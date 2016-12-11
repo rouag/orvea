@@ -11,6 +11,3 @@ from . import medical
 from . import res_partner
 from . import judicial_precedents
 from . import recruiters
-
-from . import medical_report_parser
-from . import order_enquiry_report_parser
