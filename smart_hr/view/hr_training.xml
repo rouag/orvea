@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<!-- الدورات التدربية -->
+
+		<record model="ir.ui.view" id="hr_training_tree">
+			<field name="name">hr.training.tree</field>
+			<field name="model">hr.training</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="الدورات التدربية">
+					<field name="name" />
+					<field name="number" />
+					<field name="date" />
+					<field name="date_of" />
+					<field name="date_end" />
+					<field name="period" />
+					<field name="department" />
+					<field name="place" />
+					<field name="number_place" />
+					<field name="number_participant" />
+				</tree>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_training_form">
+			<field name="name">hr.training.form</field>
+			<field name="model">hr.training</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="الدورات التدربية">
+					<header>
+						<button name="action_waiting" string="جديد" type="object"
+							states="new" />
+						<button name="action_candidat" string="الترشح" type="object"
+							states="candidat" />
+						<button name="action_review" string="المراجعة" type="object"
+							states="review" />
+						<button name="action_confirm" string="إعتمدت" type="object"
+							states="confirm" />
+
+						<button name="action_done" string="تمت" type="object"
+							states="done" />
+						<field name="state" widget="statusbar"
+							statusbar_visible="new,candidat,review,confirm,done" />
+					</header>
+					<sheet>
+						<group col="4">
+							<field name="name" />
+							<field name="number" />
+							<field name="date" />
+								<field name="place" />
+							<field name="date_of" />
+							<field name="date_end" />
+							<field name="period" />
+							<field name="department" />
+							<field name="number_place" />
+							<field name="number_participant" />
+						</group>
+						<group string="المترشحين">
+							<field name="line_ids" string="المترشحين">
+								<tree editable="bottom">
+									<field name="employee_id" />
+								</tree>
+							</field>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_training">
+			<field name="name">الدورات التدربية</field>
+			<field name="res_model">hr.training</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+		<menuitem id="hr_training_menu" name="الدورات التدربية"
+			sequence="5" parent="hr_root_training" action="action_hr_training"
+			groups="group_job_managmenet" />
+
+		<!-- الدورات التدربيةالمفتوحة -->
+		<record model="ir.actions.act_window" id="action_hr_training_open">
+			<field name="name"> الدورات التدربيةالمفتوحة</field>
+			<field name="res_model">hr.training</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('state','=','candidat')]</field>
+		</record>
+
+		<record id="action_hr_training_open_tree" model="ir.actions.act_window.view">
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="hr_training_tree" />
+			<field name="act_window_id" ref="action_hr_training_open" />
+		</record>
+
+		<record id="action_hr_training_open_form" model="ir.actions.act_window.view">
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="hr_training_form" />
+			<field name="act_window_id" ref="action_hr_training_open" />
+		</record>
+		<menuitem id="hr_training_open_menu" name="الدورات التدربيةالمفتوحة"
+			sequence="10" parent="hr_root_training" action="action_hr_training_open" />
+
+		<!-- الترشيحات -->
+
+		<record model="ir.ui.view" id="hr_candidates_tree">
+			<field name="name">hr.candidates.tree</field>
+			<field name="model">hr.candidates</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="الترشيحات">
+					<field name="employee_id" />
+					<field name="number" />
+					<field name="job_id" />
+					<field name="department_id" />
+					<field name="training_id" />
+					<field name="date_of" />
+					<field name="date_end" />
+					<field name="department" />
+				</tree>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_candidates_form">
+			<field name="name">hr.candidates.form</field>
+			<field name="model">hr.candidates</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="الترشيحات">
+					<header>
+						<button name="action_waiting" string="طلب" type="object"
+							states="new" />
+						<button name="action_done" string="في إنتظار الإعتماد"
+							type="object" states="waiting" />
+						<button name="action_refuse" string="اعتمدت" type="object"
+							states="waiting" />
+						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
+					</header>
+					<sheet>
+
+						<group string="بيانات الموظف">
+							<field name="employee_id" />
+							<field name="number" />
+							<field name="job_id" />
+							<field name="department_id" />
+						</group>
+						<group string="الدورات التدربية">
+							<field name="training_id" />
+							<field name="date_of" />
+							<field name="date_end" />
+							<field name="department" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_candidates_candidat">
+			<field name="name">الترشيحات</field>
+			<field name="res_model">hr.candidates</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('state','=','confirm')]</field>
+		</record>
+		<menuitem id="hr_training_candidat_menu" name="الترشيحات"
+			sequence="15" parent="hr_root_training" action="action_hr_candidates_candidat" />
+
+		<!-- الدورات التدربية المنتهية -->
+		<record model="ir.actions.act_window" id="action_hr_training_close">
+			<field name="name"> الدورات التدربية المنتهية</field>
+			<field name="res_model">hr.training</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+			<field name="domain">[('state','=','done')]</field>
+		</record>
+
+		<record id="action_hr_training_close_tree" model="ir.actions.act_window.view">
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="hr_training_tree" />
+			<field name="act_window_id" ref="action_hr_training_close" />
+		</record>
+
+		<record id="action_hr_training_close_form" model="ir.actions.act_window.view">
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="hr_training_form" />
+			<field name="act_window_id" ref="action_hr_training_close" />
+		</record>
+
+		<menuitem id="hr_training_close_menu" name="الدورات التدربية المنتهية"
+			sequence="20" parent="hr_root_training" action="action_hr_training_close" />
+
+
+
+	</data>
+</openerp>

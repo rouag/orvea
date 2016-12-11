@@ -1,0 +1,102 @@
+.report {
+	color: black !important;
+	font-size: 10px;
+}
+
+.medicaltable {
+	border: 1px solid #000;
+	width: 100%;
+	height: 100%;
+	border-collapse:collapse;
+}
+
+
+.medicaltable td {
+	border: 1px solid #000;
+}
+
+.rotate {
+	text-align: center;
+	white-space: nowrap;
+	-webkit-transform: rotate(270deg);
+	-moz-transform: rotate(270deg);
+	-o-transform: rotate(270deg);
+	writing-mode: lr-tb;
+	white-space: nowrap;
+	height: 100%;
+}
+.inner{
+	 display:table-cell;
+}
+.full {
+	width: 100%;
+	height: 100%;
+}
+
+.good {
+	height: 100%;
+	width: 50%;
+	float: right;
+	border-left: 1px solid black;
+}
+
+.bad {
+	height: 100%;
+	width: 50%;
+	float: left;
+}
+.head{
+	margin: 100px;
+}
+.head2{
+	margin-top: 100px;
+}
+.picture{
+	border: 1px solid black;
+	height: 100px;
+	width: 90px;
+	position: absolute;
+	left:100px;
+	
+}
+.picture img{
+	max-height: 98px;
+	max-width: 88px;
+	height: 98px;
+	width: 88px;
+	position: absolute;
+	left:0px;
+	
+}
+.headerright{
+	border-top: 2px solid black;
+	margin-top: 50px;
+	padding-bottom: 50px;
+}
+.titleresp{
+	margin-left: 70px;
+	margin-top: -50px;
+}
+.content{
+	position: absolute;
+	top: 250px;
+}
+.caret{
+	width:15px;
+	height:15px;
+	border:1px solid #000;
+	padding-right: 2px;
+}
+.righttable{
+	width:50%;
+	float:right;
+}
+.lefttable{
+	width:50%;
+	float: left;
+	
+}
+.info{
+	position:absolute;
+	top:33px
+}

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<!-- الطلبات -->
+
+		<record model="ir.ui.view" id="hr_holidays_tree">
+			<field name="name">hr.holidays.tree</field>
+			<field name="model">hr.holidays</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="الطلبات">
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+		
+		<record model="ir.ui.view" id="hr_holidays_form">
+			<field name="name">hr.holidays.form</field>
+			<field name="model">hr.holidays</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="الطلبات">
+					<header>
+						 
+						<field name="state" widget="statusbar"/>
+					</header>
+					<sheet>
+						<group>
+							<group string="بيانات الموظف">
+								<field name="name" />
+							</group>
+
+						</group>
+						<group>
+							<field name="report_note" placeholder="ملاحظات ..."
+								colspan="4" />
+						</group>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"
+							groups="base.group_user" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_holidays">
+			<field name="name">الطلبات</field>
+			<field name="res_model">hr.holidays</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+		<menuitem id="hr_holidays_menu" name="الطلبات" sequence="5" parent="hr_root_holidays" action="action_hr_holidays" />
+	</data>
+</openerp>

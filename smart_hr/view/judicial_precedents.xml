@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<menuitem id="hr_configuration_judicial_precedents_root"
+			sequence="25" name="السوابق العدلية" parent="smart_hr.hr_root_configuration" />
+
+		<!--أنواع السوابق العدلية -->
+
+		<record id="judicial_precedents_form" model="ir.ui.view">
+			<field name="name">judicial.precedents.form</field>
+			<field name="model">judicial.precedents</field>
+			<field name="arch" type="xml">
+				<form string="السوابق العدلية ">
+					<sheet>
+						<group>
+							<field name="name" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="judicial_precedents_tree" model="ir.ui.view">
+			<field name="name">judicial.precedents.tree</field>
+			<field name="model">judicial.precedents</field>
+			<field name="arch" type="xml">
+				<tree string="السوابق العدلية">
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_judicial_precedents">
+			<field name="name">أنواع السوابق العدلية</field>
+			<field name="res_model">judicial.precedents</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<!-- config menu -->
+		<menuitem id="hr_configuration_judicial_precedents" name="السوابق العدلية"
+			sequence="30" parent="hr_configuration_judicial_precedents_root"
+			action="action_judicial_precedents" />
+
+
+
+		<!-- ملف السوابق العدلية للموظف -->
+
+
+		<record id="employee_judicial_precedents_form" model="ir.ui.view">
+			<field name="name">employee.judicial.precedents.form</field>
+			<field name="model">employee.judicial.precedents</field>
+			<field name="arch" type="xml">
+				<form string="طلب إستسفار السوابق العدلية">
+					<sheet>
+							<group>
+							<group>
+								<field name="employee" />
+							</group>
+							</group>
+						<field name="judicial_precedents" string="السوابق العدلية">
+							<tree editable="bottom">
+								<field name="judicial_precident" />
+								<field name="date" />
+								<field name="periode" />
+							</tree>
+						</field>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="employee_medical_exam_tree" model="ir.ui.view">
+			<field name="name">employee.medical.exam.tree</field>
+			<field name="model">employee.medical.exam</field>
+			<field name="arch" type="xml">
+				<tree string="الفحص الطبي">
+					<field name="employee"
+						domain="['|',('state','=','done'), 
+			('state','=','employee')]" />
+					<field name="create_date" string="تاريخ الانشاء" />
+				</tree>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_employee_judicial">
+			<field name="name">السوابق العدلية</field>
+			<field name="res_model">employee.judicial.precedents</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<menuitem id="judicial_precedents" name="ملفات السوابق العدلية"
+			sequence="3" parent="hr_root_employees" action="action_employee_judicial" />
+
+
+	</data>
+</openerp>

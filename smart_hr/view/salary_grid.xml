@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+
+		<menuitem id="hr_configuration_salary_grid" sequence="5"
+			name="سلّم الرواتب" parent="hr_root_configuration" />
+
+		<!-- سلّم الرواتب -->
+		
+		<record id="salary_grid_form" model="ir.ui.view">
+			<field name="name">salary.grid.form</field>
+			<field name="model">salary.grid</field>
+			<field name="arch" type="xml">
+				<form string="سلّم الرواتب">
+					<sheet>
+						<group>
+							<group>
+								<field name="name" />
+								<field name="numero_order" />
+							</group>
+							<group>
+								<field name="enabled" />
+								<field name="date" />
+							</group>
+						</group>
+						<field name="grid_ids" string=" سلّم الرواتب">
+							<tree editable="bottom">
+								<field name="type_id" />
+								<field name="grade_id" domain="[('type_id','=',type_id)]" />
+								<field name="degree_id" domain="[('grade_id','=',grade_id)]" />
+								<field name="basic_salary" />
+								<field name="transport_allow" />
+								<field name="retirement" />
+								<field name="net_salary" />
+							</tree>
+						</field>
+
+
+					</sheet>
+				</form>
+			</field>
+		</record>
+		
+		<record id="salary_grid_tree" model="ir.ui.view">
+			<field name="name">salary.grid.tree</field>
+			<field name="model">salary.grid</field>
+			<field name="arch" type="xml">
+				<tree string="سلّم الرواتب">
+					<field name="name" />
+					<field name="numero_order" />
+					<field name="date" />
+					<field name="enabled" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_salary_grid">
+			<field name="name">سلّم الرواتب</field>
+			<field name="res_model">salary.grid</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="salary_grid_menu" name="سلّم الرواتب" sequence="5"
+			parent="hr_configuration_salary_grid" action="action_salary_grid" />
+
+		<!-- الأصناف -->
+
+		<record id="salary_grid_type_form" model="ir.ui.view">
+			<field name="name">salary.grid.type.form</field>
+			<field name="model">salary.grid.type</field>
+			<field name="arch" type="xml">
+				<form string="الأصناف">
+					<sheet>
+						<group>
+							<group>
+								<field name="name" />
+								<field name="code" />
+								<field name="grid_id" />
+
+							</group>
+
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		
+		<record id="salary_grid_type_tree" model="ir.ui.view">
+			<field name="name">salary.grid.type.tree</field>
+			<field name="model">salary.grid.type</field>
+			<field name="arch" type="xml">
+				<tree string="الأصناف">
+					<field name="name" />
+					<field name="code" />
+					<field name="grid_id" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_salary_grid_type">
+			<field name="name">الأصناف</field>
+			<field name="res_model">salary.grid.type</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="salary_grid_type_menu" name="الأصناف" sequence="10"
+			parent="hr_configuration_salary_grid" action="action_salary_grid_type" />
+
+
+		<!-- المراتب -->
+
+		<record id="salary_grid_grade_form" model="ir.ui.view">
+			<field name="name">salary.grid.grade.form</field>
+			<field name="model">salary.grid.grade</field>
+			<field name="arch" type="xml">
+				<form string="المراتب">
+					<sheet>
+						<group>
+							<group>
+								<field name="name" />
+								<field name="code" />
+								<field name="annual_premium" />
+								<field name="type_id" />
+							</group>
+
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		
+		<record id="salary_grid_grade_tree" model="ir.ui.view">
+			<field name="name">salary.grid.grade.tree</field>
+			<field name="model">salary.grid.grade</field>
+			<field name="arch" type="xml">
+				<tree string="المراتب">
+					<field name="name" />
+					<field name="code" />
+					<field name="annual_premium" />
+					<field name="type_id" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_salary_grid_grade">
+			<field name="name">المراتب</field>
+			<field name="res_model">salary.grid.grade</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="salary_grid_grade_menu" name="المراتب"
+			sequence="12" parent="hr_configuration_salary_grid" action="action_salary_grid_grade" />
+
+		<!-- الدرجات -->
+
+		<record id="salary_grid_degree_form" model="ir.ui.view">
+			<field name="name">salary.grid.degree.form</field>
+			<field name="model">salary.grid.degree</field>
+			<field name="arch" type="xml">
+				<form string="الدرجات">
+					<sheet>
+						<group>
+							<group>
+								<field name="name" />
+								<field name="code" />
+								<field name="grade_id" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		
+		<record id="salary_grid_degree_tree" model="ir.ui.view">
+			<field name="name">salary.grid.degree.tree</field>
+			<field name="model">salary.grid.degree</field>
+			<field name="arch" type="xml">
+				<tree string="الدرجات">
+					<field name="name" />
+					<field name="code" />
+					<field name="grade_id" />
+				</tree>
+			</field>
+		</record>
+		
+		<record model="ir.actions.act_window" id="action_salary_grid_degree">
+			<field name="name">الدرجات</field>
+			<field name="res_model">salary.grid.degree</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="salary_grid_degree_menu" name="الدرجات"
+			sequence="14" parent="hr_configuration_salary_grid" action="action_salary_grid_degree" />
+
+	</data>
+</openerp>

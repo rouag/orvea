@@ -1,0 +1,58 @@
+# -*- coding: utf-8 -*-
+
+
+from openerp import models, fields, api, _
+from openerp.exceptions import except_orm, Warning, RedirectWarning
+
+class MedicalCategory(models.Model):
+    _name = 'medical.category'  
+    _description = u'الفحص الطبي' 
+    
+    name = fields.Char(string = u'أسم الفحص بالعربية', required=1)
+    name_en = fields.Char(string = u'أسم الفحص باﻷنقلزية')
+    code = fields.Char(string = u'الرمز')
+    exams = fields.One2many('medical.exam','category', string=u'اﻷختبارات')
+    position = fields.Selection([('right',u'يمين'),
+                             ('left',u'يسار'),
+                             ('bottom',u'أسفل'),
+                             ], string=u"الموقع في التقرير", default='right')
+    
+class MedicalExam(models.Model):
+    _name = 'medical.exam'  
+    _description = u' أختبار الفحص الطبي' 
+    
+    name = fields.Char(string = u'أسم اﻷختبار بالعربية', required=1)
+    name_en = fields.Char(string = u'أسم اﻷختبار باﻷنقلزية')
+    code = fields.Char(string = u'الرمز', required=1)
+    category = fields.Many2one('medical.category')
+    
+class MedicalExamResult(models.Model):
+    _name = 'medical.exam.result'  
+    _description = u' أختبار الفحص الطبي' 
+    _rec_name = 'exam'
+    
+    exam = fields.Many2one ('medical.exam', string = u'الاختبار') 
+    result = fields.Boolean(string = u'سليم')
+    employee_exam = fields.Many2one('employee.medical.exam', string = u'أختبار الفحص الطبي')
+    
+class EmployeeMedicalExam(models.Model):
+    _name = 'employee.medical.exam'  
+    _description = u' أختبار الفحص الطبي لموظف معين' 
+    _rec_name = 'employee'
+    
+    sequence = fields.Char(string = u'رقم الفحص', readonly = 1)
+    employee = fields.Many2one('hr.employee', string = u'الموظف', required=1)
+    hospital = fields.Many2one('res.partner', string = u'المستشفى', required=1)
+    job = fields.Many2one('hr.job', string = u'الوظيفة المرشح لها', compute = '_get_job_employee', readonly=True)
+    exams_results = fields.One2many('medical.exam.result','employee_exam', string=u'اﻷختبارات')
+    
+    @api.depends('employee')
+    def _get_job_employee(self):
+        if self.employee :
+            self.job = self.employee.job_id
+            
+    @api.model
+    def create(self, vals):
+        code = self.env['ir.sequence'].sudo().next_by_code('seq.employee.medical.exam')
+        vals['sequence'] = code
+        return super(EmployeeMedicalExam, self).create(vals)

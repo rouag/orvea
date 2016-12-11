@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<report id="salary_grid_report" model="salary.grid"
+			report_type="qweb-pdf" string="طباعة" name="smart_hr.report_salary_grid"
+			file="smart_hr.report_salary_grid" />
+
+
+		<report id="employee_medical_exam_report" model="employee.medical.exam"
+			string="الفحص الطبي" report_type="qweb-pdf"
+			name="smart_hr.medical_examination_report_template" attachment_use="False"
+			file="smart_hr.medical_examination_report_template" />
+
+		<report id="order_enquiry_report" model="hr.employee"
+			string="طلب إستفسار" report_type="qweb-pdf"
+			name="smart_hr.order_enquiry_report_template" attachment_use="False"
+			file="smart_hr.order_enquiry_report_template" />
+
+	</data>
+</openerp>
+		

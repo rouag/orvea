@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_salary_grid">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="report.external_layout">
+						<div class="page">
+							<div class="oe_structure" />
+
+							<div class="col-xs-12 text-center">
+								<h2>
+									<strong>
+										<span t-field="o.name" />
+										<br></br>
+									</strong>
+								</h2>
+							</div>
+							
+							<div class="col-xs-6">
+								<strong>رقم القرار :</strong>
+								<span t-field="o.numero_order" />
+							</div>
+							
+							<div class="col-xs-6">
+								<strong>التاريخ :</strong>
+								<span t-field="o.date" />
+								<br></br>
+								<br></br>
+								<br></br>
+							</div>
+
+
+							<table class="table table-condensed">
+								<thead>
+									<tr>
+										<th>الصنف</th>
+										<th>المرتبة</th>
+										<th>الدرجة</th>
+										<th>الراتب الأساسي</th>
+										<th>بدل النقل</th>
+										<th>المحسوم للتقاعد</th>
+										<th>صافي الراتب </th>
+									</tr>
+								</thead>
+								<tr t-foreach="o.salary_grid_ids" t-as="l">
+									<td>
+										<span t-field="l.grid_type_id" />
+									</td>
+
+									<td>
+										<span t-field="l.grid_grade_id" />
+									</td>
+
+									<td>
+										<span t-field="l.grid_degree_id" />
+									</td>
+
+									<td>
+										<span t-field="l.basic_salary" />
+									</td>
+
+									<td>
+										<span t-field="l.transport_allow" />
+									</td>
+
+									<td>
+										<span t-field="l.retirement" />
+									</td>
+									<td>
+										<span t-field="l.net_salary" />
+									</td>
+								</tr>
+							</table>
+						</div>
+					</t>
+
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+								

@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<template id="medical_examination_report_template">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="report.external_layout">
+						<div class="page report">
+
+							<!-- head -->
+
+							<div class="col-xs-12 head">
+								<div class="col-xs-12">
+									<div class="col-xs-9 info">
+										<div class="col-xs-6" style="">
+											<strong>رقم الفحص :</strong>
+											<span t-esc="o.sequence" />
+										</div>
+										<div class="col-xs-6">
+											<strong>التاريخ :</strong>
+											<span t-esc="get_current_date()" />
+										</div>
+									</div>
+								</div>
+								<div class="col-xs-9 headerright">
+									<div class="col-xs-12">
+										<div class="col-xs-6">
+											<strong> الاسم :</strong>
+											<span t-field="o.employee.name" />
+										</div>
+										<div class="col-xs-6">
+											<strong>الوظيفة المرشح لها :</strong>
+											<span t-field="o.job" />
+										</div>
+
+									</div>
+									<div class="col-xs-12">
+										<p>سعادة مدير مستشفى / <span t-esc="o.hospital.name" />
+											المحترم
+										</p>
+										<p class="text-center">السلام عليكم ورحمة الله وبركاته :-</p>
+									</div>
+								</div>
+
+								<div class="col-xs-3 picture">
+									<img t-attf-src="data:image/*;base64,{{o.employee.image}}" />
+								</div>
+								<div class="col-xs-12">
+
+									<p class="text-left titleresp">
+										<strong>مدير عام شؤون الموظفين</strong>
+									</p>
+								</div>
+
+							</div>
+							<!-- fin head -->
+
+							<div class="content">
+
+								<table class="table table-bordered righttable">
+									<!-- head table -->
+									<tr>
+
+										<td width="85%" colspan="4" rowspan="2">
+											<strong>الفحص</strong>
+										</td>
+										<td width="15%" colspan="2">
+
+											<strong>النتيجة</strong>
+
+										</td>
+
+									</tr>
+									<tr>
+
+										<td>
+											<strong>سليم</strong>
+										</td>
+										<td>
+											<strong>غير سليم</strong>
+										</td>
+									</tr>
+									<!-- fin head table -->
+									<tr t-foreach="get_exams_category_right(o.exams_results)"
+										t-as="c">
+										<!-- exams varible have the exams for current category -->
+										<t t-set="exams" t-value="get_exams_by_category(o.exams_results, c)" />
+
+										<!-- right side -->
+										<td class="rotate">
+											<strong>
+												<span t-field="c.name" />
+											</strong>
+										</td>
+										<td colspan="3">
+											<div t-foreach="exams" t-as="e">
+												<span t-field="e.exam" />
+											</div>
+										</td>
+
+										<td>
+											<t t-foreach="exams" t-as="e">
+												<div class="caret">
+													<span t-if="e.result" class="glyphicon glyphicon-ok"></span>
+												</div>
+												<br></br>
+											</t>
+										</td>
+										<td>
+											<t t-foreach="exams" t-as="e">
+												<div class="caret">
+													<span t-if=" not e.result" class="glyphicon glyphicon-ok"></span>
+												</div>
+												<br></br>
+											</t>
+										</td>
+
+
+
+									</tr>
+
+								</table>
+								<table class="table table-bordered lefttable">
+									<!-- head table -->
+									<tr>
+
+										<td width="85%" colspan="4" rowspan="2">
+											<strong>الفحص</strong>
+										</td>
+										<td width="15%" colspan="2">
+
+											<strong>النتيجة</strong>
+
+										</td>
+
+									</tr>
+									<tr>
+
+										<td>
+											<strong>سليم</strong>
+										</td>
+										<td>
+											<strong>غير سليم</strong>
+										</td>
+									</tr>
+									<!-- fin head table -->
+									<tr t-foreach="get_exams_category_left(o.exams_results)"
+										t-as="c">
+										<!-- exams varible have the exams for current category -->
+										<t t-set="exams" t-value="get_exams_by_category(o.exams_results, c)" />
+
+										<!-- right side -->
+										<td class="rotate">
+											<strong>
+												<span t-field="c.name" />
+											</strong>
+										</td>
+										<td colspan="3">
+											<div t-foreach="exams" t-as="e">
+												<span t-field="e.exam" />
+											</div>
+										</td>
+
+										<td>
+											<t t-foreach="exams" t-as="e">
+												<div class="caret">
+													<span t-if="e.result" class="glyphicon glyphicon-ok"></span>
+												</div>
+												<br></br>
+											</t>
+										</td>
+										<td>
+											<t t-foreach="exams" t-as="e">
+												<div class="caret">
+													<span t-if=" not e.result" class="glyphicon glyphicon-ok"></span>
+												</div>
+												<br></br>
+											</t>
+										</td>
+
+
+
+									</tr>
+
+								</table>
+
+								<table class="table table-bordered ">
+									<!-- head table -->
+									<tr>
+										<td width="85%" colspan="2" rowspan="2">
+											<strong>* تضاف الفحوصات الأتية للمتقدمين لشغل الوظائف الحصيه
+												:
+											</strong>
+										</td>
+
+										<td width="15%" colspan="2">
+											<strong>النتيجة</strong>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<strong>سليم</strong>
+										</td>
+										<td>
+											<strong>غير سليم</strong>
+										</td>
+									</tr>
+									<!-- content -->
+									<tr t-foreach="get_exams_category_bottom(o.exams_results)"
+										t-as="c">
+										<!-- exams varible have the exams for current category -->
+										<t t-set="exams" t-value="get_exams_by_category(o.exams_results, c)" />
+										<td width="15%" class="rotate">
+											<strong>
+												<span t-field="c.name" />
+											</strong>
+										</td>
+										<td width="65%">
+											<div t-foreach="exams" t-as="e">
+												<span t-field="e.exam" />
+											</div>
+										</td>
+										<td width="10%">
+											<t t-foreach="exams" t-as="e">
+												<div class="caret">
+													<span t-if="e.result" class="glyphicon glyphicon-ok"></span>
+												</div>
+												<br></br>
+											</t>
+										</td>
+										<td width="10%">
+											<t t-foreach="exams" t-as="e">
+												<div class="caret">
+													<span t-if=" not e.result" class="glyphicon glyphicon-ok"></span>
+												</div>
+												<br></br>
+											</t>
+										</td>
+									</tr>
+								</table>
+
+
+								<div class="col-xs-12">
+									<p>
+										<strong>سعادة / مدير عام شؤون الموظفين بهيئة التحقيق والإدعاء
+											العام المحترم.
+										</strong>
+									</p>
+									<p>
+										السلام عليكم ورحمة الله وبركاته ، ،
+									</p>
+
+								</div>
+								<div class="col-xs-12">
+									<div class="col-xs-6">
+										<p>
+											أعيد اليكم التقرير الطبي، وبعد الكشف على المذكور أعلاه و
+											إتضح أنه
+											:
+										</p>
+										<div class="col-xs-12">
+											<div class="col-xs-2">
+												<div class="caret"></div>
+											</div>
+											<div class="col-xs-10">
+												<p>لائق صحياً للوظيفة المرشح لها</p>
+											</div>
+											<div class="col-xs-2">
+												<div class="caret"></div>
+											</div>
+											<div class="col-xs-10">
+												<p>غير لائق صحياً للوظيفة المرشح لها</p>
+											</div>
+										</div>
+
+									</div>
+									<div class="col-xs-6 text-left">
+										<strong>مدير مستشفى / </strong><span t-esc="o.hospital.hospital_director" />
+										<br></br>
+										<strong>التوقيع :.................................</strong>
+										<br></br>
+										<strong>التاريخ :.................................</strong>
+										<br></br>
+									</div>
+								</div>
+							</div>
+						</div>
+					</t>
+
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+								

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<menuitem id="hr_configuration_recruiters_root"
+			sequence="30" name="جهات التوظيف" parent="smart_hr.hr_root_configuration" />
+
+		<!--أنواع جهات التوظيف -->
+
+		<record id="recruiters_form" model="ir.ui.view">
+			<field name="name">recruiters.recruiters.form</field>
+			<field name="model">recruiters.recruiters</field>
+			<field name="arch" type="xml">
+				<form string="جهات التوظيف ">
+					<sheet>
+						<group>
+							<field name="name" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="recruiters_tree" model="ir.ui.view">
+			<field name="name">recruiters.recruiters.tree</field>
+			<field name="model">recruiters.recruiters</field>
+			<field name="arch" type="xml">
+				<tree string="جهات التوظيف">
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_recruiters">
+			<field name="name">أنواع جهات التوظيف</field>
+			<field name="res_model">recruiters.recruiters</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		
+		<!-- config menu -->
+		<menuitem id="hr_configuration_recruiters" name="جهات التوظيف"
+			sequence="35" parent="hr_configuration_recruiters_root"
+			action="action_recruiters" />
+
+
+
+
+
+	</data>
+</openerp>
