@@ -37,4 +37,4 @@ access_medical_exam,medical_exam,model_medical_exam,,1,1,1,1
 access_medical_exam_result,medical_exam_result,model_medical_exam_result,,1,1,1,1
 access_employee_medical_exam,medical_employee_medical_exam,model_employee_medical_exam,,1,1,1,1
 ,,,,,,,
-access_recruiter_recruiter,recruiter.recruiter,model_recruiter_recruiter,,1,1,1,1
+access_recruiter_recruiter,recruiter_recruiter,model_recruiter_recruiter,,1,1,1,1

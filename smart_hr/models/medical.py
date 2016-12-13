@@ -50,6 +50,21 @@ class EmployeeMedicalExam(models.Model):
     def _get_job_employee(self):
         if self.employee :
             self.job = self.employee.job_id
+    
+    @api.onchange('exams_results')
+    def onchange_exams_results(self):
+        if len(self.exams_results)>0:
+            #get last added exam
+            last_added_exam = self.exams_results[len(self.exams_results)-1].exam
+            #check if the last added exam exit only one time
+            count = 0
+            for rec in self.exams_results:
+                if rec.exam == last_added_exam:
+                    count +=1
+                    if count>1:
+                        raise Warning(_(u'إختبار '+last_added_exam.name+u' يوجد أكثر من مرة.'))
+                    
+                    """TODO: remove duplicated exam from one2manty field"""
             
     @api.model
     def create(self, vals):
