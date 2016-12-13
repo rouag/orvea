@@ -14,7 +14,7 @@ class HrEmployee(models.Model):
     is_resident = fields.Boolean (string=u'موظف مقيم', required=1) 
     birthday_location = fields.Char(string=u'مكان الميلاد')
     attachments = fields.Many2many('ir.attachment', 'res_id', string=u"المرفقات")
-    recruiter = fields.Many2one('recruiters.recruiters', string=u'جهة التوظيف', required=1)
+    recruiter = fields.Many2one('recruiter.recruiter', string=u'جهة التوظيف', required=1)
     state = fields.Selection([('new', u'جديد'),
                              ('waiting', u'في إنتظار الموافقة'),
                              ('update', u'إستكمال البيانات'),
@@ -26,9 +26,12 @@ class HrEmployee(models.Model):
     
     
     @api.one
-    @api.constrains('number')
-    def _check_unique_constraint(self):
-            if len(self.search([('number', '=', self.number)])) > 1:
+    @api.constrains('number','identification_id')
+    def _check_constraints(self):
+        if len(self.identification_id) != 10:
+                    raise Warning(_('الرجاء التثبت من رقم الهوية.'))
+                
+        if len(self.search([('number', '=', self.number)])) > 1:
                     raise Warning(_('يوجد موظف لديه نفس الرقم التوظيفي.'))
     @api.one
     def action_send(self):

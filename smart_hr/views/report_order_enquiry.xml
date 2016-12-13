@@ -29,18 +29,18 @@
 								<!-- head table -->
 								<thead>
 									<tr>
-										<td rowspan="2">م</td>
-										<td rowspan="2">اﻷسم</td>
-										<td rowspan="2" colspan="10">رقم الهوية</td>
-										<td colspan="2">مهنة الموظف</td>
-										<td colspan="2">السوابق</td>
+										<td rowspan="2" align="center">م</td>
+										<td rowspan="2" align="center">اﻷسم</td>
+										<td rowspan="2" colspan="10" align="center">رقم الهوية</td>
+										<td colspan="2" align="center">مهنة الموظف</td>
+										<td colspan="2" align="center">السوابق</td>
 									</tr>
 
 									<tr>
-										<td>موظف حكومي</td>
-										<td>غير ذلك (يذكر)</td>
-										<td>لا يوجد</td>
-										<td> يوجد (يذكر)</td>
+										<td align="center">موظف حكومي</td>
+										<td align="center">غير ذلك (يذكر)</td>
+										<td align="center">لا يوجد</td>
+										<td align="center"> يوجد (يذكر)</td>
 
 									</tr>
 								</thead>

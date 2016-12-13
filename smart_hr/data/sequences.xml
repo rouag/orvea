@@ -11,7 +11,7 @@
         
         <record id="seq_judicial_precedents_ordre" model="ir.sequence">
             <field name="name">رقم طلب إستسفار</field>
-            <field name="code">seq.employee.judicial.precedents.ordre</field>
+            <field name="code">seq.employee.judicial.precedent.ordre</field>
             <field name="prefix">EJP/</field>
             <field name="padding">3</field>
         </record>

@@ -8,8 +8,8 @@
 		<!--أنواع السوابق العدلية -->
 
 		<record id="judicial_precedents_form" model="ir.ui.view">
-			<field name="name">judicial.precedents.form</field>
-			<field name="model">judicial.precedents</field>
+			<field name="name">judicial.precedent.form</field>
+			<field name="model">judicial.precedent</field>
 			<field name="arch" type="xml">
 				<form string="السوابق العدلية ">
 					<sheet>
@@ -22,8 +22,8 @@
 		</record>
 
 		<record id="judicial_precedents_tree" model="ir.ui.view">
-			<field name="name">judicial.precedents.tree</field>
-			<field name="model">judicial.precedents</field>
+			<field name="name">judicial.precedent.tree</field>
+			<field name="model">judicial.precedent</field>
 			<field name="arch" type="xml">
 				<tree string="السوابق العدلية">
 					<field name="name" />
@@ -33,7 +33,7 @@
 
 		<record model="ir.actions.act_window" id="action_judicial_precedents">
 			<field name="name">أنواع السوابق العدلية</field>
-			<field name="res_model">judicial.precedents</field>
+			<field name="res_model">judicial.precedent</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
@@ -48,8 +48,8 @@
 
 
 		<record id="employee_judicial_precedents_form" model="ir.ui.view">
-			<field name="name">employee.judicial.precedents.form</field>
-			<field name="model">employee.judicial.precedents</field>
+			<field name="name">employee.judicial.precedent.order.form</field>
+			<field name="model">employee.judicial.precedent.order</field>
 			<field name="arch" type="xml">
 				<form string="طلب إستسفار السوابق العدلية">
 					<sheet>
@@ -83,7 +83,7 @@
 		</record>
 		<record model="ir.actions.act_window" id="action_employee_judicial">
 			<field name="name">السوابق العدلية</field>
-			<field name="res_model">employee.judicial.precedents</field>
+			<field name="res_model">employee.judicial.precedent</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>

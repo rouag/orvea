@@ -16,6 +16,7 @@ access_hr_job_move_department,hr_job_move_department,model_hr_job_move_departmen
 access_hr_job_move_department_line,hr_job_move_department_line,model_hr_job_move_department_line,group_job_managmenet,1,1,1,0
 access_hr_job_update,hr_job_update,model_hr_job_update,group_job_managmenet,1,1,1,0
 access_hr_job_update_line,hr_job_update_line,model_hr_job_update_line,group_job_managmenet,1,1,1,0
+access_hr_job_reservation,hr_job_reservation,model_hr_job_reservation,group_job_managmenet,1,1,1,0
 ,,,,,,,
 access_hr_promotion,hr_promotion,model_hr_promotion,group_job_managmenet,1,1,1,0
 ,,,,,,,
@@ -26,3 +27,14 @@ access_hr_candidates,hr_candidates,model_hr_candidates,group_department_manager,
 access_hr_candidates,hr_candidates,model_hr_training,group_employee,1,1,1,0
 access_hr_employee,hr_employee,model_hr_employee,group_employee_request,1,1,1,1
 access_hr_employee_registration,hr_employee_registration,model_hr_employee,group_employee_registration,1,1,0,0
+,,,,,,,
+access_judicial_precedent,judicial_precedent,model_judicial_precedent,,1,1,1,1
+access_employee_judicial_precedent,employee_judicial_precedent,model_employee_judicial_precedent,,1,1,1,1
+access_employee_judicial_precedent_order,employee_judicial_precedent_order,model_employee_judicial_precedent_order,,1,1,1,1
+,,,,,,,
+access_medical_category,medical_category,model_medical_category,,1,1,1,1
+access_medical_exam,medical_exam,model_medical_exam,,1,1,1,1
+access_medical_exam_result,medical_exam_result,model_medical_exam_result,,1,1,1,1
+access_employee_medical_exam,medical_employee_medical_exam,model_employee_medical_exam,,1,1,1,1
+,,,,,,,
+access_recruiter_recruiter,recruiter.recruiter,model_recruiter_recruiter,,1,1,1,1

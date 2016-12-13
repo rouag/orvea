@@ -23,8 +23,8 @@
         'view/hr_training.xml',
         'view/hr_exam_emp.xml',
         'view/res_partner.xml',
-        'view/judicial_precedents.xml',
-        'view/recruiters.xml',
+        'view/judicial_precedent.xml',
+        'view/recruiter.xml',
         
         
         'views/report_salary_grid.xml',

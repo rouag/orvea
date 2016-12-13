@@ -17,9 +17,9 @@ class OrderEnquiryReportParser(report_sxw.rml_parse):
         })
         
     def _get_employee_jurdicial_precedents(self, employee):
-        jurdicial_precedents_ids = self.pool.get('employee.judicial.precedents').search(self.cr, self.uid, [('employee','=',employee.id)], limit=1)
+        jurdicial_precedents_ids = self.pool.get('employee.judicial.precedent.order').search(self.cr, self.uid, [('employee','=',employee.id)], limit=1)
         if jurdicial_precedents_ids:
-            jurdicial_precedents_obj = self.pool.get('employee.judicial.precedents').browse(self.cr, self.uid,jurdicial_precedents_ids)
+            jurdicial_precedents_obj = self.pool.get('employee.judicial.precedent.order').browse(self.cr, self.uid,jurdicial_precedents_ids)
             print jurdicial_precedents_obj.judicial_precedents
             return jurdicial_precedents_obj.judicial_precedents
     
@@ -35,7 +35,7 @@ class OrderEnquiryReportParser(report_sxw.rml_parse):
         return identification_id[::-1]
     
     def _get_order_sequence(self):
-        sequence = self.pool.get('ir.sequence').next_by_code(self.cr, self.uid, 'seq.employee.judicial.precedents.ordre')
+        sequence = self.pool.get('ir.sequence').next_by_code(self.cr, self.uid, 'seq.employee.judicial.precedent.ordre')
         return sequence
 class OrderEnquiryObjectReport(models.AbstractModel):
     _name = 'report.smart_hr.order_enquiry_report_template'

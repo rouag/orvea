@@ -188,11 +188,11 @@
 						<div class="oe_title">
 							<label for="name" class="oe_edit_only" />
 							<h1>
-								<field name="name" placeholder="اسم الموظف" />
+								<field name="name" placeholder="اسم الموظف" attrs="{'required': 1}" />
 							</h1>
 							<label for="number" class="oe_edit_only" />
 							<h1>
-								<field name="number" placeholder="الرقم الوظيفي" />
+								<field name="number" placeholder="الرقم الوظيفي"  attrs="{'required': 1}"/>
 
 							</h1>
 						</div>
@@ -200,12 +200,12 @@
 							<page string="بيانات شخصية">
 								<group>
 									<group string="بيانات شخصية">
-										<field name="father_name" />
-										<field name="country_id" options='{"no_open": True, "no_create": True}' />
+										<field name="father_name" attrs="{'required': 1}" />
+										<field name="country_id" options='{"no_open": True, "no_create": True}' attrs="{'required': 1}" />
 
-										<field name="identification_id" groups="base.group_hr_user" />
-										<field name="passport_id" groups="base.group_hr_user" />
-										<field name="is_resident" />
+										<field name="identification_id" groups="base.group_hr_user" attrs="{'required': 1}"/>
+										<field name="passport_id" groups="base.group_hr_user" attrs="{'required': 1}" />
+										<field name="is_resident"  attrs="{'required': 1}"/>
 									</group>
 									<group string="الحالة">
 
@@ -213,8 +213,8 @@
 										<field name="marital" attrs="{'required': 1}" />
 									</group>
 									<group string="الميلاد">
-										<field name="birthday" />
-										<field name="birthday_location" />
+										<field name="birthday" attrs="{'required': 1}"/>
+										<field name="birthday_location" attrs="{'required': 1}"/>
 									</group>
 									<group string="المرفقات">
 										<field name="attachments" widget="many2many_binary"
@@ -227,10 +227,10 @@
 							<page string="بيانات التواصل">
 								<group>
 									<group string="بيانات التواصل">
-										<field name="mobile_phone" />
-										<field name="work_location" />
-										<field name="work_email" widget="email" />
-										<field name="work_phone" />
+										<field name="mobile_phone" attrs="{'required': 1}"/>
+										<field name="work_location" attrs="{'required': 1}"/>
+										<field name="work_email" widget="email" attrs="{'required': 1}" />
+										<field name="work_phone"/>
 									</group>
 								</group>
 							</page>

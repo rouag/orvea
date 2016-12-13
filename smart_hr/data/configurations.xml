@@ -4,10 +4,10 @@
 		
 		<!--أنواع جهات التوظيف -->
 		
-		<record id="governmental" model="recruiters.recruiters">
+		<record id="governmental" model="recruiter.recruiter">
 			<field name="name">حكومي</field>
 		</record>
-		<record id="private_company" model="recruiters.recruiters">
+		<record id="private_company" model="recruiter.recruiter">
 			<field name="name">شركة خاصة</field>
 		</record>
 

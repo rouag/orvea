@@ -8,8 +8,8 @@
 		<!--أنواع جهات التوظيف -->
 
 		<record id="recruiters_form" model="ir.ui.view">
-			<field name="name">recruiters.recruiters.form</field>
-			<field name="model">recruiters.recruiters</field>
+			<field name="name">recruiter.recruiter.form</field>
+			<field name="model">recruiter.recruiter</field>
 			<field name="arch" type="xml">
 				<form string="جهات التوظيف ">
 					<sheet>
@@ -22,8 +22,8 @@
 		</record>
 
 		<record id="recruiters_tree" model="ir.ui.view">
-			<field name="name">recruiters.recruiters.tree</field>
-			<field name="model">recruiters.recruiters</field>
+			<field name="name">recruiter.recruiter.tree</field>
+			<field name="model">recruiter.recruiter</field>
 			<field name="arch" type="xml">
 				<tree string="جهات التوظيف">
 					<field name="name" />
@@ -33,7 +33,7 @@
 
 		<record model="ir.actions.act_window" id="action_recruiters">
 			<field name="name">أنواع جهات التوظيف</field>
-			<field name="res_model">recruiters.recruiters</field>
+			<field name="res_model">recruiter.recruiter</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>

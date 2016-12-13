@@ -9,5 +9,5 @@ from . import hr_promotion
 from . import hr_training
 from . import medical
 from . import res_partner
-from . import judicial_precedents
-from . import recruiters
+from . import judicial_precedent
+from . import recruiter

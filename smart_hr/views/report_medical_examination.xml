@@ -63,9 +63,10 @@
 									<tr>
 
 										<td width="85%" colspan="4" rowspan="2">
-											<strong>الفحص</strong>
+											<div style="width:50%;float:right;" align="right"><strong>الفحص</strong></div>
+											<div style="width:50%;float:left;" align="left"><strong>Examination</strong></div>
 										</td>
-										<td width="15%" colspan="2">
+										<td width="15%" colspan="2" align="center">
 
 											<strong>النتيجة</strong>
 
@@ -74,10 +75,10 @@
 									</tr>
 									<tr>
 
-										<td>
+										<td align="center">
 											<strong>سليم</strong>
 										</td>
-										<td>
+										<td align="center">
 											<strong>غير سليم</strong>
 										</td>
 									</tr>
@@ -126,9 +127,10 @@
 									<tr>
 
 										<td width="85%" colspan="4" rowspan="2">
-											<strong>الفحص</strong>
+											<div style="width:50%;float:right;" align="right"><strong>الفحص</strong></div>
+											<div style="width:50%;float:left;" align="left"><strong>Examination</strong></div>
 										</td>
-										<td width="15%" colspan="2">
+										<td width="15%" colspan="2"  align="center">
 
 											<strong>النتيجة</strong>
 
@@ -137,10 +139,10 @@
 									</tr>
 									<tr>
 
-										<td>
+										<td align="center">
 											<strong>سليم</strong>
 										</td>
-										<td>
+										<td align="center">
 											<strong>غير سليم</strong>
 										</td>
 									</tr>
@@ -194,15 +196,15 @@
 											</strong>
 										</td>
 
-										<td width="15%" colspan="2">
+										<td width="15%" colspan="2" align="center">
 											<strong>النتيجة</strong>
 										</td>
 									</tr>
 									<tr>
-										<td>
+										<td align="center">
 											<strong>سليم</strong>
 										</td>
-										<td>
+										<td align="center">
 											<strong>غير سليم</strong>
 										</td>
 									</tr>
