@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-####################################
-### This Module Created by Slnee ###
-####################################
 
 from datetime import datetime, timedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT

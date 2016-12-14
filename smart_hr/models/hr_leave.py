@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-####################################
-### This Module Created by Slnee ###
-####################################
 
 from openerp import fields, models, api, _
 from openerp.tools import SUPERUSER_ID
@@ -11,7 +8,7 @@ from ..apis.iclib.hijri  import ummqura
 from ..apis.datetime_func import daterange
 from umalqurra.hijri_date import HijriDate
 from datetime import date, datetime, timedelta
-from slnee_utils.num2hindi import num2hindi
+from smart_utils.num2hindi import num2hindi
 
 class hr_leave(models.Model):
     _name = 'hr.leave'
