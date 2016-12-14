@@ -2,6 +2,8 @@
 <openerp>
 	<data>
 
+		<!-- Report Actions -->
+
 		<report id="salary_grid_report" model="salary.grid"
 			report_type="qweb-pdf" string="طباعة" name="smart_hr.report_salary_grid"
 			file="smart_hr.report_salary_grid" />
@@ -12,11 +14,42 @@
 			name="smart_hr.medical_examination_report_template" attachment_use="False"
 			file="smart_hr.medical_examination_report_template" />
 
-		<report id="order_enquiry_report" model="hr.employee"
-			string="طلب إستفسار" report_type="qweb-pdf"
-			name="smart_hr.order_enquiry_report_template" attachment_use="False"
-			file="smart_hr.order_enquiry_report_template" />
+		<report id="order_enquiry_report" model="hr.employee" string="طلب إستفسار"
+			report_type="qweb-pdf" name="smart_hr.order_enquiry_report_template"
+			attachment_use="False" file="smart_hr.order_enquiry_report_template" />
 
+		<report id="report_hr_leave_report" model="hr.leave" string="طلب الاجازة"
+			report_type="qweb-pdf" name="smart_hr.hr_leave_report" file="smart_hr.hr_leave_report"
+			attachment_use="True" attachment="('Leave_'+(object.name).replace('/','')+'.pdf')"
+			menu="False" />
+
+		<report id="report_hr_leave_hospital_transfer_form_report"
+			model="hr.leave" string="نموذج تحويل مستوصف" report_type="qweb-pdf"
+			name="smart_hr.hr_leave_hospital_transfer_form_report" file="smart_hr.hr_leave_hospital_transfer_form_report"
+			attachment_use="False" menu="False" />
+		<report id="report_hr_overtime_report" model="hr.overtime"
+			string="قرار خارج دوام" report_type="qweb-pdf" name="smart_hr.hr_overtime_report"
+			file="smart_hr.hr_overtime_report" attachment_use="True"
+			attachment="('Overtime_'+(object.name).replace('/','')+'.pdf')" menu="False" />
+
+
+		<!-- Update Reports Paper Format -->
+
+		<record id="report_hr_leave_report" model="ir.actions.report.xml">
+			<field name="paperformat_id" ref="report.paperformat_euro" />
+			<field name="download_filename">${o.name}_قرار إجازة.pdf</field>
+		</record>
+
+		<record id="report_hr_leave_hospital_transfer_form_report"
+			model="ir.actions.report.xml">
+			<field name="paperformat_id" ref="report.paperformat_euro" />
+			<field name="download_filename">${o.name}_نموذج تحويل مستوصف.pdf</field>
+		</record>
+		
+		<record id="report_hr_overtime_report" model="ir.actions.report.xml">
+			<field name="paperformat_id" ref="report.paperformat_euro" />
+			<field name="download_filename">${o.name}_قرار خارج دوام.pdf</field>
+		</record>
 	</data>
 </openerp>
 		

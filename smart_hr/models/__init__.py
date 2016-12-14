@@ -11,3 +11,9 @@ from . import medical
 from . import res_partner
 from . import judicial_precedent
 from . import recruiter
+
+from . import hr_leave
+from . import hr_leave_cancellation
+from . import hr_overtime
+from . import hr_eid
+from . import hr_department

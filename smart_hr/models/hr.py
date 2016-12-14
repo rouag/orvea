@@ -22,6 +22,10 @@ class HrEmployee(models.Model):
                              ('refused', u'رفض'),
                              ('employee', u'موظف')
                              ], string=u"الحالة", default='new')
+     # Leaves Stock
+    leave_normal = fields.Float(string=u'العادية', default=36)
+    leave_emergency = fields.Float(string=u'الاضطرارية', default=5)
+    leave_compensation = fields.Float(string=u'البديلة', default=0)
 
     
     
@@ -61,6 +65,7 @@ class HrJob(models.Model):
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1, states={'unoccupied': [('readonly', 0)]})
     state = fields.Selection([('unoccupied', 'شاغرة'), ('occupied', 'مشغولة'), ('cancel', 'ملغاة')], readonly=1, default='unoccupied')
     employee = fields.Many2one('hr.employee', string=u'الموظف')
+    
     
   
     

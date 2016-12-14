@@ -10,10 +10,28 @@
         """,
     'depends': ['hr','hr_holidays','odoo_rtl','web_readonly_bypass'],
     'data': [
+        'view/hr_menu.xml',
+        
         'security/hr_security.xml',
         'security/ir.model.access.csv',
         
-        'view/hr_menu.xml',
+        'data/sequences.xml',
+        'data/configurations.xml',
+        'data/hr_leave_data.xml',
+        'data/schedulers.xml',
+        
+        
+        'views/report_salary_grid.xml',
+        'views/report_medical_examination.xml',
+        'views/report_order_enquiry.xml',
+        'views/hr_leave_report.xml',
+        'views/report.xml',
+        'views/templates.xml',
+        'views/layout.xml',
+        
+        'wizards/view/hr_refuse_wizard_view.xml',
+               
+        
         'view/hr.xml',
         'view/hr_job.xml',
         'view/hr_decision_appoint.xml',
@@ -25,16 +43,13 @@
         'view/res_partner.xml',
         'view/judicial_precedent.xml',
         'view/recruiter.xml',
+        'view/hr_leave_view.xml',
+        'view/hr_leave_cancellation_view.xml',
+        'view/hr_overtime_view.xml',
+        'view/hr_eid_view.xml',
+ 
         
         
-        'views/report_salary_grid.xml',
-        'views/report_medical_examination.xml',
-        'views/report_order_enquiry.xml',
-        'views/report.xml',
-        'views/templates.xml',
-        
-        'data/sequences.xml',
-        'data/configurations.xml',
     ],
     'auto_install': False,
 }

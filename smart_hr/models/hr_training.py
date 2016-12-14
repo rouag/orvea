@@ -25,7 +25,8 @@ class HrTraining(models.Model):
     number_place=fields.Integer(string='عدد المقاعد',required=1,states={'new': [('readonly', 0)]})
     number_participant=fields.Integer(string=' عدد المشتركين' ,store=True, readonly=True, compute='_compute_info')
     line_ids = fields.One2many('hr.candidates', 'employee_id',string='المترشحين',required=1,states={'new': [('readonly', 0)]})
-    state= fields.Selection([('new','جديد'),('candidat','الترشح'),('review','المراجعة'),('confirm','إعتمدت'),('done','تمت')], readonly=1, default='new') 
+    state= fields.Selection([('new','جديد'),('candidat','الترشح'),('review','المراجعة'),('confirm','إعتمدت'),('done','تمت')], readonly=1, default='new')
+    employee_ids = fields.Many2many('hr.employee', 'employee_training_rel', 'emp_id', 'training_id', string=u'الموظفون') 
 
         
     @api.one

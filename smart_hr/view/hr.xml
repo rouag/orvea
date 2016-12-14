@@ -35,7 +35,7 @@
 			<field name="model">hr.employee</field>
 			<field name="arch" type="xml">
 				<form string="بيانات موظف" create='0' delete='0' duplicate='0'
-					edit='0'>
+					edit='1'>
 					<sheet>
 						<field name="image" widget='image' class="oe_avatar"
 							options='{"preview_image":"image_medium"}' />

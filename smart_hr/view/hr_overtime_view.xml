@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+    <data>
+
+        <!--
+            Overtime Decision
+        -->
+        <record id="view_form_hr_overtime" model="ir.ui.view">
+            <field name="name">hr.overtime.form</field>
+            <field name="model">hr.overtime</field>
+            <field name="arch" type="xml">
+                <form string="قرار خارج الدوام">
+                    <field name="is_direct_manager" invisible="1"/>
+                    <field name="is_current_user" invisible="1"/>
+                    <header>
+                        <button name="button_dm" string="إرسال طلب" type="object" attrs="{'invisible':['|',('state','!=','draft'),('is_current_user','=',False)]}" icon="fa-paper-plane" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
+                        <button name="button_audit" string="موافق" type="object" attrs="{'invisible':['|',('state','!=','dm'),('is_direct_manager','=',False)]}" icon="fa-check" class="oe_inline oe_stat_button"/>
+                        <button name="button_acc" string="موافق" type="object" states="audit" groups="smart_hr.group_hr" icon="fa-check" class="oe_inline oe_stat_button"/>
+                        <button name="button_hrm" string="موافق" type="object" states="acc" groups="smart_hr.group_hr" icon="fa-check" class="oe_inline oe_stat_button"/>
+                        <button name="button_done" string="موافق" type="object" states="hrm" groups="smart_hr.group_hrm" icon="fa-check" class="oe_inline oe_stat_button"/>
+                        <button name="button_refuse_dm" string="رفض" type="object" attrs="{'invisible':['|',('state','!=','dm'),('is_direct_manager','=',False)]}" icon="fa-times" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
+                        <button name="button_refuse_audit" string="رفض" type="object" states="audit" groups="smart_hr.group_hr_audit" icon="fa-times" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
+                        <button name="button_refuse_acc" string="رفض" type="object" states="acc" groups="smart_hr.group_hr_audit" icon="fa-times" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
+                        <button name="button_refuse_hrm" string="رفض" type="object" states="hrm" groups="smart_hr.group_hrm" icon="fa-times" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,dm,audit,acc,hrm,done"/>
+                    </header>
+                    <sheet>
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                        <group>
+                            <field name="date" readonly="1"/>
+                            <field name="overtime_line_ids" required="1" attrs="{'readonly':[('state','!=','draft')]}">
+                                <tree editable="bottom" create="0" delete="0">
+                                    <field name="employee_id" required="1" readonly="1"/>
+                                    <field name="line_type" required="1"/>
+                                    <field name="reason"/>
+                                    <field name="date_from" required="1"/>
+                                    <field name="date_to" required="1"/>
+                                    <field name="days"/>
+                                    <field name="hours" required="1"/>
+                                </tree>
+                            </field>
+                        </group>
+                        <button name="%(report_hr_overtime_report)d" string="طباعة القرار" type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="view_tree_hr_overtime" model="ir.ui.view">
+            <field name="name">hr.overtime.tree</field>
+            <field name="model">hr.overtime</field>
+            <field name="arch" type="xml">
+                <tree string="قرارات خارج الدوام" class="oe_tree_view" fonts="bold:state in ['draft','done']" row_classes="state-refuse:state=='refuse';state-in-progress:state not in ['draft','refuse','done'];">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="overtime_line_ids"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_search_hr_overtime" model="ir.ui.view">
+            <field name="name">hr.overtime.search</field>
+            <field name="model">hr.overtime</field>
+            <field name="arch" type="xml">
+                <search string="قرارات خارج الدوام">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="overtime_line_ids"/>
+                    <field name="state"/>
+                    <separator/>
+                    <filter string="خارج دوامى" name="my_overtimes" domain="[('overtime_line_ids.employee_id.user_id', '=', uid)]" help="خارج دوامى"/>
+                    <filter string="خارج دوام الموظفين" name="employees_overtimes" domain="[('overtime_line_ids.employee_id.user_id', '!=', uid)]" help="خارج دوام الموظفين"/>
+                    <separator/>
+                    <filter string="طلب" name="state_draft" domain="[('state','=','draft')]"/>
+                    <filter string="مدير المباشر" name="state_dm" domain="[('state','=','dm')]"/>
+                    <filter string="تدقيق" name="state_audit" domain="[('state','=','audit')]"/>
+                    <filter string="إرتباط مالى" name="state_acc" domain="[('state','=','acc')]"/>
+                    <filter string="مدير شؤون الموظفين" name="state_hrm" domain="[('state','=','hrm')]"/>
+                    <filter string="اعتمدت" name="state_done" domain="[('state','=','done')]"/>
+                    <filter string="رفض" name="state_refuse" domain="[('state','=','refuse')]"/>
+                </search>
+            </field>
+        </record>
+        <!-- My Overtimes -->
+        <record id="action_hr_overtime_my_overtime" model="ir.actions.act_window">
+            <field name="name">خارج دوامى</field>
+            <field name="res_model">hr.overtime</field>
+            <field name="search_view_id" ref="view_search_hr_overtime"/>
+            <field name="domain">[('overtime_line_ids.employee_id.user_id', '=', uid)]</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              	<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+            </field>
+        </record>
+        <menuitem id="menu_hr_my_overtime_my_overtime"
+                  action="action_hr_overtime_my_overtime"
+                  parent="menu_hr_overtime_root"
+                  sequence="1"
+                  name="خارج دوامى"/>
+        <!-- Employees' Overtimes -->
+        <record id="action_hr_overtime_employees_overtimes" model="ir.actions.act_window">
+            <field name="name">خارج دوام الموظفين</field>
+            <field name="res_model">hr.overtime</field>
+            <field name="search_view_id" ref="view_search_hr_overtime"/>
+            <field name="domain">[('overtime_line_ids.employee_id.user_id', '!=', uid)]</field>
+            <field name="context">{'search_default_state_dm':1}</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              	<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+            </field>
+        </record>
+        <menuitem id="menu_hr_overtime_employees_overtimes"
+                  action="action_hr_overtime_employees_overtimes"
+                  parent="menu_hr_overtime_root"
+                  sequence="2"
+                  groups="smart_hr.group_dm,smart_hr.group_hrm,smart_hr.group_adm,smart_hr.group_followup_manager"
+                  name="خارج دوام الموظفين"/>
+        <!-- HR Audit -->
+        <record id="action_hr_overtime_audit" model="ir.actions.act_window">
+            <field name="name">فى انتظار التدقيق</field>
+            <field name="res_model">hr.overtime</field>
+            <field name="search_view_id" ref="view_search_hr_overtime"/>
+            <field name="domain">[('state','=','audit')]</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              	<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+            </field>
+        </record>
+        <menuitem id="menu_hr_overtime_audit"
+                  action="action_hr_overtime_audit"
+                  parent="menu_hr_overtime_root"
+                  sequence="3"
+                  groups="smart_hr.group_hr"
+                  name="فى انتظار التدقيق"/>
+        <!-- Accounting Approved -->
+        <record id="action_hr_overtime_acc" model="ir.actions.act_window">
+            <field name="name">فى انتظار إرتباط مالى</field>
+            <field name="res_model">hr.overtime</field>
+            <field name="search_view_id" ref="view_search_hr_overtime"/>
+            <field name="domain">[('state','=','acc')]</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              	<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+            </field>
+        </record>
+        <menuitem id="menu_hr_overtime_acc"
+                  action="action_hr_overtime_acc"
+                  parent="menu_hr_overtime_root"
+                  sequence="4"
+                  groups="smart_hr.group_hr"
+                  name="فى انتظار إرتباط مالى"/>
+        <!-- HRM -->
+        <record id="action_hr_overtime_hrm" model="ir.actions.act_window">
+            <field name="name">فى انتظار الأعتماد</field>
+            <field name="res_model">hr.overtime</field>
+            <field name="search_view_id" ref="view_search_hr_overtime"/>
+            <field name="domain">[('state','=','hrm')]</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              	<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+            </field>
+        </record>
+        <menuitem id="menu_hr_overtime_hrm"
+                  action="action_hr_overtime_hrm"
+                  parent="menu_hr_overtime_root"
+                  sequence="5"
+                  groups="smart_hr.group_hrm"
+                  name="فى انتظار الأعتماد"/>
+        <!-- In Progress -->
+        <record id="action_hr_overtime_hrm_in_progress" model="ir.actions.act_window">
+            <field name="name">تحت الإجراء</field>
+            <field name="res_model">hr.overtime</field>
+            <field name="search_view_id" ref="view_search_hr_overtime"/>
+            <field name="domain">[('state','in',['dm','acc','audit','hrm'])]</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              	<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+            </field>
+        </record>
+        <menuitem id="menu_hr_overtime_hrm_in_progress"
+                  action="action_hr_overtime_hrm_in_progress"
+                  parent="menu_hr_overtime_root"
+                  sequence="6"
+                  groups="smart_hr.group_hr"
+                  name="تحت الإجراء"/>
+        <!-- Overtime Archive -->
+        <record id="action_hr_overtime_archive" model="ir.actions.act_window">
+            <field name="name">أرشيف خارج الدوام</field>
+            <field name="res_model">hr.overtime</field>
+            <field name="search_view_id" ref="view_search_hr_overtime"/>
+            <field name="domain">[('state','!=','draft')]</field>
+            <field name="context">{'search_default_state_done': 1}</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              	<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+            </field>
+        </record>
+        <menuitem id="menu_hr_overtime_archive"
+                  action="action_hr_overtime_archive"
+                  parent="menu_hr_overtime_root"
+                  sequence="7"
+                  groups="smart_hr.group_hr"
+                  name="أرشيف خارج الدوام"/>
+
+    </data>
+</openerp>
