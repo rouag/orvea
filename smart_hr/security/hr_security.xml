@@ -110,6 +110,12 @@
 			<field name="implied_ids" eval="[(4, ref('group_followup'))]" />
 			<!-- <field name="menu_access" eval="[(4, ref('menu_hr_assessment_root'))]"/> -->
 		</record>
+		<record id="group_adm" model="res.groups">
+			<field name="category_id" ref="base.module_category_human_resources" />
+			<field name="name">مدير التطوير الإداري</field>
+			<field name="implied_ids" eval="[(4, ref('group_ade'))]" />
+			<!-- <field name="menu_access" eval="[(4, ref('menu_hr_assessment_root'))]"/> -->
+		</record>
 
 		<record id="group_sys_manager" model="res.groups">
 			<field name="category_id" ref="base.module_category_human_resources" />
@@ -120,12 +126,6 @@
 				/> -->
 		</record>
 
-		<record id="group_adm" model="res.groups">
-			<field name="category_id" ref="base.module_category_human_resources" />
-			<field name="name">مدير التطوير الإداري</field>
-			<field name="implied_ids" eval="[(4, ref('group_ade'))]" />
-			<!-- <field name="menu_access" eval="[(4, ref('menu_hr_assessment_root'))]"/> -->
-		</record>
 
 	</data>
 
