@@ -206,6 +206,8 @@
 										<field name="identification_id" groups="base.group_hr_user" attrs="{'required': 1}"/>
 										<field name="passport_id" groups="base.group_hr_user" attrs="{'required': 1}" />
 										<field name="is_resident"  attrs="{'required': 1}"/>
+										<field name="education_level"  options='{"no_open": True, "no_create": True}' attrs="{'required': 1}"/>
+										
 									</group>
 									<group string="الحالة">
 

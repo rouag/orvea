@@ -22,6 +22,7 @@ class HrEmployee(models.Model):
                              ('refused', u'رفض'),
                              ('employee', u'موظف')
                              ], string=u"الحالة", default='new')
+    education_level = fields.Many2one('hr.employee.education.level', string = u'المستوى التعليمي')
      # Leaves Stock
     leave_normal = fields.Float(string=u'العادية', default=36)
     leave_emergency = fields.Float(string=u'الاضطرارية', default=5)
@@ -306,3 +307,10 @@ class HrJobMoveUpdateLine(models.Model):
             self.type_id = self.job_id.type_id.id
             self.grade_id = self.job_id.grade_id.id
             self.department_id = self.job_id.department_id.id
+            
+class HrEmployeeEducationLevel(models.Model):
+    _name = 'hr.employee.education.level'  
+    _description = u'مستويات التعليم'
+  
+    name = fields.Char(string = u'الإسم')
+    code = fields.Char(string = u'الرمز')

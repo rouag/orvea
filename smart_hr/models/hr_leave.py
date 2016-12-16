@@ -471,13 +471,13 @@ class hr_leave(models.Model):
                 # System Admin Bypass
                 if self.env['res.users'].browse(lv._uid).has_group('smart_hr.group_sys_manager'):
                     lv.button_audit()
-                    return
-                manager_id = self.env['hr.employee'].search([('user_id', '=', lv._uid)], limit=1)
-                if manager_id.department_id.is_root:
-                    lv.button_audit()
-                else:
-                    lv.state_dm += 1
-                    lv.message_post(u"تم الموافقة من قبل '" + unicode(user.name) + u"'")
+#                     return
+#                 manager_id = self.env['hr.employee'].search([('user_id', '=', lv._uid)], limit=1)
+#                 if manager_id.department_id.is_root:
+#                     lv.button_audit()
+#                 else:
+#                     lv.state_dm += 1
+#                     lv.message_post(u"تم الموافقة من قبل '" + unicode(user.name) + u"'")
 
     @api.one
     def button_audit(self):
@@ -596,9 +596,42 @@ class hr_leave_type(models.Model):
     _description = 'Leave Type'
 
     name = fields.Char(string=u'اسم')
+    periode = fields.Selection([
+        (1, u'سنة'),
+        (2, u'سنتين'),
+        (3, u'ثلاث سنوات'),
+        (4, u'أربع سنوات'),
+        (5, u'خمس سنوات'),
+        (6, u'ستة سنوات'),
+        (7, u'سبعة سنوات'),
+        (8, u'ثمانية سنوات'),
+        (9, u'تسعة سنوات'),
+        (10, u'عشرة سنوات'),
+        ], default = '1')
+    minimum = fields.Integer(string = u'الحد الأدنى')
+    maximum = fields.Integer(string = u'الحد الأقصى')
+    deductible_normal_leave = fields.Boolean(string = u'تخصم مدتها من رصيد الاجازة العادية')
+    deductible_duration_service = fields.Boolean(string = u'تخصم مدتها من فترة الخدمة')
+    salary_proportion = fields.Float(string = u'نسبة الراتب', default=100)  
+    educ_lvl_req = fields.Boolean(string = u'يطبق شرط المستوى التعليمي')
+    evaluation_condition = fields.Boolean(string = u'يطبق شرط تقويم الأداء')
+    
     leave_stock_default = fields.Integer(string=u'الرصيد الأفتراضي')
     leave_stock_open = fields.Boolean(string=u'الرصيد مفتوح')
-
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     @api.constrains('leave_stock_default')
     def _check_stock_value(self):
         for rec in self:
