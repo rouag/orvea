@@ -595,16 +595,17 @@ class HrLeaveType(models.Model):
     _name = 'hr.leave.type'
     _description = 'Leave Type'
 
-    name = fields.Char(string=u'الاسم')
+    name = fields.Char(string=u'نوع الاجازة')
     minimum = fields.Integer(string=u'الحد الأدنى')
     maximum = fields.Integer(string=u'الحد الأقصى')
     deductible_normal_leave = fields.Boolean(string=u'تخصم مدتها من رصيد الاجازة العادية')
     deductible_duration_service = fields.Boolean(string=u'تخصم مدتها من فترة الخدمة')
-    salary_proportion = fields.Float(string=u'نسبة الراتب', default=100)  
+    salary_proportion = fields.Float(string=u'نسبة الراتب المحتسبة (%)', default=100)  
     educ_lvl_req = fields.Boolean(string=u'يطبق شرط المستوى التعليمي')
     evaluation_condition = fields.Boolean(string=u'يطبق شرط تقويم الأداء')
-    education_levels = fields.Many2many('hr.employee.education.level', string=u'المستويات التعليمية')
-    entitlements = fields.One2many('hr.leave.type.entitlement', 'leave_type', string = u'أنواع الاستحقاقات')
+    education_levels = fields.One2many('hr.employee.education.level', 'leave_type', string=u'المستويات التعليمية')
+    entitlements = fields.One2many('hr.leave.type.entitlement', 'leave_type', string=u'أنواع الاستحقاقات')
+    assessments_required = fields.One2many('hr.assessment.result.config', 'leave_type', string=u'التقييمات المطلوبة')
     
 #     leave_stock_default = fields.Integer(string=u'الرصيد الأفتراضي')
 #     leave_stock_open = fields.Boolean(string=u'الرصيد مفتوح')
@@ -669,7 +670,7 @@ class HrLeaveType(models.Model):
 class HrLeaveTypeEntitlement(models.Model):
     _name = 'hr.leave.type.entitlement'
     _description = u'أنواع الاستحقاقات'
-    entitlment_category = fields.Many2one('hr.leave.type.entitlement.category', string=u'فئة استحقاق')
+    entitlment_category = fields.Many2one('hr.leave.type.entitlement.category', string=u'فئة الاستحقاق')
     leave_stock_default = fields.Integer(string=u'الرصيد')
     conditionnal = fields.Boolean(string=u'مشروط')
     periode = fields.Selection([
@@ -683,8 +684,8 @@ class HrLeaveTypeEntitlement(models.Model):
         (8, u'ثمانية سنوات'),
         (9, u'تسعة سنوات'),
         (10, u'عشرة سنوات'),
-        ], default=1)
-    leave_type = fields.Many2one('hr.leave.type', string = 'leave type')
+        ], string=u'المدة', default=1)
+    leave_type = fields.Many2one('hr.leave.type', string='leave type')
 #     leave_stock_open = fields.Boolean(string=u'الرصيد مفتوح')
     
     
@@ -692,5 +693,5 @@ class HrleaveTypeEntitlementCategory(models.Model):
     _name = 'hr.leave.type.entitlement.category'
     _description = u'فئة استحقاق'
     
-    name = fields.Char(string = u'الاسم')
+    name = fields.Char(string=u'الاسم')
     grades = fields.Many2many('salary.grid.grade', string=u'المراتب')

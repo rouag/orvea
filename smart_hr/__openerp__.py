@@ -48,6 +48,8 @@
         'view/hr_overtime_view.xml',
         'view/hr_eid_view.xml',
         'view/hr_employee_education_level.xml',
+        'view/hr_assessment_view.xml',
+        'view/hr_assessment_point_view.xml',
  
         
         

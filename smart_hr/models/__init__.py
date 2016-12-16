@@ -17,3 +17,6 @@ from . import hr_leave_cancellation
 from . import hr_overtime
 from . import hr_eid
 from . import hr_department
+
+from . import hr_assessment
+from . import hr_assessment_point

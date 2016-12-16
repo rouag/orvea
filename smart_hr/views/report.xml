@@ -32,6 +32,38 @@
 			file="smart_hr.hr_overtime_report" attachment_use="True"
 			attachment="('Overtime_'+(object.name).replace('/','')+'.pdf')" menu="False" />
 
+		<report id="report_hr_assessment_probation_report" model="hr.assessment.probation"
+			string="تقرير تقييم فترة التجربة" report_type="qweb-pdf"
+			name="smart_hr.hr_assessment_probation_report" file="smart_hr.hr_assessment_probation_report"
+			attachment_use="False" menu="False" />
+
+		<report id="report_hr_assessment_users_report" model="hr.assessment.users"
+			string="تقرير تقييم الاداء الوظيفى للمستخدمين والمعينين على بند الاجور والوظائف المؤقته"
+			report_type="qweb-pdf" name="smart_hr.hr_assessment_users_report"
+			file="smart_hr.hr_assessment_users_report" attachment_use="False"
+			menu="False" />
+
+		<report id="report_hr_assessment_specialized_report" model="hr.assessment.specialized"
+			string="تقرير تقييم الوظائف التخصصية" report_type="qweb-pdf"
+			name="smart_hr.hr_assessment_specialized_report" file="smart_hr.hr_assessment_specialized_report"
+			attachment_use="False" menu="False" />
+
+		<report id="report_hr_assessment_veterinary_medicine_report"
+			model="hr.assessment.veterinary.medicine" string="تقرير تقييم وظائف الطب البيطري"
+			report_type="qweb-pdf" name="smart_hr.hr_assessment_veterinary_medicine_report"
+			file="smart_hr.hr_assessment_veterinary_medicine_report"
+			attachment_use="False" menu="False" />
+
+		<report id="report_hr_assessment_executive_report" model="hr.assessment.executive"
+			string="تقرير تقييم الوظائف التنفيذية (الفنية و الحرفية)"
+			report_type="qweb-pdf" name="smart_hr.hr_assessment_executive_report"
+			file="smart_hr.hr_assessment_executive_report" attachment_use="False"
+			menu="False" />
+
+		<report id="report_hr_assessment_executive_admin_report" model="hr.assessment.executive.admin"
+			string="الوظائف التنفيذية (الإدارية)" report_type="qweb-pdf"
+			name="smart_hr.hr_assessment_executive_admin_report" file="smart_hr.hr_assessment_executive_admin_report"
+			attachment_use="False" menu="False" />
 
 		<!-- Update Reports Paper Format -->
 
@@ -45,7 +77,7 @@
 			<field name="paperformat_id" ref="report.paperformat_euro" />
 			<field name="download_filename">${o.name}_نموذج تحويل مستوصف.pdf</field>
 		</record>
-		
+
 		<record id="report_hr_overtime_report" model="ir.actions.report.xml">
 			<field name="paperformat_id" ref="report.paperformat_euro" />
 			<field name="download_filename">${o.name}_قرار خارج دوام.pdf</field>

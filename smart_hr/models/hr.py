@@ -314,3 +314,4 @@ class HrEmployeeEducationLevel(models.Model):
   
     name = fields.Char(string = u'الإسم')
     code = fields.Char(string = u'الرمز')
+    leave_type = fields.Many2one('hr.leave.type', string='leave type')

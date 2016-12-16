@@ -307,9 +307,7 @@
 				<form string="نوع الأجازة">
 					<sheet>
 						<group>
-							<group>
-								<field name="name" required="1" />
-							</group>
+							<field name="name" required="1" />
 						</group>
 						<field name="entitlements" string="أنواع  الاستحقاقات">
 							<tree editable="bottom">
@@ -332,9 +330,13 @@
 								<field name="evaluation_condition" />
 							</group>
 						</group>
-						<group>
-							<field name="education_levels" attrs="{'invisible':[('educ_lvl_req', '=', False)]}" />
-						</group>
+						
+						<field name="education_levels" attrs="{'invisible':[('educ_lvl_req', '=', False)]}"
+							widget="many2many" />
+							
+						<field name="assessments_required"
+							attrs="{'invisible':[('evaluation_condition', '=', False)]}"
+							widget="many2many" />
 					</sheet>
 				</form>
 			</field>

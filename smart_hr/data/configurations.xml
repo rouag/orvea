@@ -1,14 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data noupdate="1">
-		
+
 		<!--أنواع جهات التوظيف -->
-		
 		<record id="governmental" model="recruiter.recruiter">
 			<field name="name">حكومي</field>
 		</record>
+		
 		<record id="private_company" model="recruiter.recruiter">
 			<field name="name">شركة خاصة</field>
+		</record>
+
+		<!-- إعدادات نتائج تقييم موظف -->
+		<record id="assessment_good" model="hr.assessment.result.config">
+			<field name="name">جيد</field>
+		</record>
+		
+		<record id="assessment_medium" model="hr.assessment.result.config">
+			<field name="name">متوسط</field>
+		</record>
+
+		<record id="assessment_bad" model="hr.assessment.result.config">
+			<field name="name">سيئ</field>
 		</record>
 
 	</data>

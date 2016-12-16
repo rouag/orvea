@@ -1,0 +1,1486 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+
+		<!-- Job Assessment in Probation Period -->
+		<record id="view_search_hr_assessment_probation" model="ir.ui.view">
+			<field name="name">hr.assessment.probation.search</field>
+			<field name="model">hr.assessment.probation</field>
+			<field name="arch" type="xml">
+				<search string="فترة التجربة">
+					<field name="name" />
+					<field name="employee_id" />
+					<field name="total_score" string="الإجمــالي" />
+					<field name="performance_report" string="الاداء العام" />
+					<field name="state" />
+					<separator />
+					<filter string="طلب" domain="[('state','=','draft')]" />
+					<filter string="التقييم الاول" domain="[('state','=','eval_1')]" />
+					<filter string="التقييم الثانى" domain="[('state','=','eval_2')]" />
+					<filter string="اعتمدت" domain="[('state','=','done')]" />
+				</search>
+			</field>
+		</record>
+		<record id="view_tree_hr_assessment_probation" model="ir.ui.view">
+			<field name="name">hr.assessment.probation.tree</field>
+			<field name="model">hr.assessment.probation</field>
+			<field name="arch" type="xml">
+				<tree string="فترة التجربة" class="oe_tree_view">
+					<field name="name" />
+					<field name="employee_id" />
+					<field name="total_score" string="الإجمــالي" />
+					<field name="performance_report" string="الاداء العام" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+		<record id="view_form_hr_assessment_probation" model="ir.ui.view">
+			<field name="name">hr.assessment.probation.form</field>
+			<field name="model">hr.assessment.probation</field>
+			<field name="arch" type="xml">
+				<form string="فترة التجربة">
+					<header>
+						<button name="button_eval_1" string="تصديق" states="draft"
+							type="object" icon="fa-check" class="oe_inline oe_stat_button" />
+						<button name="button_eval_2" string="تصديق" states="eval_1"
+							type="object" icon="fa-check" class="oe_inline oe_stat_button" />
+						<button name="button_done" string="تصديق" states="eval_2"
+							type="object" icon="fa-check" class="oe_inline oe_stat_button" />
+						<field name="state" widget="statusbar" />
+					</header>
+					<sheet>
+						<div>
+							<label for="name" class="oe_edit_only" />
+							<h1>
+								<field name="name" readonly="1" />
+							</h1>
+							<label for="employee_id" class="oe_edit_only" />
+							<h1>
+								<field name="employee_id" required="1"
+									attrs="{'readonly':[('state','!=','draft')]}" />
+							</h1>
+						</div>
+						<group>
+							<field name="date" required="1"
+								attrs="{'readonly':[('state','!=','draft')]}" />
+						</group>
+						<notebook>
+							<page string="التقييم 1">
+								<group>
+									<field name="from_date_1"
+										attrs="{'required': [('state','=','eval_1')],'readonly': [('state','!=','eval_1')]}" />
+									<field name="to_date_1"
+										attrs="{'required': [('state','=','eval_1')],'readonly': [('state','!=','eval_1')]}" />
+									<group>
+										<label for="enthusiasm_1" />
+										<div>
+											<field name="enthusiasm_1" class="oe_inline"
+												attrs="{'required': [('state','=','eval_1')],'readonly': [('state','!=','eval_1')]}" />
+											<label string="1 إلى 10" class="oe_edit_only" />
+										</div>
+										<label for="learn_1" />
+										<div>
+											<field name="learn_1" class="oe_inline"
+												attrs="{'required': [('state','=','eval_1')],'readonly': [('state','!=','eval_1')]}" />
+											<label string="1 إلى 9" class="oe_edit_only" />
+										</div>
+										<label for="guidance_1" />
+										<div>
+											<field name="guidance_1" class="oe_inline"
+												attrs="{'required': [('state','=','eval_1')],'readonly': [('state','!=','eval_1')]}" />
+											<label string="1 إلى 8" class="oe_edit_only" />
+										</div>
+										<label for="worktime_1" />
+										<div>
+											<field name="worktime_1" class="oe_inline"
+												attrs="{'required': [('state','=','eval_1')],'readonly': [('state','!=','eval_1')]}" />
+											<label string="1 إلى 7" class="oe_edit_only" />
+										</div>
+									</group>
+									<group>
+										<label for="behavior_1" />
+										<div>
+											<field name="behavior_1" class="oe_inline"
+												attrs="{'required': [('state','=','eval_1')],'readonly': [('state','!=','eval_1')]}" />
+											<label string="1 إلى 7" class="oe_edit_only" />
+										</div>
+										<label for="conduct_1" />
+										<div>
+											<field name="conduct_1" class="oe_inline"
+												attrs="{'required': [('state','=','eval_1')],'readonly': [('state','!=','eval_1')]}" />
+											<label string="1 إلى 5" class="oe_edit_only" />
+										</div>
+										<label for="relation_1" />
+										<div>
+											<field name="relation_1" class="oe_inline"
+												attrs="{'required': [('state','=','eval_1')],'readonly': [('state','!=','eval_1')]}" />
+											<label string="1 إلى 4" class="oe_edit_only" />
+										</div>
+									</group>
+									<group>
+										<field name="eval_total_1" string="إجمالي أولا تقييم" />
+									</group>
+								</group>
+							</page>
+							<page string="التقييم 2">
+								<group>
+									<field name="from_date_2"
+										attrs="{'required': [('state','=','eval_2')],'readonly': [('state','!=','eval_2')]}" />
+									<field name="to_date_2"
+										attrs="{'required': [('state','=','eval_2')],'readonly': [('state','!=','eval_2')]}" />
+									<group>
+										<label for="enthusiasm_2" />
+										<div>
+											<field name="enthusiasm_2" class="oe_inline"
+												attrs="{'required': [('state','=','eval_2')],'readonly': [('state','!=','eval_2')]}" />
+											<label string="1 إلى 10" class="oe_edit_only" />
+										</div>
+										<label for="learn_2" />
+										<div>
+											<field name="learn_2" class="oe_inline"
+												attrs="{'required': [('state','=','eval_2')],'readonly': [('state','!=','eval_2')]}" />
+											<label string="1 إلى 9" class="oe_edit_only" />
+										</div>
+										<label for="guidance_2" />
+										<div>
+											<field name="guidance_2" class="oe_inline"
+												attrs="{'required': [('state','=','eval_2')],'readonly': [('state','!=','eval_2')]}" />
+											<label string="1 إلى 8" class="oe_edit_only" />
+										</div>
+										<label for="worktime_2" />
+										<div>
+											<field name="worktime_2" class="oe_inline"
+												attrs="{'required': [('state','=','eval_2')],'readonly': [('state','!=','eval_2')]}" />
+											<label string="1 إلى 7" class="oe_edit_only" />
+										</div>
+									</group>
+									<group>
+										<label for="behavior_2" />
+										<div>
+											<field name="behavior_2" class="oe_inline"
+												attrs="{'required': [('state','=','eval_2')],'readonly': [('state','!=','eval_2')]}" />
+											<label string="1 إلى 7" class="oe_edit_only" />
+										</div>
+										<label for="conduct_2" />
+										<div>
+											<field name="conduct_2" class="oe_inline"
+												attrs="{'required': [('state','=','eval_2')],'readonly': [('state','!=','eval_2')]}" />
+											<label string="1 إلى 5" class="oe_edit_only" />
+										</div>
+										<label for="relation_2" />
+										<div>
+											<field name="relation_2" class="oe_inline"
+												attrs="{'required': [('state','=','eval_2')],'readonly': [('state','!=','eval_2')]}" />
+											<label string="1 إلى 4" class="oe_edit_only" />
+										</div>
+									</group>
+									<group>
+										<field name="eval_total_2" string="إجمالي ثانى تقييم" />
+									</group>
+								</group>
+							</page>
+						</notebook>
+						<separator />
+						<group>
+							<field name="total_score" string="الإجمــالي" />
+							<field name="performance_report" string="الاداء العام" />
+						</group>
+						<button name="%(report_hr_assessment_probation_report)d"
+							string="طباعة التقرير" type="action" states="done" icon="fa-print"
+							class="oe_inline oe_stat_button" />
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="action_hr_assessment_probation" model="ir.actions.act_window">
+			<field name="name">فترة التجربة</field>
+			<field name="res_model">hr.assessment.probation</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+		<menuitem id="menu_hr_assessment_probation" action="action_hr_assessment_probation"
+			parent="menu_hr_assessment_root" sequence="3" name="فترة التجربة" />
+
+		<!-- Job Assessment for Users, Temporary Jobs and Employees on Wages -->
+		<record id="view_search_hr_assessment_users" model="ir.ui.view">
+			<field name="name">hr.assessment.users.search</field>
+			<field name="model">hr.assessment.users</field>
+			<field name="arch" type="xml">
+				<search
+					string="تقييم الاداء الوظيفى للمستخدمين والمعينين على بند الاجور والوظائف المؤقته">
+					<field name="name" />
+					<field name="employee_id" />
+					<field name="total_score" string="الإجمــالي" />
+					<field name="performance_report" string="الاداء العام" />
+					<field name="state" />
+					<separator />
+					<filter string="طلب" domain="[('state','=','draft')]" />
+					<filter string="تقييم" domain="[('state','=','eval')]" />
+					<filter string="اعتمدت" domain="[('state','=','done')]" />
+				</search>
+			</field>
+		</record>
+		<record id="view_tree_hr_assessment_users" model="ir.ui.view">
+			<field name="name">hr.assessment.users.tree</field>
+			<field name="model">hr.assessment.users</field>
+			<field name="arch" type="xml">
+				<tree
+					string="تقييم الاداء الوظيفى للمستخدمين والمعينين على بند الاجور والوظائف المؤقته"
+					class="oe_tree_view">
+					<field name="name" />
+					<field name="employee_id" />
+					<field name="total_score" string="الإجمــالي" />
+					<field name="performance_report" string="الاداء العام" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+		<record id="view_form_hr_assessment_users" model="ir.ui.view">
+			<field name="name">hr.assessment.users.form</field>
+			<field name="model">hr.assessment.users</field>
+			<field name="arch" type="xml">
+				<form
+					string="تقييم الاداء الوظيفى للمستخدمين والمعينين على بند الاجور والوظائف المؤقته">
+					<header>
+						<button name="button_done" string="تصديق" states="draft"
+							type="object" icon="fa-check" class="oe_inline oe_stat_button" />
+						<field name="state" widget="statusbar" />
+					</header>
+					<sheet>
+						<div>
+							<label for="name" class="oe_edit_only" />
+							<h1>
+								<field name="name" readonly="1" />
+							</h1>
+							<label for="employee_id" class="oe_edit_only" />
+							<h1>
+								<field name="employee_id" required="1"
+									attrs="{'readonly':[('state','!=','draft')]}" />
+							</h1>
+						</div>
+						<group>
+							<field name="date" required="1"
+								attrs="{'readonly':[('state','!=','draft')]}" />
+						</group>
+						<notebook>
+							<page string="التقييم">
+								<group>
+									<label for="work_performance_score" />
+									<div>
+										<field name="work_performance_score" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="maintain_worktime_score" />
+									<div>
+										<field name="maintain_worktime_score" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="guidance_score" />
+									<div>
+										<field name="guidance_score" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="superiors_score" />
+									<div>
+										<field name="superiors_score" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="colleagues_score" />
+									<div>
+										<field name="colleagues_score" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="audit_score" />
+									<div>
+										<field name="audit_score" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+								</group>
+							</page>
+						</notebook>
+						<separator />
+						<group>
+							<field name="total_score" string="الإجمــالي" />
+							<field name="performance_report" string="الاداء العام" />
+							<field name="last_performance_report" required="1"
+								attrs="{'readonly':[('state','!=','draft')]}" />
+						</group>
+						<button name="%(report_hr_assessment_users_report)d"
+							string="طباعة التقرير" type="action" states="done" icon="fa-print"
+							class="oe_inline oe_stat_button" />
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="action_hr_assessment_users" model="ir.actions.act_window">
+			<field name="name">تقييم الاداء الوظيفى للمستخدمين والمعينين على بند
+				الاجور والوظائف المؤقته
+			</field>
+			<field name="res_model">hr.assessment.users</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+		<menuitem id="menu_hr_assessment_users" action="action_hr_assessment_users"
+			parent="menu_hr_assessment_root" sequence="4"
+			name="تقييم الاداء الوظيفى للمستخدمين والمعينين على بند الاجور والوظائف المؤقته" />
+
+		<!-- Job assessment for specialized jobs -->
+		<record id="view_search_hr_assessment_specialized" model="ir.ui.view">
+			<field name="name">hr.assessment.specialized.search</field>
+			<field name="model">hr.assessment.specialized</field>
+			<field name="arch" type="xml">
+				<search string="الوظائف التخصصية">
+					<field name="name" />
+					<field name="employee_id" />
+					<field name="category_type" />
+					<field name="date" />
+					<field name="performance_report" string="الاداء العام" />
+					<field name="state" />
+					<separator />
+					<filter string="طلب" domain="[('state','=','draft')]" />
+					<filter string="تقييم" domain="[('state','=','eval')]" />
+					<filter string="اعتمدت" domain="[('state','=','done')]" />
+				</search>
+			</field>
+		</record>
+		<record id="view_tree_hr_assessment_specialized" model="ir.ui.view">
+			<field name="name">hr.assessment.specialized.tree</field>
+			<field name="model">hr.assessment.specialized</field>
+			<field name="arch" type="xml">
+				<tree string="الوظائف التخصصية" class="oe_tree_view">
+					<field name="name" />
+					<field name="employee_id" />
+					<field name="category_type" />
+					<field name="date" />
+					<field name="performance_report" string="الاداء العام" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+		<record id="view_form_hr_assessment_specialized" model="ir.ui.view">
+			<field name="name">hr.assessment.specialized.form</field>
+			<field name="model">hr.assessment.specialized</field>
+			<field name="arch" type="xml">
+				<form string="الوظائف التخصصية">
+					<header>
+						<button name="button_done" string="تصديق" states="draft"
+							type="object" icon="fa-check" class="oe_inline oe_stat_button" />
+						<field name="state" widget="statusbar" />
+					</header>
+					<sheet>
+						<div>
+							<label for="name" class="oe_edit_only" />
+							<h1>
+								<field name="name" readonly="1" />
+							</h1>
+							<label for="employee_id" class="oe_edit_only" />
+							<h1>
+								<field name="employee_id" required="1"
+									attrs="{'readonly':[('state','!=','draft')]}" />
+							</h1>
+						</div>
+						<group>
+							<field name="date" required="1"
+								attrs="{'readonly':[('state','!=','draft')]}" />
+							<field name="category_type" required="1"
+								attrs="{'readonly':[('state','!=','draft')]}" />
+						</group>
+						<notebook>
+							<page string="التقييم">
+								<group>
+									<label for="goal_understand" attrs="{'invisible': [('category_type','!=','a')]}" />
+									<div attrs="{'invisible': [('category_type','!=','a')]}">
+										<field name="goal_understand" class="oe_inline"
+											attrs="{'required': [('state','=','draft'),('category_type','=','a')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="skill_plan" attrs="{'invisible': [('category_type','!=','a')]}" />
+									<div attrs="{'invisible': [('category_type','!=','a')]}">
+										<field name="skill_plan" class="oe_inline"
+											attrs="{'required': [('state','=','draft'),('category_type','=','a')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="skill_decision" attrs="{'invisible': [('category_type','!=','a')]}" />
+									<div attrs="{'invisible': [('category_type','!=','a')]}">
+										<field name="skill_decision" class="oe_inline"
+											attrs="{'required': [('state','=','draft'),('category_type','=','a')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="skill_supervision" />
+									<div>
+										<field name="skill_supervision" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="performance_specialization" />
+									<div>
+										<field name="performance_specialization" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="follow_specialization" />
+									<div>
+										<field name="follow_specialization" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="high_responsibilities" />
+									<div>
+										<field name="high_responsibilities" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="knowing_system" />
+									<div>
+										<field name="knowing_system" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="work_method" />
+									<div>
+										<field name="work_method" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="maintain_work_hours" />
+									<div>
+										<field name="maintain_work_hours" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="safety_prevention" />
+									<div>
+										<field name="safety_prevention" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="careful_work" attrs="{'invisible': [('category_type','!=','b')]}" />
+									<div attrs="{'invisible': [('category_type','!=','b')]}">
+										<field name="careful_work" class="oe_inline"
+											attrs="{'required': [('state','=','draft'),('category_type','=','b')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+								</group>
+							</page>
+							<page string="الصفات الشخصية">
+								<group>
+									<label for="good_conduct" />
+									<div>
+										<field name="good_conduct" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="reliance_degree" />
+									<div>
+										<field name="reliance_degree" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="appearance_care" attrs="{'invisible': [('category_type','!=','b')]}" />
+									<div attrs="{'invisible': [('category_type','!=','b')]}">
+										<field name="appearance_care" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="accept_process" attrs="{'invisible': [('category_type','!=','b')]}" />
+									<div attrs="{'invisible': [('category_type','!=','b')]}">
+										<field name="accept_process" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+								</group>
+							</page>
+							<page string="العلاقات مع الآخرين">
+								<group>
+									<label for="superiors" />
+									<div>
+										<field name="superiors" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="colleagues" />
+									<div>
+										<field name="colleagues" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="public" />
+									<div>
+										<field name="public" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+								</group>
+							</page>
+							<page string="ملاحظات عامة">
+								<group>
+									<field name="strengths_ids"
+										attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}">
+										<tree editable="bottom">
+											<field name="name" required="1" />
+											<field name="point" sum="1" />
+										</tree>
+									</field>
+									<field name="weaknesses_ids"
+										attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}">
+										<tree editable="bottom">
+											<field name="name" required="1" />
+											<field name="point" sum="1" />
+										</tree>
+									</field>
+								</group>
+							</page>
+							<page string="الإجمــالي">
+								<group>
+									<group>
+										<field name="total_eval" string="مجموع نقاط التقييم الوظائف" />
+										<field name="total_personal_traits" string="مجموع نقاط صفات الشخصية" />
+										<field name="total_relationships" string="مجموع نقاط العلاقات مع الآخرين" />
+										<field name="total_general" string="مجموع نقاط الملاحظات العامة" />
+									</group>
+									<group>
+										<field name="total_score" string="الإجمــالي" />
+										<field name="performance_report" string="الاداء العام" />
+										<field name="last_report"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+									</group>
+								</group>
+								<group>
+									<field name="recommendations" attrs="{'readonly': [('state','!=','draft')]}" />
+									<field name="notes" attrs="{'readonly':[('state','!=','draft')]}" />
+								</group>
+							</page>
+						</notebook>
+						<button name="%(report_hr_assessment_specialized_report)d"
+							string="طباعة التقرير" type="action" states="done" icon="fa-print"
+							class="oe_inline oe_stat_button" />
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="action_hr_assessment_specialized" model="ir.actions.act_window">
+			<field name="name">الوظائف التخصصية</field>
+			<field name="res_model">hr.assessment.specialized</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+		<menuitem id="menu_hr_assessment_specialized" action="action_hr_assessment_specialized"
+			parent="menu_hr_assessment_root" sequence="5" name="الوظائف التخصصية" />
+
+		<!-- Job Assessment for Veterinary Medicine Jobs -->
+		<record id="view_search_hr_assessment_veterinary_medicine"
+			model="ir.ui.view">
+			<field name="name">hr.assessment.veterinary.medicine.search</field>
+			<field name="model">hr.assessment.veterinary.medicine</field>
+			<field name="arch" type="xml">
+				<search string="وظائف الطب البيطري">
+					<field name="name" />
+					<field name="employee_id" />
+					<field name="form_type" />
+					<field name="date" />
+					<field name="performance_report" string="الاداء العام" />
+					<field name="state" />
+					<separator />
+					<filter string="طلب" domain="[('state','=','draft')]" />
+					<filter string="تقييم" domain="[('state','=','eval')]" />
+					<filter string="اعتمدت" domain="[('state','=','done')]" />
+				</search>
+			</field>
+		</record>
+		<record id="view_tree_hr_assessment_veterinary_medicine" model="ir.ui.view">
+			<field name="name">hr.assessment.veterinary.medicine.tree</field>
+			<field name="model">hr.assessment.veterinary.medicine</field>
+			<field name="arch" type="xml">
+				<tree string="وظائف الطب البيطري" class="oe_tree_view">
+					<field name="name" />
+					<field name="employee_id" />
+					<field name="form_type" />
+					<field name="date" />
+					<field name="performance_report" string="الاداء العام" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+		<record id="view_form_hr_assessment_veterinary_medicine" model="ir.ui.view">
+			<field name="name">hr.assessment.veterinary.medicine.form</field>
+			<field name="model">hr.assessment.veterinary.medicine</field>
+			<field name="arch" type="xml">
+				<form string="وظائف الطب البيطري">
+					<header>
+						<button name="button_done" string="تصديق" states="draft"
+							type="object" icon="fa-check" class="oe_inline oe_stat_button" />
+						<field name="state" widget="statusbar" />
+					</header>
+					<sheet>
+						<div>
+							<label for="name" class="oe_edit_only" />
+							<h1>
+								<field name="name" readonly="1" />
+							</h1>
+							<label for="employee_id" class="oe_edit_only" />
+							<h1>
+								<field name="employee_id" required="1"
+									attrs="{'readonly':[('state','!=','draft')]}" />
+							</h1>
+						</div>
+						<group>
+							<field name="date" required="1"
+								attrs="{'readonly':[('state','!=','draft')]}" />
+							<field name="form_type" required="1"
+								attrs="{'readonly':[('state','!=','draft')]}" />
+						</group>
+						<notebook>
+							<page string="التقييم">
+								<group>
+									<label for="skill_monitor" attrs="{'invisible': [('form_type','!=','above')]}" />
+									<div attrs="{'invisible': [('form_type','!=','above')]}">
+										<field name="skill_monitor" class="oe_inline"
+											attrs="{'required': [('state','=','draft'),('form_type','=','above')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only" />
+									</div>
+									<label for="ability_train" attrs="{'invisible': [('form_type','!=','above')]}" />
+									<div attrs="{'invisible': [('form_type','!=','above')]}">
+										<field name="ability_train" class="oe_inline"
+											attrs="{'required': [('state','=','draft'),('form_type','=','above')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only" />
+									</div>
+									<label for="ability_improve" attrs="{'invisible': [('form_type','!=','above')]}" />
+									<div attrs="{'invisible': [('form_type','!=','above')]}">
+										<field name="ability_improve" class="oe_inline"
+											attrs="{'required': [('state','=','draft'),('form_type','=','above')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only" />
+									</div>
+									<label for="goal_understand" />
+									<div>
+										<field name="goal_understand" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only" />
+									</div>
+									<label for="know_work" />
+									<div>
+										<field name="know_work" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 5" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','=','below')]}" />
+										<label string="1 إلى 4" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','=','above')]}" />
+									</div>
+									<label for="know_system" />
+									<div>
+										<field name="know_system" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 5" class="oe_edit_only" />
+									</div>
+									<label for="ability_overcome" />
+									<div>
+										<field name="ability_overcome" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 5" class="oe_edit_only" />
+									</div>
+									<label for="ability_research" />
+									<div>
+										<field name="ability_research" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 5" class="oe_edit_only" />
+									</div>
+									<label for="high_responsibilities" />
+									<div>
+										<field name="high_responsibilities" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 3" class="oe_edit_only" />
+									</div>
+									<label for="maintain_work_hours" />
+									<div>
+										<field name="maintain_work_hours" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 5" class="oe_edit_only" />
+									</div>
+									<label for="ability_communication" />
+									<div>
+										<field name="ability_communication" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 5" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','=','below')]}" />
+										<label string="1 إلى 3" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','=','above')]}" />
+									</div>
+									<label for="follow_specialization" />
+									<div>
+										<field name="follow_specialization" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','=','below')]}" />
+										<label string="1 إلى 3" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','=','above')]}" />
+									</div>
+									<label for="skill_report" />
+									<div>
+										<field name="skill_report" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','=','below')]}" />
+										<label string="1 إلى 3" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','=','above')]}" />
+									</div>
+									<label for="ability_diagnose" />
+									<div>
+										<field name="ability_diagnose" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="ability_epidemic" />
+									<div>
+										<field name="ability_epidemic" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="field_visit" />
+									<div>
+										<field name="field_visit" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="know_equipments" />
+									<div>
+										<field name="know_equipments" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','=','below')]}" />
+										<label string="1 إلى 3" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','=','above')]}" />
+									</div>
+									<label for="special_uniform" />
+									<div>
+										<field name="special_uniform" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 5" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','=','below')]}" />
+										<label string="1 إلى 4" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','=','above')]}" />
+									</div>
+								</group>
+							</page>
+							<page string="الصفات الشخصية">
+								<group>
+									<label for="ability_dialogue" />
+									<div>
+										<field name="ability_dialogue" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only" />
+									</div>
+									<label for="responsibility_appreciation" />
+									<div>
+										<field name="responsibility_appreciation" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only" />
+									</div>
+									<label for="good_conduct" />
+									<div>
+										<field name="good_conduct" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only" />
+									</div>
+									<label for="accept_guidance" />
+									<div>
+										<field name="accept_guidance" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only" />
+									</div>
+									<label for="appearance_care" />
+									<div>
+										<field name="appearance_care" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 3" class="oe_edit_only" />
+									</div>
+								</group>
+							</page>
+							<page string="العلاقات مع الآخرين">
+								<group>
+									<label for="superiors" />
+									<div>
+										<field name="superiors" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 3" class="oe_edit_only" />
+									</div>
+									<label for="colleagues" />
+									<div>
+										<field name="colleagues" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 3" class="oe_edit_only" />
+									</div>
+									<label for="subordinates" />
+									<div>
+										<field name="subordinates" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 3" class="oe_edit_only" />
+									</div>
+								</group>
+							</page>
+							<page string="ملاحظات عامة">
+								<group>
+									<field name="strengths_ids"
+										attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}">
+										<tree editable="bottom">
+											<field name="name" required="1" />
+											<field name="point" sum="1" />
+										</tree>
+									</field>
+									<field name="weaknesses_ids"
+										attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}">
+										<tree editable="bottom">
+											<field name="name" required="1" />
+											<field name="point" sum="1" />
+										</tree>
+									</field>
+								</group>
+							</page>
+							<page string="الإجمــالي">
+								<group>
+									<group>
+										<field name="total_eval" string="مجموع نقاط التقييم الوظائف" />
+										<field name="total_personal_traits" string="مجموع نقاط صفات الشخصية" />
+										<field name="total_relationships" string="مجموع نقاط العلاقات مع الآخرين" />
+										<field name="total_general" string="مجموع نقاط الملاحظات العامة" />
+									</group>
+									<group>
+										<field name="total_score" string="الإجمــالي" />
+										<field name="performance_report" string="الاداء العام" />
+										<field name="last_report"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+									</group>
+								</group>
+								<group>
+									<field name="recommendations" attrs="{'readonly': [('state','!=','draft')]}" />
+									<field name="notes" attrs="{'readonly':[('state','!=','draft')]}" />
+								</group>
+							</page>
+						</notebook>
+						<button name="%(report_hr_assessment_veterinary_medicine_report)d"
+							string="طباعة التقرير" type="action" states="done" icon="fa-print"
+							class="oe_inline oe_stat_button" />
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="action_hr_assessment_veterinary_medicine" model="ir.actions.act_window">
+			<field name="name">وظائف الطب البيطري</field>
+			<field name="res_model">hr.assessment.veterinary.medicine</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+		<menuitem id="menu_hr_assessment_veterinary_medicine" action="action_hr_assessment_veterinary_medicine"
+			parent="menu_hr_assessment_root" sequence="6" name="وظائف الطب البيطري" />
+
+		<!-- Job Assessment for Executive Jobs -->
+		<record id="view_search_hr_assessment_executive" model="ir.ui.view">
+			<field name="name">hr.assessment.executive.search</field>
+			<field name="model">hr.assessment.executive</field>
+			<field name="arch" type="xml">
+				<search string="الوظائف التنفيذية (الفنية و الحرفية)">
+					<field name="name" />
+					<field name="employee_id" />
+					<field name="form_type" />
+					<field name="date" />
+					<field name="performance_report" string="الاداء العام" />
+					<field name="state" />
+					<separator />
+					<filter string="طلب" domain="[('state','=','draft')]" />
+					<filter string="تقييم" domain="[('state','=','eval')]" />
+					<filter string="اعتمدت" domain="[('state','=','done')]" />
+				</search>
+			</field>
+		</record>
+		<record id="view_tree_hr_assessment_executive" model="ir.ui.view">
+			<field name="name">.hr.assessment.executive.tree</field>
+			<field name="model">hr.assessment.executive</field>
+			<field name="arch" type="xml">
+				<tree string="الوظائف التنفيذية (الفنية و الحرفية)" class="oe_tree_view">
+					<field name="name" />
+					<field name="employee_id" />
+					<field name="form_type" />
+					<field name="date" />
+					<field name="performance_report" string="الاداء العام" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+		<record id="view_form_hr_assessment_executive" model="ir.ui.view">
+			<field name="name">hr.assessment.executive.form</field>
+			<field name="model">hr.assessment.executive</field>
+			<field name="arch" type="xml">
+				<form string="الوظائف التنفيذية (الفنية و الحرفية)">
+					<header>
+						<button name="button_done" string="تصديق" states="draft"
+							type="object" icon="fa-check" class="oe_inline oe_stat_button" />
+						<field name="state" widget="statusbar" />
+					</header>
+					<sheet>
+						<div>
+							<label for="name" class="oe_edit_only" />
+							<h1>
+								<field name="name" readonly="1" />
+							</h1>
+							<label for="employee_id" class="oe_edit_only" />
+							<h1>
+								<field name="employee_id" required="1"
+									attrs="{'readonly':[('state','!=','draft')]}" />
+							</h1>
+						</div>
+						<group>
+							<field name="date" required="1"
+								attrs="{'readonly':[('state','!=','draft')]}" />
+							<field name="form_type" required="1"
+								attrs="{'readonly':[('state','!=','draft')]}" />
+						</group>
+						<notebook>
+							<page string="التقييم">
+								<group>
+									<label for="ability_improve" attrs="{'invisible': [('form_type','!=','a')]}" />
+									<div attrs="{'invisible': [('form_type','!=','a')]}">
+										<field name="ability_improve" class="oe_inline"
+											attrs="{'required': [('state','=','draft'),('form_type','=','a')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="ability_train" attrs="{'invisible': [('form_type','!=','a')]}" />
+									<div attrs="{'invisible': [('form_type','!=','a')]}">
+										<field name="ability_train" class="oe_inline"
+											attrs="{'required': [('state','=','draft'),('form_type','=','a')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="ability_completion_work" />
+									<div>
+										<field name="ability_completion_work" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 7" class="oe_edit_only" />
+									</div>
+									<label for="skill_execution" />
+									<div>
+										<field name="skill_execution" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 7" class="oe_edit_only"
+											attrs="{'invisible': [('form_type','!=','a')]}" />
+										<label string="1 إلى 6" class="oe_edit_only"
+											attrs="{'invisible': [('form_type','!=','b')]}" />
+									</div>
+									<label for="ability_timetable" />
+									<div>
+										<field name="ability_timetable" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="maintain_worktime_score" />
+									<div>
+										<field name="maintain_worktime_score" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only"
+											attrs="{'invisible': [('form_type','!=','a')]}" />
+										<label string="1 إلى 7" class="oe_edit_only"
+											attrs="{'invisible': [('form_type','!=','b')]}" />
+									</div>
+									<label for="implementation_safety" />
+									<div>
+										<field name="implementation_safety" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 5" class="oe_edit_only" />
+									</div>
+									<label for="know_equipments" />
+									<div>
+										<field name="know_equipments" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only" />
+									</div>
+									<label for="know_work" />
+									<div>
+										<field name="know_work" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only" />
+									</div>
+									<label for="ability_overcome" />
+									<div>
+										<field name="ability_overcome" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','a')]}" />
+										<label string="1 إلى 3" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','b')]}" />
+									</div>
+									<label for="followup_developments_work" />
+									<div>
+										<field name="followup_developments_work" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','a')]}" />
+										<label string="1 إلى 3" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','b')]}" />
+									</div>
+									<label for="ability_communication" />
+									<div>
+										<field name="ability_communication" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','a')]}" />
+										<label string="1 إلى 3" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','b')]}" />
+									</div>
+									<label for="high_responsibilities" />
+									<div>
+										<field name="high_responsibilities" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 3" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','a')]}" />
+										<label string="1 إلى 4" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','b')]}" />
+									</div>
+									<label for="knowing_system" />
+									<div>
+										<field name="knowing_system" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 3" class="oe_edit_only" />
+									</div>
+									<label for="submit_ideas" />
+									<div>
+										<field name="submit_ideas" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 3" class="oe_edit_only" />
+									</div>
+									<label for="completion_work_time" attrs="{'invisible':[('form_type','!=','b')]}" />
+									<div attrs="{'invisible':[('form_type','!=','b')]}">
+										<field name="completion_work_time" class="oe_inline"
+											attrs="{'required': [('state','=','draft'),('form_type','=','b')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 7" class="oe_edit_only" />
+									</div>
+									<label for="ability_review" attrs="{'invisible':[('form_type','!=','b')]}" />
+									<div attrs="{'invisible':[('form_type','!=','b')]}">
+										<field name="ability_review" class="oe_inline"
+											attrs="{'required': [('state','=','draft'),('form_type','=','b')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 7" class="oe_edit_only" />
+									</div>
+								</group>
+							</page>
+							<page string="الصفات الشخصية">
+								<group>
+									<label for="ability_dialogue" />
+									<div>
+										<field name="ability_dialogue" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','a')]}" />
+										<label string="1 إلى 3" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','b')]}" />
+									</div>
+									<label for="responsibility_appreciation" />
+									<div>
+										<field name="responsibility_appreciation" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only" />
+									</div>
+									<label for="good_conduct" />
+									<div>
+										<field name="good_conduct" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only" />
+									</div>
+									<label for="guidance_score" />
+									<div>
+										<field name="guidance_score" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only" />
+									</div>
+									<label for="appearance_care" />
+									<div>
+										<field name="appearance_care" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 3" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','a')]}" />
+										<label string="1 إلى 4" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','b')]}" />
+									</div>
+								</group>
+							</page>
+							<page string="العلاقات مع الآخرين">
+								<group>
+									<label for="superiors_score" />
+									<div>
+										<field name="superiors_score" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 3" class="oe_edit_only" />
+									</div>
+									<label for="colleagues_score" />
+									<div>
+										<field name="colleagues_score" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 3" class="oe_edit_only" />
+									</div>
+									<label for="audit_score" />
+									<div>
+										<field name="audit_score" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 3" class="oe_edit_only" />
+									</div>
+								</group>
+							</page>
+							<page string="الإجمــالي">
+								<group>
+									<group>
+										<field name="total_eval" string="مجموع نقاط التقييم الوظائف" />
+										<field name="total_personal_traits" string="مجموع نقاط صفات الشخصية" />
+										<field name="total_relationships" string="مجموع نقاط العلاقات مع الآخرين" />
+									</group>
+									<group>
+										<field name="total_score" string="الإجمــالي" />
+										<field name="performance_report" string="الاداء العام" />
+									</group>
+								</group>
+								<group>
+									<field name="recommendations" attrs="{'readonly': [('state','!=','draft')]}" />
+									<field name="notes" attrs="{'readonly':[('state','!=','draft')]}" />
+								</group>
+							</page>
+						</notebook>
+						<button name="%(report_hr_assessment_executive_report)d"
+							string="طباعة التقرير" type="action" states="done" icon="fa-print"
+							class="oe_inline oe_stat_button" />
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="action_hr_assessment_executive" model="ir.actions.act_window">
+			<field name="name">الوظائف التنفيذية (الفنية و الحرفية)</field>
+			<field name="res_model">hr.assessment.executive</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+		<menuitem id="menu_hr_assessment_executive" action="action_hr_assessment_executive"
+			parent="menu_hr_assessment_root" sequence="1"
+			name="الوظائف التنفيذية (الفنية و الحرفية)" />
+
+		<!-- Job Assessment for Executive Administrator Jobs -->
+		<record id="view_search_hr_assessment_executive_admin" model="ir.ui.view">
+			<field name="name">hr.assessment.executive.admin.search</field>
+			<field name="model">hr.assessment.executive.admin</field>
+			<field name="arch" type="xml">
+				<search string="الوظائف التنفيذية (الإدارية)">
+					<field name="name" />
+					<field name="employee_id" />
+					<field name="form_type" />
+					<field name="date" />
+					<field name="performance_report" string="الاداء العام" />
+					<field name="state" />
+					<separator />
+					<filter string="طلب" domain="[('state','=','draft')]" />
+					<filter string="تقييم" domain="[('state','=','eval')]" />
+					<filter string="اعتمدت" domain="[('state','=','done')]" />
+				</search>
+			</field>
+		</record>
+		<record id="view_tree_hr_assessment_executive_admin" model="ir.ui.view">
+			<field name="name">.hr.assessment.executive.admin.tree</field>
+			<field name="model">hr.assessment.executive.admin</field>
+			<field name="arch" type="xml">
+				<tree string="الوظائف التنفيذية (الإدارية)" class="oe_tree_view">
+					<field name="name" />
+					<field name="employee_id" />
+					<field name="form_type" />
+					<field name="date" />
+					<field name="performance_report" string="الاداء العام" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+		<record id="view_form_hr_assessment_executive_admin" model="ir.ui.view">
+			<field name="name">hr.assessment.executive.admin.form</field>
+			<field name="model">hr.assessment.executive.admin</field>
+			<field name="arch" type="xml">
+				<form string="الوظائف التنفيذية (الإدارية)">
+					<header>
+						<button name="button_done" string="تصديق" states="draft"
+							type="object" icon="fa-check" class="oe_inline oe_stat_button" />
+						<field name="state" widget="statusbar" />
+					</header>
+					<sheet>
+						<div>
+							<label for="name" class="oe_edit_only" />
+							<h1>
+								<field name="name" readonly="1" />
+							</h1>
+							<label for="employee_id" class="oe_edit_only" />
+							<h1>
+								<field name="employee_id" required="1"
+									attrs="{'readonly':[('state','!=','draft')]}" />
+							</h1>
+						</div>
+						<group>
+							<field name="date" required="1"
+								attrs="{'readonly':[('state','!=','draft')]}" />
+							<field name="form_type" required="1"
+								attrs="{'readonly':[('state','!=','draft')]}" />
+						</group>
+						<notebook>
+							<page string="التقييم">
+								<group>
+									<label for="ability_improve" attrs="{'invisible': [('form_type','!=','a')]}" />
+									<div attrs="{'invisible': [('form_type','!=','a')]}">
+										<field name="ability_improve" class="oe_inline"
+											attrs="{'required': [('state','=','draft'),('form_type','=','a')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="ability_train" attrs="{'invisible': [('form_type','!=','a')]}" />
+									<div attrs="{'invisible': [('form_type','!=','a')]}">
+										<field name="ability_train" class="oe_inline"
+											attrs="{'required': [('state','=','draft'),('form_type','=','a')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="ability_completion_work" />
+									<div>
+										<field name="ability_completion_work" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 7" class="oe_edit_only" />
+									</div>
+									<label for="skill_execution" />
+									<div>
+										<field name="skill_execution" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 7" class="oe_edit_only"
+											attrs="{'invisible': [('form_type','!=','a')]}" />
+										<label string="1 إلى 6" class="oe_edit_only"
+											attrs="{'invisible': [('form_type','!=','b')]}" />
+									</div>
+									<label for="ability_timetable" />
+									<div>
+										<field name="ability_timetable" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only" />
+									</div>
+									<label for="maintain_worktime_score" />
+									<div>
+										<field name="maintain_worktime_score" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 6" class="oe_edit_only"
+											attrs="{'invisible': [('form_type','!=','a')]}" />
+										<label string="1 إلى 7" class="oe_edit_only"
+											attrs="{'invisible': [('form_type','!=','b')]}" />
+									</div>
+									<label for="ability_overcome" />
+									<div>
+										<field name="ability_overcome" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 5" class="oe_edit_only" />
+									</div>
+									<label for="know_work" />
+									<div>
+										<field name="know_work" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only" />
+									</div>
+									<label for="knowing_system" />
+									<div>
+										<field name="knowing_system" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only" />
+									</div>
+									<label for="followup_developments_work" />
+									<div>
+										<field name="followup_developments_work" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','a')]}" />
+										<label string="1 إلى 3" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','b')]}" />
+									</div>
+									<label for="attend_meetings" />
+									<div>
+										<field name="attend_meetings" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','a')]}" />
+										<label string="1 إلى 3" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','b')]}" />
+									</div>
+									<label for="ability_communication" />
+									<div>
+										<field name="ability_communication" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','a')]}" />
+										<label string="1 إلى 3" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','b')]}" />
+									</div>
+									<label for="high_responsibilities" />
+									<div>
+										<field name="high_responsibilities" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 3" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','a')]}" />
+										<label string="1 إلى 4" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','b')]}" />
+									</div>
+									<label for="goal_understand" />
+									<div>
+										<field name="goal_understand" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 3" class="oe_edit_only" />
+									</div>
+									<label for="submit_ideas" />
+									<div>
+										<field name="submit_ideas" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 3" class="oe_edit_only" />
+									</div>
+									<label for="completion_work_time" attrs="{'invisible':[('form_type','!=','b')]}" />
+									<div attrs="{'invisible':[('form_type','!=','b')]}">
+										<field name="completion_work_time" class="oe_inline"
+											attrs="{'required': [('state','=','draft'),('form_type','=','b')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 7" class="oe_edit_only" />
+									</div>
+									<label for="ability_review" attrs="{'invisible':[('form_type','!=','b')]}" />
+									<div attrs="{'invisible':[('form_type','!=','b')]}">
+										<field name="ability_review" class="oe_inline"
+											attrs="{'required': [('state','=','draft'),('form_type','=','b')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 7" class="oe_edit_only" />
+									</div>
+								</group>
+							</page>
+							<page string="الصفات الشخصية">
+								<group>
+									<label for="ability_dialogue" />
+									<div>
+										<field name="ability_dialogue" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','a')]}" />
+										<label string="1 إلى 3" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','b')]}" />
+									</div>
+									<label for="responsibility_appreciation" />
+									<div>
+										<field name="responsibility_appreciation" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only" />
+									</div>
+									<label for="good_conduct" />
+									<div>
+										<field name="good_conduct" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only" />
+									</div>
+									<label for="accept_guidance" />
+									<div>
+										<field name="accept_guidance" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 4" class="oe_edit_only" />
+									</div>
+									<label for="appearance_care" />
+									<div>
+										<field name="appearance_care" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 3" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','a')]}" />
+										<label string="1 إلى 4" class="oe_edit_only"
+											attrs="{'invisible':[('form_type','!=','b')]}" />
+									</div>
+								</group>
+							</page>
+							<page string="العلاقات مع الآخرين">
+								<group>
+									<label for="superiors_score" />
+									<div>
+										<field name="superiors_score" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 3" class="oe_edit_only" />
+									</div>
+									<label for="colleagues_score" />
+									<div>
+										<field name="colleagues_score" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 3" class="oe_edit_only" />
+									</div>
+									<label for="audit_score" />
+									<div>
+										<field name="audit_score" class="oe_inline"
+											attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}" />
+										<label string="1 إلى 3" class="oe_edit_only" />
+									</div>
+								</group>
+							</page>
+							<page string="ملاحظات عامة">
+								<group>
+									<field name="strengths_ids"
+										attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}">
+										<tree editable="bottom">
+											<field name="name" required="1" />
+											<field name="point" sum="1" />
+										</tree>
+									</field>
+									<field name="weaknesses_ids"
+										attrs="{'required': [('state','=','draft')],'readonly': [('state','!=','draft')]}">
+										<tree editable="bottom">
+											<field name="name" required="1" />
+											<field name="point" sum="1" />
+										</tree>
+									</field>
+								</group>
+							</page>
+							<page string="الإجمــالي">
+								<group>
+									<group>
+										<field name="total_eval" string="مجموع نقاط التقييم الوظائف" />
+										<field name="total_personal_traits" string="مجموع نقاط صفات الشخصية" />
+										<field name="total_relationships" string="مجموع نقاط العلاقات مع الآخرين" />
+										<field name="total_general" string="مجموع نقاط الملاحظات العامة" />
+									</group>
+									<group>
+										<field name="total_score" string="الإجمــالي" />
+										<field name="performance_report" string="الاداء العام" />
+									</group>
+								</group>
+								<group>
+									<field name="recommendations" attrs="{'readonly': [('state','!=','draft')]}" />
+									<field name="notes" attrs="{'readonly':[('state','!=','draft')]}" />
+								</group>
+							</page>
+						</notebook>
+						<button name="%(report_hr_assessment_executive_admin_report)d"
+							string="طباعة التقرير" type="action" states="done" icon="fa-print"
+							class="oe_inline oe_stat_button" />
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="action_hr_assessment_executive_admin" model="ir.actions.act_window">
+			<field name="name">الوظائف التنفيذية (الإدارية)</field>
+			<field name="res_model">hr.assessment.executive.admin</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+		<menuitem id="menu_hr_assessment_executive_admin" action="action_hr_assessment_executive_admin"
+			parent="menu_hr_assessment_root" sequence="2"
+			name="الوظائف التنفيذية (الإدارية)" />
+
+
+
+	</data>
+</openerp>
