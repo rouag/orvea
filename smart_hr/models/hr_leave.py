@@ -10,7 +10,7 @@ from umalqurra.hijri_date import HijriDate
 from datetime import date, datetime, timedelta
 from smart_utils.num2hindi import num2hindi
 
-class hr_leave(models.Model):
+class HrLeave(models.Model):
     _name = 'hr.leave'
     _inherit = ['mail.thread', 'ir.needaction_mixin']
     _description = 'Leave Request'
@@ -94,7 +94,7 @@ class hr_leave(models.Model):
 
     @api.model
     def create(self, vals):
-        res = super(hr_leave, self).create(vals)
+        res = super(HrLeave, self).create(vals)
         # Extension
         extended_leave_id = vals.get('extended_leave_id', False)
         if extended_leave_id:
@@ -115,7 +115,7 @@ class hr_leave(models.Model):
         for rec in self:
             if rec.state != 'draft' and self._uid != SUPERUSER_ID:
                 raise ValidationError(u'لا يمكن حذف الإجازة فى هذه المرحلة يرجى مراجعة مدير النظام')
-        return super(hr_leave, self).unlink()
+        return super(HrLeave, self).unlink()
 
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
@@ -127,7 +127,7 @@ class hr_leave(models.Model):
         user = user_obj.browse(uid)
         emp_ids = employee_obj.search(['|', ('parent_id.user_id', 'child_of', uid), ('user_id', '=', uid)])
         #
-        res = super(hr_leave, self).fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
+        res = super(HrLeave, self).fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
         if view_type == 'form':
             # Make fields readonly for all employees except admin
             arch = etree.XML(res['arch'])
@@ -591,11 +591,87 @@ class hr_leave(models.Model):
     def create_report_attachment(self):
         self.env['report'].get_pdf(self, 'smart_hr.hr_leave_report')
 
-class hr_leave_type(models.Model):
+class HrLeaveType(models.Model):
     _name = 'hr.leave.type'
     _description = 'Leave Type'
 
-    name = fields.Char(string=u'اسم')
+    name = fields.Char(string=u'الاسم')
+    minimum = fields.Integer(string=u'الحد الأدنى')
+    maximum = fields.Integer(string=u'الحد الأقصى')
+    deductible_normal_leave = fields.Boolean(string=u'تخصم مدتها من رصيد الاجازة العادية')
+    deductible_duration_service = fields.Boolean(string=u'تخصم مدتها من فترة الخدمة')
+    salary_proportion = fields.Float(string=u'نسبة الراتب', default=100)  
+    educ_lvl_req = fields.Boolean(string=u'يطبق شرط المستوى التعليمي')
+    evaluation_condition = fields.Boolean(string=u'يطبق شرط تقويم الأداء')
+    education_levels = fields.Many2many('hr.employee.education.level', string=u'المستويات التعليمية')
+    entitlements = fields.One2many('hr.leave.type.entitlement', 'leave_type', string = u'أنواع الاستحقاقات')
+    
+#     leave_stock_default = fields.Integer(string=u'الرصيد الأفتراضي')
+#     leave_stock_open = fields.Boolean(string=u'الرصيد مفتوح')
+#     
+#     @api.constrains('leave_stock_default')
+#     def _check_stock_value(self):
+#         for rec in self:
+#             if rec.leave_stock_default <= 0 and not rec.leave_stock_open:
+#                 raise ValidationError(u'قيمة الرصيد الأفتراضي يجب ان يكون اكبر من صفر')
+# 
+#     """
+#         Scheduler function
+#     """
+#     @api.model
+#     def update_leave_stock(self):
+#         self.update_normal_leave()
+#         self.update_emergency_leave()
+# 
+#     @api.model
+#     def update_normal_leave(self):
+#         # Objects
+#         employee_obj = self.env['hr.employee']
+#         # Check first day of arabic month
+#         today_date = fields.Date.from_string(fields.Datetime.now())
+#         hijri_date = ummqura.from_gregorian(today_date.year, today_date.month, today_date.day)
+#         # Is first day in month
+#         if hijri_date[2] == 1:
+#             # Loop all employees
+#             for emp in employee_obj.search([]):
+#                 # Normal
+#                 current_normal = emp.leave_normal
+#                 expected_normal = current_normal + 3
+#                 emp.leave_normal = expected_normal
+#                 # TODO Disabling the below part is against labour laws
+#                 # TODO Disabled upon municipality request
+#                 # if emp.age >= 50 or emp.service_years >= 25:
+#                 #     if expected_normal > 120:
+#                 #         emp.leave_normal = 120
+#                 #     else:
+#                 #         emp.leave_normal = expected_normal
+#                 # else:
+#                 #     if expected_normal > 90:
+#                 #         emp.leave_normal = 90
+#                 #     else:
+#                 #         emp.leave_normal = expected_normal
+
+#     @api.model
+#     def update_emergency_leave(self):
+#         # Objects
+#         employee_obj = self.env['hr.employee']
+#         # Check first day of arabic month
+#         today_date = fields.Date.from_string(fields.Datetime.now())
+#         hijri_date = ummqura.from_gregorian(today_date.year, today_date.month, today_date.day)
+#         # Is first day in year
+#         if hijri_date[1] == 1 and hijri_date[2] == 1:
+#             # Loop all employees
+#             for emp in employee_obj.search([]):
+#                 # Emergency
+#                 emp.leave_emergency = 5
+                
+                
+class HrLeaveTypeEntitlement(models.Model):
+    _name = 'hr.leave.type.entitlement'
+    _description = u'أنواع الاستحقاقات'
+    entitlment_category = fields.Many2one('hr.leave.type.entitlement.category', string=u'فئة استحقاق')
+    leave_stock_default = fields.Integer(string=u'الرصيد')
+    conditionnal = fields.Boolean(string=u'مشروط')
     periode = fields.Selection([
         (1, u'سنة'),
         (2, u'سنتين'),
@@ -607,83 +683,14 @@ class hr_leave_type(models.Model):
         (8, u'ثمانية سنوات'),
         (9, u'تسعة سنوات'),
         (10, u'عشرة سنوات'),
-        ], default = '1')
-    minimum = fields.Integer(string = u'الحد الأدنى')
-    maximum = fields.Integer(string = u'الحد الأقصى')
-    deductible_normal_leave = fields.Boolean(string = u'تخصم مدتها من رصيد الاجازة العادية')
-    deductible_duration_service = fields.Boolean(string = u'تخصم مدتها من فترة الخدمة')
-    salary_proportion = fields.Float(string = u'نسبة الراتب', default=100)  
-    educ_lvl_req = fields.Boolean(string = u'يطبق شرط المستوى التعليمي')
-    evaluation_condition = fields.Boolean(string = u'يطبق شرط تقويم الأداء')
-    
-    leave_stock_default = fields.Integer(string=u'الرصيد الأفتراضي')
-    leave_stock_open = fields.Boolean(string=u'الرصيد مفتوح')
+        ], default=1)
+    leave_type = fields.Many2one('hr.leave.type', string = 'leave type')
+#     leave_stock_open = fields.Boolean(string=u'الرصيد مفتوح')
     
     
+class HrleaveTypeEntitlementCategory(models.Model):
+    _name = 'hr.leave.type.entitlement.category'
+    _description = u'فئة استحقاق'
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    @api.constrains('leave_stock_default')
-    def _check_stock_value(self):
-        for rec in self:
-            if rec.leave_stock_default <= 0 and not rec.leave_stock_open:
-                raise ValidationError(u'قيمة الرصيد الأفتراضي يجب ان يكون اكبر من صفر')
-
-    """
-        Scheduler function
-    """
-    @api.model
-    def update_leave_stock(self):
-        self.update_normal_leave()
-        self.update_emergency_leave()
-
-    @api.model
-    def update_normal_leave(self):
-        # Objects
-        employee_obj = self.env['hr.employee']
-        # Check first day of arabic month
-        today_date = fields.Date.from_string(fields.Datetime.now())
-        hijri_date = ummqura.from_gregorian(today_date.year, today_date.month, today_date.day)
-        # Is first day in month
-        if hijri_date[2] == 1:
-            # Loop all employees
-            for emp in employee_obj.search([]):
-                # Normal
-                current_normal = emp.leave_normal
-                expected_normal = current_normal + 3
-                emp.leave_normal = expected_normal
-                # TODO Disabling the below part is against labour laws
-                # TODO Disabled upon municipality request
-                # if emp.age >= 50 or emp.service_years >= 25:
-                #     if expected_normal > 120:
-                #         emp.leave_normal = 120
-                #     else:
-                #         emp.leave_normal = expected_normal
-                # else:
-                #     if expected_normal > 90:
-                #         emp.leave_normal = 90
-                #     else:
-                #         emp.leave_normal = expected_normal
-
-    @api.model
-    def update_emergency_leave(self):
-        # Objects
-        employee_obj = self.env['hr.employee']
-        # Check first day of arabic month
-        today_date = fields.Date.from_string(fields.Datetime.now())
-        hijri_date = ummqura.from_gregorian(today_date.year, today_date.month, today_date.day)
-        # Is first day in year
-        if hijri_date[1] == 1 and hijri_date[2] == 1:
-            # Loop all employees
-            for emp in employee_obj.search([]):
-                # Emergency
-                emp.leave_emergency = 5
+    name = fields.Char(string = u'الاسم')
+    grades = fields.Many2many('salary.grid.grade', string=u'المراتب')

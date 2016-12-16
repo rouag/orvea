@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <openerp>
 	<data>
-		
+
 		<menuitem id="menu_hr_leave_type_root" parent="hr_root_configuration"
 			name="اجازات" sequence="8" />
-			
+
 		<!-- Leave Request -->
 		<record id="view_form_hr_leave" model="ir.ui.view">
 			<field name="name">hr.leave.form</field>
@@ -222,7 +222,8 @@
 			<field name="res_model">hr.leave</field>
 			<field name="search_view_id" ref="view_search_hr_leave" />
 			<field name="domain">[('employee_id.user_id', '!=', uid),('state', '!=',
-				'draft')]</field>
+				'draft')]
+			</field>
 			<field name="context">{'search_default_state_dm':1,'default_edit_employee':1,'default_employee_id':False}
 			</field>
 			<field name="view_type">form</field>
@@ -306,10 +307,33 @@
 				<form string="نوع الأجازة">
 					<sheet>
 						<group>
-							<field name="name" required="1" />
-							<field name="leave_stock_open" />
-							<field name="leave_stock_default"
-								attrs="{'invisible':[('leave_stock_open', '=', True)]}" />
+							<group>
+								<field name="name" required="1" />
+							</group>
+						</group>
+						<field name="entitlements" string="أنواع  الاستحقاقات">
+							<tree editable="bottom">
+								<field name="entitlment_category" />
+								<field name="leave_stock_default" />
+								<field name="conditionnal" />
+								<field name="periode" />
+							</tree>
+						</field>
+						<group>
+							<group>
+								<field name="minimum" />
+								<field name="maximum" />
+								<field name="salary_proportion" />
+							</group>
+							<group>
+								<field name="deductible_normal_leave" />
+								<field name="deductible_duration_service" />
+								<field name="educ_lvl_req" />
+								<field name="evaluation_condition" />
+							</group>
+						</group>
+						<group>
+							<field name="education_levels" attrs="{'invisible':[('educ_lvl_req', '=', False)]}" />
 						</group>
 					</sheet>
 				</form>
@@ -321,8 +345,6 @@
 			<field name="arch" type="xml">
 				<tree string="أنواع الأجازات">
 					<field name="name" />
-					<field name="leave_stock_open" />
-					<field name="leave_stock_default" />
 				</tree>
 			</field>
 		</record>
