@@ -15,6 +15,13 @@
 			<field name="implied_ids" eval="[(4, ref('base.group_user'))]" />
 		</record>
 
+
+		<record id="group_department_training" model="res.groups">
+			<field name="name">إدارة الدورات التدريبية</field>
+			<field name="category_id" ref="base.module_category_human_resources" />
+			<field name="implied_ids" eval="[(4, ref('base.group_user'))]" />
+		</record>
+		
 		<record id="group_employee_request" model="res.groups">
 			<field name="name">صلاحية تسجيل بيانات الموظفين </field>
 			<field name="category_id" ref="base.module_category_human_resources" />
