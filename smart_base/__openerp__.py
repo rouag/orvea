@@ -7,8 +7,7 @@
     'summary': 'Smart Base',
     'description':
         """
-        Todo:
-
+        Module base  can be used in any app
         """,
     'depends': ['base'],
     'auto_install': False,
