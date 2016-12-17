@@ -8,7 +8,7 @@ from ..apis.iclib.hijri  import ummqura
 from ..apis.datetime_func import daterange
 from umalqurra.hijri_date import HijriDate
 from datetime import date, datetime, timedelta
-from smart_utils.num2hindi import num2hindi
+#from smart_utils.num2hindi import num2hindi
 
 class HrLeave(models.Model):
     _name = 'hr.leave'

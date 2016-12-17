@@ -1,0 +1,137 @@
+/***************************************************
+****************************************************
+                          CSS : Forms
+
+*****************************************************
+*****************************************************/
+
+
+/*------------------------------------------------------
+			All Forms
+--------------------------------------------------------*/
+.form-control::-moz-placeholder {color: inherit;}
+.form-control:-ms-input-placeholder {color: inherit;}
+.form-control::-webkit-input-placeholder {color: inherit;}
+
+.form-control{color:#5a86b3;background:#e5f0f3;border-color: #e5f0f3;border-radius: 3px !important;box-shadow: none;}
+
+.form-horizontal{text-align:right;}
+.form-horizontal .form-group{}
+.form-horizontal .control-label{color:#676767;font-size:13px;font-family: 'Droid Arabic Kufi';font-style: normal;font-weight: 400;cursor:text;}
+.form-horizontal .control-label small{color:#999;font-family:inherit;}
+
+.form-horizontal .requiredFields span.hidden{display:none !important;}
+
+.form-horizontal .checkField td input{margin-left:5px;}
+.form-horizontal .checkField td label{margin-left:15px;}
+
+.input-group{position:relative;display:block;}
+.input-group .form-control{padding-right: 85px;height:49px;background:#e5f0f3;border-color: #e5f0f3;border-radius: 3px !important;}
+.input-group .input-group-addon{position:absolute;right:0;top:10px;padding:0 15px;width:auto;background:none;border:none;border-left:1px solid #a1a2a3;border-radius: 0;z-index: 3;}
+
+/* select2 */
+.select2-results .select2-result-label{font-size: 12px;direction: rtl;}
+html[dir="rtl"] .select2-container .select2-choice .select2-arrow{top:2px;left:5px;background: none;border: none;}
+
+/* Radio&Checkbox Fluid */
+.checkField{}
+.checkField table{}
+.checkField table td {position: relative;}
+.checkField .radio, .checkField .checkbox{padding-left:0;padding-right:20px;}
+.checkField .radio label{margin:0 0 0 40px;padding:0 20px;}
+.checkField .checkbox label{margin:0 0 0 20px;padding:0 20px;}
+.checkField .radio input[type="radio"], .checkField .radio-inline input[type="radio"], 
+.checkField .checkbox input[type="checkbox"], .checkField .checkbox-inline input[type="checkbox"]{right:0;margin:0 0 0 10px;}
+
+.checkbox{position:relative;}
+.checkbox span{position:absolute;top:0;right:0;display:block;width:38px;height:39px;background:transparent url("../img/icons/icons_38.png") 0 0 no-repeat;}
+.checkbox span i{float:left;display:none;width:38px;height:39px;}
+.checkbox label{padding-right:50px;}
+.checkbox input{opacity: 0;}
+.has-error .checkbox span{background-position:0 -80px;}
+
+/**/
+.niceField{position:relative;}
+.niceField a{position:relative;z-index:2;text-decoration:none;background-image:url(../img/icons/upload.png);background-repeat:no-repeat;background-position: 8px 6px;}
+.niceField input{position:absolute;top:0;opacity:0;z-index:1;}
+
+/*------------------------------------------------------
+			btn
+--------------------------------------------------------*/
+.btn{float: left;width: 100px;border: none;color: #fff;font-size: 16px;text-decoration: none !important;}
+
+.btn:hover,
+.btn:focus {
+  color: #fff;
+}
+.btn:active,
+.btn.active {
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+.btn-default {
+  color: #8f8f8f;
+  background: #cccccc;
+  -webkit-box-shadow: inset 0px -6px 0px -3px rgba(162,162,162,1);
+	 -moz-box-shadow: inset 0px -6px 0px -3px rgba(162,162,162,1);
+		  box-shadow: inset 0px -6px 0px -3px rgba(162,162,162,1);
+}
+.btn-default:hover,
+.btn-default:focus {
+  background: #a2a2a2;
+}
+.btn-default.disabled,
+.btn-default[disabled],
+fieldset[disabled] .btn-default,
+.btn-default.disabled:hover,
+.btn-default[disabled]:hover,
+fieldset[disabled] .btn-default:hover,
+.btn-default.disabled:focus,
+.btn-default[disabled]:focus,
+fieldset[disabled] .btn-default:focus,
+.btn-default.disabled:active,
+.btn-default[disabled]:active,
+fieldset[disabled] .btn-default:active,
+.btn-default.disabled.active,
+.btn-default[disabled].active,
+fieldset[disabled] .btn-default.active {
+  background: #cccccc;
+  -webkit-box-shadow: none;
+	 -moz-box-shadow: none;
+		  box-shadow: none;
+}
+
+.btn-primary {
+  color: #ffffff;
+  background: #41aefa;
+  -webkit-box-shadow: inset 0px -6px 0px -3px rgba(58,157,223,1);
+	 -moz-box-shadow: inset 0px -6px 0px -3px rgba(58,157,223,1);
+		  box-shadow: inset 0px -6px 0px -3px rgba(58,157,223,1);
+}
+.btn-primary:hover,
+.btn-primary:focus {
+  background: #3a9de0;
+}
+
+.btn-success {
+  color: #ffffff;
+  background: #bbc21d;
+  -webkit-box-shadow: inset 0px -6px 0px -3px rgba(158,160,35,1);
+	 -moz-box-shadow: inset 0px -6px 0px -3px rgba(158,160,35,1);
+		  box-shadow: inset 0px -6px 0px -3px rgba(158,160,35,1);
+}
+.btn-success:hover,
+.btn-success:focus {
+  background: #9ea023;
+}
+
+/*------------------------------------------------------
+           Responsive
+--------------------------------------------------------*/
+@media (max-width: 767px) {
+
+}
+@media (max-width: 991px) {
+	
+}
