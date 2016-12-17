@@ -22,6 +22,8 @@ addon | version | summary
 
 web
 -----
+addon | version | summary
+--- | --- | ---
 [smart_theme](smart_theme/) | 9.0.1.0  |تصميم خاص بالهيئة.
 [web_readonly_bypass](web_readonly_bypass/) | 9.0.1.0  | [TECH] Allow to save onchange modifications to readonly fields.
 
