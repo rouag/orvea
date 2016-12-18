@@ -4,7 +4,6 @@ from openerp import fields, models, api, _
 from openerp.tools import SUPERUSER_ID
 from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
-from antlr import ifelse
 
 class HrHolidays(models.Model):
     _inherit = 'hr.holidays'
@@ -151,7 +150,8 @@ class HrHolidays(models.Model):
         # Objects
         holiday_obj = self.env['hr.holidays']
         train_obj = self.env['hr.training']
-        eid_obj = self.env['hr.eid']
+        
+
         for lv in self:
             # Date validation
             if lv.date_from > lv.date_to:
@@ -174,13 +174,13 @@ class HrHolidays(models.Model):
                         lv.date_from <= rec.date_to <= lv.date_to:
                     raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق فى الإجازات")
             # Check for eid
-            for eid in eid_obj.search([]):
-                if eid.date_from <= lv.date_from <= eid.date_to or \
-                        eid.date_from <= lv.date_to <= eid.date_to or \
-                        lv.date_from <= eid.date_from <= lv.date_to or \
-                        lv.date_from <= eid.date_to <= lv.date_to:
-                    raise ValidationError(u"هناك تداخل في التواريخ مع اعياد و مناسبات رسمية")
-           
+#             for eid in eid_obj.search([]):
+#                 if eid.date_from <= lv.date_from <= eid.date_to or \
+#                         eid.date_from <= lv.date_to <= eid.date_to or \
+#                         lv.date_from <= eid.date_from <= lv.date_to or \
+#                         lv.date_from <= eid.date_to <= lv.date_to:
+#                     raise ValidationError(u"هناك تداخل في التواريخ مع اعياد و مناسبات رسمية")
+#            
             # Training
             search_domain = [
                 ('employee_ids', 'in', [lv.employee_id.id]),

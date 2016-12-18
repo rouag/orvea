@@ -55,13 +55,6 @@ access_hr_leave_type_entitlement_category,hr_leave_type_entitlement_category,mod
 ,,,,,,,
 access_hr_employee_education_level,hr_employee_education_level,model_hr_employee_education_level,,1,1,1,1
 ,,,,,,,
-access_hr_eid_deputed_employee,hr_eid_deputed_employee,model_hr_eid,group_deputed_employee,1,0,0,0
-access_hr_eid_normal_employee,hr_eid_normal_employee,model_hr_eid,group_normal_employee,1,0,0,0
-access_hr_eid_followup,hr_eid_followup,model_hr_eid,group_followup,1,0,0,0
-access_hr_eid_configuration,hr_eid_configuration,model_hr_eid,group_configuration,1,1,1,0
-access_hr_eid_configuration,hr_eid_configuration,model_hr_eid,group_configuration,1,1,1,0
-access_hr_eid_sys_manager,hr_eid_sys_manager,model_hr_eid,group_sys_manager,1,1,1,1
-,,,,,,,
 access_hr_assessment_probation_dm,hr_assessment_probation_dm,model_hr_assessment_probation,group_dm,1,1,1,0
 access_hr_assessment_users_dm,hr_assessment_users_dm,model_hr_assessment_users,group_dm,1,1,1,0
 access_hr_assessment_specialized_dm,hr_assessment_specialized_dm,model_hr_assessment_specialized,group_dm,1,1,1,0
