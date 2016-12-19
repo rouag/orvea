@@ -18,3 +18,5 @@ from . import hr_department
 
 from . import hr_assessment
 from . import hr_assessment_point
+
+from . import hr_decision

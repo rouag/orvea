@@ -49,7 +49,8 @@
         'view/hr_assessment_view.xml',
         'view/hr_assessment_point_view.xml',
  
-        
+        #القرارات
+        'view/hr_decision.xml',
         
     ],
     'auto_install': False,
