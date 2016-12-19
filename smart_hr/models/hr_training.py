@@ -97,7 +97,11 @@ class HrCandidates(models.Model):
     date_from = fields.Date(related='training_id.date_from', store=True, readonly=True)
     date_to = fields.Date(related='training_id.date_to', store=True, readonly=True)
     department = fields.Char(related='training_id.department', store=True, readonly=True)
-    state= fields.Selection(string=' الحالة',[('new',' ارسال طلب'),('waiting','في إنتظار الإعتماد'),('cancel','رفض'),('done','اعتمدت')], readonly=1, default='new',) 
+    state= fields.Selection([('new',' ارسال طلب'),
+                             ('waiting','في إنتظار الإعتماد'),
+                             ('cancel','رفض'),
+                             ('done','اعتمدت')
+                             ],string='الحالة', readonly=1, default='new') 
     
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
