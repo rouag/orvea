@@ -299,68 +299,8 @@
 			parent="menu_hr_leave_root" sequence="6"
 			groups="smart_hr.group_hr,smart_hr.group_followup" name="أرشيف الإجازات" />
 
-		<!-- Leave Type -->
-		<record id="view_form_hr_leave_type" model="ir.ui.view">
-			<field name="name">hr.leave.type.form</field>
-			<field name="model">hr.leave.type</field>
-			<field name="arch" type="xml">
-				<form string="نوع الأجازة">
-					<sheet>
-						<group>
-							<field name="name" required="1" />
-						</group>
-						<field name="entitlements" string="أنواع  الاستحقاقات">
-							<tree editable="bottom">
-								<field name="entitlment_category" />
-								<field name="leave_stock_default" />
-								<field name="conditionnal" />
-								<field name="periode" />
-							</tree>
-						</field>
-						<group>
-							<group>
-								<field name="minimum" />
-								<field name="maximum" />
-								<field name="salary_proportion" />
-							</group>
-							<group>
-								<field name="deductible_normal_leave" />
-								<field name="deductible_duration_service" />
-								<field name="educ_lvl_req" />
-								<field name="evaluation_condition" />
-							</group>
-						</group>
-						
-						<field name="education_levels" attrs="{'invisible':[('educ_lvl_req', '=', False)]}"
-							widget="many2many" />
-							
-						<field name="assessments_required"
-							attrs="{'invisible':[('evaluation_condition', '=', False)]}"
-							widget="many2many" />
-					</sheet>
-				</form>
-			</field>
-		</record>
-		<record id="view_tree_hr_leave_type" model="ir.ui.view">
-			<field name="name">hr.leave.type.tree</field>
-			<field name="model">hr.leave.type</field>
-			<field name="arch" type="xml">
-				<tree string="أنواع الأجازات">
-					<field name="name" />
-				</tree>
-			</field>
-		</record>
-		<record id="action_hr_leave_type" model="ir.actions.act_window">
-			<field name="name">أنواع الأجازات</field>
-			<field name="res_model">hr.leave.type</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
-			<field name="help" type="html">
-				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
-			</field>
-		</record>
-		<menuitem id="menu_hr_leave_type" action="action_hr_leave_type"
-			parent="menu_hr_leave_type_root" name="أنواع الأجازات" />
+		
+		
 
 	</data>
 </openerp>

@@ -14,34 +14,147 @@
 				</tree>
 			</field>
 		</record>
-		
+
 		<record model="ir.ui.view" id="hr_holidays_form">
 			<field name="name">hr.holidays.form</field>
 			<field name="model">hr.holidays</field>
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="الطلبات">
-					<header>
-						 
-						<field name="state" widget="statusbar"/>
+
+					<field name="edit_employee" invisible="1" />
+					<field name="is_direct_manager" invisible="1" />
+					<field name="is_current_user" invisible="1" />
+					<field name="is_extension" invisible="1" />
+					<field name="is_extended" invisible="1" />
+					<field name="is_cancelled" invisible="1" />
+					<field name="is_started" invisible="1" />
+					<header name="main">
+						<button name="button_dm" string="إرسال طلب" type="object"
+							attrs="{'invisible':['|',('state','!=','draft'),('is_current_user','=',False)]}"
+							icon="fa-paper-plane" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="button_hrm" string="موافق" type="object"
+							states="audit" groups="slnee_hr.group_hr" icon="fa-check"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="button_done" string="موافق" type="object"
+							states="hrm" groups="slnee_hr.group_hrm" icon="fa-check"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="214" string="رفض" type="action" states="audit"
+							groups="slnee_hr.group_hr" icon="fa-times" class="oe_inline oe_stat_button" />
+						<button name="214" string="رفض" type="action" states="hrm"
+							groups="slnee_hr.group_hrm" icon="fa-times" class="oe_inline oe_stat_button" />
+						<button name="button_extend" string="تمديد الإجازة" type="object"
+							attrs="{'invisible':['|','|','|','|','|',('state','!=','done'),('is_current_user','=',False),('is_extended','=',True),('is_extension','=',True),('is_cancelled','=',True),('leave_type_id','!=',1)]}"
+							icon="fa-check" class="oe_inline oe_stat_button" />
+						<button name="button_cancel" string="إلغاء الإجازة" type="object"
+							attrs="{'invisible':['|','|','|',('state','!=','done'),('is_current_user','=',False),('is_cancelled','=',True),('is_started','=',True)]}"
+							icon="fa-times-circle-o" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="button_draft" string="إعادة فتح الطلب" type="object"
+							attrs="{'invisible':['|',('state','!=','refuse'),('is_current_user','=',False)]}"
+							icon="fa-check" class="oe_inline oe_stat_button" />
+						<field name="state" widget="statusbar" statusbar_visible="draft,dm,audit,hrm,done" />
+					</header>
+					<header name="dm" attrs="{'invisible':[('state','!=','dm')]}">
+						<button name="button_state_approve" string="موافق" type="object"
+							attrs="{'invisible':['|',('state','!=','dm'),('is_direct_manager','=',False)]}"
+							icon="fa-paper-plane" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="214" string="رفض" type="action"
+							attrs="{'invisible':['|',('state','!=','dm'),('is_direct_manager','=',False)]}"
+							icon="fa-times" class="oe_inline oe_stat_button" />
+						<field name="state_dm" widget="statusbar" statusbar_visible="0" />
 					</header>
 					<sheet>
+						<label for="name" class="oe_edit_only" />
+						<h1>
+							<field name="name" readonly="1" />
+						</h1>
+						<group string="صاحب الطلب">
+							<field name="date" readonly="1" />
+							<field name="employee_id" required="1"
+								attrs="{'readonly':['|',('edit_employee','=',False),('state','!=','draft')]}" />
+						</group>
+						<group string="معلومات الإجازة" col="4">
+							<field name="extended_leave_id" readonly="1"
+								attrs="{'invisible':[('is_extension','=',False)]}" />
+							<field name="alternative_employee_id" domain="[('id','!=',employee_id)]"
+								attrs="{'readonly':['|','|',('is_current_user','=',True),('is_direct_manager','=',False),('state','!=','dm')],'invisible':['|',('state','=','draft'),('leave_type_id','!=',1)]}" />
+							<field name="leave_type_id" widget="selection" required="1"
+								attrs="{'readonly':['|',('state','!=','draft'),('is_extension','=',True)]}" />
+							<field name="leave_type_stock" attrs="{'invisible':[('state','=','done')]}" />
+							<field name="relationship"
+								attrs="{'invisible':[('leave_type_id','!=',17)],'required':[('leave_type_id','=',17)]}" />
+							<field name="salary_calc_type" groups="slnee_hr.group_hr,slnee_hr.group_hrm" />
+						</group>
+						<group col="4">
+							<field name="date_from" required="1"
+								attrs="{'readonly':['|',('state','!=','draft'),('is_extension','=',True)]}" />
+							<field name="date_to" required="1"
+								attrs="{'readonly':[('state','!=','draft')]}" />
+							<field name="duration" />
+						</group>
 						<group>
-							<group string="بيانات الموظف">
-								<field name="name" />
+							<field name="notes" attrs="{'readonly':[('state','!=','draft')]}" />
+						</group>
+						<group string="معلومات إضافية" col="1"
+							attrs="{'invisible':[('leave_type_id','in',[1,2,16])]}">
+							<group>
+								<field name="justification_file" filename="justification_file_fname"
+									attrs="{'readonly':[('state','!=','draft')],'invisible':[('leave_type_id','in',[1,2,3,11,15,16])],'required':[('leave_type_id','not in',[1,2,3,10,11,15,16]),('state','=','draft')]}" />
+								<field name="justification_file_fname" invisible="1" />
 							</group>
-
+							<group attrs="{'invisible':[('leave_type_id','not in',[3,11,15])]}">
+								<field name="hospital"
+									attrs="{'readonly':[('state','!=','draft')],'required':[('leave_type_id','in',[3,11,15])]}" />
+								<field name="hospital_report_no" attrs="{'readonly':[('state','!=','draft')]}" />
+								<field name="hospital_report_date" attrs="{'readonly':[('state','!=','draft')]}" />
+								<field name="hospital_attach" filename="hospital_attach_fname"
+									attrs="{'readonly':[('state','!=','draft')]}" />
+								<field name="hospital_attach_fname" invisible="1" />
+							</group>
+							<group attrs="{'invisible':[('leave_type_id','!=',9)]}">
+								<field name="aid_letter"
+									attrs="{'readonly':[('state','!=','draft')],'required':[('leave_type_id','=',9),('state','=','draft')]}" />
+								<field name="aid_letter_no"
+									attrs="{'readonly':[('state','!=','draft')],'required':[('leave_type_id','=',9),('state','=','draft')]}" />
+								<field name="aid_letter_date"
+									attrs="{'readonly':[('state','!=','draft')],'required':[('leave_type_id','=',9),('state','=','draft')]}" />
+							</group>
+							<group attrs="{'invisible':[('leave_type_id','!=',8)]}">
+								<field name="sport_letter"
+									attrs="{'readonly':[('state','!=','draft')],'required':[('leave_type_id','=',8),('state','=','draft')]}" />
+								<field name="sport_letter_no"
+									attrs="{'readonly':[('state','!=','draft')],'required':[('leave_type_id','=',8),('state','=','draft')]}" />
+								<field name="sport_letter_date"
+									attrs="{'readonly':[('state','!=','draft')],'required':[('leave_type_id','=',8),('state','=','draft')]}" />
+								<field name="sport_reason"
+									attrs="{'readonly':[('state','!=','draft')],'required':[('leave_type_id','=',8),('state','=','draft')]}" />
+							</group>
+							<group attrs="{'invisible':[('leave_type_id','!=',5)]}">
+								<field name="edu_subject"
+									attrs="{'readonly':[('state','!=','draft')],'required':[('leave_type_id','=',5),('state','=','draft')]}" />
+								<field name="edu_specialty"
+									attrs="{'readonly':[('state','!=','draft')],'required':[('leave_type_id','=',5),('state','=','draft')]}" />
+							</group>
 						</group>
 						<group>
-							<field name="report_note" placeholder="ملاحظات ..."
-								colspan="4" />
+							<field name="extension_leave_ids" readonly="1"
+								attrs="{'invisible':['|','|',('extended_leave_id','!=',False),('leave_type_id','!=',1),('extension_leave_ids','=',[])]}" />
+							<field name="leave_cancellation_ids" readonly="1"
+								attrs="{'invisible':[('leave_cancellation_ids','=',[])]}" />
 						</group>
+						<button name="187" string="طباعة القرار" type="action"
+							states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+						<button name="205" string="طباعة نموذج تحويل مستوصف" type="action"
+							attrs="{'invisible':['|',('state','!=','draft'),('leave_type_id','!=',3)]}"
+							icon="fa-print" class="oe_inline oe_stat_button" />
+						<div>
+							<field name="message_ids" widget="mail_thread" readonly="1" />
+						</div>
 					</sheet>
-					<div class="oe_chatter">
-						<field name="message_follower_ids" widget="mail_followers"
-							groups="base.group_user" />
-						<field name="message_ids" widget="mail_thread" />
-					</div>
+
 				</form>
 			</field>
 		</record>
@@ -52,6 +165,95 @@
 			<field name="view_mode">tree,form</field>
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
-		<menuitem id="hr_holidays_menu" name="الطلبات" sequence="5" parent="menu_hr_leave_root" action="action_hr_holidays" />
+		<menuitem id="hr_holidays_menu" name="الطلبات" sequence="5"
+			parent="menu_hr_leave_root" action="action_hr_holidays" />
+
+
+
+
+		<!-- hr holidays status inherit form -->
+		<menuitem id="menu_hr_leave_type_root" parent="hr_root_configuration"
+			name="اجازات" sequence="8" />
+
+		<record id="view_form_hr_leave_type" model="ir.ui.view">
+			<field name="name">hr.holidays.status.form</field>
+			<field name="model">hr.holidays.status</field>
+			<field name="inherit_id" ref="hr_holidays.edit_holiday_status_form" />
+			<field name="arch" type="xml">
+				<xpath expr="/form" position='replace'>
+					<form string="نوع الأجازة">
+						<sheet>
+							<group>
+								<field name="name" required="1" />
+							</group>
+							<group>
+								<field name="entitlements" string="أنواع  الاستحقاقات">
+									<tree editable="bottom">
+										<field name="entitlment_category" required="1" />
+										<field name="leave_stock_default" />
+										<field name="conditionnal" />
+										<field name="periode" />
+									</tree>
+								</field>
+							</group>
+							<group>
+								<field name="percentages">
+									<tree editable="bottom" string="نسب الراتب المحتسبة">
+										<field name="sequence" required="1" />
+										<field name="periode" required="1" />
+										<field name="salary_proportion" required="1" />
+									</tree>
+								</field>
+							</group>
+							<group>
+								<group>
+									<field name="minimum" />
+									<field name="maximum" />
+									<field name="color_name" />
+								</group>
+
+							</group>
+							<group>
+								<field name="limit" />
+								<field name="active" />
+								<field name="deductible_normal_leave" />
+								<field name="deductible_duration_service" />
+								<field name="educ_lvl_req" />
+								<field name="education_levels" attrs="{'invisible':[('educ_lvl_req', '=', False)]}"
+									widget="many2many" />
+								<field name="evaluation_condition" />
+								<field name="assessments_required"
+									attrs="{'invisible':[('evaluation_condition', '=', False)]}"
+									widget="many2many" />
+							</group>
+
+
+
+						</sheet>
+					</form>
+				</xpath>
+			</field>
+		</record>
+		<record id="view_tree_hr_leave_type" model="ir.ui.view">
+			<field name="name">hr.holidays.status.tree</field>
+			<field name="model">hr.holidays.status</field>
+			<field name="arch" type="xml">
+				<tree string="أنواع الأجازات">
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="action_hr_leave_type" model="ir.actions.act_window">
+			<field name="name">أنواع الأجازات</field>
+			<field name="res_model">hr.holidays.status</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+		<menuitem id="menu_hr_leave_type" action="action_hr_leave_type"
+			parent="menu_hr_leave_type_root" name="أنواع الأجازات" />
 	</data>
 </openerp>

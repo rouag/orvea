@@ -8,7 +8,7 @@
     'description':
         """
         """,
-    'depends': ['hr','hr_holidays','odoo_rtl','web_readonly_bypass'],
+    'depends': ['hr', 'hr_holidays', 'odoo_rtl', 'web_readonly_bypass'],
     'data': [
         'view/hr_menu.xml',
         
@@ -35,7 +35,6 @@
         'view/hr.xml',
         'view/hr_job.xml',
         'view/hr_decision_appoint.xml',
-        'view/hr_holidays.xml',
         'view/hr_promotion.xml',
         'view/salary_grid.xml',
         'view/hr_training.xml',
@@ -43,8 +42,8 @@
         'view/res_partner.xml',
         'view/judicial_precedent.xml',
         'view/recruiter.xml',
-        'view/hr_leave_view.xml',
-        'view/hr_leave_cancellation_view.xml',
+        'view/hr_holidays.xml',
+        'view/hr_holidays_cancellation_view.xml',
         'view/hr_overtime_view.xml',
         'view/hr_eid_view.xml',
         'view/hr_employee_education_level.xml',

@@ -26,7 +26,7 @@ class HrLeave(models.Model):
     date_from = fields.Date(string=u'التاريخ من', default=fields.Datetime.now())
     date_to = fields.Date(string=u'التاريخ الى', default=fields.Datetime.now())
     duration = fields.Integer(string=u'الأيام', compute='_compute_duration')
-    leave_type_id = fields.Many2one('hr.leave.type', string=u'نوع الأجازة', default=lambda self: self.env.ref('smart_hr.data_hr_leave_type_01'), advanced_search=True)
+    leave_type_id = fields.Many2one('hr.holidays.status', string=u'نوع الأجازة', default=lambda self: self.env.ref('smart_hr.data_hr_leave_type_01'), advanced_search=True)
     leave_type_stock = fields.Float(string=u'رصيد الاجازة', compute='_compute_leave_type_stock')
     # Extension
     is_extension = fields.Boolean(string=u'تمديد إجازة')
@@ -592,7 +592,7 @@ class HrLeave(models.Model):
         self.env['report'].get_pdf(self, 'smart_hr.hr_leave_report')
 
 class HrLeaveType(models.Model):
-    _name = 'hr.leave.type'
+    _name = 'hr.holidays.status'
     _description = 'Leave Type'
 
     name = fields.Char(string=u'نوع الاجازة')
@@ -604,7 +604,7 @@ class HrLeaveType(models.Model):
     educ_lvl_req = fields.Boolean(string=u'يطبق شرط المستوى التعليمي')
     evaluation_condition = fields.Boolean(string=u'يطبق شرط تقويم الأداء')
     education_levels = fields.One2many('hr.employee.education.level', 'leave_type', string=u'المستويات التعليمية')
-    entitlements = fields.One2many('hr.leave.type.entitlement', 'leave_type', string=u'أنواع الاستحقاقات')
+    entitlements = fields.One2many('hr.holidays.status.entitlement', 'leave_type', string=u'أنواع الاستحقاقات')
     assessments_required = fields.One2many('hr.assessment.result.config', 'leave_type', string=u'التقييمات المطلوبة')
     
 #     leave_stock_default = fields.Integer(string=u'الرصيد الأفتراضي')
@@ -668,9 +668,9 @@ class HrLeaveType(models.Model):
                 
                 
 class HrLeaveTypeEntitlement(models.Model):
-    _name = 'hr.leave.type.entitlement'
+    _name = 'hr.holidays.status.entitlement'
     _description = u'أنواع الاستحقاقات'
-    entitlment_category = fields.Many2one('hr.leave.type.entitlement.category', string=u'فئة الاستحقاق')
+    entitlment_category = fields.Many2one('hr.holidays.status.entitlement.category', string=u'فئة الاستحقاق')
     leave_stock_default = fields.Integer(string=u'الرصيد')
     conditionnal = fields.Boolean(string=u'مشروط')
     periode = fields.Selection([
@@ -685,12 +685,12 @@ class HrLeaveTypeEntitlement(models.Model):
         (9, u'تسعة سنوات'),
         (10, u'عشرة سنوات'),
         ], string=u'المدة', default=1)
-    leave_type = fields.Many2one('hr.leave.type', string='leave type')
+    leave_type = fields.Many2one('hr.holidays.status', string='leave type')
 #     leave_stock_open = fields.Boolean(string=u'الرصيد مفتوح')
     
     
 class HrleaveTypeEntitlementCategory(models.Model):
-    _name = 'hr.leave.type.entitlement.category'
+    _name = 'hr.holidays.status.entitlement.category'
     _description = u'فئة استحقاق'
     
     name = fields.Char(string=u'الاسم')

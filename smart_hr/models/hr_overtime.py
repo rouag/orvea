@@ -185,7 +185,7 @@ class hr_overtime_line(models.Model):
     @api.constrains('date_from', 'date_to')
     def _check_dates(self):
         # Objects
-        leave_obj = self.env['hr.leave']
+        leave_obj = self.env['hr.holidays']
         dep_obj = self.env['hr.deputation']
         train_obj = self.env['hr.training']
         overtime_obj = self.env['hr.overtime']

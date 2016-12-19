@@ -3,15 +3,15 @@
     <data>
     	
     	
-    	<menuitem id="menu_hr_leave_cancellation_root" parent="menu_hr_leave_root"
+    	<menuitem id="menu_hr_holidays_cancellation_root" parent="menu_hr_leave_root"
 			name="إلغاءات الإجازات" sequence="500" />
 
         <!--
             Leave Cancellation
         -->
-        <record id="view_form_hr_leave_cancellation" model="ir.ui.view">
-            <field name="name">hr.leave.cancellation.form</field>
-            <field name="model">hr.leave.cancellation</field>
+        <record id="view_form_hr_holidays_cancellation" model="ir.ui.view">
+            <field name="name">hr.holidays.cancellation.form</field>
+            <field name="model">hr.holidays.cancellation</field>
             <field name="arch" type="xml">
                 <form string="إلغاء إجازة" create="0">
                     <field name="is_current_user" invisible="1"/>
@@ -39,9 +39,9 @@
             </field>
         </record>
 
-        <record id="view_tree_hr_leave_cancellation" model="ir.ui.view">
-            <field name="name">hr.leave.cancellation.tree</field>
-            <field name="model">hr.leave.cancellation</field>
+        <record id="view_tree_hr_holidays_cancellation" model="ir.ui.view">
+            <field name="name">hr.holidays.cancellation.tree</field>
+            <field name="model">hr.holidays.cancellation</field>
             <field name="arch" type="xml">
                 <tree string="إلغاء إجازات" class="oe_tree_view" create="0" fonts="bold:state in ['draft','done']" row_classes="state-refuse:state=='refuse';state-in-progress:state not in ['draft','refuse','done'];">
                     <field name="name"/>
@@ -54,9 +54,9 @@
         </record>
 
         <!-- Leave Cancellation Search-->
-        <record id="view_search_hr_leave_cancellation" model="ir.ui.view">
-            <field name="name">hr.leave.cancellation.search</field>
-            <field name="model">hr.leave.cancellation</field>
+        <record id="view_search_hr_holidays_cancellation" model="ir.ui.view">
+            <field name="name">hr.holidays.cancellation.search</field>
+            <field name="model">hr.holidays.cancellation</field>
             <field name="arch" type="xml">
                 <search string="إلغاء إجازات">
                     <field name="name"/>
@@ -76,10 +76,10 @@
         </record>
 
         <!-- My Leave Cancellation -->
-        <record id="action_hr_leave_cancellation_mine" model="ir.actions.act_window">
+        <record id="action_hr_holidays_cancellation_mine" model="ir.actions.act_window">
             <field name="name">إلغاء إجازاتي</field>
-            <field name="res_model">hr.leave.cancellation</field>
-            <field name="search_view_id" ref="view_search_hr_leave_cancellation"/>
+            <field name="res_model">hr.holidays.cancellation</field>
+            <field name="search_view_id" ref="view_search_hr_holidays_cancellation"/>
             <field name="domain">[('leave_id.employee_id.user_id', '=', uid)]</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
@@ -88,16 +88,16 @@
             </field>
         </record>
         <menuitem id="menu_hr_my_leave_cancellation"
-                  action="action_hr_leave_cancellation_mine"
-                  parent="menu_hr_leave_cancellation_root"
+                  action="action_hr_holidays_cancellation_mine"
+                  parent="menu_hr_holidays_cancellation_root"
                   sequence="1"
                   name="إلغاء إجازاتي"/>
 
         <!-- Employees' Leave Cancellation -->
-        <record id="action_hr_leave_cancellation_employees" model="ir.actions.act_window">
+        <record id="action_hr_holidays_cancellation_employees" model="ir.actions.act_window">
             <field name="name">إلغاء إجازات الموظفين</field>
-            <field name="res_model">hr.leave.cancellation</field>
-            <field name="search_view_id" ref="view_search_hr_leave_cancellation"/>
+            <field name="res_model">hr.holidays.cancellation</field>
+            <field name="search_view_id" ref="view_search_hr_holidays_cancellation"/>
             <field name="domain">[('leave_id.employee_id.user_id', '!=', uid),('state','!=','draft')]</field>
             <field name="context">{'search_default_state_dm':1}</field>
             <field name="view_type">form</field>
@@ -106,18 +106,18 @@
               	<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
             </field>
         </record>
-        <menuitem id="menu_hr_leave_cancellation_employees"
-                  action="action_hr_leave_cancellation_employees"
-                  parent="menu_hr_leave_cancellation_root"
+        <menuitem id="menu_hr_holidays_cancellation_employees"
+                  action="action_hr_holidays_cancellation_employees"
+                  parent="menu_hr_holidays_cancellation_root"
                   sequence="2"
                   groups="smart_hr.group_dm,smart_hr.group_hr"
                   name="إلغاء إجازات الموظفين"/>
 
         <!-- HR Audit -->
-        <record id="action_hr_leave_cancellation_audit" model="ir.actions.act_window">
+        <record id="action_hr_holidays_cancellation_audit" model="ir.actions.act_window">
             <field name="name">في إنتظار الإعتماد</field>
-            <field name="res_model">hr.leave.cancellation</field>
-            <field name="search_view_id" ref="view_search_hr_leave_cancellation"/>
+            <field name="res_model">hr.holidays.cancellation</field>
+            <field name="search_view_id" ref="view_search_hr_holidays_cancellation"/>
             <field name="domain">[('state','=','audit')]</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
@@ -125,18 +125,18 @@
               	<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
             </field>
         </record>
-        <menuitem id="menu_hr_leave_cancellation_audit"
-                  action="action_hr_leave_cancellation_audit"
-                  parent="menu_hr_leave_cancellation_root"
+        <menuitem id="menu_hr_holidays_cancellation_audit"
+                  action="action_hr_holidays_cancellation_audit"
+                  parent="menu_hr_holidays_cancellation_root"
                   sequence="3"
                   groups="smart_hr.group_hr"
                   name="فى انتظار الإعتماد"/>
 
         <!-- Leave Cancellation Archive -->
-        <record id="action_hr_leave_cancellation_archive" model="ir.actions.act_window">
+        <record id="action_hr_holidays_cancellation_archive" model="ir.actions.act_window">
             <field name="name">أرشيف إلغاء الإجازات</field>
-            <field name="res_model">hr.leave.cancellation</field>
-            <field name="search_view_id" ref="view_search_hr_leave_cancellation"/>
+            <field name="res_model">hr.holidays.cancellation</field>
+            <field name="search_view_id" ref="view_search_hr_holidays_cancellation"/>
             <field name="domain">[('state','!=','draft')]</field>
             <field name="context">{'search_default_state_done':1}</field>
             <field name="view_type">form</field>
@@ -145,9 +145,9 @@
               	<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
             </field>
         </record>
-        <menuitem id="menu_hr_leave_cancellation_archive"
-                  action="action_hr_leave_cancellation_archive"
-                  parent="menu_hr_leave_cancellation_root"
+        <menuitem id="menu_hr_holidays_cancellation_archive"
+                  action="action_hr_holidays_cancellation_archive"
+                  parent="menu_hr_holidays_cancellation_root"
                   sequence="4"
                   groups="smart_hr.group_hr"
                   name="أرشيف إلغاء الإجازات"/>

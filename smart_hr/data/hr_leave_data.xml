@@ -5,92 +5,92 @@
         <!--
             Leave Types
         -->
-        <record id="data_hr_leave_type_01" model="hr.leave.type">
+        <record id="data_hr_leave_type_01" model="hr.holidays.status">
             <field name="name">عادية</field>
             <field name="leave_stock_default">36</field>
             <field name="leave_stock_open" eval="False"/>
         </record>
-        <record id="data_hr_leave_type_02" model="hr.leave.type">
+        <record id="data_hr_leave_type_02" model="hr.holidays.status">
             <field name="name">اضطرارية</field>
             <field name="leave_stock_default">5</field>
             <field name="leave_stock_open" eval="False"/>
         </record>
-        <record id="data_hr_leave_type_03" model="hr.leave.type">
+        <record id="data_hr_leave_type_03" model="hr.holidays.status">
             <field name="name">مرضية</field>
             <field name="leave_stock_default">0</field>
             <field name="leave_stock_open" eval="True"/>
         </record>
-        <record id="data_hr_leave_type_04" model="hr.leave.type">
+        <record id="data_hr_leave_type_04" model="hr.holidays.status">
             <field name="name">إستثنائية</field>
             <field name="leave_stock_default">0</field>
             <field name="leave_stock_open" eval="True"/>
         </record>
-        <record id="data_hr_leave_type_05" model="hr.leave.type">
+        <record id="data_hr_leave_type_05" model="hr.holidays.status">
             <field name="name">دراسية</field>
             <field name="leave_stock_default">0</field>
             <field name="leave_stock_open" eval="True"/>
         </record>
-        <record id="data_hr_leave_type_06" model="hr.leave.type">
+        <record id="data_hr_leave_type_06" model="hr.holidays.status">
             <field name="name">إمتحان</field>
             <field name="leave_stock_default">0</field>
             <field name="leave_stock_open" eval="True"/>
         </record>
-        <record id="data_hr_leave_type_07" model="hr.leave.type">
+        <record id="data_hr_leave_type_07" model="hr.holidays.status">
             <field name="name">أدباء</field>
             <field name="leave_stock_default">0</field>
             <field name="leave_stock_open" eval="True"/>
         </record>
-        <record id="data_hr_leave_type_08" model="hr.leave.type">
+        <record id="data_hr_leave_type_08" model="hr.holidays.status">
             <field name="name">ثقافة - رياضة - إجتماعية</field>
             <field name="leave_stock_default">0</field>
             <field name="leave_stock_open" eval="True"/>
         </record>
-        <record id="data_hr_leave_type_09" model="hr.leave.type">
+        <record id="data_hr_leave_type_09" model="hr.holidays.status">
             <field name="name">مشاركة في أعمال الإغاثة</field>
             <field name="leave_stock_default">0</field>
             <field name="leave_stock_open" eval="True"/>
         </record>
-        <record id="data_hr_leave_type_10" model="hr.leave.type">
+        <record id="data_hr_leave_type_10" model="hr.holidays.status">
             <field name="name">بديلة</field>
             <field name="leave_stock_default">0</field>
             <field name="leave_stock_open" eval="True"/>
         </record>
-        <record id="data_hr_leave_type_11" model="hr.leave.type">
+        <record id="data_hr_leave_type_11" model="hr.holidays.status">
             <field name="name">مرافقة</field>
             <field name="leave_stock_default">0</field>
             <field name="leave_stock_open" eval="True"/>
         </record>
-        <record id="data_hr_leave_type_12" model="hr.leave.type">
+        <record id="data_hr_leave_type_12" model="hr.holidays.status">
             <field name="name">وضع</field>
             <field name="leave_stock_default">0</field>
             <field name="leave_stock_open" eval="True"/>
         </record>
-        <record id="data_hr_leave_type_13" model="hr.leave.type">
+        <record id="data_hr_leave_type_13" model="hr.holidays.status">
             <field name="name">عدة الوفاة</field>
             <field name="leave_stock_default">0</field>
             <field name="leave_stock_open" eval="True"/>
         </record>
-        <record id="data_hr_leave_type_14" model="hr.leave.type">
+        <record id="data_hr_leave_type_14" model="hr.holidays.status">
             <field name="name">أمومة</field>
             <field name="leave_stock_default">0</field>
             <field name="leave_stock_open" eval="True"/>
         </record>
-        <record id="data_hr_leave_type_15" model="hr.leave.type">
+        <record id="data_hr_leave_type_15" model="hr.holidays.status">
             <field name="name">غسيل كلوي</field>
             <field name="leave_stock_default">0</field>
             <field name="leave_stock_open" eval="True"/>
         </record>
-        <record id="data_hr_leave_type_16" model="hr.leave.type">
+        <record id="data_hr_leave_type_16" model="hr.holidays.status">
             <field name="name">إفادة</field>
             <field name="leave_stock_default">0</field>
             <field name="leave_stock_open" eval="True"/>
         </record>
-        <record id="data_hr_leave_type_17" model="hr.leave.type">
+        <record id="data_hr_leave_type_17" model="hr.holidays.status">
             <field name="name">وفاة</field>
             <field name="leave_stock_default">0</field>
             <field name="leave_stock_open" eval="True"/>
         </record>
-        <record id="data_hr_leave_type_18" model="hr.leave.type">
+        <record id="data_hr_leave_type_18" model="hr.holidays.status">
             <field name="name">مولود</field>
             <field name="leave_stock_default">0</field>
             <field name="leave_stock_open" eval="True"/>

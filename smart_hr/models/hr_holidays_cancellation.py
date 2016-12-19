@@ -5,15 +5,15 @@ from openerp.exceptions import ValidationError
 from openerp.tools import SUPERUSER_ID
 from lxml import etree
 
-class hr_leave_cancellation(models.Model):
-    _name = 'hr.leave.cancellation'
-    _description = 'Leave Cancellation'
+class hrHolidaysCancellation(models.Model):
+    _name = 'hr.holidays.cancellation'
+    _description = 'Holidays Cancellation'
     _inherit = ['mail.thread', 'ir.needaction_mixin']
     _order = 'id desc'
 
     name = fields.Char(string=u'رقم القرار', advanced_search=True)
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now())
-    leave_id = fields.Many2one('hr.leave', string=u'الإجازة الملغاة', advanced_search=True)
+    leave_id = fields.Many2one('hr.holidays', string=u'الإجازة الملغاة', advanced_search=True)
     employee_id = fields.Many2one('hr.employee', related='leave_id.employee_id', string=u'الموظف', advanced_search=True)
     is_current_user = fields.Boolean(string='Is Current User', related='leave_id.is_current_user')
     state = fields.Selection([
@@ -25,9 +25,9 @@ class hr_leave_cancellation(models.Model):
 
     @api.model
     def create(self, vals):
-        res = super(hr_leave_cancellation, self).create(vals)
+        res = super(hrHolidaysCancellation, self).create(vals)
         vals = {}
-        vals['name'] = self.env['ir.sequence'].get('hr.leave.cancellation.seq')
+        vals['name'] = self.env['ir.sequence'].get('hr.holidays.cancellation.seq')
         res.write(vals)
         return res
 
@@ -36,7 +36,7 @@ class hr_leave_cancellation(models.Model):
         for rec in self:
             if rec.state != 'draft' and self._uid != SUPERUSER_ID:
                 raise ValidationError(u'لا يمكن حذف طلب إلغاء الإجازة فى هذه المرحلة يرجى مراجعة مدير النظام')
-        return super(hr_leave_cancellation, self).unlink()
+        return super(hrHolidaysCancellation, self).unlink()
 
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
@@ -48,7 +48,7 @@ class hr_leave_cancellation(models.Model):
         user = user_obj.browse(uid)
         emp_ids = employee_obj.search(['|', ('parent_id.user_id', 'child_of', uid), ('user_id', '=', uid)])
         #
-        res = super(hr_leave_cancellation, self).fields_view_get(view_id=view_id, view_type=view_type,  toolbar=toolbar, submenu=submenu)
+        res = super(hrHolidaysCancellation, self).fields_view_get(view_id=view_id, view_type=view_type,  toolbar=toolbar, submenu=submenu)
         if view_type == 'form':
             # Make fields readonly for all employees except admin
             arch = etree.XML(res['arch'])

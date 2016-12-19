@@ -63,4 +63,4 @@ class hrAssessmentResultConfig(models.Model):
    
     name = fields.Char(string = u'النتيجة', advanced_search=True)
     
-    leave_type = fields.Many2one('hr.leave.type', string='leave type')
+    leave_type = fields.Many2one('hr.holidays.status', string='leave type')
