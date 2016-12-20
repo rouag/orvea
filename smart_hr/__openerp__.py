@@ -17,14 +17,14 @@
         
         'data/sequences.xml',
         'data/configurations.xml',
-        'data/hr_leave_data.xml',
+        'data/hr_holidays_data.xml',
         'data/schedulers.xml',
         
         
         'views/report_salary_grid.xml',
         'views/report_medical_examination.xml',
         'views/report_order_enquiry.xml',
-        'views/hr_leave_report.xml',
+        'views/hr_holidays_report.xml',
         'views/report.xml',
         'views/templates.xml',
         'views/layout.xml',
@@ -45,7 +45,6 @@
         'view/hr_holidays.xml',
         'view/hr_holidays_cancellation_view.xml',
         'view/hr_overtime_view.xml',
-        'view/hr_eid_view.xml',
         'view/hr_employee_education_level.xml',
         'view/hr_assessment_view.xml',
         'view/hr_assessment_point_view.xml',

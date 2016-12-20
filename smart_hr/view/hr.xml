@@ -58,6 +58,7 @@
 										<field name="birthday_location" />
 										<field name="identification_id" groups="base.group_hr_user" />
 										<field name="passport_id" groups="base.group_hr_user" />
+										<field name="country_id" />
 									</group>
 
 									<group string="بيانات التواصل">
@@ -71,6 +72,7 @@
 										<field name="department_id" on_change="onchange_department_id(department_id)" />
 										<field name="job_id" />
 										<field name="parent_id" />
+										<field name="user_id" />
 									</group>
 
 									<group string="بيانات البنك">
