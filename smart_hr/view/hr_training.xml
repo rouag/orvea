@@ -3,7 +3,21 @@
 	<data>
 
 		<!-- الدورات التدربية -->
-
+		<record id="view_search_hr_training" model="ir.ui.view">
+			<field name="name">hr.training.search</field>
+			<field name="model">hr.training</field>
+			<field name="arch" type="xml">
+				<search string="الدورات التدربية">
+					<field name="number" />
+					<field name="date" />
+					<separator />
+					<group expand="0" string="Group By">
+						<filter string="تاريخ من" name="date_from" />
+						<filter string="إلى" name="date_to" />
+					</group>
+				</search>
+			</field>
+		</record>
 		<record model="ir.ui.view" id="hr_training_tree">
 			<field name="name">hr.training.tree</field>
 			<field name="model">hr.training</field>
@@ -20,6 +34,7 @@
 					<field name="place" />
 					<field name="number_place" />
 					<field name="number_participant" />
+						<field name="state" />
 				</tree>
 			</field>
 		</record>
@@ -30,39 +45,45 @@
 			<field name="arch" type="xml">
 				<form string="الدورات التدربية">
 					<header>
-						<button name="action_candidat" string="فتح الترشحات" type="object" states="new" />
-						<button name="action_review" string="إنهاء الترشحات" type="object" states="candidat" />
-						<button name="action_confirm" string="إعتماد" type="object" states="review" />
-						<button name="action_done" string="تمت" type="object" states="confirm" />
-						<field name="state" widget="statusbar" statusbar_visible="new,candidat,review,confirm,done" />
+						<button name="action_candidat" string="فتح الترشحات" type="object"
+							states="new" />
+						<button name="action_review" string="إنهاء الترشحات" type="object"
+							states="candidat" />
+						<button name="action_confirm" string="إعتماد" type="object"
+							states="review" />
+						<button name="action_done" string="تمت" type="object"
+							states="confirm" />
+						<field name="state" widget="statusbar"
+							statusbar_visible="new,candidat,review,confirm,done" />
 					</header>
 					<sheet>
-					<group>
 						<group>
-							<field name="name" />
-							<label for="number_of_days" />
-                            <div>
-                                <div>
-                                    <field name="date_from"  class="oe_inline"/>
-                                    <label string="-" class="oe_inline"/>
-                                    <field name="date_to"  class="oe_inline"/>
-                                </div>
-                                <div>
-                                    <field name="number_of_days" class="oe_inline"/> يوم
-                                </div>
-                            </div>
-                            <field name="place" />
+							<group>
+								<field name="name" />
+								<label for="number_of_days" />
+								<div>
+									<div>
+										<field name="date_from" class="oe_inline" />
+										<label string="-" class="oe_inline" />
+										<field name="date_to" class="oe_inline" />
+									</div>
+									<div>
+										<field name="number_of_days" class="oe_inline" />
+										يوم
+									</div>
+								</div>
+								<field name="place" />
+							</group>
+
+							<group>
+								<field name="number" />
+								<field name="date" />
+								<field name="department" />
+								<field name="number_place" />
+								<field name="number_participant" />
+							</group>
 						</group>
-						
-						<group>
-							<field name="number" />
-							<field name="date" />
-							<field name="department" />
-							<field name="number_place" />
-							<field name="number_participant" />
-						</group>
-						</group>
-                            
+
 						<group string="المترشحين">
 							<field name="line_ids" string="المترشحين" nolabel="1">
 								<tree editable="bottom">
@@ -105,7 +126,7 @@
 			<field name="view_id" ref="hr_training_form" />
 			<field name="act_window_id" ref="action_hr_training_open" />
 		</record>
-		<menuitem id="hr_training_open_menu" name="الدورات التدربيةالمفتوحة"
+		<menuitem id="hr_training_open_menu" name="الدورات التدربيةالمفتوحة" groups="smart_hr.group_department_training"
 			sequence="10" parent="hr_root_training" action="action_hr_training_open" />
 
 		<!-- الترشيحات -->
@@ -134,13 +155,17 @@
 			<field name="arch" type="xml">
 				<form string="الترشيحات">
 					<header>
-						<button name="action_waiting" string="طلب" type="object"
+						<button name="action_waiting" string=" ارسال طلب" type="object"
 							states="new" />
-						<button name="action_done" string="في إنتظار الإعتماد"
+						<button name="action_cancel"  string="في إنتظار الإعتماد"
 							type="object" states="waiting" />
+							
+							<button name="action_done" string="رفض" type="object"
+							states="new" />
+							
 						<button name="action_refuse" string="اعتمدت" type="object"
-							states="waiting" />
-						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
+							states="done" />
+						<field name="state" widget="statusbar" statusbar_visible="new,waiting,cancel,done" />
 					</header>
 					<sheet>
 
@@ -168,7 +193,7 @@
 			<field name="view_mode">tree,form</field>
 			<field name="domain">[('state','=','confirm')]</field>
 		</record>
-		<menuitem id="hr_training_candidat_menu" name="الترشيحات"
+		<menuitem id="hr_training_candidat_menu" name="الترشيحات" groups="smart_hr.group_department_training"
 			sequence="15" parent="hr_root_training" action="action_hr_candidates_candidat" />
 
 		<!-- الدورات التدربية المنتهية -->

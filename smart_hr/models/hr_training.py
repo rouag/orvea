@@ -18,7 +18,7 @@ class HrTraining(models.Model):
     def _compute_info(self):
         self.number_participant = len(self.line_ids)
         
-    name=fields.Char(string=' الإسم',required=1,states={'new': [('readonly', 0)]})
+    name=fields.Char(string=' المسمى',required=1,states={'new': [('readonly', 0)]})
     number=fields.Char(string='رقم القرار',required=1,states={'new': [('readonly', 0)]})
     date=fields.Date(string=' تاريخ القرار',required=1,states={'new': [('readonly', 0)]})
     date_from=fields.Date(string='تاريخ من',required=1,states={'new': [('readonly', 0)]})
@@ -87,6 +87,7 @@ class HrTraining(models.Model):
 class HrCandidates(models.Model):
     _name = 'hr.candidates'  
     _description=u'المترشحين'
+    _rec_name= 'employee_id'  
     
     employee_id=fields.Many2one('hr.employee',string=' إسم الموظف')
     number = fields.Char(related='employee_id.number', store=True, readonly=True,string=' الرقم الوظيفي')
@@ -96,7 +97,7 @@ class HrCandidates(models.Model):
     date_from = fields.Date(related='training_id.date_from', store=True, readonly=True)
     date_to = fields.Date(related='training_id.date_to', store=True, readonly=True)
     department = fields.Char(related='training_id.department', store=True, readonly=True)
-    state= fields.Selection([('new','طلب'),('waiting','في إنتظار الإعتماد'),('done','اعتمدت')], readonly=1, default='new',) 
+    state= fields.Selection(string=' الحالة',[('new',' ارسال طلب'),('waiting','في إنتظار الإعتماد'),('cancel','رفض'),('done','اعتمدت')], readonly=1, default='new',) 
     
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
@@ -115,11 +116,12 @@ class HrCandidates(models.Model):
     @api.one
     def action_waiting(self):
         self.state = 'waiting' 
-         
+    @api.one
+    def action_cancel(self):
+        self.state = 'cancel' 
     @api.one
     def action_done(self):
         self.state = 'done'  
-        
     @api.one
     def action_refuse(self):
         self.state = 'new'     
