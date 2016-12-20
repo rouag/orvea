@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data noupdate="0">
-		<record id="group_deputed_employee" model="res.groups">
+		<record id="group_employee" model="res.groups">
 			<field name="category_id" ref="base.module_category_human_resources" />
 			<field name="name">موظف</field>
 			<field name="implied_ids" eval="[(4, ref('base.group_user'))]" />

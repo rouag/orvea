@@ -10,13 +10,13 @@ class HrHolidays(models.Model):
     _description = 'hr holidays Request'
     _order = 'id desc'
 
-    name = fields.Char(string=u'رقم القرار', advanced_search=True)
-    date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now())
-    employee_id = fields.Many2one('hr.employee', string=u'الموظف', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), advanced_search=True)
-    date_from = fields.Date(string=u'التاريخ من', default=fields.Datetime.now())
-    date_to = fields.Date(string=u'التاريخ الى', default=fields.Datetime.now())
-    duration = fields.Integer(string=u'الأيام', compute='_compute_duration')
-    holiday_status_id = fields.Many2one('hr.holidays.status', string=u'نوع الأجازة', default=lambda self: self.env.ref('smart_hr.data_hr_leave_type_01'), advanced_search=True)
+    name = fields.Char(string = u'رقم القرار', advanced_search = True)
+    date = fields.Date(string = u'تاريخ الطلب', default = fields.Datetime.now())
+    employee_id = fields.Many2one('hr.employee', string = u'الموظف', default = lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), advanced_search=True)
+    date_from = fields.Date(string = u'التاريخ من', default = fields.Datetime.now())
+    date_to = fields.Date(string = u'التاريخ الى', default = fields.Datetime.now())
+    duration = fields.Integer(string = u'الأيام', compute = '_compute_duration')
+    holiday_status_id = fields.Many2one('hr.holidays.status', string = u'نوع الأجازة', default = lambda self: self.env.ref('smart_hr.data_hr_leave_type_01'), advanced_search=True)
     state = fields.Selection(selection_add=[
         ('draft', u'طلب'),
         ('dm', u'مدير المباشر'),
@@ -27,27 +27,47 @@ class HrHolidays(models.Model):
         ('revision_response', u'تسجيل رد الجهة'),
         ('done', u'اعتمدت'),
         ('refuse', u'رفض'),
-        ('cancel', u'ملغاة')], string=u'حالة', default='draft', advanced_search=True)
-    is_current_user = fields.Boolean(string='Is Current User', compute='_is_current_user')
-    is_direct_manager = fields.Boolean(string='Is Direct Manager', compute='_is_direct_manager')
-    num_outspeech = fields.Char(string=u'رقم الخطاب الصادر')
-    date_outspeech = fields.Date(string=u'تاريخ الخطاب الصادر')
-    num_inspeech = fields.Char(string=u'رقم الخطاب الوارد')
-    date_inspeech = fields.Date(string=u'تاريخ الخطاب الوارد')
-    
-    @api.model
-    def create(self, vals):
-        res = super(HrHolidays, self).create(vals)
-        # Sequence
-        vals = {}
-        vals['state'] = 'draft'
-        vals['name'] = self.env['ir.sequence'].get('hr.holidays.seq')
-        res.write(vals)
-        return res
-    
+        ('cancel', u'ملغاة')], string = u'حالة', default = 'draft', advanced_search=True)
+    is_current_user = fields.Boolean(string = 'Is Current User', compute='_is_current_user')
+    is_direct_manager = fields.Boolean(string = 'Is Direct Manager', compute='_is_direct_manager')
+    is_delayble = fields.Boolean(string = 'Is delaybale', default = False)
+    num_outspeech = fields.Char(string = u'رقم الخطاب الصادر')
+    date_outspeech = fields.Date(string = u'تاريخ الخطاب الصادر')
+    num_inspeech = fields.Char(string = u'رقم الخطاب الوارد')
+    date_inspeech = fields.Date(string = u'تاريخ الخطاب الوارد')
+    holidays_available_stock = fields.Float(string=u'رصيد الاجازة', compute='_compute_holiday_status_available_stock')
+
+
+                    
+    @api.depends('holiday_status_id')
+    def _compute_holiday_status_available_stock(self):
+        for holiday in self:
+            #check if there is entitlements in holiday_status_id
+            if not holiday.holiday_status_id.entitlements:
+                raise ValidationError(u"يجب التحقق من الإستحقاقات في إعدادات نوع الإجازة.")
+            else:
+                #loop under entitlements and get the holiday solde depend on grade of the employee
+                holiday_solde_by_year_number = {}
+                for en in holiday.holiday_status_id.entitlements:
+                    if holiday.employee_id.job_id.grade_id in en.entitlment_category.grades:
+                        holiday_solde_by_year_number = {en.periode : en.holiday_stock_default}
+                        break
+            
+            #Sum of given holidays depend on holiday_status entitlement's periode
+            if holiday_solde_by_year_number.items()[0]:
+                periode = holiday_solde_by_year_number.items()[0][0]
+            #One year
+            if periode == 1:
+                given_holiday_scount = 0
+                for rec in holiday.search([('state', '=', 'done'),('employee_id.id', '=', holiday.employee_id.id), ('holiday_status_id.id', '=', holiday.holiday_status_id.id), ('date_from','<=', date(date.today().year, 12, 31)),('date_from','>=',date(date.today().year, 1, 1))]):
+                    given_holiday_scount += rec.duration 
+                holiday.holidays_available_stock = holiday_solde_by_year_number[1] - given_holiday_scount
+        
+
+                    
     @api.model
     def _check_state_access_right(self, vals):
-        # override this method to be always returning true to avoid check state access right
+        # override this method to be always returning true to avoid checking state access right
         return True
     
     
@@ -71,32 +91,48 @@ class HrHolidays(models.Model):
                     rec.is_direct_manager = True
 
 
+
     @api.depends('date_from', 'date_to')
     def _compute_duration(self):
-        for lv in self:
-            if lv.date_from and lv.date_to:
-                start_date = fields.Date.from_string(lv.date_from)
-                end_date = fields.Date.from_string(lv.date_to)
+        for holiday in self:
+            if holiday.date_from and holiday.date_to:
+                start_date = fields.Date.from_string(holiday.date_from)
+                end_date = fields.Date.from_string(holiday.date_to)
                 duration = (end_date - start_date).days + 1
-                lv.duration = duration
+                holiday.duration = duration
     @api.one
     def send_holiday_request(self):
         user = self.env['res.users'].browse(self._uid)
-        for lv in self:
+        for holiday in self:
             # check if the holiday status is supposed to be confirmed by direct manager
-            if lv.holiday_status_id.direct_director_decision:
-                lv.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"' إلى المدير المباشر")
-                lv.state = 'dm'
+            if holiday.holiday_status_id.direct_director_decision:
+                holiday.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"' إلى المدير المباشر")
+                holiday.state = 'dm'
             else:
-                lv.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"' إلى مرحلة التدقيق")
-                lv.state = 'audit'
+                holiday.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"' إلى مرحلة التدقيق")
+                holiday.state = 'audit'
                 
     @api.one
     def button_accept_dm(self):
         self.state = 'audit'
+    
+    @api.multi
+    def action_delay_holiday(self):
+        context = {};
+        context['holiday_id'] = self.id
+        return {
+              'name': u'حجز الوظيفة',
+              'view_type': 'form',
+              "view_mode": 'form',
+              'res_model': 'hr.delay.holiday',
+              'type': 'ir.actions.act_window',
+              'context': context,
+              'target': 'new',
+              }
+        
     @api.one
-    def button_refuse_dm(self):
-        self.state = 'refuse'
+    def button_delay_dm(self):
+        self.state = 'draft'
         
     @api.one
     def button_accept_audit(self):
@@ -118,8 +154,8 @@ class HrHolidays(models.Model):
             self.state = 'external_audit'
             
     @api.one
-    def button_refuse_hrm(self):
-        self.state = 'audit'
+    def button_delay_hrm(self):
+        self.state = 'dm'
         
     @api.one
     def button_accept_external_audit(self):
@@ -144,7 +180,12 @@ class HrHolidays(models.Model):
     @api.one
     def button_refuse_revision_response(self):
         self.state = 'refuse'
-            
+    
+    @api.onchange('holiday_status_id')
+    def onchange_holiday_status_id(self):
+        for rec in self:
+            print rec
+    
     @api.constrains('date_from', 'date_to')
     def check_dates_periode(self):
         # Objects
@@ -152,51 +193,88 @@ class HrHolidays(models.Model):
         train_obj = self.env['hr.training']
         
 
-        for lv in self:
+        for holiday in self:
+            #check demanded periode with solde
+            if holiday.duration > holiday.holidays_available_stock:
+                raise ValidationError(u"ليس لديك الرصيد الكافي.")
+            
             # Date validation
-            if lv.date_from > lv.date_to:
+            if holiday.date_from > holiday.date_to:
                 raise ValidationError(u"تاريخ من يجب ان يكون أصغر من تاريخ الى")
             # check minimum request validation
-            if lv.holiday_status_id.minimum != 0 and lv.duration < lv.holiday_status_id.minimum:
-                raise ValidationError(u"أقل فترة يمكن طلبها من نوع إجازة " + lv.holiday_status_id.name + u" " + str(lv.holiday_status_id.minimum) + u" أيام")
+            if holiday.holiday_status_id.minimum != 0 and holiday.duration < holiday.holiday_status_id.minimum:
+                raise ValidationError(u"أقل فترة يمكن طلبها من نوع إجازة " + holiday.holiday_status_id.name + u" " + str(holiday.holiday_status_id.minimum) + u" أيام")
    
             # Date overlap
             # Leaves
             domain_search = [
-                ('employee_id', '=', lv.employee_id.id),
-                ('id', '!=', lv.id),
+                ('employee_id', '=', holiday.employee_id.id),
+                ('id', '!=', holiday.id),
                 ('state', 'not in', ['refuse', 'cancel']),
             ]
             for rec in holiday_obj.search(domain_search):
-                if rec.date_from <= lv.date_from <= rec.date_to or \
-                        rec.date_from <= lv.date_to <= rec.date_to or \
-                        lv.date_from <= rec.date_from <= lv.date_to or \
-                        lv.date_from <= rec.date_to <= lv.date_to:
+                if rec.date_from <= holiday.date_from <= rec.date_to or \
+                        rec.date_from <= holiday.date_to <= rec.date_to or \
+                        holiday.date_from <= rec.date_from <= holiday.date_to or \
+                        holiday.date_from <= rec.date_to <= holiday.date_to:
                     raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق فى الإجازات")
             # Check for eid
 #             for eid in eid_obj.search([]):
-#                 if eid.date_from <= lv.date_from <= eid.date_to or \
-#                         eid.date_from <= lv.date_to <= eid.date_to or \
-#                         lv.date_from <= eid.date_from <= lv.date_to or \
-#                         lv.date_from <= eid.date_to <= lv.date_to:
+#                 if eid.date_from <= holiday.date_from <= eid.date_to or \
+#                         eid.date_from <= holiday.date_to <= eid.date_to or \
+#                         holiday.date_from <= eid.date_from <= holiday.date_to or \
+#                         holiday.date_from <= eid.date_to <= holiday.date_to:
 #                     raise ValidationError(u"هناك تداخل في التواريخ مع اعياد و مناسبات رسمية")
 #            
             # Training
             search_domain = [
-                ('employee_ids', 'in', [lv.employee_id.id]),
+                ('employee_ids', 'in', [holiday.employee_id.id]),
                 ('state', '!=', 'refuse'),
             ]
             for rec in train_obj.search(search_domain):
-                if rec.effective_date_from <= lv.date_from <= rec.effective_date_to or \
-                        rec.effective_date_from <= lv.date_to <= rec.effective_date_to or \
-                        lv.date_from <= rec.effective_date_from <= lv.date_to or \
-                        lv.date_from <= rec.effective_date_to <= lv.date_to:
+                if rec.effective_date_from <= holiday.date_from <= rec.effective_date_to or \
+                        rec.effective_date_from <= holiday.date_to <= rec.effective_date_to or \
+                        holiday.date_from <= rec.effective_date_from <= holiday.date_to or \
+                        holiday.date_from <= rec.effective_date_to <= holiday.date_to:
                     raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في التدريب")
             """
             
             TO DO: check dates with :مع الإنتتبات، وأوقات خارج الدوام ... 
             
             """
+                
+    @api.model
+    def create(self, vals):
+        res = super(HrHolidays, self).create(vals)
+        # Sequence
+        vals = {}
+        vals['state'] = 'draft'
+        vals['name'] = self.env['ir.sequence'].get('hr.holidays.seq')
+        res.write(vals)
+        return res
+    
+class HrDelayHoliday(models.Model):
+    _name = 'hr.delay.holiday'  
+    _description = u'تأجيل إجازة'
+    
+    delay_days = fields.Integer(string = u'عدد أيام التأجيل')
+    
+    
+    @api.multi
+    def action_delay_holiday_confirm(self):
+        holiday = self.env['hr.holidays'].search([('id', '=', self._context['holiday_id'])])
+        if holiday.holiday_status_id.postponement_period>0:
+            if self.delay_days > 0 and self.delay_days <= holiday.holiday_status_id.postponement_period:
+                #add delay_days to date_from and date_to of the holiday
+                new_date_from = fields.Date.from_string(holiday.date_from) + timedelta(days=self.delay_days)
+                new_date_to = fields.Date.from_string(holiday.date_to) + timedelta(days=self.delay_days)
+                holiday.write({'date_from':new_date_from, 'date_to':new_date_to, 'state': 'draft'})
+    
+            if self.delay_days > 0 and self.delay_days > holiday.holiday_status_id.postponement_period:
+                raise ValidationError(u"لا يمكن تأجيل هذا النوع من الاجازة أكثر من "+str(holiday.holiday_status_id.postponement_period)+u"يوماً.")
+        else:
+            raise ValidationError(u"لا يمكن تأجيل هذا النوع من الاجازة. ")
+                
             
             
 class HrHolidaysStatus(models.Model):
@@ -229,7 +307,7 @@ class HrHolidaysStatusEntitlement(models.Model):
     _name = 'hr.holidays.status.entitlement'
     _description = u'أنواع الاستحقاقات'
     entitlment_category = fields.Many2one('hr.holidays.status.entitlement.category', string=u'فئة الاستحقاق')
-    leave_stock_default = fields.Integer(string=u'الرصيد')
+    holiday_stock_default = fields.Integer(string=u'الرصيد')
     conditionnal = fields.Boolean(string=u'مشروط')
     periode = fields.Selection([
         (1, u'سنة'),
