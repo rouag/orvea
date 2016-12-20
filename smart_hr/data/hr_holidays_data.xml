@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+
+		<!-- Leave Types -->
+		<record id="data_hr_holiday_status_01" model="hr.holidays.status">
+			<field name="name">عادية</field>
+			<field name="minimum" eval="5"/>
+			<field name="postponement_period" eval="90"/>
+		</record>
+		<record id="data_hr_holiday_status_02" model="hr.holidays.status">
+			<field name="name">استثنائية</field>
+		</record>
+		<record id="data_hr_holiday_status_03" model="hr.holidays.status">
+			<field name="name">مرضية</field>
+		</record>
+		<record id="data_hr_holiday_status_04" model="hr.holidays.status">
+			<field name="name">دراسية</field>
+		</record>
+		<record id="data_hr_holiday_status_05" model="hr.holidays.status">
+			<field name="name">إداء إمتحان</field>
+		</record>
+		<record id="data_hr_holiday_status_06" model="hr.holidays.status">
+			<field name="name">مرافقة مريض</field>
+		</record>
+		<record id="data_hr_holiday_status_07" model="hr.holidays.status">
+			<field name="name">غياب بعذر</field>
+		</record>
+		<record id="data_hr_holiday_status_08" model="hr.holidays.status">
+			<field name="name">تعويض</field>
+		</record>
+		<record id="data_hr_holiday_status_09" model="hr.holidays.status">
+			<field name="name">الرياضية</field>
+		</record>
+		<record id="data_hr_holiday_status_15" model="hr.holidays.status">
+			<field name="name">غسيل كلوي</field>
+		</record>
+		<record id="data_hr_holiday_status_16" model="hr.holidays.status">
+			<field name="name">اضطرارية</field>
+			<field name="maximum" eval="5"/>
+		</record>
+
+	</data>
+</openerp>

@@ -82,17 +82,17 @@ class hrHolidaysCancellation(models.Model):
             cancellation.leave_id.state = 'cancel'
             # Update leave stock
             # Normal, Statement and Accompaniment
-            if cancellation.leave_id.leave_type_id in [self.env.ref('smart_hr.data_hr_leave_type_01'),
-                                                       self.env.ref('smart_hr.data_hr_leave_type_11'),
-                                                       self.env.ref('smart_hr.data_hr_leave_type_16')]:
-                cancellation.leave_id.employee_id.leave_normal += cancellation.leave_id.duration
-            # Emergency
-            elif cancellation.leave_id.leave_type_id == self.env.ref('smart_hr.data_hr_leave_type_02'):
-                cancellation.leave_id.employee_id.leave_emergency += cancellation.leave_id.duration
-            # Compensation
-            elif cancellation.leave_id.leave_type_id == self.env.ref('smart_hr.data_hr_leave_type_10'):
-                cancellation.leave_id.employee_id.leave_compensation += cancellation.leave_id.duration
-            cancellation.message_post(u"تم التدقيق من قبل '" + unicode(user.name) + u"'")
+#             if cancellation.leave_id.leave_type_id in [self.env.ref('smart_hr.data_hr_leave_type_01'),
+#                                                        self.env.ref('smart_hr.data_hr_leave_type_11'),
+#                                                        self.env.ref('smart_hr.data_hr_leave_type_16')]:
+#                 cancellation.leave_id.employee_id.leave_normal += cancellation.leave_id.duration
+#             # Emergency
+#             elif cancellation.leave_id.leave_type_id == self.env.ref('smart_hr.data_hr_leave_type_02'):
+#                 cancellation.leave_id.employee_id.leave_emergency += cancellation.leave_id.duration
+#             # Compensation
+#             elif cancellation.leave_id.leave_type_id == self.env.ref('smart_hr.data_hr_leave_type_10'):
+#                 cancellation.leave_id.employee_id.leave_compensation += cancellation.leave_id.duration
+#             cancellation.message_post(u"تم التدقيق من قبل '" + unicode(user.name) + u"'")
 
     @api.one
     def button_refuse(self):
