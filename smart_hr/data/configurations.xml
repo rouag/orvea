@@ -6,7 +6,7 @@
 		<record id="governmental" model="recruiter.recruiter">
 			<field name="name">حكومي</field>
 		</record>
-		
+
 		<record id="private_company" model="recruiter.recruiter">
 			<field name="name">شركة خاصة</field>
 		</record>
@@ -15,13 +15,44 @@
 		<record id="assessment_good" model="hr.assessment.result.config">
 			<field name="name">جيد</field>
 		</record>
-		
+
 		<record id="assessment_medium" model="hr.assessment.result.config">
 			<field name="name">متوسط</field>
 		</record>
 
 		<record id="assessment_bad" model="hr.assessment.result.config">
 			<field name="name">سيئ</field>
+		</record>
+
+
+		<!-- إعدادات مستويات التعليم -->
+		<record id="certificate_primary_education" model="hr.employee.education.level">
+			<field name="sequence" eval="40" />
+			<field name="name">شهادة تعليم إبتدائي</field>
+		</record>
+		<record id="certificate_secondary_education" model="hr.employee.education.level">
+			<field name="sequence" eval="50" />
+			<field name="name">شهادة تعليم ثانوي</field>
+		</record>
+		<record id="certificate_ba" model="hr.employee.education.level">
+			<field name="sequence" eval="60" />
+			<field name="name">شهادة بكالوريوس</field>
+		</record>
+		<record id="certificate_ma" model="hr.employee.education.level">
+			<field name="sequence" eval="70" />
+			<field name="name">شهادة ماجستير</field>
+		</record>
+		<record id="certificate_engineer" model="hr.employee.education.level">
+			<field name="sequence" eval="80" />
+			<field name="name">شهادة مهندس</field>
+		</record>
+		<record id="certificate_mba" model="hr.employee.education.level">
+			<field name="sequence" eval="90" />
+			<field name="name">شهادة ماجستير في إدارة الأعمال</field>
+		</record>
+		<record id="certificate_doctorate" model="hr.employee.education.level">
+			<field name="sequence" eval="100" />
+			<field name="name">شهادة دكتوراه</field>
 		</record>
 
 	</data>

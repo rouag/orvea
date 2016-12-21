@@ -3,6 +3,8 @@
 
 from openerp import models, fields, api, _
 from openerp.exceptions import except_orm, Warning, RedirectWarning, ValidationError
+from dateutil.relativedelta import relativedelta
+
 
 
 class HrEmployee(models.Model):
@@ -23,6 +25,17 @@ class HrEmployee(models.Model):
                              ('employee', u'موظف')
                              ], string=u"الحالة", default='new')
     education_level = fields.Many2one('hr.employee.education.level', string = u'المستوى التعليمي')
+    service_duration = fields.Integer(string = u'سنوات الخدمة', compute = '_get_service_duration')
+    
+    @api.depends('name')
+    def _get_service_duration(self):
+        print "hello"
+        for rec in self:
+            #get date of hiring
+            date_hiring = self.env['hr.decision.appoint'].search([('employee_id.id', '=', self.id)], limit = 1).date_hiring
+            res = relativedelta(fields.Datetime.now(),date_hiring)
+            self.service_duration = res.year 
+            print self.service_duration
     # holiday Stock
 #     holiday_normal_stock = fields.Float(string=u'العادية', compute='_compute_holiday_normal_stock')
 #     
@@ -333,5 +346,5 @@ class HrEmployeeEducationLevel(models.Model):
     _description = u'مستويات التعليم'
   
     name = fields.Char(string = u'الإسم')
-    code = fields.Char(string = u'الرمز')
+    sequence = fields.Char(string = u'الرتبة')
     leave_type = fields.Many2one('hr.holidays.status', string='leave type')

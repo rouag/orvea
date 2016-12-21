@@ -4,6 +4,7 @@ from openerp import fields, models, api, _
 from openerp.tools import SUPERUSER_ID
 from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
 class HrHolidays(models.Model):
     _inherit = 'hr.holidays'
@@ -41,7 +42,7 @@ class HrHolidays(models.Model):
     def _compute_holiday_status_available_stock(self):
         for holiday in self:
             # check if there is entitlements in holiday_status_id
-            if not holiday.holiday_status_id.entitlements:
+            if not holiday.holiday_status_id.entitlements and holiday.holiday_status_id.limit:
                 raise ValidationError(u"يجب التحقق من الإستحقاقات في إعدادات نوع الإجازة.")
             else:
                 # loop under entitlements and get the holiday solde depend on grade of the employee
@@ -54,12 +55,12 @@ class HrHolidays(models.Model):
             # Sum of given holidays depend on holiday_status entitlement's periode
             if holiday_solde_by_year_number.items():
                 periode = holiday_solde_by_year_number.items()[0][0]
-            # One year
-            if periode == 1:
-                given_holiday_scount = 0
-                for rec in holiday.search([('state', '=', 'done'), ('employee_id.id', '=', holiday.employee_id.id), ('holiday_status_id.id', '=', holiday.holiday_status_id.id), ('date_from', '<=', date(date.today().year, 12, 31)), ('date_from', '>=', date(date.today().year, 1, 1))]):
-                    given_holiday_scount += rec.duration 
-                holiday.holidays_available_stock = holiday_solde_by_year_number[1] - given_holiday_scount
+                # One year
+                if periode == 1:
+                    given_holiday_scount = 0
+                    for rec in holiday.search([('state', '=', 'done'), ('employee_id.id', '=', holiday.employee_id.id), ('holiday_status_id.id', '=', holiday.holiday_status_id.id), ('date_from', '<=', date(date.today().year, 12, 31)), ('date_from', '>=', date(date.today().year, 1, 1))]):
+                        given_holiday_scount += rec.duration 
+                    holiday.holidays_available_stock = holiday_solde_by_year_number[1] - given_holiday_scount
         
 
                     
@@ -185,8 +186,8 @@ class HrHolidays(models.Model):
         
 
         for holiday in self:
-            # check demanded periode with solde
-            if holiday.duration > holiday.holidays_available_stock:
+            # check demanded periode with solde for holidays that have limit solde
+            if holiday.duration > holiday.holidays_available_stock and holiday.holiday_status_id.limit:
                 raise ValidationError(u"ليس لديك الرصيد الكافي.")
             
             # Date validation
@@ -229,36 +230,45 @@ class HrHolidays(models.Model):
             TO DO: check dates with :مع الإنتتبات، وأوقات خارج الدوام ... 
             
             """
+            
     def check_constraintes(self):
         """
         check constraintes beside date and periode ones
         """
+        
+        #common constraintes
+        if self.holiday_status_id in [self.env.ref('smart_hr.data_hr_holiday_status_normal'),self.env.ref('smart_hr.data_hr_holiday_status_compelling')]:
+            # check if there is another undone request for the same status of holiday
+            domain_search = [
+                                ('state', 'not in', ['done', 'refuse']),
+                                ('employee_id.id', '=', self.employee_id.id),
+                                ('holiday_status_id.id', '=', self.holiday_status_id.id),
+                                ('id', '!=', self.id)
+                            ]
+            if self.search_count(domain_search) > 0:
+                raise ValidationError(u"لديك طلب قيد الإجراء من نفس هذا النوع من الإجازة.")
+        
         # Constraintes for normal holidays عادية
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_normal'):
             # check the nationnality of the employee if it is saudi 
             if self.employee_id.country_id != self.env.ref('base.sa'):
                 raise ValidationError(u"هذا النوع من الإجازة ينطبق فقط على السعوديين.")
-            # check if there is another undone request for the same status of holiday
-            domain_search = [
-                                ('state', 'not in', ['done', 'refuse']),
-                                ('employee_id.id', '=', self.employee_id.id),
-                                ('holiday_status_id.id', '=', self.holiday_status_id.id),
-                                ('id', '!=', self.id)
-                            ]
-            if self.search_count(domain_search) > 0:
-                raise ValidationError(u"لديك طلب قيد الإجراء من نفس هذا النوع من الإجازة.")
+
             
         # Constraintes for Compelling holidays اضطرارية
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
-            # check if there is another undone request for the same status of holiday
-            domain_search = [
-                                ('state', 'not in', ['done', 'refuse']),
-                                ('employee_id.id', '=', self.employee_id.id),
-                                ('holiday_status_id.id', '=', self.holiday_status_id.id),
-                                ('id', '!=', self.id)
-                            ]
-            if self.search_count(domain_search) > 0:
-                raise ValidationError(u"لديك طلب قيد الإجراء من نفس هذا النوع من الإجازة.")
+            print 'ijaza idhtirariya'
+        
+        # Constraintes for studying holidays دراسية
+        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_study'):
+            # check education level
+            if self.employee_id.education_level.sequence < self.env.ref('smart_hr.certificate_secondary_education').sequence:
+                raise ValidationError(u"لم تتحصل على المستوى الدراسي المطلوب.")
+            #check 3 years of services
+            date_hiring = self.env['hr.decision.appoint'].search([('employee_id.id', '=', self.employee_id.id)], limit = 1).date_hiring
+            res = relativedelta(fields.Date.from_string(fields.Datetime.now()),fields.Date.from_string(date_hiring))
+            if res.years < 3:
+                raise ValidationError(u"ليس لديك ثلاث سنوات خدمة.")
         
         return True
     
