@@ -6,31 +6,31 @@ from openerp.exceptions import except_orm, Warning, RedirectWarning
 from datetime import timedelta
 import math
 
-
 HOURS_PER_DAY = 7
 
+
 class HrTraining(models.Model):
-    _name = 'hr.training'  
-    _description=u'التدريب' 
-    
+    _name = 'hr.training'
+    _description = u'التدريب'
+
     @api.one
     @api.depends('line_ids')
     def _compute_info(self):
         self.number_participant = len(self.line_ids)
-        
-    name=fields.Char(string=' المسمى',required=1,states={'new': [('readonly', 0)]})
-    number=fields.Char(string='رقم القرار',required=1,states={'new': [('readonly', 0)]})
-    date=fields.Date(string=' تاريخ القرار',required=1,states={'new': [('readonly', 0)]})
-    date_from=fields.Date(string='تاريخ من',required=1,states={'new': [('readonly', 0)]})
-    date_to=fields.Date(string=' إلى',required=1,states={'new': [('readonly', 0)]})
-    number_of_days=fields.Float(string=' المدة',required=1,states={'new': [('readonly', 0)]})
-    department=fields.Char(string=' الجهة',required=1,states={'new': [('readonly', 0)]})
-    place=fields.Char(string=' المكان',required=1,states={'new': [('readonly', 0)]})
-    number_place=fields.Integer(string='عدد المقاعد',required=1,states={'new': [('readonly', 0)]})
-    number_participant=fields.Integer(string=' عدد المشتركين' ,store=True, readonly=True, compute='_compute_info')
-    line_ids = fields.One2many('hr.candidates', 'employee_id',string='المترشحين',required=1,states={'new': [('readonly', 0)]})
-    state= fields.Selection([('new','جديد'),('candidat','الترشح'),('review','المراجعة'),('confirm','إعتمدت'),('done','تمت')], readonly=1, default='new')
-    employee_ids = fields.Many2many('hr.employee', 'employee_training_rel', 'emp_id', 'training_id', string=u'الموظفون') 
+
+    name = fields.Char(string=' المسمى', required=1, states={'new': [('readonly', 0)]})
+    number = fields.Char(string='رقم القرار', required=1, states={'new': [('readonly', 0)]})
+    date = fields.Date(string=' تاريخ القرار', required=1, states={'new': [('readonly', 0)]})
+    date_from = fields.Date(string='تاريخ من', required=1, states={'new': [('readonly', 0)]})
+    date_to = fields.Date(string=' إلى', required=1, states={'new': [('readonly', 0)]})
+    number_of_days = fields.Float(string=' المدة', required=1, states={'new': [('readonly', 0)]})
+    department = fields.Char(string=' الجهة', required=1, states={'new': [('readonly', 0)]})
+    place = fields.Char(string=' المكان', required=1, states={'new': [('readonly', 0)]})
+    number_place = fields.Integer(string='عدد المقاعد', required=1, states={'new': [('readonly', 0)]})
+    number_participant = fields.Integer(string=' عدد المشتركين', store=True, readonly=True, compute='_compute_info')
+    line_ids = fields.One2many('hr.candidates', 'employee_id', string='المترشحين', required=1, states={'new': [('readonly', 0)]})
+    state = fields.Selection([('new', 'جديد'), ('candidat', 'الترشح'), ('review', 'المراجعة'), ('confirm', 'إعتمدت'), ('done', 'تمت')], readonly=1, default='new')
+    employee_ids = fields.Many2many('hr.employee', 'employee_training_rel', 'emp_id', 'training_id', string=u'الموظفون')
 
     @api.onchange('date_from')
     def _onchange_date_from(self):
@@ -65,68 +65,70 @@ class HrTraining(models.Model):
         from_dt = fields.Datetime.from_string(date_from)
         to_dt = fields.Datetime.from_string(date_to)
         time_delta = to_dt - from_dt
-        return math.ceil(time_delta.days + float(time_delta.seconds) / 86400)+1
-                 
+        return math.ceil(time_delta.days + float(time_delta.seconds) / 86400) + 1
+
     @api.one
     def action_candidat(self):
-        self.state = 'candidat'  
-        
+        self.state = 'candidat'
+
     @api.one
     def action_review(self):
-        self.state = 'review' 
-          
+        self.state = 'review'
+
     @api.one
     def action_confirm(self):
-        self.state = 'confirm'  
-        
+        self.state = 'confirm'
+
     @api.one
     def action_done(self):
-        self.state = 'done'   
-        
-        
+        self.state = 'done'
+
+
 class HrCandidates(models.Model):
-    _name = 'hr.candidates'  
-    _description=u'المترشحين'
-    _rec_name= 'employee_id'  
-    
-    employee_id=fields.Many2one('hr.employee',string=' إسم الموظف')
-    number = fields.Char(related='employee_id.number', store=True, readonly=True,string=' الرقم الوظيفي')
-    job_id = fields.Many2one(related='employee_id.job_id', store=True, readonly=True,string=' الوظيفة')
-    department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True,string=' القسم')
-    training_id=fields.Many2one('hr.training',string=' الدورة')
+    _name = 'hr.candidates'
+    _description = u'المترشحين'
+    _rec_name = 'employee_id'
+
+    employee_id = fields.Many2one('hr.employee', string=' إسم الموظف')
+    number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' الرقم الوظيفي')
+    job_id = fields.Many2one(related='employee_id.job_id', store=True, readonly=True, string=' الوظيفة')
+    department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string=' القسم')
+    training_id = fields.Many2one('hr.training', string=' الدورة')
     date_from = fields.Date(related='training_id.date_from', store=True, readonly=True)
     date_to = fields.Date(related='training_id.date_to', store=True, readonly=True)
     department = fields.Char(related='training_id.department', store=True, readonly=True)
-    state= fields.Selection([('new',' ارسال طلب'),
-                             ('waiting','في إنتظار الإعتماد'),
-                             ('cancel','رفض'),
-                             ('done','اعتمدت')
-                             ],string='الحالة', readonly=1, default='new') 
-    
+    state = fields.Selection([('new', ' ارسال طلب'),
+                             ('waiting', 'في إنتظار الإعتماد'),
+                             ('cancel', 'رفض'),
+                             ('done', 'اعتمدت')
+                             ], string='الحالة', readonly=1, default='new')
+
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
-        if self.employee_id :
+        if self.employee_id:
             self.number = self.employee_id.number
             self.job_id = self.employee_id.job_id.id
             self.department_id = self.employee_id.department_id.id
-                
+
     @api.onchange('training_id')
     def _onchange_training_id(self):
-        if self.training_id :
+        if self.training_id:
             self.date_from = self.date_from
             self.date_to = self.date_to
             self.department = self.department
-            
+
     @api.one
     def action_waiting(self):
-        self.state = 'waiting' 
+        self.state = 'waiting'
+
     @api.one
     def action_cancel(self):
-        self.state = 'cancel' 
+        self.state = 'cancel'
+
     @api.one
     def action_done(self):
-        self.state = 'done'  
+        self.state = 'done'
+
     @api.one
     def action_refuse(self):
-        self.state = 'new'     
-    
+        self.state = 'new'

@@ -4,10 +4,11 @@
 
 		<!-- Report Actions -->
 
+
+
 		<report id="salary_grid_report" model="salary.grid"
 			report_type="qweb-pdf" string="طباعة" name="smart_hr.report_salary_grid"
 			file="smart_hr.report_salary_grid" />
-
 
 		<report id="employee_medical_exam_report" model="employee.medical.exam"
 			string="الفحص الطبي" report_type="qweb-pdf"
@@ -27,6 +28,7 @@
 			model="hr.leave" string="نموذج تحويل مستوصف" report_type="qweb-pdf"
 			name="smart_hr.hr_leave_hospital_transfer_form_report" file="smart_hr.hr_leave_hospital_transfer_form_report"
 			attachment_use="False" menu="False" />
+
 		<report id="report_hr_overtime_report" model="hr.overtime"
 			string="قرار خارج دوام" report_type="qweb-pdf" name="smart_hr.hr_overtime_report"
 			file="smart_hr.hr_overtime_report" attachment_use="True"
@@ -82,6 +84,13 @@
 			<field name="paperformat_id" ref="report.paperformat_euro" />
 			<field name="download_filename">${o.name}_قرار خارج دوام.pdf</field>
 		</record>
+		
+		<report id="hr_deduction_report" model="hr.deduction"
+			report_type="qweb-pdf" string="الحسميات" name="smart_hr.report_hr_deduction"
+			file="smart_hr.report_hr_deduction" paperformat="smart_base.paperformat_landscape" />
+
+		<report id="hr_deduction_line_report" model="hr.deduction.line" name="smart_hr.report_hr_deduction_line"
+			report_type="qweb-pdf" string="حسميات الموظف" file="smart_hr.report_hr_deduction_line" />
 	</data>
 </openerp>
 		

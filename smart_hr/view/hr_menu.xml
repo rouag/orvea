@@ -23,6 +23,8 @@
 		<menuitem id="hr_root_training" name="التدريب" sequence="30" parent="hr_root" />
 		
 		<menuitem id="hr_root_decision" name="القرارات" sequence="35" parent="hr_root" />
+		
+		<menuitem id="hr_deduction_root" sequence="40" name="إدارة الحسميات" parent="hr_root" groups="group_deduction_management" />
 
 		<menuitem id="hr_root_configuration" name="الإعدادات" sequence="100" parent="hr_root" />
 			

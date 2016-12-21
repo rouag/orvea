@@ -83,7 +83,6 @@
 								<field name="number_participant" />
 							</group>
 						</group>
-
 						<group string="المترشحين">
 							<field name="line_ids" string="المترشحين" nolabel="1">
 								<tree editable="bottom">
