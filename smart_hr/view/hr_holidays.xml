@@ -87,7 +87,7 @@
 
 
 						<field name="state" widget="statusbar"
-							statusbar_visible="draft,dm,audit,hrm,external_audit,refuse,done" />
+							statusbar_visible="draft,dm,audit,hrm,external_audit,revision,revision_response,done" />
 
 					</header>
 					<sheet>
@@ -102,9 +102,9 @@
 						</group>
 						<group col="4">
 							<field name="date_from" required="1"
-								attrs="{'readonly':['|',('state','not in',['draft', 'dm', 'hrm'])]}" />
+								attrs="{'readonly':['|',('state','not in',['draft'])]}" />
 							<field name="date_to" required="1"
-								attrs="{'readonly':[('state','not in',['draft', 'dm', 'hrm'])]}" />
+								attrs="{'readonly':[('state','not in',['draft'])]}" />
 							<field name="duration" />
 						</group>
 						<group col="4">
@@ -248,7 +248,9 @@
 			<field name="arch" type="xml">
 				<form string="تأجيل إجازة">
 					<sheet>
-						<group col="2">
+						<group col="4">
+							<field name="date_from" />
+							<field name="date_to" />
 							<field name="delay_days" />
 						</group>
 					</sheet>

@@ -73,11 +73,9 @@ class HrHolidays(models.Model):
     @api.depends('employee_id')
     def _is_current_user(self):
         for rec in self:
-            # System Admin Bypass
-            if self.env['res.users'].browse(rec._uid).has_group('smart_hr.group_sys_manager'):
+            if rec.employee_id.user_id.id == rec._uid:
                 rec.is_current_user = True
-            elif rec.employee_id.user_id.id == rec._uid:
-                rec.is_current_user = True
+            print rec.is_current_user
     @api.depends('employee_id')
     def _is_direct_manager(self):
         for rec in self:
@@ -268,9 +266,6 @@ class HrHolidays(models.Model):
     
     @api.model
     def create(self, vals):
-        
-        
-        
         res = super(HrHolidays, self).create(vals)
         res.check_constraintes()
         # Sequence
@@ -285,7 +280,22 @@ class HrDelayHoliday(models.Model):
     _name = 'hr.delay.holiday'  
     _description = u'تأجيل إجازة'
     
-    delay_days = fields.Integer(string = u'عدد أيام التأجيل')
+    date_from = fields.Date(string=u'التاريخ من', default = lambda self: self.env['hr.holidays'].search([('id', '=', self._context['holiday_id'])], limit=1).date_from)
+    date_to = fields.Date(string=u'التاريخ الى', readonly = 1, default = lambda self: self.env['hr.holidays'].search([('id', '=', self._context['holiday_id'])], limit=1).date_to)
+    delay_days = fields.Integer(string=u'عدد أيام التأجيل', compute='_compute_delay_days')
+
+    @api.depends('date_from', 'date_to')
+    def _compute_delay_days(self):
+        holiday = self.env['hr.holidays'].search([('id', '=', self._context['holiday_id'])])
+        for holidayDelay in self:
+            if holidayDelay.date_from and holidayDelay.date_to:
+                start_date = fields.Date.from_string(holiday.date_from)
+                new_start_date = fields.Date.from_string(holidayDelay.date_from)
+                if new_start_date < start_date:
+                    raise ValidationError(u"الرجاء التأكد من تاريخ بد الإجازة.")
+                delay_days = (new_start_date - start_date).days 
+                holidayDelay.delay_days = delay_days
+                holidayDelay.date_to = fields.Date.from_string(holiday.date_to) + timedelta(days=self.delay_days)
     
     
     @api.multi
