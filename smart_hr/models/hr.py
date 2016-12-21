@@ -2,7 +2,7 @@
 
 
 from openerp import models, fields, api, _
-from openerp.exceptions import except_orm, Warning, RedirectWarning
+from openerp.exceptions import except_orm, Warning, RedirectWarning, ValidationError
 
 
 class HrEmployee(models.Model):
@@ -23,10 +23,30 @@ class HrEmployee(models.Model):
                              ('employee', u'موظف')
                              ], string=u"الحالة", default='new')
     education_level = fields.Many2one('hr.employee.education.level', string = u'المستوى التعليمي')
-     # Leaves Stock
-    leave_normal = fields.Float(string=u'العادية', default=36)
-    leave_emergency = fields.Float(string=u'الاضطرارية', default=5)
-    leave_compensation = fields.Float(string=u'البديلة', default=0)
+    # holiday Stock
+#     holiday_normal_stock = fields.Float(string=u'العادية', compute='_compute_holiday_normal_stock')
+#     
+#     
+#     def _compute_holiday_normal_stock(self):
+#         for holiday in self:
+#             # loop under entitlements and get the holiday solde depend on grade of the employee
+#             holiday_solde_by_year_number = {}
+#             for en in holiday.holiday_status_id.entitlements:
+#                 if holiday.employee_id.job_id.grade_id in en.entitlment_category.grades:
+#                     holiday_solde_by_year_number = {en.periode : en.holiday_stock_default}
+#                     break
+#             
+#             # Sum of given holidays depend on holiday_status entitlement's periode
+#             if holiday_solde_by_year_number.items()[0]:
+#                 periode = holiday_solde_by_year_number.items()[0][0]
+#             # One year
+#             if periode == 1:
+#                 given_holiday_scount = 0
+#                 for rec in holiday.search([('state', '=', 'done'), ('employee_id.id', '=', holiday.employee_id.id), ('holiday_status_id.id', '=', holiday.holiday_status_id.id), ('date_from', '<=', date(date.today().year, 12, 31)), ('date_from', '>=', date(date.today().year, 1, 1))]):
+#                     given_holiday_scount += rec.duration 
+#                 holiday.holidays_available_stock = holiday_solde_by_year_number[1] - given_holiday_scount
+        
+
 
     
     

@@ -20,7 +20,6 @@ class OrderEnquiryReportParser(report_sxw.rml_parse):
         jurdicial_precedents_ids = self.pool.get('employee.judicial.precedent.order').search(self.cr, self.uid, [('employee','=',employee.id)], limit=1)
         if jurdicial_precedents_ids:
             jurdicial_precedents_obj = self.pool.get('employee.judicial.precedent.order').browse(self.cr, self.uid,jurdicial_precedents_ids)
-            print jurdicial_precedents_obj.judicial_precedents
             return jurdicial_precedents_obj.judicial_precedents
     
     def _get_current_date(self):

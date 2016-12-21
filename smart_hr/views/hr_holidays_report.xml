@@ -1,222 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-    <data>
+	<data>
 
-        <template id="hr_leave_report">
-            <t t-call="report.html_container">
-                <t t-foreach="docs" t-as="o">
-                    <t t-call="smart_hr.external_layout_hr">
-                        <div class="page" style="direction:rtl;">
-                            <p align="left">رقم القرار: <span t-esc="o.get_hindi_nums(o.name)"/></p>
-                            <p align="left">تاريخ القرار: <span t-esc="o.get_ummqura(o.date)"/></p>
-                            <t t-if="o.leave_type_id == docs.env.ref('smart_hr.data_hr_leave_type_01')">
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">قرار إجازة عادية</p>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <p style="font-size:22px;">إن مدير شؤون الموظفين</p>
-                                <p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
-                                <p style="font-size:22px;">و إشارة إلى طلب الإجازة المرفق.</p>
-                                <p align="center" style="font-size:22px;">و استنادا إلى المادة رقم (1/28) من نظام الخدمة المدنية</p>
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">يقرر ما يلى</p>
-                                <p style="font-size:22px;">1) الموافقة على تمتع الموظف / <span t-field="o.employee_id.name"/> الذى يشغل وظيفة <span t-field="o.employee_id.job_id.name"/></p>
-                                <!-- <p style="font-size:22px;">المرتبة: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.salary_ladder_id.salary_ladder_level_id.name)"/> رقمها: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.level_no)"/> بالدرجة: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.salary_ladder_id.name)"/></p> -->
-                               <!--  <p style="font-size:22px;">وراتبه: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.salary_ladder_id.basic)"/> ريال بإجازة عادية لمده <span t-esc="o.get_hindi_nums(o.duration)"/> يوما اعتبارا من <span t-esc="o.get_ummqura(o.date_from)"/></p> -->
-                                <p style="font-size:22px;">2) يصرف / لا يصرف راتبها مقدما.</p>
-                                <p style="font-size:22px;">3) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-                                <p style="font-size:22px;">4) الموظف البديل: <span t-field="o.alternative_employee_id.name"/></p>
-                            </t>
-                            <t t-if="o.leave_type_id == docs.env.ref('smart_hr.data_hr_leave_type_03')">
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">قرار إجازة مرضية</p>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <p align="left" style="font-size:22px;">رقم بطاقة الأحوال <span t-esc="o.get_hindi_nums(o.employee_id.identification_id)"/></p>
-                                <p style="font-size:22px;">إن مدير شؤون الموظفين</p>
-                                <p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
-                                <p style="font-size:22px;">و بعد الاطلاع على التقرير الطبى الصادر من <span t-field="o.hospital"/></p>
-                                <p style="font-size:22px;">برقم <span t-esc="o.get_hindi_nums(o.hospital_report_no)"/> و تاريخ <span t-esc="o.get_ummqura(o.hospital_report_date)"/> و الذى أوصى بالترخيص له بإجازة مرضية لمدة <span t-field="o.duration"/></p>
-                                <p style="font-size:22px;">و بناء على المادة (11/28) و المادة (13/28) من اللوائح التنفيذية لنظام الخدمة المدنية</p>
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">يقرر ما يلى</p>
-                                <p style="font-size:22px;">1) يمنح الموظف / <span t-field="o.employee_id.name"/> الذى يشغل وظيفة <span t-field="o.employee_id.job_id.name"/></p>
-                                <!-- <p style="font-size:22px;">المرتبة: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.salary_ladder_id.salary_ladder_level_id.name)"/> رقمها: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.level_no)"/> بالدرجة: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.salary_ladder_id.name)"/> بإدارة <span t-field="o.employee_id.department_id.name"/></p> -->
-                                <p style="font-size:22px;">إجازة مرضية لمدة <span t-esc="o.get_hindi_nums(o.duration)"/> اعتبارا من <span t-esc="o.get_ummqura(o.date_from)"/></p>
-                                <p style="font-size:22px;">2) يعامل من حيث راتب الإجازة على أساس <span t-field="o.salary_calc_type"/></p>
-                                <p style="font-size:22px;">3) يصرف / لا يصرف راتبها مقدما.</p>
-                                <p style="font-size:22px;">4) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-                            </t>
-                            <t t-if="o.leave_type_id == docs.env.ref('smart_hr.data_hr_leave_type_04')">
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">قرار إجازة إستثنائية</p>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <p align="left" style="font-size:22px;">رقم بطاقة الأحوال <span t-esc="o.get_hindi_nums(o.employee_id.identification_id)"/></p>
-                                <p style="font-size:22px;">إن مدير شؤون الموظفين</p>
-                                <p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
-                                <p style="font-size:22px;">و .....................................</p>
-                                <p style="font-size:22px;">و استنادا إلى المادة رقم (22/28) من اللائحة التنفيذية لنظام الخدمة المدنية.</p>
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">يقرر ما يلى</p>
-                                <p style="font-size:22px;">1( (منح / تمديد) إجازة إستثنائية للموظف <span t-field="o.employee_id.name"/> المثبت على وظيفة <span t-field="o.employee_id.job_id.name"/></p>
-                                <!-- <p style="font-size:22px;">المرتبة: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.salary_ladder_id.salary_ladder_level_id.name)"/> رقمها: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.level_no)"/> بالدرجة <span t-esc="o.get_hindi_nums(o.employee_id.job_id.salary_ladder_id.name)"/></p>
-                                <p style="font-size:22px;">و راتبه <span t-esc="o.get_hindi_nums(o.employee_id.job_id.salary_ladder_id.basic)"/> ريال لمدة <span t-esc="o.get_hindi_nums(o.duration)"/> اعتبارا من <span t-esc="o.get_ummqura(o.date_from)"/></p> -->
-                                <p style="font-size:22px;">2) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-                            </t>
-                            <t t-if="o.leave_type_id == docs.env.ref('smart_hr.data_hr_leave_type_05')">
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">قرار إجازة دراسية</p>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <p align="left" style="font-size:22px;">رقم بطاقة الأحوال <span t-esc="o.get_hindi_nums(o.employee_id.identification_id)"/></p>
-                                <p style="font-size:22px;">إن مدير شؤون الموظفين</p>
-                                <p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
-                                <p style="font-size:22px;">و إشارة إلى الطلب المقدم من الموظف: <span t-field="o.employee_id.name"/></p>
-                                <p style="font-size:22px;">المؤهل الدراسى: <span t-field="o.employee_id.education"/> الوظيفة: <span t-field="o.employee_id.job_id.name"/></p>
-                                <!-- <p style="font-size:22px;">المرتبة: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.salary_ladder_id.salary_ladder_level_id.name)"/> رقمها: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.level_no)"/> بإدارة <span t-field="o.employee_id.department_id.name"/></p> -->
-                                <p style="font-size:22px;">و المضمون طلب الموافقة على منحه إجازة دراسية ، و لتوفر شروط منحه الإجازة.</p>
-                                <p style="font-size:22px;">و استنادا للمادة (19/28) من اللائحة التنفيذية لنظام الخدمة المدنية.</p>
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">يقرر ما يلى</p>
-                                <p style="font-size:22px;">1) يمنح الموظف : <span t-field="o.employee_id.name"/> إجازة دراسية بدون راتب</p>
-                                <p style="font-size:22px;">لدراسة <span t-field="o.edu_subject"/> تخصص <span t-field="o.edu_specialty"/></p>
-                                <p style="font-size:22px;">و ذلك لمدة <span t-esc="o.get_hindi_nums(o.duration)"/> ابتداء من <span t-esc="o.get_ummqura(o.date_from)"/></p>
-                                <p style="font-size:22px;">2) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-                            </t>
-                            <t t-if="o.leave_type_id == docs.env.ref('smart_hr.data_hr_leave_type_08')">
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">قرار إجازة رياضية</p>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <p align="left" style="font-size:22px;">رقم بطاقة الأحوال <span t-esc="o.get_hindi_nums(o.employee_id.identification_id)"/></p>
-                                <p style="font-size:22px;">إن مدير شؤون الموظفين</p>
-                                <p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
-                                <p style="font-size:22px;">و بالإشارة إلى خطاب <span t-field="o.sport_letter"/> رقم <span t-esc="o.get_hindi_nums(o.sport_letter_no)"/> و تاريخ <span t-esc="o.get_hindi_nums(o.sport_letter_date)"/></p>
-                                <p style="font-size:22px;">المتضمن طلب السماح للموظف <span t-field="o.employee_id.name"/></p>
-                                <p style="font-size:22px;">الإدارة <span t-field="o.employee_id.department_id.name"/> الوظيفة <span t-field="o.employee_id.job_id.name"/></p>
-                                <!-- <p style="font-size:22px;">المرتبة: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.salary_ladder_id.salary_ladder_level_id.name)"/> رقمها: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.level_no)"/> بالتغيب مدة <span t-esc="o.get_hindi_nums(o.duration)"/></p> -->
-                                <p style="font-size:22px;">للمشاركة فى <span t-field="o.sport_reason"/></p>
-                                <p style="font-size:22px;">و استنادا لقرار مجلس الوزاراء الموقر رقم 28 و تاريخ 1406/1/30.</p>
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">يقرر ما يلى</p>
-                                <p style="font-size:22px;">1( يمنح الموظف <span t-field="o.employee_id.name"/> إجازة رياضية لمدة <span t-esc="o.get_hindi_nums(o.duration)"/> و ذلك ابتداءا من تاريخ <span t-esc="o.get_ummqura(o.date_from)"/></p>
-                                <p style="font-size:22px;">2) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-                            </t>
-                            <t t-if="o.leave_type_id == docs.env.ref('smart_hr.data_hr_leave_type_09')">
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">قرار إجازة مشاركة فى أعمال الإغاثة</p>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <p style="font-size:22px;">إن مدير شؤون الموظفين</p>
-                                <p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
-                                <p style="font-size:22px;">و بالإشارة إلى خطاب <span t-field="o.aid_letter"/> رقم <span t-esc="o.get_hindi_nums(o.aid_letter_no)"/> و تاريخ <span t-esc="o.get_hindi_nums(o.aid_letter_date)"/></p>
-                                <p style="font-size:22px;">و المتضمن طلب السماح للموظف الموضح أسمه و بياناته أدناه بالمشاركة فى أعمال إغاثة <span t-field="o.aid"/></p>
-                                <p style="font-size:22px;">و استنادا إلى قرار مجلس الخدمة المدنية رقم (1031) و تاريخ 1406/7/8 و رقم (248/3) و تاريخ 1412/5/27</p>
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">يقرر ما يلى</p>
-                                <p style="font-size:22px;">1( يسمح للموظف <span t-field="o.employee_id.name"/> الذى يشغل وظيفة <span t-field="o.employee_id.job_id.name"/></p>
-                                <!-- <p style="font-size:22px;">المرتبة: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.salary_ladder_id.salary_ladder_level_id.name)"/> رقمها: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.level_no)"/> بإدارة <span t-field="o.employee_id.department_id.name"/></p> -->
-                                <p style="font-size:22px;">بإجازة للمشاركة فى أعمال الإغاثة لمدة <span t-esc="o.get_hindi_nums(o.duration)"/> ابتداء من <span t-esc="o.get_ummqura(o.date_from)"/></p>
-                                <p style="font-size:22px;">2) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-                            </t>
-                            <t t-if="o.leave_type_id == docs.env.ref('smart_hr.data_hr_leave_type_11')">
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">قرار إجازة مرافقة</p>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <p align="left" style="font-size:22px;">رقم بطاقة الأحوال <span t-esc="o.get_hindi_nums(o.employee_id.identification_id)"/></p>
-                                <p style="font-size:22px;">إن مدير شؤون الموظفين</p>
-                                <p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
-                                <p style="font-size:22px;">و استنادا إلى المادة رقم (17/28) من اللائحة التنفيذية لنظام الخدمة المدنية.</p>
-                                <p style="font-size:22px;">و إشارة التقرير الطبى الصادر من <span t-field="o.hospital"/> برقم <span t-esc="o.get_hindi_nums(o.hospital_report_no)"/> و تاريخ <span t-esc="o.get_ummqura(o.hospital_report_date)"/></p>
-                                <p style="font-size:22px;">و القاضى بضرورة مرافقة الموظف <span t-field="o.employee_id.name"/></p>
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">يقرر ما يلى</p>
-                                <p style="font-size:22px;">1( يمنح الموظف <span t-field="o.employee_id.name"/> المثبت على وظيفة <span t-field="o.employee_id.job_id.name"/></p>
-                                <!-- <p style="font-size:22px;">المرتبة: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.salary_ladder_id.salary_ladder_level_id.name)"/> رقمها: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.level_no)"/> بإدارة <span t-field="o.employee_id.department_id.name"/></p> -->
-                                <p style="font-size:22px;">بإجازة مرافقة لمدة <span t-esc="o.get_hindi_nums(o.duration)"/> اعتبارا من <span t-esc="o.get_ummqura(o.date_from)"/></p>
-                                <p style="font-size:22px;">2) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-                            </t>
-                            <t t-if="o.leave_type_id == docs.env.ref('smart_hr.data_hr_leave_type_12')">
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">قرار إجازة وضع</p>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <p style="font-size:22px;">إن مدير شؤون الموظفين</p>
-                                <p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
-                                <p style="font-size:22px;">و بناء على المادة رقم (23/28) من اللائحة التنفيذية لنظام الخدمة المدنية.</p>
-                                <p style="font-size:22px;">و إشارة إلى .....................................</p>
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">يقرر ما يلى</p>
-                                <p style="font-size:22px;">1) تمنح الموظفة / <span t-field="o.employee_id.name"/> المثبتة على وظيفة <span t-field="o.employee_id.job_id.name"/></p>
-                                <!-- <p style="font-size:22px;">المرتبة: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.salary_ladder_id.salary_ladder_level_id.name)"/> رقمها: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.level_no)"/> بإدارة <span t-field="o.employee_id.department_id.name"/></p> -->
-                                <p style="font-size:22px;">إجازة وضع لمده ستين يوما اعتبارا من <span t-esc="o.get_ummqura(o.date_from)"/></p>
-                                <p style="font-size:22px;">2) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-                            </t>
-                            <t t-if="o.leave_type_id == docs.env.ref('smart_hr.data_hr_leave_type_13')">
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">قرار إجازة عدة وفاة</p>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <p style="font-size:22px;">إن مدير شؤون الموظفين</p>
-                                <p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
-                                <p style="font-size:22px;">و بناء على المادة رقم (24/28) من اللائحة التنفيذية لنظام الخدمة المدنية.</p>
-                                <p style="font-size:22px;">و استنادا إلى شهادة وفاة زوج الموظفة: <span t-field="o.employee_id.name"/></p>
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">يقرر ما يلى</p>
-                                <p style="font-size:22px;">1) تمنح الموظفة / <span t-field="o.employee_id.name"/> المثبتة على وظيفة <span t-field="o.employee_id.job_id.name"/></p>
-                                <!-- <p style="font-size:22px;">المرتبة: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.salary_ladder_id.salary_ladder_level_id.name)"/> رقمها: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.level_no)"/> بإدارة <span t-field="o.employee_id.department_id.name"/></p> -->
-                                <p style="font-size:22px;">إجازة عدة وفاة اعتبارا من <span t-esc="o.get_ummqura(o.date_from)"/></p>
-                                <p style="font-size:22px;">2) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-                            </t>
-                            <t t-if="o.leave_type_id == docs.env.ref('smart_hr.data_hr_leave_type_15')">
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">قرار إجازة غسيل الكلوى</p>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <p style="font-size:22px;">إن مدير شؤون الموظفين</p>
-                                <p style="font-size:22px;">بناء على الصلاحيات الممنوحة له ، و إشارة إلى التقرير الطبى الصادر من <span t-field="o.hospital"/></p>
-                                <p style="font-size:22px;">برقم: <span t-esc="o.get_hindi_nums(o.hospital_report_no)"/> و تاريخ <span t-esc="o.get_ummqura(o.hospital_report_date)"/></p>
-                                <p style="font-size:22px;">و بناء على قرار مجلس الخدمة المدنية رقم (370/1) و تاريخ 1416/2/13</p>
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">يقرر ما يلى</p>
-                                <p style="font-size:22px;">1) منح الموظف / <span t-field="o.employee_id.name"/> المثبتة على وظيفة <span t-field="o.employee_id.job_id.name"/></p>
-                                <!-- <p style="font-size:22px;">المرتبة: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.salary_ladder_id.salary_ladder_level_id.name)"/> رقمها: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.level_no)"/> بإدارة <span t-field="o.employee_id.department_id.name"/></p> -->
-                                <p style="font-size:22px;">إجازة لغسيل الكلوى وفقا لما يلى: ....................................</p>
-                                <p style="font-size:22px;">2) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-                            </t>
-                            <t t-if="o.leave_type_id in [docs.env.ref('smart_hr.data_hr_leave_type_02'),docs.env.ref('smart_hr.data_hr_leave_type_06'),docs.env.ref('smart_hr.data_hr_leave_type_07'),docs.env.ref('smart_hr.data_hr_leave_type_10'),docs.env.ref('smart_hr.data_hr_leave_type_14'),docs.env.ref('smart_hr.data_hr_leave_type_16'),docs.env.ref('smart_hr.data_hr_leave_type_18')]">
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">قرار إجازة <span t-field="o.leave_type_id.name"/></p>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <p style="font-size:22px;">إن مدير شؤون الموظفين</p>
-                                <p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
-                                <p style="font-size:22px;">و إشارة إلى طلب الإجازة المرفق.</p>
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">تقرر ما يلى</p>
-                                <p style="font-size:22px;">1) يمنح الموظف / <span t-field="o.employee_id.name"/> الذى يشغل وظيفة <span t-field="o.employee_id.job_id.name"/></p>
-                                <!-- <p style="font-size:22px;">المرتبة: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.salary_ladder_id.salary_ladder_level_id.name)"/> رقمها: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.level_no)"/> بالدرجة: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.salary_ladder_id.name)"/></p> -->
-                                <p style="font-size:22px;">ريال بإجازة <span t-field="o.leave_type_id.name"/> لمده <span t-esc="o.get_hindi_nums(o.duration)"/> يوما اعتبارا من <span t-esc="o.get_ummqura(o.date_from)"/></p>
-                                <p style="font-size:22px;">2) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-                            </t>
-                            <t t-if="o.leave_type_id == docs.env.ref('smart_hr.data_hr_leave_type_17')">
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">قرار إجازة وفاة</p>
-                                <br/>
-                                <br/>
-                                <br/>
-                                <p style="font-size:22px;">إن مدير شؤون الموظفين</p>
-                                <p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
-                                <p style="font-size:22px;">و استنادا إلى شهادة الوفاة المرفقة</p>
-                                <p align="center" style="font-size:30px;font-weight: bold;text-decoration: underline;">يقرر ما يلى</p>
-                                <p style="font-size:22px;">1) يمنح الموظف / <span t-field="o.employee_id.name"/> المثبت على وظيفة <span t-field="o.employee_id.job_id.name"/></p>
-                                <!-- <p style="font-size:22px;">المرتبة: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.salary_ladder_id.salary_ladder_level_id.name)"/> رقمها: <span t-esc="o.get_hindi_nums(o.employee_id.job_id.level_no)"/> بإدارة <span t-field="o.employee_id.department_id.name"/></p> -->
-                                <p style="font-size:22px;">إجازة وفاة لمدة <span t-esc="o.get_hindi_nums(o.duration)"/> يوم اعتبارا من <span t-esc="o.get_ummqura(o.date_from)"/></p>
-                                <p style="font-size:22px;">2) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-                            </t>
-                            <br/>
-                            <br/>
-                            <br/>
-                            <br/>
-                            <br/>
-                            <div class="col-xs-5 pull-right" style="font-size:22px;">
-                                <span t-if="user.signature" t-field="user.signature"/>
-                            </div>
-                        </div>
-                    </t>
-                </t>
-            </t>
-        </template>
+		<template id="hr_holidays_report">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_hr.external_layout_hr">
+						<div class="page" style="direction:rtl;">
+							<p align="left">
+								رقم القرار:
+								<span t-esc="o.name" />
+							</p>
+							<p align="left">
+								تاريخ القرار:
+								<span t-esc="o.date" />
+							</p>
+							<p align="center"
+								style="font-size:30px;font-weight: bold;text-decoration: underline;">
+								قرار إجازة
+								<span t-field="o.holiday_status_id.name" />
+							</p>
+							<br />
+							<br />
+							<br />
+							<p style="font-size:22px;">إن مدير شؤون الموظفين</p>
+							<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
+							<p style="font-size:22px;">و إشارة إلى طلب الإجازة المرفق.</p>
+							<p align="center"
+								style="font-size:30px;font-weight: bold;text-decoration: underline;">تقرر ما يلى</p>
+							<p style="font-size:22px;">
+								1) يمنح الموظف /
+								<span t-field="o.employee_id.name" />
+								الذى يشغل وظيفة
+								<span t-field="o.employee_id.job_id.name" />
+							</p>
+							<p style="font-size:22px;">
+								إجازة
+								<span t-field="o.holiday_status_id.name" />
+								لمده
+								<span t-esc="o.duration" />
+								يوما اعتبارا من
+								<span t-esc="o.date_from" />
+							</p>
+							<p style="font-size:22px;">2) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<div class="col-xs-5 pull-right" style="font-size:22px;">
+								<span t-if="user.signature" t-field="user.signature" />
+							</div>
+						</div>
+					</t>
+				</t>
+			</t>
+		</template>
 
-    </data>
+	</data>
 </openerp>
