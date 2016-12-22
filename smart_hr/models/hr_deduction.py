@@ -37,7 +37,7 @@ class hrDeductionLine(models.Model):
     department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True,string=' القسم')
     deduction_type=fields.Many2one('hr.deduction.type',string='نوع الحسم',required=1)
     deduction_way= fields.Selection([('values','قيمة'),('day','أيام'),('hours','ساعات'),('rate','نسبة')],string='طريقة الحسم',required=1) 
-    action_deduction=fields.Selection(string='الإجراءات',[('values','قيمة'),('day','أيام'),('hours','ساعات'),('rate','نسبة')],string='طريقة الحسم',required=1)
+    action_deduction=fields.Char(string='الإجراءات',)
     valuer_deduction=fields.Char(string='القيمة',required=1)
     premium_dedection=fields.Char(string='قسط الحسم',required=1)
     date_from=fields.Date(string='تاريخ من',required=1)
