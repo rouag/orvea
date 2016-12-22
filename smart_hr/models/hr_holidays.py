@@ -14,6 +14,12 @@ class HrHolidays(models.Model):
     name = fields.Char(string=u'رقم القرار', advanced_search=True)
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), advanced_search=True)
+    raison = fields.Selection([
+        ('other', u'سبب أخر'),
+        ('husband', u'مرافقة الزوج'),
+        ('wife', u'مرافقة الزوجة'),
+         ('legit', u'مرافقة كمحرم شرعي'),
+        ], default="other", string = u'السبب ')
     date_from = fields.Date(string=u'التاريخ من', default=fields.Datetime.now())
     date_to = fields.Date(string=u'التاريخ الى', default=fields.Datetime.now())
     duration = fields.Integer(string=u'الأيام', compute='_compute_duration')
@@ -36,6 +42,13 @@ class HrHolidays(models.Model):
     num_inspeech = fields.Char(string=u'رقم الخطاب الوارد')
     date_inspeech = fields.Date(string=u'تاريخ الخطاب الوارد')
     holidays_available_stock = fields.Float(string=u'رصيد الاجازة', compute='_compute_holiday_status_available_stock')
+    is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started')
+    
+    @api.depends('date_from')
+    def _compute_is_started(self):
+        for rec in self:
+            if rec.date_from <= datetime.today().strftime('%Y-%m-%d'):
+                rec.is_started = True
 
                     
     @api.depends('holiday_status_id')
@@ -236,8 +249,8 @@ class HrHolidays(models.Model):
         check constraintes beside date and periode ones
         """
         
-        #common constraintes
-        if self.holiday_status_id in [self.env.ref('smart_hr.data_hr_holiday_status_normal'),self.env.ref('smart_hr.data_hr_holiday_status_compelling')]:
+        # common constraintes
+        if self.holiday_status_id in [self.env.ref('smart_hr.data_hr_holiday_status_normal'), self.env.ref('smart_hr.data_hr_holiday_status_exceptional'), self.env.ref('smart_hr.data_hr_holiday_status_compelling')]:
             # check if there is another undone request for the same status of holiday
             domain_search = [
                                 ('state', 'not in', ['done', 'refuse']),
@@ -255,20 +268,27 @@ class HrHolidays(models.Model):
                 raise ValidationError(u"هذا النوع من الإجازة ينطبق فقط على السعوديين.")
 
             
-        # Constraintes for Compelling holidays اضطرارية
-        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
-            print 'ijaza idhtirariya'
-        
         # Constraintes for studying holidays دراسية
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_study'):
             # check education level
             if self.employee_id.education_level.sequence < self.env.ref('smart_hr.certificate_secondary_education').sequence:
                 raise ValidationError(u"لم تتحصل على المستوى الدراسي المطلوب.")
-            #check 3 years of services
-            date_hiring = self.env['hr.decision.appoint'].search([('employee_id.id', '=', self.employee_id.id)], limit = 1).date_hiring
-            res = relativedelta(fields.Date.from_string(fields.Datetime.now()),fields.Date.from_string(date_hiring))
+            # check 3 years of services
+            date_hiring = self.env['hr.decision.appoint'].search([('employee_id.id', '=', self.employee_id.id)], limit=1).date_hiring
+            res = relativedelta(fields.Date.from_string(fields.Datetime.now()), fields.Date.from_string(date_hiring))
             if res.years < 3:
                 raise ValidationError(u"ليس لديك ثلاث سنوات خدمة.")
+         
+        # Constraintes for Compelling holidays اضطرارية
+        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
+            print 'اضطرارية'
+           
+        # Constraintes for exceptionnal holidays استثنائية
+        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional'):
+            # check raison
+            print 'استثنائية'
+            
+            
         
         return True
     
@@ -288,8 +308,8 @@ class HrDelayHoliday(models.Model):
     _name = 'hr.delay.holiday'  
     _description = u'تأجيل إجازة'
     
-    date_from = fields.Date(string=u'التاريخ من', default = lambda self: self.env['hr.holidays'].search([('id', '=', self._context['holiday_id'])], limit=1).date_from)
-    date_to = fields.Date(string=u'التاريخ الى', readonly = 1, default = lambda self: self.env['hr.holidays'].search([('id', '=', self._context['holiday_id'])], limit=1).date_to)
+    date_from = fields.Date(string=u'التاريخ من', default=lambda self: self.env['hr.holidays'].search([('id', '=', self._context['holiday_id'])], limit=1).date_from)
+    date_to = fields.Date(string=u'التاريخ الى', readonly=1, default=lambda self: self.env['hr.holidays'].search([('id', '=', self._context['holiday_id'])], limit=1).date_to)
     delay_days = fields.Integer(string=u'عدد أيام التأجيل', compute='_compute_delay_days')
 
     @api.depends('date_from', 'date_to')

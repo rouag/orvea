@@ -21,7 +21,7 @@
 			name="التقييم" sequence="16" />
 
 
-		<menuitem id="menu_hr_leave_root" name="الإجازات" sequence="20"
+		<menuitem id="menu_hr_holiday_root" name="الإجازات" sequence="20"
 			parent="hr_root" />
 
 		<menuitem id="menu_hr_overtime_root" parent="hr.menu_hr_root"

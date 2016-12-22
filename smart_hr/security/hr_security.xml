@@ -6,7 +6,7 @@
 			<field name="name">موظف</field>
 			<field name="implied_ids" eval="[(4, ref('base.group_user'))]" />
 			<field name="menu_access"
-				eval="[(4, ref('hr_root')),(4, ref('menu_hr_leave_root'))]" />
+				eval="[(4, ref('hr_root')),(4, ref('menu_hr_holiday_root'))]" />
 		</record>
 		
 		<record id="group_holidays_checker" model="res.groups">
@@ -73,7 +73,7 @@
 			<field name="name">صلاحيات افتراضية</field>
 			<field name="implied_ids" eval="[(4, ref('base.group_user'))]" />
 			<!-- <field name="menu_access" eval="[(4, ref('menu_hr_deputation_root')),(4, 
-				ref('menu_hr_task_completion_root')),(4, ref('menu_hr_leave_root')),(4, ref('menu_hr_leave_cancellation_root')),(4, 
+				ref('menu_hr_task_completion_root')),(4, ref('menu_hr_holiday_root')),(4, ref('menu_hr_leave_cancellation_root')),(4, 
 				ref('menu_hr_overtime_root')),(4, ref('menu_hr_attendance_view_wizard')),(4, 
 				ref('menu_hr_training_root')),(4, ref('menu_hr_task_root'))]"/> -->
 		</record>
