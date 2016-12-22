@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <template id="hr_termination_report">
+            <t t-call="report.html_container">
+                <t t-call="smart_hr.external_layout_hr">
+                    <div class="page" style="direction:rtl;">
+                        <p><strong>قيد التطوير</strong></p>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</openerp>

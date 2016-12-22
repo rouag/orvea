@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 ####################################
-### This Module Created by Slnee ###
+### This Module Created by smart-etech ###
 ####################################
 
 from openerp import fields, models, api, _
 from openerp.exceptions import ValidationError
-from ..apis.datetime_func import daterange
 
 class hr_period_line(models.Model):
     _name = 'hr.period.line'

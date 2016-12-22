@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<template id="hr_suspension_end_report">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_hr.external_layout_hr">
+						<div class="page" style="font-size:16px; font-family:'Times New Roman' !important;direction:rtl;">
+							<div class="text-center"><strong>إطلاق سراح موظف</strong></div>
+                            <p>الشئون الإدارية و المالية</p>
+                            <p>قرار إنهاء كف يد</p>
+                            <p>قرار إدارى رقم <span t-esc="o.get_hindi_nums(o.name)"/> و تاريخ <span t-esc="o.get_ummqura(o.date)"/></p>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <td>رقم بطاقة الأحوال</td>
+                                    <td><span t-esc="o.get_hindi_nums(o.employee_id.identification_id[9:10])"/></td>
+                                    <td><span t-esc="o.get_hindi_nums(o.employee_id.identification_id[8:9])"/></td>
+                                    <td><span t-esc="o.get_hindi_nums(o.employee_id.identification_id[7:8])"/></td>
+                                    <td><span t-esc="o.get_hindi_nums(o.employee_id.identification_id[6:7])"/></td>
+                                    <td><span t-esc="o.get_hindi_nums(o.employee_id.identification_id[5:6])"/></td>
+                                    <td><span t-esc="o.get_hindi_nums(o.employee_id.identification_id[4:5])"/></td>
+                                    <td><span t-esc="o.get_hindi_nums(o.employee_id.identification_id[3:4])"/></td>
+                                    <td><span t-esc="o.get_hindi_nums(o.employee_id.identification_id[2:3])"/></td>
+                                    <td><span t-esc="o.get_hindi_nums(o.employee_id.identification_id[1:2])"/></td>
+                                    <td><span t-esc="o.get_hindi_nums(o.employee_id.identification_id[0:1])"/></td>
+                                </tr>
+                            </table>
+                            <p>أن رئيس الشركة.</p>
+                            <p>بناء على الصلاحيات الممنوحة له.</p>
+                            <br/>
+                            <p>و إشارة إلى خطاب <span t-field="o.letter_sender"/> رقم <span t-esc="o.get_hindi_nums(o.letter_no)"/> و تاريخ <span t-esc="o.get_ummqura(o.letter_date)"/> المتضمن إطلاق سراح الموظف / <span t-field="o.employee_id.name"/> بتاريخ <span t-esc="o.get_ummqura(o.release_date)"/> حيث <span t-esc="o.release_reason"/>.</p>
+                            <div class="text-center"><strong>يقرر ما يلي.</strong></div>
+                            <p>1) إنهاء كف يد الموظف / <span t-field="o.employee_id.name"/> وظيفته / <span t-field="o.employee_id.job_id.name"/> مرتبته <span t-esc="o.get_hindi_nums(o.employee_id.job_id.level)"/> رقمها / <span t-esc="o.get_hindi_nums(o.employee_id.job_id.level_no)"/> و تمكينه من مباشرة عمله اعتبارن من <span t-esc="o.get_ummqura(o.release_date)"/></p>
+                            <p>2) يصرف له النصف الباقي من رواتبه السابقة التى حسمت عليه أثناء كف يده اعتبارا من <span t-esc="o.get_ummqura(o.suspension_id.suspension_date)"/></p>
+                            <p>3) يباغ هذا القرار لمن يلزم لإنقاذه.</p>
+                            <br/>
+                            <p class="text-left">رئيس الشركة المكلف</p>
+						</div>
+					</t>
+				</t>
+			</t>
+		</template>
+
+	</data>
+</openerp>

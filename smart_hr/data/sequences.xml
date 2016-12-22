@@ -45,5 +45,26 @@
             <field name="padding">5</field>
         </record>
 
+        <record id="hr_suspension_end_seq" forcecreate="1" model="ir.sequence">
+            <field name="name">Suspension End Decision</field>
+            <field name="code">hr.suspension.end.seq</field>
+            <field eval="1" name="number_increment"/>
+            <field name="padding">5</field>
+        </record>
+        
+        <record id="hr_suspension_seq" forcecreate="1" model="ir.sequence">
+            <field name="name">Suspension Decision</field>
+            <field name="code">hr.suspension.seq</field>
+            <field eval="1" name="number_increment"/>
+            <field name="padding">5</field>
+        </record>
+                
+        <record id="hr_termination_seq" forcecreate="1" model="ir.sequence">
+            <field name="name">Termination</field>
+            <field name="code">hr.term.seq</field>
+            <field eval="1" name="number_increment"/>
+            <field name="padding">5</field>
+        </record>
+        
 	</data>
 </openerp>

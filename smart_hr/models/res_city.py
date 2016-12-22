@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 ####################################
-### This Module Created by Slnee ###
+### This Module Created by smart-etech ###
 ####################################
 
 from openerp import fields, models, api, _

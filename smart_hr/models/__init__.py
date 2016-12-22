@@ -22,3 +22,8 @@ from . import hr_assessment_point
 from . import res_city
 from . import hr_period_line
 from . import hr_deputation
+
+from . import hr_suspension
+from . import hr_suspension_end
+
+from . import hr_termination

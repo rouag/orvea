@@ -20,6 +20,7 @@
         'data/hr_holidays_data.xml',
         'data/schedulers.xml',
         'data/res.city.csv',
+        'data/hr_termination_data.xml',
 
         
         'views/report_salary_grid.xml',
@@ -31,6 +32,11 @@
         'views/layout.xml',
         'views/hr_deputation_report.xml',
         'views/hr_dep_accr_report.xml',
+        
+        'report/reports.xml',
+        'report/hr_suspension_end_report.xml',
+        'report/hr_suspension_report.xml',
+        'report/hr_termination_report.xml',
 
         'wizards/view/hr_refuse_wizard_view.xml',
                
@@ -53,6 +59,9 @@
         'view/hr_assessment_point_view.xml',
         'view/hr_deputation_view.xml',
         'view/res_city_view.xml',
+        'view/hr_suspension_view.xml',
+        'view/hr_suspension_end_view.xml',
+        'view/hr_termination_view.xml',
 
         
     ],

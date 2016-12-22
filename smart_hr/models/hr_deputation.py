@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 ####################################
-### This Module Created by Slnee ###
+### This Module Created by smart-etech ###
 ####################################
 
 from openerp import fields, models, api, _
@@ -9,7 +9,6 @@ from openerp.exceptions import ValidationError
 from lxml import etree
 from datetime import datetime
 from umalqurra.hijri_date import HijriDate
-from slnee_utils.num2hindi import num2hindi
 
 class hr_deputation(models.Model):
     _name = 'hr.deputation'
@@ -284,12 +283,23 @@ class hr_deputation(models.Model):
     '''
         Report Functions
     '''
+    def num2hindi(self,string_number):
+        if string_number:
+            hindi_numbers = {'0':'٠','1':'١','2':'٢','3':'٣','4':'٤','5':'٥','6':'٦','7':'٧','8':'٨','9':'٩','.':','}
+            if isinstance(string_number, unicode):
+                hindi_string = string_number.encode('utf-8','replace')
+            else:
+                hindi_string = str(string_number)
+            for number in hindi_numbers:
+                hindi_string = hindi_string.replace(str(number),hindi_numbers[number])
+            return hindi_string
+        
     def get_ummqura(self, g_date):
         try:
             g_date = fields.Date.from_string(g_date)
             hijri_date = HijriDate(g_date.year, g_date.month, g_date.day, gr=True)
             hijri_date_str = "{0}/{1}/{2}".format(int(hijri_date.year), int(hijri_date.month), int(hijri_date.day))
-            return num2hindi(hijri_date_str)
+            return self.num2hindi(hijri_date_str)
         except Exception:
             return False
 
@@ -302,7 +312,7 @@ class hr_deputation(models.Model):
             return False
 
     def get_hindi_nums(self, string_number):
-        return num2hindi(string_number)
+        return self.num2hindi(string_number)
 
     # Create the PDF attachment and save it in database or ftp
     @api.multi

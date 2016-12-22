@@ -32,7 +32,24 @@ class HrEmployee(models.Model):
     # Deputation Stock
     deputation_stock = fields.Integer(string=u'الأنتدابات', default=60)
     service_duration = fields.Integer(string = u'سنوات الخدمة', compute = '_get_service_duration')
-    
+    emp_state = fields.Selection([('working', u'على رأس العمل'),
+                                  ('suspended', u'مكفوف اليد'),
+                                  ('terminated', u'مطوي قيده'),
+                                  ], string=u'الحالة', default='working', advanced_search=True)
+    job_id = fields.Many2one(advanced_search=True)
+    age = fields.Integer(string=u'السن', compute='_compute_age')
+    employee_no = fields.Integer(string=u'رقم الموظف', advanced_search=True)
+    join_date = fields.Date(string=u'تاريخ الالتحاق بالجهة')
+
+    @api.depends('birthday')
+    def _compute_age(self):
+        for emp in self:
+            if emp.birthday:
+                today_date = fields.Date.from_string(fields.Date.today())
+                birthday = fields.Date.from_string(emp.birthday)
+                years = (today_date - birthday).days / 365
+                if years > -1:
+                    emp.age = years
     @api.depends('name')
     def _get_service_duration(self):
         print "hello"
@@ -104,10 +121,8 @@ class HrJob(models.Model):
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1, states={'unoccupied': [('readonly', 0)]})
     state = fields.Selection([('unoccupied', 'شاغرة'), ('occupied', 'مشغولة'), ('cancel', 'ملغاة')], readonly=1, default='unoccupied')
     employee = fields.Many2one('hr.employee', string=u'الموظف')
-    
-    
-  
-    
+    deputed_employee = fields.Boolean(string=u'موظف ندب', advanced_search=True)
+
     @api.multi
     def action_job_reservation(self):
         context = {};
