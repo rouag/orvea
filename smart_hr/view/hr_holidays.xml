@@ -81,7 +81,6 @@
 							type="object" states="revision_response" groups="smart_hr.group_holidays_checker"
 							icon="fa-times" class="oe_inline oe_stat_button" />
 
-
 						<field name="state" widget="statusbar"
 							statusbar_visible="draft,dm,audit,hrm,external_audit,revision,revision_response,done" />
 
@@ -91,10 +90,12 @@
 						<group string="صاحب الطلب">
 							<field name="date" readonly="1" />
 							<field name="employee_id" required="1" readonly='1' />
+							
 						</group>
 						<group col="4">
 							<field name="holiday_status_id" required="1" />
 							<field name="holidays_available_stock" attrs="{'invisible':[('state','=','done')]}" />
+							<field name="raison" attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_exceptional)d)]}" />
 						</group>
 						<group col="4">
 							<field name="date_from" required="1"
@@ -116,7 +117,7 @@
 								attrs="{'readonly':[('state','!=','revision_response')], 'invisible':[('state','not in',['revision_response','done'])]}" />
 						</group>
 						<group>
-							<field name="notes" attrs="{'readonly':[('state','!=','draft')]}" />
+							<field name="notes" string="ملاحظات" attrs="{'readonly':[('state','!=','draft')]}" />
 						</group>
 						<button name="%(report_hr_holidays_report)d" string="طباعة القرار" type="action"
 							states="done" icon="fa-print" class="oe_inline oe_stat_button" />
@@ -135,8 +136,8 @@
 			<field name="view_mode">tree,form</field>
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
-		<menuitem id="hr_holidays_menu" name="الطلبات" sequence="5"
-			parent="menu_hr_leave_root" action="action_hr_holidays" />
+		<menuitem id="hr_holidays_menu" name='طلبات الإجازة'  sequence="5"
+			parent="menu_hr_holiday_root" action="action_hr_holidays" />
 
 
 
@@ -184,7 +185,7 @@
 							</group>
 							<group>
 
-								<field name="limit" />
+								<field name="limit" string = "محدودة المدة"/>
 								<field name="direct_decision" />
 								<field name="external_decision" />
 								<field name="direct_director_decision" />
