@@ -197,6 +197,7 @@ class HrHolidays(models.Model):
         # Objects
         holiday_obj = self.env['hr.holidays']
         train_obj = self.env['hr.training']
+        deput_obj = self.env['hr.deputation']
         
 
         for holiday in self:
@@ -245,7 +246,7 @@ class HrHolidays(models.Model):
                 ('employee_id', '=', holiday.employee_id.id),
                 ('state', '!=', 'refuse'),
             ]
-            for rec in train_obj.search(search_domain):
+            for rec in deput_obj.search(search_domain):
                 if rec.date_from <= holiday.date_from <= rec.date_to or \
                         rec.date_from <= holiday.date_to <= rec.date_to or \
                         holiday.date_from <= rec.date_from <= holiday.date_to or \

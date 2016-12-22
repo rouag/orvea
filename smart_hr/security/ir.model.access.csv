@@ -98,8 +98,4 @@ access_hr_hr_assessment_result_config,hr_assessment_result_config,model_hr_asses
 access_hr_job_employee,hr_job,model_hr_job,group_employee,1,0,0,0
 ,,,,,,,
 access_hr_decision_appoint,hr_decision_appoint,model_hr_decision_appoint,group_employee,1,0,0,0
-,,,,,,,
-access_hr_suspension_hr,hr_suspension_hr,model_hr_suspension,group_hr,1,1,1,0
-access_hr_suspension_end_hr,hr_suspension_end_hr,model_hr_suspension_end,group_hr,1,1,1,0
-access_hr_suspension_sys_manager,hr_suspension_sys_manager,model_hr_suspension,group_sys_manager,1,1,1,1
-access_hr_suspension_end_sys_manager,hr_suspension_end_sys_manager,model_hr_suspension_end,group_sys_manager,1,1,1,1
+access_hr_deputation,hr_deputation,model_hr_deputation,group_employee,1,0,0,0
