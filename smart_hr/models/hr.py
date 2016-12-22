@@ -2,7 +2,9 @@
 
 
 from openerp import models, fields, api, _
-from openerp.exceptions import except_orm, Warning, RedirectWarning
+from openerp.exceptions import except_orm, Warning, RedirectWarning, ValidationError
+from dateutil.relativedelta import relativedelta
+
 
 
 class HrEmployee(models.Model):
@@ -29,6 +31,41 @@ class HrEmployee(models.Model):
     leave_compensation = fields.Float(string=u'البديلة', default=0)
     # Deputation Stock
     deputation_stock = fields.Integer(string=u'الأنتدابات', default=60)
+    service_duration = fields.Integer(string = u'سنوات الخدمة', compute = '_get_service_duration')
+    
+    @api.depends('name')
+    def _get_service_duration(self):
+        print "hello"
+        for rec in self:
+            #get date of hiring
+            date_hiring = self.env['hr.decision.appoint'].search([('employee_id.id', '=', self.id)], limit = 1).date_hiring
+            res = relativedelta(fields.Datetime.now(),date_hiring)
+            self.service_duration = res.year 
+            print self.service_duration
+    # holiday Stock
+#     holiday_normal_stock = fields.Float(string=u'العادية', compute='_compute_holiday_normal_stock')
+#     
+#     
+#     def _compute_holiday_normal_stock(self):
+#         for holiday in self:
+#             # loop under entitlements and get the holiday solde depend on grade of the employee
+#             holiday_solde_by_year_number = {}
+#             for en in holiday.holiday_status_id.entitlements:
+#                 if holiday.employee_id.job_id.grade_id in en.entitlment_category.grades:
+#                     holiday_solde_by_year_number = {en.periode : en.holiday_stock_default}
+#                     break
+#             
+#             # Sum of given holidays depend on holiday_status entitlement's periode
+#             if holiday_solde_by_year_number.items()[0]:
+#                 periode = holiday_solde_by_year_number.items()[0][0]
+#             # One year
+#             if periode == 1:
+#                 given_holiday_scount = 0
+#                 for rec in holiday.search([('state', '=', 'done'), ('employee_id.id', '=', holiday.employee_id.id), ('holiday_status_id.id', '=', holiday.holiday_status_id.id), ('date_from', '<=', date(date.today().year, 12, 31)), ('date_from', '>=', date(date.today().year, 1, 1))]):
+#                     given_holiday_scount += rec.duration 
+#                 holiday.holidays_available_stock = holiday_solde_by_year_number[1] - given_holiday_scount
+        
+
     
     
     @api.one
@@ -314,5 +351,5 @@ class HrEmployeeEducationLevel(models.Model):
     _description = u'مستويات التعليم'
   
     name = fields.Char(string = u'الإسم')
-    code = fields.Char(string = u'الرمز')
+    sequence = fields.Char(string = u'الرتبة')
     leave_type = fields.Many2one('hr.holidays.status', string='leave type')
