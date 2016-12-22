@@ -96,3 +96,8 @@ access_hr_hr_assessment_result_config,hr_assessment_result_config,model_hr_asses
 access_hr_hr_assessment_result_config,hr_assessment_result_config,model_hr_assessment_result_config,group_hrm,1,1,1,1
 access_hr_hr_assessment_result_config,hr_assessment_result_config,model_hr_assessment_result_config,group_dm,1,1,1,1
 access_hr_job_employee,hr_job,model_hr_job,group_employee,1,0,0,0
+,,,,,,,
+access_hr_deduction_type,hr_deduction_type,model_hr_deduction_type,group_deductions_management,1,1,1,1
+access_hr_deduction,hr_deduction,model_hr_deduction,group_deductions_management,1,1,1,1
+access_hr_deduction_line,hr_deduction_line,model_hr_deduction_line,group_deductions_management,1,1,1,1
+access_hr_deduction_history,hr_deduction_history,model_hr_deduction_history,group_deductions_management,1,1,1,1

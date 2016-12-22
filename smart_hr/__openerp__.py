@@ -22,6 +22,8 @@
         
         
         'views/report_salary_grid.xml',
+        'views/report_hr_deduction.xml',
+        'views/report_hr_deduction_line.xml',
         'views/report_medical_examination.xml',
         'views/report_order_enquiry.xml',
         'views/hr_holidays_report.xml',
@@ -35,6 +37,7 @@
         'view/hr.xml',
         'view/hr_job.xml',
         'view/hr_decision_appoint.xml',
+        'view/hr_deduction.xml',
         'view/hr_promotion.xml',
         'view/salary_grid.xml',
         'view/hr_training.xml',

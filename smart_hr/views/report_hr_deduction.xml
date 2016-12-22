@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_hr_deduction">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="report.external_layout">
+						<div class="page">
+							<br></br>
+							<br></br>
+							<br></br>
+
+							<div class="col-xs-6">
+								<strong>المسمى:</strong>
+								<span t-field="o.name" />
+
+								<br></br>
+								<strong>التاريخ :</strong>
+								<span t-field="o.date" />
+
+								<br></br>
+								<br></br>
+								<br></br>
+								<br></br>
+							</div>
+							<div class="col-xs-6">
+								<strong>رقم القرار :</strong>
+								<span t-field="o.number_decision" />
+
+								<br></br>
+								<strong>تاريخ القرار :</strong>
+								<span t-field="o.date_decision" />
+								<br></br>
+								<br></br>
+								<br></br>
+								<br></br>
+							</div>
+							<table class="table  table-bordered">
+								<thead>
+									<tr>
+										<th>إسم الموظف</th>
+										<th>نوع الحسم</th>
+										<th>طريقة الحسم</th>
+										<th>القيمة</th>
+										<th>قسط الحسم</th>
+										<th>تاريخ من</th>
+										<th>إلي</th>
+										<th>حسمية دائمة </th>
+										<th>الإجراءات</th>
+									</tr>
+								</thead>
+								<tr t-foreach="o.line_ids" t-as="l">
+									<td>
+										<span t-field="l.employee_id" />
+									</td>
+
+									<td>
+										<span t-field="l.deduction_type" />
+									</td>
+										<td>
+										<span t-field="l.deduction_way" />
+									</td>
+									<td>
+										<span t-field="l.valuer_deduction" />
+									</td>
+
+									<td>
+										<span t-field="l.premium_dedection" />
+									</td>
+
+									<td>
+										<span t-field="l.date_from" />
+									</td>
+
+									<td>
+										<span t-field="l.date_to" />
+									</td>
+									<td>
+										<span t-field="l.deduction_fixe" />
+									</td>
+									<td>
+										<span t-field="l.action_deduction" />
+									</td>
+								</tr>
+							</table>
+							<br></br>
+							<br></br>
+							<br></br>
+							<br></br>
+							<table class="table  table-bordered">
+								<thead>
+									<tr>
+										<th>التاريخ</th>
+										<th>الموظف</th>
+										<th>صاحب الصلاحية</th>
+										<th>السبب</th>
+									</tr>
+								</thead>
+								<tr t-foreach="o.line_history_ids" t-as="h">
+									<td>
+										<span t-field="h.date_deduction" />
+									</td>
+
+									<td>
+										<span t-field="H.employee_id" />
+									</td>
+
+									<td>
+										<span t-field="h.res_id" />
+									</td>
+
+									<td>
+										<span t-field="h.reason" />
+									</td>
+
+
+								</tr>
+							</table>
+						</div>
+					</t>
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+							

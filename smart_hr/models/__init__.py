@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 
-from . import hr
-from . import salary_grid
+
+
 from . import hr_decision_appoint
 from . import hr_promotion
 from . import hr_training
@@ -18,3 +18,6 @@ from . import hr_department
 
 from . import hr_assessment
 from . import hr_assessment_point
+from . import hr_deduction
+from . import hr
+from . import salary_grid

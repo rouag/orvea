@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!-- أنواع الحسميات -->
+		<record id="view_search_hr_deduction_type" model="ir.ui.view">
+			<field name="name">hr.deduction.type.search</field>
+			<field name="model">hr.deduction.type</field>
+			<field name="arch" type="xml">
+				<search string="أنواع الحسميات">
+					<field name="number" />
+					<field name="name" />
+					<separator />
+					<group expand="0" string="Group By">
+						<filter string=" الرمز" name="number" />
+						<filter string="الوصف" name="name" />
+					</group>
+				</search>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_deduction_type_tree">
+			<field name="name">hr.deduction.type.tree</field>
+			<field name="model">hr.deduction.type</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="أنواع الحسميات">
+					<field name="number" />
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_deduction_type_form">
+			<field name="name">hr.deduction.type.form</field>
+			<field name="model">hr.deduction.type</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="أنواع الحسميات">
+					<sheet>
+						<group>
+							<field name="number" />
+							<field name="name" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_deduction_type">
+			<field name="name">أنواع الحسميات</field>
+			<field name="res_model">hr.deduction.type</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<menuitem id="hr_configuration_deduction_type_root" sequence="35"
+			name="الحسميات" parent="smart_hr.hr_root_configuration" />
+		<menuitem id="hr_deduction_type_menu" name="أنواع الحسميات"
+			sequence="25" parent="hr_configuration_deduction_type_root" action="action_hr_deduction_type" />
+		<!-- الحسميات -->
+		<record id="view_search_hr_deduction" model="ir.ui.view">
+			<field name="name">hr.deduction.search</field>
+			<field name="model">hr.deduction</field>
+			<field name="arch" type="xml">
+				<search string=" الحسميات">
+					<field name="name" />
+					<field name="date" />
+					<field name="number_decision" />
+					<field name="date_decision" />
+					<separator />
+					<group expand="0" string="Group By">
+						<filter string=" المسمى" name="name" />
+						<filter string=" التاريخ" name="date" />
+						<filter string=" رقم القرار" name="number_decision" />
+						<filter string=" تاريخ القرار" name="date_decision" />
+
+					</group>
+				</search>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_deduction_tree">
+			<field name="name">hr.deduction.tree</field>
+			<field name="model">hr.deduction</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string=" الحسميات">
+					<field name="name" />
+					<field name="date" />
+					<field name="number_decision" />
+					<field name="date_decision" />
+				</tree>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_deduction_form">
+			<field name="name">hr.deduction.form</field>
+			<field name="model">hr.deduction</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string=" الحسميات">
+					<header>
+						<button name="action_new" string="جديدة" type="object"
+							states="new" />
+
+						<field name="state" widget="statusbar" statusbar_visible="new,confirm" />
+					</header>
+					<sheet>
+						<group>
+							<group>
+								<field name="name" />
+								<field name="date" />
+							</group>
+							<group>
+								<field name="number_decision" />
+								<field name="date_decision" />
+							</group>
+						</group>
+						<group>
+							<field name="line_ids" nolabel="1">
+								<tree editable="bottom">
+									<field name="employee_id" />
+									<field name="number" invisible="1" />
+									<field name="job_id" invisible="1" />
+									<field name="department_id" invisible="1" />
+									<field name="deduction_type" />
+									<field name="deduction_way" />
+									<field name="valuer_deduction" />
+									<field name="premium_dedection" />
+									<field name="date_from" />
+									<field name="date_to" />
+									<field name="deduction_fixe" />
+									<field name="action_deduction" />
+										
+								</tree>
+							</field>
+						</group>
+						<group>
+							<field name="line_history_ids" nolabel="1">
+								<tree editable="bottom">
+									<field name="date_deduction" />
+									<field name="employee_id" />
+									<field name="res_id" />
+									<field name="reason" />
+								</tree>
+							</field>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_deduction">
+			<field name="name"> الحسميات</field>
+			<field name="res_model">hr.deduction</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<menuitem id="hr_configuration_deduction_root" sequence="35"
+			name="إدارة الحسميات" parent="smart_hr.hr_root" />
+		<menuitem id="hr_deduction_menu" name=" الحسميات" sequence="25"
+			parent="hr_configuration_deduction_root" action="action_hr_deduction" />
+
+		<!-- الحسميات بالموظف -->
+		<record id="view_search_hr_deduction_line" model="ir.ui.view">
+			<field name="name">hr.deduction.line.search</field>
+			<field name="model">hr.deduction.line</field>
+			<field name="arch" type="xml">
+				<search string="الحسميات بالموظف">
+					<field name="employee_id" />
+					<field name="deduction_type" />
+					<field name="valuer_deduction" />
+					<field name="premium_dedection" />
+					<field name="date_from" />
+					<field name="date_to" />
+					<separator />
+					<group expand="0" string="Group By">
+						<filter string="  إسم الموظف" name="employee_id" />
+						<filter string=" نوع الحسم" name="deduction_type" />
+						<filter string=" القيمة" name="valuer_deduction" />
+						<filter string=" قسط الحسم" name="premium_dedection" />
+					</group>
+				</search>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_deduction_line_tree">
+			<field name="name">hr.deduction.line.tree</field>
+			<field name="model">hr.deduction.line</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="الحسميات بالموظف">
+					<field name="employee_id" />
+					<field name="deduction_type" />
+					<field name="deduction_way" />
+					<field name="valuer_deduction" />
+					<field name="premium_dedection" />
+					<field name="date_from" />
+					<field name="date_to" />
+					<field name="deduction_fixe" />
+					<field name="action_deduction" />
+				</tree>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_deduction_line_form">
+			<field name="name">hr.deduction.line.form</field>
+			<field name="model">hr.deduction.line</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="الحسميات بالموظف">
+					<sheet>
+						<group>
+							<group>
+								<field name="employee_id" />
+								<field name="deduction_type" />
+								<field name="deduction_way" />
+								<field name="valuer_deduction" />
+								<field name="premium_dedection" />
+							</group>
+							<group>
+								<field name="date_from" />
+								<field name="date_to" />
+								<field name="deduction_fixe" />
+								<field name="action_deduction" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_deduction_line">
+			<field name="name">الحسميات بالموظف</field>
+			<field name="res_model">hr.deduction.line</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="hr_deduction_line_menu" name="الحسميات بالموظف"
+			sequence="35" parent="hr_configuration_deduction_root" action="action_hr_deduction_line" />
+
+
+	</data>
+</openerp>
+			
