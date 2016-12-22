@@ -127,7 +127,7 @@
 		<record id="action_hr_holidays_cancellation_employees" model="ir.actions.act_window">
 			<field name="name">إلغاء إجازات الموظفين</field>
 			<field name="res_model">hr.holidays.cancellation</field>
-			<field name="domain">[]</field>
+			<field name="domain">[('type', '=', 'cancellation')]</field>
 			<field name="context">{'operation': 'cancel'}</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
@@ -200,7 +200,7 @@
 		<record id="action_hr_holidays_cut_employees" model="ir.actions.act_window">
 			<field name="name">قطع إجازات الموظفين</field>
 			<field name="res_model">hr.holidays.cancellation</field>
-			<field name="domain">[]</field>
+			<field name="domain">[('type', '=', 'cut')]</field>
 			<field name="context">{'operation': 'cut'}</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>

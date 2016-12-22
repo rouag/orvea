@@ -22,12 +22,22 @@ class hrHolidaysCancellation(models.Model):
         ('done', u'إعتمد'),
         ('refuse', u'رفض'),
     ], string=u'حالة', default='draft', advanced_search=True)
+    type = fields.Selection([
+        ('cut', u'طلب'),
+        ('cancellation', u'مراجعة الموظف'),
+    ], string=u'نوع', default='cancellation', advanced_search=True)
     
     
     @api.model
     def create(self, vals):
+      
+            
         res = super(hrHolidaysCancellation, self).create(vals)
         vals = {}
+        if self._context['operation'] == 'cancel':
+            vals['type'] = 'cancellation'
+        if self._context['operation'] == 'cut':
+            vals['type'] = 'cut'
         vals['name'] = self.env['ir.sequence'].get('hr.holidays.cancellation.seq')
         res.write(vals)
         return res
@@ -39,7 +49,16 @@ class hrHolidaysCancellation(models.Model):
                 raise ValidationError(u'لا يمكن حذف طلب إلغاء الإجازة فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(hrHolidaysCancellation, self).unlink()
 
-
+    @api.constrains('holiday')
+    def check_constrains(self):
+        
+        if self._context['operation'] == 'cut' and self.holiday.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_normal'):
+                start_date = fields.Date.from_string(self.holiday.date_from)
+                now = fields.Date.from_string(fields.Datetime.now())
+                duration = (now - start_date).days + 1
+                if duration < 5:
+                    raise ValidationError(u'لا يمكن قطع إجازة عادية قبل مرور خمسة أيام من بدئها.')
+        
     @api.one
     def button_dm_send(self):
         user = self.env['res.users'].browse(self._uid)
