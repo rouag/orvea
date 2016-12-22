@@ -34,7 +34,8 @@ class HrHolidays(models.Model):
         ('revision_response', u'تسجيل رد الجهة'),
         ('done', u'اعتمدت'),
         ('refuse', u'رفض'),
-        ('cancel', u'ملغاة')], string=u'حالة', default='draft', advanced_search=True)
+        ('cancel', u'ملغاة'),
+        ('cutoff', u'مقطوعة')], string=u'حالة', default='draft', advanced_search=True)
     is_current_user = fields.Boolean(string='Is Current User', compute='_is_current_user')
     is_direct_manager = fields.Boolean(string='Is Direct Manager', compute='_is_direct_manager')
     num_outspeech = fields.Char(string=u'رقم الخطاب الصادر')
@@ -42,14 +43,14 @@ class HrHolidays(models.Model):
     num_inspeech = fields.Char(string=u'رقم الخطاب الوارد')
     date_inspeech = fields.Date(string=u'تاريخ الخطاب الوارد')
     holidays_available_stock = fields.Float(string=u'رصيد الاجازة', compute='_compute_holiday_status_available_stock')
-    is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started')
+    is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started', store = True)
     
     @api.depends('date_from')
     def _compute_is_started(self):
         for rec in self:
-            if rec.date_from <= datetime.today().strftime('%Y-%m-%d'):
+            if rec.date_from <= datetime.today().strftime('%Y-%m-%d') and rec.state == 'done':
                 rec.is_started = True
-
+                print rec.is_started
                     
     @api.depends('holiday_status_id')
     def _compute_holiday_status_available_stock(self):
@@ -215,19 +216,19 @@ class HrHolidays(models.Model):
                 raise ValidationError(u"أكثر فترة يمكن طلبها من نوع إجازة " + holiday.holiday_status_id.name + u" " + str(holiday.holiday_status_id.maximum) + u" أيام")
    
             # Date overlap
-            # holidays
-            domain_search = [
+            # الإجازات
+            search_domain = [
                 ('employee_id', '=', holiday.employee_id.id),
                 ('id', '!=', holiday.id),
                 ('state', 'not in', ['refuse', 'cancel']),
             ]
-            for rec in holiday_obj.search(domain_search):
+            for rec in holiday_obj.search(search_domain):
                 if rec.date_from <= holiday.date_from <= rec.date_to or \
                         rec.date_from <= holiday.date_to <= rec.date_to or \
                         holiday.date_from <= rec.date_from <= holiday.date_to or \
                         holiday.date_from <= rec.date_to <= holiday.date_to:
                     raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق فى الإجازات")
-            # Training
+            # التدريب
             search_domain = [
                 ('employee_ids', 'in', [holiday.employee_id.id]),
                 ('state', '!=', 'refuse'),
@@ -238,9 +239,22 @@ class HrHolidays(models.Model):
                         holiday.date_from <= rec.effective_date_from <= holiday.date_to or \
                         holiday.date_from <= rec.effective_date_to <= holiday.date_to:
                     raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في التدريب")
+            
+            # الإنتتبات
+            search_domain = [
+                ('employee_id', '=', holiday.employee_id.id),
+                ('state', '!=', 'refuse'),
+            ]
+            for rec in train_obj.search(search_domain):
+                if rec.date_from <= holiday.date_from <= rec.date_to or \
+                        rec.date_from <= holiday.date_to <= rec.date_to or \
+                        holiday.date_from <= rec.date_from <= holiday.date_to or \
+                        holiday.date_from <= rec.date_to <= holiday.date_to:
+                    raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الإنتداب")
+            
             """
             
-            TO DO: check dates with :مع الإنتتبات، وأوقات خارج الدوام ... 
+            TO DO: check dates with :أوقات خارج الدوام ... 
             
             """
             
