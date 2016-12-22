@@ -82,6 +82,19 @@
 			<field name="paperformat_id" ref="report.paperformat_euro" />
 			<field name="download_filename">${o.name}_قرار خارج دوام.pdf</field>
 		</record>
+
+		<report id="report_hr_deputation_report" model="hr.deputation"
+			string="قرار انتداب" report_type="qweb-pdf" name="smart_hr.hr_deputation_report"
+			file="smart_hr.hr_deputation_report" attachment_use="True"
+			attachment="('Deputation_'+(object.name).replace('/','')+'.pdf')"
+			menu="False" />
+
+		<report id="report_hr_dep_accr_report" model="hr.deputation"
+			string="قرار تعميد إنتداب" report_type="qweb-pdf" name="smart_hr.hr_dep_accr_report"
+			file="smart_hr.hr_dep_accr_report" attachment_use="True"
+			attachment="('Deputation_Assignment_'+(object.name).replace('/','')+'.pdf')"
+			menu="False" />
+		
 	</data>
 </openerp>
 		

@@ -19,7 +19,8 @@
         'data/configurations.xml',
         'data/hr_holidays_data.xml',
         'data/schedulers.xml',
-        
+        'data/res.city.csv',
+
         
         'views/report_salary_grid.xml',
         'views/report_medical_examination.xml',
@@ -28,7 +29,9 @@
         'views/report.xml',
         'views/templates.xml',
         'views/layout.xml',
-        
+        'views/hr_deputation_report.xml',
+        'views/hr_dep_accr_report.xml',
+
         'wizards/view/hr_refuse_wizard_view.xml',
                
         
@@ -48,8 +51,9 @@
         'view/hr_employee_education_level.xml',
         'view/hr_assessment_view.xml',
         'view/hr_assessment_point_view.xml',
- 
-        
+        'view/hr_deputation_view.xml',
+        'view/res_city_view.xml',
+
         
     ],
     'auto_install': False,

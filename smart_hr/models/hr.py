@@ -25,6 +25,12 @@ class HrEmployee(models.Model):
                              ('employee', u'موظف')
                              ], string=u"الحالة", default='new')
     education_level = fields.Many2one('hr.employee.education.level', string = u'المستوى التعليمي')
+     # Leaves Stock
+    leave_normal = fields.Float(string=u'العادية', default=36)
+    leave_emergency = fields.Float(string=u'الاضطرارية', default=5)
+    leave_compensation = fields.Float(string=u'البديلة', default=0)
+    # Deputation Stock
+    deputation_stock = fields.Integer(string=u'الأنتدابات', default=60)
     service_duration = fields.Integer(string = u'سنوات الخدمة', compute = '_get_service_duration')
     
     @api.depends('name')
@@ -59,7 +65,6 @@ class HrEmployee(models.Model):
 #                     given_holiday_scount += rec.duration 
 #                 holiday.holidays_available_stock = holiday_solde_by_year_number[1] - given_holiday_scount
         
-
 
     
     

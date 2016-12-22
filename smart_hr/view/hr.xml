@@ -30,6 +30,71 @@
 			</field>
 		</record>
 
+		<record id="view_employee_form" model="ir.ui.view">
+			<field name="name">hr.employee.form</field>
+			<field name="model">hr.employee</field>
+			<field name="arch" type="xml">
+				<form string="بيانات موظف" create='0' delete='0' duplicate='0'
+					edit='1'>
+					<sheet>
+						<field name="image" widget='image' class="oe_avatar"
+							options='{"preview_image":"image_medium"}' />
+						<div class="oe_title">
+							<label for="name" class="oe_edit_only" />
+							<h1>
+								<field name="name" placeholder="Employee's Name" />
+							</h1>
+						</div>
+						<notebook>
+							<page string="بيانات الموظف">
+								<group>
+
+									<group string="بيانات شخصية">
+										<field name="number" />
+										<field name="gender" />
+										<field name="marital" />
+										<field name="country_id" options='{"no_open": True, "no_create": True}' />
+										<field name="birthday" />
+										<field name="birthday_location" />
+										<field name="identification_id" groups="base.group_hr_user" />
+										<field name="passport_id" groups="base.group_hr_user" />
+										<field name="country_id" />
+									</group>
+
+									<group string="بيانات التواصل">
+										<field name="mobile_phone" />
+										<field name="work_location" />
+										<field name="work_email" widget="email" />
+										<field name="work_phone" />
+									</group>
+
+									<group string="بيانات العمل">
+										<field name="department_id" on_change="onchange_department_id(department_id)" />
+										<field name="job_id" />
+										<field name="parent_id" />
+										<field name="user_id" />
+									</group>
+
+									<group string="بيانات البنك">
+										<field name="address_home_id" invisible="1"/>
+										<field name="bank_account_id" />
+									</group>
+
+								</group>
+								<field name="notes" placeholder="معلومات أخرى ..."
+									colspan="4" />
+							</page>
+						</notebook>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"
+							groups="base.group_user" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+				</form>
+			</field>
+		</record>
+
 		<!-- <record id="view_employee_form" model="ir.ui.view"> <field name="name">hr.employee.form</field> 
 			<field name="model">hr.employee</field> <field name="arch" type="xml"> <form 
 			string="بيانات موظف" create='0' delete='0' duplicate='0' edit='1'> <sheet> 
@@ -207,24 +272,35 @@
 											<field name="bank_account_id" />
 										</group>
 									</group>
-								</page>
+								
+							</page>
+							<page string="بيانات البنك">
 
-								<page string="البدلات">
-								</page>
-								<page string="الحسميات">
-								</page>
-								<page string="الورديات">
-								</page>
-								<page string="بيان الخدمة">
-								</page>
-							</notebook>
-						</sheet>
-						<div class="oe_chatter">
-							<field name="message_follower_ids" widget="mail_followers"
-								groups="base.group_user" />
-							<field name="message_ids" widget="mail_thread" />
-						</div>
-					</form>
+								<group>
+									<group string="بيانات البنك">
+										<field name="address_home_id" invisible="1"/>
+										<field name="bank_account_id" />
+									</group>
+								</group>
+							</page>
+
+							<page string="البدلات">
+							</page>
+							<page string="الحسميات">
+							</page>
+							<page string="الورديات">
+							</page>
+							<page string="بيان الخدمة">
+							</page>
+						</notebook>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"
+							groups="base.group_user" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+				</form>
+
 				</xpath>
 			</field>
 		</record>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="hr_dep_accr_report">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="dep">
+					<t t-call="smart_hr.external_layout_hr">
+						<div class="page" style="font-size:22px; font-family:'Times New Roman' !important;">
+							<div class="col-xs-12 text-center">
+								<h1 align="center">
+									<strong>
+										قرار تعميد إنتداب
+									</strong>
+								</h1>
+							</div>
+                            <div class="col-xs-12" style="margin-top:20px;">
+								<p>
+									<span>المكرم الموظف/ </span>
+									<span t-esc="dep.employee_id.name"/>
+								</p>
+
+								<p>
+									<span>السلام عليكم و رحمة الله و بركاته</span>
+								</p>
+								<p>
+									<span>إعتمدوا التوجه إلى مدينة </span>
+									<span t-esc="dep.city_id.name"/>
+									<span>إعتبارا من يوم </span>
+									<span t-esc="dep.get_day_name(dep.date_from)"/>
+									<span>الموافق لـ</span>
+									<span t-esc="dep.get_ummqura(dep.date_from)"/>
+									<span> و لمدة (</span>
+									<span t-esc="dep.get_hindi_nums(dep.duration)"/>
+									<span>) يوم فقط لمهمة </span>
+									<span t-esc="dep.task_description" />
+								</p>
+							</div>
+							<div class="col-xs-12 text-center">
+								<p>
+									وفقكم الله..... و السلام عليكم و رحمة الله و بركاته
+								</p>
+							</div>
+							<div class="col-xs-5 pull-right">
+								<span t-if="user.signature" t-field="user.signature"/>
+							</div>
+						</div>
+					</t>
+				</t>
+			</t>
+		</template>
+
+	</data>
+</openerp>

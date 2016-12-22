@@ -36,6 +36,10 @@
 		<menuitem id="hr_root_configuration" name="الإعدادات"
 			sequence="100" parent="hr_root" />
 			
+		<menuitem id="menu_hr_deputation_root" parent="hr_root"
+			name="الأنتدابات" sequence="17" />
 
+		<menuitem id="menu_hr_deputation_category_root" parent="hr_root_configuration"
+			name="الأنتدابات" sequence="300" />
 	</data>
 </openerp>
