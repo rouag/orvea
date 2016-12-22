@@ -22,3 +22,4 @@ msgstr "الهاتف"
 #: model:ir.model.fields,field_description:hr.field_hr_employee_country_id
 msgid "Nationality (Country)"
 msgstr "الجنسية"
+
