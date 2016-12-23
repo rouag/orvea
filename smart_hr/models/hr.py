@@ -41,6 +41,7 @@ class HrEmployee(models.Model):
     employee_no = fields.Integer(string=u'رقم الموظف', advanced_search=True)
     join_date = fields.Date(string=u'تاريخ الالتحاق بالجهة')
     external_decision = fields.Boolean(string=u'موافقة خارجية', default=False)
+    holidays = fields.One2many('hr.holidays', 'employee_id', string = u'الاجازات')
 
     @api.depends('birthday')
     def _compute_age(self):

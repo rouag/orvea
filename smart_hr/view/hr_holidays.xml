@@ -12,7 +12,7 @@
 			<field name="arch" type="xml">
 				<xpath expr="/tree" position='replace'>
 					<tree string="الطلبات">
-						<field name="name" />
+						<field name="name" string = "الرمز" />
 						<field name="employee_id" />
 						<field name="holiday_status_id" />
 						<field name="date_from" />
