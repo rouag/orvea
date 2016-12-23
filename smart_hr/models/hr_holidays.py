@@ -317,7 +317,7 @@ class HrHolidays(models.Model):
         vals['name'] = self.env['ir.sequence'].get('hr.holidays.seq')
         res.write(vals)
         return res
-            
+    
     
 class HrDelayHoliday(models.Model):
     _name = 'hr.delay.holiday'  

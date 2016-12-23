@@ -13,6 +13,7 @@
         'view/hr_menu.xml',
         
         'security/hr_security.xml',
+        'security/ir_rule.xml',
         'security/ir.model.access.csv',
         
         'data/sequences.xml',

@@ -39,14 +39,14 @@ access_employee_medical_exam,medical_employee_medical_exam,model_employee_medica
 ,,,,,,,
 access_recruiter_recruiter,recruiter_recruiter,model_recruiter_recruiter,,1,1,1,1
 ,,,,,,,
-access_hr_holiday_deputed_employee,hr_holiday_deputed_employee,model_hr_holidays,group_employee,1,1,1,1
+,,,,,,,
 ,,,,,,,
 access_hr_holiday_status_deputed_employee,hr_holiday_status_deputed_employee,model_hr_holidays_status,group_employee,1,0,0,0
 access_hr_overtime_deputed_employee,hr_overtime_deputed_employee,model_hr_overtime,group_employee,1,0,0,0
 access_hr_overtime_line_deputed_employee,hr_overtime_line_deputed_employee,model_hr_overtime_line,group_employee,1,0,0,0
-access_hr_holiday_normal_employee,hr_holiday_normal_employee,model_hr_holidays,group_normal_employee,1,1,1,1
+access_hr_holiday_employee,hr_holiday_employee,model_hr_holidays,group_employee,1,1,1,1
 access_hr_holidays_cancellation,hr_holidays_cancellation,model_hr_holidays_cancellation,,1,1,1,1
-access_hr_holiday_status_normal_employee,hr_holiday_status_normal_employee,model_hr_holidays_status,group_normal_employee,1,0,0,0
+access_hr_holiday_status_employee,hr_holiday_status_employee,model_hr_holidays_status,group_employee,1,0,0,0
 access_hr_holiday_followup,hr_holiday_followup,model_hr_holidays,group_followup,1,0,0,0
 access_hr_holiday_status_configuration,hr_holiday_type_configuration,model_hr_holidays_status,group_configuration,1,1,1,0
 access_hr_holiday_status_sys_manager,hr_holiday_status_sys_manager,model_hr_holidays_status,group_sys_manager,1,1,1,1
@@ -95,6 +95,7 @@ access_hr_hr_assessment_result_config,hr_assessment_result_config,model_hr_asses
 access_hr_hr_assessment_result_config,hr_assessment_result_config,model_hr_assessment_result_config,group_followup_manager,1,1,1,1
 access_hr_hr_assessment_result_config,hr_assessment_result_config,model_hr_assessment_result_config,group_hrm,1,1,1,1
 access_hr_hr_assessment_result_config,hr_assessment_result_config,model_hr_assessment_result_config,group_dm,1,1,1,1
+,,,,,,,
 access_hr_job_employee,hr_job,model_hr_job,group_employee,1,0,0,0
 ,,,,,,,
 access_hr_decision_appoint,hr_decision_appoint,model_hr_decision_appoint,group_employee,1,0,0,0

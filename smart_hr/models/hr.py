@@ -40,6 +40,7 @@ class HrEmployee(models.Model):
     age = fields.Integer(string=u'السن', compute='_compute_age')
     employee_no = fields.Integer(string=u'رقم الموظف', advanced_search=True)
     join_date = fields.Date(string=u'تاريخ الالتحاق بالجهة')
+    external_decision = fields.Boolean(string=u'موافقة خارجية', default=False)
 
     @api.depends('birthday')
     def _compute_age(self):
@@ -52,7 +53,6 @@ class HrEmployee(models.Model):
                     emp.age = years
     @api.depends('name')
     def _get_service_duration(self):
-        print "hello"
         for rec in self:
             #get date of hiring
             date_hiring = self.env['hr.decision.appoint'].search([('employee_id.id', '=', self.id)], limit = 1).date_hiring

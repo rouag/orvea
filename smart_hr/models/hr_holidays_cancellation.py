@@ -23,15 +23,13 @@ class hrHolidaysCancellation(models.Model):
         ('refuse', u'رفض'),
     ], string=u'حالة', default='draft', advanced_search=True)
     type = fields.Selection([
-        ('cut', u'طلب'),
-        ('cancellation', u'مراجعة الموظف'),
+        ('cut', u'قطع'),
+        ('cancellation', u'إلغاء'),
     ], string=u'نوع', default='cancellation', advanced_search=True)
     
     
     @api.model
     def create(self, vals):
-      
-            
         res = super(hrHolidaysCancellation, self).create(vals)
         vals = {}
         if self._context['operation'] == 'cancel':
@@ -68,10 +66,11 @@ class hrHolidaysCancellation(models.Model):
 
     @api.one
     def button_employee_done(self):
+        print "hello"
         for cancellation in self:
             cancellation.state = 'done'
             # Update the holiday state
-            cancellation.holiday.state = 'cancel'
+            cancellation.holiday.write({'state': 'cancel'})
 
     @api.one
     def button_refuse(self):
