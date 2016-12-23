@@ -100,3 +100,11 @@ access_hr_job_employee,hr_job,model_hr_job,group_employee,1,0,0,0
 ,,,,,,,
 access_hr_decision_appoint,hr_decision_appoint,model_hr_decision_appoint,group_employee,1,0,0,0
 access_hr_deputation,hr_deputation,model_hr_deputation,group_employee,1,0,0,0
+,,,,,,,
+access_hr_deduction_type,hr_deduction_type,model_hr_deduction_type,group_deduction_management,1,1,1,1
+access_hr_deduction,hr_deduction,model_hr_deduction,group_deduction_management,1,1,1,1
+access_hr_deduction_line,hr_deduction_line,model_hr_deduction_line,group_deduction_management,1,1,1,1
+access_hr_deduction_history,hr_deduction_history,model_hr_deduction_history,group_deduction_management,1,1,1,1
+,,,,,,,
+access_hr_decision,name_hr_decision,model_hr_decision,,1,1,1,1
+access_hr_decision_type,name_hr_decision_type,model_hr_decision_type,,1,1,1,1

@@ -9,7 +9,10 @@
         """
         Module base  can be used in any app
         """,
-    'depends': ['base'],
+    'depends': ['base', 'report'],
+    'data': ['data/paperformat.xml',
+             'view/res_company.xml',
+             'views/layout.xml',
+             ],
     'auto_install': False,
-    'data': [],
 }
