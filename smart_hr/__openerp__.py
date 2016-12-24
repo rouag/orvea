@@ -8,7 +8,7 @@
     'description':
         """
         """,
-    'depends': ['hr', 'hr_holidays', 'odoo_rtl', 'web_readonly_bypass', 'web_one2many_selectable', 'hr_payroll'],
+    'depends': ['hr', 'hr_holidays', 'odoo_rtl', 'web_readonly_bypass', 'hr_payroll'],
     'data': [
 
 

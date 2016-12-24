@@ -23,13 +23,17 @@
 		<menuitem id="hr_root_training" name="التدريب" sequence="30" parent="hr_root" />
 
 		<menuitem id="hr_root_configuration" name="الإعدادات" sequence="100" parent="hr_root" />
+		
+		<menuitem id="hr_root_employee_configuration" name="شؤون الموظفين" sequence="15" parent="hr_root_configuration" />
 			
 		<menuitem id="menu_hr_deputation_root" parent="hr_root" name="الأنتدابات" sequence="17" />
 
-		<menuitem id="menu_hr_deputation_category_root" parent="hr_root_configuration" name="الأنتدابات" sequence="300" />
-			
-		<menuitem id="menu_hr_decisions" parent="hr_root" name="القرارات" sequence="40" />		
-			
+		<menuitem id="hr_root_decision" parent="hr_root" name="القرارات" sequence="40" />		
+		
+		<menuitem id="hr_deduction_root" parent="hr_root" name="الحسميات" sequence="45" />
+		
+		<menuitem id="menu_hr_decisions" parent="hr_root" name="القرارات" sequence="50" />		
+<!-- 		 #TODO:  two menu of  القرارات -->
 		<menuitem id="menu_hr_suspension_root" parent="menu_hr_decisions" name="كف اليد" sequence="10" />
 			
 		<menuitem id="menu_hr_termination_root" parent="menu_hr_decisions" name="طى القيد" sequence="20" />
