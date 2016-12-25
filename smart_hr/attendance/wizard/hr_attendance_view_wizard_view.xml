@@ -36,9 +36,9 @@
             <field name="target">new</field>
         </record>
         <menuitem id="menu_hr_attendance_view_wizard"
-                  sequence="2"
+                  sequence="5"
                   action="action_hr_attendance_view_wizard"
-                  parent="menu_hr_reports_root"/>
+                  parent="menu_attendance_report"/>
 
     </data>
 </openerp>

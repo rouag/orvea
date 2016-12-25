@@ -2,14 +2,14 @@
 <openerp>
 	<data>
 
-		<!--  العطلة الرسمية -->
+		<!--  الأعياد و العطل الرسمية -->
 
 		<record model="ir.ui.view" id="hr_public_holiday_tree">
 			<field name="name">hr.public.holiday.tree</field>
 			<field name="model">hr.public.holiday</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
-				<tree string="العطلة الرسمية">
+				<tree string="الأعياد و العطل الرسمية">
 					<field name="name" />
 					<field name="date" />
 					<field name="date_from" />
@@ -23,7 +23,7 @@
 			<field name="model">hr.public.holiday</field>
 			<field name="type">form</field>
 			<field name="arch" type="xml">
-				<form string="العطلة الرسمية">
+				<form string="الأعياد و العطل الرسمية">
 					<header>
 						<button name="action_confirm" string="إعتماد" type="object" states="new" />
 						<button name="action_done" string="تمت" type="object" states="confirm" />
@@ -42,44 +42,16 @@
 			</field>
 		</record>
 		<record model="ir.actions.act_window" id="action_hr_public_holiday">
-			<field name="name">العطل الرسمية</field>
+			<field name="name">الأعياد و العطل الرسمية</field>
 			<field name="res_model">hr.public.holiday</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
-		<menuitem id="hr_public_holiday_menu" name="العطل الرسمية"
-			sequence="12" parent="hr_root_training" action="action_hr_public_holiday"
-			/>
-
-
 		
-		<!-- العطل المنتهية -->
-		<record model="ir.actions.act_window" id="action_hr_public_holiday_close">
-			<field name="name">العطل الرسمية</field>
-			<field name="res_model">hr.public.holiday</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
-			<field name="context">{'readonly_by_pass': True}</field>
-			<field name="domain">[('state','=','done')]</field>
-		</record>
-
-		<record id="action_hr_public_holiday_close_tree" model="ir.actions.act_window.view">
-			<field name="view_mode">tree</field>
-			<field name="view_id" ref="hr_public_holiday_tree" />
-			<field name="act_window_id" ref="action_hr_public_holiday_close" />
-		</record>
-
-		<record id="action_hr_public_holiday_closee_form" model="ir.actions.act_window.view">
-			<field name="view_mode">form</field>
-			<field name="view_id" ref="hr_public_holiday_form" />
-			<field name="act_window_id" ref="action_hr_public_holiday_close" />
-		</record>
-
-		<menuitem id="action_hr_public_holiday_close_menu" name="العطل المعتمدة"
-			sequence="13" parent="hr_presence_quit" action="action_hr_public_holiday_close" />
-
-
+		<menuitem id="hr_public_holiday_menu" name="الأعياد و العطل الرسمية"
+			sequence="15" parent="menu_attendance_configuration" action="action_hr_public_holiday" />
+ 
 
 	</data>
 </openerp>

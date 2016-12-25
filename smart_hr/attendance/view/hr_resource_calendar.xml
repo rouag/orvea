@@ -1,14 +1,56 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <openerp>
-    <data>
-    	
-	
-		<menuitem name ="الورديات" action="resource.action_resource_calendar_form" id="menu_resource_calendar_inherit"
-			parent="hr_presence_quit" sequence="1" />
-<!-- 		<menuitem name ="الموارد المعتمدة " action="resource.action_resource_calendar_leave_tree" -->
-<!-- 			id="menu_view_resource_calendar_leaves_search__inherit" parent="hr_presence_quit" -->
-<!-- 			sequence="2" /> -->
-<!-- 		<menuitem name ='الموارد' action="resource.action_resource_resource_tree" id="menu_resource_resource_inherit" -->
-<!-- 			parent="hr_presence_quit" sequence="3" /> -->
+	<data>
+
+		<menuitem name="الإعدادات" id="menu_attendance_configuration"
+			parent="menu_attendance_root" sequence="50" />
+
+
+		<record id="resource_calendar_form" model="ir.ui.view">
+			<field name="name">resource.calendar.form</field>
+			<field name="model">resource.calendar</field>
+			<field name="inherit_id" ref="resource.resource_calendar_form" />
+			<field name="arch" type="xml">
+				<xpath expr="/form" position='replace'>
+					<form string="ساعات العمل">
+						<sheet>
+							<group>
+								<group col="4">
+									<field name="name" string="المسمى" />
+									<newline />
+									<field name="date_from" />
+									<field name="date_to" />
+								</group>
+								<group>
+									<field name="company_id" groups="base.group_multi_company" />
+								</group>
+								<separator colspan="4" string="الورديات" />
+								<field name="attendance_ids" nolabel="1">
+									<tree editable="buttom">
+										<field name="dayofweek" />
+										<field name="name" string="المسمى" />
+										<field name="hour_from" string="من" />
+										<field name="hour_to" string="إلى" />
+									</tree>
+									<from>
+										<field name="dayofweek" />
+										<field name="name" string="المسمى" />
+										<field name="hour_from" string="من" />
+										<field name="hour_to" string="إلى" />
+									</from>
+								</field>
+								<field name="leave_ids" context="{'default_calendar_id': id}"
+									invisible="1" />
+							</group>
+						</sheet>
+					</form>
+				</xpath>
+			</field>
+		</record>
+
+		<menuitem name="ساعات العمل" action="resource.action_resource_calendar_form"
+			id="menu_resource_calendar_inherit" parent="menu_attendance_configuration"
+			sequence="5" />
+
 	</data>
 </openerp>

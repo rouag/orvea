@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <openerp>
 	<data>
-	
-
-
 
 
 		<!-- presence -->
@@ -11,7 +8,7 @@
 				<field name="name">hr.plan.presence.form</field>
 			<field name="model">hr.plan.presence</field>
 			<field name="arch" type="xml">
-				<form string="خطة الحضور والإنصرافة">
+				<form string="خطة الحضور والإنصراف">
 					<sheet>
 						<group>
 							<group col="2">
@@ -38,7 +35,7 @@
 			<field name="name">hr.plan.presence.form</field>
 			<field name="model">hr.plan.presence</field>
 			<field name="arch" type="xml">
-				<tree string="خطة الحضور والإنصرافة" class="oe_tree_view">
+				<tree string="خطة الحضور والإنصراف" class="oe_tree_view">
 					<field name="name" />
 					<field name="late" />
 					<field name="percent_late" />
@@ -53,7 +50,7 @@
 			<field name="name">hr.plan.presence.form</field>
 			<field name="model">hr.plan.presence</field>
 			<field name="arch" type="xml">
-				<search string="خطة الحضور والإنصرافة">
+				<search string="خطة الحضور والإنصراف">
 					<field name="name" />
 					<field name="late" />
 					<field name="percent_late" />
@@ -65,14 +62,16 @@
 			</field>
 		</record>
 		<record id="action_hr_plan_presence" model="ir.actions.act_window">
-			<field name="name">خطة الحضور والإنصرافة</field>
+			<field name="name">خطة الحضور والإنصراف</field>
 			<field name="res_model">hr.plan.presence</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-			<menuitem name='خطة الحضور والإنصراف' action="action_hr_plan_presence"
-			id="menu_hr_plan_presence" parent="hr_presence_quit"
-			sequence="4" />
+		
+		
+	   <menuitem name='خطة الحضور والإنصراف' action="action_hr_plan_presence"
+			id="menu_hr_plan_presence" parent="menu_attendance_configuration"
+			sequence="10" />
 
 
 

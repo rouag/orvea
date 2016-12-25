@@ -5,3 +5,6 @@ access_hr_reward_setting,name_hr_reward_setting,model_hr_reward,group_payroll_se
 access_hr_reward_payroll,name_hr_reward_payroll,model_hr_reward,group_payroll_management,1,0,0,0
 access_hr_indemnity_setting,name_hr_indemnity_setting,model_hr_indemnity,group_payroll_setting,1,1,1,1
 access_hr_indemnity_payroll,name_hr_indemnity_payroll,model_hr_indemnity,group_payroll_management,1,0,0,0
+,,,,,,,
+access_hr_payslip_days_off,name_hr_payslip_days_off,model_hr_payslip_days_off,,1,1,1,0
+
