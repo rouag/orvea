@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <template id="hr_attendance_followup_summary_report">
+            <t t-call="report.html_container">
+                <t t-set="wizard" t-value="data['form']"/>
+                <t t-call="smart_hr.external_layout_hr">
+                    <div class="page" style="direction:rtl;">
+                        <p align="left">تاريخ الطباعة: <span t-esc="today"/></p>
+                        <h1 align="center">تقرير المتابعة المختصر</h1>
+                        <h1 align="center">غياب الموظف فى الفترة ما بين: <span t-esc="get_ummqura(wizard['date_from'])[3]"/> الى <span t-esc="get_ummqura(wizard['date_to'])[3]"/></h1>
+                        <hr/>
+                        <table class="table table-striped table-bordered">
+                            <tr>
+                                <th style="text-align:center !important;">موظف</th>
+                                <th style="text-align:center !important;">دقائق</th>
+                                <th style="text-align:center !important;">ساعات</th>
+                                <th style="text-align:center !important;">ايام</th>
+                            </tr>
+                            <t t-foreach="get_followup(wizard['employee_ids'], wizard['all_employees'], wizard['date_from'], wizard['date_to'])" t-as="rec">
+                                <tr>
+                                    <td><span t-esc="rec['employee_id']"/></td>
+                                    <td align="center"><span t-esc="rec['minutes']"/></td>
+                                    <td align="center"><span t-esc="rec['hours']"/></td>
+                                    <td align="center"><span t-esc="rec['days']"/></td>
+                                </tr>
+                            </t>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</openerp>

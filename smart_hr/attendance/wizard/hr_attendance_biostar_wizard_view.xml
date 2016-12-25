@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+    <data>
+
+        <!--
+            Attendance Biostar Wizard
+        -->
+        <record id="view_form_hr_attendance_biostar_wizard" model="ir.ui.view">
+            <field name="name">hr.attendance.biostar.wizard.form</field>
+            <field name="model">hr.attendance.biostar.wizard</field>
+            <field name="arch" type="xml">
+                <form string="تحديث بيانات البصمة">
+                    <separator string="تحديث بيانات البصمة"/>
+                    <notebook>
+                        <page string="تحديث بيانات البصمة الجديدة">
+                            <group>
+                                <field name="old_records"/>
+                                <field name="current_records"/>
+                                <field name="new_records"/>
+                            </group>
+                            <button name="button_download" string="تحديث" type="object" icon="fa-refresh" class="oe_inline oe_stat_button"/>
+                        </page>
+                        <page string="تحديث بيانات البصمة لموظف">
+                            <group>
+                                <field name="employee_id" domain="[('biostar_no','!=',False)]"/>
+                            </group>
+                            <button name="button_employee" string="تحديث" type="object" icon="fa-refresh" class="oe_inline oe_stat_button"/>
+                        </page>
+                    </notebook>
+                    <footer>
+                        <button string="إلغاء" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_hr_attendance_biostar_wizard" model="ir.actions.act_window">
+            <field name="name">تحديث بيانات البصمة</field>
+            <field name="res_model">hr.attendance.biostar.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_form_hr_attendance_biostar_wizard"/>
+            <field name="context">{'default_old_records':1}</field>
+            <field name="target">new</field>
+        </record>
+        <menuitem id="menu_hr_attendance_biostar_wizard"
+                  sequence="1"
+                  action="action_hr_attendance_biostar_wizard"
+                  parent="menu_hr_reports_root"/>
+
+    </data>
+</openerp>

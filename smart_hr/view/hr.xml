@@ -58,6 +58,7 @@
 										<field name="birthday_location" />
 										<field name="identification_id" groups="base.group_hr_user" />
 										<field name="passport_id" groups="base.group_hr_user" />
+										<field name="country_id" />
 									</group>
 
 									<group string="بيانات التواصل">
@@ -71,12 +72,15 @@
 										<field name="department_id" on_change="onchange_department_id(department_id)" />
 										<field name="job_id" />
 										<field name="parent_id" />
+										<field name="user_id" />
 										<field name="working_hours_calendar" />
-										
 									</group>
 
 									<group string="بيانات البنك">
+										<field name="address_home_id" invisible="1"/>
 										<field name="bank_account_id" />
+										<field name="wage" />
+										<field name="payroll_structure_id" />
 									</group>
 
 								</group>
@@ -94,6 +98,7 @@
 			</field>
 		</record>
 
+
 		<record model="ir.actions.act_window" id="action_hr_employee">
 			<field name="name">الموظفون</field>
 			<field name="res_model">hr.employee</field>
@@ -110,46 +115,14 @@
 
 		<record id="action_hr_employee_form" model="ir.actions.act_window.view">
 			<field name="view_mode">form</field>
-			<field name="view_id" ref="view_employee_form" />
+			<field name="view_id" ref="hr.view_employee_form" />
 			<field name="act_window_id" ref="action_hr_employee" />
 		</record>
 
 
 
-		<menuitem id="hr_employee_menu" name="الموظفون"
-			sequence="10" parent="hr_root_employees" action="action_hr_employee" />
-
-
-		<record model="ir.ui.view" id="view_employee_form_inherit">
-			<field name="name">hr.employee.inherit</field>
-			<field name="model">hr.employee</field>
-			<field name="type">form</field>
-			<field name="inherit_id" ref="hr.view_employee_form" />
-			<field name="arch" type="xml">
-				<!-- update invisible and string fields -->
-				<field name="address_id" position="attributes">
-					<attribute name="invisible">1</attribute>
-				</field>
-				<field name="work_location" position="attributes">
-					<attribute name="string">مكان العمل</attribute>
-				</field>
-				<field name="coach_id" position="attributes">
-					<attribute name="invisible">1</attribute>
-				</field>
-				<field name="country_id" position="attributes">
-					<attribute name="string">الجنسية</attribute>
-				</field>
-
-				<!-- Field added -->
-				<field name="category_ids" position="replace" />
-				<div class="oe_title" position="inside">
-					<label for="number" class="oe_edit_only" />
-					<h1>
-						<field name="number" placeholder="الرقم الوظيفي" />
-					</h1>
-				</div>
-			</field>
-		</record>
+		<menuitem id="hr_employee_menu" name="الموظفون" sequence="10"
+			parent="hr_root_employees" action="action_hr_employee" />
 
 
 		<!-- تسجيل بيانات موظف -->
@@ -169,101 +142,125 @@
 		<record id="view_employee_request_form" model="ir.ui.view">
 			<field name="name">hr.employee.request.form</field>
 			<field name="model">hr.employee</field>
+			<field name="inherit_id" ref="hr.view_employee_form" />
 			<field name="arch" type="xml">
-				<form string="تسجيل بيانات موظف">
-					<header>
-						<button name="action_send" string="إرسال للإعتماد" type="object"
-							groups="smart_hr.group_employee_request" states="new" />
-						<button name="action_confirm" string="موافقة" type="object"
+				<xpath expr="/form" position='replace'>
+					<form string="تسجيل بيانات موظف">
+						<header>
+							<button name="action_send" string="إرسال للإعتماد" type="object"
+								groups="smart_hr.group_employee_request" states="new" />
+							<button name="action_confirm" string="موافقة" type="object"
 
-							groups="smart_hr.group_employee_registration" states="waiting" />
-						<button name="action_cancel" string="إلغاء" type="object"
-							groups="smart_hr.group_employee_request" states="waiting" />
-						<button name="action_refuse" string="رفض" type="object"
-							groups="smart_hr.group_employee_registration" states="waiting" />
-						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done,refused" />
-					</header>
+								groups="smart_hr.group_employee_registration" states="waiting" />
+							<button name="action_cancel" string="إلغاء" type="object"
+								groups="smart_hr.group_employee_request" states="waiting" />
+							<button name="action_refuse" string="رفض" type="object"
+								groups="smart_hr.group_employee_registration" states="waiting" />
+							<field name="state" widget="statusbar" statusbar_visible="new,waiting,done,refused" />
+						</header>
 
-					<sheet>
-						<field name="image" widget="image" class="oe_avatar"
-							options="{&quot;preview_image&quot;:&quot;image_medium&quot;}" />
-						<div class="oe_title">
-							<label for="name" class="oe_edit_only" />
-							<h1>
-								<field name="name" placeholder="اسم الموظف" attrs="{'required': 1}" />
-							</h1>
-							<label for="number" class="oe_edit_only" />
-							<h1>
-								<field name="number" placeholder="الرقم الوظيفي"  attrs="{'required': 1}"/>
+						<sheet>
+							<div name="button_box" invisible="1"/>
+							<field name="image" widget="image" class="oe_avatar"
+								options="{&quot;preview_image&quot;:&quot;image_medium&quot;}" />
+							<div class="oe_title">
+								<label for="name" class="oe_edit_only" />
+								<h1>
+									<field name="name" placeholder="اسم الموظف" attrs="{'required': 1}" />
+								</h1>
+								<label for="number" class="oe_edit_only" />
+								<h1>
+									<field name="number" placeholder="الرقم الوظيفي" attrs="{'required': 1}" />
 
-							</h1>
-						</div>
-						<notebook>
-							<page string="بيانات شخصية">
-								<group>
-									<group string="بيانات شخصية">
-										<field name="father_name" attrs="{'required': 1}" />
-										<field name="country_id" options='{"no_open": True, "no_create": True}' attrs="{'required': 1}" />
+								</h1>
+							</div>
+							<notebook>
+								<page string="بيانات شخصية">
+									<group>
+										<group string="بيانات شخصية">
+											<field name="father_name" attrs="{'required': 1}" />
+											<field name="country_id" options='{"no_open": True, "no_create": True}'
+												attrs="{'required': 1}" />
 
-										<field name="identification_id" groups="base.group_hr_user" attrs="{'required': 1}"/>
-										<field name="passport_id" groups="base.group_hr_user" attrs="{'required': 1}" />
-										<field name="is_resident"  attrs="{'required': 1}"/>
-										<field name="education_level"  options='{"no_open": True, "no_create": True}' attrs="{'required': 1}"/>
-										
-									</group>
-									<group string="الحالة">
+											<field name="identification_id" groups="base.group_hr_user"
+												attrs="{'required': 1}" />
+											<field name="passport_id" groups="base.group_hr_user"
+												attrs="{'required': 1}" />
+											<field name="is_resident" attrs="{'required': 1}" />
+											<field name="education_level" options='{"no_open": True, "no_create": True}'
+												attrs="{'required': 1}" />
 
-										<field name="gender" attrs="{'required': 1}" />
-										<field name="marital" attrs="{'required': 1}" />
-									</group>
-									<group string="الميلاد">
-										<field name="birthday" attrs="{'required': 1}"/>
-										<field name="birthday_location" attrs="{'required': 1}"/>
-									</group>
-									<group string="المرفقات">
-										<field name="attachments" widget="many2many_binary"
-											nolabel="1" />
-									</group>
-									<field name="notes" placeholder="معلومات أخرى ..."
-										colspan="4" />
-								</group>
-							</page>
-							<page string="بيانات التواصل">
-								<group>
-									<group string="بيانات التواصل">
-										<field name="mobile_phone" attrs="{'required': 1}"/>
-										<field name="work_location" attrs="{'required': 1}"/>
-										<field name="work_email" widget="email" attrs="{'required': 1}" />
-										<field name="work_phone"/>
-									</group>
-								</group>
-							</page>
-							<page string="بيانات العمل">
-								<group>
-									<group string="بيانات العمل">
-										<field name="department_id" on_change="onchange_department_id(department_id)" />
-										<field name="job_id" attrs="{'readonly': 1, 'invisible': [('state','!=', 'employee')]}"/>
-										<field name="parent_id" />
-										
-									</group>
-									<group string="خصائص أخرى">
-										<field name="user_id" attrs="{'readonly': 1, 'invisible': [('state','!=', 'employee')]}"/>
-										<field name="recruiter" widget="selection"/>
-										<field name="working_hours_calendar" />
+										</group>
+										<group string="الحالة">
 
+											<field name="gender" attrs="{'required': 1}" />
+											<field name="marital" attrs="{'required': 1}" />
+										</group>
+										<group string="الميلاد">
+											<field name="birthday" attrs="{'required': 1}" />
+											<field name="birthday_location" attrs="{'required': 1}" />
+										</group>
+										<group string="المرفقات">
+											<field name="attachments" widget="many2many_binary"
+												nolabel="1" />
+										</group>
+										<field name="notes" placeholder="معلومات أخرى ..."
+											colspan="4" />
 									</group>
-								</group>
+								</page>
+								<page string="بيانات التواصل">
+									<group>
+										<group string="بيانات التواصل">
+											<field name="mobile_phone" attrs="{'required': 1}" />
+											<field name="work_location" attrs="{'required': 1}" />
+											<field name="work_email" widget="email" attrs="{'required': 1}" />
+											<field name="work_phone" />
+											<field name="coach_id" invisible="1"/>
+										</group>
+									</group>
+								</page>
+								<page string="بيانات العمل">
+									<group>
+										<group string="بيانات العمل">
+											<field name="department_id" on_change="onchange_department_id(department_id)" />
+											<field name="job_id"
+												attrs="{'readonly': 1, 'invisible': [('state','!=', 'employee')]}" />
+											<field name="parent_id" />
+										</group>
+										<group string="خصائص أخرى">
+											<field name="user_id"
+												attrs="{'readonly': 1, 'invisible': [('state','!=', 'employee')]}" />
+											<field name="recruiter" widget="selection" />
+
+										</group>
+									</group>
+								</page>
+								<page string="بيانات البنك">
+
+									<group>
+										<group string="بيانات البنك">
+											<field name="bank_account_id" />
+										</group>
+									</group>
+								
 							</page>
 							<page string="بيانات البنك">
-
 								<group>
 									<group string="بيانات البنك">
+										<field name="address_home_id" invisible="1"/>
 										<field name="bank_account_id" />
 									</group>
 								</group>
+								<group  name="active_group" invisible="1"/>
 							</page>
 
 							<page string="البدلات">
+								<field name="allowance_ids">
+									<tree editable="buttom">
+										<field name="allowance_id"/>
+										<field name="amount"/>
+									</tree>
+								</field>
 							</page>
 							<page string="الحسميات">
 							</page>
@@ -279,6 +276,8 @@
 						<field name="message_ids" widget="mail_thread" />
 					</div>
 				</form>
+
+				</xpath>
 			</field>
 		</record>
 
@@ -300,8 +299,8 @@
 			<field name="act_window_id" ref="action_employee_request" />
 		</record>
 		<menuitem id="employee_request_menu" name="تسجيل بيانات موظف"
-			groups="smart_hr.group_employee_request" sequence="1"
-			parent="hr_root_employees" action="action_employee_request" />
+			groups="smart_hr.group_employee_request" sequence="1" parent="hr_root_employees"
+			action="action_employee_request" />
 
 
 

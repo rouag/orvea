@@ -3,7 +3,6 @@
 from openerp import fields, models, api, _
 from openerp.exceptions import ValidationError
 from lxml import etree
-from ..apis.datetime_func import daterange
 
 class hr_overtime(models.Model):
     _name = 'hr.overtime'

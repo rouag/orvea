@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
-
-		<menuitem id="hr_configuration_recruiters_root"
-			sequence="30" name="جهات التوظيف" parent="smart_hr.hr_root_configuration" />
-
+ 
 		<!--أنواع جهات التوظيف -->
 
 		<record id="recruiters_form" model="ir.ui.view">
@@ -40,7 +37,7 @@
 		
 		<!-- config menu -->
 		<menuitem id="hr_configuration_recruiters" name="جهات التوظيف"
-			sequence="35" parent="hr_configuration_recruiters_root"
+			sequence="20" parent="hr_root_employee_configuration"
 			action="action_recruiters" />
 
 

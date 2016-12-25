@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+    <data>
+
+        <!--
+            Termination Types
+        -->
+        <record id="data_hr_termination_type_01" model="hr.termination.type">
+            <field name="name">نقل</field>
+        </record>
+        <record id="data_hr_termination_type_02" model="hr.termination.type">
+            <field name="name">الإستقالة</field>
+        </record>
+        <record id="data_hr_termination_type_03" model="hr.termination.type">
+            <field name="name">التقاعد المبكر</field>
+        </record>
+        <record id="data_hr_termination_type_04" model="hr.termination.type">
+            <field name="name">الفصل</field>
+        </record>
+        <record id="data_hr_termination_type_05" model="hr.termination.type">
+            <field name="name">بلوغ سن التقاعد</field>
+        </record>
+        <record id="data_hr_termination_type_06" model="hr.termination.type">
+            <field name="name">الوفاه</field>
+        </record>
+
+    </data>
+</openerp>

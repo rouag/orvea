@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+    <data>
+
+        <!--
+            Attendance Follow-Up Summary View Wizard
+        -->
+        <record id="view_form_hr_attendance_followup_summary_view_wizard" model="ir.ui.view">
+            <field name="name">hr.attendance.followup.summary.view.wizard.form</field>
+            <field name="model">hr.attendance.followup.summary.view.wizard</field>
+            <field name="arch" type="xml">
+                <form string="تقرير المتابعة المختصر">
+                    <group string="معلومات المتابعة">
+                        <field name="all_employees"/>
+                        <field name="employee_ids" domain="[('biostar_no','!=',False)]" attrs="{'invisible':[('all_employees','=',True)],'required':[('all_employees','=',False)]}"/>
+                        <field name="date_from" required="1"/>
+                        <field name="date_to" required="1"/>
+                    </group>
+                    <footer>
+                        <button name="button_display" string="عرض" type="object" icon="fa-list" class="oe_inline oe_stat_button"/>
+                        أو
+                        <button name="button_print" string="طباعة" type="object" icon="fa-print" class="oe_inline oe_stat_button"/>
+                        أو
+                        <button string="إلغاء" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_hr_attendance_followup_summary_view_wizard" model="ir.actions.act_window">
+            <field name="name">تقرير المتابعة المختصر</field>
+            <field name="res_model">hr.attendance.followup.summary.view.wizard</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+        <menuitem id="menu_hr_attendance_followup_summary_view_wizard"
+                  sequence="4"
+                  action="action_hr_attendance_followup_summary_view_wizard"
+                  parent="menu_hr_reports_root"/>
+
+    </data>
+</openerp>

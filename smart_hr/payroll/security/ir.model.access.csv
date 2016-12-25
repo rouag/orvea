@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_allowance_setting,name_hr_allowance_setting,model_hr_allowance,group_payroll_setting,1,1,1,1
+access_hr_allowance_payroll,name_hr_allowance_payroll,model_hr_allowance,group_payroll_management,1,0,0,0
+access_hr_reward_setting,name_hr_reward_setting,model_hr_reward,group_payroll_setting,1,1,1,1
+access_hr_reward_payroll,name_hr_reward_payroll,model_hr_reward,group_payroll_management,1,0,0,0
+access_hr_indemnity_setting,name_hr_indemnity_setting,model_hr_indemnity,group_payroll_setting,1,1,1,1
+access_hr_indemnity_payroll,name_hr_indemnity_payroll,model_hr_indemnity,group_payroll_management,1,0,0,0

@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <openerp>
 	<data>
-		<menuitem id="menu_hr_employee_education_level_root" parent="hr_root_configuration"
-			name="المستويات التعليمية" sequence="12" />
-
-		<!-- Eid -->
+	  
 		<record id="view_form_hr_employee_education_level" model="ir.ui.view">
 			<field name="name">hr.employee.education.level.form</field>
 			<field name="model">hr.employee.education.level</field>
@@ -13,7 +10,7 @@
 					<sheet>
 						<group>
 							<group>
-								<field name="code" required="1" />
+								<field name="sequence" required="1" />
 							</group>
 							<group>
 								<field name="name" required="1" />
@@ -28,7 +25,7 @@
 			<field name="model">hr.employee.education.level</field>
 			<field name="arch" type="xml">
 				<tree string="المستوى التعليمي" class="oe_tree_view">
-					<field name="code" />
+					<field name="sequence" />
 					<field name="name" />
 				</tree>
 			</field>
@@ -42,7 +39,8 @@
 				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
 			</field>
 		</record>
-		<menuitem id="menu_hr_employee_education_level" action="action_hr_employee_education_level" parent="menu_hr_employee_education_level_root" />
+		<menuitem id="menu_hr_employee_education_level" action="action_hr_employee_education_level" 
+		    sequence="5" parent="hr_root_employee_configuration" />
 
 
 

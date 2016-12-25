@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<template id="hr_suspension_report">
+			<t t-call="report.html_container">
+					<t t-foreach="docs" t-as="susp">
+						<t t-call="smart_hr.external_layout_hr">
+							<div class="page"
+								style="font-size:16px; font-family:'Times New Roman' !important;">
+								
+								<div class="col-xs-12 text-center">
+									<h1 align="center">
+										<strong>
+											Test
+										</strong>
+									</h1>
+								</div>
+								</div>
+						</t>
+					</t>
+				</t>
+		</template>
+
+	</data>
+</openerp>

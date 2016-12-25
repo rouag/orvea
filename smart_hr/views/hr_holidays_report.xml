@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<template id="hr_holidays_report">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_hr.external_layout_hr">
+						<div class="page" style="direction:rtl;">
+							<p align="left">
+								رقم القرار:
+								<span t-esc="o.name" />
+							</p>
+							<p align="left">
+								تاريخ القرار:
+								<span t-esc="o.date" />
+							</p>
+							<p align="center"
+								style="font-size:30px;font-weight: bold;text-decoration: underline;">
+								قرار إجازة
+								<span t-field="o.holiday_status_id.name" />
+							</p>
+							<br />
+							<br />
+							<br />
+							<p style="font-size:22px;">إن مدير شؤون الموظفين</p>
+							<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
+							<p style="font-size:22px;">و إشارة إلى طلب الإجازة المرفق.</p>
+							<p align="center"
+								style="font-size:30px;font-weight: bold;text-decoration: underline;">تقرر ما يلى</p>
+							<p style="font-size:22px;">
+								1) يمنح الموظف /
+								<span t-field="o.employee_id.name" />
+								الذى يشغل وظيفة
+								<span t-field="o.employee_id.job_id.name" />
+							</p>
+							<p style="font-size:22px;">
+								إجازة
+								<span t-field="o.holiday_status_id.name" />
+								لمده
+								<span t-esc="o.duration" />
+								يوما اعتبارا من
+								<span t-esc="o.date_from" />
+							</p>
+							<p style="font-size:22px;">2) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
+							<br />
+							<br />
+							<br />
+							<br />
+							<br />
+							<div class="col-xs-5 pull-right" style="font-size:22px;">
+								<span t-if="user.signature" t-field="user.signature" />
+							</div>
+						</div>
+					</t>
+				</t>
+			</t>
+		</template>
+
+	</data>
+</openerp>

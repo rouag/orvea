@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<!--External layout -->
+
+		<template id="external_layout_extend">
+			<t t-if="not o and doc">
+				<t t-set="o" t-value="doc" />
+			</t>
+			<t t-if="o and 'company_id' in o">
+				<t t-set="company" t-value="o.company_id"></t>
+			</t>
+			<t t-if="not o or not 'company_id' in o">
+				<t t-set="company" t-value="res_company"></t>
+			</t>
+			<t t-call="smart_base.external_layout_header_extend" />
+			<t t-raw="0" />
+			<t t-call="smart_base.external_layout_footer_extend" />
+		</template>
+
+		<!--External Header layout -->
+		
+		<template id="external_layout_header_extend">
+			<div class="header">
+				<div class="row">
+					<img t-if="company.report_header" t-att-src="'data:image/png;base64,%s' % company.report_header" width="100%" />
+				</div>
+			</div>
+		</template>
+
+		<!--External Footer layout -->
+		
+		<template id="external_layout_footer_extend">
+			<div class="footer">
+				<div class="row">
+					<img t-if="company.report_footer" t-att-src="'data:image/png;base64,%s' % company.report_footer" width="100%" />
+				</div>
+			</div>
+		</template>
+		
+	</data>
+</openerp>

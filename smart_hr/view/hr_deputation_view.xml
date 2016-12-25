@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+    <data>
+
+        <!--
+            Deputation Decision
+        -->
+        <record id="view_form_hr_deputation" model="ir.ui.view">
+            <field name="name">hr.deputation.form</field>
+            <field name="model">hr.deputation</field>
+            <field name="arch" type="xml">
+                <form string="قرار الأنتداب">
+                    <field name="is_direct_manager" invisible="1"/>
+                    <field name="is_current_user" invisible="1"/>
+                    <header>
+                        <field name="is_finished" invisible="1"/>
+                        <field name="is_same_employee" invisible="1"/>
+                        <button name="button_dm" string="إرسال طلب" type="object" attrs="{'invisible':['|',('state','!=','draft'),('is_current_user','=',False)]}" icon="fa-paper-plane" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
+                        <button name="button_hrm" string="موافق" type="object" attrs="{'invisible':['|',('state','!=','dm'),('is_direct_manager','=',False)]}" icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
+                        <button name="button_done" string="موافق" type="object" states="hrm" groups="smart_hr.group_hrm" icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
+                        <button name="%(action_hr_refuse_wizard)d" string="رفض" type="action" attrs="{'invisible':['|',('state','!=','dm'),('is_direct_manager','=',False)]}" icon="fa-times" class="oe_inline oe_stat_button"/>
+                        <button name="%(action_hr_refuse_wizard)d" string="رفض" type="action" states="hrm" groups="smart_hr.group_hrm" icon="fa-times" class="oe_inline oe_stat_button"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,dm,hrm,done"/>
+                    </header>
+                    <sheet>
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                        <group>
+                            <group>
+                                <field name="date" readonly="1"/>
+                                <field name="employee_id" required="1" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            </group>
+                            <group string="البدلات">
+                                <field name="deputation_support" required="1" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                <field name="deputation_transport" attrs="{'readonly':[('state','!=','draft')]}"/>
+                            </group>
+                            <group string="داخلى أو خارجى">
+                                <field name="deputation_type" required="1" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                <field name="city_id" widget="selection" attrs="{'invisible':[('deputation_type','!=','internal')], 'required':[('deputation_type','=','internal')], 'readonly':[('state','!=','draft')]}"/>
+                                <field name="deputation_category_id" attrs="{'invisible':[('deputation_type','!=','external')], 'required':[('deputation_type','=','external')], 'readonly':[('state','!=','draft')]}"/>
+                            </group>
+                            <group string="معلومات المهمة">
+                                <field name="task_description" required="1" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                <field name="date_from" required="1" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                <field name="date_to" required="1" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                <field name="duration"/>
+                                <field name="deputation_stock" readonly="1"/>
+                            </group>
+                        </group>
+                        <button name="%(report_hr_deputation_report)d" string="طباعة قرار الإنتداب" type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button"/>
+                        <button name="%(report_hr_dep_accr_report)d" string="طباعة قرار التعميد" type="action" states="done" icon="fa-user" class="oe_inline oe_stat_button"/>
+                        <div>
+                            <field name="message_ids" widget="mail_thread" readonly="1"/>
+                        </div>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="view_tree_hr_deputation" model="ir.ui.view">
+            <field name="name">hr.deputation.tree</field>
+            <field name="model">hr.deputation</field>
+            <field name="arch" type="xml">
+                <tree string="قرارات الأنتداب" class="oe_tree_view" fonts="bold:state in ['draft','done']" row_classes="state-refuse:state=='refuse';state-in-progress:state not in ['draft','refuse','done'];">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="task_description"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="duration"/>
+                    <field name="employee_id"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_search_hr_deputation" model="ir.ui.view">
+            <field name="name">hr.deputation.search</field>
+            <field name="model">hr.deputation</field>
+            <field name="arch" type="xml">
+                <search string="قرارات الأنتداب">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="task_description"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="duration"/>
+                    <field name="employee_id"/>
+                    <field name="state"/>
+                    <separator/>
+                    <filter string="أنتدباتى" name="my_deputations" domain="[('employee_id.user_id', '=', uid)]" help="أنتدباتى"/>
+                    <filter string="أنتدبات الموظفين" name="employees_deputations" domain="[('employee_id.user_id', '!=', uid)]" help="أنتدبات الموظفين"/>
+                    <separator/>
+                    <filter string="طلب" name="state_draft" domain="[('state','=','draft')]"/>
+                    <filter string="مدير المباشر" name="state_dm" domain="[('state','=','dm')]"/>
+                    <filter string="مدير شؤون الموظفين" name="state_hrm" domain="[('state','=','hrm')]"/>
+                    <filter string="اعتمدت" name="state_done" domain="[('state','=','done')]"/>
+                    <filter string="رفض" name="state_refuse" domain="[('state','=','refuse')]"/>
+                </search>
+            </field>
+        </record>
+        <!-- My Deputations -->
+        <record id="action_hr_deputation_my_deputation" model="ir.actions.act_window">
+            <field name="name">إنتدباتى</field>
+            <field name="res_model">hr.deputation</field>
+            <field name="search_view_id" ref="view_search_hr_deputation"/>
+            <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              	<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+            </field>
+        </record>
+        <menuitem id="menu_hr_my_deputation_my_deputation"
+                  action="action_hr_deputation_my_deputation"
+                  parent="menu_hr_deputation_root"
+                  sequence="1"
+                  name="إنتدباتى"/>
+        <!-- Employees' Deputation -->
+        <record id="action_hr_deputation_employees_deputations" model="ir.actions.act_window">
+            <field name="name">إنتدبات الموظفين</field>
+            <field name="res_model">hr.deputation</field>
+            <field name="search_view_id" ref="view_search_hr_deputation"/>
+            <field name="domain">[('employee_id.user_id', '!=', uid),('state','!=','draft')]</field>
+            <field name="context">{'search_default_state_dm':1}</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              	<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+            </field>
+        </record>
+        <menuitem id="menu_hr_deputation_employees_deputations"
+                  action="action_hr_deputation_employees_deputations"
+                  parent="menu_hr_deputation_root"
+                  sequence="2"
+                  groups="smart_hr.group_dm,smart_hr.group_hrm,smart_hr.group_adm,smart_hr.group_followup_manager"
+                  name="إنتدبات الموظفين"/>
+        <!-- HRM -->
+        <record id="action_hr_deputation_hrm" model="ir.actions.act_window">
+            <field name="name">في إنتظار الإعتماد</field>
+            <field name="res_model">hr.deputation</field>
+            <field name="search_view_id" ref="view_search_hr_deputation"/>
+            <field name="domain">[('state','=','hrm')]</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              	<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+            </field>
+        </record>
+        <menuitem id="menu_hr_deputation_hrm"
+                  action="action_hr_deputation_hrm"
+                  parent="menu_hr_deputation_root"
+                  sequence="6"
+                  groups="smart_hr.group_hrm"
+                  name="فى انتظار الإعتماد"/>
+        <!-- In Progress -->
+        <record id="action_hr_deputation_hrm_in_progress" model="ir.actions.act_window">
+            <field name="name">تحت الإجراء</field>
+            <field name="res_model">hr.deputation</field>
+            <field name="search_view_id" ref="view_search_hr_deputation"/>
+            <field name="domain">[('state','in',['dm'])]</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              	<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+            </field>
+        </record>
+        <menuitem id="menu_hr_deputation_hrm_in_progress"
+                  action="action_hr_deputation_hrm_in_progress"
+                  parent="menu_hr_deputation_root"
+                  sequence="7"
+                  groups="smart_hr.group_hrm"
+                  name="تحت الإجراء"/>
+        <!-- Deputation Archive -->
+        <record id="action_hr_deputation_archive" model="ir.actions.act_window">
+            <field name="name">أرشيف الإنتدابات</field>
+            <field name="res_model">hr.deputation</field>
+            <field name="search_view_id" ref="view_search_hr_deputation"/>
+            <field name="domain">[('state','!=','draft')]</field>
+            <field name="context">{'search_default_state_done':1}</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              	<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+            </field>
+        </record>
+        <menuitem id="menu_hr_deputation_archive"
+                  action="action_hr_deputation_archive"
+                  parent="menu_hr_deputation_root"
+                  sequence="8"
+                  groups="smart_hr.group_hr,smart_hr.group_followup"
+                  name="أرشيف الإنتدابات"/>
+
+        <!--
+            Deputation Category
+        -->
+        <record id="view_form_hr_deputation_category" model="ir.ui.view">
+            <field name="name">hr.deputation.category.form</field>
+            <field name="model">hr.deputation.category</field>
+            <field name="arch" type="xml">
+                <form string="فئة الدول">
+                    <sheet>
+                        <group>
+                            <field name="category" required="1"/>
+                            <field name="country_ids" required="1">
+                                <tree>
+                                    <field name="name" string="بلد"/>
+                                </tree>
+                            </field>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="view_tree_hr_deputation_category" model="ir.ui.view">
+            <field name="name">hr.deputation.category.tree</field>
+            <field name="model">hr.deputation.category</field>
+            <field name="arch" type="xml">
+                <tree string="فئات الدول" class="oe_tree_view">
+                    <field name="category"/>
+                    <field name="country_ids"/>
+                </tree>
+            </field>
+        </record>
+        <record id="action_hr_deputation_category" model="ir.actions.act_window">
+            <field name="name">فئات الدول</field>
+            <field name="res_model">hr.deputation.category</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              	<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+             </field>
+        </record>
+        <menuitem id="menu_hr_deputation_category"
+                  action="action_hr_deputation_category"
+                  sequence="35"
+                  parent="hr_root_employee_configuration"
+                  name="فئات الدول"/>
+
+    </data>
+</openerp>

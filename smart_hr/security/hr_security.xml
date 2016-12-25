@@ -1,20 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data noupdate="0">
-		<record id="group_deputed_employee" model="res.groups">
-			<field name="category_id" ref="base.module_category_human_resources" />
-			<field name="name">موظف</field>
-			<field name="implied_ids" eval="[(4, ref('base.group_user'))]" />
-			<field name="menu_access"
-				eval="[(4, ref('hr_root')),(4, ref('menu_hr_leave_root'))]" />
-		</record>
-		
 		<record id="group_holidays_checker" model="res.groups">
 			<field name="category_id" ref="base.module_category_human_resources" />
 			<field name="name">مدقق الاجازات</field>
 			<field name="implied_ids" eval="[(4, ref('base.group_user'))]" />
 		</record>
-		
+
 		<record id="group_director_division_salaries_vacations" model="res.groups">
 			<field name="category_id" ref="base.module_category_human_resources" />
 			<field name="name">مدير شعبة الرواتب والإجازات</field>
@@ -33,7 +25,7 @@
 			<field name="category_id" ref="base.module_category_human_resources" />
 			<field name="implied_ids" eval="[(4, ref('base.group_user'))]" />
 		</record>
-		
+
 		<record id="group_employee_request" model="res.groups">
 			<field name="name">صلاحية تسجيل بيانات الموظفين </field>
 			<field name="category_id" ref="base.module_category_human_resources" />
@@ -55,6 +47,10 @@
 			<field name="name">الموظفين</field>
 			<field name="category_id" ref="base.module_category_human_resources" />
 		</record>
+		<record id="group_deduction_management" model="res.groups">
+			<field name="name"> إدارة الحسميات</field>
+			<field name="category_id" ref="base.module_category_human_resources" />
+		</record>
 
 
 		<record id="group_configuration" model="res.groups">
@@ -68,20 +64,11 @@
 
 
 
-		<record id="group_normal_employee" model="res.groups">
-			<field name="category_id" ref="base.module_category_human_resources" />
-			<field name="name">صلاحيات افتراضية</field>
-			<field name="implied_ids" eval="[(4, ref('base.group_user'))]" />
-			<!-- <field name="menu_access" eval="[(4, ref('menu_hr_deputation_root')),(4, 
-				ref('menu_hr_task_completion_root')),(4, ref('menu_hr_leave_root')),(4, ref('menu_hr_leave_cancellation_root')),(4, 
-				ref('menu_hr_overtime_root')),(4, ref('menu_hr_attendance_view_wizard')),(4, 
-				ref('menu_hr_training_root')),(4, ref('menu_hr_task_root'))]"/> -->
-		</record>
 
 		<record id="group_hr" model="res.groups">
 			<field name="category_id" ref="base.module_category_human_resources" />
 			<field name="name">موظف شؤون الموظفين - القرارات</field>
-			<field name="implied_ids" eval="[(4, ref('group_normal_employee'))]" />
+			<field name="implied_ids" eval="[(4, ref('group_employee'))]" />
 			<!-- <field name="menu_access" eval="[(4, ref('menu_hr_job')),(4, ref('menu_hr_hire')),(4, 
 				ref('menu_hr_promotion_root')),(4, ref('menu_hr_suspension_root')),(4, ref('menu_hr_termination_root'))]"/> -->
 		</record>
@@ -89,7 +76,7 @@
 		<record id="group_hr_payroll" model="res.groups">
 			<field name="category_id" ref="base.module_category_human_resources" />
 			<field name="name">موظف شؤون الموظفين - الرواتب</field>
-			<field name="implied_ids" eval="[(4, ref('group_normal_employee'))]" />
+			<field name="implied_ids" eval="[(4, ref('group_employee'))]" />
 			<!-- <field name="menu_access" eval="[(4, ref('menu_hr_job')),(4, ref('hr_payroll.menu_hr_payroll_root'))]"/> -->
 		</record>
 
@@ -111,13 +98,13 @@
 		<record id="group_ade" model="res.groups">
 			<field name="category_id" ref="base.module_category_human_resources" />
 			<field name="name">موظف التطوير الإداري</field>
-			<field name="implied_ids" eval="[(4, ref('group_normal_employee'))]" />
+			<field name="implied_ids" eval="[(4, ref('group_employee'))]" />
 
 		</record>
 		<record id="group_followup" model="res.groups">
 			<field name="category_id" ref="base.module_category_human_resources" />
 			<field name="name">موظف المتابعة</field>
-			<field name="implied_ids" eval="[(4, ref('group_normal_employee'))]" />
+			<field name="implied_ids" eval="[(4, ref('group_employee'))]" />
 			<!-- <field name="menu_access" eval="[(4, ref('menu_hr_attendance_biostar_wizard')),(4, 
 				ref('menu_hr_attendance_followup_view_wizard')),(4, ref('menu_hr_attendance_followup_summary_view_wizard')),(4, 
 				ref('menu_res_schedule_root'))]"/> -->
@@ -144,6 +131,8 @@
 			<!-- <field name="menu_access" eval="[(4, ref('menu_hr_attendance_root'))]" 
 				/> -->
 		</record>
+
+
 
 
 	</data>

@@ -4,10 +4,11 @@
 
 		<!-- Report Actions -->
 
+
+
 		<report id="salary_grid_report" model="salary.grid"
 			report_type="qweb-pdf" string="طباعة" name="smart_hr.report_salary_grid"
 			file="smart_hr.report_salary_grid" />
-
 
 		<report id="employee_medical_exam_report" model="employee.medical.exam"
 			string="الفحص الطبي" report_type="qweb-pdf"
@@ -18,15 +19,16 @@
 			report_type="qweb-pdf" name="smart_hr.order_enquiry_report_template"
 			attachment_use="False" file="smart_hr.order_enquiry_report_template" />
 
-		<report id="report_hr_leave_report" model="hr.leave" string="طلب الاجازة"
-			report_type="qweb-pdf" name="smart_hr.hr_leave_report" file="smart_hr.hr_leave_report"
+		<report id="report_hr_holidays_report" model="hr.holidays" string="طلب الاجازة"
+			report_type="qweb-pdf" name="smart_hr.hr_holidays_report" file="smart_hr.hr_holidays_report"
 			attachment_use="True" attachment="('Leave_'+(object.name).replace('/','')+'.pdf')"
 			menu="False" />
 
-		<report id="report_hr_leave_hospital_transfer_form_report"
-			model="hr.leave" string="نموذج تحويل مستوصف" report_type="qweb-pdf"
+		<report id="report_hr_holidays_hospital_transfer_form_report"
+			model="hr.holidays" string="نموذج تحويل مستوصف" report_type="qweb-pdf"
 			name="smart_hr.hr_leave_hospital_transfer_form_report" file="smart_hr.hr_leave_hospital_transfer_form_report"
 			attachment_use="False" menu="False" />
+
 		<report id="report_hr_overtime_report" model="hr.overtime"
 			string="قرار خارج دوام" report_type="qweb-pdf" name="smart_hr.hr_overtime_report"
 			file="smart_hr.hr_overtime_report" attachment_use="True"
@@ -67,12 +69,12 @@
 
 		<!-- Update Reports Paper Format -->
 
-		<record id="report_hr_leave_report" model="ir.actions.report.xml">
+		<record id="report_hr_holidays_report" model="ir.actions.report.xml">
 			<field name="paperformat_id" ref="report.paperformat_euro" />
 			<field name="download_filename">${o.name}_قرار إجازة.pdf</field>
 		</record>
 
-		<record id="report_hr_leave_hospital_transfer_form_report"
+		<record id="report_hr_holidays_hospital_transfer_form_report"
 			model="ir.actions.report.xml">
 			<field name="paperformat_id" ref="report.paperformat_euro" />
 			<field name="download_filename">${o.name}_نموذج تحويل مستوصف.pdf</field>
@@ -82,6 +84,26 @@
 			<field name="paperformat_id" ref="report.paperformat_euro" />
 			<field name="download_filename">${o.name}_قرار خارج دوام.pdf</field>
 		</record>
+
+		<report id="report_hr_deputation_report" model="hr.deputation"
+			string="قرار انتداب" report_type="qweb-pdf" name="smart_hr.hr_deputation_report"
+			file="smart_hr.hr_deputation_report" attachment_use="True"
+			attachment="('Deputation_'+(object.name).replace('/','')+'.pdf')"
+			menu="False" />
+
+		<report id="report_hr_dep_accr_report" model="hr.deputation"
+			string="قرار تعميد إنتداب" report_type="qweb-pdf" name="smart_hr.hr_dep_accr_report"
+			file="smart_hr.hr_dep_accr_report" attachment_use="True"
+			attachment="('Deputation_Assignment_'+(object.name).replace('/','')+'.pdf')"
+			menu="False" />
+		
+		
+		<report id="hr_deduction_report" model="hr.deduction"
+			report_type="qweb-pdf" string="الحسميات" name="smart_hr.report_hr_deduction"
+			file="smart_hr.report_hr_deduction" paperformat="smart_base.paperformat_landscape" />
+
+		<report id="hr_deduction_line_report" model="hr.deduction.line" name="smart_hr.report_hr_deduction_line"
+			report_type="qweb-pdf" string="حسميات الموظف" file="smart_hr.report_hr_deduction_line" />
 	</data>
 </openerp>
 		
