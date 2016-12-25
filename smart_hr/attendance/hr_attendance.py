@@ -15,19 +15,19 @@ class ResourceCalendarAttendance(models.Model):
 
     @api.onchange('dayofweek')
     def onchange_dayofweek(self):
-        day = 'الأثنين'
+        day = u'الأثنين'
         if self.dayofweek == '1':
-            day = 'الثلاثاء'
+            day = u'الثلاثاء'
         elif self.dayofweek == '2':
-            day = 'الأربعاء'
+            day = u'الأربعاء'
         elif self.dayofweek == '3':
-            day = 'الخميس'
+            day = u'الخميس'
         elif self.dayofweek == '4':
-            day = 'الجمعة'
+            day = u'الجمعة'
         elif self.dayofweek == '5':
-            day = 'السبت'
+            day = u'السبت'
         elif self.dayofweek == '6':
-            day = 'الأحد'
+            day = u'الأحد'
         self.name = u'وردية يوم %s ' % day
 
 

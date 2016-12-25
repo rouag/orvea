@@ -41,8 +41,8 @@ class import_csv(osv.osv):
         fileobj.write((base64.decodestring(this.data)))   
         fileobj.seek(0)                                    
         reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))  
-        employee=self.env['hr.employee'].search([])
-        print employee.number
+#         employee=self.env['hr.employee'].search([])
+#         print employee.number
         for row  in reader :  
             
 
