@@ -4,7 +4,7 @@ from openerp import fields, models, api, _
 from openerp.tools import SUPERUSER_ID
 from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
-from antlr import ifelse
+
 
 class HrHolidays(models.Model):
     _inherit = 'hr.holidays'

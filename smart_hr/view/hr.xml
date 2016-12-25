@@ -71,6 +71,8 @@
 										<field name="department_id" on_change="onchange_department_id(department_id)" />
 										<field name="job_id" />
 										<field name="parent_id" />
+										<field name="working_hours_calendar" />
+										
 									</group>
 
 									<group string="بيانات البنك">
@@ -242,10 +244,12 @@
 										<field name="department_id" on_change="onchange_department_id(department_id)" />
 										<field name="job_id" attrs="{'readonly': 1, 'invisible': [('state','!=', 'employee')]}"/>
 										<field name="parent_id" />
+										
 									</group>
 									<group string="خصائص أخرى">
 										<field name="user_id" attrs="{'readonly': 1, 'invisible': [('state','!=', 'employee')]}"/>
 										<field name="recruiter" widget="selection"/>
+										<field name="working_hours_calendar" />
 
 									</group>
 								</group>
