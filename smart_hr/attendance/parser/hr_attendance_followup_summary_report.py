@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-####################################
-### This Module Created by Slnee ###
-####################################
+
 
 from openerp import fields, models, api, _
 from openerp.exceptions import ValidationError

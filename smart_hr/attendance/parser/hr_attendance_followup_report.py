@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-####################################
-### This Module Created by Slnee ###
-####################################
+
 
 from openerp import fields, models, api, _
 from openerp.exceptions import ValidationError
 from openerp.report import report_sxw
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_TIME_FORMAT
 from datetime import datetime, timedelta
+import umalqurra
  
 class hr_attendance_followup_report_parser(report_sxw.rml_parse):
     def __init__(self, cr, uid, name, context):
@@ -15,9 +14,9 @@ class hr_attendance_followup_report_parser(report_sxw.rml_parse):
         self.localcontext.update({
             'get_employees': self._get_employees,
             'get_followup': self._get_followup,
-            'get_ummqura': self._get_ummqura,
+            
             'get_total_time': self._get_total_time,
-            'today': self._get_ummqura(datetime.now().strftime(DEFAULT_SERVER_DATE_FORMAT))[3],
+            
         })
 
     def _get_employees(self, wiz):
