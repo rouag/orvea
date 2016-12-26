@@ -57,7 +57,7 @@
 			</field>
 		</record>
 
-		<record id="view_employee_form" model="ir.ui.view">
+		<!-- <record id="view_employee_form" model="ir.ui.view">
 			<field name="name">hr.employee.form</field>
 			<field name="model">hr.employee</field>
 			<field name="arch" type="xml">
@@ -123,13 +123,13 @@
 					</div>
 				</form>
 			</field>
-		</record>
+		</record> -->
 
 
 		<record model="ir.actions.act_window" id="action_hr_employee">
 			<field name="name">الموظفون</field>
 			<field name="res_model">hr.employee</field>
-			<field name="view_type">form</field>
+			<field name="view_type">tree</field>
 			<field name="view_mode">tree,form</field>
 			<field name="domain">[('employee_state','=','employee')]</field>
 		</record>
@@ -256,6 +256,7 @@
 											<field name="job_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="parent_id" />
+											<field name="external_decision" />
 										</group>
 										<group string="خصائص أخرى">
 											<field name="user_id"

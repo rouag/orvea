@@ -50,7 +50,7 @@ class HrDecisionAppoint(models.Model):
         
         #create system user and link current employee to created user
         if self.employee_id.work_email:
-            user = self.env['res.users'].create({'name':self.employee_id.name,'login':self.employee_id.work_email})
+            user = self.env['res.users'].create({'name':self.employee_id.name,'login':self.employee_id.work_email, 'email':self.employee_id.work_email})
             self.employee_id.user_id = user
         else:
             raise Warning(_('الرجاء تعبئة البريد الإلكتروني.'))
