@@ -49,7 +49,7 @@
 							<br />
 							<br />
 							<div class="col-xs-5 pull-right" style="font-size:22px;">
-								<span t-if="user.signature" t-field="user.signature" />
+								<span t-if="user.name" t-field="user.name" groups="smart_hr.group_hrm"/>
 							</div>
 						</div>
 					</t>
