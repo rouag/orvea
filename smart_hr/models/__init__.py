@@ -31,3 +31,6 @@ from . import hr_termination
 
 from . import hr_deduction
 from . import hr_decision
+
+from . import section
+from . import hierarchy_level

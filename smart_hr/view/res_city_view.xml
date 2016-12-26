@@ -14,6 +14,8 @@
                         <group>
                             <field name="name" required="1"/>
                             <field name="days_before_after" required="1"/>
+                            <field name="city_recruiter" required="1"/>
+                            
                         </group>
                     </sheet>
                 </form>
@@ -26,6 +28,8 @@
                 <tree string="مدن" class="oe_tree_view">
                     <field name="name"/>
                     <field name="days_before_after"/>
+					<field name="city_recruiter" />
+                    
                 </tree>
             </field>
         </record>
@@ -36,6 +40,7 @@
                 <search string="مدن">
                     <field name="name"/>
                     <field name="days_before_after"/>
+                    <field name="city_recruiter" />
                 </search>
             </field>
         </record>

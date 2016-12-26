@@ -2,8 +2,8 @@
 <openerp>
     <data>
 
-        <record id="ir_cron_hr_leave_stock" model="ir.cron">
-            <field name="name">Leave Stock Updater</field>
+        <record id="ir_cron_hr_holidays_stock" model="ir.cron">
+            <field name="name">Holiday Stock Updater</field>
             <field name="interval_number">1</field>
             <field name="interval_type">days</field>
             <field name="numbercall">-1</field>

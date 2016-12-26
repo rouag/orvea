@@ -44,5 +44,13 @@
 		
 		<menuitem id="menu_attendance_report" name="التقارير"  sequence="50" parent="menu_attendance_root" /> 		
 			
+		<menuitem id="menu_hr_department_hierarchy_level" parent="hr_root_configuration"
+			name="مستوى العمق في‫الهيكل‬" sequence="100" />
+		<menuitem id="menu_hr_termination_conf_root" parent="hr_root_configuration" name="طى القيد" sequence="90" />
+		
+		<menuitem id="hr_presence_quit" name="الحضور والإنصراف"  sequence="40" parent="hr_root" /> 
+		
+		<menuitem id="menu_hr_reports_root" name="تقارير الحضور والإنصراف  "  sequence="40" parent="hr_presence_quit" /> 		
+			
 	</data>
 </openerp>

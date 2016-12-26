@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+
+
+		<!--الفروع -->
+
+		<record id="hierarchy_level_form" model="ir.ui.view">
+			<field name="name">hierarchy.level.form</field>
+			<field name="model">hierarchy.level</field>
+			<field name="arch" type="xml">
+				<form string="مستوى العمق في ‫الهيكل‬">
+					<sheet>
+						<group>
+							<field name="department_id" />
+							<field name="level" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="hierarchy_level_tree" model="ir.ui.view">
+			<field name="name">hierarchy.level.tree</field>
+			<field name="model">hierarchy.level</field>
+			<field name="arch" type="xml">
+				<tree string="مستوى العمق في ‫الهيكل‬">
+							<field name="department_id" />
+							<field name="level" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hierarchy_level">
+			<field name="name">مستوى العمق في ‫الهيكل‬</field>
+			<field name="res_model">hierarchy.level</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="menu_hr_department_hierarchy_level_conf" parent="menu_hr_department_hierarchy_level"
+			name="مستوى العمق في ‫الهيكل‬" sequence="100" action="action_hierarchy_level"/>
+
+
+
+
+	</data>
+</openerp>

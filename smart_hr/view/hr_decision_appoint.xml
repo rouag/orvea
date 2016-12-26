@@ -50,7 +50,7 @@
 								<field name="date_direct_action" />
 							</group>
 							<group string="بيانات الموظف">
-								<field name="employee_id" domain="[('state','=','done')]" />
+								<field name="employee_id" domain="[('employee_state','=','done')]" />
 								<field name="number" />
 							</group>
 							<group string="بيانات الوظيفة">
