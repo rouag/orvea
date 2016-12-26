@@ -17,15 +17,15 @@ class HrEmployee(models.Model):
     birthday_location = fields.Char(string=u'مكان الميلاد')
     attachments = fields.Many2many('ir.attachment', 'res_id', string=u"المرفقات")
     recruiter = fields.Many2one('recruiter.recruiter', string=u'جهة التوظيف', required=1)
-    state = fields.Selection([('new', u'جديد'),
+    employee_state = fields.Selection([('new', u'جديد'),
                              ('waiting', u'في إنتظار الموافقة'),
                              ('update', u'إستكمال البيانات'),
                              ('done', u'اعتمدت'),
                              ('refused', u'رفض'),
                              ('employee', u'موظف')
-                             ], string=u"الحالة", default='new')
+                             ], string=u'الحالة', default='new')    
     education_level = fields.Many2one('hr.employee.education.level', string = u'المستوى التعليمي')
-     # Leaves Stock
+    # Leaves Stock
     leave_normal = fields.Float(string=u'العادية', default=36)
     leave_emergency = fields.Float(string=u'الاضطرارية', default=5)
     leave_compensation = fields.Float(string=u'البديلة', default=0)
@@ -96,19 +96,19 @@ class HrEmployee(models.Model):
                     raise Warning(_('يوجد موظف لديه نفس الرقم التوظيفي.'))
     @api.one
     def action_send(self):
-        self.state = 'waiting'  
+        self.employee_state = 'waiting'  
 
     @api.one
     def action_confirm(self):
-        self.state = 'done' 
+        self.employee_state = 'done' 
         
     @api.one
     def action_cancel(self):
-        self.state = 'new'
+        self.employee_state = 'new'
     
     @api.one
     def action_refuse(self):
-        self.state = 'refused'          
+        self.employee_state = 'refused'          
                  
 class HrJob(models.Model):
     _inherit = 'hr.job'  
