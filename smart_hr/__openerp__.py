@@ -8,7 +8,7 @@
     'description':
         """
         """,
-    'depends': ['hr', 'hr_holidays', 'odoo_rtl', 'web_readonly_bypass', 'hr_payroll','hr_attendance'],
+    'depends': ['hr', 'hr_holidays', 'odoo_rtl', 'web_readonly_bypass', 'hr_payroll','hr_attendance','smart_base'],
     'data': [
 
 
@@ -46,7 +46,7 @@
 
         'wizards/view/hr_refuse_wizard_view.xml',
 
-
+        'view/hr_department_views.xml',
         'view/hr.xml',
         'view/hr_job.xml',
         'view/hr_decision_appoint.xml',
@@ -69,7 +69,6 @@
         'view/hr_suspension_view.xml',
         'view/hr_suspension_end_view.xml',
         'view/hr_termination_view.xml',
-        'view/hr_department_views.xml',
         'view/section.xml',
         'view/hierarchy_level.xml',
         # القرارات

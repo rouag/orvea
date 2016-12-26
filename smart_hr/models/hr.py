@@ -11,7 +11,7 @@ class HrEmployee(models.Model):
     _inherit = 'hr.employee'  
     
     number = fields.Char(string=u'الرقم الوظيفي', required=1) 
-    working_hours_calendar = fields.Many2one('resource.calendar', string=u"الورديات")
+
     father_name = fields.Char(string=u'إسم الأب', required=1)
     is_resident = fields.Boolean (string=u'موظف مقيم', required=1) 
     birthday_location = fields.Char(string=u'مكان الميلاد')

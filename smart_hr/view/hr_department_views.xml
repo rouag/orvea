@@ -26,12 +26,12 @@
 					<div class="o_primary">
 						<div>
 							<field name="name" />
-							<t t-if="parent_id">
-								<p>~</p>
+							<t t-if="parent_id!='False'">
+								~
 								<field name="parent_id" />
 							</t>
-							<t t-if="dep_section">
-								<p>~</p>
+							<t t-if="dep_section!='False'">
+								<t>~</t>
 							</t>
 							<field name="dep_section" />
 						</div>
@@ -58,14 +58,14 @@
 
 						</group>
 						<group>
-<!-- 							<div> -->
-<!-- 								<li t-if="is_root"> -->
-<!-- 									<p>قسم/إدارة رئيسية:نعم</p> -->
-<!-- 								</li> -->
-<!-- 								<li t-if="!is_root"> -->
-<!-- 									<p>قسم/إدارة رئيسية:لا</p> -->
-<!-- 								</li> -->
-<!-- 							</div> -->
+							<div>
+								<li t-if="is_root=True">
+									<p>قسم/إدارة رئيسية:نعم</p>
+								</li>
+								<li t-if="is_root">
+									<p>قسم/إدارة رئيسية:لا</p>
+								</li>
+							</div>
 						</group>
 
 					</group>
