@@ -95,6 +95,8 @@
         'attendance/views/hr_attendance_followup_summary_report.xml',
         'attendance/views/hr_attendance_report.xml',
         'attendance/views/report.xml',
+        'attendance/view/hr_permission_view.xml',
+        'attendance/view/hr_hour_supp_view.xml'
     ],
     'auto_install': False,
 }

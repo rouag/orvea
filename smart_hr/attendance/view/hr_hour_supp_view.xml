@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+
+		<!-- Termination Decision -->
+		<record id="view_form_hr_hour_supp" model="ir.ui.view">
+			<field name="name">hr.hour.supp.form</field>
+			<field name="model">hr.hour.supp</field>
+			<field name="arch" type="xml">
+				<form string="طلب  الساعات الاضافية">
+					<header>
+						<button name="button_hrm" string="ارسال الطلب" type="object"
+							states="draft" groups="smart_hr.group_hr" icon="fa-check"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="button_done" string="موافق" type="object"
+							states="hrm" groups="smart_hr.group_hrm" icon="fa-check"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="button_refuse" string="رفض" type="object"
+							states="hrm" groups="smart_hr.group_hrm" icon="fa-times"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<field name="state" widget="statusbar" statusbar_visible="draft,hrm,done" />
+					</header>
+					<sheet>
+						<label for="name" class="oe_edit_only" />
+						<h1>
+							<field name="name" />
+						</h1>
+						<group col="4">
+							<field name="date" readonly="1" />
+							<field name="employee_id" required="1"
+								attrs="{'readonly':[('state','!=','draft')]}"  />
+						</group>
+						<group>
+							<group string="معلومات الموظف">
+								<field name="employee_no" readonly="1" />
+								<field name="job_id" readonly="1" />
+								<!-- <field name="level" readonly="1"/> <field name="degree" readonly="1"/> -->
+
+							</group>
+							<group string="معلومات الساعات الاضافية">
+								<field name="hour_supp_date" />
+								<field name="hours" required="1"
+									attrs="{'readonly':[('state','!=','draft')]}" />
+								<field name="hours_leave" required="1"
+									attrs="{'readonly':[('state','!=','draft')]}" />
+								<field name="hours_rentre" required="1"
+									attrs="{'readonly':[('state','!=','draft')]}" />
+								<field name="reason" required="1"
+									attrs="{'readonly':[('state','!=','draft')]}" />
+							</group>
+
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="view_tree_hr_hour_supp" model="ir.ui.view">
+			<field name="name">hr.hour.supp.tree</field>
+			<field name="model">hr.hour.supp</field>
+			<field name="arch" type="xml">
+				<tree string="طلبات الساعات الاضافية" class="oe_tree_view">
+					<field name="name" />
+					<field name="date" />
+					<field name="employee_id" />
+					<field name="hour_supp_date" />
+					<field name="hours"  />
+					<field name="hours_leave"  />
+					<field name="hours_rentre" />
+					<field name="reason"  />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+		<record id="view_search_hr_hour_supp" model="ir.ui.view">
+			<field name="name">hr.hour.supp.search</field>
+			<field name="model">hr.hour.supp</field>
+			<field name="arch" type="xml">
+				<search string="طلبات الساعات الاضافية">
+					<field name="name" />
+					<field name="date" />
+					<field name="employee_id" />
+					<field name="hour_supp_date" />
+					<field name="hours"  />
+					<field name="hours_leave"  />
+					<field name="hours_rentre" />
+					<field name="reason"  />
+					<field name="state" />
+					<separator />
+					<filter string="طلب" domain="[('state','=','draft')]" />
+					<filter string="مدير شؤون الموظفين" domain="[('state','=','hrm')]" />
+					<filter string="اعتمدت" domain="[('state','=','done')]" />
+					<filter string="رفض" domain="[('state','=','refuse')]" />
+				</search>
+			</field>
+		</record>
+		<record id="action_hr_hour_supp" model="ir.actions.act_window">
+			<field name="name">طلبات الساعات الاضافية</field>
+			<field name="res_model">hr.hour.supp</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<menuitem id="menu_hr_hour_supp" action="action_hr_hour_supp"
+			parent="hr_presence_quit" name="طلبات الساعات الاضافية" />
+
+
+
+	</data>
+</openerp>
