@@ -23,3 +23,33 @@ msgstr "الهاتف"
 msgid "Nationality (Country)"
 msgstr "الجنسية"
 
+#. module: hr
+#: model:ir.ui.view,arch_db:hr.hr_department_view_kanban
+msgid "Settings"
+msgstr "تحرير"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/views/form_view.js:773
+#: code:addons/web/static/src/js/views/form_view.js:820
+#, python-format
+msgid "The record has been modified, your changes will be discarded. Are you sure you want to leave this page ?"
+msgstr "لقد تم تعديل النموذج، سيتم تجاهل التغييرات. هل أنت متأكد أنك تريد مغادرة هذه الصفحة؟"
+
+#. module: hr_payroll
+#: model:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
+msgid "Generate"
+msgstr "تأكيد"
+
+#. module: hr_payroll
+#: model:ir.actions.act_window,name:hr_payroll.action_hr_payslip_by_employees
+#: model:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_form
+msgid "Generate Payslips"
+msgstr "إضافة موظفين"
+
+#. module: hr_payroll
+#: model:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
+msgid ""
+"This wizard will generate payslips for all selected employee(s) based on the"
+" dates and credit note specified on Payslips Run."
+msgstr "."

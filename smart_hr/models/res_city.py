@@ -12,7 +12,7 @@ class res_city(models.Model):
 
     name = fields.Char(string=u'اسم', advanced_search=True)
     days_before_after = fields.Integer(string=u'عدد أيام الأنتداب بقل و بعد التدريب', default=1, advanced_search=True)
-
+    city_recruiter = fields.Many2one('recruiter.recruiter',string = u'الجهة')
     @api.constrains('days_before_after')
     def _check_days(self):
         for rec in self:

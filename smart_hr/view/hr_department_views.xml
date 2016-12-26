@@ -1,0 +1,81 @@
+<odoo>
+
+	<!-- hr.department form -->
+	<record id="view_department_form_smart_inherit" model="ir.ui.view">
+		<field name="name">hr.department.form</field>
+		<field name="model">hr.department</field>
+		<field name="inherit_id" ref="hr.view_department_form" />
+		<field name="arch" type="xml">
+			<field name="name" position="after">
+				<field name="dep_section" />
+				<field name="dep_city" />
+				<field name="dep_recruiter" />
+				<field name="is_root" />
+				<field name="level" invisible="1" />
+			</field>
+		</field>
+	</record>
+
+	<record id="hr_department_view_kanban_smart_inherit" model="ir.ui.view">
+		<field name="name">hr.department.kanban.inherit</field>
+		<field name="model">hr.department</field>
+		<field name="inherit_id" ref="hr.hr_department_view_kanban" />
+		<field name="arch" type="xml">
+			<data>
+				<div class="o_primary" position="replace">
+					<div class="o_primary">
+						<div>
+							<field name="name" />
+							<t t-if="parent_id">
+								<p>~</p>
+								<field name="parent_id" />
+							</t>
+							<t t-if="dep_section">
+								<p>~</p>
+							</t>
+							<field name="dep_section" />
+						</div>
+					</div>
+				</div>
+				<div class="o_secondary" position="inside">
+					<group>
+						<group>
+							<li>
+								المسؤول:
+								<field name="manager_id" />
+
+							</li>
+							<li>
+								المدينة:
+								<field name="dep_city" />
+
+							</li>
+							<li>
+								الجهة:
+								<field name="dep_recruiter" />
+
+							</li>
+
+						</group>
+						<group>
+<!-- 							<div> -->
+<!-- 								<li t-if="is_root"> -->
+<!-- 									<p>قسم/إدارة رئيسية:نعم</p> -->
+<!-- 								</li> -->
+<!-- 								<li t-if="!is_root"> -->
+<!-- 									<p>قسم/إدارة رئيسية:لا</p> -->
+<!-- 								</li> -->
+<!-- 							</div> -->
+						</group>
+
+					</group>
+
+				</div>
+			</data>
+		</field>
+	</record>
+
+
+
+
+</odoo>

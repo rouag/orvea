@@ -4,15 +4,41 @@
 
 		<!-- الإدارات -->
 
+
 		<record model="ir.actions.act_window" id="action_hr_department">
 			<field name="name">الإدارات</field>
 			<field name="res_model">hr.department</field>
 			<field name="view_type">form</field>
-			<field name="view_mode">kanban,form</field>
+			<field name="view_mode">kanban,form,tree</field>
 		</record>
-
+        <!--
+            Department Hierarchy
+        -->
+        <record id="view_tree_hr_department_tree_view" model="ir.ui.view">
+            <field name="name">hr.department.tree.view</field>
+            <field name="model">hr.department</field>
+            <field name="field_parent">child_ids</field>
+            <field name="arch" type="xml">
+                <tree string="الهيكل الإدارى" class="oe_tree_view">
+                    <field name="name"/>
+                    <field name="manager_id"/>
+                    <field name="parent_id" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="action_hr_department_tree_view" model="ir.actions.act_window">
+            <field name="name">الهيكل الإدارى</field>
+            <field name="res_model">hr.department</field>
+            <field name="view_type">tree</field>
+            <field name="view_id" ref="view_tree_hr_department_tree_view"/>
+            <field name="help" type="html">
+              	<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+             </field>
+        </record>
+		
 		<menuitem id="hr_department_menu" name="الإدارات" sequence="5"
-			parent="hr_root_organisation" action="action_hr_department" />
+			parent="hr_root_organisation" action="action_hr_department_tree_view" />
 
 		<!-- الموظفون -->
 
@@ -76,7 +102,7 @@
 									</group>
 
 									<group string="بيانات البنك">
-										<field name="address_home_id" invisible="1"/>
+										<field name="address_home_id" invisible="1" />
 										<field name="bank_account_id" />
 									</group>
 
@@ -272,19 +298,41 @@
 											<field name="bank_account_id" />
 										</group>
 									</group>
-								
-							</page>
-							<page string="بيانات البنك">
 
-								<group>
-									<group string="بيانات البنك">
-										<field name="address_home_id" invisible="1"/>
-										<field name="bank_account_id" />
+								</page>
+								<page string="بيانات البنك">
+
+									<group>
+										<group string="بيانات البنك">
+											<field name="address_home_id" invisible="1" />
+											<field name="bank_account_id" />
+										</group>
 									</group>
-								</group>
-							</page>
+								</page>
 
+								<page string="البدلات">
+								</page>
+								<page string="الحسميات">
+								</page>
+								<page string="الورديات">
+								</page>
+								<page string="بيان الخدمة">
+								</page>
+							</notebook>
+						</sheet>
+						<div class="oe_chatter">
+							<field name="message_follower_ids" widget="mail_followers"
+								groups="base.group_user" />
+							<field name="message_ids" widget="mail_thread" />
+						</div>
+					</form>
 							<page string="البدلات">
+								<field name="allowance_ids">
+									<tree editable="buttom">
+										<field name="allowance_id"/>
+										<field name="amount"/>
+									</tree>
+								</field>
 							</page>
 							<page string="الحسميات">
 							</page>
