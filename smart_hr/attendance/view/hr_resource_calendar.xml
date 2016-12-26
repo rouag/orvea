@@ -2,9 +2,6 @@
 <openerp>
 	<data>
 
-		<menuitem name="الإعدادات" id="menu_attendance_configuration"
-			parent="menu_attendance_root" sequence="100" />
-
 
 		<record id="resource_calendar_form" model="ir.ui.view">
 			<field name="name">resource.calendar.form</field>

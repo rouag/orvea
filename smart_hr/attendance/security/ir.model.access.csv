@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_extra_hours,name_hr_extra_hours,model_hr_extra_hours,group_extra_hours_management,1,1,1,0
+access_hr_extra_hours_all,name_hr_extra_hours_all,model_hr_extra_hours,,1,1,1,0
+,,,,,,,
+access_hr_authorization,name_hr_authorization,model_hr_authorization,group_authorization_management,1,1,1,0
+access_hr_authorization_all,name_hr_authorization_all,model_hr_authorization,,1,1,1,0

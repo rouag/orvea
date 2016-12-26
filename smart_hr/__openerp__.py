@@ -80,13 +80,18 @@
         'payroll/hr_salary_rule_view.xml',
 
         # الحضور والإنصراف
-
+        'attendance/security/attendance_security.xml',
+        'attendance/security/ir.model.access.csv',
+        'attendance/data/sequences.xml',
+        'attendance/menu.xml',
         'attendance/view/hr_resource_calendar.xml',
         'attendance/view/hr_plan_presence.xml',
         'attendance/view/hr_public_holiday.xml',
         'attendance/view/import_csv_view.xml',
         'attendance/view/hr_attendance.xml',
         'attendance/view/hr_attendance.xml',
+        'attendance/view/hr_extra_hours.xml',
+        'attendance/view/hr_authorization_view.xml',
     ],
     'auto_install': False,
 }
