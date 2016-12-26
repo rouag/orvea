@@ -161,7 +161,7 @@ class HrHolidays(models.Model):
         if not self.holiday_status_id.external_decision:
             self.state = 'done'
         # need an external decision
-        if self.holiday_status_id.external_decision:
+        if self.holiday_status_id.external_decision and self.employee_id.external_decision:
             self.state = 'external_audit'
             
     @api.one

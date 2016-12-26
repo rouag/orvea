@@ -100,6 +100,8 @@ access_hr_job_employee,hr_job,model_hr_job,group_employee,1,0,0,0
 ,,,,,,,
 access_hr_decision_appoint,hr_decision_appoint,model_hr_decision_appoint,group_employee,1,0,0,0
 access_hr_deputation,hr_deputation,model_hr_deputation,group_employee,1,0,0,0
+access_hr_assessment_result_config,hr_assessment_result_config,model_hr_assessment_result_config,group_employee,1,0,0,0
+access_hr_holidays_status_salary_percentage,hr_holidays_status_salary_percentage,model_hr_holidays_status_salary_percentage,group_employee,1,0,0,0
 ,,,,,,,
 access_hr_deduction_type,hr_deduction_type,model_hr_deduction_type,group_deduction_management,1,1,1,1
 access_hr_deduction,hr_deduction,model_hr_deduction,group_deduction_management,1,1,1,1
