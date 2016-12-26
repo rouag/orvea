@@ -8,12 +8,10 @@
 		<record id="view_attendance_form_inherite" model="ir.ui.view">
 			<field name="name">hr.attendance.form.inherite</field>
 			<field name="model">hr.attendance</field>
-		
 				<field name="inherit_id" ref="hr_attendance.view_attendance_form" />
 				<field name="arch" type="xml">
 					<data>
 						<xpath expr="//field[@name='action_desc']" position="after">
-
 							<field name="id_emprinte" />
 							<field name="mac_id" />
 						</xpath>
@@ -28,7 +26,6 @@
 			<field name="arch" type="xml">
 					<data>
 						<xpath expr="//field[@name='action_desc']" position="after">
-
 							<field name="id_emprinte" />
 							<field name="mac_id" />
 						</xpath>
@@ -58,6 +55,6 @@
 		</record>
 
 		<menuitem id="menu_hr_attendance" action="open_view_attendance_inherite"
-			parent="hr_presence_quit" name="سجل الحظور والإنصراف" />
+			parent="menu_attendance_root" name="سجل الحظور والإنصراف" sequence="5" />
 	</data>
 </openerp>

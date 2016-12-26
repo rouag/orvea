@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<record id="hr_salary_rule_list_inherit" model="ir.ui.view">
+			<field name="name">hr.salary.rule.tree.inherit</field>
+			<field name="model">hr.salary.rule</field>
+			<field name="inherit_id" ref="hr_payroll.hr_salary_rule_list" />
+			<field name="arch" type="xml">
+				<xpath expr="/tree" position='replace'>
+					<tree string="قواعد إحتساب الرواتب">
+						<field name="sequence" widget="handle" />
+						<field name="name" string="المسمى" />
+						<field name="code" />
+						<field name="category_id" string="الفئة" />
+						<field name="register_id" invisible="1" />
+					</tree>
+				</xpath>
+			</field>
+		</record>
+		
+		<record id="hr_salary_rule_form" model="ir.ui.view">
+			<field name="name">hr.salary.rule.form</field>
+			<field name="model">hr.salary.rule</field>
+			<field name="inherit_id" ref="hr_payroll.hr_salary_rule_form" />
+			<field name="arch" type="xml">
+				<xpath expr="/form" position='replace'>
+					<form string="قواعد إحتساب الرواتب">
+						<group col="4">
+							<field name="name" string="المسمى" />
+							<field name="category_id" string="الفئة" />
+						</group>
+						<group col="4">
+							<field name="code" />
+							<field name="sequence" string="الترتيب" />
+							<field name="active" />
+							<field name="appears_on_payslip" string="لا يظهر في مسيّر الموظف" />
+							<field name="company_id" options="{'no_create': True}"
+								groups="base.group_multi_company" />
+						</group>
+						<notebook>
+							<page string="القواعد">
+								<separator colspan="4" string="الشروط" />
+								<group>
+									<group>
+										<field name="condition_select" />
+										<newline />
+										<field name="condition_python"
+											attrs="{'invisible':[('condition_select','&lt;&gt;','python')], 'required': [('condition_select','=','python')]}" />
+										<newline />
+										<field name="condition_range"
+											attrs="{'invisible':[('condition_select','&lt;&gt;','range')], 'required':[('condition_select','=','range')]}" />
+										<newline />
+										<field name="condition_range_min"
+											attrs="{'invisible':[('condition_select','&lt;&gt;','range')], 'required':[('condition_select','=','range')]}" />
+										<newline />
+										<field name="condition_range_max"
+											attrs="{'invisible':[('condition_select','&lt;&gt;','range')], 'required':[('condition_select','=','range')]}" />
+										<newline />
+									</group>
+									<group></group>
+								</group>
+
+								<separator colspan="4" string="طريقة الإحتساب" />
+								<group>
+									<group>
+										<field name="amount_select" />
+										<newline />
+										<field name="amount_percentage_base"
+											attrs="{'invisible':[('amount_select','&lt;&gt;','percentage')], 'required': [('amount_select','=','percentage')]}" />
+										<newline />
+										<field name="quantity"
+											attrs="{'invisible':[('amount_select','=','code')], 'required':[('amount_select','!=','code')]}" />
+										<newline />
+										<field name="amount_fix"
+											attrs="{'invisible':[('amount_select','&lt;&gt;','fix')], 'required':[('amount_select','=','fix')]}" />
+										<newline />
+										<field colspan="4" name="amount_python_compute"
+											attrs="{'invisible':[('amount_select','&lt;&gt;','code')], 'required':[('amount_select','=','code')]}" />
+										<field name="amount_percentage"
+											attrs="{'invisible':[('amount_select','&lt;&gt;','percentage')], 'required':[('amount_select','=','percentage')]}" />
+									</group>
+									<group>
+										<separator colspan="4" string="Company Contribution"
+											invisible="1" />
+										<field name="register_id" invisible="1" />
+									</group>
+								</group>
+								<field name="note" placeholder="ملاحظات ..." />
+							</page>
+						</notebook>
+					</form>
+				</xpath>
+			</field>
+		</record>
+
+	</data>
+</openerp>
