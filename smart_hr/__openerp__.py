@@ -8,7 +8,7 @@
     'description':
         """
         """,
-    'depends': ['hr', 'hr_holidays', 'odoo_rtl', 'web_readonly_bypass', 'hr_payroll','hr_attendance'],
+    'depends': ['hr', 'hr_holidays', 'odoo_rtl', 'web_readonly_bypass', 'hr_payroll', 'hr_attendance'],
     'data': [
 
 
@@ -79,25 +79,12 @@
         'payroll/hr_salary_rule_view.xml',
 
         # الحضور والإنصراف
-        'attendance/wizard/hr_attendance_biostar_wizard_view.xml',
-        'attendance/wizard/hr_attendance_followup_summary_view_wizard_view.xml',
-        'attendance/wizard/hr_attendance_followup_view_wizard_view.xml',
-        'attendance/wizard/hr_attendance_view_wizard_view.xml',
         'attendance/view/hr_resource_calendar.xml',
         'attendance/view/hr_plan_presence.xml',
         'attendance/view/hr_public_holiday.xml',
         'attendance/view/import_csv_view.xml',
         'attendance/view/hr_attendance.xml',
         'attendance/view/hr_attendance.xml',
-        'attendance/view/hr_attendance_followup_summary_view_report_view.xml',
-        'attendance/view/hr_attendance_followup_view_report_view.xml',
-        'attendance/view/hr_attendance_followup_summary_view_report_view.xml',
-        'attendance/views/hr_attendance_followup_report.xml',
-        'attendance/views/hr_attendance_followup_summary_report.xml',
-        'attendance/views/hr_attendance_report.xml',
-        'attendance/views/report.xml',
-        'attendance/view/hr_permission_view.xml',
-        'attendance/view/hr_hour_supp_view.xml'
     ],
     'auto_install': False,
 }

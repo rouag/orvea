@@ -4,33 +4,7 @@
 
 		<!-- Report Actions -->
 		
-		
-		<report id="report_attendance_report"
-                model="hr.employee"
-                string="تقرير الحصور و الانصراف"
-                report_type="qweb-pdf"
-                name="smart_hr.hr_attendance_report"
-                file="smart_hr.hr_attendance_report"
-                attachment_use="False"
-                menu="False"/>
-
-        <report id="report_attendance_followup_report"
-                model="hr.employee"
-                string="تقرير المتابعة"
-                report_type="qweb-pdf"
-                name="smart_hr.hr_attendance_followup_report"
-                file="smart_hr.hr_attendance_followup_report"
-                attachment_use="False"
-                menu="False"/>
-
-        <report id="report_attendance_followup_summary_report"
-                model="hr.employee"
-                string="تقرير المتابعة المختصر"
-                report_type="qweb-pdf"
-                name="smart_hr.hr_attendance_followup_summary_report"
-                file="smart_hr.hr_attendance_followup_summary_report"
-                attachment_use="False"
-                menu="False"/>
+	 
 
 
 	</data>
