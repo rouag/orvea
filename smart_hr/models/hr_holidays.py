@@ -44,6 +44,7 @@ class HrHolidays(models.Model):
     date_inspeech = fields.Date(string=u'تاريخ الخطاب الوارد')
     holidays_available_stock = fields.Float(string=u'رصيد الاجازة', compute='_compute_holiday_status_available_stock')
     is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started', store = True)
+    holiday_cancellation = fields.Many2one('hr.holidays.cancellation')
     
     @api.depends('date_from')
     def _compute_is_started(self):
@@ -317,7 +318,7 @@ class HrHolidays(models.Model):
         vals['name'] = self.env['ir.sequence'].get('hr.holidays.seq')
         res.write(vals)
         return res
-            
+    
     
 class HrDelayHoliday(models.Model):
     _name = 'hr.delay.holiday'  

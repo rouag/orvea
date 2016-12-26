@@ -28,10 +28,9 @@ from . import hr_suspension
 from . import hr_suspension_end
 
 from . import hr_termination
-from . import section
-
-from . import hierarchy_level
-from . import hr_termination
 
 from . import hr_deduction
 from . import hr_decision
+
+from . import section
+from . import hierarchy_level

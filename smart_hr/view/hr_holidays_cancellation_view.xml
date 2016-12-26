@@ -22,8 +22,13 @@
 						<group>
 							<field name="name" />
 							<field name="employee_id" />
-							<field name="holiday" />
+							<field name="holidays"  />
 						</group>
+						<group>
+							<field name="note" />
+						</group>
+						<button name="%(report_hr_holidays_report)d" string="طباعة القرار" type="action"
+							states="done" icon="fa-print" class="oe_inline oe_stat_button" />
 					</sheet>
 				</form>
 			</field>
@@ -37,14 +42,14 @@
 					<field name="name" />
 					<field name="employee_id" />
 					<field name="state" />
+					<field name="type" />
 				</tree>
 			</field>
 		</record>
 		<record id="action_hr_holidays_cancellation_mine" model="ir.actions.act_window">
 			<field name="name">إلغاء أو قطع إجازاتي</field>
 			<field name="res_model">hr.holidays.cancellation</field>
-			<field name="domain">[('employee_id.user_id', '=', uid),('state', '=',
-				'employee')]
+			<field name="domain">[('employee_id.user_id', '=', uid),('state', 'in',['employee', 'done'])]
 			</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
@@ -82,7 +87,6 @@
 			<field name="model">hr.holidays.cancellation</field>
 			<field name="arch" type="xml">
 				<form string="إلغاء إجازة">
-					<field name="is_current_user" invisible="1" />
 					<header>
 						<button name="button_dm_send" string="إرسال طلب" type="object"
 							attrs="{'invisible':['|',('state','!=','draft')]}" icon="fa-paper-plane"
@@ -96,10 +100,14 @@
 						</h1>
 						<group>
 							<field name="date" readonly="1" />
-							<field name="holiday" required="1" options='{"no_open": True, "no_create": True}'
-								attrs="{'readonly':[('state','!=','draft')]}"  domain = "[('is_started', '=', False),('state', '=', 'done')]"/>
-							<field name="employee_id" readonly="1" />
+							<field name="employee_id" />
+							<field name="holidays" widget="many2many" domain="[('state','=', 'done')]"/>
 						</group>
+						<group>
+							<field name="note" />
+						</group>
+						<button name="%(report_hr_holidays_report)d" string="طباعة القرار" type="action"
+							states="done" icon="fa-print" class="oe_inline oe_stat_button" />
 						<div>
 							<field name="message_ids" widget="mail_thread" readonly="1" />
 						</div>
@@ -117,7 +125,7 @@
 					row_classes="state-refuse:state=='refuse';state-in-progress:state not in ['draft','refuse','done'];">
 					<field name="name" />
 					<field name="date" />
-					<field name="holiday" />
+					<field name="holidays" />
 					<field name="employee_id" />
 					<field name="state" />
 				</tree>
@@ -157,7 +165,6 @@
 			<field name="model">hr.holidays.cancellation</field>
 			<field name="arch" type="xml">
 				<form string="قطع إجازة">
-					<field name="is_current_user" invisible="1" />
 					<header>
 						<button name="button_dm_send" string="إرسال طلب" type="object"
 							attrs="{'invisible':['|',('state','!=','draft')]}" icon="fa-paper-plane"
@@ -171,9 +178,14 @@
 						</h1>
 						<group>
 							<field name="date" readonly="1" />
-							<field name="holiday" required="1" />
 							<field name="employee_id" readonly="1" />
+							<field name="holidays"  />
 						</group>
+						<group>
+							<field name="note" />
+						</group>
+						<button name="%(report_hr_holidays_report)d" string="طباعة القرار" type="action"
+							states="done" icon="fa-print" class="oe_inline oe_stat_button" />
 						<div>
 							<field name="message_ids" widget="mail_thread" readonly="1" />
 						</div>
@@ -191,7 +203,7 @@
 					row_classes="state-refuse:state=='refuse';state-in-progress:state not in ['draft','refuse','done'];">
 					<field name="name" />
 					<field name="date" />
-					<field name="holiday" />
+					<field name="holidays" />
 					<field name="employee_id" />
 					<field name="state" />
 				</tree>

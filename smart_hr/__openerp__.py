@@ -72,8 +72,6 @@
         'view/hr_department_views.xml',
         'view/section.xml',
         'view/hierarchy_level.xml',
-
-
         # القرارات
         'view/hr_decision.xml',
         # الرواتب

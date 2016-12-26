@@ -53,3 +53,21 @@ msgid ""
 "This wizard will generate payslips for all selected employee(s) based on the"
 " dates and credit note specified on Payslips Run."
 msgstr "."
+
+#. module: hr_payroll
+#: model:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
+msgid "Generate"
+msgstr "تأكيد"
+
+#. module: hr_payroll
+#: model:ir.actions.act_window,name:hr_payroll.action_hr_payslip_by_employees
+#: model:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_form
+msgid "Generate Payslips"
+msgstr "إضافة موظفين"
+
+#. module: hr_payroll
+#: model:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
+msgid ""
+"This wizard will generate payslips for all selected employee(s) based on the"
+" dates and credit note specified on Payslips Run."
+msgstr "."

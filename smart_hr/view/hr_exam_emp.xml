@@ -2,8 +2,6 @@
 <openerp>
 	<data>
 
-		<menuitem id="hr_configuration_examination_root" sequence="20"
-			name="الفحص الطبي" parent="smart_hr.hr_root_configuration" />
 
 		<!--أنواع الفحص الطبي -->
 
@@ -56,7 +54,7 @@
 		</record>
 		<!-- config menu -->
 		<menuitem id="hr_configuration_examination" name="الفحص الطبي"
-			sequence="25" parent="hr_configuration_examination_root" action="action_medical_category" />
+			 sequence="10" parent="hr_root_employee_configuration"  action="action_medical_category" />
 
 
 

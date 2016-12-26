@@ -11,7 +11,7 @@ class HrEmployee(models.Model):
     _inherit = 'hr.employee'  
     
     number = fields.Char(string=u'الرقم الوظيفي', required=1) 
-
+    working_hours_calendar = fields.Many2one('resource.calendar', string=u"الورديات")
     father_name = fields.Char(string=u'إسم الأب', required=1)
     is_resident = fields.Boolean (string=u'موظف مقيم', required=1) 
     birthday_location = fields.Char(string=u'مكان الميلاد')
@@ -40,6 +40,8 @@ class HrEmployee(models.Model):
     age = fields.Integer(string=u'السن', compute='_compute_age')
     employee_no = fields.Integer(string=u'رقم الموظف', advanced_search=True)
     join_date = fields.Date(string=u'تاريخ الالتحاق بالجهة')
+    external_decision = fields.Boolean(string=u'موافقة خارجية', default=False)
+    holidays = fields.One2many('hr.holidays', 'employee_id', string = u'الاجازات')
 
     @api.depends('birthday')
     def _compute_age(self):
@@ -52,7 +54,6 @@ class HrEmployee(models.Model):
                     emp.age = years
     @api.depends('name')
     def _get_service_duration(self):
-        print "hello"
         for rec in self:
             #get date of hiring
             date_hiring = self.env['hr.decision.appoint'].search([('employee_id.id', '=', self.id)], limit = 1).date_hiring

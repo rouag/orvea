@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
-
-		<menuitem id="hr_configuration_judicial_precedents_root"
-			sequence="25" name="السوابق العدلية" parent="smart_hr.hr_root_configuration" />
-
+ 
 		<!--أنواع السوابق العدلية -->
 
 		<record id="judicial_precedents_form" model="ir.ui.view">
@@ -39,7 +36,7 @@
 		</record>
 		<!-- config menu -->
 		<menuitem id="hr_configuration_judicial_precedents" name="السوابق العدلية"
-			sequence="30" parent="hr_configuration_judicial_precedents_root"
+			sequence="15" parent="hr_root_employee_configuration"
 			action="action_judicial_precedents" />
 
 

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+    <data>
+    	
+	
+		<menuitem name ="الورديات" action="resource.action_resource_calendar_form" id="menu_resource_calendar_inherit"
+			parent="hr_presence_quit" sequence="1" />
+<!-- 		<menuitem name ="الموارد المعتمدة " action="resource.action_resource_calendar_leave_tree" -->
+<!-- 			id="menu_view_resource_calendar_leaves_search__inherit" parent="hr_presence_quit" -->
+<!-- 			sequence="2" /> -->
+<!-- 		<menuitem name ='الموارد' action="resource.action_resource_resource_tree" id="menu_resource_resource_inherit" -->
+<!-- 			parent="hr_presence_quit" sequence="3" /> -->
+	</data>
+</openerp>

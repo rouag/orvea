@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <template id="hr_attendance_report">
+            <t t-call="report.html_container">
+                <t t-set="wizard" t-value="data['form']"/>
+                <t t-call="smart_hr.external_layout_hr">
+                    <div class="page" style="direction:rtl;">
+                        <t t-foreach="get_employees(wizard)" t-as="employee">
+                            <p align="left">تاريخ الطباعة: <span t-esc="today"/></p>
+                            <h1 align="center">تقرير الحضور و الانصراف</h1>
+                            <h1 align="center">عن فترة من: <span t-esc="get_ummqura(wizard['date_from'])[3]"/> إلى <span t-esc="get_ummqura(wizard['date_to'])[3]"/></h1>
+                            <hr/>
+                            <h2>موظف: <span t-esc="employee.name"/></h2>
+                            <h3>رقم الموظف: <span t-esc="employee.number"/></h3>
+                            <table class="table table-striped table-bordered">
+                                <tr>
+                                    <th style="text-align:center !important;">يوم</th>
+                                    <th style="text-align:center !important;">تاريخ</th>
+                                    <th style="text-align:center !important;">تسجيل دخول</th>
+                                    <th style="text-align:center !important;">تسجيل خروج</th>
+                                    <th style="text-align:center !important;">أجازة</th>
+                                </tr>
+                                <t t-foreach="get_attendance_leaves(employee.id, wizard['date_from'], wizard['date_to'])" t-as="rec">
+                                    <t t-if="rec['color'] == 1">
+                                        <tr>
+                                            <td align="center"><span t-esc="rec['day']"/></td>
+                                            <td align="center"><span t-esc="rec['date']"/></td>
+                                            <td align="center"><span t-esc="rec['sign_in']"/></td>
+                                            <td align="center"><span t-esc="rec['sign_out']"/></td>
+                                            <td align="center"><span t-esc="rec['leave']"/></td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="rec['color'] == 2">
+                                        <tr style="color:green;">
+                                            <td align="center"><span t-esc="rec['day']"/></td>
+                                            <td align="center"><span t-esc="rec['date']"/></td>
+                                            <td align="center"><span t-esc="rec['sign_in']"/></td>
+                                            <td align="center"><span t-esc="rec['sign_out']"/></td>
+                                            <td align="center"><span t-esc="rec['leave']"/></td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="rec['color'] == 3">
+                                        <tr style="color:orange;">
+                                            <td align="center"><span t-esc="rec['day']"/></td>
+                                            <td align="center"><span t-esc="rec['date']"/></td>
+                                            <td align="center"><span t-esc="rec['sign_in']"/></td>
+                                            <td align="center"><span t-esc="rec['sign_out']"/></td>
+                                            <td align="center"><span t-esc="rec['leave']"/></td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="rec['color'] == 4">
+                                        <tr style="color:red;">
+                                            <td align="center"><span t-esc="rec['day']"/></td>
+                                            <td align="center"><span t-esc="rec['date']"/></td>
+                                            <td align="center"><span t-esc="rec['sign_in']"/></td>
+                                            <td align="center"><span t-esc="rec['sign_out']"/></td>
+                                            <td align="center"><span t-esc="rec['leave']"/></td>
+                                        </tr>
+                                    </t>
+                                    <t t-if="rec['color'] == 5">
+                                        <tr style="color:grey;">
+                                            <td align="center"><span t-esc="rec['day']"/></td>
+                                            <td align="center"><span t-esc="rec['date']"/></td>
+                                            <td align="center"><span t-esc="rec['sign_in']"/></td>
+                                            <td align="center"><span t-esc="rec['sign_out']"/></td>
+                                            <td align="center"><span t-esc="rec['leave']"/></td>
+                                        </tr>
+                                    </t>
+                                </t>
+                            </table>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</openerp>

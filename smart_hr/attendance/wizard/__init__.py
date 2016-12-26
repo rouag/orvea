@@ -1,0 +1,4 @@
+import hr_attendance_biostar_wizard
+import hr_attendance_followup_summary_view_wizard
+import hr_attendance_followup_view_wizard
+import hr_attendance_view_wizard
