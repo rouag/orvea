@@ -52,7 +52,7 @@
 					edit='0'>
 					<field name="name" />
 					<field name="number" />
-					<field name="state" />
+					<field name="employee_state" />
 				</tree>
 			</field>
 		</record>
@@ -104,7 +104,7 @@
 									</group>
 
 									<group string="بيانات البنك">
-										<field name="address_home_id" invisible="1"/>
+										<field name="address_home_id" invisible="1" />
 										<field name="bank_account_id" />
 										<field name="wage" />
 										<field name="payroll_structure_id" />
@@ -131,7 +131,7 @@
 			<field name="res_model">hr.employee</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
-			<field name="domain">[('state','=','employee')]</field>
+			<field name="domain">[('employee_state','=','employee')]</field>
 		</record>
 
 		<record id="action_hr_employee_tree" model="ir.actions.act_window.view">
@@ -158,11 +158,14 @@
 			<field name="name">hr.employee.request.tree</field>
 			<field name="model">hr.employee</field>
 			<field name="type">tree</field>
+			<field name="inherit_id" ref="hr.view_employee_tree" />
 			<field name="arch" type="xml">
-				<tree string="تسجيل بيانات موظف">
-					<field name="name" />
-					<field name="state" />
-				</tree>
+				<xpath expr="/tree" position='replace'>
+					<tree string="تسجيل بيانات موظف">
+						<field name="name" />
+						<field name="employee_state" />
+					</tree>
+				</xpath>
 			</field>
 		</record>
 
@@ -175,19 +178,19 @@
 					<form string="تسجيل بيانات موظف">
 						<header>
 							<button name="action_send" string="إرسال للإعتماد" type="object"
-								groups="smart_hr.group_employee_request" states="new" />
+								groups="smart_hr.group_employee_request" attrs="{'invisible': [('employee_state', '!=', 'new')]}" />
 							<button name="action_confirm" string="موافقة" type="object"
 
-								groups="smart_hr.group_employee_registration" states="waiting" />
+								groups="smart_hr.group_employee_registration" attrs="{'invisible': [('employee_state', '!=', 'waiting')]}" />
 							<button name="action_cancel" string="إلغاء" type="object"
-								groups="smart_hr.group_employee_request" states="waiting" />
+								groups="smart_hr.group_employee_request" attrs="{'invisible': [('employee_state', '!=', 'waiting')]}" />
 							<button name="action_refuse" string="رفض" type="object"
-								groups="smart_hr.group_employee_registration" states="waiting" />
-							<field name="state" widget="statusbar" statusbar_visible="new,waiting,done,refused" />
+								groups="smart_hr.group_employee_registration" attrs="{'invisible': [('employee_state', '!=', 'waiting')]}" />
+							<field name="employee_state" widget="statusbar" statusbar_visible="new,waiting,done,refused" />
 						</header>
 
 						<sheet>
-							<div name="button_box" invisible="1"/>
+							<div name="button_box" invisible="1" />
 							<field name="image" widget="image" class="oe_avatar"
 								options="{&quot;preview_image&quot;:&quot;image_medium&quot;}" />
 							<div class="oe_title">
@@ -242,7 +245,7 @@
 											<field name="work_location" attrs="{'required': 1}" />
 											<field name="work_email" widget="email" attrs="{'required': 1}" />
 											<field name="work_phone" />
-											<field name="coach_id" invisible="1"/>
+											<field name="coach_id" invisible="1" />
 										</group>
 									</group>
 								</page>
@@ -251,12 +254,12 @@
 										<group string="بيانات العمل">
 											<field name="department_id" on_change="onchange_department_id(department_id)" />
 											<field name="job_id"
-												attrs="{'readonly': 1, 'invisible': [('state','!=', 'employee')]}" />
+												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="parent_id" />
 										</group>
 										<group string="خصائص أخرى">
 											<field name="user_id"
-												attrs="{'readonly': 1, 'invisible': [('state','!=', 'employee')]}" />
+												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="recruiter" widget="selection" />
 
 										</group>
@@ -269,40 +272,40 @@
 											<field name="bank_account_id" />
 										</group>
 									</group>
-								
-							</page>
-							<page string="بيانات البنك">
-								<group>
-									<group string="بيانات البنك">
-										<field name="address_home_id" invisible="1"/>
-										<field name="bank_account_id" />
-									</group>
-								</group>
-								<group  name="active_group" invisible="1"/>
-							</page>
 
-							<page string="البدلات">
-								<field name="allowance_ids">
-									<tree editable="buttom">
-										<field name="allowance_id"/>
-										<field name="amount"/>
-									</tree>
-								</field>
-							</page>
-							<page string="الحسميات">
-							</page>
-							<page string="الورديات">
-							</page>
-							<page string="بيان الخدمة">
-							</page>
-						</notebook>
-					</sheet>
-					<div class="oe_chatter">
-						<field name="message_follower_ids" widget="mail_followers"
-							groups="base.group_user" />
-						<field name="message_ids" widget="mail_thread" />
-					</div>
-				</form>
+								</page>
+								<page string="بيانات البنك">
+									<group>
+										<group string="بيانات البنك">
+											<field name="address_home_id" invisible="1" />
+											<field name="bank_account_id" />
+										</group>
+									</group>
+									<group name="active_group" invisible="1" />
+								</page>
+
+								<page string="البدلات">
+									<field name="allowance_ids">
+										<tree editable="buttom">
+											<field name="allowance_id" />
+											<field name="amount" />
+										</tree>
+									</field>
+								</page>
+								<page string="الحسميات">
+								</page>
+								<page string="الورديات">
+								</page>
+								<page string="بيان الخدمة">
+								</page>
+							</notebook>
+						</sheet>
+						<div class="oe_chatter">
+							<field name="message_follower_ids" widget="mail_followers"
+								groups="base.group_user" />
+							<field name="message_ids" widget="mail_thread" />
+						</div>
+					</form>
 
 				</xpath>
 			</field>
@@ -313,7 +316,7 @@
 			<field name="res_model">hr.employee</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
-			<field name="domain">[('state','!=','employee')]</field>
+			<field name="domain">[('employee_state','!=','employee')]</field>
 		</record>
 		<record id="action_employee_request_tree" model="ir.actions.act_window.view">
 			<field name="view_mode">tree</field>
@@ -337,7 +340,7 @@
 			<field name="res_model">hr.employee</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
-			<field name="domain">['|',('state','=','waiting'),('state','=','done')]
+			<field name="domain">['|',('employee_state','=','waiting'),('employee_state','=','done')]
 			</field>
 		</record>
 		<record id="action_employee_waiting_request_tree" model="ir.actions.act_window.view">

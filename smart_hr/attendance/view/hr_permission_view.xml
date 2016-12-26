@@ -99,8 +99,8 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-		<menuitem id="menu_hr_permission" action="action_hr_permission"
-			parent="hr_presence_quit" name="طلبات الاستئذان" />
+		<menuitem id="menu_hr_permission" action="action_hr_permission" sequence="25"
+			parent="menu_attendance_root" name="طلبات الاستئذان" />
 
 
 

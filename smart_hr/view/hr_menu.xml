@@ -42,7 +42,7 @@
 		
 		<menuitem id="menu_attendance_root" name="الحضور والإنصراف"  sequence="40" parent="hr_root" /> 
 		
-		<menuitem id="menu_attendance_report" name="التقارير"  sequence="10" parent="menu_attendance_root" /> 		
+		<menuitem id="menu_attendance_report" name="التقارير"  sequence="50" parent="menu_attendance_root" /> 		
 			
 		<menuitem id="menu_hr_department_hierarchy_level" parent="hr_root_configuration"
 			name="مستوى العمق في‫الهيكل‬" sequence="100" />
