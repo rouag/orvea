@@ -42,9 +42,7 @@ class HrEmployee(models.Model):
     join_date = fields.Date(string=u'تاريخ الالتحاق بالجهة')
     external_decision = fields.Boolean(string=u'موافقة خارجية', default=False)
     holidays = fields.One2many('hr.holidays', 'employee_id', string=u'الاجازات')
-    holidays_balance = fields.One2many('hr.employee.holidays.stock', 'employee_id', string=u'الأرصدة', readonly = 1)
-
-
+    holidays_balance = fields.One2many('hr.employee.holidays.stock', 'employee_id', string=u'الأرصدة', readonly=1)
 
 
 
