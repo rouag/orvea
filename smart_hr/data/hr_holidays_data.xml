@@ -14,6 +14,11 @@
 			<field name="name">استثنائية</field>
 			<field name="limit" eval="True" />
 			<field name="extension_number" eval="'many'" />
+			<field name="expansion_period" eval="1" />
+			<field name="direct_decision" eval="True" />
+			<field name="deductible_normal_leave" eval="True" />
+			<field name="deductible_duration_service" eval="True" />
+
 		</record>
 		<record id="data_hr_holiday_status_illness" model="hr.holidays.status">
 			<field name="name">مرضية</field>
@@ -61,7 +66,16 @@
 			<field name="limit" eval="True" />
 			<field name="extension_number" eval="'many'" />
 		</record>
-
+		<record id="data_hr_holiday_status_exceptional_accompaniment"
+			model="hr.holidays.status">
+			<field name="name">استثنائية للمرافقة</field>
+			<field name="limit" eval="True" />
+			<field name="extension_number" eval="'many'" />
+			<field name="expansion_period" eval="0" />
+			<field name="direct_decision" eval="True" />
+			<field name="direct_decision" eval="True" />
+			<field name="direct_decision" eval="True" />
+		</record>
 
 	</data>
 </openerp>

@@ -41,7 +41,8 @@
 		<menuitem id="menu_hr_termination_conf_root" parent="hr_root_configuration" name="طى القيد" sequence="90" />
 		
 		<menuitem id="menu_hr_department_hierarchy_level" parent="hr_root_configuration"
-			name="مستوى العمق في‫الهيكل‬" sequence="100" />
+			name="الإدارات‬" sequence="100" />
+			
 		<menuitem id="menu_hr_termination_conf_root" parent="hr_root_configuration" name="طى القيد" sequence="90" />
 		
 			

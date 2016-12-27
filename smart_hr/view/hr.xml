@@ -8,7 +8,7 @@
 			<field name="name">الإدارات</field>
 			<field name="res_model">hr.department</field>
 			<field name="view_type">form</field>
-			<field name="view_mode">kanban,form</field>
+			<field name="view_mode">tree,form</field>
 		</record>
 
 		<!-- Department Hierarchy -->
@@ -39,6 +39,8 @@
 		<menuitem id="hr_department_menu" name="الإدارات" sequence="5"
 			parent="hr_root_organisation" action="action_hr_department_tree_view" />
 
+		<menuitem id="hr_department_menu_conf" name="الإدارات" sequence="1"
+			 action="action_hr_department" parent="menu_hr_department_hierarchy_level"/>
 		<!-- الموظفون -->
 
 		<record id="view_employee_tree" model="ir.ui.view">

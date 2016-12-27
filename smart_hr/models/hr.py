@@ -29,6 +29,7 @@ class HrEmployee(models.Model):
     leave_normal = fields.Float(string=u'العادية', default=36)
     leave_emergency = fields.Float(string=u'الاضطرارية', default=5)
     leave_compensation = fields.Float(string=u'البديلة', default=0)
+    leave_exceptional = fields.Float(string=u'الاستثنائية', default=265)
     # Deputation Stock
     deputation_stock = fields.Integer(string=u'الأنتدابات', default=60)
     service_duration = fields.Integer(string = u'سنوات الخدمة', compute = '_get_service_duration')

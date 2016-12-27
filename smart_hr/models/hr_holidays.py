@@ -54,6 +54,7 @@ class HrHolidays(models.Model):
     extended_holiday_id = fields.Many2one('hr.holidays', string=u'الإجازة الممددة')
     parent_id = fields.Many2one('hr.holidays', string=u'Parent')
     extension_holidays_ids = fields.One2many('hr.holidays', 'parent_id', string=u'التمديدات')
+    need_decision = fields.Boolean('status_id need decision',related='holiday_status_id.direct_decision')
     num_decision = fields.Many2one('hr.decision',string=u'رقم القرار')
     date_decision = fields.Date(string=u'تاريخ القرار')
 
@@ -429,7 +430,15 @@ class HrHolidays(models.Model):
            
         # Constraintes for exceptionnal holidays استثنائية
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional'):
-            # check raison
+            for en in self.holiday_status_id.entitlements:
+                if self.employee_id.job_id.grade_id in en.entitlment_category.grades:
+                    #غير مشروط
+                    if not en.conditionnal:
+                        break
+                    else:
+                        if self.duration > self.employee_id.leave_exceptional:
+                            raise ValidationError(u" ليس لديك الرصيد الكافي في الاجازات الاستثنائية")
+                        
             print 'استثنائية'
             
             
@@ -516,7 +525,18 @@ class HrHolidaysStatus(models.Model):
     entitlements = fields.One2many('hr.holidays.status.entitlement', 'leave_type', string=u'أنواع الاستحقاقات')
     assessments_required = fields.One2many('hr.assessment.result.config', 'leave_type', string=u'التقييمات المطلوبة')
     percentages = fields.One2many('hr.holidays.status.salary.percentage', 'holiday_status', string=u'نسب الراتب المحتسبة')
-    
+    expansion_period = fields.Selection([(0,'لايمكن تمديدها'),
+        (1, u'سنة'),
+        (2, u'سنتين'),
+        (3, u'ثلاث سنوات'),
+        (4, u'أربع سنوات'),
+        (5, u'خمس سنوات'),
+        (6, u'ستة سنوات'),
+        (7, u'سبعة سنوات'),
+        (8, u'ثمانية سنوات'),
+        (9, u'تسعة سنوات'),
+        (10, u'عشرة سنوات'),
+        ], string=u'المدة', default=1)  
                 
                 
 class HrHolidaysStatusEntitlement(models.Model):
