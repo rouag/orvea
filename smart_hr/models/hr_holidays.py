@@ -87,8 +87,7 @@ class HrHolidays(models.Model):
                                                                                   'holiday_status_id': holiday_status_id.id,
                                                                                   'periode': periode})
                     employee_id.holidays_balance += balance_line
-    
-                    # One year
+
                     if holiday_solde_by_year_number[1] > 0:
                         # calculate the number of worked month in current year
                         months = relativedelta(date.today(), date(date.today().year, 1, 1)).months
