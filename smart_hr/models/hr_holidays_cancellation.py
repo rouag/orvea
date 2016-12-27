@@ -78,6 +78,8 @@ class hrHolidaysCancellation(models.Model):
             for holiday in cancellation.holidays:
                 # Update the holiday state
                 holiday.write({'state': 'cancel'})
+                # update holidays balance
+                holiday._compute_balance(holiday.employee_id)
             cancellation.state = 'done'
 
     @api.one

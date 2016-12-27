@@ -86,6 +86,7 @@ class HrHolidays(models.Model):
                         balance_line = self.env['hr.employee.holidays.stock'].create({'holidays_available_stock': 0,
                                                                                   'employee_id': employee_id.id,
                                                                                   'holiday_status_id': holiday_status_id.id,
+                                                                                  'token_holidays_sum': 0,
                                                                                   'periode': periode})
                     employee_id.holidays_balance += balance_line
 
@@ -97,16 +98,16 @@ class HrHolidays(models.Model):
                             balance = holiday_solde_by_year_number[1] / (periode * 12) * months
                             # get the sum of holidays given in from the start of current year till now
                             given_holidays_count = 0
-                            for rec in holiday_obj.search([('state', '=', 'done'), ('employee_id', '=', employee_id.id), ('holiday_status_id', '=', holiday_status_id.id), ('date_to', '<=', date(date.today().year, 12, 31)), ('date_from', '>=', date(date.today().year, 1, 1))]):
+                            for rec in holiday_obj.search([('state', '=', 'done'), ('employee_id', '=', employee_id.id), ('holiday_status_id', '=', holiday_status_id.id), ('date_from', '<=', date(date.today().year, 12, 31)), ('date_from', '>=', date(date.today().year, 1, 1))]):
                                 given_holidays_count += rec.duration
                             balance -= given_holidays_count
-                            balance_line.write({'holidays_available_stock': balance})
+                            balance_line.write({'holidays_available_stock': balance, 'token_holidays_sum': given_holidays_count})
     @api.multi
     def button_extend(self):
         # check if its possible to extend this holiday
         extensions_number = self.env['hr.holidays'].search_count([('extended_holiday_id', '=', self.extended_holiday_id.id)])
-        if self.holiday_status_id.extension_number == 'one' and extensions_number >= 1:
-            raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من مرة واحدة.")
+        if extensions_number >= self.holiday_status_id.extension_number:
+            raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من " + self.holiday_status_id.extension_number + u".")
         view_id = self.env.ref('smart_hr.hr_holidays_form').id
         context = self._context.copy()
         default_date_from = fields.Date.to_string(fields.Date.from_string(self.date_to) + timedelta(days=1))
@@ -305,6 +306,8 @@ class HrHolidays(models.Model):
 
         for holiday in self:
             # Date validation
+            if holiday.date_from < fields.Datetime.now():
+                raise ValidationError(u"تاريخ من يجب ان يكون أكبر من تاريخ اليوم")
             if holiday.date_from > holiday.date_to:
                 raise ValidationError(u"تاريخ من يجب ان يكون أصغر من تاريخ الى")
             # check minimum request validation
@@ -492,10 +495,7 @@ class HrHolidaysStatus(models.Model):
     minimum = fields.Integer(string=u'الحد الأدنى في المرة الواحدة')
     maximum = fields.Integer(string=u'الحد الأقصى في المرة الواحدة')
     postponement_period = fields.Integer(string=u'مدة التأجيل')
-    extension_number = fields.Selection([
-                                        ('one', u'مرة'),
-                                        ('many', u'عادات مرت التمديد'),
-                                         ], string=u'مدة التأجيل')
+    extension_number = fields.Integer(string=u'عدد مرات التأجيل', default=0)
     deductible_normal_leave = fields.Boolean(string=u'تخصم مدتها من رصيد الاجازة العادية')
     deductible_duration_service = fields.Boolean(string=u'تخصم مدتها من فترة الخدمة')
     educ_lvl_req = fields.Boolean(string=u'يطبق شرط المستوى التعليمي')

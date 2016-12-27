@@ -244,6 +244,7 @@
 										<tree editable="buttom">
 											<field name="holiday_status_id" />
 											<field name="holidays_available_stock" />
+											<field name="token_holidays_sum" />
 											<field name="periode" />
 										</tree>
 									</field>

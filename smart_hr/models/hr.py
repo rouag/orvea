@@ -116,6 +116,7 @@ class HrEmployeeHolidaysStock(models.Model):
     employee_id = fields.Many2one('hr.employee', string=u'الموظف')
     holiday_status_id = fields.Many2one('hr.holidays.status', string=u'نوع الاجازة')
     holidays_available_stock = fields.Float(string=u'رصيد الاجازة')
+    token_holidays_sum = fields.Integer(string=u'الإيام المأخوذة', default=0)
     periode = fields.Selection([
         (1, u'سنة'),
         (2, u'سنتين'),
@@ -127,7 +128,7 @@ class HrEmployeeHolidaysStock(models.Model):
         (8, u'ثمانية سنوات'),
         (9, u'تسعة سنوات'),
         (10, u'عشرة سنوات'),
-        ], string=u'المدة', default=1) 
+        ], string=u'مدة صلاحيات الإجازة', default=1) 
     
 
                       
