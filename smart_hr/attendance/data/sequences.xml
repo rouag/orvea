@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data noupdate="1">
+		<record id="seq_hr_extra_hours" model="ir.sequence">
+			<field name="name">الساعات الإضافية</field>
+			<field name="code">seq.hr.extra_hours</field>
+			<field name="prefix"></field>
+			<field name="padding">3</field>
+		</record>
+
+		<record id="seq_hr_authorization" model="ir.sequence">
+			<field name="name">hr.authorization</field>
+			<field name="code">seq.hr.authorization</field>
+			<field name="prefix"></field>
+			<field name="padding">3</field>
+		</record>
+				
+	</data>
+</openerp>

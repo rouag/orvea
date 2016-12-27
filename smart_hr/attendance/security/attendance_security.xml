@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data noupdate="0">
+	
+		<record id="group_extra_hours_management" model="res.groups">
+			<field name="category_id" ref="base.module_category_human_resources" />
+			<field name="name">إدارة الساعات الإضافية</field>
+		</record>
+ 
+ 		<record id="group_authorization_management" model="res.groups">
+			<field name="category_id" ref="base.module_category_human_resources" />
+			<field name="name">إدارة طلبات الإستئذان</field>
+		</record>
+
+		<record id="my_hr_extra_hours" model="ir.rule">
+			<field name="name">طلباتي</field>
+			<field name="model_id" ref="model_hr_extra_hours" />
+			<field name="domain_force">[('employee_id.user_id','=',user.id)]</field>
+			<field name="perm_read" eval="False" />
+			<field name="groups" eval="[(4,ref('base.group_user'))]" />
+		</record>
+
+		<record id="all_hr_extra_hours" model="ir.rule">
+			<field name="name">كل طلبات الساعات الإضافية </field>
+			<field name="model_id" ref="model_hr_extra_hours" />
+			<field name="domain_force">[(1,'=',1)]</field>
+			<field name="perm_read" eval="False" />
+			<field name="groups" eval="[(4,ref('smart_hr.group_extra_hours_management'))]" />
+		</record>
+
+		<record id="my_authorization" model="ir.rule">
+			<field name="name">طلباتي</field>
+			<field name="model_id" ref="model_hr_authorization" />
+			<field name="domain_force">[('employee_id.user_id','=',user.id)]</field>
+			<field name="perm_read" eval="False" />
+			<field name="groups" eval="[(4,ref('base.group_user'))]" />
+		</record>
+
+		<record id="all_authorization" model="ir.rule">
+			<field name="name">كل طلبات الساعات الإضافية </field>
+			<field name="model_id" ref="model_hr_authorization" />
+			<field name="domain_force">[(1,'=',1)]</field>
+			<field name="perm_read" eval="False" />
+			<field name="groups" eval="[(4,ref('smart_hr.group_authorization_management'))]" />
+		</record>
+						
+ </data>
+</openerp>

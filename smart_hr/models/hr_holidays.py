@@ -106,6 +106,63 @@ class HrHolidays(models.Model):
                     break
             rec.is_cancelled = is_cancelled
             
+    holiday_cancellation = fields.Many2one('hr.holidays.cancellation')    
+    # Extension
+    is_extension = fields.Boolean(string=u'تمديد إجازة')
+    is_extended = fields.Boolean(string=u'ممددة', compute='_is_extended')
+    extended_holiday_id = fields.Many2one('hr.holidays', string=u'الإجازة الممددة')
+    parent_id = fields.Many2one('hr.holidays', string=u'Parent')
+    extension_holidays_ids = fields.One2many('hr.holidays', 'parent_id', string=u'التمديدات')
+    
+    @api.multi
+    def button_extend(self):
+        #check if its possible to extend this holiday
+        extensions_number = self.env['hr.holidays'].search_count([('extended_holiday_id', '=', self.extended_holiday_id.id)])
+        if self.holiday_status_id.extension_number == 'one' and extensions_number >=1: 
+            raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من مرة واحدة.")
+        view_id = self.env.ref('smart_hr.hr_holidays_form').id
+        context = self._context.copy()
+        default_date_from = fields.Date.to_string(fields.Date.from_string(self.date_to) + timedelta(days=1))
+        context.update({
+            u'default_is_extension': True,
+            u'default_extended_holiday_id': self.id,
+            u'default_date_from': default_date_from,
+            u'readonly_by_pass': True,
+        })
+        return {
+            'name': 'تمديد الإجازة',
+            'view_type': 'form',
+            'view_mode': 'tree',
+            'views': [(view_id, 'form')],
+            'res_model': 'hr.holidays',
+            'view_id': view_id,
+            'type': 'ir.actions.act_window',
+            'res_id': False,
+            'target': 'current',
+            'context': context,
+        }
+        
+    @api.depends('extension_holidays_ids')
+    def _is_extended(self):
+        # Check if the holiday have a pending or completed extension leave
+        for rec in self:
+            is_extended = False
+            for ext in rec.extension_holidays_ids:
+                if ext.state != 'refuse':
+                    is_extended = True
+                    break
+            rec.is_extended = is_extended
+            
+    @api.depends('holiday_cancellation')
+    def _is_cancelled(self):
+        # Check if the holidays have a pending or completed holidays cancellation
+        for rec in self:
+            is_cancelled = False
+            if rec.holiday_cancellation and rec.holiday_cancellation.state != 'refuse': 
+                    is_cancelled = True
+                    break
+            rec.is_cancelled = is_cancelled
+            
     @api.depends('date_from')
     def _compute_is_started(self):
         for rec in self:
@@ -199,7 +256,7 @@ class HrHolidays(models.Model):
     def button_accept_hrm(self):
         if not self.holiday_status_id.external_decision:
             self.state = 'done'
-        # need an external decision
+         # need an external decision
         if self.holiday_status_id.external_decision and self.employee_id.external_decision:
             self.state = 'external_audit'
             
