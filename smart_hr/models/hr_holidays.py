@@ -55,12 +55,48 @@ class HrHolidays(models.Model):
     extended_holiday_id = fields.Many2one('hr.holidays', string=u'الإجازة الممددة')
     parent_id = fields.Many2one('hr.holidays', string=u'Parent')
     extension_holidays_ids = fields.One2many('hr.holidays', 'parent_id', string=u'التمديدات')
-    
+
+    @api.one
+    def _compute_balance(self, employee_id):
+        holidays_status = self.env['hr.holidays.status'].search([])
+        for holiday_status_id in holidays_status:
+            # check if the type existe in holidays_balance of the employee
+            balance_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', employee_id.id), ('holiday_status_id', '=', holiday_status_id.id)])
+            if not balance_line:
+                # create balance line in holidays_balance of the employee
+                balance_line = self.env['hr.employee.holidays.stock'].create({'holidays_available_stock': 0,
+                                                                              'employee_id': employee_id.id,
+                                                                              'holiday_status_id': holiday_status_id.id,
+                                                                              'periode': 1})
+                employee_id.holidays_balance += balance_line
+            # recompute balance of the holiday_status_id
+            # check if there is entitlements in holiday_status_id
+            holiday_solde_by_year_number = {}
+            if holiday_status_id.entitlements:
+                # loop under entitlements and get the holiday solde depend on grade of the employee
+                for en in holiday_status_id.entitlements:
+                    if employee_id.job_id.grade_id in en.entitlment_category.grades:
+                        holiday_solde_by_year_number = {en.periode: en.holiday_stock_default}
+                        break
+
+            # calculate the balance of he employee for current holliday status
+            if holiday_solde_by_year_number.items():
+                periode = holiday_solde_by_year_number.items()[0][0]
+                # One year
+                if holiday_solde_by_year_number[1] > 0:
+                    # calculate the number of worked month in current year
+                    print date.today()
+                    print date(date.today().year, 1, 1)
+                    months = relativedelta(date.today(), date(date.today().year, 1, 1)).months
+                    #balance per month
+                    if months > 0:
+                        balance = holiday_solde_by_year_number[1] / (periode * 12) * months
+                        balance_line.write({'holidays_available_stock': balance})
     @api.multi
     def button_extend(self):
-        #check if its possible to extend this holiday
+        # check if its possible to extend this holiday
         extensions_number = self.env['hr.holidays'].search_count([('extended_holiday_id', '=', self.extended_holiday_id.id)])
-        if self.holiday_status_id.extension_number == 'one' and extensions_number >=1: 
+        if self.holiday_status_id.extension_number == 'one' and extensions_number >= 1:
             raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من مرة واحدة.")
         view_id = self.env.ref('smart_hr.hr_holidays_form').id
         context = self._context.copy()
@@ -83,7 +119,7 @@ class HrHolidays(models.Model):
             'target': 'current',
             'context': context,
         }
-        
+
     @api.depends('extension_holidays_ids')
     def _is_extended(self):
         # Check if the holiday have a pending or completed extension leave
@@ -219,6 +255,8 @@ class HrHolidays(models.Model):
     def button_accept_hrm(self):
         if not self.holiday_status_id.external_decision:
             self.state = 'done'
+            # update holidays balance
+            self._compute_balance(self.employee_id)
         
         if self.holiday_status_id.external_decision and not self.employee_id.external_decision:
             raise ValidationError(u"الموظف يحتاج إلى موافقة جهة خارجية.")
@@ -264,6 +302,8 @@ class HrHolidays(models.Model):
             raise ValidationError(u"الرجاء إرفاق الخطاب.")
         
         self.state = 'done'
+        # update holidays balance
+        self._compute_balance(self.employee_id)
     @api.one
     def button_refuse_revision_response(self):
         self.state = 'refuse'

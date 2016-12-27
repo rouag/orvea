@@ -293,6 +293,15 @@
 										</tree>
 									</field>
 								</page>
+								<page string="أرصدة الاجازات">
+									<field name="holidays_balance">
+										<tree editable="buttom">
+											<field name="holiday_status_id" />
+											<field name="holidays_available_stock" />
+											<field name="periode" />
+										</tree>
+									</field>
+								</page>
 								<page string="الحسميات">
 								</page>
 								<page string="الورديات">
