@@ -38,6 +38,7 @@ class HrHolidays(models.Model):
         ('cutoff', u'مقطوعة')], string=u'حالة', default='draft', advanced_search=True)
     is_current_user = fields.Boolean(string='Is Current User', compute='_is_current_user')
     is_direct_manager = fields.Boolean(string='Is Direct Manager', compute='_is_direct_manager')
+    is_delayed = fields.Boolean(string='is_delayed', default=False)
     num_outspeech = fields.Char(string=u'رقم الخطاب الصادر')
     date_outspeech = fields.Date(string=u'تاريخ الخطاب الصادر')
     outspeech_file = fields.Binary(string=u'الخطاب الصادر')
@@ -473,7 +474,7 @@ class HrDelayHoliday(models.Model):
                 # add delay_days to date_from and date_to of the holiday
                 new_date_from = fields.Date.from_string(holiday.date_from) + timedelta(days=self.delay_days)
                 new_date_to = fields.Date.from_string(holiday.date_to) + timedelta(days=self.delay_days)
-                holiday.write({'date_from': new_date_from, 'date_to': new_date_to, 'state': 'draft'})
+                holiday.write({'date_from': new_date_from, 'date_to': new_date_to, 'state': 'draft', 'is_delayed': True})
     
             if self.delay_days > 0 and self.delay_days > holiday.holiday_status_id.postponement_period:
                 raise ValidationError(u"لا يمكن تأجيل هذا النوع من الاجازة أكثر من " + str(holiday.holiday_status_id.postponement_period) + u"يوماً.")
