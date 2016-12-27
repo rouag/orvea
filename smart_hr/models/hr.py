@@ -47,6 +47,8 @@ class HrEmployee(models.Model):
 
 
 
+
+
     @api.depends('birthday')
     def _compute_age(self):
         for emp in self:
