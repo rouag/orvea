@@ -128,6 +128,8 @@
 								attrs="{'readonly':[('state','!=','revision_response')], 'invisible':[('state','not in',['revision_response','done'])]}" />
 							<field name="inspeech_file" groups="smart_hr.group_holidays_checker"
 								attrs="{'readonly':[('state','!=','revision_response')], 'invisible':[('state','not in',['revision_response','done'])]}" />
+							<field name="inspeech_file" groups="smart_hr.group_holidays_checker"
+								attrs="{'readonly':[('state','!=','revision_response')], 'invisible':[('state','not in',['revision_response','done'])]}" />
 						</group>
 						<field name="need_decision" invisible="1"></field>
 						
@@ -212,7 +214,6 @@
 							</group>
 							<group>
 
-								<field name="limit" string="محدودة المدة" />
 								<field name="direct_decision" />
 								<field name="extension_number" />
 								<field name="external_decision" />
