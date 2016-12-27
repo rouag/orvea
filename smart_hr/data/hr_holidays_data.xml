@@ -62,5 +62,6 @@
 			<field name="extension_number" eval="'many'" />
 		</record>
 
+
 	</data>
 </openerp>

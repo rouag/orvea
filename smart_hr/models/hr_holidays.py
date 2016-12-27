@@ -44,7 +44,7 @@ class HrHolidays(models.Model):
     num_inspeech = fields.Char(string=u'رقم الخطاب الوارد')
     date_inspeech = fields.Date(string=u'تاريخ الخطاب الوارد')
     inspeech_file = fields.Binary(string=u'الخطاب الوارد')
-    holidays_available_stock = fields.Float(string=u'رصيد الاجازة', compute='_compute_holiday_status_available_stock')
+
     # Cancellation
     is_cancelled = fields.Boolean(string=u'ملغاة', compute='_is_cancelled')
     is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started', store = True)
@@ -55,7 +55,9 @@ class HrHolidays(models.Model):
     extended_holiday_id = fields.Many2one('hr.holidays', string=u'الإجازة الممددة')
     parent_id = fields.Many2one('hr.holidays', string=u'Parent')
     extension_holidays_ids = fields.One2many('hr.holidays', 'parent_id', string=u'التمديدات')
-    
+    num_decision = fields.Many2one('hr.decision',string=u'رقم القرار')
+    date_decision = fields.Date(string=u'تاريخ القرار')
+
     @api.multi
     def button_extend(self):
         #check if its possible to extend this holiday
@@ -105,37 +107,15 @@ class HrHolidays(models.Model):
                     break
             rec.is_cancelled = is_cancelled
             
-    @api.depends('date_from')
-    def _compute_is_started(self):
-        for rec in self:
-            if rec.date_from <= datetime.today().strftime('%Y-%m-%d') and rec.state == 'done':
-                rec.is_started = True
-                print rec.is_started
-                    
-    @api.depends('holiday_status_id')
-    def _compute_holiday_status_available_stock(self):
-        for holiday in self:
-            # check if there is entitlements in holiday_status_id
-            if not holiday.holiday_status_id.entitlements and holiday.holiday_status_id.limit:
-                raise ValidationError(u"يجب التحقق من الإستحقاقات في إعدادات نوع الإجازة.")
-            else:
-                # loop under entitlements and get the holiday solde depend on grade of the employee
-                holiday_solde_by_year_number = {}
-                for en in holiday.holiday_status_id.entitlements:
-                    if holiday.employee_id.job_id.grade_id in en.entitlment_category.grades:
-                        holiday_solde_by_year_number = {en.periode : en.holiday_stock_default}
-                        break
-            
-            # Sum of given holidays depend on holiday_status entitlement's periode
-            if holiday_solde_by_year_number.items():
-                periode = holiday_solde_by_year_number.items()[0][0]
-                # One year
-                if periode == 1:
-                    given_holiday_scount = 0
-                    for rec in holiday.search([('state', '=', 'done'), ('employee_id.id', '=', holiday.employee_id.id), ('holiday_status_id.id', '=', holiday.holiday_status_id.id), ('date_from', '<=', date(date.today().year, 12, 31)), ('date_from', '>=', date(date.today().year, 1, 1))]):
-                        given_holiday_scount += rec.duration 
-                    holiday.holidays_available_stock = holiday_solde_by_year_number[1] - given_holiday_scount
-        
+    holiday_cancellation = fields.Many2one('hr.holidays.cancellation')    
+    # Extension
+    is_extension = fields.Boolean(string=u'تمديد إجازة')
+    is_extended = fields.Boolean(string=u'ممددة', compute='_is_extended')
+    extended_holiday_id = fields.Many2one('hr.holidays', string=u'الإجازة الممددة')
+    parent_id = fields.Many2one('hr.holidays', string=u'Parent')
+    extension_holidays_ids = fields.One2many('hr.holidays', 'parent_id', string=u'التمديدات')
+
+
 
                     
     @api.model
@@ -219,10 +199,8 @@ class HrHolidays(models.Model):
     def button_accept_hrm(self):
         if not self.holiday_status_id.external_decision:
             self.state = 'done'
-        
         if self.holiday_status_id.external_decision and not self.employee_id.external_decision:
             raise ValidationError(u"الموظف يحتاج إلى موافقة جهة خارجية.")
-        # need an external decision
         if self.holiday_status_id.external_decision and self.employee_id.external_decision:
             self.state = 'external_audit'
             
@@ -278,10 +256,6 @@ class HrHolidays(models.Model):
         
 
         for holiday in self:
-            # check demanded periode with solde for holidays that have limit solde
-            if holiday.duration > holiday.holidays_available_stock and holiday.holiday_status_id.limit:
-                raise ValidationError(u"ليس لديك الرصيد الكافي.")
-            
             # Date validation
             if holiday.date_from > holiday.date_to:
                 raise ValidationError(u"تاريخ من يجب ان يكون أصغر من تاريخ الى")
@@ -352,7 +326,17 @@ class HrHolidays(models.Model):
                             ]
             if self.search_count(domain_search) > 0:
                 raise ValidationError(u"لديك طلب قيد الإجراء من نفس هذا النوع من الإجازة.")
-        
+            if not self.holiday_status_id.entitlements and self.holiday_status_id.limit:
+                raise ValidationError(u"يجب التحقق من الإستحقاقات في إعدادات نوع الإجازة.")
+                # loop under entitlements and get the holiday solde depend on grade of the employee
+                for en in self.holiday_status_id.entitlements:
+                    if self.employee_id.job_id.grade_id in en.entitlment_category.grades:
+                        #غير مشروط
+                        if not en.conditionnal:
+                            break
+                        else:
+                            if self.duration > self.employee_id.leave_emergency:
+                                raise ValidationError(u"ليس لديك الرصيد الكافي")
         # Constraintes for normal holidays عادية
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_normal'):
             # check the nationnality of the employee if it is saudi 
@@ -373,6 +357,18 @@ class HrHolidays(models.Model):
          
         # Constraintes for Compelling holidays اضطرارية
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
+            for en in self.holiday_status_id.entitlements:
+                if self.employee_id.job_id.grade_id in en.entitlment_category.grades:
+                    #غير مشروط
+                    if not en.conditionnal:
+                        break
+                    else:
+                        if self.duration > self.employee_id.leave_emergency:
+                            raise ValidationError(u"ليس لديك الرصيد الكافي")
+                        
+            if self.employee_id.leave_normal>=self.duration:
+                raise ValidationError(u"‫يوجد رصيد في الإجازات العاديّة.")
+            
             print 'اضطرارية'
            
         # Constraintes for exceptionnal holidays استثنائية
@@ -394,6 +390,8 @@ class HrHolidays(models.Model):
         vals['name'] = self.env['ir.sequence'].get('hr.holidays.seq')
         res.write(vals)
         return res
+    
+
     
 
     
