@@ -208,7 +208,6 @@
 							</group>
 							<group>
 
-								<field name="limit" string="محدودة المدة" />
 								<field name="direct_decision" />
 								<field name="extension_number" />
 								<field name="external_decision" />
