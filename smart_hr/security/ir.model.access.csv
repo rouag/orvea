@@ -27,6 +27,7 @@ access_hr_candidates,hr_candidates,model_hr_candidates,group_department_manager,
 access_hr_candidates,hr_candidates,model_hr_training,group_employee,1,1,1,0
 access_hr_employee,hr_employee,model_hr_employee,group_employee_request,1,1,1,1
 access_hr_employee_registration,hr_employee_registration,model_hr_employee,group_employee_registration,1,1,0,0
+access_hr_employee_update_balance_holidays,hr_employee_update_balance_holidays,model_hr_employee,group_employee,1,1,0,0
 ,,,,,,,
 access_judicial_precedent,judicial_precedent,model_judicial_precedent,,1,1,1,1
 access_employee_judicial_precedent,employee_judicial_precedent,model_employee_judicial_precedent,,1,1,1,1
@@ -110,3 +111,4 @@ access_hr_deduction_history,hr_deduction_history,model_hr_deduction_history,grou
 ,,,,,,,
 access_hr_decision,name_hr_decision,model_hr_decision,,1,1,1,1
 access_hr_decision_type,name_hr_decision_type,model_hr_decision_type,,1,1,1,1
+access_hr_employee_holidays_stock,hr_employee_holidays_stock,model_hr_employee_holidays_stock,group_employee,1,1,1,0
