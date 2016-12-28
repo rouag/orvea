@@ -34,8 +34,10 @@
 					<field name="is_extended" invisible="1" />
 					<field name="is_cancelled" invisible="1" />
 					<field name="is_started" invisible="1" />
-				   <field name="is_delayed" invisible="1" />
-										<header name="main">
+					<field name="is_delayed" invisible="1" />
+										<field name="is_extensible" invisible="1" />
+					
+					<header name="main">
 						<button name="send_holiday_request" string="إرسال طلب"
 							type="object"
 							attrs="{'invisible':['|',('state','!=','draft'),('is_current_user','=',False)]}"
@@ -49,8 +51,9 @@
 						<button name="action_delay_holiday" string="تأجيل" type="object"
 							states="dm" groups="smart_hr.group_dm" icon="fa-times"
 							class="oe_inline oe_stat_button" />
-						<button name="button_extend" string="تمديد الإجازة"
-							attrs="{'invisible':[('state', '!=', 'done') ] } " type="object"
+						
+						<button name="button_extend" string="تمديد الإجازة" 
+							attrs="{'invisible':['|',('state', '!=', 'done'),('is_extensible', '=', 'False')] } " type="object"
 							icon="fa-check" class="oe_inline oe_stat_button" />
 
 						<button name="button_accept_audit" string="موافق" type="object"
@@ -96,7 +99,7 @@
 					<sheet>
 						<div class="col-md-12" attrs="{'invisible':[('is_delayed','=',False)]}">
 							<center>
-							<h3>طلب معدل للتأجيل</h3>
+								<h3>طلب معدل للتأجيل</h3>
 							</center>
 						</div>
 						<group string="صاحب الطلب">
@@ -137,7 +140,7 @@
 								attrs="{'readonly':[('state','!=','revision_response')], 'invisible':[('state','not in',['revision_response','done'])]}" />
 						</group>
 						<field name="need_decision" invisible="1"></field>
-						
+
 						<group col="4">
 							<field name="num_decision" groups="smart_hr.group_holidays_checker"
 								attrs="{'readonly':[('state','!=','audit')], 'invisible':[('state','not in',['audit','done'])],'required':[('state','=','audit'),('need_decision','=',True)]}" />
@@ -220,7 +223,9 @@
 							<group>
 
 								<field name="direct_decision" />
-								<field name="extension_number" />
+								<field name="is_extensible"  />
+								<field name="extension_number" attrs="{'invisible':[('is_extensible', '=', False)]}"/>
+								<field name="extension_period" attrs="{'invisible':[('is_extensible', '=', False)]}"/>
 								<field name="external_decision" />
 								<field name="for_saudi" />
 								<field name="for_other" />

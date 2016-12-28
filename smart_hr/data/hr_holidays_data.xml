@@ -12,11 +12,11 @@
 		<record id="data_hr_holiday_status_exceptional" model="hr.holidays.status">
 			<field name="name">استثنائية</field>
 			<field name="limit" eval="True" />
-			<field name="expansion_period" eval="1" />
+			<field name="extension_period" eval="1" />
 			<field name="direct_decision" eval="True" />
 			<field name="deductible_normal_leave" eval="True" />
 			<field name="deductible_duration_service" eval="True" />
-
+			<field name="is_extensible" eval="True" />
 		</record>
 		<record id="data_hr_holiday_status_illness" model="hr.holidays.status">
 			<field name="name">مرضية</field>
@@ -50,19 +50,26 @@
 			<field name="name">غسيل كلوي</field>
 			<field name="limit" eval="True" />
 		</record>
+
 		<record id="data_hr_holiday_status_compelling" model="hr.holidays.status">
 			<field name="name">اضطرارية</field>
 			<field name="maximum" eval="5" />
 			<field name="limit" eval="True" />
+			<field name="for_saudi" eval="True" />
+			<field name="for_other" eval="True" />
+			<field name="direct_decision" eval="True" />
+
 		</record>
+
 		<record id="data_hr_holiday_status_exceptional_accompaniment"
 			model="hr.holidays.status">
 			<field name="name">استثنائية للمرافقة</field>
-		<field name="limit" eval="True" />
-			<field name="expansion_period" eval="0" />
+			<field name="limit" eval="True" />
+			<field name="extension_period" eval="1" />
 			<field name="direct_decision" eval="True" />
 			<field name="deductible_normal_leave" eval="True" />
 			<field name="deductible_duration_service" eval="True" />
+			<field name="is_extensible" eval="True" />
 		</record>
 
 	</data>
