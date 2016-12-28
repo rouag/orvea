@@ -56,10 +56,11 @@ class HrHolidays(models.Model):
     extended_holiday_id = fields.Many2one('hr.holidays', string=u'الإجازة الممددة')
     parent_id = fields.Many2one('hr.holidays', string=u'Parent')
     extension_holidays_ids = fields.One2many('hr.holidays', 'parent_id', string=u'التمديدات')
-    need_decision = fields.Boolean('status_id need decision',related='holiday_status_id.direct_decision')
-    num_decision = fields.Char( string=u'رقم القرار')
-    date_decision = fields.Date(string=u'تاريخ القرار')
     is_extensible = fields.Boolean(string=u'يمكن تمديدها',related='holiday_status_id.is_extensible',default=False)
+    # decision
+    need_decision = fields.Boolean('status_id need decision', related='holiday_status_id.direct_decision')
+    num_decision = fields.Char(string=u'رقم القرار')
+    date_decision = fields.Date(string=u'تاريخ القرار')
     childbirth_date = fields.Date(string=u'تاريخ ولادة الطفل')
     medical_certificate = fields.Binary(string=u'شهادة طبية')
 
@@ -319,7 +320,7 @@ class HrHolidays(models.Model):
 
         for holiday in self:
             # Date validation
-            if holiday.date_from < fields.Datetime.now():
+            if fields.Date.from_string(holiday.date_from) < fields.Date.from_string(fields.Date.today()):
                 raise ValidationError(u"تاريخ من يجب ان يكون أكبر من تاريخ اليوم")
             
             if holiday.date_from > holiday.date_to:
@@ -562,6 +563,7 @@ class HrHolidaysStatus(models.Model):
     for_other = fields.Boolean(string=u'تنطبق على غير السعوديين', default=True)
     extension_period = fields.Integer(string=u'مدة التمديد', default=0)
     is_extensible = fields.Boolean(string=u'يمكن تمديدها',default=False)
+    promotion_deductible = fields.Boolean(string=u'تخصم مدتها من رصيد الترقية', default=False)
 
 
 class HrHolidaysStatusEntitlement(models.Model):

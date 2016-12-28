@@ -32,7 +32,7 @@ class HrPromotion(models.Model):
     total_point=fields.Char(string='مجموع النقاط')
     deadline_sign=fields.Char(string=' تاريخ أخر موعد للتوقيع على الإقرار') 
     state= fields.Selection([('new','طلب'),('waiting','في إنتظار الإعتماد'),('done','اعتمدت')], readonly=1, default='new')
-    
+
     
     @api.one
     def action_waiting(self):
@@ -57,3 +57,4 @@ class HrPromotion(models.Model):
             self.number_job = self.job_id.number
             self.grade_id = self.job_id.grade_id.id
             self.department_id = self.job_id.department_id.id
+

@@ -39,8 +39,8 @@
 		<menuitem id="hr_department_menu" name="الإدارات" sequence="5"
 			parent="hr_root_organisation" action="action_hr_department_tree_view" />
 
-		<menuitem id="hr_department_menu_conf" name="الإدارات" sequence="1"
-			 action="action_hr_department" parent="menu_hr_department_hierarchy_level"/>
+		<menuitem id="hr_department_menu_conf" name="الإدارات"
+			sequence="1" action="action_hr_department" parent="menu_hr_department_hierarchy_level" />
 		<!-- الموظفون -->
 
 		<record id="view_employee_tree" model="ir.ui.view">
@@ -183,13 +183,13 @@
 											<field name="gender" attrs="{'required': 1}" />
 											<field name="marital" attrs="{'required': 1}" />
 										</group>
-										
+
 										<group string="الميلاد">
 											<field name="birthday" attrs="{'required': 1}" />
 											<field name="birthday_location" attrs="{'required': 1}" />
-											
+
 										</group>
-										
+
 										<group string="المرفقات">
 											<field name="attachments" widget="many2many_binary"
 												nolabel="1" />
@@ -245,13 +245,21 @@
 										</tree>
 									</field>
 								</page>
-								<page string="أرصدة الاجازات">
-									<field name="holidays_balance">
-										<tree editable="buttom">
+								<page string="أرصدة الاجازات والترقيات">
+									<field name="holidays_balance" >
+										<tree string="أرصدة الاجازات ">
 											<field name="holiday_status_id" />
 											<field name="holidays_available_stock" />
 											<field name="token_holidays_sum" />
 											<field name="periode" />
+										</tree>
+									</field>
+									<field name="promotions_history" readonly="1">
+										<tree string="أرصدة الترقيات" >
+											<field name="salary_grid_id" />
+											<field name="date_from" />
+											<field name="date_to" />
+											<field name="balance" />
 										</tree>
 									</field>
 								</page>
@@ -261,7 +269,7 @@
 								</page>
 								<page string="بيان الخدمة">
 								</page>
-							
+
 							</notebook>
 						</sheet>
 						<div class="oe_chatter">
