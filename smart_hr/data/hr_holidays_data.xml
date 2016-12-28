@@ -70,8 +70,7 @@
 			<field name="deductible_normal_leave" eval="True" />
 			<field name="deductible_duration_service" eval="True" />
 			<field name="is_extensible" eval="True" />
-			<field name="external_decision" eval="True" />
-			
+			<field name="external_decision" eval="True" />			
 		</record>
 
 	</data>

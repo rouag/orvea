@@ -113,7 +113,7 @@ class HrHolidays(models.Model):
         for extension in extensions:
             extensions_period = extension.duration
             sum_periods += extensions_period
-        status_extension_period = self.holiday_status_id.extension_period * 265
+        status_extension_period = self.holiday_status_id.extension_period * 365
         if sum_periods >= status_extension_period:
             raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من عام")
 
