@@ -40,6 +40,9 @@ class HrPromotion(models.Model):
          
     @api.one
     def action_done(self):
+        """
+        TODO: update promotion history  for the employee when he have a promotion
+        """
         self.state = 'done'  
         
     @api.one
