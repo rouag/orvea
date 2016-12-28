@@ -332,7 +332,9 @@ class HrHolidays(models.Model):
                         rec.date_from <= holiday.date_to <= rec.date_to or \
                         holiday.date_from <= rec.date_from <= holiday.date_to or \
                         holiday.date_from <= rec.date_to <= holiday.date_to:
-                    raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق فى الإجازات")
+                    # holidays can be ovelapped with illness type
+                    if self.holiday_status_id != self.env.ref('smart_hr.data_hr_holiday_status_illness'):
+                        raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق فى الإجازات")
             # التدريب
             search_domain = [
                 ('employee_ids', 'in', [holiday.employee_id.id]),
