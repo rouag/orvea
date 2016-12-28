@@ -12,11 +12,14 @@
 		<record id="data_hr_holiday_status_exceptional" model="hr.holidays.status">
 			<field name="name">استثنائية</field>
 			<field name="limit" eval="True" />
+<<<<<<< HEAD
 			<field name="expansion_period" eval="1" />
 			<field name="direct_decision" eval="True" />
 			<field name="deductible_normal_leave" eval="True" />
 			<field name="deductible_duration_service" eval="True" />
 
+=======
+>>>>>>> branch '9.0' of https://gitlab.smart-etech.com/smart-dev/addons_smart.git
 		</record>
 		<record id="data_hr_holiday_status_illness" model="hr.holidays.status">
 			<field name="name">مرضية</field>

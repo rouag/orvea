@@ -47,6 +47,8 @@ class HrDecisionAppoint(models.Model):
         self.employee_id.department_id=self.department_id.id
         self.employee_id.employee_state='employee'
         self.state = 'done'
+        # update holidays balance for the employee
+        self.env['hr.holidays'].sudo()._compute_balance(self.employee_id)
         
         #create system user and link current employee to created user
         if self.employee_id.work_email:
