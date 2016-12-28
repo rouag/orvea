@@ -56,7 +56,7 @@ class HrHolidays(models.Model):
     extended_holiday_id = fields.Many2one('hr.holidays', string=u'الإجازة الممددة')
     parent_id = fields.Many2one('hr.holidays', string=u'Parent')
     extension_holidays_ids = fields.One2many('hr.holidays', 'parent_id', string=u'التمديدات')
-    need_decision = fields.Boolean('status_id need decision',related='holiday_status_id.direct_decision')
+
     num_decision = fields.Many2one('hr.decision', string=u'رقم القرار')
     date_decision = fields.Date(string=u'تاريخ القرار')
 
@@ -352,27 +352,26 @@ class HrHolidays(models.Model):
                         holiday.date_from <= rec.date_from <= holiday.date_to or \
                         holiday.date_from <= rec.date_to <= holiday.date_to:
                     raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الإنتداب")
-            
+
             """
-            
-            TO DO: check dates with :أوقات خارج الدوام ... 
-            
+
+            TODO: check dates with :أوقات خارج الدوام ... 
+
             """
-            
+
     def check_constraintes(self):
         """
         check constraintes beside date and periode ones
         """
-        
-        # common constraintes
+
+        # check if there is another undone request for the same status of holiday
         if self.holiday_status_id in [self.env.ref('smart_hr.data_hr_holiday_status_normal'), self.env.ref('smart_hr.data_hr_holiday_status_exceptional'), self.env.ref('smart_hr.data_hr_holiday_status_compelling')]:
             # check if there is another undone request for the same status of holiday
             domain_search = [
-                                ('state', 'not in', ['done', 'refuse']),
-                                ('employee_id.id', '=', self.employee_id.id),
-                                ('holiday_status_id.id', '=', self.holiday_status_id.id),
-                                ('id', '!=', self.id)
-                            ]
+                ('state', 'not in', ['done', 'refuse']),
+                ('employee_id.id', '=', self.employee_id.id),
+                ('holiday_status_id.id', '=', self.holiday_status_id.id),
+                ('id', '!=', self.id)]
             if self.search_count(domain_search) > 0:
                 raise ValidationError(u"لديك طلب قيد الإجراء من نفس هذا النوع من الإجازة.")
             if not self.holiday_status_id.entitlements and self.holiday_status_id.limit:
@@ -384,11 +383,10 @@ class HrHolidays(models.Model):
             if self.employee_id.country_id != self.env.ref('base.sa'):
                 raise ValidationError(u"هذا النوع من الإجازة ينطبق فقط على السعوديين.")
 
-            
-        # Constraintes for studying holidays دراسية
-        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_study'):
+        # Constraintes for studyinglevel
+        if self.holiday_status_id.educ_lvl_req:
             # check education level
-            if self.employee_id.education_level.sequence < self.env.ref('smart_hr.certificate_secondary_education').sequence:
+            if self.employee_id.education_level not in self.holiday_status_id.education_levels:
                 raise ValidationError(u"لم تتحصل على المستوى الدراسي المطلوب.")
             # check 3 years of services
             date_hiring = self.env['hr.decision.appoint'].search([('employee_id.id', '=', self.employee_id.id)], limit=1).date_hiring
@@ -502,7 +500,7 @@ class HrHolidaysStatus(models.Model):
     minimum = fields.Integer(string=u'الحد الأدنى في المرة الواحدة')
     maximum = fields.Integer(string=u'الحد الأقصى في المرة الواحدة')
     postponement_period = fields.Integer(string=u'مدة التأجيل')
-    extension_number = fields.Integer(string=u'عدد مرات التأجيل', default=0)
+    extension_number = fields.Integer(string=u'عدد مرات تمديد', default=0)
     deductible_normal_leave = fields.Boolean(string=u'تخصم مدتها من رصيد الاجازة العادية')
     deductible_duration_service = fields.Boolean(string=u'تخصم مدتها من فترة الخدمة')
     educ_lvl_req = fields.Boolean(string=u'يطبق شرط المستوى التعليمي')
@@ -517,6 +515,8 @@ class HrHolidaysStatus(models.Model):
     entitlements = fields.One2many('hr.holidays.status.entitlement', 'leave_type', string=u'أنواع الاستحقاقات')
     assessments_required = fields.One2many('hr.assessment.result.config', 'leave_type', string=u'التقييمات المطلوبة')
     percentages = fields.One2many('hr.holidays.status.salary.percentage', 'holiday_status', string=u'نسب الراتب المحتسبة')
+    for_saudi = fields.Boolean(string=u'تنطبق على السعوديين', default=True)
+    for_other = fields.Boolean(string=u'تنطبق على غير السعوديين', default=True)
     expansion_period = fields.Selection([(0,'لايمكن تمديدها'),
         (1, u'سنة'),
         (2, u'سنتين'),
