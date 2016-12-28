@@ -260,11 +260,7 @@
 								</page>
 								<page string="بيان الخدمة">
 								</page>
-								<page string="بيانات الإجازات">
-
-			
-
-								</page>
+							
 							</notebook>
 						</sheet>
 						<div class="oe_chatter">

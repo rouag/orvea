@@ -56,9 +56,10 @@ class HrHolidays(models.Model):
     extended_holiday_id = fields.Many2one('hr.holidays', string=u'الإجازة الممددة')
     parent_id = fields.Many2one('hr.holidays', string=u'Parent')
     extension_holidays_ids = fields.One2many('hr.holidays', 'parent_id', string=u'التمديدات')
-
-    num_decision = fields.Many2one('hr.decision', string=u'رقم القرار')
+    need_decision = fields.Boolean('status_id need decision',related='holiday_status_id.direct_decision')
+    num_decision = fields.Char( string=u'رقم القرار')
     date_decision = fields.Date(string=u'تاريخ القرار')
+    is_extensible = fields.Boolean(string=u'يمكن تمديدها',related='holiday_status_id.is_extensible',default=False)
 
 
     @api.one
@@ -106,6 +107,15 @@ class HrHolidays(models.Model):
     def button_extend(self):
         # check if its possible to extend this holiday
         extensions_number = self.env['hr.holidays'].search_count([('extended_holiday_id', '=', self.extended_holiday_id.id)])
+        extensions = self.env['hr.holidays'].search([('extended_holiday_id', '=', self.extended_holiday_id.id),('state', '=', 'done')])
+        sum_periods = 0
+        for extension in extensions:
+            extensions_period = extension.duration
+            sum_periods += extensions_period
+        status_extension_period = self.holiday_status_id.extension_period * 265
+        if sum_periods >= status_extension_period:
+            raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من عام")
+
         if extensions_number >= self.holiday_status_id.extension_number:
             raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من " + self.holiday_status_id.extension_number + u".")
         view_id = self.env.ref('smart_hr.hr_holidays_form').id
@@ -393,17 +403,17 @@ class HrHolidays(models.Model):
             res = relativedelta(fields.Date.from_string(fields.Datetime.now()), fields.Date.from_string(date_hiring))
             if res.years < 3:
                 raise ValidationError(u"ليس لديك ثلاث سنوات خدمة.")
-        holiday_status_compelling_stock=holiday_status_exceptional_stock=holiday_status_normal_stock=0    
-        emp_holiday_balance= self.employee_id.holidays_balance
+        holiday_status_compelling_stock = holiday_status_exceptional_stock = holiday_status_normal_stock = 0
+        emp_holiday_balance = self.employee_id.holidays_balance
         for holiday_status_id in emp_holiday_balance.holiday_status_id:
             holiday_status = self.env('hr.employee.holidays.stock').browse(holiday_status_id)
-            if holiday_status==self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
-                holiday_status_compelling_stock=holiday_status.holidays_available_stock
-            if holiday_status==self.env.ref('smart_hr.data_hr_holiday_status_exceptional'):
-                holiday_status_exceptional_stock=holiday_status.holidays_available_stock
-            if holiday_status==self.env.ref('smart_hr.data_hr_holiday_status_normal'):
-                holiday_status_normal_stock=holiday_status.holidays_available_stock  
-                              
+            if holiday_status == self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
+                holiday_status_compelling_stock = holiday_status.holidays_available_stock
+            if holiday_status == self.env.ref('smart_hr.data_hr_holiday_status_exceptional'):
+                holiday_status_exceptional_stock = holiday_status.holidays_available_stock
+            if holiday_status == self.env.ref('smart_hr.data_hr_holiday_status_normal'):
+                holiday_status_normal_stock = holiday_status.holidays_available_stock
+
         # Constraintes for Compelling holidays اضطرارية
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
             for en in self.holiday_status_id.entitlements:
@@ -517,20 +527,10 @@ class HrHolidaysStatus(models.Model):
     percentages = fields.One2many('hr.holidays.status.salary.percentage', 'holiday_status', string=u'نسب الراتب المحتسبة')
     for_saudi = fields.Boolean(string=u'تنطبق على السعوديين', default=True)
     for_other = fields.Boolean(string=u'تنطبق على غير السعوديين', default=True)
-    expansion_period = fields.Selection([(0,'لايمكن تمديدها'),
-        (1, u'سنة'),
-        (2, u'سنتين'),
-        (3, u'ثلاث سنوات'),
-        (4, u'أربع سنوات'),
-        (5, u'خمس سنوات'),
-        (6, u'ستة سنوات'),
-        (7, u'سبعة سنوات'),
-        (8, u'ثمانية سنوات'),
-        (9, u'تسعة سنوات'),
-        (10, u'عشرة سنوات'),
-        ], string=u'مدة التمديد', default=1)  
-                
-                
+    extension_period = fields.Integer(string=u'مدة التمديد', default=0)
+    is_extensible = fields.Boolean(string=u'يمكن تمديدها',default=False)
+
+
 class HrHolidaysStatusEntitlement(models.Model):
     _name = 'hr.holidays.status.entitlement'
     _description = u'أنواع الاستحقاقات'

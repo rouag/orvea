@@ -42,7 +42,7 @@ access_recruiter_recruiter,recruiter_recruiter,model_recruiter_recruiter,,1,1,1,
 ,,,,,,,
 ,,,,,,,
 ,,,,,,,
-access_hr_holiday_status_deputed_employee,hr_holiday_status_deputed_employee,model_hr_holidays_status,group_employee,1,0,0,0
+access_hr_holiday_status_deputed_employee,hr_holiday_status_deputed_employee,model_hr_holidays_status,group_employee,1,1,0,0
 access_hr_overtime_deputed_employee,hr_overtime_deputed_employee,model_hr_overtime,group_employee,1,0,0,0
 access_hr_overtime_line_deputed_employee,hr_overtime_line_deputed_employee,model_hr_overtime_line,group_employee,1,0,0,0
 access_hr_holiday_employee,hr_holiday_employee,model_hr_holidays,group_employee,1,1,1,1
