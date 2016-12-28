@@ -111,6 +111,8 @@ access_hr_deduction_history,hr_deduction_history,model_hr_deduction_history,grou
 ,,,,,,,
 access_hr_decision,name_hr_decision,model_hr_decision,,1,1,1,1
 access_hr_decision_type,name_hr_decision_type,model_hr_decision_type,,1,1,1,1
-
+,,,,,,,
 access_hr_employee_holidays_stock,hr_employee_holidays_stock_employee,model_hr_employee_holidays_stock,group_employee,1,0,0,0
 access_hr_employee_holidays_stock,hr_employee_holidays_stock,model_hr_employee_holidays_stock,group_employee,1,1,1,0
+access_hr_employee_allowance,hr_employee_allowance,model_hr_employee_allowance,group_employee,1,0,0,0
+access_hr_employee_promotion_history,hr_employee_promotion_history,model_hr_employee_promotion_history,group_employee,1,0,0,0

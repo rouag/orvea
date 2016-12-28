@@ -48,8 +48,7 @@
 			<field name="model">hr.employee</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
-				<tree string="بيانات موظف" create='0' delete='0' duplicate='0'
-					edit='0'>
+				<tree string="بيانات موظف" >
 					<field name="name" />
 					<field name="number" />
 					<field name="employee_state" />
