@@ -61,8 +61,9 @@ class HrHolidays(models.Model):
     date_decision = fields.Date(string=u'تاريخ القرار')
 
 
-    @api.one
+    @api.multi
     def _compute_balance(self, employee_id):
+        print employee_id
         holiday_obj = self.env['hr.holidays']
         holidays_status = self.env['hr.holidays.status'].search([])
         for holiday_status_id in holidays_status:

@@ -46,17 +46,17 @@ class HrDecisionAppoint(models.Model):
         self.employee_id.job_id=self.job_id.id
         self.employee_id.department_id=self.department_id.id
         self.employee_id.employee_state='employee'
-        self.state = 'done'
+        #self.state = 'done'
         # update holidays balance for the employee
-        self.env['hr.holidays'].sudo()._compute_balance(self.employee_id)
+        self.env['hr.holidays']._compute_balance(self.employee_id)
         
         #create system user and link current employee to created user
-        if self.employee_id.work_email:
-            user = self.env['res.users'].create({'name':self.employee_id.name,'login':self.employee_id.work_email, 'email':self.employee_id.work_email})
-            self.employee_id.user_id = user
-        else:
-            raise Warning(_('الرجاء تعبئة البريد الإلكتروني.'))
-        
+#         if self.employee_id.work_email:
+#             user = self.env['res.users'].create({'name':self.employee_id.name,'login':self.employee_id.work_email, 'email':self.employee_id.work_email})
+#             self.employee_id.user_id = user
+#         else:
+#             raise Warning(_('الرجاء تعبئة البريد الإلكتروني.'))
+#         
     @api.one
     def action_refuse(self):
         self.state = 'new' 
