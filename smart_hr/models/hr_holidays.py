@@ -108,7 +108,7 @@ class HrHolidays(models.Model):
     def button_extend(self):
         # check if its possible to extend this holiday
         extensions_number = self.env['hr.holidays'].search_count([('extended_holiday_id', '=', self.extended_holiday_id.id)])
-        extensions = self.env['hr.holidays'].search([('extended_holiday_id', '=', self.extended_holiday_id.id),('state', '=', 'done')])
+        extensions = self.env['hr.holidays'].search([('extended_holiday_id', '!=', False),('extended_holiday_id', '=', self.extended_holiday_id.id),('state', '=', 'done')])
         sum_periods = 0
         for extension in extensions:
             extensions_period = extension.duration
