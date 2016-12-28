@@ -47,6 +47,10 @@ class HrDecisionAppoint(models.Model):
         self.employee_id.department_id=self.department_id.id
         self.employee_id.employee_state='employee'
         self.state = 'done'
+        # update holidays balance for the employee
+        self.env['hr.holidays']._compute_balance(self.employee_id)
+        # create promotion history line
+        self.env['hr.employee.promotion.history'].create({'employee_id': self.employee_id.id, 'salary_grid_id': self.employee_id.job_id.grade_id.id, 'date_from': fields.Datetime.now() })
         
         #create system user and link current employee to created user
         if self.employee_id.work_email:
@@ -54,7 +58,7 @@ class HrDecisionAppoint(models.Model):
             self.employee_id.user_id = user
         else:
             raise Warning(_('الرجاء تعبئة البريد الإلكتروني.'))
-        
+         
     @api.one
     def action_refuse(self):
         self.state = 'new' 

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+
+
+
+		<record id="external_autorities_form" model="ir.ui.view">
+			<field name="name">external.authorities.form</field>
+			<field name="model">external.authorities</field>
+			<field name="arch" type="xml">
+				<form string="الجهات الخارجية‬‬">
+					<sheet>
+						<group>
+							<field name="name" />
+							<field name="holiday_status" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="external_autorities_tree" model="ir.ui.view">
+			<field name="name">external.authorities.tree</field>
+			<field name="model">external.authorities</field>
+			<field name="arch" type="xml">
+				<tree string="الجهات الخارجية‬">
+							<field name="name" />
+							<field name="holiday_status" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_external_autorities">
+			<field name="name">الجهات الخارجية‬‬</field>
+			<field name="res_model">external.authorities</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="menu_external_autorities_conf" parent="menu_hr_holiday_root"
+			name="الجهات الخارجية‬" sequence="100" action="action_external_autorities"/>
+
+
+
+
+	</data>
+</openerp>

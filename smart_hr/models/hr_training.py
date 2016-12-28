@@ -137,6 +137,7 @@ class HrCandidates(models.Model):
     def action_refuse(self):
         self.state = 'new'
 
+
 # TODO: all conditions not work
 #     @api.constrains('date_from', 'date_to')
 #     def check_dates(self):

@@ -34,3 +34,5 @@ from . import hr_decision
 
 from . import section
 from . import hierarchy_level
+
+from . import external_authorities

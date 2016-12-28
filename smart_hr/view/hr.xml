@@ -8,39 +8,39 @@
 			<field name="name">الإدارات</field>
 			<field name="res_model">hr.department</field>
 			<field name="view_type">form</field>
-			<field name="view_mode">kanban,form</field>
+			<field name="view_mode">tree,form</field>
 		</record>
-		
-        <!--
-            Department Hierarchy
-        -->
-        <record id="view_tree_hr_department_tree_view" model="ir.ui.view">
-            <field name="name">hr.department.tree.view</field>
-            <field name="model">hr.department</field>
-            <field name="field_parent">child_ids</field>
-            <field name="arch" type="xml">
-                <tree string="الهيكل الإدارى" class="oe_tree_view">
-                    <field name="name"/>
-                    <field name="manager_id"/>
-                    <field name="parent_id" invisible="1"/>
-                </tree>
-            </field>
-        </record>
-        <record id="action_hr_department_tree_view" model="ir.actions.act_window">
-            <field name="name">الهيكل الإدارى</field>
-            <field name="res_model">hr.department</field>
-            <field name="view_type">tree</field>
-            <field name="view_mode">tree,kanban,form</field>
-            <field name="domain">[('parent_id','=',False)]</field>
-            <field name="view_id" ref="view_tree_hr_department_tree_view"/>
-            <field name="help" type="html">
-              	<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
-             </field>
-        </record>
-        
+
+		<!-- Department Hierarchy -->
+		<record id="view_tree_hr_department_tree_view" model="ir.ui.view">
+			<field name="name">hr.department.tree.view</field>
+			<field name="model">hr.department</field>
+			<field name="field_parent">child_ids</field>
+			<field name="arch" type="xml">
+				<tree string="الهيكل الإدارى" class="oe_tree_view">
+					<field name="name" />
+					<field name="manager_id" />
+					<field name="parent_id" invisible="1" />
+				</tree>
+			</field>
+		</record>
+		<record id="action_hr_department_tree_view" model="ir.actions.act_window">
+			<field name="name">الهيكل الإدارى</field>
+			<field name="res_model">hr.department</field>
+			<field name="view_type">tree</field>
+			<field name="view_mode">tree,kanban,form</field>
+			<field name="domain">[('parent_id','=',False)]</field>
+			<field name="view_id" ref="view_tree_hr_department_tree_view" />
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+
 		<menuitem id="hr_department_menu" name="الإدارات" sequence="5"
 			parent="hr_root_organisation" action="action_hr_department_tree_view" />
 
+		<menuitem id="hr_department_menu_conf" name="الإدارات"
+			sequence="1" action="action_hr_department" parent="menu_hr_department_hierarchy_level" />
 		<!-- الموظفون -->
 
 		<record id="view_employee_tree" model="ir.ui.view">
@@ -48,8 +48,7 @@
 			<field name="model">hr.employee</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
-				<tree string="بيانات موظف" create='0' delete='0' duplicate='0'
-					edit='0'>
+				<tree string="بيانات موظف">
 					<field name="name" />
 					<field name="number" />
 					<field name="employee_state" />
@@ -57,73 +56,7 @@
 			</field>
 		</record>
 
-		<!-- <record id="view_employee_form" model="ir.ui.view">
-			<field name="name">hr.employee.form</field>
-			<field name="model">hr.employee</field>
-			<field name="arch" type="xml">
-				<form string="بيانات موظف" create='0' delete='0' duplicate='0'
-					edit='1'>
-					<sheet>
-						<field name="image" widget='image' class="oe_avatar"
-							options='{"preview_image":"image_medium"}' />
-						<div class="oe_title">
-							<label for="name" class="oe_edit_only" />
-							<h1>
-								<field name="name" placeholder="Employee's Name" />
-							</h1>
-						</div>
-						<notebook>
-							<page string="بيانات الموظف">
-								<group>
 
-									<group string="بيانات شخصية">
-										<field name="number" />
-										<field name="gender" />
-										<field name="marital" />
-										<field name="country_id" options='{"no_open": True, "no_create": True}' />
-										<field name="birthday" />
-										<field name="birthday_location" />
-										<field name="identification_id" groups="base.group_hr_user" />
-										<field name="passport_id" groups="base.group_hr_user" />
-										<field name="country_id" />
-									</group>
-
-									<group string="بيانات التواصل">
-										<field name="mobile_phone" />
-										<field name="work_location" />
-										<field name="work_email" widget="email" />
-										<field name="work_phone" />
-									</group>
-
-									<group string="بيانات العمل">
-										<field name="department_id" on_change="onchange_department_id(department_id)" />
-										<field name="job_id" />
-										<field name="parent_id" />
-										<field name="user_id" />
-										<field name="working_hours_calendar" />
-									</group>
-
-									<group string="بيانات البنك">
-										<field name="address_home_id" invisible="1" />
-										<field name="bank_account_id" />
-										<field name="wage" />
-										<field name="payroll_structure_id" />
-									</group>
-
-								</group>
-								<field name="notes" placeholder="معلومات أخرى ..."
-									colspan="4" />
-							</page>
-						</notebook>
-					</sheet>
-					<div class="oe_chatter">
-						<field name="message_follower_ids" widget="mail_followers"
-							groups="base.group_user" />
-						<field name="message_ids" widget="mail_thread" />
-					</div>
-				</form>
-			</field>
-		</record> -->
 
 
 		<record model="ir.actions.act_window" id="action_hr_employee">
@@ -145,14 +78,169 @@
 			<field name="view_id" ref="hr.view_employee_form" />
 			<field name="act_window_id" ref="action_hr_employee" />
 		</record>
-
-
-
 		<menuitem id="hr_employee_menu" name="الموظفون" sequence="10"
 			parent="hr_root_employees" action="action_hr_employee" />
 
+		<!-- بياناتي -->
+		 <record id="view_employee_mine_form" model="ir.ui.view">
+			<field name="name">hr.employee.form</field>
+			<field name="model">hr.employee</field>
+			<field name="arch" type="xml">
+				<form string="بياناتي" create='0' delete='0' duplicate='0'>
 
-		<!-- تسجيل بيانات موظف -->
+					<sheet>
+						<div name="button_box" invisible="1" />
+						<field name="image" widget="image" class="oe_avatar"
+							options="{&quot;preview_image&quot;:&quot;image_medium&quot;}" />
+						<div class="oe_title">
+							<label for="name" class="oe_edit_only" />
+							<h1>
+								<field name="name" placeholder="اسم الموظف" attrs="{'required': 1}" />
+							</h1>
+							<label for="number" class="oe_edit_only" />
+							<h1>
+								<field name="number" placeholder="الرقم الوظيفي" attrs="{'required': 1}" />
+
+							</h1>
+						</div>
+						<notebook>
+							<page string="بيانات شخصية">
+								<group>
+									<group string="بيانات شخصية">
+										<field name="father_name" attrs="{'required': 1}" />
+										<field name="country_id" options='{"no_open": True, "no_create": True}'
+											attrs="{'required': 1}" />
+
+										<field name="identification_id" groups="base.group_hr_user"
+											attrs="{'required': 1}" />
+										<field name="passport_id" groups="base.group_hr_user"
+											attrs="{'required': 1}" />
+										<field name="is_resident" attrs="{'required': 1}" />
+										<field name="education_level" options='{"no_open": True, "no_create": True}'
+											attrs="{'required': 1}" />
+
+									</group>
+									<group string="الحالة">
+
+										<field name="gender" attrs="{'required': 1}" />
+										<field name="marital" attrs="{'required': 1}" />
+									</group>
+
+									<group string="الميلاد">
+										<field name="birthday" attrs="{'required': 1}" />
+										<field name="birthday_location" attrs="{'required': 1}" />
+
+									</group>
+
+									<group string="المرفقات">
+										<field name="attachments" widget="many2many_binary"
+											nolabel="1" />
+									</group>
+									<field name="notes" placeholder="معلومات أخرى ..."
+										colspan="4" />
+								</group>
+							</page>
+							<page string="بيانات التواصل">
+								<group>
+									<group string="بيانات التواصل">
+										<field name="mobile_phone" attrs="{'required': 1}" />
+										<field name="work_location" attrs="{'required': 1}" />
+										<field name="work_email" widget="email" attrs="{'required': 1}" />
+										<field name="work_phone" />
+										<field name="coach_id" invisible="1" />
+									</group>
+								</group>
+							</page>
+							<page string="بيانات العمل">
+								<group>
+									<group string="بيانات العمل">
+										<field name="department_id" on_change="onchange_department_id(department_id)" />
+										<field name="job_id"
+											attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+										<field name="parent_id" />
+										<field name="service_years" />
+										<field name="external_decision" />
+									</group>
+									<group string="خصائص أخرى">
+										<field name="user_id"
+											attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+										<field name="recruiter" widget="selection" />
+
+									</group>
+								</group>
+							</page>
+							<page string="بيانات البنك">
+								<group>
+									<group string="بيانات البنك">
+										<field name="address_home_id" invisible="1" />
+										<field name="bank_account_id" />
+									</group>
+								</group>
+								<group name="active_group" invisible="1" />
+							</page>
+
+							<page string="البدلات">
+								<field name="allowance_ids">
+									<tree editable="buttom">
+										<field name="allowance_id" />
+										<field name="amount" />
+									</tree>
+								</field>
+							</page>
+							<page string="أرصدة الاجازات والترقيات">
+								<field name="holidays_balance">
+									<tree string="أرصدة الاجازات ">
+										<field name="holiday_status_id" />
+										<field name="holidays_available_stock" />
+										<field name="token_holidays_sum" />
+										<field name="periode" />
+									</tree>
+								</field>
+								<field name="promotions_history" readonly="1">
+									<tree string="أرصدة الترقيات">
+										<field name="salary_grid_id" />
+										<field name="date_from" />
+										<field name="date_to" />
+										<field name="balance" />
+									</tree>
+								</field>
+							</page>
+							<page string="الحسميات">
+							</page>
+							<page string="الورديات">
+							</page>
+							<page string="بيان الخدمة">
+							</page>
+
+						</notebook>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"
+							groups="base.group_user" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+				</form>
+			</field>
+		</record>
+
+        <record id="ir_actions_button_my_info" model="ir.actions.server">
+			<field name="sequence" eval="5" />
+			<field name="state">code</field>
+			<field name="type">ir.actions.server</field>
+			<field name="model_id" ref="model_hr_employee" />
+			<field name="code">action=pool.get('hr.employee').button_my_info(cr,uid,None,)
+			</field>
+			<field name="condition">True</field>
+			<field name="name">بياناتي</field>
+		</record>
+
+		<menuitem name="بياناتي" id="hr_employee_mine_menu"
+			parent="hr_root_employees" sequence="11"
+			action="ir_actions_button_my_info" />
+
+
+
+		<!-- طلبات بيانات موظف -->
 
 		<record id="view_employee_request_tree" model="ir.ui.view">
 			<field name="name">hr.employee.request.tree</field>
@@ -161,7 +249,7 @@
 			<field name="inherit_id" ref="hr.view_employee_tree" />
 			<field name="arch" type="xml">
 				<xpath expr="/tree" position='replace'>
-					<tree string="تسجيل بيانات موظف">
+					<tree string="طلبات بيانات موظف">
 						<field name="name" />
 						<field name="employee_state" />
 					</tree>
@@ -172,21 +260,22 @@
 		<record id="view_employee_request_form" model="ir.ui.view">
 			<field name="name">hr.employee.request.form</field>
 			<field name="model">hr.employee</field>
+			<field name="sequence" eval="100" />
 			<field name="inherit_id" ref="hr.view_employee_form" />
 			<field name="arch" type="xml">
 				<xpath expr="/form" position='replace'>
-					<form string="تسجيل بيانات موظف">
+					<form string="طلبات بيانات موظف">
 						<header>
 							<button name="action_send" string="إرسال للإعتماد" type="object"
 								groups="smart_hr.group_employee_request" attrs="{'invisible': [('employee_state', '!=', 'new')]}" />
 							<button name="action_confirm" string="موافقة" type="object"
-
 								groups="smart_hr.group_employee_registration" attrs="{'invisible': [('employee_state', '!=', 'waiting')]}" />
 							<button name="action_cancel" string="إلغاء" type="object"
 								groups="smart_hr.group_employee_request" attrs="{'invisible': [('employee_state', '!=', 'waiting')]}" />
 							<button name="action_refuse" string="رفض" type="object"
 								groups="smart_hr.group_employee_registration" attrs="{'invisible': [('employee_state', '!=', 'waiting')]}" />
-							<field name="employee_state" widget="statusbar" statusbar_visible="new,waiting,done,refused" />
+							<field name="employee_state" widget="statusbar"
+								statusbar_visible="new,waiting,done,refused" />
 						</header>
 
 						<sheet>
@@ -226,10 +315,13 @@
 											<field name="gender" attrs="{'required': 1}" />
 											<field name="marital" attrs="{'required': 1}" />
 										</group>
+
 										<group string="الميلاد">
 											<field name="birthday" attrs="{'required': 1}" />
 											<field name="birthday_location" attrs="{'required': 1}" />
+
 										</group>
+
 										<group string="المرفقات">
 											<field name="attachments" widget="many2many_binary"
 												nolabel="1" />
@@ -256,6 +348,7 @@
 											<field name="job_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="parent_id" />
+											<field name="service_years" />
 											<field name="external_decision" />
 										</group>
 										<group string="خصائص أخرى">
@@ -266,15 +359,6 @@
 
 										</group>
 									</group>
-								</page>
-								<page string="بيانات البنك">
-
-									<group>
-										<group string="بيانات البنك">
-											<field name="bank_account_id" />
-										</group>
-									</group>
-
 								</page>
 								<page string="بيانات البنك">
 									<group>
@@ -294,12 +378,31 @@
 										</tree>
 									</field>
 								</page>
+								<page string="أرصدة الاجازات والترقيات">
+									<field name="holidays_balance">
+										<tree string="أرصدة الاجازات ">
+											<field name="holiday_status_id" />
+											<field name="holidays_available_stock" />
+											<field name="token_holidays_sum" />
+											<field name="periode" />
+										</tree>
+									</field>
+									<field name="promotions_history" readonly="1">
+										<tree string="أرصدة الترقيات">
+											<field name="salary_grid_id" />
+											<field name="date_from" />
+											<field name="date_to" />
+											<field name="balance" />
+										</tree>
+									</field>
+								</page>
 								<page string="الحسميات">
 								</page>
 								<page string="الورديات">
 								</page>
 								<page string="بيان الخدمة">
 								</page>
+
 							</notebook>
 						</sheet>
 						<div class="oe_chatter">
@@ -314,7 +417,7 @@
 		</record>
 
 		<record model="ir.actions.act_window" id="action_employee_request">
-			<field name="name">تسجيل بيانات موظف</field>
+			<field name="name">طلبات تسجيل موظف</field>
 			<field name="res_model">hr.employee</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
@@ -330,36 +433,10 @@
 			<field name="view_id" ref="view_employee_request_form" />
 			<field name="act_window_id" ref="action_employee_request" />
 		</record>
-		<menuitem id="employee_request_menu" name="تسجيل بيانات موظف"
-			groups="smart_hr.group_employee_request" sequence="1" parent="hr_root_employees"
-			action="action_employee_request" />
+		<menuitem id="employee_request_menu" name="طلبات تسجيل موظف"
+			sequence="1" parent="hr_root_employees" action="action_employee_request" />
 
 
-
-		<!-- طلبات تسجيل موظف -->
-		<record model="ir.actions.act_window" id="action_employee_waiting_request">
-			<field name="name">طلبات تسجيل موظف</field>
-			<field name="res_model">hr.employee</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
-			<field name="domain">['|',('employee_state','=','waiting'),('employee_state','=','done')]
-			</field>
-		</record>
-		<record id="action_employee_waiting_request_tree" model="ir.actions.act_window.view">
-			<field name="view_mode">tree</field>
-			<field name="view_id" ref="view_employee_request_tree" />
-			<field name="act_window_id" ref="action_employee_waiting_request" />
-		</record>
-		<record id="action_employee_waiting_request_form" model="ir.actions.act_window.view">
-			<field name="view_mode">form</field>
-			<field name="view_id" ref="view_employee_request_form" />
-			<field name="act_window_id" ref="action_employee_waiting_request" />
-		</record>
-
-
-		<menuitem id="employee_waiting_request_menu" name="طلبات تسجيل موظف"
-			groups="smart_hr.group_employee_registration" sequence="2"
-			parent="hr_root_employees" action="action_employee_waiting_request" />
 
 
 	</data>

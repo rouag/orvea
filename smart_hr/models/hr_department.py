@@ -7,9 +7,9 @@ class hr_department(models.Model):
     _inherit = 'hr.department'
 
     # Inherited Fields
-    name = fields.Char(advanced_search=True)
+    name = fields.Char(advanced_search=True,string=u'المسمّى')
     manager_id = fields.Many2one(advanced_search=True)
-    parent_id = fields.Many2one(advanced_search=True)
+    parent_id = fields.Many2one(advanced_search=True,string=u'القسم الرئيسي')
     #
     is_root = fields.Boolean(string=u'قسم/إدارة رئيسية', default=True)
     dep_city = fields.Many2one('res.city',string = u'المدينة')
