@@ -78,7 +78,8 @@ class HrHolidays(models.Model):
                     if employee_id.job_id.grade_id in en.entitlment_category.grades:
                         holiday_solde_by_year_number = {en.periode: en.holiday_stock_default}
                         break
-
+                
+                
                 # calculate the balance of he employee for current holiday status
                 if holiday_solde_by_year_number.items():
                     periode = holiday_solde_by_year_number.items()[0][0]
@@ -91,14 +92,14 @@ class HrHolidays(models.Model):
                                                                                   'holiday_status_id': holiday_status_id.id,
                                                                                   'token_holidays_sum': 0,
                                                                                   'periode': periode})
-                    employee_id.holidays_balance += balance_line
-
-                    if holiday_solde_by_year_number[1] > 0:
+                    #employee_id.holidays_balance += balance_line
+                    employee_solde=holiday_solde_by_year_number.items()[0][1] 
+                    if employee_solde > 0:
                         # calculate the number of worked month in current year
                         months = relativedelta(date.today(), date(date.today().year, 1, 1)).months
                         # balance per month
                         if months > 0:
-                            balance = holiday_solde_by_year_number[1] / (periode * 12) * months
+                            balance = employee_solde / (periode * 12) * months
                             # get the sum of holidays given in from the start of current year till now
                             given_holidays_count = 0
                             for rec in holiday_obj.search([('state', '=', 'done'), ('employee_id', '=', employee_id.id), ('holiday_status_id', '=', holiday_status_id.id), ('date_from', '<=', date(date.today().year, 12, 31)), ('date_from', '>=', date(date.today().year, 1, 1))]):
