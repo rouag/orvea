@@ -118,7 +118,7 @@
 								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_childbirth)d)]}" />
 
 							<field name="birth_certificate"
-								attrs="{'invisible':[('holiday_status_id','!=', data_hr_holiday_child_birth_dad" />
+								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_child_birth_dad)d)]}" />
 						</group>
 
 						<group col="4">

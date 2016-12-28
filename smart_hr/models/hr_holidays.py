@@ -602,7 +602,16 @@ class HrHolidaysStatus(models.Model):
     min_amount = fields.Float(string=u'المبلغ الادنى') 
     pension_percent = fields.Float(string=u' نسبة راتب التقاعد') 
 
+    @api.multi
+    def write(self, vals):
+   
+        if vals.get('pension_percent', False):
+            for rec in self:
+                if rec.pension_percent<0 or rec.pension_percent>100:
+                    raise ValidationError(u"لنسبة راتب التقاعد خاطئة ")
 
+                
+        return super(HrHolidaysStatus, self).write(vals)
 class HrHolidaysStatusEntitlement(models.Model):
     _name = 'hr.holidays.status.entitlement'
     _description = u'أنواع الاستحقاقات'
