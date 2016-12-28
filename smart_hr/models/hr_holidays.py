@@ -426,16 +426,13 @@ class HrHolidays(models.Model):
             res = relativedelta(fields.Date.from_string(fields.Datetime.now()), fields.Date.from_string(date_hiring))
             if res.years < 3:
                 raise ValidationError(u"ليس لديك ثلاث سنوات خدمة.")
-        holiday_status_compelling_stock = holiday_status_exceptional_stock = holiday_status_normal_stock = 0
-        emp_holiday_balance = self.employee_id.holidays_balance
-        for holiday_status_id in emp_holiday_balance.holiday_status_id:
-            holiday_status = self.env('hr.employee.holidays.stock').browse(holiday_status_id)
-            if holiday_status == self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
-                holiday_status_compelling_stock = holiday_status.holidays_available_stock
-            if holiday_status == self.env.ref('smart_hr.data_hr_holiday_status_exceptional'):
-                holiday_status_exceptional_stock = holiday_status.holidays_available_stock
-            if holiday_status == self.env.ref('smart_hr.data_hr_holiday_status_normal'):
-                holiday_status_normal_stock = holiday_status.holidays_available_stock
+
+        holiday_status_compelling_stock = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_compelling').id)]).holidays_available_stock
+        holiday_status_exceptional_stock = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id)]).holidays_available_stock
+        holiday_status_normal_stock = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id)]).holidays_available_stock
+        holiday_status_childbirth_stock = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_childbirth').id)]).holidays_available_stock
+        holiday_status_exceptional_accompaniment = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_exceptional_accompaniment').id)]).holidays_available_stock
+
 
         # Constraintes for Compelling holidays اضطرارية
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
@@ -462,21 +459,34 @@ class HrHolidays(models.Model):
                     else:
                         if self.duration > holiday_status_exceptional_stock:
                             raise ValidationError(u" ليس لديك الرصيد الكافي في الاجازات الاستثنائية")
-                        
             print 'استثنائية'
+            
+        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional_accompaniment'):
+            for en in self.holiday_status_id.entitlements:
+                if self.employee_id.job_id.grade_id in en.entitlment_category.grades:
+                    #غير مشروط
+                    if not en.conditionnal:
+                        break
+                    else:
+                        if self.duration > holiday_status_exceptional_accompaniment:
+                            raise ValidationError(u"  ليس لديك الرصيد الكافي في الاجازات الاستثنائية للمرافقة")
+            print 'استثنائية للمرافقة'
             
                     # Constraintes for childbirth holidays وضع
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_childbirth'):
             if self.employee_id.gender!='female':
                 raise ValidationError(u"لا يتمتّع بإجازة الوضع إلّا النساء")
+            if self.duration > holiday_status_childbirth_stock:
+                raise ValidationError(u"ليس لديك الرصيد الكافي ")
             date_from = fields.Date.from_string(self.date_from)
             date_birth = fields.Date.from_string(self.childbirth_date)
             if (date_from-date_birth).days>14:
                 raise ValidationError(u" لا يمكن لتاريخ بداية إجازة الوضع ان يتجاوز تاريخ الوضع بأسبوعين")
+            print 'الوضع'
+        
+        return True
+                        # Constraintes for maternity الامومة
 
-            
-                        
-            print 'استثنائية'
         
         return True
     
