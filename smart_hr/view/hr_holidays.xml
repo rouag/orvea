@@ -220,6 +220,8 @@
 								<field name="direct_decision" />
 								<field name="extension_number" />
 								<field name="external_decision" />
+								<field name="for_saudi" />
+								<field name="for_other" />
 								<field name="direct_director_decision" />
 								<field name="salary_spending" />
 								<field name="employees_director_decision" />

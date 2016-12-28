@@ -510,6 +510,8 @@ class HrHolidaysStatus(models.Model):
     entitlements = fields.One2many('hr.holidays.status.entitlement', 'leave_type', string=u'أنواع الاستحقاقات')
     assessments_required = fields.One2many('hr.assessment.result.config', 'leave_type', string=u'التقييمات المطلوبة')
     percentages = fields.One2many('hr.holidays.status.salary.percentage', 'holiday_status', string=u'نسب الراتب المحتسبة')
+    for_saudi = fields.Boolean(string=u'تنطبق على السعوديين', default=True)
+    for_other = fields.Boolean(string=u'تنطبق على غير السعوديين', default=True)
     
                 
                 
