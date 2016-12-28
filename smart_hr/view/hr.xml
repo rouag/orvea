@@ -216,6 +216,7 @@
 											<field name="job_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="parent_id" />
+											<field name="service_years" />
 											<field name="external_decision" />
 										</group>
 										<group string="خصائص أخرى">
