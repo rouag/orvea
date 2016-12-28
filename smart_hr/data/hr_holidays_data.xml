@@ -17,6 +17,8 @@
 			<field name="deductible_normal_leave" eval="True" />
 			<field name="deductible_duration_service" eval="True" />
 			<field name="is_extensible" eval="True" />
+			<field name="external_decision" eval="True" />
+			
 		</record>
 		<record id="data_hr_holiday_status_illness" model="hr.holidays.status">
 			<field name="name">مرضية</field>
@@ -70,8 +72,18 @@
 			<field name="deductible_normal_leave" eval="True" />
 			<field name="deductible_duration_service" eval="True" />
 			<field name="is_extensible" eval="True" />
-			<field name="external_decision" eval="True" />			
+			<field name="external_decision" eval="True" />
+			<field name="direct_director_decision" eval="False" />
+			
+			
+		</record>
+		
+		<record id="data_hr_holiday_status_childbirth" model="hr.holidays.status">
+			<field name="name">وضع</field>
+			<field name="limit" eval="True" />
+			
 		</record>
 
 	</data>
+	
 </openerp>

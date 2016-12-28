@@ -60,7 +60,8 @@ class HrHolidays(models.Model):
     num_decision = fields.Char( string=u'رقم القرار')
     date_decision = fields.Date(string=u'تاريخ القرار')
     is_extensible = fields.Boolean(string=u'يمكن تمديدها',related='holiday_status_id.is_extensible',default=False)
-
+    childbirth_date = fields.Date(string=u'تاريخ ولادة الطفل')
+    medical_certificate = fields.Binary(string=u'شهادة طبية')
 
     @api.multi
     def _compute_balance(self, employee_id):
@@ -462,7 +463,18 @@ class HrHolidays(models.Model):
                         
             print 'استثنائية'
             
+                    # Constraintes for childbirth holidays وضع
+        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_childbirth'):
+            if self.employee_id.gender!='female':
+                raise ValidationError(u"لا يتمتّع بإجازة الوضع إلّا النساء")
+            date_from = fields.Date.from_string(self.date_from)
+            date_birth = fields.Date.from_string(self.childbirth_date)
+            if (date_from-date_birth).days>14:
+                raise ValidationError(u" لا يمكن لتاريخ بداية إجازة الوضع ان يتجاوز تاريخ الوضع بأسبوعين")
+
             
+                        
+            print 'استثنائية'
         
         return True
     

@@ -35,8 +35,9 @@
 					<field name="is_cancelled" invisible="1" />
 					<field name="is_started" invisible="1" />
 					<field name="is_delayed" invisible="1" />
-										<field name="is_extensible" invisible="1" />
-					
+					<field name="is_extensible" invisible="1" />
+					<field name="childbirth_date" />
+
 					<header name="main">
 						<button name="send_holiday_request" string="إرسال طلب"
 							type="object"
@@ -51,10 +52,10 @@
 						<button name="action_delay_holiday" string="تأجيل" type="object"
 							states="dm" groups="smart_hr.group_dm" icon="fa-times"
 							class="oe_inline oe_stat_button" />
-						
-						<button name="button_extend" string="تمديد الإجازة" 
-							attrs="{'invisible':['|',('state', '!=', 'done'),('is_extensible', '=', 'False')] } " type="object"
-							icon="fa-check" class="oe_inline oe_stat_button" />
+
+						<button name="button_extend" string="تمديد الإجازة"
+							attrs="{'invisible':['|',('state', '!=', 'done'),('is_extensible', '=', 'False')] } "
+							type="object" icon="fa-check" class="oe_inline oe_stat_button" />
 
 						<button name="button_accept_audit" string="موافق" type="object"
 							states="audit" groups="smart_hr.group_holidays_checker" icon="fa-check"
@@ -111,7 +112,13 @@
 							<field name="holiday_status_id" required="1" />
 							<field name="raison"
 								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_exceptional_accompaniment)d)]}" />
+							<field name="childbirth_date"
+								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_childbirth)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_status_childbirth)d)]}" />
+						
+							<field name="medical_certificate"
+								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_childbirth)d)]}" />
 						</group>
+						
 						<group col="4">
 							<field name="date_from" required="1"
 								attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)]}" />
@@ -143,9 +150,9 @@
 
 						<group col="4">
 							<field name="num_decision" groups="smart_hr.group_holidays_checker"
-								attrs="{'readonly':[('state','!=','audit')], 'invisible':[('state','not in',['audit','done'])],'required':[('state','=','audit'),('need_decision','=',True)]}" />
+								attrs="{'readonly':[('state','!=','audit')], 'invisible':['|',('state','not in',['audit','done']),('need_decision','=',False)],'required':[('state','=','audit'),('need_decision','=',True)]}" />
 							<field name="date_decision" groups="smart_hr.group_holidays_checker"
-								attrs="{'readonly':[('state','!=','audit')], 'invisible':[('state','not in',['audit','done'])],'required':[('state','=','audit'),('need_decision','=',True)]}" />
+								attrs="{'readonly':[('state','!=','audit')], 'invisible':['|',('state','not in',['audit','done']),('need_decision','=',False)],'required':[('state','=','audit'),('need_decision','=',True)]}" />
 						</group>
 						<group>
 							<field name="notes" string="ملاحظات"
@@ -223,9 +230,11 @@
 							<group>
 
 								<field name="direct_decision" />
-								<field name="is_extensible"  />
-								<field name="extension_number" attrs="{'invisible':[('is_extensible', '=', False)]}"/>
-								<field name="extension_period" attrs="{'invisible':[('is_extensible', '=', False)]}"/>
+								<field name="is_extensible" />
+								<field name="extension_number"
+									attrs="{'invisible':[('is_extensible', '=', False)]}" />
+								<field name="extension_period"
+									attrs="{'invisible':[('is_extensible', '=', False)]}" />
 								<field name="external_decision" />
 								<field name="for_saudi" />
 								<field name="for_other" />
