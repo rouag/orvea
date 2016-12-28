@@ -84,10 +84,7 @@
 							</group>
 						</group>
 						<group string="المترشحين">
-							<field name="line_ids" string="المترشحين" nolabel="1">
-								<tree editable="bottom">
-									<field name="employee_id" />
-								</tree>
+							<field name="line_ids" string="المترشحين" nolabel="1" readonly="1">
 							</field>
 						</group>
 					</sheet>
@@ -105,29 +102,6 @@
 			sequence="5" parent="hr_root_training" action="action_hr_training"
 			groups="group_job_managmenet" />
 
-		<!-- الدورات التدربيةالمفتوحة -->
-		<record model="ir.actions.act_window" id="action_hr_training_open">
-			<field name="name"> الدورات التدربيةالمفتوحة</field>
-			<field name="res_model">hr.training</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
-			<field name="domain">[('state','=','candidat')]</field>
-		</record>
-
-		<record id="action_hr_training_open_tree" model="ir.actions.act_window.view">
-			<field name="view_mode">tree</field>
-			<field name="view_id" ref="hr_training_tree" />
-			<field name="act_window_id" ref="action_hr_training_open" />
-		</record>
-
-		<record id="action_hr_training_open_form" model="ir.actions.act_window.view">
-			<field name="view_mode">form</field>
-			<field name="view_id" ref="hr_training_form" />
-			<field name="act_window_id" ref="action_hr_training_open" />
-		</record>
-		<menuitem id="hr_training_open_menu" name="الدورات التدربيةالمفتوحة" groups="smart_hr.group_department_training"
-			sequence="10" parent="hr_root_training" action="action_hr_training_open" />
-
 		<!-- الترشيحات -->
 
 		<record model="ir.ui.view" id="hr_candidates_tree">
@@ -144,6 +118,7 @@
 					<field name="date_from" />
 					<field name="date_to" />
 					<field name="department" />
+					<field name="state" />
 				</tree>
 			</field>
 		</record>
@@ -154,17 +129,10 @@
 			<field name="arch" type="xml">
 				<form string="الترشيحات">
 					<header>
-						<button name="action_waiting" string=" ارسال طلب" type="object"
-							states="new" />
-						<button name="action_cancel"  string="في إنتظار الإعتماد"
-							type="object" states="waiting" />
-							
-							<button name="action_done" string="رفض" type="object"
-							states="new" />
-							
-						<button name="action_refuse" string="اعتمدت" type="object"
-							states="done" />
-						<field name="state" widget="statusbar" statusbar_visible="new,waiting,cancel,done" />
+						<button name="action_waiting" string=" ارسال طلب" type="object" states="new" />
+						<button name="action_refuse" string="رفض" type="object" states="waiting" />
+						<button name="action_done" string="إعتماد" type="object" states="waiting" />
+						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
 					</header>
 					<sheet>
 
@@ -190,35 +158,10 @@
 			<field name="res_model">hr.candidates</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
-			<field name="domain">[('state','=','confirm')]</field>
 		</record>
 		<menuitem id="hr_training_candidat_menu" name="الترشيحات" groups="smart_hr.group_department_training"
 			sequence="15" parent="hr_root_training" action="action_hr_candidates_candidat" />
 
-		<!-- الدورات التدربية المنتهية -->
-		<record model="ir.actions.act_window" id="action_hr_training_close">
-			<field name="name"> الدورات التدربية المنتهية</field>
-			<field name="res_model">hr.training</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
-			<field name="context">{'readonly_by_pass': True}</field>
-			<field name="domain">[('state','=','done')]</field>
-		</record>
-
-		<record id="action_hr_training_close_tree" model="ir.actions.act_window.view">
-			<field name="view_mode">tree</field>
-			<field name="view_id" ref="hr_training_tree" />
-			<field name="act_window_id" ref="action_hr_training_close" />
-		</record>
-
-		<record id="action_hr_training_close_form" model="ir.actions.act_window.view">
-			<field name="view_mode">form</field>
-			<field name="view_id" ref="hr_training_form" />
-			<field name="act_window_id" ref="action_hr_training_close" />
-		</record>
-
-		<menuitem id="hr_training_close_menu" name="الدورات التدربية المنتهية"
-			sequence="20" parent="hr_root_training" action="action_hr_training_close" />
 
 
 

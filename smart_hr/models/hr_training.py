@@ -30,9 +30,12 @@ class HrTraining(models.Model):
     place = fields.Char(string=' المكان', required=1, states={'new': [('readonly', 0)]})
     number_place = fields.Integer(string='عدد المقاعد', required=1, states={'new': [('readonly', 0)]})
     number_participant = fields.Integer(string=' عدد المشتركين', store=True, readonly=True, compute='_compute_info')
-    line_ids = fields.One2many('hr.candidates', 'employee_id', string='المترشحين', required=1, states={'new': [('readonly', 0)]})
-    state = fields.Selection([('new', 'جديد'), ('candidat', 'الترشح'), ('review', 'المراجعة'), ('confirm', 'إعتمدت'), ('done', 'تمت')], readonly=1, default='new')
-    employee_ids = fields.Many2many('hr.employee', 'employee_training_rel', 'emp_id', 'training_id', string=u'الموظفون')
+    line_ids = fields.One2many('hr.candidates', 'training_id', string='المترشحين', required=1, states={'new': [('readonly', 0)]})
+    state = fields.Selection([('new', 'جديد'),
+                              ('candidat', 'الترشح'),
+                              ('review', 'المراجعة'),
+                              ('confirm', 'إعتمدت'),
+                              ('done', 'تمت')], readonly=1, string='الحالة', default='new')
 
     @api.onchange('date_from')
     def _onchange_date_from(self):
@@ -134,69 +137,70 @@ class HrCandidates(models.Model):
     def action_refuse(self):
         self.state = 'new'
 
-    @api.constrains('date_from', 'date_to')
-    def check_dates(self):
-        for train in self:
-            # Objects
-            dep_obj = self.env['hr.deputation']
-            train_obj = self.env['hr.training']
-            overtime_obj = self.env['hr.overtime']
-            eid_obj = self.env['hr.eid']
-            # Variables
-            days_before_after = train.city_id.days_before_after
-            # Calculate Effective Dates
-            effective_date_from = (datetime.strptime(train.date_from, DEFAULT_SERVER_DATE_FORMAT) - timedelta(days=days_before_after)).strftime(DEFAULT_SERVER_DATE_FORMAT)
-            effective_date_to = (datetime.strptime(train.date_to, DEFAULT_SERVER_DATE_FORMAT) + timedelta(days=days_before_after)).strftime(DEFAULT_SERVER_DATE_FORMAT)
-            # Check for incomplete data
-            if train.date_from > train.date_to:
-                raise ValidationError(u'تاريخ بداية الدورة يجب ان يكون أصغر من تاريخ انتهاء الدورة')
-            # Check for eid
-            for eid in eid_obj.search([]):
-                if eid.date_from <= effective_date_from <= eid.date_to or \
-                        eid.date_from <= effective_date_to <= eid.date_to or \
-                        effective_date_from <= eid.date_from <= effective_date_to or \
-                        effective_date_from <= eid.date_to <= effective_date_to:
-                    raise ValidationError(u"هناك تداخل فى التواريخ مع اعياد و مناسبات رسمية")
-            # Check for any intersection with other decisions
-            for emp in train.employee_ids:
-                # Overtime
-                search_domain = [
-                    ('overtime_line_ids.employee_id', '=', emp.id),
-                    ('state', '!=', 'refuse'),
-                ]
-                for rec in overtime_obj.search(search_domain):
-                    for line in rec.overtime_line_ids:
-                        if (line.date_from <= effective_date_from <= line.date_to or \
-                                line.date_from <= effective_date_to <= line.date_to or \
-                                effective_date_from <= line.date_from <= effective_date_to or \
-                                effective_date_from <= line.date_to <= effective_date_to) and \
-                                line.employee_id == emp:
-                            raise ValidationError(u"هناك تداخل فى التواريخ مع قرار سابق فى خارج الدوام")
-                # Leave
-                search_domain = [
-                    ('employee_id', '=', emp.id),
-                    ('state', '!=', 'refuse'),
-                ]
-                # Training
-                search_domain = [
-                    ('employee_ids', 'in', [emp.id]),
-                    ('id', '!=', train.id),
-                    ('state', '!=', 'refuse'),
-                ]
-                for rec in train_obj.search(search_domain):
-                    if rec.date_from <= effective_date_from <= rec.date_to or \
-                            rec.date_from <= effective_date_to <= rec.date_to or \
-                            effective_date_from <= rec.date_from <= effective_date_to or \
-                            effective_date_from <= rec.date_to <= effective_date_to:
-                        raise ValidationError(u"هناك تداخل فى التواريخ مع قرار سابق فى التدريب")
-                # Deputation
-                search_domain = [
-                    ('employee_id', '=', emp.id),
-                    ('state', '!=', 'refuse'),
-                ]
-                for rec in dep_obj.search(search_domain):
-                    if rec.date_from <= effective_date_from <= rec.date_to or \
-                            rec.date_from <= effective_date_to <= rec.date_to or \
-                            effective_date_from <= rec.date_from <= effective_date_to or \
-                            effective_date_from <= rec.date_to <= effective_date_to:
-                        raise ValidationError(u"هناك تداخل فى التواريخ مع قرار سابق فى الأنتداب")
+# TODO: all conditions not work
+#     @api.constrains('date_from', 'date_to')
+#     def check_dates(self):
+#         for train in self:
+#             # Objects
+#             dep_obj = self.env['hr.deputation']
+#             train_obj = self.env['hr.training']
+#             overtime_obj = self.env['hr.overtime']
+#             hr_public_holiday_obj = self.env['hr.public.holiday']
+#             # Variables
+#             #days_before_after = train.city_id.days_before_after
+#             # Calculate Effective Dates
+#             effective_date_from = (datetime.strptime(train.date_from, DEFAULT_SERVER_DATE_FORMAT)).strftime(DEFAULT_SERVER_DATE_FORMAT)
+#             effective_date_to = (datetime.strptime(train.date_to, DEFAULT_SERVER_DATE_FORMAT)).strftime(DEFAULT_SERVER_DATE_FORMAT)
+#             # Check for incomplete data
+#             if train.date_from > train.date_to:
+#                 raise ValidationError(u'تاريخ بداية الدورة يجب ان يكون أصغر من تاريخ انتهاء الدورة')
+#             # Check for eid
+#             for public_holiday in hr_public_holiday_obj.search([]):
+#                 if public_holiday.date_from <= effective_date_from <= public_holiday.date_to or \
+#                         public_holiday.date_from <= effective_date_to <= public_holiday.date_to or \
+#                         effective_date_from <= public_holiday.date_from <= effective_date_to or \
+#                         effective_date_from <= public_holiday.date_to <= effective_date_to:
+#                     raise ValidationError(u"هناك تداخل فى التواريخ مع اعياد و مناسبات رسمية")
+#             # Check for any intersection with other decisions
+#             for emp in train.employee_ids:
+#                 # Overtime
+#                 search_domain = [
+#                     ('overtime_line_ids.employee_id', '=', emp.id),
+#                     ('state', '!=', 'refuse'),
+#                 ]
+#                 for rec in overtime_obj.search(search_domain):
+#                     for line in rec.overtime_line_ids:
+#                         if (line.date_from <= effective_date_from <= line.date_to or \
+#                                 line.date_from <= effective_date_to <= line.date_to or \
+#                                 effective_date_from <= line.date_from <= effective_date_to or \
+#                                 effective_date_from <= line.date_to <= effective_date_to) and \
+#                                 line.employee_id == emp:
+#                             raise ValidationError(u"هناك تداخل فى التواريخ مع قرار سابق فى خارج الدوام")
+#                 # Leave
+#                 search_domain = [
+#                     ('employee_id', '=', emp.id),
+#                     ('state', '!=', 'refuse'),
+#                 ]
+#                 # Training
+#                 search_domain = [
+#                     ('employee_ids', 'in', [emp.id]),
+#                     ('id', '!=', train.id),
+#                     ('state', '!=', 'refuse'),
+#                 ]
+#                 for rec in train_obj.search(search_domain):
+#                     if rec.date_from <= effective_date_from <= rec.date_to or \
+#                             rec.date_from <= effective_date_to <= rec.date_to or \
+#                             effective_date_from <= rec.date_from <= effective_date_to or \
+#                             effective_date_from <= rec.date_to <= effective_date_to:
+#                         raise ValidationError(u"هناك تداخل فى التواريخ مع قرار سابق فى التدريب")
+#                 # Deputation
+#                 search_domain = [
+#                     ('employee_id', '=', emp.id),
+#                     ('state', '!=', 'refuse'),
+#                 ]
+#                 for rec in dep_obj.search(search_domain):
+#                     if rec.date_from <= effective_date_from <= rec.date_to or \
+#                             rec.date_from <= effective_date_to <= rec.date_to or \
+#                             effective_date_from <= rec.date_from <= effective_date_to or \
+#                             effective_date_from <= rec.date_to <= effective_date_to:
+#                         raise ValidationError(u"هناك تداخل فى التواريخ مع قرار سابق فى الأنتداب")

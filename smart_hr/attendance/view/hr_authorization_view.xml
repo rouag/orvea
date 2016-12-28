@@ -13,8 +13,8 @@
 					<field name="name" />
 					<field name="employee_id" />
 					<field name="date" />
-					<field name="hour_from" />
-					<field name="hour_to" />
+					<field name="hour_from" widget="float_time" />
+					<field name="hour_to"  widget="float_time" />
 					<field name="state" />
 				</tree>
 			</field>
@@ -48,13 +48,14 @@
 								<field name="grade_id" />
 							</group>
 							<group string="بيانات العمل">
+								<field name="type_id" />
 								<field name="date" />
 								<label for="hour_from" string="الفترة" />
 								<div>
 									<div>
-										<field name="hour_from" class="oe_inline" />
+										<field name="hour_from" class="oe_inline"  widget="float_time" />
 										<label string="-" class="oe_inline" />
-										<field name="hour_to" class="oe_inline" />
+										<field name="hour_to" class="oe_inline"  widget="float_time" />
 									</div>
 									<div>
 										<field name="hour_number" class="oe_inline" />

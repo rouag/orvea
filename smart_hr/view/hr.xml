@@ -129,7 +129,7 @@
 		<record model="ir.actions.act_window" id="action_hr_employee">
 			<field name="name">الموظفون</field>
 			<field name="res_model">hr.employee</field>
-			<field name="view_type">tree</field>
+			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="domain">[('employee_state','=','employee')]</field>
 		</record>
@@ -262,6 +262,7 @@
 											<field name="user_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="recruiter" widget="selection" />
+											<field name="calendar_id"/>
 
 										</group>
 									</group>
