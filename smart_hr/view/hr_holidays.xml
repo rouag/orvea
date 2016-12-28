@@ -34,11 +34,8 @@
 					<field name="is_extended" invisible="1" />
 					<field name="is_cancelled" invisible="1" />
 					<field name="is_started" invisible="1" />
-<<<<<<< HEAD
-=======
-					<field name="is_delayed" invisible="1" />
->>>>>>> branch '9.0' of https://gitlab.smart-etech.com/smart-dev/addons_smart.git
-					<header name="main">
+				   <field name="is_delayed" invisible="1" />
+										<header name="main">
 						<button name="send_holiday_request" string="إرسال طلب"
 							type="object"
 							attrs="{'invisible':['|',('state','!=','draft'),('is_current_user','=',False)]}"
@@ -53,11 +50,7 @@
 							states="dm" groups="smart_hr.group_dm" icon="fa-times"
 							class="oe_inline oe_stat_button" />
 						<button name="button_extend" string="تمديد الإجازة"
-<<<<<<< HEAD
 							attrs="{'invisible':[('state', '!=', 'done') ] } " type="object"
-=======
-							attrs="{'invisible':['|',('state', '!=', 'done'),('is_started', '=', False) ] } " type="object"
->>>>>>> branch '9.0' of https://gitlab.smart-etech.com/smart-dev/addons_smart.git
 							icon="fa-check" class="oe_inline oe_stat_button" />
 
 						<button name="button_accept_audit" string="موافق" type="object"
@@ -229,6 +222,8 @@
 								<field name="direct_decision" />
 								<field name="extension_number" />
 								<field name="external_decision" />
+								<field name="for_saudi" />
+								<field name="for_other" />
 								<field name="direct_director_decision" />
 								<field name="salary_spending" />
 								<field name="employees_director_decision" />
@@ -243,8 +238,6 @@
 								<field name="assessments_required"
 									attrs="{'invisible':[('evaluation_condition', '=', False)]}"
 									widget="many2many" />
-								<field name="expansion_period" />
-
 							</group>
 
 

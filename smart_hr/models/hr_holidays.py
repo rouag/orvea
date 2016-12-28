@@ -418,9 +418,7 @@ class HrHolidays(models.Model):
                             raise ValidationError(u"ليس لديك الرصيد الكافي")
                         
             if holiday_status_normal_stock>=self.duration:
-            if self.employee_id.leave_normal >= self.duration:
                 raise ValidationError(u"‫يوجد رصيد في الإجازات العاديّة.")
-            
             print 'اضطرارية'
            
         # Constraintes for exceptionnal holidays استثنائية

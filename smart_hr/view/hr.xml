@@ -183,10 +183,13 @@
 											<field name="gender" attrs="{'required': 1}" />
 											<field name="marital" attrs="{'required': 1}" />
 										</group>
+										
 										<group string="الميلاد">
 											<field name="birthday" attrs="{'required': 1}" />
 											<field name="birthday_location" attrs="{'required': 1}" />
+											
 										</group>
+										
 										<group string="المرفقات">
 											<field name="attachments" widget="many2many_binary"
 												nolabel="1" />
