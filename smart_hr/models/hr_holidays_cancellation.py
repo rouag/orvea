@@ -69,6 +69,10 @@ class hrHolidaysCancellation(models.Model):
     def button_dm_send(self):
         user = self.env['res.users'].browse(self._uid)
         for cancellation in self:
+            for holiday in cancellation.holidays:
+                if not holiday.holiday_status_id.can_be_cancelled:
+                    raise ValidationError(u'نوع الاجازة '+holiday.holiday_status_id.name+u' لا يكن الغاؤها.')
+                    
             cancellation.state = 'employee'
             cancellation.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"'")
 

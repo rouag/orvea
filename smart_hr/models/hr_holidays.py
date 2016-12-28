@@ -79,8 +79,8 @@ class HrHolidays(models.Model):
                     if employee_id.job_id.grade_id in en.entitlment_category.grades:
                         holiday_solde_by_year_number = {en.periode: en.holiday_stock_default}
                         break
-                
-                
+
+
                 # calculate the balance of he employee for current holiday status
                 if holiday_solde_by_year_number.items():
                     periode = holiday_solde_by_year_number.items()[0][0]
@@ -563,7 +563,7 @@ class HrHolidaysStatus(models.Model):
     external_decision = fields.Boolean(string=u'موافقة خارجية', default=False)
     salary_spending = fields.Boolean(string=u'يجوز صرف راتبها')
     employees_director_decision = fields.Boolean(string=u'موافقة مدير شؤون الموظفين', default=True)
-    can_be_cancelled = fields.Boolean(string=u'يمكن الغاؤها')
+    can_be_cancelled = fields.Boolean(string=u'يمكن الغاؤها', default=True)
     evaluation_condition = fields.Boolean(string=u'يطبق شرط تقويم الأداء')
     education_levels = fields.One2many('hr.employee.education.level', 'leave_type', string=u'المستويات التعليمية')
     entitlements = fields.One2many('hr.holidays.status.entitlement', 'leave_type', string=u'أنواع الاستحقاقات')
