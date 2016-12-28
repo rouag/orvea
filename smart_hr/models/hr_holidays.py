@@ -63,6 +63,7 @@ class HrHolidays(models.Model):
     date_decision = fields.Date(string=u'تاريخ القرار')
     childbirth_date = fields.Date(string=u'تاريخ ولادة الطفل')
     medical_certificate = fields.Binary(string=u'شهادة طبية')
+    birth_certificate = fields.Binary(string=u'شهادة الميلاد')
 
     @api.multi
     def _compute_balance(self, employee_id):
@@ -484,12 +485,36 @@ class HrHolidays(models.Model):
                 raise ValidationError(u" لا يمكن لتاريخ بداية إجازة الوضع ان يتجاوز تاريخ الوضع بأسبوعين")
             print 'الوضع'
         
-        return True
                         # Constraintes for maternity الامومة
 
-        
-        return True
-    
+        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_maternity'):
+            if self.employee_id.gender!='female':
+                raise ValidationError(u"لا يتمتّع بإجازة الامومة إلّا النساء")
+            
+            last_holiday_status_childbirth = self.env['hr.holidays'].search([('state', '=', 'done'),('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_childbirth').id)]).ids
+            last_id = last_holiday_status_childbirth and max(last_holiday_status_childbirth)
+            last_holiday_status_childbirth_browse =self.env['hr.holidays'].browse(last_id)   
+            if last_holiday_status_childbirth_browse.date_to>self.date_from:
+                raise ValidationError(u"لا يمكن التمتع باجازة الامومة قبل انتهاء اجازة الوضع")
+            date_from = fields.Date.from_string(self.date_from)
+            date_birth = fields.Date.from_string(last_holiday_status_childbirth_browse.childbirth_date)
+            if (date_from-date_birth).days>1095:
+                raise ValidationError(u"لا يمكن التمتع باجازة الامومة بعد اكثر من ثلاث سنوات من الوضع")
+                        # Constraintes for adoption الحضانة
+
+        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_adoption'):
+            if self.employee_id.gender!='female':
+                raise ValidationError(u"لا يتمتّع بإجازة الحضانة إلّا النساء")
+            
+                                    # Constraintes for child_birth_dad المولود
+
+        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_child_birth_dad'):
+            if self.employee_id.gender!='male':
+                raise ValidationError(u"لا يتمتّع بإجازة المولود إلّا الرجال")
+            date_birth = fields.Date.from_string(self.childbirth_date)
+            if (date_from-date_birth).days>7:
+                raise ValidationError(u"لا يمكن لتاريخ بداية إجازة المولود ان يتجاوز تاريخ الوضع بأسبوع")            
+            
     @api.model
     def create(self, vals):
         res = super(HrHolidays, self).create(vals)
@@ -574,6 +599,8 @@ class HrHolidaysStatus(models.Model):
     extension_period = fields.Integer(string=u'مدة التمديد', default=0)
     is_extensible = fields.Boolean(string=u'يمكن تمديدها',default=False)
     promotion_deductible = fields.Boolean(string=u'تخصم مدتها من رصيد الترقية', default=False)
+    min_amount = fields.Float(string=u'المبلغ الادنى') 
+    pension_percent = fields.Float(string=u' نسبة راتب التقاعد') 
 
 
 class HrHolidaysStatusEntitlement(models.Model):
