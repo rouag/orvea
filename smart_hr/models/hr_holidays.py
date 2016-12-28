@@ -308,6 +308,7 @@ class HrHolidays(models.Model):
             # Date validation
             if holiday.date_from < fields.Datetime.now():
                 raise ValidationError(u"تاريخ من يجب ان يكون أكبر من تاريخ اليوم")
+            
             if holiday.date_from > holiday.date_to:
                 raise ValidationError(u"تاريخ من يجب ان يكون أصغر من تاريخ الى")
             # check minimum request validation
@@ -336,12 +337,27 @@ class HrHolidays(models.Model):
                 ('employee_ids', 'in', [holiday.employee_id.id]),
                 ('state', '!=', 'refuse'),
             ]
+
             for rec in train_obj.search(search_domain):
-                if rec.effective_date_from <= holiday.date_from <= rec.effective_date_to or \
-                        rec.effective_date_from <= holiday.date_to <= rec.effective_date_to or \
-                        holiday.date_from <= rec.effective_date_from <= holiday.date_to or \
-                        holiday.date_from <= rec.effective_date_to <= holiday.date_to:
-                    raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في التدريب")
+                periode_in_months = relativedelta(fields.Datetime.from_string(rec.date_to) - fields.Datetime.from_string(rec.date_from)).months
+                # for none normal holidays test
+                if self.holiday_status_id != self.env.ref('smart_hr.data_hr_holiday_status_normal'):
+                    if rec.date_from <= holiday.date_from <= rec.date_to or \
+                            rec.date_from <= holiday.date_to <= rec.date_to or \
+                            holiday.date_from <= rec.date_from <= holiday.date_to or \
+                            holiday.date_from <= rec.date_to <= holiday.date_to:
+                        raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في التدريب")
+
+                # for normal holidays test
+                else:
+                    if rec.date_from < holiday.date_from < rec.date_to and rec.date_from < holiday.date_to < rec.date_to:
+                        if periode_in_months <= 1:
+                            raise ValidationError(u"الإجازة يتخللها تدريب مدته أقل من شهر.")
+                    if holiday.date_from <= rec.date_from <= holiday.date_to or \
+                            holiday.date_from <= rec.date_to <= holiday.date_to:
+                        raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في التدريب")
+                    
+                        
             
             # الإنتتبات
             search_domain = [
@@ -376,6 +392,8 @@ class HrHolidays(models.Model):
                 ('id', '!=', self.id)]
             if self.search_count(domain_search) > 0:
                 raise ValidationError(u"لديك طلب قيد الإجراء من نفس هذا النوع من الإجازة.")
+            
+        
 
         # Constraintes for employee's nationnality
         if self.holiday_status_id.for_saudi and not self.holiday_status_id.for_other:
