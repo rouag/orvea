@@ -371,15 +371,7 @@ class HrHolidays(models.Model):
                 raise ValidationError(u"لديك طلب قيد الإجراء من نفس هذا النوع من الإجازة.")
             if not self.holiday_status_id.entitlements and self.holiday_status_id.limit:
                 raise ValidationError(u"يجب التحقق من الإستحقاقات في إعدادات نوع الإجازة.")
-                # loop under entitlements and get the holiday solde depend on grade of the employee
-                for en in self.holiday_status_id.entitlements:
-                    if self.employee_id.job_id.grade_id in en.entitlment_category.grades:
-                        #غير مشروط
-                        if not en.conditionnal:
-                            break
-                        else:
-                            if self.duration > self.employee_id.leave_emergency:
-                                raise ValidationError(u"ليس لديك الرصيد الكافي")
+
         # Constraintes for normal holidays عادية
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_normal'):
             # check the nationnality of the employee if it is saudi 
@@ -397,7 +389,17 @@ class HrHolidays(models.Model):
             res = relativedelta(fields.Date.from_string(fields.Datetime.now()), fields.Date.from_string(date_hiring))
             if res.years < 3:
                 raise ValidationError(u"ليس لديك ثلاث سنوات خدمة.")
-         
+        holiday_status_compelling_stock=holiday_status_exceptional_stock=holiday_status_normal_stock=0    
+        emp_holiday_balance= self.employee_id.holidays_balance
+        for holiday_status_id in emp_holiday_balance.holiday_status_id:
+            holiday_status = self.env('hr.employee.holidays.stock').browse(holiday_status_id)
+            if holiday_status==self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
+                holiday_status_compelling_stock=holiday_status.holidays_available_stock
+            if holiday_status==self.env.ref('smart_hr.data_hr_holiday_status_exceptional'):
+                holiday_status_exceptional_stock=holiday_status.holidays_available_stock
+            if holiday_status==self.env.ref('smart_hr.data_hr_holiday_status_normal'):
+                holiday_status_normal_stock=holiday_status.holidays_available_stock  
+                              
         # Constraintes for Compelling holidays اضطرارية
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
             for en in self.holiday_status_id.entitlements:
@@ -406,10 +408,10 @@ class HrHolidays(models.Model):
                     if not en.conditionnal:
                         break
                     else:
-                        if self.duration > self.employee_id.leave_emergency:
+                        if self.duration > holiday_status_compelling_stock:
                             raise ValidationError(u"ليس لديك الرصيد الكافي")
                         
-            if self.employee_id.leave_normal>=self.duration:
+            if holiday_status_normal_stock>=self.duration:
                 raise ValidationError(u"‫يوجد رصيد في الإجازات العاديّة.")
             
             print 'اضطرارية'
@@ -422,7 +424,7 @@ class HrHolidays(models.Model):
                     if not en.conditionnal:
                         break
                     else:
-                        if self.duration > self.employee_id.leave_exceptional:
+                        if self.duration > holiday_status_exceptional_stock:
                             raise ValidationError(u" ليس لديك الرصيد الكافي في الاجازات الاستثنائية")
                         
             print 'استثنائية'
@@ -524,7 +526,7 @@ class HrHolidaysStatus(models.Model):
         (8, u'ثمانية سنوات'),
         (9, u'تسعة سنوات'),
         (10, u'عشرة سنوات'),
-        ], string=u'المدة', default=1)  
+        ], string=u'مدة التمديد', default=1)  
                 
                 
 class HrHolidaysStatusEntitlement(models.Model):

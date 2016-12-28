@@ -258,12 +258,7 @@
 								</page>
 								<page string="بيانات الإجازات">
 
-									<group>
-										<group string=" بيانات الإجازات">
-											<field name="leave_normal" />
-											<field name="leave_emergency" />
-										</group>
-									</group>
+			
 
 								</page>
 							</notebook>
