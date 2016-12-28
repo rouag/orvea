@@ -223,6 +223,7 @@
 							<group>
 
 								<field name="direct_decision" />
+								<field name="promotion_deductible" />
 								<field name="is_extensible"  />
 								<field name="extension_number" attrs="{'invisible':[('is_extensible', '=', False)]}"/>
 								<field name="extension_period" attrs="{'invisible':[('is_extensible', '=', False)]}"/>

@@ -39,6 +39,7 @@ class HrEmployee(models.Model):
     external_decision = fields.Boolean(string=u'موافقة خارجية', default=False)
     holidays = fields.One2many('hr.holidays', 'employee_id', string=u'الاجازات')
     holidays_balance = fields.One2many('hr.employee.holidays.stock', 'employee_id', string=u'الأرصدة', readonly=1)
+    promotions_history = fields.One2many('hr.employee.promotion.history', 'employee_id', string=u'الترقيات')
 
     def _compute_service_years(self):
         for emp in self:
@@ -105,7 +106,38 @@ class HrEmployeeHolidaysStock(models.Model):
         (9, u'تسعة سنوات'),
         (10, u'عشرة سنوات'),
         ], string=u'مدة صلاحيات الإجازة', default=1) 
-    
+
+class HrEmployeePromotionHistory(models.Model):
+    _name = 'hr.employee.promotion.history'
+
+    employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف')
+    salary_grid_id = fields.Many2one('salary.grid.grade', string=u'الرتبة')
+    date_from = fields.Date(string=u'التاريخ من', default=fields.Datetime.now())
+    date_to = fields.Date(string=u'التاريخ الى')
+    balance = fields.Integer(string=u'رصيد الترقية', compute='_compute_balance')
+
+    def _compute_balance(self):
+        for rec in self:
+            if rec.date_from:
+                today_date = fields.Date.from_string(fields.Date.today())
+                date_from = fields.Date.from_string(rec.date_from)
+                days = (today_date - date_from).days
+                # find the holidays of the employee start from date_from and they are promotion_deductible
+                holidays = self.env['hr.holidays'].search([
+                    ('state', '=', 'done'),
+                    ('employee_id', '=', rec.employee_id.id),
+                    ('holiday_status_id.promotion_deductible', '=', True),
+                    ('date_from', '>=', rec.date_from)
+                    ])
+                for holiday in holidays:
+                    days -= holiday.periode
+                
+                years = 0
+                if days >0:
+                    years = (today_date - date_from).days / 365
+                if years > -1:
+                    rec.balance = years
+ 
 
                       
 class HrJob(models.Model):

@@ -40,37 +40,39 @@
 						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
 					</header>
 					<sheet>
-				<group>
-						<group string="بيانات الموظف">
-							
+						<group>
+							<group string="بيانات الموظف">
+
 								<field name="employee_id" />
 								<field name="number" />
-						</group>
-						<group string="الوظيفة المرشح إليها">
+						
+							</group>
+							<group string="الوظيفة المرشح إليها">
 								<field name="job_id" />
 								<field name="number_job" />
 								<field name="grade_id" />
 								<field name="department_id" />
-						</group>
-						<group string="مجموع الخدمة">
+							</group>
+							<group string="مجموع الخدمة">
 								<field name="job_day" />
 								<field name="job_month" />
 								<field name="job_year" />
-						</group>
-						<group string="المؤهلات العلمية و الدورات التديبية">
+							</group>
+							<group string="المؤهلات العلمية و الدورات التديبية">
 								<field name="diplome" />
 								<field name="period" />
 								<field name="date" />
 								<field name="direct" />
 								<field name="not_direct" />
-						</group>
-						<group string="النقاط التي حصل عليها">
+							</group>
+							<group string="النقاط التي حصل عليها">
 								<field name="education" />
 								<field name="seniority" />
 								<field name="training" />
 								<field name="evalution" />
 								<field name="total_point" />
-					</group>	</group>
+							</group>
+						</group>
 						<group string="بيانات">
 							<field name="deadline_sign" />
 						</group>
