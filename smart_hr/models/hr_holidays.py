@@ -67,7 +67,6 @@ class HrHolidays(models.Model):
 
     @api.multi
     def _compute_balance(self, employee_id):
-        print employee_id
         holiday_obj = self.env['hr.holidays']
         holidays_status = self.env['hr.holidays.status'].search([])
         for holiday_status_id in holidays_status:
@@ -277,7 +276,7 @@ class HrHolidays(models.Model):
             raise ValidationError(u"الرجاء تعبئة تاريخ الخطاب الصادر.")
         if not self.outspeech_file:
             raise ValidationError(u"الرجاء إرفاق الخطاب.")
-            
+
         if self.holiday_status_id.external_decision:
             self.state = 'revision'
             

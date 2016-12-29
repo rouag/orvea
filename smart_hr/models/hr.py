@@ -47,7 +47,17 @@ class HrEmployee(models.Model):
             if decision_appoint:
                 today_date = fields.Date.from_string(fields.Date.today())
                 date_hiring = fields.Date.from_string(decision_appoint.date_hiring)
-                years = (today_date - date_hiring).days / 365
+                days = (today_date - date_hiring).days
+                deductible_days = 0
+                # find the holidays of the employee that are deductible_duration_service
+                holidays = self.env['hr.holidays'].search([
+                    ('state', '=', 'done'),
+                    ('employee_id', '=', emp.id),
+                    ('holiday_status_id.deductible_duration_service', '=', True),
+                    ])
+                for holiday in holidays:
+                    days -= holiday.periode
+                years = days / 365
                 if years > -1:
                     emp.service_years = years
 
