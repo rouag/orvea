@@ -16,8 +16,8 @@ class HrHolidays(models.Model):
         # Check if the holiday have a pending or completed extension leave
         for rec in self:
             is_extensible = False
-            for en in rec.holiday_status_id.entitlements:
-                if rec.employee_id.job_id.grade_id in en.entitlment_category.grades:
+            for en in self.holiday_status_id.entitlements:
+                if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
                     if en.extension_period>0:
                         is_extensible = True
                         rec.extension_period=en.extension_period
@@ -144,7 +144,7 @@ class HrHolidays(models.Model):
             sum_periods += extension.duration
         extension_period=0
         for en in self.holiday_status_id.entitlements:
-            if self.employee_id.job_id.grade_id in en.entitlment_category.grades:
+            if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
                 extension_period = en.extension_period * 365
         if sum_periods >= extension_period:
             raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من%s عام"%str(extension_period/365))
@@ -695,8 +695,6 @@ class HrHolidaysStatusEntitlement(models.Model):
     leave_type = fields.Many2one('hr.holidays.status', string='leave type')
 #     holiday_stock_open = fields.Boolean(string=u'الرصيد مفتوح')
     extension_period = fields.Integer(string=u'مدة التمديد', default=0)
-    death_type = fields.Many2one('hr.holidays.death.type', string=u'صنف الوفاة')
-
     
 class HrHolidaysStatusSalaryPercentage(models.Model):
     _name = 'hr.holidays.status.salary.percentage'
