@@ -109,7 +109,7 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-		<menuitem id="medical_examination" name="الفحص الطبي"
+		<menuitem id="medical_examination" name="الفحص الطبي" groups="smart_hr.group_hrm"
 			sequence="5" parent="hr_root_employees" action="action_employee_medical_exam" />
 
 
