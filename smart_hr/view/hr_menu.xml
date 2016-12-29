@@ -4,7 +4,7 @@
 
 		<menuitem id="hr_root" name="الموارد البشرية" />
 
-		<menuitem id="hr_root_employees" name="إدارة الموظفون" sequence="5" parent="hr_root" />
+		<menuitem id="hr_root_employees" name="إدارة الموظفين" sequence="5" parent="hr_root" />
 
 		<menuitem id="hr_root_organisation" name="الهيكل الإداري" sequence="10" parent="hr_root" />
 
