@@ -10,7 +10,25 @@ class HrHolidays(models.Model):
     _inherit = 'hr.holidays'
     _description = 'hr holidays Request'
     _order = 'id desc'
-
+    
+    @api.depends('holiday_status_id.entitlements')
+    def _check_is_extensible(self):
+        # Check if the holiday have a pending or completed extension leave
+        for rec in self:
+            is_extensible = False
+            for en in rec.holiday_status_id.entitlements:
+                if rec.employee_id.job_id.grade_id in en.entitlment_category.grades:
+                    if en.extension_period>0:
+                        is_extensible = True
+                        rec.extension_period=en.extension_period
+                    break
+            rec.is_extensible = is_extensible
+            
+    @api.multi
+    def _set_external_autoritie(self):
+        search_external_authoritie = self.env["external.authorities"].search([('holiday_status.id','=',self.holiday_status_id.id)])
+        if search_external_authoritie:
+            self.external_authoritie = search_external_authoritie[0]           
     name = fields.Char(string=u'رقم القرار', advanced_search=True)
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), advanced_search=True)
@@ -56,7 +74,7 @@ class HrHolidays(models.Model):
     extended_holiday_id = fields.Many2one('hr.holidays', string=u'الإجازة الممددة')
     parent_id = fields.Many2one('hr.holidays', string=u'Parent')
     extension_holidays_ids = fields.One2many('hr.holidays', 'parent_id', string=u'التمديدات')
-    is_extensible = fields.Boolean(string=u'يمكن تمديدها',related='holiday_status_id.is_extensible',default=False)
+    is_extensible = fields.Boolean(string=u'يمكن تمديدها',default=False,compute='_check_is_extensible')
     # decision
     need_decision = fields.Boolean('status_id need decision', related='holiday_status_id.direct_decision')
     num_decision = fields.Char(string=u'رقم القرار')
@@ -64,7 +82,9 @@ class HrHolidays(models.Model):
     childbirth_date = fields.Date(string=u'تاريخ ولادة الطفل')
     medical_certificate = fields.Binary(string=u'شهادة طبية')
     birth_certificate = fields.Binary(string=u'شهادة الميلاد')
-
+    extension_period = fields.Integer(string=u'مدة التمديد', default=0)
+    external_authoritie = fields.Many2one('external.authorities', string=u'الجهة الخارجية',compute="_set_external_autoritie")
+    
     @api.multi
     def _compute_balance(self, employee_id):
         print employee_id
@@ -115,14 +135,22 @@ class HrHolidays(models.Model):
         extensions = self.env['hr.holidays'].search([('extended_holiday_id', '!=', False),('extended_holiday_id', '=', self.extended_holiday_id.id),('state', '=', 'done')])
         sum_periods = 0
         for extension in extensions:
-#             extensions_period = extension.duration
-#             sum_periods += extensions_period
-#         status_extension_period = self.holiday_status_id.extension_period * 365
-#         if sum_periods >= status_extension_period:
-#             raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من عام")
-# 
-#         if extensions_number >= self.holiday_status_id.extension_number:
-            raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من " + self.holiday_status_id.extension_number + u".")
+            sum_periods += extension.duration
+        extension_period=0
+        for en in self.holiday_status_id.entitlements:
+            if self.employee_id.job_id.grade_id in en.entitlment_category.grades:
+                extension_period = en.extension_period * 365
+        if sum_periods >= extension_period:
+            raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من%s عام"%str(extension_period/365))
+        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional'):
+            holiday_status_exceptional_stock = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id)]).holidays_available_stock
+            if holiday_status_exceptional_stock>0:
+                 raise ValidationError(u"لا يمكن تمديد الاجازة قبل نهاتة رصيدها")
+            if extensions_number==1:
+                holiday_status_exceptional_stock+=extension_period
+        if extensions_number >= self.holiday_status_id.extension_number and self.holiday_status_id.extension_number>=0:
+            raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من%s "%str(self.holiday_status_id.extension_number))
+        
         view_id = self.env.ref('smart_hr.hr_holidays_form').id
         context = self._context.copy()
         default_date_from = fields.Date.to_string(fields.Date.from_string(self.date_to) + timedelta(days=1))
@@ -317,23 +345,23 @@ class HrHolidays(models.Model):
         holiday_obj = self.env['hr.holidays']
         train_obj = self.env['hr.training']
         deput_obj = self.env['hr.deputation']
-        
-
+         
+ 
         for holiday in self:
             # Date validation
             if fields.Date.from_string(holiday.date_from) < fields.Date.from_string(fields.Date.today()):
                 raise ValidationError(u"تاريخ من يجب ان يكون أكبر من تاريخ اليوم")
-            
+             
             if holiday.date_from > holiday.date_to:
                 raise ValidationError(u"تاريخ من يجب ان يكون أصغر من تاريخ الى")
             # check minimum request validation
             if holiday.holiday_status_id.minimum != 0 and holiday.duration < holiday.holiday_status_id.minimum:
                 raise ValidationError(u"أقل فترة يمكن طلبها من نوع إجازة " + holiday.holiday_status_id.name + u" " + str(holiday.holiday_status_id.minimum) + u" أيام")
-            
+             
             # check maximum request validation
             if holiday.holiday_status_id.maximum != 0 and holiday.duration > holiday.holiday_status_id.maximum:
                 raise ValidationError(u"أكثر فترة يمكن طلبها من نوع إجازة " + holiday.holiday_status_id.name + u" " + str(holiday.holiday_status_id.maximum) + u" أيام")
-   
+    
             # Date overlap
             # الإجازات
             search_domain = [
@@ -355,7 +383,7 @@ class HrHolidays(models.Model):
                 ('employee_ids', 'in', [holiday.employee_id.id]),
                 ('state', '!=', 'refuse'),
             ]
-
+ 
             for rec in train_obj.search(search_domain):
                 periode_in_months = relativedelta(fields.Datetime.from_string(rec.date_to) - fields.Datetime.from_string(rec.date_from)).months
                 # for none normal holidays test
@@ -365,7 +393,7 @@ class HrHolidays(models.Model):
                             holiday.date_from <= rec.date_from <= holiday.date_to or \
                             holiday.date_from <= rec.date_to <= holiday.date_to:
                         raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في التدريب")
-
+ 
                 # for normal holidays test
                 else:
                     if rec.date_from < holiday.date_from < rec.date_to and rec.date_from < holiday.date_to < rec.date_to:
@@ -374,9 +402,9 @@ class HrHolidays(models.Model):
                     if holiday.date_from <= rec.date_from <= holiday.date_to or \
                             holiday.date_from <= rec.date_to <= holiday.date_to:
                         raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في التدريب")
-                    
-                        
-            
+                     
+                         
+             
             # الإنتتبات
             search_domain = [
                 ('employee_id', '=', holiday.employee_id.id),
@@ -388,11 +416,11 @@ class HrHolidays(models.Model):
                         holiday.date_from <= rec.date_from <= holiday.date_to or \
                         holiday.date_from <= rec.date_to <= holiday.date_to:
                     raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الإنتداب")
-
+ 
             """
-
+ 
             TODO: check dates with :أوقات خارج الدوام ... 
-
+ 
             """
 
     def check_constraintes(self):
@@ -580,6 +608,8 @@ class HrHolidaysStatus(models.Model):
     _inherit = 'hr.holidays.status'
     _description = 'holidays status'
 
+
+            
     name = fields.Char(string=u'نوع الاجازة')
     minimum = fields.Integer(string=u'الحد الأدنى في المرة الواحدة')
     maximum = fields.Integer(string=u'الحد الأقصى في المرة الواحدة')
@@ -601,8 +631,6 @@ class HrHolidaysStatus(models.Model):
     percentages = fields.One2many('hr.holidays.status.salary.percentage', 'holiday_status', string=u'نسب الراتب المحتسبة')
     for_saudi = fields.Boolean(string=u'تنطبق على السعوديين', default=True)
     for_other = fields.Boolean(string=u'تنطبق على غير السعوديين', default=True)
-    extension_period = fields.Integer(string=u'مدة التمديد', default=0)
-    is_extensible = fields.Boolean(string=u'يمكن تمديدها',default=False)
     promotion_deductible = fields.Boolean(string=u'تخصم مدتها من رصيد الترقية', default=False)
     min_amount = fields.Float(string=u'المبلغ الادنى') 
     pension_percent = fields.Float(string=u' (%)نسبة راتب التقاعد') 

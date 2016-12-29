@@ -9,4 +9,4 @@ class ExternalAutorities(models.Model):
     _name = 'external.authorities'
     _description = u'الجهات الخارجية‬'
     name = fields.Char(string=u'المسمّى',required=True)
-    holiday_status = fields.Many2one('hr.holidays.status', string='holiday status')
+    holiday_status = fields.Many2one('hr.holidays.status', string=u'نوع الاجازة')

@@ -38,7 +38,7 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 
-		<menuitem id="menu_external_autorities_conf" parent="menu_hr_holiday_root"
+		<menuitem id="menu_external_autorities_conf" parent="menu_hr_holidays_status_root"
 			name="الجهات الخارجية‬" sequence="100" action="action_external_autorities"/>
 
 
