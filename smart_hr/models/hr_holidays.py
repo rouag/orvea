@@ -341,7 +341,7 @@ class HrHolidays(models.Model):
     def check_dates_periode(self):
         # Objects
         holiday_obj = self.env['hr.holidays']
-        train_obj = self.env['hr.training']
+        candidate_obj = self.env['hr.candidates']
         deput_obj = self.env['hr.deputation']
          
  
@@ -378,12 +378,16 @@ class HrHolidays(models.Model):
                         raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق فى الإجازات")
             # التدريب
             search_domain = [
-                ('employee_ids', 'in', [holiday.employee_id.id]),
-                ('state', '!=', 'refuse'),
+                ('employee_id', '=', holiday.employee_id.id),
+                ('state', '=', 'done'),
             ]
  
-            for rec in train_obj.search(search_domain):
-                periode_in_months = relativedelta(fields.Datetime.from_string(rec.date_to) - fields.Datetime.from_string(rec.date_from)).months
+            for rec in candidate_obj.search(search_domain):
+                dateto = fields.Date.from_string(rec.date_to)
+                datefrom = fields.Date.from_string(rec.date_from)
+                res = relativedelta(dateto, datefrom)
+                months = res.months
+                days = res.days
                 # for none normal holidays test
                 if self.holiday_status_id != self.env.ref('smart_hr.data_hr_holiday_status_normal'):
                     if rec.date_from <= holiday.date_from <= rec.date_to or \
@@ -395,7 +399,7 @@ class HrHolidays(models.Model):
                 # for normal holidays test
                 else:
                     if rec.date_from < holiday.date_from < rec.date_to and rec.date_from < holiday.date_to < rec.date_to:
-                        if periode_in_months <= 1:
+                        if (months < 1) or (months == 1 and days == 0):
                             raise ValidationError(u"الإجازة يتخللها تدريب مدته أقل من شهر.")
                     if holiday.date_from <= rec.date_from <= holiday.date_to or \
                             holiday.date_from <= rec.date_to <= holiday.date_to:
