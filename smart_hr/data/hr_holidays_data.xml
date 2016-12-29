@@ -17,7 +17,7 @@
 			<field name="deductible_duration_service" eval="True" />
 			<field name="is_extensible" eval="True" />
 			<field name="external_decision" eval="True" />
-			<field name="commence_work_decision" eval="False" />
+			<field name="direct_decision" eval="False" />
 
 		</record>
 		<record id="data_hr_holiday_status_illness_normal" model="hr.holidays.status">
@@ -74,7 +74,7 @@
 			<field name="is_extensible" eval="True" />
 			<field name="external_decision" eval="True" />
 			<field name="direct_director_decision" eval="False" />
-			<field name="commence_work_decision" eval="False" />
+			<field name="direct_decision" eval="False" />
 
 
 
@@ -116,7 +116,19 @@
 		<record id="data_hr_holiday_death_types_husband_death" model="hr.entitlement.config">
 			<field name="name"> وفاة:عدّة</field>
 		</record>
+		<record id="data_hr_holiday_dialysis" model="hr.holidays.status">
+			<field name="name">غسيل كلى</field>
+			<field name="need_decision" eval="True" />
+		</record>
+
+		<record id="data_hr_holiday_literaty" model="hr.holidays.status">
+			<field name="name">الأدبيّة</field>
+			<field name="educ_lvl_req" eval="True" />
+		</record>
 		
+		<record id="data_hr_holiday_exam" model="hr.holidays.status">
+			<field name="name">‫إمتحان‬</field>
+		</record>
 		
 	</data>
 

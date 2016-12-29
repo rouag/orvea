@@ -85,6 +85,7 @@ class HrHolidays(models.Model):
     extension_period = fields.Integer(string=u'مدة التمديد', default=0)
     external_authoritie = fields.Many2one('external.authorities', string=u'الجهة الخارجية',compute="_set_external_autoritie")
     death_type = fields.Many2one('hr.holidays.death.type', string=u'صنف الوفاة')
+    death_person = fields.Char(string=u'المتوفي')
 
     @api.multi
     def _compute_balance(self, employee_id):
@@ -561,14 +562,10 @@ class HrHolidays(models.Model):
 
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_death'):
             for en in self.holiday_status_id.entitlements:
-                if en.death_type == self.death_type and en.periode<self.duration:
+                if en.name == self.death_type.name and en.periode<self.duration:
                     raise ValidationError(u"لا يمكن لإجازة الوفاة ان تتجاوز %s يوم" %en.periode)  
                     break
 
-                    
-                
-                
-                
     @api.model
     def create(self, vals):
         res = super(HrHolidays, self).create(vals)
@@ -656,7 +653,6 @@ class HrHolidaysStatus(models.Model):
     promotion_deductible = fields.Boolean(string=u'تخصم مدتها من رصيد الترقية', default=False)
     min_amount = fields.Float(string=u'المبلغ الادنى') 
     pension_percent = fields.Float(string=u' (%)نسبة راتب التقاعد') 
-    commence_work_decision = fields.Boolean(string=u'تحتاج إلى قرار مباشرة')
     
     @api.onchange('deductible_duration_service')
     def onchange_deductible_duration_service(self):

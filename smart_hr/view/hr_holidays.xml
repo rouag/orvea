@@ -112,6 +112,11 @@
 						</group>
 						<group col="6">
 							<field name="holiday_status_id" required="1" />
+						<field name="death_type"
+								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_death)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_death)d)]}" />
+						<field name="death_person"
+								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_death)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_death)d)]}" />
+							
 							<field name="raison"
 								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_exceptional_accompaniment)d)]}" />
 							<field name="childbirth_date"
@@ -122,8 +127,6 @@
 
 							<field name="birth_certificate"
 								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_child_birth_dad)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_child_birth_dad)d)]}" />
-							<field name="death_type"
-								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_death)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_death)d)]}" />
 						</group>
 
 						<group col="4">
@@ -253,7 +256,6 @@
 										widget="many2many" />
 									<field name="min_amount" />
 									<field name="pension_percent" />
-									<field name="commence_work_decision" />
 								</group>
 
 
