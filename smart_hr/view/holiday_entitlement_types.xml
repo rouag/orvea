@@ -6,8 +6,8 @@
 
 
 		<record id="holiday_entitlement_types_form" model="ir.ui.view">
-			<field name="name">hr.entitlement.config.form</field>
-			<field name="model">hr.entitlement.config</field>
+			<field name="name">hr.holidays.entitlement.config.form</field>
+			<field name="model">hr.holidays.entitlement.config</field>
 			<field name="arch" type="xml">
 				<form string="اصناف الوفايات‬‬">
 					<sheet>
@@ -20,8 +20,8 @@
 		</record>
 
 		<record id="holiday_entitlement_types_tree" model="ir.ui.view">
-			<field name="name">hr.entitlement.config.tree</field>
-			<field name="model">hr.entitlement.config</field>
+			<field name="name">hr.holidays.entitlement.config.tree</field>
+			<field name="model">hr.holidays.entitlement.config</field>
 			<field name="arch" type="xml">
 				<tree string="اصناف الوفايات">
 							<field name="name" />
@@ -31,7 +31,7 @@
 
 		<record model="ir.actions.act_window" id="action_holiday_entitlement_types">
 			<field name="name">اصناف الوفايات‬‬</field>
-			<field name="res_model">hr.entitlement.config</field>
+			<field name="res_model">hr.holidays.entitlement.config</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>

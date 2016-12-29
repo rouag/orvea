@@ -719,7 +719,7 @@ class HrHolidaysStatusSalaryPercentage(models.Model):
     holiday_status = fields.Many2one('hr.holidays.status', string='holiday status')
     
 class EntitlementConfig(models.Model):
-    _name = 'hr.entitlement.config'
+    _name = 'hr.holidays.entitlement.config'
     _description = u' اصناف الاستحقاقات'
     
     name = fields.Char(string=u'المسمّى')
