@@ -148,15 +148,16 @@ class HrEmployeePromotionHistory(models.Model):
                 date_from = fields.Date.from_string(rec.date_from)
                 days = (today_date - date_from).days
                 # find the holidays of the employee start from date_from and they are promotion_deductible
+                # only deductible_duration_service it means promotion_deductible also
                 holidays = self.env['hr.holidays'].search([
                     ('state', '=', 'done'),
                     ('employee_id', '=', rec.employee_id.id),
-                    ('holiday_status_id.promotion_deductible', '=', True),
+                    ('holiday_status_id.deductible_duration_service', '=', True),
                     ('date_from', '>=', rec.date_from)
                     ])
                 for holiday in holidays:
                     days -= holiday.periode
-                
+
                 rec.balance = days
  
 

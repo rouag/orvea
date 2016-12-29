@@ -225,6 +225,7 @@
 								<field name="maximum" />
 								<field name="postponement_period" />
 								<field name="color_name" />
+								<field name="need_decision" />
 								<field name="direct_decision" />
 								<field name="promotion_deductible" />
 								<field name="extension_number"/>
