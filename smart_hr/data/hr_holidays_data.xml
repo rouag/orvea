@@ -75,7 +75,7 @@
 			<field name="external_decision" eval="True" />
 			<field name="direct_director_decision" eval="False" />
 			<field name="commence_work_decision" eval="False" />
-			
+
 
 
 		</record>
@@ -106,6 +106,18 @@
 			<field name="name">الوفاة</field>
 			<field name="limit" eval="True" />
 		</record>
+
+		<record id="data_hr_holiday_death_types_parent" model="hr.entitlement.config">
+			<field name="name">‫ وفاةأصل(‫أبناء‬ ‫أو‬ ‫والدين ‫أو‬ ز وجة)  </field>
+		</record>
+		<record id="data_hr_holiday_death_types_branch" model="hr.entitlement.config">
+			<field name="name">وفاة فرع (‫أحد الإخوة او غيرهم من الأقارب)</field>
+		</record>
+		<record id="data_hr_holiday_death_types_husband_death" model="hr.entitlement.config">
+			<field name="name"> وفاة:عدّة</field>
+		</record>
+		
+		
 	</data>
 
 </openerp>

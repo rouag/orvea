@@ -84,7 +84,8 @@ class HrHolidays(models.Model):
     birth_certificate = fields.Binary(string=u'شهادة الميلاد')
     extension_period = fields.Integer(string=u'مدة التمديد', default=0)
     external_authoritie = fields.Many2one('external.authorities', string=u'الجهة الخارجية',compute="_set_external_autoritie")
-    
+    death_type = fields.Many2one('hr.holidays.death.type', string=u'صنف الوفاة')
+
     @api.multi
     def _compute_balance(self, employee_id):
         holiday_obj = self.env['hr.holidays']
@@ -336,7 +337,13 @@ class HrHolidays(models.Model):
     def button_refuse_revision_response(self):
         self.state = 'refuse'
     
-    
+    @api.constrains('pension_percent', 'date_to')
+    def check_pension_percent(self):
+        for rec in self:
+            if rec.pension_percent<0 or rec.pension_percent>100:
+                raise ValidationError(u"نسبة راتب التقاعد خاطئة ")
+                
+                
     @api.constrains('date_from', 'date_to')
     def check_dates_periode(self):
         # Objects
@@ -546,6 +553,18 @@ class HrHolidays(models.Model):
             if (self.duration)>1:
                 raise ValidationError(u"لا يمكن لإجازة المولود ان تتجاوز يوم")  
             
+            # Constraintes for death الوفاة
+
+        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_death'):
+            for en in self.holiday_status_id.entitlements:
+                if en.death_type == self.death_type and en.periode<self.duration:
+                    raise ValidationError(u"لا يمكن لإجازة الوفاة ان تتجاوز %s يوم" %en.periode)  
+                    break
+
+                    
+                
+                
+                
     @api.model
     def create(self, vals):
         res = super(HrHolidays, self).create(vals)
@@ -670,8 +689,9 @@ class HrHolidaysStatusEntitlement(models.Model):
     leave_type = fields.Many2one('hr.holidays.status', string='leave type')
 #     holiday_stock_open = fields.Boolean(string=u'الرصيد مفتوح')
     extension_period = fields.Integer(string=u'مدة التمديد', default=0)
-    
-    
+    death_type = fields.Many2one('hr.holidays.death.type', string=u'صنف الوفاة')
+
+
 class HrHolidaysStatusEntitlementCategory(models.Model):
     _name = 'hr.holidays.status.entitlement.category'
     _description = u'فئة استحقاق'
@@ -687,3 +707,11 @@ class HrHolidaysStatusSalaryPercentage(models.Model):
     periode = fields.Integer(string=u'عدد الأشهر')
     salary_proportion = fields.Float(string=u'نسبة الراتب (%)', default=100) 
     holiday_status = fields.Many2one('hr.holidays.status', string='holiday status')
+    
+class EntitlementConfig(models.Model):
+    _name = 'hr.entitlement.config'
+    _description = u' اصناف الاستحقاقات'
+    
+    name = fields.Char(string=u'المسمّى')
+    
+    

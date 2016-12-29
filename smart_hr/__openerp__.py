@@ -71,7 +71,8 @@
         'view/hr_termination_view.xml',
         'view/section.xml',
         'view/hierarchy_level.xml',
-                'view/external_autorities.xml',
+        'view/external_autorities.xml',
+         'view/holiday_entitlement_types.xml',
 
         # القرارات
         'view/hr_decision.xml',

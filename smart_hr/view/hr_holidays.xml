@@ -106,10 +106,11 @@
 							<field name="date" readonly="1" />
 							<field name="employee_id" required="1" readonly='1' />
 							<field name="external_authoritie"
-								attrs="{'invisible':[('state','!=','external_audit')]}" readonly='1'/>							
+								attrs="{'invisible':[('state','!=','external_audit')]}"
+								readonly='1' />
 
 						</group>
-						<group col="4">
+						<group col="6">
 							<field name="holiday_status_id" required="1" />
 							<field name="raison"
 								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_exceptional_accompaniment)d)]}" />
@@ -121,6 +122,8 @@
 
 							<field name="birth_certificate"
 								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_child_birth_dad)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_child_birth_dad)d)]}" />
+							<field name="death_type"
+								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_death)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_death)d)]}" />
 						</group>
 
 						<group col="4">
@@ -198,65 +201,65 @@
 				<xpath expr="/form" position='replace'>
 					<form string="نوع الأجازة">
 						<sheet>
-						<group col="4">
+							<group col="4">
 								<group>
-								<field name="name" required="1"/>
+									<field name="name" required="1" />
 								</group>
 								<group></group>
-								</group>
-								<field name="entitlements" string="أنواع  الاستحقاقات">
-									<tree editable="bottom">
-										<field name="entitlment_category" required="1" />
-										<field name="holiday_stock_default" />
-										<field name="conditionnal" />
-										<field name="periode" />
-										<field name="extension_period" />
-									</tree>
-								</field>
+							</group>
+							<field name="entitlements" string="أنواع  الاستحقاقات">
+								<tree editable="bottom">
+									<field name="entitlment_category" required="1" />
+									<field name="holiday_stock_default" />
+									<field name="conditionnal" />
+									<field name="periode" />
+									<field name="extension_period" />
+								</tree>
+							</field>
 
-								<field name="percentages">
-									<tree editable="bottom" string="نسب الراتب المحتسبة">
-										<field name="sequence" required="1" />
-										<field name="periode" required="1" />
-										<field name="salary_proportion" required="1" />
-									</tree>
-								</field>
-								<group col="4">
+							<field name="percentages">
+								<tree editable="bottom" string="نسب الراتب المحتسبة">
+									<field name="sequence" required="1" />
+									<field name="periode" required="1" />
+									<field name="salary_proportion" required="1" />
+								</tree>
+							</field>
+							<group col="4">
 								<group>
-								<field name="minimum" />
-								<field name="maximum" />
-								<field name="postponement_period" />
-								<field name="color_name" />
-								<field name="need_decision" />
-								<field name="direct_decision" />
-								<field name="promotion_deductible" />
-								<field name="extension_number"/>
-								<field name="external_decision" />
-								<field name="for_saudi" />
-								<field name="for_other" />
-								<field name="direct_director_decision" />
-								<field name="salary_spending" />
-								<field name="employees_director_decision" />
-								<field name="can_be_cancelled" />
-								<field name="active" />
-								<field name="deductible_normal_leave" />
-								<field name="deductible_duration_service" />
-								<field name="educ_lvl_req" />
-								<field name="education_levels" attrs="{'invisible':[('educ_lvl_req', '=', False)]}"
-									widget="many2many" />
-								<field name="evaluation_condition" />
-								<field name="assessments_required"
-									attrs="{'invisible':[('evaluation_condition', '=', False)]}"
-									widget="many2many" />
-								<field name="min_amount" />
-								<field name="pension_percent" />
-								<field name="commence_work_decision" />
+									<field name="minimum" />
+									<field name="maximum" />
+									<field name="postponement_period" />
+									<field name="color_name" />
+									<field name="need_decision" />
+									<field name="direct_decision" />
+									<field name="promotion_deductible" />
+									<field name="extension_number" />
+									<field name="external_decision" />
+									<field name="for_saudi" />
+									<field name="for_other" />
+									<field name="direct_director_decision" />
+									<field name="salary_spending" />
+									<field name="employees_director_decision" />
+									<field name="can_be_cancelled" />
+									<field name="active" />
+									<field name="deductible_normal_leave" />
+									<field name="deductible_duration_service" />
+									<field name="educ_lvl_req" />
+									<field name="education_levels"
+										attrs="{'invisible':[('educ_lvl_req', '=', False)]}" widget="many2many" />
+									<field name="evaluation_condition" />
+									<field name="assessments_required"
+										attrs="{'invisible':[('evaluation_condition', '=', False)]}"
+										widget="many2many" />
+									<field name="min_amount" />
+									<field name="pension_percent" />
+									<field name="commence_work_decision" />
 								</group>
-								
 
-<group></group>
-							
-</group>
+
+								<group></group>
+
+							</group>
 
 
 						</sheet>
@@ -270,11 +273,11 @@
 			<field name="inherit_id" ref="hr_holidays.view_holiday_status_tree" />
 			<field name="arch" type="xml">
 				<xpath expr="/tree" position='replace'>
-				<tree string="أنواع الأجازات">
-					<field name="name" />
-					<field name="minimum" />
-					<field name="maximum" />
-				</tree>
+					<tree string="أنواع الأجازات">
+						<field name="name" />
+						<field name="minimum" />
+						<field name="maximum" />
+					</tree>
 				</xpath>
 			</field>
 		</record>
