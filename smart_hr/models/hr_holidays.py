@@ -28,7 +28,8 @@ class HrHolidays(models.Model):
     def _set_external_autoritie(self):
         search_external_authoritie = self.env["external.authorities"].search([('holiday_status.id','=',self.holiday_status_id.id)])
         if search_external_authoritie:
-            self.external_authoritie = search_external_authoritie[0]           
+            self.external_authoritie = search_external_authoritie[0] 
+                      
     name = fields.Char(string=u'رقم القرار', advanced_search=True)
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), advanced_search=True)
@@ -66,7 +67,7 @@ class HrHolidays(models.Model):
 
     # Cancellation
     is_cancelled = fields.Boolean(string=u'ملغاة', compute='_is_cancelled')
-    is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started', store=True)
+    is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started')
     holiday_cancellation = fields.Many2one('hr.holidays.cancellation')    
     # Extension
     is_extension = fields.Boolean(string=u'تمديد إجازة')
@@ -85,6 +86,11 @@ class HrHolidays(models.Model):
     extension_period = fields.Integer(string=u'مدة التمديد', default=0)
     external_authoritie = fields.Many2one('external.authorities', string=u'الجهة الخارجية',compute="_set_external_autoritie")
     
+    @api.depends('date_from')
+    def _compute_is_started(self):
+        for rec in self:
+            if rec.date_from <= datetime.today().strftime('%Y-%m-%d'):
+                rec.is_started = True
     @api.multi
     def _compute_balance(self, employee_id):
         holiday_obj = self.env['hr.holidays']
