@@ -103,7 +103,7 @@ class HrHolidays(models.Model):
             if holiday_status_id.entitlements:
                 # loop under entitlements and get the holiday solde depend on grade of the employee
                 for en in holiday_status_id.entitlements:
-                    if employee_id.job_id.grade_id in en.entitlment_category.grades:
+                    if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en:
                         holiday_solde_by_year_number = {en.periode: en.holiday_stock_default}
                         break
 
@@ -477,47 +477,47 @@ class HrHolidays(models.Model):
         holiday_status_childbirth_stock = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_childbirth').id)]).holidays_available_stock
         holiday_status_exceptional_accompaniment = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_exceptional_accompaniment').id)]).holidays_available_stock
 
-
-        # Constraintes for Compelling holidays اضطرارية
-        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
-            for en in self.holiday_status_id.entitlements:
-                if self.employee_id.job_id.grade_id in en.entitlment_category.grades:
-                    # غير مشروط
-                    if not en.conditionnal:
-                        break
-                    else:
-                        if self.duration > holiday_status_compelling_stock:
-                            raise ValidationError(u"ليس لديك الرصيد الكافي")
-                        
-            if holiday_status_normal_stock>=self.duration:
-                raise ValidationError(u"يوجد رصيد في الإجازات العاديّة")
-
-
-            print 'اضطرارية'
-           
-        # Constraintes for exceptionnal holidays استثنائية
-        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional'):
-            for en in self.holiday_status_id.entitlements:
-                if self.employee_id.job_id.grade_id in en.entitlment_category.grades:
-                    #غير مشروط
-                    if not en.conditionnal:
-                        break
-                    else:
-                        if self.duration > holiday_status_exceptional_stock:
-                            raise ValidationError(u" ليس لديك الرصيد الكافي في الاجازات الاستثنائية")
-            print 'استثنائية'
-            
-        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional_accompaniment'):
-            for en in self.holiday_status_id.entitlements:
-                if self.employee_id.job_id.grade_id in en.entitlment_category.grades:
-                    #غير مشروط
-                    if not en.conditionnal:
-                        break
-                    else:
-                        if self.duration > holiday_status_exceptional_accompaniment:
-                            raise ValidationError(u"  ليس لديك الرصيد الكافي في الاجازات الاستثنائية للمرافقة")
-            print 'استثنائية للمرافقة'
-            
+# 
+#         # Constraintes for Compelling holidays اضطرارية
+#         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
+#             for en in self.holiday_status_id.entitlements:
+#                 if self.employee_id.job_id.grade_id in en.entitlment_category.grades:
+#                     # غير مشروط
+#                     if not en.conditionnal:
+#                         break
+#                     else:
+#                         if self.duration > holiday_status_compelling_stock:
+#                             raise ValidationError(u"ليس لديك الرصيد الكافي")
+#                         
+#             if holiday_status_normal_stock>=self.duration:
+#                 raise ValidationError(u"يوجد رصيد في الإجازات العاديّة")
+# 
+# 
+#             print 'اضطرارية'
+#            
+#         # Constraintes for exceptionnal holidays استثنائية
+#         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional'):
+#             for en in self.holiday_status_id.entitlements:
+#                 if self.employee_id.job_id.grade_id in en.entitlment_category.grades:
+#                     #غير مشروط
+#                     if not en.conditionnal:
+#                         break
+#                     else:
+#                         if self.duration > holiday_status_exceptional_stock:
+#                             raise ValidationError(u" ليس لديك الرصيد الكافي في الاجازات الاستثنائية")
+#             print 'استثنائية'
+#             
+#         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional_accompaniment'):
+#             for en in self.holiday_status_id.entitlements:
+#                 if self.employee_id.job_id.grade_id in en.entitlment_category.grades:
+#                     #غير مشروط
+#                     if not en.conditionnal:
+#                         break
+#                     else:
+#                         if self.duration > holiday_status_exceptional_accompaniment:
+#                             raise ValidationError(u"  ليس لديك الرصيد الكافي في الاجازات الاستثنائية للمرافقة")
+#             print 'استثنائية للمرافقة'
+#             
                     # Constraintes for childbirth holidays وضع
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_childbirth'):
             if self.employee_id.gender!='female':
