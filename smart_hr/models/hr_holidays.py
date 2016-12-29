@@ -605,6 +605,11 @@ class HrHolidaysStatus(models.Model):
     min_amount = fields.Float(string=u'المبلغ الادنى') 
     pension_percent = fields.Float(string=u' (%)نسبة راتب التقاعد') 
     commence_work_decision = fields.Boolean(string=u'تحتاج إلى قرار مباشرة')
+    @api.onchange('deductible_duration_service')
+    def onchange_deductible_duration_service(self):
+        print "hello"
+        if self.deductible_duration_service:
+            self.promotion_deductible = True
 
     @api.multi
     def write(self, vals):
