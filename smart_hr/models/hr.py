@@ -89,7 +89,6 @@ class HrEmployee(models.Model):
     
     @api.multi 
     def button_my_info(self):
-        print self._uid
         employee = self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1)
         if employee:
             value = {
@@ -108,7 +107,7 @@ class HrEmployeeHolidaysStock(models.Model):
 
     employee_id = fields.Many2one('hr.employee', string=u'الموظف')
     holiday_status_id = fields.Many2one('hr.holidays.status', string=u'نوع الاجازة')
-    holidays_available_stock = fields.Float(string=u'رصيد الاجازة')
+    holidays_available_stock = fields.Float(string=u'رصيد الاجازة (يوم)')
     token_holidays_sum = fields.Integer(string=u'الإيام المأخوذة', default=0)
     periode = fields.Selection([
         (1, u'سنة'),
@@ -130,7 +129,7 @@ class HrEmployeePromotionHistory(models.Model):
     salary_grid_id = fields.Many2one('salary.grid.grade', string=u'الرتبة')
     date_from = fields.Date(string=u'التاريخ من', default=fields.Datetime.now())
     date_to = fields.Date(string=u'التاريخ الى')
-    balance = fields.Integer(string=u'رصيد الترقية', compute='_compute_balance')
+    balance = fields.Integer(string=u'رصيد الترقية (يوم)', compute='_compute_balance')
 
     def _compute_balance(self):
         for rec in self:
@@ -148,11 +147,7 @@ class HrEmployeePromotionHistory(models.Model):
                 for holiday in holidays:
                     days -= holiday.periode
                 
-                years = 0
-                if days >0:
-                    years = (today_date - date_from).days / 365
-                if years > -1:
-                    rec.balance = years
+                rec.balance = days
  
 
                       

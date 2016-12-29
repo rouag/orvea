@@ -81,7 +81,6 @@ class HrHolidays(models.Model):
                         holiday_solde_by_year_number = {en.periode: en.holiday_stock_default}
                         break
 
-
                 # calculate the balance of he employee for current holiday status
                 if holiday_solde_by_year_number.items():
                     periode = holiday_solde_by_year_number.items()[0][0]
@@ -102,9 +101,9 @@ class HrHolidays(models.Model):
                         # balance per month
                         if months > 0:
                             balance = employee_solde / (periode * 12) * months
-                            # get the sum of holidays given in from the start of current year till now
+                            # get the sum of holidays given in from the start of current year
                             given_holidays_count = 0
-                            for rec in holiday_obj.search([('state', '=', 'done'), ('employee_id', '=', employee_id.id), ('holiday_status_id', '=', holiday_status_id.id), ('date_from', '<=', date(date.today().year, 12, 31)), ('date_from', '>=', date(date.today().year, 1, 1))]):
+                            for rec in holiday_obj.search([('state', '=', 'done'), ('employee_id', '=', employee_id.id), ('holiday_status_id', '=', holiday_status_id.id), ('date_from', '>=', date(date.today().year, 1, 1))]):
                                 given_holidays_count += rec.duration
                             balance -= given_holidays_count
                             balance_line.write({'holidays_available_stock': balance, 'token_holidays_sum': given_holidays_count})

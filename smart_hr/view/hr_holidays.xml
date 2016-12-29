@@ -268,10 +268,15 @@
 		<record id="view_tree_hr_holidays_status" model="ir.ui.view">
 			<field name="name">hr.holidays.status.tree</field>
 			<field name="model">hr.holidays.status</field>
+			<field name="inherit_id" ref="hr_holidays.view_holiday_status_tree" />
 			<field name="arch" type="xml">
+				<xpath expr="/tree" position='replace'>
 				<tree string="أنواع الأجازات">
 					<field name="name" />
+					<field name="minimum" />
+					<field name="maximum" />
 				</tree>
+				</xpath>
 			</field>
 		</record>
 
