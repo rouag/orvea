@@ -94,8 +94,14 @@
 			<field name="limit" eval="True" />
 			<field name="postponement_period" eval="60" />
 		</record>
+
 		<record id="data_hr_holiday_child_birth_dad" model="hr.holidays.status">
 			<field name="name"> المولود</field>
+			<field name="limit" eval="True" />
+		</record>
+
+		<record id="data_hr_holiday_death" model="hr.holidays.status">
+			<field name="name">الوفاة</field>
 			<field name="limit" eval="True" />
 		</record>
 	</data>
