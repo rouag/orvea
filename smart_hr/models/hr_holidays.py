@@ -58,7 +58,7 @@ class HrHolidays(models.Model):
     extension_holidays_ids = fields.One2many('hr.holidays', 'parent_id', string=u'التمديدات')
     is_extensible = fields.Boolean(string=u'يمكن تمديدها',related='holiday_status_id.is_extensible',default=False)
     # decision
-    need_decision = fields.Boolean('status_id need decision', related='holiday_status_id.direct_decision')
+    need_decision = fields.Boolean('status_id need decision', related='holiday_status_id.need_decision')
     num_decision = fields.Char(string=u'رقم القرار')
     date_decision = fields.Date(string=u'تاريخ القرار')
     childbirth_date = fields.Date(string=u'تاريخ ولادة الطفل')
@@ -586,7 +586,8 @@ class HrHolidaysStatus(models.Model):
     deductible_normal_leave = fields.Boolean(string=u'تخصم مدتها من رصيد الاجازة العادية')
     deductible_duration_service = fields.Boolean(string=u'تخصم مدتها من فترة الخدمة')
     educ_lvl_req = fields.Boolean(string=u'يطبق شرط المستوى التعليمي')
-    direct_decision = fields.Boolean(string=u'تحتاج إلى قرار')
+    need_decision = fields.Boolean(string=u' تحتاج إلى قرار')
+    direct_decision = fields.Boolean(string=u'تحتاج إلى قرار مباشرة')
     direct_director_decision = fields.Boolean(string=u'موافقة مدير مباشر', default=True)
     external_decision = fields.Boolean(string=u'موافقة خارجية', default=False)
     salary_spending = fields.Boolean(string=u'يجوز صرف راتبها')
@@ -605,9 +606,9 @@ class HrHolidaysStatus(models.Model):
     min_amount = fields.Float(string=u'المبلغ الادنى') 
     pension_percent = fields.Float(string=u' (%)نسبة راتب التقاعد') 
     commence_work_decision = fields.Boolean(string=u'تحتاج إلى قرار مباشرة')
+    
     @api.onchange('deductible_duration_service')
     def onchange_deductible_duration_service(self):
-        print "hello"
         if self.deductible_duration_service:
             self.promotion_deductible = True
 

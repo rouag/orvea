@@ -12,7 +12,7 @@
 			<field name="name">استثنائية</field>
 			<field name="limit" eval="True" />
 			<field name="extension_period" eval="1" />
-			<field name="direct_decision" eval="True" />
+			<field name="need_decision" eval="True" />
 			<field name="deductible_normal_leave" eval="True" />
 			<field name="deductible_duration_service" eval="True" />
 			<field name="is_extensible" eval="True" />
@@ -59,7 +59,7 @@
 			<field name="maximum" eval="5" />
 			<field name="for_saudi" eval="True" />
 			<field name="for_other" eval="True" />
-			<field name="direct_decision" eval="True" />
+			<field name="need_decision" eval="True" />
 
 		</record>
 
@@ -67,7 +67,7 @@
 			model="hr.holidays.status">
 			<field name="name">استثنائية للمرافقة</field>
 			<field name="extension_period" eval="1" />
-			<field name="direct_decision" eval="True" />
+			<field name="need_decision" eval="True" />
 			<field name="deductible_normal_leave" eval="True" />
 			<field name="deductible_duration_service" eval="True" />
 			<field name="is_extensible" eval="True" />
@@ -93,6 +93,10 @@
 
 		<record id="data_hr_holiday_child_birth_dad" model="hr.holidays.status">
 			<field name="name"> المولود</field>
+		</record>
+
+		<record id="data_hr_holiday_status_rescue" model="hr.holidays.status">
+			<field name="name">إجازة اغاثة</field>
 		</record>
 
 		<record id="data_hr_holiday_death" model="hr.holidays.status">
