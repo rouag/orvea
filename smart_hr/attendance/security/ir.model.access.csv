@@ -1,10 +1,13 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_hr_extra_hours,name_hr_extra_hours,model_hr_extra_hours,group_extra_hours_management,1,1,1,0
+,,,,,,,
+access_resource_calendary_all,name_resource_calendar_all,resource.model_resource_calendar,,1,1,1,0
+,,,,,,,
+access_hr_extra_hours,name_hr_extra_hours,model_hr_extra_hours,,1,1,1,0
 access_hr_extra_hours_all,name_hr_extra_hours_all,model_hr_extra_hours,,1,1,1,0
 ,,,,,,,
-access_hr_authorization,name_hr_authorization,model_hr_authorization,group_authorization_management,1,1,1,0
+access_hr_public_holiday_all,name_hr_public_holiday_all,model_hr_public_holiday,,1,1,1,0
+,,,,,,,
 access_hr_authorization_all,name_hr_authorization_all,model_hr_authorization,,1,1,1,0
-access_hr_authorization_type,name_hr_authorization_type,model_hr_authorization_type,group_authorization_management,1,1,1,0
 access_hr_authorization_type_all,name_hr_authorization_type_all,model_hr_authorization_type,,1,1,1,0
 ,,,,,,,
 access_hr_attendance_schedule_all,name_hr_attendance_schedule_all,model_hr_attendance_schedule,,1,1,1,0
@@ -12,3 +15,5 @@ access_hr_attendance_schedule_all,name_hr_attendance_schedule_all,model_hr_atten
 access_hr_attendance_import_all,name_hr_attendance_import_all,model_hr_attendance_import,,1,1,1,0
 ,,,,,,,
 access_hr_attendance_report_day_all,name_hr_attendance_report_day_all,model_hr_attendance_report_day,,1,1,1,0
+,,,,,,,
+access_hr_attendance_check_all,name_hr_attendance_check_all,model_hr_attendance_check,,1,1,1,0

@@ -27,12 +27,9 @@
 			<field name="arch" type="xml">
 				<form string="طلبات الإستئذان">
 					<header>
-						<button name="action_waiting" string="إرسال للإعتماد" type="object"
-							states="new" />
-						<button name="action_done" string="إعتماد" type="object"
-							states="waiting" />
-						<button name="action_refuse" string="رفض" type="object"
-							states="waiting" />
+						<button name="action_waiting" string="إرسال للإعتماد" type="object" states="new" />
+						<button name="action_done" string="إعتماد" type="object" states="waiting"  groups="smart_hr.group_dm"/>
+						<button name="action_refuse" string="رفض" type="object" states="waiting" groups="smart_hr.group_dm" />
 						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
 					</header>
 					<sheet>
@@ -103,7 +100,53 @@
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 
-		<menuitem id="hr_authorization_menu" name="طلبات الإستئذان"
+		<menuitem id="hr_authorization_menu" name="طلبات الإستئذان" groups="smart_hr.group_employee"
 			sequence="25" parent="menu_attendance_root" action="action_hr_authorization" />
+			
+		<!-- أنواع الإستئذانات  -->	
+		
+		<record model="ir.ui.view" id="hr_authorization_type_tree">
+			<field name="name">hr.authorization.type.tree</field>
+			<field name="model">hr.authorization.type</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="أنواع الإستئذانات">
+					<field name="sequence" widget="handle" />
+					<field name="name" />
+					<field name="code" />
+					<field name="create_date" string="تاريخ الإنشاء" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_authorization_type_form">
+			<field name="name">hr.authorization.type.form</field>
+			<field name="model">hr.authorization.type</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="أنواع الإستئذانات">
+					<sheet>
+						<group col="4">
+							<field name="name" />
+							<field name="code" />
+						</group>
+						<field name="note" placeholder="ملاحظات ..." />
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_authorization_type">
+			<field name="name">أنواع الإستئذانات</field>
+			<field name="res_model">hr.authorization.type</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+
+		<menuitem id="hr_authorization_type_menu" name="أنواع الإستئذانات" sequence="30"
+			groups="smart_hr.group_sys_manager" parent="menu_attendance_configuration" action="action_hr_authorization_type" />
+
+			
 	</data>
 </openerp>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<record model="ir.ui.view" id="hr_attendance_check_tree">
+			<field name="name">hr.attendance.check.tree</field>
+			<field name="model">hr.attendance.check</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="ساعات التأخير و الخروج المبكر">
+					<field name="employee_id" />
+					<field name="number" />
+					<field name="department_id" />
+					<field name="type" />
+					<field name="date" />
+					<field name="delay"  widget="float_time" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_attendance_check_form">
+			<field name="name">hr.attendance.check.form</field>
+			<field name="model">hr.attendance.check</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="ساعات التأخير و الخروج المبكر">
+					<header>
+						<button name="action_done" string="إعتماد" type="object" states="new" />
+						<button name="action_refuse" string="رفض" type="object" states="new" />
+						<field name="state" widget="statusbar" statusbar_visible="new,done" />
+					</header>
+					<sheet>
+						<group>
+							<group string="بيانات الموظف">
+								<field name="employee_id" />
+								<field name="number" />
+								<field name="department_id" />
+								<field name="job_id" />
+								<field name="grade_id" />
+							</group>
+							<group string="بيانات العمل">
+								<field name="type" />
+								<field name="date" />
+								<field name="delay" widget="float_time" />
+							</group>
+						</group>
+						<group>
+							<field name="description" placeholder="ملاحظات ..."
+								colspan="4" />
+						</group>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" groups="base.group_user" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record id="hr_attendance_check_search" model="ir.ui.view">
+			<field name="name">hr.attendance.check.search</field>
+			<field name="model">hr.attendance.check</field>
+			<field name="arch" type="xml">
+				<search string="ساعات التأخير و الخروج المبكر">
+					<field name="employee_id" />
+					<field name="date" />
+					<field name="type" />
+					<field name="department_id" />
+					<group expand="0" string="تجميع حسب...">
+						<filter name="employee_id" string="الموظف" context="{'group_by':'employee_id'}" />
+						<filter name="date"  string="التاريخ" context="{'group_by':'date'}" />
+						<filter name="state"  string="الحالة" context="{'group_by':'state'}" />
+						<filter name="type"  string="النوع" context="{'group_by':'type'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+		
+		<record model="ir.actions.act_window" id="action_hr_attendance_check">
+			<field name="name">ساعات التأخير و الخروج المبكر</field>
+			<field name="res_model">hr.attendance.check</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+
+		<menuitem id="hr_attendance_check_menu" name="ساعات التأخير و الخروج المبكر" groups="smart_hr.group_dm,smart_hr.group_hrm"
+			sequence="30" parent="menu_attendance_root" action="action_hr_attendance_check" />
+	</data>
+</openerp>

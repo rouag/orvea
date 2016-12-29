@@ -63,7 +63,7 @@
 			</field>
 		</record>
 
-		<menuitem name="ساعات العمل" action="resource.action_resource_calendar_form"
+		<menuitem name="ساعات العمل" action="resource.action_resource_calendar_form" groups="smart_hr.group_sys_manager"
 			id="menu_resource_calendar_inherit" parent="menu_attendance_configuration"
 			sequence="5" />
 
