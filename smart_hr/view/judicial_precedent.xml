@@ -84,7 +84,7 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-		<menuitem id="judicial_precedents" name="ملفات السوابق العدلية"
+		<menuitem id="judicial_precedents" name="ملفات السوابق العدلية" groups="smart_hr.group_hrm"
 			sequence="3" parent="hr_root_employees" action="action_employee_judicial" />
 
 
