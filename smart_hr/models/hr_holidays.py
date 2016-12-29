@@ -76,7 +76,7 @@ class HrHolidays(models.Model):
     extension_holidays_ids = fields.One2many('hr.holidays', 'parent_id', string=u'التمديدات')
     is_extensible = fields.Boolean(string=u'يمكن تمديدها',default=False,compute='_check_is_extensible')
     # decision
-    need_decision = fields.Boolean('status_id need decision', related='holiday_status_id.direct_decision')
+    need_decision = fields.Boolean('status_id need decision', related='holiday_status_id.need_decision')
     num_decision = fields.Char(string=u'رقم القرار')
     date_decision = fields.Date(string=u'تاريخ القرار')
     childbirth_date = fields.Date(string=u'تاريخ ولادة الطفل')
@@ -87,7 +87,6 @@ class HrHolidays(models.Model):
     
     @api.multi
     def _compute_balance(self, employee_id):
-        print employee_id
         holiday_obj = self.env['hr.holidays']
         holidays_status = self.env['hr.holidays.status'].search([])
         for holiday_status_id in holidays_status:
@@ -100,7 +99,6 @@ class HrHolidays(models.Model):
                     if employee_id.job_id.grade_id in en.entitlment_category.grades:
                         holiday_solde_by_year_number = {en.periode: en.holiday_stock_default}
                         break
-
 
                 # calculate the balance of he employee for current holiday status
                 if holiday_solde_by_year_number.items():
@@ -122,9 +120,9 @@ class HrHolidays(models.Model):
                         # balance per month
                         if months > 0:
                             balance = employee_solde / (periode * 12) * months
-                            # get the sum of holidays given in from the start of current year till now
+                            # get the sum of holidays given in from the start of current year
                             given_holidays_count = 0
-                            for rec in holiday_obj.search([('state', '=', 'done'), ('employee_id', '=', employee_id.id), ('holiday_status_id', '=', holiday_status_id.id), ('date_from', '<=', date(date.today().year, 12, 31)), ('date_from', '>=', date(date.today().year, 1, 1))]):
+                            for rec in holiday_obj.search([('state', '=', 'done'), ('employee_id', '=', employee_id.id), ('holiday_status_id', '=', holiday_status_id.id), ('date_from', '>=', date(date.today().year, 1, 1))]):
                                 given_holidays_count += rec.duration
                             balance -= given_holidays_count
                             balance_line.write({'holidays_available_stock': balance, 'token_holidays_sum': given_holidays_count})
@@ -306,7 +304,7 @@ class HrHolidays(models.Model):
             raise ValidationError(u"الرجاء تعبئة تاريخ الخطاب الصادر.")
         if not self.outspeech_file:
             raise ValidationError(u"الرجاء إرفاق الخطاب.")
-            
+
         if self.holiday_status_id.external_decision:
             self.state = 'revision'
             
@@ -618,7 +616,8 @@ class HrHolidaysStatus(models.Model):
     deductible_normal_leave = fields.Boolean(string=u'تخصم مدتها من رصيد الاجازة العادية')
     deductible_duration_service = fields.Boolean(string=u'تخصم مدتها من فترة الخدمة')
     educ_lvl_req = fields.Boolean(string=u'يطبق شرط المستوى التعليمي')
-    direct_decision = fields.Boolean(string=u'تحتاج إلى قرار')
+    need_decision = fields.Boolean(string=u' تحتاج إلى قرار')
+    direct_decision = fields.Boolean(string=u'تحتاج إلى قرار مباشرة')
     direct_director_decision = fields.Boolean(string=u'موافقة مدير مباشر', default=True)
     external_decision = fields.Boolean(string=u'موافقة خارجية', default=False)
     salary_spending = fields.Boolean(string=u'يجوز صرف راتبها')
@@ -635,6 +634,11 @@ class HrHolidaysStatus(models.Model):
     min_amount = fields.Float(string=u'المبلغ الادنى') 
     pension_percent = fields.Float(string=u' (%)نسبة راتب التقاعد') 
     commence_work_decision = fields.Boolean(string=u'تحتاج إلى قرار مباشرة')
+    
+    @api.onchange('deductible_duration_service')
+    def onchange_deductible_duration_service(self):
+        if self.deductible_duration_service:
+            self.promotion_deductible = True
 
     @api.multi
     def write(self, vals):

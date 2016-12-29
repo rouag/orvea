@@ -228,7 +228,7 @@
 			<field name="state">code</field>
 			<field name="type">ir.actions.server</field>
 			<field name="model_id" ref="model_hr_employee" />
-			<field name="code">env('hr.employee').button_my_info(cr,uid,None,)
+			<field name="code">action=pool.get('hr.employee').button_my_info(cr,uid,None,)
 			</field>
 			<field name="condition">True</field>
 			<field name="name">بياناتي</field>
@@ -355,6 +355,7 @@
 											<field name="user_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="recruiter" widget="selection" />
+											<field name="calendar_id"/>
 
 										</group>
 									</group>

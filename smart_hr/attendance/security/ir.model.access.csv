@@ -4,3 +4,11 @@ access_hr_extra_hours_all,name_hr_extra_hours_all,model_hr_extra_hours,,1,1,1,0
 ,,,,,,,
 access_hr_authorization,name_hr_authorization,model_hr_authorization,group_authorization_management,1,1,1,0
 access_hr_authorization_all,name_hr_authorization_all,model_hr_authorization,,1,1,1,0
+access_hr_authorization_type,name_hr_authorization_type,model_hr_authorization_type,group_authorization_management,1,1,1,0
+access_hr_authorization_type_all,name_hr_authorization_type_all,model_hr_authorization_type,,1,1,1,0
+,,,,,,,
+access_hr_attendance_schedule_all,name_hr_attendance_schedule_all,model_hr_attendance_schedule,,1,1,1,0
+,,,,,,,
+access_hr_attendance_import_all,name_hr_attendance_import_all,model_hr_attendance_import,,1,1,1,0
+,,,,,,,
+access_hr_attendance_report_day_all,name_hr_attendance_report_day_all,model_hr_attendance_report_day,,1,1,1,0
