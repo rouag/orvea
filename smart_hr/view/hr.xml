@@ -82,23 +82,11 @@
 			parent="hr_root_employees" action="action_hr_employee" />
 
 		<!-- بياناتي -->
-		<record id="view_employee_mine_form" model="ir.ui.view">
+		 <record id="view_employee_mine_form" model="ir.ui.view">
 			<field name="name">hr.employee.form</field>
 			<field name="model">hr.employee</field>
 			<field name="arch" type="xml">
 				<form string="بياناتي" create='0' delete='0' duplicate='0'>
-					<header>
-						<button name="action_send" string="إرسال للإعتماد" type="object"
-							groups="smart_hr.group_employee_request" attrs="{'invisible': [('employee_state', '!=', 'new')]}" />
-						<button name="action_confirm" string="موافقة" type="object"
-							groups="smart_hr.group_employee_registration" attrs="{'invisible': [('employee_state', '!=', 'waiting')]}" />
-						<button name="action_cancel" string="إلغاء" type="object"
-							groups="smart_hr.group_employee_request" attrs="{'invisible': [('employee_state', '!=', 'waiting')]}" />
-						<button name="action_refuse" string="رفض" type="object"
-							groups="smart_hr.group_employee_registration" attrs="{'invisible': [('employee_state', '!=', 'waiting')]}" />
-						<field name="employee_state" widget="statusbar"
-							statusbar_visible="new,waiting,done,refused" />
-					</header>
 
 					<sheet>
 						<div name="button_box" invisible="1" />
@@ -234,26 +222,22 @@
 				</form>
 			</field>
 		</record>
-		<record model="ir.actions.act_window" id="action_hr_employee_mine">
+
+        <record id="ir_actions_button_my_info" model="ir.actions.server">
+			<field name="sequence" eval="5" />
+			<field name="state">code</field>
+			<field name="type">ir.actions.server</field>
+			<field name="model_id" ref="model_hr_employee" />
+			<field name="code">env('hr.employee').button_my_info(cr,uid,None,)
+			</field>
+			<field name="condition">True</field>
 			<field name="name">بياناتي</field>
-			<field name="res_model">hr.employee</field>
-			<field name="view_type">tree</field>
-			<field name="view_mode">tree,form</field>
-			<field name="domain">[('employee_state','=','employee')]</field>
 		</record>
 
+		<menuitem name="بياناتي" id="hr_employee_mine_menu"
+			parent="hr_root_employees" sequence="11"
+			action="ir_actions_button_my_info" />
 
-		<record id="action_hr_employee_mine_form" model="ir.actions.act_window.view">
-			<field name="view_mode">form</field>
-			<field name="view_id" ref="hr.view_employee_form" />
-			<field name="act_window_id" ref="action_hr_employee_mine" />
-		</record>
-
-
-
-
-		<menuitem id="hr_employee_mine_menu" name="بياناتي" sequence="11"
-			parent="hr_root_employees" action="action_hr_employee" />
 
 
 		<!-- طلبات بيانات موظف -->

@@ -85,8 +85,24 @@ class HrEmployee(models.Model):
     
     @api.one
     def action_refuse(self):
-        self.employee_state = 'refused'    
-              
+        self.employee_state = 'refused'
+    
+    @api.multi 
+    def button_my_info(self):
+        print self._uid
+        employee = self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1)
+        if employee:
+            value = {
+                'name': _('Open ressence setting'),
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': 'hr.employee',
+                'view_id': False,
+                'type': 'ir.actions.act_window',
+                'res_id': employee.id,
+            }
+            return value
+        
 class HrEmployeeHolidaysStock(models.Model):
     _name = 'hr.employee.holidays.stock'
 
