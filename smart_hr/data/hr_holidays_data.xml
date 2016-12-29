@@ -107,15 +107,16 @@
 			<field name="limit" eval="True" />
 		</record>
 
-		<record id="data_hr_holiday_death_types_parent" model="hr.entitlement.config">
+		<record id="data_hr_holiday_death_types_parent" model="hr.holidays.entitlement.config">
 			<field name="name">‫ وفاةأصل(‫أبناء‬ ‫أو‬ ‫والدين ‫أو‬ ز وجة)  </field>
 		</record>
-		<record id="data_hr_holiday_death_types_branch" model="hr.entitlement.config">
+		<record id="data_hr_holiday_death_types_branch" model="hr.holidays.entitlement.config">
 			<field name="name">وفاة فرع (‫أحد الإخوة او غيرهم من الأقارب)</field>
 		</record>
-		<record id="data_hr_holiday_death_types_husband_death" model="hr.entitlement.config">
+		<record id="data_hr_holiday_death_types_husband_death" model="hr.holidays.entitlement.config">
 			<field name="name"> وفاة:عدّة</field>
 		</record>
+<<<<<<< HEAD
 		<record id="data_hr_holiday_dialysis" model="hr.holidays.status">
 			<field name="name">غسيل كلى</field>
 			<field name="need_decision" eval="True" />
@@ -130,6 +131,14 @@
 			<field name="name">‫إمتحان‬</field>
 		</record>
 		
+=======
+
+		<record id="data_hr_holiday_entitlement_all" model="hr.holidays.entitlement.config">
+			<field name="name"> الكل</field>
+		</record>
+
+
+>>>>>>> branch '9.0' of https://gitlab.smart-etech.com/smart-dev/addons_smart.git
 	</data>
 
 </openerp>

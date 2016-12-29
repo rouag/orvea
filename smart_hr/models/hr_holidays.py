@@ -28,7 +28,8 @@ class HrHolidays(models.Model):
     def _set_external_autoritie(self):
         search_external_authoritie = self.env["external.authorities"].search([('holiday_status.id','=',self.holiday_status_id.id)])
         if search_external_authoritie:
-            self.external_authoritie = search_external_authoritie[0]           
+            self.external_authoritie = search_external_authoritie[0] 
+                      
     name = fields.Char(string=u'رقم القرار', advanced_search=True)
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), advanced_search=True)
@@ -66,7 +67,7 @@ class HrHolidays(models.Model):
 
     # Cancellation
     is_cancelled = fields.Boolean(string=u'ملغاة', compute='_is_cancelled')
-    is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started', store=True)
+    is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started')
     holiday_cancellation = fields.Many2one('hr.holidays.cancellation')    
     # Extension
     is_extension = fields.Boolean(string=u'تمديد إجازة')
@@ -87,6 +88,11 @@ class HrHolidays(models.Model):
     death_type = fields.Many2one('hr.holidays.death.type', string=u'صنف الوفاة')
     death_person = fields.Char(string=u'المتوفي')
 
+    @api.depends('date_from')
+    def _compute_is_started(self):
+        for rec in self:
+            if rec.date_from <= datetime.today().strftime('%Y-%m-%d'):
+                rec.is_started = True
     @api.multi
     def _compute_balance(self, employee_id):
         holiday_obj = self.env['hr.holidays']
@@ -671,7 +677,7 @@ class HrHolidaysStatus(models.Model):
 class HrHolidaysStatusEntitlement(models.Model):
     _name = 'hr.holidays.status.entitlement'
     _description = u'أنواع الاستحقاقات'
-    entitlment_category = fields.Many2one('hr.holidays.status.entitlement.category', string=u'فئة الاستحقاق')
+    entitlment_category = fields.Many2one('hr.holidays.entitlement.config', string=u'فئة الاستحقاق')
     holiday_stock_default = fields.Integer(string=u'الرصيد')
     conditionnal = fields.Boolean(string=u'مشروط')
     periode = fields.Selection([
@@ -691,13 +697,6 @@ class HrHolidaysStatusEntitlement(models.Model):
     extension_period = fields.Integer(string=u'مدة التمديد', default=0)
     death_type = fields.Many2one('hr.holidays.death.type', string=u'صنف الوفاة')
 
-
-class HrHolidaysStatusEntitlementCategory(models.Model):
-    _name = 'hr.holidays.status.entitlement.category'
-    _description = u'فئة استحقاق'
-    
-    name = fields.Char(string=u'الاسم')
-    grades = fields.Many2many('salary.grid.grade', string=u'المراتب')
     
 class HrHolidaysStatusSalaryPercentage(models.Model):
     _name = 'hr.holidays.status.salary.percentage'
@@ -709,7 +708,7 @@ class HrHolidaysStatusSalaryPercentage(models.Model):
     holiday_status = fields.Many2one('hr.holidays.status', string='holiday status')
     
 class EntitlementConfig(models.Model):
-    _name = 'hr.entitlement.config'
+    _name = 'hr.holidays.entitlement.config'
     _description = u' اصناف الاستحقاقات'
     
     name = fields.Char(string=u'المسمّى')

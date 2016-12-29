@@ -101,7 +101,7 @@
 						<group>
 							<field name="date" readonly="1" />
 							<field name="employee_id" />
-							<field name="holidays" widget="many2many" domain="[('state','=', 'done')]"/>
+							<field name="holidays" widget="many2many" domain="[('state', '=', 'done'), ('employee_id', '=', employee_id)]"/>
 						</group>
 						<group>
 							<field name="note" />
@@ -178,8 +178,8 @@
 						</h1>
 						<group>
 							<field name="date" readonly="1" />
-							<field name="employee_id" readonly="1" />
-							<field name="holidays"  />
+							<field name="employee_id"  />
+							<field name="holidays" widget="many2many" domain="[('state', '=', 'done'), ('employee_id', '=', employee_id)]"/>
 						</group>
 						<group>
 							<field name="note" />
