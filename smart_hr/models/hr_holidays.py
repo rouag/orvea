@@ -681,7 +681,7 @@ class HrHolidaysStatus(models.Model):
 class HrHolidaysStatusEntitlement(models.Model):
     _name = 'hr.holidays.status.entitlement'
     _description = u'أنواع الاستحقاقات'
-    entitlment_category = fields.Many2one('hr.holidays.status.entitlement.category', string=u'فئة الاستحقاق')
+    entitlment_category = fields.Many2one('hr.holidays.entitlement.config', string=u'فئة الاستحقاق')
     holiday_stock_default = fields.Integer(string=u'الرصيد')
     conditionnal = fields.Boolean(string=u'مشروط')
     periode = fields.Selection([
@@ -701,13 +701,6 @@ class HrHolidaysStatusEntitlement(models.Model):
     extension_period = fields.Integer(string=u'مدة التمديد', default=0)
     death_type = fields.Many2one('hr.holidays.death.type', string=u'صنف الوفاة')
 
-
-class HrHolidaysStatusEntitlementCategory(models.Model):
-    _name = 'hr.holidays.status.entitlement.category'
-    _description = u'فئة استحقاق'
-    
-    name = fields.Char(string=u'الاسم')
-    grades = fields.Many2many('salary.grid.grade', string=u'المراتب')
     
 class HrHolidaysStatusSalaryPercentage(models.Model):
     _name = 'hr.holidays.status.salary.percentage'

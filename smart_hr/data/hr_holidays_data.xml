@@ -116,8 +116,12 @@
 		<record id="data_hr_holiday_death_types_husband_death" model="hr.holidays.entitlement.config">
 			<field name="name"> وفاة:عدّة</field>
 		</record>
-		
-		
+
+		<record id="data_hr_holiday_entitlement_all" model="hr.holidays.entitlement.config">
+			<field name="name"> الكل</field>
+		</record>
+
+
 	</data>
 
 </openerp>
