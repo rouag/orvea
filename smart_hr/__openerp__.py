@@ -32,7 +32,7 @@
         'views/report_hr_deduction_line.xml',
         'views/report_medical_examination.xml',
         'views/report_order_enquiry.xml',
-#         'views/hr_holidays_report.xml',
+        'views/hr_holidays_report.xml',
         'views/report.xml',
         'views/templates.xml',
         'views/layout.xml',
