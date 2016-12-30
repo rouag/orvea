@@ -207,8 +207,10 @@
 										<field name="balance" />
 									</tree>
 								</field>
-								<field name="compensation_stock"/>
-								
+								<group>
+									<field name="compensation_stock" />
+								</group>
+
 							</page>
 							<page string="الحسميات">
 							</page>
@@ -399,6 +401,9 @@
 											<field name="balance" />
 										</tree>
 									</field>
+									<group>
+										<field name="compensation_stock" />
+									</group>
 								</page>
 								<page string="الحسميات">
 								</page>
