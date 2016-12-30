@@ -125,17 +125,31 @@
 			<field name="name">الأدبيّة</field>
 			<field name="educ_lvl_req" eval="True" />
 		</record>
-		
+
 		<record id="data_hr_holiday_exam" model="hr.holidays.status">
 			<field name="name">‫إمتحان‬</field>
 		</record>
-		
+
 
 		<record id="data_hr_holiday_entitlement_all" model="hr.holidays.entitlement.config">
 			<field name="name"> الكل</field>
 		</record>
 
+		<record id="data_hr_holiday_accompaniment_exceptional" model="hr.holidays.status">
+			<field name="name">اجازة مرافقة استثنائية</field>
+		</record>
 
+		<record id="data_hr_holiday_status_contractor" model="hr.holidays.status">
+			<field name="name">ا‫لمتعاقدون‬</field>
+			<field name="postponement_period" eval="150" />
+			<field name="limit" eval="True" />
+			<field name="demand_number_max" eval="2" />
+			<field name="traveling_ticket" eval="True" />
+		</record>
+
+		<record id="data_hr_holiday_compensation" model="hr.holidays.status">
+			<field name="name">اجازة التعويض</field>
+		</record>
 	</data>
 
 </openerp>

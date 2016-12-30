@@ -14,10 +14,12 @@ class hrHolidaysCancellation(models.Model):
     name = fields.Char(string=u'رقم القرار', advanced_search=True)
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee',  string=u'الموظف', domain=[('employee_state','=','employee')], advanced_search=True)
+    is_the_creator = fields.Boolean(string='Is Current User', compute='_employee_is_the_creator')
+    
     holidays = fields.One2many('hr.holidays', 'holiday_cancellation', string=u'الإجازات')
     state = fields.Selection([
         ('draft', u'طلب'),
-        ('employee', u'مراجعة الموظف'),
+        ('audit', u'مراجعة'),
         ('done', u'إعتمد'),
         ('refuse', u'رفض'),
     ], string=u'حالة', default='draft', advanced_search=True)
@@ -27,15 +29,11 @@ class hrHolidaysCancellation(models.Model):
     ], string=u'نوع', default='cancellation', advanced_search=True)
     note = fields.Text(string = u'الملاحظات', required = True)
     
-#     @api.depends('employee_id')
-#     def _get_holidays(self):
-#         for rec in self:
-#             if rec._context['operation'] == 'cancel':
-#                 # get only the none started holidays
-#                 self.holidays = (0,0,rec.env['hr.holidays'].search([('employee_id.id', '=', rec.employee_id.id), ('is_started', '=', False),('state', '=', 'done')]))
-#             if rec._context['operation'] == 'cut':
-#                 # get all confirmed holidays
-#                 self.holidays = (0,0,rec.env['hr.holidays'].search([('employee_id.id', '=', rec.employee_id.id), ('state', '=', 'done')]))
+    @api.depends('employee_id')
+    def _employee_is_the_creator(self):
+        for rec in self:
+            if rec.employee_id.user_id.id == rec.create_uid.id:
+                rec.is_the_creator = True
     @api.model
     def create(self, vals):
         res = super(hrHolidaysCancellation, self).create(vals)
@@ -73,16 +71,16 @@ class hrHolidaysCancellation(models.Model):
                     duration = (now - start_date).days + 1
                     if duration < 5:
                         raise ValidationError(u'لا يمكن قطع إجازة عادية قبل مرور خمسة أيام من بدئها.')
-        
+
     @api.one
-    def button_dm_send(self):
+    def button_send(self):
         user = self.env['res.users'].browse(self._uid)
         for cancellation in self:
-            cancellation.state = 'employee'
+            cancellation.state = 'audit'
             cancellation.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"'")
 
     @api.one
-    def button_employee_done(self):
+    def button_done(self):
         for cancellation in self:
             for holiday in cancellation.holidays:
                 # Update the holiday state
@@ -100,5 +98,5 @@ class hrHolidaysCancellation(models.Model):
     @api.model
     def _needaction_domain_get(self):
         return [
-            ('state', 'in', ['employee']),
+            ('state', 'in', ['audit']),
         ]

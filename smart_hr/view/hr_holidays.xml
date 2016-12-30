@@ -52,9 +52,6 @@
 							states="dm" groups="smart_hr.group_dm" icon="fa-times"
 							class="oe_inline oe_stat_button" />
 
-						<button name="button_extend" string="تمديد الإجازة"
-							attrs="{'invisible':['|',('state', '!=', 'done'),('is_extensible', '=', 'False')] } "
-							type="object" icon="fa-check" class="oe_inline oe_stat_button" />
 
 						<button name="button_accept_audit" string="موافق" type="object"
 							states="audit" groups="smart_hr.group_holidays_checker" icon="fa-check"
@@ -92,6 +89,23 @@
 							type="object" states="revision_response" groups="smart_hr.group_holidays_checker"
 							icon="fa-times" class="oe_inline oe_stat_button" />
 
+
+						<button name="button_extend" string="تمديد الإجازة"
+							attrs="{'invisible':['|','|',('state', '!=', 'done'),('is_extensible', '=', False),('is_current_user','=',False)] } "
+							type="object" icon="fa-check" class="oe_inline oe_stat_button" />
+
+						<button name="button_cancel" context="{'operation': 'cancel'}"
+							string="إلغاء الإجازة" type="object"
+							attrs="{'invisible':['|','|','|',('state','!=','done'),('is_current_user','=',False),('is_cancelled','=',True),('is_started','=',True)]}"
+							icon="fa-times-circle-o" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="button_cut" context="{'operation': 'cut'}"
+							string="قطع الاجازة" type="object"
+							attrs="{'invisible':['|','|','|',('state','!=','done'),('is_current_user','=',False),('is_cancelled','=',True),('is_started','=',False)]}"
+							icon="fa-times-circle-o" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
 						<field name="state" widget="statusbar"
 							statusbar_visible="draft,dm,audit,hrm,external_audit,revision,revision_response,done" />
 
@@ -110,23 +124,49 @@
 								readonly='1' />
 
 						</group>
-						<group col="6">
+						<group col="2">
 							<field name="holiday_status_id" required="1" />
-						<field name="death_type"
-								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_death)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_death)d)]}" />
-						<field name="death_person"
-								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_death)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_death)d)]}" />
-							
+						</group>
+						<group col="4">
+
+							<field name="death_type"
+								attrs="{'readonly':[('state','not in',['draft'])],'invisible':[('holiday_status_id','!=', %(data_hr_holiday_death)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_death)d)]}" />
+							<field name="death_person"
+								attrs="{'readonly':[('state','not in',['draft'])],'invisible':[('holiday_status_id','!=', %(data_hr_holiday_death)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_death)d)]}" />
+
 							<field name="raison"
-								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_exceptional_accompaniment)d)]}" />
+								attrs="{'readonly':[('state','not in',['draft'])],'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_exceptional_accompaniment)d)]}" />
 							<field name="childbirth_date"
-								attrs="{'invisible':[('holiday_status_id','not in', (%(data_hr_holiday_status_childbirth)d,%(data_hr_holiday_child_birth_dad)d))],'required':[('holiday_status_id','in', (%(data_hr_holiday_status_childbirth)d,%(data_hr_holiday_child_birth_dad)d))]}" />
+								attrs="{'readonly':[('state','not in',['draft'])],'invisible':[('holiday_status_id','not in', (%(data_hr_holiday_status_childbirth)d,%(data_hr_holiday_child_birth_dad)d))],'required':[('holiday_status_id','in', (%(data_hr_holiday_status_childbirth)d,%(data_hr_holiday_child_birth_dad)d))]}" />
 
 							<field name="medical_certificate"
-								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_childbirth)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_status_childbirth)d)]}" />
+								attrs="{'readonly':[('state','not in',['draft'])],
+								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_childbirth)d)],
+								'required':[('holiday_status_id','=', %(data_hr_holiday_status_childbirth)d)]}" />
 
 							<field name="birth_certificate"
-								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_child_birth_dad)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_child_birth_dad)d)]}" />
+								attrs="{'readonly':[('state','not in',['draft'])],
+								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_child_birth_dad)d),'|',('holiday_status_id','!=', %(data_hr_holiday_accompaniment_exceptional)d),('accompaniment_type','!=','child')],
+								'required':[('holiday_status_id','=', %(data_hr_holiday_child_birth_dad)d),'&amp;',('holiday_status_id','=', %(data_hr_holiday_accompaniment_exceptional)d),('accompaniment_type','=','child')]}" />
+
+						</group>
+						<group col="2">
+							<field name="compensation_type"
+								attrs="{'readonly':[('state','not in',['draft'])],
+								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_compensation)d)],
+								'required':[('holiday_status_id','=', %(data_hr_holiday_compensation)d)]}" />
+						</group>
+						<group col="4">
+							<field name="accompaniment_type"
+								attrs="{'readonly':[('state','not in',['draft'])],
+								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_accompaniment_exceptional)d)],
+								'required':[('holiday_status_id','=', %(data_hr_holiday_accompaniment_exceptional)d)]}" />
+							<field name="accompanied_child_age"
+								attrs="{'readonly':[('state','not in',['draft'])],
+								'invisible':['|',('holiday_status_id','!=', %(data_hr_holiday_accompaniment_exceptional)d),('accompaniment_type','!=','child')],
+								'required':[('holiday_status_id','=', %(data_hr_holiday_accompaniment_exceptional)d),('accompaniment_type','=','child')]}" />
+
+
 						</group>
 
 						<group col="4">
@@ -138,7 +178,7 @@
 						</group>
 						<group col="4">
 							<field name="num_outspeech"
-								attrs="{'readonly':['|',('state','!=','external_audit')], 'invisible':[('state','not in',['external_audit','revision', 'revision_response','done'])]}" />
+								attrs="{'readonly':[('state','!=','external_audit')], 'invisible':[('state','not in',['external_audit','revision', 'revision_response','done'])]}" />
 							<field name="date_outspeech"
 								attrs="{'readonly':[('state','!=','external_audit')], 'invisible':[('state','not in',['external_audit','revision', 'revision_response','done'])]}" />
 							<field name="outspeech_file"
@@ -146,7 +186,7 @@
 						</group>
 						<group col="4">
 							<field name="num_inspeech" groups="smart_hr.group_holidays_checker"
-								attrs="{'readonly':['|',('state','!=','revision_response')], 'invisible':[('state','not in',['revision_response','done'])]}" />
+								attrs="{'readonly':[('state','not in',['draft'])], 'invisible':[('state','not in',['revision_response','done'])]}" />
 							<field name="date_inspeech" groups="smart_hr.group_holidays_checker"
 								attrs="{'readonly':[('state','!=','revision_response')], 'invisible':[('state','not in',['revision_response','done'])]}" />
 							<field name="inspeech_file" groups="smart_hr.group_holidays_checker"
@@ -167,11 +207,11 @@
 						<button name="%(report_hr_holidays_report)d" string="طباعة القرار"
 							type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
 
-						<button style="padding-right:10px;" name=""
+						<button style="padding-right:10px," name=""
 							string="طباعة قرار التمديد"
 							attrs="{'invisible':['|',('is_extension','=',False),('state','!=','done')]}"
 							type="action" icon="fa-print" class="oe_inline oe_stat_button" />
-						<div style="margin-top:15px;">
+						<div style="margin-top:15px,">
 							<field name="message_ids" widget="mail_thread" readonly="1" />
 						</div>
 					</sheet>

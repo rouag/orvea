@@ -82,7 +82,7 @@
 			parent="hr_root_employees" action="action_hr_employee" />
 
 		<!-- بياناتي -->
-		 <record id="view_employee_mine_form" model="ir.ui.view">
+		<record id="view_employee_mine_form" model="ir.ui.view">
 			<field name="name">hr.employee.form</field>
 			<field name="model">hr.employee</field>
 			<field name="arch" type="xml">
@@ -160,6 +160,9 @@
 										<field name="parent_id" />
 										<field name="service_years" />
 										<field name="external_decision" />
+										<field name="traveling_ticket" />
+										<field name="traveling_ticket_familiar" />
+
 									</group>
 									<group string="خصائص أخرى">
 										<field name="user_id"
@@ -204,6 +207,10 @@
 										<field name="balance" />
 									</tree>
 								</field>
+								<group>
+									<field name="compensation_stock" />
+								</group>
+
 							</page>
 							<page string="الحسميات">
 							</page>
@@ -223,7 +230,7 @@
 			</field>
 		</record>
 
-        <record id="ir_actions_button_my_info" model="ir.actions.server">
+		<record id="ir_actions_button_my_info" model="ir.actions.server">
 			<field name="sequence" eval="5" />
 			<field name="state">code</field>
 			<field name="type">ir.actions.server</field>
@@ -234,9 +241,8 @@
 			<field name="name">بياناتي</field>
 		</record>
 
-		<menuitem name="بياناتي" id="hr_employee_mine_menu"
-			parent="hr_root_employees" sequence="11"
-			action="ir_actions_button_my_info" />
+		<menuitem name="بياناتي" id="hr_employee_mine_menu" parent="hr_root_employees"
+			sequence="11" action="ir_actions_button_my_info" />
 
 
 
@@ -355,7 +361,7 @@
 											<field name="user_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="recruiter" widget="selection" />
-											<field name="calendar_id"/>
+											<field name="calendar_id" />
 
 										</group>
 									</group>
@@ -395,6 +401,9 @@
 											<field name="balance" />
 										</tree>
 									</field>
+									<group>
+										<field name="compensation_stock" />
+									</group>
 								</page>
 								<page string="الحسميات">
 								</page>
