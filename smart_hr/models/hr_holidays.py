@@ -200,13 +200,37 @@ class HrHolidays(models.Model):
                 'employee_id': employee.id,
                 'holidays': [(4, self.id)],
                 'note': '   ',
-                'operation': 'cancel',
             }
         holiday_cancellation_id = holidays_cancellation_obj.create(vals)
         # Add to log
         self.message_post(u"تم ارسال طلب إلغاء من قبل '" + unicode(user.name) + u"'")
         return {
                     'name': u'طلب إلغاء',
+                    'view_type': 'form',
+                    'view_mode': 'form',
+                    'res_model': 'hr.holidays.cancellation',
+                    'view_id': self.env.ref('smart_hr.hr_holidays_cancellation_mine_form').id,
+                    'type': 'ir.actions.act_window',
+                    'res_id': holiday_cancellation_id.id,
+                }
+    @api.multi
+    def button_cut(self):
+        # Objects
+        holidays_cancellation_obj = self.env['hr.holidays.cancellation']
+        # Variables
+        user = self.env['res.users'].browse(self._uid)
+        employee = self.env['hr.employee'].search([('user_id', '=', user.id)], limit=1)
+        # Create leave cancellation request
+        vals = {
+                'employee_id': employee.id,
+                'holidays': [(4, self.id)],
+                'note': '   ',
+            }
+        holiday_cancellation_id = holidays_cancellation_obj.create(vals)
+        # Add to log
+        self.message_post(u"تم ارسال طلب القطع من قبل '" + unicode(user.name) + u"'")
+        return {
+                    'name': u'طلب قطع',
                     'view_type': 'form',
                     'view_mode': 'form',
                     'res_model': 'hr.holidays.cancellation',
