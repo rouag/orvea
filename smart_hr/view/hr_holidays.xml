@@ -52,9 +52,6 @@
 							states="dm" groups="smart_hr.group_dm" icon="fa-times"
 							class="oe_inline oe_stat_button" />
 
-						<button name="button_extend" string="تمديد الإجازة"
-							attrs="{'invisible':['|',('state', '!=', 'done'),('is_extensible', '=', False)] } "
-							type="object" icon="fa-check" class="oe_inline oe_stat_button" />
 
 						<button name="button_accept_audit" string="موافق" type="object"
 							states="audit" groups="smart_hr.group_holidays_checker" icon="fa-check"
@@ -91,11 +88,23 @@
 						<button name="button_refuse_revision_response" string="رفض"
 							type="object" states="revision_response" groups="smart_hr.group_holidays_checker"
 							icon="fa-times" class="oe_inline oe_stat_button" />
+<<<<<<< HEAD
 						<button name="button_cancel" string="إلغاء الإجازة" type="object"
 							attrs="{'invisible':['|','|','|',('state','!=','done'),('is_current_user','=',False),('is_cancelled','=',True),('is_started','=',True)]}"
 							icon="fa-times-circle-o" class="oe_inline oe_stat_button"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
+=======
+						
+						<button name="button_extend" string="تمديد الإجازة"
+							attrs="{'invisible':['|','|',('state', '!=', 'done'),('is_extensible', '=', 'False'),('is_current_user','=',False)] } "
+							type="object" icon="fa-check" class="oe_inline oe_stat_button" />
+						
+						<button name="button_cancel" context="{'operation': 'cancel'}" string="إلغاء الإجازة" type="object" attrs="{'invisible':['|','|','|',('state','!=','done'),('is_current_user','=',False),('is_cancelled','=',True),('is_started','=',True)]}" icon="fa-times-circle-o" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
+						
+						<button name="button_cut" context="{'operation': 'cut'}" string="قطع الاجازة" type="object" attrs="{'invisible':['|','|','|',('state','!=','done'),('is_current_user','=',False),('is_cancelled','=',True),('is_started','=',True)]}" icon="fa-times-circle-o" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
+						
+>>>>>>> branch '9.0' of https://gitlab.smart-etech.com/smart-dev/addons_smart.git
 						<field name="state" widget="statusbar"
 							statusbar_visible="draft,dm,audit,hrm,external_audit,revision,revision_response,done" />
 
@@ -116,13 +125,17 @@
 						</group>
 						<group col="2">
 							<field name="holiday_status_id" required="1" />
+<<<<<<< HEAD
 													</group>
 							<group col="4">
 							<field name="death_type"
+=======
+						<field name="death_type"
+>>>>>>> branch '9.0' of https://gitlab.smart-etech.com/smart-dev/addons_smart.git
 								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_death)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_death)d)]}" />
-							<field name="death_person"
+						<field name="death_person"
 								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_death)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_death)d)]}" />
-
+							
 							<field name="raison"
 								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_exceptional_accompaniment)d)]}" />
 							<field name="childbirth_date"
@@ -267,10 +280,6 @@
 										widget="many2many" />
 									<field name="min_amount" />
 									<field name="pension_percent" />
-									<field name="demand_number_max" />
-									<field name="traveling_ticket" />
-									<field name="traveling_ticket_familiar" />
-
 								</group>
 
 
