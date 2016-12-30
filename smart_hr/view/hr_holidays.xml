@@ -91,7 +91,8 @@
 						<button name="button_refuse_revision_response" string="رفض"
 							type="object" states="revision_response" groups="smart_hr.group_holidays_checker"
 							icon="fa-times" class="oe_inline oe_stat_button" />
-
+						<button name="button_cancel" string="إلغاء الإجازة" type="object" attrs="{'invisible':['|','|','|',('state','!=','done'),('is_current_user','=',False),('is_cancelled','=',True),('is_started','=',True)]}" icon="fa-times-circle-o" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
+						
 						<field name="state" widget="statusbar"
 							statusbar_visible="draft,dm,audit,hrm,external_audit,revision,revision_response,done" />
 
