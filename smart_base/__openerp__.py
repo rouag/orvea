@@ -9,10 +9,14 @@
         """
         Module base  can be used in any app
         """,
-    'depends': ['base', 'report'],
-    'data': ['data/paperformat.xml',
-             'view/res_company.xml',
-             'views/layout.xml',
+    'depends': ['base', 'web', 'report'],
+    'data': [
+        'security/ir.model.access.csv',
+        'data/paperformat.xml',
+        'view/res_company.xml',
+        'views/layout.xml',
+        'views/assets.xml',
              ],
+    'qweb': ['static/src/xml/*.xml'],
     'auto_install': False,
 }

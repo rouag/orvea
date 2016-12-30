@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<template>
+    
+    <t t-name="BaseNotification" t-extend="Notification">
+        <t t-jquery=".o_notification_title > t" t-operation="replace">
+            <span  t-attf-class="link2event eid_{{widget.eid}}">
+                <t t-esc="widget.title"/>
+            </span>
+        </t>
+        <t t-jquery=".o_notification_content" t-operation="append">
+            <br/><br/>
+            <button type="button" class="btn btn-sm btn-primary link2showed oe_highlight oe_form oe_button"><span>OK2</span></button>
+            <button type="button" class="btn btn-sm btn-link link2event">Details2</button>
+            <button type="button" class="btn btn-sm btn-link link2recall">Snooze2</button>
+        </t>
+    </t>
+
+</template>
