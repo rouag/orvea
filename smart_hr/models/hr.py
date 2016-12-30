@@ -42,7 +42,8 @@ class HrEmployee(models.Model):
     promotions_history = fields.One2many('hr.employee.promotion.history', 'employee_id', string=u'الترقيات')
     traveling_ticket = fields.Boolean(string=u'تذكرة سفر', default=False)
     traveling_ticket_familiar = fields.Boolean(string=u'تذكرة سفر عائليّة', default=False)
-
+    compensation_stock = fields.Integer(string=u'رصيد إجازات التعويض')
+    
     def _compute_service_years(self):
         for emp in self:
             decision_appoint = self.env['hr.decision.appoint'].search([('state', '=', 'done'), ('employee_id', '=', emp.id)])

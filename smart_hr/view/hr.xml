@@ -207,6 +207,8 @@
 										<field name="balance" />
 									</tree>
 								</field>
+								<field name="compensation_stock"/>
+								
 							</page>
 							<page string="الحسميات">
 							</page>

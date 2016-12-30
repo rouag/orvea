@@ -75,7 +75,7 @@ class HrHolidays(models.Model):
     extended_holiday_id = fields.Many2one('hr.holidays', string=u'الإجازة الممددة')
     parent_id = fields.Many2one('hr.holidays', string=u'Parent')
     extension_holidays_ids = fields.One2many('hr.holidays', 'parent_id', string=u'التمديدات')
-    is_extensible = fields.Boolean(string=u'يمكن تمديدها', default=False, compute='_check_is_extensible', store=True)
+    is_extensible = fields.Boolean(string=u'يمكن تمديدها',default=False,compute='_check_is_extensible',store=True)
     # decision
     need_decision = fields.Boolean('status_id need decision', related='holiday_status_id.need_decision')
     num_decision = fields.Char(string=u'رقم القرار')
@@ -90,7 +90,7 @@ class HrHolidays(models.Model):
     compensation_type = fields.Selection([
         ('holiday', u'إجازة'),
         ('money', u' مقابل ‫مادي‬ ‬ ')], string=u'نوع التعويض')
-
+    compensation_stock = fields.Integer(string=u'رصيد إجازات التعويض',related='employee_id.compensation_stock')
 
 
     @api.depends('date_from')
@@ -317,7 +317,9 @@ class HrHolidays(models.Model):
             self.state = 'done'
             # update holidays balance
             self._compute_balance(self.employee_id)
-        
+            if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_compensation') and self.compensation_type == 'holiday':
+                self.employee_id.compensation_stock-=self.duration
+
         if self.holiday_status_id.external_decision and not self.employee_id.external_decision:
             raise ValidationError(u"الموظف يحتاج إلى موافقة جهة خارجية.")
         if self.holiday_status_id.external_decision and self.employee_id.external_decision:
@@ -563,6 +565,7 @@ class HrHolidays(models.Model):
         if self.holiday_status_id.demand_number_max<=past_demand_number and self.holiday_status_id.demand_number_max>0:
             raise ValidationError(u" لا يمكن تجزئة هذا النوع من الإجازات على أكثر من %s مرّة " %self.holiday_status_id.demand_number_max)
                   # Constraintes for compensation التعويض
+                
 
     @api.model
     def create(self, vals):
@@ -574,12 +577,8 @@ class HrHolidays(models.Model):
         vals['name'] = self.env['ir.sequence'].get('hr.holidays.seq')
         res.write(vals)
         return res
-    
 
-    
 
-    
-    
 class HrDelayHoliday(models.Model):
     _name = 'hr.delay.holiday'  
     _description = u'تأجيل إجازة'
