@@ -125,7 +125,7 @@ class HrHolidays(models.Model):
                                                                                   'token_holidays_sum': 0,
                                                                                   'periode': periode})
                     #employee_id.holidays_balance += balance_line
-                    employee_solde=holiday_solde_by_year_number.items()[0][1] 
+                    employee_solde = right_entitlement.holiday_stock_default 
                     if employee_solde > 0:
                         # calculate the number of worked month in current year
                         months = relativedelta(date.today(), date(date.today().year, 1, 1)).months
