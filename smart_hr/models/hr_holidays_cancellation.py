@@ -13,11 +13,11 @@ class hrHolidaysCancellation(models.Model):
 
     name = fields.Char(string=u'رقم القرار', advanced_search=True)
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now())
-    employee_id = fields.Many2one('hr.employee',  string=u'الموظف', domain=[('employee_state','=','employee')], advanced_search=True)
+    employee_id = fields.Many2one('hr.employee',  string=u'الموظف', domain=[('employee_state','=','audit')], advanced_search=True)
     holidays = fields.One2many('hr.holidays', 'holiday_cancellation', string=u'الإجازات')
     state = fields.Selection([
         ('draft', u'طلب'),
-        ('employee', u'مراجعة الموظف'),
+        ('audit', u'مراجعة'),
         ('done', u'إعتمد'),
         ('refuse', u'رفض'),
     ], string=u'حالة', default='draft', advanced_search=True)
@@ -78,7 +78,7 @@ class hrHolidaysCancellation(models.Model):
     def button_dm_send(self):
         user = self.env['res.users'].browse(self._uid)
         for cancellation in self:
-            cancellation.state = 'employee'
+            cancellation.state = 'audit'
             cancellation.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"'")
 
     @api.one
@@ -100,5 +100,5 @@ class hrHolidaysCancellation(models.Model):
     @api.model
     def _needaction_domain_get(self):
         return [
-            ('state', 'in', ['employee']),
+            ('state', 'in', ['audit']),
         ]

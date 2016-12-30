@@ -182,7 +182,21 @@ class HrHolidays(models.Model):
             'target': 'current',
             'context': context,
         }
-
+        
+    @api.one
+    def button_cancel(self):
+        # Objects
+        holidays_cancellation_obj = self.env['hr.holidays.cancellation']
+        # Variables
+        user = self.env['res.users'].browse(self._uid)
+        # Create leave cancellation request
+        for holiday in self:
+            vals = {
+                'leave_id': holiday.id,
+            }
+            leave_cancellation_id = holidays_cancellation_obj.create(vals)
+            # Add to log
+            holiday.message_post(u"تم ارسال طلب إلغاء من قبل '" + unicode(user.name) + u"'")
     @api.depends('extension_holidays_ids')
     def _is_extended(self):
         # Check if the holiday have a pending or completed extension leave

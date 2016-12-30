@@ -11,12 +11,12 @@
 				<form string="إلغاء أو قطع إجازاتي" create="0" edit="0">
 					<header>
 						<button name="button_employee_done" string="موافق" type="object"
-							states="employee" icon="fa-check" class="oe_inline oe_stat_button"
+							states="audit" icon="fa-check" class="oe_inline oe_stat_button"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" states="employee" icon="fa-times" class="oe_inline oe_stat_button" />
 
-						<field name="state" widget="statusbar" statusbar_visible="draft,employee,done" />
+						<field name="state" widget="statusbar" statusbar_visible="draft,audit,done" />
 					</header>
 					<sheet>
 						<group>
