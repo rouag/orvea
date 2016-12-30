@@ -52,7 +52,7 @@ access_hr_holiday_followup,hr_holiday_followup,model_hr_holidays,group_followup,
 access_hr_holiday_status_configuration,hr_holiday_type_configuration,model_hr_holidays_status,group_configuration,1,1,1,0
 access_hr_holiday_status_sys_manager,hr_holiday_status_sys_manager,model_hr_holidays_status,group_sys_manager,1,1,1,1
 access_hr_holiday_status_entitlement,hr_holiday_status_entitlement,model_hr_holidays_status_entitlement,,1,1,1,1
-access_hr_holiday_status_entitlement_category,hr_holiday_status_entitlement_category,model_hr_holidays_status_entitlement_category,,1,1,1,1
+,,,,,,,
 ,,,,,,,
 access_hr_employee_education_level,hr_employee_education_level,model_hr_employee_education_level,,1,1,1,1
 ,,,,,,,
@@ -119,5 +119,3 @@ access_hr_employee_promotion_history,hr_employee_promotion_history,model_hr_empl
 access_employee_hr_candidates,hr_candidates,model_hr_candidates,group_employee,1,0,0,0
 access_employee_external_authorities,external_authorities,model_external_authorities,group_employee,1,0,0,0
 access_employee_hr_holidays_entitlement_config,hr_holidays_entitlement_config,model_hr_holidays_entitlement_config,group_employee,1,0,0,0
-
-
