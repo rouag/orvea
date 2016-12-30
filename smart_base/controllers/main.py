@@ -13,9 +13,10 @@ class BaseNotification(http.Controller):
     @http.route('/notification/notify', type='json', auth="none")
     def notify(self):
         notification_obj = request.env['base.notification']
-        now = datetime.strftime(datetime.now().date(), "%Y-%m-%d %H:%M:%S")
+        now = datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M:%S")
         notifications = notification_obj.search([('user_id', '=', request.session.uid), ('to_read', '=', 'True'), ('show_date', '>=', now)])
         all_notif = []
+        print now
         for notification in notifications:
             all_notif.append({
                 'event_id': 1,
