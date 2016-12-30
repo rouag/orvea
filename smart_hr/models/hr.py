@@ -62,7 +62,7 @@ class HrEmployee(models.Model):
                     ('holiday_status_id.deductible_duration_service', '=', False), ('holiday_status_id.promotion_deductible', '=', True),
                     ])
                 for holiday in holidays:
-                    days -= holiday.periode
+                    days -= holiday.duration
                 years = days / 365
                 if years > -1:
                     emp.service_years = years
