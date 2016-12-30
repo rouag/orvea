@@ -104,7 +104,7 @@ class HrHolidays(models.Model):
             if holiday_status_id.entitlements:
                 # loop under entitlements and get the holiday solde depend on grade of the employee
                 for en in holiday_status_id.entitlements:
-                    if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
+                    if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en:
                         holiday_solde_by_year_number = {en.periode: en.holiday_stock_default}
                         break
 
