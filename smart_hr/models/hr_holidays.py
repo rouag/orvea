@@ -85,7 +85,7 @@ class HrHolidays(models.Model):
     birth_certificate = fields.Binary(string=u'شهادة الميلاد')
     extension_period = fields.Integer(string=u'مدة التمديد', default=0)
     external_authoritie = fields.Many2one('external.authorities', string=u'الجهة الخارجية',compute="_set_external_autoritie")
-    death_type = fields.Many2one('hr.holidays.death.type', string=u'صنف الوفاة')
+    death_type = fields.Many2one('hr.holidays.entitlement.config', string=u'صنف الوفاة',domain=[('name','ilike','وفاة')])
     death_person = fields.Char(string=u'المتوفي')
 
     @api.depends('date_from')
@@ -344,12 +344,7 @@ class HrHolidays(models.Model):
     def button_refuse_revision_response(self):
         self.state = 'refuse'
     
-    @api.constrains('pension_percent', 'date_to')
-    def check_pension_percent(self):
-        for rec in self:
-            if rec.pension_percent<0 or rec.pension_percent>100:
-                raise ValidationError(u"نسبة راتب التقاعد خاطئة ")
-                
+
                 
     @api.constrains('date_from', 'date_to')
     def check_dates_periode(self):
@@ -478,46 +473,39 @@ class HrHolidays(models.Model):
         holiday_status_childbirth_stock = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_childbirth').id)]).holidays_available_stock
         holiday_status_exceptional_accompaniment = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_exceptional_accompaniment').id)]).holidays_available_stock
 
+        # Constraintes for Compelling holidays اضطرارية
+        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
+            for en in self.holiday_status_id.entitlements:
+                if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
+                    # غير مشروط
+                    if not en.conditionnal:
+                        break
+                    else:
+                        if self.duration > holiday_status_compelling_stock:
+                            raise ValidationError(u"ليس لديك الرصيد الكافي")
+            if holiday_status_normal_stock>=self.duration:
+                raise ValidationError(u"يوجد رصيد في الإجازات العاديّة")
 # 
-#         # Constraintes for Compelling holidays اضطرارية
-#         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
-#             for en in self.holiday_status_id.entitlements:
-#                 if self.employee_id.job_id.grade_id in en.entitlment_category.grades:
-#                     # غير مشروط
-#                     if not en.conditionnal:
-#                         break
-#                     else:
-#                         if self.duration > holiday_status_compelling_stock:
-#                             raise ValidationError(u"ليس لديك الرصيد الكافي")
-#                         
-#             if holiday_status_normal_stock>=self.duration:
-#                 raise ValidationError(u"يوجد رصيد في الإجازات العاديّة")
-# 
-# 
-#             print 'اضطرارية'
-#            
+#
 #         # Constraintes for exceptionnal holidays استثنائية
-#         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional'):
-#             for en in self.holiday_status_id.entitlements:
-#                 if self.employee_id.job_id.grade_id in en.entitlment_category.grades:
-#                     #غير مشروط
-#                     if not en.conditionnal:
-#                         break
-#                     else:
-#                         if self.duration > holiday_status_exceptional_stock:
-#                             raise ValidationError(u" ليس لديك الرصيد الكافي في الاجازات الاستثنائية")
-#             print 'استثنائية'
+        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional'):
+           for en in self.holiday_status_id.entitlements:
+                if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:                    #غير مشروط
+                    if not en.conditionnal:
+                        break
+                    else:
+                        if self.duration > holiday_status_exceptional_stock:
+                            raise ValidationError(u" ليس لديك الرصيد الكافي في الاجازات الاستثنائية")
 #             
-#         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional_accompaniment'):
-#             for en in self.holiday_status_id.entitlements:
-#                 if self.employee_id.job_id.grade_id in en.entitlment_category.grades:
-#                     #غير مشروط
-#                     if not en.conditionnal:
-#                         break
-#                     else:
-#                         if self.duration > holiday_status_exceptional_accompaniment:
-#                             raise ValidationError(u"  ليس لديك الرصيد الكافي في الاجازات الاستثنائية للمرافقة")
-#             print 'استثنائية للمرافقة'
+        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional_accompaniment'):
+         for en in self.holiday_status_id.entitlements:
+                if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
+                    #غير مشروط
+                    if not en.conditionnal:
+                        break
+                    else:
+                        if self.duration > holiday_status_exceptional_accompaniment:
+                            raise ValidationError(u"  ليس لديك الرصيد الكافي في الاجازات الاستثنائية للمرافقة")
 #             
                     # Constraintes for childbirth holidays وضع
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_childbirth'):
@@ -568,8 +556,8 @@ class HrHolidays(models.Model):
 
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_death'):
             for en in self.holiday_status_id.entitlements:
-                if en.name == self.death_type.name and en.periode<self.duration:
-                    raise ValidationError(u"لا يمكن لإجازة الوفاة ان تتجاوز %s يوم" %en.periode)  
+                if en.entitlment_category.name == self.death_type.name and en.holiday_stock_default<self.duration:
+                    raise ValidationError(u" %s  ان تتجاوز يوم %s  لا يمكن لإجازة   " %(en.holiday_stock_default,en.entitlment_category.name))
                     break
 
     @api.model
@@ -665,15 +653,13 @@ class HrHolidaysStatus(models.Model):
         if self.deductible_duration_service:
             self.promotion_deductible = True
 
-    @api.multi
-    def write(self, vals):
-   
-        if vals.get('pension_percent', False):
-            for rec in self:
-                if rec.pension_percent<0 or rec.pension_percent>100:
-                    raise ValidationError(u"نسبة راتب التقاعد خاطئة ")
+    
+    @api.constrains('pension_percent')
+    def check_pension_percent(self):
+        for rec in self:
+            if rec.pension_percent<0 or rec.pension_percent>100:
+                raise ValidationError(u"نسبة راتب التقاعد خاطئة ")
                 
-        return super(HrHolidaysStatus, self).write(vals)
 class HrHolidaysStatusEntitlement(models.Model):
     _name = 'hr.holidays.status.entitlement'
     _description = u'أنواع الاستحقاقات'
