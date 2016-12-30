@@ -96,7 +96,7 @@
 						
 						<button name="button_cancel" context="{'operation': 'cancel'}" string="إلغاء الإجازة" type="object" attrs="{'invisible':['|','|','|',('state','!=','done'),('is_current_user','=',False),('is_cancelled','=',True),('is_started','=',True)]}" icon="fa-times-circle-o" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
 						
-						<button name="button_cut" context="{'operation': 'cut'}" string="قطع الاجازة" type="object" attrs="{'invisible':['|','|','|',('state','!=','done'),('is_current_user','=',False),('is_cancelled','=',True),('is_started','=',True)]}" icon="fa-times-circle-o" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
+						<button name="button_cut" context="{'operation': 'cut'}" string="قطع الاجازة" type="object" attrs="{'invisible':['|','|','|',('state','!=','done'),('is_current_user','=',False),('is_cancelled','=',True),('is_started','=',False)]}" icon="fa-times-circle-o" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
 						
 						<field name="state" widget="statusbar"
 							statusbar_visible="draft,dm,audit,hrm,external_audit,revision,revision_response,done" />
