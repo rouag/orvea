@@ -18,7 +18,7 @@ class HrHolidays(models.Model):
             is_extensible = False
             for en in self.holiday_status_id.entitlements:
                 if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
-                    if en.extension_period > 0:
+                    if en.extension_period != 0:
                         is_extensible = True
                         rec.extension_period = en.extension_period
                     break
@@ -75,7 +75,7 @@ class HrHolidays(models.Model):
     extended_holiday_id = fields.Many2one('hr.holidays', string=u'الإجازة الممددة')
     parent_id = fields.Many2one('hr.holidays', string=u'Parent')
     extension_holidays_ids = fields.One2many('hr.holidays', 'parent_id', string=u'التمديدات')
-    is_extensible = fields.Boolean(string=u'يمكن تمديدها', default=False, compute='_check_is_extensible')
+    is_extensible = fields.Boolean(string=u'يمكن تمديدها', default=False, compute='_check_is_extensible', store=True)
     # decision
     need_decision = fields.Boolean('status_id need decision', related='holiday_status_id.need_decision')
     num_decision = fields.Char(string=u'رقم القرار')

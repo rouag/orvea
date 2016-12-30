@@ -40,6 +40,8 @@ class HrEmployee(models.Model):
     holidays = fields.One2many('hr.holidays', 'employee_id', string=u'الاجازات')
     holidays_balance = fields.One2many('hr.employee.holidays.stock', 'employee_id', string=u'الأرصدة', readonly=1)
     promotions_history = fields.One2many('hr.employee.promotion.history', 'employee_id', string=u'الترقيات')
+    traveling_ticket = fields.Boolean(string=u'تذكرة سفر', default=False)
+    traveling_ticket_familiar = fields.Boolean(string=u'تذكرة سفر عائليّة', default=False)
 
     def _compute_service_years(self):
         for emp in self:
