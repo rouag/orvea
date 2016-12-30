@@ -87,6 +87,11 @@ class HrHolidays(models.Model):
     external_authoritie = fields.Many2one('external.authorities', string=u'الجهة الخارجية',compute="_set_external_autoritie")
     death_type = fields.Many2one('hr.holidays.entitlement.config', string=u'صنف الوفاة',domain=[('name','ilike','وفاة')])
     death_person = fields.Char(string=u'المتوفي')
+    compensation_type = fields.Selection([
+        ('holiday', u'إجازة'),
+        ('money', u' مقابل ‫مادي‬ ‬ ')], string=u'نوع التعويض')
+
+
 
     @api.depends('date_from')
     def _compute_is_started(self):
@@ -557,7 +562,7 @@ class HrHolidays(models.Model):
                                                                    ('holiday_status_id', '=', self.holiday_status_id.id), ('date_from', '>=', date(date_from.year, 1, 1))])
         if self.holiday_status_id.demand_number_max<=past_demand_number and self.holiday_status_id.demand_number_max>0:
             raise ValidationError(u" لا يمكن تجزئة هذا النوع من الإجازات على أكثر من %s مرّة " %self.holiday_status_id.demand_number_max)
-                  # Constraintes for contractores ا‫لمتعاقدون‬
+                  # Constraintes for compensation التعويض
 
     @api.model
     def create(self, vals):

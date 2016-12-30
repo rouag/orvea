@@ -91,8 +91,11 @@
 						<button name="button_refuse_revision_response" string="رفض"
 							type="object" states="revision_response" groups="smart_hr.group_holidays_checker"
 							icon="fa-times" class="oe_inline oe_stat_button" />
-						<button name="button_cancel" string="إلغاء الإجازة" type="object" attrs="{'invisible':['|','|','|',('state','!=','done'),('is_current_user','=',False),('is_cancelled','=',True),('is_started','=',True)]}" icon="fa-times-circle-o" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
-						
+						<button name="button_cancel" string="إلغاء الإجازة" type="object"
+							attrs="{'invisible':['|','|','|',('state','!=','done'),('is_current_user','=',False),('is_cancelled','=',True),('is_started','=',True)]}"
+							icon="fa-times-circle-o" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
 						<field name="state" widget="statusbar"
 							statusbar_visible="draft,dm,audit,hrm,external_audit,revision,revision_response,done" />
 
@@ -111,8 +114,10 @@
 								readonly='1' />
 
 						</group>
-						<group col="6">
+						<group col="2">
 							<field name="holiday_status_id" required="1" />
+													</group>
+							<group col="4">
 							<field name="death_type"
 								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_death)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_death)d)]}" />
 							<field name="death_person"
@@ -128,6 +133,11 @@
 
 							<field name="birth_certificate"
 								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_child_birth_dad)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_child_birth_dad)d)]}" />
+
+						</group>
+						<group col="2">
+							<field name="compensation_type"
+								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_accompaniment_compensation)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_accompaniment_compensation)d)]}" />
 						</group>
 
 						<group col="4">

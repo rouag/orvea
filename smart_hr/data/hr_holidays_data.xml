@@ -147,7 +147,7 @@
 			<field name="traveling_ticket" eval="True" />
 		</record>
 
-		<record id="data_hr_holiday_accompaniment_compensation" model="hr.holidays.status">
+		<record id="data_hr_holiday_compensation" model="hr.holidays.status">
 			<field name="name">اجازة التعويض</field>
 		</record>
 	</data>
