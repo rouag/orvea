@@ -84,6 +84,7 @@ class HrAttendanceImport(models.Model):
     data = fields.Binary(string='الملف', required=1, readonly=1, states={'new': [('readonly', 0)]})
     create_uid = fields.Many2one('res.users', 'المستخدم', readonly=1)
     create_date = fields.Datetime(string='التاريخ', readonly=1, states={'new': [('readonly', 0)]})
+    date = fields.Date(string='التاريخ', readonly=1, states={'new': [('readonly', 0)]})
     state = fields.Selection([('new', 'جديد'), ('done', 'تم التحميل')], string='الحالة', readonly=1, default='new')
 
     def get_day_number(self, date):
@@ -132,17 +133,47 @@ class HrAttendanceImport(models.Model):
         # TODO: FixMe  dont use  hour+late or  hour-leave because minute must be in 0..59 must use timedelta
         return time_from, time_to, late, time_from_max, time_to_min
 
-    def close_day(self, date):
+    @api.multi
+    def close_day(self):
+        # date = current date
+        # date = datetime.now().date()
+        date = self.date
         employee_obj = self.env['hr.employee']
+        report_day_obj = self.env['hr.attendance.report_day']
+        attendance_check = self.env['hr.attendance.check']
+        # first delete all actions for this day
+        report_day_ids = report_day_obj.search([('date', '=', date)])
+        report_day_ids.unlink()
+        #
         for employee in employee_obj.search([]):
             day = self.get_day_number(date)
             time_from, time_to, late, time_from_max, time_to_min = self.get_time_from_to_calendar(employee.calendar_id.id, day)
             self.chek_sign_in(date, employee.id, time_to, datetime.now())
             self.chek_sign_out(date, employee.id, time_to, datetime.now())
-        # create الاشعارات
-        
-        
-        return  True
+        # create attendance.check
+        retards = report_day_obj.search([('date', '=', date), ('action', '=', 'retard')])
+        leaves = report_day_obj.search([('date', '=', date), ('action', '=', 'leave')])
+        for retard in retards:
+            val = {'employee_id': retard.employee_id.id,
+                   'number': retard.employee_id.number,
+                   'department_id': retard.employee_id.job_id.department_id.id,
+                   'job_id': retard.employee_id.job_id.id,
+                   'grade_id': retard.employee_id.job_id.grade_id.id,
+                   'type': 'retard',
+                   'date': retard.date,
+                   'delay': retard.delay_retard}
+            attendance_check.create(val)
+        for leave in leaves:
+            val = {'employee_id': leave.employee_id.id,
+                   'number': leave.employee_id.number,
+                   'department_id': leave.employee_id.job_id.department_id.id,
+                   'job_id': leave.employee_id.job_id.id,
+                   'grade_id': leave.employee_id.job_id.grade_id.id,
+                   'type': 'leave',
+                   'date': leave.date,
+                   'delay': leave.delay_leave}
+            attendance_check.create(val)
+        return True
 
     def chek_sign_in(self, date, employee_id, latest_time, latest_datetime_import):
         '''
@@ -218,12 +249,9 @@ class HrAttendanceImport(models.Model):
                     'latest_date_import': latest_datetime_import
                     }
             report_day_obj.create(vals)
-            print '-------no attendance in ', employee.name
-
         else:
             first_sign_in = employee_attendances_sign_in[-1]
             first_sign_in_time = datetime.strptime(first_sign_in.name, '%Y-%m-%d %H:%M:%S').time()
-            print '--calendar from,_to-----', first_sign_in_time, time_from, time_to, late, time_from_max
             if first_sign_in_time > time_from_max:
                 # إذا كان للموظف إستئذان يجب احتساب وقت التأخير بداية من  وقت نهاية فترة الإستئذان
                 sign_in_time_start = time_from
@@ -281,7 +309,6 @@ class HrAttendanceImport(models.Model):
                                                                ('name', '>=', str(date_start)),
                                                                ('name', '<=', str(date_stop))])
 
-        print '------current_time,time_to--------', current_time, time_to
         if current_time >= time_to:
             if not employee_attendances_sign_out:
                 vals = {'employee_id': employee_id,
@@ -292,7 +319,6 @@ class HrAttendanceImport(models.Model):
                         'latest_date_import': latest_date_import
                         }
                 report_day_obj.create(vals)
-                print '-------no attendance out ', employee.name
             else:
                 last_sign_out = employee_attendances_sign_out[0]
                 last_sign_out_time = datetime.strptime(last_sign_out.name, '%Y-%m-%d %H:%M:%S').time()
@@ -311,15 +337,19 @@ class HrAttendanceImport(models.Model):
                 # احتساب وقت إضافي
                 elif last_sign_out_time > time_to_min:
                     delay_hours_supp = datetime.strptime(str(last_sign_out_time), FORMAT_TIME) - datetime.strptime(str(time_to), FORMAT_TIME)
-                    delay_hours_supp_seconds = delay_hours_supp.seconds
-                    delay_hours_supp = delay_hours_supp_seconds / 3600.0
-                    vals = {'employee_id': employee.id,
-                            'hour_calendar_to': time_float_convert(time_to),
-                            'delay_hours_supp': delay_hours_supp,
-                            'date': date,
-                            'action': 'hour_supp',
-                            'latest_date_import': latest_date_import}
-                    report_day_obj.create(vals)
+                    min_sup_hour = employee.calendar_id.schedule_id.min_sup_hour * 60.0
+                    max_sup_hour = employee.calendar_id.schedule_id.max_sup_hour * 60.0
+                    delay_hours_supp = delay_hours_supp.seconds
+                    if delay_hours_supp > min_sup_hour:
+                        if delay_hours_supp > max_sup_hour:
+                            delay_hours_supp = max_sup_hour
+                        vals = {'employee_id': employee.id,
+                                'hour_calendar_to': time_float_convert(time_to),
+                                'delay_hours_supp': delay_hours_supp / 3600.0,
+                                'date': date,
+                                'action': 'hour_supp',
+                                'latest_date_import': latest_date_import}
+                        report_day_obj.create(vals)
         return True
 
     def chek_import_attendance(self, date):
@@ -404,3 +434,50 @@ class HrAttendanceReportDay(models.Model):
                                ('absence', 'غياب'),
                                ('hour_supp', 'وقت إضافي')], string='الحالة')
     description = fields.Char(string='السبب')
+
+
+class HrAttendanceCheck(models.Model):
+    _name = 'hr.attendance.check'
+    _inherit = ['mail.thread']
+    _order = 'id desc'
+    _description = 'ساعات التأخير و الخروج المبكر'
+    _rec_name = 'employee_id'
+
+    employee_id = fields.Many2one('hr.employee', string='الموظف', required=1, readonly=1)
+    number = fields.Char(string='الرقم الوظيفي', readonly=1)
+    department_id = fields.Many2one('hr.department', string='القسم', readonly=1)
+    job_id = fields.Many2one('hr.job', string='الوظيفة', readonly=1)
+    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
+    description = fields.Text(string=' ملاحظات ')
+    state = fields.Selection([('new', 'تدقيق'),
+                              ('cancel', 'ملغى'),
+                              ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
+    type = fields.Selection([('leave', 'خروج مبكر'), ('retard', 'تأخير')], string='النوع', readonly=1)
+    date = fields.Date(string='التاريخ', required=1, readonly=1)
+    delay = fields.Float(string='المدة', readonly=1)
+
+    @api.multi
+    def action_done(self):
+        self.state = 'done'
+
+    @api.one
+    def action_refuse(self):
+        self.state = 'cancel'
+
+
+class HrAttendanceReport(models.Model):
+    _name = 'hr.attendance.report'
+    _order = 'id desc'
+    _rec_name = 'employee_id'
+
+    employee_id = fields.Many2one('hr.employee', string='الموظف', required=1, readonly=1)
+    number = fields.Char(string='الرقم الوظيفي', readonly=1)
+    department_id = fields.Many2one('hr.department', string='القسم', readonly=1)
+    job_id = fields.Many2one('hr.job', string='الوظيفة', readonly=1)
+    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
+    date = fields.Date(string='التاريخ', required=1, readonly=1)
+    hour_start = fields.Float(string='وقت الدخول')
+    hour_stop = fields.Float(string='وقت الخروج')
+    delay_retard = fields.Float(string='مدة التأخير')
+    delay_leave = fields.Float(string='مدة الخروج المبكر')
+    delay_hours_supp = fields.Float(string='مدة الوقت الإضافي')

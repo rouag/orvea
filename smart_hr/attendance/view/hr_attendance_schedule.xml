@@ -61,7 +61,7 @@
 		</record>
 
 
-		<menuitem name='خطة الحضور والإنصراف' action="action_hr_attendance_schedule"
+		<menuitem name='خطة الحضور والإنصراف' action="action_hr_attendance_schedule" groups="smart_hr.group_sys_manager"
 			id="menu_hr_attendance_schedule" parent="menu_attendance_configuration"
 			sequence="10" />
 

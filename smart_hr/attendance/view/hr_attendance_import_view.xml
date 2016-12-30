@@ -9,7 +9,7 @@
 			<field name="arch" type="xml">
 				<tree string="تحديث  سجل الحضور والإنصراف">
 					<field name="name" />
-					<field name="create_date" />
+					<field name="date" />
 					<field name="state" />
 				</tree>
 			</field>
@@ -25,12 +25,15 @@
 					<header>
 						<button name="import_attendance" string="تحديث" type="object" states="new"
 						  class="oe_highlight" />
+						 <button name="close_day" string="أخر تحديث" type="object" states="done"
+						  class="oe_highlight" />
 						<field name="state" widget="statusbar" statusbar_visible="new,done" />
 					</header>
 					<sheet>
 						<group>
 							<group>
 								<field name="name" />
+								<field name="date" />
 								<field name="data" />
 							</group>
 							<group />
@@ -53,7 +56,7 @@
 		</record>
 
 		<menuitem action="action_hr_attendance_import" name="تحديث  سجل الحضور والإنصراف"
-			id="menu_hr_attendance_import" parent="menu_attendance_root"
+			id="menu_hr_attendance_import" parent="menu_attendance_root" groups="smart_hr.group_attandance_update"
 			sequence="10" />
 
 

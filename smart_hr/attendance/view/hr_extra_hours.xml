@@ -28,11 +28,11 @@
 				<form string="الساعات الإضافية">
 					<header>
 						<button name="action_waiting" string="إرسال للإعتماد" type="object"
-							states="new" />
+							states="new"  />
 						<button name="action_done" string="إعتماد" type="object"
-							states="waiting" />
+							states="waiting" groups="smart_hr.group_dm"/>
 						<button name="action_refuse" string="رفض" type="object"
-							states="waiting" />
+							states="waiting" groups="smart_hr.group_dm"/>
 						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
 					</header>
 					<sheet>
@@ -102,7 +102,7 @@
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 
-		<menuitem id="hr_extra_hours_menu" name="الساعات الإضافية"
+		<menuitem id="hr_extra_hours_menu" name="الساعات الإضافية" groups="smart_hr.group_employee"
 			sequence="30" parent="menu_attendance_root" action="action_hr_extra_hours" />
 	</data>
 </openerp>
