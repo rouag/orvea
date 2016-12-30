@@ -102,15 +102,19 @@ class HrHolidays(models.Model):
             # check if there is entitlements in holiday_status_id
             holiday_solde_by_year_number = {}
             if holiday_status_id.entitlements:
-                # loop under entitlements and get the holiday solde depend on grade of the employee
+                right_entitlement = False
+                # loop under entitlements and get the right one
                 for en in holiday_status_id.entitlements:
+                    if self.death_type == en.entitlment_category:
+                        right_entitlement = en
+                        break
                     if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
-                        holiday_solde_by_year_number = {en.periode: en.holiday_stock_default}
+                        right_entitlement = en
                         break
 
                 # calculate the balance of he employee for current holiday status
-                if holiday_solde_by_year_number.items():
-                    periode = holiday_solde_by_year_number.items()[0][0]
+                if right_entitlement:
+                    periode = right_entitlement.periode
                     # check if the type existe in holidays_balance of the employee
                     balance_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', employee_id.id), ('holiday_status_id', '=', holiday_status_id.id)])
                     if not balance_line:
@@ -121,7 +125,7 @@ class HrHolidays(models.Model):
                                                                                   'token_holidays_sum': 0,
                                                                                   'periode': periode})
                     #employee_id.holidays_balance += balance_line
-                    employee_solde=holiday_solde_by_year_number.items()[0][1] 
+                    employee_solde = right_entitlement.holiday_stock_default 
                     if employee_solde > 0:
                         # calculate the number of worked month in current year
                         months = relativedelta(date.today(), date(date.today().year, 1, 1)).months
