@@ -108,7 +108,7 @@ class HrEmployee(models.Model):
         employee = self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1)
         if employee:
             value = {
-                'name': _('Open ressence setting'),
+                'name': u'بياناتي',
                 'view_type': 'form',
                 'view_mode': 'form',
                 'res_model': 'hr.employee',
