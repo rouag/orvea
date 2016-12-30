@@ -102,7 +102,7 @@
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 
-		<menuitem id="hr_extra_hours_menu" name="الساعات الإضافية" groups="smart_hr.group_employee"
-			sequence="30" parent="menu_attendance_root" action="action_hr_extra_hours" />
+		<!-- <menuitem id="hr_extra_hours_menu" name="الساعات الإضافية" groups="smart_hr.group_employee"
+			sequence="30" parent="menu_attendance_root" action="action_hr_extra_hours" /> -->
 	</data>
 </openerp>

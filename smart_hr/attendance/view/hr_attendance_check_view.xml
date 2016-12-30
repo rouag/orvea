@@ -2,12 +2,13 @@
 <openerp>
 	<data>
 
+ 
 		<record model="ir.ui.view" id="hr_attendance_check_tree">
 			<field name="name">hr.attendance.check.tree</field>
 			<field name="model">hr.attendance.check</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
-				<tree string="ساعات التأخير و الخروج المبكر">
+				<tree>
 					<field name="employee_id" />
 					<field name="number" />
 					<field name="department_id" />
@@ -24,7 +25,7 @@
 			<field name="model">hr.attendance.check</field>
 			<field name="type">form</field>
 			<field name="arch" type="xml">
-				<form string="ساعات التأخير و الخروج المبكر">
+				<form>
 					<header>
 						<button name="action_done" string="إعتماد" type="object" states="new" />
 						<button name="action_refuse" string="رفض" type="object" states="new" />
@@ -62,7 +63,7 @@
 			<field name="name">hr.attendance.check.search</field>
 			<field name="model">hr.attendance.check</field>
 			<field name="arch" type="xml">
-				<search string="ساعات التأخير و الخروج المبكر">
+				<search>
 					<field name="employee_id" />
 					<field name="date" />
 					<field name="type" />
@@ -77,15 +78,48 @@
 			</field>
 		</record>
 		
+
+		<!-- الغيابات -->
+		
+		<record model="ir.actions.act_window" id="action_hr_attendance_check_absence">
+			<field name="name">الغيابات</field>
+			<field name="res_model">hr.attendance.check</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('type','=','absence')]</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+
+		<menuitem id="hr_attendance_check_menu_absence" name="الغيابات" groups="smart_hr.group_dm,smart_hr.group_hrm"
+			sequence="35" parent="menu_attendance_root" action="action_hr_attendance_check_absence" />
+			
+		<!-- الساعات الإضافية -->
+		
+		<record model="ir.actions.act_window" id="action_hr_attendance_check_hour_supp">
+			<field name="name">الساعات الإضافية</field>
+			<field name="res_model">hr.attendance.check</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('type','=','hour_supp')]</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+
+		<menuitem id="hr_attendance_check_menu_hour_supp" name="الساعات الإضافية" groups="smart_hr.group_dm,smart_hr.group_hrm"
+			sequence="40" parent="menu_attendance_root" action="action_hr_attendance_check_hour_supp" />
+
+		<!-- ساعات التأخير و الخروج المبكر -->
+
 		<record model="ir.actions.act_window" id="action_hr_attendance_check">
 			<field name="name">ساعات التأخير و الخروج المبكر</field>
 			<field name="res_model">hr.attendance.check</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
+			<field name="domain">[('type','in',('leave','retard'))]</field>
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 
 		<menuitem id="hr_attendance_check_menu" name="ساعات التأخير و الخروج المبكر" groups="smart_hr.group_dm,smart_hr.group_hrm"
-			sequence="30" parent="menu_attendance_root" action="action_hr_attendance_check" />
+			sequence="45" parent="menu_attendance_root" action="action_hr_attendance_check" />
+									
 	</data>
 </openerp>

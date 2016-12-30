@@ -2,10 +2,10 @@
 <openerp>
 	<data>
 
-		<!-- Report Actions -->
+		<report id="attendance_summary_report" model="False"
+			report_type="qweb-pdf" string="تقرير الحضور والإنصراف" name="smart_hr.report_attendance_summary"
+			file="smart_hr.report_attendance_summary" paperformat="smart_base.paperformat_landscape" />
 		
-	 
-
 
 	</data>
 </openerp>
