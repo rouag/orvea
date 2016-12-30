@@ -188,20 +188,32 @@ class HrHolidays(models.Model):
             'context': context,
         }
         
-    @api.one
+    @api.multi
     def button_cancel(self):
         # Objects
         holidays_cancellation_obj = self.env['hr.holidays.cancellation']
         # Variables
         user = self.env['res.users'].browse(self._uid)
+        employee = self.env['hr.employee'].search([('user_id', '=', user.id)], limit=1)
         # Create leave cancellation request
-        for holiday in self:
-            vals = {
-                'leave_id': holiday.id,
+        vals = {
+                'employee_id': employee.id,
+                'holidays': [(4, self.id)],
+                'note': '   ',
+                'operation': 'cancel',
             }
-            leave_cancellation_id = holidays_cancellation_obj.create(vals)
-            # Add to log
-            holiday.message_post(u"تم ارسال طلب إلغاء من قبل '" + unicode(user.name) + u"'")
+        holiday_cancellation_id = holidays_cancellation_obj.create(vals)
+        # Add to log
+        self.message_post(u"تم ارسال طلب إلغاء من قبل '" + unicode(user.name) + u"'")
+        return {
+                    'name': u'طلب إلغاء',
+                    'view_type': 'form',
+                    'view_mode': 'form',
+                    'res_model': 'hr.holidays.cancellation',
+                    'view_id': self.env.ref('smart_hr.hr_holidays_cancellation_mine_form').id,
+                    'type': 'ir.actions.act_window',
+                    'res_id': holiday_cancellation_id.id,
+                }
     @api.depends('extension_holidays_ids')
     def _is_extended(self):
         # Check if the holiday have a pending or completed extension leave

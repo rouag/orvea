@@ -129,12 +129,24 @@
 								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_exceptional_accompaniment)d)]}" />
 							<field name="childbirth_date"
 								attrs="{'invisible':[('holiday_status_id','not in', (%(data_hr_holiday_status_childbirth)d,%(data_hr_holiday_child_birth_dad)d))],'required':[('holiday_status_id','in', (%(data_hr_holiday_status_childbirth)d,%(data_hr_holiday_child_birth_dad)d))]}" />
+						</group>
+						<group col="4">
+						
+								<field name="death_type"
+									attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_death)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_death)d)]}" />
+								<field name="death_person"
+									attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_death)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_death)d)]}" />
 
-							<field name="medical_certificate"
-								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_childbirth)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_status_childbirth)d)]}" />
+								<field name="raison"
+									attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_exceptional_accompaniment)d)]}" />
+								<field name="childbirth_date"
+									attrs="{'invisible':[('holiday_status_id','not in', (%(data_hr_holiday_status_childbirth)d,%(data_hr_holiday_child_birth_dad)d))],'required':[('holiday_status_id','in', (%(data_hr_holiday_status_childbirth)d,%(data_hr_holiday_child_birth_dad)d))]}" />
 
-							<field name="birth_certificate"
-								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_child_birth_dad)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_child_birth_dad)d)]}" />
+								<field name="medical_certificate"
+									attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_childbirth)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_status_childbirth)d)]}" />
+
+								<field name="birth_certificate"
+									attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_child_birth_dad)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_child_birth_dad)d)]}" />
 
 						</group>
 						<group col="2">
