@@ -145,10 +145,11 @@
 			<field name="limit" eval="True" />
 			<field name="demand_number_max" eval="2" />
 			<field name="traveling_ticket" eval="True" />
-
 		</record>
 
-
+		<record id="data_hr_holiday_accompaniment_compensation" model="hr.holidays.status">
+			<field name="name">اجازة التعويض</field>
+		</record>
 	</data>
 
 </openerp>
