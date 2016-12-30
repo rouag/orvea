@@ -49,11 +49,17 @@ class HrEmployee(models.Model):
                 date_hiring = fields.Date.from_string(decision_appoint.date_hiring)
                 days = (today_date - date_hiring).days
                 deductible_days = 0
-                # find the holidays of the employee that are deductible_duration_service
+                # find the holidays of the employee that are deductible_duration_service and promotion_deductible
                 holidays = self.env['hr.holidays'].search([
                     ('state', '=', 'done'),
                     ('employee_id', '=', emp.id),
-                    ('holiday_status_id.deductible_duration_service', '=', True),
+                    ('holiday_status_id.deductible_duration_service', '=', True), ('holiday_status_id.promotion_deductible', '=', True),
+                    ])
+                # find the holidays of the employee that are only promotion_deductible
+                holidays += self.env['hr.holidays'].search([
+                    ('state', '=', 'done'),
+                    ('employee_id', '=', emp.id),
+                    ('holiday_status_id.deductible_duration_service', '=', False), ('holiday_status_id.promotion_deductible', '=', True),
                     ])
                 for holiday in holidays:
                     days -= holiday.periode
