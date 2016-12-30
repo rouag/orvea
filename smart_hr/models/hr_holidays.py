@@ -91,7 +91,10 @@ class HrHolidays(models.Model):
         ('holiday', u'إجازة'),
         ('money', u' مقابل ‫مادي‬ ‬ ')], string=u'نوع التعويض')
     compensation_stock = fields.Integer(string=u'رصيد إجازات التعويض',related='employee_id.compensation_stock')
-
+    accompaniment_type = fields.Selection([
+        ('Relatives', u'أحد الأقارب '),
+        ('child', u' ‫طفل‬‬')], string=u'نوع المرافقة')
+    accompanied_child_age = fields.Integer(string=u'عمر الطفل')
 
     @api.depends('date_from')
     def _compute_is_started(self):
@@ -600,9 +603,16 @@ class HrHolidays(models.Model):
                                                                    ('holiday_status_id', '=', self.holiday_status_id.id), ('date_from', '>=', date(date_from.year, 1, 1))])
         if self.holiday_status_id.demand_number_max<=past_demand_number and self.holiday_status_id.demand_number_max>0:
             raise ValidationError(u" لا يمكن تجزئة هذا النوع من الإجازات على أكثر من %s مرّة " %self.holiday_status_id.demand_number_max)
-                  # Constraintes for compensation التعويض
-                
+                  # Constraintes for accompaniment_exceptional اجازة مرافقة استثنائية
 
+        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional'):
+            if self.accompaniment_type=="child" and self.employee_id.gender!='female':
+                raise ValidationError(u"لا يتمتّع بإجازة مرافقة طفل  إلّا النساء")
+            if self.accompaniment_type=="child" and self.accompanied_child_age>7:
+                raise ValidationError(u"يجب أن يكون عمر الطفل أقل من 7 سنوات")
+            if holiday_status_normal_stock>0:
+                raise ValidationError(u"يوجد رصيد في الإجازات العاديّة")
+            
     @api.model
     def create(self, vals):
         res = super(HrHolidays, self).create(vals)
