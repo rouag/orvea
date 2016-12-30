@@ -49,14 +49,14 @@
 			<field name="groups" eval="[(4,ref('smart_hr.group_hrm'))]" />
 		</record>
 
-		<record id="dm_authorization" model="ir.rule">
+		<record id="dm_attendance_check" model="ir.rule">
 			<field name="name"> ساعات التأخير و الخروج المبكر المدير المباشر </field>
 			<field name="model_id" ref="model_hr_attendance_check" />
 			<field name="domain_force">['|',('employee_id.parent_id.user_id','=',user.id),('employee_id.user_id','=',user.id)]</field>
 			<field name="groups" eval="[(4,ref('smart_hr.group_dm'))]" />
 		</record>
 		
-		<record id="hrm_authorization" model="ir.rule">
+		<record id="hrm_attendance_check" model="ir.rule">
 			<field name="name">كل ساعات التأخير و الخروج المبكر </field>
 			<field name="model_id" ref="model_hr_attendance_check" />
 			<field name="domain_force">[(1,'=',1)]</field>

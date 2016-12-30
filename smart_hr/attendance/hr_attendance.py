@@ -153,6 +153,9 @@ class HrAttendanceImport(models.Model):
         # create attendance.check
         retards = report_day_obj.search([('date', '=', date), ('action', '=', 'retard')])
         leaves = report_day_obj.search([('date', '=', date), ('action', '=', 'leave')])
+        hour_supps = report_day_obj.search([('date', '=', date), ('action', '=', 'hour_supp')])
+        absences = report_day_obj.search([('date', '=', date), ('action', '=', 'absence')])
+        # retard
         for retard in retards:
             val = {'employee_id': retard.employee_id.id,
                    'number': retard.employee_id.number,
@@ -163,6 +166,7 @@ class HrAttendanceImport(models.Model):
                    'date': retard.date,
                    'delay': retard.delay_retard}
             attendance_check.create(val)
+        # leave
         for leave in leaves:
             val = {'employee_id': leave.employee_id.id,
                    'number': leave.employee_id.number,
@@ -173,7 +177,30 @@ class HrAttendanceImport(models.Model):
                    'date': leave.date,
                    'delay': leave.delay_leave}
             attendance_check.create(val)
+        # hour_supp
+        for hour_supp in hour_supps:
+            val = {'employee_id': hour_supp.employee_id.id,
+                   'number': hour_supp.employee_id.number,
+                   'department_id': hour_supp.employee_id.job_id.department_id.id,
+                   'job_id': hour_supp.employee_id.job_id.id,
+                   'grade_id': hour_supp.employee_id.job_id.grade_id.id,
+                   'type': 'hour_supp',
+                   'date': hour_supp.date,
+                   'delay': hour_supp.delay_hours_supp}
+            attendance_check.create(val)
+        # absences
+        for absence in absences:
+            val = {'employee_id': absence.employee_id.id,
+                   'number': absence.employee_id.number,
+                   'department_id': absence.employee_id.job_id.department_id.id,
+                   'job_id': absence.employee_id.job_id.id,
+                   'grade_id': absence.employee_id.job_id.grade_id.id,
+                   'type': 'absence',
+                   'date': absence.date,
+                   'delay': absence.delay_hours_supp}
+            attendance_check.create(val)
         return True
+
 
     def chek_sign_in(self, date, employee_id, latest_time, latest_datetime_import):
         '''
@@ -452,21 +479,98 @@ class HrAttendanceCheck(models.Model):
     state = fields.Selection([('new', 'تدقيق'),
                               ('cancel', 'ملغى'),
                               ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
-    type = fields.Selection([('leave', 'خروج مبكر'), ('retard', 'تأخير')], string='النوع', readonly=1)
+    type = fields.Selection([('leave', 'خروج مبكر'),
+                             ('retard', 'تأخير'),
+                             ('hour_supp', 'وقت إضافي'),
+                             ('absence', 'غياب'),
+                             ], string='النوع', readonly=1)
     date = fields.Date(string='التاريخ', required=1, readonly=1)
     delay = fields.Float(string='المدة', readonly=1)
 
     @api.multi
     def action_done(self):
         self.state = 'done'
+        # check if all is done create a summary_report for this day
+        checks = self.search([('date', '=', self.date), ('state', '=', 'new')])
+        if not checks:
+            self.create_summary_report(self.date)
 
     @api.one
     def action_refuse(self):
         self.state = 'cancel'
+        # check if all is done create a summary_report for this day
+        checks = self.search([('date', '=', self.date), ('state', '=', 'new')])
+        if not checks:
+            self.create_summary_report(self.date)
+
+    def create_summary_report(self, date):
+        # search old day closed
+        employee_obj = self.env['hr.employee']
+        attendance_obj = self.env['hr.attendance']
+        attendance_check_obj = self.env['hr.attendance.check']
+        summary_obj = self.env['hr.attendance.summary']
+
+        date_start = datetime.strptime(date + ' 00:00:00', '%Y-%m-%d %H:%M:%S')
+        date_stop = datetime.strptime(date + ' 23:59:59', '%Y-%m-%d %H:%M:%S')
+        # check for each employee
+        for employee in employee_obj.search([]):  # TODO: must add it [('employee_state', '=', 'employee')]
+            val = {'employee_id': employee.id,
+                   'number': employee.number,
+                   'department_id': employee.job_id.department_id.id,
+                   'job_id': employee.job_id.id,
+                   'grade_id': employee.job_id.grade_id.id,
+                   'date': date}
+            # get hour_start
+            employee_attendances_sign_in = attendance_obj.search([('employee_id', '=', employee.id),
+                                                                  ('action', '=', 'sign_in'),
+                                                                  ('name', '>=', str(date_start)),
+                                                                  ('name', '<=', str(date_stop))])
+            if employee_attendances_sign_in:
+                first_sign_in = employee_attendances_sign_in[-1]
+                first_sign_in_time = datetime.strptime(first_sign_in.name, '%Y-%m-%d %H:%M:%S').time()
+                val.update({'hour_start': time_float_convert(first_sign_in_time)})
+            # get hour_stop
+            employee_attendances_sign_out = attendance_obj.search([('employee_id', '=', employee.id),
+                                                                  ('action', '=', 'sign_out'),
+                                                                  ('name', '>=', str(date_start)),
+                                                                  ('name', '<=', str(date_stop))])
+            if employee_attendances_sign_out:
+                last_sign_out = employee_attendances_sign_out[0]
+                last_sign_out_time = datetime.strptime(last_sign_out.name, '%Y-%m-%d %H:%M:%S').time()
+                val.update({'hour_stop': time_float_convert(last_sign_out_time)})
+            # get retard
+            retard = leave = hours_supp = 0.0
+            attendances = attendance_check_obj.search([('employee_id', '=', employee.id), ('state', '=', 'done'), ('date', '=', date)])
+            for attendance in attendances:
+                if attendance.type == 'retard':
+                    retard += attendance.delay
+                elif attendance.type == 'leave':
+                    leave += attendance.delay
+                elif attendance.type == 'hour_supp':
+                    hours_supp += attendance.delay
+            val.update({'retard': retard, 'leave': leave, 'hours_supp': hours_supp})
+            # get authorization
+            authorization_delay = 0.0
+            authorization_ids = employee.get_authorization_by_date(date)
+            for authorization in authorization_ids:
+                authorization_delay += authorization.hour_number
+            val.update({'authorization': authorization_delay})
+            # get holidays
+            holidays_ids = employee.get_holidays_by_date(date)
+            holiday_nb = len(holidays_ids)
+            val.update({'holiday': holiday_nb})
+            # get absences
+            absences = attendance_check_obj.search([('employee_id', '=', employee.id), ('state', '=', 'done'),
+                                                    ('date', '=', date), ('type', '=', 'absence')])
+            absence_nb = len(absences)
+            val.update({'absence': absence_nb})
+            # create report summary
+            summary_obj.create(val)
+        return True
 
 
-class HrAttendanceReport(models.Model):
-    _name = 'hr.attendance.report'
+class HrAttendanceSummary(models.Model):
+    _name = 'hr.attendance.summary'
     _order = 'id desc'
     _rec_name = 'employee_id'
 
@@ -476,8 +580,11 @@ class HrAttendanceReport(models.Model):
     job_id = fields.Many2one('hr.job', string='الوظيفة', readonly=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
     date = fields.Date(string='التاريخ', required=1, readonly=1)
-    hour_start = fields.Float(string='وقت الدخول')
-    hour_stop = fields.Float(string='وقت الخروج')
-    delay_retard = fields.Float(string='مدة التأخير')
-    delay_leave = fields.Float(string='مدة الخروج المبكر')
-    delay_hours_supp = fields.Float(string='مدة الوقت الإضافي')
+    hour_start = fields.Float(string='الدخول')
+    hour_stop = fields.Float(string='الخروج')
+    retard = fields.Float(string='تأخير')
+    leave = fields.Float(string='خروج مبكر')
+    hours_supp = fields.Float(string='وقت إضافي')
+    authorization = fields.Float(string='إستئذان')
+    holidays = fields.Float(string='إجازة')
+    absence = fields.Float(string='غياب')

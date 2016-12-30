@@ -210,7 +210,7 @@
 							<field name="notes" string="ملاحظات"
 								attrs="{'readonly':[('state','!=','draft')]}" />
 						</group>
-						<button name="%(report_hr_holidays_report)d" string="طباعة القرار"
+						<button name="%(report_hr_holidays_report)d" string="طباعة القرار" groups="smart_hr.group_hrm"
 							type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
 
 						<button style="padding-right:10px," name=""

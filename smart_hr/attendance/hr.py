@@ -9,7 +9,7 @@ class HrEmployee(models.Model):
 
     calendar_id = fields.Many2one('resource.calendar', 'جدول ساعات العمل')
 
-    def get_authorization_by_date(self, date, first_time, latest_time):
+    def get_authorization_by_date(self, date, first_time=False, latest_time=False):
         '''
         :param date:
         :param first_time: must be a float
@@ -17,12 +17,11 @@ class HrEmployee(models.Model):
         '''
         # search in طلبات الإستئذان
         authorization_obj = self.env['hr.authorization']
-        authorization_ids = authorization_obj.search([('state', '=', 'done'),
-                                                      ('date', '=', date),
-                                                      ('employee_id', '=', self.id),
-                                                      ('hour_from', '>=', first_time),
-                                                      ('hour_to', '<=', latest_time)])
-
+        domain = [('state', '=', 'done'), ('date', '=', date), ('employee_id', '=', self.id)]
+        if first_time and latest_time:
+            domain.append(('hour_from', '>=', first_time))
+            domain.append(('hour_to', '<=', latest_time))
+        authorization_ids = authorization_obj.search(domain)
         return authorization_ids
 
     def get_holidays_by_date(self, date):
