@@ -11,6 +11,21 @@ class HrHolidays(models.Model):
     _description = 'hr holidays Request'
     _order = 'id desc'
     
+    def _check_date(self, cr, uid, ids, context=None):
+        for holiday in self.browse(cr, uid, ids, context=context):
+            domain = [
+                ('date_from', '<=', holiday.date_to),
+                ('date_to', '>=', holiday.date_from),
+                ('employee_id', '=', holiday.employee_id.id),
+                ('id', '!=', holiday.id),
+                ('state', 'not in', ['cancel', 'refuse']),
+            ]
+            nholidays = self.search_count(cr, uid, domain, context=context)
+            if holiday.compensation_type=='money':
+                return True
+            if nholidays:
+                return False
+        return True
     @api.depends('holiday_status_id.entitlements')
     def _check_is_extensible(self):
         # Check if the holiday have a pending or completed extension leave
@@ -95,7 +110,8 @@ class HrHolidays(models.Model):
         ('Relatives', u'أحد الأقارب '),
         ('child', u' ‫طفل‬‬')], string=u'نوع المرافقة')
     accompanied_child_age = fields.Integer(string=u'عمر الطفل')
-
+    _constraints = [
+        (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to'])]
     @api.depends('date_from')
     def _compute_is_started(self):
         for rec in self:
@@ -356,8 +372,11 @@ class HrHolidays(models.Model):
             self.state = 'done'
             # update holidays balance
             self._compute_balance(self.employee_id)
-            if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_compensation') and self.compensation_type == 'holiday':
-                self.employee_id.compensation_stock-=self.duration
+            if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_compensation') :
+                if  self.compensation_type == 'holiday':
+                    self.employee_id.compensation_stock-=self.duration
+                if self.compensation_type == 'money':
+                    self.employee_id.compensation_stock=0
 
         if self.holiday_status_id.external_decision and not self.employee_id.external_decision:
             raise ValidationError(u"الموظف يحتاج إلى موافقة جهة خارجية.")
@@ -417,7 +436,6 @@ class HrHolidays(models.Model):
         candidate_obj = self.env['hr.candidates']
         deput_obj = self.env['hr.deputation']
          
- 
         for holiday in self:
             # Date validation
             if fields.Date.from_string(holiday.date_from) < fields.Date.from_string(fields.Date.today()):
@@ -426,29 +444,29 @@ class HrHolidays(models.Model):
             if holiday.date_from > holiday.date_to:
                 raise ValidationError(u"تاريخ من يجب ان يكون أصغر من تاريخ الى")
             # check minimum request validation
-            if holiday.holiday_status_id.minimum != 0 and holiday.duration < holiday.holiday_status_id.minimum:
+            if holiday.holiday_status_id.minimum != 0 and holiday.duration < holiday.holiday_status_id.minimum and self.holiday_status_id!=self.env.ref('smart_hr.data_hr_holiday_compensation'):
                 raise ValidationError(u"أقل فترة يمكن طلبها من نوع إجازة " + holiday.holiday_status_id.name + u" " + str(holiday.holiday_status_id.minimum) + u" أيام")
              
             # check maximum request validation
-            if holiday.holiday_status_id.maximum != 0 and holiday.duration > holiday.holiday_status_id.maximum:
+            if holiday.holiday_status_id.maximum != 0 and holiday.duration > holiday.holiday_status_id.maximum and self.holiday_status_id!=self.env.ref('smart_hr.data_hr_holiday_compensation'):
                 raise ValidationError(u"أكثر فترة يمكن طلبها من نوع إجازة " + holiday.holiday_status_id.name + u" " + str(holiday.holiday_status_id.maximum) + u" أيام")
     
             # Date overlap
             # الإجازات
-            search_domain = [
-                ('employee_id', '=', holiday.employee_id.id),
-                ('id', '!=', holiday.id),
-                ('state', 'not in', ['refuse', 'cancel']),
-            ]
-            for rec in holiday_obj.search(search_domain):
-                if rec.date_from <= holiday.date_from <= rec.date_to or \
-                        rec.date_from <= holiday.date_to <= rec.date_to or \
-                        holiday.date_from <= rec.date_from <= holiday.date_to or \
-                        holiday.date_from <= rec.date_to <= holiday.date_to:
-                    # normal holidays can be ovelapped with illness type
-                    if not(rec.holiday_status == self.env.ref('smart_hr.data_hr_holiday_status_illness_normal') and \
-                            self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_normal')):
-                        raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق فى الإجازات")
+#             search_domain = [
+#                 ('employee_id', '=', holiday.employee_id.id),
+#                 ('id', '!=', holiday.id),
+#                 ('state', 'not in', ['refuse', 'cancel']),
+#             ]
+#             for rec in holiday_obj.search(search_domain):
+#                 if rec.date_from <= holiday.date_from <= rec.date_to or \
+#                         rec.date_from <= holiday.date_to <= rec.date_to or \
+#                         holiday.date_from <= rec.date_from <= holiday.date_to or \
+#                         holiday.date_from <= rec.date_to <= holiday.date_to:
+#                     # normal holidays can be ovelapped with illness type
+#                     if not(rec.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_illness_normal') and \
+#                             self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_normal') and self.holiday_status_id==self.env.ref('smart_hr.data_hr_holiday_compensation')):
+#                         raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق فى الإجازات")
             # التدريب
             search_domain = [
                 ('employee_id', '=', holiday.employee_id.id),
@@ -462,7 +480,7 @@ class HrHolidays(models.Model):
                 months = res.months
                 days = res.days
                 # for none normal holidays test
-                if self.holiday_status_id != self.env.ref('smart_hr.data_hr_holiday_status_normal'):
+                if self.holiday_status_id != self.env.ref('smart_hr.data_hr_holiday_status_normal') and  self.holiday_status_id!=self.env.ref('smart_hr.data_hr_holiday_compensation'):
                     if rec.date_from <= holiday.date_from <= rec.date_to or \
                             rec.date_from <= holiday.date_to <= rec.date_to or \
                             holiday.date_from <= rec.date_from <= holiday.date_to or \

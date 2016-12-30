@@ -30,7 +30,7 @@
 
 		<record id="data_hr_holiday_status_illness_work_accident"
 			model="hr.holidays.status">
-			<field name="name">مرضية (اصابت عمل)</field>
+			<field name="name">مرضية (اصابة عمل)</field>
 		</record>
 
 		<record id="data_hr_holiday_status_study" model="hr.holidays.status">
@@ -149,6 +149,30 @@
 
 		<record id="data_hr_holiday_compensation" model="hr.holidays.status">
 			<field name="name">اجازة التعويض</field>
+		</record>
+		<record id="data_hr_holidays_status_salary_percentage_normal_holiday1" model="hr.holidays.status.salary.percentage">
+			<field name="sequence" eval="0" />
+			<field name="periode" eval="6" />
+			<field name="salary_proportion" eval="100" />
+			<field name="holiday_status_id" ref="data_hr_holiday_status_illness_normal" />
+		</record>
+		<record id="data_hr_holidays_status_salary_percentage_normal_holiday2" model="hr.holidays.status.salary.percentage">
+			<field name="sequence" eval="1" />
+			<field name="periode" eval="6" />
+			<field name="salary_proportion" eval="50" />
+			<field name="holiday_status_id" ref="data_hr_holiday_status_illness_normal" />
+		</record>
+		<record id="data_hr_holidays_status_salary_percentage_normal_holiday3" model="hr.holidays.status.salary.percentage">
+			<field name="sequence" eval="2" />
+			<field name="periode" eval="6" />
+			<field name="salary_proportion" eval="25" />
+			<field name="holiday_status_id" ref="data_hr_holiday_status_illness_normal" />
+		</record>
+				<record id="data_hr_holidays_status_salary_percentage_normal_holiday3" model="hr.holidays.status.salary.percentage">
+			<field name="sequence" eval="3" />
+			<field name="periode" eval="6" />
+			<field name="salary_proportion" eval="0" />
+			<field name="holiday_status_id" ref="data_hr_holiday_status_illness_normal" />
 		</record>
 	</data>
 
