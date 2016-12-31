@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="view_notification_form">
+			<field name="name">base.notification.form</field>
+			<field name="model">base.notification</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="التنبيهات">
+					<sheet>
+						<group>
+							<field name="title" string="العنوان"/>
+							<field name="message" string="المحتوى"/>
+							<field name="show_date" string="تاريخ التنبيه" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_base_notification">
+			<field name="name">التنبيهات</field>
+			<field name="res_model">base.notification</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+		</record>
+	</data>
+</openerp>
