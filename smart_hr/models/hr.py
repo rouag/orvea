@@ -148,7 +148,7 @@ class HrEmployeePromotionHistory(models.Model):
     salary_grid_id = fields.Many2one('salary.grid.grade', string=u'الرتبة')
     date_from = fields.Date(string=u'التاريخ من', default=fields.Datetime.now())
     date_to = fields.Date(string=u'التاريخ الى')
-    balance = fields.Integer(string=u'رصيد الترقية (يوم)', compute='_compute_balance')
+    balance = fields.Integer(string=u'رصيد الترقية (يوم)', compute='_compute_balance',store=True)
 
     def _compute_balance(self):
         for rec in self:

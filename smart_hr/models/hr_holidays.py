@@ -27,19 +27,15 @@ class HrHolidays(models.Model):
                 return False
         return True
     
-    @api.depends('holiday_status_id.entitlements.extension_period')
+    @api.depends('holiday_status_id.extension_number')
     def _check_is_extensible(self):
         # Check if the holiday have a pending or completed extension leave
+        is_extensible = False
         for rec in self:
-            is_extensible = False
-            if rec.holiday_status_id.entitlements:
-                for en in rec.holiday_status_id.entitlements:
-                    if rec.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
-                        if en.extension_period!=0:
-                            is_extensible = True
-                            rec.extension_period=en.extension_period
-                            break
-            rec.is_extensible = is_extensible
+            if rec.holiday_status_id.extension_number!=0:
+                is_extensible = True
+                break
+        rec.is_extensible = is_extensible
             
     @api.multi
     def _set_external_autoritie(self):

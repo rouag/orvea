@@ -192,7 +192,7 @@
 						</group>
 						<group col="4">
 							<field name="num_inspeech" groups="smart_hr.group_holidays_checker"
-								attrs="{'readonly':[('state','not in',['draft'])], 'invisible':[('state','not in',['revision_response','done'])]}" />
+								attrs="{'readonly':[('state','!=','revision_response')], 'invisible':[('state','not in',['revision_response','done'])]}" />
 							<field name="date_inspeech" groups="smart_hr.group_holidays_checker"
 								attrs="{'readonly':[('state','!=','revision_response')], 'invisible':[('state','not in',['revision_response','done'])]}" />
 							<field name="inspeech_file" groups="smart_hr.group_holidays_checker"
