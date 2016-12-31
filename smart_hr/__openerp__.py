@@ -37,6 +37,7 @@
         'views/report_medical_examination.xml',
         'views/report_order_enquiry.xml',
         'views/hr_holidays_report.xml',
+        'views/report_hr_holidays_decision.xml',
         'views/report.xml',
         'views/templates.xml',
         'views/layout.xml',
@@ -62,6 +63,7 @@
         'view/recruiter.xml',
         'view/hr_holidays.xml',
         'view/hr_holidays_cancellation_view.xml',
+         'view/hr_holidays_decision_view.xml',
         'view/hr_overtime_view.xml',
         'view/hr_employee_education_level.xml',
         'view/hr_assessment_view.xml',
@@ -111,7 +113,15 @@
          # تصنيف الوظائف
         'job/view/hr_job_setting.xml',
         'job/view/hr_skils_job.xml',
-        
+        #الاجازات
+        'holidays/menu.xml',
+        'holidays/wizard/wizard_resume_holidays_view.xml',
+        'holidays/views/resume_holidays_report.xml',
+        'holidays/views/report.xml',
+    
+    
+    
+    
     ],
     'auto_install': False,
 }

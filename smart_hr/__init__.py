@@ -7,3 +7,4 @@ from . import attendance
 from . import payroll
 from . import job
 from . import hr
+from . import holidays
