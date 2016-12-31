@@ -143,54 +143,54 @@ class hr_deputation(models.Model):
 #                         dep.date_from <= eid.date_to <= dep.date_to:
 #                     raise ValidationError(u"هناك تداخل فى التواريخ مع اعياد و مناسبات رسمية")
             # Check for any intersection with other decisions
-            for emp in dep.employee_id:
-                # Leave
-                search_domain = [
-                    ('employee_id', '=', emp.id),
-                    ('state', '!=', 'refuse'),
-                ]
-#                 for rec in leave_obj.search(search_domain):
-#                     if rec.date_from <= dep.date_from <= rec.date_to or \
-#                             rec.date_from <= dep.date_to <= rec.date_to or \
-#                             dep.date_from <= rec.date_from <= dep.date_to or \
-#                             dep.date_from <= rec.date_to <= dep.date_to:
-#                         raise ValidationError(u"هناك تداخل فى التواريخ مع قرار سابق فى الاجازات")
-                # Overtime
-                search_domain = [
-                    ('overtime_line_ids.employee_id', '=', emp.id),
-                    ('state', '!=', 'refuse'),
-                ]
-                for rec in overtime_obj.search(search_domain):
-                    for line in rec.overtime_line_ids:
-                        if (line.date_from <= dep.date_from <= line.date_to or \
-                                line.date_from <= dep.date_to <= line.date_to or \
-                                dep.date_from <= line.date_from <= dep.date_to or \
-                                dep.date_from <= line.date_to <= dep.date_to) and \
-                                line.employee_id == emp:
-                            raise ValidationError(u"هناك تداخل فى التواريخ مع قرار سابق فى خارج الدوام")
-            # Training
-            search_domain = [
-                ('employee_ids', 'in', [dep.employee_id.id]),
-                ('state', '!=', 'refuse'),
-            ]
-            for rec in train_obj.search(search_domain):
-                if rec.effective_date_from <= dep.date_from <= rec.effective_date_to or \
-                        rec.effective_date_from <= dep.date_to <= rec.effective_date_to or \
-                        dep.date_from <= rec.effective_date_from <= dep.date_to or \
-                        dep.date_from <= rec.effective_date_to <= dep.date_to:
-                    raise ValidationError(u"هناك تداخل فى التواريخ مع قرار سابق فى التدريب")
-            # Deputation
-            search_domain = [
-                ('employee_id', '=', dep.employee_id.id),
-                ('id', '!=', dep.id),
-                ('state', '!=', 'refuse'),
-            ]
-            for rec in dep_obj.search(search_domain):
-                if rec.date_from <= dep.date_from <= rec.date_to or \
-                        rec.date_from <= dep.date_to <= rec.date_to or \
-                        dep.date_from <= rec.date_from <= dep.date_to or \
-                        dep.date_from <= rec.date_to <= dep.date_to:
-                    raise ValidationError(u"هناك تداخل فى التواريخ مع قرار سابق فى الأنتداب")
+#             for emp in dep.employee_id:
+#                 # Leave
+#                 search_domain = [
+#                     ('employee_id', '=', emp.id),
+#                     ('state', '!=', 'refuse'),
+#                 ]
+# #                 for rec in leave_obj.search(search_domain):
+# #                     if rec.date_from <= dep.date_from <= rec.date_to or \
+# #                             rec.date_from <= dep.date_to <= rec.date_to or \
+# #                             dep.date_from <= rec.date_from <= dep.date_to or \
+# #                             dep.date_from <= rec.date_to <= dep.date_to:
+# #                         raise ValidationError(u"هناك تداخل فى التواريخ مع قرار سابق فى الاجازات")
+#                 # Overtime
+#                 search_domain = [
+#                     ('overtime_line_ids.employee_id', '=', emp.id),
+#                     ('state', '!=', 'refuse'),
+#                 ]
+#                 for rec in overtime_obj.search(search_domain):
+#                     for line in rec.overtime_line_ids:
+#                         if (line.date_from <= dep.date_from <= line.date_to or \
+#                                 line.date_from <= dep.date_to <= line.date_to or \
+#                                 dep.date_from <= line.date_from <= dep.date_to or \
+#                                 dep.date_from <= line.date_to <= dep.date_to) and \
+#                                 line.employee_id == emp:
+#                             raise ValidationError(u"هناك تداخل فى التواريخ مع قرار سابق فى خارج الدوام")
+#             # Training
+#             search_domain = [
+#                 ('employee_ids', 'in', [dep.employee_id.id]),
+#                 ('state', '!=', 'refuse'),
+#             ]
+#             for rec in train_obj.search(search_domain):
+#                 if rec.effective_date_from <= dep.date_from <= rec.effective_date_to or \
+#                         rec.effective_date_from <= dep.date_to <= rec.effective_date_to or \
+#                         dep.date_from <= rec.effective_date_from <= dep.date_to or \
+#                         dep.date_from <= rec.effective_date_to <= dep.date_to:
+#                     raise ValidationError(u"هناك تداخل فى التواريخ مع قرار سابق فى التدريب")
+#             # Deputation
+#             search_domain = [
+#                 ('employee_id', '=', dep.employee_id.id),
+#                 ('id', '!=', dep.id),
+#                 ('state', '!=', 'refuse'),
+#             ]
+#             for rec in dep_obj.search(search_domain):
+#                 if rec.date_from <= dep.date_from <= rec.date_to or \
+#                         rec.date_from <= dep.date_to <= rec.date_to or \
+#                         dep.date_from <= rec.date_from <= dep.date_to or \
+#                         dep.date_from <= rec.date_to <= dep.date_to:
+#                     raise ValidationError(u"هناك تداخل فى التواريخ مع قرار سابق فى الأنتداب")
 
     @api.depends('date_from', 'date_to')
     def _compute_duration(self):
