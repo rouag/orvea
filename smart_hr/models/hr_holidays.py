@@ -39,9 +39,10 @@ class HrHolidays(models.Model):
             
     @api.multi
     def _set_external_autoritie(self):
-        search_external_authoritie = self.env["external.authorities"].search([('holiday_status.id','=',self.holiday_status_id.id)])
-        if search_external_authoritie:
-            self.external_authoritie = search_external_authoritie[0] 
+        for rec in self:
+            search_external_authoritie = self.env["external.authorities"].search([('holiday_status','=',rec.holiday_status_id.id)])
+            if search_external_authoritie:
+                rec.external_authoritie = search_external_authoritie[0] 
                       
     name = fields.Char(string=u'رقم القرار', advanced_search=True)
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now())
@@ -199,8 +200,8 @@ class HrHolidays(models.Model):
     @api.multi
     def button_extend(self):
         # check if its possible to extend this holiday
-        extensions_number = self.env['hr.holidays'].search_count([('extended_holiday_id', '=', self.extended_holiday_id.id)])
-        extensions = self.env['hr.holidays'].search([('extended_holiday_id', '!=', False),('extended_holiday_id', '=', self.extended_holiday_id.id),('state', '=', 'done')])
+        extensions_number = self.env['hr.holidays'].search_count([('extended_holiday_id', '=', self.id),('extended_holiday_id', '!=', False),('state', '=', 'done')])
+        extensions = self.env['hr.holidays'].search([('extended_holiday_id', '!=', False),('extended_holiday_id', '=', self.id),('state', '=', 'done')])
         sum_periods = 0
         for extension in extensions:
             sum_periods += extension.duration
