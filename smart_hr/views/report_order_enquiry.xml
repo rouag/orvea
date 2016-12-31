@@ -48,7 +48,7 @@
 
 								</tbody>
 								<!-- content -->
-
+								<!-- loop under employees -->
 								<t t-foreach="docs" t-as="o">
 									<tr>
 										<!-- exams varible have the exams for current category -->
