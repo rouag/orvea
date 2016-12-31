@@ -467,7 +467,7 @@ class HrHolidays(models.Model):
             open_periode = False
             for periode in periodes:
                 if fields.Datetime.from_string(periode.date_to) > datetime.now():
-                    open_periode = True
+                    open_periode = periode
                     break
             if not open_periode:
                 # get the entitlement from holiday status
@@ -723,6 +723,11 @@ class HrHolidays(models.Model):
         """
         # if ilness holiday than check periode
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_illness'):
+            for en in self.holiday_status_id.entitlements:
+                if en.entitlment_category.name == self.entitlement_type.name and en.holiday_stock_default<self.duration:
+                    raise ValidationError(u"لا يمكن لإجازة " +en.entitlment_category.name + u"ان تتجاوز " + str(en.holiday_stock_default) + u" أيام")
+                    break
+                
             periodes = self.env['hr.illness.holidays.periode'].search([('employee_id', '=', self.employee_id.id)])
             open_periode = False
             for periode in periodes:
