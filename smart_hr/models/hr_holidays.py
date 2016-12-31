@@ -5,6 +5,7 @@ from openerp.tools import SUPERUSER_ID
 from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 class HrHolidays(models.Model):
     _inherit = 'hr.holidays'
@@ -372,6 +373,14 @@ class HrHolidays(models.Model):
                 
     @api.one
     def button_accept_dm(self):
+        # send notification for the employee who is requesting a holiday
+        self.env['base.notification'].create({'title': u'إشعار بقبول إجازة',
+                                              'message': u'لقد تم قبول الإجازة من طرف المدير المباشر',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'res_model':'hr.holidays',
+                                              'res_id': self.id,
+                                              'res_action': 'smart_hr.action_hr_holidays'})
         self.state = 'audit'
     
     @api.multi
@@ -407,6 +416,14 @@ class HrHolidays(models.Model):
     def button_accept_hrm(self):
         if not self.holiday_status_id.external_decision:
             self.state = 'done'
+            # send notification for the employee who is requesting a holiday
+            self.env['base.notification'].create({'title': u'إشعار بقبول إجازة',
+                                              'message': u'لقد تم قبول الإجازة من طرف مدير شؤون الموظفين',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'res_model':'hr.holidays',
+                                              'res_id': self.id,
+                                              'res_action': 'smart_hr.action_hr_holidays'})
             # check illness holiday periode
             self.check_illness_holiday_periode_existance(self.employee_id)
             # update holidays balance
@@ -450,10 +467,6 @@ class HrHolidays(models.Model):
     def button_refuse_revision(self):
         self.state = 'external_audit'
     
-    
-    
-    
-    
     def check_illness_holiday_periode_existance(self, employee_id):
         """
         return: an open periode or False
@@ -489,6 +502,14 @@ class HrHolidays(models.Model):
         if not self.inspeech_file:
             raise ValidationError(u"الرجاء إرفاق الخطاب.")
         self.state = 'done'
+        # send notification for the employee who is requesting a holiday
+        self.env['base.notification'].create({'title': u'إشعار بقبول إجازة',
+                                              'message': u'لقد تم قبول الإجازة من طرف مدقق الاجازات',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'res_model':'hr.holidays',
+                                              'res_id': self.id,
+                                              'res_action': 'smart_hr.action_hr_holidays'})
         # check illness holiday periode
         self.check_illness_holiday_periode_existance(self.employee_id)
         # update holidays balance
@@ -496,6 +517,14 @@ class HrHolidays(models.Model):
     @api.one
     def button_refuse_revision_response(self):
         self.state = 'refuse'
+        # send notification for the employee who is requesting a holiday
+        self.env['base.notification'].create({'title': u'إشعار برفض إجازة',
+                                              'message': u'لقد تم رفض الإجازة من طرف مدقق الاجازات',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'res_model':'hr.holidays',
+                                              'res_id': self.id,
+                                              'res_action': 'smart_hr.action_hr_holidays'})
     
 
                 
