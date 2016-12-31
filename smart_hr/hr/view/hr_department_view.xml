@@ -3,9 +3,9 @@
 	<data>
 
 
-		 
+
 		<!-- Department Hierarchy -->
-		
+
 		<record id="hr_department_tree_view_level" model="ir.ui.view">
 			<field name="name">hr.department.tree.view</field>
 			<field name="model">hr.department</field>
@@ -18,7 +18,7 @@
 				</tree>
 			</field>
 		</record>
-		
+
 		<record id="action_hr_department_level_tree" model="ir.actions.act_window">
 			<field name="name">الهيكل الإدارى</field>
 			<field name="res_model">hr.department</field>
@@ -28,19 +28,20 @@
 			<field name="view_id" ref="hr_department_tree_view_level" />
 		</record>
 
-		<menuitem id="hr_department_level_menu" name="الهيكل الشجري" sequence="5"
-			parent="hr_root_organisation" action="action_hr_department_level_tree" />
+		<menuitem id="hr_department_level_menu" name="الهيكل الشجري"
+			sequence="5" parent="hr_root_organisation" action="action_hr_department_level_tree" />
 
 
 
 		<!-- hr.department form -->
-		
+
 		<record id="view_department_form_smart_inherit" model="ir.ui.view">
 			<field name="name">hr.department.form</field>
 			<field name="model">hr.department</field>
 			<field name="inherit_id" ref="hr.view_department_form" />
 			<field name="arch" type="xml">
 				<field name="name" position="after">
+					<field name="code" />
 					<field name="dep_section" />
 					<field name="dep_city" />
 					<field name="dep_recruiter" />
