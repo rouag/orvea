@@ -3,7 +3,8 @@
 from openerp import fields, models, api, _
 from openerp.exceptions import ValidationError
 from openerp.tools import SUPERUSER_ID
-from lxml import etree
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
+from datetime import date, datetime, timedelta
 
 class hrHolidaysCancellation(models.Model):
     _name = 'hr.holidays.cancellation'
@@ -77,6 +78,29 @@ class hrHolidaysCancellation(models.Model):
         user = self.env['res.users'].browse(self._uid)
         for cancellation in self:
             cancellation.state = 'audit'
+            # send notification for requested the DM
+            if self.is_the_creator: 
+                self.env['base.notification'].create({'title': u'إشعار بإلغاء أو قطع إجازة',
+                                                  'message': u'الرجاء مراجعة طلب الإلغاء أو القطع',
+                                                  'user_id': self.employee_id.parent_id.user_id.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_model':'hr.holidays.cancellation',
+                                                  'res_id': self.id,
+                                                  })
+            else:
+                # send notification for requested employee
+                if self._context['operation'] == 'cancel':
+                    res_model = 'smart_hr.action_hr_holidays_cancellation_employees'
+                else:
+                    res_model = 'smart_hr.action_hr_holidays_cut_employees'
+                self.env['base.notification'].create({'title': u'إشعار بإلغاء أو قطع إجازة',
+                                                  'message': u'الرجاء مراجعة طلب الإلغاء أو القطع',
+                                                  'user_id': self.employee_id.user_id.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_model':'hr.holidays.cancellation',
+                                                  'res_id': self.id,
+                                                  'res_action': res_model})
+                
             cancellation.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"'")
 
     @api.one
@@ -94,6 +118,14 @@ class hrHolidaysCancellation(models.Model):
         for cancellation in self:
             for holiday in cancellation.holidays:
                 holiday.state = 'draft'
+                # send notification for requested the DM
+                self.env['base.notification'].create({'title': u'إشعار برفض إلغاء أو قطع إجازة',
+                                                  'message': u' '+self.employee_id.name +u'لقد تم الرفض من قبل ',
+                                                  'user_id': self.employee_id.parent_id.user_id.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_model':'hr.holidays.cancellation',
+                                                  'res_id': self.id,
+                                                  })
 
     @api.model
     def _needaction_domain_get(self):

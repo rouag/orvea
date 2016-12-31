@@ -31,6 +31,39 @@
     </nav>
       
 	</t>
+
+<!-- 
+juste modif :
+background-position: ' + 19*(level) + 'px; padding-left: ' + (4 + 19*(level)) + 'px;
+by
+background-position: ' + 19*(level) + 'px; padding-right: ' + (4 + 19*(level)) + 'px;
+ -->
+
+<tr t-name="TreeView.rows"
+        t-foreach="records" t-as="record"
+        t-att-id="'treerow_' + record.id"
+        t-att-data-id="record.id" t-att-data-level="level + 1"
+        t-att-data-row-parent-id="row_parent_id">
+    <t t-set="children" t-value="record[children_field]"/>
+    <t t-set="class" t-value="children and children.length ? 'treeview-tr' : 'treeview-td'"/>
+    <t t-set="rank" t-value="'o_treeview_first'"/>
+    <t t-set="style" t-value="'background-position: ' + 19*(level) + 'px; padding-right: ' + (4 + 19*(level)) + 'px;'"/>
+
+    <td t-foreach="fields_view" t-as="field"
+        t-if="!field.attrs.modifiers.tree_invisible"
+        t-att-data-id="record.id"
+        t-att-style="color_for(record) + style "
+        t-attf-class="#{class} #{rank} #{(fields[field.attrs.name].type === 'float') or (fields[field.attrs.name].type === 'integer') or (fields[field.attrs.name].type === 'monetary')? 'oe_number' : ''}">
+
+        <span t-if="!field.attrs.modifiers.invisible" >
+            <t t-esc="render(record[field.attrs.name], fields[field.attrs.name])" />
+        </span>
+
+        <t t-set="class" t-value="'treeview-td'"/>
+        <t t-set="rank" t-value="''"/>
+        <t t-set="style" t-value="''"/>
+    </td>
+</tr>
 	
 	 
 

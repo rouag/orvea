@@ -16,6 +16,12 @@ class hr_termination(models.Model):
     date = fields.Date(string=u'تاريخ', default=fields.Datetime.now())
     termination_date = fields.Date(string=u'تاريخ الإعتماد')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', advanced_search=True)
+    employee_state = fields.Selection([('new', u'جديد'),
+                                       ('waiting', u'في إنتظار الموافقة'),
+                                       ('update', u'إستكمال البيانات'),
+                                       ('done', u'اعتمدت'),
+                                       ('refused', u'رفض'),
+                                       ('employee', u'موظف')], string=u'الحالة', related='employee_id.employee_state')
     # Employee Info
     employee_no = fields.Integer(string=u'رقم الموظف', related='employee_id.employee_no')
     job_id = fields.Many2one(string=u'الوظيفة', related='employee_id.job_id')

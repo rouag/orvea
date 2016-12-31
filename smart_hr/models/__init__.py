@@ -14,8 +14,8 @@ from . import recruiter
 from . import hr_holidays
 from . import hr_holidays_cancellation
 from . import hr_overtime
-from . import hr_department
 from . import hr_holidays_decision
+
 from . import hr_assessment
 from . import hr_assessment_point
 
@@ -29,7 +29,6 @@ from . import hr_suspension_end
 
 from . import hr_termination
 
-from . import hr_deduction
 from . import hr_decision
 
 from . import section

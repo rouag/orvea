@@ -15,6 +15,7 @@
                     <header>
                         <field name="is_finished" invisible="1"/>
                         <field name="is_same_employee" invisible="1"/>
+                        <field name="employee_state" invisible="1"/>
                         <button name="button_dm" string="إرسال طلب" type="object" attrs="{'invisible':['|',('state','!=','draft'),('is_current_user','=',False)]}" icon="fa-paper-plane" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
                         <button name="button_hrm" string="موافق" type="object" attrs="{'invisible':['|',('state','!=','dm'),('is_direct_manager','=',False)]}" icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
                         <button name="button_done" string="موافق" type="object" states="hrm" groups="smart_hr.group_hrm" icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
@@ -30,7 +31,7 @@
                         <group>
                             <group>
                                 <field name="date" readonly="1"/>
-                                <field name="employee_id" required="1" attrs="{'readonly':[('employee_state','!=','draft')]}"/>
+                                <field name="employee_id" required="1" />
                             </group>
                             <group string="البدلات">
                                 <field name="deputation_support" required="1" attrs="{'readonly':[('state','!=','draft')]}"/>
@@ -121,7 +122,7 @@
             <field name="name">إنتدبات الموظفين</field>
             <field name="res_model">hr.deputation</field>
             <field name="search_view_id" ref="view_search_hr_deputation"/>
-            <field name="domain">[('employee_id.user_id', '!=', uid),('employee_state','!=','draft')]</field>
+            <field name="domain">[('employee_id.user_id', '!=', uid),('employee_state','!=','new')]</field>
             <field name="context">{'search_default_state_dm':1}</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>

@@ -3,9 +3,6 @@
 	<data>
 
 
-
-		<!--الفروع -->
-
 		<record id="hierarchy_level_form" model="ir.ui.view">
 			<field name="name">hierarchy.level.form</field>
 			<field name="model">hierarchy.level</field>
@@ -26,8 +23,8 @@
 			<field name="model">hierarchy.level</field>
 			<field name="arch" type="xml">
 				<tree string="مستوى العمق في ‫الهيكل‬">
-							<field name="department_id" />
-							<field name="level" />
+					<field name="department_id" />
+					<field name="level" />
 				</tree>
 			</field>
 		</record>
@@ -39,8 +36,9 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 
-		<menuitem id="menu_hr_department_hierarchy_level_conf" parent="menu_hr_department_hierarchy_level"
-			name="مستوى العمق في ‫الهيكل‬" sequence="100" action="action_hierarchy_level"/>
+		<menuitem id="menu_hierarchy_level"
+			parent="menu_department_configuration" name="مستوى العمق في ‫الهيكل‬"
+			sequence="10" action="action_hierarchy_level" />
 
 
 

@@ -16,6 +16,12 @@ class hr_suspension(models.Model):
     name = fields.Char(string=u'رقم القرار', advanced_search=True)
     date = fields.Date(string=u'التاريخ', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', advanced_search=True)
+    employee_state = fields.Selection([('new', u'جديد'),
+                                       ('waiting', u'في إنتظار الموافقة'),
+                                       ('update', u'إستكمال البيانات'),
+                                       ('done', u'اعتمدت'),
+                                       ('refused', u'رفض'),
+                                       ('employee', u'موظف')], string=u'الحالة', related='employee_id.employee_state')
     letter_sender = fields.Char(string=u'جهة الخطاب', advanced_search=True)
     letter_number = fields.Integer(string=u'رقم الخطاب', advanced_search=True)
     letter_date = fields.Date(string=u'تاريخ الخطاب')

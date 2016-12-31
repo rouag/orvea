@@ -6,13 +6,11 @@
 
 		<menuitem id="hr_root_employees" name="إدارة الموظفين" sequence="5" parent="hr_root" />
 
-		<menuitem id="hr_root_organisation" name="الهيكل الإداري" sequence="10" parent="hr_root" />
-
 		<menuitem id="hr_root_organisation_action" name="الإجراءات" sequence="100" parent="hr_root_employees" />
 
+		<menuitem id="hr_root_organisation_configuration" name="الإعدادات" sequence="500" parent="hr_root_employees" />
+		
 		<menuitem id="hr_root_job" name="إدارة الوظائف" sequence="15" parent="hr_root" />
-
-		<menuitem id="menu_hr_assessment_root" parent="hr_root" name="التقييم" sequence="16" />
 
 		<menuitem id="menu_hr_holiday_root" name="الإجازات" sequence="20" parent="hr_root" />
 
@@ -20,6 +18,8 @@
 
 		<menuitem id="hr_root_training" name="التدريب" sequence="30" parent="hr_root" />
 
+		<menuitem id="menu_hr_assessment_root" parent="hr_root" name="التقييم" sequence="90" />
+		
 		<menuitem id="hr_root_configuration" name="الإعدادات" sequence="100" parent="hr_root" />
 		
 		<menuitem id="hr_root_employee_configuration" name="شؤون الموظفين" sequence="15" parent="hr_root_configuration" />
@@ -27,22 +27,6 @@
 		<menuitem id="menu_hr_deputation_root" parent="hr_root" name="الأنتدابات" sequence="17" />
 
 		<menuitem id="hr_root_decision" parent="hr_root" name="القرارات" sequence="40" />		
-		
-		<menuitem id="hr_deduction_root" parent="hr_root" name="الحسميات" sequence="45" />
-		
-		<menuitem id="menu_hr_decisions" parent="hr_root" name="القرارات" sequence="50" />		
-<!-- 		 #TODO:  two menu of  القرارات -->
-		<menuitem id="menu_hr_suspension_root" parent="menu_hr_decisions" name="كف اليد" sequence="10" />
-			
-		<menuitem id="menu_hr_termination_root" parent="menu_hr_decisions" name="طى القيد" sequence="20" />
-			
-		<menuitem id="menu_hr_termination_conf_root" parent="hr_root_configuration" name="طى القيد" sequence="90" />
-		
-		<menuitem id="menu_hr_department_hierarchy_level" parent="hr_root_configuration"
-			name="الإدارات‬" sequence="100" />
-			
-		<menuitem id="menu_hr_termination_conf_root" parent="hr_root_configuration" name="طى القيد" sequence="90" />
-		
 			
 	</data>
 </openerp>

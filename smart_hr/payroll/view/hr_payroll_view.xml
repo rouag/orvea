@@ -3,8 +3,6 @@
 	<data>
 
 
-		<menuitem id="hr_payroll_root" name="الرواتب"
-			groups="group_payroll_management" parent="hr_root" sequence="25" />
 
 		<!-- إعداد مسيّر إفرادي -->
 
@@ -300,9 +298,6 @@
 
 
 		<!-- التقارير -->
-
-		<menuitem id="hr_payroll_reporting" name="التقارير"
-			groups="group_payroll_management" sequence="15" parent="hr_payroll_root" />
 
 
 		<record id="hr_payslip_line_tree_report" model="ir.ui.view">
