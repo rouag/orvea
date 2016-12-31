@@ -665,6 +665,17 @@ class HrHolidays(models.Model):
                 sum_days = 0
                 for holiday in holidays:
                     sum_days += holiday.periode
+                # get the entitlement from holiday status
+                entitlement = False
+                for en in self.holiday_status_id.entitlements:
+                    if en.entitlment_category.id == self.entitlement_type.id:
+                        entitlement = en
+                        break
+                if entitlement:
+                    if entitlement.holiday_stock_default <= sum_days:
+                        raise ValidationError(u"ليس لديك الرصيد الكافي")
+                        
+                    
 
     @api.model
     def create(self, vals):
@@ -784,7 +795,7 @@ class HrHolidaysStatusEntitlement(models.Model):
     _name = 'hr.holidays.status.entitlement'
     _description = u'أنواع الاستحقاقات'
     entitlment_category = fields.Many2one('hr.holidays.entitlement.config', string=u'فئة الاستحقاق')
-    holiday_stock_default = fields.Integer(string=u'الرصيد')
+    holiday_stock_default = fields.Integer(string=u'الرصيد (يوم)')
     conditionnal = fields.Boolean(string=u'مشروط')
     periode = fields.Selection([
         (1, u'سنة'),
