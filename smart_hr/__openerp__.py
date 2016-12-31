@@ -92,6 +92,10 @@
         'attendance/view/hr_attendance.xml',
         'attendance/view/hr_extra_hours.xml',
         'attendance/view/hr_authorization_view.xml',
+        
+        # تصنيف الوظائف
+        'job/view/hr_job_setting.xml',
+        'job/view/hr_skils_job.xml',
     ],
     'auto_install': False,
 }
