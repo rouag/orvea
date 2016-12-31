@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+
+		<menuitem id="hr_job_setting" sequence="6" name="تصنيف الوظائف"
+			parent="hr_root_configuration" />
+
+		<!-- ‫المجموعة العامة -->
+
+		<record id="hr_groupe_general_form" model="ir.ui.view">
+			<field name="name">hr.groupe.job.form</field>
+			<field name="model">hr.groupe.job</field>
+			<field name="arch" type="xml">
+				<form string="المجموعة العامة">
+					<sheet>
+						<group>
+							<group>
+								<field name="name" string="مسمى المجموعة العامة" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<!-- <record id="hr_groupe_general_tree" model="ir.ui.view"> -->
+		<!-- <field name="name">hr.groupe.job.tree</field> -->
+		<!-- <field name="model">hr.groupe.job</field> -->
+		<!-- <field name="arch" type="xml"> -->
+		<!-- <tree string="المجموعة العامة"> -->
+		<!-- <field name="name" /> -->
+		<!-- </tree> -->
+		<!-- </field> -->
+		<!-- </record> -->
+
+
+		<record id="hr_groupe_general_tree" model="ir.ui.view">
+			<field name="name">hr.groupe.job.tree</field>
+			<field name="model">hr.groupe.job</field>
+			<field name="field_parent">child_id</field>
+			<field name="arch" type="xml">
+				<tree toolbar="1" string="المجموعة العامة">
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="groupe_category_action" model="ir.actions.act_window">
+			<field name="name">هيكل المجموعة العامة</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">hr.groupe.job</field>
+			<field name="domain">[('parent_id','=',False)]</field>
+			<field name="view_type">tree</field>
+			<field name="view_id" ref="hr_groupe_general_tree" />
+		</record>
+
+		<menuitem id="groupe_general_hearchi_menu" name=" هيكل المجموعة العامة"
+			sequence="1" parent="hr_job_setting" action="groupe_category_action" />
+
+		<record model="ir.actions.act_window" id="action_groupe_general">
+			<field name="name">المجموعة العامة</field>
+			<field name="res_model">hr.groupe.job</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="context">{'default_type_groupe':'general'}</field>
+			<field name="view_id" ref="hr_groupe_general_form" />
+		</record>
+
+		<menuitem id="groupe_general_menu" name="المجموعة العامة"
+			sequence="2" parent="hr_job_setting" action="action_groupe_general" />
+
+		<!-- المجموعة النوعية -->
+
+		<record id="hr_groupe_specific_form" model="ir.ui.view">
+			<field name="name">hr.groupe.job.form.specific</field>
+			<field name="model">hr.groupe.job</field>
+			<field name="arch" type="xml">
+				<form string="المجموعة النوعية">
+					<sheet>
+						<group>
+							<group>
+								<field name="name" string="مسمى المجموعة النوعية" />
+								<field name="parent_id" domain="[('type_groupe', '=', 'general')]"
+									string="المجموعة العامة" />
+							</group>
+
+						</group>
+
+
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+
+
+		<record model="ir.actions.act_window" id="action_hr_groupe_specific">
+			<field name="name">المجموعة النوعية</field>
+			<field name="res_model">hr.groupe.job</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="context">{'default_type_groupe':'spicific'}</field>
+			<field name="view_id" ref="hr_groupe_specific_form" />
+		</record>
+
+		<menuitem id="group_specific_menu" name="المجموعة النوعية"
+			sequence="2" parent="hr_job_setting" action="action_hr_groupe_specific" />
+
+
+
+		<!-- سلسلة الفئات‬ -->
+
+
+		<record id="hr_categorie_serie_form" model="ir.ui.view">
+			<field name="name">hr.groupe.serie.form</field>
+			<field name="model">hr.groupe.job</field>
+			<field name="arch" type="xml">
+				<form string="سلسلة الفئات‬">
+					<sheet>
+						<group col="4">
+							<group>
+								<field name="name" string="مسمى سلسلة الفئات" />
+								<field name="numero" />
+							</group>
+							<group>
+								<field name="rank_from" />
+								<field name="rank_to"  />
+							</group>
+							<group>
+								<field name="parent_id" domain="[('type_groupe', '=', 'spicific')]"
+									string="المجموعة النوعية" />
+									<field name="skils_ids" widget="many2many" />
+									
+							</group>
+							<group col="10">
+								<field name="instead_risk" />
+								<field name="instead_damage" />
+								<field name="instead_job_nature" />
+								<field name="reward_postman" />
+								<field name="direct_public_funds_reward" />
+							</group>
+
+						</group>
+
+
+						<field name="hr_classment_job_ids" string="الرتب‬">
+						<tree >
+								<field name="name" />
+								<field name="exeperince" />
+							</tree>
+							<form >
+							<group>
+								<field name="name" readonly="1" />
+								<field name="exeperince" />
+								</group>
+							</form>
+							
+						</field>
+
+
+						<field name="hr_training_ids" string="دورات تدريبية‬">
+							<tree>
+								<field name="traninig_id" />
+								<field name="type" />
+							</tree>
+							<form>
+								<group col='2'>
+									<field name="traninig_id" />
+									<field name="type" />
+								</group>
+							</form>
+						</field>
+
+
+
+
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+
+		<record model="ir.actions.act_window" id="action_hr_categorie_serie">
+			<field name="name">سلسلة الفئات</field>
+			<field name="res_model">hr.groupe.job</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="context">{'default_type_groupe':'serie'}</field>
+			<field name="view_id" ref="hr_categorie_serie_form" />
+
+		</record>
+
+		<menuitem id="categorie_serie_menu" name="سلسلة الفئات"
+			sequence="3" parent="hr_job_setting" action="action_hr_categorie_serie" />
+
+
+
+
+
+	</data>
+</openerp>

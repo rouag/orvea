@@ -16,7 +16,6 @@ class BaseNotification(http.Controller):
         now = datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M:%S")
         notifications = notification_obj.search([('user_id', '=', request.session.uid), ('to_read', '=', 'True'), ('show_date', '>=', now)])
         all_notif = []
-        print now
         for notification in notifications:
             all_notif.append({
                 'event_id': 1,

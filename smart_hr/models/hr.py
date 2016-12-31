@@ -43,6 +43,7 @@ class HrEmployee(models.Model):
     traveling_ticket = fields.Boolean(string=u'تذكرة سفر', default=False)
     traveling_ticket_familiar = fields.Boolean(string=u'تذكرة سفر عائليّة', default=False)
     compensation_stock = fields.Integer(string=u'رصيد إجازات التعويض')
+    sick_holiday_peiodes = fields.One2many('hr.illness.holidays.periode', 'employee_id', string='sick holidays periodes')
     
     def _compute_service_years(self):
         for emp in self:

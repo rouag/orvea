@@ -101,6 +101,10 @@
         'attendance/wizard/wizard_attendance_summary_view.xml',
         'attendance/views/attendance_summary_report.xml',
         'attendance/views/report.xml',
+         # تصنيف الوظائف
+        'job/view/hr_job_setting.xml',
+        'job/view/hr_skils_job.xml',
+        
     ],
     'auto_install': False,
 }
