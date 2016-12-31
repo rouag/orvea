@@ -1,0 +1,10 @@
+.o_notification_manager .o_notification .o_close {
+    position: absolute;
+    top: 5px;
+    left: 0;
+     direction: ltr;
+    /* bottom: auto; */
+    right: 5px;
+    color: rgba(0, 0, 0, 0.3);
+    text-decoration: none;
+}
