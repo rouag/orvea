@@ -48,7 +48,6 @@
 
         'view/hr_department_views.xml',
         'view/hr.xml',
-        'view/hr_job.xml',
         'view/hr_decision_appoint.xml',
         'view/hr_deduction.xml',
         'view/hr_promotion.xml',
@@ -104,7 +103,7 @@
          # تصنيف الوظائف
         'job/view/hr_job_setting.xml',
         'job/view/hr_skils_job.xml',
-        
+        'job/view/hr_job.xml'
     ],
     'auto_install': False,
 }
