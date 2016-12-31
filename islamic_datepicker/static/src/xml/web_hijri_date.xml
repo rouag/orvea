@@ -1,0 +1,55 @@
+<template>
+	<t t-name="SlDatepicker">
+
+		<t
+			t-if="widget.__parentedParent.field_manager and (widget.__parentedParent.field_manager.fields_view.arch.attrs.editable == 'top' || widget.__parentedParent.field_manager.fields_view.arch.attrs.editable == 'bottom')">
+			<div>
+				<t t-set="placeholder"
+					t-value="widget.getParent().node and widget.getParent().node.attrs.placeholder" />
+				<input type="text" class="oe_datepicker_container" disabled="disabled" />
+
+				<input type="text" t-att-name="widget.name" t-att-placeholder="placeholder"
+					class="oe_datepicker_master hidden oe_simple_date" />
+				<img class="oe_input_icon oe_datepicker_trigger hidden"
+					t-att-src='_s + "/web/static/src/img/ui/field_calendar.png"' title="Select date"
+					width="16" height="16" border="0" />
+			</div>
+		</t>
+
+		<t
+			t-if="widget.__parentedParent.field_manager and (widget.__parentedParent.field_manager.fields_view.arch.attrs.editable != 'top' and widget.__parentedParent.field_manager.fields_view.arch.attrs.editable != 'bottom')">
+			<span style="float: right;width: 25%; padding-left: 5px;">
+				<div class="calandar_hijri">
+					<input t-att-id="widget.name" type="text" t-att-placeholder="placeholder"
+						style="background-color: #FFFFFF !important" class="oe_hijri oe_datepicker_master" />
+
+				</div>
+			</span>
+
+			<span style="float: right; width: 25%; padding-left: 5px;">
+				<t t-set="placeholder"
+					t-value="widget.getParent().node and widget.getParent().node.attrs.placeholder" />
+				<input type="text" t-att-placeholder="placeholder" class="oe_datepicker_container" />
+				<input type="text" t-att-name="widget.name" t-att-placeholder="placeholder"
+					class="oe_datepicker_master hidden oe_simple_date" />
+				<img class="oe_input_icon oe_datepicker_trigger hidden"
+					t-att-src='_s + "/web/static/src/img/ui/field_calendar.png"' title="Select date"
+					width="16" height="16" border="0" />
+			</span>
+
+		</t>
+	</t>
+
+	<t t-name="SlDateTimepicker">
+
+		<t t-call="SlDatepicker" />
+
+		<span width="20%">
+			<div>
+				<input type="text" class="form-control input-small sl_timepicker"   />
+			</div>
+		</span>
+	</t>
+
+
+</template>

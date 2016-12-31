@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+      <record id="view_users_form_inherit_local" model="ir.ui.view">
+            <field name="name">res.users.form.inherit.local</field>
+            <field name="model">res.users</field>
+            <field name="inherit_id" ref="base.view_users_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='lang']" position="after">
+                    <field name="calendear_localisation"/>
+                </xpath>
+            </field>
+        </record>
+        
+    </data>
+</openerp>   
