@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+
+		<menuitem id="hr_payroll_root" name="الرواتب" groups="group_payroll_management" parent="hr_root" sequence="25" />
+
+		<menuitem id="hr_deduction_root" parent="hr_payroll_root" name="الحسميات" sequence="10" />
+
+		<menuitem id="hr_payroll_reporting" name="التقارير" groups="group_payroll_management" sequence="15" parent="hr_payroll_root" />
+			
+		<menuitem id="hr_payroll_setting" name="الإعدادات" groups="group_payroll_setting" sequence="50" parent="hr_payroll_root" />		
+			
+	</data>
+</openerp>

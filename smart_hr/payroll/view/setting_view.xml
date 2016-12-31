@@ -3,9 +3,7 @@
 	<data>
 
 
-		<menuitem id="hr_payroll_setting" name="الإعدادات"
-			groups="group_payroll_setting" sequence="50" parent="hr_payroll_root" />
-			
+	
 			
 			
 		<!-- هياكل الرواتب -->
@@ -55,9 +53,6 @@
 
 		<!-- البدلات -->
 
-		<menuitem id="hr_payroll_benefit" name="المزايا المالية"
-			groups="group_payroll_setting" sequence="60" parent="hr_payroll_root" />
-			
 			
 		<record model="ir.ui.view" id="hr_allowance_tree">
 			<field name="name">hr.allowance.tree</field>
@@ -98,8 +93,8 @@
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 
-		<menuitem id="hr_allowance_menu" name="البدلات" sequence="5"
-			groups="group_payroll_setting" parent="hr_payroll_benefit" action="action_hr_allowance" />
+		<menuitem id="hr_allowance_menu" name="البدلات" sequence="25"
+			groups="group_payroll_setting" parent="hr_payroll_setting" action="action_hr_allowance" />
 
 		<!-- المكافآت‬ -->
 
@@ -142,8 +137,8 @@
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 
-		<menuitem id="hr_reward_menu" name="المكافآت‬" sequence="10"
-			groups="group_payroll_setting" parent="hr_payroll_benefit" action="action_hr_reward" />
+		<menuitem id="hr_reward_menu" name="المكافآت‬" sequence="30"
+			groups="group_payroll_setting" parent="hr_payroll_setting" action="action_hr_reward" />
 
 
 		<!-- التعويضات -->
@@ -186,8 +181,8 @@
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 
-		<menuitem id="hr_indemnity_menu" name="التعويضات" sequence="15"
-			groups="group_payroll_setting" parent="hr_payroll_benefit" action="action_hr_indemnity" />
+		<menuitem id="hr_indemnity_menu" name="التعويضات" sequence="35"
+			groups="group_payroll_setting" parent="hr_payroll_setting" action="action_hr_indemnity" />
 
 
 

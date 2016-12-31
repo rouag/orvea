@@ -9,9 +9,10 @@
         </t>
         <t t-jquery=".o_notification_content" t-operation="append">
             <br/><br/>
-            <button type="button" class="btn btn-sm btn-primary link2showed oe_highlight oe_form oe_button"><span>OK2</span></button>
-            <button type="button" class="btn btn-sm btn-link link2event">Details2</button>
-            <button type="button" class="btn btn-sm btn-link link2recall">Snooze2</button>
+             <button type="button" class="btn btn-sm btn-primary link2showed oe_highlight oe_form oe_button"><span>موافق</span></button>
+            <button type="button" class="btn btn-sm btn-link link2event">التفاصيل</button>
+            <button type="button" class="btn btn-sm btn-link link2recall">تأجيل</button>
+            
         </t>
     </t>
 

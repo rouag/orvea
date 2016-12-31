@@ -21,33 +21,42 @@ var QWeb = core.qweb;
 var BaseNotification = Notification.extend({
     template: "BaseNotification",
 
-    init: function(parent, title, text, eid) {
+    init: function(parent, title, text, eid, action_id) {
         this._super(parent, title, text, true);
         this.eid = eid;
+        this.action_id = action_id;
+        
 
         this.events = _.extend(this.events || {}, {
             'click .link2event': function() {
                 var self = this;
-                
-                console.log('------self-----------',self);
+
                 this.rpc("/web/action/load", {
-                    action_id: "calendar.action_calendar_event_notify",
+                	action_id: this.action_id,
                 }).then(function(r) {
+                	console.log(r);
                     r.res_id = self.eid;
-                    console.log('------r-----------',r);
-                    console.log('------eid-----------',eid);
                     return self.do_action(r);
                 });
+            },
+            'click .link2showed': function() {
+                var self = this;
+                console.log(self);
+                console.log(this.eid);
+                this.rpc("/notification/validate", {
+                	notif_id: this.eid,
+                	
+                }).then(function(r) {
+                	
+                	console.log('ok');
+                });
+                this.destroy(true);
             },
 
             'click .link2recall': function() {
                 this.destroy(true);
             },
 
-            'click .link2showed': function() {
-                this.destroy(true);
-                this.rpc("/calendar/notify_ack");
-            },
         });
     },
 });
@@ -55,17 +64,16 @@ var BaseNotification = Notification.extend({
 WebClient.include({
     get_next_notif: function() {
     	
-    	console.log('------get_next_notif-----------');
+    	
         var self = this;
-
         this.rpc("/notification/notify", {}, {shadow: true})
         .done(function(result) {
-        	console.log('------result-----------',result);
             _.each(result, function(res) {
                 setTimeout(function() {
                     // If notification not already displayed, we create and display it (FIXME is this check usefull?)
-                    if(self.$(".eid_" + res.event_id).length === 0) {
-                        self.notification_manager.display(new BaseNotification(self.notification_manager, res.title, res.message, res.event_id));
+                    if(self.$(".eid_" + res.notif_id).length === 0) {
+                    	
+                        self.notification_manager.display(new BaseNotification(self.notification_manager, res.title, res.message, res.notif_id, res.res_action));
                     }
                 }, res.timer * 1000);
             });
