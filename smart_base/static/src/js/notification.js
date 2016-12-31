@@ -34,7 +34,6 @@ var BaseNotification = Notification.extend({
                 this.rpc("/web/action/load", {
                 	action_id: this.action_id,
                 }).then(function(r) {
-                	console.log(self.res_id);
                     r.res_id = self.res_id;
                     return self.do_action(r);
                 });
