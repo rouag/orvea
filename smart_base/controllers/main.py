@@ -28,7 +28,7 @@ class BaseNotification(http.Controller):
                 'title': notification.title,
                 'message': notification.message,
                 'res_action': res_action,
-                'timer': 5,
+                'timer': 300,
                 'res_id': res_id,
                 'notify_at': notification.show_date
                 }
