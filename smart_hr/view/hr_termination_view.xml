@@ -24,7 +24,7 @@
                         </h1>
                         <group>
                             <field name="date" readonly="1"/>
-                            <field name="employee_id" required="1" attrs="{'readonly':[('employee_state','!=','new')]}" domain="[('job_id.deputed_employee','=',False)]"/>
+                            <field name="employee_id" required="1" domain="[('job_id.deputed_employee','=',False)]"/>
                         </group>
                         <group>
                             <group string="معلومات الموظف">
