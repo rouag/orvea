@@ -302,6 +302,9 @@
 										widget="many2many" />
 									<field name="min_amount" />
 									<field name="pension_percent" />
+									<field name="demand_number_max" />
+									<field name="traveling_ticket" />
+									<field name="traveling_ticket_familiar" />
 								</group>
 
 
