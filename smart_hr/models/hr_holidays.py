@@ -201,21 +201,21 @@ class HrHolidays(models.Model):
     def button_extend(self):
         # check if its possible to extend this holiday
         extensions_number = self.env['hr.holidays'].search_count([('extended_holiday_id', '=', self.id),('extended_holiday_id', '!=', False),('state', '=', 'done')])
-        extensions = self.env['hr.holidays'].search([('extended_holiday_id', '!=', False),('extended_holiday_id', '=', self.id),('state', '=', 'done')])
-        sum_periods = 0
-        for extension in extensions:
-            sum_periods += extension.duration
-        for en in self.holiday_status_id.entitlements:
-            if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
-                extension_period = en.extension_period * 365
-                if sum_periods >= extension_period and extension_period!=0:
-                    raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من%s عام"%str(extension_period/365))
-        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional'):
-            holiday_status_exceptional_stock = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id)]).holidays_available_stock
-            if holiday_status_exceptional_stock>0:
-                 raise ValidationError(u"لا يمكن تمديد الاجازة قبل نهاتة رصيدها")
-            if extensions_number==1:
-                holiday_status_exceptional_stock+=extension_period
+#         extensions = self.env['hr.holidays'].search([('extended_holiday_id', '!=', False),('extended_holiday_id', '=', self.id),('state', '=', 'done')])
+#         sum_periods = 0
+#         for extension in extensions:
+#             sum_periods += extension.duration
+#         for en in self.holiday_status_id.entitlements:
+#             if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
+#                 extension_period = en.extension_period * 365-sum_periods
+#                 if self.duration >= extension_period and extension_period!=0:
+#                     raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من%s عام"%str(extension_period/365))
+#         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional'):
+#             holiday_status_exceptional_stock = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id)]).holidays_available_stock
+#             if holiday_status_exceptional_stock>0:
+#                  raise ValidationError(u"لا يمكن تمديد الاجازة قبل نهاتة رصيدها")
+#             if extensions_number==1:
+#                 holiday_status_exceptional_stock+=extension_period
                 
         if extensions_number >= self.holiday_status_id.extension_number and self.holiday_status_id.extension_number>0:
             raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من%s "%str(self.holiday_status_id.extension_number))
@@ -228,6 +228,8 @@ class HrHolidays(models.Model):
             u'default_extended_holiday_id': self.id,
             u'default_date_from': default_date_from,
             u'readonly_by_pass': True,
+        u'default_holiday_status_id': self.holiday_status_id.id,
+
         })
         return {
             'name': 'تمديد الإجازة',
@@ -628,6 +630,16 @@ class HrHolidays(models.Model):
                 else:
                     if self.duration > current_holiday_status_stock and current_holiday_status_stock:
                         raise ValidationError(u"ليس لديك الرصيد الكافي")
+#                     if self.is_extension:
+#                         extensions = self.env['hr.holidays'].search([('extended_holiday_id', '!=', False),('extended_holiday_id', '=', self.id),('state', '=', 'done')])
+#                         sum_periods = 0
+#                         for extension in extensions:
+#                             sum_periods += extension.duration
+#                         for en in self.holiday_status_id.entitlements:
+#                             if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
+#                                 extension_period = en.extension_period * 365 - sum_periods
+#                                 if self.duration >= extension_period and extension_period!=0:
+#                                     raise ValidationError(u"ليس لديك الرصيد الكافي")
 
         # Constraintes for Compelling holidays اضطرارية
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
@@ -681,7 +693,8 @@ class HrHolidays(models.Model):
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_death'):
             for en in self.holiday_status_id.entitlements:
                 if en.entitlment_category.name == self.entitlement_type.name and en.holiday_stock_default<self.duration:
-                    raise ValidationError(u" %s  ان تتجاوز يوم %s  لا يمكن لإجازة   " %(en.holiday_stock_default,en.entitlment_category.name))
+                    raise ValidationError(u"لا يمكن لإجازة " +en.entitlment_category.name + u"ان تتجاوز " + str(en.holiday_stock_default) + u" أيام")
+
                     break
 
         date_from = fields.Date.from_string(self.date_from)
@@ -689,6 +702,8 @@ class HrHolidays(models.Model):
                                                                    ('holiday_status_id', '=', self.holiday_status_id.id), ('date_from', '>=', date(date_from.year, 1, 1))])
         if self.holiday_status_id.demand_number_max<=past_demand_number and self.holiday_status_id.demand_number_max>0:
             raise ValidationError(u" لا يمكن تجزئة هذا النوع من الإجازات على أكثر من %s مرّة " %self.holiday_status_id.demand_number_max)
+                 
+                  
                   # Constraintes for accompaniment_exceptional اجازة مرافقة استثنائية
 
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional'):
