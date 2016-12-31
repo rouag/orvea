@@ -24,6 +24,7 @@
 	writing-mode: lr-tb;
 	white-space: nowrap;
 	height: 100%;
+	 border:none;
 }
 .inner{
 	 display:table-cell;
@@ -49,7 +50,7 @@
 	margin: 100px;
 }
 .head2{
-	margin-top: 100px;
+	margin-top: 50px;
 }
 .picture{
 	border: 1px solid black;

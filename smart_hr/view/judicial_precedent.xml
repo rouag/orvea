@@ -66,9 +66,9 @@
 				</form>
 			</field>
 		</record>
-		<record id="employee_medical_exam_tree" model="ir.ui.view">
-			<field name="name">employee.medical.exam.tree</field>
-			<field name="model">employee.medical.exam</field>
+		<record id="employee_judicial_precedents_tree" model="ir.ui.view">
+			<field name="name">employee.judicial.precedent.order.tree</field>
+			<field name="model">employee.judicial.precedent.order</field>
 			<field name="arch" type="xml">
 				<tree string="الفحص الطبي">
 					<field name="employee"
@@ -80,7 +80,7 @@
 		</record>
 		<record model="ir.actions.act_window" id="action_employee_judicial">
 			<field name="name">السوابق العدلية</field>
-			<field name="res_model">employee.judicial.precedent</field>
+			<field name="res_model">employee.judicial.precedent.order</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>

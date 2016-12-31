@@ -80,8 +80,8 @@
         </record>
         <menuitem id="menu_hr_suspension_end"
                   action="action_hr_suspension_end"
-                  parent="menu_hr_suspension_root"
-                  sequence="2"
+                  parent="hr_root_organisation_action"
+                  sequence="20"
                   name="إنهاء كف اليد"/>
 
     </data>
