@@ -273,7 +273,7 @@
 											<field name="identification_id" groups="base.group_hr_user"
 												attrs="{'required': 1}" />
 											<field name="identification_date" groups="base.group_hr_user" />
-											<field name="identification_date" groups="base.group_hr_user" />
+											<field name="identification_place" groups="base.group_hr_user" />
 
 											<field name="passport_id" groups="base.group_hr_user"
 												attrs="{'required': 1}" />
