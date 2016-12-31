@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!-- قرار مباشرة -->
+		<record id="hr_holidays_decision_form" model="ir.ui.view">
+			<field name="name">hr.holidays.decision.form</field>
+			<field name="model">hr.holidays.decision</field>
+			<field name="arch" type="xml">
+				<form string="قرار مباشرة">
+					<header>
+						<button name="action_waiting" string=" ارسال طلب" type="object"
+							states="new" />
+						<button name="action_refuse" string="رفض" type="object"
+							states="waiting" />
+						<button name="action_done" string="إعتماد" type="object"
+							states="waiting" />
+						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
+					</header>
+					<sheet>
+						<group>
+							<group string="بيانات الموظف">
+								<field name="employee_id" />
+								<field name="number" />
+								<field name="job_id" />
+								<field name="department_id" />
+								
+							</group>
+							<group>
+								<field name="date" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="hr_holidays_decision_tree" model="ir.ui.view">
+			<field name="name">hr.holidays.decision.tree</field>
+			<field name="model">hr.holidays.decision</field>
+			<field name="arch" type="xml">
+				<tree string="قرار مباشرة">
+					<field name="employee_id" />
+					<field name="number" />
+					<field name="job_id" />
+					<field name="department_id" />
+					<field name="date" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_holidays_decision">
+			<field name="name">قرار مباشرة‬‬</field>
+			<field name="res_model">hr.holidays.decision</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="menu_hr_holidays_decision" parent="menu_hr_holiday_root"
+			name="قرار مباشرة" sequence="100" action="action_hr_holidays_decision" />
+
+
+
+
+	</data>
+</openerp>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_resume_holidays">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.landscape_layout">
+						<div class="page">
+							<div class="oe_structure" />
+
+							<div class="col-xs-12 text-center">
+								<h3 style="color:#395870;">
+									<strong>
+										تقرير ملخص الاجازات
+									</strong>
+									<br />
+									<br />
+								</h3>
+							</div>
+							<div class="col-xs-12 text-center">
+								<strong>التاريخ :</strong>
+								<span t-esc="data['form']['date_from']" />
+								-
+								<span t-esc="data['form']['date_to']" />
+								<br />
+								<br />
+							</div>
+
+							<table class="table table-condensed">
+								<thead>
+									<tr>
+										<th width="25%">الموظف</th>
+										<th width="15%">رقم الوظيفة</th>
+										<th width="15%">القسم</th>
+										<th width="15%"> التاريخ من</th>
+										<th width="15%">التاريخ الى</th>
+											<th width="15%">المدة</th>
+										
+
+									</tr>
+								</thead>
+								<tbody>
+									<tr t-foreach="get_lines(data['form'])" t-as="line">
+										<td>
+											<span t-field="line.employee_id.name" />
+										</td>
+										<td>
+											<span t-field="line.employee_id.number" />
+										</td>
+										<td>
+											<span t-field="line.employee_id.department_id.name" />
+										</td>
+										<field name="date_from" />
+										<td>
+											<span t-field="line.date_from" />
+										</td>
+										<td>
+											<span t-field="line.date_to" />
+										</td>
+										<td>
+											<span t-field="line.duration" />
+										</td>
+										
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</t>
+
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+								

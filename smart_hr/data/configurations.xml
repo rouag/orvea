@@ -55,5 +55,43 @@
 			<field name="name">شهادة دكتوراه</field>
 		</record>
 
+		<!-- أنواع فئة الاستحقاق -->
+		<record id="data_hr_holiday_accompaniment_exceptional" model="hr.holidays.status">
+			<field name="name">اجازة مرافقة استثنائية</field>
+			<field name="code">accompaniment</field>
+		</record>
+		<record id="data_hr_holiday_entitlement_types_parent" model="hr.holidays.entitlement.config">
+			<field name="name">‫ وفاةأصل(‫أبناء‬ ‫أو‬ ‫والدين ‫أو‬ ز وجة)  </field>
+
+			<field name="code">death</field>
+		</record>
+		<record id="data_hr_holiday_entitlement_types_branch" model="hr.holidays.entitlement.config">
+			<field name="name">وفاة فرع (‫أحد الإخوة او غيرهم من الأقارب)</field>
+			<field name="code">death</field>
+		</record>
+		<record id="data_hr_holiday_entitlement_types_husband_death"
+			model="hr.holidays.entitlement.config">
+			<field name="name"> وفاة:عدّة</field>
+			<field name="code">death</field>
+		</record>
+		<record id="data_entitlement_illness_normal" model="hr.holidays.entitlement.config">
+			<field name="name">مرضية (عادية)</field>
+			<field name="code">illness</field>
+		</record>
+		<record id="data_entitlement_illness_serious" model="hr.holidays.entitlement.config">
+			<field name="name">مرضية (مرض خطير)</field>
+			<field name="code">illness</field>
+		</record>
+
+		<record id="data_entitlement_illness_work_accident" model="hr.holidays.entitlement.config">
+			<field name="name">مرضية (اصابة عمل)</field>
+			<field name="code">illness</field>
+		</record>
+		<record id="data_hr_holiday_entitlement_all" model="hr.holidays.entitlement.config">
+			<field name="name"> الكل</field>
+			<field name="code">all</field>
+		</record>
+
+
 	</data>
 </openerp>

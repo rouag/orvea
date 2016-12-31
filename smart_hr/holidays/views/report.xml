@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<report id="resume_holidays_report" model="False"
+			report_type="qweb-pdf" string="تقرير ملخص الاجازات" name="smart_hr.report_resume_holidays"
+			file="smart_hr.report_resume_holidays" paperformat="smart_base.paperformat_landscape" />
+		
+
+	</data>
+</openerp>
+		

@@ -14,6 +14,7 @@
         'security/ir.model.access.csv',
         'data/paperformat.xml',
         'view/res_company.xml',
+        'view/notification.xml',
         'views/layout.xml',
         'views/assets.xml',
              ],

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+
+		 
+		<!-- Department Hierarchy -->
+		
+		<record id="hr_department_tree_view_level" model="ir.ui.view">
+			<field name="name">hr.department.tree.view</field>
+			<field name="model">hr.department</field>
+			<field name="field_parent">child_ids</field>
+			<field name="arch" type="xml">
+				<tree string="الهيكل الإدارى" class="oe_tree_view">
+					<field name="name" />
+					<field name="manager_id" />
+					<field name="parent_id" invisible="1" />
+				</tree>
+			</field>
+		</record>
+		
+		<record id="action_hr_department_level_tree" model="ir.actions.act_window">
+			<field name="name">الهيكل الإدارى</field>
+			<field name="res_model">hr.department</field>
+			<field name="view_type">tree</field>
+			<field name="view_mode">tree</field>
+			<field name="domain">[('parent_id','=',False)]</field>
+			<field name="view_id" ref="hr_department_tree_view_level" />
+		</record>
+
+		<menuitem id="hr_department_level_menu" name="الهيكل الشجري" sequence="5"
+			parent="hr_root_organisation" action="action_hr_department_level_tree" />
+
+
+
+		<!-- hr.department form -->
+		
+		<record id="view_department_form_smart_inherit" model="ir.ui.view">
+			<field name="name">hr.department.form</field>
+			<field name="model">hr.department</field>
+			<field name="inherit_id" ref="hr.view_department_form" />
+			<field name="arch" type="xml">
+				<field name="name" position="after">
+					<field name="dep_section" />
+					<field name="dep_city" />
+					<field name="dep_recruiter" />
+					<field name="is_root" />
+					<field name="level" invisible="1" />
+				</field>
+			</field>
+		</record>
+
+		<record id="hr_department_view_kanban_smart_inherit" model="ir.ui.view">
+			<field name="name">hr.department.kanban.inherit</field>
+			<field name="model">hr.department</field>
+			<field name="inherit_id" ref="hr.hr_department_view_kanban" />
+			<field name="arch" type="xml">
+				<data>
+					<div class="o_primary" position="replace">
+						<div class="o_primary">
+							<div>
+								<field name="name" />
+								<t t-if="parent_id!='False'">
+									~
+									<field name="parent_id" />
+								</t>
+								<t t-if="dep_section!='False'">
+									<t>~</t>
+								</t>
+								<field name="dep_section" />
+							</div>
+						</div>
+					</div>
+					<div class="o_secondary" position="inside">
+						<group>
+							<group>
+								<li>
+									المسؤول:
+									<field name="manager_id" />
+
+								</li>
+								<li>
+									المدينة:
+									<field name="dep_city" />
+
+								</li>
+								<li>
+									الجهة:
+									<field name="dep_recruiter" />
+
+								</li>
+
+							</group>
+							<!-- <group> <div> <t t-if="is_root == 'true'"> قسم/إدارة رئيسية:نعم 
+								</t> <t t-if="is_root == false"> قسم/إدارة رئيسية:ل </t> </div> </group> -->
+
+						</group>
+
+					</div>
+				</data>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_department_kanban">
+			<field name="name">الإدارات</field>
+			<field name="res_model">hr.department</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">kanban,form</field>
+		</record>
+
+		<menuitem id="hr_department_kanban_menu" name="الإدارات"
+			sequence="10" action="action_hr_department_kanban" parent="hr_root_organisation" />
+
+
+	</data>
+</openerp>

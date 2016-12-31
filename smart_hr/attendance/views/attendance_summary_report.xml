@@ -4,7 +4,7 @@
 		<template id="report_attendance_summary">
 			<t t-call="report.html_container">
 				<t t-foreach="docs" t-as="o">
-					<t t-call="report.internal_layout">
+					<t t-call="smart_base.landscape_layout">
 						<div class="page">
 							<div class="oe_structure" />
 

@@ -16,20 +16,34 @@ class BaseNotification(http.Controller):
         now = datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M:%S")
         notifications = notification_obj.search([('user_id', '=', request.session.uid), ('to_read', '=', 'True'), ('show_date', '>=', now)])
         all_notif = []
-        print now
         for notification in notifications:
+            if not notification.res_action:
+                res_action = 'smart_base.action_base_notification'
+            else:
+                res_action = notification.res_action
             all_notif.append({
-                'event_id': 1,
+                'notif_id': notification.id,
                 'title': notification.title,
                 'message': notification.message,
-                'timer': 3600,
-                'notify_at': notification.show_date
+                'res_action': res_action,
+                'timer': 5,
+                'notify_at': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
                 }
                              )
-
-
         return all_notif
+#         print datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+#         return [{
+#                 'notif_id': 1,
+#                 'title': 'resultresultresult',
+#                 'message': 'azeazeaze',
+#                 'timer': 10,
+#                 'notify_at': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+#                 }]
 
-    @http.route('/notification/notify_stop', type='json', auth="none")
-    def notify_stop(self):
-        return  True
+    @http.route('/notification/validate', type='json', auth="user")
+    def notify_validate(self, notif_id):
+        notification_obj = request.env['base.notification']
+        notification = notification_obj.search([('id', '=', int(notif_id))])
+        notification.write({'to_read': False})
+        return True
+
