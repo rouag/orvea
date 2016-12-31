@@ -119,7 +119,7 @@ class hr_overtime(models.Model):
                     tmp_set = rec.overtime_line_ids - line
                     for tmp_ln in tmp_set:
                         if tmp_ln.employee_id == line.employee_id:
-                            raise ValidationError(u"تم ادخل موظف اكثر من مرة يرجى التحقق")
+                            raise ValidationError(u"تم إدخال موظف اكثر من مرة يرجى التحقق")
 
     @api.model
     def _needaction_domain_get(self):
