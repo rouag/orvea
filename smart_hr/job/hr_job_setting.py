@@ -11,6 +11,9 @@ from datetime import date
 class HrGrouupGeneral(models.Model):
     _name = 'hr.groupe.job'
     _description = u'‫المجموعة العامة‬‬'
+    _sql_constraints = [
+        ('name_uniq', 'unique(name)', 'لايمكن اظافة مجموعتين بنفس الإسم'),
+    ]
     
     @api.multi
     def _get_all_child_ids(self, field_name, arg, context=None):
@@ -21,30 +24,35 @@ class HrGrouupGeneral(models.Model):
         return result
     
     name = fields.Char(string=u'المسمى', required=1)
-    parent_id = fields.Many2one('hr.groupe.job', ' المجموعة الأب', ondelete='cascade',  advanced_search=True)
+    parent_id = fields.Many2one('hr.groupe.job', ' المجموعة الأب', ondelete='cascade')
+    genral_id = fields.Many2one('hr.groupe.job', ' المجموعة الأب', ondelete='cascade')
     child_ids= fields.One2many('hr.groupe.job', 'parent_id', 'المجموعات الفرعية')
     all_child_ids= fields.Many2many(compute='_get_all_child_ids', type='many2many', relation='hr.groupe.job'),
     numero  = fields.Char(string=u'الرمز',)
-    rank_from =fields.Integer(string=u'‫‬ ‫المرتبة‬ ‫من‬ ',)
-    rank_to =fields.Integer(string=u'‫‬ ‫المرتبة ‬إلى‬',)
+    rank_from =fields.Integer(string=u'‫‬ ‫المرتبة‬ ‫من‬ ',default=1)
+    rank_to =fields.Integer(string=u'‫‬ ‫المرتبة ‬إلى‬',default=2)
     instead_risk=fields.Boolean(string=u'بدل خطر')
     instead_damage=fields.Boolean(string=u' بدل ‫ضرر‬')
     instead_job_nature=fields.Boolean(string=u' بدل‫ طبيعة‬  ‫عمل‬ ')
     reward_postman=fields.Boolean(string=u'مكافأة موزع البريد')
     direct_public_funds_reward=fields.Boolean(string=u'مكافأة‬ مباشرة الأموال العامة')
-    hr_training_ids=fields.One2many('hr.job.trainning', 'ategorie_serie_id', string=u'الدورات التدريبية',)
-    hr_classment_job_ids=fields.One2many('hr.job.classment', 'ategorie_serie_id', string=u'الرتبة',)
+    hr_training_ids=fields.One2many('hr.job.trainning', 'categorie_serie_id', string=u'الدورات التدريبية',)
+    hr_classment_job_ids=fields.One2many('hr.job.classment', 'categorie_serie_id', string=u'الرتبة',)
+    department_id = fields.Many2one('hr.department', string='الإدارة', )
     skils_ids = fields.Many2many('hr.skils.job', 'skills_job_rel', 'skil_id', 'job_id', string=u'المهارات‬ ‫و‬ ‫القدرات')
     type_groupe= fields.Selection([
         ('general', u'المجموعة العامة‬‬'),
         ('spicific', u'المجموعة النوعية '),
         ('serie', u'سلسلة الفئات'),
     ], string=u' ‫نوع‬ المجموعة ', )
+    type_exeprience= fields.Selection([
+        ('direct', u'‫مباشرة‬‬‬'),
+        ('theroric', u'‫نظيرة‬ '),
+        ('excepted', u'‫مقبولة‬'),
+    ], string=u' ‫نوعية‬ الخبرة‬ ‫', )
     
-    _sql_constraints = [
-        ('name_uniq', 'unique(name)', 'لايمكن اظافة مجموعتين بنفس الإسم'),
-        ('name_uniq', 'unique(numero)', 'لايمكن اظافة مجموعتين بنفس الرمز')
-    ]
+    
+    
     
     
     @api.onchange('rank_to')
@@ -59,11 +67,29 @@ class HrGrouupGeneral(models.Model):
                 classment_ids=[]
                 i = self.rank_from 
                 while  i <= self.rank_to :
-                    classment_id=self.env['hr.job.classment'].create({'name': i,  }).id
-                    classment_ids.append(classment_id)
+                    print '1',i
+                    grade=self.env['salary.grid.grade'].search([('name', '=', str(i))])
+                    print  'grade',
+                    if grade:
+                        classment_id=self.env['hr.job.classment'].create({'grade_id': grade.id, 'name':grade.name }).id
+                        classment_ids.append(classment_id)
                     i=i+1
             self.hr_classment_job_ids= classment_ids
     
+            
+#     @api.onchange('hr_classment_job_ids')
+#     def onchange_classment(self,):
+#         for hr_classment_job_id in self.hr_classment_job_ids:
+#             print 222
+# #             self.env['hr.job.classment'].browse(hr_classment_job_id.id)
+#             print 333 , hr_classment_job_id
+#             if hr_classment_job_id.education_level_id:
+#                 classment = self.env['hr.job.classment'].search([('name', '=', hr_classment_job_id.name),('education_level_id.id', '=', hr_classment_job_id.education_level_id.id)])
+#                 print 'classment',classment
+#                 if classment:
+#                     raise ValidationError(u'لايمكن اظافة رتبتين بنفس الشهادة العلمية‬')
+#                     self.env['hr.job.classment'].browse(hr_classment_job_id.id).unlink()
+            
 #     @api.onchange('rank_from')
 #     def onchange_rank(self):
 #         if self.rank_from <=0:
@@ -76,7 +102,7 @@ class HrGrouupGeneral(models.Model):
 class HrJobTraining(models.Model):
     _name = 'hr.job.trainning'
     name = fields.Char(string=u' المسمى الدورات التدريبية ', required=1,related='traninig_id.name',readonly=1)
-    ategorie_serie_id=fields.Many2one('hr.groupe.job', string=u'سلسلة الفئات‬')
+    categorie_serie_id=fields.Many2one('hr.groupe.job', string=u'سلسلة الفئات‬')
     traninig_id=fields.Many2one('hr.training', string=u'الدورات التدريبية ', required=True ,)
     type= fields.Selection([
         ('direct', u'‫مباشرة‬'),
@@ -87,11 +113,12 @@ class HrJobTraining(models.Model):
     
 class HrJobClassment(models.Model):
     _name = 'hr.job.classment'
-    name = fields.Char(string=u'مسمى الرتبة', required=1,readonly=1)
-    ategorie_serie_id=fields.Many2one('hr.groupe.job', string=u'سلسلة الفئات‬')
-#     traninig_id=fields.Many2one('hr.training', string=u'الدورات التدريبية ', required=True ,)
+    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة',)
+    name = fields.Char(string=u'مسمى الرتبة', related='grade_id.name',)
+    categorie_serie_id=fields.Many2one('hr.groupe.job', string=u'سلسلة الفئات‬')
+    education_level_id=fields.Many2one('hr.employee.education.level', string=u'المستوى التعليمي ', required=True ,)
     exeperince=fields.Char(string=u'سنوات الخبرة المطلوبة',)
     
-#     _sql_constraints = [
-#         ('name_uniq', 'unique(name)', 'لايمكن اظافة رتبتين بنفس الشهادة العلمية'),
-#         ]
+    _sql_constraints = [
+        ('name_uniq', 'unique(name,education_level_id)', 'لايمكن اظافة رتبتين بنفس الشهادة العلمية'),
+        ]
