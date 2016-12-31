@@ -17,7 +17,7 @@ class EmployeeJudicialPrecedent(models.Model):
     judicial_precident = fields.Many2one ('judicial.precedent', string = u'السابقة العدلية')
     date = fields.Date(string = u'التاريخ')
     periode = fields.Integer(string  = u'المدة')
-    employee_judicial_precedents = fields.Many2one('employee.judicial.precedent', string = u'ملفات السوابق العدلية')
+    employee_judicial_precedents = fields.Many2one('employee.judicial.precedent.order', string = u'طلب إستسفار السوابق العدلية')
     
 class EmployeeJudicialPrecedentOrdre(models.Model):
     _name = 'employee.judicial.precedent.order'  
