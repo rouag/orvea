@@ -20,10 +20,11 @@
                         <label for="name" class="oe_edit_only"/>
                         <h1>
                             <field name="name" readonly="1"/>
+                             <field name="employee_state" invisible="1"/>
                         </h1>
                         <group>
                             <field name="date" readonly="1"/>
-                            <field name="employee_id" required="1" attrs="{'readonly':[('employee_state','!=','draft')]}" domain="[('job_id.deputed_employee','=',False)]"/>
+                            <field name="employee_id" required="1" attrs="{'readonly':[('employee_state','!=','new')]}" domain="[('job_id.deputed_employee','=',False)]"/>
                         </group>
                         <group>
                             <group string="معلومات الموظف">

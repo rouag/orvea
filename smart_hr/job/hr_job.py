@@ -172,7 +172,9 @@ class HrJobMoveGrade(models.Model):
          
     @api.one
     def action_done(self):
-        self.state = 'done'  
+        self.state = 'done' 
+        for job in self.job_grade_ids:
+            job.job_id.department_id=job.New_department_id.id 
         
     @api.one
     def action_refuse(self):
@@ -216,7 +218,6 @@ class HrJobMoveDeparrtment(models.Model):
     def action_done(self):
         self.state = 'done'  
         for job in self.job_movement_ids:
-            print "2222",job.new_grade_id.id
             job.job_id.grade_id=job.new_grade_id.id
         
     @api.one
@@ -260,7 +261,9 @@ class HrJobMoveUpdate(models.Model):
          
     @api.one
     def action_done(self):
-        self.state = 'done'  
+        self.state = 'done'
+        for job in self.job_update_ids:
+            job.job_id.name=job.new_name
         
     @api.one
     def action_refuse(self):
@@ -268,7 +271,7 @@ class HrJobMoveUpdate(models.Model):
     
 class HrJobMoveUpdateLine(models.Model):
     _name = 'hr.job.update.line'  
-    _description = u'تعديل وظائف'
+    _description = u'تحوير‬ وظيفة'
   
     job_update_line_id = fields.Many2one('hr.job.update', string='الوظيفة', required=1) 
     new_name = fields.Char(string='مسمى الجديد', required=1)
