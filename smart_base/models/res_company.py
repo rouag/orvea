@@ -9,3 +9,5 @@ class ResCompany(models.Model):
 
     report_header = fields.Binary(string=' صورة رأس الصفحة ', attachment=1)
     report_footer = fields.Binary(string=' صورة أخر الصفحة ', attachment=1)
+    report_header_speech = fields.Binary(string=' صورة رأس الصفحة ', attachment=1)
+    report_footer_speech = fields.Binary(string=' صورة أخر الصفحة ', attachment=1)
