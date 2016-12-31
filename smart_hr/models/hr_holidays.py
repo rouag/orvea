@@ -183,7 +183,7 @@ class HrHolidays(models.Model):
         for en in self.holiday_status_id.entitlements:
             if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
                 extension_period = en.extension_period * 365
-                if sum_periods >= extension_period:
+                if sum_periods >= extension_period and extension_period!=0:
                     raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من%s عام"%str(extension_period/365))
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional'):
             holiday_status_exceptional_stock = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id)]).holidays_available_stock
