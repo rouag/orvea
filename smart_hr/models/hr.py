@@ -43,6 +43,7 @@ class HrEmployee(models.Model):
     traveling_ticket = fields.Boolean(string=u'تذكرة سفر', default=False)
     traveling_ticket_familiar = fields.Boolean(string=u'تذكرة سفر عائليّة', default=False)
     compensation_stock = fields.Integer(string=u'رصيد إجازات التعويض')
+    sick_holiday_peiodes = fields.One2many('hr.illness.holidays.periode', 'employee_id', string='sick holidays periodes')
     
     def _compute_service_years(self):
         for emp in self:
@@ -148,7 +149,7 @@ class HrEmployeePromotionHistory(models.Model):
     salary_grid_id = fields.Many2one('salary.grid.grade', string=u'الرتبة')
     date_from = fields.Date(string=u'التاريخ من', default=fields.Datetime.now())
     date_to = fields.Date(string=u'التاريخ الى')
-    balance = fields.Integer(string=u'رصيد الترقية (يوم)', compute='_compute_balance')
+    balance = fields.Integer(string=u'رصيد الترقية (يوم)', compute='_compute_balance',store=True)
 
     def _compute_balance(self):
         for rec in self:
