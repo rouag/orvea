@@ -27,9 +27,13 @@
         'data/res.city.csv',
         'data/hr_termination_data.xml',
 
+        # الإدارات
+        'hr/menu.xml',
+        'hr/view/hierarchy_level.xml',
+        'hr/view/hr_department_view.xml',
+
+
         'views/report_salary_grid.xml',
-        'views/report_hr_deduction.xml',
-        'views/report_hr_deduction_line.xml',
         'views/report_medical_examination.xml',
         'views/report_order_enquiry.xml',
         'views/hr_holidays_report.xml',
@@ -46,11 +50,9 @@
 
         'wizards/view/hr_refuse_wizard_view.xml',
 
-        'view/hr_department_views.xml',
         'view/hr.xml',
         'view/hr_job.xml',
         'view/hr_decision_appoint.xml',
-        'view/hr_deduction.xml',
         'view/hr_promotion.xml',
         'view/salary_grid.xml',
         'view/hr_training.xml',
@@ -70,17 +72,22 @@
         'view/hr_suspension_end_view.xml',
         'view/hr_termination_view.xml',
         'view/section.xml',
-        'view/hierarchy_level.xml',
         'view/external_autorities.xml',
          'view/holiday_entitlement_types.xml',
+
+
 
         # القرارات
         'view/hr_decision.xml',
         # الرواتب
+        'payroll/menu.xml',
         'payroll/data.xml',
-        'payroll/hr_payroll_view.xml',
-        'payroll/setting_view.xml',
-        'payroll/hr_salary_rule_view.xml',
+        'payroll/view/hr_payroll_view.xml',
+        'payroll/view/setting_view.xml',
+        'payroll/view/hr_salary_rule_view.xml',
+        'payroll/view/hr_deduction.xml',
+        'payroll/views/report_hr_deduction.xml',
+        'payroll/views/report_hr_deduction_line.xml',
 
         # الحضور والإنصراف
         'attendance/security/attendance_security.xml',

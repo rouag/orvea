@@ -1,0 +1,15 @@
+update manuelle des fichiers 
+
+/enterprise/web/static/src/js/views/list_view.js
+L 1419
+                // group_label is html-clean (through format or explicit
+                // escaping if format failed), can inject straight into HTML
+                $group_column.html(_.str.sprintf(_t("%d - %s"),
+                    group.length,group_label));
+                if (group.length && group.openable) {
+                    // Make openable if not terminal group & group_by_no_leaf
+                    $group_column.prepend('<span class="fa fa-caret-right" style="padding-left: 5px;">');
+                } else {
+                    $group_column.prepend('<span class="fa">');
+                }
+                

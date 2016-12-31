@@ -2,44 +2,7 @@
 <openerp>
 	<data>
 
-		<!-- الإدارات -->
-
-		<record model="ir.actions.act_window" id="action_hr_department">
-			<field name="name">الإدارات</field>
-			<field name="res_model">hr.department</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
-		</record>
-
-		<!-- Department Hierarchy -->
-		<record id="view_tree_hr_department_tree_view" model="ir.ui.view">
-			<field name="name">hr.department.tree.view</field>
-			<field name="model">hr.department</field>
-			<field name="field_parent">child_ids</field>
-			<field name="arch" type="xml">
-				<tree string="الهيكل الإدارى" class="oe_tree_view">
-					<field name="name" />
-					<field name="manager_id" />
-					<field name="parent_id" invisible="1" />
-				</tree>
-			</field>
-		</record>
-		<record id="action_hr_department_tree_view" model="ir.actions.act_window">
-			<field name="name">الهيكل الإدارى</field>
-			<field name="res_model">hr.department</field>
-			<field name="view_type">tree</field>
-			<field name="view_mode">tree,kanban,form</field>
-			<field name="view_id" ref="view_tree_hr_department_tree_view" />
-			<field name="help" type="html">
-				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
-			</field>
-		</record>
-
-		<menuitem id="hr_department_menu" name="الإدارات" sequence="5"
-			parent="hr_root_organisation" action="action_hr_department_tree_view" />
-
-		<menuitem id="hr_department_menu_conf" name="الإدارات"
-			sequence="1" action="action_hr_department" parent="menu_hr_department_hierarchy_level" />
+			
 		<!-- الموظفون -->
 
 		<record id="view_employee_tree" model="ir.ui.view">
