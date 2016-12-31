@@ -40,14 +40,33 @@ class HrEmployee(models.Model):
     holidays = fields.One2many('hr.holidays', 'employee_id', string=u'الاجازات')
     holidays_balance = fields.One2many('hr.employee.holidays.stock', 'employee_id', string=u'الأرصدة', readonly=1)
     promotions_history = fields.One2many('hr.employee.promotion.history', 'employee_id', string=u'الترقيات')
-
+    traveling_ticket = fields.Boolean(string=u'تذكرة سفر', default=False)
+    traveling_ticket_familiar = fields.Boolean(string=u'تذكرة سفر عائليّة', default=False)
+    compensation_stock = fields.Integer(string=u'رصيد إجازات التعويض')
+    
     def _compute_service_years(self):
         for emp in self:
             decision_appoint = self.env['hr.decision.appoint'].search([('state', '=', 'done'), ('employee_id', '=', emp.id)])
             if decision_appoint:
                 today_date = fields.Date.from_string(fields.Date.today())
-                date_hiring = fields.Date.from_string(decision_appoint.date_hiring)
-                years = (today_date - date_hiring).days / 365
+                date_hiring = fields.Date.from_string(decision_appoint[0].date_hiring)
+                days = (today_date - date_hiring).days
+                deductible_days = 0
+                # find the holidays of the employee that are deductible_duration_service and promotion_deductible
+                holidays = self.env['hr.holidays'].search([
+                    ('state', '=', 'done'),
+                    ('employee_id', '=', emp.id),
+                    ('holiday_status_id.deductible_duration_service', '=', True), ('holiday_status_id.promotion_deductible', '=', True),
+                    ])
+                # find the holidays of the employee that are only promotion_deductible
+                holidays += self.env['hr.holidays'].search([
+                    ('state', '=', 'done'),
+                    ('employee_id', '=', emp.id),
+                    ('holiday_status_id.deductible_duration_service', '=', False), ('holiday_status_id.promotion_deductible', '=', True),
+                    ])
+                for holiday in holidays:
+                    days -= holiday.duration
+                years = days / 365
                 if years > -1:
                     emp.service_years = years
 
@@ -85,14 +104,29 @@ class HrEmployee(models.Model):
     
     @api.one
     def action_refuse(self):
-        self.employee_state = 'refused'    
-              
+        self.employee_state = 'refused'
+    
+    @api.multi 
+    def button_my_info(self):
+        employee = self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1)
+        if employee:
+            value = {
+                'name': u'بياناتي',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': 'hr.employee',
+                'view_id': False,
+                'type': 'ir.actions.act_window',
+                'res_id': employee.id,
+            }
+            return value
+        
 class HrEmployeeHolidaysStock(models.Model):
     _name = 'hr.employee.holidays.stock'
 
     employee_id = fields.Many2one('hr.employee', string=u'الموظف')
     holiday_status_id = fields.Many2one('hr.holidays.status', string=u'نوع الاجازة')
-    holidays_available_stock = fields.Float(string=u'رصيد الاجازة')
+    holidays_available_stock = fields.Float(string=u'رصيد الاجازة (يوم)')
     token_holidays_sum = fields.Integer(string=u'الإيام المأخوذة', default=0)
     periode = fields.Selection([
         (1, u'سنة'),
@@ -114,7 +148,7 @@ class HrEmployeePromotionHistory(models.Model):
     salary_grid_id = fields.Many2one('salary.grid.grade', string=u'الرتبة')
     date_from = fields.Date(string=u'التاريخ من', default=fields.Datetime.now())
     date_to = fields.Date(string=u'التاريخ الى')
-    balance = fields.Integer(string=u'رصيد الترقية', compute='_compute_balance')
+    balance = fields.Integer(string=u'رصيد الترقية (يوم)', compute='_compute_balance')
 
     def _compute_balance(self):
         for rec in self:
@@ -123,20 +157,17 @@ class HrEmployeePromotionHistory(models.Model):
                 date_from = fields.Date.from_string(rec.date_from)
                 days = (today_date - date_from).days
                 # find the holidays of the employee start from date_from and they are promotion_deductible
+                # only deductible_duration_service it means promotion_deductible also
                 holidays = self.env['hr.holidays'].search([
                     ('state', '=', 'done'),
                     ('employee_id', '=', rec.employee_id.id),
-                    ('holiday_status_id.promotion_deductible', '=', True),
+                    ('holiday_status_id.deductible_duration_service', '=', True),
                     ('date_from', '>=', rec.date_from)
                     ])
                 for holiday in holidays:
                     days -= holiday.periode
-                
-                years = 0
-                if days >0:
-                    years = (today_date - date_from).days / 365
-                if years > -1:
-                    rec.balance = years
+
+                rec.balance = days
  
 
                       

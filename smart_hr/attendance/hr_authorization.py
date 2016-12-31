@@ -16,10 +16,11 @@ class HrAuthorization(models.Model):
     department_id = fields.Many2one('hr.department', string='القسم', readonly=1)
     job_id = fields.Many2one('hr.job', string='الوظيفة', readonly=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
+    type_id = fields.Many2one('hr.authorization.type', string='النوع', required=1, readonly=1, states={'new': [('readonly', 0)]})
     description = fields.Text(string=' ملاحظات ')
     state = fields.Selection([('new', 'طلب'),
                               ('waiting', 'في إنتظار الإعتماد'),
-                              ('cancel', 'ملغى'),
+                              ('cancel', 'مرفوض'),
                               ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
 
     date = fields.Date(string='تاريخ الطلب', required=1, readonly=1, states={'new': [('readonly', 0)]})
@@ -47,3 +48,21 @@ class HrAuthorization(models.Model):
     @api.one
     def action_refuse(self):
         self.state = 'cancel'
+
+
+class HrAuthorizationType(models.Model):
+    _name = 'hr.authorization.type'
+    _description = u'أنواع طلبات الإستئذان'
+
+    name = fields.Char(string='المسمى', required=1)
+    code = fields.Char(string='الرمز')
+    note = fields.Text(string='ملاحظات')
+    sequence = fields.Integer(string='الترتيب')
+
+    @api.multi
+    def name_get(self):
+        result = []
+        for record in self:
+            name = '[%s] %s' % (record.code, record.name)
+            result.append((record.id, name))
+        return result

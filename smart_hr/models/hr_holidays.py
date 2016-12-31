@@ -10,7 +10,43 @@ class HrHolidays(models.Model):
     _inherit = 'hr.holidays'
     _description = 'hr holidays Request'
     _order = 'id desc'
-
+    
+    def _check_date(self, cr, uid, ids, context=None):
+        for holiday in self.browse(cr, uid, ids, context=context):
+            domain = [
+                ('date_from', '<=', holiday.date_to),
+                ('date_to', '>=', holiday.date_from),
+                ('employee_id', '=', holiday.employee_id.id),
+                ('id', '!=', holiday.id),
+                ('state', 'not in', ['cancel', 'refuse']),
+            ]
+            nholidays = self.search_count(cr, uid, domain, context=context)
+            if holiday.compensation_type=='money':
+                return True
+            if nholidays:
+                return False
+        return True
+    
+    @api.depends('holiday_status_id.entitlements.extension_period')
+    def _check_is_extensible(self):
+        # Check if the holiday have a pending or completed extension leave
+        for rec in self:
+            is_extensible = False
+            if rec.holiday_status_id.entitlements:
+                for en in rec.holiday_status_id.entitlements:
+                    if rec.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
+                        if en.extension_period!=0:
+                            is_extensible = True
+                            rec.extension_period=en.extension_period
+                            break
+            rec.is_extensible = is_extensible
+            
+    @api.multi
+    def _set_external_autoritie(self):
+        search_external_authoritie = self.env["external.authorities"].search([('holiday_status.id','=',self.holiday_status_id.id)])
+        if search_external_authoritie:
+            self.external_authoritie = search_external_authoritie[0] 
+                      
     name = fields.Char(string=u'رقم القرار', advanced_search=True)
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), advanced_search=True)
@@ -48,7 +84,7 @@ class HrHolidays(models.Model):
 
     # Cancellation
     is_cancelled = fields.Boolean(string=u'ملغاة', compute='_is_cancelled')
-    is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started', store=True)
+    is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started')
     holiday_cancellation = fields.Many2one('hr.holidays.cancellation')    
     # Extension
     is_extension = fields.Boolean(string=u'تمديد إجازة')
@@ -56,18 +92,35 @@ class HrHolidays(models.Model):
     extended_holiday_id = fields.Many2one('hr.holidays', string=u'الإجازة الممددة')
     parent_id = fields.Many2one('hr.holidays', string=u'Parent')
     extension_holidays_ids = fields.One2many('hr.holidays', 'parent_id', string=u'التمديدات')
-    is_extensible = fields.Boolean(string=u'يمكن تمديدها',related='holiday_status_id.is_extensible',default=False)
+    is_extensible = fields.Boolean(string=u'يمكن تمديدها',default=False,compute='_check_is_extensible',store=True)
     # decision
-    need_decision = fields.Boolean('status_id need decision', related='holiday_status_id.direct_decision')
+    need_decision = fields.Boolean('status_id need decision', related='holiday_status_id.need_decision')
     num_decision = fields.Char(string=u'رقم القرار')
     date_decision = fields.Date(string=u'تاريخ القرار')
     childbirth_date = fields.Date(string=u'تاريخ ولادة الطفل')
     medical_certificate = fields.Binary(string=u'شهادة طبية')
     birth_certificate = fields.Binary(string=u'شهادة الميلاد')
-
+    extension_period = fields.Integer(string=u'مدة التمديد', default=0)
+    external_authoritie = fields.Many2one('external.authorities', string=u'الجهة الخارجية',compute="_set_external_autoritie")
+    death_type = fields.Many2one('hr.holidays.entitlement.config', string=u'صنف الوفاة',domain=[('name','ilike','وفاة')])
+    death_person = fields.Char(string=u'المتوفي')
+    compensation_type = fields.Selection([
+        ('holiday', u'إجازة'),
+        ('money', u' مقابل ‫مادي‬ ‬ ')], string=u'نوع التعويض')
+    compensation_stock = fields.Integer(string=u'رصيد إجازات التعويض',related='employee_id.compensation_stock')
+    accompaniment_type = fields.Selection([
+        ('Relatives', u'أحد الأقارب '),
+        ('child', u' ‫طفل‬‬')], string=u'نوع المرافقة')
+    accompanied_child_age = fields.Integer(string=u'عمر الطفل')
+    _constraints = [
+        (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to'])]
+    @api.depends('date_from')
+    def _compute_is_started(self):
+        for rec in self:
+            if rec.date_from <= datetime.today().strftime('%Y-%m-%d'):
+                rec.is_started = True
     @api.multi
     def _compute_balance(self, employee_id):
-        print employee_id
         holiday_obj = self.env['hr.holidays']
         holidays_status = self.env['hr.holidays.status'].search([])
         for holiday_status_id in holidays_status:
@@ -75,16 +128,19 @@ class HrHolidays(models.Model):
             # check if there is entitlements in holiday_status_id
             holiday_solde_by_year_number = {}
             if holiday_status_id.entitlements:
-                # loop under entitlements and get the holiday solde depend on grade of the employee
+                right_entitlement = False
+                # loop under entitlements and get the right one
                 for en in holiday_status_id.entitlements:
-                    if employee_id.job_id.grade_id in en.entitlment_category.grades:
-                        holiday_solde_by_year_number = {en.periode: en.holiday_stock_default}
+                    if self.death_type == en.entitlment_category:
+                        right_entitlement = en
+                        break
+                    if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
+                        right_entitlement = en
                         break
 
-
                 # calculate the balance of he employee for current holiday status
-                if holiday_solde_by_year_number.items():
-                    periode = holiday_solde_by_year_number.items()[0][0]
+                if right_entitlement:
+                    periode = right_entitlement.periode
                     # check if the type existe in holidays_balance of the employee
                     balance_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', employee_id.id), ('holiday_status_id', '=', holiday_status_id.id)])
                     if not balance_line:
@@ -95,16 +151,16 @@ class HrHolidays(models.Model):
                                                                                   'token_holidays_sum': 0,
                                                                                   'periode': periode})
                     #employee_id.holidays_balance += balance_line
-                    employee_solde=holiday_solde_by_year_number.items()[0][1] 
+                    employee_solde = right_entitlement.holiday_stock_default 
                     if employee_solde > 0:
                         # calculate the number of worked month in current year
                         months = relativedelta(date.today(), date(date.today().year, 1, 1)).months
                         # balance per month
                         if months > 0:
                             balance = employee_solde / (periode * 12) * months
-                            # get the sum of holidays given in from the start of current year till now
+                            # get the sum of holidays given in from the start of current year
                             given_holidays_count = 0
-                            for rec in holiday_obj.search([('state', '=', 'done'), ('employee_id', '=', employee_id.id), ('holiday_status_id', '=', holiday_status_id.id), ('date_from', '<=', date(date.today().year, 12, 31)), ('date_from', '>=', date(date.today().year, 1, 1))]):
+                            for rec in holiday_obj.search([('state', '=', 'done'), ('employee_id', '=', employee_id.id), ('holiday_status_id', '=', holiday_status_id.id), ('date_from', '>=', date(date.today().year, 1, 1))]):
                                 given_holidays_count += rec.duration
                             balance -= given_holidays_count
                             balance_line.write({'holidays_available_stock': balance, 'token_holidays_sum': given_holidays_count})
@@ -115,14 +171,22 @@ class HrHolidays(models.Model):
         extensions = self.env['hr.holidays'].search([('extended_holiday_id', '!=', False),('extended_holiday_id', '=', self.extended_holiday_id.id),('state', '=', 'done')])
         sum_periods = 0
         for extension in extensions:
-            extensions_period = extension.duration
-            sum_periods += extensions_period
-        status_extension_period = self.holiday_status_id.extension_period * 365
-        if sum_periods >= status_extension_period:
-            raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من عام")
+            sum_periods += extension.duration
+        for en in self.holiday_status_id.entitlements:
+            if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
+                extension_period = en.extension_period * 365
+                if sum_periods >= extension_period:
+                    raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من%s عام"%str(extension_period/365))
+        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional'):
+            holiday_status_exceptional_stock = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id)]).holidays_available_stock
+            if holiday_status_exceptional_stock>0:
+                 raise ValidationError(u"لا يمكن تمديد الاجازة قبل نهاتة رصيدها")
+            if extensions_number==1:
+                holiday_status_exceptional_stock+=extension_period
+                
+        if extensions_number >= self.holiday_status_id.extension_number and self.holiday_status_id.extension_number>0:
+            raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من%s "%str(self.holiday_status_id.extension_number))
 
-        if extensions_number >= self.holiday_status_id.extension_number:
-            raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من " + self.holiday_status_id.extension_number + u".")
         view_id = self.env.ref('smart_hr.hr_holidays_form').id
         context = self._context.copy()
         default_date_from = fields.Date.to_string(fields.Date.from_string(self.date_to) + timedelta(days=1))
@@ -144,7 +208,57 @@ class HrHolidays(models.Model):
             'target': 'current',
             'context': context,
         }
-
+        
+    @api.multi
+    def button_cancel(self):
+        # Objects
+        holidays_cancellation_obj = self.env['hr.holidays.cancellation']
+        # Variables
+        user = self.env['res.users'].browse(self._uid)
+        employee = self.env['hr.employee'].search([('user_id', '=', user.id)], limit=1)
+        # Create leave cancellation request
+        vals = {
+                'employee_id': employee.id,
+                'holidays': [(4, self.id)],
+                'note': '   ',
+            }
+        holiday_cancellation_id = holidays_cancellation_obj.create(vals)
+        # Add to log
+        self.message_post(u"تم ارسال طلب إلغاء من قبل '" + unicode(user.name) + u"'")
+        return {
+                    'name': u'طلب إلغاء',
+                    'view_type': 'form',
+                    'view_mode': 'form',
+                    'res_model': 'hr.holidays.cancellation',
+                    'view_id': self.env.ref('smart_hr.hr_holidays_cancellation_mine_form').id,
+                    'type': 'ir.actions.act_window',
+                    'res_id': holiday_cancellation_id.id,
+                }
+    @api.multi
+    def button_cut(self):
+        # Objects
+        holidays_cancellation_obj = self.env['hr.holidays.cancellation']
+        # Variables
+        user = self.env['res.users'].browse(self._uid)
+        employee = self.env['hr.employee'].search([('user_id', '=', user.id)], limit=1)
+        # Create leave cancellation request
+        vals = {
+                'employee_id': employee.id,
+                'holidays': [(4, self.id)],
+                'note': '   ',
+            }
+        holiday_cancellation_id = holidays_cancellation_obj.create(vals)
+        # Add to log
+        self.message_post(u"تم ارسال طلب القطع من قبل '" + unicode(user.name) + u"'")
+        return {
+                    'name': u'طلب قطع',
+                    'view_type': 'form',
+                    'view_mode': 'form',
+                    'res_model': 'hr.holidays.cancellation',
+                    'view_id': self.env.ref('smart_hr.hr_holidays_cancellation_mine_form').id,
+                    'type': 'ir.actions.act_window',
+                    'res_id': holiday_cancellation_id.id,
+                }
     @api.depends('extension_holidays_ids')
     def _is_extended(self):
         # Check if the holiday have a pending or completed extension leave
@@ -260,7 +374,12 @@ class HrHolidays(models.Model):
             self.state = 'done'
             # update holidays balance
             self._compute_balance(self.employee_id)
-        
+            if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_compensation') :
+                if  self.compensation_type == 'holiday':
+                    self.employee_id.compensation_stock-=self.duration
+                if self.compensation_type == 'money':
+                    self.employee_id.compensation_stock=0
+
         if self.holiday_status_id.external_decision and not self.employee_id.external_decision:
             raise ValidationError(u"الموظف يحتاج إلى موافقة جهة خارجية.")
         if self.holiday_status_id.external_decision and self.employee_id.external_decision:
@@ -278,7 +397,7 @@ class HrHolidays(models.Model):
             raise ValidationError(u"الرجاء تعبئة تاريخ الخطاب الصادر.")
         if not self.outspeech_file:
             raise ValidationError(u"الرجاء إرفاق الخطاب.")
-            
+
         if self.holiday_status_id.external_decision:
             self.state = 'revision'
             
@@ -310,73 +429,77 @@ class HrHolidays(models.Model):
     def button_refuse_revision_response(self):
         self.state = 'refuse'
     
-    
+
+                
     @api.constrains('date_from', 'date_to')
     def check_dates_periode(self):
         # Objects
         holiday_obj = self.env['hr.holidays']
-        train_obj = self.env['hr.training']
+        candidate_obj = self.env['hr.candidates']
         deput_obj = self.env['hr.deputation']
-        
-
+         
         for holiday in self:
             # Date validation
             if fields.Date.from_string(holiday.date_from) < fields.Date.from_string(fields.Date.today()):
                 raise ValidationError(u"تاريخ من يجب ان يكون أكبر من تاريخ اليوم")
-            
+             
             if holiday.date_from > holiday.date_to:
                 raise ValidationError(u"تاريخ من يجب ان يكون أصغر من تاريخ الى")
             # check minimum request validation
-            if holiday.holiday_status_id.minimum != 0 and holiday.duration < holiday.holiday_status_id.minimum:
+            if holiday.holiday_status_id.minimum != 0 and holiday.duration < holiday.holiday_status_id.minimum and self.holiday_status_id!=self.env.ref('smart_hr.data_hr_holiday_compensation'):
                 raise ValidationError(u"أقل فترة يمكن طلبها من نوع إجازة " + holiday.holiday_status_id.name + u" " + str(holiday.holiday_status_id.minimum) + u" أيام")
-            
+             
             # check maximum request validation
-            if holiday.holiday_status_id.maximum != 0 and holiday.duration > holiday.holiday_status_id.maximum:
+            if holiday.holiday_status_id.maximum != 0 and holiday.duration > holiday.holiday_status_id.maximum and self.holiday_status_id!=self.env.ref('smart_hr.data_hr_holiday_compensation'):
                 raise ValidationError(u"أكثر فترة يمكن طلبها من نوع إجازة " + holiday.holiday_status_id.name + u" " + str(holiday.holiday_status_id.maximum) + u" أيام")
-   
+    
             # Date overlap
             # الإجازات
-            search_domain = [
-                ('employee_id', '=', holiday.employee_id.id),
-                ('id', '!=', holiday.id),
-                ('state', 'not in', ['refuse', 'cancel']),
-            ]
-            for rec in holiday_obj.search(search_domain):
-                if rec.date_from <= holiday.date_from <= rec.date_to or \
-                        rec.date_from <= holiday.date_to <= rec.date_to or \
-                        holiday.date_from <= rec.date_from <= holiday.date_to or \
-                        holiday.date_from <= rec.date_to <= holiday.date_to:
-                    # normal holidays can be ovelapped with illness type
-                    if not(rec.holiday_status == self.env.ref('smart_hr.data_hr_holiday_status_illness') and \
-                            self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_normal')):
-                        raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق فى الإجازات")
+#             search_domain = [
+#                 ('employee_id', '=', holiday.employee_id.id),
+#                 ('id', '!=', holiday.id),
+#                 ('state', 'not in', ['refuse', 'cancel']),
+#             ]
+#             for rec in holiday_obj.search(search_domain):
+#                 if rec.date_from <= holiday.date_from <= rec.date_to or \
+#                         rec.date_from <= holiday.date_to <= rec.date_to or \
+#                         holiday.date_from <= rec.date_from <= holiday.date_to or \
+#                         holiday.date_from <= rec.date_to <= holiday.date_to:
+#                     # normal holidays can be ovelapped with illness type
+#                     if not(rec.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_illness_normal') and \
+#                             self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_normal') and self.holiday_status_id==self.env.ref('smart_hr.data_hr_holiday_compensation')):
+#                         raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق فى الإجازات")
             # التدريب
             search_domain = [
-                ('employee_ids', 'in', [holiday.employee_id.id]),
-                ('state', '!=', 'refuse'),
+                ('employee_id', '=', holiday.employee_id.id),
+                ('state', '=', 'done'),
             ]
-
-            for rec in train_obj.search(search_domain):
-                periode_in_months = relativedelta(fields.Datetime.from_string(rec.date_to) - fields.Datetime.from_string(rec.date_from)).months
+ 
+            for rec in candidate_obj.search(search_domain):
+                dateto = fields.Date.from_string(rec.date_to)
+                datefrom = fields.Date.from_string(rec.date_from)
+                res = relativedelta(dateto, datefrom)
+                months = res.months
+                days = res.days
                 # for none normal holidays test
-                if self.holiday_status_id != self.env.ref('smart_hr.data_hr_holiday_status_normal'):
+                if self.holiday_status_id != self.env.ref('smart_hr.data_hr_holiday_status_normal') and  self.holiday_status_id!=self.env.ref('smart_hr.data_hr_holiday_compensation'):
                     if rec.date_from <= holiday.date_from <= rec.date_to or \
                             rec.date_from <= holiday.date_to <= rec.date_to or \
                             holiday.date_from <= rec.date_from <= holiday.date_to or \
                             holiday.date_from <= rec.date_to <= holiday.date_to:
                         raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في التدريب")
-
+ 
                 # for normal holidays test
                 else:
                     if rec.date_from < holiday.date_from < rec.date_to and rec.date_from < holiday.date_to < rec.date_to:
-                        if periode_in_months <= 1:
+                        if (months < 1) or (months == 1 and days == 0):
                             raise ValidationError(u"الإجازة يتخللها تدريب مدته أقل من شهر.")
                     if holiday.date_from <= rec.date_from <= holiday.date_to or \
                             holiday.date_from <= rec.date_to <= holiday.date_to:
                         raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في التدريب")
-                    
-                        
-            
+                     
+                         
+             
             # الإنتتبات
             search_domain = [
                 ('employee_id', '=', holiday.employee_id.id),
@@ -388,11 +511,11 @@ class HrHolidays(models.Model):
                         holiday.date_from <= rec.date_from <= holiday.date_to or \
                         holiday.date_from <= rec.date_to <= holiday.date_to:
                     raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الإنتداب")
-
+ 
             """
-
+ 
             TODO: check dates with :أوقات خارج الدوام ... 
-
+ 
             """
 
     def check_constraintes(self):
@@ -428,69 +551,38 @@ class HrHolidays(models.Model):
             if res.years < 3:
                 raise ValidationError(u"ليس لديك ثلاث سنوات خدمة.")
 
-        holiday_status_compelling_stock = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_compelling').id)]).holidays_available_stock
-        holiday_status_exceptional_stock = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id)]).holidays_available_stock
         holiday_status_normal_stock = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id)]).holidays_available_stock
-        holiday_status_childbirth_stock = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_childbirth').id)]).holidays_available_stock
-        holiday_status_exceptional_accompaniment = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_exceptional_accompaniment').id)]).holidays_available_stock
-
+        current_holiday_status_stock = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.holiday_status_id.id)]).holidays_available_stock
+        
+        for en in self.holiday_status_id.entitlements:
+            if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
+                # غير مشروط
+                if not en.conditionnal:
+                    break
+                else:
+                    if self.duration > current_holiday_status_stock and current_holiday_status_stock:
+                        raise ValidationError(u"ليس لديك الرصيد الكافي")
 
         # Constraintes for Compelling holidays اضطرارية
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
-            for en in self.holiday_status_id.entitlements:
-                if self.employee_id.job_id.grade_id in en.entitlment_category.grades:
-                    # غير مشروط
-                    if not en.conditionnal:
-                        break
-                    else:
-                        if self.duration > holiday_status_compelling_stock:
-                            raise ValidationError(u"ليس لديك الرصيد الكافي")
-                        
             if holiday_status_normal_stock>=self.duration:
-                raise ValidationError(u"‫يوجد رصيد في الإجازات العاديّة.")
-            print 'اضطرارية'
-           
-        # Constraintes for exceptionnal holidays استثنائية
-        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional'):
-            for en in self.holiday_status_id.entitlements:
-                if self.employee_id.job_id.grade_id in en.entitlment_category.grades:
-                    #غير مشروط
-                    if not en.conditionnal:
-                        break
-                    else:
-                        if self.duration > holiday_status_exceptional_stock:
-                            raise ValidationError(u" ليس لديك الرصيد الكافي في الاجازات الاستثنائية")
-            print 'استثنائية'
-            
-        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional_accompaniment'):
-            for en in self.holiday_status_id.entitlements:
-                if self.employee_id.job_id.grade_id in en.entitlment_category.grades:
-                    #غير مشروط
-                    if not en.conditionnal:
-                        break
-                    else:
-                        if self.duration > holiday_status_exceptional_accompaniment:
-                            raise ValidationError(u"  ليس لديك الرصيد الكافي في الاجازات الاستثنائية للمرافقة")
-            print 'استثنائية للمرافقة'
-            
+                raise ValidationError(u"يوجد رصيد في الإجازات العاديّة")
+
                     # Constraintes for childbirth holidays وضع
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_childbirth'):
             if self.employee_id.gender!='female':
                 raise ValidationError(u"لا يتمتّع بإجازة الوضع إلّا النساء")
-            if self.duration > holiday_status_childbirth_stock:
-                raise ValidationError(u"ليس لديك الرصيد الكافي ")
             date_from = fields.Date.from_string(self.date_from)
             date_birth = fields.Date.from_string(self.childbirth_date)
             if (date_from-date_birth).days>14:
                 raise ValidationError(u" لا يمكن لتاريخ بداية إجازة الوضع ان يتجاوز تاريخ الوضع بأسبوعين")
             print 'الوضع'
-        
-                        # Constraintes for maternity الامومة
 
+                        # Constraintes for maternity الامومة
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_maternity'):
             if self.employee_id.gender!='female':
                 raise ValidationError(u"لا يتمتّع بإجازة الامومة إلّا النساء")
-            
+
             last_holiday_status_childbirth = self.env['hr.holidays'].search([('state', '=', 'done'),('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_childbirth').id)]).ids
             last_id = last_holiday_status_childbirth and max(last_holiday_status_childbirth)
             last_holiday_status_childbirth_browse =self.env['hr.holidays'].browse(last_id)   
@@ -505,15 +597,41 @@ class HrHolidays(models.Model):
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_adoption'):
             if self.employee_id.gender!='female':
                 raise ValidationError(u"لا يتمتّع بإجازة الحضانة إلّا النساء")
-            
-                                    # Constraintes for child_birth_dad المولود
+
+                        # Constraintes for child_birth_dad المولود
 
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_child_birth_dad'):
-            if self.employee_id.gender!='male':
+            if self.employee_id.gender != 'male':
                 raise ValidationError(u"لا يتمتّع بإجازة المولود إلّا الرجال")
             date_birth = fields.Date.from_string(self.childbirth_date)
-            if (date_from-date_birth).days>7:
+            date_from = fields.Date.from_string(self.date_from)
+            if (date_from-date_birth).days > 7:
                 raise ValidationError(u"لا يمكن لتاريخ بداية إجازة المولود ان يتجاوز تاريخ الوضع بأسبوع")            
+            if (self.duration) > 1:
+                raise ValidationError(u"لا يمكن لإجازة المولود ان تتجاوز يوم")  
+
+            # Constraintes for death الوفاة
+
+        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_death'):
+            for en in self.holiday_status_id.entitlements:
+                if en.entitlment_category.name == self.death_type.name and en.holiday_stock_default<self.duration:
+                    raise ValidationError(u" %s  ان تتجاوز يوم %s  لا يمكن لإجازة   " %(en.holiday_stock_default,en.entitlment_category.name))
+                    break
+
+        date_from = fields.Date.from_string(self.date_from)
+        past_demand_number = self.env['hr.holidays'].search_count([('state', '=', 'done'),('employee_id', '=', self.employee_id.id),
+                                                                   ('holiday_status_id', '=', self.holiday_status_id.id), ('date_from', '>=', date(date_from.year, 1, 1))])
+        if self.holiday_status_id.demand_number_max<=past_demand_number and self.holiday_status_id.demand_number_max>0:
+            raise ValidationError(u" لا يمكن تجزئة هذا النوع من الإجازات على أكثر من %s مرّة " %self.holiday_status_id.demand_number_max)
+                  # Constraintes for accompaniment_exceptional اجازة مرافقة استثنائية
+
+        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional'):
+            if self.accompaniment_type=="child" and self.employee_id.gender!='female':
+                raise ValidationError(u"لا يتمتّع بإجازة مرافقة طفل  إلّا النساء")
+            if self.accompaniment_type=="child" and self.accompanied_child_age>7:
+                raise ValidationError(u"يجب أن يكون عمر الطفل أقل من 7 سنوات")
+            if holiday_status_normal_stock>0:
+                raise ValidationError(u"يوجد رصيد في الإجازات العاديّة")
             
     @api.model
     def create(self, vals):
@@ -525,12 +643,8 @@ class HrHolidays(models.Model):
         vals['name'] = self.env['ir.sequence'].get('hr.holidays.seq')
         res.write(vals)
         return res
-    
 
-    
 
-    
-    
 class HrDelayHoliday(models.Model):
     _name = 'hr.delay.holiday'  
     _description = u'تأجيل إجازة'
@@ -575,15 +689,18 @@ class HrHolidaysStatus(models.Model):
     _inherit = 'hr.holidays.status'
     _description = 'holidays status'
 
+
+            
     name = fields.Char(string=u'نوع الاجازة')
     minimum = fields.Integer(string=u'الحد الأدنى في المرة الواحدة')
     maximum = fields.Integer(string=u'الحد الأقصى في المرة الواحدة')
     postponement_period = fields.Integer(string=u'مدة التأجيل')
-    extension_number = fields.Integer(string=u'عدد مرات تمديد', default=0)
+    extension_number = fields.Integer(string=u'عدد مرات تمديد', default=-1)
     deductible_normal_leave = fields.Boolean(string=u'تخصم مدتها من رصيد الاجازة العادية')
     deductible_duration_service = fields.Boolean(string=u'تخصم مدتها من فترة الخدمة')
     educ_lvl_req = fields.Boolean(string=u'يطبق شرط المستوى التعليمي')
-    direct_decision = fields.Boolean(string=u'تحتاج إلى قرار مباشر')
+    need_decision = fields.Boolean(string=u' تحتاج إلى قرار')
+    direct_decision = fields.Boolean(string=u'تحتاج إلى قرار مباشرة')
     direct_director_decision = fields.Boolean(string=u'موافقة مدير مباشر', default=True)
     external_decision = fields.Boolean(string=u'موافقة خارجية', default=False)
     salary_spending = fields.Boolean(string=u'يجوز صرف راتبها')
@@ -596,26 +713,29 @@ class HrHolidaysStatus(models.Model):
     percentages = fields.One2many('hr.holidays.status.salary.percentage', 'holiday_status', string=u'نسب الراتب المحتسبة')
     for_saudi = fields.Boolean(string=u'تنطبق على السعوديين', default=True)
     for_other = fields.Boolean(string=u'تنطبق على غير السعوديين', default=True)
-    extension_period = fields.Integer(string=u'مدة التمديد', default=0)
-    is_extensible = fields.Boolean(string=u'يمكن تمديدها',default=False)
     promotion_deductible = fields.Boolean(string=u'تخصم مدتها من رصيد الترقية', default=False)
     min_amount = fields.Float(string=u'المبلغ الادنى') 
-    pension_percent = fields.Float(string=u' نسبة راتب التقاعد') 
+    pension_percent = fields.Float(string=u' (%)نسبة راتب التقاعد') 
+    demand_number_max = fields.Integer(string=u'عدد مرات الطلب',default='-1')
+    traveling_ticket = fields.Boolean(string=u'تذكرة سفر', default=False)
+    traveling_ticket_familiar = fields.Boolean(string=u'تذكرة سفر عائليّة', default=False)
 
-    @api.multi
-    def write(self, vals):
-   
-        if vals.get('pension_percent', False):
-            for rec in self:
-                if rec.pension_percent<0 or rec.pension_percent>100:
-                    raise ValidationError(u"لنسبة راتب التقاعد خاطئة ")
+    @api.onchange('deductible_duration_service')
+    def onchange_deductible_duration_service(self):
+        if self.deductible_duration_service:
+            self.promotion_deductible = True
 
+    
+    @api.constrains('pension_percent')
+    def check_pension_percent(self):
+        for rec in self:
+            if rec.pension_percent<0 or rec.pension_percent>100:
+                raise ValidationError(u"نسبة راتب التقاعد خاطئة ")
                 
-        return super(HrHolidaysStatus, self).write(vals)
 class HrHolidaysStatusEntitlement(models.Model):
     _name = 'hr.holidays.status.entitlement'
     _description = u'أنواع الاستحقاقات'
-    entitlment_category = fields.Many2one('hr.holidays.status.entitlement.category', string=u'فئة الاستحقاق')
+    entitlment_category = fields.Many2one('hr.holidays.entitlement.config', string=u'فئة الاستحقاق')
     holiday_stock_default = fields.Integer(string=u'الرصيد')
     conditionnal = fields.Boolean(string=u'مشروط')
     periode = fields.Selection([
@@ -632,14 +752,7 @@ class HrHolidaysStatusEntitlement(models.Model):
         ], string=u'المدة', default=1)
     leave_type = fields.Many2one('hr.holidays.status', string='leave type')
 #     holiday_stock_open = fields.Boolean(string=u'الرصيد مفتوح')
-    
-    
-class HrHolidaysStatusEntitlementCategory(models.Model):
-    _name = 'hr.holidays.status.entitlement.category'
-    _description = u'فئة استحقاق'
-    
-    name = fields.Char(string=u'الاسم')
-    grades = fields.Many2many('salary.grid.grade', string=u'المراتب')
+    extension_period = fields.Integer(string=u'مدة التمديد', default=0)
     
 class HrHolidaysStatusSalaryPercentage(models.Model):
     _name = 'hr.holidays.status.salary.percentage'
@@ -649,3 +762,11 @@ class HrHolidaysStatusSalaryPercentage(models.Model):
     periode = fields.Integer(string=u'عدد الأشهر')
     salary_proportion = fields.Float(string=u'نسبة الراتب (%)', default=100) 
     holiday_status = fields.Many2one('hr.holidays.status', string='holiday status')
+    
+class EntitlementConfig(models.Model):
+    _name = 'hr.holidays.entitlement.config'
+    _description = u' اصناف الاستحقاقات'
+    
+    name = fields.Char(string=u'المسمّى')
+    
+    

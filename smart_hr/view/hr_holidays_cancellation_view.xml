@@ -7,16 +7,24 @@
 		<record id="hr_holidays_cancellation_mine_form" model="ir.ui.view">
 			<field name="name">hr.holidays.cancellation.form</field>
 			<field name="model">hr.holidays.cancellation</field>
+			<field name="sequence" eval="5"/>
 			<field name="arch" type="xml">
 				<form string="إلغاء أو قطع إجازاتي" create="0" edit="0">
+				<field name="is_the_creator" invisible="1" />
 					<header>
-						<button name="button_employee_done" string="موافق" type="object"
-							states="employee" icon="fa-check" class="oe_inline oe_stat_button"
+					
+						<button name="button_send" string="إرسال طلب" type="object"
+							attrs="{'invisible':['|',('state','!=','draft'),('is_the_creator','=', False)]}" icon="fa-paper-plane"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							
+						<button name="button_done" string="موافق" type="object"
+							attrs="{'invisible':['|',('state','!=','audit'),('is_the_creator','=', True)]}" icon="fa-check" class="oe_inline oe_stat_button"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
-							type="action" states="employee" icon="fa-times" class="oe_inline oe_stat_button" />
+							type="action" attrs="{'invisible':['|',('state','!=','audit'),('is_the_creator','=', True)]}" icon="fa-times" class="oe_inline oe_stat_button" />
 
-						<field name="state" widget="statusbar" statusbar_visible="draft,employee,done" />
+						<field name="state" widget="statusbar" statusbar_visible="draft,audit,done" />
 					</header>
 					<sheet>
 						<group>
@@ -85,13 +93,23 @@
 		<record id="hr_holidays_cancellation_employee_form" model="ir.ui.view">
 			<field name="name">hr.holidays.cancellation.form</field>
 			<field name="model">hr.holidays.cancellation</field>
+			<field name="sequence" eval="10"/>
 			<field name="arch" type="xml">
 				<form string="إلغاء إجازة">
+				<field name="is_the_creator" invisible="1" />
 					<header>
-						<button name="button_dm_send" string="إرسال طلب" type="object"
-							attrs="{'invisible':['|',('state','!=','draft')]}" icon="fa-paper-plane"
+						<button name="button_send" string="إرسال طلب" type="object" 
+							attrs="{'invisible':['|',('state','!=','draft'), ('is_the_creator','=', True)]}" icon="fa-paper-plane"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<field name="state" widget="statusbar" statusbar_visible="draft,employee,done" />
+							
+							<button name="button_done" string="موافق" type="object"
+							attrs="{'invisible':['|',('state','!=','audit'),('is_the_creator','=', False)]}" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" attrs="{'invisible':['|',('state','!=','audit'),('is_the_creator','=', False)]}" icon="fa-times" class="oe_inline oe_stat_button" />
+							
+						<field name="state" widget="statusbar" statusbar_visible="draft,audit,done" />
 					</header>
 					<sheet>
 						<label for="name" class="oe_edit_only" />
@@ -101,7 +119,7 @@
 						<group>
 							<field name="date" readonly="1" />
 							<field name="employee_id" />
-							<field name="holidays" widget="many2many" domain="[('state','=', 'done')]"/>
+							<field name="holidays" widget="many2many" domain="[('state', '=', 'done'), ('employee_id', '=', employee_id)]"/>
 						</group>
 						<group>
 							<field name="note" />
@@ -163,13 +181,23 @@
 		<record id="hr_holidays_cut_employee_form" model="ir.ui.view">
 			<field name="name">hr.holidays.cancellation.form</field>
 			<field name="model">hr.holidays.cancellation</field>
+			<field name="sequence" eval="15"/>
 			<field name="arch" type="xml">
 				<form string="قطع إجازة">
+				<field name="is_the_creator" invisible="1" />
 					<header>
-						<button name="button_dm_send" string="إرسال طلب" type="object"
-							attrs="{'invisible':['|',('state','!=','draft')]}" icon="fa-paper-plane"
+						<button name="button_send" string="إرسال طلب" type="object"
+							attrs="{'invisible':['|',('state','!=','draft'),('is_the_creator','=', True)]}" icon="fa-paper-plane"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<field name="state" widget="statusbar" statusbar_visible="draft,employee,done" />
+							
+						<button name="button_done" string="موافق" type="object"
+							attrs="{'invisible':['|',('state','!=','audit'),('is_the_creator','=', False)]}" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" attrs="{'invisible':['|',('state','!=','audit'),('is_the_creator','=', False)]}" icon="fa-times" class="oe_inline oe_stat_button" />
+							
+						<field name="state" widget="statusbar" statusbar_visible="draft,audit,done" />
 					</header>
 					<sheet>
 						<label for="name" class="oe_edit_only" />
@@ -178,8 +206,8 @@
 						</h1>
 						<group>
 							<field name="date" readonly="1" />
-							<field name="employee_id" readonly="1" />
-							<field name="holidays"  />
+							<field name="employee_id"  />
+							<field name="holidays" widget="many2many" domain="[('state', '=', 'done'), ('employee_id', '=', employee_id)]"/>
 						</group>
 						<group>
 							<field name="note" />

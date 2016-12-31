@@ -6,97 +6,173 @@
 		<record id="data_hr_holiday_status_normal" model="hr.holidays.status">
 			<field name="name">عادية</field>
 			<field name="minimum" eval="5" />
-			<field name="limit" eval="True" />
 			<field name="postponement_period" eval="90" />
 		</record>
 		<record id="data_hr_holiday_status_exceptional" model="hr.holidays.status">
 			<field name="name">استثنائية</field>
 			<field name="limit" eval="True" />
 			<field name="extension_period" eval="1" />
-			<field name="direct_decision" eval="True" />
+			<field name="need_decision" eval="True" />
 			<field name="deductible_normal_leave" eval="True" />
 			<field name="deductible_duration_service" eval="True" />
 			<field name="is_extensible" eval="True" />
 			<field name="external_decision" eval="True" />
+			<field name="direct_decision" eval="False" />
 
 		</record>
-		<record id="data_hr_holiday_status_illness" model="hr.holidays.status">
-			<field name="name">مرضية</field>
-			<field name="limit" eval="True" />
+		<record id="data_hr_holiday_status_illness_normal" model="hr.holidays.status">
+			<field name="name">مرضية عادية</field>
 		</record>
+
+		<record id="data_hr_holiday_status_illness_serious" model="hr.holidays.status">
+			<field name="name">مرضية (مرض خطير)</field>
+		</record>
+
+		<record id="data_hr_holiday_status_illness_work_accident"
+			model="hr.holidays.status">
+			<field name="name">مرضية (اصابة عمل)</field>
+		</record>
+
 		<record id="data_hr_holiday_status_study" model="hr.holidays.status">
 			<field name="name">دراسية</field>
-			<field name="limit" eval="False" />
 		</record>
 		<record id="data_hr_holiday_status_exam" model="hr.holidays.status">
 			<field name="name">إداء إمتحان</field>
-			<field name="limit" eval="True" />
 		</record>
 		<record id="data_hr_holiday_status_patient_accompanied" model="hr.holidays.status">
 			<field name="name">مرافقة مريض</field>
-			<field name="limit" eval="True" />
 		</record>
 		<record id="data_hr_holiday_status_legal_absent" model="hr.holidays.status">
 			<field name="name">غياب بعذر</field>
-			<field name="limit" eval="True" />
 		</record>
 		<record id="data_hr_holiday_status_compensation" model="hr.holidays.status">
 			<field name="name">تعويض</field>
-			<field name="limit" eval="True" />
 		</record>
 		<record id="data_hr_holiday_status_sport" model="hr.holidays.status">
 			<field name="name">الرياضية</field>
-			<field name="limit" eval="True" />
 		</record>
 		<record id="data_hr_holiday_status_dialysis" model="hr.holidays.status">
 			<field name="name">غسيل كلوي</field>
-			<field name="limit" eval="True" />
 		</record>
 
 		<record id="data_hr_holiday_status_compelling" model="hr.holidays.status">
 			<field name="name">اضطرارية</field>
 			<field name="maximum" eval="5" />
-			<field name="limit" eval="True" />
 			<field name="for_saudi" eval="True" />
 			<field name="for_other" eval="True" />
-			<field name="direct_decision" eval="True" />
+			<field name="need_decision" eval="True" />
 
 		</record>
 
 		<record id="data_hr_holiday_status_exceptional_accompaniment"
 			model="hr.holidays.status">
 			<field name="name">استثنائية للمرافقة</field>
-			<field name="limit" eval="True" />
 			<field name="extension_period" eval="1" />
-			<field name="direct_decision" eval="True" />
+			<field name="need_decision" eval="True" />
 			<field name="deductible_normal_leave" eval="True" />
 			<field name="deductible_duration_service" eval="True" />
 			<field name="is_extensible" eval="True" />
 			<field name="external_decision" eval="True" />
 			<field name="direct_director_decision" eval="False" />
+			<field name="direct_decision" eval="False" />
+
 
 
 		</record>
 
 		<record id="data_hr_holiday_status_childbirth" model="hr.holidays.status">
 			<field name="name">وضع</field>
-			<field name="limit" eval="True" />
 
 		</record>
 		<record id="data_hr_holiday_status_maternity" model="hr.holidays.status">
 			<field name="name">الامومة</field>
-			<field name="limit" eval="True" />
 			<field name="postponement_period" eval="60" />
 		</record>
 
 		<record id="data_hr_holiday_status_adoption" model="hr.holidays.status">
 			<field name="name"> الحضانة</field>
-			<field name="limit" eval="True" />
 			<field name="postponement_period" eval="60" />
 		</record>
+
 		<record id="data_hr_holiday_child_birth_dad" model="hr.holidays.status">
 			<field name="name"> المولود</field>
+		</record>
+
+		<record id="data_hr_holiday_status_rescue" model="hr.holidays.status">
+			<field name="name">إجازة اغاثة</field>
+		</record>
+
+		<record id="data_hr_holiday_death" model="hr.holidays.status">
+			<field name="name">الوفاة</field>
 			<field name="limit" eval="True" />
+		</record>
+
+		<record id="data_hr_holiday_death_types_parent" model="hr.holidays.entitlement.config">
+			<field name="name">‫ وفاةأصل(‫أبناء‬ ‫أو‬ ‫والدين ‫أو‬ ز وجة)  </field>
+		</record>
+		<record id="data_hr_holiday_death_types_branch" model="hr.holidays.entitlement.config">
+			<field name="name">وفاة فرع (‫أحد الإخوة او غيرهم من الأقارب)</field>
+		</record>
+		<record id="data_hr_holiday_death_types_husband_death" model="hr.holidays.entitlement.config">
+			<field name="name"> وفاة:عدّة</field>
+		</record>
+		<record id="data_hr_holiday_dialysis" model="hr.holidays.status">
+			<field name="name">غسيل كلى</field>
+			<field name="need_decision" eval="True" />
+		</record>
+
+		<record id="data_hr_holiday_literaty" model="hr.holidays.status">
+			<field name="name">الأدبيّة</field>
+			<field name="educ_lvl_req" eval="True" />
+		</record>
+
+		<record id="data_hr_holiday_exam" model="hr.holidays.status">
+			<field name="name">‫إمتحان‬</field>
+		</record>
+
+
+		<record id="data_hr_holiday_entitlement_all" model="hr.holidays.entitlement.config">
+			<field name="name"> الكل</field>
+		</record>
+
+		<record id="data_hr_holiday_accompaniment_exceptional" model="hr.holidays.status">
+			<field name="name">اجازة مرافقة استثنائية</field>
+		</record>
+
+		<record id="data_hr_holiday_status_contractor" model="hr.holidays.status">
+			<field name="name">ا‫لمتعاقدون‬</field>
+			<field name="postponement_period" eval="150" />
+			<field name="limit" eval="True" />
+			<field name="demand_number_max" eval="2" />
+			<field name="traveling_ticket" eval="True" />
+		</record>
+
+		<record id="data_hr_holiday_compensation" model="hr.holidays.status">
+			<field name="name">اجازة التعويض</field>
+		</record>
+		<record id="data_hr_holidays_status_salary_percentage_normal_holiday1" model="hr.holidays.status.salary.percentage">
+			<field name="sequence" eval="0" />
+			<field name="periode" eval="6" />
+			<field name="salary_proportion" eval="100" />
+			<field name="holiday_status_id" ref="data_hr_holiday_status_illness_normal" />
+		</record>
+		<record id="data_hr_holidays_status_salary_percentage_normal_holiday2" model="hr.holidays.status.salary.percentage">
+			<field name="sequence" eval="1" />
+			<field name="periode" eval="6" />
+			<field name="salary_proportion" eval="50" />
+			<field name="holiday_status_id" ref="data_hr_holiday_status_illness_normal" />
+		</record>
+		<record id="data_hr_holidays_status_salary_percentage_normal_holiday3" model="hr.holidays.status.salary.percentage">
+			<field name="sequence" eval="2" />
+			<field name="periode" eval="6" />
+			<field name="salary_proportion" eval="25" />
+			<field name="holiday_status_id" ref="data_hr_holiday_status_illness_normal" />
+		</record>
+				<record id="data_hr_holidays_status_salary_percentage_normal_holiday3" model="hr.holidays.status.salary.percentage">
+			<field name="sequence" eval="3" />
+			<field name="periode" eval="6" />
+			<field name="salary_proportion" eval="0" />
+			<field name="holiday_status_id" ref="data_hr_holiday_status_illness_normal" />
 		</record>
 	</data>
 

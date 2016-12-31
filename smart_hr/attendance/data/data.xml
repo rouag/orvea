@@ -14,6 +14,17 @@
 			<field name="prefix"></field>
 			<field name="padding">3</field>
 		</record>
-				
+		<record id="hr_authorization_type_01" model="hr.authorization.type">
+			<field name="name">إستئذان لعمل‬</field>
+			<field name="code">01</field>
+		</record>
+		<record id="hr_authorization_type_02" model="hr.authorization.type">
+			<field name="name">إستئذان من أجل مهمة‬</field>
+			<field name="code">02</field>
+		</record>
+		<record id="hr_authorization_type_03" model="hr.authorization.type">
+			<field name="name">إستئذان شخصي‬</field>
+			<field name="code">03</field>
+		</record>
 	</data>
 </openerp>

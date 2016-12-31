@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+
+
+
+		<record id="holiday_entitlement_types_form" model="ir.ui.view">
+			<field name="name">hr.holidays.entitlement.config.form</field>
+			<field name="model">hr.holidays.entitlement.config</field>
+			<field name="arch" type="xml">
+				<form string="اصناف الوفايات‬‬">
+					<sheet>
+						<group>
+							<field name="name" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="holiday_entitlement_types_tree" model="ir.ui.view">
+			<field name="name">hr.holidays.entitlement.config.tree</field>
+			<field name="model">hr.holidays.entitlement.config</field>
+			<field name="arch" type="xml">
+				<tree string="اصناف الوفايات">
+							<field name="name" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_holiday_entitlement_types">
+			<field name="name">اصناف الوفايات‬‬</field>
+			<field name="res_model">hr.holidays.entitlement.config</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="menu_holiday_entitlement_types" parent="menu_hr_holidays_status_root"
+			name="اصناف الاستحقاقات" sequence="100" action="action_holiday_entitlement_types"/>
+
+
+
+
+	</data>
+</openerp>

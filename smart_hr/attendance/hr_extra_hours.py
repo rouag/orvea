@@ -19,7 +19,7 @@ class HrExtraHours(models.Model):
     description = fields.Text(string=' ملاحظات ')
     state = fields.Selection([('new', 'طلب'),
                               ('waiting', 'في إنتظار الإعتماد'),
-                              ('cancel', 'ملغى'),
+                              ('cancel', 'مرفوض'),
                               ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
 
     date = fields.Date(string='تاريخ الطلب', required=1, readonly=1, states={'new': [('readonly', 0)]})

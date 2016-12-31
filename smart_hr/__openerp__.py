@@ -71,6 +71,9 @@
         'view/hr_termination_view.xml',
         'view/section.xml',
         'view/hierarchy_level.xml',
+        'view/external_autorities.xml',
+         'view/holiday_entitlement_types.xml',
+
         # القرارات
         'view/hr_decision.xml',
         # الرواتب
@@ -82,20 +85,26 @@
         # الحضور والإنصراف
         'attendance/security/attendance_security.xml',
         'attendance/security/ir.model.access.csv',
-        'attendance/data/sequences.xml',
+        'attendance/data/data.xml',
         'attendance/menu.xml',
         'attendance/view/hr_resource_calendar.xml',
-        'attendance/view/hr_plan_presence.xml',
+        'attendance/view/hr_attendance_schedule.xml',
         'attendance/view/hr_public_holiday.xml',
-        'attendance/view/import_csv_view.xml',
+        'attendance/view/hr_attendance_import_view.xml',
         'attendance/view/hr_attendance.xml',
         'attendance/view/hr_attendance.xml',
         'attendance/view/hr_extra_hours.xml',
         'attendance/view/hr_authorization_view.xml',
-        
-        # تصنيف الوظائف
+        'attendance/view/report_day_view.xml',
+        'attendance/view/hr_attendance_check_view.xml',
+        'attendance/view/hr_attendance_report_view.xml',
+        'attendance/wizard/wizard_attendance_summary_view.xml',
+        'attendance/views/attendance_summary_report.xml',
+        'attendance/views/report.xml',
+         # تصنيف الوظائف
         'job/view/hr_job_setting.xml',
         'job/view/hr_skils_job.xml',
+        
     ],
     'auto_install': False,
 }
