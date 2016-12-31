@@ -91,7 +91,6 @@
 
 									<group string="الميلاد">
 										<field name="birthday" attrs="{'required': 1}" />
-										<field name="birthday_location" attrs="{'required': 1}" />
 
 									</group>
 
@@ -288,7 +287,6 @@
 
 										<group string="الميلاد">
 											<field name="birthday" attrs="{'required': 1}" />
-											<field name="birthday_location" attrs="{'required': 1}" />
 
 										</group>
 
