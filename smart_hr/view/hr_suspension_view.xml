@@ -27,7 +27,7 @@
                         </group>
                         <group>
                             <group string="معلومات كف اليد">
-                                <field name="employee_id" required="1" attrs="{'readonly':[('employee_state','!=','new')]}"/>
+                                <field name="employee_id" required="1" />
                                 <field name="suspension_date" required="1" attrs="{'readonly':[('state','!=','draft')]}"/>
                                 <field name="suspension_end_id" readonly="1"/>
                             </group>
