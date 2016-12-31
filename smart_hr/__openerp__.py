@@ -52,7 +52,7 @@
         'wizards/view/hr_refuse_wizard_view.xml',
 
         'view/hr.xml',
-        'view/hr_job.xml',
+      
         'view/hr_decision_appoint.xml',
         'view/hr_promotion.xml',
         'view/salary_grid.xml',
@@ -113,6 +113,7 @@
          # تصنيف الوظائف
         'job/view/hr_job_setting.xml',
         'job/view/hr_skils_job.xml',
+        'job/view/hr_job.xml',
         #الاجازات
         'holidays/menu.xml',
         'holidays/wizard/wizard_resume_holidays_view.xml',

@@ -239,8 +239,8 @@
 
 
 		<!-- hr holidays status inherit form -->
-		<menuitem id="menu_hr_holidays_status_root" parent="hr_root_configuration"
-			name="اجازات" sequence="8" />
+		<menuitem id="menu_hr_holidays_status_root" parent="menu_hr_holiday_root"
+			name="الإعدادات" sequence="500" />
 
 		<record id="view_form_hr_holidays_status" model="ir.ui.view">
 			<field name="name">hr.holidays.status.form</field>

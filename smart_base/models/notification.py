@@ -2,6 +2,7 @@
 
 
 from openerp import models, fields
+from pychart.arrow import default
 
 
 class BaseNotification(models.Model):
@@ -12,7 +13,7 @@ class BaseNotification(models.Model):
     show_date = fields.Datetime(string='show date')
     message = fields.Char(string='Message')
     title = fields.Char(string='Title')
-    to_read = fields.Boolean(string='To read')
+    to_read = fields.Boolean(string='To read', default=True)
     res_model = fields.Char(string='model name')
     res_id = fields.Integer(string='Res ID')
     res_action = fields.Char(string='action name (module_name.action_name)')

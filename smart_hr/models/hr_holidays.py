@@ -5,6 +5,7 @@ from openerp.tools import SUPERUSER_ID
 from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 class HrHolidays(models.Model):
     _inherit = 'hr.holidays'
@@ -372,6 +373,14 @@ class HrHolidays(models.Model):
                 
     @api.one
     def button_accept_dm(self):
+        # send notification for the employee who is requesting a holiday
+        self.env['base.notification'].create({'title': u'إشعار بقبول إجازة',
+                                              'message': u'لقد تم قبول الإجازة من طرف المدير المباشر',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'res_model':'hr.holidays',
+                                              'res_id': self.id,
+                                              'res_action': 'smart_hr.action_hr_holidays'})
         self.state = 'audit'
     
     @api.multi
