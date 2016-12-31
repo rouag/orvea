@@ -1,10 +1,12 @@
 .o_notification_manager .o_notification .o_close {
-    position: absolute;
-    top: 5px;
-    left: 0;
-     direction: ltr;
-    /* bottom: auto; */
-    right: 5px;
-    color: rgba(0, 0, 0, 0.3);
-    text-decoration: none;
+	display:none;
 }
+
+.o_notification_manager .o_notification .o_notification_title .o_icon {
+    display: inline-block;
+    margin-right: 20px;
+    color: rgba(0, 0, 0, 0.3);
+    position: absolute;
+    left: 20px;
+}
+
