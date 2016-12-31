@@ -74,7 +74,10 @@
 			<field name="name"> وفاة:عدّة</field>
 			<field name="code">death</field>
 		</record>
-
+		<record id="data_entitlement_illness_normal" model="hr.holidays.entitlement.config">
+			<field name="name">مرضية (عادية)</field>
+			<field name="code">illness</field>
+		</record>
 		<record id="data_entitlement_illness_serious" model="hr.holidays.entitlement.config">
 			<field name="name">مرضية (مرض خطير)</field>
 			<field name="code">illness</field>
