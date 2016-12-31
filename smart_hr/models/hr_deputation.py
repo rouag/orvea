@@ -18,6 +18,12 @@ class hr_deputation(models.Model):
     name = fields.Char(string=u'رقم القرار', advanced_search=True)
     date = fields.Date(string=u'التاريخ', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), advanced_search=True)
+    employee_state = fields.Selection([('new', u'جديد'),
+                                       ('waiting', u'في إنتظار الموافقة'),
+                                       ('update', u'إستكمال البيانات'),
+                                       ('done', u'اعتمدت'),
+                                       ('refused', u'رفض'),
+                                       ('employee', u'موظف')], string=u'الحالة', related='employee_id.employee_state')
     is_direct_manager = fields.Boolean(string='Is Direct Manager', compute='_is_direct_manager')
     is_current_user = fields.Boolean(string='Is Current User', compute='_is_current_user')
     date_from = fields.Date(string=u'من')

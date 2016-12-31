@@ -214,7 +214,7 @@
 							<field name="speech_picture" />
 						</group>
 
-						<field name="job_update_ids" string=" تعديل وظائف">
+						<field name="job_update_ids" string=" تحوير‬  وظائف">
 							<tree editable="bottom">
 								 <field name="job_id" domain="[('state','=','unoccupied')]" />
 								<field name="new_name" />
@@ -233,13 +233,13 @@
 			</field>
 		</record>
 		<record model="ir.actions.act_window" id="action_hr_job_update">
-			<field name="name">تعديل وظائف</field>
+			<field name="name">تحوير‬  وظائف</field>
 			<field name="res_model">hr.job.update</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
-		<menuitem id="hr_job_update_menu" name="تعديل وظائف"
+		<menuitem id="hr_job_update_menu" name="تحوير‬  وظائف"
 			sequence="30" parent="hr_root_job" action="action_hr_job_update" />
 
 		<!-- نقل وظائف -->
