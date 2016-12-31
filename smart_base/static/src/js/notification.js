@@ -21,11 +21,11 @@ var QWeb = core.qweb;
 var BaseNotification = Notification.extend({
     template: "BaseNotification",
 
-    init: function(parent, title, text, eid, action_id) {
+    init: function(parent, title, text, eid, action_id, res_id) {
         this._super(parent, title, text, true);
         this.eid = eid;
         this.action_id = action_id;
-        
+        this.res_id = res_id;
 
         this.events = _.extend(this.events || {}, {
             'click .link2event': function() {
@@ -34,8 +34,8 @@ var BaseNotification = Notification.extend({
                 this.rpc("/web/action/load", {
                 	action_id: this.action_id,
                 }).then(function(r) {
-                	console.log(r);
-                    r.res_id = self.eid;
+                	console.log(self.res_id);
+                    r.res_id = self.res_id;
                     return self.do_action(r);
                 });
             },
@@ -68,12 +68,13 @@ WebClient.include({
         var self = this;
         this.rpc("/notification/notify", {}, {shadow: true})
         .done(function(result) {
+        	
             _.each(result, function(res) {
                 setTimeout(function() {
                     // If notification not already displayed, we create and display it (FIXME is this check usefull?)
                     if(self.$(".eid_" + res.notif_id).length === 0) {
                     	
-                        self.notification_manager.display(new BaseNotification(self.notification_manager, res.title, res.message, res.notif_id, res.res_action));
+                        self.notification_manager.display(new BaseNotification(self.notification_manager, res.title, res.message, res.notif_id, res.res_action, res.res_id));
                     }
                 }, res.timer * 1000);
             });
