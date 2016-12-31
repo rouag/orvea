@@ -100,6 +100,7 @@ class HrHolidays(models.Model):
     external_authoritie = fields.Many2one('external.authorities', string=u'الجهة الخارجية',compute="_set_external_autoritie")
     entitlement_type = fields.Many2one('hr.holidays.entitlement.config', string=u'الصنف')
     death_person = fields.Char(string=u'المتوفي')
+    medical_certification = fields.Binary(string=u'الشهادة الطبية')
     compensation_type = fields.Selection([
         ('holiday', u'إجازة'),
         ('money', u' مقابل ‫مادي‬ ‬ ')], string=u'نوع التعويض')
@@ -130,35 +131,34 @@ class HrHolidays(models.Model):
     def _compute_balance(self, employee_id):
         holiday_obj = self.env['hr.holidays']
         holidays_status = self.env['hr.holidays.status'].search([])
-
         #compute solde of holidays
         for holiday_status_id in holidays_status:
-            if holiday_status_id not in [self.env.ref('smart_hr.data_hr_holiday_status_illness')]:
-                # recompute balance of the holiday_status_id
-                # check if there is entitlements in holiday_status_id
-                if holiday_status_id.entitlements:
-                    right_entitlement = False
-                    # loop under entitlements and get the right one
-                    for en in holiday_status_id.entitlements:
-                        if self.entitlement_type == en.entitlment_category:
-                            right_entitlement = en
-                            break
-                        if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
-                            right_entitlement = en
-                            break
+            # recompute balance of the holiday_status_id
+            # check if there is entitlements in holiday_status_id
+            if holiday_status_id.entitlements:
+                right_entitlement = False
+                # loop under entitlements and get the right one
+                for en in holiday_status_id.entitlements:
+                    if self.entitlement_type == en.entitlment_category:
+                        right_entitlement = en
+                        break
+                    if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
+                        right_entitlement = en
+                        break
 
-                    # calculate the balance of he employee for current holiday status
-                    if right_entitlement:
-                        periode = right_entitlement.periode
-                        # check if the type existe in holidays_balance of the employee
-                        balance_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', employee_id.id), ('holiday_status_id', '=', holiday_status_id.id)])
-                        if not balance_line:
-                            # create balance line in holidays_balance of the employee
-                            balance_line = self.env['hr.employee.holidays.stock'].create({'holidays_available_stock': 0,
-                                                                                      'employee_id': employee_id.id,
-                                                                                      'holiday_status_id': holiday_status_id.id,
-                                                                                      'token_holidays_sum': 0,
-                                                                                      'periode': periode})
+                # calculate the balance of he employee for current holiday status
+                if right_entitlement:
+                    periode = right_entitlement.periode
+                    # check if the type existe in holidays_balance of the employee
+                    balance_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', employee_id.id), ('holiday_status_id', '=', holiday_status_id.id)])
+                    if not balance_line:
+                        # create balance line in holidays_balance of the employee
+                        balance_line = self.env['hr.employee.holidays.stock'].create({'holidays_available_stock': 0,
+                                                                                    'employee_id': employee_id.id,
+                                                                                    'holiday_status_id': holiday_status_id.id,
+                                                                                    'token_holidays_sum': 0,
+                                                                                    'periode': periode})
+                    if holiday_status_id not in [self.env.ref('smart_hr.data_hr_holiday_status_illness')]:  
                         #employee_id.holidays_balance += balance_line
                         employee_solde = right_entitlement.holiday_stock_default 
                         if employee_solde > 0:
@@ -173,6 +173,29 @@ class HrHolidays(models.Model):
                                     given_holidays_count += rec.duration
                                 balance -= given_holidays_count
                                 balance_line.write({'holidays_available_stock': balance, 'token_holidays_sum': given_holidays_count})
+                    else:
+                        # compute illness holiday
+                        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_illness'):
+                            open_periode = self.check_illness_holiday_periode_existance(employee_id)
+                            # case there is an open periode
+                            if open_periode:
+                                # case there is an open periode, check the entitlement
+                                # fetch all illness holidays from the start of open periode
+                                holidays = self.env['hr.holidays'].search([('state', '=', 'done'), ('employee_id', '=', self.employee_id.id), ('date_from', '>=', fields.Datetime.from_string(open_periode.date_from))])
+                                sum_days = 0
+                                for holiday in holidays:
+                                    sum_days += holiday.duration
+                                # get the entitlement from holiday status
+                                entitlement = False
+                                for en in self.holiday_status_id.entitlements:
+                                    if en.entitlment_category.id == self.entitlement_type.id:
+                                        entitlement = en
+                                        break
+                                if entitlement:
+                                    balance = entitlement.holiday_stock_default - sum_days
+                                    balance_line.write({'holidays_available_stock': balance, 'token_holidays_sum': sum_days})
+                        
+                                
     @api.multi
     def button_extend(self):
         # check if its possible to extend this holiday
@@ -382,7 +405,7 @@ class HrHolidays(models.Model):
         if not self.holiday_status_id.external_decision:
             self.state = 'done'
             # check illness holiday periode
-            self.check_illness_holiday_periode_existance()
+            self.check_illness_holiday_periode_existance(self.employee_id)
             # update holidays balance
             self._compute_balance(self.employee_id)
             if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_compensation'):
@@ -428,12 +451,16 @@ class HrHolidays(models.Model):
     
     
     
-    def check_illness_holiday_periode_existance(self):
+    def check_illness_holiday_periode_existance(self, employee_id):
+        """
+        return: an open periode or False
+        """
+        open_periode = False
         # open a periode for illness holidays only if there is no open periode
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_illness'):
 
             # create new open periode if there is no ones
-            periodes = self.env['hr.illness.holidays.periode'].search([('employee_id', '=', self.employee_id.id)])
+            periodes = self.env['hr.illness.holidays.periode'].search([('employee_id', '=', employee_id.id)])
             open_periode = False
             for periode in periodes:
                 if fields.Datetime.from_string(periode.date_to) > datetime.now():
@@ -447,8 +474,8 @@ class HrHolidays(models.Model):
                         entitlement = en
                         break
                 if entitlement:
-                    self.env['hr.illness.holidays.periode'].sudo().create({'employee_id': self.employee_id.id, 'date_to': datetime.now() + relativedelta(years=entitlement.periode)})
-
+                    self.env['hr.illness.holidays.periode'].sudo().create({'employee_id': employee_id.id, 'date_to': datetime.now() + relativedelta(years=entitlement.periode)})
+        return open_periode
         
     @api.one
     def button_accept_revision_response(self):
@@ -460,7 +487,7 @@ class HrHolidays(models.Model):
             raise ValidationError(u"الرجاء إرفاق الخطاب.")
         self.state = 'done'
         # check illness holiday periode
-        self.check_illness_holiday_periode_existance()
+        self.check_illness_holiday_periode_existance(self.employee_id)
         # update holidays balance
         self._compute_balance(self.employee_id)
     @api.one
@@ -686,16 +713,14 @@ class HrHolidays(models.Model):
                 if fields.Datetime.from_string(periode.date_to) > datetime.now():
                     open_periode = periode
                     break
-            # case there is no open periode
+            # case there is  open periode
             if open_periode:
-                print open_periode
                 # case there is an open periode, check the entitlement
                 # fetch all illness holidays from the start of open periode
                 holidays = self.env['hr.holidays'].search([('state', '=', 'done'), ('employee_id', '=', self.employee_id.id), ('date_from', '>=', fields.Datetime.from_string(open_periode.date_from))])
                 sum_days = 0
                 for holiday in holidays:
                     sum_days += holiday.duration
-                print sum_days
                 # get the entitlement from holiday status
                 entitlement = False
                 for en in self.holiday_status_id.entitlements:
