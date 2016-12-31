@@ -106,7 +106,15 @@
          # تصنيف الوظائف
         'job/view/hr_job_setting.xml',
         'job/view/hr_skils_job.xml',
-        
+        #الاجازات
+        'holidays/menu.xml',
+        'holidays/wizard/wizard_resume_holidays_view.xml',
+        'holidays/views/resume_holidays_report.xml',
+        'holidays/views/report.xml',
+    
+    
+    
+    
     ],
     'auto_install': False,
 }
