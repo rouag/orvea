@@ -2,7 +2,7 @@
 <openerp>
 	<data>
 
-			
+
 		<!-- الموظفون -->
 
 		<record id="view_employee_tree" model="ir.ui.view">
@@ -272,6 +272,9 @@
 
 											<field name="identification_id" groups="base.group_hr_user"
 												attrs="{'required': 1}" />
+											<field name="identification_date" groups="base.group_hr_user" />
+											<field name="identification_place" groups="base.group_hr_user" />
+
 											<field name="passport_id" groups="base.group_hr_user"
 												attrs="{'required': 1}" />
 											<field name="is_resident" attrs="{'required': 1}" />
@@ -325,6 +328,7 @@
 											<field name="user_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="recruiter" widget="selection" />
+											<field name="recruiter_date" />
 											<field name="calendar_id" />
 
 										</group>

@@ -16,6 +16,7 @@ class hr_department(models.Model):
     dep_recruiter = fields.Many2one('recruiter.recruiter',string = u'الجهة')
     dep_section = fields.Many2one('smart.section',string = u'الفرع')
     level = fields.Integer(string = u'العمق')
+    code = fields.Char(string = u'الرمز')
     
     @api.multi
     def write(self, vals):

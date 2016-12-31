@@ -12,12 +12,14 @@ class HrEmployee(models.Model):
     _inherit = 'hr.employee'
 
     number = fields.Char(string=u'الرقم الوظيفي', required=1)
-
+    identification_date=fields.Date(string=u'تاريخ إصدار بطاقة الهوية ')
+    identification_place=fields.Char(string=u'مكان إصدار بطاقة الهوية')
     father_name = fields.Char(string=u'إسم الأب', required=1)
     is_resident = fields.Boolean(string=u'موظف مقيم', required=1)
     birthday_location = fields.Char(string=u'مكان الميلاد')
     attachments = fields.Many2many('ir.attachment', 'res_id', string=u"المرفقات")
     recruiter = fields.Many2one('recruiter.recruiter', string=u'جهة التوظيف', required=1)
+    recruiter_date = fields.Date(string=u' تاريخ التعين بالجهة ')
     employee_state = fields.Selection([('new', u'جديد'),
                                        ('waiting', u'في إنتظار الموافقة'),
                                        ('update', u'إستكمال البيانات'),
