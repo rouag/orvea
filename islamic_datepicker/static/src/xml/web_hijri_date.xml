@@ -18,7 +18,7 @@
 
 		<t
 			t-if="widget.__parentedParent.field_manager and (widget.__parentedParent.field_manager.fields_view.arch.attrs.editable != 'top' and widget.__parentedParent.field_manager.fields_view.arch.attrs.editable != 'bottom')">
-			<span style="float: right;width: 25%; padding-left: 5px;">
+			<span style="float: right;width: 25%; padding-left: 5px;min-width: 150px;">
 				<div class="calandar_hijri">
 					<input t-att-id="widget.name" type="text" t-att-placeholder="placeholder"
 						style="background-color: #FFFFFF !important" class="oe_hijri oe_datepicker_master" />
@@ -26,7 +26,7 @@
 				</div>
 			</span>
 
-			<span style="float: right; width: 25%; padding-left: 5px;">
+			<span style="float: right; width: 25%; padding-left: 5px;min-width: 150px;">
 				<t t-set="placeholder"
 					t-value="widget.getParent().node and widget.getParent().node.attrs.placeholder" />
 				<input type="text" t-att-placeholder="placeholder" class="oe_datepicker_container" />
