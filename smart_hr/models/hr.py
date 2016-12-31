@@ -28,6 +28,9 @@ class HrEmployee(models.Model):
     # Deputation Stock
     deputation_stock = fields.Integer(string=u'الأنتدابات', default=60)
     service_years = fields.Integer(string=u'سنوات الخدمة', compute='_compute_service_years')
+    religion_state = fields.Selection([('muslim', u'مسلم'),
+                                  ('notmoslum', u'غير مسلم'),
+                                  ], string=u'الديانة', default='muslim', required=1)
     emp_state = fields.Selection([('working', u'على رأس العمل'),
                                   ('suspended', u'مكفوف اليد'),
                                   ('terminated', u'مطوي قيده'),

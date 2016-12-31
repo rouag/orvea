@@ -122,6 +122,7 @@
 									<group string="الحالة">
 
 										<field name="gender" attrs="{'required': 1}" />
+											<field name="religion_state" attrs="{'required': 1}" />
 										<field name="marital" attrs="{'required': 1}" />
 									</group>
 
@@ -318,6 +319,7 @@
 										<group string="الحالة">
 
 											<field name="gender" attrs="{'required': 1}" />
+											<field name="religion_state"  />
 											<field name="marital" attrs="{'required': 1}" />
 										</group>
 

@@ -20,11 +20,10 @@ access_hr_job_reservation,hr_job_reservation,model_hr_job_reservation,group_job_
 ,,,,,,,
 access_hr_promotion,hr_promotion,model_hr_promotion,group_job_managmenet,1,1,1,0
 ,,,,,,,
-access_hr_training,hr_training,model_hr_training,group_department_manager,1,1,1,1
-access_hr_training,hr_training,model_hr_training,group_employee,0,0,0,0
+access_hr_training,hr_training,model_hr_training,,1,1,1,1
 ,,,,,,,
-access_hr_candidates,hr_candidates,model_hr_candidates,group_department_manager,1,1,1,1
-access_hr_candidates,hr_candidates,model_hr_training,group_employee,1,1,1,0
+access_hr_candidates,hr_candidates,model_hr_candidates,,1,1,1,1
+access_hr_candidates,hr_candidates,model_hr_candidates,,1,1,1,0
 access_hr_employee,hr_employee,model_hr_employee,group_employee_request,1,1,1,1
 access_hr_employee_registration,hr_employee_registration,model_hr_employee,group_employee_registration,1,1,0,0
 access_hr_employee_update_balance_holidays,hr_employee_update_balance_holidays,model_hr_employee,group_employee,1,1,0,0
