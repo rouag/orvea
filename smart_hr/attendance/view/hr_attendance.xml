@@ -18,7 +18,7 @@
 								<field name="name" />
 								<field name="action" />
 								<field name="id_emprinte" />
-								<field name="action_desc" />
+								<field name="action_desc"  invisible="1"/>
 								<field name="mac_id" invisible="1" />
 							</group>
 						</sheet>
@@ -38,7 +38,7 @@
 						<field name="name" />
 						<field name="employee_id" />
 						<field name="action" />
-						<field name="action_desc" />
+						<field name="action_desc" invisible="1"/>
 						<field name="id_emprinte" invisible="1" />
 						<field name="mac_id" />
 						<field name="worked_hours" invisible="1" />

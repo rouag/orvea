@@ -128,7 +128,7 @@ access_hr_termination_hr,hr_termination_hr,model_hr_termination,group_hr,1,1,1,0
 access_hr_termination_type_hr,hr_termination_type_hr,model_hr_termination_type,group_hr,1,0,0,0
 
 access_hr_deputation_category,hr_deputation_category,model_hr_deputation_category,,1,1,1,1
-access_hr_job_training,hr_job_training,model_hr_job_training,,1,1,1,1
+access_hr_job_training,hr_job_training,model_hr_job_trainning,,1,1,1,1
 access_hr_job_classment,hr_job_classment,model_hr_job_classment,,1,1,1,1
 access_hr_skils_job,hr_skils_job,model_hr_skils_job,,1,1,1,1
 access_hr_groupe_job,hr_groupe_job,model_hr_groupe_job,,1,1,1,1

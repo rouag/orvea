@@ -109,7 +109,7 @@ class HrAttendanceImport(models.Model):
             day_number = 4
         elif um.day_name_en == 'Saturday':
             day_number = 5
-        elif um.day_name_en == 'Sunday':
+        elif um.day_name_en == 'dimanche':
             day_number = 6
         return str(day_number)
 
@@ -128,9 +128,12 @@ class HrAttendanceImport(models.Model):
         time_to = time(int(hour_to_hour), int(hour_to_min), 0)
         late = calendar_attendance.calendar_id.schedule_id.late
         leave = calendar_attendance.calendar_id.schedule_id.leave
-        time_from_max = time(int(hour_from_hour), int(hour_from_min) + int(late), 0)
-        time_to_min = time(int(hour_to_hour), int(hour_to_min) - int(leave), 0)
-        # TODO: FixMe  dont use  hour+late or  hour-leave because minute must be in 0..59 must use timedelta
+        datetime_from_max = datetime(100, 1, 1, int(hour_from_hour), int(hour_from_min), 0)
+        datetime_from_max = datetime_from_max + timedelta(0, int(late) * 60.0)
+        time_from_max = datetime_from_max.time()
+        datetime_to_min = datetime(100, 1, 1, int(hour_to_hour), int(hour_to_min), 0)
+        datetime_to_min = datetime_to_min - timedelta(0, int(leave) * 60.0)
+        time_to_min = datetime_to_min.time()
         return time_from, time_to, late, time_from_max, time_to_min
 
     @api.multi
@@ -200,7 +203,6 @@ class HrAttendanceImport(models.Model):
                    'delay': absence.delay_hours_supp}
             attendance_check.create(val)
         return True
-
 
     def chek_sign_in(self, date, employee_id, latest_time, latest_datetime_import):
         '''
@@ -339,7 +341,7 @@ class HrAttendanceImport(models.Model):
         if current_time >= time_to:
             if not employee_attendances_sign_out:
                 vals = {'employee_id': employee_id,
-                        'hour_calendar': time_float_convert(time_to),
+                        'hour_calendar_to': time_float_convert(time_to),
                         'date': date,
                         'action': 'no_leave',
                         'description': u'لم يسجل بصمة الخروج',
@@ -354,7 +356,7 @@ class HrAttendanceImport(models.Model):
                     delay_leave_seconds = delay_leave.seconds
                     delay_leave = delay_leave_seconds / 3600.0
                     vals = {'employee_id': employee.id,
-                            'hour_calendar': time_float_convert(time_to),
+                            'hour_calendar_to': time_float_convert(time_to),
                             'hour_attendance': time_float_convert(last_sign_out_time),
                             'delay_leave': delay_leave,
                             'date': date,
@@ -362,7 +364,7 @@ class HrAttendanceImport(models.Model):
                             'latest_date_import': latest_date_import}
                     report_day_obj.create(vals)
                 # احتساب وقت إضافي
-                elif last_sign_out_time > time_to_min:
+                elif last_sign_out_time > time_to:
                     delay_hours_supp = datetime.strptime(str(last_sign_out_time), FORMAT_TIME) - datetime.strptime(str(time_to), FORMAT_TIME)
                     min_sup_hour = employee.calendar_id.schedule_id.min_sup_hour * 60.0
                     max_sup_hour = employee.calendar_id.schedule_id.max_sup_hour * 60.0
@@ -371,6 +373,7 @@ class HrAttendanceImport(models.Model):
                         if delay_hours_supp > max_sup_hour:
                             delay_hours_supp = max_sup_hour
                         vals = {'employee_id': employee.id,
+                                'hour_attendance': time_float_convert(last_sign_out_time),
                                 'hour_calendar_to': time_float_convert(time_to),
                                 'delay_hours_supp': delay_hours_supp / 3600.0,
                                 'date': date,
@@ -386,7 +389,7 @@ class HrAttendanceImport(models.Model):
         date_start = datetime.strptime(date + ' 00:00:00', '%Y-%m-%d %H:%M:%S')
         date_stop = datetime.strptime(date + ' 23:59:59', '%Y-%m-%d %H:%M:%S')
         # first delete all actions for this day
-        report_day_ids = report_day_obj.search([('date', '=', date)])
+        report_day_ids = report_day_obj.search([])
         report_day_ids.unlink()
         # get latest time for attendence
         all_attendances = attendance_obj.search([('name', '>=', str(date_start)), ('name', '<=', str(date_stop))])
@@ -446,14 +449,14 @@ class HrAttendanceReportDay(models.Model):
     _name = 'hr.attendance.report_day'
 
     employee_id = fields.Many2one('hr.employee', string='الموظف')
-    hour_calendar = fields.Float(string='وقت الوردية')
-    hour_calendar_to = fields.Float(string='وقت الوردية')
+    hour_calendar = fields.Float(string='وقت الدخول')
+    hour_calendar_to = fields.Float(string='وقت الخروج')
     hour_attendance = fields.Float(string='وقت البصمة')
-    delay_retard = fields.Float(string='مدة التأخير')
-    delay_leave = fields.Float(string='مدة الخروج المبكر')
-    delay_hours_supp = fields.Float(string='مدة الوقت الإضافي')
+    delay_retard = fields.Float(string='المدة')
+    delay_leave = fields.Float(string='المدة')
+    delay_hours_supp = fields.Float(string='المدة')
     date = fields.Date(string='التاريخ')
-    latest_date_import = fields.Datetime(string='أخر وقت تحديث البيانات')
+    latest_date_import = fields.Datetime(string='وقت أخر تحديث')
     action = fields.Selection([('retard', 'تأخير'),
                                ('leave', 'خروج مبكر'),
                                ('no_leave', 'لم يسجل بصمة الخروج'),

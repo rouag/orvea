@@ -52,7 +52,7 @@
 			<field name="arch" type="xml">
 				<tree string="تقرير الخروج المبكر">
 					<field name="employee_id" />
-					<field name="hour_calendar" widget="float_time" />
+					<field name="hour_calendar_to" widget="float_time" />
 					<field name="hour_attendance" widget="float_time" />
 					<field name="delay_leave" widget="float_time" sum="Total" />
 					<field name="latest_date_import" />
@@ -67,7 +67,7 @@
 			<field name="arch" type="xml">
 				<tree string="الموظفين الذين لم يسجلوا خروجهم">
 					<field name="employee_id" />
-					<field name="hour_calendar" widget="float_time" />
+					<field name="hour_calendar_to" widget="float_time" />
 					<field name="description" />
 					<field name="latest_date_import" />
 				</tree>
@@ -82,8 +82,8 @@
 				<tree string="تقرير الوقت الإضافي">
 					<field name="employee_id" />
 					<field name="hour_calendar_to" widget="float_time" />
+					<field name="hour_attendance" widget="float_time" />
 					<field name="delay_hours_supp" widget="float_time" sum="Total" />
-					<field name="action"  />
 					<field name="latest_date_import" />
 				</tree>
 			</field>
