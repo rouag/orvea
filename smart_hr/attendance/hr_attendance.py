@@ -97,7 +97,7 @@ class HrAttendanceImport(models.Model):
         month = date_str[1]
         day = date_str[2]
         um = HijriDate(int(year), int(month), int(day), gr=True)
-        if um.day_name_en == 'lundi':  # Monday
+        if um.day_name_en == 'Monday':
             day_number = 0
         elif um.day_name_en == 'Tuesday':
             day_number = 1
@@ -109,7 +109,7 @@ class HrAttendanceImport(models.Model):
             day_number = 4
         elif um.day_name_en == 'Saturday':
             day_number = 5
-        elif um.day_name_en == 'dimanche':
+        elif um.day_name_en == 'Sunday':
             day_number = 6
         return str(day_number)
 
