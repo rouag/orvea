@@ -618,16 +618,17 @@ class HrHolidays(models.Model):
  
             """
             hr_public_holiday_obj = self.env['hr.public.holiday']
-            if fields.Date.from_string(holiday.date_from).weekday() in [4, 5]:
+            if fields.Date.from_string(holiday.date_from).weekday() in [4, 5] and not holiday.is_extension:
                 raise ValidationError(u"هناك تداخل في تاريخ البدء مع عطلة نهاية الاسبوع  ")
             if fields.Date.from_string(holiday.date_to).weekday() in [4, 5]:
                 raise ValidationError(u"هناك تداخل في تاريخ الإنتهاء مع عطلة نهاية الاسبوع")
             for public_holiday in hr_public_holiday_obj.search([]):
-                if public_holiday.date_from <= holiday.date_from <= public_holiday.date_to or \
+                if not holiday.is_extension:
+                    if public_holiday.date_from <= holiday.date_from <= public_holiday.date_to or \
                         public_holiday.date_from <= holiday.date_to <= public_holiday.date_to or \
                         holiday.date_from <= public_holiday.date_from <= holiday.date_to or \
-                        holiday.date_from <= public_holiday.date_to <= holiday.date_to:
-                    raise ValidationError(u"هناك تداخل فى التواريخ مع اعياد و مناسبات رسمية")
+                        holiday.date_from <= public_holiday.date_to <= holiday.date_to :
+                        raise ValidationError(u"هناك تداخل فى التواريخ مع اعياد و مناسبات رسمية")
     def check_constraintes(self):
         """
         check constraintes beside date and periode ones
