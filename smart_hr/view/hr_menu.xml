@@ -18,15 +18,15 @@
 
 		<menuitem id="hr_root_training" name="التدريب" sequence="30" parent="hr_root" />
 
-		<menuitem id="menu_hr_assessment_root" parent="hr_root" name="التقييم" sequence="90" />
+		<menuitem id="menu_hr_assessment_root" parent="hr_root" name="التقييم" sequence="90" groups="smart_hr.group_hrm"/>
 		
-		<menuitem id="hr_root_configuration" name="الإعدادات" sequence="100" parent="hr_root" />
+		<menuitem id="hr_root_configuration" name="الإعدادات" sequence="100" parent="hr_root" groups="smart_hr.group_hrm"/>
 		
 		<menuitem id="hr_root_employee_configuration" name="شؤون الموظفين" sequence="15" parent="hr_root_configuration" />
 			
 		<menuitem id="menu_hr_deputation_root" parent="hr_root" name="الأنتدابات" sequence="17" />
 
-		<menuitem id="hr_root_decision" parent="hr_root" name="القرارات" sequence="40" />		
+		<menuitem id="hr_root_decision" parent="hr_root" name="القرارات"  sequence="40" groups="smart_hr.group_hrm"/>		
 			
 	</data>
 </openerp>

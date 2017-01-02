@@ -4,7 +4,7 @@
 
 
 		<menuitem id="hr_job_setting" sequence="50" name="الإعدادات"
-			parent="hr_root_job" />
+			parent="hr_root_job"  groups="smart_hr.group_hrm" />
 
 
 		<record id="hr_groupe_categorie_tree" model="ir.ui.view">

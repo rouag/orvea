@@ -37,7 +37,7 @@
 		</record>
 
 		<menuitem id="menu_hierarchy_level"
-			parent="menu_department_configuration" name="مستوى العمق في ‫الهيكل‬"
+			parent="menu_department_configuration" name="مستوى العمق في ‫الهيكل‬" groups="smart_hr.group_hrm"
 			sequence="10" action="action_hierarchy_level" />
 
 
