@@ -408,7 +408,7 @@
 			<field name="view_id" ref="view_employee_request_form" />
 			<field name="act_window_id" ref="action_employee_request" />
 		</record>
-		<menuitem id="employee_request_menu" name="طلبات تسجيل موظف"
+		<menuitem id="employee_request_menu" name="طلبات تسجيل موظف" groups="smart_hr.group_employee_request"
 			sequence="1" parent="hr_root_employees" action="action_employee_request" />
 
 
