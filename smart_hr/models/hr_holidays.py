@@ -27,7 +27,7 @@ class HrHolidays(models.Model):
             if nholidays:
                 return False
         return True
-    
+
     @api.depends('holiday_status_id.extension_number')
     def _check_is_extensible(self):
         # Check if the holiday have a pending or completed extension leave
@@ -112,7 +112,8 @@ class HrHolidays(models.Model):
         ('child', u' ‫طفل‬‬')], string=u'نوع المرافقة')
     accompanied_child_age = fields.Integer(string=u'عمر الطفل')
     _constraints = [
-        (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to'])]
+        (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
+    ]
     
     @api.depends('date_from')
     def _compute_is_started(self):
@@ -594,6 +595,8 @@ class HrHolidays(models.Model):
                     if holiday.date_from <= rec.date_from <= holiday.date_to or \
                             holiday.date_from <= rec.date_to <= holiday.date_to:
                         raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في التدريب")
+                    
+    
                      
                          
              
@@ -614,7 +617,17 @@ class HrHolidays(models.Model):
             TODO: check dates with :أوقات خارج الدوام ... 
  
             """
-
+            hr_public_holiday_obj = self.env['hr.public.holiday']
+            if fields.Date.from_string(holiday.date_from).weekday() in [3, 4]:
+                raise ValidationError(u"هناك تداخل في تاريخ البدء مع عطلة نهاية الاسبوع  ")
+            if fields.Date.from_string(holiday.date_to).weekday() in [3, 4]:
+                raise ValidationError(u"هناك تداخل في تاريخ الإنتهاء مع عطلة نهاية الاسبوع")
+            for public_holiday in hr_public_holiday_obj.search([]):
+                if public_holiday.date_from <= holiday.date_from <= public_holiday.date_to or \
+                        public_holiday.date_from <= holiday.date_to <= public_holiday.date_to or \
+                        holiday.date_from <= public_holiday.date_from <= holiday.date_to or \
+                        holiday.date_from <= public_holiday.date_to <= holiday.date_to:
+                    raise ValidationError(u"هناك تداخل فى التواريخ مع اعياد و مناسبات رسمية")
     def check_constraintes(self):
         """
         check constraintes beside date and periode ones
