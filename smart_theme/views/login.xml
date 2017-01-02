@@ -41,7 +41,7 @@
        	
 	       	<xpath expr="//form" position="replace">
 	       	
-	       	 <form class="oe_login_form" role="form" t-attf-action="/web/login{{ '?debug' if debug else '' }}" method="post" onsubmit="this.action = this.action + location.hash">
+	       	 <form id="loginform" class="oe_login_form" role="form" t-attf-action="/web/login{{ '?debug' if debug else '' }}" method="post" onsubmit="this.action = this.action + location.hash">
                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                     
            <div class="container-fluid">
@@ -67,14 +67,14 @@
 							  <div class="form-group">
 								<div class="col-sm-12 input-group">
 								  <div class="input-group-addon"><i class="icon32-user"></i></div>
-								  <input type="text" name="login" t-att-value="login" id="login"   required="required" autofocus="autofocus" autocapitalize="off"
+								  <input type="text" name="login" t-att-value="login" id="login"    required="required" autofocus="autofocus" autocapitalize="off"
 								  		class="form-control OnlyLatin required" placeholder="اسم المستخدم/البريد الالكتروني" />
 								</div>
 							  </div>
 							  <div class="form-group">
 								<div class="col-sm-12 input-group">
 								  <div class="input-group-addon"><i class="icon32-lock"></i></div>
-								  <input type="password"  name="password" id="password" required="required" t-att-autofocus="'autofocus' if login else None"
+								  <input type="password"  name="password" id="password" onkeypress="return runScript(event)" required="required" t-att-autofocus="'autofocus' if login else None"
 								  class="form-control OnlyLatin required"  placeholder="كلمة السر" />
 								</div>
 							  </div>

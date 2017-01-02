@@ -38,6 +38,13 @@ jQuery(document).ready(function () {
 			jQuery('#loginBox').fadeToggle('fast');
 		});
 	});
+	
+	function runScript(e) {
+	    if (e.keyCode == 13) {
+	    	document.getElementById("loginform").submit();
+	        return false;
+	    }
+	}
 
     /**************************************************************************************************************
                         Form all .form-control
