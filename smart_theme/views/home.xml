@@ -78,7 +78,7 @@
 
 			<div id="navbar" class="row">
 				<div id="brandHolder" class="col-xs-12 col-sm-6">
-					<a href="index.html" class="navbar-brand" title="">
+					<a href="/home" class="navbar-brand" title="">
 						<img src="/smart_theme/static/src/img/logo/logo_h.png" class="img-responsive" alt="" />
 						<!-- <img src="img/logo/logo_v.jpg" class="img-responsive visible-sm" alt="" /> -->
 					</a>
