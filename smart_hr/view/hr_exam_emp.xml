@@ -54,7 +54,7 @@
 		</record>
 		<!-- config menu -->
 		<menuitem id="hr_configuration_examination" name="الفحص الطبي"
-			 sequence="10" parent="hr_root_employee_configuration"  action="action_medical_category" />
+			sequence="10" parent="hr_root_employee_configuration" action="action_medical_category" />
 
 
 
@@ -69,20 +69,17 @@
 					<sheet>
 						<group>
 							<group>
-								<field name="employee" domain="['|',('state','=','employee'),('state','=','done'), ('job_id','!=',False)]"  />
-								<field name="sequence" />
-								
+								<field name="employee"
+									domain="['|',('state','=','employee'),('state','=','done'), ('job_id','!=',False)]" />
 							</group>
 							<group>
-								<field name="job" />
-								<field name="hospital"
-						domain="[('company_type','=','hospital')]" />
+								<field name="hospital" domain="[('company_type','=','hospital')]" />
 							</group>
 						</group>
 
 						<field name="exams_results" string="اﻷختبارات">
 							<tree editable="bottom">
-								<field name="exam"   />
+								<field name="exam" />
 								<field name="result" />
 							</tree>
 						</field>
@@ -97,7 +94,8 @@
 			<field name="model">employee.medical.exam</field>
 			<field name="arch" type="xml">
 				<tree string="الفحص الطبي">
-					<field name="employee"/>
+					<field name="sequence" />
+					<field name="employee" />
 					<field name="create_date" string="تاريخ الانشاء" />
 				</tree>
 			</field>
