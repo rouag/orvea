@@ -146,7 +146,7 @@
 				<link rel="stylesheet" href="/smart_theme/static/src/repository/js/vendor/canvasbg/canvasbg.css" type="text/css" media="screen" />
 				<script src="/smart_theme/static/src/repository/js/vendor/canvasbg/canvasbg.js"></script>
 			
-				<script src="/smart_theme/static/src/js/checkform.js"></script>
+				<!-- <script src="/smart_theme/static/src/js/checkform.js"></script> -->
 				<script src="/smart_theme/static/src/js/plugins.js"></script>
 				<script src="/smart_theme/static/src/js/login.js?rev=1952016153250"></script>
 	
