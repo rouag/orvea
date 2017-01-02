@@ -71,9 +71,8 @@ class HrJobCreate(models.Model):
         if self.serie_id:
             gride=[]
             for classment in self.serie_id.hr_classment_job_ids:
-                gride.append(classment.grade_id).id
+                gride.append(classment.grade_id.id)
             self.grade_ids=gride
-            print gride
    
    
     @api.one
