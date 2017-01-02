@@ -114,7 +114,7 @@
 				<div class="col-sm-12 col-lg-10 col-lg-offset-1">
 					<div id="home">
 						<ul class="list-inline">
-							<li class="animate-in" data-anim-type="fade-in-left-large" data-anim-delay="200"><a href="/web#menu_id=144" title=""><span><i class="icon90-group"></i></span><h2>نظام الموارد البشرية</h2></a></li>
+							<li class="animate-in" data-anim-type="fade-in-left-large" data-anim-delay="200"><a t-attf-href="/web#menu_id={{hr_root}}" title=""><span><i class="icon90-group"></i></span><h2>نظام الموارد البشرية</h2></a></li>
 							<li class="animate-in" data-anim-type="fade-in-down-large" data-anim-delay="200"><a href="javascript:void(0);" title=""><span><i class="icon90-map"></i></span><h2>نظام الإتصالات الإدارية</h2></a></li>
 							<li class="animate-in" data-anim-type="fade-in-right-large" data-anim-delay="200"><a href="javascript:void(0);" title=""><span><i class="icon90-plan"></i></span><h2>نظام الميزانية</h2></a></li>
 							<li class="animate-in" data-anim-type="fade-in-left-large" data-anim-delay="400"><a href="javascript:void(0);" title=""><span><i class="icon90-password"></i></span><h2>نظام الصلاحيات</h2></a></li>

@@ -38,9 +38,14 @@ class Home(Home):
         request.uid = request.session.uid
         
         user = request.registry.get('res.users').browse(request.cr, request.uid,request.uid)
+        
+        #hr_root
+        menu_xml_id = request.env.ref('smart_hr.hr_root')
+        
         return request.render('smart_theme.webclient_home',
                                qcontext={'db_info': json.dumps(openerp.addons.web.controllers.main.db_info()),
-                                         'user': user
+                                         'user': user,
+                                         'hr_root': menu_xml_id.id
                                          }
                                
                                )
