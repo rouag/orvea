@@ -24,7 +24,6 @@
 	writing-mode: lr-tb;
 	white-space: nowrap;
 	height: 100%;
-	 border:none;
 }
 .inner{
 	 display:table-cell;

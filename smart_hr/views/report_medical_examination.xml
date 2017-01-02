@@ -36,7 +36,9 @@
 
 									</div>
 									<div class="col-xs-12">
-										<p>سعادة مدير مستشفى / <span t-esc="o.hospital.name" />
+										<p>
+											سعادة مدير مستشفى /
+											<span t-esc="o.hospital.name" />
 											المحترم
 										</p>
 										<p class="text-center">السلام عليكم ورحمة الله وبركاته :-</p>
@@ -63,8 +65,12 @@
 									<tr>
 
 										<td width="85%" colspan="4" rowspan="2">
-											<div style="width:50%;float:right;" align="right"><strong>الفحص</strong></div>
-											<div style="width:50%;float:left;" align="left"><strong>Examination</strong></div>
+											<div style="width:50%;float:right;" align="right">
+												<strong>الفحص</strong>
+											</div>
+											<div style="width:50%;float:left;" align="left">
+												<strong>Examination</strong>
+											</div>
 										</td>
 										<td width="15%" colspan="2" align="center">
 
@@ -89,10 +95,12 @@
 										<t t-set="exams" t-value="get_exams_by_category(o.exams_results, c)" />
 
 										<!-- right side -->
-										<td class="rotate">
-											<strong>
-												<span t-field="c.name" />
-											</strong>
+										<td>
+											<div class="rotate text-center">
+												<strong>
+													<span t-field="c.name" />
+												</strong>
+											</div>
 										</td>
 										<td colspan="3">
 											<div t-foreach="exams" t-as="e">
@@ -127,10 +135,14 @@
 									<tr>
 
 										<td width="85%" colspan="4" rowspan="2">
-											<div style="width:50%;float:right;" align="right"><strong>الفحص</strong></div>
-											<div style="width:50%;float:left;" align="left"><strong>Examination</strong></div>
+											<div style="width:50%;float:right;" align="right">
+												<strong>الفحص</strong>
+											</div>
+											<div style="width:50%;float:left;" align="left">
+												<strong>Examination</strong>
+											</div>
 										</td>
-										<td width="15%" colspan="2"  align="center">
+										<td width="15%" colspan="2" align="center">
 
 											<strong>النتيجة</strong>
 
@@ -153,10 +165,12 @@
 										<t t-set="exams" t-value="get_exams_by_category(o.exams_results, c)" />
 
 										<!-- right side -->
-										<td class="rotate">
-											<strong>
-												<span t-field="c.name" />
-											</strong>
+										<td>
+											<div class="rotate text-center">
+												<strong>
+													<span t-field="c.name" />
+												</strong>
+											</div>
 										</td>
 										<td colspan="3">
 											<div t-foreach="exams" t-as="e">
@@ -213,10 +227,12 @@
 										t-as="c">
 										<!-- exams varible have the exams for current category -->
 										<t t-set="exams" t-value="get_exams_by_category(o.exams_results, c)" />
-										<td width="15%" class="rotate">
-											<strong>
-												<span t-field="c.name" />
-											</strong>
+										<td width="15%">
+											<div class="rotate text-center">
+												<strong>
+													<span t-field="c.name" />
+												</strong>
+											</div>
 										</td>
 										<td width="65%">
 											<div t-foreach="exams" t-as="e">
@@ -225,7 +241,7 @@
 										</td>
 										<td width="10%">
 											<t t-foreach="exams" t-as="e">
-												<div class="caret">
+												<div class="caret text-center">
 													<span t-if="e.result" class="glyphicon glyphicon-ok"></span>
 												</div>
 												<br></br>
@@ -278,7 +294,8 @@
 
 									</div>
 									<div class="col-xs-6 text-left">
-										<strong>مدير مستشفى / </strong><span t-esc="o.hospital.hospital_director" />
+										<strong>مدير مستشفى / </strong>
+										<span t-esc="o.hospital.hospital_director" />
 										<br></br>
 										<strong>التوقيع :.................................</strong>
 										<br></br>
