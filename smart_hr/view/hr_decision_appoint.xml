@@ -36,14 +36,13 @@
 					</header>
 					<sheet>
 						<group>
-							<group string="بيانات الموظف">
+							<group string="بيانات القرار">
 								<field name="name" />
 								<field name="order_date" />
 								<field name="order_picture" />
-								<field name="medical_examination_file" />
-								<field name="order_enquiry_file" />
+								
 							</group>
-							<group string="بيانات الموظف">
+							<group string="بيانات التعيين">
 								<field name="date_hiring" />
 								<field name="type_appointment" />
 								<field name="instead_exchange" />
@@ -52,6 +51,8 @@
 							<group string="بيانات الموظف">
 								<field name="employee_id" domain="[('employee_state','=','done')]" />
 								<field name="number" />
+								<field name="medical_examination_file" />
+								<field name="order_enquiry_file" />
 							</group>
 							<group string="بيانات الوظيفة">
 								<field name="job_id" />
