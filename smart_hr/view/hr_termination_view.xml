@@ -132,6 +132,7 @@
         <menuitem id="menu_hr_termination_type" sequence="5"
                   action="action_hr_termination_type"
                   parent="hr_root_organisation_configuration"
+                  groups="smart_hr.group_hrm"
                   name="أنواع طى القيد"/>
 
     </data>

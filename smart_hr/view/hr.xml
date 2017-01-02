@@ -41,7 +41,7 @@
 			<field name="act_window_id" ref="action_hr_employee" />
 		</record>
 		<menuitem id="hr_employee_menu" name="الموظفون" sequence="10"
-			parent="hr_root_employees" action="action_hr_employee" />
+			parent="hr_root_employees" action="action_hr_employee" groups="smart_hr.group_employees" />
 
 		<!-- بياناتي -->
 		<record id="view_employee_mine_form" model="ir.ui.view">
@@ -408,7 +408,7 @@
 			<field name="view_id" ref="view_employee_request_form" />
 			<field name="act_window_id" ref="action_employee_request" />
 		</record>
-		<menuitem id="employee_request_menu" name="طلبات تسجيل موظف"
+		<menuitem id="employee_request_menu" name="طلبات تسجيل موظف" groups="smart_hr.group_employee_request"
 			sequence="1" parent="hr_root_employees" action="action_employee_request" />
 
 

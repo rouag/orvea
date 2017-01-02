@@ -109,7 +109,7 @@
 			<field name="view_mode">kanban,form</field>
 		</record>
 
-		<menuitem id="hr_department_kanban_menu" name="الإدارات"
+		<menuitem id="hr_department_kanban_menu" name="الإدارات" groups="smart_hr.group_hrm"
 			sequence="10" action="action_hr_department_kanban" parent="hr_root_organisation" />
 
 
