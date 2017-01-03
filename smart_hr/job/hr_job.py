@@ -14,7 +14,7 @@ class HrJob(models.Model):
     name = fields.Char(string='المسمى', required=1)
     number = fields.Char(string='الرقم الوظيفي', required=1, states={'unoccupied': [('readonly', 0)]})
     department_id = fields.Many2one('hr.department', string='الإدارة', required=1, states={'unoccupied': [('readonly', 0)]})
-    genral_id = fields.Many2one('hr.groupe.job', ' المجموعة العامة', ondelete='cascade')
+    general_id = fields.Many2one('hr.groupe.job', ' المجموعة العامة', ondelete='cascade')
     specific_id = fields.Many2one('hr.groupe.job', ' المجموعة النوعية', ondelete='cascade')
     serie_id = fields.Many2one('hr.groupe.job', ' سلسلة الفئات', ondelete='cascade')
     type_id = fields.Many2one('salary.grid.type', string='التصنيف', required=1, states={'unoccupied': [('readonly', 0)]}) 
@@ -61,7 +61,7 @@ class HrJobCreate(models.Model):
     speech_picture = fields.Binary(string='صورة الخطاب', required=1, readonly=1, states={'new': [('readonly', 0)]})
     line_ids = fields.One2many('hr.job.create.line', 'job_create_id', readonly=1, states={'new': [('readonly', 0)]})
     state = fields.Selection([('new', 'طلب'), ('waiting', 'في إنتظار الإعتماد'), ('done', 'اعتمدت')], readonly=1, default='new') 
-    genral_id = fields.Many2one('hr.groupe.job', ' المجموعة العامة', ondelete='cascade')
+    general_id = fields.Many2one('hr.groupe.job', ' المجموعة العامة', ondelete='cascade')
     specific_id = fields.Many2one('hr.groupe.job', ' المجموعة النوعية', ondelete='cascade')
     serie_id = fields.Many2one('hr.groupe.job', ' سلسلة الفئات', ondelete='cascade')
     grade_ids = fields.One2many('salary.grid.grade','job_create_id', string='المرتبة',)
@@ -87,7 +87,7 @@ class HrJobCreate(models.Model):
                      'type_id':line.type_id.id,
                      'grade_id':line.grade_id.id,
                      'department_id':line.department_id.id,
-                     'genral_id':self.genral_id.id,
+                     'general_id':self.general_id.id,
                      'specific_id':self.specific_id.id,
                      'serie_id':self.serie_id.id,
                      

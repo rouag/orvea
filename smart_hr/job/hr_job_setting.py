@@ -19,13 +19,13 @@ class HrGrouupGeneral(models.Model):
     def _get_all_child_ids(self, field_name, arg, context=None):
         result = dict.fromkeys(self._ids)
         for i in ids:
-            result[i] = self.search( [('parent_id', 'child_of', i)], context=context)
+            result[i] = self.search([('parent_id', 'child_of', i)], context=context)
 
         return result
     
     name = fields.Char(string=u'المسمى', required=1)
     parent_id = fields.Many2one('hr.groupe.job', ' المجموعة الأب', ondelete='cascade')
-    genral_id = fields.Many2one('hr.groupe.job', ' المجموعة الأب', ondelete='cascade')
+    general_id = fields.Many2one('hr.groupe.job', ' المجموعة الأب', ondelete='cascade')
     child_ids= fields.One2many('hr.groupe.job', 'parent_id', 'المجموعات الفرعية')
     all_child_ids= fields.Many2many(compute='_get_all_child_ids', type='many2many', relation='hr.groupe.job'),
     numero  = fields.Char(string=u'الرمز',)
