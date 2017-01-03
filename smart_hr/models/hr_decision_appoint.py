@@ -98,8 +98,8 @@ class HrDecisionAppoint(models.Model):
             if self.degree_id:
            
                 salary_grid_line = self.env['salary.grid.detail'].search([('type_id', '=', self.type_id.id),
-                                                ('grade_id', '=', self.grade_id.id)
-                                                  ('degree_id', '=', self.degree_id.id),
+                                                ('grade_id', '=', self.grade_id.id),
+                                                  ('degree_id', '=', self.degree_id.id)
                                                 ])
                 if salary_grid_line:
                     self.basic_salary = salary_grid_line.basic_salary  
