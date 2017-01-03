@@ -1,6 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
+		<record model="ir.ui.view" id="hr_type_appoint_tree">
+			<field name="name">hr.type.appoint.tree</field>
+			<field name="model">hr.type.appoint</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="أنواع التعين">
+					<field name="name" />
+					<field name="date_test" />
+					<field name="code" />
+				</tree>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_type_appoint_form">
+			<field name="name">hr.type.appoint.form</field>
+			<field name="model">hr.type.appoint</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string=" أنواع التعين">
+					<sheet>
+						<group>
+							<field name="name" />
+							<field name="date_test" />
+							<field name="code" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_type_appoint">
+			<field name="name"> أنواع التعين</field>
+			<field name="res_model">hr.type.appoint</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="hr_type_appoint_menu" name=" إعداد التعين"
+			sequence="20" parent="hr_root_configuration" />
+
+		<menuitem id="hr_type_appoint_menu_sou" name=" أنواع التعين"
+			sequence="25" parent="hr_type_appoint_menu" action="action_hr_type_appoint" />
+
 
 		<!-- التعيين -->
 
@@ -40,7 +81,7 @@
 								<field name="name" />
 								<field name="order_date" />
 								<field name="order_picture" />
-								
+
 							</group>
 							<group string="بيانات التعيين">
 								<field name="date_hiring" />
@@ -51,6 +92,7 @@
 							<group string="بيانات الموظف">
 								<field name="employee_id" domain="[('employee_state','=','done')]" />
 								<field name="number" />
+								<field name="country_id" />
 								<field name="medical_examination_file" />
 								<field name="order_enquiry_file" />
 							</group>
@@ -61,8 +103,11 @@
 								<field name="department_id" />
 								<field name="grade_id" />
 								<field name="degree_id" domain="[('grade_id','=',grade_id)]" />
+								<field name="basic_salary" />
+								<field name="transport_allow" />
+								<field name="retirement" />
+								<field name="net_salary" />
 							</group>
-
 						</group>
 						<group>
 							<field name="description" placeholder="ملاحظات ..."
@@ -84,7 +129,8 @@
 			<field name="view_mode">tree,form</field>
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
-		<menuitem id="hr_decision_appoint_menu" name="التعيين" groups="smart_hr.group_hrm"
-			sequence="10" parent="hr_root_organisation_action" action="action_hr_decision_appoint" />
+		<menuitem id="hr_decision_appoint_menu" name="التعيين"
+			groups="smart_hr.group_hrm" sequence="10" parent="hr_root_organisation_action"
+			action="action_hr_decision_appoint" />
 	</data>
 </openerp>
