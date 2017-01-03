@@ -57,19 +57,16 @@ class HrGrouupGeneral(models.Model):
     
     @api.onchange('rank_to')
     def onchange_rank(self):
-        print '1111'
         if self.rank_from <=0:
              raise ValidationError(u'يجب أن تكون المرتبة  أكبر من 0‬')
         if self.rank_from and self.rank_to:
             if self.rank_to - self.rank_from <=0 :
                     raise ValidationError(u'يجب أن تكون المرتبة ‬إلى أكبر من المرتبة‬ ‫من‬')
-            else :
+            else:
                 classment_ids=[]
                 i = self.rank_from 
                 while  i <= self.rank_to :
-                    print '1',i
                     grade=self.env['salary.grid.grade'].search([('name', '=', str(i))])
-                    print  'grade',
                     if grade:
                         classment_id=self.env['hr.job.classment'].create({'grade_id': grade.id, 'name':grade.name }).id
                         classment_ids.append(classment_id)

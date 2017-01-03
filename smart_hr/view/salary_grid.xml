@@ -77,7 +77,7 @@
 							<group>
 								<field name="name" />
 								<field name="code" />
-								<field name="grid_id" />
+								<field name="grid_id" invisible="1"/>
 
 							</group>
 

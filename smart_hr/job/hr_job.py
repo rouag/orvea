@@ -108,7 +108,10 @@ class HrJobCreateLine(models.Model):
     type_id = fields.Many2one('salary.grid.type', string='التصنيف', required=1) 
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1) 
     department_id = fields.Many2one('hr.department', string='الإدارة', required=1) 
-    job_create_id = fields.Many2one('hr.job.create', string=' وظائف') 
+    job_create_id = fields.Many2one('hr.job.create', string=' وظائف')
+    _sql_constraints = [
+        ('number_grade_uniq', 'unique(number,grade_id)', 'لا يمكن إضافة وظيفتين بنفس الرتبة والرقم'),
+        ] 
     
 class HrJobCancel(models.Model):
     _name = 'hr.job.cancel'  
