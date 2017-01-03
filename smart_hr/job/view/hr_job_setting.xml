@@ -162,9 +162,9 @@
 								<field name="rank_to" />
 							</group>
 							<group>
-								<field name="genral_id" domain="[('type_groupe', '=', 'general')]"
+								<field name="general_id" domain="[('type_groupe', '=', 'general')]"
 									string="المجموعة العامة" />
-								<field name="parent_id" domain="[('parent_id', '=', genral_id)]"
+								<field name="parent_id" domain="[('parent_id', '=', general_id)]"
 									string="المجموعة النوعية" />
 
 
@@ -190,7 +190,7 @@
 
 
 						<field name="hr_classment_job_ids" string="الرتب‬">
-							<tree>
+							<tree editable="bottom">
 								<field name="grade_id" style="width:5%%" />
 								<field name="exeperince" />
 								<field name="education_level_id" />
@@ -207,7 +207,7 @@
 
 
 						<field name="hr_training_ids" string="دورات تدريبية‬">
-							<tree>
+							<tree editable="bottom">
 								<field name="traninig_id" />
 								<field name="type" />
 							</tree>
