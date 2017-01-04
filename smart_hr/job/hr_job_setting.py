@@ -53,44 +53,23 @@ class HrGrouupGeneral(models.Model):
 
     @api.onchange('rank_to')
     def onchange_rank(self):
-        if int(self.rank_from.code) <=0:
+        if self.rank_from and int(self.rank_from.code) <=0:
             raise ValidationError(u'يجب أن تكون المرتبة  أكبر من 0‬')
         if self.rank_from.code and self.rank_to.code:
             if int(self.rank_to.code) - int(self.rank_from.code) <= 0:
-                    raise ValidationError(u'يجب أن تكون المرتبة ‬إلى أكبر من المرتبة‬ ‫من‬')
+                raise ValidationError(u'يجب أن تكون المرتبة ‬إلى أكبر من المرتبة‬ ‫من‬')
             else:
                 classment_ids = []
                 i = int(self.rank_from.code)
                 while i <= int(self.rank_to.code):
                     grade = self.env['salary.grid.grade'].search([('code', '=', str(i))])
                     if grade:
-                        classment_id = self.env['hr.job.classment'].create({'grade_id': grade.id, 'name': grade.name}).id
+                        classment_id = self.env['hr.job.classment'].create({'grade_id': grade.id, 'name': grade.name, 'categorie_serie_id': self._origin.id}).id
                         classment_ids.append(classment_id)
                     i = i + 1
             self.hr_classment_job_ids = classment_ids
-    
-            
-#     @api.onchange('hr_classment_job_ids')
-#     def onchange_classment(self,):
-#         for hr_classment_job_id in self.hr_classment_job_ids:
-#             print 222
-# #             self.env['hr.job.classment'].browse(hr_classment_job_id.id)
-#             print 333 , hr_classment_job_id
-#             if hr_classment_job_id.education_level_id:
-#                 classment = self.env['hr.job.classment'].search([('name', '=', hr_classment_job_id.name),('education_level_id.id', '=', hr_classment_job_id.education_level_id.id)])
-#                 print 'classment',classment
-#                 if classment:
-#                     raise ValidationError(u'لايمكن اظافة رتبتين بنفس الشهادة العلمية‬')
-#                     self.env['hr.job.classment'].browse(hr_classment_job_id.id).unlink()
-            
-#     @api.onchange('rank_from')
-#     def onchange_rank(self):
-#         if self.rank_from <=0:
-#             raise ValidationError(u'يجب أن تكون المرتبة  أكبر من 0‬')
-#            
-        
-    
-    
+
+
 # hr_job_description_ids=fields.One2many('hr.job.description', 'categorie_serie_id', string=u'مسمى ‬‫‫الفئة‬',readonly=1)
 class HrJobTraining(models.Model):
     _name = 'hr.job.training'

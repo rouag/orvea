@@ -73,20 +73,19 @@ class HrJobCreate(models.Model):
     general_id = fields.Many2one('hr.groupe.job', ' المجموعة العامة', ondelete='cascade')
     specific_id = fields.Many2one('hr.groupe.job', ' المجموعة النوعية', ondelete='cascade')
     serie_id = fields.Many2one('hr.groupe.job', ' سلسلة الفئات', ondelete='cascade')
-    grade_ids = fields.One2many('salary.grid.grade','job_create_id', string='المرتبة',)
-   
+    grade_ids = fields.One2many('salary.grid.grade', 'job_create_id', string='المرتبة')
+
     @api.onchange('serie_id')
-    def onchange_rank(self):
+    def onchange_serie_id(self):
         if self.serie_id:
-            gride=[]
+            grides = []
             for classment in self.serie_id.hr_classment_job_ids:
-                gride.append(classment.grade_id.id)
-            self.grade_ids=gride
-   
-   
+                grides.append(classment.grade_id.id)
+            self.grade_ids = grides
+
     @api.one
     def action_waiting(self):
-        self.state = 'waiting'       
+        self.state = 'waiting'
 
     @api.one
     def action_done(self):
@@ -121,6 +120,21 @@ class HrJobCreateLine(models.Model):
     _sql_constraints = [
         ('number_grade_uniq', 'unique(number,grade_id)', 'لا يمكن إضافة وظيفتين بنفس الرتبة والرقم'),
         ] 
+    
+               
+    @api.onchange('name')
+    def onchange_name(self):
+        if self.name:
+            self.number = self.name.number
+            
+    @api.onchange('grade_id')
+    def onchange_holiday_status_id(self):
+        res = {}
+        #get grades in job_create_id
+        if not self.grade_id:
+            grade_ids = [rec .id for rec in self.job_create_id.grade_ids]
+            res['domain'] = {'grade_id': [('id', 'in', grade_ids)]}
+            return res
     
 class HrJobCancel(models.Model):
     _name = 'hr.job.cancel'  
