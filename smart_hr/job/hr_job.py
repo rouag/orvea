@@ -36,16 +36,19 @@ class HrJob(models.Model):
               'context': context,
               'target': 'new',
               }
-        
+
+
 class HrJobName(models.Model):
-    _name = 'hr.job.name'  
+    _name = 'hr.job.name'
     _description = u'المسميات الوظيفية '
     name = fields.Char(string=u'المسمى', required=1)
     number = fields.Char(string=u'الرمز', required=1)
+    job_description = fields.Text(string=u'متطلبات الوظيفية')
     _sql_constraints = [
         ('number_uniq', 'unique(number)', 'رمز هذا المسمى موجود.'),
         ]
-    
+
+
 class HrJobReservation(models.Model):
     _name = 'hr.job.reservation'  
     _description = u'الوظائف'
@@ -67,6 +70,7 @@ class HrJobCreate(models.Model):
     name = fields.Char(string='المسمى', required=1, readonly=1, states={'new': [('readonly', 0)]})
     speech_number = fields.Char(string='رقم الخطاب', required=1, readonly=1, states={'new': [('readonly', 0)]})
     speech_date = fields.Date(string='تاريخ الخطاب', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    fiscal_year = fields.Char(string='السنه المالية', default=(date.today().year), readonly=1)
     speech_picture = fields.Binary(string='صورة الخطاب', required=1, readonly=1, states={'new': [('readonly', 0)]})
     line_ids = fields.One2many('hr.job.create.line', 'job_create_id', readonly=1, states={'new': [('readonly', 0)]})
     state = fields.Selection([('new', 'طلب'), ('waiting', 'في إنتظار الإعتماد'), ('done', 'اعتمدت')], readonly=1, default='new') 

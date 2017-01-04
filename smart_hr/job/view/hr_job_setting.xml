@@ -274,7 +274,7 @@
 							<group>
 								<field name="number" />
 							</group>
-
+							<field name="job_description" />
 
 						</group>
 
