@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+
+		<menuitem id="hr_training_setting" sequence="50" name="الإعدادات"
+			parent="hr_root_training"  groups="smart_hr.group_hrm" />
+
+		<!-- المسميات الوظيفية‬ -->
+
+		<record id="hr_training_type_form" model="ir.ui.view">
+			<field name="name">hr.training.type.form</field>
+			<field name="model">hr.training.type</field>
+			<field name="arch" type="xml">
+				<form string="أنواع التدريب‬">
+					<sheet>
+							<group>
+								<field name="name"  />
+								
+							</group>
+
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="hr_training_type_tree" model="ir.ui.view">
+			<field name="name">hr.training.type.tree</field>
+			<field name="model">hr.training.type</field>
+			<field name="arch" type="xml">
+				<tree string="أنواع التدريب">
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+
+
+		<record model="ir.actions.act_window" id="action_hr_training_type">
+			<field name="name">أنواع التدريب</field>
+			<field name="res_model">hr.training.type</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="hr_training_type_form" />
+
+		</record>
+
+		<record id="action_hr_training_type_tree" model="ir.actions.act_window.view">
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="hr_training_type_tree" />
+			<field name="act_window_id" ref="action_hr_training_type" />
+		</record>
+
+		<menuitem id="training_type_menu" name="أنواع التدريب"
+			sequence="1" parent="hr_training_setting" action="action_hr_training_type" />
+
+
+
+
+	</data>
+</openerp>

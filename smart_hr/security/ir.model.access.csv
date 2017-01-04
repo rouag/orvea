@@ -120,13 +120,13 @@ access_employee_external_authorities,external_authorities,model_external_authori
 access_employee_hr_holidays_entitlement_config,hr_holidays_entitlement_config,model_hr_holidays_entitlement_config,group_employee,1,0,0,0
 access_hr_holidays_decision,name_hr_holidays_decision,model_hr_holidays_decision,,1,1,1,1
 access_hr_illness_holidays_periode,hr_illness_holidays_periode,model_hr_illness_holidays_periode,,1,1,1,1
-
+,,,,,,,
 access_hr_suspension_hr,hr_suspension_hr,model_hr_suspension,group_hr,1,1,1,0
 access_hr_suspension_end_hr,hr_suspension_end_hr,model_hr_suspension_end,group_hr,1,1,1,0
-
+,,,,,,,
 access_hr_termination_hr,hr_termination_hr,model_hr_termination,group_hr,1,1,1,0
 access_hr_termination_type_hr,hr_termination_type_hr,model_hr_termination_type,group_hr,1,0,0,0
-
+,,,,,,,
 access_hr_deputation_category,hr_deputation_category,model_hr_deputation_category,,1,1,1,1
 access_hr_job_training,hr_job_training,model_hr_job_trainning,,1,1,1,1
 access_hr_job_classment,hr_job_classment,model_hr_job_classment,,1,1,1,1
@@ -139,7 +139,8 @@ access_hr_period_line,hr_period_line,model_hr_period_line,,1,1,1,1
 access_res_city,res_city,model_res_city,,1,1,1,1
 access_hr_delay_holiday,hr_delay_holiday,model_hr_delay_holiday,,1,1,1,1
 access_hr_assessment_specialized_strength,hr_assessment_specialized_strength,model_hr_assessment_specialized_strength,,1,1,1,1
-
+,,,,,,,
 access_hr_assessment_executive_admin,hr_assessment_executive_admin,model_hr_assessment_executive_admin,,1,1,1,1
 access_hr_assessment_specialized_weakness,hr_assessment_specialized_weakness,model_hr_assessment_specialized_weakness,,1,1,1,1
-
+access_hr_job_name,hr_job_name,model_hr_job_name,,1,1,1,1
+access_hr_training_type,hr_training_type,model_hr_training_type,,1,1,1,1

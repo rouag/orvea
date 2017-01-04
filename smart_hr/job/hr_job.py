@@ -10,8 +10,8 @@ from datetime import date
 class HrJob(models.Model):
     _inherit = 'hr.job'  
     _description = u'الوظائف'
-   
-    name = fields.Char(string='المسمى', required=1)
+    
+    name = fields.Many2one('hr.job.name', string='المسمى', required=1)
     number = fields.Char(string='الرقم الوظيفي', required=1, states={'unoccupied': [('readonly', 0)]})
     department_id = fields.Many2one('hr.department', string='الإدارة', required=1, states={'unoccupied': [('readonly', 0)]})
     general_id = fields.Many2one('hr.groupe.job', ' المجموعة العامة', ondelete='cascade')
@@ -36,7 +36,16 @@ class HrJob(models.Model):
               'context': context,
               'target': 'new',
               }
-         
+        
+class HrJobName(models.Model):
+    _name = 'hr.job.name'  
+    _description = u'المسميات الوظيفية '
+    name = fields.Char(string=u'المسمى', required=1)
+    number = fields.Char(string=u'الرمز', required=1)
+    _sql_constraints = [
+        ('number_uniq', 'unique(number)', 'رمز هذا المسمى موجود.'),
+        ]
+    
 class HrJobReservation(models.Model):
     _name = 'hr.job.reservation'  
     _description = u'الوظائف'
@@ -103,7 +112,7 @@ class HrJobCreateLine(models.Model):
     _name = 'hr.job.create.line'  
     _description = u'الوظائف'
     
-    name = fields.Char(string='الوظيفة', required=1)
+    name = fields.Many2one('hr.job.name', string='الوظيفة', required=1)
     number = fields.Char(string='الرقم الوظيفي', required=1) 
     type_id = fields.Many2one('salary.grid.type', string='التصنيف', required=1) 
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1) 
