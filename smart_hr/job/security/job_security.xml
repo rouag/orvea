@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data noupdate="0">
+
+		<record id="group_job_managment" model="res.groups">
+			<field name="name">إدارة الوظائف</field>
+			<field name="category_id" ref="base.module_category_human_resources" />
+		</record>
+		
+		<record id="group_new_job_confirmation" model="res.groups">
+			<field name="name">معتمد طلبات إحداث وظائف</field>
+			<field name="category_id" ref="base.module_category_human_resources" />
+		</record>
+		
+		<record id="group_budget_managment" model="res.groups">
+			<field name="name">إدارة الميزانية</field>
+			<field name="category_id" ref="base.module_category_human_resources" />
+		</record>
+		
+		<record id="group_communication_managment" model="res.groups">
+			<field name="name">إدارة الإتصالات</field>
+			<field name="category_id" ref="base.module_category_human_resources" />
+		</record>
+		
+		<record id="group_communication_managment" model="res.groups">
+			<field name="name">إدارة الإتصالات</field>
+			<field name="category_id" ref="base.module_category_human_resources" />
+		</record>
+		
+		<record id="group_job_external_managment" model="res.groups">
+			<field name="name">تسجيل الجهة الخارجية في الوظائف</field>
+			<field name="category_id" ref="base.module_category_human_resources" />
+		</record>
+		
+		
+		<record id="group_reserve_job" model="res.groups">
+			<field name="name">حجز/فك وظائف</field>
+			<field name="category_id" ref="base.module_category_human_resources" />
+		</record>
+
+
+	</data>
+</openerp>
