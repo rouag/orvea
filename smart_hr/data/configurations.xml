@@ -91,6 +91,20 @@
 			<field name="name"> الكل</field>
 			<field name="code">all</field>
 		</record>
+		
+		
+			<!-- إعدادات أنواع التدريب -->
+		<record id="directly_training" model="hr.training.type">
+			<field name="name">مباشرة</field>
+		</record>
+
+		<record id="not_directly_training" model="hr.training.type">
+			<field name="name">غير مباشرة</field>
+		</record>
+
+		<record id="not_counted_training" model="hr.training.type">
+			<field name="name">لا تحتسب</field>
+		</record>
 
 
 	</data>

@@ -97,7 +97,7 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-		<menuitem id="hr_training_menu" name="الدورات التدربية"
+		<menuitem id="hr_training_menu_2" name="الدورات التدربية"
 			sequence="5" parent="hr_root_training" action="action_hr_training"
 		 />
 
@@ -158,7 +158,7 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-		<menuitem id="hr_training_candidat_menu" name="الترشيحات" 
+		<menuitem id="hr_training_candidat_menu_2" name="الترشيحات" 
 			sequence="15" parent="hr_root_training" action="action_hr_candidates_candidat" />
 
 

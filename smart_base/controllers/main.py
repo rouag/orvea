@@ -34,14 +34,6 @@ class BaseNotification(http.Controller):
                 }
                              )
         return all_notif
-#         print datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
-#         return [{
-#                 'notif_id': 1,
-#                 'title': 'resultresultresult',
-#                 'message': 'azeazeaze',
-#                 'timer': 10,
-#                 'notify_at': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
-#                 }]
 
     @http.route('/notification/validate', type='json', auth="user")
     def notify_validate(self, notif_id):
