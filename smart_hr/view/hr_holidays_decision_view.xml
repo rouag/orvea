@@ -27,6 +27,10 @@
 							</group>
 							<group>
 								<field name="date" />
+
+							<field name="holidays" domain="[('employee_id', '=', employee_id),('state', '=', 'done'),('holiday_status_id.direct_decision', '=', True)]"/>
+								
+								
 							</group>
 						</group>
 					</sheet>

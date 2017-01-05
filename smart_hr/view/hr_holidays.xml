@@ -173,14 +173,14 @@
 								'required':[('holiday_status_id','=', %(data_hr_holiday_accompaniment_exceptional)d),('accompaniment_type','=','child')]}" />
 						</group>
 
-						<group col="4">
+						<group col="6">
 							<field name="date_from" required="1"
 								attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)],
 								'invisible':[('compensation_type','=','money')]}" />
-							<field name="date_to" required="1"
-								attrs="{'readonly':[('state','not in',['draft'])],
-								'invisible':[('compensation_type','=','money')]}" />
 							<field name="duration" attrs="{'invisible':[('compensation_type','=','money')]}" />
+							<field name="date_to" readonly="1"
+								attrs="{
+								'invisible':[('compensation_type','=','money')]}" />
 						</group>
 						<group col="4">
 							<field name="num_outspeech"
@@ -305,6 +305,8 @@
 									<field name="demand_number_max" />
 									<field name="traveling_ticket" />
 									<field name="traveling_ticket_familiar" />
+									<field name="maximum_days_by_year" />
+									
 								</group>
 
 

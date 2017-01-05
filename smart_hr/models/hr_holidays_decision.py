@@ -19,7 +19,8 @@ class hrHolidaysDecision(models.Model):
                              ('cancel', 'رفض'),
                              ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
 
-   
+    holidays = fields.Many2many('hr.holidays', string=u'الإجازات')
+
 
     @api.one
     def action_waiting(self):
