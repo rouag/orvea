@@ -121,11 +121,6 @@ class HrJobCreate(models.Model):
         if self.serie_id:
             grides = []
             for classment in self.serie_id.hr_classment_job_ids:
-                gride.append(classment.grade_id).id
-            self.grade_ids=gride
-            print gride
-   
-   
                 grides.append(classment.grade_id.id)
             self.grade_ids = grides
 
