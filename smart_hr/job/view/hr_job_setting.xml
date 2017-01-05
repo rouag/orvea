@@ -162,15 +162,15 @@
 								<field name="rank_to" />
 							</group>
 							<group>
-								<field name="general_id" domain="[('type_groupe', '=', 'general')]"
-									string="المجموعة العامة" />
-								<field name="parent_id" domain="[('parent_id', '=', general_id)]"
+								
+								<field name="parent_id" domain="[('type_groupe', '=', 'spicific')]"
 									string="المجموعة النوعية" />
+								<field name="skils_ids" widget="many2many_tags" options="{'no_create_edit': True}" />
 
 
 							</group>
 							<group>
-								<field name="skils_ids" widget="many2many_tags" options="{'no_create_edit': True}" />
+								
 								<field name="type_exeprience" required="1" />
 							</group>
 							<group>
@@ -192,13 +192,13 @@
 						<field name="hr_classment_job_ids" string="الرتب‬">
 							<tree editable="bottom">
 								<field name="grade_id" style="width:5%%" />
-								<field name="exeperince" />
+								<field name="experience" />
 								<field name="education_level_id" />
 							</tree>
 							<form>
 								<group>
 									<field name="grade_id" />
-									<field name="exeperince" />
+									<field name="experience" />
 									<field name="education_level_id" />
 								</group>
 							</form>
@@ -208,8 +208,8 @@
 
 						<field name="hr_training_ids" string="دورات تدريبية‬">
 							<tree editable="bottom">
-								<field name="traninig_id" />
-								<field name="type" />
+								<field name="traninig_id" options='{"no_open": True, "no_create": True}' />
+								<field name="type" options='{"no_open": True, "no_create": True}' />
 							</tree>
 							<form>
 								<group col='2'>
@@ -255,6 +255,62 @@
 		<menuitem id="categorie_serie_menu" name="سلسلة الفئات"
 			sequence="3" parent="hr_job_setting" action="action_hr_categorie_serie" />
 
+
+
+		<!-- المسميات الوظيفية‬ -->
+
+
+		<record id="hr_jobe_name_form" model="ir.ui.view">
+			<field name="name">hr.job.name.form</field>
+			<field name="model">hr.job.name</field>
+			<field name="arch" type="xml">
+				<form string="المسميات الوظيفية‬">
+					<sheet>
+						<group col="2">
+							<group>
+								<field name="name"  />
+								
+							</group>
+							<group>
+								<field name="number" />
+							</group>
+							<field name="job_description" />
+
+						</group>
+
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="hr_job_name_tree" model="ir.ui.view">
+			<field name="name">hr.job.name.tree</field>
+			<field name="model">hr.job.name</field>
+			<field name="arch" type="xml">
+				<tree string="المسميات الوظيفية">
+					<field name="name" />
+					<field name="number" />
+				</tree>
+			</field>
+		</record>
+
+
+		<record model="ir.actions.act_window" id="action_hr_job_name">
+			<field name="name">المسميات الوظيفية</field>
+			<field name="res_model">hr.job.name</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="hr_jobe_name_form" />
+
+		</record>
+
+		<record id="action_hr_job_name_tree" model="ir.actions.act_window.view">
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="hr_job_name_tree" />
+			<field name="act_window_id" ref="action_hr_job_name" />
+		</record>
+
+		<menuitem id="job_name_menu" name="المسميات الوظيفية"
+			sequence="4" parent="hr_job_setting" action="action_hr_job_name" />
 
 
 

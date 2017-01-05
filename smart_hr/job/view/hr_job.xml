@@ -140,20 +140,20 @@
 							<field name="speech_date" />
 							<field name="speech_picture" />
 							<field name="grade_ids" invisible="1"/>
+							<field name="fiscal_year" />
 						</group>
 						<group col="6">
 							<field name="general_id" domain="[('type_groupe', '=', 'general')]" />
-							<field name="specific_id" domain="[('parent_id', '=', general_id)]" />
-							<field name="serie_id" domain="[('parent_id', '=',specific_id)]" />
+							<field name="specific_id" domain="[('parent_id', '=', general_id),('type_groupe', '=', 'spicific')]" />
+							<field name="serie_id" domain="[('parent_id', '=',specific_id), ('type_groupe', '=', 'serie')]" />
 						</group>
 
 						<field name="line_ids" string=" الوظائف">
 							<tree editable="bottom">
-								<field name="name" />
-								<field name="number" />
-								<field name="type_id" />
-								<field name="grade_id"
-									/>
+								<field name="name" options='{"no_open": True, "no_create": True}' />
+								<field name="number" readonly="1" />
+								<field name="type_id" options='{"no_open": True, "no_create": True}' />
+								<field name="grade_id" options='{"no_open": True, "no_create": True}' />
 								<field name="department_id" />
 							</tree>
 						</field>

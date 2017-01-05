@@ -10,8 +10,8 @@ from datetime import date
 class HrJob(models.Model):
     _inherit = 'hr.job'  
     _description = u'الوظائف'
-   
-    name = fields.Char(string='المسمى', required=1)
+    
+    name = fields.Many2one('hr.job.name', string='المسمى', required=1)
     number = fields.Char(string='الرقم الوظيفي', required=1, states={'unoccupied': [('readonly', 0)]})
     department_id = fields.Many2one('hr.department', string='الإدارة', required=1, states={'unoccupied': [('readonly', 0)]})
     general_id = fields.Many2one('hr.groupe.job', ' المجموعة العامة', ondelete='cascade')
@@ -36,7 +36,19 @@ class HrJob(models.Model):
               'context': context,
               'target': 'new',
               }
-         
+
+
+class HrJobName(models.Model):
+    _name = 'hr.job.name'
+    _description = u'المسميات الوظيفية '
+    name = fields.Char(string=u'المسمى', required=1)
+    number = fields.Char(string=u'الرمز', required=1)
+    job_description = fields.Text(string=u'متطلبات الوظيفية')
+    _sql_constraints = [
+        ('number_uniq', 'unique(number)', 'رمز هذا المسمى موجود.'),
+        ]
+
+
 class HrJobReservation(models.Model):
     _name = 'hr.job.reservation'  
     _description = u'الوظائف'
@@ -58,26 +70,26 @@ class HrJobCreate(models.Model):
     name = fields.Char(string='المسمى', required=1, readonly=1, states={'new': [('readonly', 0)]})
     speech_number = fields.Char(string='رقم الخطاب', required=1, readonly=1, states={'new': [('readonly', 0)]})
     speech_date = fields.Date(string='تاريخ الخطاب', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    fiscal_year = fields.Char(string='السنه المالية', default=(date.today().year), readonly=1)
     speech_picture = fields.Binary(string='صورة الخطاب', required=1, readonly=1, states={'new': [('readonly', 0)]})
     line_ids = fields.One2many('hr.job.create.line', 'job_create_id', readonly=1, states={'new': [('readonly', 0)]})
     state = fields.Selection([('new', 'طلب'), ('waiting', 'في إنتظار الإعتماد'), ('done', 'اعتمدت')], readonly=1, default='new') 
     general_id = fields.Many2one('hr.groupe.job', ' المجموعة العامة', ondelete='cascade')
     specific_id = fields.Many2one('hr.groupe.job', ' المجموعة النوعية', ondelete='cascade')
     serie_id = fields.Many2one('hr.groupe.job', ' سلسلة الفئات', ondelete='cascade')
-    grade_ids = fields.One2many('salary.grid.grade','job_create_id', string='المرتبة',)
-   
+    grade_ids = fields.One2many('salary.grid.grade', 'job_create_id', string='المرتبة')
+
     @api.onchange('serie_id')
-    def onchange_rank(self):
+    def onchange_serie_id(self):
         if self.serie_id:
-            gride=[]
+            grides = []
             for classment in self.serie_id.hr_classment_job_ids:
-                gride.append(classment.grade_id.id)
-            self.grade_ids=gride
-   
-   
+                grides.append(classment.grade_id.id)
+            self.grade_ids = grides
+
     @api.one
     def action_waiting(self):
-        self.state = 'waiting'       
+        self.state = 'waiting'
 
     @api.one
     def action_done(self):
@@ -103,7 +115,7 @@ class HrJobCreateLine(models.Model):
     _name = 'hr.job.create.line'  
     _description = u'الوظائف'
     
-    name = fields.Char(string='الوظيفة', required=1)
+    name = fields.Many2one('hr.job.name', string='الوظيفة', required=1)
     number = fields.Char(string='الرقم الوظيفي', required=1) 
     type_id = fields.Many2one('salary.grid.type', string='التصنيف', required=1) 
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1) 
@@ -112,6 +124,21 @@ class HrJobCreateLine(models.Model):
     _sql_constraints = [
         ('number_grade_uniq', 'unique(number,grade_id)', 'لا يمكن إضافة وظيفتين بنفس الرتبة والرقم'),
         ] 
+    
+               
+    @api.onchange('name')
+    def onchange_name(self):
+        if self.name:
+            self.number = self.name.number
+            
+    @api.onchange('grade_id')
+    def onchange_holiday_status_id(self):
+        res = {}
+        #get grades in job_create_id
+        if not self.grade_id:
+            grade_ids = [rec .id for rec in self.job_create_id.grade_ids]
+            res['domain'] = {'grade_id': [('id', 'in', grade_ids)]}
+            return res
     
 class HrJobCancel(models.Model):
     _name = 'hr.job.cancel'  
