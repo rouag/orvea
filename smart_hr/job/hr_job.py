@@ -79,18 +79,18 @@ class HrJobCreate(models.Model):
     serie_id = fields.Many2one('hr.groupe.job', ' سلسلة الفئات', ondelete='cascade')
     grade_ids = fields.One2many('salary.grid.grade', 'job_create_id', string='المرتبة')
 
-    @api.onchange('serie_id')
-    def onchange_serie_id(self):
-        if self.serie_id:
-            grides = []
-            for classment in self.serie_id.hr_classment_job_ids:
-                gride.append(classment.grade_id).id
-            self.grade_ids=gride
-            print gride
-   
-   
-                grides.append(classment.grade_id.id)
-            self.grade_ids = grides
+#     @api.onchange('serie_id')
+#     def onchange_serie_id(self):
+#         if self.serie_id:
+#             grides = []
+#             for classment in self.serie_id.hr_classment_job_ids:
+#                 gride.append(classment.grade_id).id
+#             self.grade_ids=gride
+#             print gride
+#    
+#    
+#                 grides.append(classment.grade_id.id)
+#             self.grade_ids = grides
 
     @api.one
     def action_waiting(self):
