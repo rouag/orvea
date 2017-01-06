@@ -29,9 +29,13 @@
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="الوظائف" create="0" edit="0" delete="0">
+				<field name="is_occupied" invisible="1" />
 					<header>
-						<button name="action_job_reservation" string="حجز الوظيفة"
-							type="object" groups="smart_hr.group_job_managmenet" states="unoccupied" />
+						<button name="action_job_reserve" string="حجز الوظيفة"
+							type="object" groups="smart_hr.group_reserve_job" attrs="{'invisible': ['|',('state','!=', 'unoccupied'),('is_occupied','=',True)]}" />
+						
+						<button name="action_job_unreserve" string="فك حجز الوظيفة"
+							type="object" groups="smart_hr.group_reserve_job" attrs="{'invisible': [('is_occupied','=',False)]}" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"  />
 
 						<field name="state" widget="statusbar" statusbar_visible="unoccupied,occupied,cancel" />
 					</header>
@@ -124,36 +128,67 @@
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="إحداث وظائف">
+					<field name="grade_ids" invisible="1" />
 					<header>
 						<button name="action_waiting" string="إرسال للإعتماد" type="object"
-							states="new" />
-						<button name="action_done" string="إعتماد" type="object"
-							states="waiting" />
+							groups="smart_hr.group_job_managment" states="new"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_budget" string="موافقة" type="object"
+							groups="smart_hr.group_new_job_confirmation" states="waiting"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_refuse" string="رفض" type="object"
-							states="waiting" />
-						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
+							groups="smart_hr.group_new_job_confirmation" states="waiting"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_communication" string="موافقة" type="object"
+							groups="smart_hr.group_budget_managment" states="budget"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_external" string="موافقة" type="object"
+							groups="smart_hr.group_communication_managment" states="communication"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_hrm" string="موافقة" type="object"
+							groups="smart_hr.group_job_external_managment" states="external" />
+						<button name="action_communication" string="رفض" type="object"
+							groups="smart_hr.group_job_external_managment" states="external"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_done" string="موافقة" type="object"
+							groups="smart_hr.group_job_external_managment" states="hrm" />
+
+						<field name="state" widget="statusbar"
+							statusbar_visible="new,waiting,budget,communication,external,hrm,done" />
 					</header>
 					<sheet string="إحداث وظائف">
 						<group col="4">
 							<field name="name" />
-							<field name="speech_number" />
-							<field name="speech_date" />
-							<field name="speech_picture" />
-							<field name="grade_ids" invisible="1"/>
+							<field name="decision_number" />
+							<field name="speech_number"
+								attrs="{'invisible':[('state', 'not in', ['hrm','done'])],'required':[('state','=','hrm')], 'readonly':[('state', '=', 'done')]}" />
+							<field name="speech_date"
+								attrs="{'invisible':[('state', 'not in', ['hrm','done'])],'required':[('state','=','hrm')], 'readonly':[('state', '=', 'done')]}" />
+							<field name="speech_file"
+								attrs="{'invisible':[('state', 'not in', ['hrm','done'])],'required':[('state','=','hrm')], 'readonly':[('state', '=', 'done')]}" />
+							<field name="draft_budget"
+								attrs="{'invisible':[('state', 'not in', ['communication','external', 'hrm', 'done'])],'readonly':[('state', 'in', ['external', 'hrm', 'done'])],'required':[('state','=','communication')]}" />
 							<field name="fiscal_year" />
 						</group>
 						<group col="6">
-							<field name="general_id" domain="[('type_groupe', '=', 'general')]" />
-							<field name="specific_id" domain="[('parent_id', '=', general_id),('type_groupe', '=', 'spicific')]" />
-							<field name="serie_id" domain="[('parent_id', '=',specific_id), ('type_groupe', '=', 'serie')]" />
+							<field name="general_id" domain="[('type_groupe', '=', 'general')]"
+								attrs="{'readonly':[('state', '!=', 'new')]}" />
+							<field name="specific_id"
+								domain="[('parent_id', '=', general_id),('type_groupe', '=', 'spicific')]"
+								attrs="{'readonly':[('state', '!=', 'new')]}" />
+							<field name="serie_id"
+								domain="[('parent_id', '=',specific_id), ('type_groupe', '=', 'serie')]"
+								attrs="{'readonly':[('state', '!=', 'new')]}" />
 						</group>
 
 						<field name="line_ids" string=" الوظائف">
 							<tree editable="bottom">
 								<field name="name" options='{"no_open": True, "no_create": True}' />
 								<field name="number" readonly="1" />
-								<field name="type_id" options='{"no_open": True, "no_create": True}' />
 								<field name="grade_id" options='{"no_open": True, "no_create": True}' />
+								<field name="type_id" readonly="1" />
+
 								<field name="department_id" />
 							</tree>
 						</field>
@@ -187,7 +222,7 @@
 					<field name="name" />
 					<field name="speech_number" />
 					<field name="speech_date" />
-					<field name="speech_picture" />
+					<field name="speech_file" />
 				</tree>
 			</field>
 		</record>
@@ -211,12 +246,12 @@
 							<field name="name" />
 							<field name="speech_number" />
 							<field name="speech_date" />
-							<field name="speech_picture" />
+							<field name="speech_file" />
 						</group>
 
 						<field name="job_update_ids" string=" تحوير‬  وظائف">
 							<tree editable="bottom">
-								 <field name="job_id" domain="[('state','=','unoccupied')]" />
+								<field name="job_id" domain="[('state','=','unoccupied')]" />
 								<field name="new_name" />
 								<field name="type_id" />
 								<field name="department_id" />
@@ -233,7 +268,7 @@
 			</field>
 		</record>
 		<record model="ir.actions.act_window" id="action_hr_job_update">
-			<field name="name">تحوير‬  وظائف</field>
+			<field name="name">تحوير‬ وظائف</field>
 			<field name="res_model">hr.job.update</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
@@ -253,7 +288,7 @@
 					<field name="name" />
 					<field name="speech_number" />
 					<field name="speech_date" />
-					<field name="speech_picture" />
+					<field name="speech_file" />
 				</tree>
 			</field>
 		</record>
@@ -278,11 +313,11 @@
 							<field name="name" />
 							<field name="speech_number" />
 							<field name="speech_date" />
-							<field name="speech_picture" />
+							<field name="speech_file" />
 						</group>
 						<field name="job_grade_ids" string=" نقل وظائف">
 							<tree editable="bottom">
-								<field name="job_id"  domain="[('state','=','unoccupied')]"/>
+								<field name="job_id" domain="[('state','=','unoccupied')]" />
 								<field name="type_id" />
 								<field name="department_id" />
 								<field name="grade_id" />
@@ -319,7 +354,7 @@
 					<field name="name" />
 					<field name="speech_number" />
 					<field name="speech_date" />
-					<field name="speech_picture" />
+					<field name="speech_file" />
 				</tree>
 			</field>
 		</record>
@@ -343,11 +378,11 @@
 							<field name="name" />
 							<field name="speech_number" />
 							<field name="speech_date" />
-							<field name="speech_picture" />
+							<field name="speech_file" />
 						</group>
 						<field name="job_movement_ids" string=" الوظائف">
 							<tree editable="bottom">
-								<field name="job_id" domain="[('state','=','unoccupied')]"/>
+								<field name="job_id" domain="[('state','=','unoccupied')]" />
 								<field name="type_id" />
 								<field name="department_id" />
 								<field name="grade_id" />
@@ -385,7 +420,7 @@
 					<field name="name" />
 					<field name="speech_number" />
 					<field name="speech_date" />
-					<field name="speech_picture" />
+					<field name="speech_file" />
 				</tree>
 			</field>
 		</record>
@@ -409,7 +444,7 @@
 							<field name="name" />
 							<field name="speech_number" />
 							<field name="speech_date" />
-							<field name="speech_picture" />
+							<field name="speech_file" />
 						</group>
 						<field name="job_cancel_ids" string="إلغاء وظائف">
 							<tree editable="bottom">
@@ -451,12 +486,18 @@
 			<field name="arch" type="xml">
 				<form string="حجز وظيفة">
 					<sheet>
-						<group col="2">
-							<field name="employee" domain="[('state','=','done'),('job_id','=',False)]" />
+						<group col="4">
+							<field name="date_from" />
+							<field name="date_to" />
 						</group>
 					</sheet>
-					<button name="action_job_reservation_confirm" string="موافق"
-						type="object" groups="smart_hr.group_job_managmenet" />
+					<footer>
+						<button name="action_job_reserve_confirm" string="موافق"
+							type="object" />
+						أو
+						
+						<button string="إلغاء" class="oe_link" special="cancel" />
+					</footer>
 				</form>
 			</field>
 		</record>
