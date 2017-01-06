@@ -88,6 +88,8 @@
 								<field name="type_appointment" />
 								<field name="instead_exchange" />
 								<field name="date_direct_action" />
+								<field name="decision_state" />
+
 							</group>
 							<group string="بيانات الموظف">
 								<field name="employee_id" domain="[('employee_state','=','done')]" />
