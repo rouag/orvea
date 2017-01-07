@@ -17,6 +17,8 @@
         'security/ir.model.access.csv',
         'payroll/security/payroll_security.xml',
         'payroll/security/ir.model.access.csv',
+        #'job/security/job_security.xml',
+      #  'job/security/ir.model.access.csv',
 
         'view/hr_menu.xml',
 
@@ -60,13 +62,14 @@
         'view/hr_promotion.xml',
         'view/salary_grid.xml',
         'view/hr_training.xml',
+        'view/hr_training_setting.xml',
         'view/hr_exam_emp.xml',
         'view/res_partner.xml',
         'view/judicial_precedent.xml',
         'view/recruiter.xml',
         'view/hr_holidays.xml',
         'view/hr_holidays_cancellation_view.xml',
-         'view/hr_holidays_decision_view.xml',
+        'view/hr_holidays_decision_view.xml',
         'view/hr_overtime_view.xml',
         'view/hr_employee_education_level.xml',
         'view/hr_assessment_view.xml',
@@ -78,8 +81,8 @@
         'view/hr_termination_view.xml',
         'view/section.xml',
         'view/external_autorities.xml',
-         'view/holiday_entitlement_types.xml',
-
+        'view/holiday_entitlement_types.xml',
+        'view/hr_holidays_extension.xml',
 
 
         # القرارات

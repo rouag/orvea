@@ -20,13 +20,16 @@ class HrDecision(models.Model):
         if self.decision_type_id:
             decision_type_line = self.env['hr.decision.type'].search([('id', '=', self.decision_type_id.id)
                                                 ])
-           # employee=self.employee_id.id
-           # employe=str(employee)
-          #  print"employe",employee
+            employee=self.employee_id.name or ""
+            date=self.date or ""
+            numero=self.name or ""
             if decision_type_line.text:
                 rel_text=decision_type_line.text
-                rep_text=rel_text.replace('EMPLOYE','123456' )
-                
+                rep_text=rel_text.replace('EMPLOYEE',unicode(employee))
+                print"rep_text",rep_text
+                rep_text = rep_text.replace('DATE',unicode(date))
+                rep_text = rep_text.replace('NUMERO',unicode(numero))
+                print"rep_text",rep_text
                 self.text = rep_text
                 print"text",self.text
                 

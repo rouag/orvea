@@ -106,18 +106,35 @@ class hrHolidaysCancellation(models.Model):
     @api.one
     def button_done(self):
         for cancellation in self:
-            for holiday in cancellation.holidays:
+            if cancellation.type=='cancellation':
+                for holiday in cancellation.holidays:
+                    for holiday_balance in holiday.employee_id.holidays_balance:
+                        if holiday_balance.holiday_status_id.id == holiday.holiday_status_id.id:
+                            holiday_balance.holidays_available_stock += holiday.duration
+                            holiday_balance.token_holidays_sum -= holiday.duration
+                            break
                 # Update the holiday state
                 holiday.write({'state': 'cancel'})
                 # update holidays balance
-                holiday._compute_balance(holiday.employee_id)
+#                 holiday._compute_balance(holiday.employee_id)
+            if cancellation.type=='cut':
+                for holiday in cancellation.holidays:
+                    for holiday_balance in holiday.employee_id.holidays_balance:
+                        end_date = fields.Date.from_string(holiday.date_to)
+                        now = fields.Date.from_string(fields.Datetime.now())
+                        cuted_duration = (end_date - now).days
+                        if holiday_balance.holiday_status_id.id == holiday.holiday_status_id.id:
+                            holiday_balance.holidays_available_stock += cuted_duration
+                            holiday_balance.token_holidays_sum -= cuted_duration
+                            break
+
             cancellation.state = 'done'
 
     @api.one
     def button_refuse(self):
         for cancellation in self:
             for holiday in cancellation.holidays:
-                holiday.state = 'draft'
+                cancellation.state = 'draft'
                 # send notification for requested the DM
                 self.env['base.notification'].create({'title': u'إشعار برفض إلغاء أو قطع إجازة',
                                                   'message': u' '+self.employee_id.name +u'لقد تم الرفض من قبل ',

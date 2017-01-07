@@ -28,9 +28,7 @@
 		<record id="data_hr_holiday_status_study" model="hr.holidays.status">
 			<field name="name">دراسية</field>
 		</record>
-		<record id="data_hr_holiday_status_exam" model="hr.holidays.status">
-			<field name="name">إداء إمتحان</field>
-		</record>
+
 
 		<record id="data_hr_holiday_status_legal_absent" model="hr.holidays.status">
 			<field name="name">غياب بعذر</field>
@@ -46,7 +44,6 @@
 			<field name="for_saudi" eval="True" />
 			<field name="for_other" eval="True" />
 			<field name="need_decision" eval="True" />
-
 		</record>
 
 		<record id="data_hr_holiday_status_exceptional_accompaniment"

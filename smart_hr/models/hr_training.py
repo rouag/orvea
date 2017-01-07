@@ -36,6 +36,7 @@ class HrTraining(models.Model):
                               ('review', 'المراجعة'),
                               ('confirm', 'إعتمدت'),
                               ('done', 'تمت')], readonly=1, string='الحالة', default='new')
+    job_trainings = fields.One2many('hr.job.training', 'type', string='job trainings')
 
     @api.onchange('date_from')
     def _onchange_date_from(self):
@@ -87,6 +88,11 @@ class HrTraining(models.Model):
     @api.one
     def action_done(self):
         self.state = 'done'
+
+class HrTrainingType(models.Model):
+    _name = 'hr.training.type'
+    _description = u'أنواع التدريب'
+    name = fields.Char(string=u'المسمى', required=True)
 
 
 class HrCandidates(models.Model):

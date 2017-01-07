@@ -6,10 +6,12 @@
 		<record id="data_decision_type" model="hr.decision.type">
 			<field name="name"> قرارتعين موظف</field>
 			<field name="text"><![CDATA[  قرار إداري رقم(NUMERO)
-         (DATE) و تاريخ  
-       ....................  إن رئيس هيئة التحقيق والإدعاء العام
-           يقرر ما يلي
-           
+         و تاريخ  
+       (DATE)..  
+       إن رئيس هيئة التحقيق والإدعاء العام
+          
+          <p> يقرر ما يلي
+           </p>
            أولا  :يعين /
            EMPLOYEE
             ]]></field>
