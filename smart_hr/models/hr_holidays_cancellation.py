@@ -112,11 +112,12 @@ class hrHolidaysCancellation(models.Model):
                         if holiday_balance.holiday_status_id.id == holiday.holiday_status_id.id:
                             holiday_balance.holidays_available_stock += holiday.duration
                             holiday_balance.token_holidays_sum -= holiday.duration
-                            break
-                # Update the holiday state
-                holiday.write({'state': 'cancel'})
-                # update holidays balance
-#                 holiday._compute_balance(holiday.employee_id)
+                            break    
+                    if holiday.holiday_status_id.id  in [self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id]:
+                        holiday.open_period.holiday_stock += holiday.duration
+                        # Update the holiday state
+                    holiday.write({'state': 'cancel'})
+
             if cancellation.type=='cut':
                 for holiday in cancellation.holidays:
                     for holiday_balance in holiday.employee_id.holidays_balance:
@@ -127,7 +128,10 @@ class hrHolidaysCancellation(models.Model):
                             holiday_balance.holidays_available_stock += cuted_duration
                             holiday_balance.token_holidays_sum -= cuted_duration
                             break
-
+                    if holiday.holiday_status_id.id  in [self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id]:
+                        holiday.open_period.holiday_stock += cuted_duration
+                    holiday.write({'state': 'cancel'})
+                                    
             cancellation.state = 'done'
 
     @api.one

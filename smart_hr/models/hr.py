@@ -49,6 +49,7 @@ class HrEmployee(models.Model):
     traveling_ticket_familiar = fields.Boolean(string=u'تذكرة سفر عائليّة', default=False)
     compensation_stock = fields.Integer(string=u'رصيد إجازات التعويض')
     holiday_peiodes = fields.One2many('hr.holidays.periode', 'employee_id', string='holidays periodes')
+    first_recruiter_date = fields.Date(string=u'   تاريخ أوّل تعين بالجهة الحكومية ')
     
     def _compute_service_years(self):
         for emp in self:
@@ -147,7 +148,7 @@ class HrEmployeeHolidaysStock(models.Model):
         (10, u'عشرة سنوات'),
         ], string=u'مدة صلاحيات الإجازة', default=1) 
     entitlement_id = fields.Many2one('hr.holidays.status.entitlement', string=u'نوع الاستحقاق')
-
+    entitlement_name = fields.Char(string=u'نوع الاستحقاق', related='entitlement_id.entitlment_category.name')
 class HrEmployeePromotionHistory(models.Model):
     _name = 'hr.employee.promotion.history'
 

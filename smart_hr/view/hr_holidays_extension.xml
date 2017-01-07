@@ -79,7 +79,7 @@
 			<field name="act_window_id" ref="action_hr_holidays_extension_mine" />
 		</record>
 		<menuitem id="menu_hr_my_Hollidays_extension" action="action_hr_holidays_extension_mine"
-			parent="menu_hr_holiday_root" sequence="50" name="تمديد إجازاتي" />
+			parent="menu_hr_holiday_root" sequence="51" name="تمديد إجازاتي" />
 
 
 
@@ -176,8 +176,7 @@
 		</record>
 		<menuitem id="menu_hr_holidays_extension_employees"
 			action="action_hr_holidays_extension_employees" parent="menu_hr_holiday_root"
-			sequence="60" groups="smart_hr.group_dm" name="طلبات التمديد" />
-
+			sequence="52" groups="smart_hr.group_dm" name="طلبات التمديد" />
 
 	</data>
 </openerp>
