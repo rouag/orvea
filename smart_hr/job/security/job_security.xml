@@ -3,7 +3,7 @@
 	<data noupdate="0">
 
 		<record id="group_job_managment" model="res.groups">
-			<field name="name">إدارة الوظائف</field>
+			<field name="name">2إدارة الوظائف</field>
 			<field name="category_id" ref="base.module_category_human_resources" />
 		</record>
 		

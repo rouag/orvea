@@ -144,3 +144,7 @@ access_hr_assessment_executive_admin,hr_assessment_executive_admin,model_hr_asse
 access_hr_assessment_specialized_weakness,hr_assessment_specialized_weakness,model_hr_assessment_specialized_weakness,,1,1,1,1
 access_hr_job_name,hr_job_name,model_hr_job_name,,1,1,1,1
 access_hr_training_type,hr_training_type,model_hr_training_type,,1,1,1,1
+
+
+access_hr_holidays_extension,hr_holidays_extension,model_hr_holidays_extension,,1,1,1,1
+

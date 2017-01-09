@@ -208,6 +208,7 @@ class HrHolidays(models.Model):
             else:
                 open_period = self.create_holiday_periode(self.employee_id,self.holiday_status_id,right_entitlement)
                 open_period.holiday_stock -= self.duration
+            self.open_period = open_period
            
         stock_line = self.env['hr.employee.holidays.stock'].search ([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.holiday_status_id.id),('entitlement_id.entitlment_category.id', '=', self.entitlement_type.id)])
         if not stock_line:
@@ -222,7 +223,6 @@ class HrHolidays(models.Model):
                 break
         stock_line.holidays_available_stock -= self.duration
         stock_line.token_holidays_sum += self.duration
-        self.open_period = open_period
         self.state = 'done'
 
     @api.model
@@ -599,7 +599,11 @@ class HrHolidays(models.Model):
                                                             'entitlement_id':entitlement.id,
                                                             'holiday_stock':entitlement.holiday_stock_default,
                                                             })
-
+        for stock_line in employee_id.holidays_balance:
+            if stock_line.holiday_status_id==self.holiday_status_id:
+                stock_line.holidays_available_stock=0
+                
+                
         return open_periode
     
     @api.one
@@ -741,6 +745,15 @@ class HrHolidays(models.Model):
         """
         check constraintes beside date and periode ones
         """
+        for en in self.holiday_status_id.entitlements:
+            if en.entitlment_category.id == self.entitlement_type.id:
+                right_entitlement = en
+                break
+        if not right_entitlement:
+            for en in self.holiday_status_id.entitlements:
+                if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
+                    right_entitlement = en
+                    break
         date_from = fields.Date.from_string(self.date_from)
 
         # check if there is another undone request for the same status of holiday
@@ -782,12 +795,12 @@ class HrHolidays(models.Model):
                     raise ValidationError(u"الحد الأقصى للتمتع بهذا النّوع من الإجازات خلال السنة"+str(self.holiday_status_id.maximum_days_by_year)+u"يوما")
         
         # Constraintes for normal holidays العادية
-        if  current_holiday_status_stock and self.holiday_status_id.id!=self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id:
-            if self.duration > current_holiday_status_stock.holidays_available_stock :
-                raise ValidationError(u"ليس لديك الرصيد الكافي")
-        else:
-            for en in self.holiday_status_id.entitlements:
-                if en.entitlment_category.id == self.entitlement_type.id and en.holiday_stock_default<self.duration:
+        if self.holiday_status_id.id != self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id:
+            if  current_holiday_status_stock:
+                if self.duration > current_holiday_status_stock.holidays_available_stock :
+                    raise ValidationError(u"ليس لديك الرصيد الكافي")
+            else:
+                if right_entitlement.holiday_stock_default<self.duration:
                     raise ValidationError(u"ليس لديك الرصيد الكافي")
 
         # Constraintes for Compelling holidays اضطرارية
@@ -836,13 +849,6 @@ class HrHolidays(models.Model):
             if (self.duration) > 1:
                 raise ValidationError(u"لا يمكن لإجازة المولود ان تتجاوز يوم")  
 
-        # Constraintes for death الوفاة
-        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_death'):
-            for en in self.holiday_status_id.entitlements:
-                if en.entitlment_category.id == self.entitlement_type.id and en.holiday_stock_default<self.duration:
-                    raise ValidationError(u"لا يمكن لإجازة " +en.entitlment_category.name + u"ان تتجاوز " + str(en.holiday_stock_default) + u" أيام")
-                    break
-
         # demand_number_max
         past_demand_number = self.env['hr.holidays'].search_count([('state', '=', 'done'),('employee_id', '=', self.employee_id.id),
                                                                    ('holiday_status_id', '=', self.holiday_status_id.id), ('date_from', '>=', date(date_from.year, 1, 1))])
@@ -861,24 +867,17 @@ class HrHolidays(models.Model):
             
         # Constraintes for exceptional hollidays اجازة استثنائية 
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional'):
-            right_entitlement=False
-            for en in self.holiday_status_id.entitlements:
-                if en.entitlment_category.id == self.entitlement_type.id :
-                    right_entitlement=en
-                    if en.holiday_stock_default<self.duration:
-                        raise ValidationError(u"لا يمكن لإجازة " +en.entitlment_category.name + u"ان تتجاوز " + str(en.holiday_stock_default) + u" أيام")
-                    break
-            if right_entitlement:
-                open_periode  = self.check_holiday_periode_existance(self.employee_id,self.holiday_status_id,right_entitlement)
-            if open_periode:
-                if self.duration>open_periode.holiday_stock:
-                    taken_days = self.env['hr.holidays'].search([('state', '=', 'done'),('employee_id', '=', self.employee_id.id),
-                                                                   ('holiday_status_id', '=', self.holiday_status_id.id),
-                                                                    ('date_to', '>=',open_periode.date_from)])
-                    raise ValidationError(u"ليس لديك الرصيد الكافي")
 
+            if current_holiday_status_stock:
+                if current_holiday_status_stock.holidays_available_stock>0:
+                    if current_holiday_status_stock.token_holidays_sum<right_entitlement.extension_period*365:
+                        raise ValidationError(u"ليس لديك الرصيد الكافي،يمكنك التقدم بطلب تمديد")
+                    else:
+                        raise ValidationError(u"ليس لديك الرصيد الكافي")
 
-
+            else:
+                if right_entitlement.holiday_stock_default<self.duration:
+                    raise ValidationError(u"لا يمكن لإجازة " +en.entitlment_category.name + u"ان تتجاوز " + str(en.holiday_stock_default) + u" أيام")
         """
         check solde of illness holidays
 

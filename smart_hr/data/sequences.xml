@@ -30,47 +30,52 @@
 			<field eval="1" name="number_increment" />
 			<field name="padding">5</field>
 		</record>
-		
-		<record id="hr_holidays_cancellation_seq" forcecreate="1" model="ir.sequence">
-            <field name="name">Holidays Cancellation</field>
-            <field name="code">hr.holidays.cancellation.seq</field>
-            <field eval="1" name="number_increment"/>
-            <field name="padding">5</field>
-        </record>
-        
-       	<record id="hr_deputation_seq" forcecreate="1" model="ir.sequence">
-            <field name="name">Deputation</field>
-            <field name="code">hr.deputation.seq</field>
-            <field eval="1" name="number_increment"/>
-            <field name="padding">5</field>
-        </record>
 
-        <record id="hr_suspension_end_seq" forcecreate="1" model="ir.sequence">
-            <field name="name">Suspension End Decision</field>
-            <field name="code">hr.suspension.end.seq</field>
-            <field eval="1" name="number_increment"/>
-            <field name="padding">5</field>
-        </record>
-        
-        <record id="hr_suspension_seq" forcecreate="1" model="ir.sequence">
-            <field name="name">Suspension Decision</field>
-            <field name="code">hr.suspension.seq</field>
-            <field eval="1" name="number_increment"/>
-            <field name="padding">5</field>
-        </record>
-                
-        <record id="hr_termination_seq" forcecreate="1" model="ir.sequence">
-            <field name="name">Termination</field>
-            <field name="code">hr.term.seq</field>
-            <field eval="1" name="number_increment"/>
-            <field name="padding">5</field>
-        </record>
-        <record id="hr_holidays_extension_seq" forcecreate="1" model="ir.sequence">
-            <field name="name">Holidays Extension</field>
-            <field name="code">hr.holidays.extension.seq</field>
-            <field eval="1" name="number_increment"/>
-            <field name="padding">5</field>
-        </record>
-        
+		<record id="hr_holidays_cancellation_seq" forcecreate="1"
+			model="ir.sequence">
+			<field name="name">Holidays Cancellation</field>
+			<field name="code">hr.holidays.cancellation.seq</field>
+			<field eval="1" name="number_increment" />
+			<field name="padding">5</field>
+		</record>
+
+		<record id="hr_deputation_seq" forcecreate="1" model="ir.sequence">
+			<field name="name">Deputation</field>
+			<field name="code">hr.deputation.seq</field>
+			<field eval="1" name="number_increment" />
+			<field name="padding">5</field>
+		</record>
+
+		<record id="hr_suspension_end_seq" forcecreate="1" model="ir.sequence">
+			<field name="name">Suspension End Decision</field>
+			<field name="code">hr.suspension.end.seq</field>
+			<field eval="1" name="number_increment" />
+			<field name="padding">5</field>
+		</record>
+
+		<record id="hr_suspension_seq" forcecreate="1" model="ir.sequence">
+			<field name="name">Suspension Decision</field>
+			<field name="code">hr.suspension.seq</field>
+			<field eval="1" name="number_increment" />
+			<field name="padding">5</field>
+		</record>
+
+		<record id="hr_termination_seq" forcecreate="1" model="ir.sequence">
+			<field name="name">Termination</field>
+			<field name="code">hr.term.seq</field>
+			<field eval="1" name="number_increment" />
+			<field name="padding">5</field>
+		</record>
+
+
+		<!-- Sequences for Holidays Extension -->
+		<record id="seq_hr_holidays_extension_" model="ir.sequence">
+			<field name="name">Holidays Extension</field>
+			<field name="code">hr.holidays.extension</field>
+			<field eval="1" name="number_increment" />
+			<field name="padding">5</field>
+		</record>
+
+
 	</data>
 </openerp>
