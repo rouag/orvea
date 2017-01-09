@@ -14,19 +14,19 @@ class HrHolidays(models.Model):
     _order = 'id desc'
 
     def _check_date(self, cr, uid, ids, context=None):
-#         for holiday in self.browse(cr, uid, ids, context=context):
-#             domain = [
-#                 ('date_from', '<=', holiday.date_to),
-#                 ('date_to', '>=', holiday.date_from),
-#                 ('employee_id', '=', holiday.employee_id.id),
-#                 ('id', '!=', holiday.id),
-#                 ('state', 'not in', ['cancel', 'refuse']),
-#             ]
-#             nholidays = self.search_count(cr, uid, domain, context=context)
-#             if holiday.compensation_type=='money':
-#                 return True
-#             if nholidays:
-#                 return False
+        for holiday in self.browse(cr, uid, ids, context=context):
+            domain = [
+                ('date_from', '<=', holiday.date_to),
+                ('date_to', '>=', holiday.date_from),
+                ('employee_id', '=', holiday.employee_id.id),
+                ('id', '!=', holiday.id),
+                ('state', 'not in', ['cancel', 'refuse']),
+            ]
+            nholidays = self.search_count(cr, uid, domain, context=context)
+            if holiday.compensation_type=='money':
+                return True
+            if nholidays:
+                return False
         return True
 
     @api.depends('holiday_status_id.extension_number')
@@ -56,7 +56,7 @@ class HrHolidays(models.Model):
         ('legit', u'مرافقة كمحرم شرعي'),
         ], default="other", string=u'السبب ')
     date_from = fields.Date(string=u'التاريخ من ', default=fields.Datetime.now())
-    date_to = fields.Date(string=u'التاريخ الى' , compute='_compute_date_to')
+    date_to = fields.Date(string=u'التاريخ الى' , compute='_compute_date_to',store=True)
     duration = fields.Integer(string=u'الأيام' ,required=1)
     holiday_status_id = fields.Many2one('hr.holidays.status', string=u'نوع الأجازة', default=lambda self: self.env.ref('smart_hr.data_hr_holiday_status_normal'), advanced_search=True)
     state = fields.Selection([

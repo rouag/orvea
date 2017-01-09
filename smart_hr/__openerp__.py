@@ -28,8 +28,8 @@
         'data/schedulers.xml',
         'data/res.city.csv',
         'data/hr_termination_data.xml',
-        'data/decisions_type_data.xml',
-        'data/decision_action_data.xml',
+#         'data/decisions_type_data.xml',
+#         'data/decision_action_data.xml',
 
         # الإدارات
         'hr/menu.xml',
