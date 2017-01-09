@@ -17,8 +17,8 @@
         'security/ir.model.access.csv',
         'payroll/security/payroll_security.xml',
         'payroll/security/ir.model.access.csv',
-        'job/security/job_security.xml',
-        'job/security/ir.model.access.csv',
+        #'job/security/job_security.xml',
+      #  'job/security/ir.model.access.csv',
 
         'view/hr_menu.xml',
 
@@ -28,6 +28,8 @@
         'data/schedulers.xml',
         'data/res.city.csv',
         'data/hr_termination_data.xml',
+        'data/decisions_type_data.xml',
+        'data/decision_action_data.xml',
 
         # الإدارات
         'hr/menu.xml',
@@ -40,6 +42,7 @@
         'views/report_order_enquiry.xml',
         'views/hr_holidays_report.xml',
         'views/report_hr_holidays_decision.xml',
+        'views/report_hr_decision_type.xml',
         'views/report.xml',
         'views/templates.xml',
         'views/layout.xml',
@@ -91,8 +94,12 @@
         'payroll/view/setting_view.xml',
         'payroll/view/hr_salary_rule_view.xml',
         'payroll/view/hr_deduction.xml',
+        'payroll/view/hr_contract_inherit_view.xml',
         'payroll/views/report_hr_deduction.xml',
         'payroll/views/report_hr_deduction_line.xml',
+        'payroll/views/report_hr_contract.xml',
+        'payroll/views/report.xml',
+        
 
         # الحضور والإنصراف
         'attendance/security/attendance_security.xml',

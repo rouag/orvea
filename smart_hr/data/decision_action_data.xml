@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<openerp>
+
+
+	<data noupdate="1">
+		<record id="email_template_edi_decision" model="hr.decision.type">
+			<field name="name">Decision</field>
+			<field name="model_id" ref="model_hr_decision" />
+			<field name="report_template" ref="hr_decision_type_report" />
+			<field name="body_html"><![CDATA[
+    
+            ]]></field>
+		</record>
+	</data>
+</openerp>

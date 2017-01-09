@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<record id="view_hr_contract_form_inherit" model="ir.ui.view">
+			<field name="name">hr.contract.form.inherit</field>
+			<field name="model">hr.contract</field>
+			<field name="inherit_id" ref="hr_contract.hr_contract_view_form" />
+			<field name="arch" type="xml">
+
+				<field name="employee_id" position="after">
+					<field name="country_id" />
+					<field name="identification_id" />
+					<field name="identification_date" />
+					<field name="identification_place" />
+					<field name="passport_id" />
+				</field>
+				<label for="name" position="replace">
+					<label string="مسمى العقد" for="name" />
+				</label>
+
+
+				<field name="department_id" position="replace">
+					<field name="department_id" />
+				</field>
+				<field name="type_id" position="replace">
+					<field name="type_id" />
+					<field name="grade_id" />
+					<field name="degree_id" domain="[('grade_id','=',grade_id)]" />
+					<field name="renewable" />
+				</field>
+			
+
+				<xpath
+					expr="/form/sheet/notebook/page/group/group[@name='salary_and_advantages']"
+					position="after">
+					<group name="payement" string=" الرواتب و البدلات  ">
+						<field name="basic_salary" />
+						<field name="transport_allow" />
+						<field name="net_salary" />
+						<field name="assurance" />
+						<field name="ticket_travel" />
+						<field name="ticket_famely" />
+					</group>
+
+
+					<group name="periode" string=" خصائص العقد  ">
+						<field name="date_to" />
+						<field name="date_endd" />
+						<field name="date_contract_to" />
+						<field name="date_contract_end" />
+						<field name="calendar_id" />
+						<field name="payement_emploi" />
+
+					</group>
+				</xpath>
+				<xpath expr="/form/sheet/notebook/page/group/group/field[@name='wage']"
+					position="attributes">
+					<attribute name="invisible">True</attribute>
+				</xpath>
+					
+				<xpath
+					expr="/form/sheet/notebook/page/group/group[@name='salary_and_advantages']"
+					position="attributes">
+					 <attribute name="required">False</attribute>
+					<attribute name="invisible">True</attribute>
+				</xpath>
+
+				<xpath
+					expr="/form/sheet/notebook/page/group/group[@name='duration_group']"
+					position="attributes">
+					<attribute name="invisible">True</attribute>
+					
+				</xpath>
+				<xpath expr="//page[@name='information']" position="after">
+					<page string="المسوول على العقد و مراجع البيانات">
+						<group>
+							<group string="المسوول على العقد">
+								<field name="employee_id1" string="المسوول على العقد" />
+								<field name="department_id1" string="القسم" />
+								<field name="job_id1" string="الوظيفة" />
+							</group>
+							<group string="مراجع البيانات">
+								<field name="employee_id2" string="مراجع البيانات" />
+								<field name="job_id2" string="الوظيفة" />
+							</group>
+						</group>
+					</page>
+				</xpath>
+
+			</field>
+		</record>
+	</data>
+</openerp>

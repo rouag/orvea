@@ -15,6 +15,9 @@ class HrDecisionAppoint(models.Model):
     type_appointment=fields.Many2one('hr.type.appoint',string='نوع التعيين',required=1,states={'new': [('readonly', 0)]})
     date_direct_action=fields.Date(string='تاريخ مباشرة العمل',required=1) 
     instead_exchange=fields.Boolean(string='صرف بدل تعيين')
+    decision_state = fields.Selection([('actif', u'نشط'),
+                                       ('notactif', u'غير نشط'),
+                                      ], string=u'حالة التعين', default='actif')
     #info about employee
     employee_id=fields.Many2one('hr.employee',string='الموظف',required=1,domain=[('employee_state','=','done')],states={'new': [('readonly', 0)]})
     number=fields.Char(string='الرقم الوظيفي',readonly=1) 
@@ -89,10 +92,6 @@ class HrDecisionAppoint(models.Model):
             self.grade_id = self.job_id.grade_id.id
             self.department_id = self.job_id.department_id.id
             
-          #  self.basic_salary = self.job_id.basic_salary.id
-           # self.transport_allow = self.job_id.transport_allow.id
-           # self.retirement = self.job_id.retirement.id
-           # self.net_salary = self.job_id.net_salary.id
             
     @api.onchange('degree_id')
     def _onchange_degree_id(self):

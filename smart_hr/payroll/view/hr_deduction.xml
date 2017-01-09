@@ -1,6 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
+		<!-- إعداد الدفع -->
+		<record model="ir.ui.view" id="hr_contract_payement_tree">
+			<field name="name">hr.contract.payement.tree</field>
+			<field name="model">hr.contract.payement</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="دفع المجدول">
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_contract_payement_form">
+			<field name="name">hr.contract.payement.form</field>
+			<field name="model">hr.contract.payement</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string=" دفع المجدول">
+					<sheet>
+						<group>
+							<field name="name" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_contract_payement">
+			<field name="name"> دفع المجدول</field>
+			<field name="res_model">hr.contract.payement</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="hr_contract_payement_menu" name="جدولة دفع الرواتب "
+			sequence="42" parent="hr_payroll_setting" />
+
+		<menuitem id="hr_contract_payement_menu_sou" name="  الدفع المجدول"
+			sequence="25" parent="hr_contract_payement_menu" action="action_hr_contract_payement" />
+
 		<!-- أنواع الحسميات -->
 		<record id="view_search_hr_deduction_type" model="ir.ui.view">
 			<field name="name">hr.deduction.type.search</field>
@@ -49,11 +87,11 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-		
- 
+
+
 		<menuitem id="hr_deduction_type_menu" name="أنواع الحسميات"
 			sequence="40" parent="hr_payroll_setting" action="action_hr_deduction_type" />
-			
+
 		<!-- الحسميات -->
 		<record id="view_search_hr_deduction" model="ir.ui.view">
 			<field name="name">hr.deduction.search</field>
@@ -126,7 +164,7 @@
 									<field name="date_to" />
 									<field name="deduction_fixe" />
 									<field name="action_deduction" />
-										
+
 								</tree>
 							</field>
 						</group>
@@ -150,9 +188,10 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-			
-		<menuitem id="hr_deduction_menu" name=" الحسميات" sequence="25" groups="group_deduction_management"
-			parent="hr_deduction_root" action="action_hr_deduction" />
+
+		<menuitem id="hr_deduction_menu" name=" الحسميات" sequence="25"
+			groups="group_deduction_management" parent="hr_deduction_root"
+			action="action_hr_deduction" />
 
 		<!-- الحسميات بالموظف -->
 		<record id="view_search_hr_deduction_line" model="ir.ui.view">
@@ -227,8 +266,9 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 
-		<menuitem id="hr_deduction_line_menu" name="الحسميات بالموظف" groups="group_deduction_management"
-			sequence="35" parent="hr_deduction_root" action="action_hr_deduction_line" />
+		<menuitem id="hr_deduction_line_menu" name="الحسميات بالموظف"
+			groups="group_deduction_management" sequence="35" parent="hr_deduction_root"
+			action="action_hr_deduction_line" />
 
 
 	</data>
