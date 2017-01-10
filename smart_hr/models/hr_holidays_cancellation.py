@@ -108,12 +108,21 @@ class hrHolidaysCancellation(models.Model):
         for cancellation in self:
             if cancellation.type=='cancellation':
                 for holiday in cancellation.holidays:
+                    for en in holiday.holiday_status_id.entitlements:
+                        if en.entitlment_category.id == holiday.entitlement_type.id:
+                            right_entitlement = en
+                            break
+                    if not right_entitlement:
+                        for en in holiday.holiday_status_id.entitlements:
+                            if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
+                                right_entitlement = en
+                                break
                     for holiday_balance in holiday.employee_id.holidays_balance:
-                        if holiday_balance.holiday_status_id.id == holiday.holiday_status_id.id:
+                        if holiday_balance.holiday_status_id.id == holiday.holiday_status_id.id and holiday_balance.entitlement_id.id == right_entitlement.id:
                             holiday_balance.holidays_available_stock += holiday.duration
                             holiday_balance.token_holidays_sum -= holiday.duration
                             break    
-                    if holiday.holiday_status_id.id  in [self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id]:
+                    if holiday.open_period:
                         holiday.open_period.holiday_stock += holiday.duration
                         # Update the holiday state
                     holiday.write({'state': 'cancel'})
@@ -128,7 +137,7 @@ class hrHolidaysCancellation(models.Model):
                             holiday_balance.holidays_available_stock += cuted_duration
                             holiday_balance.token_holidays_sum -= cuted_duration
                             break
-                    if holiday.holiday_status_id.id  in [self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id]:
+                    if holiday.open_period:
                         holiday.open_period.holiday_stock += cuted_duration
                     holiday.write({'state': 'cancel'})
                                     
