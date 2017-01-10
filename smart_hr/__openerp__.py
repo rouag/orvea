@@ -17,8 +17,8 @@
         'security/ir.model.access.csv',
         'payroll/security/payroll_security.xml',
         'payroll/security/ir.model.access.csv',
-        #'job/security/job_security.xml',
-      #  'job/security/ir.model.access.csv',
+        'job/security/job_security.xml',
+        'job/security/ir.model.access.csv',
 
         'view/hr_menu.xml',
 
@@ -28,8 +28,8 @@
         'data/schedulers.xml',
         'data/res.city.csv',
         'data/hr_termination_data.xml',
-#         'data/decisions_type_data.xml',
-#         'data/decision_action_data.xml',
+#       'data/decisions_type_data.xml',
+#       'data/decision_action_data.xml',
 
         # الإدارات
         'hr/menu.xml',

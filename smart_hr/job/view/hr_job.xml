@@ -29,13 +29,16 @@
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="الوظائف" create="0" edit="0" delete="0">
-				<field name="is_occupied" invisible="1" />
+					<field name="is_occupied" invisible="1" />
+					<field name="is_occupied_compute" invisible="1" />
 					<header>
 						<button name="action_job_reserve" string="حجز الوظيفة"
-							type="object" groups="smart_hr.group_reserve_job" attrs="{'invisible': ['|',('state','!=', 'unoccupied'),('is_occupied','=',True)]}" />
-						
+							type="object" groups="smart_hr.group_reserve_job"
+							attrs="{'invisible': ['|',('state','=', 'occupied'),('is_occupied','=',True)]}" />
+
 						<button name="action_job_unreserve" string="فك حجز الوظيفة"
-							type="object" groups="smart_hr.group_reserve_job" attrs="{'invisible': [('is_occupied','=',False)]}" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"  />
+							type="object" groups="smart_hr.group_reserve_job" attrs="{'invisible': [('is_occupied','=',False)]}"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<field name="state" widget="statusbar" statusbar_visible="unoccupied,occupied,cancel" />
 					</header>
@@ -343,46 +346,93 @@
 		<menuitem id="hr_job_move_grade_menu" name="نقل وظائف"
 			sequence="25" parent="hr_root_job" action="action_hr_job_move_grade" />
 
-		<!-- رفع أو خفض وظائف -->
+		<!-- رفع وظائف -->
 
-		<record model="ir.ui.view" id="hr_job_move_department_tree">
+		<record model="ir.ui.view" id="hr_job_scal_up_department_tree">
 			<field name="name">hr.job.move.department.tree</field>
 			<field name="model">hr.job.move.department</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
-				<tree string="رفع أو خفض وظائف">
-					<field name="name" />
-					<field name="speech_number" />
-					<field name="speech_date" />
-					<field name="speech_file" />
+				<tree string="رفع وظائف">
+					<field name="employee_id" />
+					<field name="out_speech_number" />
+					<field name="out_speech_date" />
+					<field name="out_speech_file" />
 				</tree>
 			</field>
 		</record>
-		<record model="ir.ui.view" id="hr_job_move_department_form">
+		<record model="ir.ui.view" id="hr_job_scal_up_department_form">
 			<field name="name">hr.job.move.department.form</field>
 			<field name="model">hr.job.move.department</field>
 			<field name="type">form</field>
 			<field name="arch" type="xml">
-				<form string="رفع أو خفض وظائف">
+				<form string="رفع وظائف">
 					<header>
+
 						<button name="action_waiting" string="إرسال للإعتماد" type="object"
-							states="new" />
-						<button name="action_done" string="إعتماد" type="object"
-							states="waiting" />
+							groups="smart_hr.group_job_managment" states="new"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_hrm1" string="موافقة" type="object"
+							groups="smart_hr.group_move_job_grade" states="waiting"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_refuse" string="رفض" type="object"
-							states="waiting" />
-						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
+							groups="smart_hr.group_move_job_grade" states="waiting"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+
+						<button name="action_budget" string="حجز الوظائف و إرسال الطلب"
+							type="object" groups="smart_hr.group_hrm" states="hrm1" />
+
+
+						<button name="action_communication" string="موافقة" type="object"
+							groups="smart_hr.group_budget_managment" states="budget"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_external" string="موافقة" type="object"
+							groups="smart_hr.group_communication_managment" states="communication"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_hrm" string="موافقة" type="object"
+							groups="smart_hr.group_job_external_managment" states="external" />
+						<button name="action_communication" string="رفض" type="object"
+							groups="smart_hr.group_job_external_managment" states="external"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<!-- <button name="action_job_unreserve" string="فك حجز الوظيفة" type="object" 
+							groups="smart_hr.group_reserve_job" attrs="{'invisible': [('is_occupied','=',False)]}" 
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" /> -->
+						<button name="action_done" string="موافقة" type="object"
+							groups="smart_hr.group_job_external_managment" states="hrm" />
+
+
+						<field name="state" widget="statusbar"
+							statusbar_visible="new,waiting,hrm1,budget,communication,external,hrm2,done" />
 					</header>
 					<sheet>
 						<group col="4">
-							<field name="name" />
-							<field name="speech_number" />
-							<field name="speech_date" />
-							<field name="speech_file" />
+							<field name="employee_id" />
+							<field name="decision_number" />
+							<field name="decision_date" />
+							<field name="move_date" />
+							<field name="fiscal_year" />
+							<field name="out_speech_number"
+								attrs="{'invisible':[('state', 'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" />
+							<field name="out_speech_date"
+								attrs="{'invisible':[('state', 'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" />
+							<field name="out_speech_file"
+								attrs="{'invisible':[('state', 'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" />
+							<field name="in_speech_number"
+								attrs="{'invisible':[('state', 'not in', ['external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','external')]}" />
+							<field name="in_speech_date"
+								attrs="{'invisible':[('state', 'not in', ['external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','external')]}" />
+							<field name="in_speech_file"
+								attrs="{'invisible':[('state', 'not in', ['external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','external')]}" />
 						</group>
-						<field name="job_movement_ids" string=" الوظائف">
+						<field name="job_movement_ids" context="{'operation': 'scal_up'}"
+							string=" الوظائف">
 							<tree editable="bottom">
-								<field name="job_id" domain="[('state','=','unoccupied')]" />
+								<field name="job_id" />
+								<field name="job_number" />
 								<field name="type_id" />
 								<field name="department_id" />
 								<field name="grade_id" />
@@ -398,15 +448,123 @@
 				</form>
 			</field>
 		</record>
-		<record model="ir.actions.act_window" id="action_hr_job_move_department">
-			<field name="name">رفع أو خفض وظائف</field>
+		<record model="ir.actions.act_window" id="action_hr_job_scal_up_department">
+			<field name="name">رفع وظائف</field>
 			<field name="res_model">hr.job.move.department</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
-			<field name="context">{'readonly_by_pass': True}</field>
+			<field name="context">{'readonly_by_pass': True, 'operation':'scal_up'}
+			</field>
 		</record>
-		<menuitem id="hr_job_move_department_menu" name="رفع أو خفض وظائف"
-			sequence="20" parent="hr_root_job" action="action_hr_job_move_department" />
+
+		<record id="action_hr_job_scal_up_department_tree" model="ir.actions.act_window.view">
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="hr_job_scal_up_department_tree" />
+			<field name="act_window_id" ref="action_hr_job_scal_up_department" />
+		</record>
+
+		<record id="action_hr_job_scal_up_department_form" model="ir.actions.act_window.view">
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="hr_job_scal_up_department_form" />
+			<field name="act_window_id" ref="action_hr_job_scal_up_department" />
+		</record>
+
+		<menuitem id="hr_job_scal_up_department_menu" name="رفع وظائف"
+			sequence="20" parent="hr_root_job" action="action_hr_job_scal_up_department" />
+
+		<!-- خفض وظائف -->
+
+		<record model="ir.ui.view" id="hr_job_scal_down_department_tree">
+			<field name="name">hr.job.move.department.tree</field>
+			<field name="model">hr.job.move.department</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="خفض وظائف">
+					<field name="employee_id" />
+					<field name="out_speech_number" />
+					<field name="out_speech_date" />
+					<field name="out_speech_file" />
+				</tree>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_job_scal_down_department_form">
+			<field name="name">hr.job.move.department.form</field>
+			<field name="model">hr.job.move.department</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="خفض وظائف">
+					<header>
+						<button name="action_waiting" string="إرسال للإعتماد" type="object"
+							states="new" />
+						<button name="action_done" string="إعتماد" type="object"
+							states="waiting" />
+						<button name="action_refuse" string="رفض" type="object"
+							states="waiting" />
+						<field name="state" widget="statusbar"
+							statusbar_visible="new,waiting,hrm1,budget,communication,external,hrm2,done" />
+					</header>
+					<sheet>
+						<group col="4">
+							<field name="employee_id" />
+							<field name="decision_number" />
+							<field name="decision_date" />
+							<field name="move_date" />
+							<field name="fiscal_year" />
+							<field name="out_speech_number"
+								invisible="[('state', 'not in', ['communication','external', 'hrm', 'done'])]" />
+							<field name="out_speech_date"
+								invisible="[('state', 'not in', ['communication', 'external', 'hrm', 'done'])]" />
+							<field name="out_speech_file"
+								invisible="[('state', 'not in', ['communication', 'external', 'hrm', 'done'])]" />
+							<field name="in_speech_number"
+								invisible="[('state', 'not in', ['external', 'hrm', 'done'])]" />
+							<field name="in_speech_date"
+								invisible="[('state', 'not in', ['external', 'hrm', 'done'])]" />
+							<field name="in_speech_file"
+								invisible="[('state', 'not in', ['external', 'hrm', 'done'])]" />
+						</group>
+						<field name="job_movement_ids" context="{'operation':'scal_up'}"
+							string=" الوظائف">
+							<tree editable="bottom">
+								<field name="job_id" />
+								<field name="job_number" />
+								<field name="type_id" />
+								<field name="department_id" />
+								<field name="grade_id" />
+								<field name="new_grade_id" />
+							</tree>
+						</field>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"
+							groups="base.group_user" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_job_scal_down_department">
+			<field name="name">خفض وظائف</field>
+			<field name="res_model">hr.job.move.department</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True, 'operation':'scal_down'}
+			</field>
+		</record>
+
+		<record id="action_hr_job_scal_down_department_tree" model="ir.actions.act_window.view">
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="hr_job_scal_down_department_tree" />
+			<field name="act_window_id" ref="action_hr_job_scal_down_department" />
+		</record>
+
+		<record id="action_hr_job_scal_down_department_form" model="ir.actions.act_window.view">
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="hr_job_scal_down_department_form" />
+			<field name="act_window_id" ref="action_hr_job_scal_down_department" />
+		</record>
+		<menuitem id="hr_job_scal_down_department_menu" name="خفض وظائف"
+			sequence="21" parent="hr_root_job" action="action_hr_job_scal_down_department" />
 
 
 
@@ -495,7 +653,7 @@
 						<button name="action_job_reserve_confirm" string="موافق"
 							type="object" />
 						أو
-						
+
 						<button string="إلغاء" class="oe_link" special="cancel" />
 					</footer>
 				</form>
