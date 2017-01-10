@@ -18,27 +18,25 @@ class HrContract(models.Model):
     identification_place=fields.Char(related='employee_id.identification_place', store=True, readonly=True,string=u'مكان إصدار بطاقة الهوية')
     calendar_id=fields.Many2one(related='employee_id.calendar_id', store=True, readonly=True,string=u'وردية العمل')
     passport_id=fields.Char(related='employee_id.passport_id', store=True, readonly=True,string=u'رقم جواز السفر')
-  #  line_employee_ids = fields.One2many('hr.contract.responsable', 'contract_id', string='المسوول على العقد و مراجع البيانات', )
     job_id=fields.Many2one('hr.job',string='المسمى الوظيفي',required=1,)
     department_id=fields.Many2one(related='employee_id.department_id', store=True, readonly=True,string='القسم',)
     assurance=fields.Char(string='التامين') 
-   # work=fields.Char(string='وردية العمل') 
     type_id=fields.Many2one('salary.grid.type',string='الصنف',readonly=1) 
     grade_id=fields.Many2one('salary.grid.grade',string='المرتبة',readonly=1)
-   
+    #struct_id= fields.Char(string="struct",required=0,),
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة' )
     payement_emploi = fields.Many2one('hr.contract.payement',string=' الدفع المجدول')
     date_to = fields.Date(string=u'مدة التجربة من', )
     date_endd = fields.Date(string=u'إلى', )
     date_contract_to = fields.Date(string=u'مدة العقد من', )
     date_contract_end = fields.Date(string=u'إلى', )
-    
- 
     basic_salary = fields.Float(string='الراتب الأساسي',required=1)   
     transport_allow = fields.Float(string='بدل النقل') 
     retirement = fields.Float(string='المحسوم للتقاعد') 
     net_salary = fields.Float(string='صافي الراتب',required=1)
+    contract_item_ids = fields.Many2many('hr.contract.item',  string=u'بند العقد')
     
+   
     employee_id1=fields.Many2one('hr.employee',string='المسوول على العقد',required=1,)
     job_id1=fields.Many2one(related='employee_id1.job_id', store=True, readonly=True,)
     employee_id2=fields.Many2one('hr.employee',string='مراجع البيانات',required=1,)
@@ -73,3 +71,14 @@ class hrContractPayement(models.Model):
     _name = 'hr.contract.payement'
 
     name = fields.Char(advanced_search=True,string=u'المسمّى')
+    
+
+    
+    
+class hrContractItem(models.Model):
+    _name = 'hr.contract.item'
+    
+    name = fields.Char(string=u'مادة')
+    text = fields.Html(string=u'محتوى البند')
+ #   contract_item=fields.Many2one('hr.contract.item',string='بند العقد')
+    

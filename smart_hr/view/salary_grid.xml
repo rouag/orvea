@@ -7,7 +7,7 @@
 			name="سلّم الرواتب" parent="hr_root_configuration" />
 
 		<!-- سلّم الرواتب -->
-		
+
 		<record id="salary_grid_form" model="ir.ui.view">
 			<field name="name">salary.grid.form</field>
 			<field name="model">salary.grid</field>
@@ -41,7 +41,7 @@
 				</form>
 			</field>
 		</record>
-		
+
 		<record id="salary_grid_tree" model="ir.ui.view">
 			<field name="name">salary.grid.tree</field>
 			<field name="model">salary.grid</field>
@@ -74,19 +74,46 @@
 				<form string="الأصناف">
 					<sheet>
 						<group>
-							<group>
+							<group string="الصنف">
 								<field name="name" />
 								<field name="code" />
-								<field name="grid_id" invisible="1"/>
-
+								<field name="grid_id" />
+								<field name="far_age" />
 							</group>
-
+							<group string="المستحقات  المالية عند التعين">
+								<field name="basic_salary" />
+								<field name="retrait_monthly" />
+								<field name="assurance_monthly" />
+								 
+								
+							</group>
 						</group>
+						<group string="البدلات و المكافآت‬">
+							<group>
+								<field name="allowance_ids" widget="many2many"
+									domain="[('type_id', '=', id)]">
+									<tree>
+										<field name="name" />
+										<field name="code" />
+									</tree>
+								</field>
+							</group>
+							<group>
+								<field name="reward_ids" widget="many2many" domain="[('type_id', '=', id)]">
+									<tree>
+										<field name="name" />
+										<field name="code" />
+									</tree>
+								</field>
+							</group>
+						</group>
+
+
 					</sheet>
 				</form>
 			</field>
 		</record>
-		
+
 		<record id="salary_grid_type_tree" model="ir.ui.view">
 			<field name="name">salary.grid.type.tree</field>
 			<field name="model">salary.grid.type</field>
@@ -94,6 +121,7 @@
 				<tree string="الأصناف">
 					<field name="name" />
 					<field name="code" />
+					<field name="basic_salary" />
 					<field name="grid_id" />
 				</tree>
 			</field>
@@ -131,7 +159,7 @@
 				</form>
 			</field>
 		</record>
-		
+
 		<record id="salary_grid_grade_tree" model="ir.ui.view">
 			<field name="name">salary.grid.grade.tree</field>
 			<field name="model">salary.grid.grade</field>
@@ -165,6 +193,8 @@
 					<sheet>
 						<group>
 							<group>
+								<field name="sequence" widget="handle" />
+
 								<field name="name" />
 								<field name="code" />
 								<field name="grade_id" />
@@ -174,7 +204,7 @@
 				</form>
 			</field>
 		</record>
-		
+
 		<record id="salary_grid_degree_tree" model="ir.ui.view">
 			<field name="name">salary.grid.degree.tree</field>
 			<field name="model">salary.grid.degree</field>
@@ -186,7 +216,7 @@
 				</tree>
 			</field>
 		</record>
-		
+
 		<record model="ir.actions.act_window" id="action_salary_grid_degree">
 			<field name="name">الدرجات</field>
 			<field name="res_model">salary.grid.degree</field>

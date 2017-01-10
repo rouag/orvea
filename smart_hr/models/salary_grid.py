@@ -20,8 +20,16 @@ class SalaryGridType(models.Model):
     _description = u' الأصناف' 
     
     name = fields.Char(string='الصنف', required=1)   
+    code = fields.Integer(string='الرمز')   
+    basic_salary = fields.Float(string='الراتب الأساسي') 
+    allowance_ids = fields.Many2many('hr.allowance',  string=u'البدلات' )
+    far_age = fields.Float(string=' السن الاقصى',)
     code = fields.Char(string='الرمز')   
+    reward_ids = fields.Many2many('hr.reward',  string=u'المكافآت‬' )
     grid_id = fields.Many2one('salary.grid', string='سلّم الرواتب')
+    retrait_monthly = fields.Integer(string='نسبة الحسم الشهري على التقاعد:')   
+    assurance_monthly = fields.Integer(string='نسبة التامين الشهري  من الراتب الاساسي:')   
+    salary_recent = fields.Float(string=' أخر راتب شهري' ,invisible=True)
     
 class SalaryGridGrade(models.Model):
     _name = 'salary.grid.grade'  
@@ -40,6 +48,15 @@ class SalaryGridDegree(models.Model):
     name = fields.Char(string='الإسم', required=1)  
     code = fields.Char(string='الرمز') 
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة')
+    sequence = fields.Integer(string='الترتيب')
+
+    @api.multi
+    def name_get(self):
+        result = []
+        for record in self:
+            name = '[%s] %s' % (record.code, record.name)
+            result.append((record.id, name))
+        return result
 
 class SalaryGridDetail(models.Model):
     _name = 'salary.grid.detail'  
