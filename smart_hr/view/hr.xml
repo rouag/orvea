@@ -153,13 +153,15 @@
 								</field>
 							</page>
 							<page string="أرصدة الاجازات والترقيات">
-								<field name="holidays_balance">
+								<field name="holidays_balance" domain="[('period_id.date_to','>',context_today())]">
 									<tree string="أرصدة الاجازات ">
 										<field name="holiday_status_id" />
 										<field name="entitlement_name" />
 										<field name="holidays_available_stock" />
 										<field name="token_holidays_sum" />
 										<field name="periode" />
+										<field name="period_id" invisible="1"/>
+										
 									</tree>
 								</field>
 								<field name="promotions_history" readonly="1">
@@ -328,7 +330,6 @@
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="recruiter" widget="selection" />
 											<field name="recruiter_date" />
-											<field name="first_recruiter_date" />
 											<field name="calendar_id" />
 
 										</group>
@@ -353,7 +354,7 @@
 									</field>
 								</page>
 								<page string="أرصدة الاجازات والترقيات">
-									<field name="holidays_balance">
+									<field name="holidays_balance" domain="[('period_id.date_to','&lt;=',context_today())]">
 										<tree string="أرصدة الاجازات ">
 											<field name="holiday_status_id" />
 											<field name="entitlement_name" />

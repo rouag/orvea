@@ -29,8 +29,7 @@ class HrHolidaysExtension(models.Model):
     ], string=u'حالة', default='draft', advanced_search=True)
     note = fields.Text(string = u'الملاحظات', required = True)
     duration = fields.Integer(string=u'الأيام')
-
-
+    open_period = fields.Many2one('hr.holidays.periode', string=u'periode')
     
     
     @api.depends('employee_id')
@@ -61,8 +60,10 @@ class HrHolidaysExtension(models.Model):
 
             extension_period =  right_entitlement.extension_period
             today = datetime.today()
-            periodes = self.env['hr.holidays.periode'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.holiday_status_id.id),
-                                                           ('entitlement_id.id', '=', right_entitlement.id),
+            periodes = self.env['hr.holidays.periode'].search([('employee_id', '=', self.employee_id.id),
+                                                           ('holiday_status_id', '=', self.holiday_status_id.id),
+                                                           ('entitlement_id', '=', right_entitlement.id),
+                                                           ('active', '=', True),
                                                            ])
             open_period = False
             for periode in periodes:
@@ -70,6 +71,7 @@ class HrHolidaysExtension(models.Model):
                     open_period = periode
                     break
             if open_period:
+                self.open_period=open_period.id
                 old_extensions = self.search([('holiday_status_id','=',self.holiday_status_id.id),('state', '=', 'done'),
                                                ('employee_id', '=', self.employee_id.id),
                                                 ('date', '>=', fields.Datetime.from_string(open_period.date_from))])
@@ -81,8 +83,10 @@ class HrHolidaysExtension(models.Model):
                 
     @api.one
     def button_send(self):
+       
         user = self.env['res.users'].browse(self._uid)
         for extension in self:
+            extension.check_constrains()
             extension.state = 'audit'
                 # send notification for requested the DM
             if self.is_the_creator: 
@@ -112,6 +116,7 @@ class HrHolidaysExtension(models.Model):
             holidays_available_stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
                                                            ('holiday_status_id', '=', self.holiday_status_id.id)])
             holidays_available_stock_line.holidays_available_stock+=extension.duration
+            extension.open_period.holiday_stock += extension.duration
             extension.state = 'done'
 
     @api.one

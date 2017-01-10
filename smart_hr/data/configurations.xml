@@ -87,10 +87,7 @@
 			<field name="name">مرضية (اصابة عمل)</field>
 			<field name="code">illness</field>
 		</record>
-		<record id="data_hr_holiday_entitlement_all" model="hr.holidays.entitlement.config">
-			<field name="name"> الكل</field>
-			<field name="code">all</field>
-		</record>
+
 		
 		
 			<!-- إعدادات أنواع التدريب -->

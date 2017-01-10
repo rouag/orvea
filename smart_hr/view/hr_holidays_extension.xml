@@ -19,13 +19,13 @@
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="button_done" string="موافق" type="object"
-							attrs="{'invisible':['|',('state','!=','audit'),('is_the_creator','=', True)]}"
+							attrs="{'invisible':['|',('state','!=','audit')]}" groups="smart_hr.group_dm"
 							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action"
-							attrs="{'invisible':['|',('state','!=','audit'),('is_the_creator','=', True)]}"
-							icon="fa-times" class="oe_inline oe_stat_button" />
+							attrs="{'invisible':['|',('state','!=','audit')]}"
+							icon="fa-times" class="oe_inline oe_stat_button" groups="smart_hr.group_dm"/>
 
 						<field name="state" widget="statusbar" statusbar_visible="draft,audit,done" />
 					</header>

@@ -118,7 +118,7 @@ class HrHolidays(models.Model):
         ('Relatives', u'أحد الأقارب '),
         ('child', u' ‫طفل‬‬')], string=u'نوع المرافقة')
     accompanied_child_age = fields.Integer(string=u'عمر الطفل')
-    open_period =   fields.Many2one('hr.holidays.periode', string=u'periode')
+    open_period = fields.Many2one('hr.holidays.periode', string=u'periode')
 
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
@@ -152,7 +152,10 @@ class HrHolidays(models.Model):
                 for en in holiday_status_id.entitlements:
                  # calculate the balance of the employee for all holiday status having entitlements
                     # check if the type existe in holidays_balance of the employee
-                    balance_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', employee_id.id),('holiday_status_id', '=', holiday_status_id.id),('entitlement_id.id', '=', en.id)])
+                    balance_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', employee_id.id),
+                                                                                  ('holiday_status_id', '=', holiday_status_id.id),
+                                                                                  ('entitlement_id.id', '=', en.id),
+                                                                                  ])
                     if not balance_line:
                         if holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_normal').id:
                             balance_line = self.env['hr.employee.holidays.stock'].create({'holidays_available_stock': 0,
@@ -161,149 +164,175 @@ class HrHolidays(models.Model):
                                                                                     'token_holidays_sum': 0,
                                                                                     'periode': en.periode,
                                                                                     'entitlement_id':en.id})
-                        else:
-                            if holiday_status_id.id in [self.env.ref('smart_hr.data_hr_holiday_status_illness').id,self.env.ref('smart_hr.data_hr_holiday_status_contractor').id]:
-                                balance_line = self.env['hr.employee.holidays.stock'].create({'holidays_available_stock': en.holiday_stock_default,
-                                                                                    'employee_id': employee_id.id,
-                                                                                    'holiday_status_id': holiday_status_id.id,
-                                                                                    'token_holidays_sum': 0,
-                                                                                    'periode': en.periode,
-                                                                                    'entitlement_id':en.id})
-    @api.multi
-    def _init_exceptionnel_holidays_periodes(self, employee_id):
-        holiday_status_id = self.env.ref('smart_hr.data_hr_holiday_status_exceptional')
-        for en in holiday_status_id.entitlements:
-            if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
-                entitlement = en
-                break
-        if entitlement:
-            periodes = self.env['hr.holidays.periode'].search([('employee_id', '=', employee_id.id),('holiday_status_id', '=', holiday_status_id.id),
-                                                           ('entitlement_id.id', '=', entitlement.id)])
-            if not periodes:
-                first_recruiter_date = fields.Date.from_string(employee_id.first_recruiter_date)
-                today = date.today()
-                diff = relativedelta(today, first_recruiter_date).years
-                years = (diff//entitlement.periode)*entitlement.periode
-                date_from = first_recruiter_date + relativedelta(years=years)
-                self.env['hr.holidays.periode'].sudo().create({'holiday_status_id': self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id,
-                                                           'employee_id': employee_id.id,
-                                                            'date_to': date_from + relativedelta(years=entitlement.periode),
-                                                            'date_from': date_from,
-                                                            'entitlement_id':entitlement.id,
-                                                            'holiday_stock':entitlement.holiday_stock_default,
-                                                            })
+                            open_period = self.create_holiday_periode(employee_id,holiday_status_id,en)
+# 
+#                                                            
+#                         else:
+#                             if holiday_status_id.id in [self.env.ref('smart_hr.data_hr_holiday_status_illness').id,self.env.ref('smart_hr.data_hr_holiday_status_contractor').id]:
+#                                 balance_line = self.env['hr.employee.holidays.stock'].create({'holidays_available_stock': en.holiday_stock_default,
+#                                                                                     'employee_id': employee_id.id,
+#                                                                                     'holiday_status_id': holiday_status_id.id,
+#                                                                                     'token_holidays_sum': 0,
+#                                                                                     'periode': en.periode,
+#                                                                                     'entitlement_id':en.id})
 
     @api.multi
     def smart_action_done(self):
+        if not self.entitlement_type:
+            entitlement_type=self.env.ref('smart_hr.data_hr_holiday_entitlement_all')
+        else:
+            entitlement_type = self.entitlement_type
         for en in self.holiday_status_id.entitlements:
-            if en.entitlment_category.id == self.entitlement_type.id:
+            if en.entitlment_category.id == entitlement_type.id:
                 right_entitlement = en
-        if not right_entitlement:
-            right_entitlement = self.env.ref('smart_hr.data_hr_holiday_entitlement_all')
-            
-        if self.holiday_status_id.id  in [self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id]:
-            open_period = self.check_holiday_periode_existance(self.employee_id,self.holiday_status_id,right_entitlement)
-            if open_period:
-                open_period.holiday_stock -= self.duration
+        open_period = False
+        if right_entitlement.periode:
+            periodes = self.env['hr.holidays.periode'].search([('employee_id', '=', self.employee_id.id),
+                                                           ('holiday_status_id', '=', self.holiday_status_id.id),
+                                                           ('entitlement_id', '=', en.id),
+                                                           ('active', '=', True),
+                                                           ])
+            stock_line = self.env['hr.employee.holidays.stock'].search ([('employee_id', '=', self.employee_id.id),
+                                                                         ('holiday_status_id', '=', self.holiday_status_id.id),
+                                                                         ('entitlement_id.id', '=', right_entitlement.id),
+                                                                         ])
+            if periodes:
+                for periode in periodes:
+                    if fields.Datetime.from_string(periode.date_to) > fields.Datetime.from_string(self.date_to) and fields.Datetime.from_string(periode.date_from) < fields.Datetime.from_string(self.date_from):
+                        open_period = periode
+                    else:
+                        periode.active=False
+                     
+
             else:
                 open_period = self.create_holiday_periode(self.employee_id,self.holiday_status_id,right_entitlement)
-                open_period.holiday_stock -= self.duration
-            self.open_period = open_period
-           
-        stock_line = self.env['hr.employee.holidays.stock'].search ([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.holiday_status_id.id),('entitlement_id.entitlment_category.id', '=', self.entitlement_type.id)])
-        if not stock_line:
-            for en in self.holiday_status_id.entitlements:
-                if en.entitlment_category.id == self.entitlement_type.id:
-                    stock_line = self.env['hr.employee.holidays.stock'].create({'holidays_available_stock': en.holiday_stock_default,
+                open_period.active=True
+                
+            if not stock_line:
+                stock_line = self.env['hr.employee.holidays.stock'].create({'holidays_available_stock': open_period.holiday_stock,
                                                                                     'employee_id': self.employee_id.id,
                                                                                     'holiday_status_id': self.holiday_status_id.id,
                                                                                     'token_holidays_sum': 0,
-                                                                                    'periode': en.periode,
-                                                                                    'entitlement_id':en.id})
-                break
-        stock_line.holidays_available_stock -= self.duration
-        stock_line.token_holidays_sum += self.duration
+                                                                                    'periode': right_entitlement.periode,
+                                                                                    'entitlement_id':en.id,
+                                                                                    })            
+            open_period.holiday_stock -= self.duration
+            stock_line.holidays_available_stock -= self.duration
+            stock_line.token_holidays_sum += self.duration
+            self.open_period=open_period.id
+        else:
+            stock_line = self.env['hr.employee.holidays.stock'].search ([('employee_id', '=', self.employee_id.id),
+                                                                         ('holiday_status_id', '=', self.holiday_status_id.id),
+                                                                         ('entitlement_id.id', '=', right_entitlement.id),
+                                                                         ])
+            if stock_line:
+                stock_line.holidays_available_stock += right_entitlement.holiday_stock_default-self.duration
+                stock_line.token_holidays_sum += self.duration
+            else:
+                stock_line = self.env['hr.employee.holidays.stock'].create({'holidays_available_stock': right_entitlement.holiday_stock_default-self.duration,
+                                                                                    'employee_id': self.employee_id.id,
+                                                                                    'holiday_status_id': self.holiday_status_id.id,
+                                                                                    'token_holidays_sum': self.duration,
+                                                                                    'periode': right_entitlement.periode,
+                                                                                    'entitlement_id':en.id,
+                                                                                    })  
         self.state = 'done'
 
+
     @api.model
-    def update_holidays_stock(self):
-        for employee in self.env['hr.employee'].search([]):
-            for holiday_balance in employee.holidays_balance:
-                if holiday_balance.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_normal').id:
-                    for en in self.env.ref('smart_hr.data_hr_holiday_status_normal').entitlements:
-                        if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
-                            right_entitlement = en
-                            break
-                    uncounted_days=0
-                    employee_solde = right_entitlement.holiday_stock_default
-                    periode = right_entitlement.periode
-                    current_normal_holiday_stock = holiday_balance.holidays_available_stock
-                    today = date.today()
-                    d = today - relativedelta(months=1)
-                    previous_month_first_day = date(d.year, d.month, 1)
-                    previous_month_last_day = date(today.year, today.month, 1) - relativedelta(days=1)
+    def update_normal_holidays_stock(self):
+        
+        for en in self.env.ref('smart_hr.data_hr_holiday_status_normal').entitlements:
+            if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
+                right_entitlement = en
+                break
+        for employee in self.env['hr.employee'].search([('employee_state','=','employee')]):    
+            
+            todayDate = datetime.now()
+            first_day_date = todayDate.replace(day=1,month=1)      
+            open_periode = self.env['hr.holidays.periode'].search([('employee_id', '=', employee.id),
+                                                           ('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id),
+                                                           ('entitlement_id', '=', right_entitlement.id),
+                                                           ('active', '=', True),
+                                                            ('date_from', '=',  first_day_date.strftime(DEFAULT_SERVER_DATE_FORMAT))])
+            holiday_balance = self.env['hr.employee.holidays.stock'].search ([('employee_id', '=', employee.id),
+                                                           ('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id),
+                                                                         ('entitlement_id.id', '=', right_entitlement.id),
+                                                                         ])
+            uncounted_days=0
+            employee_solde = right_entitlement.holiday_stock_default
+            periode = right_entitlement.periode
+            current_normal_holiday_stock = open_periode.holiday_stock
+            today = date.today()
+            d = today - relativedelta(months=1)
+            previous_month_first_day = date(d.year, d.month, 1)
+            previous_month_last_day = date(today.year, today.month, 1) - relativedelta(days=1)
 #                    مدّة الإجازة الاستثنائية و الدراسية 
 
-                    holiday_uncounted_days = 0
-                    for holiday in self.env['hr.holidays'].search([]):
-                        if holiday.state == 'done' and holiday.employee_id == employee.id and  \
-                         holiday.holiday_status_id in [self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional').id,
+            holiday_uncounted_days = 0
+            for holiday in self.env['hr.holidays'].search([]):
+                if holiday.state == 'done' and holiday.employee_id == employee.id and  \
+                    holiday.holiday_status_id in [self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional').id,
                                                        self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id,
                                                         self.env.ref('smart_hr.data_hr_holiday_status_study').id]:
-                            if holiday.date_from < previous_month_first_day :
-                                if holiday.date_to >= previous_month_first_day:
-                                    holiday_uncounted_days += (today - previous_month_first_day).days
-                                else:
-                                    holiday_uncounted_days += holiday.date_to - previous_month_first_day
-                            else:
-                                if holiday.date_to > previous_month_last_day:
-                                    holiday_uncounted_days += previous_month_last_day - holiday.date_from
-                                else:
-                                    holiday_uncounted_days += holiday.date_to - holiday.date_from 
+                    if holiday.date_from < previous_month_first_day :
+                        if holiday.date_to >= previous_month_first_day:
+                            holiday_uncounted_days += (today - previous_month_first_day).days
+                        else:
+                            holiday_uncounted_days += holiday.date_to - previous_month_first_day
+                    else:
+                        if holiday.date_to > previous_month_last_day:
+                            holiday_uncounted_days += previous_month_last_day - holiday.date_from
+                        else:
+                            holiday_uncounted_days += holiday.date_to - holiday.date_from 
 
 #                    مدّة كف اليد todo
 
 #                    مدّة الاعارة todo
 
-                    uncounted_days += holiday_uncounted_days
+            uncounted_days += holiday_uncounted_days
 
-                    uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', employee.id),('action','=','absence'),
+            uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', employee.id),('action','=','absence'),
                                                                             ('date','>=',previous_month_first_day),('date','<=',previous_month_last_day)])
 
-                    uncounted_days += uncounted_absence_days
+            uncounted_days += uncounted_absence_days
 
 #                     مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫نظامي todo
             # مدّةالتدريب
-                    search_domain = [
+            search_domain = [
                         ('employee_id', '=', employee.id),
                         ('state', '=', 'done'),
                         ]
-                    formation_uncounted_days=0
-                    candidate_obj = self.env['hr.candidates']
-                    for rec in candidate_obj.search(search_domain):
-                         dateto = fields.Date.from_string(rec.date_to)
-                         datefrom = fields.Date.from_string(rec.date_from)
-                         res = relativedelta(dateto, datefrom)
-                         months = res.months
-                         days = res.days
-                         if rec.date_from < previous_month_first_day < previous_month_last_day or rec.date_from < previous_month_last_day < rec.date_to:
-                            if (months >= 1):
-                                if rec.date_from<previous_month_first_day:
-                                    if rec.date_to>previous_month_last_day:
-                                        formation_uncounted_days+=(today-previous_month_first_day).days
-                                    else:
-                                        formation_uncounted_days+=rec.date_to-previous_month_first_day
-                                else:
-                                    if rec.date_to>previous_month_last_day:
-                                        formation_uncounted_days+=previous_month_last_day-rec.date_from
-                                    else:
-                                        formation_uncounted_days+=rec.date_to-rec.date_from            
+            formation_uncounted_days=0
+            candidate_obj = self.env['hr.candidates']
+            for rec in candidate_obj.search(search_domain):
+                dateto = fields.Date.from_string(rec.date_to)
+                datefrom = fields.Date.from_string(rec.date_from)
+                res = relativedelta(dateto, datefrom)
+                months = res.months
+                days = res.days
+                if rec.date_from < previous_month_first_day < previous_month_last_day or rec.date_from < previous_month_last_day < rec.date_to:
+                    if (months >= 1):
+                        if rec.date_from<previous_month_first_day:
+                            if rec.date_to>previous_month_last_day:
+                                formation_uncounted_days+=(today-previous_month_first_day).days
+                            else:
+                                formation_uncounted_days+=rec.date_to-previous_month_first_day
+                        else:
+                            if rec.date_to>previous_month_last_day:
+                                formation_uncounted_days+=previous_month_last_day-rec.date_from
+                            else:
+                                formation_uncounted_days+=rec.date_to-rec.date_from            
                                         
-                    uncounted_days+=formation_uncounted_days
-                    init_solde = (employee_solde / (periode * 12))
-                    balance = init_solde-(uncounted_days/30)*init_solde
-                    holiday_balance.write({'holidays_available_stock': balance})
+            uncounted_days+=formation_uncounted_days
+            init_solde = (employee_solde / (periode * 12))
+            balance = init_solde-(uncounted_days/30)*init_solde
 
+            holiday_balance.write({'holidays_available_stock': current_normal_holiday_stock+balance})
+            open_periode.write({'holiday_stock': open_periode.holiday_stock+balance})
+
+                    
+                    
     @api.multi
     def button_extend(self):
         # check if its possible to extend this holiday
@@ -568,42 +597,45 @@ class HrHolidays(models.Model):
     @api.one
     def button_refuse_revision(self):
         self.state = 'external_audit'
-    
-    def check_holiday_periode_existance(self, employee_id,holiday_status_id,entitlement):
-        """
-        return:open_periode or False
-        
-        """
-        periodes = self.env['hr.holidays.periode'].search([('employee_id', '=', employee_id.id),('holiday_status_id', '=', holiday_status_id.id),
-                                                           ('entitlement_id.id', '=', entitlement.id)])
-        open_periode = False
-        for periode in periodes:
-            if fields.Datetime.from_string(periode.date_to) > fields.Datetime.from_string(self.date_to):
-                open_periode = periode
-                break
-        return open_periode
-    
+
+
     def create_holiday_periode(self, employee_id,holiday_status_id,entitlement):
         """
         return: an open periode 
         """
-        first_recruiter_date = fields.Date.from_string(employee_id.first_recruiter_date)
-        date_to = fields.Date.from_string(self.date_to)
-        diff = relativedelta(date_to, first_recruiter_date).years
-        years = (diff//entitlement.periode)*entitlement.periode
-        date_from = first_recruiter_date + relativedelta(years=years)
-        open_periode = self.env['hr.holidays.periode'].sudo().create({'holiday_status_id': self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id,
+        if self.holiday_status_id.id==self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id:
+            date_direct_action_ids = self.env['hr.decision.appoint'].search([ ('employee_id', '=', employee_id.id),
+                ('state', '=', 'done')]).ids
+            if date_direct_action_ids:
+                first_id = date_direct_action_ids and max(date_direct_action_ids)
+            direct_action_date = self.env['hr.decision.appoint'].browse(first_id).date_direct_action
+            date_direct_action = fields.Date.from_string(direct_action_date)
+            date_to = fields.Date.from_string(self.date_to)
+            diff = relativedelta(date_to, date_direct_action).years
+            years = (diff//entitlement.periode)*entitlement.periode
+            date_from = date_direct_action + relativedelta(years=years)
+            open_periode = self.env['hr.holidays.periode'].sudo().create({'holiday_status_id': self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id,
                                                            'employee_id': employee_id.id,
                                                             'date_to': date_from + relativedelta(years=entitlement.periode),
                                                             'date_from': date_from,
                                                             'entitlement_id':entitlement.id,
                                                             'holiday_stock':entitlement.holiday_stock_default,
+                                                            'active':True
                                                             })
-        for stock_line in employee_id.holidays_balance:
-            if stock_line.holiday_status_id==self.holiday_status_id:
-                stock_line.holidays_available_stock=0
-                
-                
+        else:
+            if holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_normal').id:
+               holiday_stock=0
+            else:
+                holiday_stock=entitlement.holiday_stock_default
+            date_from = date(date.today().year, 1, 1)
+            open_periode = self.env['hr.holidays.periode'].sudo().create({'holiday_status_id': holiday_status_id.id,
+                                                           'employee_id': employee_id.id,
+                                                            'date_to': date_from + relativedelta(years=entitlement.periode),
+                                                            'date_from': date_from,
+                                                            'entitlement_id':entitlement.id,
+                                                            'holiday_stock':holiday_stock,
+                                                            'active':True
+                                                            })
         return open_periode
     
     @api.one
@@ -784,25 +816,43 @@ class HrHolidays(models.Model):
             if res.years < 3:
                 raise ValidationError(u"ليس لديك ثلاث سنوات خدمة.")
 
-        holiday_status_normal_stock = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id)]).holidays_available_stock
-        current_holiday_status_stock = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.holiday_status_id.id)])
-        
+        holiday_status_normal_stock = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id), ('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id)]).holidays_available_stock
+        current_holiday_status_stock = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
+                                                                                       ('holiday_status_id', '=', self.holiday_status_id.id),
+                                                                                       ('entitlement_id.id', '=', right_entitlement.id),
+                                                                                       ])
+
         # Constraintes for maximum_days_by_year
         for holidays_balance in self.employee_id.holidays_balance:
             if holidays_balance.holiday_status_id==self.holiday_status_id:
                 taken_holidays_days_by_year = holidays_balance.token_holidays_sum
                 if taken_holidays_days_by_year+self.duration>=self.holiday_status_id.maximum_days_by_year and self.holiday_status_id.maximum_days_by_year!=0:
                     raise ValidationError(u"الحد الأقصى للتمتع بهذا النّوع من الإجازات خلال السنة"+str(self.holiday_status_id.maximum_days_by_year)+u"يوما")
-        
-        # Constraintes for normal holidays العادية
-        if self.holiday_status_id.id != self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id:
-            if  current_holiday_status_stock:
-                if self.duration > current_holiday_status_stock.holidays_available_stock :
-                    raise ValidationError(u"ليس لديك الرصيد الكافي")
-            else:
-                if right_entitlement.holiday_stock_default<self.duration:
-                    raise ValidationError(u"ليس لديك الرصيد الكافي")
 
+        if right_entitlement.periode:
+            periodes = self.env['hr.holidays.periode'].search([('employee_id', '=', self.employee_id.id),
+                                                           ('holiday_status_id', '=', self.holiday_status_id.id),
+                                                           ('entitlement_id', '=', right_entitlement.id),
+                                                           ('active', '=', True),
+                                                           ])
+            open_periode=False
+            if periodes:
+                for periode in periodes:
+                    if fields.Datetime.from_string(periode.date_to) > fields.Datetime.from_string(self.date_to) and fields.Datetime.from_string(periode.date_from) < fields.Datetime.from_string(self.date_from):
+                        open_periode = periode
+                        break
+                if open_periode:
+                    if self.duration > open_periode.holiday_stock:
+                        raise ValidationError(u"ليس لديك الرصيد الكافي")
+                else:
+                        raise ValidationError(u"ليس لديك فترة اجازة مفتوحة")
+            else:
+                if right_entitlement.holiday_stock_default < self.duration:
+                    raise ValidationError(u"ليس لديك الرصيد الكافي")
+        else:
+            if right_entitlement.holiday_stock_default < self.duration:
+                raise ValidationError(u"ليس لديك الرصيد الكافي")
+            
         # Constraintes for Compelling holidays اضطرارية
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
             if holiday_status_normal_stock>=self.duration:
@@ -866,53 +916,53 @@ class HrHolidays(models.Model):
             
             
         # Constraintes for exceptional hollidays اجازة استثنائية 
-        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional'):
-
-            if current_holiday_status_stock:
-                if current_holiday_status_stock.holidays_available_stock>0:
-                    if current_holiday_status_stock.token_holidays_sum<right_entitlement.extension_period*365:
-                        raise ValidationError(u"ليس لديك الرصيد الكافي،يمكنك التقدم بطلب تمديد")
-                    else:
-                        raise ValidationError(u"ليس لديك الرصيد الكافي")
-
-            else:
-                if right_entitlement.holiday_stock_default<self.duration:
-                    raise ValidationError(u"لا يمكن لإجازة " +en.entitlment_category.name + u"ان تتجاوز " + str(en.holiday_stock_default) + u" أيام")
+#         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional'):
+# 
+#             if current_holiday_status_stock:
+#                 if current_holiday_status_stock.holidays_available_stock>0:
+#                     if current_holiday_status_stock.token_holidays_sum<right_entitlement.extension_period*365:
+#                         raise ValidationError(u"ليس لديك الرصيد الكافي،يمكنك التقدم بطلب تمديد")
+#                     else:
+#                         raise ValidationError(u"ليس لديك الرصيد الكافي")
+# 
+#             else:
+#                 if right_entitlement.holiday_stock_default<self.duration:
+#                     raise ValidationError(u"لا يمكن لإجازة " +en.entitlment_category.name + u"ان تتجاوز " + str(en.holiday_stock_default) + u" أيام")
         """
         check solde of illness holidays
 
         """
 
         # if ilness holiday than check periode
-        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_illness'):
-            for en in self.holiday_status_id.entitlements:
-                if en.entitlment_category.id == self.entitlement_type.id and en.holiday_stock_default<self.duration:
-                    raise ValidationError(u"لا يمكن لإجازة " +en.entitlment_category.name + u"ان تتجاوز " + str(en.holiday_stock_default) + u" أيام")
-                    break
-                
-            periodes = self.env['hr.holidays.periode'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.holiday_status_id.id)])
-            open_periode = False
-            for periode in periodes:
-                if fields.Datetime.from_string(periode.date_to) > datetime.now():
-                    open_periode = periode
-                    break
-            # case there is  open periode
-            if open_periode:
-                # case there is an open periode, check the entitlement
-                # fetch all illness holidays from the start of open periode
-                holidays = self.env['hr.holidays'].search([('state', '=', 'done'), ('employee_id', '=', self.employee_id.id), ('date_from', '>=', fields.Datetime.from_string(open_periode.date_from))])
-                sum_days = 0
-                for holiday in holidays:
-                    sum_days += holiday.duration
-                # get the entitlement from holiday status
-                entitlement = False
-                for en in self.holiday_status_id.entitlements:
-                    if en.entitlment_category.id == self.entitlement_type.id:
-                        entitlement = en
-                        break
-                if entitlement:
-                    if entitlement.holiday_stock_default <= sum_days:
-                        raise ValidationError(u"ليس لديك الرصيد الكافي")
+#         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_illness'):
+#             for en in self.holiday_status_id.entitlements:
+#                 if en.entitlment_category.id == self.entitlement_type.id and en.holiday_stock_default<self.duration:
+#                     raise ValidationError(u"لا يمكن لإجازة " +en.entitlment_category.name + u"ان تتجاوز " + str(en.holiday_stock_default) + u" أيام")
+#                     break
+#                 
+#             periodes = self.env['hr.holidays.periode'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.holiday_status_id.id)])
+#             open_periode = False
+#             for periode in periodes:
+#                 if fields.Datetime.from_string(periode.date_to) > datetime.now():
+#                     open_periode = periode
+#                     break
+#             # case there is  open periode
+#             if open_periode:
+#                 # case there is an open periode, check the entitlement
+#                 # fetch all illness holidays from the start of open periode
+#                 holidays = self.env['hr.holidays'].search([('state', '=', 'done'), ('employee_id', '=', self.employee_id.id), ('date_from', '>=', fields.Datetime.from_string(open_periode.date_from))])
+#                 sum_days = 0
+#                 for holiday in holidays:
+#                     sum_days += holiday.duration
+#                 # get the entitlement from holiday status
+#                 entitlement = False
+#                 for en in self.holiday_status_id.entitlements:
+#                     if en.entitlment_category.id == self.entitlement_type.id:
+#                         entitlement = en
+#                         break
+#                 if entitlement:
+#                     if entitlement.holiday_stock_default <= sum_days:
+#                         raise ValidationError(u"ليس لديك الرصيد الكافي")
 
 
 
@@ -940,8 +990,18 @@ class HrIllnessHolidaysPeriode(models.Model):
     holiday_status_id = fields.Many2one('hr.holidays.status',string=u'نوع الإجازة')
     entitlement_id = fields.Many2one('hr.holidays.status.entitlement', string=u'نوع الاستحقاق')
     holiday_stock = fields.Integer(string=u'الرصيد (يوم)')
+    active = fields.Boolean(string=u'active')
+    
+    @api.model
+    def update_holidays_periodes(self):
+        for periode in self.search([('active','=',True)]):
+            if fields.Date.from_string(periode.date_to) < fields.Date.from_string(fields.Date.today()):
+                periode.active=False
 
-
+    
+    
+    
+    
 class HrDelayHoliday(models.Model):
     _name = 'hr.delay.holiday'  
     _description = u'تأجيل إجازة'
@@ -1016,7 +1076,7 @@ class HrHolidaysStatus(models.Model):
     
     transport_allowance  = fields.Boolean(string=u'صرف بدل النقل', default=False)
     maximum_days_by_year = fields.Integer(string=u'الحد الأقصى لأيّامات الإجازات في السّنة')
-
+    
     @api.onchange('deductible_duration_service')
     def onchange_deductible_duration_service(self):
         if self.deductible_duration_service:
