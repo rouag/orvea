@@ -29,8 +29,6 @@
 					<field name="degree_id" domain="[('grade_id','=',grade_id)]" />
 					<field name="renewable" />
 				</field>
-			
-
 				<xpath
 					expr="/form/sheet/notebook/page/group/group[@name='salary_and_advantages']"
 					position="after">
@@ -41,6 +39,7 @@
 						<field name="assurance" />
 						<field name="ticket_travel" />
 						<field name="ticket_famely" />
+
 					</group>
 
 
@@ -58,11 +57,11 @@
 					position="attributes">
 					<attribute name="invisible">True</attribute>
 				</xpath>
-					
+
 				<xpath
 					expr="/form/sheet/notebook/page/group/group[@name='salary_and_advantages']"
 					position="attributes">
-					 <attribute name="required">False</attribute>
+					<attribute name="required">False</attribute>
 					<attribute name="invisible">True</attribute>
 				</xpath>
 
@@ -70,7 +69,7 @@
 					expr="/form/sheet/notebook/page/group/group[@name='duration_group']"
 					position="attributes">
 					<attribute name="invisible">True</attribute>
-					
+
 				</xpath>
 				<xpath expr="//page[@name='information']" position="after">
 					<page string="المسوول على العقد و مراجع البيانات">
@@ -83,6 +82,19 @@
 							<group string="مراجع البيانات">
 								<field name="employee_id2" string="مراجع البيانات" />
 								<field name="job_id2" string="الوظيفة" />
+							</group>
+						</group>
+					</page>
+					<page string="بنود العقد">
+						<group>
+							<group string="بنود العقد">
+								<field name="contract_item_ids" nolabel="1">
+									<tree editable="bottom">
+										<field name="name" />
+										<field name="text" />
+									</tree>
+								</field>
+
 							</group>
 						</group>
 					</page>

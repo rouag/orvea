@@ -30,11 +30,12 @@ class HrDecisionAppoint(models.Model):
     type_id=fields.Many2one('salary.grid.type',string='الصنف',readonly=1) 
     department_id=fields.Many2one('hr.department',string='القسم',readonly=1)
     grade_id=fields.Many2one('salary.grid.grade',string='المرتبة',readonly=1)
-   
+    far_age = fields.Float(string=' السن الاقصى',readonly=1) 
     basic_salary = fields.Float(string='الراتب الأساسي',readonly=1)   
     transport_allow = fields.Float(string='بدل النقل',readonly=1) 
     retirement = fields.Float(string='المحسوم للتقاعد',readonly=1) 
     net_salary = fields.Float(string='صافي الراتب',readonly=1)
+    salary_recent = fields.Float(string=' أخر راتب شهري ')
     #other info
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
     description=fields.Text(string=' ملاحظات ') 
@@ -43,6 +44,7 @@ class HrDecisionAppoint(models.Model):
     order_picture=fields.Binary(string='صورة القرار',required=1) 
     medical_examination_file = fields.Binary(string = 'وثيقة الفحص الطبي') 
     order_enquiry_file = fields.Binary(string = 'طلب الاستسفار')
+    file_salar_recent = fields.Binary(string = 'إمكانية إرفاق وثيقة')
     
     
     @api.one
@@ -88,8 +90,10 @@ class HrDecisionAppoint(models.Model):
         if self.job_id :
             self.number_job = self.job_id.number
             self.type_id = self.job_id.type_id.id
+            self.far_age = self.job_id.type_id.far_age
             self.grade_id = self.job_id.grade_id.id
             self.department_id = self.job_id.department_id.id
+          
             
             
     @api.onchange('degree_id')
@@ -113,5 +117,19 @@ class HrTypeAppoint(models.Model):
     
     
     name=fields.Char(string='النوع',required=1 )
-    date_test=fields.Date(string='فترة التجربة') 
+    date_test=fields.Char(string='فترة التجربة') 
     code=fields.Char(string='الرمز')
+    
+class HrNoticesSettings(models.Model):
+    _name = 'hr.notices.settings'  
+    _description=u'اشعارات التعين'
+    
+    
+    name=fields.Char(string='المسمى ',required=1 )
+    description=fields.Char(string='المحتوى') 
+    group_notice = fields.Many2many('res.groups', string='إلى') 
+    tye_notice_mail=fields.Boolean(string='إشعار عن طريق  بريد إلكتروني ')
+    tye_notice_sms=fields.Boolean(string='إشعار عن طريق   إرسال رسالة قصيرة ')
+    tye_notice_event=fields.Boolean(string=' عن طريق الإشعار ')
+    tyooe_notice=fields.Char(string='طريقة الإشعار')
+    

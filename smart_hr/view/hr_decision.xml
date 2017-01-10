@@ -27,10 +27,9 @@
 					<sheet>
 						<group col="4">
 							<field name="name" />
-							<field name="decision_type_id" />
-								<field name="employee_id" />
-							
 							<field name="date" />
+							<field name="employee_id" />
+							<field name="decision_type_id" />
 						</group>
 						<field name="text" />
 					</sheet>
@@ -112,7 +111,7 @@
 		<menuitem id="hr_decision_type_menu" name="أنواع القرارات"
 			sequence="5" parent="hr_root_decision" action="action_hr_decision_type" />
 
-	
+
 
 	</data>
 </openerp>
