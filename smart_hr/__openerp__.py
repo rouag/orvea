@@ -18,27 +18,19 @@
         'payroll/security/payroll_security.xml',
         'payroll/security/ir.model.access.csv',
         'job/security/job_security.xml',
-<<<<<<< HEAD
-       'job/security/ir.model.access.csv',
-=======
         'job/security/ir.model.access.csv',
->>>>>>> branch '9.0' of https://gitlab.smart-etech.com/smart-dev/addons_smart.git
-
+        'job/security/ir.model.access.csv',
         'view/hr_menu.xml',
-
         'data/sequences.xml',
         'data/configurations.xml',
         'data/hr_holidays_data.xml',
         'data/schedulers.xml',
         'data/res.city.csv',
         'data/hr_termination_data.xml',
-<<<<<<< HEAD
         'data/decisions_type_data.xml',
         'data/salary_grid_type_data.xml',
-=======
 #       'data/decisions_type_data.xml',
 #       'data/decision_action_data.xml',
->>>>>>> branch '9.0' of https://gitlab.smart-etech.com/smart-dev/addons_smart.git
 
         # الإدارات
         'hr/menu.xml',
@@ -135,7 +127,7 @@
         'job/view/hr_job_setting.xml',
         'job/view/hr_skils_job.xml',
         'job/view/hr_job.xml',
-        #الاجازات
+        # الاجازات
         'holidays/menu.xml',
         'holidays/wizard/wizard_resume_holidays_view.xml',
         'holidays/views/resume_holidays_report.xml',
