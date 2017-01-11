@@ -185,8 +185,9 @@ class HrHolidays(models.Model):
         for en in self.holiday_status_id.entitlements:
             if en.entitlment_category.id == entitlement_type.id:
                 right_entitlement = en
+                break
         open_period = False
-        if right_entitlement.periode and right_entitlement.periode!='infinity':
+        if right_entitlement.periode and right_entitlement.periode!='100':
             periodes = self.env['hr.holidays.periode'].search([('employee_id', '=', self.employee_id.id),
                                                            ('holiday_status_id', '=', self.holiday_status_id.id),
                                                            ('entitlement_id', '=', en.id),
@@ -227,7 +228,7 @@ class HrHolidays(models.Model):
                                                                          ('entitlement_id.id', '=', right_entitlement.id),
                                                                          ])
             if stock_line:
-                if right_entitlement.periode=='infinity':
+                if right_entitlement.periode=='100':
                     stock_line.holidays_available_stock -= self.duration
                     stock_line.token_holidays_sum += self.duration
                 else:
