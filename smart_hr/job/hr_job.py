@@ -399,7 +399,8 @@ class HrJobMoveDepartment(models.Model):
     def action_job_unreserve(self):
         self.ensure_one()
         for rec in self.job_movement_ids:
-            rec.job_id.is_occupied = False
+            rec.job_id.write({'is_occupied': False})
+        self.state = 'done'
 
     @api.multi
     def action_job_reserve(self):
@@ -411,7 +412,7 @@ class HrJobMoveDeparrtmentLine(models.Model):
     _name = 'hr.job.move.department.line'  
     _description = u'رفع أو خفض وظائف'
 
-    job_movement_line_id = fields.Many2one('hr.job.move.department', string='الوظيفة', required=1) 
+    job_movement_line_id = fields.Many2one('hr.job.move.department', string='الوظيفة', required=1, ondelete="cascade") 
     job_id = fields.Many2one('hr.job', string='الوظيفة', domain=[('state', '=', 'unoccupied')], required=1)
     type_id = fields.Many2one('salary.grid.type', string='التصنيف', readonly=1, required=1) 
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة الحالية', readonly=1, required=1) 
@@ -438,6 +439,17 @@ class HrJobMoveDeparrtmentLine(models.Model):
                         grade_ids.append(rec.grade_id.id)
             res['domain'] = {'new_grade_id': [('id', 'in', grade_ids)]}
             return res
+
+    @api.constrains('job_number','new_grade_id')
+    def _check_new_grade_id_job_number(self):
+        if self.job_number and self.new_grade_id:
+            # check if there is already a job with new grade and same job number
+            jobs = self.env['hr.job'].search([])
+            for job in jobs:
+                if job.grade_id == self.new_grade_id and job.number == self.job_number:
+                    raise ValidationError(u"يوجد وظيفة بنفس الرقم والمرتبة.")
+            
+        
 
 class HrJobMoveUpdate(models.Model):
     _name = 'hr.job.update'  

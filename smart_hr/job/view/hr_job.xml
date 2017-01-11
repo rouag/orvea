@@ -392,17 +392,16 @@
 						<button name="action_external" string="موافقة" type="object"
 							groups="smart_hr.group_communication_managment" states="communication"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_hrm" string="موافقة" type="object"
+						<button name="action_hrm2" string="موافقة" type="object"
 							groups="smart_hr.group_job_external_managment" states="external" />
 						<button name="action_communication" string="رفض" type="object"
 							groups="smart_hr.group_job_external_managment" states="external"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<!-- <button name="action_job_unreserve" string="فك حجز الوظيفة" type="object" 
-							groups="smart_hr.group_reserve_job" attrs="{'invisible': [('is_occupied','=',False)]}" 
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" /> -->
-						<button name="action_done" string="موافقة" type="object"
-							groups="smart_hr.group_job_external_managment" states="hrm" />
+						 <button name="action_job_unreserve" string="فك حجز الوظيفة" type="object" 
+							groups="smart_hr.group_hrm" states="hrm2"  
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" /> 
+							
 
 
 						<field name="state" widget="statusbar"
