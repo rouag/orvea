@@ -37,9 +37,7 @@ class HrDecision(models.Model):
                 rep_text = rep_text.replace('JOB',unicode(job_id))
                 rep_text = rep_text.replace('GRADE',unicode(grade_id))
              #   rep_text = rep_text.replace('DEGREE',unicode(degree_id))
-                print"rep_text",rep_text
                 self.text = rep_text
-                print"text",self.text
                 
 class HrDecisionType(models.Model):
     _name = 'hr.decision.type'
