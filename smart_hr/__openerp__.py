@@ -127,7 +127,7 @@
         'job/view/hr_job_setting.xml',
         'job/view/hr_skils_job.xml',
         'job/view/hr_job.xml',
-        # الاجازات
+        #الاجازات
         'holidays/menu.xml',
         'holidays/wizard/wizard_resume_holidays_view.xml',
         'holidays/views/resume_holidays_report.xml',
