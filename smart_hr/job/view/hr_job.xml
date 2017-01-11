@@ -283,8 +283,8 @@
 		<!-- نقل وظائف -->
 
 		<record model="ir.ui.view" id="hr_job_move_grade_tree">
-			<field name="name">hr.job.move.grade.tree</field>
-			<field name="model">hr.job.move.grade</field>
+			<field name="name">hr.job.move.department.tree</field>
+			<field name="model">hr.job.move.department</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
 				<tree string="نقل وظائف">
@@ -297,8 +297,8 @@
 		</record>
 
 		<record model="ir.ui.view" id="hr_job_move_grade_form">
-			<field name="name">hr.job.move.grade.form</field>
-			<field name="model">hr.job.move.grade</field>
+			<field name="name">hr.job.move.department.form</field>
+			<field name="model">hr.job.move.department</field>
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="نقل وظائف">
@@ -338,7 +338,7 @@
 		</record>
 		<record model="ir.actions.act_window" id="action_hr_job_move_grade">
 			<field name="name">نقل وظائف</field>
-			<field name="res_model">hr.job.move.grade</field>
+			<field name="res_model">hr.job.move.department</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="context">{'readonly_by_pass': True}</field>
@@ -349,8 +349,8 @@
 		<!-- رفع وظائف -->
 
 		<record model="ir.ui.view" id="hr_job_scal_up_department_tree">
-			<field name="name">hr.job.move.department.tree</field>
-			<field name="model">hr.job.move.department</field>
+			<field name="name">hr.job.move.grade.tree</field>
+			<field name="model">hr.job.move.grade</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
 				<tree string="رفع وظائف">
@@ -362,8 +362,8 @@
 			</field>
 		</record>
 		<record model="ir.ui.view" id="hr_job_scal_up_department_form">
-			<field name="name">hr.job.move.department.form</field>
-			<field name="model">hr.job.move.department</field>
+			<field name="name">hr.job.move.grade.form</field>
+			<field name="model">hr.job.move.grade</field>
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="رفع وظائف">
@@ -449,7 +449,7 @@
 		</record>
 		<record model="ir.actions.act_window" id="action_hr_job_scal_up_department">
 			<field name="name">رفع وظائف</field>
-			<field name="res_model">hr.job.move.department</field>
+			<field name="res_model">hr.job.move.grade</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="context">{'readonly_by_pass': True, 'default_move_type':'scale_up'}</field>
@@ -474,8 +474,8 @@
 		<!-- خفض وظائف -->
 
 		<record model="ir.ui.view" id="hr_job_scal_down_department_tree">
-			<field name="name">hr.job.move.department.tree</field>
-			<field name="model">hr.job.move.department</field>
+			<field name="name">hr.job.move.grade.tree</field>
+			<field name="model">hr.job.move.grade</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
 				<tree string="خفض وظائف">
@@ -487,8 +487,8 @@
 			</field>
 		</record>
 		<record model="ir.ui.view" id="hr_job_scal_down_department_form">
-			<field name="name">hr.job.move.department.form</field>
-			<field name="model">hr.job.move.department</field>
+			<field name="name">hr.job.move.grade.form</field>
+			<field name="model">hr.job.move.grade</field>
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="خفض وظائف">
@@ -574,7 +574,7 @@
 		</record>
 		<record id="action_hr_job_scal_down_department" model="ir.actions.act_window" >
 			<field name="name">خفض وظائف</field>
-			<field name="res_model">hr.job.move.department</field>
+			<field name="res_model">hr.job.move.grade</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="context">{'readonly_by_pass': True, 'default_move_type': 'scale_down'}</field>

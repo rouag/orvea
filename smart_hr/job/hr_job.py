@@ -309,8 +309,8 @@ class HrJobCancelLine(models.Model):
             self.department_id = self.job_id.department_id.id
 
 
-class HrJobMoveGrade(models.Model):
-    _name = 'hr.job.move.grade'
+class HrJobMoveDeparrtment(models.Model):
+    _name = 'hr.job.move.department'
     _inherit = ['mail.thread']
     _description = u'نقل وظائف'
     
@@ -318,7 +318,7 @@ class HrJobMoveGrade(models.Model):
     speech_number = fields.Char(string='رقم الخطاب', required=1) 
     speech_date = fields.Date(string='تاريخ الخطاب', required=1)
     speech_file = fields.Binary(string='صورة الخطاب', required=1) 
-    job_grade_ids = fields.One2many('hr.job.move.grade.line', 'job_grade_line_id')
+    job_grade_ids = fields.One2many('hr.job.move.department.line', 'job_grade_line_id')
     state = fields.Selection([('new', 'طلب'), ('waiting', 'في إنتظار الإعتماد'), ('done', 'اعتمدت')], readonly=1, default='new',) 
     
     @api.one
@@ -335,8 +335,8 @@ class HrJobMoveGrade(models.Model):
     def action_refuse(self):
         self.state = 'new'          
     
-class HrJobMoveGradeLine(models.Model):
-    _name = 'hr.job.move.grade.line'  
+class HrJobMoveDeparrtmentLine(models.Model):
+    _name = 'hr.job.move.department.line'  
     _description = u'نقل وظائف'
     
     job_id = fields.Many2one('hr.job', string='الوظيفة', required=1 ,) 
@@ -344,7 +344,7 @@ class HrJobMoveGradeLine(models.Model):
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة ', readonly=1, required=1) 
     department_id = fields.Many2one('hr.department', string=' الإدارة الحالية', readonly=1, required=1) 
     New_department_id = fields.Many2one('hr.department', string='الإدارة الجديد', required=1) 
-    job_grade_line_id = fields.Many2one('hr.job.move.grade', string='الوظيفة', required=1) 
+    job_grade_line_id = fields.Many2one('hr.job.move.department', string='الوظيفة', required=1) 
     
     @api.onchange('job_id')
     def _onchange_job_id(self):
@@ -353,8 +353,8 @@ class HrJobMoveGradeLine(models.Model):
             self.grade_id = self.job_id.grade_id.id
             self.department_id = self.job_id.department_id.id
     
-class HrJobMoveDepartment(models.Model):
-    _name = 'hr.job.move.department'  
+class HrJobMoveGrade(models.Model):
+    _name = 'hr.job.move.grade'  
     _inherit = ['mail.thread']    
     _description = u'رفع أو خفض وظائف'
     _rec_name = 'decision_number'
@@ -370,7 +370,7 @@ class HrJobMoveDepartment(models.Model):
     in_speech_number = fields.Char(string=u'رقم الخطاب الوارد') 
     in_speech_date = fields.Date(string=u'تاريخ الخطاب الوارد') 
     in_speech_file = fields.Binary(string=u'صورة الخطاب الوارد')  
-    job_movement_ids = fields.One2many('hr.job.move.department.line', 'job_movement_line_id')
+    job_movement_ids = fields.One2many('hr.job.move.grade.line', 'job_movement_line_id')
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', u'في إنتظار الموافقة'),
                               ('hrm1', u'شؤون الموظفين'),
@@ -441,11 +441,11 @@ class HrJobMoveDepartment(models.Model):
         for rec in self.job_movement_ids:
             rec.job_id.write({'is_occupied': True})
     
-class HrJobMoveDeparrtmentLine(models.Model):
-    _name = 'hr.job.move.department.line'  
+class HrJobMoveGradeLine(models.Model):
+    _name = 'hr.job.move.grade.line'  
     _description = u'رفع أو خفض وظائف'
 
-    job_movement_line_id = fields.Many2one('hr.job.move.department', string='الوظيفة', required=1, ondelete="cascade") 
+    job_movement_line_id = fields.Many2one('hr.job.move.grade', string='الوظيفة', required=1, ondelete="cascade") 
     job_id = fields.Many2one('hr.job', string='الوظيفة', domain=[('state', '=', 'unoccupied'),('is_occupied','=',False)], required=1)
     type_id = fields.Many2one('salary.grid.type', string='التصنيف', readonly=1, required=1) 
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة الحالية', readonly=1, required=1) 
