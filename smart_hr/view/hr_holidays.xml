@@ -149,6 +149,11 @@
 								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_child_birth_dad)d),'|',('holiday_status_id','!=', %(data_hr_holiday_accompaniment_exceptional)d),('accompaniment_type','!=','child')],
 								'required':[('holiday_status_id','=', %(data_hr_holiday_child_birth_dad)d),'&amp;',('holiday_status_id','=', %(data_hr_holiday_accompaniment_exceptional)d),('accompaniment_type','=','child')]}" />
 
+							<field name="medical_report"
+								attrs="{'readonly':[('state','not in',['draft'])],
+								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_dialysis)d)],
+								'required':[('holiday_status_id','=', %(data_hr_holiday_dialysis)d)]}" />
+
 						</group>
 						<group>
 							<field name="compensation_stock" readonly="True"

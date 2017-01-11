@@ -119,6 +119,7 @@ class HrHolidays(models.Model):
         ('child', u' ‫طفل‬‬')], string=u'نوع المرافقة')
     accompanied_child_age = fields.Integer(string=u'عمر الطفل')
     open_period = fields.Many2one('hr.holidays.periode', string=u'periode')
+    medical_report = fields.Binary(string=u'التقرير الطبي')
 
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
@@ -868,7 +869,7 @@ class HrHolidays(models.Model):
                     if right_entitlement.holiday_stock_default < self.duration:
                         raise ValidationError(u"ليس لديك الرصيد الكافي")
             else:
-                if right_entitlement.holiday_stock_default < self.duration:
+                if right_entitlement.holiday_stock_default < self.duration and right_entitlement.holiday_stock_default>0:
                     raise ValidationError(u"ليس لديك الرصيد الكافي")        # Constraintes for Compelling holidays اضطرارية
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
             if holiday_status_normal_stock>=self.duration:
