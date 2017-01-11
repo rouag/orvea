@@ -6,6 +6,7 @@ from openerp.exceptions import Warning
 from dateutil.relativedelta import relativedelta
 from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 class HrJob(models.Model):
     _inherit = 'hr.job'
@@ -280,6 +281,14 @@ class HrJobCancel(models.Model):
     def action_refuse(self):
         self.ensure_one()
         self.state = 'refused'
+        # send notification for the employee who is request cancelling job
+        self.env['base.notification'].create({'title': u'إشعار برفض طلب إلغاء وظيفة',
+                                              'message': u'لقد تم رفض طلبكم بإلغاء وظيفة',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'res_model':'hr.job.cancel',
+                                              'res_id': self.id,
+                                              'res_action': 'smart_hr.action_hr_job_cancel'})
 
 
 class HrJobCancelLine(models.Model):
@@ -301,8 +310,8 @@ class HrJobCancelLine(models.Model):
 
 
 class HrJobMoveGrade(models.Model):
-    _name = 'hr.job.move.grade'  
-    _inherit = ['mail.thread']    
+    _name = 'hr.job.move.grade'
+    _inherit = ['mail.thread']
     _description = u'نقل وظائف'
     
     name = fields.Char(string='مسمى الوظيفة', required=1) 
