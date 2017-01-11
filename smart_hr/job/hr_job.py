@@ -236,50 +236,70 @@ class HrJobCreateLine(models.Model):
             grade_ids = [rec .id for rec in self.job_create_id.grade_ids]
             res['domain'] = {'grade_id': [('id', 'in', grade_ids)]}
             return res
-    
+
+
 class HrJobCancel(models.Model):
-    _name = 'hr.job.cancel'  
-    _inherit = ['mail.thread']    
+    _name = 'hr.job.cancel'
+    _inherit = ['mail.thread']
     _description = u' إلغاء الوظائف'
-    
-    name = fields.Char(string='المسمى', required=1)
-    speech_number = fields.Char(string='رقم الخطاب', required=1) 
-    speech_date = fields.Date(string='تاريخ الخطاب', required=1) 
-    speech_file = fields.Binary(string='صورة الخطاب', required=1) 
+    _rec_name = 'speech_number'
+
+    employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1, readonly=1)
+    speech_number = fields.Char(string='رقم الخطاب', required=1)
+    speech_date = fields.Date(string='تاريخ الخطاب', required=1)
+    speech_file = fields.Binary(string='صورة الخطاب', required=1)
+    decision_number = fields.Char(string=u'رقم القرار')
+    decision_date = fields.Date(string=u'تاريخ القرار')
+    decision_file = fields.Binary(string=u'ملف القرار')
     job_cancel_ids = fields.One2many('hr.job.cancel.line', 'job_cancel_line_id')
-    state = fields.Selection([('new', 'طلب'), ('waiting', 'في إنتظار الإعتماد'), ('done', 'اعتمدت')], readonly=1, default='new') 
-    
-    @api.one
+    state = fields.Selection([('new', 'طلب'),
+                              ('waiting', 'في إنتظار الموافقة'),
+                              ('hrm', 'شؤون الموظفين'),
+                              ('done', 'اعتمدت'),
+                              ('refused', 'رفض')],
+                             readonly=1, default='new')
+
+    @api.multi
     def action_waiting(self):
-        self.state = 'waiting' 
-         
-    @api.one
+        self.ensure_one()
+        self.state = 'waiting'
+
+    @api.multi
+    def action_hrm(self):
+        self.ensure_one()
+        self.state = 'hrm'
+
+    @api.multi
     def action_done(self):
-        self.state = 'done'  
+        self.ensure_one()
+        self.state = 'done'
         for job in self.job_cancel_ids:
             job.job_id.state = 'cancel'
-        
-    @api.one
+
+    @api.multi
     def action_refuse(self):
-        self.state = 'new'   
-        
+        self.ensure_one()
+        self.state = 'refused'
+
+
 class HrJobCancelLine(models.Model):
-    _name = 'hr.job.cancel.line'  
+    _name = 'hr.job.cancel.line'
     _description = u'الوظائف'
-    
-    job_cancel_line_id = fields.Many2one('hr.job.cancel', string='الوظيفة', required=1) 
-    job_id = fields.Many2one('hr.job', string='الوظيفة', required=1) 
-    type_id = fields.Many2one('salary.grid.type', string='التصنيف', required=1, readonly=1) 
-    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1, readonly=1) 
+
+    job_cancel_line_id = fields.Many2one('hr.job.cancel', string='الوظيفة', required=1)
+    job_id = fields.Many2one('hr.job', string='الوظيفة', required=1)
+    type_id = fields.Many2one('salary.grid.type', string='التصنيف', required=1, readonly=1)
+    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1, readonly=1)
     department_id = fields.Many2one('hr.department', string='الإدارة', required=1, readonly=1) 
-    
+
     @api.onchange('job_id')
     def _onchange_job_id(self):
-        if self.job_id :
+        if self.job_id:
             self.type_id = self.job_id.type_id.id
             self.grade_id = self.job_id.grade_id.id
             self.department_id = self.job_id.department_id.id
-            
+
+
 class HrJobMoveGrade(models.Model):
     _name = 'hr.job.move.grade'  
     _inherit = ['mail.thread']    
@@ -417,7 +437,7 @@ class HrJobMoveDeparrtmentLine(models.Model):
     _description = u'رفع أو خفض وظائف'
 
     job_movement_line_id = fields.Many2one('hr.job.move.department', string='الوظيفة', required=1, ondelete="cascade") 
-    job_id = fields.Many2one('hr.job', string='الوظيفة', domain=[('state', '=', 'unoccupied')], required=1)
+    job_id = fields.Many2one('hr.job', string='الوظيفة', domain=[('state', '=', 'unoccupied'),('is_occupied','=',False)], required=1)
     type_id = fields.Many2one('salary.grid.type', string='التصنيف', readonly=1, required=1) 
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة الحالية', readonly=1, required=1) 
     new_grade_id = fields.Many2one('salary.grid.grade', string=' المرتبة الجديد', required=1) 

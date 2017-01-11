@@ -254,7 +254,7 @@
 
 						<field name="job_update_ids" string=" تحوير‬  وظائف">
 							<tree editable="bottom">
-								<field name="job_id" domain="[('state','=','unoccupied')]" />
+								<field name="job_id" domain="[('state','=','unoccupied'),('is_occupied','=',False)]" />
 								<field name="new_name" />
 								<field name="type_id" />
 								<field name="department_id" />
@@ -320,7 +320,7 @@
 						</group>
 						<field name="job_grade_ids" string=" نقل وظائف">
 							<tree editable="bottom">
-								<field name="job_id" domain="[('state','=','unoccupied')]" />
+								<field name="job_id" domain="[('state','=','unoccupied') ,('is_occupied','=',False)]" />
 								<field name="type_id" />
 								<field name="department_id" />
 								<field name="grade_id" />
@@ -604,7 +604,7 @@
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
 				<tree string="إلغاء وظائف">
-					<field name="name" />
+					<field name="employee_id" />
 					<field name="speech_number" />
 					<field name="speech_date" />
 					<field name="speech_file" />
@@ -618,24 +618,33 @@
 			<field name="arch" type="xml">
 				<form string="إلغاء وظائف">
 					<header>
-						<button name="action_waiting" string="إرسال للإعتماد" type="object"
-							states="new" />
+						<button name="action_waiting" string="إرسال الطلب" type="object"
+							states="new" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							
+						<button name="action_hrm" string="موافق" type="object"
+							groups="smart_hr.group_job_cancelling" states="waiting" />
+							
+						<button name="action_refuse" string="رفض" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" type="object"
+							groups="smart_hr.group_job_cancelling" states="waiting" />
+							
 						<button name="action_done" string="إعتماد" type="object"
-							states="waiting" />
-						<button name="action_refuse" string="رفض" type="object"
-							states="waiting" />
-						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
+							states="hrm" />
+						
+						<field name="state" widget="statusbar" statusbar_visible="new,waiting,hrm,done,refused" />
 					</header>
 					<sheet>
 						<group col="4">
-							<field name="name" />
-							<field name="speech_number" />
-							<field name="speech_date" />
-							<field name="speech_file" />
+							<field name="employee_id" />
+							<field name="speech_number" attrs="{'readonly':[('state', '!=', 'new')],'required':[('state','=','new')]}" />
+							<field name="speech_date"  attrs="{'readonly':[('state', '!=', 'new')],'required':[('state','=','new')]}"/>
+							<field name="speech_file"  attrs="{'readonly':[('state', '!=', 'new')],'required':[('state','=','new')]}"/>
+							<field name="decision_number" attrs="{'invisible':[('state', 'not in', ['hrm','done'])],'readonly':[('state', '=', 'done')],'required':[('state','=','hrm')]}" />
+							<field name="decision_date"  attrs="{'invisible':[('state', 'not in', ['hrm','done'])],'readonly':[('state', '=', 'done')],'required':[('state','=','hrm')]}"/>
+							<field name="decision_file"  attrs="{'invisible':[('state', 'not in', ['hrm','done'])],'readonly':[('state', '=', 'done')],'required':[('state','=','hrm')]}"/>
 						</group>
 						<field name="job_cancel_ids" string="إلغاء وظائف">
 							<tree editable="bottom">
-								<field name="job_id" domain="[('state','=','unoccupied')]" />
+								<field name="job_id" domain="[('state','=','unoccupied'),('is_occupied','=',False)]" />
 								<field name="type_id" />
 								<field name="department_id" />
 								<field name="grade_id" />
