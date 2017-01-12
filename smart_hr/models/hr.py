@@ -145,6 +145,7 @@ class HrEmployeeHolidaysStock(models.Model):
         (8, u'ثمانية سنوات'),
         (9, u'تسعة سنوات'),
         (10, u'عشرة سنوات'),
+        (100, u'طوال مدة الخدمة الوظيفيّة'),
         ], string=u'مدة صلاحيات الإجازة', default=1) 
     entitlement_id = fields.Many2one('hr.holidays.status.entitlement', string=u'نوع الاستحقاق')
     entitlement_name = fields.Char(string=u'نوع الاستحقاق', related='entitlement_id.entitlment_category.name')

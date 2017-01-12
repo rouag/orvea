@@ -68,8 +68,8 @@
 			<field name="res_model">hr.groupe.job</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">form,tree</field>
-			<field name="context">{'default_type_groupe':'general','readonly_by_pass': True }</field>
-			<field name="domain">[('type_groupe', '=', 'general')]</field>
+			<field name="context">{'default_group_type':'general','readonly_by_pass': True }</field>
+			<field name="domain">[('group_type', '=', 'general')]</field>
 			<field name="view_id" ref="hr_groupe_general_form" />
 		</record>
 		<record id="action_action_groupe_general_tree" model="ir.actions.act_window.view">
@@ -98,7 +98,7 @@
 							<group>
 								<field name="name" string="مسمى المجموعة النوعية" />
 								<field name="numero" string="رمز المجموعة النوعية" />
-								<field name="parent_id" domain="[('type_groupe', '=', 'general')]"
+								<field name="parent_id" domain="[('group_type', '=', 'general')]"
 									string="المجموعة العامة" />
 							</group>
 
@@ -129,8 +129,8 @@
 			<field name="res_model">hr.groupe.job</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
-			<field name="context">{'default_type_groupe':'spicific','readonly_by_pass': True}</field>
-			<field name="domain">[('type_groupe', '=', 'spicific')]</field>
+			<field name="context">{'default_group_type':'spicific','readonly_by_pass': True}</field>
+			<field name="domain">[('group_type', '=', 'spicific')]</field>
 			<field name="view_id" ref="hr_groupe_specific_form" />
 		</record>
 		<record id="action_action_groupe_specific_tree" model="ir.actions.act_window.view">
@@ -163,7 +163,7 @@
 							</group>
 							<group>
 								
-								<field name="parent_id" domain="[('type_groupe', '=', 'spicific')]"
+								<field name="parent_id" domain="[('group_type', '=', 'spicific')]"
 									string="المجموعة النوعية" />
 								<field name="skils_ids" widget="many2many_tags" options="{'no_create_edit': True}" />
 
@@ -240,8 +240,8 @@
 			<field name="res_model">hr.groupe.job</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
-			<field name="context">{'default_type_groupe':'serie','readonly_by_pass': True}</field>
-			<field name="domain">[('type_groupe', '=', 'serie')]</field>
+			<field name="context">{'default_group_type':'serie','readonly_by_pass': True}</field>
+			<field name="domain">[('group_type', '=', 'serie')]</field>
 			<field name="view_id" ref="hr_categorie_serie_form" />
 
 		</record>
