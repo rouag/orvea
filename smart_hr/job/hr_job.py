@@ -11,15 +11,14 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FO
 class HrJob(models.Model):
     _inherit = 'hr.job'
     _description = u'الوظائف'
-    
-            
+
     name = fields.Many2one('hr.job.name', string='المسمى', required=1)
     number = fields.Char(string='الرقم الوظيفي', required=1, states={'unoccupied': [('readonly', 0)]})
     department_id = fields.Many2one('hr.department', string='الإدارة', required=1, states={'unoccupied': [('readonly', 0)]})
     general_id = fields.Many2one('hr.groupe.job', ' المجموعة العامة', ondelete='cascade')
     specific_id = fields.Many2one('hr.groupe.job', ' المجموعة النوعية', ondelete='cascade')
     serie_id = fields.Many2one('hr.groupe.job', ' سلسلة الفئات', ondelete='cascade')
-    type_id = fields.Many2one('salary.grid.type', string='التصنيف', required=1, states={'unoccupied': [('readonly', 0)]}) 
+    type_id = fields.Many2one('salary.grid.type', string='التصنيف', required=1, states={'unoccupied': [('readonly', 0)]})
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1, states={'unoccupied': [('readonly', 0)]})
     state = fields.Selection([('unoccupied', 'شاغرة'), ('occupied', 'مشغولة'), ('cancel', 'ملغاة')], readonly=1, default='unoccupied')
     employee = fields.Many2one('hr.employee', string=u'الموظف')
@@ -32,10 +31,8 @@ class HrJob(models.Model):
 
     def _compute_is_occupated(self):
         for rec in self:
-            print rec.is_occupied
             if rec.occupation_date_to:
                 if rec.occupation_date_to >= datetime.today().strftime('%Y-%m-%d'):
-                    print "heello"
                     rec.write({'is_occupied': True})
                 else:
                     self.action_job_unreserve()
@@ -46,6 +43,7 @@ class HrJob(models.Model):
         self.occupation_date_from = False
         self.occupation_date_to = False
         self.is_occupied = False
+
     @api.multi
     def action_job_reserve(self):
         self.ensure_one()
@@ -122,18 +120,6 @@ class HrJobCreate(models.Model):
     draft_budget = fields.Binary(string=u'مشروع الميزانية')
 
 
-#     @api.onchange('serie_id')
-#     def onchange_serie_id(self):
-#         if self.serie_id:
-#             grides = []
-#             for classment in self.serie_id.hr_classment_job_ids:
-#                 gride.append(classment.grade_id).id
-#             self.grade_ids=gride
-#             print gride
-#    
-#    
-#                 grides.append(classment.grade_id.id)
-#             self.grade_ids = grides
     @api.onchange('serie_id')
     def onchange_serie_id(self):
         if self.serie_id:
@@ -146,7 +132,7 @@ class HrJobCreate(models.Model):
     def action_waiting(self):
         self.ensure_one()
         self.state = 'waiting'
-        
+
     @api.multi
     def action_hrm(self):
         self.ensure_one()
@@ -154,6 +140,7 @@ class HrJobCreate(models.Model):
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل الجهة الخارجية (وزارة المالية)")
+
     @api.multi
     def action_budget(self):
         self.ensure_one()
@@ -185,20 +172,19 @@ class HrJobCreate(models.Model):
         self.ensure_one()
         for line in self.line_ids:
             job_val = {'name': line.name.id,
-                     'number': line.job_number,
-                     'type_id':line.type_id.id,
-                     'grade_id':line.grade_id.id,
-                     'department_id':line.department_id.id,
-                     'general_id':self.general_id.id,
-                     'specific_id':self.specific_id.id,
-                     'serie_id':self.serie_id.id,
-                     
-                     }
+                       'number': line.job_number,
+                       'type_id': line.type_id.id,
+                       'grade_id': line.grade_id.id,
+                       'department_id': line.department_id.id,
+                       'general_id': self.general_id.id,
+                       'specific_id': self.specific_id.id,
+                       'serie_id': self.serie_id.id
+                       }
             self.env['hr.job'].create(job_val)
         self.state = 'done'
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت إحداث الوظائف من قبل '" + unicode(user.name) + u"'")
-             
+
     @api.multi
     def action_refuse(self):
         self.ensure_one()
@@ -276,6 +262,8 @@ class HrJobCancel(models.Model):
         self.state = 'done'
         for job in self.job_cancel_ids:
             job.job_id.state = 'cancel'
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت إلغاء الوظائف من قبل '" + unicode(user.name) + u"'")
 
     @api.multi
     def action_refuse(self):
@@ -313,6 +301,7 @@ class HrJobMoveDeparrtment(models.Model):
     _name = 'hr.job.move.department'
     _inherit = ['mail.thread']
     _description = u'نقل وظائف'
+    _rec_name = 'employee_id'
 
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1, readonly=1)
     out_speech_number = fields.Char(string=u'رقم الخطاب الصادر')
@@ -321,7 +310,7 @@ class HrJobMoveDeparrtment(models.Model):
     in_speech_number = fields.Char(string=u'رقم الخطاب الوارد')
     in_speech_date = fields.Date(string=u'تاريخ الخطاب الوارد')
     in_speech_file = fields.Binary(string=u'صورة الخطاب الوارد')
-    job_grade_ids = fields.One2many('hr.job.move.department.line', 'job_grade_line_id')
+    job_movement_ids = fields.One2many('hr.job.move.department.line', 'job_move_department_id')
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', u'في إنتظار الموافقة'),
                               ('hrm1', u'شؤون الموظفين'),
@@ -369,6 +358,8 @@ class HrJobMoveDeparrtment(models.Model):
         self.state = 'done'
         for job in self.job_movement_ids:
             job.job_id.grade_id = job.new_grade_id.id
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت نقل الوظائف من قبل '" + unicode(user.name) + u"'")
 
     @api.multi
     def action_refuse(self):
@@ -379,7 +370,7 @@ class HrJobMoveDeparrtment(models.Model):
     def action_job_unreserve(self):
         self.ensure_one()
         for rec in self.job_movement_ids:
-            rec.job_id.write({'is_occupied': False, 'number': rec.job_number, 'grade_id': rec.new_grade_id.id})
+            rec.job_id.write({'is_occupied': False, 'department_id': rec.new_department_id.id})
         self.state = 'done'
 
     @api.multi
@@ -397,14 +388,14 @@ class HrJobMoveDeparrtmentLine(models.Model):
     type_id = fields.Many2one('salary.grid.type', string='التصنيف', readonly=1, required=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة ', readonly=1, required=1)
     department_id = fields.Many2one('hr.department', string=' الإدارة الحالية', readonly=1, required=1)
-    New_department_id = fields.Many2one('hr.department', string='الإدارة الجديد', required=1)
-    job_grade_line_id = fields.Many2one('hr.job.move.department', string='الوظيفة', required=1) 
+    new_department_id = fields.Many2one('hr.department', string='الإدارة الجديد', required=1)
+    job_move_department_id = fields.Many2one('hr.job.move.department', string='الوظيفة', required=1) 
 
     @api.onchange('job_id')
     def _onchange_job_id(self):
         res = {}
-        if not self.job_id and self._context['job_grade_ids']:
-            job_ids = [rec[2]['job_id'] for rec in self._context['job_grade_ids']]
+        if not self.job_id and self._context['job_movement_ids']:
+            job_ids = [rec[2]['job_id'] for rec in self._context['job_movement_ids']]
             nex_job_ids = [rec.id for rec in self.env['hr.job'].search([('id', 'not in', job_ids)])]
             res['domain'] = {'job_id': [('id', 'in', nex_job_ids)]}
 
@@ -483,6 +474,8 @@ class HrJobMoveGrade(models.Model):
         self.state = 'done'
         for job in self.job_movement_ids:
             job.job_id.grade_id = job.new_grade_id.id
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت " + self.move_type + u" الوظائف من قبل '" + unicode(user.name) + u"'")
 
     @api.multi
     def action_refuse(self):
