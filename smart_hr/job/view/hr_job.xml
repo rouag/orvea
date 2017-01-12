@@ -175,13 +175,13 @@
 							<field name="fiscal_year" />
 						</group>
 						<group col="6">
-							<field name="general_id" domain="[('type_groupe', '=', 'general')]"
+							<field name="general_id" domain="[('group_type', '=', 'general')]"
 								attrs="{'readonly':[('state', '!=', 'new')]}" />
 							<field name="specific_id"
-								domain="[('parent_id', '=', general_id),('type_groupe', '=', 'spicific')]"
+								domain="[('parent_id', '=', general_id),('group_type', '=', 'spicific')]"
 								attrs="{'readonly':[('state', '!=', 'new')]}" />
 							<field name="serie_id"
-								domain="[('parent_id', '=',specific_id), ('type_groupe', '=', 'serie')]"
+								domain="[('parent_id', '=',specific_id), ('group_type', '=', 'serie')]"
 								attrs="{'readonly':[('state', '!=', 'new')]}" />
 						</group>
 
@@ -189,9 +189,9 @@
 							<tree editable="bottom">
 								<field name="name" options='{"no_open": True, "no_create": True}' />
 								<field name="number" readonly="1" />
-								<field name="grade_id" options='{"no_open": True, "no_create": True}' />
 								<field name="type_id" readonly="1" />
-
+								<field name="job_number"/>
+								<field name="grade_id" options='{"no_open": True, "no_create": True}' />
 								<field name="department_id" />
 							</tree>
 						</field>
@@ -307,40 +307,28 @@
 						<button name="action_waiting" string="إرسال للإعتماد" type="object"
 							groups="smart_hr.group_job_managment" states="new"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
 						<button name="action_hrm1" string="موافقة" type="object"
 							groups="smart_hr.group_move_job_department" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_refuse" string="رفض" type="object"
 							groups="smart_hr.group_move_job_department" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
-
 						<button name="action_budget" string="حجز الوظائف و إرسال الطلب"
 							type="object" groups="smart_hr.group_hrm" states="hrm1" />
-
-
 						<button name="action_communication" string="موافقة" type="object"
 							groups="smart_hr.group_budget_managment" states="budget"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
 						<button name="action_external" string="موافقة" type="object"
 							groups="smart_hr.group_communication_managment" states="communication"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						
 						<button name="action_hrm2" string="موافقة" type="object"
 							groups="smart_hr.group_job_external_managment" states="external" />
-						
 						<button name="action_communication" string="رفض" type="object"
 							groups="smart_hr.group_job_external_managment" states="external"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
 						<button name="action_job_unreserve" string="فك حجز الوظيفة"
 							type="object" groups="smart_hr.group_hrm" states="hrm2"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
-
-
 						<field name="state" widget="statusbar"
 							statusbar_visible="new,waiting,hrm1,budget,communication,external,hrm2,done" />
 					</header>
@@ -360,14 +348,14 @@
 							<field name="in_speech_file"
 								attrs="{'invisible':[('state', 'not in', ['external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','external')]}" />
 						</group>
-						<field name="job_grade_ids" string=" نقل وظائف" context="{'job_grade_ids': job_grade_ids}">
+						<field name="job_movement_ids" string=" نقل وظائف" context="{'job_movement_ids': job_movement_ids}">
 							<tree editable="bottom">
 								<field name="job_id"
 									domain="[('state','=','unoccupied') ,('is_occupied','=',False)]" />
 								<field name="type_id" />
 								<field name="grade_id" />
 								<field name="department_id" />
-								<field name="New_department_id" />
+								<field name="new_department_id"  />
 							</tree>
 						</field>
 					</sheet>
@@ -415,23 +403,17 @@
 						<button name="action_waiting" string="إرسال للإعتماد" type="object"
 							groups="smart_hr.group_job_managment" states="new"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
 						<button name="action_hrm1" string="موافقة" type="object"
 							groups="smart_hr.group_move_job_grade" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_refuse" string="رفض" type="object"
 							groups="smart_hr.group_move_job_grade" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
-
 						<button name="action_budget" string="حجز الوظائف و إرسال الطلب"
 							type="object" groups="smart_hr.group_hrm" states="hrm1" />
-
-
 						<button name="action_communication" string="موافقة" type="object"
 							groups="smart_hr.group_budget_managment" states="budget"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
 						<button name="action_external" string="موافقة" type="object"
 							groups="smart_hr.group_communication_managment" states="communication"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
@@ -440,13 +422,9 @@
 						<button name="action_communication" string="رفض" type="object"
 							groups="smart_hr.group_job_external_managment" states="external"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
 						<button name="action_job_unreserve" string="فك حجز الوظيفة"
 							type="object" groups="smart_hr.group_hrm" states="hrm2"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
-
-
 						<field name="state" widget="statusbar"
 							statusbar_visible="new,waiting,hrm1,budget,communication,external,hrm2,done" />
 					</header>
