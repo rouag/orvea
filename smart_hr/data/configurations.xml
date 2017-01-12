@@ -116,5 +116,17 @@
 			<field name="name">مرافقة مريض‫ ‫(اصابة عمل)‬</field>
 			<field name="code">accompaniment_exceptional</field>
 		</record>
+		
+		<!--الاجازات الرياضية -->
+		<record id="data_entitlement_sport_in" model="hr.holidays.entitlement.config">
+			<field name="name">داخل المملكة‬</field>
+			<field name="code">sport</field>
+		</record>
+		<record id="data_entitlement_sport_out" model="hr.holidays.entitlement.config">
+			<field name="name">خارج المملكة‬</field>
+			<field name="code">sport</field>
+		</record>
+	
+		
 	</data>
 </openerp>

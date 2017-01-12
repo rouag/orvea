@@ -141,6 +141,8 @@ class HrHolidays(models.Model):
             res['domain'] = {'entitlement_type': [('code', '=', 'death')]}
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional'):
             res['domain'] = {'entitlement_type': [('code', '=', 'accompaniment_exceptional')]}
+        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_sport'):
+            res['domain'] = {'entitlement_type': [('code', '=', 'sport')]}
         return res
 
     @api.multi
@@ -231,7 +233,7 @@ class HrHolidays(models.Model):
             self.open_period = open_period.id
             if init_stock_line:
                 stock_line.holidays_available_stock = open_period.holiday_stock
-                stock_line.token_holidays_sum += self.duration
+                stock_line.token_holidays_sum = self.duration
             else:   
                 stock_line.holidays_available_stock -= self.duration
                 stock_line.token_holidays_sum += self.duration
@@ -975,12 +977,14 @@ class HrHolidays(models.Model):
                 for periode in periodes:
                     if fields.Datetime.from_string(periode.date_to) > fields.Datetime.from_string(self.date_to) and fields.Datetime.from_string(periode.date_from) < fields.Datetime.from_string(self.date_from):
                         open_periode = periode
+                        if self.duration > open_periode.holiday_stock:
+                            raise ValidationError(u"ليس لديك الرصيد الكافي")
+                        else:
+                            if fields.Datetime.from_string(periode.date_to) < fields.Datetime.from_string(self.date_from):
+                                raise ValidationError(u"ليس لديك فترة اجازة مفتوحة")
                         break
-                if open_periode:
-                    if self.duration > open_periode.holiday_stock:
-                        raise ValidationError(u"ليس لديك الرصيد الكافي")
-                else:
-                        raise ValidationError(u"ليس لديك فترة اجازة مفتوحة")
+                    else:
+                        periode.active = False
             else:
                 if right_entitlement.holiday_stock_default < self.duration:
                     raise ValidationError(u"ليس لديك الرصيد الكافي")
