@@ -19,3 +19,6 @@ access_hr_job_update_line,hr_job_update_line,model_hr_job_update_line,group_job_
 access_hr_job_reservation,hr_job_reservation,model_hr_job_reservation,group_job_managment,1,1,1,0
 ,,,,,,,
 access_hr_promotion,hr_promotion,model_hr_promotion,group_job_managment,1,1,1,0
+,,,,,,,
+access_hr_job_strip_from,hr_job_strip_from,model_hr_job_strip_from,group_job_managment,1,1,1,0
+access_hr_job_strip_from_line,hr_job_strip_from_line,model_hr_job_strip_from_line,group_job_managment,1,1,1,0
