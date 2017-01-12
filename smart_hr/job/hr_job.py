@@ -314,7 +314,7 @@ class HrJobMoveDeparrtment(models.Model):
     _inherit = ['mail.thread']
     _description = u'نقل وظائف'
     
-    name = fields.Char(string='مسمى الوظيفة', required=1) 
+    employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1, readonly=1) 
     speech_number = fields.Char(string='رقم الخطاب', required=1) 
     speech_date = fields.Date(string='تاريخ الخطاب', required=1)
     speech_file = fields.Binary(string='صورة الخطاب', required=1) 

@@ -22,7 +22,7 @@ Projet: SEPM
    ========================================================================== */
    html, body{direction:rtl;}
    html{background:#99cccc url(../img/background/bg_html.png) 0 0 no-repeat;background-size: 100% 100%;background-attachment: fixed;}
-   body{position:relative;background-color:#fff;font-family: 'Droid Arabic Kufi';font-style: normal;font-weight: 400;background:transparent url(../img/background/bg_saudia.png) bottom left no-repeat;background-size: auto 100%;}
+   body{position:relative;background-color:#fff;font-family: 'Droid Arabic Kufi';font-style: normal;font-weight: 400;background:transparent url(../img/background/) bottom left no-repeat;background-size: auto 100%;}
    a, button, input[type="submit"]{outline: none !important;}
 
 /* ==========================================================================
@@ -40,7 +40,7 @@ Helper classes
 
 	.details{color:#cc6600;}
 	
-	.container-fluid{position:relative;z-index:2;background:transparent url(../img/background/bg_bip.png) top right no-repeat;background-size:  auto 100%;}
+	.container-fluid{position:relative;z-index:2;background:transparent url(../img/background/) top right no-repeat;background-size:  auto 100%;}
 	
 	.status{display:inline-block;width: 10px;height:10px;border-radius:10px;vertical-align:middle;}
 	.status.warning{background-color:#ffcc00;}

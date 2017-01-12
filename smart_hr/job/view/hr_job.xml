@@ -288,7 +288,7 @@
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
 				<tree string="نقل وظائف">
-					<field name="name" />
+					<field name="employee_id" />
 					<field name="speech_number" />
 					<field name="speech_date" />
 					<field name="speech_file" />
@@ -305,15 +305,18 @@
 					<header>
 						<button name="action_waiting" string="إرسال للإعتماد" type="object"
 							states="new" />
+							
 						<button name="action_done" string="إعتماد" type="object"
 							states="waiting" />
+							
 						<button name="action_refuse" string="رفض" type="object"
 							states="waiting" />
+							
 						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
 					</header>
 					<sheet>
 						<group col="4">
-							<field name="name" />
+							<field name="employee_id" />
 							<field name="speech_number" />
 							<field name="speech_date" />
 							<field name="speech_file" />
@@ -322,8 +325,8 @@
 							<tree editable="bottom">
 								<field name="job_id" domain="[('state','=','unoccupied') ,('is_occupied','=',False)]" />
 								<field name="type_id" />
-								<field name="department_id" />
 								<field name="grade_id" />
+								<field name="department_id" />
 								<field name="New_department_id" />
 							</tree>
 						</field>
