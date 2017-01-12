@@ -123,31 +123,56 @@
 								readonly='1' />
 
 						</group>
-						<group col="2">
+						<group col="8">
 							<field name="holiday_status_id" required="1" />
 						</group>
-						<group col="4">
-
-							<field name="entitlement_type"
-								attrs="{'readonly':[('state','not in',['draft'])],'invisible':[('holiday_status_id','not in', [%(data_hr_holiday_death)d, %(data_hr_holiday_status_illness)d ])],'required':[('holiday_status_id','in', [%(data_hr_holiday_death)d, %(data_hr_holiday_status_illness)d ])]}" />
-							<field name="death_person"
-								attrs="{'readonly':[('state','not in',['draft'])],'invisible':[('holiday_status_id','!=', %(data_hr_holiday_death)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_death)d)]}" />
-							<field name="medical_certification"
-								attrs="{'readonly':[('state','not in',['draft'])],'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_illness)d)],'required':[('holiday_status_id','=', %(data_hr_holiday_status_illness)d)]}" />
-							<field name="raison"
-								attrs="{'readonly':[('state','not in',['draft'])],'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_exceptional_accompaniment)d)]}" />
-							<field name="childbirth_date"
-								attrs="{'readonly':[('state','not in',['draft'])],'invisible':[('holiday_status_id','not in', (%(data_hr_holiday_status_childbirth)d,%(data_hr_holiday_child_birth_dad)d))],'required':[('holiday_status_id','in', (%(data_hr_holiday_status_childbirth)d,%(data_hr_holiday_child_birth_dad)d))]}" />
-
-							<field name="medical_certificate"
+						<group col="6">
+							<field name="accompaniment_type"
 								attrs="{'readonly':[('state','not in',['draft'])],
-								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_childbirth)d)],
-								'required':[('holiday_status_id','=', %(data_hr_holiday_status_childbirth)d)]}" />
+								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_accompaniment_exceptional)d)],
+								'required':[('holiday_status_id','=', %(data_hr_holiday_accompaniment_exceptional)d)]}" />
+							<field name="accompanied_child_age"
+								attrs="{'readonly':[('state','not in',['draft'])],
+								'invisible':['|',('holiday_status_id','!=', %(data_hr_holiday_accompaniment_exceptional)d),('accompaniment_type','!=','child')],
+								'required':[('holiday_status_id','=', %(data_hr_holiday_accompaniment_exceptional)d),('accompaniment_type','=','child')]}" />
 
 							<field name="birth_certificate"
 								attrs="{'readonly':[('state','not in',['draft'])],
 								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_child_birth_dad)d),'|',('holiday_status_id','!=', %(data_hr_holiday_accompaniment_exceptional)d),('accompaniment_type','!=','child')],
 								'required':[('holiday_status_id','=', %(data_hr_holiday_child_birth_dad)d),'&amp;',('holiday_status_id','=', %(data_hr_holiday_accompaniment_exceptional)d),('accompaniment_type','=','child')]}" />
+
+						</group>
+						<group>
+
+							<field name="entitlement_type"
+								attrs="{'readonly':[('state','not in',['draft'])],
+								'invisible':[('holiday_status_id','not in', [%(data_hr_holiday_death)d, %(data_hr_holiday_status_illness)d, %(data_hr_holiday_accompaniment_exceptional)d ])],
+								'required':[('holiday_status_id','in', [%(data_hr_holiday_death)d, %(data_hr_holiday_status_illness)d, %(data_hr_holiday_accompaniment_exceptional)d ])]}" />
+						</group>
+						<group>
+							<field name="death_person"
+								attrs="{'readonly':[('state','not in',['draft'])],
+								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_death)d)],
+								'required':[('holiday_status_id','=', %(data_hr_holiday_death)d)]}" />
+						</group>
+						<group>
+
+							<field name="medical_certification"
+								attrs="{'readonly':[('state','not in',['draft'])],
+								'invisible':[('holiday_status_id','not in', [%(data_hr_holiday_status_illness)d, %(data_hr_holiday_accompaniment_exceptional)d])],
+								'required':[('holiday_status_id','in', [%(data_hr_holiday_status_illness)d, %(data_hr_holiday_accompaniment_exceptional)d])]}" />
+						</group>
+						<group>
+							<field name="raison"
+								attrs="{'readonly':[('state','not in',['draft'])],'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_exceptional_accompaniment)d)]}" />
+							<field name="childbirth_date"
+								attrs="{'readonly':[('state','not in',['draft'])],'invisible':[('holiday_status_id','not in', (%(data_hr_holiday_status_childbirth)d,%(data_hr_holiday_child_birth_dad)d))],'required':[('holiday_status_id','in', (%(data_hr_holiday_status_childbirth)d,%(data_hr_holiday_child_birth_dad)d))]}" />
+						</group>
+						<group>
+							<field name="medical_certificate"
+								attrs="{'readonly':[('state','not in',['draft'])],
+								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_childbirth)d)],
+								'required':[('holiday_status_id','=', %(data_hr_holiday_status_childbirth)d)]}" />
 						</group>
 						<group>
 							<field name="medical_report"
@@ -173,16 +198,7 @@
 
 
 						</group>
-						<group col="4">
-							<field name="accompaniment_type"
-								attrs="{'readonly':[('state','not in',['draft'])],
-								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_accompaniment_exceptional)d)],
-								'required':[('holiday_status_id','=', %(data_hr_holiday_accompaniment_exceptional)d)]}" />
-							<field name="accompanied_child_age"
-								attrs="{'readonly':[('state','not in',['draft'])],
-								'invisible':['|',('holiday_status_id','!=', %(data_hr_holiday_accompaniment_exceptional)d),('accompaniment_type','!=','child')],
-								'required':[('holiday_status_id','=', %(data_hr_holiday_accompaniment_exceptional)d),('accompaniment_type','=','child')]}" />
-						</group>
+
 
 						<group col="6">
 							<field name="date_from" required="1"
