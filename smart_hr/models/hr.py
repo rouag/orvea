@@ -52,7 +52,9 @@ class HrEmployee(models.Model):
     
     def _compute_service_years(self):
         for emp in self:
-            decision_appoint = self.env['hr.decision.appoint'].search([('state', '=', 'done'), ('employee_id', '=', emp.id)])
+            #sudo for employee accede a decision like admin
+            decision_appoint = self.env['hr.decision.appoint'].sudo().search([('state', '=', 'done'), ('employee_id', '=', emp.id)])
+            
             if decision_appoint:
                 today_date = fields.Date.from_string(fields.Date.today())
                 date_hiring = fields.Date.from_string(decision_appoint[0].date_hiring)

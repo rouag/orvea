@@ -118,23 +118,23 @@
 				<form string="قرار تعيين">
 					<header>
 						<button name="action_waiting" string="إرسال " type="object"
-							groups="smart_hr.group_responsable_decision" states="new"
+							groups="smart_hr.group_enterview_manager" states="new"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_communication" string="موافقة" type="object"
-							groups="smart_hr.group_responsable_entretien" states="waiting"
+							groups="smart_hr.group_recrutment_manager" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_refuse" string="رفض" type="object"
-							groups="smart_hr.group_responsable_entretien" states="waiting"
+							groups="smart_hr.group_recrutment_manager" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_hrm" string="موافقة" type="object"
-							groups="smart_hr.group_director_authority" states="budget"
+							groups="smart_hr.group_recrutment_decider" states="budget"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_refuse" string="رفض" type="object"
-							groups="smart_hr.group_director_authority" states="budget"
+							groups="smart_hr.group_recrutment_decider" states="budget"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_done" string="موافقة" type="object"

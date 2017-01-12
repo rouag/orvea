@@ -112,6 +112,7 @@ class HrDecisionAppoint(models.Model):
                     'employee_id': line.employee_id.id,
                               
                      }
+            
             self.env['hr.decision.appoint'].create(decision_val)
         self.state = 'done'
         user = self.env['res.users'].browse(self._uid)
