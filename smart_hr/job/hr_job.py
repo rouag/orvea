@@ -28,6 +28,9 @@ class HrJob(models.Model):
     occupation_date_to = fields.Date(string=u'حجز الوظيفة الى',)
     is_occupied_compute = fields.Boolean(string='is occupied compute', compute='_compute_is_occupated')
     is_occupied = fields.Boolean(string='is occupied', default=False)
+    # سلخ
+    is_striped_from = fields.Boolean(string='is striped from', default=False)
+    is_striped_to = fields.Boolean(string='is striped to', default=False)
 
     def _compute_is_occupated(self):
         for rec in self:
@@ -193,34 +196,177 @@ class HrJobCreate(models.Model):
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
 
+
 class HrJobCreateLine(models.Model):
-    _name = 'hr.job.create.line'  
+    _name = 'hr.job.create.line'
     _description = u'الوظائف'
-    
+
     name = fields.Many2one('hr.job.name', string='الوظيفة', required=1)
-    number = fields.Char(string='الرمز', required=1) 
-    job_number = fields.Char(string='الرقم الوظيفي', required=1) 
-    type_id = fields.Many2one('salary.grid.type', related="grade_id.type_id", string='التصنيف', required=1) 
-    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1) 
-    department_id = fields.Many2one('hr.department', string='الإدارة', required=1) 
+    number = fields.Char(string='الرمز', required=1)
+    job_number = fields.Char(string='الرقم الوظيفي', required=1)
+    type_id = fields.Many2one('salary.grid.type', related="grade_id.type_id", string='التصنيف', required=1)
+    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1)
+    department_id = fields.Many2one('hr.department', string='الإدارة', required=1)
     job_create_id = fields.Many2one('hr.job.create', string=' وظائف')
-    _sql_constraints = [
-        ('number_grade_uniq', 'unique(job_number,grade_id)', 'لا يمكن إضافة وظيفتين بنفس الرتبة والرقم'),
-        ] 
-    
-               
+
     @api.onchange('name')
     def onchange_name(self):
         if self.name:
             self.number = self.name.number
-    
-            
+
+    @api.constrains('job_number', 'grade_id')
+    def _check_grade_id_job_number(self):
+        if self.job_number and self.grade_id:
+            # check if there is already a job with same grade and job number
+            jobs = self.env['hr.job'].search([])
+            for job in jobs:
+                if job.grade_id == self.grade_id and job.number == self.job_number:
+                    raise ValidationError(u"يوجد وظيفة بنفس الرقم والمرتبة.")
+
     @api.onchange('grade_id')
     def onchange_holiday_status_id(self):
         res = {}
         # get grades in job_create_id
         if not self.grade_id:
             grade_ids = [rec .id for rec in self.job_create_id.grade_ids]
+            res['domain'] = {'grade_id': [('id', 'in', grade_ids)]}
+            return res
+
+
+class HrJobStripFrom(models.Model):
+    _name = 'hr.job.strip.from'
+    _inherit = ['mail.thread']
+    _description = u'سلخ وظائف من جهة'
+
+    name = fields.Char(string='المسمى', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    fiscal_year = fields.Char(string='السنه المالية', default=(date.today().year), readonly=1)
+    decision_number = fields.Char(string=u"رقم القرار", required=1, readonly=1, states={'new': [('readonly', 0)]})
+    speech_number = fields.Char(string=u'رقم الخطاب')
+    speech_date = fields.Date(string=u'تاريخ الخطاب')
+    speech_file = fields.Binary(string=u'صورة الخطاب')
+    line_ids = fields.One2many('hr.job.strip.from.line', 'job_strip_from_id', readonly=1, states={'new': [('readonly', 0)]})
+    state = fields.Selection([('new', u'طلب'),
+                              ('waiting', u'في إنتظار الموافقة'),
+                              ('hrm1', u'شؤون الموظفين'),
+                              ('budget', u'إدارة الميزانية'),
+                              ('communication', u'إدارة الإتصالات'),
+                              ('external', u'وزارة المالية'),
+                              ('hrm2', u'شؤون الموظفين'),
+                              ('done', u'اعتمدت')
+                              ], readonly=1, default='new')
+    general_id = fields.Many2one('hr.groupe.job', ' المجموعة العامة', ondelete='cascade')
+    specific_id = fields.Many2one('hr.groupe.job', ' المجموعة النوعية', ondelete='cascade')
+    serie_id = fields.Many2one('hr.groupe.job', ' سلسلة الفئات', ondelete='cascade')
+    grade_ids = fields.One2many('salary.grid.grade', 'job_create_id', string='المرتبة')
+
+    @api.onchange('serie_id')
+    def onchange_serie_id(self):
+        if self.serie_id:
+            grides = []
+            for classment in self.serie_id.hr_classment_job_ids:
+                grides.append(classment.grade_id.id)
+            self.grade_ids = grides
+
+    @api.multi
+    def action_waiting(self):
+        self.ensure_one()
+        self.state = 'waiting'
+
+    @api.multi
+    def action_hrm1(self):
+        self.ensure_one()
+        self.state = 'hrm1'
+
+    @api.multi
+    def action_hrm2(self):
+        self.ensure_one()
+        self.state = 'hrm2'
+        # Add to log
+        self.message_post(u"تمت الموافقة من قبل الجهة الخارجية (وزارة المالية)")
+
+    @api.multi
+    def action_budget(self):
+        self.ensure_one()
+        self.state = 'budget'
+        # Add to log
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
+
+    @api.multi
+    def action_external(self):
+        self.ensure_one()
+        self.state = 'external'
+        # Add to log
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"' (إدارة الإتصالات)")
+
+    @api.multi
+    def action_communication(self):
+        self.ensure_one()
+        self.state = 'communication'
+        # Add to log
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"' (إدارة الميزانية)")
+
+    @api.multi
+    def action_done(self):
+        self.ensure_one()
+        for line in self.line_ids:
+            job_val = {'name': line.name.id,
+                       'number': line.job_number,
+                       'type_id': line.type_id.id,
+                       'grade_id': line.grade_id.id,
+                       'department_id': line.department_id.id,
+                       'general_id': self.general_id.id,
+                       'specific_id': self.specific_id.id,
+                       'serie_id': self.serie_id.id
+                       }
+            self.env['hr.job'].create(job_val)
+        self.state = 'done'
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت إحداث الوظائف من قبل '" + unicode(user.name) + u"'")
+
+    @api.multi
+    def action_refuse(self):
+        self.ensure_one()
+        self.state = 'new'
+        # Add to log
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
+
+
+class HrJobStripFromLine(models.Model):
+    _name = 'hr.job.strip.from.line'
+    _description = u'الوظائف'
+
+    name = fields.Many2one('hr.job.name', string='الوظيفة', required=1)
+    number = fields.Char(string='الرمز', required=1)
+    job_number = fields.Char(string='الرقم الوظيفي', required=1)
+    type_id = fields.Many2one('salary.grid.type', related="grade_id.type_id", string='التصنيف', required=1)
+    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1)
+    department_id = fields.Many2one('hr.department', string='الإدارة', required=1)
+    job_strip_from_id = fields.Many2one('hr.job.strip.from', string=' وظائف')
+
+    @api.onchange('name')
+    def onchange_name(self):
+        if self.name:
+            self.number = self.name.number
+
+    @api.constrains('job_number', 'grade_id')
+    def _check_grade_id_job_number(self):
+        if self.job_number and self.grade_id:
+            # check if there is already a job with same grade and job number
+            jobs = self.env['hr.job'].search([])
+            for job in jobs:
+                if job.grade_id == self.grade_id and job.number == self.job_number:
+                    raise ValidationError(u"يوجد وظيفة بنفس الرقم والمرتبة.")
+
+    @api.onchange('grade_id')
+    def onchange_holiday_status_id(self):
+        res = {}
+        # get grades in job_strip_from_id
+        if not self.grade_id:
+            grade_ids = [rec .id for rec in self.job_strip_from_id.grade_ids]
             res['domain'] = {'grade_id': [('id', 'in', grade_ids)]}
             return res
 
