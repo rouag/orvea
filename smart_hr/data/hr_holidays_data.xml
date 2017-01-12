@@ -5,13 +5,13 @@
 		<!-- Leave Types -->
 		
 		<record id="data_hr_holiday_status_normal" model="hr.holidays.status">
-			<field name="name">عادية</field>
+			<field name="name">إجازة عادية</field>
 			<field name="minimum" eval="5" />
 			<field name="postponement_period" eval="90" />
 		</record>
 		
 		<record id="data_hr_holiday_status_exceptional" model="hr.holidays.status">
-			<field name="name">استثنائية</field>
+			<field name="name">إجازة استثنائية</field>
 			<field name="limit" eval="True" />
 			<field name="extension_period" eval="1" />
 			<field name="need_decision" eval="True" />
@@ -23,12 +23,12 @@
 		</record>
 		
 		<record id="data_hr_holiday_status_illness" model="hr.holidays.status">
-			<field name="name">مرضية</field>
+			<field name="name">إجازة مرضيّة</field>
 		</record>
 
 
 		<record id="data_hr_holiday_status_study" model="hr.holidays.status">
-			<field name="name">دراسية</field>
+			<field name="name">إجازة دراسية</field>
 		</record>
 
 
@@ -37,11 +37,11 @@
 		</record>
 
 		<record id="data_hr_holiday_status_sport" model="hr.holidays.status">
-			<field name="name">الرياضية</field>
+			<field name="name">إجازة رياضية</field>
 		</record>
 
 		<record id="data_hr_holiday_status_compelling" model="hr.holidays.status">
-			<field name="name">اضطرارية</field>
+			<field name="name">إجازة اضطرارية</field>
 			<field name="maximum" eval="5" />
 			<field name="for_saudi" eval="True" />
 			<field name="for_other" eval="True" />
@@ -50,7 +50,7 @@
 
 		<record id="data_hr_holiday_status_exceptional_accompaniment"
 			model="hr.holidays.status">
-			<field name="name">استثنائية للمرافقة</field>
+			<field name="name">إجازة استثنائية للمرافقة</field>
 			<field name="extension_period" eval="1" />
 			<field name="need_decision" eval="True" />
 			<field name="deductible_normal_leave" eval="True" />
@@ -62,21 +62,21 @@
 		</record>
 
 		<record id="data_hr_holiday_status_childbirth" model="hr.holidays.status">
-			<field name="name">وضع</field>
+			<field name="name">إجازة وضع</field>
 
 		</record>
 		<record id="data_hr_holiday_status_maternity" model="hr.holidays.status">
-			<field name="name">الامومة</field>
+			<field name="name">إجازة أُمومة</field>
 			<field name="postponement_period" eval="60" />
 		</record>
 
 		<record id="data_hr_holiday_status_adoption" model="hr.holidays.status">
-			<field name="name"> الحضانة</field>
+			<field name="name"> إجازة حضانة</field>
 			<field name="postponement_period" eval="60" />
 		</record>
 
 		<record id="data_hr_holiday_child_birth_dad" model="hr.holidays.status">
-			<field name="name"> المولود</field>
+			<field name="name"> إجازة المولود</field>
 		</record>
 
 		<record id="data_hr_holiday_status_rescue" model="hr.holidays.status">
@@ -84,27 +84,26 @@
 		</record>
 
 		<record id="data_hr_holiday_death" model="hr.holidays.status">
-			<field name="name">الوفاة</field>
+			<field name="name">إجازة وفاة</field>
 			<field name="limit" eval="True" />
 		</record>
 		
 		<record id="data_hr_holiday_dialysis" model="hr.holidays.status">
-			<field name="name">غسيل كلى</field>
+			<field name="name">إجازة غسيل كلى</field>
 			<field name="need_decision" eval="True" />
 		</record>
 
 		<record id="data_hr_holiday_literaty" model="hr.holidays.status">
-			<field name="name">الأدبيّة</field>
-			<field name="educ_lvl_req" eval="True" />
+			<field name="name">إجازة أدبيّة</field>
 		</record>
 
 		<record id="data_hr_holiday_exam" model="hr.holidays.status">
-			<field name="name">‫إمتحان‬</field>
+			<field name="name">‫إجازة إمتحان‬</field>
 		</record>
 
 
 		<record id="data_hr_holiday_status_contractor" model="hr.holidays.status">
-			<field name="name">ا‫لمتعاقدون‬</field>
+			<field name="name">إجازة ا‫لمتعاقدون‬</field>
 			<field name="postponement_period" eval="150" />
 			<field name="limit" eval="True" />
 			<field name="demand_number_max" eval="2" />

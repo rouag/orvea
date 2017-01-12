@@ -102,7 +102,19 @@
 		<record id="not_counted_training" model="hr.training.type">
 			<field name="name">لا تحتسب</field>
 		</record>
+		<!-- مرافقة مريض -->
+		<record id="data_entitlement_accompaniment_exceptional_illness_normal" model="hr.holidays.entitlement.config">
+			<field name="name">مرافقة مريض‫ ‫(أمراض‬ غير‬ خطيرة)‬</field>
+			<field name="code">accompaniment_exceptional</field>
+		</record>
+		<record id="data_entitlement_accompaniment_exceptional_illness_serious" model="hr.holidays.entitlement.config">
+			<field name="name">مرافقة مريض‫ ‫(مرض‬  خطير)‬</field>
+			<field name="code">accompaniment_exceptional</field>
+		</record>
 
-
+		<record id="data_entitlement_accompaniment_exceptional_illness_work_accident" model="hr.holidays.entitlement.config">
+			<field name="name">مرافقة مريض‫ ‫(اصابة عمل)‬</field>
+			<field name="code">accompaniment_exceptional</field>
+		</record>
 	</data>
 </openerp>
