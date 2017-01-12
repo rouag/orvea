@@ -36,45 +36,96 @@ class HrDecisionAppoint(models.Model):
     retirement = fields.Float(string='المحسوم للتقاعد',readonly=1) 
     net_salary = fields.Float(string='صافي الراتب',readonly=1)
     salary_recent = fields.Float(string=' أخر راتب شهري ')
+    transport_alocation = fields.Boolean(string='بدل نقل')
+    transport_car = fields.Boolean(string='سيارة')
     #other info
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
     description=fields.Text(string=' ملاحظات ') 
-    state= fields.Selection([('new','طلب'),('waiting','في إنتظار الإعتماد'),('done','اعتمدت')], readonly=1, default='new',) 
+    state = fields.Selection([('new', u'طلب تعين جديد'),
+                              ('waiting', u'مقابلة شخصية'),
+                              ('budget', u'مديرالهيئة'),
+                              ('hrm', u'شؤون الموظفين'),
+                              ('done', u'اعتمدت')
+                              ], readonly=1, default='new')
+   # state= fields.Selection([('new','طلب'),('waiting','في إنتظار الإعتماد'),('done','اعتمدت')], readonly=1, default='new',) 
     #attachments files
     order_picture=fields.Binary(string='صورة القرار',required=1) 
     medical_examination_file = fields.Binary(string = 'وثيقة الفحص الطبي') 
     order_enquiry_file = fields.Binary(string = 'طلب الاستسفار')
     file_salar_recent = fields.Binary(string = 'إمكانية إرفاق وثيقة')
+    file_engagement = fields.Binary(string = 'تعهد من المترشح')
+    file_appoint = fields.Binary(string = 'قرار التعين')
+    file_decision = fields.Binary(string = 'قرار المباشر')
     
-    
-    @api.one
+    @api.multi
     def action_waiting(self):
-        self.state = 'waiting' 
-         
+        self.ensure_one()
+        self.state = 'waiting'
+    
+    @api.multi
+    def action_communication(self):
+        self.ensure_one()
+        self.state = 'budget'
+        # Add to log
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"' (مديرالهيئة)")
+
+        
+    @api.multi
+    def action_hrm(self):
+        self.ensure_one()
+        self.state = 'hrm'
+        # Add to log
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت الموافقة من قبل شؤون الموظفين)")
+    @api.multi
+    def action_budget(self):
+        self.ensure_one()
+        self.state = 'budget'
+        # Add to log
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
+
+   
     @api.multi
     def action_done(self):
-        if not self.medical_examination_file or not self.order_enquiry_file:
-            raise Warning(_('يجب عليك إرفاق كل من شهادة الفحص الطبي وطلب الاستسفار.'))
-        #update employee data
-        self.employee_id.job_id=self.job_id.id
-        self.employee_id.department_id=self.department_id.id
-        self.employee_id.employee_state='employee'
+        self.ensure_one()
+        for line in self:
+            decision_val = {
+                    'name': line.name,
+                    'number': line.number,
+                    'country_id': line.country_id.id,
+                    'degree_id': line.degree_id.id,
+                    'order_picture': line.order_picture,
+                    'date_hiring': line.date_hiring,
+                    'order_date': line.order_date,
+                     'date_direct_action': line.date_direct_action,
+                    'type_appointment': line.type_appointment.id,
+                    'job_id': line.job_id.id,
+                    'number_job': line.number_job,
+                    'type_id': line.type_id.id,
+                    'far_age': line.far_age,
+                    'grade_id': line.grade_id.id,
+                    'department_id': line.department_id.id,
+                    'file_appoint': line.file_appoint,
+                    'file_decision': line.file_decision,
+                    'employee_id': line.employee_id.id,
+                              
+                     }
+            self.env['hr.decision.appoint'].create(decision_val)
         self.state = 'done'
-        # update holidays balance for the employee
-        self.env['hr.holidays']._init_balance(self.employee_id)
-        # create promotion history line
-        self.env['hr.employee.promotion.history'].create({'employee_id': self.employee_id.id, 'salary_grid_id': self.employee_id.job_id.grade_id.id, 'date_from': fields.Datetime.now() })
-        
-        #create system user and link current employee to created user
-        if self.employee_id.work_email:
-            user = self.env['res.users'].create({'name':self.employee_id.name,'login':self.employee_id.work_email, 'email':self.employee_id.work_email})
-            self.employee_id.user_id = user
-        else:
-            raise Warning(_('الرجاء تعبئة البريد الإلكتروني.'))
-         
-    @api.one
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت إحداث تعين جديد '" + unicode(user.name) + u"'")
+             
+    @api.multi
     def action_refuse(self):
-        self.state = 'new' 
+        self.ensure_one()
+        self.state = 'new'
+        # Add to log
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تم رفض تعين جديد من قبل '" + unicode(user.name) + u"'")
+
+
         
     @api.onchange('employee_id')
     def _onchange_employee_id(self):

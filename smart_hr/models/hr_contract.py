@@ -23,6 +23,7 @@ class HrContract(models.Model):
     assurance=fields.Char(string='التامين') 
     type_id=fields.Many2one('salary.grid.type',string='الصنف',readonly=1) 
     grade_id=fields.Many2one('salary.grid.grade',string='المرتبة',readonly=1)
+    struct_id= fields.Many2one('hr.payroll.structure', 'Salary Structure',required=False)
     #struct_id= fields.Char(string="struct",required=0,),
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة' )
     payement_emploi = fields.Many2one('hr.contract.payement',string=' الدفع المجدول')

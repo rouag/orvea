@@ -98,7 +98,6 @@ access_hr_hr_assessment_result_config,hr_assessment_result_config,model_hr_asses
 ,,,,,,,
 access_hr_job_employee,hr_job,model_hr_job,group_employee,1,0,0,0
 ,,,,,,,
-access_hr_decision_appoint,hr_decision_appoint,model_hr_decision_appoint,group_employee,1,0,0,0
 access_hr_deputation,hr_deputation,model_hr_deputation,group_employee,1,0,0,0
 access_hr_assessment_result_config,hr_assessment_result_config,model_hr_assessment_result_config,group_employee,1,0,0,0
 access_hr_holidays_status_salary_percentage,hr_holidays_status_salary_percentage,model_hr_holidays_status_salary_percentage,group_employee,1,0,0,0
@@ -147,3 +146,18 @@ access_hr_training_type,hr_training_type,model_hr_training_type,,1,1,1,1
 ,,,,,,,
 ,,,,,,,
 access_hr_holidays_extension,hr_holidays_extension,model_hr_holidays_extension,,1,1,1,1
+,,,,,,,
+,,,,,,,
+access_hr_decision_appoint,hr_decision_appoint,model_hr_decision_appoint,group_employee,1,1,1,1
+access_hr_decision_appoint,hr_decision_appoint,model_hr_decision_appoint,group_responsable_decision,1,1,1,1
+access_hr_decision_appoint,hr_decision_appoint,model_hr_decision_appoint,group_responsable_entretien,1,1,1,1
+access_hr_decision_appoint,hr_decision_appoint,model_hr_decision_appoint,group_director_authority,1,1,1,1
+access_hr_decision_appoint,hr_decision_appoint,model_hr_decision_appoint,group_personnel_hr,1,1,1,1
+access_hr_decision_appoint,hr_decision_appoint,model_hr_decision_appoint,group_hrm,1,1,1,1
+
+access_hr_type_appoint,hr_type_appoint,model_hr_type_appoint,group_employee,1,1,1,1
+access_hr_type_appoint,hr_type_appoint,model_hr_type_appoint,group_responsable_decision,1,1,1,1
+access_hr_type_appoint,hr_type_appoint,model_hr_type_appoint,group_responsable_entretien,1,1,1,0
+access_hr_type_appoint,hr_type_appoint,model_hr_type_appoint,group_director_authority,1,1,1,0
+access_hr_type_appoint,hr_type_appoint,model_hr_type_appoint,group_personnel_hr,1,1,1,1
+access_hr_type_appoint,hr_type_appoint,model_hr_type_appoint,group_hrm,1,1,1,1

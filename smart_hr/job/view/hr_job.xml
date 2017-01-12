@@ -142,18 +142,20 @@
 						<button name="action_refuse" string="رفض" type="object"
 							groups="smart_hr.group_new_job_confirmation" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							
 						<button name="action_communication" string="موافقة" type="object"
 							groups="smart_hr.group_budget_managment" states="budget"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							
 						<button name="action_external" string="موافقة" type="object"
 							groups="smart_hr.group_communication_managment" states="communication"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_hrm" string="موافقة" type="object"
 							groups="smart_hr.group_job_external_managment" states="external" />
+							
 						<button name="action_communication" string="رفض" type="object"
 							groups="smart_hr.group_job_external_managment" states="external"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
 						<button name="action_done" string="موافقة" type="object"
 							groups="smart_hr.group_job_external_managment" states="hrm" />
 

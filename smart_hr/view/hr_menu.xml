@@ -6,7 +6,7 @@
 
 		<menuitem id="hr_root_employees" name="إدارة الموظفين" sequence="5" parent="hr_root" />
 
-		<menuitem id="hr_root_organisation_action" name="الإجراءات" sequence="100" parent="hr_root_employees" />
+		<menuitem id="hr_root_organisation_action" name="الإجراءات" sequence="100" parent="hr_root_employees"  />
 
 		<menuitem id="hr_root_organisation_configuration" name="الإعدادات" sequence="500" parent="hr_root_employees" />
 		

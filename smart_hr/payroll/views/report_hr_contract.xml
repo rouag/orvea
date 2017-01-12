@@ -102,13 +102,16 @@
 								</p>
 								<br></br>
 							</div>
-							<t  t-foreach="o.contract_item_ids" t-as="line">
-							<p style="font-size:22px;" align="right">
-							<span t-field="line.name" /> :<span t-field="line.text" /></p>
-							
+							<t t-foreach="o.contract_item_ids" t-as="line">
+								<p style="font-size:22px;" align="right">
+									<span t-field="line.name" />
+									:
+									<span t-field="line.text" />
+								</p>
+
 							</t>
-							
-							<div class="col-xs-8">
+
+							<div class="col-xs-4">
 								<p style="font-size:22px;" align="right">
 									<br></br>
 									الطرف الاول
@@ -124,7 +127,7 @@
 									<span t-field="o.job_id1" />
 								</p>
 							</div>
-
+							<div class="col-xs-4"></div>
 							<div class="col-xs-4">
 								<p style="font-size:22px;" align="right">
 									<br></br>

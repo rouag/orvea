@@ -117,47 +117,79 @@
 			<field name="arch" type="xml">
 				<form string="قرار تعيين">
 					<header>
-						<button name="action_waiting" string="إرسال للإعتماد" type="object"
-							states="new" />
-						<button name="action_done" string="إعتماد" type="object"
-							states="waiting" />
+						<button name="action_waiting" string="إرسال " type="object"
+							groups="smart_hr.group_responsable_decision" states="new"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_communication" string="موافقة" type="object"
+							groups="smart_hr.group_responsable_entretien" states="waiting"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
 						<button name="action_refuse" string="رفض" type="object"
-							states="waiting" />
-						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
+							groups="smart_hr.group_responsable_entretien" states="waiting"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_hrm" string="موافقة" type="object"
+							groups="smart_hr.group_director_authority" states="budget"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_refuse" string="رفض" type="object"
+							groups="smart_hr.group_director_authority" states="budget"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_done" string="موافقة" type="object"
+							groups="smart_hr.group_personnel_hr" states="hrm" />
+
+						<button name="action_refuse" string="رفض" type="object"
+							groups="smart_hr.group_personnel_hr" states="hrm"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<field name="state" widget="statusbar" statusbar_visible="new,waiting,budget,hrm,done" />
 					</header>
+
 					<sheet>
 						<group>
 							<group string="بيانات القرار">
-								<field name="name" />
-								<field name="order_date" />
-								<field name="order_picture" />
+								<field name="name" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
+								<field name="order_date" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
+								<field name="order_picture" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
+								<field name="file_appoint"
+									attrs="{'invisible':[('state', 'not in', ['hrm'])],'required':[('state','=','hrm')]}" />
+								<field name="file_decision"
+									attrs="{'invisible':[('state', 'not in', ['hrm'])],'required':[('state','=','hrm')]}" />
 
 							</group>
 							<group string="بيانات التعيين">
-								<field name="date_hiring" />
-								<field name="type_appointment" />
-								<field name="instead_exchange" />
-								<field name="date_direct_action" />
-								<field name="decision_state" />
+								<field name="date_hiring"  	 attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
+								<field name="type_appointment"
+								 attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
+								<field name="instead_exchange" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
+								<field name="date_direct_action" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'done'])]}"  />
+								<field name="decision_state" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
+								<field name="transport_alocation" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
+								<field name="transport_car" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
+
 
 							</group>
 							<group string="بيانات الموظف">
-								<field name="employee_id" domain="[('employee_state','=','done')]" />
+								<field name="employee_id" domain="[('employee_state','=','done')]" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
 								<field name="number" />
 								<field name="country_id" />
-								<field name="medical_examination_file" />
-								<field name="order_enquiry_file" />
+								<field name="medical_examination_file" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
+								<field name="order_enquiry_file" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
 
-								<field name="file_salar_recent" />
+								<field name="file_salar_recent" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
+								<field name="file_engagement" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
+
 
 							</group>
 							<group string="بيانات الوظيفة">
-								<field name="job_id" />
+								<field name="job_id" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
 								<field name="number_job" />
 								<field name="type_id" />
 								<field name="department_id" />
 								<field name="grade_id" />
-								<field name="degree_id" domain="[('grade_id','=',grade_id)]" />
+								<field name="degree_id" domain="[('grade_id','=',grade_id)]" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
 								<field name="far_age" />
 								<field name="basic_salary" />
 								<field name="transport_allow" />
@@ -167,7 +199,7 @@
 						</group>
 						<group>
 							<field name="description" placeholder="ملاحظات ..."
-								colspan="4" />
+								colspan="4" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
 						</group>
 					</sheet>
 					<div class="oe_chatter">
@@ -186,7 +218,7 @@
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 		<menuitem id="hr_decision_appoint_menu" name="التعيين"
-			groups="smart_hr.group_hrm" sequence="10" parent="hr_root_organisation_action"
+			 sequence="10" parent="hr_root_organisation_action"
 			action="action_hr_decision_appoint" />
 	</data>
 </openerp>

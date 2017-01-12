@@ -33,12 +33,14 @@
 					expr="/form/sheet/notebook/page/group/group[@name='salary_and_advantages']"
 					position="after">
 					<group name="payement" string=" الرواتب و البدلات  ">
+						<field name="struct_id" invisible="1" />
 						<field name="basic_salary" />
 						<field name="transport_allow" />
 						<field name="net_salary" />
 						<field name="assurance" />
 						<field name="ticket_travel" />
 						<field name="ticket_famely" />
+					
 
 					</group>
 
