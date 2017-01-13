@@ -32,6 +32,11 @@
 			<field name="name">صاحب صلاحية - سلخ من جهة</field>
 			<field name="category_id" ref="base.module_category_human_resources" />
 		</record>
+		
+		<record id="group_strip_to_job" model="res.groups">
+			<field name="name">صاحب صلاحية - سلخ إلى جهة</field>
+			<field name="category_id" ref="base.module_category_human_resources" />
+		</record>
 
 		<record id="group_budget_managment" model="res.groups">
 			<field name="name">إدارة الميزانية</field>

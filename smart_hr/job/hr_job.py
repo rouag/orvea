@@ -236,6 +236,7 @@ class HrJobCreateLine(models.Model):
 class HrJobStripFrom(models.Model):
     _name = 'hr.job.strip.from'
     _inherit = ['mail.thread']
+    _rec_name = 'employee_id'
     _description = u'سلخ وظائف من جهة'
 
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1, readonly=1)
@@ -262,7 +263,7 @@ class HrJobStripFrom(models.Model):
     general_id = fields.Many2one('hr.groupe.job', ' المجموعة العامة', ondelete='cascade')
     specific_id = fields.Many2one('hr.groupe.job', ' المجموعة النوعية', ondelete='cascade')
     serie_id = fields.Many2one('hr.groupe.job', ' سلسلة الفئات', ondelete='cascade')
-    grade_ids = fields.One2many('salary.grid.grade', 'job_create_id', string='المرتبة')
+    grade_ids = fields.One2many('salary.grid.grade', 'job_strip_from_id', string='المرتبة')
 
     @api.onchange('serie_id')
     def onchange_serie_id(self):
@@ -345,13 +346,13 @@ class HrJobStripFromLine(models.Model):
     _name = 'hr.job.strip.from.line'
     _description = u'الوظائف'
 
-    name = fields.Many2one('hr.job.name', string='الوظيفة', required=1)
-    number = fields.Char(string='الرمز', required=1)
-    job_number = fields.Char(string='الرقم الوظيفي', required=1)
-    type_id = fields.Many2one('salary.grid.type', related="grade_id.type_id", string='التصنيف', required=1)
-    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1)
-    department_id = fields.Many2one('hr.department', string='الإدارة', required=1)
-    job_strip_from_id = fields.Many2one('hr.job.strip.from', string=' وظائف')
+    name = fields.Many2one('hr.job.name', string=u'الوظيفة', required=1)
+    number = fields.Char(string=u'الرمز', required=1)
+    job_number = fields.Char(string=u'الرقم الوظيفي', required=1)
+    type_id = fields.Many2one('salary.grid.type', related="grade_id.type_id", string=u'التصنيف', required=1)
+    grade_id = fields.Many2one('salary.grid.grade', string=u'المرتبة', required=1)
+    department_id = fields.Many2one('hr.department', string=u'الإدارة', required=1)
+    job_strip_from_id = fields.Many2one('hr.job.strip.from', string=u' وظائف')
 
     @api.onchange('name')
     def onchange_name(self):
@@ -375,6 +376,110 @@ class HrJobStripFromLine(models.Model):
             grade_ids = [rec .id for rec in self.job_strip_from_id.grade_ids]
             res['domain'] = {'grade_id': [('id', 'in', grade_ids)]}
             return res
+
+
+class HrJobStripTo(models.Model):
+    _name = 'hr.job.strip.to'
+    _inherit = ['mail.thread']
+    _description = u' سلخ وظيفة إلى جهة'
+    _rec_name = 'employee_id'
+
+    employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1, readonly=1)
+    speech_number = fields.Char(string=u'رقم الخطاب')
+    speech_date = fields.Date(string=u'تاريخ الخطاب')
+    speech_file = fields.Binary(string=u'صورة الخطاب')
+    out_speech_number = fields.Char(string=u'رقم الخطاب الصادر')
+    out_speech_date = fields.Date(string=u'تاريخ الخطاب الصادر')
+    out_speech_file = fields.Binary(string=u'صورة الخطاب الصادر')
+    in_speech_number = fields.Char(string=u'رقم الخطاب الوارد')
+    in_speech_date = fields.Date(string=u'تاريخ الخطاب الوارد')
+    in_speech_file = fields.Binary(string=u'صورة الخطاب الوارد ')
+    line_ids = fields.One2many('hr.job.strip.to.line', 'job_strip_to_id')
+    state = fields.Selection([('new', u'طلب'),
+                              ('waiting', u'في إنتظار الموافقة'),
+                              ('hrm1', u'شؤون الموظفين'),
+                              ('communication', u'إدارة الإتصالات'),
+                              ('external', u'وزارة المالية'),
+                              ('hrm2', u'شؤون الموظفين'),
+                              ('done', u'اعتمدت')
+                              ], readonly=1, default='new')
+
+    @api.multi
+    def action_waiting(self):
+        self.ensure_one()
+        self.state = 'waiting'
+
+    @api.multi
+    def action_hrm1(self):
+        self.ensure_one()
+        self.state = 'hrm1'
+
+    @api.multi
+    def action_hrm2(self):
+        self.ensure_one()
+        self.state = 'hrm2'
+        # Add to log
+        self.message_post(u"تمت الموافقة من قبل الجهة الخارجية (وزارة المالية)")
+
+    @api.multi
+    def action_budget(self):
+        self.ensure_one()
+        self.state = 'budget'
+        # Add to log
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
+
+    @api.multi
+    def action_external(self):
+        self.ensure_one()
+        self.state = 'external'
+        # Add to log
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"' (إدارة الإتصالات)")
+
+    @api.multi
+    def action_communication(self):
+        self.ensure_one()
+        self.state = 'communication'
+        # Add to log
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"' (إدارة الميزانية)")
+
+    @api.multi
+    def action_done(self):
+        self.ensure_one()
+        self.state = 'done'
+        for job in self.line_ids:
+            job.job_id.state = 'cancel'
+            job.job_id.is_striped_to = True
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت إلغاء الوظائف من قبل '" + unicode(user.name) + u"'")
+
+    @api.multi
+    def action_refuse(self):
+        self.ensure_one()
+        self.state = 'new'
+        # Add to log
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
+
+
+class HrJobStripToLine(models.Model):
+    _name = 'hr.job.strip.to.line'
+    _description = u'الوظائف'
+
+    job_strip_to_id = fields.Many2one('hr.job.strip.to', string='الوظيفة', required=1)
+    job_id = fields.Many2one('hr.job', string='الوظيفة', required=1)
+    type_id = fields.Many2one('salary.grid.type', string='التصنيف', required=1, readonly=1)
+    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1, readonly=1)
+    department_id = fields.Many2one('hr.department', string='الإدارة', required=1, readonly=1)
+
+    @api.onchange('job_id')
+    def _onchange_job_id(self):
+        if self.job_id:
+            self.type_id = self.job_id.type_id.id
+            self.grade_id = self.job_id.grade_id.id
+            self.department_id = self.job_id.department_id.id
 
 
 class HrJobCancel(models.Model):
