@@ -222,7 +222,7 @@
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
 				<tree string="سلخ من جهة" delete='0'>
-					<field name="name" />
+					<field name="employee_id" />
 					<field name="speech_number" />
 					<field name="speech_date" />
 					<field name="state" />
@@ -243,41 +243,47 @@
 						<button name="action_hrm1" string="موافقة" type="object"
 							groups="smart_hr.group_strip_from_job" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_budget" string="موافقة" type="object"
-							groups="smart_hr.group_strip_from_job" states="hrm1"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
 						<button name="action_refuse" string="رفض" type="object"
 							groups="smart_hr.group_strip_from_job" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+
 						<button name="action_communication" string="موافقة" type="object"
-							groups="smart_hr.group_budget_managment" states="budget"
+							groups="smart_hr.group_hrm" states="hrm1"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
 						<button name="action_external" string="موافقة" type="object"
 							groups="smart_hr.group_communication_managment" states="communication"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
 						<button name="action_hrm2" string="موافقة" type="object"
 							groups="smart_hr.group_job_external_managment" states="external" />
-						<button name="action_communication" string="رفض" type="object"
-							groups="smart_hr.group_job_external_managment" states="external"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
-						<button name="action_done" string="موافقة" type="object"
-							groups="smart_hr.group_job_external_managment" states="hrm" />
-
+						
+						<button name="action_done" string="إحداث الوظائف" type="object"
+							groups="smart_hr.group_hrm" states="hrm2" />
+						
 						<field name="state" widget="statusbar"
-							statusbar_visible="new,waiting,hrm1,budget,communication,external,hrm2,done" />
+							statusbar_visible="new,waiting,hrm1,communication,external,hrm2,done" />
 					</header>
 					<sheet string="سلخ من جهة">
 						<group col="4">
-							<field name="name" />
+							<field name="employee_id" />
 							<field name="decision_number" />
-							<field name="speech_number"
-								attrs="{'invisible':[('state', 'not in', ['hrm','done'])],'required':[('state','=','hrm2')], 'readonly':[('state', '=', 'done')]}" />
-							<field name="speech_date"
-								attrs="{'invisible':[('state', 'not in', ['hrm','done'])],'required':[('state','=','hrm2')], 'readonly':[('state', '=', 'done')]}" />
-							<field name="speech_file"
-								attrs="{'invisible':[('state', 'not in', ['hrm','done'])],'required':[('state','=','hrm2')], 'readonly':[('state', '=', 'done')]}" />
 							<field name="fiscal_year" />
+							<field name="speech_number"
+								attrs="{'invisible':[('state', 'not in', ['hrm1','communication','external','hrm2','done'])],'required':[('state','=','hrm1')], 'readonly':[('state', 'in', ['communication','external','hrm2','done'])]}" />
+							<field name="speech_date"
+								attrs="{'invisible':[('state', 'not in', ['hrm1','communication','external','hrm2','done'])],'required':[('state','=','hrm1')], 'readonly':[('state', 'in', ['communication','external','hrm2','done'])]}" />
+							<field name="speech_file"
+								attrs="{'invisible':[('state', 'not in', ['hrm1','communication','external','hrm2','done'])],'required':[('state','=','hrm1')], 'readonly':[('state', 'in', ['communication','external','hrm2','done'])]}" />
+
+							<field name="in_speech_number"
+								attrs="{'invisible':[('state', 'not in', ['communication','external','hrm2','done'])],'required':[('state','=','communication')], 'readonly':[('state', 'in', ['external','hrm2','done'])]}" />
+							<field name="in_speech_date"
+								attrs="{'invisible':[('state', 'not in', ['communication','external','hrm2','done'])],'required':[('state','=','communication')], 'readonly':[('state', 'in', ['external','hrm2','done'])]}" />
+							<field name="in_speech_file"
+								attrs="{'invisible':[('state', 'not in', ['communication','external','hrm2','done'])],'required':[('state','=','communication')], 'readonly':[('state', 'in', ['external','hrm2','done'])]}" />
 						</group>
 						<group col="6">
 							<field name="general_id" domain="[('group_type', '=', 'general')]"

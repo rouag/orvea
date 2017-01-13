@@ -95,12 +95,13 @@ class HrJobReservation(models.Model):
             print self.date_from
             print self.date_to
             self.env['hr.job'].search([('id', '=', self._context['job_id'])]).write({'occupation_date_from': self.date_from, 'occupation_date_to': self.date_to})
-           
+
+
 class HrJobCreate(models.Model):
-    _name = 'hr.job.create'  
+    _name = 'hr.job.create'
     _inherit = ['mail.thread']
     _description = u'إحداث وظائف'
-    
+
     name = fields.Char(string='المسمى', required=1, readonly=1, states={'new': [('readonly', 0)]})
     fiscal_year = fields.Char(string='السنه المالية', default=(date.today().year), readonly=1)
     decision_number = fields.Char(string=u"رقم القرار", required=1, readonly=1, states={'new': [('readonly', 0)]})
@@ -141,7 +142,6 @@ class HrJobCreate(models.Model):
         self.ensure_one()
         self.state = 'hrm'
         # Add to log
-        user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل الجهة الخارجية (وزارة المالية)")
 
     @api.multi
@@ -224,7 +224,7 @@ class HrJobCreateLine(models.Model):
                     raise ValidationError(u"يوجد وظيفة بنفس الرقم والمرتبة.")
 
     @api.onchange('grade_id')
-    def onchange_holiday_status_id(self):
+    def onchange_grade_idd(self):
         res = {}
         # get grades in job_create_id
         if not self.grade_id:
@@ -238,17 +238,22 @@ class HrJobStripFrom(models.Model):
     _inherit = ['mail.thread']
     _description = u'سلخ وظائف من جهة'
 
-    name = fields.Char(string='المسمى', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1, readonly=1)
     fiscal_year = fields.Char(string='السنه المالية', default=(date.today().year), readonly=1)
     decision_number = fields.Char(string=u"رقم القرار", required=1, readonly=1, states={'new': [('readonly', 0)]})
     speech_number = fields.Char(string=u'رقم الخطاب')
     speech_date = fields.Date(string=u'تاريخ الخطاب')
     speech_file = fields.Binary(string=u'صورة الخطاب')
+    out_speech_number = fields.Char(string=u'رقم الخطاب الصادر')
+    out_speech_date = fields.Date(string=u'تاريخ الخطاب الصادر')
+    out_speech_file = fields.Binary(string=u'صورة الخطاب الصادر')
+    in_speech_number = fields.Char(string=u'رقم الخطاب الوارد')
+    in_speech_date = fields.Date(string=u'تاريخ الخطاب الوارد')
+    in_speech_file = fields.Binary(string=u'صورة الخطاب الوارد ')
     line_ids = fields.One2many('hr.job.strip.from.line', 'job_strip_from_id', readonly=1, states={'new': [('readonly', 0)]})
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', u'في إنتظار الموافقة'),
                               ('hrm1', u'شؤون الموظفين'),
-                              ('budget', u'إدارة الميزانية'),
                               ('communication', u'إدارة الإتصالات'),
                               ('external', u'وزارة المالية'),
                               ('hrm2', u'شؤون الموظفين'),
@@ -319,7 +324,8 @@ class HrJobStripFrom(models.Model):
                        'department_id': line.department_id.id,
                        'general_id': self.general_id.id,
                        'specific_id': self.specific_id.id,
-                       'serie_id': self.serie_id.id
+                       'serie_id': self.serie_id.id,
+                       'is_striped_from': True
                        }
             self.env['hr.job'].create(job_val)
         self.state = 'done'
@@ -362,7 +368,7 @@ class HrJobStripFromLine(models.Model):
                     raise ValidationError(u"يوجد وظيفة بنفس الرقم والمرتبة.")
 
     @api.onchange('grade_id')
-    def onchange_holiday_status_id(self):
+    def onchange_grade_id(self):
         res = {}
         # get grades in job_strip_from_id
         if not self.grade_id:
