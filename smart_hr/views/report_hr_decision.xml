@@ -8,21 +8,22 @@
 		<template id="report_hr_decision">
 			<t t-call="report.html_container">
 				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.external_layout_extend">
+						<div class="page" style="direction:rtl;">
+							<div class="row">
+								<div class="col-xs-12" style="margin-top:20px;">
+									<p style="font-size:22px;" align="center">
 
-					<div class="page" style="direction:rtl;">
-						<div class="row">
-							<div class="col-xs-12" style="margin-top:20px;">
-								<p style="font-size:22px;" align="center">
+										<span t-field="o.decision_type_id.name" />
+									</p>
+								</div>
 
-									<span t-field="o.decision_type_id.name" />
-								</p>
-							</div>
-
-							<div class="col-md-12">
-								<span t-field="o.text" />
+								<div class="col-md-12">
+									<span t-field="o.text" />
+								</div>
 							</div>
 						</div>
-					</div>
+					</t>
 				</t>
 			</t>
 		</template>

@@ -112,8 +112,10 @@ class HrDecisionAppoint(models.Model):
                     'employee_id': line.employee_id.id,
                               
                      }
-            
+            line.employee_id.write({'employee_state':'employee','job_id':line.job_id.id})
             self.env['hr.decision.appoint'].create(decision_val)
+          
+            
         self.state = 'done'
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت إحداث تعين جديد '" + unicode(user.name) + u"'")
