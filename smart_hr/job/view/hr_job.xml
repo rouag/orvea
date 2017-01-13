@@ -50,6 +50,7 @@
 							</h1>
 						</div>
 						<group col="4">
+							<field name="name" />
 							<field name="number" />
 							<field name="employee" attrs="{'invisible': [('state','!=', 'occupied')]}" />
 							<field name="general_id" />
@@ -439,10 +440,10 @@
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
 				<tree string="تعديل وظائف">
-					<field name="name" />
-					<field name="speech_number" />
-					<field name="speech_date" />
-					<field name="speech_file" />
+					<field name="employee_id" />
+					<field name="out_speech_number" />
+					<field name="out_speech_date" />
+					<field name="out_speech_file" />
 				</tree>
 			</field>
 		</record>
@@ -453,28 +454,60 @@
 			<field name="arch" type="xml">
 				<form string="تعديل وظائف">
 					<header>
+						
 						<button name="action_waiting" string="إرسال للإعتماد" type="object"
-							states="new" />
-						<button name="action_done" string="إعتماد" type="object"
-							states="waiting" />
+							groups="smart_hr.group_job_managment" states="new"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_hrm1" string="موافقة" type="object"
+							groups="smart_hr.group_update_job" states="waiting"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_refuse" string="رفض" type="object"
-							states="waiting" />
-						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
+							groups="smart_hr.group_update_job" states="waiting"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_budget" string="حجز الوظائف و إرسال الطلب"
+							type="object" groups="smart_hr.group_hrm" states="hrm1" />
+						<button name="action_communication" string="موافقة" type="object"
+							groups="smart_hr.group_budget_managment" states="budget"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_external" string="موافقة" type="object"
+							groups="smart_hr.group_communication_managment" states="communication"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_hrm2" string="موافقة" type="object"
+							groups="smart_hr.group_job_external_managment" states="external" />
+						<button name="action_communication" string="رفض" type="object"
+							groups="smart_hr.group_job_external_managment" states="external"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_job_unreserve" string="فك حجز الوظائف"
+							type="object" groups="smart_hr.group_hrm" states="hrm2"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<field name="state" widget="statusbar"
+							statusbar_visible="new,waiting,hrm1,budget,communication,external,hrm2,done" />
 					</header>
 					<sheet>
 						<group col="4">
-							<field name="name" />
-							<field name="speech_number" />
-							<field name="speech_date" />
-							<field name="speech_file" />
+							<field name="employee_id" />
+							
+							<field name="out_speech_number"
+								attrs="{'invisible':[('state', 'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" />
+							<field name="out_speech_date"
+								attrs="{'invisible':[('state', 'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" />
+							<field name="out_speech_file"
+								attrs="{'invisible':[('state', 'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" />
+							<field name="in_speech_number"
+								attrs="{'invisible':[('state', 'not in', ['external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','external')]}" />
+							<field name="in_speech_date"
+								attrs="{'invisible':[('state', 'not in', ['external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','external')]}" />
+							<field name="in_speech_file"
+								attrs="{'invisible':[('state', 'not in', ['external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','external')]}" />
 						</group>
 
 						<field name="job_update_ids" string=" تحوير‬  وظائف">
 							<tree editable="bottom">
-								<field name="job_id"
-									domain="[('state','=','unoccupied'),('is_occupied','=',False)]" />
+								<field name="job_id" />
+								<field name="old_name" />
 								<field name="new_name" />
-								<field name="type_id" />
+								<field name="old_type_id" />
+								<field name="new_type_id" />
 								<field name="department_id" />
 								<field name="grade_id" />
 							</tree>
