@@ -2,6 +2,46 @@
 <openerp>
 	<data>
 
+		<!-- إعداد الدفع -->
+		<record model="ir.ui.view" id="hr_contract_payement_tree">
+			<field name="name">hr.contract.payement.tree</field>
+			<field name="model">hr.contract.payement</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="دفع المجدول">
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_contract_payement_form">
+			<field name="name">hr.contract.payement.form</field>
+			<field name="model">hr.contract.payement</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string=" دفع المجدول">
+					<sheet>
+						<group>
+							<field name="name" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_contract_payement">
+			<field name="name"> دفع المجدول</field>
+			<field name="res_model">hr.contract.payement</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<!--<menuitem id="hr_contract_payement_menu" name="جدولة دفع الرواتب "
+			sequence="42" parent="hr_payroll_setting" />
+
+		<menuitem id="hr_contract_payement_menu_sou" name="  الدفع المجدول"
+			sequence="25" parent="hr_contract_payement_menu" action="action_hr_contract_payement" />  -->
+
+		<!-- HR Contract -->
+		
 		<record id="view_hr_contract_form_inherit" model="ir.ui.view">
 			<field name="name">hr.contract.form.inherit</field>
 			<field name="model">hr.contract</field>

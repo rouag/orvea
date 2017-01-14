@@ -36,7 +36,10 @@
         'hr/menu.xml',
         'hr/view/hierarchy_level.xml',
         'hr/view/hr_department_view.xml',
-
+        'hr/view/hr_contract_inherit_view.xml',
+        'hr/view/hr_contract_item_view.xml',
+        'hr/views/report_hr_contract.xml',
+        'hr/views/report.xml',
 
         'views/report_salary_grid.xml',
         'views/report_medical_examination.xml',
@@ -85,6 +88,8 @@
         'view/external_autorities.xml',
         'view/holiday_entitlement_types.xml',
         'view/hr_holidays_extension.xml',
+        
+
 
 
         # القرارات
@@ -96,14 +101,11 @@
         'payroll/view/setting_view.xml',
         'payroll/view/hr_salary_rule_view.xml',
         'payroll/view/hr_deduction.xml',
-        'payroll/view/hr_contract_inherit_view.xml',
-        'payroll/view/hr_contract_item_view.xml',
         'payroll/views/report_hr_deduction.xml',
         'payroll/views/report_hr_deduction_line.xml',
-        'payroll/views/report_hr_contract.xml',
-        'payroll/views/report.xml',
         
-
+        
+         
         # الحضور والإنصراف
         'attendance/security/attendance_security.xml',
         'attendance/security/ir.model.access.csv',
