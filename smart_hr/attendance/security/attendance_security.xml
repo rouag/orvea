@@ -7,8 +7,10 @@
 			<field name="name">تحديث سجل الحضور والإنصراف</field>
 		</record>
 	 
+	 	<!-- الساعات الإضافية -->
+	 	
 		<record id="employee_hr_extra_hours" model="ir.rule">
-			<field name="name">طلباتي</field>
+			<field name="name"> طلباتي : الساعات الإضافية </field>
 			<field name="model_id" ref="model_hr_extra_hours" />
 			<field name="domain_force">[('employee_id.user_id','=',user.id)]</field>
 			<field name="groups" eval="[(4,ref('smart_hr.group_employee'))]" />
@@ -27,9 +29,11 @@
 			<field name="domain_force">[(1,'=',1)]</field>
 			<field name="groups" eval="[(4,ref('smart_hr.group_hrm'))]" />
 		</record>
-		
+
+	 	<!-- إستئذان -->
+	 			
 		<record id="employee_authorization" model="ir.rule">
-			<field name="name">طلباتي</field>
+			<field name="name">طلباتي  : إستئذان </field>
 			<field name="model_id" ref="model_hr_authorization" />
 			<field name="domain_force">[('employee_id.user_id','=',user.id)]</field>
 			<field name="groups" eval="[(4,ref('smart_hr.group_employee'))]" />
@@ -49,6 +53,8 @@
 			<field name="groups" eval="[(4,ref('smart_hr.group_hrm'))]" />
 		</record>
 
+	 	<!-- ساعات التأخير و الخروج المبكر -->
+	 	
 		<record id="dm_attendance_check" model="ir.rule">
 			<field name="name"> ساعات التأخير و الخروج المبكر المدير المباشر </field>
 			<field name="model_id" ref="model_hr_attendance_check" />
@@ -62,6 +68,29 @@
 			<field name="domain_force">[(1,'=',1)]</field>
 			<field name="groups" eval="[(4,ref('smart_hr.group_hrm'))]" />
 		</record>
-								
+
+	 	<!-- طلبات تحويل ساعات التأخير والغيابات --> 
+	 	
+		<record id="employee_request_transfer" model="ir.rule">
+			<field name="name">طلباتي  : طلبات تحويل ساعات التأخير والغيابات </field>
+			<field name="model_id" ref="model_hr_request_transfer" />
+			<field name="domain_force">[('employee_id.user_id','=',user.id)]</field>
+			<field name="groups" eval="[(4,ref('smart_hr.group_employee'))]" />
+		</record>
+
+		<record id="dm_request_transfer" model="ir.rule">
+			<field name="name">طلبات تحويل ساعات التأخير والغيابات  موظفي المدير المباشر </field>
+			<field name="model_id" ref="model_hr_request_transfer" />
+			<field name="domain_force">['|',('employee_id.parent_id.user_id','=',user.id),('employee_id.user_id','=',user.id)]</field>
+			<field name="groups" eval="[(4,ref('smart_hr.group_dm'))]" />
+		</record>
+		
+		<record id="hrm_request_transfer" model="ir.rule">
+			<field name="name">كل طلبات تحويل ساعات التأخير والغيابات </field>
+			<field name="model_id" ref="model_hr_request_transfer" />
+			<field name="domain_force">[(1,'=',1)]</field>
+			<field name="groups" eval="[(4,ref('smart_hr.group_hrm'))]" />
+		</record>
+										
  </data>
 </openerp>

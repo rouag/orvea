@@ -1,1 +1,1 @@
-from . import attendance_summary_report
+from . import report_parser

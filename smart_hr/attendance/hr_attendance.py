@@ -4,13 +4,27 @@ from openerp import fields, models, api, _
 import base64
 from tempfile import TemporaryFile
 import csv
+import time as time_date
 from datetime import datetime, timedelta, time
 from openerp.exceptions import ValidationError
 from umalqurra.hijri_date import HijriDate
 from openerp.addons.smart_base.util.time_util import float_time_convert
 from openerp.addons.smart_base.util.time_util import time_float_convert
+from dateutil import relativedelta
 
 FORMAT_TIME = '%H:%M:%S'
+MONTHS = [('1', 'محرّم'),
+          ('2', 'صفر'),
+          ('3', 'ربيع الأول'),
+          ('4', 'ربيع الثاني'),
+          ('5', 'جمادي الأولى'),
+          ('6', 'جمادي الآخرة'),
+          ('7', 'رجب'),
+          ('8', 'شعبان'),
+          ('9', 'رمضان'),
+          ('10', 'شوال'),
+          ('11', 'ذو القعدة'),
+          ('12', 'ذو الحجة')]
 
 
 class ResourceCalendar(models.Model):
@@ -591,3 +605,111 @@ class HrAttendanceSummary(models.Model):
     authorization = fields.Float(string='إستئذان')
     holidays = fields.Float(string='إجازة')
     absence = fields.Float(string='غياب')
+
+
+class HrMonthlySummary(models.Model):
+    _name = 'hr.monthly.summary'
+    _inherit = ['mail.thread']
+    _description = u'الخلاصة الشهرية للغيابات والتأخير'
+    _order = 'id desc'
+    # TODO: get default MONTH
+
+    name = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    date = fields.Date(string='التاريخ', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    date_from = fields.Date('تاريخ من', default=lambda *a: time_date.strftime('%Y-%m-01'),
+                            readonly=1, states={'new': [('readonly', 0)]})
+    date_to = fields.Date('إلى', default=lambda *a: str(datetime.now() + relativedelta.relativedelta(months=+1, day=1, days=-1))[:10],
+                          readonly=1, states={'new': [('readonly', 0)]})
+    description = fields.Text(string=' ملاحظات ')
+    state = fields.Selection([('new', 'مسودة'),
+                              ('waiting', 'في إنتظار الإعتماد'),
+                              ('cancel', 'مرفوض'),
+                              ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
+    line_ids = fields.One2many('hr.monthly.summary.line', 'monthly_summary_id', string='التفاصيل')
+
+    @api.onchange('date_from', 'date_to')
+    def onchange_date(self):
+        line_ids = []
+        # delete current line
+        self.line_ids.unlink()
+        # get all line
+        attendance_summary_obj = self.env['hr.attendance.summary']
+        all_attendances = attendance_summary_obj.search([('date', '>=', self.date_from), ('date', '<=', self.date_to)])
+        monthly_summary = {}
+        for attendance in all_attendances:
+            if attendance.retard or attendance.leave or attendance.absence:
+                key = attendance.employee_id
+                if key not in monthly_summary:
+                    monthly_summary[key] = {'delay_hours': 0.0, 'absence': 0.0, 'balance_previous': 0.0}
+                if attendance.retard or attendance.leave:
+                    monthly_summary[key]['delay_hours'] += attendance.retard + attendance.leave
+                if attendance.retard:
+                    monthly_summary[key]['absence'] += attendance.absence
+        # create line in summary
+        request_transfer_obj = self.env['hr.request.transfer']
+        for employee in monthly_summary:
+            absence = monthly_summary[employee]['absence']
+            delay_hours = monthly_summary[employee]['delay_hours']
+            balance_previous = 0.0
+            balance_forward = 0.0
+            total_days = 0.0
+            # check طلبات تحويل ساعات التأخير
+            request_transfers = request_transfer_obj.search([('employee_id', '=', employee.id), ('date', '>=', self.date_from), ('date', '<=', self.date_to)])
+            for request in request_transfers:
+                if request.type == 'delay_hours':
+                    delay_hours -= request.number_request
+                elif request.type == 'absence':
+                    absence -= request.number_request
+            # check رصيد الشهر السابق
+            monthly_summary_line_obj = self.env['hr.monthly.summary.line']
+            summary_lines = monthly_summary_line_obj.search([('employee_id', '=', employee.id)])
+            if summary_lines:
+                balance_previous = summary_lines[0].balance_forward
+            # create line if employee have a delay_hours or absence
+            if delay_hours or absence or balance_previous:
+                balance_forward = delay_hours + balance_previous
+                if balance_forward >= 7:
+                    total_days += int(balance_forward / 7)
+                    balance_forward = balance_forward % 7
+                line = {'monthly_summary_id': self.id,
+                        'employee_id': employee.id,
+                        'department_id': employee.job_id.department_id,
+                        'job_id': employee.job_id,
+                        'grade_id': employee.job_id.grade_id,
+                        'delay_hours': monthly_summary[employee]['delay_hours'],
+                        'absence': monthly_summary[employee]['absence'],
+                        'total_days': total_days,
+                        'balance_previous': balance_previous,
+                        'balance_forward': balance_forward}
+                line_ids.append(line)
+        self.line_ids = line_ids
+
+    @api.one
+    def action_waiting(self):
+        self.name = self.env['ir.sequence'].get('seq.hr.authorization')
+        self.state = 'waiting'
+
+    @api.multi
+    def action_done(self):
+        self.state = 'done'
+
+    @api.one
+    def action_refuse(self):
+        self.state = 'cancel'
+
+
+class HrMonthlySummaryLine(models.Model):
+    _name = 'hr.monthly.summary.line'
+    _order = 'id desc'
+    _rec_name = 'employee_id'
+
+    monthly_summary_id = fields.Many2one('hr.monthly.summary', string='الخلاصة الشهرية', ondelete='cascade')
+    employee_id = fields.Many2one('hr.employee', string='الموظف', required=1, readonly=1)
+    department_id = fields.Many2one('hr.department', string='القسم', readonly=1)
+    job_id = fields.Many2one('hr.job', string='الوظيفة', readonly=1)
+    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
+    balance_previous = fields.Float(string='رصيد الشهر السابق(س.)')
+    delay_hours = fields.Float(string=' التأخير والخروج(س.)')
+    absence = fields.Float(string='غياب (اليوم)')
+    total_days = fields.Float(string='المجموع (اليوم)')
+    balance_forward = fields.Float(string='الرصيد المرحل(س.)')

@@ -5,7 +5,7 @@
 		<menuitem id="menu_attendance_root" name="الحضور والإنصراف"  sequence="40" parent="hr_root" /> 
 		
 		
-		<menuitem id="menu_attendance_report" name="التقارير"  sequence="50" parent="menu_attendance_root" /> 		
+		<menuitem id="menu_attendance_report" name="التقارير"  sequence="60" parent="menu_attendance_root" /> 		
 			
 		
 		<menuitem  id="menu_attendance_configuration"  name="الإعدادات"  sequence="100"  parent="menu_attendance_root" />

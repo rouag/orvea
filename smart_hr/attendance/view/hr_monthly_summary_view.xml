@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<!-- الخلاصة الشهرية للغيابات والتأخير -->
+
+		<record model="ir.ui.view" id="hr_monthly_summary_tree">
+			<field name="name">hr.monthly.summary.tree</field>
+			<field name="model">hr.monthly.summary</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="الخلاصة الشهرية للغيابات والتأخير">
+					<field name="name" />
+					<field name="date" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_monthly_summary_form">
+			<field name="name">hr.monthly.summary.form</field>
+			<field name="model">hr.monthly.summary</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="الخلاصة الشهرية للغيابات والتأخير">
+					<header>
+						<button name="action_waiting" string="إرسال للإعتماد" type="object" states="new" />
+						<button name="action_done" string="إعتماد" type="object" states="waiting"  groups="smart_hr.group_dm"/>
+						<button name="action_refuse" string="رفض" type="object" states="waiting" groups="smart_hr.group_dm" />
+						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
+					</header>
+					<sheet>
+						<group>
+							<group>
+								<field name="name" />
+								<field name="date" />
+							</group>
+							<group>
+								<field name="date_from" />
+								<field name="date_to" />
+							</group>
+						</group>
+						
+						<field name="line_ids" >
+							<tree>
+								<field name="employee_id" />
+								<field name="department_id" />
+								<field name="job_id" />
+								<field name="balance_previous"  widget="float_time" />
+								<field name="delay_hours"  widget="float_time"/>
+								<field name="absence" />
+								<field name="total_days" />
+								<field name="balance_forward"  widget="float_time" />
+							</tree>
+						</field>
+						
+						<group>
+							<field name="description" placeholder="ملاحظات ..."
+								colspan="4" />
+						</group>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"
+							groups="base.group_user" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record id="hr_monthly_summary_search" model="ir.ui.view">
+			<field name="name">hr.monthly.summary.search</field>
+			<field name="model">hr.monthly.summary</field>
+			<field name="arch" type="xml">
+				<search string="الخلاصة الشهرية للغيابات والتأخير">
+					<field name="name" />
+					<field name="date" />
+					<group expand="0" string="تجميع حسب...">
+						<filter name="date"  string="التاريخ" context="{'group_by':'date'}" />
+						<filter name="state"  string="الحالة" context="{'group_by':'state'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+		
+		<record model="ir.actions.act_window" id="action_hr_monthly_summary">
+			<field name="name">الخلاصة الشهرية للغيابات والتأخير</field>
+			<field name="res_model">hr.monthly.summary</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+
+		<menuitem id="hr_monthly_summary_menu" name="الخلاصة الشهرية للغيابات والتأخير" groups="smart_hr.group_employee"
+			sequence="30" parent="menu_attendance_report" action="action_hr_monthly_summary" />
+			
+			
+	</data>
+</openerp>

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_monthly_summary_all">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.landscape_layout">
+						<div class="page">
+							<div class="oe_structure" />
+
+							<div class="col-xs-12 text-center">
+								<h3 style="color:#395870;">
+									<strong>
+										الخلاصة الشهرية للغيابات والتأخير
+									</strong>
+									<br />
+									<br />
+								</h3>
+							</div>
+							<div class="col-xs-12 text-center">
+								<strong>التاريخ :</strong>
+								<span t-esc="o.date_from" />
+								-
+								<span t-esc="o.date_to" />
+								<br />
+								<br />
+							</div>
+
+							<table class="table table-condensed">
+								<thead>
+									<tr>
+										<th width="30%">الموظف</th>
+										<th width="5%">رقم.و</th>
+										<th width="15%">القسم</th>
+										<th width="10%">(.رصيد الشهر السابق(س</th>
+										<th width="10%">(.التأخير والخروج(س</th>
+										<th width="10%">(غياب(اليوم</th>
+										<th width="10%">(المجموع(اليوم</th>
+										<th width="10%">(.الرصيد المرحل(س</th>
+									</tr>
+								</thead>
+
+								<t t-set="balance_previous" t-value="0" />
+								<t t-set="delay_hours" t-value="0" />
+								<t t-set="absence" t-value="0" />
+								<t t-set="total_days" t-value="0" />
+								<t t-set="balance_forward" t-value="0" />
+								<tbody>
+									<tr t-foreach="o.line_ids" t-as="line">
+
+										<t t-set="balance_previous" t-value="balance_previous+line.balance_previous" />
+										<t t-set="delay_hours" t-value="delay_hours+line.delay_hours" />
+										<t t-set="absence" t-value="absence+line.absence" />
+										<t t-set="total_days" t-value="total_days+line.total_days" />
+										<t t-set="balance_forward" t-value="balance_forward+line.balance_forward" />
+										<td>
+											<span t-field="line.employee_id.name" />
+										</td>
+
+										<td>
+											<span t-field="line.employee_id.number" />
+										</td>
+
+										<td>
+											<span t-field="line.department_id.name" />
+										</td>
+
+										<td class="text-center">
+											<t t-if="line.balance_previous">
+												<span t-esc="format_time(line.balance_previous)" />
+											</t>
+											<t t-if="not line.balance_previous">
+												-
+											</t>
+										</td>
+										
+										<td class="text-center">
+											<t t-if="line.delay_hours">
+												<span t-esc="format_time(line.delay_hours)" />
+											</t>
+											<t t-if="not line.delay_hours">
+												-
+											</t>
+										</td>
+
+										<td class="text-center">
+											<t t-if="line.absence">
+												<span t-esc="format_time(line.absence)" />
+											</t>
+											<t t-if="not line.absence">
+												-
+											</t>
+										</td>
+										<td class="text-center">
+											<t t-if="line.total_days">
+												<span t-esc="format_time(line.total_days)" style="color:red;" />
+											</t>
+											<t t-if="not line.total_days">
+												-
+											</t>
+										</td>
+										<td class="text-center">
+											<t t-if="line.balance_forward">
+												<span t-esc="format_time(line.balance_forward)" />
+											</t>
+											<t t-if="not line.balance_forward">
+												-
+											</t>
+										</td>
+									</tr>
+								</tbody>
+								<tfoot>
+									<tr>  
+										<td colspan="3">المجموع</td>
+										<td class="text-center">
+											<span t-esc="format_time(balance_previous)" />
+										</td>
+										<td class="text-center">
+											<span t-esc="format_time(delay_hours)" />
+										</td>
+
+										<td class="text-center">
+											<span t-esc="format_time(absence)" />
+										</td>
+
+										<td class="text-center">
+											<span t-esc="format_time(total_days)" />
+										</td>
+
+										<td class="text-center">
+											<span t-esc="format_time(balance_forward)" />
+										</td>
+
+									</tr>
+								</tfoot>
+
+							</table>
+						</div>
+					</t>
+
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+								
