@@ -105,7 +105,6 @@
 					<field name="order_date" />
 					<field name="date_hiring" />
 					<field name="type_appointment" />
-					<field name="instead_exchange" />
 					<field name="date_direct_action" />
 				</tree>
 			</field>
@@ -163,7 +162,6 @@
 								<field name="date_hiring"  	 attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
 								<field name="type_appointment"
 								 attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
-								<field name="instead_exchange" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
 								<field name="date_direct_action" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'done'])]}"  />
 								<field name="decision_state" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
 								<field name="transport_alocation" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
@@ -184,7 +182,7 @@
 
 							</group>
 							<group string="بيانات الوظيفة">
-								<field name="job_id" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
+								<field name="job_id" domain="[('state','=','unoccupied')]"  attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
 								<field name="number_job" />
 								<field name="type_id" />
 								<field name="department_id" />

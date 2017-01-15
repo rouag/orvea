@@ -99,7 +99,7 @@ class HrDecisionAppoint(models.Model):
                     'order_picture': line.order_picture,
                     'date_hiring': line.date_hiring,
                     'order_date': line.order_date,
-                     'date_direct_action': line.date_direct_action,
+                    'date_direct_action': line.date_direct_action,
                     'type_appointment': line.type_appointment.id,
                     'job_id': line.job_id.id,
                     'number_job': line.number_job,
@@ -113,6 +113,7 @@ class HrDecisionAppoint(models.Model):
                               
                      }
             line.employee_id.write({'employee_state':'employee','job_id':line.job_id.id})
+            line.job_id.write({'state':'occupied'})
             self.env['hr.decision.appoint'].create(decision_val)
           
             

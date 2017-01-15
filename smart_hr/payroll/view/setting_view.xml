@@ -85,12 +85,13 @@
 							<field name="code" />
 							<field name="type_id" />
 							<field name="min_degree_id" />
-							<field name="max_degree_id" />
 							<field name="transport_allow" />
-
+							<field name="max_degree_id" />
 
 						</group>
-						<field name="note" placeholder="ملاحظات ..." />
+						<group>
+							<field name="note" string="ملاحظات" placeholder="ملاحظات ..." />
+						</group>
 					</sheet>
 				</form>
 			</field>
@@ -136,10 +137,13 @@
 							<field name="code" />
 							<field name="type_id" />
 							<field name="min_degree_id" />
-							<field name="max_degree_id" />
 							<field name="nb_salary" />
+							<field name="max_degree_id" />
+
 						</group>
-						<field name="note" placeholder="ملاحظات ..." />
+						<group>
+							<field name="note" string="ملاحظات" placeholder="ملاحظات ..." />
+						</group>
 					</sheet>
 				</form>
 			</field>
@@ -186,11 +190,15 @@
 							<field name="name" />
 							<field name="code" />
 							<field name="type_id" />
-							<field name="min_degree_id" />
-							<field name="max_degree_id" />
+							 
+								<field name="min_degree_id" />
 							<field name="transport_allow" />
+							<field name="max_degree_id" />
+
 						</group>
-						<field name="note" placeholder="ملاحظات ..." />
+						<group>
+							<field name="note" string="ملاحظات" placeholder="ملاحظات ..." />
+						</group>
 					</sheet>
 				</form>
 			</field>

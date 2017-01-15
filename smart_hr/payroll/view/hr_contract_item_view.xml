@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
-		<!-- إعداد الدفع -->
+		<!-- مواد العقد -->
 		<record model="ir.ui.view" id="hr_contract_item_tree">
 			<field name="name">hr.contract.item.tree</field>
 			<field name="model">hr.contract.item</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
-				<tree string="بند العقد">
+				<tree string="مواد العقد">
+					<field name="code" />
 					<field name="name" />
-					<field name="text" />
+
 				</tree>
 			</field>
 		</record>
@@ -18,9 +19,10 @@
 			<field name="model">hr.contract.item</field>
 			<field name="type">form</field>
 			<field name="arch" type="xml">
-				<form string=" بند العقد">
+				<form string="مواد العقد">
 					<sheet>
 						<group>
+							<field name="code" />
 							<field name="name" />
 							<field name="text" />
 						</group>
@@ -29,16 +31,58 @@
 			</field>
 		</record>
 		<record model="ir.actions.act_window" id="action_hr_contract_item">
-			<field name="name"> بند العقد</field>
+			<field name="name"> مواد العقد</field>
 			<field name="res_model">hr.contract.item</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
 
-		<menuitem id="hr_contract_item_menu" name="إعدادات بنود العقد "
-			sequence="42" parent="hr.menu_human_resources_configuration" />
+		<menuitem id="hr_contract_item_menu" name="إعدادات مواد العقد "
+			sequence="42" parent="hr_root_organisation_configuration" />
 
-		<menuitem id="hr_contract_item_menu_sou" name=" بند العقد"
+		<menuitem id="hr_contract_item_menu_sou" name=" مواد العقد"
 			sequence="25" parent="hr_contract_item_menu" action="action_hr_contract_item" />
+	
+	<record model="ir.ui.view" id="hr_contract_payement_tree">
+			<field name="name">hr.contract.payement.tree</field>
+			<field name="model">hr.contract.payement</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="الدفع المجدول">
+					<field name="name" />
+						<field name="periode" />
+
+				</tree>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_contract_payement_form">
+			<field name="name">hr.contract.payement.form</field>
+			<field name="model">hr.contract.payement</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="الدفع المجدول">
+					<sheet>
+						<group>
+						
+							<field name="name" />
+								<field name="periode" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_contract_payement">
+			<field name="name"> الدفع المجدول</field>
+			<field name="res_model">hr.contract.payement</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		
+
+		<menuitem id="hr_contract_payement_menu_sou" name=" الدفع المجدول"
+			sequence="26" parent="hr_root_organisation_configuration" action="action_hr_contract_payement" />
+	
+	
 	</data>
 </openerp>

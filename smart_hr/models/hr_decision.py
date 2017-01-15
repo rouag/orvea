@@ -20,10 +20,10 @@ class HrDecision(models.Model):
         if self.decision_type_id:
             decision_type_line = self.env['hr.decision.type'].search([('id', '=', self.decision_type_id.id)
                                                 ])
-            employee=self.employee_id.name or ""
-            date=self.date or ""
-            numero=self.name or ""
-            job_id=self.employee_id.job_id.name or ""
+            employee = self.employee_id.name or ""
+            date = self.date or ""
+            numero = self.name or ""
+            job_id = self.employee_id.job_id.name.name or ""
             grade_id=self.employee_id.job_id.grade_id.name or ""
            # degree_id=self.employee_id.job_id.degree_id.name or ""
             code=self.employee_id.job_id.number or ""
@@ -48,10 +48,10 @@ class HrDecisionType(models.Model):
     note = fields.Text(string='ملاحظات')
     text = fields.Html(string='نص القرار')
 
-    @api.multi
-    def name_get(self):
-        result = []
-        for record in self:
-            name = '[%s] %s' % (record.code, record.name)
-            result.append((record.id, name))
-        return result
+#     @api.multi
+#     def name_get(self):
+#         result = []
+#         for record in self:
+#             name = '[%s] %s' % (record.code, record.name)
+#             result.append((record.id, name))
+#         return result
