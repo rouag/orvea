@@ -460,8 +460,7 @@ class HrHolidays(models.Model):
         # Check if the holidays have a pending or completed holidays cancellation
         is_cancelled = False
         if self.holiday_cancellation and self.holiday_cancellation.state != 'refuse': 
-             is_cancelled = True
-             break
+            is_cancelled = True
         self.is_cancelled = is_cancelled
 
     holiday_cancellation = fields.Many2one('hr.holidays.cancellation')    
@@ -1154,7 +1153,7 @@ class HrHolidaysStatus(models.Model):
     @api.one
     @api.constrains('pension_percent')
     def check_pension_percent(self):
-        if rec.pension_percent<0 or rec.pension_percent>100:
+        if self.pension_percent<0 or self.pension_percent>100:
             raise ValidationError(u"نسبة راتب التقاعد خاطئة ")
                 
 class HrHolidaysStatusEntitlement(models.Model):
