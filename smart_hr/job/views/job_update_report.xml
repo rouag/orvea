@@ -26,7 +26,7 @@
 							</t>
 							<t t-if="data['form']['report_type']=='accepted'">
 								<div class="col-xs-12 text-center">
-									<strong> بيان الوظائف الموافق على تحويرها</strong>
+									<strong> بيان الوظائف الموافق على تحويرها في القرار رقم (<span t-esc="data['form']['decision_number']" />) في <span t-esc="data['form']['decision_date']" /> </strong>
 									<br />
 									<br />
 								</div>

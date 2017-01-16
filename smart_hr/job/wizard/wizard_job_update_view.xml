@@ -8,7 +8,8 @@
 			<form>
 				<group col="4" string="التحوير" attrs="{'invisible': [('report_type', '=', 'requested')]}" >
 					<field name="update_request_id" options='{"no_open": True, "no_create": True}' />
-					<field name="speech_number" />
+					<field name="decision_number" />
+					<field name="decision_date" />
 				</group>
 				<group col="2" string="خيارات أخرى">
 					<field name="report_type" widget="radio"/>

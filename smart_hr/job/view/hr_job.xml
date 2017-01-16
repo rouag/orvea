@@ -486,6 +486,8 @@
 					<sheet>
 						<group col="4">
 							<field name="employee_id" />
+							<field name="decision_number" />
+							<field name="decision_date" />
 							
 							<field name="out_speech_number"
 								attrs="{'invisible':[('state', 'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" />
