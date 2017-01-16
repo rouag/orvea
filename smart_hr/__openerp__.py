@@ -17,9 +17,18 @@
         'security/ir.model.access.csv',
         'payroll/security/payroll_security.xml',
         'payroll/security/ir.model.access.csv',
+
+        # الوظائف
+        'job/menu.xml',
         'job/security/job_security.xml',
         'job/security/ir.model.access.csv',
         'job/security/ir.model.access.csv',
+        'job/wizard/wizard_job_grade_view.xml',
+        'job/wizard/wizard_job_update_view.xml',
+        'job/views/job_grade_report.xml',
+        'job/views/job_update_report.xml',
+        'job/views/report.xml',
+
         'view/hr_menu.xml',
         'data/sequences.xml',
         'data/configurations.xml',
@@ -40,7 +49,6 @@
         'hr/view/hr_contract_item_view.xml',
         'hr/views/report_hr_contract.xml',
         'hr/views/report.xml',
-
 
         'views/report_salary_grid.xml',
         'views/report_medical_examination.xml',
@@ -63,7 +71,7 @@
         'wizards/view/hr_refuse_wizard_view.xml',
 
         'view/hr.xml',
-      
+
         'view/hr_decision_appoint.xml',
         'view/hr_promotion.xml',
         'view/salary_grid.xml',
@@ -89,8 +97,11 @@
         'view/external_autorities.xml',
         'view/holiday_entitlement_types.xml',
         'view/hr_holidays_extension.xml',
+<<<<<<< HEAD
         'view/courses_follow_up.xml',
         'view/hr_improve_situation_view.xml',
+=======
+>>>>>>> branch '9.0' of https://gitlab.smart-etech.com/smart-dev/addons_smart.git
 
         # القرارات
         'view/hr_decision.xml',
@@ -103,7 +114,6 @@
         'payroll/view/hr_deduction.xml',
         'payroll/views/report_hr_deduction.xml',
         'payroll/views/report_hr_deduction_line.xml',
-        
 
         # الحضور والإنصراف
         'attendance/security/attendance_security.xml',
@@ -118,25 +128,28 @@
         'attendance/view/hr_attendance.xml',
         'attendance/view/hr_extra_hours.xml',
         'attendance/view/hr_authorization_view.xml',
+        'attendance/view/hr_request_transfer_view.xml',
         'attendance/view/report_day_view.xml',
         'attendance/view/hr_attendance_check_view.xml',
         'attendance/view/hr_attendance_report_view.xml',
+        'attendance/view/hr_monthly_summary_view.xml',
         'attendance/wizard/wizard_attendance_summary_view.xml',
         'attendance/views/attendance_summary_report.xml',
+        'attendance/views/monthly_summary_report.xml',
+        'attendance/views/monthly_summary_report_all.xml',
         'attendance/views/report.xml',
-         # تصنيف الوظائف
+
+        # تصنيف الوظائف
         'job/view/hr_job_setting.xml',
         'job/view/hr_skils_job.xml',
         'job/view/hr_job.xml',
-        #الاجازات
+
+        # الاجازات
         'holidays/menu.xml',
         'holidays/wizard/wizard_resume_holidays_view.xml',
         'holidays/views/resume_holidays_report.xml',
         'holidays/views/report.xml',
-    
-    
-    
-    
+
     ],
     'auto_install': False,
 }

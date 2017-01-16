@@ -9,7 +9,7 @@
 			<field name="arch" type="xml">
 				<form string="الدورات الدراسيّة ">
 					<header>
-						<button name="send_courses_request" string="بداية الدورة"
+						<button name="action_start" string="بداية الدورة"
 							type="object"
 							attrs="{'invisible':[('state','!=','draft')]}"
 							icon="fa-paper-plane" class="oe_inline oe_stat_button"
@@ -18,9 +18,9 @@
 
 						<button name="action_done" string="نهاية الدورة" type="object"
 							states="progress"  icon="fa-times"
-							class="oe_inline oe_stat_button" />
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 							
-						<field name="state" widget="statusbar" statusbar_visible="draft,progress,cancel" />
+						<field name="state" widget="statusbar" statusbar_visible="draft,progress,done" />
 					</header>
 					<sheet>
 						<group>

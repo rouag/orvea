@@ -49,6 +49,11 @@ class HrEmployee(models.Model):
     traveling_ticket_familiar = fields.Boolean(string=u'تذكرة سفر عائليّة', default=False)
     compensation_stock = fields.Integer(string=u'رصيد إجازات التعويض')
     holiday_peiodes = fields.One2many('hr.holidays.periode', 'employee_id', string='holidays periodes')
+    grandfather_name = fields.Char(string=u'اسم الجد', required=1)
+    grandfather2_name = fields.Char(string=u'  اسم الجد الثاني ', required=1)
+    family_name = fields.Char(string=u'الاسم العائلي', required=1)
+
+    
     
     def _compute_service_years(self):
         for emp in self:
