@@ -198,7 +198,7 @@
 							<field name="date_from" required="1"
 								attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)],
 								'invisible':[('compensation_type','=','money')]}" />
-							<field name="duration" class="integer_width oe_inline"
+							<field name="duration" class="oe_inline"
 								attrs="{'readonly':[('state','!=','draft')],'invisible':[('compensation_type','=','money')]}" />
 							<field name="date_to" readonly="1"
 								attrs="{'invisible':[('compensation_type','=','money')]}" />
