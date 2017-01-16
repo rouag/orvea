@@ -17,6 +17,7 @@
 						<field name="holiday_status_id" />
 						<field name="date_from" />
 						<field name="date_to" />
+						<field name="duration" />
 						<field name="state" />
 					</tree>
 				</xpath>
