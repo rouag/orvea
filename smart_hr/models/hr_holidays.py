@@ -661,11 +661,11 @@ class HrHolidays(models.Model):
         """
         holidays_periode_obj=self.env['hr.holidays.periode']
         if holiday_status_id.id==self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id:
-            date_direct_action_ids = self.env['hr.decision.appoint'].sudo().search([ ('employee_id', '=', employee_id.id),
-                ('state', '=', 'done')]).ids
-            if date_direct_action_ids:
-                first_id = date_direct_action_ids and min(date_direct_action_ids)
-            direct_action_date = self.env['hr.decision.appoint'].sudo().browse(first_id).date_direct_action
+            decision_appoint_ids = self.env['hr.decision.appoint'].sudo().search([('employee_id.id', '=', self.employee_id.id)])
+            direct_action_date = decision_appoint_ids[0].date_direct_action
+            for decision_appoint in decision_appoint_ids:
+                if fields.Date.from_string(decision_appoint.date_direct_action)<fields.Date.from_string(direct_action_date):
+                    direct_action_date=decision_appoint.date_direct_action
             date_direct_action = fields.Date.from_string(direct_action_date)
             date_to = fields.Date.from_string(self.date_to)
             diff = relativedelta(date_to, date_direct_action).years
@@ -968,8 +968,12 @@ class HrHolidays(models.Model):
           # Constraintes for studyinglevel for study holydays
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_study'):
             # check 3 years of services
-            date_hiring = self.env['hr.decision.appoint'].sudo().search([('employee_id.id', '=', self.employee_id.id)], limit=1).date_hiring
-            res = relativedelta(fields.Date.from_string(fields.Datetime.now()), fields.Date.from_string(date_hiring))
+            decision_appoint_ids = self.env['hr.decision.appoint'].sudo().search([('employee_id.id', '=', self.employee_id.id)])
+            date_direct_actions_min = decision_appoint_ids[0].date_direct_action
+            for decision_appoint in decision_appoint_ids:
+                if fields.Date.from_string(decision_appoint.date_direct_action)<fields.Date.from_string(date_direct_actions_min):
+                    date_direct_actions_min=decision_appoint.date_direct_action
+            res = relativedelta(fields.Date.from_string(fields.Datetime.now()), fields.Date.from_string(date_direct_actions_min))
             if res.years < 3:
                 raise ValidationError(u"ليس لديك ثلاث سنوات خدمة.")  
             
