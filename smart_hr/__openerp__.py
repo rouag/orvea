@@ -100,12 +100,8 @@
         'payroll/view/setting_view.xml',
         'payroll/view/hr_salary_rule_view.xml',
         'payroll/view/hr_deduction.xml',
-        'payroll/view/hr_contract_inherit_view.xml',
-        'payroll/view/hr_contract_item_view.xml',
         'payroll/views/report_hr_deduction.xml',
         'payroll/views/report_hr_deduction_line.xml',
-        'payroll/views/report_hr_contract.xml',
-        'payroll/views/report.xml',
         
 
         # الحضور والإنصراف
