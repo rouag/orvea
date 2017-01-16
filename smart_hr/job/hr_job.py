@@ -8,6 +8,7 @@ from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
+
 class HrJob(models.Model):
     _inherit = 'hr.job'
     _description = u'الوظائف'
