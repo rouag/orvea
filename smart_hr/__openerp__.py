@@ -97,11 +97,8 @@
         'view/external_autorities.xml',
         'view/holiday_entitlement_types.xml',
         'view/hr_holidays_extension.xml',
-<<<<<<< HEAD
         'view/courses_follow_up.xml',
         'view/hr_improve_situation_view.xml',
-=======
->>>>>>> branch '9.0' of https://gitlab.smart-etech.com/smart-dev/addons_smart.git
 
         # القرارات
         'view/hr_decision.xml',
@@ -114,6 +111,7 @@
         'payroll/view/hr_deduction.xml',
         'payroll/views/report_hr_deduction.xml',
         'payroll/views/report_hr_deduction_line.xml',
+        
 
         # الحضور والإنصراف
         'attendance/security/attendance_security.xml',
