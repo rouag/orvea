@@ -25,7 +25,7 @@ class HrDecision(models.Model):
             numero = self.name or ""
             job_id = self.employee_id.job_id.name.name or ""
             grade_id=self.employee_id.job_id.grade_id.name or ""
-           # degree_id=self.employee_id.job_id.degree_id.name or ""
+            salary=self.job_id.type_id.basic_salary or ""
             code=self.employee_id.job_id.number or ""
             
             if decision_type_line.text:
@@ -36,7 +36,7 @@ class HrDecision(models.Model):
                 rep_text = rep_text.replace('CODE',unicode(code))
                 rep_text = rep_text.replace('JOB',unicode(job_id))
                 rep_text = rep_text.replace('GRADE',unicode(grade_id))
-             #   rep_text = rep_text.replace('DEGREE',unicode(degree_id))
+                rep_text = rep_text.replace('BASICSALAIRE',unicode(salary))
                 self.text = rep_text
                 
 class HrDecisionType(models.Model):

@@ -41,9 +41,9 @@ class HrDecisionAppoint(models.Model):
     #other info
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
     description=fields.Text(string=' ملاحظات ') 
-    state = fields.Selection([('new', u'طلب تعين جديد'),
+    state = fields.Selection([('new', u'طلب '),
                               ('waiting', u'مقابلة شخصية'),
-                              ('budget', u'مديرالهيئة'),
+                              ('budget', u'رئيس الهيئة'),
                               ('hrm', u'شؤون الموظفين'),
                               ('done', u'اعتمدت')
                               ], readonly=1, default='new')
@@ -53,7 +53,8 @@ class HrDecisionAppoint(models.Model):
     medical_examination_file = fields.Binary(string = 'وثيقة الفحص الطبي') 
     order_enquiry_file = fields.Binary(string = 'طلب الاستسفار')
     file_salar_recent = fields.Binary(string = 'إمكانية إرفاق وثيقة')
-    file_engagement = fields.Binary(string = 'تعهد من المترشح')
+    file_engagement = fields.Many2many('ir.attachment',string='إرفاق مزيد من الوثائق')
+    #file_engagement = fields.Binary(string = 'تعهد من المترشح')
     file_appoint = fields.Binary(string = 'قرار التعين')
     file_decision = fields.Binary(string = 'قرار المباشر')
     
