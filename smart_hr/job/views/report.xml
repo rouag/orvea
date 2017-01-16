@@ -2,17 +2,13 @@
 <openerp>
 	<data>
 
-		<report id="job_grade_report" model="False"
-			report_type="qweb-pdf" string="تقرير تخفيض الوظائف" name="smart_hr.report_job_grade"
-			file="smart_hr.report_job_grade" paperformat="smart_base.paperformat_landscape" />
-
-		<!-- <report id="monthly_summary_report" model="hr.monthly.summary" report_type="qweb-pdf" 
-			string="الخلاصة الشهرية للغيابات والتأخير " name="smart_hr.report_monthly_summary" 
-			file="smart_hr.report_monthly_summary" paperformat="smart_base.paperformat_landscape" 
-			/> <report id="monthly_summary_report_all" model="hr.monthly.summary" report_type="qweb-pdf" 
-			string="الخلاصة الشهرية للغيابات والتأخير - عام" name="smart_hr.report_monthly_summary_all" 
-			file="smart_hr.report_monthly_summary_all" paperformat="smart_base.paperformat_landscape" 
-			/> -->
+		<report id="job_grade_report" model="False" report_type="qweb-pdf"
+			string="تقرير تخفيض الوظائف" name="smart_hr.report_job_grade" file="smart_hr.report_job_grade"
+			paperformat="smart_base.paperformat_landscape" />
+			
+		<report id="job_update_report" model="False" report_type="qweb-pdf"
+			string="تقرير تحوير الوظائف" name="smart_hr.report_job_update" file="smart_hr.report_job_update"
+			paperformat="smart_base.paperformat_landscape" />
 
 
 	</data>

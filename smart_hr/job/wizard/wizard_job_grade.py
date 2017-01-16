@@ -3,6 +3,7 @@
 from openerp import api, fields, models
 from openerp.exceptions import ValidationError
 
+
 class WizardJobGrade(models.TransientModel):
     _name = 'wizard.job.grade'
 
