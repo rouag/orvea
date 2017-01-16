@@ -46,10 +46,9 @@
 
 
 					<group name="periode" string=" خصائص العقد  ">
-						<field name="date_to" />
+						<field name="date_to" string="مدة التجربة         من "/>
 						<field name="date_endd" />
-
-						<field name="date_contract_to" />
+						<field name="date_contract_to" string="مدة العقد         من "/>
 						<field name="date_contract_end" />
 						<field name="calendar_id" />
 						<field name="payement_emploi" />

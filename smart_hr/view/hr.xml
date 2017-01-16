@@ -54,11 +54,15 @@
 						<div name="button_box" invisible="1" />
 						<field name="image" widget="image" class="oe_avatar"
 							options="{&quot;preview_image&quot;:&quot;image_medium&quot;}" />
-						<div class="oe_title">
-							<label for="name" class="oe_edit_only" />
-							<h1>
-								<field name="name" placeholder="اسم الموظف" attrs="{'required': 1}" />
-							</h1>
+						<div >
+
+									<group col="10">
+									<field name="name"  attrs="{'required': 1}" />
+									<field name="father_name" />
+									<field name="grandfather_name" />
+									<field name="grandfather2_name" />
+									<field name="family_name" />
+								</group>
 							<label for="number" class="oe_edit_only" />
 							<h1>
 								<field name="number" placeholder="الرقم الوظيفي" attrs="{'required': 1}" />
@@ -69,7 +73,7 @@
 							<page string="بيانات شخصية">
 								<group>
 									<group string="بيانات شخصية">
-										<field name="father_name" attrs="{'required': 1}" />
+
 										<field name="country_id" options='{"no_open": True, "no_create": True}'
 											attrs="{'required': 1}" />
 
@@ -160,8 +164,8 @@
 										<field name="holidays_available_stock" />
 										<field name="token_holidays_sum" />
 										<field name="periode" />
-										<field name="period_id" invisible="1"/>
-										
+										<field name="period_id" invisible="1" />
+
 									</tree>
 								</field>
 								<field name="promotions_history" readonly="1">
@@ -253,11 +257,15 @@
 							<div name="button_box" invisible="1" />
 							<field name="image" widget="image" class="oe_avatar"
 								options="{&quot;preview_image&quot;:&quot;image_medium&quot;}" />
-							<div class="oe_title">
-								<label for="name" class="oe_edit_only" />
-								<h1>
-									<field name="name" placeholder="اسم الموظف" attrs="{'required': 1}" />
-								</h1>
+							<div>
+								<group col="10">
+									<field name="name" />
+									<field name="father_name"  />
+									<field name="grandfather_name"  />
+									<field name="grandfather2_name" />
+									<field name="family_name" />
+								</group>					
+											
 								<label for="number" class="oe_edit_only" />
 								<h1>
 									<field name="number" placeholder="الرقم الوظيفي" attrs="{'required': 1}" />
@@ -268,7 +276,6 @@
 								<page string="بيانات شخصية">
 									<group>
 										<group string="بيانات شخصية">
-											<field name="father_name" attrs="{'required': 1}" />
 											<field name="country_id" options='{"no_open": True, "no_create": True}'
 												attrs="{'required': 1}" />
 
@@ -354,7 +361,8 @@
 									</field>
 								</page>
 								<page string="أرصدة الاجازات والترقيات">
-									<field name="holidays_balance" domain="[('period_id.date_to','&lt;=',context_today())]">
+									<field name="holidays_balance"
+										domain="[('period_id.date_to','&lt;=',context_today())]">
 										<tree string="أرصدة الاجازات ">
 											<field name="holiday_status_id" />
 											<field name="entitlement_name" />
