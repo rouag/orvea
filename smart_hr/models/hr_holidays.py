@@ -472,8 +472,6 @@ class HrHolidays(models.Model):
     extension_holidays_ids = fields.One2many('hr.holidays', 'parent_id', string=u'التمديدات')
 
 
-
-                    
     @api.model
     def _check_state_access_right(self, vals):
         # override this method to be always returning true to avoid checking state access right
@@ -788,7 +786,7 @@ class HrHolidays(models.Model):
         if self.date_from > self.date_to:
             raise ValidationError(u"تاريخ من يجب ان يكون أصغر من تاريخ الى")
             # check minimum request validation
-        if self.self_status_id.minimum != 0 and self.duration < self.holiday_status_id.minimum:
+        if self.holiday_status_id.minimum != 0 and self.duration < self.holiday_status_id.minimum:
             raise ValidationError(u"أقل فترة يمكن طلبها من نوع إجازة " + self.holiday_status_id.name + u" " + str(self.holiday_status_id.minimum) + u" أيام")
              
             # check maximum request validation
