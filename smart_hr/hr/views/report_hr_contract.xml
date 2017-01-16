@@ -26,17 +26,17 @@
 								</strong>
 								<br />
 								<p style="font-size:22px;" align="right">
-									في اليوم الاول من شهر
-									في.............و
+									في 
+										<span t-field="o.employee_id1.department_id1" />و
 									<br></br>
-									تم التعاقد بين كل
+									: تم التعاقد بين كل من
 									<br></br>
 									١-
 									ممثلية المملكة العربية
-
-									...... في السعودية
+									   في السعودية
+									   <span t-field="o.employee_id1.department_id1" />
 									يمثلها في هذا العقد
-									:-
+									:
 								</p>
 								<br></br>
 								<p style="font-size:22px;" align="right">
@@ -95,23 +95,28 @@
 									و تشتمل واجبات الوظيفة ما يلي
 								</p>
 								<br></br>
-								<p style="font-size:22px;" align="right">(ا).........................
+								<p style="font-size:22px;" align="right">
+									<span t-field="o.job_id.name.job_description" />
 								</p>
-								<br></br>
-								<p style="font-size:22px;" align="right"> (ب).........................
-								</p>
+
+
 								<br></br>
 							</div>
-							<t  t-foreach="o.contract_item_ids" t-as="line">
-							<p style="font-size:22px;" align="right">
-							<span t-field="line.name" /> :<span t-field="line.text" /></p>
-							
+							<t t-foreach="o.contract_item_ids" t-as="line">
+								<p style="font-size:22px;" align="right">
+									<span t-field="line.name" />
+									:
+									<span t-field="line.text" />
+								</p>
+
 							</t>
-							
-							<div class="col-xs-8">
+
+							<div class="col-xs-4">
 								<p style="font-size:22px;" align="right">
 									<br></br>
 									الطرف الاول
+								</p>
+								<p style="font-size:22px;" align="right">
 									الاسم
 									/
 									<span t-field="o.employee_id1" />
@@ -124,19 +129,25 @@
 									<span t-field="o.job_id1" />
 								</p>
 							</div>
-
+							<div class="col-xs-4"></div>
 							<div class="col-xs-4">
 								<p style="font-size:22px;" align="right">
 									<br></br>
-									الطرف الثاني
 
+									الطرف الثاني
+								</p>
+								<p style="font-size:22px;" align="right">
 									الاسم
 									/
 									<span t-field="o.employee_id" />
 									<br></br>
+								</p>
+								<p style="font-size:22px;" align="right">
 									التوقيع
 									/
 									<br></br>
+								</p>
+								<p style="font-size:22px;" align="right">
 									الوظيفة
 									/
 									<span t-field="o.job_id" />
@@ -151,6 +162,8 @@
 									<p style="font-size:22px;" align="right">
 										راجع البيانات
 										<br></br>
+									</p>
+									<p style="font-size:22px;" align="right">
 										الاسم
 										/
 										<span t-field="o.employee_id2" />

@@ -36,6 +36,10 @@
         'hr/menu.xml',
         'hr/view/hierarchy_level.xml',
         'hr/view/hr_department_view.xml',
+        'hr/view/hr_contract_inherit_view.xml',
+        'hr/view/hr_contract_item_view.xml',
+        'hr/views/report_hr_contract.xml',
+        'hr/views/report.xml',
 
 
         'views/report_salary_grid.xml',

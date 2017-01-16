@@ -33,6 +33,7 @@
 					expr="/form/sheet/notebook/page/group/group[@name='salary_and_advantages']"
 					position="after">
 					<group name="payement" string=" الرواتب و البدلات  ">
+						<field name="struct_id" invisible="1" />
 						<field name="basic_salary" />
 						<field name="transport_allow" />
 						<field name="net_salary" />
@@ -40,12 +41,14 @@
 						<field name="ticket_travel" />
 						<field name="ticket_famely" />
 
+
 					</group>
 
 
 					<group name="periode" string=" خصائص العقد  ">
 						<field name="date_to" />
 						<field name="date_endd" />
+
 						<field name="date_contract_to" />
 						<field name="date_contract_end" />
 						<field name="calendar_id" />
@@ -72,26 +75,27 @@
 
 				</xpath>
 				<xpath expr="//page[@name='information']" position="after">
-					<page string="المسوول على العقد و مراجع البيانات">
+					<page string="المسؤول على العقد و مراجع البيانات">
 						<group>
-							<group string="المسوول على العقد">
-								<field name="employee_id1" string="المسوول على العقد" />
+							<group string="الممسؤول على العقد">
+								<field name="employee_id1" string="الممسؤول على العقد" />
 								<field name="department_id1" string="القسم" />
 								<field name="job_id1" string="الوظيفة" />
 							</group>
 							<group string="مراجع البيانات">
 								<field name="employee_id2" string="مراجع البيانات" />
+								<field name="department_id2" string="القسم" />
 								<field name="job_id2" string="الوظيفة" />
 							</group>
 						</group>
 					</page>
-					<page string="بنود العقد">
+					<page string="مواد العقد">
 						<group>
-							<group string="بنود العقد">
+							<group string="مواد العقد">
 								<field name="contract_item_ids" nolabel="1">
 									<tree editable="bottom">
+										<field name="code" />
 										<field name="name" />
-										<field name="text" />
 									</tree>
 								</field>
 
@@ -102,5 +106,35 @@
 
 			</field>
 		</record>
+
+
+
+		<record id="view_hr_contract_tree" model="ir.ui.view">
+			<field name="name">hr.contract.tree</field>
+			<field name="model">hr.contract</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="العقد">
+					<field name="name" string="مسمى العقد" />
+					<field name="employee_id" />
+					<field name="job_id" />
+					<field name="type_id" />
+					<field name="date_contract_to" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="action_hr_contract_view" model="ir.actions.act_window">
+			<field name="name">العقود</field>
+			<field name="res_model">hr.contract</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem action="action_hr_contract_view" id="hr_menu_contract_view"
+			parent="smart_hr.hr_root_employees" name="العقود" sequence="14"
+			groups="base.group_hr_manager" />
+
+
 	</data>
 </openerp>

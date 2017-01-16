@@ -23,12 +23,13 @@ class HrContract(models.Model):
     assurance=fields.Char(string='التامين') 
     type_id=fields.Many2one('salary.grid.type',string='الصنف',readonly=1) 
     grade_id=fields.Many2one('salary.grid.grade',string='المرتبة',readonly=1)
+    struct_id= fields.Many2one('hr.payroll.structure', 'Salary Structure',required=False)
     #struct_id= fields.Char(string="struct",required=0,),
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة' )
     payement_emploi = fields.Many2one('hr.contract.payement',string=' الدفع المجدول')
-    date_to = fields.Date(string=u'مدة التجربة من', )
+    date_to = fields.Date(string=u' من', )
     date_endd = fields.Date(string=u'إلى', )
-    date_contract_to = fields.Date(string=u'مدة العقد من', )
+    date_contract_to = fields.Date(string=u'من', )
     date_contract_end = fields.Date(string=u'إلى', )
     basic_salary = fields.Float(string='الراتب الأساسي',required=1)   
     transport_allow = fields.Float(string='بدل النقل') 
@@ -37,15 +38,21 @@ class HrContract(models.Model):
     contract_item_ids = fields.Many2many('hr.contract.item',  string=u'بند العقد')
     
    
-    employee_id1=fields.Many2one('hr.employee',string='المسوول على العقد',required=1,)
+    employee_id1=fields.Many2one('hr.employee',string='المسؤول على العقد',required=1,)
     job_id1=fields.Many2one(related='employee_id1.job_id', store=True, readonly=True,)
     employee_id2=fields.Many2one('hr.employee',string='مراجع البيانات',required=1,)
     job_id2=fields.Many2one(related='employee_id2.job_id', store=True, readonly=True,)
     department_id1=fields.Many2one(related='employee_id1.department_id', store=True, readonly=True,string='القسم',)
+    department_id2=fields.Many2one(related='employee_id2.department_id', store=True, readonly=True,string='القسم',)
     renewable=fields.Boolean(string='قابل للتجديد')
     ticket_travel=fields.Boolean(string='تذاكر السفر')
     ticket_famely=fields.Boolean(string='تذكرة سفر عائلية')
     
+    @api.onchange('state')
+    def _onchange_state(self):
+        if self.state == 'open':
+            self.date_contract_to = fields.Datetime.now()
+   
     @api.onchange('job_id')
     def _onchange_job_id(self):
         if self.job_id :
@@ -71,6 +78,7 @@ class hrContractPayement(models.Model):
     _name = 'hr.contract.payement'
 
     name = fields.Char(advanced_search=True,string=u'المسمّى')
+    periode = fields.Char(string=u'المدة')
     
 
     
@@ -78,7 +86,8 @@ class hrContractPayement(models.Model):
 class hrContractItem(models.Model):
     _name = 'hr.contract.item'
     
-    name = fields.Char(string=u'مادة')
-    text = fields.Html(string=u'محتوى البند')
+    name = fields.Char(string=u'مسمى المادة')
+    code = fields.Char(string=u'رقم المادة')
+    text = fields.Html(string=u' محتوى المادة')
  #   contract_item=fields.Many2one('hr.contract.item',string='بند العقد')
     
