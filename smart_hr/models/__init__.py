@@ -38,4 +38,4 @@ from . import external_authorities
 from . import hr_holidays_extension
 
 from . import courses_follow_up
-
+from . import hr_improve_situation

@@ -90,6 +90,7 @@
         'view/holiday_entitlement_types.xml',
         'view/hr_holidays_extension.xml',
         'view/courses_follow_up.xml',
+        'view/hr_improve_situation_view.xml',
 
         # القرارات
         'view/hr_decision.xml',
