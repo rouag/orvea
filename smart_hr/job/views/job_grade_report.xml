@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_job_grade">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.landscape_layout">
+						<div class="page">
+							<div class="oe_structure" />
+
+							<div class="col-xs-12 text-center">
+								<h3 style="color:#395870;">
+									<strong>
+										تقرير الحضور والإنصراف
+									</strong>
+									<br />
+									<br />
+								</h3>
+							</div>
+							<div class="col-xs-12 text-center">
+								<strong>التاريخ :</strong>
+								<span t-esc="data['form']['date_from']" />
+								-
+								<span t-esc="data['form']['date_to']" />
+								<br />
+								<br />
+							</div>
+
+							<table class="table table-condensed">
+								<thead>
+									<tr>
+										<th width="23%">الموظف</th>
+										<th width="5%">رقم.و</th>
+										<th width="15%">القسم</th>
+										<th width="7%">الدخول</th>
+										<th width="7%">الخروج</th>
+										<th width="7%">تأخير</th>
+										<th width="7%">خروج مبكر</th>
+										<th width="8%">وقت إضافي</th>
+										<th width="7%">إستئذان</th>
+										<th width="7%">غياب</th>
+										<th width="7%">إجازة</th>
+									</tr>
+								</thead>
+
+								<t t-set="total_retard" t-value="0" />
+								<t t-set="total_leave" t-value="0" />
+								<t t-set="total_hours_supp" t-value="0" />
+								<t t-set="total_authorization" t-value="0" />
+								<t t-set="total_absence" t-value="0" />
+								<t t-set="total_holidays" t-value="0" />
+								<tbody>
+									<tr t-foreach="get_lines(data['form'])" t-as="line">
+
+										<t t-set="total_retard" t-value="total_retard+line.retard" />
+										<t t-set="total_leave" t-value="total_leave+line.leave" />
+										<t t-set="total_hours_supp" t-value="total_hours_supp+line.hours_supp" />
+										<t t-set="total_authorization" t-value="total_authorization+line.authorization" />
+										<t t-set="total_absence" t-value="total_absence+line.absence" />
+										<t t-set="total_holidays" t-value="total_holidays+line.holidays" />
+
+										<td>
+											<span t-field="line.employee_id.name" />
+										</td>
+
+										<td>
+											<span t-field="line.number" />
+										</td>
+
+										<td>
+											<span t-field="line.department_id.name" />
+										</td>
+
+										<td class="text-center">
+											<t t-if="line.hour_start">
+												<span t-esc="format_time(line.hour_start)" />
+											</t>
+											<t t-if="not line.hour_start">
+												-
+											</t>
+										</td>
+
+										<td class="text-center">
+											<t t-if="line.hour_stop">
+												<span t-esc="format_time(line.hour_stop)" />
+											</t>
+											<t t-if="not line.hour_stop">
+												-
+											</t>
+										</td>
+										
+										<td class="text-center">
+											<t t-if="line.retard">
+												<span t-esc="format_time(line.retard)" style="color:red;" />
+											</t>
+											<t t-if="not line.retard">
+												-
+											</t>
+										</td>
+
+										<td class="text-center">
+											<t t-if="line.leave">
+												<span t-esc="format_time(line.leave)" />
+											</t>
+											<t t-if="not line.leave">
+												-
+											</t>
+										</td>
+										<td class="text-center">
+											<t t-if="line.hours_supp">
+												<span t-esc="format_time(line.hours_supp)" />
+											</t>
+											<t t-if="not line.hours_supp">
+												-
+											</t>
+										</td>
+										<td class="text-center">
+											<t t-if="line.authorization">
+												<span t-esc="format_time(line.authorization)" />
+											</t>
+											<t t-if="not line.authorization">
+												-
+											</t>
+										</td>
+										<td class="text-center">
+											<t t-if="line.absence">
+												<span t-field="line.absence" style="color:red;" />
+											</t>
+											<t t-if="not line.absence">
+												-
+											</t>
+										</td>
+										<td class="text-center">
+											<t t-if="line.holidays">
+												<span t-field="line.holidays" />
+											</t>
+											<t t-if="not line.holidays">
+												-
+											</t>
+										</td>
+									</tr>
+								</tbody>
+								<tfoot>
+									<tr>
+										<td colspan="5">المجموع</td>
+										<td class="text-center">
+											<span t-esc="format_time(total_retard)" />
+										</td>
+										<td class="text-center">
+											<span t-esc="format_time(total_leave)" />
+										</td>
+
+										<td class="text-center">
+											<span t-esc="format_time(total_hours_supp)" />
+										</td>
+
+										<td class="text-center">
+											<span t-esc="format_time(total_authorization)" />
+										</td>
+
+										<td class="text-center">
+											<span t-esc="format_time(total_absence)" />
+										</td>
+
+										<td class="text-center">
+											<span t-esc="format_time(total_holidays)" />
+										</td>
+
+									</tr>
+								</tfoot>
+
+							</table>
+						</div>
+					</t>
+
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+								

@@ -55,14 +55,14 @@ class HrJob(models.Model):
         context = {}
         context['job_id'] = self.id
         return {
-              'name': u'حجز الوظيفة',
-              'view_type': 'form',
-              "view_mode": 'form',
-              'res_model': 'hr.job.reservation',
-              'type': 'ir.actions.act_window',
-              'context': context,
-              'target': 'new',
-              }
+            'name': u'حجز الوظيفة',
+            'view_type': 'form',
+            "view_mode": 'form',
+            'res_model': 'hr.job.reservation',
+            'type': 'ir.actions.act_window',
+            'context': context,
+            'target': 'new',
+            }
 
 
 class HrJobName(models.Model):
@@ -71,13 +71,11 @@ class HrJobName(models.Model):
     name = fields.Char(string=u'المسمى', required=1)
     number = fields.Char(string=u'الرمز', required=1)
     job_description = fields.Text(string=u'متطلبات الوظيفية')
-    _sql_constraints = [
-        ('number_uniq', 'unique(number)', 'رمز هذا المسمى موجود.'),
-        ]
+    _sql_constraints = [('number_uniq', 'unique(number)', 'رمز هذا المسمى موجود.')]
 
 
 class HrJobReservation(models.Model):
-    _name = 'hr.job.reservation'  
+    _name = 'hr.job.reservation'
     _description = u'الوظائف'
     _rec_name = 'date_from'
 
@@ -124,7 +122,6 @@ class HrJobCreate(models.Model):
     serie_id = fields.Many2one('hr.groupe.job', ' سلسلة الفئات', ondelete='cascade')
     grade_ids = fields.One2many('salary.grid.grade', 'job_create_id', string='المرتبة')
     draft_budget = fields.Binary(string=u'مشروع الميزانية')
-
 
     @api.onchange('serie_id')
     def onchange_serie_id(self):
@@ -533,7 +530,7 @@ class HrJobCancel(models.Model):
                                               'message': u'لقد تم رفض طلبكم بإلغاء وظيفة',
                                               'user_id': self.employee_id.user_id.id,
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-                                              'res_model':'hr.job.cancel',
+                                              'res_model': 'hr.job.cancel',
                                               'res_id': self.id,
                                               'res_action': 'smart_hr.action_hr_job_cancel'})
 
@@ -546,7 +543,7 @@ class HrJobCancelLine(models.Model):
     job_id = fields.Many2one('hr.job', string='الوظيفة', required=1)
     type_id = fields.Many2one('salary.grid.type', string='التصنيف', required=1, readonly=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1, readonly=1)
-    department_id = fields.Many2one('hr.department', string='الإدارة', required=1, readonly=1) 
+    department_id = fields.Many2one('hr.department', string='الإدارة', required=1, readonly=1)
 
     @api.onchange('job_id')
     def _onchange_job_id(self):
@@ -648,7 +645,7 @@ class HrJobMoveDeparrtmentLine(models.Model):
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة ', readonly=1, required=1)
     department_id = fields.Many2one('hr.department', string=' الإدارة الحالية', readonly=1, required=1)
     new_department_id = fields.Many2one('hr.department', string='الإدارة الجديد', required=1)
-    job_move_department_id = fields.Many2one('hr.job.move.department', string='الوظيفة', required=1) 
+    job_move_department_id = fields.Many2one('hr.job.move.department', string='الوظيفة', required=1)
 
     @api.onchange('job_id')
     def _onchange_job_id(self):
@@ -666,22 +663,22 @@ class HrJobMoveDeparrtmentLine(models.Model):
 
 
 class HrJobMoveGrade(models.Model):
-    _name = 'hr.job.move.grade'  
-    _inherit = ['mail.thread']    
+    _name = 'hr.job.move.grade'
+    _inherit = ['mail.thread']
     _description = u'رفع أو خفض وظائف'
     _rec_name = 'decision_number'
 
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1, readonly=1)
-    decision_number = fields.Char(string=u'رقم القرار', required=1)   
+    decision_number = fields.Char(string=u'رقم القرار', required=1)
     decision_date = fields.Date(string=u'تاريخ القرار', required=1)
     move_date = fields.Date(string=u'التاريخ', readonly=1, default=fields.Datetime.now(), required=1)
     fiscal_year = fields.Char(string='السنه المالية', default=(date.today().year), readonly=1)
-    out_speech_number = fields.Char(string=u'رقم الخطاب الصادر') 
-    out_speech_date = fields.Date(string=u'تاريخ الخطاب الصادر') 
+    out_speech_number = fields.Char(string=u'رقم الخطاب الصادر')
+    out_speech_date = fields.Date(string=u'تاريخ الخطاب الصادر')
     out_speech_file = fields.Binary(string=u'صورة الخطاب الصادر')
-    in_speech_number = fields.Char(string=u'رقم الخطاب الوارد') 
-    in_speech_date = fields.Date(string=u'تاريخ الخطاب الوارد') 
-    in_speech_file = fields.Binary(string=u'صورة الخطاب الوارد')  
+    in_speech_number = fields.Char(string=u'رقم الخطاب الوارد')
+    in_speech_date = fields.Date(string=u'تاريخ الخطاب الوارد')
+    in_speech_file = fields.Binary(string=u'صورة الخطاب الوارد')
     job_movement_ids = fields.One2many('hr.job.move.grade.line', 'job_movement_line_id')
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', u'في إنتظار الموافقة'),
@@ -753,18 +750,19 @@ class HrJobMoveGrade(models.Model):
         self.ensure_one()
         for rec in self.job_movement_ids:
             rec.job_id.write({'is_occupied': True})
-    
+
+
 class HrJobMoveGradeLine(models.Model):
-    _name = 'hr.job.move.grade.line'  
+    _name = 'hr.job.move.grade.line'
     _description = u'رفع أو خفض وظائف'
 
-    job_movement_line_id = fields.Many2one('hr.job.move.grade', string='الوظيفة', required=1, ondelete="cascade") 
-    job_id = fields.Many2one('hr.job', string='الوظيفة', domain=[('state', '=', 'unoccupied'),('is_occupied','=',False)], required=1)
-    type_id = fields.Many2one('salary.grid.type', string='التصنيف', readonly=1, required=1) 
-    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة الحالية', readonly=1, required=1) 
-    new_grade_id = fields.Many2one('salary.grid.grade', string=' المرتبة الجديد', required=1) 
-    department_id = fields.Many2one('hr.department', string='الإدارة', readonly=1, required=1) 
-    job_number = fields.Char(string='الرقم الوظيفي', required=1) 
+    job_movement_line_id = fields.Many2one('hr.job.move.grade', string='الوظيفة', required=1, ondelete="cascade")
+    job_id = fields.Many2one('hr.job', string='الوظيفة', domain=[('state', '=', 'unoccupied'), ('is_occupied', '=', False)], required=1)
+    type_id = fields.Many2one('salary.grid.type', string='التصنيف', readonly=1, required=1)
+    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة الحالية', readonly=1, required=1)
+    new_grade_id = fields.Many2one('salary.grid.grade', string=' المرتبة الجديد', required=1)
+    department_id = fields.Many2one('hr.department', string='الإدارة', readonly=1, required=1)
+    job_number = fields.Char(string='الرقم الوظيفي', required=1)
 
     @api.onchange('job_id')
     def _onchange_job_id(self):
@@ -775,7 +773,7 @@ class HrJobMoveGradeLine(models.Model):
             self.job_number = self.job_id.number
             res = {}
             grade_ids = []
-            # get availble grades depend on move_type type رفع أو خفض 
+            # get availble grades depend on move_type type رفع أو خفض
             for rec in self.job_id.serie_id.hr_classment_job_ids:
                 print self._context
                 if self._context['operation'] == 'scale_down':
@@ -911,4 +909,3 @@ class HrJobMoveUpdateLine(models.Model):
                         job_ids.append(job.id)
             res['domain'] = {'job_id': [('id', 'in', job_ids)]}
             return res
-            
