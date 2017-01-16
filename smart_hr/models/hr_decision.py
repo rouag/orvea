@@ -25,7 +25,7 @@ class HrDecision(models.Model):
             numero = self.name or ""
             job_id = self.employee_id.job_id.name.name or ""
             grade_id=self.employee_id.job_id.grade_id.name or ""
-            salary=self.job_id.type_id.basic_salary or ""
+            salary=self.employee_id.type_id.basic_salary or ""
             code=self.employee_id.job_id.number or ""
             
             if decision_type_line.text:
