@@ -126,6 +126,11 @@
 						<group col="2">
 							<field name="holiday_status_id" options="{'no_create_edit': True}" required="1" />
 						</group>
+						<group>
+						<field name="study_subject"	attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_study)d)],
+								'required':[('holiday_status_id','=', %(data_hr_holiday_status_study)d)]}" />
+
+						</group>
 						<group col="6">
 							<field name="accompaniment_type"
 								attrs="{'readonly':[('state','not in',['draft'])],
@@ -166,7 +171,9 @@
 							<field name="raison"
 								attrs="{'readonly':[('state','not in',['draft'])],'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_exceptional_accompaniment)d)]}" />
 							<field name="childbirth_date"
-								attrs="{'readonly':[('state','not in',['draft'])],'invisible':[('holiday_status_id','not in', (%(data_hr_holiday_status_childbirth)d,%(data_hr_holiday_child_birth_dad)d))],'required':[('holiday_status_id','in', (%(data_hr_holiday_status_childbirth)d,%(data_hr_holiday_child_birth_dad)d))]}" />
+								attrs="{'readonly':[('state','not in',['draft'])],
+								'invisible':[('holiday_status_id','not in', (%(data_hr_holiday_status_childbirth)d,%(data_hr_holiday_child_birth_dad)d,%(data_hr_holiday_status_maternity)d))],
+								'required':[('holiday_status_id','in', (%(data_hr_holiday_status_childbirth)d,%(data_hr_holiday_child_birth_dad)d,%(data_hr_holiday_status_maternity)d))]}" />
 						</group>
 						<group>
 							<field name="medical_certificate"
@@ -195,10 +202,7 @@
 								attrs="{'readonly':[('state','not in',['draft'])],
 								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_compensation)d)],
 								'required':[('holiday_status_id','=', %(data_hr_holiday_compensation)d)]}" />
-
-
 						</group>
-
 
 						<group col="6">
 							<field name="date_from" required="1"
@@ -288,7 +292,7 @@
 								<tree editable="bottom">
 									<field name="entitlment_category" required="1" />
 									<field name="holiday_stock_default" />
-									<field name="conditionnal" />
+<!-- 									<field name="conditionnal" /> -->
 									<field name="periode" />
 									<field name="extension_period" />
 								</tree>
