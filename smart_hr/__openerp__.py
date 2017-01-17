@@ -28,7 +28,7 @@
         'job/views/job_grade_report.xml',
         'job/views/job_update_report.xml',
         'job/views/report.xml',
-
+        
         'view/hr_menu.xml',
         'data/sequences.xml',
         'data/configurations.xml',
@@ -98,6 +98,8 @@
         'view/holiday_entitlement_types.xml',
         'view/hr_holidays_extension.xml',
         'view/religion.xml',
+        'view/courses_follow_up.xml',
+        'view/hr_improve_situation_view.xml',
 
         # القرارات
         'view/hr_decision.xml',
@@ -110,6 +112,7 @@
         'payroll/view/hr_deduction.xml',
         'payroll/views/report_hr_deduction.xml',
         'payroll/views/report_hr_deduction_line.xml',
+        
 
         # الحضور والإنصراف
         'attendance/security/attendance_security.xml',

@@ -7,7 +7,8 @@ class WizardJobUpdate(models.TransientModel):
     _name = 'wizard.job.update'
 
     update_request_id = fields.Many2one('hr.job.update', string=u'طلب التحوير', domain=[('state', '=', 'done')])
-    speech_number = fields.Char(related="update_request_id.in_speech_number", readonly=1, string=u'رقم الخطاب الوارد')
+    decision_number = fields.Char(related="update_request_id.decision_number", readonly=1, string=u'رقم القرار')
+    decision_date = fields.Date(related="update_request_id.decision_date", readonly=1, string=u'تاريخ القرار')
     report_type = fields.Selection([('requested', u'الجارية'),
                                     ('accepted', u'الموافق عليها'),
                                     ], string=u'طلبات التحوير', default='requested')

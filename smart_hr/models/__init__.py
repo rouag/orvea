@@ -40,4 +40,4 @@ from . import hr_holidays_extension
 from . import religion
 
 from . import courses_follow_up
-
+from . import hr_improve_situation

@@ -128,7 +128,10 @@
 						<group col="4">
 							<field name="name" />
 							<field name="code" />
-							
+							<field name="type_id" />
+							<field name="min_degree_id" />
+							<field name="max_degree_id" />
+							<field name="nb_salary" />
 
 						</group>
 						<group>
@@ -177,7 +180,10 @@
 						<group col="4">
 							<field name="name" />
 							<field name="code" />
-							
+							<field name="type_id" />
+							<field name="min_degree_id" />
+							<field name="max_degree_id" />
+							<field name="transport_allow" />
 
 						</group>
 						<group>

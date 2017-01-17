@@ -14,6 +14,20 @@ class HrDecision(models.Model):
     date = fields.Date(string='بتاريخ', required=1)
     employee_id=fields.Many2one('hr.employee',string='الموظف',required=1,)
     text = fields.Html(string='نص القرار')
+    
+#     decision_appoint_id = Many2one('hr.decision.appoint')
+#     job_id=fields.Many2one(related='decision_appoint_id.job_id', store=True, readonly=True, string='الوظيفة')
+#     number_job=fields.Many2one(related='decision_appoint_id.number_job', store=True, readonly=True, string='الرقم الوظيفي')
+#     type_id=fields.Many2one(related='decision_appoint_id.type_id', store=True, readonly=True, string='الصنف')
+#        department_id=fields.Many2one(related='decision_appoint_id.department_id', store=True, readonly=True, string='القسم')
+#     grade_id=fields.Many2one(related='decision_appoint_id.grade_id', store=True, readonly=True, string='المرتبة')
+#     basic_salary=fields.Many2one(related='decision_appoint_id.basic_salary', store=True, readonly=True, string='الراتب الأساسي')
+#     net_salary=fields.Many2one(related='decision_appoint_id.net_salary', store=True, readonly=True, string='صافي الراتب')
+#     degree_id=fields.Many2one(related='decision_appoint_id.degree_id', store=True, readonly=True, string='الدرجة')
+#   
+    
+    
+           
 
     @api.onchange('decision_type_id')
     def onchange_decision_type_id(self):
@@ -25,7 +39,7 @@ class HrDecision(models.Model):
             numero = self.name or ""
             job_id = self.employee_id.job_id.name.name or ""
             grade_id=self.employee_id.job_id.grade_id.name or ""
-            salary=self.employee_id.type_id.basic_salary or ""
+            salary=self.employee_id.job_id.type_id.basic_salary or ""
             code=self.employee_id.job_id.number or ""
             
             if decision_type_line.text:
