@@ -292,24 +292,14 @@
 									<field name="sequence" required="1" />
 									<field name="periode" required="1" />
 									<field name="salary_proportion" required="1" />
+
 								</tree>
 							</field>
-							<group col="4">
-								<group>
-									<field name="minimum" />
-									<field name="maximum" />
-									<field name="postponement_period" />
-									<field name="color_name" />
+
+							<group col="10">
+								<group string="القرارات و الضوابط">
 									<field name="need_decision" />
 									<field name="direct_decision" />
-									<field name="promotion_deductible" />
-									<field name="extension_number" />
-									<field name="for_saudi" />
-									<field name="for_other" />
-									<field name="salary_spending" />
-									<field name="active" />
-									<field name="deductible_normal_leave" />
-									<field name="deductible_duration_service" />
 									<field name="educ_lvl_req" />
 									<field name="education_levels"
 										attrs="{'invisible':[('educ_lvl_req', '=', False)]}" widget="many2many" />
@@ -317,27 +307,41 @@
 									<field name="assessments_required"
 										attrs="{'invisible':[('evaluation_condition', '=', False)]}"
 										widget="many2many" />
-									<field name="min_amount" />
-									<field name="pension_percent" />
+									<field name="extension_number" />
 									<field name="demand_number_max" />
+									<field name="maximum_days_by_year" />
+								</group>
+								<group string="إعدادات المدة و التواريخ">
+									<field name="promotion_deductible" />
+									<field name="deductible_normal_leave" />
+									<field name="deductible_duration_service" />
+									<field name="minimum" />
+									<field name="maximum" />
+									<field name="postponement_period" />
+								</group>
+								<group string="الأثر المالي">
+									<field name="salary_spending" />
+
 									<field name="traveling_ticket" />
 									<field name="traveling_ticket_familiar" />
 									<field name="transport_allowance" />
-									<field name="maximum_days_by_year" />
+									<field name="min_amount" />
+									<field name="pension_percent" />
 								</group>
 
-								<group>
-									<separator colspan="4" string=" المخطط‬‫ الانسيابي‬ " />
-									<group>
+								<group string=" المخطط‬‫ الانسيابي‬ ">
 
-										<field name="direct_director_decision" />
-										<field name="audit" />
-										<field name="employees_director_decision" />
-										<field name="external_decision" />
-										<field name="need_decision" />
-										<field name="direct_decision" />
-										<field name="can_be_cancelled" />
-									</group>
+									<field name="direct_director_decision" />
+									<field name="audit" />
+									<field name="employees_director_decision" />
+									<field name="external_decision" />
+									<field name="can_be_cancelled" />
+								</group>
+								<group string="إعدادات عامّة">
+									<field name="for_saudi" />
+									<field name="for_other" />
+									<field name="active" />
+									<field name="color_name" />
 
 								</group>
 							</group>
