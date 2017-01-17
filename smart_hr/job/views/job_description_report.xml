@@ -138,11 +138,9 @@
 
 								</tr>
 								<tr>
-									<t t-if="decision_appoint_history">
-										<td width="5%" rowspan="2">
-											<strong>20</strong>
-										</td>
-									</t>
+									<td width="5%" rowspan="2">
+										<strong>20</strong>
+									</td>
 
 									<td width="23.75%">
 										<strong>أخر برنامج تم الحصول عليه:</strong>
