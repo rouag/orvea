@@ -11,7 +11,7 @@
 							<t t-set="job" t-value="get_job(data['form'])" />
 							<t t-set="decision_appoint" t-value="get_employee_job_decision(job)" />
 							<t t-set="decision_appoint_history" t-value="get_employee_job_decision_history(job)" />
-							<t t-set="employee_last_training" t-value="get_employee_last_training(job)" />							
+							<t t-set="employee_last_training" t-value="get_employee_last_training(job)" />
 							<div class="col-xs-12 text-center">
 								<h3 style="color:#395870;">
 									<strong>
@@ -93,7 +93,7 @@
 										<strong>تاريخ شغورها:</strong>
 									</td>
 									<td width="23.75%">
-											<span t-esc="job.occupied_date" />
+										<span t-esc="job.occupied_date" />
 									</td>
 								</tr>
 								<tr>
@@ -114,13 +114,13 @@
 										<strong>الإسم:</strong>
 									</td>
 									<td width="23.75%">
-											<span t-esc="job.employee.name" />
+										<span t-esc="job.employee.name" />
 									</td>
 									<td width="23.75%">
 										<strong>السجل المدني</strong>
 									</td>
 									<td width="23.75%">
-											<span t-esc="job.employee.identification_id" />
+										<span t-esc="job.employee.identification_id" />
 									</td>
 								</tr>
 								<tr>
@@ -138,24 +138,33 @@
 
 								</tr>
 								<tr>
-									<td width="5%" t-att-rowspan="len(decision_appoint_history)+1">
-										<strong>20</strong>
-									</td>
+									<t t-if="decision_appoint_history">
+										<td width="5%" rowspan="2">
+											<strong>20</strong>
+										</td>
+									</t>
+
 									<td width="23.75%">
 										<strong>أخر برنامج تم الحصول عليه:</strong>
 									</td>
-									<td width="71.25%" colspan="3"><span t-esc="employee_last_training.name" /></td>
+									<td width="71.25%" colspan="3">
+										<span t-esc="employee_last_training.name" />
+									</td>
 
 								</tr>
 								<tr>
 									<td width="23.75%">
 										<strong>نوعه:</strong>
 									</td>
-									<td width="23.75%"><span t-esc="employee_last_training.name" /></td>
+									<td width="23.75%">
+										<span t-esc="employee_last_training.name" />
+									</td>
 									<td width="23.75%">
 										<strong>مدته:</strong>
 									</td>
-									<td width="23.75%"><span t-esc="employee_last_training.number_of_days" /></td>
+									<td width="23.75%">
+										<span t-esc="employee_last_training.number_of_days" />
+									</td>
 
 								</tr>
 								<tr>
@@ -165,7 +174,9 @@
 									<td width="23.75%">
 										<strong>مصدرها:</strong>
 									</td>
-									<td width="71.25%" colspan="3"><span t-esc="employee_last_training.department" /></td>
+									<td width="71.25%" colspan="3">
+										<span t-esc="employee_last_training.department" />
+									</td>
 
 								</tr>
 								<tr>
@@ -179,9 +190,16 @@
 									</td>
 								</tr>
 								<tr>
-									<td width="5%" rowspan="2">
+									<t t-if="decision_appoint_history">
+										<td width="5%" t-att-rowspan="len(decision_appoint_history)+1">
+											<strong>23</strong>
+										</td>
+									</t>
+									<t t-if="not decision_appoint_history">
+									<td width="5%" >
 										<strong>23</strong>
 									</td>
+									</t>
 									<td width="23.75%">
 										<strong>المسمى الوظيفي الذي كان يشغلها</strong>
 									</td>
@@ -196,10 +214,18 @@
 									</td>
 								</tr>
 								<tr t-foreach="decision_appoint_history" t-as="line">
-									<td width="23.75%"><span t-esc="line.job_id.name.name" /></td>
-									<td width="23.75%"><span t-esc="line.job_id.grade_id.name" /></td>
-									<td width="23.75%"><span t-esc="line.date_hiring" /></td>
-									<td width="23.75%"><span t-esc="line.date_hiring_end" /></td>
+									<td width="23.75%">
+										<span t-esc="line.job_id.name.name" />
+									</td>
+									<td width="23.75%">
+										<span t-esc="line.job_id.grade_id.name" />
+									</td>
+									<td width="23.75%">
+										<span t-esc="line.date_hiring" />
+									</td>
+									<td width="23.75%">
+										<span t-esc="line.date_hiring_end" />
+									</td>
 								</tr>
 								<tr>
 									<td width="5%" rowspan="4">
