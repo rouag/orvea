@@ -11,6 +11,7 @@
 							<t t-set="job" t-value="get_job(data['form'])" />
 							<t t-set="decision_appoint" t-value="get_employee_job_decision(job)" />
 							<t t-set="decision_appoint_history" t-value="get_employee_job_decision_history(job)" />
+							<div class="text-center" style="position:absolute;right:0px;white-space: nowrap;-webkit-transform: rotate(270deg);-moz-transform: rotate(270deg);-o-transform: rotate(270deg);writing-mode: lr-tb;white-space: nowrap;height: 100%;">يتم تعبئة هذه الفقرات من قبل الجهة طالبات التحوير</div>
 							<div class="col-xs-12 text-center">
 								<h3 style="color:#395870;">
 									<strong>
