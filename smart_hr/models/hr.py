@@ -31,13 +31,14 @@ class HrEmployee(models.Model):
     deputation_stock = fields.Integer(string=u'الأنتدابات', default=60)
     service_years = fields.Integer(string=u'سنوات الخدمة', compute='_compute_service_years')
     religion_state = fields.Selection([('muslim', u'مسلم'),
-                                  ('notmoslum', u'غير مسلم'),
-                                  ], string=u'الديانة', default='muslim', required=1)
+                                       ('notmoslum', u'غير مسلم'),
+                                       ], string=u'الديانة', default='muslim', required=1)
     emp_state = fields.Selection([('working', u'على رأس العمل'),
                                   ('suspended', u'مكفوف اليد'),
                                   ('terminated', u'مطوي قيده'),
                                   ], string=u'الحالة', default='working', advanced_search=True)
-    job_id = fields.Many2one('hr.job',advanced_search=True)
+    decision_appoint_ids = fields.One2many('hr.decision.appoint', 'employee_id', string=u'تعيينات الموظف')
+    job_id = fields.Many2one('hr.job', advanced_search=True)
     age = fields.Integer(string=u'السن', compute='_compute_age')
     employee_no = fields.Integer(string=u'رقم الموظف', advanced_search=True)
     join_date = fields.Date(string=u'تاريخ الالتحاق بالجهة')

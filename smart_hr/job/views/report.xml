@@ -5,10 +5,14 @@
 		<report id="job_grade_report" model="False" report_type="qweb-pdf"
 			string="تقرير تخفيض الوظائف" name="smart_hr.report_job_grade" file="smart_hr.report_job_grade"
 			paperformat="smart_base.paperformat_landscape" />
-			
+
 		<report id="job_update_report" model="False" report_type="qweb-pdf"
 			string="تقرير تحوير الوظائف" name="smart_hr.report_job_update" file="smart_hr.report_job_update"
 			paperformat="smart_base.paperformat_landscape" />
+
+		<report id="job_description_report" model="False" report_type="qweb-pdf"
+			string="تقرير تحوير الوظائف" name="smart_hr.report_job_description"
+			file="smart_hr.report_job_description" />
 
 
 	</data>
