@@ -7,24 +7,22 @@
 					<t t-call="smart_base.landscape_layout">
 						<div class="page">
 							<div class="oe_structure" />
-							
+
 							<t t-set="job" t-value="get_job(data['form'])" />
 							<t t-set="decision_appoint" t-value="get_employee_job_decision(job)" />
-							
+							<t t-set="decision_appoint_history" t-value="get_employee_job_decision_history(job)" />
 							<div class="col-xs-12 text-center">
 								<h3 style="color:#395870;">
 									<strong>
 										تقرير وصف أعمال وظيفة
 									</strong>
-									<br />
-									<br />
 								</h3>
 							</div>
 
 
 							<table class="table table-condensed">
 
-								<tr>
+								<tr style="height: 50px;">
 									<td width="5%">
 										<strong>13</strong>
 									</td>
@@ -87,11 +85,15 @@
 									<td width="23.75%">
 										<strong>تاريخ إحداث الوظيفة:</strong>
 									</td>
-									<td width="23.75%"><span t-esc="get_job_create_date(job)" /></td>
+									<td width="23.75%">
+										<span t-esc="get_job_create_date(job)" />
+									</td>
 									<td width="23.75%">
 										<strong>تاريخ شغورها:</strong>
 									</td>
-									<td width="23.75%"><t t-if="decision_appoint" ><span t-esc="decision_appoint.date_hiring" /></t></td>
+									<td width="23.75%">
+											<span t-esc="job.occupied_date" />
+									</td>
 								</tr>
 								<tr>
 									<td width="5%">
@@ -110,11 +112,15 @@
 									<td width="23.75%">
 										<strong>الإسم:</strong>
 									</td>
-									<td width="23.75%"><t t-if="decision_appoint" ><span t-esc="decision_appoint.employee_id.name" /></t></td>
+									<td width="23.75%">
+											<span t-esc="job.employee.name" />
+									</td>
 									<td width="23.75%">
 										<strong>السجل المدني</strong>
 									</td>
-									<td width="23.75%"><t t-if="decision_appoint" ><span  t-esc="decision_appoint.employee_id.identification_id" /></t></td>
+									<td width="23.75%">
+											<span t-esc="job.employee.identification_id" />
+									</td>
 								</tr>
 								<tr>
 									<td width="5%">
@@ -123,11 +129,15 @@
 									<td width="23.75%">
 										<strong>المؤهل العلمي:</strong>
 									</td>
-									<td width="71.25%" colspan="3"><t t-if="decision_appoint" ><spant t-esc="decision_appoint.employee_id.education_level.name" /></t></td>
+									<td width="71.25%" colspan="3">
+										<t t-if="decision_appoint">
+											<spant t-esc="decision_appoint.employee_id.education_level.name" />
+										</t>
+									</td>
 
 								</tr>
 								<tr>
-									<td width="5%" rowspan="2">
+									<td width="5%" t-att-rowspan="len(decision_appoint_history)+1">
 										<strong>20</strong>
 									</td>
 									<td width="23.75%">
@@ -168,7 +178,7 @@
 									</td>
 								</tr>
 								<tr>
-									<td width="5%" rowspan="3">
+									<td width="5%" rowspan="2">
 										<strong>23</strong>
 									</td>
 									<td width="23.75%">
@@ -184,17 +194,11 @@
 										<strong>حتى تاريخ</strong>
 									</td>
 								</tr>
-								<tr>
-									<td width="23.75%"></td>
-									<td width="23.75%"></td>
-									<td width="23.75%"></td>
-									<td width="23.75%"></td>
-								</tr>
-								<tr>
-									<td width="23.75%"></td>
-									<td width="23.75%"></td>
-									<td width="23.75%"></td>
-									<td width="23.75%"></td>
+								<tr t-foreach="decision_appoint_history" t-as="line">
+									<td width="23.75%"><span t-esc="line.job_id.name.name" /></td>
+									<td width="23.75%"><span t-esc="line.job_id.grade_id.name" /></td>
+									<td width="23.75%"><span t-esc="line.date_hiring" /></td>
+									<td width="23.75%"><span t-esc="line.date_hiring_end" /></td>
 								</tr>
 								<tr>
 									<td width="5%" rowspan="4">

@@ -24,6 +24,7 @@ class HrJob(models.Model):
     state = fields.Selection([('unoccupied', 'شاغرة'), ('occupied', 'مشغولة'), ('cancel', 'ملغاة')], readonly=1, default='unoccupied')
     employee = fields.Many2one('hr.employee', string=u'الموظف')
     deputed_employee = fields.Boolean(string=u'موظف ندب', advanced_search=True)
+    occupied_date = fields.Date(string=u'تاريخ الشغول')
     # حجز الوظيفة
     occupation_date_from = fields.Date(string=u'حجز الوظيفة من')
     occupation_date_to = fields.Date(string=u'حجز الوظيفة الى',)
