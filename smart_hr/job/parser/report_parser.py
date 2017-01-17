@@ -3,6 +3,7 @@ import datetime
 from openerp.osv import osv
 from openerp.report import report_sxw
 from openerp.addons.smart_base.util.time_util import float_time_convert
+from openerp import fields
 
 
 class JobGradeReport(report_sxw.rml_parse):
@@ -88,3 +89,51 @@ class ReportJobUpdate(osv.AbstractModel):
     _inherit = 'report.abstract_report'
     _template = 'smart_hr.report_job_update'
     _wrapped_report_class = JobUpdateReport
+
+
+class JobDescriptionReport(report_sxw.rml_parse):
+
+    def __init__(self, cr, uid, name, context):
+        super(JobDescriptionReport, self).__init__(cr, uid, name, context=context)
+        self.localcontext.update({
+            'get_lines': self._get_lines,
+            'format_time': self._format_time,
+            'get_current_date': self._get_current_date,
+            'get_job': self._get_job,
+            'get_job_create_date': self._get_job_create_date,
+            'get_employee_job_decision': self._get_employee_job_decision
+        })
+
+    def _get_employee_job_decision(self, job):
+        print job.employee.id
+        print job.employee.decision_appoint_ids
+        hr_decision_appoint_id = self.pool.get('hr.decision.appoint').search(self.cr, self.uid, [('job_id', '=', job.id), ('state', '=', 'done')], limit=1)
+        if hr_decision_appoint_id:
+            hr_decision_appoint = self.pool.get('hr.decision.appoint').browse(self.cr, self.uid, [hr_decision_appoint_id[0]])[0]
+            return hr_decision_appoint
+        return False
+
+    def _get_job_create_date(self, job):
+        return fields.Datetime.from_string(job.create_date).strftime("%Y-%m-%d")
+
+    def _get_job(self, data):
+        job_id = data['job_id'][0]
+        return self.pool.get('hr.job').browse(self.cr, self.uid, [job_id])[0]
+
+    def _get_current_date(self):
+        now = datetime.datetime.now()
+        return now.strftime("%Y-%m-%d")
+
+    def _format_time(self, time_float):
+        hour, minn = float_time_convert(time_float)
+        return '%s:%s' % (str(hour).zfill(2), str(minn).zfill(2))
+
+    def _get_lines(self, data):
+        return []
+
+
+class ReportJobDescription(osv.AbstractModel):
+    _name = 'report.smart_hr.report_job_description'
+    _inherit = 'report.abstract_report'
+    _template = 'smart_hr.report_job_description'
+    _wrapped_report_class = JobDescriptionReport
