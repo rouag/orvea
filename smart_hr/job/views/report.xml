@@ -11,7 +11,7 @@
 			paperformat="smart_base.paperformat_landscape" />
 
 		<report id="job_description_report" model="False" report_type="qweb-pdf"
-			string="تقرير تحوير الوظائف" name="smart_hr.report_job_description"
+			string="تقرير وصف أعمال وظيفة" name="smart_hr.report_job_description"
 			file="smart_hr.report_job_description" />
 
 
