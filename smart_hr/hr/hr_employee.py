@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api, _
-from openerp.addons.smart_base.util.time_util import time_float_convert
-
+from dateutil.relativedelta import relativedelta
+from datetime import date
 
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'

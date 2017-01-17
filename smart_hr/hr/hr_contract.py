@@ -18,11 +18,11 @@ class HrContract(models.Model):
     identification_place=fields.Char(related='employee_id.identification_place', store=True, readonly=True,string=u'مكان إصدار بطاقة الهوية')
     calendar_id=fields.Many2one(related='employee_id.calendar_id', store=True, readonly=True,string=u'وردية العمل')
     passport_id=fields.Char(related='employee_id.passport_id', store=True, readonly=True,string=u'رقم جواز السفر')
-    job_id=fields.Many2one('hr.job',string='المسمى الوظيفي',required=1,)
+    job_id=fields.Many2one('hr.job',string='المسمى الوظيفي', store=True,required=1,)
     department_id=fields.Many2one(related='employee_id.department_id', store=True, readonly=True,string='القسم',)
     assurance=fields.Char(string='التامين') 
-    type_id=fields.Many2one('salary.grid.type',string='الصنف',readonly=1) 
-    grade_id=fields.Many2one('salary.grid.grade',string='المرتبة',readonly=1)
+    type_id=fields.Many2one('salary.grid.type',string='الصنف', store=True,readonly=1) 
+    grade_id=fields.Many2one('salary.grid.grade',string='المرتبة', store=True,readonly=1)
     struct_id= fields.Many2one('hr.payroll.structure', 'Salary Structure',required=False)
     #struct_id= fields.Char(string="struct",required=0,),
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة' )
@@ -86,8 +86,8 @@ class hrContractPayement(models.Model):
 class hrContractItem(models.Model):
     _name = 'hr.contract.item'
     
-    name = fields.Char(string=u'مسمى المادة')
-    code = fields.Char(string=u'رقم المادة')
-    text = fields.Html(string=u' محتوى المادة')
+    name = fields.Char(string=u'مسمى المادة',required=1)
+    code = fields.Char(string=u'رقم المادة',required=1)
+    text = fields.Html(string=u' محتوى المادة',required=1)
  #   contract_item=fields.Many2one('hr.contract.item',string='بند العقد')
     

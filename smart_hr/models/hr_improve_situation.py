@@ -14,7 +14,9 @@ class HrImproveSituatim(models.Model):
     employee_id=fields.Many2one('hr.employee',string=' إسم الموظف',required=1,)
     number=fields.Char(string='الرقم الموظف',readonly=1) 
     state= fields.Selection([('new','طلب'),('waiting','في إنتظار الإعتماد'),('done','اعتمدت')], readonly=1, default='new')
- 
+    order_picture=fields.Binary(string='صورة القرار',required=1) 
+    order_date=fields.Date(string='تاريخ القرار',required=1) 
+    date_hiring=fields.Date(string='تاريخ التعيين',required=1)
     job_id = fields.Many2one('hr.job', string='الوظيفة',readonly=1) 
     number_job=fields.Char(string='الرقم الوظيفي',readonly=1) 
     type_id=fields.Many2one('salary.grid.type',string='الصنف',readonly=1) 
@@ -29,24 +31,49 @@ class HrImproveSituatim(models.Model):
     salary_recent = fields.Float(string=' أخر راتب شهري ',readonly=1)
     transport_alocation = fields.Boolean(string='بدل نقل',readonly=1)
     type_improve=fields.Many2one('hr.type.improve.situation',string='نوع التتحسين',required=1,states={'new': [('readonly', 0)]})
+    order_picture1=fields.Binary(string='صورة القرار',required=1) 
     job_id1 = fields.Many2one('hr.job', string='الوظيفة') 
     number_job1=fields.Char(string='الرقم الوظيفي') 
+    order_date1=fields.Date(string='تاريخ القرار',required=1) 
+    date_hiring1=fields.Date(string='تاريخ التعيين',required=1)
     type_id1=fields.Many2one('salary.grid.type',string='الصنف') 
     department_id1=fields.Many2one('hr.department',string='القسم')
     grade_id1=fields.Many2one('salary.grid.grade',string='المرتبة')
     degree_id1 = fields.Many2one('salary.grid.degree', string='الدرجة')
     basic_salary1 = fields.Float(string='الراتب الأساسي')   
     net_salary1 = fields.Float(string='صافي الراتب')
+    
     @api.one
     def action_waiting(self):
         self.state = 'waiting' 
-         
-    @api.one
+    
+    
+    @api.multi
     def action_done(self):
-        """
-        TODO: update promotion history  for the employee when he have a promotion
-        """
-        self.state = 'done'  
+        self.ensure_one()
+        for line in self:
+            improve_val = {
+                   
+                    'degree_id': line.degree_id1.id,
+                    'job_id': line.job_id1.id,
+                    'number_job': line.number_job1,
+                    'type_id': line.type_id1.id,
+                     'basic_salary': line.basic_salary1,
+                    'type_improve': line.type_improve.id,
+                    'grade_id': line.grade_id1.id,
+                    'department_id': line.department_id1.id,
+                     }
+            self.env['hr.decision.appoint'].search([('employee_id', '=', line.employee_id.id)], limit=1).write  ({
+                                    'job_id':line.job_id1.id,
+                                     'degree_id': line.degree_id1.id,
+                                    'number_job': line.number_job1,
+                                    'type_id': line.type_id1.id,
+                                    'basic_salary': line.basic_salary1,
+                                    'grade_id': line.grade_id1.id,
+                                    'department_id': line.department_id1.id,})
+        self.state = 'done'
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت إحداث تحسين الوضع جديد '" + unicode(user.name) + u"'")
         
     @api.one
     def action_refuse(self):
@@ -64,6 +91,7 @@ class HrImproveSituatim(models.Model):
                     self.number = employee_id_line.number
                     self.number_job = employee_id_line.number_job
                     self.job_id = employee_id_line.job_id
+                    self.order_picture = employee_id_line.order_picture
                     self.type_id = employee_id_line.type_id
                     self.grade_id = employee_id_line.grade_id
                     self.degree_id = employee_id_line.degree_id

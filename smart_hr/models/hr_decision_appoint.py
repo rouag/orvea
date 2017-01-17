@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 
 
+
 from openerp import models, fields, api, _
-from openerp.exceptions import except_orm, Warning, RedirectWarning
+from openerp.exceptions import Warning
+from dateutil.relativedelta import relativedelta
+from openerp.exceptions import ValidationError
+from datetime import date, datetime, timedelta
 
 class HrDecisionAppoint(models.Model):
     _name = 'hr.decision.appoint'  
@@ -19,7 +23,7 @@ class HrDecisionAppoint(models.Model):
                                        ('notactif', u'غير نشط'),
                                       ], string=u'حالة التعين', default='actif')
     #info about employee
-    employee_id=fields.Many2one('hr.employee',string='الموظف',required=1,domain=[('employee_state','=','done')],states={'new': [('readonly', 0)]})
+    employee_id=fields.Many2one('hr.employee',string='الموظف',required=1)
     number=fields.Char(string='الرقم الوظيفي',readonly=1) 
     country_id=fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
     #info about job
@@ -61,6 +65,8 @@ class HrDecisionAppoint(models.Model):
     def action_waiting(self):
         self.ensure_one()
         self.state = 'waiting'
+        if self.employee_id.age > 60 :
+            raise ValidationError(u"الرجاء التثبت من سن المترشح تجاوز 60)")
     
     @api.multi
     def action_communication(self):
@@ -91,30 +97,8 @@ class HrDecisionAppoint(models.Model):
     def action_done(self):
         self.ensure_one()
         for line in self:
-            decision_val = {
-                    'name': line.name,
-                    'number': line.number,
-                    'country_id': line.country_id.id,
-                    'degree_id': line.degree_id.id,
-                    'order_picture': line.order_picture,
-                    'date_hiring': line.date_hiring,
-                    'order_date': line.order_date,
-                    'date_direct_action': line.date_direct_action,
-                    'type_appointment': line.type_appointment.id,
-                    'job_id': line.job_id.id,
-                    'number_job': line.number_job,
-                    'type_id': line.type_id.id,
-                    'far_age': line.far_age,
-                    'grade_id': line.grade_id.id,
-                    'department_id': line.department_id.id,
-                    'file_appoint': line.file_appoint,
-                    'file_decision': line.file_decision,
-                    'employee_id': line.employee_id.id,
-                              
-                     }
             line.employee_id.write({'employee_state':'employee','job_id':line.job_id.id})
-            line.job_id.write({'state':'occupied'})
-            self.env['hr.decision.appoint'].create(decision_val)
+            line.job_id.write({'state':'occupied','employee': line.employee_id.id})
           
             
         self.state = 'done'
@@ -148,13 +132,12 @@ class HrDecisionAppoint(models.Model):
             self.far_age = self.job_id.type_id.far_age
             self.grade_id = self.job_id.grade_id.id
             self.department_id = self.job_id.department_id.id
-          
             
             
-    @api.onchange('degree_id')
+    api.onchange('degree_id')
     def _onchange_degree_id(self):
             if self.degree_id:
-           
+            
                 salary_grid_line = self.env['salary.grid.detail'].search([('type_id', '=', self.type_id.id),
                                                 ('grade_id', '=', self.grade_id.id),
                                                   ('degree_id', '=', self.degree_id.id)
