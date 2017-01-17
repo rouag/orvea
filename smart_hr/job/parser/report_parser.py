@@ -102,8 +102,19 @@ class JobDescriptionReport(report_sxw.rml_parse):
             'get_job': self._get_job,
             'get_job_create_date': self._get_job_create_date,
             'get_employee_job_decision': self._get_employee_job_decision,
-            'get_employee_job_decision_history': self._get_employee_job_decision_history
+            'get_employee_job_decision_history': self._get_employee_job_decision_history,
+            'get_employee_last_training': self._get_employee_last_training
         })
+
+    def _get_employee_last_training(self, job):
+        hr_candidates_ids = self.pool.get('hr.candidates').search(self.cr, self.uid, [('training_id.state', '=', 'done'), ('employee_id', '=', job.employee.id)])
+        print hr_candidates_ids
+        if hr_candidates_ids:
+            last_hr_candidate_id = hr_candidates_ids[len(hr_candidates_ids) - 1]
+            hr_candidate = self.pool.get('hr.candidates').browse(self.cr, self.uid, [last_hr_candidate_id])
+            print hr_candidate
+            return hr_candidate.training_id
+        return False
 
     def _get_employee_job_decision_history(self, job):
         hr_decision_appoint_ids = self.pool.get('hr.decision.appoint').search(self.cr, self.uid, [('employee_id', '=', job.employee.id), ('state', '=', 'done'), ('active', '=', False)])
