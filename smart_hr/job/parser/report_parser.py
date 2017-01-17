@@ -108,11 +108,10 @@ class JobDescriptionReport(report_sxw.rml_parse):
 
     def _get_employee_last_training(self, job):
         hr_candidates_ids = self.pool.get('hr.candidates').search(self.cr, self.uid, [('training_id.state', '=', 'done'), ('employee_id', '=', job.employee.id)])
-        print hr_candidates_ids
         if hr_candidates_ids:
             last_hr_candidate_id = hr_candidates_ids[len(hr_candidates_ids) - 1]
-            hr_candidate = self.pool.get('hr.candidates').browse(self.cr, self.uid, [last_hr_candidate_id])
-            print hr_candidate
+            if last_hr_candidate_id:
+                hr_candidate = self.pool.get('hr.candidates').browse(self.cr, self.uid, [last_hr_candidate_id])
             return hr_candidate.training_id
         return False
 
