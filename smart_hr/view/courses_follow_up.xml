@@ -9,27 +9,43 @@
 			<field name="arch" type="xml">
 				<form string="الدورات الدراسيّة ">
 					<header>
-						<button name="action_start" string="بداية الدورة"
-							type="object"
-							attrs="{'invisible':[('state','!=','draft')]}"
-							icon="fa-paper-plane" class="oe_inline oe_stat_button"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_start" string="إرسال طلب" type="object"
+							attrs="{'invisible':[('state','!=','draft')]}" icon="fa-paper-plane"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 
 						<button name="action_done" string="نهاية الدورة" type="object"
-							states="progress"  icon="fa-times"
-							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-							
+							states="progress" icon="fa-times" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
 						<field name="state" widget="statusbar" statusbar_visible="draft,progress,done" />
 					</header>
 					<sheet>
-						<group>
-
-							<field name="employee_id" colspan="1" />
-							<field name="name" />
-							<field name="date_from" />
-							<field name="date_to" />
-							<field name="result" />
+						<group >
+							<group >
+								<field name="name" />
+							</group>
+							<group></group>
+						</group>
+						<group >
+							<group >
+								<field name="employee_id" />
+							</group>
+							<group></group>
+						</group>
+						<group >
+						<group >
+							<field name="date_from"/>
+							</group>
+							<group>
+							<field name="date_to"  />
+						</group>
+						</group>
+							<group >
+							<group >
+								<field name="result" />
+							</group>
+							<group></group>
 						</group>
 					</sheet>
 				</form>
@@ -60,6 +76,6 @@
 		</record>
 		<!-- config menu -->
 		<menuitem id="hr_configuration_courses_followup" name="الدورات الدراسيّة"
-			sequence="20" parent="hr_root_employees" action="action_courses_followup" />
+			parent="menu_hr_holiday_root" sequence="54" action="action_courses_followup" />
 	</data>
 </openerp>

@@ -2,6 +2,7 @@
 
 
 from openerp import models, fields, api, _
+from openerp.exceptions import ValidationError
 
 
 class CoursesFollowUp(models.Model):
@@ -21,7 +22,7 @@ class CoursesFollowUp(models.Model):
         ('progress', u'جارية'),
         ('done', u'انتهت')], string=u'حالة', default='draft')
 
-    employee_id = fields.Many2one('hr.employee', string=u'الموظف', advanced_search=True)
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف', advanced_search=True ,required=1)
 
     @api.one
     def action_start(self):
@@ -29,4 +30,6 @@ class CoursesFollowUp(models.Model):
         
     @api.one
     def action_done(self):
+        if not self.result:
+            raise ValidationError(u"الرجاء تعبئة النتيجة.")
         self.state = 'done'
