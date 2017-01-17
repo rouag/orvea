@@ -97,6 +97,7 @@
         'view/external_autorities.xml',
         'view/holiday_entitlement_types.xml',
         'view/hr_holidays_extension.xml',
+        'view/religion.xml',
 
         # القرارات
         'view/hr_decision.xml',

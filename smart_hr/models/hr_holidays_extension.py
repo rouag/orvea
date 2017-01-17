@@ -27,11 +27,12 @@ class HrHolidaysExtension(models.Model):
         ('done', u'إعتمد'),
         ('refuse', u'رفض'),
     ], string=u'حالة', default='draft', advanced_search=True)
-    note = fields.Text(string = u'الملاحظات', required = True)
+    note = fields.Text(string = u'الملاحظات')
     duration = fields.Integer(string=u'الأيام')
     open_period = fields.Many2one('hr.holidays.periode', string=u'periode')
-    
-    
+    num_decision = fields.Char(string=u'رقم القرار')
+    date_decision = fields.Date(string=u'تاريخ القرار')
+        
     @api.depends('employee_id')
     def _employee_is_the_creator(self):
         for rec in self:

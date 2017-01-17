@@ -37,5 +37,7 @@ from . import hierarchy_level
 from . import external_authorities
 from . import hr_holidays_extension
 
+from . import religion
+
 from . import courses_follow_up
 

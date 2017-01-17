@@ -30,9 +30,7 @@ class HrEmployee(models.Model):
     # Deputation Stock
     deputation_stock = fields.Integer(string=u'الأنتدابات', default=60)
     service_years = fields.Integer(string=u'سنوات الخدمة', compute='_compute_service_years')
-    religion_state = fields.Selection([('muslim', u'مسلم'),
-                                  ('notmoslum', u'غير مسلم'),
-                                  ], string=u'الديانة', default='muslim', required=1)
+    religion_state = fields.Many2one('religion.religion',string=u'الديانة', required=1)
     emp_state = fields.Selection([('working', u'على رأس العمل'),
                                   ('suspended', u'مكفوف اليد'),
                                   ('terminated', u'مطوي قيده'),
@@ -50,10 +48,18 @@ class HrEmployee(models.Model):
     compensation_stock = fields.Integer(string=u'رصيد إجازات التعويض')
     holiday_peiodes = fields.One2many('hr.holidays.periode', 'employee_id', string='holidays periodes')
     grandfather_name = fields.Char(string=u'اسم الجد', required=1)
-    grandfather2_name = fields.Char(string=u'  اسم الجد الثاني ', required=1)
+    grandfather2_name = fields.Char(string=u'  اسم الجد الثاني ')
     family_name = fields.Char(string=u'الاسم العائلي', required=1)
-
+    father_middle_name = fields.Char(string=u'middle_name')
+    grandfather_middle_name = fields.Char(string=u'middle_name2')
+    grandfather2_middle_name = fields.Char(string=u'  middle_name3')
     
+    @api.multi
+    def name_get(self):
+        res = []
+        for emp in self:
+            res.append((emp.id, "%s %s %s %s" % (emp.name or '', emp.father_middle_name or '', emp.father_name or '', emp.family_name or '')))
+        return res
     
     def _compute_service_years(self):
         for emp in self:

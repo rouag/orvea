@@ -54,18 +54,31 @@
 						<div name="button_box" invisible="1" />
 						<field name="image" widget="image" class="oe_avatar"
 							options="{&quot;preview_image&quot;:&quot;image_medium&quot;}" />
-						<div >
+						<div>
 
-									<group col="10">
-									<field name="name"  attrs="{'required': 1}" />
-									<field name="father_name" />
-									<field name="grandfather_name" />
-									<field name="grandfather2_name" />
-									<field name="family_name" />
-								</group>
+							<group col="13">
+								<label name="name" string="الاسم" colspan="3" />
+								<label name="father_name" string="إسم الأب" colspan="3" />
+								<label name="grandfather_name" string="اسم الجد" colspan="3" />
+								<label name="grandfather2_name" string="اسم الجد الثاني"
+									colspan="3" />
+								<label name="family_name" string="الاسم العائلي" colspan="1" />
+							</group>
+							<group col="13">
+								<field name="name" nolabel="1" colspan="2" />
+								<field name="father_middle_name" nolabel="1" />
+								<field name="father_name" nolabel="1" colspan="2" />
+								<field name="grandfather_middle_name" nolabel="1" />
+								<field name="grandfather_name" nolabel="1" colspan="2" />
+								<field name="grandfather2_middle_name" nolabel="1" />
+								<field name="grandfather2_name" nolabel="1" colspan="2" />
+								<field name="family_name" nolabel="1" colspan="2" />
+							</group>
+
 							<label for="number" class="oe_edit_only" />
 							<h1>
-								<field name="number" placeholder="الرقم الوظيفي" attrs="{'required': 1}" />
+								<field name="number" placeholder="الرقم الوظيفي" attrs="{'required': 1}"
+									class="oe_smart_inline" />
 
 							</h1>
 						</div>
@@ -258,17 +271,29 @@
 							<field name="image" widget="image" class="oe_avatar"
 								options="{&quot;preview_image&quot;:&quot;image_medium&quot;}" />
 							<div>
-								<group col="10">
-									<field name="name" />
-									<field name="father_name"  />
-									<field name="grandfather_name"  />
-									<field name="grandfather2_name" />
-									<field name="family_name" />
-								</group>					
-											
+								<group col="13">
+									<label name="name" string="الاسم" colspan="3" class="gn_change_css" />
+									<label name="father_name" string="إسم الأب" colspan="3" />
+									<label name="grandfather_name" string="اسم الجد" colspan="3" />
+									<label name="grandfather2_name" string="اسم الجد الثاني"
+										colspan="3" />
+									<label name="family_name" string="الاسم العائلي" colspan="1" />
+								</group>
+								<group col="13">
+									<field name="name" nolabel="1" colspan="2" />
+									<field name="father_middle_name" nolabel="1" />
+									<field name="father_name" nolabel="1" colspan="2" />
+									<field name="grandfather_middle_name" nolabel="1" />
+									<field name="grandfather_name" nolabel="1" colspan="2" />
+									<field name="grandfather2_middle_name" nolabel="1" />
+									<field name="grandfather2_name" nolabel="1" colspan="2" />
+									<field name="family_name" nolabel="1" colspan="2" />
+								</group>
+
 								<label for="number" class="oe_edit_only" />
 								<h1>
-									<field name="number" placeholder="الرقم الوظيفي" attrs="{'required': 1}" />
+									<field name="number" placeholder="الرقم الوظيفي" attrs="{'required': 1}"
+										class="oe_smart_inline" />
 
 								</h1>
 							</div>

@@ -1,0 +1,23 @@
+.o_form_field_number {
+  text-align: right !important;
+ width:60px !important;
+}
+
+.oe_smart_inline {
+  width: 50% !important;
+}
+
+.oe_smart_middle_name {
+float: left !important;
+  width: 20px !important;
+}
+
+.align_change_css {
+    text-align: center !important;
+
+}
+
+.o_td_label{
+    text-align: center !important;
+
+}
