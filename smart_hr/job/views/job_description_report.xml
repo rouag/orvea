@@ -148,7 +148,9 @@
 										<strong>أخر برنامج تم الحصول عليه:</strong>
 									</td>
 									<td width="71.25%" colspan="3">
-										<span t-esc="employee_last_training.name" />
+										<t t-if="employee_last_training">
+											<span t-esc="employee_last_training.name" />
+										</t>
 									</td>
 
 								</tr>
@@ -157,13 +159,17 @@
 										<strong>نوعه:</strong>
 									</td>
 									<td width="23.75%">
-										<span t-esc="employee_last_training.name" />
+										<t t-if="employee_last_training">
+											<span t-esc="employee_last_training.name" />
+										</t>
 									</td>
 									<td width="23.75%">
 										<strong>مدته:</strong>
 									</td>
 									<td width="23.75%">
-										<span t-esc="employee_last_training.number_of_days" />
+										<t t-if="employee_last_training">
+											<span t-esc="employee_last_training.number_of_days" />
+										</t>
 									</td>
 
 								</tr>
@@ -175,7 +181,9 @@
 										<strong>مصدرها:</strong>
 									</td>
 									<td width="71.25%" colspan="3">
-										<span t-esc="employee_last_training.department" />
+										<t t-if="employee_last_training">
+											<span t-esc="employee_last_training.department" />
+										</t>
 									</td>
 
 								</tr>
@@ -196,9 +204,9 @@
 										</td>
 									</t>
 									<t t-if="not decision_appoint_history">
-									<td width="5%" >
-										<strong>23</strong>
-									</td>
+										<td width="5%">
+											<strong>23</strong>
+										</td>
 									</t>
 									<td width="23.75%">
 										<strong>المسمى الوظيفي الذي كان يشغلها</strong>
