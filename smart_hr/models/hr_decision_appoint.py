@@ -15,7 +15,8 @@ class HrDecisionAppoint(models.Model):
     
     name=fields.Char(string='رقم القرار',required=1 ,states={'new': [('readonly', 0)]})
     order_date=fields.Date(string='تاريخ القرار',required=1) 
-    date_hiring=fields.Date(string='تاريخ التعيين',required=1) 
+    date_hiring=fields.Date(string='تاريخ التعيين',required=1)
+    date_hiring_end = fields.Date(string=u'تاريخ إنتهاء التعيين')  
     type_appointment=fields.Many2one('hr.type.appoint',string='نوع التعيين',required=1,states={'new': [('readonly', 0)]})
     date_direct_action=fields.Date(string='تاريخ مباشرة العمل',required=1) 
     instead_exchange=fields.Boolean(string='صرف بدل تعيين')
@@ -96,7 +97,7 @@ class HrDecisionAppoint(models.Model):
         self.ensure_one()
         for line in self:
             line.employee_id.write({'employee_state':'employee','job_id':line.job_id.id})
-            line.job_id.write({'state':'occupied','employee': line.employee_id.id})
+            line.job_id.write({'state': 'occupied', 'employee': line.employee_id.id, 'occupied_date': fields.Datetime.now()})
           
             
         self.state = 'done'
