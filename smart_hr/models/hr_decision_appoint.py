@@ -19,9 +19,7 @@ class HrDecisionAppoint(models.Model):
     type_appointment=fields.Many2one('hr.type.appoint',string='نوع التعيين',required=1,states={'new': [('readonly', 0)]})
     date_direct_action=fields.Date(string='تاريخ مباشرة العمل',required=1) 
     instead_exchange=fields.Boolean(string='صرف بدل تعيين')
-    decision_state = fields.Selection([('actif', u'نشط'),
-                                       ('notactif', u'غير نشط'),
-                                      ], string=u'حالة التعين', default='actif')
+    active = fields.Boolean( string=u'نشط', default=True)
     #info about employee
     employee_id=fields.Many2one('hr.employee',string='الموظف',required=1)
     number=fields.Char(string='الرقم الوظيفي',readonly=1) 

@@ -163,7 +163,7 @@
 								<field name="type_appointment"
 								 attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
 								<field name="date_direct_action" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'done'])]}"  />
-								<field name="decision_state" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
+								<field name="active" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
 								<field name="transport_alocation" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
 								<field name="transport_car" attrs="{'invisible':[('state', 'not in', ['new','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}"  />
 							</group>
