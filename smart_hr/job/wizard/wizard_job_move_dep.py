@@ -5,8 +5,18 @@ from openerp import api, fields, models
 
 class WizardJobMoveDep(models.TransientModel):
     _name = 'wizard.job.move.dep'
+    job_move_department_id = fields.Many2one('hr.job.move.department', string=u'طلب النقل', required=1)
+    job_id = fields.Many2one('hr.job', string=u'الوظيفة', required=1)
 
-    job_id = fields.Many2one('hr.job', string=u'الوظيفة')
+    @api.onchange('job_move_department_id')
+    def _onchange_job_move_department_id(self):
+        res = {}
+        if self.job_move_department_id:
+            job_ids = [rec.job_id.id for rec in self.job_move_department_id.job_movement_ids]
+            print job_ids
+            res['domain'] = {'job_id': [('id', 'in', job_ids)]}
+            return res
+        self.job_id = []
 
     @api.multi
     def print_report(self):

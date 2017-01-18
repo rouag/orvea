@@ -18,6 +18,20 @@
         'payroll/security/payroll_security.xml',
         'payroll/security/ir.model.access.csv',
 
+      
+
+        'view/hr_menu.xml',
+        'data/sequences.xml',
+        'data/configurations.xml',
+        'data/hr_holidays_data.xml',
+        'data/schedulers.xml',
+        'data/res.city.csv',
+        'data/hr_termination_data.xml',
+        'data/decisions_type_data.xml',
+        'data/salary_grid_type_data.xml',
+#       'data/decisions_type_data.xml',
+#       'data/decision_action_data.xml',
+
         # الوظائف
         'job/menu.xml',
         'job/security/job_security.xml',
@@ -32,19 +46,6 @@
         'job/views/job_update_report.xml',
         'job/views/job_description_report.xml',
         'job/views/report.xml',
-
-        'view/hr_menu.xml',
-        'data/sequences.xml',
-        'data/configurations.xml',
-        'data/hr_holidays_data.xml',
-        'data/schedulers.xml',
-        'data/res.city.csv',
-        'data/hr_termination_data.xml',
-        'data/decisions_type_data.xml',
-        'data/salary_grid_type_data.xml',
-#       'data/decisions_type_data.xml',
-#       'data/decision_action_data.xml',
-
         # الإدارات
         'hr/menu.xml',
         'hr/view/hierarchy_level.xml',
