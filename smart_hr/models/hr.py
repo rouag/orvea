@@ -45,7 +45,7 @@ class HrEmployee(models.Model):
     holidays_balance = fields.One2many('hr.employee.holidays.stock', 'employee_id', string=u'الأرصدة', readonly=1)
     promotions_history = fields.One2many('hr.employee.promotion.history', 'employee_id', string=u'الترقيات')
     traveling_ticket = fields.Boolean(string=u'تذكرة سفر', default=False)
-    traveling_ticket_familiar = fields.Boolean(string=u'تذكرة سفر عائليّة', default=False)
+    traveling_family_ticket = fields.Boolean(string=u'تذكرة سفر عائليّة', default=False)
     compensation_stock = fields.Integer(string=u'رصيد إجازات التعويض')
     holiday_peiodes = fields.One2many('hr.holidays.periode', 'employee_id', string='holidays periodes')
     grandfather_name = fields.Char(string=u'اسم الجد', required=1)
@@ -54,7 +54,7 @@ class HrEmployee(models.Model):
     father_middle_name = fields.Char(string=u'middle_name')
     grandfather_middle_name = fields.Char(string=u'middle_name2')
     grandfather2_middle_name = fields.Char(string=u'  middle_name3')
-    
+
     @api.multi
     def name_get(self):
         res = []

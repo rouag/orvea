@@ -1141,7 +1141,7 @@ class HrHolidaysStatus(models.Model):
     pension_percent = fields.Float(string=u' (%)نسبة راتب التقاعد') 
     demand_number_max = fields.Integer(string=u'عدد مرات الطلب',default='-1')
     traveling_ticket = fields.Boolean(string=u'تذكرة سفر', default=False)
-    traveling_ticket_familiar = fields.Boolean(string=u'تذكرة سفر عائليّة', default=False)
+    traveling_family_ticket = fields.Boolean(string=u'تذكرة سفر عائليّة', default=False)
     
     transport_allowance  = fields.Boolean(string=u'صرف بدل النقل', default=False)
     maximum_days_by_year = fields.Integer(string=u'الحد الأقصى لأيّامات الإجازات في السّنة')
