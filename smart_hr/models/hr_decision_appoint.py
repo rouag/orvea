@@ -20,13 +20,13 @@ class HrDecisionAppoint(models.Model):
     type_appointment=fields.Many2one('hr.type.appoint',string='نوع التعيين',required=1,states={'new': [('readonly', 0)]})
     date_direct_action=fields.Date(string='تاريخ مباشرة العمل',required=1) 
     instead_exchange=fields.Boolean(string='صرف بدل تعيين')
-    active = fields.Boolean( string=u'نشط', default=True)
+    active = fields.Boolean( string=u'مفعل', default=True)
     #info about employee
     employee_id=fields.Many2one('hr.employee',string='الموظف',required=1)
     number=fields.Char(string='الرقم الوظيفي',readonly=1) 
     country_id=fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
     #info about job
-    job_id = fields.Many2one('hr.job', string='الوظيفة') 
+    job_id = fields.Many2one('hr.job', string='الوظيفة',required=1)
     number_job=fields.Char(string='الرقم الوظيفي',readonly=1) 
     
     type_id=fields.Many2one('salary.grid.type',string='الصنف',readonly=1) 
@@ -54,7 +54,7 @@ class HrDecisionAppoint(models.Model):
     order_picture=fields.Binary(string='صورة القرار',required=1) 
     medical_examination_file = fields.Binary(string = 'وثيقة الفحص الطبي') 
     order_enquiry_file = fields.Binary(string = 'طلب الاستسفار')
-    file_salar_recent = fields.Binary(string = 'إمكانية إرفاق وثيقة')
+    file_salar_recent = fields.Binary(string = 'تعهد من الموظف')
     file_engagement = fields.Many2many('ir.attachment',string='إرفاق مزيد من الوثائق')
     #file_engagement = fields.Binary(string = 'تعهد من المترشح')
     file_appoint = fields.Binary(string = 'قرار التعين')
@@ -156,6 +156,13 @@ class HrTypeAppoint(models.Model):
     name=fields.Char(string='النوع',required=1 )
     date_test=fields.Char(string='فترة التجربة') 
     code=fields.Char(string='الرمز')
+    
+    audit = fields.Boolean(string=u'تدقيق', default=False)
+    recrutment_manager = fields.Boolean(string=u'صاحب صلاحية التعين', default=True)
+    enterview_manager = fields.Boolean(string=u'مقابلة شخصية', default=True)
+    personnel_hr = fields.Boolean(string=u'شؤون الموظفين', default=True)
+    recrutment_decider = fields.Boolean(string=u'رئيس الهيئة', default=True)
+    can_be_cancelled = fields.Boolean(string=u'يمكن الغاؤها', default=True)
     
 class HrNoticesSettings(models.Model):
     _name = 'hr.notices.settings'  

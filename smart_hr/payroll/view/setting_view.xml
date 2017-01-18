@@ -16,13 +16,15 @@
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 
-		<menuitem id="hr_payroll_structure_menu" name="هياكل الرواتب" sequence="5"
-			groups="group_payroll_setting" parent="hr_payroll_setting" action="action_hr_payroll_structure" />
-			
+		<menuitem id="hr_payroll_structure_menu" name="هياكل الرواتب"
+			sequence="5" groups="group_payroll_setting" parent="hr_payroll_setting"
+			action="action_hr_payroll_structure" />
+
 		<!-- التسلسل الهرمي للراتب -->
 
-		<menuitem id="hr_payroll_structure_tree_menu" name="التسلسل الهرمي للرواتب" sequence="10"
-			groups="group_payroll_setting" parent="hr_payroll_setting" action="hr_payroll.action_view_hr_payroll_structure_tree" />
+		<menuitem id="hr_payroll_structure_tree_menu" name="التسلسل الهرمي للرواتب"
+			sequence="10" groups="group_payroll_setting" parent="hr_payroll_setting"
+			action="hr_payroll.action_view_hr_payroll_structure_tree" />
 
 		<!-- فئات قواعد الرواتب -->
 
@@ -54,7 +56,7 @@
 
 		<!-- البدلات -->
 
-			
+
 		<record model="ir.ui.view" id="hr_allowance_tree">
 			<field name="name">hr.allowance.tree</field>
 			<field name="model">hr.allowance</field>
@@ -79,7 +81,7 @@
 						<group col="4">
 							<field name="name" />
 							<field name="code" />
-						
+
 
 						</group>
 						<group>
@@ -112,7 +114,6 @@
 					<field name="sequence" widget="handle" />
 					<field name="name" />
 					<field name="code" />
-				
 					<field name="create_date" string="تاريخ الإنشاء" />
 				</tree>
 			</field>
@@ -130,8 +131,9 @@
 							<field name="code" />
 							<field name="type_id" />
 							<field name="min_degree_id" />
+							<field name="salary" />
 							<field name="max_degree_id" />
-							<field name="nb_salary" />
+							<field name="pr_salary" />
 
 						</group>
 						<group>
@@ -164,7 +166,7 @@
 					<field name="sequence" widget="handle" />
 					<field name="name" />
 					<field name="code" />
-				
+
 					<field name="create_date" string="تاريخ الإنشاء" />
 				</tree>
 			</field>
@@ -179,11 +181,12 @@
 					<sheet>
 						<group col="4">
 							<field name="name" />
-							<field name="code" />
-							<field name="type_id" />
 							<field name="min_degree_id" />
+							<field name="code" />
 							<field name="max_degree_id" />
-							<field name="transport_allow" />
+							<field name="type_id" />
+
+
 
 						</group>
 						<group>
