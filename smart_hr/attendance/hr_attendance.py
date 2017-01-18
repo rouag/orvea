@@ -115,9 +115,9 @@ class HrAttendanceImport(models.Model):
             day_number = 0
         elif um.day_name_en == 'Tuesday':
             day_number = 1
-        elif um.day_name_en == 'Wednesday':
+        elif um.day_name_en == 'mercredi': #Wednesday
             day_number = 2
-        elif um.day_name_en == 'Thursday':
+        elif um.day_name_en == 'jeudi': #Thursday
             day_number = 3
         elif um.day_name_en == 'Friday':
             day_number = 4
@@ -284,11 +284,20 @@ class HrAttendanceImport(models.Model):
                 report_day_obj.create(vals)
                 return True
             # else create غياب غير مبرر
+            current_time = datetime.now().time().strftime(FORMAT_TIME)
+            if datetime.now().time() >= time_to:
+                current_time = str(time_to)
+            delay_absence = datetime.strptime(current_time, FORMAT_TIME) - datetime.strptime(str(time_from), FORMAT_TIME)
+            delay_absence_seconds = delay_absence.seconds
+            delay_absence = delay_absence_seconds / 3600.0
             vals = {'employee_id': employee_id,
                     'hour_calendar': first_time,
+                    'hour_calendar_to': False,
+                    'hour_attendance': False,
+                    'delay_absence': delay_absence,
                     'date': date,
                     'action': 'absence',
-                    'description': u'غياب غير مبرر',
+                    'description': u'الموظف لم يسجل دخوله',
                     'latest_date_import': latest_datetime_import
                     }
             report_day_obj.create(vals)
@@ -352,6 +361,7 @@ class HrAttendanceImport(models.Model):
                                                                ('name', '>=', str(date_start)),
                                                                ('name', '<=', str(date_stop))])
 
+        # إذا كان الوقت الحالي أكبر أو يساوي وقت الخروج الموجود في الوردية
         if current_time >= time_to:
             if not employee_attendances_sign_out:
                 vals = {'employee_id': employee_id,
@@ -361,7 +371,7 @@ class HrAttendanceImport(models.Model):
                         'description': u'لم يسجل بصمة الخروج',
                         'latest_date_import': latest_date_import
                         }
-                report_day_obj.create(vals)
+                # AAAAreport_day_obj.create(vals)
             else:
                 last_sign_out = employee_attendances_sign_out[0]
                 last_sign_out_time = datetime.strptime(last_sign_out.name, '%Y-%m-%d %H:%M:%S').time()
@@ -394,6 +404,66 @@ class HrAttendanceImport(models.Model):
                                 'action': 'hour_supp',
                                 'latest_date_import': latest_date_import}
                         report_day_obj.create(vals)
+        # إذا  لم يكن كذلك يجب التثبت إن كان هناك دخول وخروج أثناء  فترة العمل
+        for sign_out in employee_attendances_sign_out:
+            sign_out_time = datetime.strptime(sign_out.name, '%Y-%m-%d %H:%M:%S').time()
+            # this is a sign_out we must search the sign_in for this sign_out
+            attendances_sign_in = attendance_obj.search([('employee_id', '=', employee.id),
+                                                        ('action', '=', 'sign_in'),
+                                                        ('name', '>=', str(date_start)),
+                                                        ('name', '<=', str(date_stop)),
+                                                        ('id', '>', sign_out.id)])
+            if not attendances_sign_in:
+                # nothing todo
+                continue
+            else:
+                sign_in = attendances_sign_in[-1]
+                sign_in_time = datetime.strptime(sign_in.name, '%Y-%m-%d %H:%M:%S').time()
+                # إذا كان لديه إستئذان يجب إنشاء غياب مبرر واحتساب أخر وقت  دخوله بعد الإستئذان
+                sign_in_time_after_authorization = sign_in_time
+                authorization_ids = employee.get_authorization_by_date(date, time_float_convert(sign_in_time), time_float_convert(sign_out_time))
+                if authorization_ids:
+                    authorization = authorization_ids[0]
+                    vals = {'employee_id': employee_id,
+                            'hour_calendar': time_float_convert(sign_in_time),
+                            'date': date,
+                            'action': 'absence_justified',
+                            'description': u'طلب إستئذان رقم %s . من الساعة %s إلى %s  ' % (authorization.name, authorization.hour_from, authorization.hour_to),
+                            'latest_date_import': latest_date_import
+                            }
+                    report_day_obj.create(vals)
+                    hour_start, min_start = float_time_convert(authorization.hour_to)
+                    sign_in_time_after_authorization = time(int(hour_start), int(min_start), 0)
+                    # احتساب التأخر إذا عاد متأخراً بعد الإستئذان
+                    if sign_in_time > sign_in_time_after_authorization:
+                        # create retard action
+                        delay_retard = datetime.strptime(str(sign_in_time), FORMAT_TIME) - datetime.strptime(str(sign_in_time_after_authorization), FORMAT_TIME)
+                        delay_retard_seconds = delay_retard.seconds
+                        delay_retard = delay_retard_seconds / 3600.0
+                        vals = {'employee_id': employee.id,
+                                'hour_calendar': time_float_convert(sign_in_time_after_authorization),
+                                'hour_attendance': time_float_convert(sign_in_time),
+                                'delay_retard': delay_retard,
+                                'date': date,
+                                'action': 'retard',
+                                'latest_date_import': latest_date_import}
+                        report_day_obj.create(vals)
+                # إذا لم يكن هناك إستئذان يعتبر غياب غير مبرر
+                else:
+                    delay_absence = datetime.strptime(str(sign_in_time), FORMAT_TIME) - datetime.strptime(str(sign_out_time), FORMAT_TIME)
+                    delay_absence_seconds = delay_absence.seconds
+                    delay_absence = delay_absence_seconds / 3600.0
+                    vals = {'employee_id': employee_id,
+                            'hour_calendar': time_float_convert(sign_in_time),
+                            'hour_calendar_to': time_float_convert(sign_out_time),
+                            'hour_attendance': time_float_convert(sign_in_time),
+                            'delay_absence': delay_absence,
+                            'date': date,
+                            'action': 'absence',
+                            'description': u'خروج الساعة %s وعودة الساعة %s دون إستئذان' % (str(sign_out_time), str(sign_in_time)),
+                            'latest_date_import': latest_date_import
+                            }
+                    report_day_obj.create(vals)
         return True
 
     def chek_import_attendance(self, date):
@@ -468,6 +538,7 @@ class HrAttendanceReportDay(models.Model):
     hour_attendance = fields.Float(string='وقت البصمة')
     delay_retard = fields.Float(string='المدة')
     delay_leave = fields.Float(string='المدة')
+    delay_absence = fields.Float(string='المدة')
     delay_hours_supp = fields.Float(string='المدة')
     date = fields.Date(string='التاريخ')
     latest_date_import = fields.Datetime(string='وقت أخر تحديث')
