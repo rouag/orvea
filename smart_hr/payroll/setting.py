@@ -33,7 +33,8 @@ class HrReward(models.Model):
     type_id = fields.Many2one('salary.grid.type', string='الصنف')
     min_degree_id = fields.Many2one('salary.grid.degree', string='الدرجة من ',) 
     max_degree_id = fields.Many2one('salary.grid.degree', string='إلى',) 
-    nb_salary = fields.Float(string='عدد الرواتب') 
+    pr_salary = fields.Float(string='نسبة من الراتب') 
+    salary = fields.Float(string='مبلغ مقطوع')
     note = fields.Text(string='ملاحظات')
     sequence = fields.Integer(string='الترتيب')
     
