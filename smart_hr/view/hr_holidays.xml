@@ -347,7 +347,7 @@
 									<field name="salary_spending" />
 
 									<field name="traveling_ticket" />
-									<field name="traveling_ticket_familiar" />
+									<field name="traveling_family_ticket" />
 									<field name="transport_allowance" />
 									<field name="min_amount" />
 									<field name="pension_percent" />

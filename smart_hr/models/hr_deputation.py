@@ -10,6 +10,7 @@ from lxml import etree
 from datetime import datetime
 from umalqurra.hijri_date import HijriDate
 
+
 class hr_deputation(models.Model):
     _name = 'hr.deputation'
     _inherit = ['mail.thread', 'ir.needaction_mixin']

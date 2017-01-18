@@ -18,18 +18,7 @@
         'payroll/security/payroll_security.xml',
         'payroll/security/ir.model.access.csv',
 
-        # الوظائف
-        'job/menu.xml',
-        'job/security/job_security.xml',
-        'job/security/ir.model.access.csv',
-        'job/security/ir.model.access.csv',
-        'job/wizard/wizard_job_grade_view.xml',
-        'job/wizard/wizard_job_update_view.xml',
-        'job/wizard/wizard_job_description_view.xml',
-        'job/views/job_grade_report.xml',
-        'job/views/job_update_report.xml',
-        'job/views/job_description_report.xml',
-        'job/views/report.xml',
+      
 
         'view/hr_menu.xml',
         'data/sequences.xml',
@@ -43,6 +32,20 @@
 #       'data/decisions_type_data.xml',
 #       'data/decision_action_data.xml',
 
+        # الوظائف
+        'job/menu.xml',
+        'job/security/job_security.xml',
+        'job/security/ir.model.access.csv',
+        'job/security/ir.model.access.csv',
+        'job/wizard/wizard_job_grade_view.xml',
+        'job/wizard/wizard_job_update_view.xml',
+        'job/wizard/wizard_job_description_view.xml',
+        'job/wizard/wizard_job_move_dep_view.xml',
+        'job/views/job_move_dep_report.xml',
+        'job/views/job_grade_report.xml',
+        'job/views/job_update_report.xml',
+        'job/views/job_description_report.xml',
+        'job/views/report.xml',
         # الإدارات
         'hr/menu.xml',
         'hr/view/hierarchy_level.xml',

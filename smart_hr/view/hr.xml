@@ -151,7 +151,7 @@
 										<field name="service_years" />
 										<field name="external_decision" />
 										<field name="traveling_ticket" />
-										<field name="traveling_ticket_familiar" />
+										<field name="traveling_family_ticket" />
 
 									</group>
 									<group string="خصائص أخرى">
