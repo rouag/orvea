@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+	<record id="wizard_job_move_dep_form" model="ir.ui.view">
+		<field name="name">wizard.job.move.dep.form</field>
+		<field name="model">wizard.job.move.dep</field>
+		<field name="arch" type="xml">
+			<form>
+				<group col="2" string="الوظيفة"  >
+					<field name="job_id" options='{"no_open": True, "no_create": True}' />
+				</group>
+				<footer>
+					<button name="print_report" string="طباعة التقرير" type="object"
+						default_focus="1" class="oe_highlight" />
+						
+					  أو
+					
+					<button string="إلغاء" class="oe_link" special="cancel" />
+				</footer>
+			</form>
+		</field>
+	</record>
+
+	<record id="wizard_job_move_dep_action" model="ir.actions.act_window">
+		<field name="name">طباعة نموذج طلب نقل وظيفة</field>
+		<field name="res_model">wizard.job.move.dep</field>
+		<field name="type">ir.actions.act_window</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="view_id" ref="wizard_job_move_dep_form" />
+		<field name="target">new</field>
+	</record>
+
+	<menuitem id="wizard_job_move_dep_menu" name="نموذج طلب نقل وظيفة"
+		groups="smart_hr.group_dm,smart_hr.group_hrm" sequence="40"
+		action="wizard_job_move_dep_action" parent="menu_job_report" />
+
+</odoo>

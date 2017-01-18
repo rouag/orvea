@@ -26,6 +26,8 @@
         'job/wizard/wizard_job_grade_view.xml',
         'job/wizard/wizard_job_update_view.xml',
         'job/wizard/wizard_job_description_view.xml',
+        'job/wizard/wizard_job_move_dep_view.xml',
+        'job/views/job_move_dep_report.xml',
         'job/views/job_grade_report.xml',
         'job/views/job_update_report.xml',
         'job/views/job_description_report.xml',
