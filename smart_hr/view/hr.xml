@@ -24,8 +24,7 @@
 		<record model="ir.actions.act_window" id="action_hr_employee">
 			<field name="name">الموظفون</field>
 			<field name="res_model">hr.employee</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
+			<field name="view_mode">kanban</field>
 			<field name="domain">[('employee_state','=','employee')]</field>
 		</record>
 
@@ -40,9 +39,21 @@
 			<field name="view_id" ref="hr.view_employee_form" />
 			<field name="act_window_id" ref="action_hr_employee" />
 		</record>
+		
+		
+				<record id="action_hr_employee_kanban" model="ir.actions.act_window.view">
+			<field name="view_mode">kanban</field>
+			<field name="view_id" ref="hr.hr_kanban_view_employees" />
+			<field name="act_window_id" ref="action_hr_employee" />
+		</record>
+		
+		
 		<menuitem id="hr_employee_menu" name="الموظفون" sequence="10"
 			parent="hr_root_employees" action="action_hr_employee" groups="smart_hr.group_employees" />
 
+		
+		
+		
 		<!-- بياناتي -->
 		<record id="view_employee_mine_form" model="ir.ui.view">
 			<field name="name">hr.employee.form</field>
@@ -56,7 +67,7 @@
 							options="{&quot;preview_image&quot;:&quot;image_medium&quot;}" />
 						<div>
 
-							<group col="13">
+							<group col="13" class='smart_td_label_center'>
 								<label name="name" string="الاسم" colspan="3" />
 								<label name="father_name" string="إسم الأب" colspan="3" />
 								<label name="grandfather_name" string="اسم الجد" colspan="3" />
@@ -271,8 +282,8 @@
 							<field name="image" widget="image" class="oe_avatar"
 								options="{&quot;preview_image&quot;:&quot;image_medium&quot;}" />
 							<div>
-								<group col="13">
-									<label name="name" string="الاسم" colspan="3" class="gn_change_css" />
+								<group col="13" class='smart_td_label_center'>
+									<label name="name" string="الاسم" colspan="3" />
 									<label name="father_name" string="إسم الأب" colspan="3" />
 									<label name="grandfather_name" string="اسم الجد" colspan="3" />
 									<label name="grandfather2_name" string="اسم الجد الثاني"
@@ -445,6 +456,7 @@
 			<field name="view_id" ref="view_employee_request_form" />
 			<field name="act_window_id" ref="action_employee_request" />
 		</record>
+
 		<menuitem id="employee_request_menu" name="طلبات تسجيل موظف"
 			groups="smart_hr.group_employee_request" sequence="1" parent="hr_root_employees"
 			action="action_employee_request" />
