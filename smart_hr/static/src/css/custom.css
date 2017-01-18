@@ -14,10 +14,12 @@ float: left !important;
 
 .align_change_css {
     text-align: center !important;
-
 }
 
-.o_td_label{
+.smart_td_label_center{
     text-align: center !important;
+}
 
+.o_form_input{
+    height: 38px !important;
 }

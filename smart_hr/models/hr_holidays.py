@@ -94,7 +94,6 @@ class HrHolidays(models.Model):
     num_decision = fields.Char(string=u'رقم القرار')
     date_decision = fields.Date(string=u'تاريخ القرار')
     childbirth_date = fields.Date(string=u'تاريخ ولادة الطفل')
-    medical_certificate = fields.Binary(string=u'شهادة طبية')
     birth_certificate = fields.Binary(string=u'شهادة الميلاد')
     extension_period = fields.Integer(string=u'مدة التمديد', default=0)
     external_authoritie = fields.Many2one('external.authorities', string=u'الجهة الخارجية',compute="_set_external_autoritie")
@@ -341,7 +340,7 @@ class HrHolidays(models.Model):
                     if (months >= 1):
                         if rec.date_from<previous_month_first_day:
                             if rec.date_to>previous_month_last_day:
-                                formation_uncounted_days+=(today-previous_month_first_day).days
+                                formation_uncounted_days+=(date_to-previous_month_first_day).days
                             else:
                                 formation_uncounted_days+=rec.date_to-previous_month_first_day
                         else:
@@ -851,6 +850,22 @@ class HrHolidays(models.Model):
                     self.date_from <= public_holiday.date_from <= self.date_to or \
                     self.date_from <= public_holiday.date_to <= self.date_to :
                     raise ValidationError(u"هناك تداخل فى التواريخ مع اعياد و مناسبات رسمية")
+                
+            # خارج الدوام
+        if self.holiday_status_id != self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
+            search_domain = [
+                ('employee_id', '=', self.employee_id.id),
+                ('overtime_id.state', '=', 'done'),
+                ]
+            overtime_line_obj = self.env['hr.overtime.line']
+
+            for rec in overtime_line_obj.search(search_domain):
+                if rec.date_from <= self.date_from <= rec.date_to or \
+                        rec.date_from <= self.date_to <= rec.date_to or \
+                        self.date_from <= rec.date_from <= self.date_to or \
+                        self.date_from <= rec.date_to <= self.date_to:
+                    raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في تكليف")
+                                      
     @api.multi
     def check_constraintes(self):
         """

@@ -3,6 +3,8 @@
 from openerp import fields, models, api, _
 from openerp.exceptions import ValidationError
 from lxml import etree
+from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 class hr_overtime(models.Model):
     _name = 'hr.overtime'
@@ -23,7 +25,6 @@ class hr_overtime(models.Model):
         ('done', u'اعتمدت'),
         ('refuse', u'رفض'),
     ], string=u'الحالة', default='draft', advanced_search=True)
-
     @api.model
     def create(self, vals):
         res = super(hr_overtime, self).create(vals)
@@ -79,12 +80,36 @@ class hr_overtime(models.Model):
         for ot in self:
             ot.state = 'hrm'
 
-    @api.one
+    @api.multi
     def button_done(self):
-        for ot in self:
-            ot.state = 'done'
-        self.create_report_attachment()
+        self.ensure_one()
+        self.state = 'done'
+#         self.create_report_attachment()
+        leave_obj = self.env['hr.holidays']
+        for line in self.overtime_line_ids:
+            domain_search = [
+                ('employee_id', '=', line.employee_id.id),
+                ('state', '=', 'done'),
+            ]
+            overtime_uncounted_days = 0
+            for holiday in leave_obj.search(domain_search):
+                line_datefrom = fields.Date.from_string(line.date_from)
+                holiday_datefrom = fields.Date.from_string(holiday.date_from)
+                line_dateto = fields.Date.from_string(line.date_to)
+                holiday_dateto = fields.Date.from_string(holiday.date_to)
 
+                if holiday_datefrom < line_datefrom:
+                    if holiday_dateto > line_dateto:
+                        overtime_uncounted_days += (line_dateto - line_datefrom).days
+                    else:
+                        overtime_uncounted_days += (holiday_dateto - line_datefrom).days
+                else:
+                    if holiday_dateto > line_dateto:
+                        overtime_uncounted_days += (line_dateto - holiday_datefrom).days
+                    else:
+                        overtime_uncounted_days += holiday.duration
+            line.days -= overtime_uncounted_days
+            
     @api.one
     def button_refuse_dm(self):
         for ot in self:
@@ -212,25 +237,26 @@ class hr_overtime_line(models.Model):
             # Leave
             domain_search = [
                 ('employee_id', '=', ot.employee_id.id),
-                ('state', '!=', 'refuse'),
+                ('state', '=', 'done'),
             ]
             for rec in leave_obj.search(domain_search):
                 if rec.date_from <= ot.date_from <= rec.date_to or \
                         rec.date_from <= ot.date_to <= rec.date_to or \
                         ot.date_from <= rec.date_from <= ot.date_to or \
                         ot.date_from <= rec.date_to <= ot.date_to:
-                    raise ValidationError(u"هناك تداخل فى التواريخ مع قرار سابق فى الاجازات")
+                    if rec.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
+                        raise ValidationError(u"هناك تداخل فى التواريخ مع قرار سابق فى الاجازات")
             # Training
-            search_domain = [
-                ('employee_ids', 'in', [ot.employee_id.id]),
-                ('state', '!=', 'refuse'),
-            ]
-            for rec in train_obj.search(search_domain):
-                if rec.effective_date_from <= ot.date_from <= rec.effective_date_to or \
-                        rec.effective_date_from <= ot.date_to <= rec.effective_date_to or \
-                        ot.date_from <= rec.effective_date_from <= ot.date_to or \
-                        ot.date_from <= rec.effective_date_to <= ot.date_to:
-                    raise ValidationError(u"هناك تداخل فى التواريخ مع قرار سابق فى التدريب")
+#             search_domain = [
+#                 ('employee_ids', 'in', [ot.employee_id.id]),
+#                 ('state', '!=', 'refuse'),
+#             ]
+#             for rec in train_obj.search(search_domain):
+#                 if rec.effective_date_from <= ot.date_from <= rec.effective_date_to or \
+#                         rec.effective_date_from <= ot.date_to <= rec.effective_date_to or \
+#                         ot.date_from <= rec.effective_date_from <= ot.date_to or \
+#                         ot.date_from <= rec.effective_date_to <= ot.date_to:
+#                     raise ValidationError(u"هناك تداخل فى التواريخ مع قرار سابق فى التدريب")
             # Deputation
             search_domain = [
                 ('employee_id', '=', ot.employee_id.id),
@@ -252,7 +278,11 @@ class hr_overtime_line(models.Model):
                 raise ValidationError(u"لا يمكن عمل عدد ساعات خارج دوام اكثر من دوام كامل")
             elif rec.hours <= 0:
                 raise ValidationError(u"عدد ساعات خارج الدوام يجب ان تكون اكبر من صفر")
-
+            # Date range generator
+    def daterange(self,start_date, end_date):
+        for n in range(int((end_date - start_date).days) + 1):
+            yield start_date + timedelta(n)
+            
     @api.depends('line_type', 'date_from', 'date_to')
     def _compute_days(self):
         for rec in self:
@@ -260,7 +290,7 @@ class hr_overtime_line(models.Model):
             if rec.date_from and rec.date_to:
                 start_date = fields.Date.from_string(rec.date_from)
                 end_date = fields.Date.from_string(rec.date_to)
-                for single_date in daterange(start_date, end_date):
+                for single_date in self.daterange(start_date, end_date):
                     if rec.line_type == 1 and single_date.weekday() not in [4, 5]:
                         count += 1
                     elif rec.line_type == 2 and single_date.weekday() in [4, 5]:

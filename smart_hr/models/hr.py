@@ -54,6 +54,8 @@ class HrEmployee(models.Model):
     father_middle_name = fields.Char(string=u'middle_name')
     grandfather_middle_name = fields.Char(string=u'middle_name2')
     grandfather2_middle_name = fields.Char(string=u'  middle_name3')
+    space = fields.Char(string=' ', default=" ", readonly=True)
+    begin_work_date = fields.Date(string=u' تاريخ بداية العمل بالجة الحكومية', required=1)
 
     @api.multi
     def name_get(self):

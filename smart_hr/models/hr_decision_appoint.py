@@ -103,7 +103,11 @@ class HrDecisionAppoint(models.Model):
         self.state = 'done'
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت إحداث تعين جديد '" + unicode(user.name) + u"'")
-             
+        # update holidays balance for the employee
+        self.env['hr.holidays']._init_balance(self.employee_id)
+        self.env['hr.holidays']. _init_exceptionnel_holidays_periodes(self.employee_id)
+        # create promotion history line
+        self.env['hr.employee.promotion.history'].create({'employee_id': self.employee_id.id, 'salary_grid_id': self.employee_id.job_id.grade_id.id, 'date_from': fields.Datetime.now() })
     @api.multi
     def action_refuse(self):
         self.ensure_one()
