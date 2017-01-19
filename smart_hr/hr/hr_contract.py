@@ -11,7 +11,7 @@ from datetime import date
 class HrContract(models.Model):
     _inherit = 'hr.contract'
     
-    employee_id=fields.Many2one('hr.employee',string='      الموظف ',required=1,)
+    employee_id=fields.Many2one('hr.employee',string='      الموظف ',required=1)
     country_id=fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
     identification_id = fields.Char(related='employee_id.identification_id', store=True, readonly=True,string=u'          رقم الهوية')
     identification_date=fields.Date(related='employee_id.identification_date', store=True, readonly=True,string=u'تاريخ إصدار بطاقة الهوية')
@@ -22,7 +22,8 @@ class HrContract(models.Model):
     job_id = fields.Many2one('hr.job',string='المسمى الوظيفي',store=True, readonly=1) 
    
     assurance=fields.Char(string='التامين') 
-    type_id=fields.Many2one('salary.grid.type',string='الصنف',store=True,  readonly=1) 
+    type_job_id=fields.Many2one('salary.grid.type',string='الصنف',store=True,  readonly=1) 
+    #type_id=fields.Many2one('salary.grid.type',string='الصنف',store=True,  readonly=1) 
     grade_id=fields.Many2one('salary.grid.grade',string='المرتبة', store=True, readonly=1)
     struct_id= fields.Many2one('hr.payroll.structure', 'Salary Structure',required=False)
     #struct_id= fields.Char(string="struct",required=0,),
@@ -58,14 +59,14 @@ class HrContract(models.Model):
             
     @api.onchange('employee_id')
     def _onchange_employe(self):
-            print"hhhhhhhhhhhhhhhh"
+       
             if self.employee_id:
                 
                 employee_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('active', '=', True)])
                 print"employee_line" ,employee_line   
                 if employee_line:
                     self.job_id = employee_line.job_id.id
-                    self.type_id = employee_line.type_id.id
+                    self.type_job_id = employee_line.type_id.id
                     self.grade_id = employee_line.grade_id.id
                     self.degree_id = employee_line.degree_id.id
                     self.basic_salary = employee_line.basic_salary  
