@@ -37,6 +37,7 @@
         'job/security/job_security.xml',
         'job/security/ir.model.access.csv',
         'job/security/ir.model.access.csv',
+        'job/data/data.xml',
         'job/wizard/wizard_job_grade_view.xml',
         'job/wizard/wizard_job_update_view.xml',
         'job/wizard/wizard_job_description_view.xml',

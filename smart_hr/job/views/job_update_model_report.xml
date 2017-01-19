@@ -25,87 +25,87 @@
 								</h3>
 								<table class="table table-condensed">
 								<tr>
-									<td colspan="6" class="text-center">معلومات عن الوظيفة المراد تحويرها</td>
+									<td colspan="6" class="text-center"><strong>معلومات عن الوظيفة المراد تحويرها</strong></td>
 									<td rowspan="8"></td>
-									<td>المرتبة:</td>
-									<td><span></span></td>
-									<td >رقمها:</td>
-									<td colspan="2"><span></span></td>
+									<td><strong>المرتبة:</strong></td>
+									<td><span t-esc="job.grade_id.name"/></td>
+									<td ><strong>رقمها</strong>:</td>
+									<td colspan="2"><span t-esc="job.number"/></td>
 								</tr>
 								<tr>
-									<td colspan="6" class="text-center">الوضع الحالي</td>
+									<td colspan="6" class="text-center"><strong>الوضع الحالي</strong></td>
 									<td></td>
-									<td colspan="5" class="text-center">الوضع المقترح</td>
+									<td colspan="5" class="text-center"><strong>الوضع المقترح</strong></td>
 								</tr>
 								<tr>
-									<td>1</td>
-									<td>المسمى</td>
-									<td colspan="4"><span></span></td>
+									<td><strong>1</strong></td>
+									<td><strong>المسمى</strong></td>
+									<td colspan="4"><span t-esc="move_line.old_name.name"/></td>
 									<td></td>
-									<td >المسمى</td>
-									<td colspan="4"><span></span></td>
+									<td ><strong>المسمى</strong></td>
+									<td colspan="4"><span t-esc="move_line.new_name.name"/></td>
 								</tr>
 								<tr>
-									<td>2</td>
-									<td >الرمز التصنيفي:</td>
-									<td colspan="4"><span></span></td>
+									<td><strong>2</strong></td>
+									<td ><strong>الرمز التصنيفي:</strong></td>
+									<td colspan="4"><span t-esc="move_line.old_type_id.code"/></td>
 									<td></td>
-									<td >الرمز التصنيفي:</td>
-									<td colspan="4"><span></span></td>
+									<td ><strong>الرمز التصنيفي:</strong></td>
+									<td colspan="4"><span t-esc="move_line.new_type_id.code"/></td>
 								</tr>
 								<tr>
-									<td>3</td>
-									<td colspan="5" class="text-center">موقع الوظيفة في التنظيم الإداري</td>
+									<td><strong>3</strong></td>
+									<td colspan="5" class="text-center"><strong>موقع الوظيفة في التنظيم الإداري</strong></td>
 									<td></td>
-									<td colspan="5" class="text-center">موقع الوظيفة في التنظيم الإداري</td>
+									<td colspan="5" class="text-center"><strong>موقع الوظيفة في التنظيم الإداري</strong></td>
 								</tr>
 								<tr>
-									<td>4</td>
-									<td >الإدارة:</td>
-									<td colspan="4"><span></span></td>
+									<td><strong>4</strong></td>
+									<td ><strong>الإدارة:</strong></td>
+									<td colspan="4"><span t-esc="move_line.department_id.name"/></td>
 									<td></td>
-									<td >الإدارة:</td>
-									<td colspan="4"><span></span></td>
+									<td ><strong>الإدارة:</strong></td>
+									<td colspan="4"><span t-esc="move_line.department_id.name"/></td>
 								</tr>
 								<tr>
-									<td>5</td>
-									<td >الشعبة:</td>
-									<td colspan="4"><span></span></td>
-									<td></td>
-									<td >الشعبة:</td>
-									<td colspan="4"><span></span></td>
-								</tr>
-								<tr>
-									<td>6</td>
-									<td >المقر:</td>
+									<td><strong>5</strong></td>
+									<td ><strong>الشعبة:</strong></td>
 									<td colspan="4"><span></span></td>
 									<td></td>
-									<td >المقر:</td>
+									<td ><strong>الشعبة:</strong></td>
 									<td colspan="4"><span></span></td>
 								</tr>
 								<tr>
-									<td>7</td>
-									<td colspan="11">هل توجد ( وظائف أخرى بنفس المسمى) بمختلف المراتب أو تمثل نفس النشاط في نفس الموقع الحالي والمقترح؟</td>
+									<td><strong>6</strong></td>
+									<td ><strong>المقر:</strong></td>
+									<td colspan="4"><span t-esc="move_line.department_id.dep_city.name"/></td>
+									<td></td>
+									<td ><strong>المقر:</strong></td>
+									<td colspan="4"><span t-esc="move_line.department_id.dep_city.name"/></td>
 								</tr>
 								<tr>
-									<td>8</td>
-									<td colspan="5"> <span class="notokradio"></span><span>لا</span><span class="notokradio"></span><span>نعم</span>,<span>عددها الإجمالي()</span></td>
-									<td></td>
-									<td colspan="5"> <span class="notokradio"></span><span>لا</span><span class="notokradio"></span><span>نعم</span>,<span>عددها الإجمالي()</span></td>								
+									<td><strong>7</strong></td>
+									<td colspan="11"><strong>هل توجد ( وظائف أخرى بنفس المسمى) بمختلف المراتب أو تمثل نفس النشاط في نفس الموقع الحالي والمقترح؟</strong></td>
 								</tr>
 								<tr>
-									<td rowspan="2">9</td>
-									<td>المسمى</td>
-									<td>المرتبة</td>
-									<td>العدد</td>
-									<td>مشغولة</td>
-									<td>شاغرة</td>
+									<td><strong>8</strong></td>
+									<td colspan="5"> <span class="notokradio"></span><span><strong>لا</strong></span><span class="notokradio"></span><span><strong>نعم</strong></span>,<span><strong>عددها الإجمالي()</strong></span></td>
 									<td></td>
-									<td>المسمى</td>
-									<td>المرتبة</td>
-									<td>العدد</td>
-									<td>مشغولة</td>
-									<td>شاغرة</td>								
+									<td colspan="5"> <span class="notokradio"></span><span><strong>لا</strong></span><span class="notokradio"></span><span><strong>نعم</strong></span>,<span><strong>عددها الإجمالي()</strong></span></td>								
+								</tr>
+								<tr>
+									<td rowspan="2"><strong>9</strong></td>
+									<td><strong>المسمى</strong></td>
+									<td><strong>المرتبة</strong></td>
+									<td><strong>العدد</strong></td>
+									<td><strong>مشغولة</strong></td>
+									<td><strong>شاغرة</strong></td>
+									<td></td>
+									<td><strong>المسمى</strong></td>
+									<td><strong>المرتبة</strong></td>
+									<td><strong>العدد</strong></td>
+									<td><strong>مشغولة</strong></td>
+									<td><strong>شاغرة</strong></td>								
 								</tr>
 								<tr>
 									<td></td>
@@ -123,53 +123,53 @@
 									<td></td>								
 								</tr>
 								<tr>
-									<td>10</td>
-									<td colspan="6">مسمى الوظيفة الاشرفية على الوظيفة للموسم المقترح:</td>
+									<td><strong>10</strong></td>
+									<td colspan="6"><strong>مسمى الوظيفة الاشرفية على الوظيفة للمسمى المقترح:</strong></td>
 									<td colspan="3"></td>
-									<td>مرتبتها</td>
+									<td><strong>مرتبتها</strong></td>
 									<td></td>								
 								</tr>
 								<tr>
-									<td rowspan="3">11</td>
-									<td colspan="11">في حالة كو الوظيفة المطلوبة (المسمى المقترح) اشرفياً يتم ذكر الوحدات أو الإدارات التي تشرف عليها </td>
+									<td rowspan="3"><strong>11</strong></td>
+									<td colspan="11"><strong>في حالة كون الوظيفة المطلوبة (المسمى المقترح) اشرفياً يتم ذكر الوحدات أو الإدارات التي تشرف عليها</strong> </td>
 								</tr>
 								<tr>
-									<td>إسم الوحدة الإدارية أو الإدارة</td>
-									<td colspan="2">مرتبتها</td>
-									<td colspan="8">عدد الوظائف في الوحدة الادارية</td>
-								</tr>
-								<tr>
-									<td></td>
-									<td colspan="2"></td>
-									<td>1-5</td>
-									<td>6-8</td>
-									<td>9-10</td>
-									<td>11</td>
-									<td>12</td>
-									<td>13</td>
-									<td>31-33</td>
-									<td>أخرى</td>
-								</tr>
-								<tr>
-									<td rowspan="3">12</td>
-									<td colspan="11">إذا كان المسمى المقترح اشرفياً فماهو مستوى الوحدات الإدارية أو الإدارات المماثلة </td>
-								</tr>
-								<tr>
-									<td>إسم الوحدة الإدارية أو الإدارة</td>
-									<td colspan="2">مرتبتها</td>
-									<td colspan="8">عدد الوظائف في الوحدة الادارية</td>
+									<td><strong>إسم الوحدة الإدارية أو الإدارة</strong></td>
+									<td colspan="2"><strong>مرتبتها</strong></td>
+									<td colspan="8"><strong>عدد الوظائف في الوحدة الادارية</strong></td>
 								</tr>
 								<tr>
 									<td></td>
 									<td colspan="2"></td>
-									<td>1-5</td>
-									<td>6-8</td>
-									<td>9-10</td>
-									<td>11</td>
-									<td>12</td>
-									<td>13</td>
-									<td>31-33</td>
-									<td>أخرى</td>
+									<td><strong>1-5</strong></td>
+									<td><strong>6-8</strong></td>
+									<td><strong>9-10</strong></td>
+									<td><strong>11</strong></td>
+									<td><strong>12</strong></td>
+									<td><strong>13</strong></td>
+									<td><strong>31-33</strong></td>
+									<td><strong>أخرى</strong></td>
+								</tr>
+								<tr>
+									<td rowspan="3"><strong>12</strong></td>
+									<td colspan="11"><strong>إذا كان المسمى المقترح اشرفياً فماهو مستوى الوحدات الإدارية أو الإدارات المماثلة </strong></td>
+								</tr>
+								<tr>
+									<td><strong>إسم الوحدة الإدارية أو الإدارة</strong></td>
+									<td colspan="2"><strong>مرتبتها</strong></td>
+									<td colspan="8"><strong>عدد الوظائف في الوحدة الادارية</strong></td>
+								</tr>
+								<tr>
+									<td></td>
+									<td colspan="2"></td>
+									<td><strong>1-5</strong></td>
+									<td><strong>6-8</strong></td>
+									<td><strong>9-10</strong></td>
+									<td><strong>11</strong></td>
+									<td><strong>12</strong></td>
+									<td><strong>13</strong></td>
+									<td><strong>31-33</strong></td>
+									<td><strong>أخرى</strong></td>
 								</tr>
 							</table>
 							</div>

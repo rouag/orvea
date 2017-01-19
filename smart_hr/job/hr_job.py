@@ -14,6 +14,7 @@ class HrJob(models.Model):
     _description = u'الوظائف'
 
     name = fields.Many2one('hr.job.name', string='المسمى', required=1)
+    activity_type = fields.Many2one('hr.job.type.activity', string=u'نوع النشاط')
     number = fields.Char(string='الرقم الوظيفي', required=1, states={'unoccupied': [('readonly', 0)]})
     department_id = fields.Many2one('hr.department', string='الإدارة', required=1, states={'unoccupied': [('readonly', 0)]})
     general_id = fields.Many2one('hr.groupe.job', ' المجموعة العامة', ondelete='cascade')
@@ -182,7 +183,8 @@ class HrJobCreate(models.Model):
                        'department_id': line.department_id.id,
                        'general_id': self.general_id.id,
                        'specific_id': self.specific_id.id,
-                       'serie_id': self.serie_id.id
+                       'serie_id': self.serie_id.id,
+                       'activity_type': line.activity_type.id
                        }
             self.env['hr.job'].create(job_val)
         self.state = 'done'
@@ -204,6 +206,7 @@ class HrJobCreateLine(models.Model):
 
     name = fields.Many2one('hr.job.name', string='الوظيفة', required=1)
     number = fields.Char(string='الرمز', required=1)
+    activity_type = fields.Many2one('hr.job.type.activity', string=u'نوع النشاط', required=1)
     job_number = fields.Char(string='الرقم الوظيفي', required=1)
     type_id = fields.Many2one('salary.grid.type', related="grade_id.type_id", string='التصنيف', required=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1)
@@ -914,3 +917,10 @@ class HrJobMoveUpdateLine(models.Model):
                         job_ids.append(job.id)
             res['domain'] = {'job_id': [('id', 'in', job_ids)]}
             return res
+
+
+class HrJobTypeActivity(models.Model):
+    _name = 'hr.job.type.activity'
+    _description = u'نوع نشاط الوظيفة'
+
+    name = fields.Char(string=u'المسمى')

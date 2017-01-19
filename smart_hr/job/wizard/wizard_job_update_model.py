@@ -6,7 +6,7 @@ from openerp import api, fields, models
 class WizardJobUpdateModel(models.TransientModel):
     _name = 'wizard.job.update.model'
 
-    job_update_id = fields.Many2one('hr.job.update', string=u'طلب التحوير', required=1)
+    job_update_id = fields.Many2one('hr.job.update', string=u'طلب التحوير', domain=[('state', '!=', 'done')], required=1)
     job_id = fields.Many2one('hr.job', string=u'الوظيفة', required=1)
 
     @api.onchange('job_update_id')
