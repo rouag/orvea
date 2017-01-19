@@ -16,7 +16,9 @@ class WizardJobMoveDep(models.TransientModel):
             print job_ids
             res['domain'] = {'job_id': [('id', 'in', job_ids)]}
             return res
-        self.job_id = []
+        # return empty job list
+        res['domain'] = {'job_id': [('id', '=', -1)]}
+        return res
 
     @api.multi
     def print_report(self):

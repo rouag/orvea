@@ -98,16 +98,24 @@ class HrDecisionAppoint(models.Model):
         for line in self:
             line.employee_id.write({'employee_state':'employee','job_id':line.job_id.id})
             line.job_id.write({'state': 'occupied', 'employee': line.employee_id.id, 'occupied_date': fields.Datetime.now()})
-          
-            
         self.state = 'done'
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت إحداث تعين جديد '" + unicode(user.name) + u"'")
         # update holidays balance for the employee
         self.env['hr.holidays']._init_balance(self.employee_id)
-        self.env['hr.holidays']. _init_exceptionnel_holidays_periodes(self.employee_id)
         # create promotion history line
-        self.env['hr.employee.promotion.history'].create({'employee_id': self.employee_id.id, 'salary_grid_id': self.employee_id.job_id.grade_id.id, 'date_from': fields.Datetime.now() })
+        promotion_obj = self.env['hr.employee.promotion.history']
+        active_promotion = self.env['hr.employee.promotion.history'].search([('active', '=', 'True'), ('employee_id', '=', self.employee_id.id)])
+        if active_promotion:
+            for prom in active_promotion:
+                prom.active=False
+                prom.date_to=self.date_direct_action
+        self.env['hr.employee.promotion.history'].create({'employee_id': self.employee_id.id,
+                                                           'salary_grid_id': self.employee_id.job_id.grade_id.id, 
+                                                           'date_from': self.date_direct_action ,
+                                                           'active':True
+                                                           })
+    
     @api.multi
     def action_refuse(self):
         self.ensure_one()

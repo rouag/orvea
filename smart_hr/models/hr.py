@@ -55,7 +55,7 @@ class HrEmployee(models.Model):
     grandfather_middle_name = fields.Char(string=u'middle_name2')
     grandfather2_middle_name = fields.Char(string=u'  middle_name3')
     space = fields.Char(string=' ', default=" ", readonly=True)
-    begin_work_date = fields.Date(string=u' تاريخ بداية العمل بالجة الحكومية', required=1)
+    begin_work_date = fields.Date(string=u' تاريخ بداية العمل بالجهة الحكومية', required=1)
 
     @api.multi
     def name_get(self):
@@ -175,28 +175,36 @@ class HrEmployeePromotionHistory(models.Model):
     salary_grid_id = fields.Many2one('salary.grid.grade', string=u'الرتبة')
     date_from = fields.Date(string=u'التاريخ من', default=fields.Datetime.now())
     date_to = fields.Date(string=u'التاريخ الى')
-    balance = fields.Integer(string=u'رصيد الترقية (يوم)', compute='_compute_balance',store=True)
+    balance = fields.Integer(string=u'رصيد الترقية (يوم)',store=True)
+    active = fields.Boolean(string=u'نشط')
+    
+    @api.model
+    def update_promotion_duration(self):
+        for promotion in self.search([('active','=','True')]):
+            promotion_date_from = fields.Date.from_string(promotion.date_from)
+            today = date.today()
+            promotion.balance = (today - promotion_date_from).days
 
-    def _compute_balance(self):
-        for rec in self:
-            if rec.date_from:
-                today_date = fields.Date.from_string(fields.Date.today())
-                date_from = fields.Date.from_string(rec.date_from)
-                days = (today_date - date_from).days
-                # find the holidays of the employee start from date_from and they are promotion_deductible
-                # only deductible_duration_service it means promotion_deductible also
-                holidays = self.env['hr.holidays'].search([
-                    ('state', '=', 'done'),
-                    ('employee_id', '=', rec.employee_id.id),
-                    ('holiday_status_id.deductible_duration_service', '=', True),
-                    ('date_from', '>=', rec.date_from)
-                    ])
-                for holiday in holidays:
-                    days -= holiday.periode
 
-                rec.balance = days
- 
-            
+#     def _compute_balance(self):
+#         for rec in self:
+#             if rec.date_from:
+#                 today_date = fields.Date.from_string(fields.Date.today())
+#                 date_from = fields.Date.from_string(rec.date_from)
+#                 days = (today_date - date_from).days
+#                 # find the holidays of the employee start from date_from and they are promotion_deductible
+#                 # only deductible_duration_service it means promotion_deductible also
+#                 holidays = self.env['hr.holidays'].search([
+#                     ('state', '=', 'done'),
+#                     ('employee_id', '=', rec.employee_id.id),
+#                     ('holiday_status_id.deductible_duration_service', '=', True),
+#                     ('date_from', '>=', rec.date_from)
+#                     ])
+#                 for holiday in holidays:
+#                     days -= holiday.periode
+# 
+#                 rec.balance = days
+
 class HrEmployeeEducationLevel(models.Model):
     _name = 'hr.employee.education.level'  
     _description = u'مستويات التعليم'

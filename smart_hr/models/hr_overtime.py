@@ -109,7 +109,7 @@ class hr_overtime(models.Model):
                     else:
                         overtime_uncounted_days += holiday.duration
             line.days -= overtime_uncounted_days
-            
+
     @api.one
     def button_refuse_dm(self):
         for ot in self:
