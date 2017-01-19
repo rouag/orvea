@@ -29,20 +29,26 @@
 							<table class="table table-condensed">
 								<thead>
 									<tr>
-										<th width="30%">الموظف</th>
+										<th width="24%">الموظف</th>
 										<th width="5%">رقم.و</th>
 										<th width="15%">القسم</th>
-										<th width="10%">(.رصيد الشهر السابق(س</th>
-										<th width="10%">(.التأخير والخروج(س</th>
-										<th width="10%">(غياب(اليوم</th>
-										<th width="10%">(المجموع(اليوم</th>
-										<th width="10%">(.الرصيد المرحل(س</th>
+										<th width="7%">رصيد الشهر السابق</th>
+										<th width="7%">تأخير</th>
+										<th width="7%">خروج مبكر</th>
+										<th width="7%">غياب</th>
+										<th width="7%">المجموع</th>
+										<th width="7%">تحويل</th>
+										<th width="7%">أيام الخصم</th>
+										<th width="7%">الرصيد المرحل</th>
 									</tr>
 								</thead>
 
 								<t t-set="balance_previous" t-value="0" />
-								<t t-set="delay_hours" t-value="0" />
+								<t t-set="retard" t-value="0" />
+								<t t-set="leave" t-value="0" />
 								<t t-set="absence" t-value="0" />
+								<t t-set="delay_hours" t-value="0" />
+								<t t-set="delay_request" t-value="0" />
 								<t t-set="total_days" t-value="0" />
 								<t t-set="balance_forward" t-value="0" />
 								<tbody>
@@ -51,10 +57,14 @@
 										<t t-if="line.total_days">
 										
 											<t t-set="balance_previous" t-value="balance_previous+line.balance_previous" />
-											<t t-set="delay_hours" t-value="delay_hours+line.delay_hours" />
+											<t t-set="retard" t-value="retard+line.retard" />
+											<t t-set="leave" t-value="leave+line.leave" />
 											<t t-set="absence" t-value="absence+line.absence" />
+											<t t-set="delay_hours" t-value="delay_hours+line.delay_hours" />
+											<t t-set="delay_request" t-value="delay_request+line.delay_request" />
 											<t t-set="total_days" t-value="total_days+line.total_days" />
 											<t t-set="balance_forward" t-value="balance_forward+line.balance_forward" />
+											
 											<td>
 												<span t-field="line.employee_id.name" />
 											</td>
@@ -77,14 +87,23 @@
 											</td>
 											
 											<td class="text-center">
-												<t t-if="line.delay_hours">
-													<span t-esc="format_time(line.delay_hours)" />
+												<t t-if="line.retard">
+													<span t-esc="format_time(line.retard)" />
 												</t>
-												<t t-if="not line.delay_hours">
+												<t t-if="not line.retard">
 													-
 												</t>
 											</td>
-	
+
+											<td class="text-center">
+												<t t-if="line.leave">
+													<span t-esc="format_time(line.leave)" />
+												</t>
+												<t t-if="not line.leave">
+													-
+												</t>
+											</td>
+
 											<td class="text-center">
 												<t t-if="line.absence">
 													<span t-esc="format_time(line.absence)" />
@@ -93,6 +112,25 @@
 													-
 												</t>
 											</td>
+											
+											<td class="text-center">
+												<t t-if="line.delay_hours">
+													<span t-esc="format_time(line.delay_hours)" />
+												</t>
+												<t t-if="not line.delay_hours">
+													-
+												</t>
+											</td>																							
+
+
+											<td class="text-center">
+												<t t-if="line.delay_request">
+													<span t-esc="format_time(line.delay_request)" />
+												</t>
+												<t t-if="not line.delay_request">
+													-
+												</t>
+											</td>												 
 											<td class="text-center">
 												<t t-if="line.total_days">
 													<span t-esc="format_time(line.total_days)" style="color:red;" />
@@ -119,28 +157,31 @@
 											<span t-esc="format_time(balance_previous)" />
 										</td>
 										<td class="text-center">
-											<span t-esc="format_time(delay_hours)" />
-										</td>
-
+											<span t-esc="format_time(retard)" />
+										</td>										
+										<td class="text-center">
+											<span t-esc="format_time(leave)" />
+										</td>										
 										<td class="text-center">
 											<span t-esc="format_time(absence)" />
 										</td>
-
+										<td class="text-center">
+											<span t-esc="format_time(delay_hours)" />
+										</td>
+										<td class="text-center">
+											<span t-esc="format_time(delay_request)" />
+										</td>
 										<td class="text-center">
 											<span t-esc="format_time(total_days)" />
 										</td>
-
 										<td class="text-center">
 											<span t-esc="format_time(balance_forward)" />
 										</td>
-
 									</tr>
 								</tfoot>
-
 							</table>
 						</div>
 					</t>
-
 				</t>
 			</t>
 		</template>
