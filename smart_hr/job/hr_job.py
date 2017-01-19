@@ -813,7 +813,7 @@ class HrJobMoveUpdate(models.Model):
     in_speech_number = fields.Char(string=u'رقم الخطاب الوارد')
     in_speech_date = fields.Date(string=u'تاريخ الخطاب الوارد')
     in_speech_file = fields.Binary(string=u'صورة الخطاب الوارد')
-    job_update_ids = fields.One2many('hr.job.update.line', 'job_update_line_id')
+    job_update_ids = fields.One2many('hr.job.update.line', 'job_update_id')
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', u'في إنتظار الموافقة'),
                               ('hrm1', u'شؤون الموظفين'),
@@ -883,7 +883,7 @@ class HrJobMoveUpdateLine(models.Model):
     _name = 'hr.job.update.line'
     _description = u'تحوير‬ وظيفة'
 
-    job_update_line_id = fields.Many2one('hr.job.update', string=u'التحوير‬')
+    job_update_id = fields.Many2one('hr.job.update', string=u'التحوير‬')
     job_id = fields.Many2one('hr.job', string=u'الوظيفة', required=1)
     old_name = fields.Many2one('hr.job.name', related='job_id.name', readonly=1, string=u'المسمى الحالي', required=1)
     new_name = fields.Many2one('hr.job.name', string=u'المسمى الجديد', required=1)

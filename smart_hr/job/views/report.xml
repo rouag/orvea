@@ -17,6 +17,10 @@
 		<report id="job_move_dep_report" model="False" report_type="qweb-pdf"
 			string="نموذج طلب نقل وظيفة" name="smart_hr.report_job_move_dep"
 			file="smart_hr.report_job_move_dep" />
+		
+		<report id="job_update_model_report" model="False" report_type="qweb-pdf"
+			string="نموذج تحوير وظيفة" name="smart_hr.report_job_update_model"
+			file="smart_hr.report_job_update_model" />
 
 
 	</data>

@@ -206,3 +206,54 @@ class ReportJobMoveDep(osv.AbstractModel):
     _inherit = 'report.abstract_report'
     _template = 'smart_hr.report_job_move_dep'
     _wrapped_report_class = JobMoveDepReport
+
+
+class JobUpdateModelReport(report_sxw.rml_parse):
+
+    def __init__(self, cr, uid, name, context):
+        super(JobUpdateModelReport, self).__init__(cr, uid, name, context=context)
+        self.localcontext.update({
+            'get_company': self._get_company,
+            'format_time': self._format_time,
+            'get_current_date': self._get_current_date,
+            'get_job': self._get_job,
+            'get_job_create_date': self._get_job_create_date,
+            'get_move_line': self._get_move_line,
+        })
+
+    def _get_company(self):
+        return self.pool.get('res.users').browse(self.cr, self.uid, [self.uid])[0].company_id
+
+    def _get_move_line(self, data, job):
+        job_move_department_id = data['job_move_department_id'][0]
+        job_move_department_obj = self.pool.get('hr.job.move.department').browse(self.cr, self.uid, [job_move_department_id])[0]
+        if job_move_department_obj:
+            for line in job_move_department_obj.job_movement_ids:
+                if line.job_id.id == job.id:
+                    return line
+        return False
+
+    def _get_job_create_date(self, job):
+        return fields.Datetime.from_string(job.create_date).strftime("%Y-%m-%d")
+
+    def _get_job(self, data):
+        job_id = data['job_id'][0]
+        return self.pool.get('hr.job').browse(self.cr, self.uid, [job_id])[0]
+
+    def _get_current_date(self):
+        now = datetime.datetime.now()
+        return now.strftime("%Y-%m-%d")
+
+    def _format_time(self, time_float):
+        hour, minn = float_time_convert(time_float)
+        return '%s:%s' % (str(hour).zfill(2), str(minn).zfill(2))
+
+    def _get_lines(self, data):
+        return []
+
+
+class ReportJobUpdateModel(osv.AbstractModel):
+    _name = 'report.smart_hr.report_job_update_model'
+    _inherit = 'report.abstract_report'
+    _template = 'smart_hr.report_job_update_model'
+    _wrapped_report_class = JobUpdateModelReport
