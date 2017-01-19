@@ -262,7 +262,13 @@ class HrHolidays(models.Model):
                 self.employee_id.compensation_stock-=self.duration
             if self.compensation_type == 'money':
                 self.employee_id.compensation_stock=0
-                
+#                 مدة الترقية
+        if self.holiday_status_id.promotion_deductible:   
+            active_promotion = self.env['hr.employee.promotion.history'].search([('active', '=', 'True'), ('employee_id', '=', self.employee_id.id)])
+            if active_promotion:
+                for prom in active_promotion:
+                    prom.balance -= self.duration
+
         self.state = 'done'
 
     @api.model
@@ -340,7 +346,7 @@ class HrHolidays(models.Model):
                     if (months >= 1):
                         if rec.date_from<previous_month_first_day:
                             if rec.date_to>previous_month_last_day:
-                                formation_uncounted_days+=(date_to-previous_month_first_day).days
+                                formation_uncounted_days+=(today-previous_month_first_day).days
                             else:
                                 formation_uncounted_days+=rec.date_to-previous_month_first_day
                         else:

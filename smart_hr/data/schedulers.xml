@@ -44,5 +44,15 @@
             <field name="function">update_holidays_periodes</field>
             <field name="args">()</field>
         </record>
+        <record id="ir_cron_hr_employee_promotion_duration" model="ir.cron">
+            <field name="name">employee promotion duration updater</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">months</field>
+            <field name="numbercall">-1</field>
+            <field name="doall">0</field>
+            <field name="model">hr.employee.promotion.history</field>
+            <field name="function">update_promotion_duration</field>
+            <field name="args">()</field>
+        </record>
     </data>
 </openerp>
