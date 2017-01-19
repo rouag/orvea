@@ -225,10 +225,10 @@ class JobUpdateModelReport(report_sxw.rml_parse):
         return self.pool.get('res.users').browse(self.cr, self.uid, [self.uid])[0].company_id
 
     def _get_move_line(self, data, job):
-        job_move_department_id = data['job_move_department_id'][0]
-        job_move_department_obj = self.pool.get('hr.job.move.department').browse(self.cr, self.uid, [job_move_department_id])[0]
-        if job_move_department_obj:
-            for line in job_move_department_obj.job_movement_ids:
+        job_update_id = data['job_update_id'][0]
+        job_update_id_obj = self.pool.get('hr.job.update').browse(self.cr, self.uid, [job_update_id])[0]
+        if job_update_id_obj:
+            for line in job_update_id_obj.job_update_ids:
                 if line.job_id.id == job.id:
                     return line
         return False

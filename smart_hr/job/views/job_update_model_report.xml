@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data>
-		<template id="report_job_move_dep">
+		<template id="report_job_update_model">
 			<t t-call="report.html_container">
 				<t t-foreach="docs" t-as="o">
 					<t t-call="smart_base.landscape_layout">
 						<div class="page">
 						<style type="text/css">
 							.okradio{
-								width:20px;height:20px;	border:1px solid #000;padding-right: 20px;border-radius: 50px;margin-left:15px;background-color:black;}
+								width:20px;height:20px;	border:1px solid #000;padding-right: 20px;margin-left:15px;margin-right:15px;background-color:black;}
 							.notokradio{
-								width:20px;height:20px;	border:1px solid #000;padding-right: 20px;border-radius: 50px;margin-left:15px;}
+								width:20px;height:20px;	border:1px solid #000;padding-right: 20px;margin-left:15px;margin-right:15px;}
 						</style>
 							<div class="oe_structure" />
 
@@ -20,161 +20,161 @@
 							<div class="col-xs-12 text-center">
 								<h3 style="color:#395870;">
 									<strong>
-										نموذج طلب نقل وظيفة
+										نموذج تحوير وظيفة
 									</strong>
 								</h3>
+								<table class="table table-condensed">
+								<tr>
+									<td colspan="6" class="text-center">معلومات عن الوظيفة المراد تحويرها</td>
+									<td rowspan="8"></td>
+									<td>المرتبة:</td>
+									<td><span></span></td>
+									<td >رقمها:</td>
+									<td colspan="2"><span></span></td>
+								</tr>
+								<tr>
+									<td colspan="6" class="text-center">الوضع الحالي</td>
+									<td></td>
+									<td colspan="5" class="text-center">الوضع المقترح</td>
+								</tr>
+								<tr>
+									<td>1</td>
+									<td>المسمى</td>
+									<td colspan="4"><span></span></td>
+									<td></td>
+									<td >المسمى</td>
+									<td colspan="4"><span></span></td>
+								</tr>
+								<tr>
+									<td>2</td>
+									<td >الرمز التصنيفي:</td>
+									<td colspan="4"><span></span></td>
+									<td></td>
+									<td >الرمز التصنيفي:</td>
+									<td colspan="4"><span></span></td>
+								</tr>
+								<tr>
+									<td>3</td>
+									<td colspan="5" class="text-center">موقع الوظيفة في التنظيم الإداري</td>
+									<td></td>
+									<td colspan="5" class="text-center">موقع الوظيفة في التنظيم الإداري</td>
+								</tr>
+								<tr>
+									<td>4</td>
+									<td >الإدارة:</td>
+									<td colspan="4"><span></span></td>
+									<td></td>
+									<td >الإدارة:</td>
+									<td colspan="4"><span></span></td>
+								</tr>
+								<tr>
+									<td>5</td>
+									<td >الشعبة:</td>
+									<td colspan="4"><span></span></td>
+									<td></td>
+									<td >الشعبة:</td>
+									<td colspan="4"><span></span></td>
+								</tr>
+								<tr>
+									<td>6</td>
+									<td >المقر:</td>
+									<td colspan="4"><span></span></td>
+									<td></td>
+									<td >المقر:</td>
+									<td colspan="4"><span></span></td>
+								</tr>
+								<tr>
+									<td>7</td>
+									<td colspan="11">هل توجد ( وظائف أخرى بنفس المسمى) بمختلف المراتب أو تمثل نفس النشاط في نفس الموقع الحالي والمقترح؟</td>
+								</tr>
+								<tr>
+									<td>8</td>
+									<td colspan="5"> <span class="notokradio"></span><span>لا</span><span class="notokradio"></span><span>نعم</span>,<span>عددها الإجمالي()</span></td>
+									<td></td>
+									<td colspan="5"> <span class="notokradio"></span><span>لا</span><span class="notokradio"></span><span>نعم</span>,<span>عددها الإجمالي()</span></td>								
+								</tr>
+								<tr>
+									<td rowspan="2">9</td>
+									<td>المسمى</td>
+									<td>المرتبة</td>
+									<td>العدد</td>
+									<td>مشغولة</td>
+									<td>شاغرة</td>
+									<td></td>
+									<td>المسمى</td>
+									<td>المرتبة</td>
+									<td>العدد</td>
+									<td>مشغولة</td>
+									<td>شاغرة</td>								
+								</tr>
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									
+									<td></td>
+									
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>								
+								</tr>
+								<tr>
+									<td>10</td>
+									<td colspan="6">مسمى الوظيفة الاشرفية على الوظيفة للموسم المقترح:</td>
+									<td colspan="3"></td>
+									<td>مرتبتها</td>
+									<td></td>								
+								</tr>
+								<tr>
+									<td rowspan="3">11</td>
+									<td colspan="11">في حالة كو الوظيفة المطلوبة (المسمى المقترح) اشرفياً يتم ذكر الوحدات أو الإدارات التي تشرف عليها </td>
+								</tr>
+								<tr>
+									<td>إسم الوحدة الإدارية أو الإدارة</td>
+									<td colspan="2">مرتبتها</td>
+									<td colspan="8">عدد الوظائف في الوحدة الادارية</td>
+								</tr>
+								<tr>
+									<td></td>
+									<td colspan="2"></td>
+									<td>1-5</td>
+									<td>6-8</td>
+									<td>9-10</td>
+									<td>11</td>
+									<td>12</td>
+									<td>13</td>
+									<td>31-33</td>
+									<td>أخرى</td>
+								</tr>
+								<tr>
+									<td rowspan="3">12</td>
+									<td colspan="11">إذا كان المسمى المقترح اشرفياً فماهو مستوى الوحدات الإدارية أو الإدارات المماثلة </td>
+								</tr>
+								<tr>
+									<td>إسم الوحدة الإدارية أو الإدارة</td>
+									<td colspan="2">مرتبتها</td>
+									<td colspan="8">عدد الوظائف في الوحدة الادارية</td>
+								</tr>
+								<tr>
+									<td></td>
+									<td colspan="2"></td>
+									<td>1-5</td>
+									<td>6-8</td>
+									<td>9-10</td>
+									<td>11</td>
+									<td>12</td>
+									<td>13</td>
+									<td>31-33</td>
+									<td>أخرى</td>
+								</tr>
+							</table>
 							</div>
 
 
-						<table class="table table-condensed">
-							<tr>
-								<td width="50%" colspan="4">إسم الجهة الحكومية: <span t-esc="company.name" /></td>
-								<td width="16.66%">فصل: <span></span></td>
-								<td width="16.66%">الفرع: <span t-esc="move_line.department_id.dep_section.name" /></td>
-								<td width="16.66%" >القسم: <span t-esc="move_line.department_id.code" /></td>
-							</tr>
-							<tr>
-								<td width="5%">1</td>
-								<td width="45%" colspan="3">المسمى الوظيفي:<span t-esc="job.name.name" /></td>
-								<td width="16.66%">المرتبة: <span t-esc="job.grade_id.name" /></td>
-								<td width="16.66%">الرقم: <span t-esc="job.number" /></td>
-								<td width="16.66%" >الرمز التصنيفي: <span t-esc="job.type_id.code" /></td>
-							</tr>
-							<tr>
-								<td width="5%" rowspan="3">2</td>
-								<td width="45%" colspan="3">حالة الوظيفة: 
-
-											<t t-if="job.state=='occupied'"><span class="notokradio"></span></t><t t-if="job.state=='unoccupied'"><span class="okradio"></span></t>شاغرة
-													<t t-if="job.state=='occupied'"><span class="okradio"></span></t><t t-if="job.state=='unoccupied'"><span class="notokradio"></span></t>مشغولة
-											</td>
-								<td width="50%" colspan="3">تاريخ شغلها: <span t-esc="job.occupied_date" /></td>
-							</tr>
-							<tr>
-								<td width="45%" colspan="3">إسم شغلها: <span t-esc="job.employee.name" /></td>
-								<td width="50%" colspan="3">الهوية الوطنية: <span>(<t t-esc="job.employee.identification_id"/>)</span></td>
-							</tr>
-							<tr>
-								<td width="45%" colspan="3" class="text-center">الوضع الحالي</td>
-								<td width="50%" colspan="3" class="text-center">الوضع بعد النقل</td>
-							</tr>
-							<tr>
-								<td width="5%">3</td>
-								<td width="45%" colspan="3">الإدارة: <span t-esc="move_line.department_id.name" /></td>
-								<td width="50%" colspan="3">الإدارة: <span t-esc="move_line.new_department_id.name" /></td>
-							</tr>
-							<tr>
-								<td width="5%">4</td>
-								<td width="45%" colspan="3">الشعبة أو القسم: <span></span></td>
-								<td width="50%" colspan="3">الشعبة أو القسم: <span></span></td>
-							</tr>
-							<tr>
-								<td width="5%">5</td>
-								<td width="45%" colspan="3">المقر: <span t-esc="move_line.department_id.dep_city.name" /></td>
-								<td width="50%" colspan="3">المقر: <span t-esc="move_line.new_department_id.dep_city.name" /></td>
-							</tr>
-							
-							<tr>
-								<td width="5%" rowspan="3">6</td>
-								<td width="45%" colspan="3">هل توجد بالإدارة وظائف تمارس نفس النشاط 
-
-												<span class="notokradio"></span><strong>نعم</strong>
-													<span class="notokradio"></span><strong>لا</strong></td>
-								<td width="50%" colspan="3">هل توجد بالإدارة وظائف تمارس نفس النشاط 
-
-												<span class="notokradio"></span><strong>نعم</strong>
-													<span class="notokradio"></span><strong>لا</strong></td>
-								
-							</tr>
-							<tr>
-								<td width="15%">مسمى الوظيفة</td>
-								<td width="15%">المرتبة</td>
-								<td width="15%">العدد</td>
-								<td width="16.66%">مسمى الوظيفة</td>
-								<td width="16.66%">المرتبة</td>
-								<td width="16.66%">العدد</td>
-							</tr>
-							<tr>
-								<td width="15%"><span></span></td>
-								<td width="15%"><span></span></td>
-								<td width="15%"><span></span></td>
-								<td width="16.66%"><span></span></td>
-								<td width="16.66%"><span></span></td>
-								<td width="16.66%"><span></span></td>
-							</tr>
-							<tr>
-								<td width="5%" rowspan="3">7</td>
-								<td width="45%" colspan="3" class="text-center">الوظيفة الإشرافية المباشرة للوظيفة</td>
-								<td width="50%" colspan="3" class="text-center">الوظيفة الإشرافية المباشرة للوظيفة</td>
-							</tr>
-							<tr>
-								<td width="45%" colspan="3">المسمى: <span></span></td>
-								<td width="50%" colspan="3">المسمى: <span></span></td>
-							</tr>
-							<tr>
-								<td width="22.5%" colspan="2">المرتبة: <span></span></td>
-								<td width="22.5%">الرقم:: <span></span></td>
-								<td width="25%" colspan="2">المرتبة: <span></span></td>
-								<td width="25%" colspan="2">الرقم: <span></span></td>
-							</tr>
-							<tr>
-								<td width="5%" rowspan="2">8</td>
-								<td width="20%">مبررات طلب النقل</td>
-								<td width="80%" colspan="5"></td>
-							</tr>
-							<tr>
-								<td width="95%" colspan="6"><span t-esc="move_line.job_move_department_id.move_raison" /></td>
-							</tr>
-							<tr>
-								<td width="5%" rowspan="3">9</td>
-								<td width="95%" colspan="6" class="text-center">مصادقة المسؤولين فالجهة</td>
-							</tr>
-							<tr>
-								<td width="23.75%" colspan="2">المشرف العام على إدارة الموارد البشرية</td>
-								<td width="23.75%"><span></span></td>
-								<td width="23.75%">صاحب الصلاحية</td>
-								<td width="23.75%" colspan="2">مدير عام شؤون الادارية والمالية المكلف</td>
-							</tr>
-							<tr>
-								<td width="23.75%" colspan="2">التوقيع:</td>
-								<td width="23.75%"><span></span></td>
-								<td width="23.75%">التوقيع:</td>
-								<td width="23.75%" colspan="2"><span></span></td>
-							</tr>
-							<tr>
-								<td width="5%" rowspan="3">10</td>
-								<td width="95%" colspan="6">تدقيق النموذج:<span></span></td>
-							</tr>
-							<tr>
-								<td width="31.66%" colspan="2">*ملاحظات:</td>
-								<td width="31.66%" colspan="2">مطابق للسجلات <span class="notokradio"></span></td>
-								<td width="31.66%" colspan="2">غير مطابق للسجلات <span class="notokradio"></span></td>
-							</tr>
-							
-							<tr>
-								<td width="45%" colspan="3">إسم المختص <span></span></td>
-								<td width="50%" colspan="3">توقيعه <span></span></td>
-							</tr>
-							<tr>
-								<td width="5%" >11</td>
-								<td width="45%" colspan="2">المبررات:<span></span></td>
-								<td width="45%" colspan="2">الموافقه على طلب النقل<span class="notokradio"></span></td>
-								<td width="45%" colspan="2">عدم الموافقة<span class="notokradio"></span></td>
-							</tr>
-							<tr>
-								<td width="25%" colspan="2">مندوب وزارة المالية</td>
-								<td width="25%"><span></span></td>
-								<td width="25%" colspan="2">مندوب وزارة الخدمة المدنية</td>
-								<td width="25%" colspan="2"><span></span></td>
-							</tr>
-								<tr>
-								<td width="25%" >التاريخ</td>
-								<td width="25%" ><span></span></td>
-								<td width="25%" >التوقيع:<span></span></td>
-								<td width="25%" >التاريخ</td>
-								<td width="25%" ><span></span></td>
-								<td width="25%" colspan="2">التوقيع: <span></span></td>
-							</tr>
-							</table>
 						</div>
 					</t>
 
