@@ -17,6 +17,9 @@
 							<t t-set="job" t-value="get_job(data['form'])" />
 							<t t-set="move_line" t-value="get_move_line(data['form'], job)" />
 							<t t-set="company" t-value="get_company()"></t>
+							<t t-set="jobs_old_name" t-value="get_same_activity_depart_job(job, move_line.old_name)" />
+							<t t-set="jobs_new_name" t-value="get_same_activity_depart_job(job, move_line.new_name)"></t>
+							<t t-set="job_size" t-value="len(jobs_new_name)+len(jobs_old_name)"></t>
 							<div class="col-xs-12 text-center">
 								<h3 style="color:#395870;">
 									<strong>
@@ -94,7 +97,7 @@
 									<td colspan="5"> <span class="notokradio"></span><span><strong>لا</strong></span><span class="notokradio"></span><span><strong>نعم</strong></span>,<span><strong>عددها الإجمالي()</strong></span></td>								
 								</tr>
 								<tr>
-									<td rowspan="2"><strong>9</strong></td>
+									<td t-att-rowspan="job_size-1"><strong>9</strong></td>
 									<td><strong>المسمى</strong></td>
 									<td><strong>المرتبة</strong></td>
 									<td><strong>العدد</strong></td>
@@ -107,21 +110,32 @@
 									<td><strong>مشغولة</strong></td>
 									<td><strong>شاغرة</strong></td>								
 								</tr>
-								<tr>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									
-									<td></td>
-									
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>								
-								</tr>
+								<t t-set="i" t-value="0"/>
+								<t t-set="j" t-value="0"/>
+								<t t-foreach="jobs_old_name+jobs_new_name" t-as="l">
+									<tr>
+										<t t-if="i &#60; len(jobs_old_name)">
+											<td><span t-esc="jobs_old_name[i].name.name"/></td>
+											<td><span t-esc="jobs_old_name[i].grade_id.name"/></td>
+											<td><span t-esc="jobs_old_name[i].number"/></td>
+											<td><span t-esc="jobs_old_name[i].state=='occupied'"/></td>
+											<td><span t-esc="jobs_old_name[i].state=='unoccupied'"/></td>
+											<t t-set="i" t-value="i+1"/>	
+											</t>
+										<td></td>
+											
+										<t t-if="j &#60; len(jobs_new_name)">
+											<td><span t-esc="jobs_new_name[j].name.name"/></td>
+											<td><span t-esc="jobs_new_name[j].grade_id.name"/></td>
+											<td><span t-esc="jobs_new_name[j].number"/></td>
+											<td><span t-esc="jobs_new_name[j].state=='occupied'"/></td>
+											<td><span t-esc="jobs_new_name[j].state=='unoccupied'"/></td>
+											<t t-set="j" t-value="j+1"/>	
+											
+										</t>
+											
+									</tr>
+								</t>
 								<tr>
 									<td><strong>10</strong></td>
 									<td colspan="6"><strong>مسمى الوظيفة الاشرفية على الوظيفة للمسمى المقترح:</strong></td>

@@ -225,7 +225,8 @@ class JobUpdateModelReport(report_sxw.rml_parse):
             'get_current_date': self._get_current_date,
             'get_job': self._get_job,
             'get_job_create_date': self._get_job_create_date,
-            'get_move_line': self._get_move_line,
+            'get_same_activity_depart_job': self._get_same_activity_depart_job,
+            'get_move_line': self._get_move_line
         })
 
     def _get_company(self):
@@ -239,6 +240,12 @@ class JobUpdateModelReport(report_sxw.rml_parse):
                 if line.job_id.id == job.id:
                     return line
         return False
+
+    def _get_same_activity_depart_job(self, job_id, job_name_id):
+        job_ids = self.pool.get('hr.job').search(self.cr, self.uid, ['|', ('name', '=', job_name_id.name), ('activity_type', '=', job_id.activity_type.id), ('department_id', '=', job_id.department_id.id)])
+        if job_ids:
+            job_objs = self.pool.get('hr.job').browse(self.cr, self.uid, job_ids)
+            return job_objs
 
     def _get_job_create_date(self, job):
         return fields.Datetime.from_string(job.create_date).strftime("%Y-%m-%d")
