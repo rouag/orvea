@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data>
-		<template id="report_job_update_model">
+		<template id="report_job_description">
 			<t t-call="report.html_container">
 				<t t-foreach="docs" t-as="o">
 					<t t-call="smart_base.landscape_layout">

@@ -4,6 +4,7 @@ from openerp.osv import osv
 from openerp.report import report_sxw
 from openerp.addons.smart_base.util.time_util import float_time_convert
 from openerp import fields
+from dateutil.relativedelta import relativedelta
 
 
 class JobGradeReport(report_sxw.rml_parse):
@@ -118,8 +119,14 @@ class JobDescriptionReport(report_sxw.rml_parse):
     def _get_employee_job_decision_history(self, job):
         hr_decision_appoint_ids = self.pool.get('hr.decision.appoint').search(self.cr, self.uid, [('employee_id', '=', job.employee.id), ('state', '=', 'done'), ('active', '=', False)])
         if hr_decision_appoint_ids:
+            res = []
             hr_decision_appoints = self.pool.get('hr.decision.appoint').browse(self.cr, self.uid, hr_decision_appoint_ids)
-            return hr_decision_appoints
+            for rec in hr_decision_appoints:
+                date_hiring = fields.Date.from_string(rec.date_hiring)
+                diff = relativedelta(fields.Date.from_string(fields.Datetime.now()), date_hiring).years
+                if diff <= 2:
+                    res.append(rec)
+            return res
         return False
 
     def _get_employee_job_decision(self, job):
