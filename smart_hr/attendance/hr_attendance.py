@@ -10,6 +10,7 @@ from openerp.exceptions import ValidationError
 from umalqurra.hijri_date import HijriDate
 from openerp.addons.smart_base.util.time_util import float_time_convert
 from openerp.addons.smart_base.util.time_util import time_float_convert
+from openerp.addons.smart_base.util.time_util import float_time_convert_str
 from dateutil import relativedelta
 
 FORMAT_TIME = '%H:%M:%S'
@@ -115,9 +116,9 @@ class HrAttendanceImport(models.Model):
             day_number = 0
         elif um.day_name_en == 'Tuesday':
             day_number = 1
-        elif um.day_name_en == 'Wednesday':
+        elif um.day_name_en == 'mercredi':  # Wednesday
             day_number = 2
-        elif um.day_name_en == 'Thursday':
+        elif um.day_name_en == 'jeudi':  # Thursday
             day_number = 3
         elif um.day_name_en == 'Friday':
             day_number = 4
@@ -152,6 +153,11 @@ class HrAttendanceImport(models.Model):
 
     @api.multi
     def close_day(self):
+        u'''
+        غلق اليوم يتم هنا تجميع التأخيرات والغيابات الغير مبرره والخروج المبكر والساعات الإضافية ليوم معين
+         ثم يتم إنشاء نماذج لكل عنصر منها وتبقى في إنتظار الإعتماد  .لا  يحتسب تأخير أو خروج مبكر أو غياب
+        أو ساعة إضافية إلا بعد الإعتماد من صاحب الصلاحية
+        '''
         # date = current date
         # date = datetime.now().date()
         date = self.date
@@ -214,12 +220,13 @@ class HrAttendanceImport(models.Model):
                    'grade_id': absence.employee_id.job_id.grade_id.id,
                    'type': 'absence',
                    'date': absence.date,
-                   'delay': absence.delay_hours_supp}
+                   'delay': absence.delay_absence}
             attendance_check.create(val)
         return True
 
     def chek_sign_in(self, date, employee_id, latest_time, latest_datetime_import):
         '''
+        التحقق من بصمة أو بصمات الدخول لكل موظف أثناء كل عملية تحديث لسجل الحضور و الإنصراف
         :param date:
         :param employee_id:
         :param latest_time: the latest hours for attendance  imported from file
@@ -250,7 +257,7 @@ class HrAttendanceImport(models.Model):
                         'hour_calendar': first_time,
                         'date': date,
                         'action': 'absence_justified',
-                        'description': u'طلب إستئذان رقم %s . من الساعة %s إلى %s  ' % (authorization.name, authorization.hour_from, authorization.hour_to),
+                        'description': u'طلب إستئذان رقم %s . من الساعة %s إلى %s  ' % (authorization.name, float_time_convert_str(authorization.hour_from), float_time_convert_str(authorization.hour_to)),
                         'latest_date_import': latest_datetime_import
                         }
                 report_day_obj.create(vals)
@@ -284,11 +291,20 @@ class HrAttendanceImport(models.Model):
                 report_day_obj.create(vals)
                 return True
             # else create غياب غير مبرر
+            current_time = datetime.now().time().strftime(FORMAT_TIME)
+            if datetime.now().time() >= time_to:
+                current_time = str(time_to)
+            delay_absence = datetime.strptime(current_time, FORMAT_TIME) - datetime.strptime(str(time_from), FORMAT_TIME)
+            delay_absence_seconds = delay_absence.seconds
+            delay_absence = delay_absence_seconds / 3600.0
             vals = {'employee_id': employee_id,
                     'hour_calendar': first_time,
+                    'hour_calendar_to': False,
+                    'hour_attendance': False,
+                    'delay_absence': delay_absence,
                     'date': date,
                     'action': 'absence',
-                    'description': u'غياب غير مبرر',
+                    'description': u'الموظف لم يسجل دخوله',
                     'latest_date_import': latest_datetime_import
                     }
             report_day_obj.create(vals)
@@ -306,7 +322,7 @@ class HrAttendanceImport(models.Model):
                             'hour_calendar': first_time,
                             'date': date,
                             'action': 'absence_justified',
-                            'description': u'طلب إستئذان رقم %s . من الساعة %s إلى %s  ' % (authorization.name, authorization.hour_from, authorization.hour_to),
+                            'description': u'طلب إستئذان رقم %s . من الساعة %s إلى %s  ' % (authorization.name, float_time_convert_str(authorization.hour_from), float_time_convert_str(authorization.hour_to)),
                             'latest_date_import': latest_datetime_import
                             }
                     report_day_obj.create(vals)
@@ -317,7 +333,7 @@ class HrAttendanceImport(models.Model):
                 delay_retard_seconds = delay_retard.seconds
                 delay_retard = delay_retard_seconds / 3600.0
                 vals = {'employee_id': employee.id,
-                        'hour_calendar': time_float_convert(time_from),
+                        'hour_calendar': time_float_convert(sign_in_time_start),
                         'hour_attendance': time_float_convert(first_sign_in_time),
                         'delay_retard': delay_retard,
                         'date': date,
@@ -329,6 +345,7 @@ class HrAttendanceImport(models.Model):
 
     def chek_sign_out(self, date, employee_id, latest_time, latest_date_import):
         '''
+        التحقق من بصمة أو بصمات الخروج لكل موظف أثناء كل عملية تحديث لسجل الحضور و الإنصراف
         :param date:
         :param employee_id:
         :param first_time: the latest hours for attendance (from from attendance.schedule)  ex 14:30
@@ -352,6 +369,7 @@ class HrAttendanceImport(models.Model):
                                                                ('name', '>=', str(date_start)),
                                                                ('name', '<=', str(date_stop))])
 
+        # إذا كان الوقت الحالي أكبر أو يساوي وقت الخروج الموجود في الوردية
         if current_time >= time_to:
             if not employee_attendances_sign_out:
                 vals = {'employee_id': employee_id,
@@ -394,6 +412,66 @@ class HrAttendanceImport(models.Model):
                                 'action': 'hour_supp',
                                 'latest_date_import': latest_date_import}
                         report_day_obj.create(vals)
+        # إذا  لم يكن كذلك يجب التثبت إن كان هناك دخول وخروج أثناء  فترة العمل
+        for sign_out in employee_attendances_sign_out:
+            sign_out_time = datetime.strptime(sign_out.name, '%Y-%m-%d %H:%M:%S').time()
+            # this is a sign_out we must search the sign_in for this sign_out
+            attendances_sign_in = attendance_obj.search([('employee_id', '=', employee.id),
+                                                        ('action', '=', 'sign_in'),
+                                                        ('name', '>=', str(date_start)),
+                                                        ('name', '<=', str(date_stop)),
+                                                        ('id', '>', sign_out.id)])
+            if not attendances_sign_in:
+                # nothing todo
+                continue
+            else:
+                sign_in = attendances_sign_in[-1]
+                sign_in_time = datetime.strptime(sign_in.name, '%Y-%m-%d %H:%M:%S').time()
+                # إذا كان لديه إستئذان يجب إنشاء غياب مبرر واحتساب أخر وقت  دخوله بعد الإستئذان
+                sign_in_time_after_authorization = sign_in_time
+                authorization_ids = employee.get_authorization_by_date(date, time_float_convert(sign_out_time), time_float_convert(sign_in_time))
+                if authorization_ids:
+                    authorization = authorization_ids[0]
+                    vals = {'employee_id': employee_id,
+                            'hour_calendar': time_float_convert(sign_in_time),
+                            'date': date,
+                            'action': 'absence_justified',
+                            'description': u'طلب إستئذان رقم %s . من الساعة %s إلى %s  ' % (authorization.name, float_time_convert_str(authorization.hour_from), float_time_convert_str(authorization.hour_to)),
+                            'latest_date_import': latest_date_import
+                            }
+                    report_day_obj.create(vals)
+                    hour_start, min_start = float_time_convert(authorization.hour_to)
+                    sign_in_time_after_authorization = time(int(hour_start), int(min_start), 0)
+                    # احتساب التأخر إذا عاد متأخراً بعد الإستئذان
+                    if sign_in_time > sign_in_time_after_authorization:
+                        # create retard action
+                        delay_retard = datetime.strptime(str(sign_in_time), FORMAT_TIME) - datetime.strptime(str(sign_in_time_after_authorization), FORMAT_TIME)
+                        delay_retard_seconds = delay_retard.seconds
+                        delay_retard = delay_retard_seconds / 3600.0
+                        vals = {'employee_id': employee.id,
+                                'hour_calendar': time_float_convert(sign_in_time_after_authorization),
+                                'hour_attendance': time_float_convert(sign_in_time),
+                                'delay_retard': delay_retard,
+                                'date': date,
+                                'action': 'retard',
+                                'latest_date_import': latest_date_import}
+                        report_day_obj.create(vals)
+                # إذا لم يكن هناك إستئذان يعتبر غياب غير مبرر
+                else:
+                    delay_absence = datetime.strptime(str(sign_in_time), FORMAT_TIME) - datetime.strptime(str(sign_out_time), FORMAT_TIME)
+                    delay_absence_seconds = delay_absence.seconds
+                    delay_absence = delay_absence_seconds / 3600.0
+                    vals = {'employee_id': employee_id,
+                            'hour_calendar': time_float_convert(sign_in_time),
+                            'hour_calendar_to': time_float_convert(sign_out_time),
+                            'hour_attendance': time_float_convert(sign_in_time),
+                            'delay_absence': delay_absence,
+                            'date': date,
+                            'action': 'absence',
+                            'description': u'خروج الساعة %s وعودة الساعة %s دون إستئذان' % (str(sign_out_time), str(sign_in_time)),
+                            'latest_date_import': latest_date_import
+                            }
+                    report_day_obj.create(vals)
         return True
 
     def chek_import_attendance(self, date):
@@ -420,6 +498,9 @@ class HrAttendanceImport(models.Model):
 
     @api.multi
     def import_attendance(self):
+        '''
+          تحديث سجل الحضور و الإنصراف
+        '''
         quotechar = '"'
         delimiter = ','
         fileobj = TemporaryFile('w+')
@@ -461,6 +542,10 @@ class HrAttendanceImport(models.Model):
 
 class HrAttendanceReportDay(models.Model):
     _name = 'hr.attendance.report_day'
+    u'''
+      التأخيرات والغيابات الغير مبرره والخروج المبكر والساعات الإضافية تستعمل في لوحة المؤشرات
+     ويتم تحديثها بعد كل عملية تحديث لسجل الحضور والإنصراف
+    '''
 
     employee_id = fields.Many2one('hr.employee', string='الموظف')
     hour_calendar = fields.Float(string='وقت الدخول')
@@ -468,6 +553,7 @@ class HrAttendanceReportDay(models.Model):
     hour_attendance = fields.Float(string='وقت البصمة')
     delay_retard = fields.Float(string='المدة')
     delay_leave = fields.Float(string='المدة')
+    delay_absence = fields.Float(string='المدة')
     delay_hours_supp = fields.Float(string='المدة')
     date = fields.Date(string='التاريخ')
     latest_date_import = fields.Datetime(string='وقت أخر تحديث')
@@ -481,6 +567,9 @@ class HrAttendanceReportDay(models.Model):
 
 
 class HrAttendanceCheck(models.Model):
+    u'''
+     يتم هنا تجميع التأخيرات والغيابات الغير مبرره والخروج المبكر والساعات الإضافية ليوم معين وتبقى في إنتظار الإعتماد
+    لا  يحتسب تأخير أو خروج مبكر أو غياب أو ساعة إضافية إلا بعد الإعتماد من صاحب الصلاحية    '''
     _name = 'hr.attendance.check'
     _inherit = ['mail.thread']
     _order = 'id desc'
@@ -556,7 +645,7 @@ class HrAttendanceCheck(models.Model):
                 last_sign_out_time = datetime.strptime(last_sign_out.name, '%Y-%m-%d %H:%M:%S').time()
                 val.update({'hour_stop': time_float_convert(last_sign_out_time)})
             # get retard
-            retard = leave = hours_supp = 0.0
+            retard = leave = hours_supp = absence = 0.0
             attendances = attendance_check_obj.search([('employee_id', '=', employee.id), ('state', '=', 'done'), ('date', '=', date)])
             for attendance in attendances:
                 if attendance.type == 'retard':
@@ -565,7 +654,9 @@ class HrAttendanceCheck(models.Model):
                     leave += attendance.delay
                 elif attendance.type == 'hour_supp':
                     hours_supp += attendance.delay
-            val.update({'retard': retard, 'leave': leave, 'hours_supp': hours_supp})
+                elif attendance.type == 'absence':
+                    absence += attendance.delay
+            val.update({'retard': retard, 'leave': leave, 'hours_supp': hours_supp, 'absence': absence})
             # get authorization
             authorization_delay = 0.0
             authorization_ids = employee.get_authorization_by_date(date)
@@ -576,11 +667,6 @@ class HrAttendanceCheck(models.Model):
             holidays_ids = employee.get_holidays_by_date(date)
             holiday_nb = len(holidays_ids)
             val.update({'holiday': holiday_nb})
-            # get absences
-            absences = attendance_check_obj.search([('employee_id', '=', employee.id), ('state', '=', 'done'),
-                                                    ('date', '=', date), ('type', '=', 'absence')])
-            absence_nb = len(absences)
-            val.update({'absence': absence_nb})
             # create report summary
             summary_obj.create(val)
         return True
@@ -589,6 +675,7 @@ class HrAttendanceCheck(models.Model):
 class HrAttendanceSummary(models.Model):
     _name = 'hr.attendance.summary'
     _order = 'id desc'
+    _description = u'الخلاصة اليومية للغيابات والتأخير'
     _rec_name = 'employee_id'
 
     employee_id = fields.Many2one('hr.employee', string='الموظف', required=1, readonly=1)
@@ -640,34 +727,36 @@ class HrMonthlySummary(models.Model):
             if attendance.retard or attendance.leave or attendance.absence:
                 key = attendance.employee_id
                 if key not in monthly_summary:
-                    monthly_summary[key] = {'delay_hours': 0.0, 'absence': 0.0, 'balance_previous': 0.0}
-                if attendance.retard or attendance.leave:
-                    monthly_summary[key]['delay_hours'] += attendance.retard + attendance.leave
+                    monthly_summary[key] = {'retard': 0.0, 'leave': 0.0, 'absence': 0.0, 'balance_previous': 0.0}
                 if attendance.retard:
+                    monthly_summary[key]['retard'] += attendance.retard
+                if attendance.leave:
+                    monthly_summary[key]['leave'] += attendance.leave
+                if attendance.absence:
                     monthly_summary[key]['absence'] += attendance.absence
         # create line in summary
         request_transfer_obj = self.env['hr.request.transfer']
         for employee in monthly_summary:
+            retard = monthly_summary[employee]['retard']
+            leave = monthly_summary[employee]['leave']
             absence = monthly_summary[employee]['absence']
-            delay_hours = monthly_summary[employee]['delay_hours']
             balance_previous = 0.0
             balance_forward = 0.0
             total_days = 0.0
+            delay_hours = retard + leave + absence
+            delay_request = 0.0
             # check طلبات تحويل ساعات التأخير
             request_transfers = request_transfer_obj.search([('employee_id', '=', employee.id), ('date', '>=', self.date_from), ('date', '<=', self.date_to)])
             for request in request_transfers:
-                if request.type == 'delay_hours':
-                    delay_hours -= request.number_request
-                elif request.type == 'absence':
-                    absence -= request.number_request
+                delay_request += request.number_request
             # check رصيد الشهر السابق
             monthly_summary_line_obj = self.env['hr.monthly.summary.line']
             summary_lines = monthly_summary_line_obj.search([('employee_id', '=', employee.id)])
             if summary_lines:
                 balance_previous = summary_lines[0].balance_forward
-            # create line if employee have a delay_hours or absence
-            if delay_hours or absence or balance_previous:
-                balance_forward = delay_hours + balance_previous
+            # create line if employee have a delay_hours or balance_previous
+            if delay_hours or balance_previous:
+                balance_forward = delay_hours + balance_previous - delay_request
                 if balance_forward >= 7:
                     total_days += int(balance_forward / 7)
                     balance_forward = balance_forward % 7
@@ -676,8 +765,11 @@ class HrMonthlySummary(models.Model):
                         'department_id': employee.job_id.department_id,
                         'job_id': employee.job_id,
                         'grade_id': employee.job_id.grade_id,
-                        'delay_hours': monthly_summary[employee]['delay_hours'],
-                        'absence': monthly_summary[employee]['absence'],
+                        'retard': retard,
+                        'leave': leave,
+                        'absence': absence,
+                        'delay_hours': delay_hours,
+                        'delay_request': delay_request,
                         'total_days': total_days,
                         'balance_previous': balance_previous,
                         'balance_forward': balance_forward}
@@ -709,7 +801,10 @@ class HrMonthlySummaryLine(models.Model):
     job_id = fields.Many2one('hr.job', string='الوظيفة', readonly=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
     balance_previous = fields.Float(string='رصيد الشهر السابق(س.)')
-    delay_hours = fields.Float(string=' التأخير والخروج(س.)')
-    absence = fields.Float(string='غياب (اليوم)')
-    total_days = fields.Float(string='المجموع (اليوم)')
+    retard = fields.Float(string=' تأخير (س)')
+    leave = fields.Float(string='خروج مبكر(س)')
+    absence = fields.Float(string='غياب(س)')
+    delay_hours = fields.Float(string='المجموع (س)')
+    delay_request = fields.Float(string='تحويل(س)')
+    total_days = fields.Float(string='أيام الخصم')
     balance_forward = fields.Float(string='الرصيد المرحل(س.)')

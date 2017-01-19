@@ -16,6 +16,8 @@
 					<field name="date" />
 					<field name="delay"  widget="float_time" />
 					<field name="state" />
+					<button name="action_done" string="إعتماد" type="object" icon="gtk-apply" states="new" groups="smart_hr.group_dm,smart_hr.group_hrm" />
+					<button name="action_refuse" string="رفض" type="object" icon="STOCK_CANCEL"  states="new" groups="smart_hr.group_dm,smart_hr.group_hrm" />
 				</tree>
 			</field>
 		</record>
@@ -78,21 +80,6 @@
 			</field>
 		</record>
 		
-
-		<!-- الغيابات -->
-		
-		<record model="ir.actions.act_window" id="action_hr_attendance_check_absence">
-			<field name="name">الغيابات</field>
-			<field name="res_model">hr.attendance.check</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
-			<field name="domain">[('type','=','absence')]</field>
-			<field name="context">{'readonly_by_pass': True}</field>
-		</record>
-
-		<menuitem id="hr_attendance_check_menu_absence" name="الغيابات" groups="smart_hr.group_dm,smart_hr.group_hrm"
-			sequence="35" parent="menu_attendance_root" action="action_hr_attendance_check_absence" />
-			
 		<!-- الساعات الإضافية -->
 		
 		<record model="ir.actions.act_window" id="action_hr_attendance_check_hour_supp">
@@ -107,18 +94,18 @@
 		<menuitem id="hr_attendance_check_menu_hour_supp" name="الساعات الإضافية" groups="smart_hr.group_dm,smart_hr.group_hrm"
 			sequence="40" parent="menu_attendance_root" action="action_hr_attendance_check_hour_supp" />
 
-		<!-- ساعات التأخير و الخروج المبكر -->
+		<!-- التأخير و الخروج المبكر والغيابات -->
 
 		<record model="ir.actions.act_window" id="action_hr_attendance_check">
-			<field name="name">ساعات التأخير و الخروج المبكر</field>
+			<field name="name">التأخير و الخروج المبكر والغيابات</field>
 			<field name="res_model">hr.attendance.check</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
-			<field name="domain">[('type','in',('leave','retard'))]</field>
+			<field name="domain">[('type','in',('leave','retard','absence'))]</field>
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 
-		<menuitem id="hr_attendance_check_menu" name="ساعات التأخير و الخروج المبكر" groups="smart_hr.group_dm,smart_hr.group_hrm"
+		<menuitem id="hr_attendance_check_menu" name="التأخير و الخروج المبكر والغيابات" groups="smart_hr.group_dm,smart_hr.group_hrm"
 			sequence="45" parent="menu_attendance_root" action="action_hr_attendance_check" />
 									
 	</data>

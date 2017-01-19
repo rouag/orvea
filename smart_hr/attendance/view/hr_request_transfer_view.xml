@@ -13,7 +13,6 @@
 					<field name="name" />
 					<field name="employee_id" />
 					<field name="date" />
-					<field name="type"/>
 					<field name="number_request" />
 					<field name="state" />
 				</tree>
@@ -46,7 +45,6 @@
 							</group>
 							<group string="ساعات التأخير  أو الغيابات ">
 								<field name="date" />
-								<field name="type" />
 								<field name="number_request" />
 								<field name="balance" />
 							</group>
@@ -73,11 +71,9 @@
 					<field name="name" />
 					<field name="employee_id" />
 					<field name="date" />
-					<field name="type" />
 					<group expand="0" string="تجميع حسب...">
 						<filter name="employee_id" string="الموظف" context="{'group_by':'employee_id'}" />
 						<filter name="date"  string="التاريخ" context="{'group_by':'date'}" />
-						<filter name="type"  string="نوع الطلب" context="{'group_by':'type'}" />
 						<filter name="state"  string="الحالة" context="{'group_by':'state'}" />
 					</group>
 				</search>

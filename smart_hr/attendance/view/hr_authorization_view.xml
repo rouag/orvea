@@ -15,6 +15,7 @@
 					<field name="date" />
 					<field name="hour_from" widget="float_time" />
 					<field name="hour_to"  widget="float_time" />
+					<field name="hour_number"  widget="float_time" />
 					<field name="state" />
 				</tree>
 			</field>
@@ -55,7 +56,7 @@
 										<field name="hour_to" class="oe_inline"  widget="float_time" />
 									</div>
 									<div>
-										<field name="hour_number" class="oe_inline" />
+										<field name="hour_number" widget="float_time"  class="oe_inline" />
 										ساعة
 									</div>
 								</div>
