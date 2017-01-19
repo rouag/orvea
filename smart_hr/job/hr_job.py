@@ -568,6 +568,7 @@ class HrJobMoveDeparrtment(models.Model):
     in_speech_number = fields.Char(string=u'رقم الخطاب الوارد')
     in_speech_date = fields.Date(string=u'تاريخ الخطاب الوارد')
     in_speech_file = fields.Binary(string=u'صورة الخطاب الوارد')
+    move_raison = fields.Text(string=u'مبررات طلب النقل')
     job_movement_ids = fields.One2many('hr.job.move.department.line', 'job_move_department_id')
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', u'في إنتظار الموافقة'),

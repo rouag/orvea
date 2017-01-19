@@ -162,39 +162,24 @@ class JobMoveDepReport(report_sxw.rml_parse):
     def __init__(self, cr, uid, name, context):
         super(JobMoveDepReport, self).__init__(cr, uid, name, context=context)
         self.localcontext.update({
-            'get_lines': self._get_lines,
+            'get_company': self._get_company,
             'format_time': self._format_time,
             'get_current_date': self._get_current_date,
             'get_job': self._get_job,
             'get_job_create_date': self._get_job_create_date,
-            'get_employee_job_decision': self._get_employee_job_decision,
-            'get_employee_job_decision_history': self._get_employee_job_decision_history,
-            'get_employee_last_training': self._get_employee_last_training
+            'get_move_line': self._get_move_line,
         })
 
-    def _get_employee_last_training(self, job):
-        hr_candidates_ids = self.pool.get('hr.candidates').search(self.cr, self.uid, [('training_id.state', '=', 'done'), ('employee_id', '=', job.employee.id)])
-        if hr_candidates_ids:
-            last_hr_candidate_id = hr_candidates_ids[len(hr_candidates_ids) - 1]
-            if last_hr_candidate_id:
-                hr_candidate = self.pool.get('hr.candidates').browse(self.cr, self.uid, [last_hr_candidate_id])
-            return hr_candidate.training_id
-        return False
+    def _get_company(self):
+        return self.pool.get('res.users').browse(self.cr, self.uid, [self.uid])[0].company_id
 
-    def _get_employee_job_decision_history(self, job):
-        hr_decision_appoint_ids = self.pool.get('hr.decision.appoint').search(self.cr, self.uid, [('employee_id', '=', job.employee.id), ('state', '=', 'done'), ('active', '=', False)])
-        if hr_decision_appoint_ids:
-            hr_decision_appoints = self.pool.get('hr.decision.appoint').browse(self.cr, self.uid, hr_decision_appoint_ids)
-            return hr_decision_appoints
-        return False
-
-    def _get_employee_job_decision(self, job):
-        hr_decision_appoint_ids = self.pool.get('hr.decision.appoint').search(self.cr, self.uid, [('job_id', '=', job.id), ('state', '=', 'done')])
-        if hr_decision_appoint_ids:
-            last_decision_appoint_id = hr_decision_appoint_ids[len(hr_decision_appoint_ids) - 1]
-            if last_decision_appoint_id:
-                hr_decision_appoint = self.pool.get('hr.decision.appoint').browse(self.cr, self.uid, [last_decision_appoint_id])[0]
-                return hr_decision_appoint
+    def _get_move_line(self, data, job):
+        job_move_department_id = data['job_move_department_id'][0]
+        job_move_department_obj = self.pool.get('hr.job.move.department').browse(self.cr, self.uid, [job_move_department_id])[0]
+        if job_move_department_obj:
+            for line in job_move_department_obj.job_movement_ids:
+                if line.job_id.id == job.id:
+                    return line
         return False
 
     def _get_job_create_date(self, job):
