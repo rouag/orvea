@@ -13,11 +13,10 @@ class HrDecisionAppoint(models.Model):
     _inherit = ['mail.thread'] 
     _description=u'قرار تعيين'
     
-    name=fields.Char(string='رقم القرار',required=1 ,states={'new': [('readonly', 0)]})
+    name=fields.Char(string='رقم القرار',required=1 ,states={'draft': [('readonly', 0)]})
     order_date=fields.Date(string='تاريخ القرار',required=1) 
-    date_hiring=fields.Date(string='تاريخ التعيين',required=1)
+    date_hiring=fields.Date(string='تاريخ التعيين',required=1,default=fields.Datetime.now())
     date_hiring_end = fields.Date(string=u'تاريخ إنتهاء التعيين')  
-    type_appointment=fields.Many2one('hr.type.appoint',string='نوع التعيين',required=1,states={'new': [('readonly', 0)]})
     date_direct_action=fields.Date(string='تاريخ مباشرة العمل',required=1) 
     instead_exchange=fields.Boolean(string='صرف بدل تعيين')
     active = fields.Boolean( string=u'مفعل', default=True)
@@ -25,10 +24,17 @@ class HrDecisionAppoint(models.Model):
     employee_id=fields.Many2one('hr.employee',string='الموظف',required=1)
     number=fields.Char(string='الرقم الوظيفي',readonly=1) 
     country_id=fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
+    emp_job_id  = fields.Many2one('hr.job', string='الوظيفة',store=True,readonly=1) 
+    emp_number_job=fields.Char(string='الرقم الوظيفي',store=True,readonly=1) 
+    emp_type_id=fields.Many2one('salary.grid.type',string='الصنف',store=True,readonly=1) 
+    emp_department_id=fields.Many2one('hr.department',string='القسم',store=True,readonly=1)
+    emp_grade_id=fields.Many2one('salary.grid.grade',string='المرتبة',store=True,readonly=1)
+    emp_far_age = fields.Float(string=' السن الاقصى',store=True,readonly=1) 
+    emp_basic_salary = fields.Float(string='الراتب الأساسي',store=True, readonly=1)   
+    emp_degree_id = fields.Many2one('salary.grid.degree', string='الدرجة',store=True, readonly=1)
     #info about job
     job_id = fields.Many2one('hr.job', string='الوظيفة',required=1)
     number_job=fields.Char(string='الرقم الوظيفي',readonly=1) 
-    
     type_id=fields.Many2one('salary.grid.type',string='الصنف',readonly=1) 
     department_id=fields.Many2one('hr.department',string='القسم',readonly=1)
     grade_id=fields.Many2one('salary.grid.grade',string='المرتبة',readonly=1)
@@ -40,16 +46,32 @@ class HrDecisionAppoint(models.Model):
     salary_recent = fields.Float(string=' أخر راتب شهري ')
     transport_alocation = fields.Boolean(string='بدل نقل')
     transport_car = fields.Boolean(string='سيارة')
-    #other info
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
+    #other info
+    type_appointment=fields.Many2one('hr.type.appoint',string=u'نوع التعيين' , default=lambda self: self.env.ref('smart_hr.data_hr_recrute_agent_public'), advanced_search=True)
     description=fields.Text(string=' ملاحظات ') 
-    state = fields.Selection([('new', u'طلب '),
+    state_appoint = fields.Selection([
+                              ('active', u'مفعل'),
+                              ('close', u'مغلق'),
+                              ('refuse', u'ملغى'),
+                              ('hanging', u'معلق'),
+                              ('new', u'جديد'),
+                              ], string=u' حالةالتعيين ', default='new', advanced_search=True)
+    state = fields.Selection([
+                              ('draft', u'طلب'),
+                              ('audit', u'تدقيق'),
                               ('waiting', u'مقابلة شخصية'),
-                              ('budget', u'رئيس الهيئة'),
+                            ('manager', u'صاحب صلاحية التعين'),
+                             ('direct', u'مدير مباشر'),
+                             ('budget', u'رئيس الهيئة'),
                               ('hrm', u'شؤون الموظفين'),
-                              ('done', u'اعتمدت')
-                              ], readonly=1, default='new')
-   # state= fields.Selection([('new','طلب'),('waiting','في إنتظار الإعتماد'),('done','اعتمدت')], readonly=1, default='new',) 
+                              ('done', u'اعتمدت'),
+                               ('refuse', u'رفض'),
+                               ('cancel', u'ملغاة'),
+                              ], string=u'حالة', default='draft', advanced_search=True)
+    
+    
+   
     #attachments files
     order_picture=fields.Binary(string='صورة القرار',required=1) 
     medical_examination_file = fields.Binary(string = 'وثيقة الفحص الطبي') 
@@ -61,36 +83,146 @@ class HrDecisionAppoint(models.Model):
     file_decision = fields.Binary(string = 'قرار المباشر')
     
     @api.multi
-    def action_waiting(self):
+    def send_appoint_request(self):
         self.ensure_one()
-        self.state = 'waiting'
-        if self.employee_id.age > 60 :
-            raise ValidationError(u"الرجاء التثبت من سن المترشح تجاوز 60)")
-    
+        
+            # check if the appoint status is supposed to be confirmed by direct manager
+        if self.type_appointment.audit:
+            self.message_post(u"تم إرسال الطلب من قبل '"  + u"' إلى مدقق طلبات التعين")
+            self.state = 'audit'
+            
+        elif self.type_appointment.enterview_manager:
+            self.message_post(u"تم إرسال الطلب من قبل '" +  u"' إلى مسؤول على مقابلة شخصية")
+            self.state = 'waiting'
+        elif self.type_appointment.personnel_hr:
+            self.message_post(u"تم إرسال الطلب من قبل '" +  u"' إلى فريق الموارد البشرية")
+            self.state = 'hrm'
+        elif self.type_appointment.recrutment_manager:
+            self.message_post(u"تم إرسال الطلب من قبل '" + u"' إلى صاحب صلاحية التعين")
+            self.state = 'manager'
+        elif self.type_appointment.recrutment_decider:
+            self.message_post(u"تم إرسال الطلب من قبل '" + u" إلى رئيس الهئية ")
+            self.state = 'budget'
+        else:
+            self.smart_action_done()
+            
+    # control audit group_audit_appointment
     @api.multi
-    def action_communication(self):
+    def button_accept_audit(self):
         self.ensure_one()
-        self.state = 'budget'
-        # Add to log
-        user = self.env['res.users'].browse(self._uid)
-        self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"' (مديرالهيئة)")
-
+        if self.type_appointment.audit:
+            self.state = 'waiting'
+        else :
+            self.state = 'draft'
         
     @api.multi
-    def action_hrm(self):
+    def button_refuse_audit(self):
         self.ensure_one()
-        self.state = 'hrm'
-        # Add to log
-        user = self.env['res.users'].browse(self._uid)
-        self.message_post(u"تمت الموافقة من قبل شؤون الموظفين)")
+        if self.type_appointment.audit:
+            self.state = 'draft'
+    #control enterview manager  group_enterview_manager
     @api.multi
-    def action_budget(self):
+    def button_accept_enterview_manager(self):
         self.ensure_one()
-        self.state = 'budget'
+        if self.type_appointment.enterview_manager:
+            self.state = 'manager'
+            
+    @api.multi
+    def button_refuse_enterview_manager(self):
+        self.ensure_one()
+        if self.type_appointment.enterview_manager:
+            self.state = 'refuse'
+
+   ## control recrutment group_recrutment_manager
+       
+    @api.multi
+    def button_accept_recrutment_manager(self):
+        self.ensure_one()
+        if self.type_appointment.recrutment_manager:
+            self.state = 'budget'
+       # if self.employee_id.age > 60 :
+          #  raise ValidationError(u"الرجاء التثبت من سن المترشح تجاوز 60)")
+    
+    @api.multi
+    def button_refuse_recrutment_manager(self):
+        self.ensure_one()
+        if self.type_appointment.recrutment_manager:
+            self.state = 'refuse'
+        
+    @api.multi
+    def button_accept_recrutment_decider(self):
+        self.ensure_one()
+        if self.type_appointment.recrutment_decider and self.type_appointment.personnel_hr:
+            self.state = 'hrm'
+        elif self.type_appointment.recrutment_decider :
+             self.state = 'done'
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
-
+    
+    @api.multi
+    def button_refuse_recrutment_decider(self):
+        self.ensure_one()
+        if self.type_appointment.recrutment_decider:
+            self.state = 'refuse'
+        # Add to log
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
+           
+        
+        
+    #contyrol hr group_personnel_hr       
+    @api.multi
+    def button_accept_personnel_hr(self):
+        self.ensure_one()
+        if self.type_appointment.personnel_hr and self.type_appointment.direct_manager:
+            self.state = 'direct'
+        else :
+            self.state = 'done'
+        # Add to log
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت الموافقة من قبل شؤون الموظفين)")
+        
+    @api.multi
+    def button_refuse_personnel_hr(self):
+        self.ensure_one()
+        if self.type_appointment.personnel_hr:
+            self.state = 'refuse'
+        # Add to log
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت الموافقة من قبل شؤون الموظفين)")
+        
+   
+    @api.multi
+    def button_accept_direct(self):
+        
+        self.ensure_one()
+        if self.type_appointment.direct_manager:
+            self.state = 'done'
+        # Add to log
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
+    
+    @api.multi
+    def button_refuse_direct(self):
+        self.ensure_one()
+        if self.type_appointment.direct_manager:
+            self.state = 'refuse'
+        # Add to log
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
+        
+    @api.multi
+    def button_cancel_appoint(self):
+        self.ensure_one()   
+        self.state_appoint = 'new'
+    
+    
+    @api.multi
+    def button_direct_appoint(self):
+        self.ensure_one()   
+        self.state_appoint = 'active'
+   
    
     @api.multi
     def action_done(self):
@@ -119,7 +251,7 @@ class HrDecisionAppoint(models.Model):
     @api.multi
     def action_refuse(self):
         self.ensure_one()
-        self.state = 'new'
+        self.state = 'draft'
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تم رفض تعين جديد من قبل '" + unicode(user.name) + u"'")
@@ -131,7 +263,14 @@ class HrDecisionAppoint(models.Model):
         if self.employee_id :
             self.number = self.employee_id.number
             self.country_id = self.employee_id.country_id
-            self.job_id = self.employee_id.job_id
+            appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('active', '=', True)],limit=1 )
+            if appoint_line :
+                self.emp_job_id = appoint_line.job_id.id
+                self.emp_number_job =appoint_line.number
+                self.emp_type_id = appoint_line.type_id.id
+                self.emp_far_age = appoint_line.type_id.far_age
+                self.emp_grade_id = appoint_line.grade_id.id
+                self.emp_department_id = appoint_line.department_id.id
            
 
                
@@ -145,7 +284,7 @@ class HrDecisionAppoint(models.Model):
             self.department_id = self.job_id.department_id.id
             
             
-    api.onchange('degree_id')
+    @api.onchange('degree_id')
     def _onchange_degree_id(self):
             if self.degree_id:
             
@@ -159,7 +298,15 @@ class HrDecisionAppoint(models.Model):
                     self.retirement = salary_grid_line.retirement
                     self.net_salary = salary_grid_line.net_salary
                 
-               
+    
+    @api.onchange('date_direct_action')
+    def _onchange_date_direct_action(self):
+          if self.date_hiring > self.date_direct_action:
+            raise ValidationError(u"تاريخ مباشرة العمل يجب ان يكون أكبر من تاريخ التعيين")
+        
+       
+        
+                  
 class HrTypeAppoint(models.Model):
     _name = 'hr.type.appoint'  
     _description=u'أنواع التعين'
@@ -170,10 +317,11 @@ class HrTypeAppoint(models.Model):
     code=fields.Char(string='الرمز')
     
     audit = fields.Boolean(string=u'تدقيق', default=False)
-    recrutment_manager = fields.Boolean(string=u'صاحب صلاحية التعين', default=True)
+    recrutment_manager = fields.Boolean(string=u'موافقة صاحب صلاحية التعين ', default=True)
     enterview_manager = fields.Boolean(string=u'مقابلة شخصية', default=True)
     personnel_hr = fields.Boolean(string=u'شؤون الموظفين', default=True)
-    recrutment_decider = fields.Boolean(string=u'رئيس الهيئة', default=True)
+    direct_manager = fields.Boolean(string=u'  موافقة مدير مباشر ', default=True)
+    recrutment_decider = fields.Boolean(string=u' موافقة رئيس الهيئة  ', default=True)
     can_be_cancelled = fields.Boolean(string=u'يمكن الغاؤها', default=True)
     
 class HrNoticesSettings(models.Model):
