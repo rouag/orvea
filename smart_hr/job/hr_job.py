@@ -690,7 +690,7 @@ class HrJobMoveGrade(models.Model):
     in_speech_number = fields.Char(string=u'رقم الخطاب الوارد')
     in_speech_date = fields.Date(string=u'تاريخ الخطاب الوارد')
     in_speech_file = fields.Binary(string=u'صورة الخطاب الوارد')
-    job_movement_ids = fields.One2many('hr.job.move.grade.line', 'job_movement_line_id')
+    job_movement_ids = fields.One2many('hr.job.move.grade.line', 'job_move_grade_id')
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', u'في إنتظار الموافقة'),
                               ('hrm1', u'شؤون الموظفين'),
@@ -767,7 +767,7 @@ class HrJobMoveGradeLine(models.Model):
     _name = 'hr.job.move.grade.line'
     _description = u'رفع أو خفض وظائف'
 
-    job_movement_line_id = fields.Many2one('hr.job.move.grade', string='الوظيفة', required=1, ondelete="cascade")
+    job_move_grade_id = fields.Many2one('hr.job.move.grade', string='الوظيفة', required=1, ondelete="cascade")
     job_id = fields.Many2one('hr.job', string='الوظيفة', domain=[('state', '=', 'unoccupied'), ('is_occupied', '=', False)], required=1)
     type_id = fields.Many2one('salary.grid.type', string='التصنيف', readonly=1, required=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة الحالية', readonly=1, required=1)
