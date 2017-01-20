@@ -36,9 +36,9 @@
 			<field name="arch" type="xml">
 				<data>
 					<field name="name" position="after">
-						<field name="space"/>	
+						<field name="space" />
 						<field name="father_middle_name" />
-						<field name="space"/>	
+						<field name="space" />
 						<field name="father_name" />
 						<field name="family_name" />
 					</field>
@@ -167,9 +167,9 @@
 										<field name="job_id"
 											attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 										<field name="parent_id" />
-										<field name="service_duration" attrs="{'readonly': 1}"/>
-									<field name="promotion_duration" attrs="{'readonly': 1}"/>
-										
+										<field name="service_duration" attrs="{'readonly': 1}" />
+										<field name="promotion_duration" attrs="{'readonly': 1}" />
+
 										<field name="external_decision" />
 										<field name="traveling_ticket" />
 										<field name="traveling_family_ticket" />
@@ -386,7 +386,8 @@
 											<field name="job_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="parent_id" />
-											<field name="service_years" />
+											<field name="service_duration" attrs="{'readonly': 1}" />
+											<field name="promotion_duration" attrs="{'readonly': 1}" />
 											<field name="external_decision" />
 										</group>
 										<group string="خصائص أخرى">
