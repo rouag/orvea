@@ -8,9 +8,9 @@
 						<div class="page">
 						<style type="text/css">
 							.okradio{
-								width:20px;height:20px;	border:1px solid #000;padding-right: 20px;margin-left:15px;margin-right:15px;background-color:black;}
+								width:20px;height:20px;	border:1px solid #000;padding-right: 20px;margin-left:15px;border-radius: 50px;margin-right:15px;background-color:black;}
 							.notokradio{
-								width:20px;height:20px;	border:1px solid #000;padding-right: 20px;margin-left:15px;margin-right:15px;}
+								width:20px;height:20px;	border:1px solid #000;padding-right: 20px;margin-left:15px;border-radius: 50px;margin-right:15px;}
 						</style>
 							<div class="oe_structure" />
 
@@ -97,9 +97,9 @@
 								</tr>
 								<tr>
 									<td><strong>8</strong></td>
-									<td colspan="5"> <span class="notokradio"></span><span><strong>لا</strong></span><span class="notokradio"></span><span><strong>نعم</strong></span>,<span><strong>عددها الإجمالي()</strong></span></td>
+									<td colspan="5"> <span class="notokradio"></span><span><strong>لا</strong></span><t t-if="len(jobs_old_name)==0"><span class="notokradio"></span></t><t t-if="len(jobs_old_name)&#62;0"><span class="okradio"></span></t><span><strong>نعم</strong></span>,<span><strong>عددها الإجمالي(<t t-esc="len(jobs_old_name)"/>)</strong></span></td>
 									<td></td>
-									<td colspan="5"> <span class="notokradio"></span><span><strong>لا</strong></span><span class="notokradio"></span><span><strong>نعم</strong></span>,<span><strong>عددها الإجمالي()</strong></span></td>								
+									<td colspan="5"> <span class="notokradio"></span><span><strong>لا</strong></span><t t-if="len(jobs_new_name)==0"><span class="notokradio"></span></t><t t-if="len(jobs_new_name)&#62;0"><span class="okradio"></span></t><span><strong>نعم</strong></span>,<span><strong>عددها الإجمالي(<t t-esc="len(jobs_new_name)"/>)</strong></span></td>								
 								</tr>
 								<tr>
 									<td t-att-rowspan="len(job_size)+1"><strong>9</strong></td>
@@ -162,7 +162,7 @@
 								<tr>
 									<td><strong>10</strong></td>
 									<td colspan="6"><strong>مسمى الوظيفة الاشرفية على الوظيفة للمسمى المقترح:</strong></td>
-									<td colspan="3"></td>
+									<td colspan="3"> <span t-esc="move_line.new_name.job_supervisory_name_id.name" /></td>
 									<td><strong>مرتبتها</strong></td>
 									<td></td>								
 								</tr>
