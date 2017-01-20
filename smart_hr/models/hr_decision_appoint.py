@@ -105,7 +105,7 @@ class HrDecisionAppoint(models.Model):
         self.env['hr.holidays']._init_balance(self.employee_id)
         # create promotion history line
         promotion_obj = self.env['hr.employee.promotion.history']
-        active_promotion = self.env['hr.employee.promotion.history'].search([('active', '=', 'True'), ('employee_id', '=', self.employee_id.id)])
+        active_promotion = self.env['hr.employee.promotion.history'].search([('active_duration', '=', 'True'), ('employee_id', '=', self.employee_id.id)])
         if active_promotion:
             for prom in active_promotion:
                 prom.active=False

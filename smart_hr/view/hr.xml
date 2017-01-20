@@ -36,9 +36,9 @@
 			<field name="arch" type="xml">
 				<data>
 					<field name="name" position="after">
-						<field name="space"/>	
+						<field name="space" />
 						<field name="father_middle_name" />
-						<field name="space"/>	
+						<field name="space" />
 						<field name="father_name" />
 						<field name="family_name" />
 					</field>
@@ -86,25 +86,37 @@
 							options="{&quot;preview_image&quot;:&quot;image_medium&quot;}" />
 						<div>
 
-							<group col="13" class='smart_td_label_center'>
-								<label name="name" string="الاسم" colspan="3" />
-								<label name="father_name" string="إسم الأب" colspan="3" />
-								<label name="grandfather_name" string="اسم الجد" colspan="3" />
-								<label name="grandfather2_name" string="اسم الجد الثاني"
-									colspan="3" />
-								<label name="family_name" string="الاسم العائلي" colspan="1" />
-							</group>
-							<group col="13">
-								<field name="name" nolabel="1" colspan="2" />
-								<field name="father_middle_name" nolabel="1" />
-								<field name="father_name" nolabel="1" colspan="2" />
-								<field name="grandfather_middle_name" nolabel="1" />
-								<field name="grandfather_name" nolabel="1" colspan="2" />
-								<field name="grandfather2_middle_name" nolabel="1" />
-								<field name="grandfather2_name" nolabel="1" colspan="2" />
-								<field name="family_name" nolabel="1" colspan="2" />
-							</group>
-
+							<!-- <group col="13" > -->
+							<!-- <label name="name" string="الاسم" colspan="3" /> -->
+							<!-- <label name="father_name" string="إسم الأب" class="smart_label_father_name_padding_right" 
+								/> -->
+							<!-- <label name="grandfather_name" string="اسم الجد" colspan="3" 
+								class="smart_label_grnad_father_name_padding_left"/> -->
+							<!-- <label name="grandfather2_name" string="اسم الجد الثاني" -->
+							<!-- colspan="3" /> -->
+							<!-- <label name="family_name" string="الاسم العائلي" colspan="1" 
+								/> -->
+							<!-- </group> -->
+							<!-- <group col="13"> -->
+							<!-- <field name="name" nolabel="1" colspan="2" /> -->
+							<!-- <field name="father_middle_name" nolabel="1" /> -->
+							<!-- <field name="father_name" nolabel="1" colspan="2" /> -->
+							<!-- <field name="grandfather_middle_name" nolabel="1" /> -->
+							<!-- <field name="grandfather_name" nolabel="1" colspan="2" /> -->
+							<!-- <field name="grandfather2_middle_name" nolabel="1" /> -->
+							<!-- <field name="grandfather2_name" nolabel="1" colspan="2" /> -->
+							<!-- <field name="family_name" nolabel="1" colspan="2" /> -->
+							<!-- </group> -->
+							<div col="13">
+								<field name="name" colspan="2" />
+								<field name="father_middle_name" />
+								<field name="father_name" colspan="2" />
+								<field name="grandfather_middle_name" />
+								<field name="grandfather_name" colspan="2" />
+								<field name="grandfather2_middle_name" />
+								<field name="grandfather2_name" colspan="2" />
+								<field name="family_name" colspan="2" />
+							</div>
 							<label for="number" class="oe_edit_only" />
 							<h1>
 								<field name="number" placeholder="الرقم الوظيفي" attrs="{'required': 1}"
@@ -167,7 +179,8 @@
 										<field name="job_id"
 											attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 										<field name="parent_id" />
-										<field name="service_years" />
+										<field name="service_duration" />
+										<field name="promotion_duration" />
 										<field name="external_decision" />
 										<field name="traveling_ticket" />
 										<field name="traveling_family_ticket" />
@@ -212,11 +225,16 @@
 									</tree>
 								</field>
 								<field name="promotions_history" readonly="1">
+
 									<tree string="أرصدة الترقيات">
+										<field name="employee_id" invisible="1" />
+
 										<field name="salary_grid_id" />
 										<field name="date_from" />
 										<field name="date_to" />
 										<field name="balance" />
+										<field name="active_duration" />
+
 									</tree>
 								</field>
 								<group>
@@ -301,24 +319,58 @@
 							<field name="image" widget="image" class="oe_avatar"
 								options="{&quot;preview_image&quot;:&quot;image_medium&quot;}" />
 							<div>
-								<group col="13" class='smart_td_label_center'>
-									<label name="name" string="الاسم" colspan="3" />
-									<label name="father_name" string="إسم الأب" colspan="3" />
-									<label name="grandfather_name" string="اسم الجد" colspan="3" />
-									<label name="grandfather2_name" string="اسم الجد الثاني"
-										colspan="3" />
-									<label name="family_name" string="الاسم العائلي" colspan="1" />
-								</group>
-								<group col="13">
-									<field name="name" nolabel="1" colspan="2" />
-									<field name="father_middle_name" nolabel="1" />
-									<field name="father_name" nolabel="1" colspan="2" />
-									<field name="grandfather_middle_name" nolabel="1" />
-									<field name="grandfather_name" nolabel="1" colspan="2" />
-									<field name="grandfather2_middle_name" nolabel="1" />
-									<field name="grandfather2_name" nolabel="1" colspan="2" />
-									<field name="family_name" nolabel="1" colspan="2" />
-								</group>
+									<label for="name" class="oe_edit_only" colspan="1" />
+									<label for=" " class="oe_edit_only" colspan="1" />
+									<label for="father_name" class="oe_edit_only" colspan="1" />
+									<label for=" " class="oe_edit_only" colspan="1" />
+									<label for="grandfather_name" class="oe_edit_only"
+										colspan="1" />
+									<label for=" " class="oe_edit_only" colspan="1" />
+
+									<label for="grandfather2_name" class="oe_edit_only"
+										colspan="1" />
+									<label for="family_name" class="oe_edit_only" colspan="1" />
+
+									<h1>
+										<field name="name" attrs="{'required': 1}" class="oe_smart_inline"
+											colspan="2" />
+									</h1>
+									<h1>
+										<field name="father_middle_name" attrs="{'required': 1}"
+											class="oe_smart_inline" colspan="1"/>
+									</h1>
+									<h1>
+										<field name="father_name" attrs="{'required': 1}" class="oe_smart_inline"
+											colspan="2" />
+									</h1>
+									<h1>
+										<field name="grandfather_middle_name" attrs="{'required': 1}"
+											class="oe_smart_inline" colspan="1"/>
+									</h1>
+									<h1>
+										<field name="grandfather_name" attrs="{'required': 1}"
+											class="oe_smart_inline" colspan="2" />
+									</h1>
+									<h1>
+										<field name="grandfather2_middle_name" attrs="{'required': 1}"
+											class="oe_smart_inline" colspan="1"/>
+									</h1>
+									<h1>
+										<field name="grandfather2_name" attrs="{'required': 1}"
+											class="oe_smart_inline" colspan="2" />
+									</h1>
+									<h1>
+										<field name="family_name" attrs="{'required': 1}" class="oe_smart_inline"
+											colspan="2" />
+									</h1>
+								<!-- <field name="name" colspan="2" /> -->
+								<!-- <field name="father_middle_name" /> -->
+								<!-- <field name="father_name" colspan="2" /> -->
+								<!-- <field name="grandfather_middle_name" /> -->
+								<!-- <field name="grandfather_name" colspan="2" /> -->
+								<!-- <field name="grandfather2_middle_name" /> -->
+								<!-- <field name="grandfather2_name" colspan="2" /> -->
+								<!-- <field name="family_name" colspan="2" /> -->
 
 								<label for="number" class="oe_edit_only" />
 								<h1>
@@ -384,7 +436,8 @@
 											<field name="job_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="parent_id" />
-											<field name="service_years" />
+											<field name="service_duration" />
+											<field name="promotion_duration" />
 											<field name="external_decision" />
 										</group>
 										<group string="خصائص أخرى">
@@ -429,10 +482,12 @@
 									</field>
 									<field name="promotions_history" readonly="1">
 										<tree string="أرصدة الترقيات">
+											<field name="employee_id" invisible="1" />
 											<field name="salary_grid_id" />
 											<field name="date_from" />
 											<field name="date_to" />
 											<field name="balance" />
+											<field name="active_duration" />
 										</tree>
 									</field>
 									<group>

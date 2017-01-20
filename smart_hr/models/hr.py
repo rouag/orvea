@@ -6,6 +6,7 @@ from openerp.exceptions import Warning
 from dateutil.relativedelta import relativedelta
 from openerp.exceptions import ValidationError
 from datetime import date
+from datetime import date, datetime, timedelta
 
 
 class HrEmployee(models.Model):
@@ -29,7 +30,7 @@ class HrEmployee(models.Model):
     education_level = fields.Many2one('hr.employee.education.level', string=u'المستوى التعليمي')
     # Deputation Stock
     deputation_stock = fields.Integer(string=u'الأنتدابات', default=60)
-    service_years = fields.Integer(string=u'سنوات الخدمة', compute='_compute_service_years')
+    service_duration = fields.Integer(string=u'مدة الخدمة(يوم)', readonly=True)
     religion_state = fields.Many2one('religion.religion',string=u'الديانة', required=1)
     emp_state = fields.Selection([('working', u'على رأس العمل'),
                                   ('suspended', u'مكفوف اليد'),
@@ -56,6 +57,7 @@ class HrEmployee(models.Model):
     grandfather2_middle_name = fields.Char(string=u'  middle_name3')
     space = fields.Char(string=' ', default=" ", readonly=True)
     begin_work_date = fields.Date(string=u' تاريخ بداية العمل بالجهة الحكومية', required=1)
+    promotion_duration = fields.Integer(string=u'مدة الترقية(يوم)', compute='_compute_promotion_days')
 
     @api.multi
     def name_get(self):
@@ -63,36 +65,43 @@ class HrEmployee(models.Model):
         for emp in self:
             res.append((emp.id, "%s %s %s %s" % (emp.name or '', emp.father_middle_name or '', emp.father_name or '', emp.family_name or '')))
         return res
-    
-    def _compute_service_years(self):
-        for emp in self:
-            #sudo for employee accede a decision like admin
-            decision_appoint = self.env['hr.decision.appoint'].sudo().search([('state', '=', 'done'), ('employee_id', '=', emp.id)])
-            
-            if decision_appoint:
-                today_date = fields.Date.from_string(fields.Date.today())
-                date_hiring = fields.Date.from_string(decision_appoint[0].date_hiring)
-                days = (today_date - date_hiring).days
-                deductible_days = 0
-                # find the holidays of the employee that are deductible_duration_service and promotion_deductible
-                holidays = self.env['hr.holidays'].search([
-                    ('state', '=', 'done'),
-                    ('employee_id', '=', emp.id),
-                    ('holiday_status_id.deductible_duration_service', '=', True), ('holiday_status_id.promotion_deductible', '=', True),
-                    ])
-                # find the holidays of the employee that are only promotion_deductible
-                holidays += self.env['hr.holidays'].search([
-                    ('state', '=', 'done'),
-                    ('employee_id', '=', emp.id),
-                    ('holiday_status_id.deductible_duration_service', '=', False), ('holiday_status_id.promotion_deductible', '=', True),
-                    ])
-                for holiday in holidays:
-                    days -= holiday.duration
-                years = days / 365
-                if years > -1:
-                    emp.service_years = years
 
+    @api.one
+    def _compute_promotion_days(self):
+        active_promotion = self.env['hr.employee.promotion.history'].search([('active_duration', '=', 'True'), ('employee_id', '=', self.id)])
+        if active_promotion:
+            self.promotion_duration=active_promotion[0].balance
 
+    @api.one
+    def _get_first_decision__apoint_date(self):
+        decision_appoint_ids = self.decision_appoint_ids
+        if decision_appoint_ids:
+            direct_action_date = decision_appoint_ids[0].date_direct_action
+            for decision_appoint in decision_appoint_ids:
+                if fields.Date.from_string(decision_appoint.date_direct_action)<fields.Date.from_string(direct_action_date):
+                    direct_action_date=decision_appoint.date_direct_action    
+                return direct_action_date
+        
+    @api.model
+    def update_service_duration(self):
+        today_date = fields.Date.from_string(fields.Date.today())
+        prev_month_end = date(today_date.year, today_date.month, 1) - relativedelta(days=1)
+        prev_month_first = prev_month_end.replace(day=1)
+        
+        for emp in self.search([ ('state', '=', 'employee')]):
+            first_date_direct_action = emp._get_first_decision__apoint_date()
+            if first_date_direct_action[0]:
+                date_direct_action = fields.Date.from_string(first_date_direct_action[0])
+                months = (today_date.year - date_direct_action.year) * 12 + (today_date.month - date_direct_action.month)
+                if months < 1:
+                    emp.service_duration += (today_date - date_direct_action).days
+                else:
+                    emp.service_duration += (prev_month_end - prev_month_first).days
+
+                # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
+                uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', emp.id),('action','=','absence'),
+                                                                            ('date','>=',prev_month_first),('date','<=',prev_month_end)])
+                emp.service_duration -= uncounted_absence_days
 
     @api.depends('birthday')
     def _compute_age(self):
@@ -176,15 +185,26 @@ class HrEmployeePromotionHistory(models.Model):
     date_from = fields.Date(string=u'التاريخ من', default=fields.Datetime.now())
     date_to = fields.Date(string=u'التاريخ الى')
     balance = fields.Integer(string=u'رصيد الترقية (يوم)',store=True)
-    active = fields.Boolean(string=u'نشط')
+    active_duration = fields.Boolean(string=u'نشط')
     
     @api.model
     def update_promotion_duration(self):
-        for promotion in self.search([('active','=','True')]):
+        today = date.today()
+        prev_month_end = date(today.year, today.month, 1) - relativedelta(days=1)
+        prev_month_first = prev_month_end.replace(day=1)
+        for promotion in self.search([('active_duration','=','True')]):
             promotion_date_from = fields.Date.from_string(promotion.date_from)
-            today = date.today()
             promotion.balance = (today - promotion_date_from).days
+            months = (today.year - promotion_date_from.year) * 12 + (today.month - promotion_date_from.month)
+            if months < 1:
+                promotion.balance += (today - promotion_date_from).days
+            else:
+                promotion.balance += (prev_month_end - prev_month_first).days
 
+                # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
+            uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', promotion.employee_id.id),('action','=','absence'),
+                                                                            ('date','>=',prev_month_first),('date','<=',prev_month_end)])
+            promotion.balance -= uncounted_absence_days
 
 #     def _compute_balance(self):
 #         for rec in self:

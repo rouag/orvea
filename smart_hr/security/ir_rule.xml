@@ -10,7 +10,12 @@
 			<field name="perm_read" eval="False" />
 			<field name="groups" eval="[(4,ref('base.group_user'))]" />
 		</record>
-		
+				<record id="property_rule_holidays_dm_checker" model="ir.rule">
+			<field name="name">Employee Holidays Create, Write,read</field>
+			<field name="model_id" ref="model_hr_holidays" />
+			<field name="domain_force">[(1,'=',1)]</field>
+			<field name="groups" eval="[(4,ref('smart_hr.group_holidays_checker')),(4,ref('smart_hr.group_dm')),(4,ref('smart_hr.group_director_division_salaries_vacations'))]" />
+		</record>
 		
 			<record id="employee_hr_candidates" model="ir.rule">
 			<field name="name">ترشيحاتي</field>
@@ -33,5 +38,13 @@
 			<field name="groups" eval="[(4,ref('smart_hr.group_hrm'))]" />
 		</record>
 
+        <record id="ir_rule_see_employee_holidays_request" model="ir.rule">
+            <field name="name">See Own Employees holidays</field>
+            <field name="model_id" ref="model_hr_holidays"/>
+            <field name="domain_force">[('employee_id.parent_id.id', 'in', user.employee_ids.ids)]</field>
+            <field name="groups" eval="[(4, ref('group_dm'))]"/>
+        </record>
+
+      
 	</data>
 </openerp>

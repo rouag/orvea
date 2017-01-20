@@ -169,6 +169,9 @@
 				eval="[(4, ref('base.group_user')),(4, ref('smart_hr.group_employees'))]" />
 		</record>
 
+
+
+
 	</data>
 
 	<data noupdate="1">

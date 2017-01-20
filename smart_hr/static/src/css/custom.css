@@ -16,10 +16,10 @@ float: left !important;
     text-align: center !important;
 }
 
-.smart_td_label_center{
-    text-align: center !important;
+.smart_label_father_name_padding_right{
+        padding-right: 43px !important;
 }
 
-.o_form_input{
-    height: 38px !important;
+.smart_label_grnad_father_name_padding_left{
+        padding-right: 107px !important;
 }
