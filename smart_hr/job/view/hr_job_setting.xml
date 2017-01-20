@@ -268,11 +268,13 @@
 						<group col="2">
 							<group>
 								<field name="name"  />
-								
+								<field name="job_nature"/>
 							</group>
 							<group>
 								<field name="number" />
+								<field name="job_supervisory_name_id"/>
 							</group>
+							<field name="job_supervised_name_ids"/>
 							<field name="job_description" />
 
 						</group>
@@ -321,8 +323,6 @@
 					<sheet>
 						<group col="2">
 								<field name="name"  />
-								
-
 						</group>
 
 					</sheet>

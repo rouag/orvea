@@ -15,7 +15,6 @@ class HrJob(models.Model):
 
     name = fields.Many2one('hr.job.name', string='المسمى', required=1)
     activity_type = fields.Many2one('hr.job.type.activity', string=u'نوع النشاط')
-    job_nature = fields.Selection([('supervisory', u'اشرافية'), ('not_supervisory', u'غير اشرافية')], string=u'طبيعة الوظيفة', readonly=1, default='not_supervisory')
     number = fields.Char(string='الرقم الوظيفي', required=1, states={'unoccupied': [('readonly', 0)]})
     department_id = fields.Many2one('hr.department', string='الإدارة', required=1, states={'unoccupied': [('readonly', 0)]})
     general_id = fields.Many2one('hr.groupe.job', ' المجموعة العامة', ondelete='cascade')
@@ -74,6 +73,10 @@ class HrJobName(models.Model):
     _description = u'المسميات الوظيفية '
     name = fields.Char(string=u'المسمى', required=1)
     number = fields.Char(string=u'الرمز', required=1)
+    job_nature = fields.Selection([('supervisory', u'اشرافية'), ('not_supervisory', u'غير اشرافية')], string=u'طبيعة الوظيفة', default='not_supervisory')
+    job_supervisory_name_id = fields.Many2one('hr.job.name', string=u'المسمى المشرف')
+    job_supervised_name_ids = fields.One2many('hr.job.name', 'job_supervisory_name_id', string=u'المسميات المشرف عليها', readonlly=1)
+
     job_description = fields.Text(string=u'متطلبات الوظيفية')
     _sql_constraints = [('number_uniq', 'unique(number)', 'رمز هذا المسمى موجود.')]
 
@@ -186,7 +189,6 @@ class HrJobCreate(models.Model):
                        'specific_id': self.specific_id.id,
                        'serie_id': self.serie_id.id,
                        'activity_type': line.activity_type.id,
-                       'job_nature': line.job_nature
                        }
             self.env['hr.job'].create(job_val)
         self.state = 'done'
