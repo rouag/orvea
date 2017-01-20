@@ -112,7 +112,7 @@
         'view/hr_holidays_extension.xml',
         'view/religion.xml',
         'view/courses_follow_up.xml',
-        'view/hr_improve_situation_view.xml',
+       # 'view/hr_improve_situation_view.xml',
 
         # القرارات
         'view/hr_decision.xml',
