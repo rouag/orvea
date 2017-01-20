@@ -25,7 +25,8 @@
 			<field name="arch" type="xml">
 				<tree string="تقرير الغيابات الغير مبررة">
 					<field name="employee_id" />
-					<field name="action" />
+					<field name="delay_absence" widget="float_time" sum="Total" />
+					<field name="description" />
 					<field name="latest_date_import" />
 				</tree>
 			</field>

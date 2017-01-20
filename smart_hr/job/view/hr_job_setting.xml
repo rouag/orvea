@@ -268,11 +268,13 @@
 						<group col="2">
 							<group>
 								<field name="name"  />
-								
+								<field name="job_nature"/>
 							</group>
 							<group>
 								<field name="number" />
+								<field name="job_supervisory_name_id"/>
 							</group>
+							<field name="job_supervised_name_ids"/>
 							<field name="job_description" />
 
 						</group>
@@ -310,6 +312,51 @@
 
 		<menuitem id="job_name_menu" name="المسميات الوظيفية"
 			sequence="4" parent="hr_job_setting" action="action_hr_job_name" />
+
+
+		<!-- نوع نشاط الوظيفة‬ -->
+		<record id="hr_job_type_activity_form" model="ir.ui.view">
+			<field name="name">hr.job.type.activity.form</field>
+			<field name="model">hr.job.type.activity</field>
+			<field name="arch" type="xml">
+				<form string="نوع نشاط الوظيفة‬">
+					<sheet>
+						<group col="2">
+								<field name="name"  />
+						</group>
+
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="hr_job_type_activity_tree" model="ir.ui.view">
+			<field name="name">hr.job.type.activity.tree</field>
+			<field name="model">hr.job.type.activity</field>
+			<field name="arch" type="xml">
+				<tree string="نوع نشاط الوظيفة">
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+
+
+		<record model="ir.actions.act_window" id="action_hr_job_type_activity">
+			<field name="name">المسميات الوظيفية</field>
+			<field name="res_model">hr.job.type.activity</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="hr_job_type_activity_form" />
+
+		</record>
+
+		<record id="action_hr_job_type_activity_tree" model="ir.actions.act_window.view">
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="hr_job_type_activity_tree" />
+			<field name="act_window_id" ref="action_hr_job_type_activity" />
+		</record>
+
+		<menuitem id="job_type_activity_menu" name="أنواع الأنشطة"
+			sequence="5" parent="hr_job_setting" action="action_hr_job_type_activity" />
 
 
 

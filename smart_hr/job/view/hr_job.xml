@@ -52,6 +52,7 @@
 						<group col="4">
 							<field name="name" />
 							<field name="number" />
+							<field name="activity_type" />
 							<field name="employee" attrs="{'invisible': [('state','!=', 'occupied')]}" />
 							<field name="general_id" />
 							<field name="specific_id" />
@@ -190,6 +191,7 @@
 							<tree editable="bottom">
 								<field name="name" options='{"no_open": True, "no_create": True}' />
 								<field name="number" readonly="1" />
+								<field name="activity_type" options='{"no_open": True, "no_create": True}'/>
 								<field name="grade_id" options='{"no_open": True, "no_create": True}' />
 								<field name="type_id" readonly="1" />
 								<field name="job_number" />
@@ -587,6 +589,7 @@
 					<sheet>
 						<group col="4">
 							<field name="employee_id" />
+							<field name="move_raison" attrs="{'readonly':[('state', '!=','new')],'required':[('state','=','new')]}" />
 							<field name="out_speech_number"
 								attrs="{'invisible':[('state', 'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" />
 							<field name="out_speech_date"

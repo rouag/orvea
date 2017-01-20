@@ -26,7 +26,7 @@ class HrAuthorization(models.Model):
     date = fields.Date(string='تاريخ الطلب', required=1, readonly=1, states={'new': [('readonly', 0)]})
     hour_from = fields.Float(string='من الساعة', required=1, readonly=1, states={'new': [('readonly', 0)]})
     hour_to = fields.Float(string='إلى', required=1, readonly=1, states={'new': [('readonly', 0)]})
-    hour_number = fields.Float(string='عدد الساعات', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    hour_number = fields.Float(string='المدة', required=1, readonly=1, states={'new': [('readonly', 0)]})
 
     @api.onchange('employee_id')
     def onchange_employee_id(self):
@@ -35,6 +35,10 @@ class HrAuthorization(models.Model):
             self.department_id = self.employee_id.job_id.department_id
             self.job_id = self.employee_id.job_id
             self.grade_id = self.employee_id.job_id.grade_id
+
+    @api.onchange('hour_from', 'hour_to')
+    def onchange_hour(self):
+        self.hour_number = self.hour_to - self.hour_from
 
     @api.one
     def action_waiting(self):

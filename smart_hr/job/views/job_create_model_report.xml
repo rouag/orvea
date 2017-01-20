@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_job_create_model">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.landscape_layout">
+						<div class="page">
+							<div class="oe_structure" />
+
+							<div class="col-xs-12 text-center">
+								<h3 style="color:#395870;">
+									<strong>
+										تقرير تحوير وظائف
+									</strong>
+									<br />
+									<br />
+								</h3>
+							</div>
+								<div class="col-xs-12 text-center">
+									<strong>بيان بالوظائف المطلوب تحويرها</strong>
+									<br />
+									<br />
+								</div>
+							
+
+
+						</div>
+					</t>
+
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+								

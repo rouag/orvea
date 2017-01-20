@@ -14,6 +14,7 @@ class HrJob(models.Model):
     _description = u'الوظائف'
 
     name = fields.Many2one('hr.job.name', string='المسمى', required=1)
+    activity_type = fields.Many2one('hr.job.type.activity', string=u'نوع النشاط')
     number = fields.Char(string='الرقم الوظيفي', required=1, states={'unoccupied': [('readonly', 0)]})
     department_id = fields.Many2one('hr.department', string='الإدارة', required=1, states={'unoccupied': [('readonly', 0)]})
     general_id = fields.Many2one('hr.groupe.job', ' المجموعة العامة', ondelete='cascade')
@@ -72,6 +73,10 @@ class HrJobName(models.Model):
     _description = u'المسميات الوظيفية '
     name = fields.Char(string=u'المسمى', required=1)
     number = fields.Char(string=u'الرمز', required=1)
+    job_nature = fields.Selection([('supervisory', u'اشرافية'), ('not_supervisory', u'غير اشرافية')], string=u'طبيعة الوظيفة', default='not_supervisory')
+    job_supervisory_name_id = fields.Many2one('hr.job.name', string=u'المسمى المشرف')
+    job_supervised_name_ids = fields.One2many('hr.job.name', 'job_supervisory_name_id', string=u'المسميات المشرف عليها', readonlly=1)
+
     job_description = fields.Text(string=u'متطلبات الوظيفية')
     _sql_constraints = [('number_uniq', 'unique(number)', 'رمز هذا المسمى موجود.')]
 
@@ -182,7 +187,8 @@ class HrJobCreate(models.Model):
                        'department_id': line.department_id.id,
                        'general_id': self.general_id.id,
                        'specific_id': self.specific_id.id,
-                       'serie_id': self.serie_id.id
+                       'serie_id': self.serie_id.id,
+                       'activity_type': line.activity_type.id,
                        }
             self.env['hr.job'].create(job_val)
         self.state = 'done'
@@ -204,6 +210,8 @@ class HrJobCreateLine(models.Model):
 
     name = fields.Many2one('hr.job.name', string='الوظيفة', required=1)
     number = fields.Char(string='الرمز', required=1)
+    activity_type = fields.Many2one('hr.job.type.activity', string=u'نوع النشاط', required=1)
+    job_nature = fields.Selection([('supervisory', u'اشرافية'), ('not_supervisory', u'غير اشرافية')], string=u'طبيعة الوظيفة', default='not_supervisory')
     job_number = fields.Char(string='الرقم الوظيفي', required=1)
     type_id = fields.Many2one('salary.grid.type', related="grade_id.type_id", string='التصنيف', required=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1)
@@ -568,6 +576,7 @@ class HrJobMoveDeparrtment(models.Model):
     in_speech_number = fields.Char(string=u'رقم الخطاب الوارد')
     in_speech_date = fields.Date(string=u'تاريخ الخطاب الوارد')
     in_speech_file = fields.Binary(string=u'صورة الخطاب الوارد')
+    move_raison = fields.Text(string=u'مبررات طلب النقل')
     job_movement_ids = fields.One2many('hr.job.move.department.line', 'job_move_department_id')
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', u'في إنتظار الموافقة'),
@@ -681,7 +690,7 @@ class HrJobMoveGrade(models.Model):
     in_speech_number = fields.Char(string=u'رقم الخطاب الوارد')
     in_speech_date = fields.Date(string=u'تاريخ الخطاب الوارد')
     in_speech_file = fields.Binary(string=u'صورة الخطاب الوارد')
-    job_movement_ids = fields.One2many('hr.job.move.grade.line', 'job_movement_line_id')
+    job_movement_ids = fields.One2many('hr.job.move.grade.line', 'job_move_grade_id')
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', u'في إنتظار الموافقة'),
                               ('hrm1', u'شؤون الموظفين'),
@@ -758,7 +767,7 @@ class HrJobMoveGradeLine(models.Model):
     _name = 'hr.job.move.grade.line'
     _description = u'رفع أو خفض وظائف'
 
-    job_movement_line_id = fields.Many2one('hr.job.move.grade', string='الوظيفة', required=1, ondelete="cascade")
+    job_move_grade_id = fields.Many2one('hr.job.move.grade', string='الوظيفة', required=1, ondelete="cascade")
     job_id = fields.Many2one('hr.job', string='الوظيفة', domain=[('state', '=', 'unoccupied'), ('is_occupied', '=', False)], required=1)
     type_id = fields.Many2one('salary.grid.type', string='التصنيف', readonly=1, required=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة الحالية', readonly=1, required=1)
@@ -812,7 +821,7 @@ class HrJobMoveUpdate(models.Model):
     in_speech_number = fields.Char(string=u'رقم الخطاب الوارد')
     in_speech_date = fields.Date(string=u'تاريخ الخطاب الوارد')
     in_speech_file = fields.Binary(string=u'صورة الخطاب الوارد')
-    job_update_ids = fields.One2many('hr.job.update.line', 'job_update_line_id')
+    job_update_ids = fields.One2many('hr.job.update.line', 'job_update_id')
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', u'في إنتظار الموافقة'),
                               ('hrm1', u'شؤون الموظفين'),
@@ -882,7 +891,7 @@ class HrJobMoveUpdateLine(models.Model):
     _name = 'hr.job.update.line'
     _description = u'تحوير‬ وظيفة'
 
-    job_update_line_id = fields.Many2one('hr.job.update', string=u'التحوير‬')
+    job_update_id = fields.Many2one('hr.job.update', string=u'التحوير‬')
     job_id = fields.Many2one('hr.job', string=u'الوظيفة', required=1)
     old_name = fields.Many2one('hr.job.name', related='job_id.name', readonly=1, string=u'المسمى الحالي', required=1)
     new_name = fields.Many2one('hr.job.name', string=u'المسمى الجديد', required=1)
@@ -913,3 +922,10 @@ class HrJobMoveUpdateLine(models.Model):
                         job_ids.append(job.id)
             res['domain'] = {'job_id': [('id', 'in', job_ids)]}
             return res
+
+
+class HrJobTypeActivity(models.Model):
+    _name = 'hr.job.type.activity'
+    _description = u'نوع نشاط الوظيفة'
+
+    name = fields.Char(string=u'المسمى')

@@ -22,7 +22,6 @@ class HrRequestTransfer(models.Model):
                               ('waiting', 'في إنتظار الإعتماد'),
                               ('cancel', 'مرفوض'),
                               ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
-    type = fields.Selection([('delay_hours', 'تحويل ساعات التأخير'), ('absence', 'تحويل أيام الغياب')], string='نوع الطلب', required=1, readonly=1, states={'new': [('readonly', 0)]})
     date = fields.Date(string='تاريخ الطلب', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=fields.Datetime.now())
     number_request = fields.Float(string='العدد', required=1, readonly=1, states={'new': [('readonly', 0)]})
     balance = fields.Float(string='الرصيد الحالي', readonly=1)
@@ -39,14 +38,10 @@ class HrRequestTransfer(models.Model):
 
     @api.onchange('number_request', 'type')
     def onchange_number_request(self):
-        if self.number_request and self.type:
-            if self.number_request > self.balance:
-                self.number_request = 0.0
-                warning = {'title': _('تحذير!'), 'message': _(u'رصيدك غير كافي')}
-                return {'warning': warning}
-            if self.type == 'delay_hours' and self.number_request % 7 != 0:
-                warning = {'title': _('تحذير!'), 'message': _(u'يجب أن يكون مجموع الساعات المراد تحويلها يوم أو أكثر ( 7 ساعات ، 14 ساعة ...)‬')}
-                return {'warning': warning}
+        if self.number_request > self.balance:
+            self.number_request = 0.0
+            warning = {'title': _('تحذير!'), 'message': _(u'رصيدك غير كافي')}
+            return {'warning': warning}
 
     @api.one
     def action_waiting(self):
