@@ -222,7 +222,7 @@
 								<field name="date_hiring_end"
 									attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
 								<field name="state_appoint"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
+									attrs="{'invisible':[('state', 'not in', [ 'done'])],'readonly':[('state', 'in', [ 'done'])]}" />
 								<field name="transport_alocation"
 									attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
 								<field name="transport_car"
@@ -243,7 +243,12 @@
 								<field name="emp_basic_salary" />
 
 								<field name="medical_examination_file"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
+									attrs="{'invisible':[('state', 'not in', ['waiting', 'hrm', 'budget', 'done']),
+									('type_appointment','not in', [%(data_hr_new_agent_public)d])],
+									'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done']),('type_appointment','not in', [%(data_hr_recrute_agent_public)d])]}" />
+								
+								
+								
 								<field name="order_enquiry_file"
 									attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
 								<field name="file_salar_recent"

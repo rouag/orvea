@@ -103,8 +103,7 @@ class HrDecisionAppoint(models.Model):
         elif self.type_appointment.recrutment_decider:
             self.message_post(u"تم إرسال الطلب من قبل '" + u" إلى رئيس الهئية ")
             self.state = 'budget'
-        else:
-            self.smart_action_done()
+        
             
     # control audit group_audit_appointment
     @api.multi
@@ -127,12 +126,16 @@ class HrDecisionAppoint(models.Model):
         if self.type_appointment.enterview_manager:
             self.state = 'manager'
             
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")    
     @api.multi
     def button_refuse_enterview_manager(self):
         self.ensure_one()
         if self.type_appointment.enterview_manager:
             self.state = 'refuse'
-
+        
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تم الرفض من قبل '" + unicode(user.name) + u"'")
    ## control recrutment group_recrutment_manager
        
     @api.multi
@@ -140,6 +143,9 @@ class HrDecisionAppoint(models.Model):
         self.ensure_one()
         if self.type_appointment.recrutment_manager:
             self.state = 'budget'
+            
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
        # if self.employee_id.age > 60 :
           #  raise ValidationError(u"الرجاء التثبت من سن المترشح تجاوز 60)")
     
@@ -149,6 +155,8 @@ class HrDecisionAppoint(models.Model):
         if self.type_appointment.recrutment_manager:
             self.state = 'refuse'
         
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تم الرفض من قبل '" + unicode(user.name) + u"'")
     @api.multi
     def button_accept_recrutment_decider(self):
         self.ensure_one()
@@ -167,7 +175,7 @@ class HrDecisionAppoint(models.Model):
             self.state = 'refuse'
         # Add to log
         user = self.env['res.users'].browse(self._uid)
-        self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
+        self.message_post(u"تم الرفض من قبل '" + unicode(user.name) + u"'")
            
         
         
@@ -179,9 +187,8 @@ class HrDecisionAppoint(models.Model):
             self.state = 'direct'
         else :
             self.state = 'done'
-        # Add to log
         user = self.env['res.users'].browse(self._uid)
-        self.message_post(u"تمت الموافقة من قبل شؤون الموظفين)")
+        self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
         
     @api.multi
     def button_refuse_personnel_hr(self):
@@ -190,16 +197,14 @@ class HrDecisionAppoint(models.Model):
             self.state = 'refuse'
         # Add to log
         user = self.env['res.users'].browse(self._uid)
-        self.message_post(u"تمت الموافقة من قبل شؤون الموظفين)")
+        self.message_post(u"تم الرفض من قبل شؤون الموظفين)")
         
    
     @api.multi
     def button_accept_direct(self):
-        
         self.ensure_one()
         if self.type_appointment.direct_manager:
             self.state = 'done'
-        # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
     
@@ -210,17 +215,19 @@ class HrDecisionAppoint(models.Model):
             self.state = 'refuse'
         # Add to log
         user = self.env['res.users'].browse(self._uid)
-        self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
+        self.message_post(u"تم الرفض  من قبل '" + unicode(user.name) + u"'")
         
     @api.multi
     def button_cancel_appoint(self):
-        self.ensure_one()   
+        self.ensure_one() 
+        #TODO  
         self.state_appoint = 'new'
     
     
     @api.multi
     def button_direct_appoint(self):
-        self.ensure_one()   
+        self.ensure_one()
+        #TODO   
         self.state_appoint = 'active'
    
    
@@ -248,19 +255,14 @@ class HrDecisionAppoint(models.Model):
                                                            'active':True
                                                            })
     
-    @api.multi
-    def action_refuse(self):
-        self.ensure_one()
-        self.state = 'draft'
-        # Add to log
-        user = self.env['res.users'].browse(self._uid)
-        self.message_post(u"تم رفض تعين جديد من قبل '" + unicode(user.name) + u"'")
+  
 
 
         
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
         if self.employee_id :
+            
             self.number = self.employee_id.number
             self.country_id = self.employee_id.country_id
             appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('active', '=', True)],limit=1 )
@@ -301,8 +303,9 @@ class HrDecisionAppoint(models.Model):
     
     @api.onchange('date_direct_action')
     def _onchange_date_direct_action(self):
-          if self.date_hiring > self.date_direct_action:
-            raise ValidationError(u"تاريخ مباشرة العمل يجب ان يكون أكبر من تاريخ التعيين")
+         if self.date_direct_action :
+             if self.date_hiring > self.date_direct_action:
+                 raise ValidationError(u"تاريخ مباشرة العمل يجب ان يكون أكبر من تاريخ التعيين")
         
        
         
