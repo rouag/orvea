@@ -29,7 +29,7 @@
         'data/hr_termination_data.xml',
         'data/decisions_type_data.xml',
         'data/salary_grid_type_data.xml',
-        'data/decisions_type_data.xml',
+        'data/hr_appoint_type_data.xml',
 #       'data/decision_action_data.xml',
 
         # الوظائف
