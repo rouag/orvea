@@ -44,12 +44,14 @@
         'job/wizard/wizard_job_move_dep_view.xml',
         'job/wizard/wizard_job_update_model_view.xml',
         'job/wizard/wizard_job_scale_down_model_view.xml',
+        'job/views/job_scale_down_model_report.xml',
         'job/views/job_move_dep_report.xml',
         'job/views/job_grade_report.xml',
         'job/views/job_update_report.xml',
         'job/views/job_description_report.xml',
         'job/views/job_update_model_report.xml',
         'job/views/report.xml',
+
         # الإدارات
         'hr/menu.xml',
         'hr/view/hierarchy_level.xml',

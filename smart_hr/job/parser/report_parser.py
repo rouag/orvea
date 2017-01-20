@@ -271,3 +271,61 @@ class ReportJobUpdateModel(osv.AbstractModel):
     _inherit = 'report.abstract_report'
     _template = 'smart_hr.report_job_update_model'
     _wrapped_report_class = JobUpdateModelReport
+
+
+class JobScaleDownModelReport(report_sxw.rml_parse):
+
+    def __init__(self, cr, uid, name, context):
+        super(JobScaleDownModelReport, self).__init__(cr, uid, name, context=context)
+        self.localcontext.update({
+            'get_company': self._get_company,
+            'format_time': self._format_time,
+            'get_current_date': self._get_current_date,
+            'get_job': self._get_job,
+            'get_job_create_date': self._get_job_create_date,
+            'get_same_activity_depart_job': self._get_same_activity_depart_job,
+            'get_move_line': self._get_move_line
+        })
+
+    def _get_company(self):
+        return self.pool.get('res.users').browse(self.cr, self.uid, [self.uid])[0].company_id
+
+    def _get_move_line(self, data, job):
+        job_move_grade_id = data['job_move_grade_id'][0]
+        job_move_grade_obj = self.pool.get('hr.job.move.grade').browse(self.cr, self.uid, [job_move_grade_id])[0]
+        if job_move_grade_obj:
+            for line in job_move_grade_obj.job_movement_ids:
+                if line.job_id.id == job.id:
+                    return line
+        return False
+
+    def _get_same_activity_depart_job(self, job_id, job_name_id):
+        job_ids = self.pool.get('hr.job').search(self.cr, self.uid, ['|', ('name', '=', job_name_id.name), ('activity_type', '=', job_id.activity_type.id), ('department_id', '=', job_id.department_id.id)])
+        if job_ids:
+            job_objs = self.pool.get('hr.job').browse(self.cr, self.uid, job_ids)
+            return job_objs
+
+    def _get_job_create_date(self, job):
+        return fields.Datetime.from_string(job.create_date).strftime("%Y-%m-%d")
+
+    def _get_job(self, data):
+        job_id = data['job_id'][0]
+        return self.pool.get('hr.job').browse(self.cr, self.uid, [job_id])[0]
+
+    def _get_current_date(self):
+        now = datetime.datetime.now()
+        return now.strftime("%Y-%m-%d")
+
+    def _format_time(self, time_float):
+        hour, minn = float_time_convert(time_float)
+        return '%s:%s' % (str(hour).zfill(2), str(minn).zfill(2))
+
+    def _get_lines(self, data):
+        return []
+
+
+class ReportJobScaleDownModel(osv.AbstractModel):
+    _name = 'report.smart_hr.report_job_scale_down_model'
+    _inherit = 'report.abstract_report'
+    _template = 'smart_hr.report_job_scale_down_model'
+    _wrapped_report_class = JobScaleDownModelReport

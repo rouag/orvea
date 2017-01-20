@@ -6,7 +6,7 @@ from openerp import api, fields, models
 class WizardJobScaleDownModel(models.TransientModel):
     _name = 'wizard.job.scale.down.model'
 
-    job_move_grade_id = fields.Many2one('hr.job.move.grade', string=u'طلب التخفيض', domain=[('move_type', '=', 'scale_down')], required=1)
+    job_move_grade_id = fields.Many2one('hr.job.move.grade', string=u'طلب التخفيض', domain=[('move_type', '=', 'scale_down'), ('state', '!=', 'done')], required=1)
     job_id = fields.Many2one('hr.job', string=u'الوظيفة', required=1)
 
     @api.onchange('job_move_grade_id')
