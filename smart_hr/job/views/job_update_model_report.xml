@@ -6,212 +6,209 @@
 				<t t-foreach="docs" t-as="o">
 					<t t-call="smart_base.landscape_layout">
 						<div class="page">
-						<style type="text/css">
-							.okradio{
-								width:20px;height:20px;	border:1px solid #000;padding-right: 20px;margin-left:15px;border-radius: 50px;margin-right:15px;background-color:black;}
-							.notokradio{
-								width:20px;height:20px;	border:1px solid #000;padding-right: 20px;margin-left:15px;border-radius: 50px;margin-right:15px;}
-						</style>
 							<div class="oe_structure" />
 
-							<t t-set="job" t-value="get_job(data['form'])" />
-							<t t-set="move_line" t-value="get_move_line(data['form'], job)" />
-							<t t-set="company" t-value="get_company()"></t>
-							<t t-set="jobs_old_name" t-value="get_same_activity_depart_job(job, move_line.old_name)" />
-							<t t-set="jobs_new_name" t-value="get_same_activity_depart_job(job, move_line.new_name)"></t>
-							<t t-if="len(jobs_new_name) &#62;= len(jobs_old_name)">
-								<t t-set="job_size" t-value="jobs_new_name"></t>
-							</t>
-							<t t-if="len(jobs_new_name) &#60; len(jobs_old_name)">
-								<t t-set="job_size" t-value="jobs_old_name"></t>
-							</t>
 							<div class="col-xs-12 text-center">
 								<h3 style="color:#395870;">
 									<strong>
-										نموذج تحوير وظيفة
+										ميزانية السنة الماليةs
 									</strong>
+									<br />
+									<br />
 								</h3>
-								<table class="table table-condensed">
-								<tr>
-									<td colspan="6" class="text-center"><strong>معلومات عن الوظيفة المراد تحويرها</strong></td>
-									<td rowspan="8"></td>
-									<td><strong>المرتبة:</strong></td>
-									<td><span t-esc="job.grade_id.name"/></td>
-									<td ><strong>رقمها</strong>:</td>
-									<td colspan="2"><span t-esc="job.number"/></td>
-								</tr>
-								<tr>
-									<td colspan="6" class="text-center"><strong>الوضع الحالي</strong></td>
-									<td></td>
-									<td colspan="5" class="text-center"><strong>الوضع المقترح</strong></td>
-								</tr>
-								<tr>
-									<td><strong>1</strong></td>
-									<td><strong>المسمى</strong></td>
-									<td colspan="4"><span t-esc="move_line.old_name.name"/></td>
-									<td></td>
-									<td ><strong>المسمى</strong></td>
-									<td colspan="4"><span t-esc="move_line.new_name.name"/></td>
-								</tr>
-								<tr>
-									<td><strong>2</strong></td>
-									<td ><strong>الرمز التصنيفي:</strong></td>
-									<td colspan="4"><span t-esc="move_line.old_type_id.code"/></td>
-									<td></td>
-									<td ><strong>الرمز التصنيفي:</strong></td>
-									<td colspan="4"><span t-esc="move_line.new_type_id.code"/></td>
-								</tr>
-								<tr>
-									<td><strong>3</strong></td>
-									<td colspan="5" class="text-center"><strong>موقع الوظيفة في التنظيم الإداري</strong></td>
-									<td></td>
-									<td colspan="5" class="text-center"><strong>موقع الوظيفة في التنظيم الإداري</strong></td>
-								</tr>
-								<tr>
-									<td><strong>4</strong></td>
-									<td ><strong>الإدارة:</strong></td>
-									<td colspan="4"><span t-esc="move_line.department_id.name"/></td>
-									<td></td>
-									<td ><strong>الإدارة:</strong></td>
-									<td colspan="4"><span t-esc="move_line.department_id.name"/></td>
-								</tr>
-								<tr>
-									<td><strong>5</strong></td>
-									<td ><strong>الشعبة:</strong></td>
-									<td colspan="4"><span></span></td>
-									<td></td>
-									<td ><strong>الشعبة:</strong></td>
-									<td colspan="4"><span></span></td>
-								</tr>
-								<tr>
-									<td><strong>6</strong></td>
-									<td ><strong>المقر:</strong></td>
-									<td colspan="4"><span t-esc="move_line.department_id.dep_city.name"/></td>
-									<td></td>
-									<td ><strong>المقر:</strong></td>
-									<td colspan="4"><span t-esc="move_line.department_id.dep_city.name"/></td>
-								</tr>
-								<tr>
-									<td><strong>7</strong></td>
-									<td colspan="11"><strong>هل توجد ( وظائف أخرى بنفس المسمى) بمختلف المراتب أو تمثل نفس النشاط في نفس الموقع الحالي والمقترح؟</strong></td>
-								</tr>
-								<tr>
-									<td><strong>8</strong></td>
-									<td colspan="5"> <span class="notokradio"></span><span><strong>لا</strong></span><t t-if="len(jobs_old_name)==0"><span class="notokradio"></span></t><t t-if="len(jobs_old_name)&#62;0"><span class="okradio"></span></t><span><strong>نعم</strong></span>,<span><strong>عددها الإجمالي(<t t-esc="len(jobs_old_name)"/>)</strong></span></td>
-									<td></td>
-									<td colspan="5"> <span class="notokradio"></span><span><strong>لا</strong></span><t t-if="len(jobs_new_name)==0"><span class="notokradio"></span></t><t t-if="len(jobs_new_name)&#62;0"><span class="okradio"></span></t><span><strong>نعم</strong></span>,<span><strong>عددها الإجمالي(<t t-esc="len(jobs_new_name)"/>)</strong></span></td>								
-								</tr>
-								<tr>
-									<td t-att-rowspan="len(job_size)+1"><strong>9</strong></td>
-									<td><strong>المسمى</strong></td>
-									<td><strong>المرتبة</strong></td>
-									<td><strong>العدد</strong></td>
-									<td><strong>مشغولة</strong></td>
-									<td><strong>شاغرة</strong></td>
-									<td></td>
-									<td><strong>المسمى</strong></td>
-									<td><strong>المرتبة</strong></td>
-									<td><strong>العدد</strong></td>
-									<td><strong>مشغولة</strong></td>
-									<td><strong>شاغرة</strong></td>								
-								</tr>
-								<t t-set="i" t-value="0"/>
-								<t t-set="j" t-value="0"/>
-								<t t-foreach="job_size" t-as="l">
-									<tr>
-									
-										<!-- >= -->
-										<t t-if="i &#62;= len(jobs_old_name)">
-												<td></td>
-												<td></td>
-												<td></td>
-												<td></td>
-												<td></td>
-										</t>
-										<!-- < -->
-										<t t-if="i &#60; len(jobs_old_name)">
-											<td><span t-esc="jobs_old_name[i].name.name"/></td>
-											<td><span t-esc="jobs_old_name[i].grade_id.name"/></td>
-											<td><span t-esc="jobs_old_name[i].number"/></td>
-											<td><t t-if="jobs_old_name[i].state=='occupied'"><span class="glyphicon glyphicon-ok"></span></t></td>
-											<td><t t-if="jobs_old_name[i].state=='unoccupied'"><span class="glyphicon glyphicon-ok"></span></t></td>
-											<t t-set="i" t-value="i+1"/>	
-											</t>
-										<td></td>
-										<!-- >= -->
-										<t t-if="j &#62;= len(jobs_new_name)">
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-										</t>	
-										<!-- < -->
-										<t t-if="j &#60; len(jobs_new_name)">
-											<td><span t-esc="jobs_new_name[j].name.name"/></td>
-											<td><span t-esc="jobs_new_name[j].grade_id.name"/></td>
-											<td><span t-esc="jobs_new_name[j].number"/></td>
-											<td><t t-if="jobs_new_name[j].state=='occupied'"><span class="glyphicon glyphicon-ok"></span></t></td>
-											<td><t t-if="jobs_new_name[j].state=='unoccupied'"><span class="glyphicon glyphicon-ok"></span></t></td>
-											<t t-set="j" t-value="j+1"/>	
-											
-										</t>
-											
-									</tr>
-								</t>
-								<tr>
-									<td><strong>10</strong></td>
-									<td colspan="6"><strong>مسمى الوظيفة الاشرفية على الوظيفة للمسمى المقترح:</strong></td>
-									<td colspan="3"> <span t-esc="move_line.new_name.job_supervisory_name_id.name" /></td>
-									<td><strong>مرتبتها</strong></td>
-									<td></td>								
-								</tr>
-								<tr>
-									<td rowspan="3"><strong>11</strong></td>
-									<td colspan="11"><strong>في حالة كون الوظيفة المطلوبة (المسمى المقترح) اشرفياً يتم ذكر الوحدات أو الإدارات التي تشرف عليها</strong> </td>
-								</tr>
-								<tr>
-									<td><strong>إسم الوحدة الإدارية أو الإدارة</strong></td>
-									<td colspan="2"><strong>مرتبتها</strong></td>
-									<td colspan="8"><strong>عدد الوظائف في الوحدة الادارية</strong></td>
-								</tr>
-								<tr>
-									<td></td>
-									<td colspan="2"></td>
-									<td><strong>1-5</strong></td>
-									<td><strong>6-8</strong></td>
-									<td><strong>9-10</strong></td>
-									<td><strong>11</strong></td>
-									<td><strong>12</strong></td>
-									<td><strong>13</strong></td>
-									<td><strong>31-33</strong></td>
-									<td><strong>أخرى</strong></td>
-								</tr>
-								<tr>
-									<td rowspan="3"><strong>12</strong></td>
-									<td colspan="11"><strong>إذا كان المسمى المقترح اشرفياً فماهو مستوى الوحدات الإدارية أو الإدارات المماثلة </strong></td>
-								</tr>
-								<tr>
-									<td><strong>إسم الوحدة الإدارية أو الإدارة</strong></td>
-									<td colspan="2"><strong>مرتبتها</strong></td>
-									<td colspan="8"><strong>عدد الوظائف في الوحدة الادارية</strong></td>
-								</tr>
-								<tr>
-									<td></td>
-									<td colspan="2"></td>
-									<td><strong>1-5</strong></td>
-									<td><strong>6-8</strong></td>
-									<td><strong>9-10</strong></td>
-									<td><strong>11</strong></td>
-									<td><strong>12</strong></td>
-									<td><strong>13</strong></td>
-									<td><strong>31-33</strong></td>
-									<td><strong>أخرى</strong></td>
-								</tr>
-							</table>
 							</div>
+							<div class="col-xs-12">
+								<strong>نموذج طلب إحداث وظيفة</strong>
+								<br />
+								<br />
+								<div class="row">
+								</div>
+								<div class="col-xs-12">
+									<div class="col-xs-8">
+										<div class="col-xs-12">
+											إسم الجهة:
+											<span></span>
+										</div>
+										<div class="col-xs-12">
+											<span>الموضوع المطلوب</span>
+											<span>مسمى الوظيفة:</span>
+											<span></span>
+										</div>
+										<div class="col-xs-12">
+											الوحدة الإدارية:
+											<span></span>
+										</div>
+										<div class="col-xs-12">
+											<table class="table">
+												<tr>
+													<td rowspan="2">المسميات المشابهة للوظيفة المطلوبة</td>
+													<td>المرتبة</td>
+													<td>العدد</td>
+													<td>الحالة</td>
+													<td>المرتبة</td>
+													<td>العدد</td>
+													<td>الحالة</td>
+												</tr>
+												<tr>
+													<td></td>
+													<td></td>
+													<td></td>
+													<td></td>
+													<td></td>
+													<td></td>
+												</tr>
+											</table>
+										</div>
+										<div class="col-xs-12">
+											<div class="col-xs-8">
+												مسمى الوظيفة الاشرافية:
+												<span></span>
+											</div>
+											<div class="col-xs-4">
+												مرتبتها:
+												<span></span>
+											</div>
+										</div>
+										<div class="col-xs-12 text-center">عموم الوظائف بجميع سلالم الرواتب</div>
 
 
+									</div>
+									<div class="col-xs-4">
+										<div class="col-xs-12">
+											المرتبة:
+											<span></span>
+										</div>
+										<div class="col-xs-12">
+											الرمز الوظيفي:
+											<span></span>
+										</div>
+										<div class="col-xs-12 text-center">إجمالي وظائف الجهة المعتمدة في الميزانية</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-xs-12">
+										<div class="col-xs-8">
+											<div class="col-xs-12">
+												<div class="col-xs-5">
+													<div class="col-xs-6">
+														<br></br>
+														عدد الوظائف في الوحدة الإدارية للوظيفة المطلوبة(مستشار
+														إداري)
+													</div>
+													<div class="col-xs-6">
+														<div class="col-xs-12 text-center">الهيكل التنظيمي</div>
+														<div class="col-xs-12 ">
+															<span class="notokradio"></span>
+															<span>
+																<strong>معتمد</strong>
+															</span>
+														</div>
+														<div class="col-xs-12 ">
+															<span class="notokradio"></span>
+															<span>
+																<strong>غير معتمد</strong>
+															</span>
+														</div>
+													</div>
+												</div>
+												<div class="col-xs-7">
+													<table class="table">
+														<tr>
+															<td>الحالة</td>
+															<td>مشغولة</td>
+															<td>شاغرة</td>
+															<td>المجموع</td>
+															<td>المطلوب</td>
+														</tr>
+														<tr>
+															<td>موظفون</td>
+															<td></td>
+															<td></td>
+															<td></td>
+															<td></td>
+														</tr>
+														<tr>
+															<td>مستخدمون</td>
+															<td></td>
+															<td></td>
+															<td></td>
+															<td></td>
+														</tr>
+														<tr>
+															<td>عمال</td>
+															<td></td>
+															<td></td>
+															<td></td>
+															<td></td>
+														</tr>
+														<tr>
+															<td>بند (105)</td>
+															<td></td>
+															<td></td>
+															<td></td>
+															<td></td>
+														</tr>
+														<tr>
+															<td>باب ثالث</td>
+															<td></td>
+															<td></td>
+															<td></td>
+															<td></td>
+														</tr>
+														<tr>
+															<td>المجموع</td>
+															<td></td>
+															<td></td>
+															<td></td>
+															<td></td>
+														</tr>
+													</table>
+												</div>
+											</div>
+										</div>
+										<div class="col-xs-4">
+											<div class="col-xs-12 text-center ">
+												<span>
+													<strong>خاص بالمختصين بوزارة المالية</strong>
+												</span>
+											</div>
+											<div class="col-xs-12 text-center">
+												<span>
+													<strong>مراجعة النموذج</strong>
+												</span>
+											</div>
+											<div class="col-xs-12 ">
+												<span class="notokradio"></span>
+												<span>
+													<strong>مكتمل</strong>
+												</span>
+											</div>
+											<div class="col-xs-12 ">
+												<span class="notokradio"></span>
+												<span>
+													<strong>غير مكتمل</strong>
+												</span>
+											</div>
+											<div class="col-xs-12 text-center">
+												<span>
+													<strong>الملاحظات</strong>
+												</span>
+											</div>
+											<div class="col-xs-12 text-center">..................................................................
+											</div>
+											<div class="col-xs-12 text-center">..................................................................
+											</div>
+											<div class="col-xs-12 text-center">..................................................................
+											</div>
+											<div class="col-xs-12 text-center">..................................................................
+											</div>
+											<div class="col-xs-12 text-center">..................................................................
+											</div>
+										</div>
+									</div>
+								</div>
+
+							</div>
 						</div>
 					</t>
 
