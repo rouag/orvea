@@ -279,7 +279,7 @@
 								<group></group>
 							</group>
 							<field name="entitlements" string="أنواع  الاستحقاقات">
-								<tree editable="bottom">
+								<tree editable="bottom" col="5">
 									<field name="entitlment_category" required="1" colspan="2" />
 									<field name="holiday_stock_default" colspan="1" />
 									<!-- <field name="conditionnal" /> -->

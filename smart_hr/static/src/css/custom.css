@@ -23,3 +23,7 @@ float: left !important;
 .smart_label_grnad_father_name_padding_left{
         padding-right: 107px !important;
 }
+
+.align_left_css {
+    text-align: left !important;
+}
