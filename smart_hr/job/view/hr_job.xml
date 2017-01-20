@@ -53,6 +53,7 @@
 							<field name="name" />
 							<field name="number" />
 							<field name="activity_type" />
+							<field name="job_nature" />
 							<field name="employee" attrs="{'invisible': [('state','!=', 'occupied')]}" />
 							<field name="general_id" />
 							<field name="specific_id" />
@@ -192,6 +193,7 @@
 								<field name="name" options='{"no_open": True, "no_create": True}' />
 								<field name="number" readonly="1" />
 								<field name="activity_type" options='{"no_open": True, "no_create": True}'/>
+								<field name="job_nature" />
 								<field name="grade_id" options='{"no_open": True, "no_create": True}' />
 								<field name="type_id" readonly="1" />
 								<field name="job_number" />

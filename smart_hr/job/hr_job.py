@@ -15,6 +15,7 @@ class HrJob(models.Model):
 
     name = fields.Many2one('hr.job.name', string='المسمى', required=1)
     activity_type = fields.Many2one('hr.job.type.activity', string=u'نوع النشاط')
+    job_nature = fields.Selection([('supervisory', u'اشرافية'), ('not_supervisory', u'غير اشرافية')], string=u'طبيعة الوظيفة', readonly=1, default='not_supervisory')
     number = fields.Char(string='الرقم الوظيفي', required=1, states={'unoccupied': [('readonly', 0)]})
     department_id = fields.Many2one('hr.department', string='الإدارة', required=1, states={'unoccupied': [('readonly', 0)]})
     general_id = fields.Many2one('hr.groupe.job', ' المجموعة العامة', ondelete='cascade')
@@ -184,7 +185,8 @@ class HrJobCreate(models.Model):
                        'general_id': self.general_id.id,
                        'specific_id': self.specific_id.id,
                        'serie_id': self.serie_id.id,
-                       'activity_type': line.activity_type.id
+                       'activity_type': line.activity_type.id,
+                       'job_nature': line.job_nature
                        }
             self.env['hr.job'].create(job_val)
         self.state = 'done'
@@ -207,6 +209,7 @@ class HrJobCreateLine(models.Model):
     name = fields.Many2one('hr.job.name', string='الوظيفة', required=1)
     number = fields.Char(string='الرمز', required=1)
     activity_type = fields.Many2one('hr.job.type.activity', string=u'نوع النشاط', required=1)
+    job_nature = fields.Selection([('supervisory', u'اشرافية'), ('not_supervisory', u'غير اشرافية')], string=u'طبيعة الوظيفة', default='not_supervisory')
     job_number = fields.Char(string='الرقم الوظيفي', required=1)
     type_id = fields.Many2one('salary.grid.type', related="grade_id.type_id", string='التصنيف', required=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1)
