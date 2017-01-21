@@ -6,5 +6,12 @@ access_hr_reward_type_payroll,name_hr_reward_type_payroll,model_hr_reward_type,g
 access_hr_indemnity_type_setting,name_hr_indemnity_type_setting,model_hr_indemnity_type,group_payroll_setting,1,1,1,1
 access_hr_indemnity_type_payroll,name_hr_indemnity_type_payroll,model_hr_indemnity_type,group_payroll_management,1,0,0,0
 ,,,,,,,
+access_hr_bonus_all,name_hr_bonus_all,model_hr_bonus,,1,0,0,0
+access_hr_bonus_manager,name_hr_bonus_manager,model_hr_bonus,group_bonus_management,1,1,1,0
+access_hr_bonus_line_all,name_hr_bonus_line_all,model_hr_bonus_line,,1,0,0,0
+access_hr_bonus_line_manager,name_hr_bonus_line_manager,model_hr_bonus_line,group_bonus_management,1,1,1,0
+access_hr_bonus_history_all,name_hr_bonus_history_all,model_hr_bonus_history,,1,0,0,0
+access_hr_bonus_history_manager,name_hr_bonus_history_manager,model_hr_bonus_history,group_bonus_management,1,1,1,0
+,,,,,,,
 access_hr_payslip_days_off,name_hr_payslip_days_off,model_hr_payslip_days_off,,1,1,1,0
 

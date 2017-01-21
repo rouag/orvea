@@ -110,7 +110,7 @@
         'view/hr_holidays_extension.xml',
         'view/religion.xml',
         'view/courses_follow_up.xml',
-       # 'view/hr_improve_situation_view.xml',
+        # 'view/hr_improve_situation_view.xml',
 
         # القرارات
         'view/hr_decision.xml',
@@ -118,15 +118,16 @@
         'payroll/menu.xml',
         'payroll/data/data.xml',
         'payroll/data/salary_grid_type_data.xml',
+        'payroll/wizard/wizard_bonus_employee.xml',
+        'payroll/wizard/wizard_bonus_action.xml',
         'payroll/view/salary_grid.xml',
         'payroll/view/hr_payroll_view.xml',
         'payroll/view/setting_view.xml',
         'payroll/view/hr_salary_rule_view.xml',
         'payroll/view/hr_deduction.xml',
+        'payroll/view/hr_bonus_view.xml',
         'payroll/views/report_hr_deduction.xml',
         'payroll/views/report_hr_deduction_line.xml',
-        
-
         # الحضور والإنصراف
         'attendance/security/attendance_security.xml',
         'attendance/security/ir.model.access.csv',
@@ -150,7 +151,6 @@
         'attendance/views/monthly_summary_report.xml',
         'attendance/views/monthly_summary_report_all.xml',
         'attendance/views/report.xml',
-
         # تصنيف الوظائف
         'job/view/hr_job_setting.xml',
         'job/view/hr_skils_job.xml',

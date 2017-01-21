@@ -54,7 +54,7 @@
 			sequence="20" groups="group_payroll_setting" parent="hr_payroll_setting"
 			action="action_hr_salary_rule" />
 
-		<!-- البدلات -->
+		<!-- أنواع البدلات -->
 
 
 		<record model="ir.ui.view" id="hr_allowance_type_tree">
@@ -62,11 +62,10 @@
 			<field name="model">hr.allowance.type</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
-				<tree string="البدلات">
+				<tree string="أنواع البدلات">
 					<field name="sequence" widget="handle" />
 					<field name="name" />
 					<field name="code" />
-					<field name="create_date" string="تاريخ الإنشاء" />
 				</tree>
 			</field>
 		</record>
@@ -76,13 +75,18 @@
 			<field name="model">hr.allowance.type</field>
 			<field name="type">form</field>
 			<field name="arch" type="xml">
-				<form string="البدلات">
+				<form string="أنواع البدلات">
 					<sheet>
-						<group col="4">
-							<field name="name" />
-							<field name="code" />
-
-
+						<group>
+							<group string="بيانات النوع">
+								<field name="name" />
+								<field name="code" />
+							</group>
+							<group string="الأثر المالي">
+								<field name="compute_method" />
+								<field name="amount" attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}"/>
+								<field name="percentage" attrs="{'invisible':[('compute_method','!=','percentage')], 'required': [('compute_method','=','percentage')]}"/> />
+							</group>
 						</group>
 						<group>
 							<field name="note" string="ملاحظات" placeholder="ملاحظات ..." />
@@ -93,24 +97,25 @@
 		</record>
 
 		<record model="ir.actions.act_window" id="action_hr_allowance_type">
-			<field name="name">البدلات</field>
+			<field name="name">أنواع البدلات</field>
 			<field name="res_model">hr.allowance.type</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 
-		<menuitem id="hr_allowance_type_menu" name="البدلات" sequence="25"
-			groups="group_payroll_setting" parent="hr_payroll_setting" action="action_hr_allowance_type" />
+		<menuitem id="hr_allowance_type_menu" name="أنواع البدلات"
+			sequence="25" groups="group_payroll_setting" parent="hr_payroll_setting"
+			action="action_hr_allowance_type" />
 
-		<!-- المكافآت‬ -->
+		<!-- أنواع المكافآت -->
 
 		<record model="ir.ui.view" id="hr_reward_type_tree">
 			<field name="name">hr.reward.type.tree</field>
 			<field name="model">hr.reward.type</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
-				<tree string="المكافآت‬">
+				<tree string="أنواع المكافآت">
 					<field name="sequence" widget="handle" />
 					<field name="name" />
 					<field name="code" />
@@ -124,17 +129,21 @@
 			<field name="model">hr.reward.type</field>
 			<field name="type">form</field>
 			<field name="arch" type="xml">
-				<form string="المكافآت‬">
+				<form string="أنواع المكافآت">
 					<sheet>
-						<group col="4">
+					<group>
+						<group string="بيانات النوع">
 							<field name="name" />
 							<field name="code" />
 							<field name="type_id" />
 							<field name="min_degree_id" />
-							<field name="salary" />
 							<field name="max_degree_id" />
-							<field name="pr_salary" />
-
+						</group>
+						<group string="الأثر المالي">
+								<field name="compute_method" />
+								<field name="amount" attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}"/>
+								<field name="percentage" attrs="{'invisible':[('compute_method','!=','percentage')], 'required': [('compute_method','=','percentage')]}"/> />
+							</group>
 						</group>
 						<group>
 							<field name="note" string="ملاحظات" placeholder="ملاحظات ..." />
@@ -145,28 +154,28 @@
 		</record>
 
 		<record model="ir.actions.act_window" id="action_hr_reward_type">
-			<field name="name">المكافآت‬</field>
+			<field name="name">أنواع المكافآت</field>
 			<field name="res_model">hr.reward.type</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 
-		<menuitem id="hr_reward_type_menu" name="المكافآت‬" sequence="30"
-			groups="group_payroll_setting" parent="hr_payroll_setting" action="action_hr_reward_type" />
+		<menuitem id="hr_reward_type_menu" name="أنواع المكافآت"
+			sequence="30" groups="group_payroll_setting" parent="hr_payroll_setting"
+			action="action_hr_reward_type" />
 
 
-		<!-- التعويضات -->
+		<!-- أنواع التعويضات -->
 		<record model="ir.ui.view" id="hr_indemnity_type_tree">
 			<field name="name">hr.indemnity.type.tree</field>
 			<field name="model">hr.indemnity.type</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
-				<tree string="التعويضات">
+				<tree string="أنواع التعويضات">
 					<field name="sequence" widget="handle" />
 					<field name="name" />
 					<field name="code" />
-
 					<field name="create_date" string="تاريخ الإنشاء" />
 				</tree>
 			</field>
@@ -177,17 +186,21 @@
 			<field name="model">hr.indemnity.type</field>
 			<field name="type">form</field>
 			<field name="arch" type="xml">
-				<form string="التعويضات">
+				<form string="أنواع التعويضات">
 					<sheet>
-						<group col="4">
-							<field name="name" />
-							<field name="min_degree_id" />
-							<field name="code" />
-							<field name="max_degree_id" />
-							<field name="type_id" />
-
-
-
+						<group>
+							<group string="بيانات النوع">
+								<field name="name" />
+								<field name="min_degree_id" />
+								<field name="code" />
+								<field name="max_degree_id" />
+								<field name="type_id" />
+							</group>
+							<group string="الأثر المالي">
+									<field name="compute_method" />
+									<field name="amount" attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}"/>
+									<field name="percentage" attrs="{'invisible':[('compute_method','!=','percentage')], 'required': [('compute_method','=','percentage')]}"/> />
+								</group>
 						</group>
 						<group>
 							<field name="note" string="ملاحظات" placeholder="ملاحظات ..." />
@@ -198,15 +211,16 @@
 		</record>
 
 		<record model="ir.actions.act_window" id="action_hr_indemnity_type">
-			<field name="name">التعويضات</field>
+			<field name="name">أنواع التعويضات</field>
 			<field name="res_model">hr.indemnity.type</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 
-		<menuitem id="hr_indemnity_type_menu" name="التعويضات" sequence="35"
-			groups="group_payroll_setting" parent="hr_payroll_setting" action="action_hr_indemnity_type" />
+		<menuitem id="hr_indemnity_type_menu" name="أنواع التعويضات"
+			sequence="35" groups="group_payroll_setting" parent="hr_payroll_setting"
+			action="action_hr_indemnity_type" />
 
 
 
