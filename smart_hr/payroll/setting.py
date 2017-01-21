@@ -4,9 +4,9 @@
 from openerp import models, fields, api, _
 
 
-class HrAllowance(models.Model):
-    _name = 'hr.allowance'
-    _description = u'البدلات'
+class HrAllowanceType(models.Model):
+    _name = 'hr.allowance.type'
+    _description = u'أنواع البدلات'
 
     name = fields.Char(string='المسمى', required=1)
     code = fields.Char(string='الرمز')
@@ -22,9 +22,9 @@ class HrAllowance(models.Model):
         return result
 
 
-class HrReward(models.Model):
-    _name = 'hr.reward'
-    _description = u'المكافآت‬'
+class HrRewardType(models.Model):
+    _name = 'hr.reward.type'
+    _description = u'أنواع المكافآت‬'
 
     name = fields.Char(string='المسمى', required=1)
     code = fields.Char(string='الرمز')
@@ -60,8 +60,8 @@ class HrReward(models.Model):
 
 
 class HrIndemnity(models.Model):
-    _name = 'hr.indemnity'
-    _description = u'التعويضات'
+    _name = 'hr.indemnity.type'
+    _description = u'أنواع التعويضات'
 
     name = fields.Char(string='المسمى', required=1)
     code = fields.Char(string='الرمز')

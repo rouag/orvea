@@ -28,7 +28,6 @@
         'data/res.city.csv',
         'data/hr_termination_data.xml',
         'data/decisions_type_data.xml',
-        'data/salary_grid_type_data.xml',
         'data/hr_appoint_type_data.xml',
 #       'data/decision_action_data.xml',
 
@@ -87,7 +86,6 @@
 
         'view/hr_decision_appoint.xml',
         'view/hr_promotion.xml',
-        'view/salary_grid.xml',
         'view/hr_training.xml',
         'view/hr_training_setting.xml',
         'view/hr_exam_emp.xml',
@@ -118,7 +116,9 @@
         'view/hr_decision.xml',
         # الرواتب
         'payroll/menu.xml',
-        'payroll/data.xml',
+        'payroll/data/data.xml',
+        'payroll/data/salary_grid_type_data.xml',
+        'payroll/view/salary_grid.xml',
         'payroll/view/hr_payroll_view.xml',
         'payroll/view/setting_view.xml',
         'payroll/view/hr_salary_rule_view.xml',

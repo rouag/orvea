@@ -44,6 +44,6 @@ class HrEmployeeAllowance(models.Model):
     _name = 'hr.employee.allowance'
     _description = u'بدلات الموظف'
 
-    allowance_id = fields.Many2one('hr.allowance', 'البدل', required=1)
+    allowance_id = fields.Many2one('hr.allowance.type', 'البدل', required=1)
     employee_id = fields.Many2one('hr.employee', 'الموظف', required=1)
     amount = fields.Float(string='القيمة', digits_compute=dp.get_precision('Payroll'), required=1)
