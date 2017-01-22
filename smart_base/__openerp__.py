@@ -9,12 +9,14 @@
         """
         Module base  can be used in any app
         """,
-    'depends': ['base', 'web', 'report'],
+    'depends': ['base', 'web', 'report', 'mail'],
     'data': [
         'security/ir.model.access.csv',
         'data/paperformat.xml',
+        'data/template_email.xml',
         'view/res_company.xml',
         'view/notification.xml',
+        'view/notification_setting.xml',
         'views/layout.xml',
         'views/assets.xml',
              ],
