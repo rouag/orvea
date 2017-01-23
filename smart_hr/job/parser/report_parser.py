@@ -339,7 +339,42 @@ class JobCreateModelReport(report_sxw.rml_parse):
             'get_company': self._get_company,
             'format_time': self._format_time,
             'get_current_date': self._get_current_date,
+            'get_jobs_with_same_name': self._get_jobs_with_same_name,
+            'get_statstics_by_grade_type': self._get_statstics_by_grade_type,
         })
+
+    def _get_statstics_by_grade_type(self, grade_type_name):
+
+        data_obj = self.pool.get('ir.model.data')
+        salary_gride_ids = []
+        # salary gid type for موظفون
+        if grade_type_name == 'موظفون':
+            salary_gride_ids.append(data_obj.get_object(self.cr, self.uid, 'smart_hr', 'data_salary_grid_type').id)
+            salary_gride_ids.append(data_obj.get_object(self.cr, self.uid, 'smart_hr', 'data_salary_grid_type2').id)
+        # salary gid type for مستخدمون
+        if grade_type_name == 'مستخدمون':
+            salary_gride_ids.append(data_obj.get_object(self.cr, self.uid, 'smart_hr', 'data_salary_grid_type3').id)
+        # salary gid type for عمال
+        if grade_type_name == 'عمال':
+            salary_gride_ids.append(data_obj.get_object(self.cr, self.uid, 'smart_hr', 'data_salary_grid_type4').id)
+        # salary gid type for 105
+        # salary gid type for باب ثالث
+
+        if grade_type_name == 'المجموع':
+            salary_gride_ids.append(data_obj.get_object(self.cr, self.uid, 'smart_hr', 'data_salary_grid_type').id)
+            salary_gride_ids.append(data_obj.get_object(self.cr, self.uid, 'smart_hr', 'data_salary_grid_type2').id)
+            salary_gride_ids.append(data_obj.get_object(self.cr, self.uid, 'smart_hr', 'data_salary_grid_type3').id)
+            salary_gride_ids.append(data_obj.get_object(self.cr, self.uid, 'smart_hr', 'data_salary_grid_type4').id)
+        occupied_job = self.pool.get('hr.job').search_count(self.cr, self.uid, [('type_id', 'in', salary_gride_ids), ('state', '=', 'occupied')])
+        unoccupied_job = self.pool.get('hr.job').search_count(self.cr, self.uid, [('type_id', 'in', salary_gride_ids), ('state', '=', 'unoccupied')])
+        res = {'occupied': occupied_job, 'unoccupied': unoccupied_job, 'sum': occupied_job + unoccupied_job, 'demand': 0}
+        return res
+
+    def _get_jobs_with_same_name(self, name):
+        hr_job_ids = self.pool.get('hr.job').search(self.cr, self.uid, [('name', '=', name.id)])
+        if hr_job_ids:
+            return self.pool.get('hr.job').browse(self.cr, self.uid, hr_job_ids)
+        return False
 
     def _get_company(self):
         return self.pool.get('res.users').browse(self.cr, self.uid, [self.uid])[0].company_id
