@@ -56,8 +56,5 @@
 			<field name="name">اعدادات الاشعارات</field>
 		</record>
 
-		<menuitem name="اعدادات الاشعارات" id="notification_setting_menu"
-			parent="menu_notif" sequence="5"
-			action="ir_actions_server_notification_setting" />
 	</data>
 </openerp>

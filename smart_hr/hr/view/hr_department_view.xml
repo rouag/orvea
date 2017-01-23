@@ -149,8 +149,6 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-		<menuitem id="hr_configuration_general_root" sequence="40"
-			name="اعدادات عامّة" parent="smart_hr.hr_root_configuration" />
 
 		<menuitem id="hr_configuration_side" name="الجهات" sequence="34"
 			parent="hr_configuration_general_root" action="action_side" />

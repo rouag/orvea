@@ -18,8 +18,6 @@
         'payroll/security/payroll_security.xml',
         'payroll/security/ir.model.access.csv',
 
-      
-
         'view/hr_menu.xml',
         'data/sequences.xml',
         'data/configurations.xml',
@@ -29,7 +27,7 @@
         'data/hr_termination_data.xml',
         'data/decisions_type_data.xml',
         'data/hr_appoint_type_data.xml',
-#       'data/decision_action_data.xml',
+        # 'data/decision_action_data.xml',
 
         # الوظائف
         'job/menu.xml',
@@ -54,6 +52,9 @@
         'job/views/job_description_report.xml',
         'job/views/job_update_model_report.xml',
         'job/views/report.xml',
+
+        # setting
+        'setting/menu.xml',
 
         # الإدارات
         'hr/menu.xml',
