@@ -61,7 +61,7 @@
 			<field name="arch" type="xml">
 				<tree string="أنواع التعين">
 					<field name="name" />
-					<field name="date_test" />
+					<field name="date_test" string="فترة التجربة بالشهر" />
 					<field name="code" />
 				</tree>
 			</field>
@@ -75,7 +75,7 @@
 					<sheet>
 						<group>
 							<field name="name" />
-							<field name="date_test" />
+							<field name="date_test" string="فترة التجربة بالشهر"  />
 							<field name="code" />
 						</group>
 						<group string="المخطط‬‫ الانسيابي‬">
@@ -195,7 +195,7 @@
 					<sheet>
 						<group>
 							<group>
-								<field name="date_hiring"
+								<field name="date_hiring" readonly="1"
 									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'done'])]}" />
 								<field name="type_appointment" options="{'no_create_edit': True}"
 									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'done'])]}" />
@@ -229,12 +229,13 @@
 									attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
 							</group>
 							<group string="بيانات الموظف">
-								<field name="employee_id"
+								<field name="employee_id" 
 									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'done'])]}" />
 								<field name="number" />
 								<field name="country_id" />
 								<field name="emp_job_id" />
 								<field name="emp_number_job" />
+								<field name="emp_code" />
 								<field name="emp_type_id" />
 								<field name="emp_department_id" />
 								<field name="emp_grade_id" />
@@ -243,23 +244,24 @@
 								<field name="emp_basic_salary" />
 
 								<field name="medical_examination_file"
-									attrs="{'invisible':[('state', 'not in', ['waiting', 'hrm', 'budget', 'done']),
+									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done']),
 									('type_appointment','not in', [%(data_hr_new_agent_public)d])],
 									'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done']),('type_appointment','not in', [%(data_hr_recrute_agent_public)d])]}" />
-								
-								
-								
+
+
+
 								<field name="order_enquiry_file"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
+									attrs="{'invisible':[('state', 'not in', ['waiting', 'hrm', 'budget', 'done']),('type_appointment','not in', [%(data_hr_new_agent_public)d])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
 								<field name="file_salar_recent"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
+									attrs="{'invisible':[('state', 'not in', ['waiting', 'hrm', 'budget', 'done']),('type_appointment','not in', [%(data_hr_new_agent_public)d])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
 								<field name="file_engagement" widget="many2many_binary"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
+									attrs="{'invisible':[('state', 'not in', ['waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
 							</group>
-							<group string="بيانات الوظيفة">
+							<group string="بيانات الوظيفة الجديدة">
 								<field name="job_id" domain="[('state','=','unoccupied')]"
 									attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
 								<field name="number_job" />
+								<field name="code" />
 								<field name="type_id" />
 								<field name="department_id" />
 								<field name="grade_id" />
@@ -272,6 +274,9 @@
 								<field name="net_salary" />
 							</group>
 						</group>
+							<button name="%(smart_hr.report_hr_direct_appoint)d" string="طباعة القرار"
+							groups="smart_hr.group_hrm" type="action" states="done" icon="fa-print"
+							class="oe_inline oe_stat_button" />
 						<group>
 							<field name="description" placeholder="ملاحظات ..."
 								colspan="4"

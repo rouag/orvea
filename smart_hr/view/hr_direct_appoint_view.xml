@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<record model="ir.ui.view" id="hr_direct_appoint_tree">
+			<field name="name">hr.direct.appoint.tree</field>
+			<field name="model">hr.direct.appoint</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="قرار مباشرة التعين">
+					<field name="employee_id" />
+					<field name="number" />
+				</tree>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_direct_appoint_form">
+			<field name="name">hr.direct.appoint.form</field>
+			<field name="model">hr.direct.appoint</field>
+			<field name="type">form</field>
+			<field name="context">{'readonly_by_pass': True}	</field>
+			<field name="arch" type="xml">
+				<form string=" قرار مباشرة التعين">
+					<header>
+						<button name="action_waiting" string=" ارسال طلب" type="object"
+							states="new" />
+						<button name="action_refuse" string="رفض" type="object"
+							states="waiting" />
+						<button name="action_done" string="إعتماد" type="object"
+							states="waiting" />
+						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
+					</header>
+					<sheet>
+						<group>
+							<group string="بيانات الموظف">
+								<field name="employee_id" />
+								<field name="number" />
+								<field name="country_id" />
+								<field name="job_id" />
+								<field name="number_job" />
+								<field name="code" />
+								<field name="type_id" />
+								<field name="department_id" />
+								<field name="grade_id" />
+								<field name="degree_id" />
+								<field name="far_age" />
+								<field name="basic_salary" />
+								<field name="date_direct_action" />
+								
+							</group>
+							<group>
+								<field name="date" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_direct_appoint">
+			<field name="name"> قرار مباشرة التعين</field>
+			<field name="res_model">hr.direct.appoint</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}	</field>
+		</record>
+
+		<menuitem id="hr_direct_appoint_menu_sou" name=" قرار مباشرة التعين"
+			sequence="22" parent="hr_root_organisation_configuration" action="action_hr_direct_appoint" />
+
+	</data>
+</openerp>

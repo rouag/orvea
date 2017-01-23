@@ -75,6 +75,7 @@
         'views/hr_deputation_report.xml',
         'views/hr_dep_accr_report.xml',
         'views/report_point_decinne.xml',
+        'views/report_hr_direct_appoint.xml',
 
         'report/reports.xml',
         'report/hr_suspension_end_report.xml',
@@ -112,7 +113,7 @@
         'view/hr_holidays_extension.xml',
         'view/religion.xml',
         'view/courses_follow_up.xml',
-       # 'view/hr_improve_situation_view.xml',
+        'view/hr_direct_appoint_view.xml',
 
         # القرارات
         'view/hr_decision.xml',

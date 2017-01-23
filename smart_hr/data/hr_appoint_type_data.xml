@@ -53,7 +53,7 @@
 			<field name="direct_manager" eval="False" />
 			<field name="recrutment_decider" eval="False" />
 		</record>
-		<record id="data_hr_recrute_contrat" model="hr.type.appoint">
+		<record id="data_hr_recrute_public_nosoudi" model="hr.type.appoint">
 			<field name="name"> تعيين غير سعودي على مرتبة رسمية</field>
 			<field name="audit" eval="False" />
 			<field name="recrutment_manager" eval="True" />
@@ -63,7 +63,7 @@
 			<field name="recrutment_decider" eval="False" />
 		</record>
 
-		<record id="data_hr_recrute_public_nosoudi" model="hr.type.appoint">
+		<record id="data_hr_recrute_public_retraite" model="hr.type.appoint">
 			<field name="name">تعيين المحالين على التقاعد</field>
 			<field name="audit" eval="False" />
 			<field name="recrutment_manager" eval="True" />
