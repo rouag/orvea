@@ -7,7 +7,7 @@ from openerp.addons.smart_base.util.time_util import time_float_convert
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'
 
-    calendar_id = fields.Many2one('resource.calendar', 'جدول ساعات العمل')
+    calendar_id = fields.Many2one('resource.calendar' ,string=u'الورديّات')
 
     def get_authorization_by_date(self, date, first_time=False, latest_time=False):
         '''

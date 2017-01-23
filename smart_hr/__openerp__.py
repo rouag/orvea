@@ -8,7 +8,7 @@
     'description':
         """
         """,
-    'depends': ['hr', 'hr_holidays', 'odoo_rtl', 'web_readonly_bypass', 'hr_payroll', 'hr_attendance', 'smart_base'],
+    'depends': ['hr', 'hr_holidays', 'odoo_rtl', 'web_readonly_bypass', 'hr_payroll', 'hr_attendance','smart_base'],
     'data': [
 
 
@@ -61,6 +61,7 @@
         'hr/view/hr_contract_item_view.xml',
         'hr/views/report_hr_contract.xml',
         'hr/views/report.xml',
+        'hr/data/hr_department_type_data.xml',
 
         'views/report_salary_grid.xml',
         'views/report_medical_examination.xml',
@@ -104,7 +105,6 @@
         'view/hr_suspension_view.xml',
         'view/hr_suspension_end_view.xml',
         'view/hr_termination_view.xml',
-        'view/section.xml',
         'view/external_autorities.xml',
         'view/holiday_entitlement_types.xml',
         'view/hr_holidays_extension.xml',
@@ -116,7 +116,7 @@
         'view/hr_decision.xml',
         # الرواتب
         'payroll/menu.xml',
-        'payroll/data/data.xml',
+#         'payroll/data/data.xml',
         'payroll/data/salary_grid_type_data.xml',
         'payroll/wizard/wizard_bonus_employee.xml',
         'payroll/wizard/wizard_bonus_action.xml',

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data noupdate="1">
+
+		<!-- department Types -->
+		<record id="data_hr_depatment_type_general_administration" model="hr.department.type">
+			<field name="name">إدارة عامة </field>
+		</record>
+		<record id="data_hr_depatment_type_section" model="hr.department.type">
+			<field name="name">فرع</field>
+		</record>
+		<record id="data_hr_depatment_type_segment" model="hr.department.type">
+			<field name="name">قسم</field>
+		</record>
+		<record id="data_hr_depatment_type_branch" model="hr.department.type">
+			<field name="name">شعبة</field>
+		</record>
+
+	</data>
+</openerp>
+		

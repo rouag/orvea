@@ -10,7 +10,7 @@
 				<form string="مستوى العمق في ‫الهيكل‬">
 					<sheet>
 						<group>
-							<field name="department_id" />
+							<field name="department_type" />
 							<field name="level" />
 						</group>
 					</sheet>
@@ -23,7 +23,7 @@
 			<field name="model">hierarchy.level</field>
 			<field name="arch" type="xml">
 				<tree string="مستوى العمق في ‫الهيكل‬">
-					<field name="department_id" />
+					<field name="department_type" />
 					<field name="level" />
 				</tree>
 			</field>

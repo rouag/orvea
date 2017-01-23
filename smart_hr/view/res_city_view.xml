@@ -13,8 +13,7 @@
                     <sheet>
                         <group>
                             <field name="name" required="1"/>
-                            <field name="days_before_after" required="1"/>
-                            <field name="city_recruiter" required="1"/>
+                            <field name="city_side" required="1"/>
                             
                         </group>
                     </sheet>
@@ -27,8 +26,7 @@
             <field name="arch" type="xml">
                 <tree string="مدن" class="oe_tree_view">
                     <field name="name"/>
-                    <field name="days_before_after"/>
-					<field name="city_recruiter" />
+					<field name="city_side" />
                     
                 </tree>
             </field>
@@ -39,8 +37,7 @@
             <field name="arch" type="xml">
                 <search string="مدن">
                     <field name="name"/>
-                    <field name="days_before_after"/>
-                    <field name="city_recruiter" />
+                    <field name="city_side" />
                 </search>
             </field>
         </record>
@@ -55,7 +52,7 @@
         </record>
         <menuitem id="menu_res_city"
                   action="action_res_city"
-                  parent="hr_root_configuration"
+                  parent="hr_configuration_general_root"
                   name="المدن"/>
 
     </data>

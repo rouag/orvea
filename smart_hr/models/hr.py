@@ -56,9 +56,10 @@ class HrEmployee(models.Model):
     grandfather_middle_name = fields.Char(string=u'middle_name2')
     grandfather2_middle_name = fields.Char(string=u'  middle_name3')
     space = fields.Char(string=' ', default=" ", readonly=True)
-    begin_work_date = fields.Date(string=u' تاريخ بداية العمل بالجهة الحكومية', required=1)
+    begin_work_date = fields.Date(string=u' تاريخ بداية العمل الحكومي', required=1)
     promotion_duration = fields.Integer(string=u'مدة الترقية(يوم)', compute='_compute_promotion_days')
-
+    dep_city = fields.Many2one('res.city', strin=u'المدينة', related="department_id.dep_city")
+    dep_Side = fields.Many2one('city.side', string=u'الجهة', related="department_id.dep_Side")
     @api.multi
     def name_get(self):
         res = []
@@ -193,6 +194,7 @@ class HrEmployeePromotionHistory(models.Model):
         today = date.today()
         prev_month_end = date(today.year, today.month, 1) - relativedelta(days=1)
         prev_month_first = prev_month_end.replace(day=1)
+        suspension_obj = self.env['hr.suspension']
         for promotion in self.search([('active_duration','=','True')]):
             if promotion.decision_appoint_id.state_appoint =='active' and promotion.decision_appoint_id.active==True:
                 promotion_date_from = fields.Date.from_string(promotion.decision_appoint_id.date_direct_action)
@@ -208,16 +210,39 @@ class HrEmployeePromotionHistory(models.Model):
                 uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', promotion.employee_id.id),('action','=','absence'),
                                                                             ('date','>=',prev_month_first),('date','<=',prev_month_end)])
                 promotion.balance -= uncounted_absence_days
+           
+
             elif promotion.decision_appoint_id.state_appoint =='close':
                 date_hiring_end= fields.Date.from_string(promotion.decision_appoint_id.date_hiring_end)
                 promotion.balance += (date_hiring_end - prev_month_first).days
                 uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', promotion.employee_id.id),('action','=','absence'),
                                                                             ('date','>=',prev_month_first),('date','<=',date_hiring_end)])
                 promotion.balance -= uncounted_absence_days
-                
-                
-                
-                
+                promotion.active_duration = False
+            elif promotion.decision_appoint_id.state_appoint =='معلق':
+                if promotion.employee_id.emp_state == 'suspended':
+                    suspension_ids = suspension_obj.search([('employee_id', '=', promotion.employee_id.id),('state', '=','done') ])
+                    if suspension_ids:
+                        last_suspension = suspension_ids and max(suspension_ids.ids)
+                        last_suspension_date = fields.Date.from_string(suspension_obj.browse(last_suspension).suspension_date)
+                        if prev_month_first<=last_suspension_date<=prev_month_end:
+                            promotion.balance += (last_suspension_date - prev_month_first).days
+                            # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
+                            uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', promotion.employee_id.id),('action','=','absence'),
+                                                                            ('date','>=',prev_month_first),('date','<=',last_suspension_date)])
+                            promotion.balance -= uncounted_absence_days   
+                                     
+            suspension_ids = suspension_obj.search([('employee_id', '=', promotion.employee_id.id),('state', '=','done'),
+                                                        ('suspension_date','>=',prev_month_first),  ('suspension_date','<=',prev_month_end)])
+            if suspension_ids:
+                suspension_days = 0
+                for suspension in suspension_ids:
+                    release_date = fields.Date.from_string(suspension.suspension_end_id.release_date)
+                    suspension_date = fields.Date.from_string(suspension.suspension_end_id.suspension_date)
+                    if release_date<=prev_month_end:
+                        suspension_days += (release_date - suspension_date).days
+                promotion.balance -= suspension_days
+                                
 class HrEmployeeEducationLevel(models.Model):
     _name = 'hr.employee.education.level'  
     _description = u'مستويات التعليم'

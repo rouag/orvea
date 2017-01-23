@@ -17,12 +17,19 @@ float: left !important;
 }
 
 .smart_label_father_name_padding_right{
-        padding-right: 43px !important;
+        padding-right: 0px !important;
 }
 
 .smart_label_grnad_father_name_padding_left{
-        padding-right: 107px !important;
+        padding-right: 20px !important;
 }
+.smart_label_grnad_father2_name_padding_left{
+        padding-right: 29px  !important;
+}
+.smart_label_family_name_padding_left{
+        padding-right: 58% !important;
+}
+
 
 .align_left_css {
     text-align: left !important;
