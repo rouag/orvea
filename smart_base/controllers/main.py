@@ -14,7 +14,7 @@ class BaseNotification(http.Controller):
     def notify(self):
         notification_obj = request.env['base.notification']
         now = datetime.strftime(datetime.now(), "%Y-%m-%d %H:%M:%S")
-        notifications = notification_obj.search([('user_id', '=', request.session.uid), ('to_read', '=', 'True')])
+        notifications = notification_obj.search([('user_id', '=', request.session.uid), ('to_read', '=', True)])
         all_notif = []
         for notification in notifications:
             if not notification.res_action:

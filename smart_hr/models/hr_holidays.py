@@ -264,12 +264,15 @@ class HrHolidays(models.Model):
                 self.employee_id.compensation_stock=0
 #                 مدة الترقية
         if self.holiday_status_id.promotion_deductible:   
-            active_promotion = self.env['hr.employee.promotion.history'].search([('active', '=', 'True'), ('employee_id', '=', self.employee_id.id)])
+            active_promotion = self.env['hr.employee.promotion.history'].search([('active_duration', '=', 'True'), ('employee_id', '=', self.employee_id.id)])
             if active_promotion:
                 for prom in active_promotion:
                     prom.balance -= self.duration
 
+        if self.holiday_status_id.deductible_duration_service:
+            self.employee_id.service_duratione -= self.duration
         self.state = 'done'
+
 
     @api.model
     def update_normal_holidays_stock(self):
@@ -322,13 +325,13 @@ class HrHolidays(models.Model):
 #                    مدّة الاعارة todo
 
             uncounted_days += holiday_uncounted_days
-
+            # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
             uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', employee.id),('action','=','absence'),
                                                                             ('date','>=',previous_month_first_day),('date','<=',previous_month_last_day)])
 
             uncounted_days += uncounted_absence_days
 
-#                     مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫نظامي todo
+#                     
             # مدّةالتدريب
             search_domain = [
                         ('employee_id', '=', employee.id),
@@ -340,7 +343,7 @@ class HrHolidays(models.Model):
                 dateto = fields.Date.from_string(rec.date_to)
                 datefrom = fields.Date.from_string(rec.date_from)
                 res = relativedelta(dateto, datefrom)
-                months = res.months
+                months = (dateto.year - datefrom.year) * 12 + (dateto.month - datefrom.month)
                 days = res.days
                 if rec.date_from < previous_month_first_day < previous_month_last_day or rec.date_from < previous_month_last_day < rec.date_to:
                     if (months >= 1):

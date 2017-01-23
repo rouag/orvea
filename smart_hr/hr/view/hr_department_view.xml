@@ -40,14 +40,33 @@
 			<field name="model">hr.department</field>
 			<field name="inherit_id" ref="hr.view_department_form" />
 			<field name="arch" type="xml">
-				<field name="name" position="after">
-					<field name="code" />
-					<field name="dep_section" />
-					<field name="dep_city" />
-					<field name="dep_recruiter" />
-					<field name="is_root" />
-					<field name="level" invisible="1" />
-				</field>
+				<form position="replace">
+					<form string="department">
+						<sheet>
+							<group>
+								<group>
+									<field name="name" />
+									<field name="code" />
+									<field name="dep_type" options="{'no_create': True}" />
+									<field name="manager_id" options="{'no_create': True}" />
+								</group>
+								<group>
+									<field name="parent_id" options="{'no_create': True}" />
+									<field name="company_id" options="{'no_create': True}"
+										groups="base.group_multi_company" />
+									<field name="dep_Side" options="{'no_create': True}" />
+									<field name="dep_city" options="{'no_create': True}" />
+								</group>
+
+							</group>
+						</sheet>
+						<div class="oe_chatter">
+							<field name="message_follower_ids" widget="mail_followers"
+								groups="base.group_user" />
+							<field name="message_ids" widget="mail_thread" />
+						</div>
+					</form>
+				</form>
 			</field>
 		</record>
 
@@ -65,10 +84,7 @@
 									~
 									<field name="parent_id" />
 								</t>
-								<t t-if="dep_section!='False'">
-									<t>~</t>
-								</t>
-								<field name="dep_section" />
+
 							</div>
 						</div>
 					</div>
@@ -87,7 +103,7 @@
 								</li>
 								<li>
 									الجهة:
-									<field name="dep_recruiter" />
+									<field name="dep_Side" />
 
 								</li>
 
@@ -109,9 +125,34 @@
 			<field name="view_mode">kanban,form</field>
 		</record>
 
-		<menuitem id="hr_department_kanban_menu" name="الإدارات" groups="smart_hr.group_hrm"
-			sequence="10" action="action_hr_department_kanban" parent="hr_root_organisation" />
+		<menuitem id="hr_department_kanban_menu" name="الإدارات"
+			groups="smart_hr.group_hrm" sequence="10" action="action_hr_department_kanban"
+			parent="hr_root_organisation" />
 
 
+		<record id="view_side_form" model="ir.ui.view">
+			<field name="name">city.side.form</field>
+			<field name="model">city.side</field>
+			<field name="arch" type="xml">
+				<form string="الجهات">
+					<sheet>
+						<group>
+							<field name="name" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_side">
+			<field name="name">الجهات</field>
+			<field name="res_model">city.side</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<menuitem id="hr_configuration_general_root" sequence="40"
+			name="اعدادات عامّة" parent="smart_hr.hr_root_configuration" />
+
+		<menuitem id="hr_configuration_side" name="الجهات" sequence="34"
+			parent="hr_configuration_general_root" action="action_side" />
 	</data>
 </openerp>

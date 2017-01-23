@@ -489,7 +489,7 @@ class HrAttendanceImport(models.Model):
         # check for each employee
         for employee in employee_obj.search([]):  # TODO: must add it [('employee_state', '=', 'employee')]
             if not employee.calendar_id:
-                raise ValidationError(u"يجب تحديد ساعات العمل للموظف %s " % employee.name)
+                raise ValidationError(u"يجب تحديد الورديّات للموظف %s " % employee.name)
 
             self.chek_sign_in(date, employee.id, latest_time, all_attendances[0].name)
             self.chek_sign_out(date, employee.id, latest_time, all_attendances[0].name)

@@ -2,7 +2,6 @@
 
 
 from . import hr
-from . import salary_grid
 from . import hr_decision_appoint
 from . import hr_promotion
 from . import hr_training
@@ -31,7 +30,6 @@ from . import hr_termination
 
 from . import hr_decision
 
-from . import section
 from . import hierarchy_level
 
 from . import external_authorities
@@ -42,3 +40,4 @@ from . import religion
 from . import courses_follow_up
 from . import hr_improve_situation
 from . import hr_direct_appoint
+

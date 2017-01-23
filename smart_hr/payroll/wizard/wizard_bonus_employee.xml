@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_wizard_bonus_employee" model="ir.ui.view">
+            <field name="name">wizard.bonus.employee.form</field>
+            <field name="model">wizard.bonus.employee</field>
+            <field name="arch" type="xml">
+                <form string="إضافة موظفون">
+                    <group colspan="4" >
+                        <separator string="الموظفون" colspan="4"/>
+                        <newline/>
+                        <field name="employee_ids" nolabel="1"/>
+                    </group>
+                    <footer>
+                        <button icon="fa-cogs" string="إضافة" name="compute_employee" type="object" class="oe_highlight"  />
+                         أو
+						<button string="إلغاء" class="oe_link" special="cancel" />
+                        
+                    </footer>
+               </form>
+            </field>
+        </record>
+
+        <record id="action_wizard_bonus_employee" model="ir.actions.act_window">
+            <field name="name">إضافة موظفون</field>
+            <field name="res_model">wizard.bonus.employee</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_wizard_bonus_employee"/>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</openerp>

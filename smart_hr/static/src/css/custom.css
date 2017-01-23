@@ -16,10 +16,21 @@ float: left !important;
     text-align: center !important;
 }
 
-.smart_td_label_center{
-    text-align: center !important;
+.smart_label_father_name_padding_right{
+        padding-right: 0px !important;
 }
 
-.o_form_input{
-    height: 38px !important;
+.smart_label_grnad_father_name_padding_left{
+        padding-right: 20px !important;
+}
+.smart_label_grnad_father2_name_padding_left{
+        padding-right: 29px  !important;
+}
+.smart_label_family_name_padding_left{
+        padding-right: 58% !important;
+}
+
+
+.align_left_css {
+    text-align: left !important;
 }

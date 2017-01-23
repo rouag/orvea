@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data>
-		<template id="report_job_create_model">
+		<template id="report_job_modifying_model">
 			<t t-call="report.html_container">
 				<t t-foreach="docs" t-as="o">
 					<t t-call="smart_base.landscape_layout">
@@ -14,49 +14,61 @@
 									</style>
 							<div class=" text-center">
 								<h3 style="color:#395870;">
-									نموذج طلب إحداث وظيفة
+									نموذج طلب تعديل وظيفة
 									<br />
 								</h3>
 							</div>
-							<t t-set="same_jobs" t-value="get_jobs_with_same_name(o.job_create_line_id.name)" />
+							<t t-set="move_line" t-value="get_move_line(data['form'], o.job_id)" />
+							<t t-set="new_name" t-value="move_line.job_id.name" /><!-- new_name to be verified -->
+							<t t-set="same_jobs_old_name" t-value="get_jobs_with_same_name(move_line.job_id.name)" />
+							<t t-set="same_jobs_new_name" t-value="get_jobs_with_same_name(new_name)" />
 								<div class="">
-									ميزانية السنة المالية <span t-esc="o.job_create_id.fiscal_year" />
-									<br />
 									<div class="">
 										<div class="col-xs-8"> 
 											<div class="">إسم الجهة:&#160;<span t-esc="company.name" /></div>
-											<div class=""><span>الموضوع المطلوب</span>&#160; &#160;<span>مسمى الوظيفة:&#160;</span><span t-esc="o.job_create_line_id.name.name" /></div>
-											<div class="">الوحدة الإدارية:&#160;<span t-esc="o.job_create_line_id.department_id.name" /></div>
-											<div class="">
+											<div class=""><span>الوضع المطلوب</span>
+											&#160; &#160;<span>مسمى الوظيفة:&#160;</span><span t-esc="new_name.name" />
+											<t t-if="o.type=='scale_down' or o.type=='scale_up'">
+												&#160; &#160;<span>المرتبة:&#160;</span><span t-esc="move_line.new_grade_id.name" />
+											</t>
+											</div>
+											<div class="">الوحدة الإدارية:&#160;<t t-if="o.type=='move_dep'"><span t-esc="move_line.new_department_id.name" /></t>
+											<t t-if="o.type=='scale_down' or o.type=='scale_up'"><span t-esc="o.job_id.department_id.name" /></t>
+											</div>
+											<div class="col-xs-6" style="padding:0px;margin:0px;">
 												<table class="table">
 													<tr>
-														<td rowspan="2">المسميات المشابهة للوظيفة المطلوبة</td>
-														<td>المرتبة</td>
-														<td>العدد</td>
-														<td>الحالة</td>
+														<td t-att-rowspan="len(same_jobs_new_name)+1">المسميات المشابهة للوظيفة المطلوبة</td>
 														<td>المرتبة</td>
 														<td>العدد</td>
 														<td>الحالة</td>
 													</tr>
 													<t t-set="i" t-value="0"/>
-													<tr t-foreach="same_jobs" t-as="line">
-															<!-- <= -->
-															<t t-if="i &#60;= len(same_jobs)-2">
-																<td><t t-esc="same_jobs[i].grade_id.name"/></td>
-																<td><t t-esc="same_jobs[i].number" /></td>
-																<td><t t-esc="dict(same_jobs[i].fields_get(allfields=['state'])['state']['selection'])[same_jobs[i].state]" /></td>
-																<td> <t t-esc="same_jobs[i+1].grade_id.name"/></td>
-																<td> <t t-esc="same_jobs[i+1].number" /></td>
-																<td> <t t-esc="dict(same_jobs[i+1].fields_get(allfields=['state'])['state']['selection'])[same_jobs[i+1].state]" /></td>
-															</t>
-															
-															<t t-set="i" t-value="i+2"/>
-														
+													<tr t-foreach="same_jobs_new_name" t-as="line">
+																<td><t t-esc="line.grade_id.name"/></td>
+																<td><t t-esc="line.number" /></td>
+																<td><t t-esc="dict(line.fields_get(allfields=['state'])['state']['selection'])[line.state]" /></td>
+													</tr>
+												</table>
+											</div>
+											<div class="col-xs-6">
+												<table class="table">
+													<tr>
+														<td>المرتبة</td>
+														<td>العدد</td>
+														<td>الحالة</td>
+														<td t-att-rowspan="len(same_jobs_old_name)+1">المسميات المشابهة للوظيفة الحالية</td>
+													</tr>
+													<t t-set="i" t-value="0"/>
+													<tr t-foreach="same_jobs_old_name" t-as="line">
+																<td><t t-esc="line.grade_id.name"/></td>
+																<td><t t-esc="line.number" /></td>
+																<td><t t-esc="dict(line.fields_get(allfields=['state'])['state']['selection'])[line.state]" /></td>
 													</tr>
 												</table>
 											</div>
 											<div class="">
-												<div class="col-xs-8">مسمى الوظيفة الاشرافية:&#160;<span t-esc="o.job_create_line_id.name.job_supervisory_name_id.name" /></div>
+												<div class="col-xs-8">مسمى الوظيفة الاشرافية:&#160;<span t-esc="move_line.job_id.name.job_supervisory_name_id.name" /></div>
 												<div class="col-xs-4">مرتبتها:&#160;<span></span></div>
 											</div>
 											<div class=" text-center">عموم الوظائف بجميع سلالم الرواتب</div>
@@ -64,8 +76,11 @@
 										
 									</div>
 									<div class="col-xs-4">
-											<div class="">المرتبة:&#160;<span t-esc="o.job_create_line_id.grade_id.name" /></div>
-											<div class="">الرمز الوظيفي:&#160;<span t-esc="o.job_create_line_id.number" /></div>
+									<p class="text-center"><strong>الوضع الحالي</strong></p>
+											<div class="">المرتبة:&#160;<span t-esc="move_line.job_id.grade_id.name" /></div>
+											<div class="">رقم الوظيفة:&#160;<span t-esc="move_line.job_id.number" /></div>
+											<div class="">الوحدة الادارية:&#160;<span t-esc="move_line.job_id.department_id.name" /></div>
+											<div class="">الرمز الوظيفي:&#160;<span t-esc="move_line.job_id.name.number" /></div>
 											<div class=" text-center">إجمالي وظائف الجهة المعتمدة في الميزانية</div>
 									</div>
 								</div>
@@ -75,7 +90,7 @@
 												<div class="">
 																<div class="">
 									<br></br>
-									عدد الوظائف في الوحدة الإدارية للوظيفة المطلوبة(<sspan t-esc="o.job_create_line_id.name.name" />)
+									عدد الوظائف في الوحدة الإدارية للوظيفة المطلوبة &#160;(<sspan t-esc="move_line.job_id.name.name" />)
 																</div>
 																<div class="">
 																	<div class=" text-center">الهيكل التنظيمي</div>
@@ -138,7 +153,7 @@
 													
 													<div class="">
 													<p class="text-center">مجموع إعتماد الابواب الأربعة بالألاف</p>
-																			<table class="table">
+																<table class="table">
 																	<tr>
 																		<td>الحالة/المرتبة</td>
 																		<td>ممتازة</td>

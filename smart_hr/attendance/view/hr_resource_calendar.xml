@@ -8,7 +8,7 @@
 			<field name="inherit_id" ref="resource.view_resource_calendar_tree" />
 			<field name="arch" type="xml">
 				<xpath expr="/tree" position='replace'>
-					<tree string="ساعات العمل">
+					<tree string="الورديّات">
 						<field name="name" string="المسمى" />
 						<field name="date_from" />
 						<field name="date_to" />
@@ -25,7 +25,7 @@
 			<field name="inherit_id" ref="resource.resource_calendar_form" />
 			<field name="arch" type="xml">
 				<xpath expr="/form" position='replace'>
-					<form string="ساعات العمل">
+					<form string="الورديّات">
 						<sheet>
 							<group>
 								<group col="4">
@@ -63,7 +63,7 @@
 			</field>
 		</record>
 
-		<menuitem name="ساعات العمل" action="resource.action_resource_calendar_form" groups="smart_hr.group_sys_manager"
+		<menuitem name="الورديّات" action="resource.action_resource_calendar_form" groups="smart_hr.group_sys_manager"
 			id="menu_resource_calendar_inherit" parent="menu_attendance_configuration"
 			sequence="5" />
 
