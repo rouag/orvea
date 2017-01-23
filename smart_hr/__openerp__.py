@@ -44,6 +44,8 @@
         'job/wizard/wizard_job_update_model_view.xml',
         'job/wizard/wizard_job_scale_down_model_view.xml',
         'job/wizard/wizard_job_create_model_view.xml',
+        'job/wizard/wizard_job_modifying_model_view.xml',
+        'job/views/job_modifying_model_report.xml',
         'job/views/job_create_model_report.xml',
         'job/views/job_scale_down_model_report.xml',
         'job/views/job_move_dep_report.xml',
