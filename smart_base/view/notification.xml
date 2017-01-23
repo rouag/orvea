@@ -7,21 +7,69 @@
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="التنبيهات">
+				<header name="main">
+						<button name="resend_notif" string="إعادة إرسال"
+							type="object"
+							icon="fa-share" class="oe_inline oe_stat_button" />
+				</header>
 					<sheet>
 						<group>
-							<field name="title" string="العنوان"/>
-							<field name="message" string="المحتوى"/>
-							<field name="show_date" string="تاريخ التنبيه" />
+							<group>
+								<field name="title" string="العنوان"/>
+								<field name="message" string="المحتوى"/>
+								<field name="show_date" string="تاريخ التنبيه" />
+								<field name="user_id" />
+								<field name="type"/>
+								<field name="interval_between_notif"/>
+							</group>
+							<group>
+								<field name="to_read" invisible="1" />
+								<field name="first_notif"/>
+								<field name="notif" />
+								<field name="sms"  />
+								<field name="email"  />
+								<field name="template_id"/>
+							</group>
 						</group>
 					</sheet>
 				</form>
 			</field>
 		</record>
+		
+		<record model="ir.ui.view" id="view_base_notif_tree">
+			<field name="name">notif - Tree</field>
+			<field name="model">base.notification</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="title"  />
+					<field name="show_date" />
+					<field name="to_read"  />
+				</tree>
+			</field>
+		</record>
+		
+		<record id="base_notification_search_view" model="ir.ui.view">
+			<field name="name">base.notification.search</field>
+			<field name="model">base.notification</field>
+			<field name="arch" type="xml">
+				<search string="التنبيهات">
+					<field name="date_moins_que" string="التنبيهات الأقل من التاريخ" filter_domain="[('show_date', '&lt;=', self)]"/>
+					<field name="date_plus_que" string="التنبيهات بعد التاريخ" filter_domain="[('show_date', '&gt;=', self )]"/>
+					
+				</search>
+			</field>
+		</record>
+		
 		<record model="ir.actions.act_window" id="action_base_notification">
 			<field name="name">التنبيهات</field>
 			<field name="res_model">base.notification</field>
 			<field name="view_type">form</field>
-			<field name="view_mode">form</field>
+			<field name="view_mode">tree,form</field>
 		</record>
+		
+		 <menuitem id="menu_notif" name="تنبيهات" parent="base.menu_custom" sequence="1"/>
+		<menuitem name="تنبيهات " id="menu_base_notif" action="action_base_notification"
+			parent="menu_notif" />
+		
 	</data>
 </openerp>

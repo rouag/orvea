@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<record id="notification_setting_form" model="ir.ui.view">
+			<field name="name">notification.setting.form</field>
+			<field name="model">notification.setting</field>
+			<field name="arch" type="xml">
+				<form string="الإعدادات" create="false" delete="false">
+					<sheet>
+<!-- 						<group> -->
+								<field name="name_setting" invisible="1" />
+								<field name="notification_setting_line_ids" nolabel="1" >
+									<tree editable="bottom">
+										<field name="type"/>
+										<field name="notif"/>
+										<field name="sms"/>
+										<field name="email"/>
+										<field name="interval_between_notif"/>
+										<field name="notification_setting_id" invisible="1"/>
+									</tree>
+									<form>
+										<group>
+											<group>
+												<field name="type"/>
+												<field name="interval_between_notif"/>
+												<field name="notification_setting_id" invisible="1"/>
+												
+											</group>
+											<group>
+												<field name="notif"/>
+												<field name="sms"/>
+												<field name="email"/>
+												
+											</group>
+										</group>
+									</form>
+								</field>
+<!-- 						</group> -->
+					</sheet>
+				</form>
+			</field>
+		</record>
+	</data>
+
+	<data >
+	
+		<record id="ir_actions_server_notification_setting" model="ir.actions.server">
+			<field name="sequence" eval="5" />
+			<field name="state">code</field>
+			<field name="type">ir.actions.server</field>
+			<field name="model_id" ref="model_notification_setting" />
+			<field name="code">
+    			action = model.open_notif_setting()
+			</field>
+			<field name="condition">True</field>
+			<field name="name">اعدادات الاشعارات</field>
+		</record>
+
+		<menuitem name="اعدادات الاشعارات" id="notification_setting_menu"
+			parent="menu_notif" sequence="5"
+			action="ir_actions_server_notification_setting" />
+	</data>
+</openerp>
