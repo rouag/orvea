@@ -15,7 +15,7 @@ class HrAllowanceType(models.Model):
                                        ('percentage', 'نسبة من الراتب الأساسي'),
                                        ('salary_grid', 'تحتسب من سلم الرواتب'),
                                        ('job', 'تحتسب من  الوظيفة'),
-                                       ('job_location', 'تحتسب  حسب مكان العمل')], string='طريقة الإحتساب', required=1)
+                                       ('job_location', 'تحتسب  حسب مكان العمل')], string='طريقة الإحتساب')
     amount = fields.Float(string='المبلغ')
     percentage = fields.Float(string='النسبة')
 
@@ -40,7 +40,7 @@ class HrRewardType(models.Model):
                                        ('percentage', 'نسبة من الراتب الأساسي'),
                                        ('salary_grid', 'تحتسب من سلم الرواتب'),
                                        ('job', 'تحتسب من  الوظيفة'),
-                                       ('job_location', 'تحتسب  حسب مكان العمل')], string='طريقة الإحتساب', required=1)
+                                       ('job_location', 'تحتسب  حسب مكان العمل')], string='طريقة الإحتساب')
     amount = fields.Float(string='المبلغ')
     percentage = fields.Float(string='النسبة')
     # TODO: whay type_id,min_degree_id,max_degree_id
@@ -79,7 +79,7 @@ class HrIndemnity(models.Model):
                                        ('percentage', 'نسبة من الراتب الأساسي'),
                                        ('salary_grid', 'تحتسب من سلم الرواتب'),
                                        ('job', 'تحتسب من  الوظيفة'),
-                                       ('job_location', 'تحتسب  حسب مكان العمل')], string='طريقة الإحتساب', required=1)
+                                       ('job_location', 'تحتسب  حسب مكان العمل')], string='طريقة الإحتساب')
     amount = fields.Float(string='المبلغ')
     percentage = fields.Float(string='النسبة')
     # TODO: whay type_id,min_degree_id,max_degree_id
