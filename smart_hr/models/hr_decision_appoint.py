@@ -15,7 +15,7 @@ class HrDecisionAppoint(models.Model):
     
     name=fields.Char(string='رقم القرار',required=1 ,states={'draft': [('readonly', 0)]})
     order_date=fields.Date(string='تاريخ القرار',required=1) 
-    date_hiring=fields.Date(string='تاريخ التعيين',required=1,default=fields.Datetime.now())
+    date_hiring=fields.Date(string='تاريخ التعيين',default=fields.Datetime.now(),  )
     date_hiring_end = fields.Date(string=u'تاريخ إنتهاء التعيين')  
     date_direct_action=fields.Date(string='تاريخ مباشرة العمل',required=1) 
     instead_exchange=fields.Boolean(string='صرف بدل تعيين')
@@ -23,9 +23,10 @@ class HrDecisionAppoint(models.Model):
     #info about employee
     employee_id=fields.Many2one('hr.employee',string='الموظف',required=1)
     number=fields.Char(string='الرقم الوظيفي',readonly=1) 
+    emp_code = fields.Char(string=u'رمز الوظيفة ',readonly=1) 
     country_id=fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
     emp_job_id  = fields.Many2one('hr.job', string='الوظيفة',store=True,readonly=1) 
-    emp_number_job=fields.Char(string='الرقم الوظيفي',store=True,readonly=1) 
+    emp_number_job=fields.Char(string='رقم الوظيفة',store=True,readonly=1) 
     emp_type_id=fields.Many2one('salary.grid.type',string='الصنف',store=True,readonly=1) 
     emp_department_id=fields.Many2one('hr.department',string='القسم',store=True,readonly=1)
     emp_grade_id=fields.Many2one('salary.grid.grade',string='المرتبة',store=True,readonly=1)
@@ -34,7 +35,8 @@ class HrDecisionAppoint(models.Model):
     emp_degree_id = fields.Many2one('salary.grid.degree', string='الدرجة',store=True, readonly=1)
     #info about job
     job_id = fields.Many2one('hr.job', string='الوظيفة',required=1)
-    number_job=fields.Char(string='الرقم الوظيفي',readonly=1) 
+    number_job=fields.Char(string='رقم الوظيفة',readonly=1) 
+    code = fields.Char(string=u'رمز الوظيفة ',readonly=1) 
     type_id=fields.Many2one('salary.grid.type',string='الصنف',readonly=1) 
     department_id=fields.Many2one('hr.department',string='القسم',readonly=1)
     grade_id=fields.Many2one('salary.grid.grade',string='المرتبة',readonly=1)
@@ -103,7 +105,7 @@ class HrDecisionAppoint(models.Model):
         elif self.type_appointment.recrutment_decider:
             self.message_post(u"تم إرسال الطلب من قبل '" + u" إلى رئيس الهئية ")
             self.state = 'budget'
-        
+#             elif self.type_appointment == self.env.ref('sm
             
     # control audit group_audit_appointment
     @api.multi
@@ -256,26 +258,56 @@ class HrDecisionAppoint(models.Model):
 
         
     @api.onchange('employee_id')
-    def _onchange_employee_id(self):
-        if self.employee_id :
+    def onchange_employee_id(self):
+        res = {}
+        employee_lines =[]
+        if self.type_appointment  :
+            if self.type_appointment == self.env.ref('smart_hr.data_hr_recrute_agent_public'):
+                appoint_line = self.env['hr.employee'].search([('id', '=', self.employee_id.id),('job_id.type_id.name','=',self.env.ref('smart_hr.data_salary_grid_type').name),('active', '=', True)],limit=1 )
+                print'appoint_line',appoint_line
+            elif self.type_appointment == self.env.ref('smart_hr.data_hr_recrute_salaire_article'):  
+                appoint_line = self.env['hr.employee'].search([('id', '=', self.employee_id.id),('job_id.type_id.name','=',self.env.ref('smart_hr.data_salary_grid_type4').name),('active', '=', True)],limit=1 )
+                print'appoint_line',appoint_line
+            elif self.type_appointment == self.env.ref('smart_hr.data_hr_recrute_agent_utilisateur'):  
+                appoint_line = self.env['hr.employee'].search([('id', '=', self.employee_id.id),('job_id.type_id.name','=',self.env.ref('smart_hr.data_salary_grid_type3').name),('active', '=', True)],limit=1 )
+                print'appoint_line',appoint_line
+            elif self.type_appointment == self.env.ref('smart_hr.data_hr_recrute_public_retraite'):  
+                appoint_line = self.env['hr.employee'].search([('id', '=', self.employee_id.id),('job_id.type_id.name','=',self.env.ref('smart_hr.data_salary_grid_type5').name),('active', '=', True)],limit=1 )
+            elif self.type_appointment == self.env.ref('smart_hr.data_hr_recrute_public_nosoudi'):  
+                appoint_line = self.env['hr.employee'].search([('id', '=', self.employee_id.id),('job_id.type_id.name','=',self.env.ref('smart_hr.data_salary_grid_type2').name),('active', '=', True)],limit=1 )
             
-            self.number = self.employee_id.number
-            self.country_id = self.employee_id.country_id
-            appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('active', '=', True)],limit=1 )
-            if appoint_line :
-                self.emp_job_id = appoint_line.job_id.id
-                self.emp_number_job =appoint_line.number
-                self.emp_type_id = appoint_line.type_id.id
-                self.emp_far_age = appoint_line.type_id.far_age
-                self.emp_grade_id = appoint_line.grade_id.id
-                self.emp_department_id = appoint_line.department_id.id
-           
+            
+            if appoint_line:
+                employee_lines = [rec.employee_id for rec in appoint_line]
+                
+                res['domain'] = {'employee_id': [('id', 'in', employee_lines)]}
+                return res
+            res['domain'] = {'employee_id': [('id', '=',-1)]}
+            return res
+              
+               
+              
+#                 if appoint_line  :
+#                     line = { 
+#                         self.number = appoint_line.employee_id.number
+#                         self.emp_job_id = appoint_line.job_id.id
+#                         self.emp_code = appoint_line.job_id.name.number
+#                         self.emp_number_job =appoint_line.number
+#                         self.emp_type_id = appoint_line.type_id.id
+#                         elf.emp_far_age = appoint_line.type_id.far_age
+#                         self.emp_grade_id = appoint_line.grade_id.id
+#                         self.emp_department_id = appoint_line.department_id.id
+#                         }
+#                         
+#                     res['domain'] = {'employee_id':  appoint_line}
+#             return res
 
                
     @api.onchange('job_id')
     def _onchange_job_id(self):
         if self.job_id :
             self.number_job = self.job_id.number
+            self.code = self.job_id.name.number
             self.type_id = self.job_id.type_id.id
             self.far_age = self.job_id.type_id.far_age
             self.grade_id = self.job_id.grade_id.id
@@ -304,7 +336,11 @@ class HrDecisionAppoint(models.Model):
                  raise ValidationError(u"تاريخ مباشرة العمل يجب ان يكون أكبر من تاريخ التعيين")
         
        
-        
+    @api.onchange('date_hiring_end')
+    def _onchange_date_hiring_end(self):
+         if self.date_direct_action :
+             if self.date_hiring > self.date_hiring_end:
+                 raise ValidationError(u"تاريخ إنتهاء التعيين يجب ان يكون أكبر من تاريخ التعيين")  
                   
 class HrTypeAppoint(models.Model):
     _name = 'hr.type.appoint'  

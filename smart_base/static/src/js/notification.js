@@ -53,6 +53,9 @@ var BaseNotification = Notification.extend({
             },
 
             'click .link2recall': function() {
+            	console.log('ok55555555555');
+            	var self = this;
+                this.rpc("/notification/snooze",{notif_id :this.eid }) 
                 this.destroy(true);
             },
 

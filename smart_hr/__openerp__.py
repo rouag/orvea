@@ -18,8 +18,6 @@
         'payroll/security/payroll_security.xml',
         'payroll/security/ir.model.access.csv',
 
-      
-
         'view/hr_menu.xml',
         'data/sequences.xml',
         'data/configurations.xml',
@@ -29,7 +27,7 @@
         'data/hr_termination_data.xml',
         'data/decisions_type_data.xml',
         'data/hr_appoint_type_data.xml',
-#       'data/decision_action_data.xml',
+        # 'data/decision_action_data.xml',
 
         # الوظائف
         'job/menu.xml',
@@ -55,6 +53,9 @@
         'job/views/job_update_model_report.xml',
         'job/views/report.xml',
 
+        # setting
+        'setting/menu.xml',
+
         # الإدارات
         'hr/menu.xml',
         'hr/view/hierarchy_level.xml',
@@ -77,6 +78,7 @@
         'views/hr_deputation_report.xml',
         'views/hr_dep_accr_report.xml',
         'views/report_point_decinne.xml',
+        'views/report_hr_direct_appoint.xml',
 
         'report/reports.xml',
         'report/hr_suspension_end_report.xml',
@@ -112,6 +114,7 @@
         'view/hr_holidays_extension.xml',
         'view/religion.xml',
         'view/courses_follow_up.xml',
+        'view/hr_direct_appoint_view.xml',
         # 'view/hr_improve_situation_view.xml',
 
         # القرارات

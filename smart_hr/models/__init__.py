@@ -40,4 +40,5 @@ from . import religion
 from . import courses_follow_up
 from . import hr_improve_situation
 from . import hr_employee_history
+from . import hr_direct_appoint
 
