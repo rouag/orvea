@@ -1,0 +1,210 @@
+
+/*	Icons
+  -----------------------------------------*/
+
+  /*
+	Icons-16
+***************/
+[class^="icon16-"],
+[class*=" icon16-"] {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+  vertical-align: text-top;
+  background-image: url("../img/icons/icons_16.png");
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  margin: 0px;
+}
+
+.icon16-calendar {background-position: 0 0;}
+.icon16-envelope {background-position: -17px 0;}
+.icon16-folder {background-position: -34px 0;}
+.icon16-help {background-position: -51px 0;}
+.icon16-message {background-position: -68px 0;}
+.icon16-logout {background-position: -85px 0;}
+
+  /*
+	Icons-30
+***************/
+[class^="icon30-"],
+[class*=" icon30-"] {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  vertical-align: text-top;
+  background-image: url("../img/icons/icons_30.png");
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  margin: 0px;
+}
+
+.icon30-ok {background-position: 0 0;}
+.icon30-envelope {background-position: -31px 0;}
+
+  /*
+	Icons-90
+***************/
+[class^="icon90-"],
+[class*=" icon90-"] {
+  display: inline-block;
+  width: 90px;
+  height: 80px;
+  line-height: 80px;
+  vertical-align: text-top;
+  background-image: url("../img/icons/icons_90.png");
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  margin: 0px;
+}
+
+.icon90-group {background-position: 0 0;}
+.icon90-map {background-position: -91px 0;}
+.icon90-plan {background-position: -182px 0;}
+.icon90-password {background-position: 0 -81px;}
+.icon90-file {background-position: -91px -81px;}
+.icon90-money {background-position: -182px -81px;}
+.icon90-megaphone {background-position: 0 -162px;}
+.icon90-warehouse {background-position: -91px -162px;}
+.icon90-business {background-position: -182px -162px;}
+
+  /*
+	Icons-22
+***************/
+[class^="icon22-"],
+[class*=" icon22-"] {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  line-height: 22px;
+  vertical-align: text-top;
+  background-image: url("../img/icons/icons_22.png");
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  margin: 0px;
+}
+
+.icon22-calendar {background-position: 0 0;}
+
+
+/*
+	Icons-22
+***************/
+[class^="icon22-"],
+[class*=" icon22-"] {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  line-height: 22px;
+  vertical-align: text-top;
+  background-image: url("../img/icons/icons_22.png");
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  margin: 0px;
+}
+
+.icon22-brush {background-position: 0 0;}
+.icon22-notif {background-position: -23px 0;}
+.icon22-star2 {background-position:  -46px 0;}
+.icon22-share {background-position: -69px 0;}
+.icon22-full {background-position: -92px 0;}
+.icon22-settings {background-position: -115px 0;}
+.icon22-edit {background-position: -138px 0;}
+.icon22-calendar {background-position: -159px 0;}
+.icon22-star-empty {background-position: -182px 0;}
+
+.icon22-folder {background-position: 0 -23px;}
+.icon22-check {background-position: -23px -23px;}
+.icon22-location {background-position:  -46px -23px;}
+.icon22-danger {background-position: -69px -23px;}
+.icon22-ribbon {background-position: -92px -23px;}
+.icon22-note {background-position: -115px -23px;}
+.icon22-calendar2 {background-position: -138px -23px;}
+.icon22-down {background-position: -159px -23px;}
+.icon22-star {background-position: -182px -23px;}
+
+/*
+	Icons-32
+***************/
+[class^="icon32-"],
+[class*=" icon32-"] {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  vertical-align: text-top;
+  background-image: url("../img/icons/icons_32.png");
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  margin: 0px;
+}
+
+.icon32-user {background-position: 0 0;}
+.icon32-lock {background-position: 0 -33px;}
+.icon32-avatar {height:38px;background-position: -33px 0;}
+
+/*
+	Icons-35
+***************/
+[class^="icon35-"],
+[class*=" icon35-"] {
+  display: inline-block;
+  width: 35px;
+  height: 29px;
+  line-height: 29px;
+  vertical-align: text-top;
+  background-image: url("../img/icons/icons_35.png");
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  margin: 0px;
+}
+
+.icon35-logout {background-position: 0 0;}
+.icon35-settings {background-position: -36px 0;}
+.icon35-magic {background-position: -72px 0;}
+.icon35-loop {background-position: -108px 0;}
+
+/*
+	Icons-38
+***************/
+[class^="icon38-"],
+[class*=" icon38-"] {
+  display: inline-block;
+  width: 38px;
+  height: 39px;
+  line-height: 39px;
+  vertical-align: text-top;
+  background-image: url("../img/icons/icons_38.png");
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  margin: 0px;
+}
+
+.icon38-check {background-position: 0 0;}
+.icon38-checked {background-position: 0 -40px;}
+
+/*
+	Icons-42
+***************/
+[class^="icon42-"],
+[class*=" icon42-"] {
+  display: inline-block;
+  width: 42px;
+  height: 42px;
+  line-height: 42px;
+  vertical-align: text-top;
+  background-image: url("../img/icons/icons_42.png");
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  margin: 0px;
+}
+
+.icon42-checkmark {background-position: 0 0;}
+.icon42-timer {background-position: 0 -43px;}
+.icon42-triangle {background-position: 0 -86px;}
+
+/*---------------------------------------------------------------------------------------------------------------
+		Responsive
+  ---------------------------------------------------------------------------------------------------------------*/

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="assets_backend" name="smart_theme assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script type="text/javascript" src="/smart_theme/static/src/js/odoo.js"></script>
+                
+                <script type="text/javascript" src="/smart_theme/static/src/js/debranding/title.js"></script>
+                <script type="text/javascript" src="/smart_theme/static/src/js/debranding/dialog.js"></script>
+                <script type="text/javascript" src="/smart_theme/static/src/js/debranding/announcement.js"></script>
+                <script type="text/javascript" src="/smart_theme/static/src/js/debranding/dashboard.js"></script>
+                <script type="text/javascript" src="/smart_theme/static/src/js/debranding/field_upgrade.js"></script>
+                
+                <link rel='stylesheet' href="/smart_theme/static/src/less/backend.less"/>
+		
+		        
+            </xpath>
+        </template>
+        
+        
+    </data>
+</openerp>
