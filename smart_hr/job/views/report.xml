@@ -33,6 +33,10 @@
 		<report id="job_modifying_model_report" model="False" report_type="qweb-pdf"
 			string="نموذج طلب تعديل وظيفة" name="smart_hr.report_job_modifying_model"
 			file="smart_hr.report_job_modifying_model" />
+			
+		<report id="job_career_model_report" model="False" report_type="qweb-pdf"
+			string="نموذج الحياة الوظيفية" name="smart_hr.report_job_career_model"
+			file="smart_hr.report_job_career_model" />
 
 
 	</data>
