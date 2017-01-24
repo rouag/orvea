@@ -61,7 +61,8 @@ class HrEmployee(models.Model):
     dep_city = fields.Many2one('res.city', strin=u'المدينة', related="department_id.dep_city")
     dep_Side = fields.Many2one('city.side', string=u'الجهة', related="department_id.dep_Side")
     history_ids = fields.One2many('hr.employee.history', 'employee_id', string=u'سجل الاجراءات')
-    
+    diploma_id = fields.Many2one('hr.employee.diploma', string=u'الشهادة')
+    specialization_ids = fields.Many2many('hr.employee.specialization', string=u'الاختصاص')
     
     @api.multi
     def name_get(self):
@@ -155,7 +156,17 @@ class HrEmployee(models.Model):
                 'res_id': employee.id,
             }
             return value
-        
+
+    @api.onchange('diploma_id')
+    def onchange_diploma_id(self):
+        res = {}
+        if self.diploma_id:
+            specialization_ids = self.diploma_id.specialization_ids.ids
+            res['domain'] = {'specialization_ids': [('id', 'in', specialization_ids)]}
+        return res
+
+
+
 class HrEmployeeHolidaysStock(models.Model):
     _name = 'hr.employee.holidays.stock'
 
@@ -253,3 +264,21 @@ class HrEmployeeEducationLevel(models.Model):
     name = fields.Char(string=u'الإسم')
     sequence = fields.Char(string=u'الرتبة')
     leave_type = fields.Many2one('hr.holidays.status', string='leave type')
+    code = fields.Char(string=u'الرمز')
+    
+class HrEmployeeDiploma(models.Model):
+    _name = 'hr.employee.diploma'  
+    _description = u'الشهادة العلمية'
+
+    name = fields.Char(string=u'المسمّى')
+    specialization_ids = fields.Many2many('hr.employee.specialization',string=u'الاختصاص')
+    code = fields.Char(string=u'الرمز')
+
+
+class HrEmployeeSpecialization(models.Model):
+    _name = 'hr.employee.specialization'  
+    _description = u'الاختصاص'
+  
+    name = fields.Char(string=u'المسمّى')
+    code = fields.Char(string=u'الرمز')
+
