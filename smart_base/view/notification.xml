@@ -6,7 +6,7 @@
 			<field name="model">base.notification</field>
 			<field name="type">form</field>
 			<field name="arch" type="xml">
-				<form string="التنبيهات">
+				<form string="التنبيهات" create="0" edit="0" delete="0">
 				<header name="main">
 						<button name="resend_notif" string="إعادة إرسال"
 							type="object"
@@ -15,16 +15,16 @@
 					<sheet>
 						<group>
 							<group>
-								<field name="title" string="العنوان"/>
-								<field name="message" string="المحتوى"/>
-								<field name="show_date" string="تاريخ التنبيه" />
+								<field name="title" />
+								<field name="message" />
+								<field name="show_date"  />
 								<field name="user_id" />
 								<field name="type"/>
 								<field name="interval_between_notif"/>
 							</group>
 							<group>
 								<field name="to_read" invisible="1" />
-								<field name="first_notif"/>
+								<field name="first_notif" invisible="1"/>
 								<field name="notif" />
 								<field name="sms"  />
 								<field name="email"  />
@@ -40,7 +40,7 @@
 			<field name="name">notif - Tree</field>
 			<field name="model">base.notification</field>
 			<field name="arch" type="xml">
-				<tree>
+				<tree create="0" edit="0" delete="0">
 					<field name="title"  />
 					<field name="show_date" />
 					<field name="to_read"  />
