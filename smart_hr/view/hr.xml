@@ -340,7 +340,7 @@
 								</h1>
 							</div>
 							<notebook>
-								<page string="بيانات شخصية">
+								<page name="public" string="بيانات شخصية">
 									<group>
 										<group string="بيانات شخصية">
 											<field name="country_id" options='{"no_open": True, "no_create": True}'
