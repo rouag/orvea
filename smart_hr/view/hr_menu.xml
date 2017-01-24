@@ -26,6 +26,11 @@
 			
 		<menuitem id="menu_hr_deputation_root" parent="hr_root" name="الأنتدابات" sequence="17" />
 
+		<menuitem id="hr_root_evaluation" parent="hr_root" name="التقييم "  sequence="89" groups="smart_hr.group_hrm"/>	
+		<menuitem id="hr_root_evaluation_configuration" parent="hr_root_evaluation" name="الاعدادات "  sequence="2" groups="smart_hr.group_hrm"/>	
+		
+		<menuitem id="hr_root_job" name="إدارة الوظائف" sequence="15" parent="hr_root" />	
+		
 		<menuitem id="hr_root_decision" parent="hr_root" name="القرارات"  sequence="40" groups="smart_hr.group_hrm"/>		
 			
 	</data>

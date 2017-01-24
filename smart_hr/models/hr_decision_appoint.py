@@ -96,12 +96,13 @@ class HrDecisionAppoint(models.Model):
         elif self.type_appointment.enterview_manager:
             self.message_post(u"تم إرسال الطلب من قبل '" +  u"' إلى مسؤول على مقابلة شخصية")
             self.state = 'waiting'
-        elif self.type_appointment.personnel_hr:
-            self.message_post(u"تم إرسال الطلب من قبل '" +  u"' إلى فريق الموارد البشرية")
-            self.state = 'hrm'
         elif self.type_appointment.recrutment_manager:
             self.message_post(u"تم إرسال الطلب من قبل '" + u"' إلى صاحب صلاحية التعين")
             self.state = 'manager'
+        elif self.type_appointment.personnel_hr:
+            self.message_post(u"تم إرسال الطلب من قبل '" +  u"' إلى فريق الموارد البشرية")
+            self.state = 'hrm'
+      
         elif self.type_appointment.recrutment_decider:
             self.message_post(u"تم إرسال الطلب من قبل '" + u" إلى رئيس الهئية ")
             self.state = 'budget'
@@ -257,51 +258,51 @@ class HrDecisionAppoint(models.Model):
 
 
         
-    @api.onchange('employee_id')
-    def onchange_employee_id(self):
-        res = {}
-        employee_lines =[]
-        if self.type_appointment  :
-            if self.type_appointment == self.env.ref('smart_hr.data_hr_recrute_agent_public'):
-                appoint_line = self.env['hr.employee'].search([('id', '=', self.employee_id.id),('job_id.type_id.name','=',self.env.ref('smart_hr.data_salary_grid_type').name),('active', '=', True)],limit=1 )
-                print'appoint_line',appoint_line
-            elif self.type_appointment == self.env.ref('smart_hr.data_hr_recrute_salaire_article'):  
-                appoint_line = self.env['hr.employee'].search([('id', '=', self.employee_id.id),('job_id.type_id.name','=',self.env.ref('smart_hr.data_salary_grid_type4').name),('active', '=', True)],limit=1 )
-                print'appoint_line',appoint_line
-            elif self.type_appointment == self.env.ref('smart_hr.data_hr_recrute_agent_utilisateur'):  
-                appoint_line = self.env['hr.employee'].search([('id', '=', self.employee_id.id),('job_id.type_id.name','=',self.env.ref('smart_hr.data_salary_grid_type3').name),('active', '=', True)],limit=1 )
-                print'appoint_line',appoint_line
-            elif self.type_appointment == self.env.ref('smart_hr.data_hr_recrute_public_retraite'):  
-                appoint_line = self.env['hr.employee'].search([('id', '=', self.employee_id.id),('job_id.type_id.name','=',self.env.ref('smart_hr.data_salary_grid_type5').name),('active', '=', True)],limit=1 )
-            elif self.type_appointment == self.env.ref('smart_hr.data_hr_recrute_public_nosoudi'):  
-                appoint_line = self.env['hr.employee'].search([('id', '=', self.employee_id.id),('job_id.type_id.name','=',self.env.ref('smart_hr.data_salary_grid_type2').name),('active', '=', True)],limit=1 )
-            
-            
-            if appoint_line:
-                employee_lines = [rec.employee_id for rec in appoint_line]
-                
-                res['domain'] = {'employee_id': [('id', 'in', employee_lines)]}
-                return res
-            res['domain'] = {'employee_id': [('id', '=',-1)]}
-            return res
+#     @api.onchange('employee_id')
+#     def onchange_employee_id(self):
+#         res = {}
+#         employee_lines =[]
+#         if self.type_appointment  :
+#             if self.type_appointment == self.env.ref('smart_hr.data_hr_recrute_agent_public'):
+#                 appoint_line = self.env['hr.employee'].search([('id', '=', self.employee_id.id),('job_id.type_id.name','=',self.env.ref('smart_hr.data_salary_grid_type').name),('active', '=', True)],limit=1 )
+#                 print'appoint_line',appoint_line
+#             elif self.type_appointment == self.env.ref('smart_hr.data_hr_recrute_salaire_article'):  
+#                 appoint_line = self.env['hr.employee'].search([('id', '=', self.employee_id.id),('job_id.type_id.name','=',self.env.ref('smart_hr.data_salary_grid_type4').name),('active', '=', True)],limit=1 )
+#                 print'appoint_line',appoint_line
+#             elif self.type_appointment == self.env.ref('smart_hr.data_hr_recrute_agent_utilisateur'):  
+#                 appoint_line = self.env['hr.employee'].search([('id', '=', self.employee_id.id),('job_id.type_id.name','=',self.env.ref('smart_hr.data_salary_grid_type3').name),('active', '=', True)],limit=1 )
+#                 print'appoint_line',appoint_line
+#             elif self.type_appointment == self.env.ref('smart_hr.data_hr_recrute_public_retraite'):  
+#                 appoint_line = self.env['hr.employee'].search([('id', '=', self.employee_id.id),('job_id.type_id.name','=',self.env.ref('smart_hr.data_salary_grid_type5').name),('active', '=', True)],limit=1 )
+#             elif self.type_appointment == self.env.ref('smart_hr.data_hr_recrute_public_nosoudi'):  
+#                 appoint_line = self.env['hr.employee'].search([('id', '=', self.employee_id.id),('job_id.type_id.name','=',self.env.ref('smart_hr.data_salary_grid_type2').name),('active', '=', True)],limit=1 )
+#             
+#             
+#             if appoint_line:
+#                 employee_lines = [rec.employee_id for rec in appoint_line]
+#                 
+#                 res['domain'] = {'employee_id': [('id', 'in', employee_lines)]}
+#                 return res
+#             res['domain'] = {'employee_id': [('id', '=',-1)]}
+#             return res
               
                
               
-#                 if appoint_line  :
-#                     line = { 
-#                         self.number = appoint_line.employee_id.number
-#                         self.emp_job_id = appoint_line.job_id.id
-#                         self.emp_code = appoint_line.job_id.name.number
-#                         self.emp_number_job =appoint_line.number
-#                         self.emp_type_id = appoint_line.type_id.id
-#                         elf.emp_far_age = appoint_line.type_id.far_age
-#                         self.emp_grade_id = appoint_line.grade_id.id
-#                         self.emp_department_id = appoint_line.department_id.id
-#                         }
-#                         
-#                     res['domain'] = {'employee_id':  appoint_line}
-#             return res
-
+    @api.onchange('employee_id')
+    def _onchange_employee_id(self):
+        if self.employee_id :
+            self.number = self.employee_id.number
+            self.country_id = self.employee_id.country_id
+            appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('state','=','done'),('active', '=', True)],limit=1 )
+            if appoint_line :
+                self.job_id = appoint_line.job_id.id
+                self.code = appoint_line.job_id.name.number
+                self.number_job =appoint_line.number
+                self.type_id = appoint_line.type_id.id
+                self.far_age = appoint_line.type_id.far_age
+                self.grade_id = appoint_line.grade_id.id
+                self.department_id = appoint_line.department_id.id
+                self.date_direct_action = appoint_line. date_direct_action
                
     @api.onchange('job_id')
     def _onchange_job_id(self):
