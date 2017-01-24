@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_job_update">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.landscape_layout">
+						<div class="page">
+							<div class="oe_structure" />
+
+							<div class="col-xs-12 text-center">
+								<h3 style="color:#395870;">
+									<strong>
+										تقرير تحوير وظائف
+									</strong>
+									<br />
+									<br />
+								</h3>
+							</div>
+							<t t-if="data['form']['report_type']=='requested'">
+								<div class="col-xs-12 text-center">
+									<strong>بيان بالوظائف المطلوب تحويرها</strong>
+									<br />
+									<br />
+								</div>
+							</t>
+							<t t-if="data['form']['report_type']=='accepted'">
+								<div class="col-xs-12 text-center">
+									<strong> بيان الوظائف الموافق على تحويرها في القرار رقم (<span t-esc="data['form']['decision_number']" />) في <span t-esc="data['form']['decision_date']" /> </strong>
+									<br />
+									<br />
+								</div>
+							</t>
+
+							<!-- بيان بالوظائف المطلوب تحويرها -->
+							<t t-if="data['form']['report_type']=='requested'">
+								<table class="table table-condensed">
+									<thead>
+										<tr>
+											<th>م</th>
+											<th>مسمى الوظيفة الحالي</th>
+											<th>الموقع</th>
+											<th>المرتبه</th>
+											<th>الرقم</th>
+											<th>مسمى الوظيفة المقترح</th>
+											<th>الموقع</th>
+											<th>الرمز التصنيفي</th>
+										</tr>
+									</thead>
+
+
+									<tbody>
+
+										<t t-set="i" t-value="1" />
+
+										<tr t-foreach="get_lines(data['form'])" t-as="line">
+											<td t-esc="i" />
+											<td t-esc="line.job_id.name.name" />
+											<td t-esc="line.department_id.name" />
+											<td t-esc="line.grade_id.name" />
+											<td t-esc="line.job_id.number" />
+											<td t-esc="line.new_name.name" />
+											<td t-esc="line.department_id.name" />
+											<td t-esc="line.new_type_id.code" />
+
+											<t t-set="i" t-value="i+1" />
+										</tr>
+									</tbody>
+
+
+								</table>
+							</t>
+							<!-- بيان الوظائف الموافق على تحويرها -->
+							<t t-if="data['form']['report_type']=='accepted'">
+								<table class="table table-condensed">
+									<thead>
+										<tr>
+											<th rowpan="2">م</th>
+											<th colspan="3">معلومات عن الوظيفة بالمسمى الحالي</th>
+
+											<th rowpan="2">حالة الوظيفة</th>
+											<th rowpan="2">مسمى المقترح</th>
+											<th rowpan="2">الرمز التصنيفي</th>
+											<th rowpan="2">مبررات لجنة التحوير</th>
+										</tr>
+										<tr>
+											<th></th>
+											<th>مسمى الحالي</th>
+											<th>الموقع</th>
+											<th>المرتبه</th>
+											<th></th>
+											<th></th>
+											<th></th>
+											<th></th>
+										</tr>
+									</thead>
+
+
+									<tbody>
+
+										<t t-set="i" t-value="1" />
+
+										<tr t-foreach="get_lines(data['form'])" t-as="line">
+											<td t-esc="i" />
+											<td t-esc="line.job_id.name.name" />
+											<td t-esc="line.grade_id.name" />
+											<td t-esc="line.job_id.number" />
+											<td t-esc="dict(line.job_id.fields_get(allfields=['state'])['state']['selection'])[line.job_id.state]" />
+											<td t-esc="line.new_name.name" />
+											<td t-esc="line.new_type_id.code" />
+											<td>---</td>
+											
+
+											<t t-set="i" t-value="i+1" />
+										</tr>
+									</tbody>
+
+
+								</table>
+							</t>
+						</div>
+					</t>
+
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+								

@@ -3,7 +3,7 @@
 	<data>
 
 <report id="hr_contract_report" model="hr.contract" name="smart_hr.report_hr_contract"
-			report_type="qweb-pdf" string="طباعة" file="smart_hr.report_hr_contract" />
+			report_type="qweb-pdf" string="طباعة العقد" file="smart_hr.report_hr_contract" />
 			
 			
 	</data>

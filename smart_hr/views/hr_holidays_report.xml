@@ -178,7 +178,7 @@
 
 						<!-- إجازة مرضية -->
 						<t
-							t-if="o.holiday_status_id in [docs.env.ref('smart_hr.data_hr_holiday_status_illness_normal'),docs.env.ref('smart_hr.data_hr_holiday_status_illness_work_accident'),docs.env.ref('smart_hr.data_hr_holiday_status_illness_serious')]">
+							t-if="o.holiday_status_id in [docs.env.ref('smart_hr.data_hr_holiday_status_illness')]">
 							<div class="page" style="direction:rtl;">
 								<div class="row">
 									<div class="col-md-12">

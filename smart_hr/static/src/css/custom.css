@@ -1,0 +1,36 @@
+.o_form_field_number {
+  text-align: right !important;
+ width:60px !important;
+}
+
+.oe_smart_inline {
+  width: 50% !important;
+}
+
+.oe_smart_middle_name {
+float: left !important;
+  width: 20px !important;
+}
+
+.align_change_css {
+    text-align: center !important;
+}
+
+.smart_label_father_name_padding_right{
+        padding-right: 0px !important;
+}
+
+.smart_label_grnad_father_name_padding_left{
+        padding-right: 20px !important;
+}
+.smart_label_grnad_father2_name_padding_left{
+        padding-right: 29px  !important;
+}
+.smart_label_family_name_padding_left{
+        padding-right: 58% !important;
+}
+
+
+.align_left_css {
+    text-align: left !important;
+}

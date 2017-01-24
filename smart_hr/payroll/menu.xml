@@ -5,6 +5,8 @@
 
 		<menuitem id="hr_payroll_root" name="الرواتب" groups="group_payroll_management" parent="hr_root" sequence="25" />
 
+		<menuitem id="hr_bonus_root" parent="hr_payroll_root" name="المزايا المالية" sequence="5" />
+		
 		<menuitem id="hr_deduction_root" parent="hr_payroll_root" name="الحسميات" sequence="10" />
 
 		<menuitem id="hr_payroll_reporting" name="التقارير" groups="group_payroll_management" sequence="15" parent="hr_payroll_root" />

@@ -8,7 +8,11 @@
 				<link rel='stylesheet' href="/smart_hr/static/src/css/reports.css" />
 			</xpath>
 		</template>
-		
+		        <template id="assets_backend" name="slnee_hr_assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="smart_hr/static/src/css/custom.css"/>
+            </xpath>
+        </template>
 	</data>
 </openerp>
 								

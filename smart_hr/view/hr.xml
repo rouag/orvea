@@ -24,11 +24,33 @@
 		<record model="ir.actions.act_window" id="action_hr_employee">
 			<field name="name">الموظفون</field>
 			<field name="res_model">hr.employee</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
+			<field name="view_mode">kanban,tree,form</field>
 			<field name="domain">[('employee_state','=','employee')]</field>
 		</record>
 
+		<record id="hr_kanban_view_employees_inherit" model="ir.ui.view">
+			<field name="name">hr.employee.kanaban.inherit</field>
+			<field name="model">hr.employee</field>
+			<field name="type">kanban</field>
+			<field name="inherit_id" ref="hr.hr_kanban_view_employees" />
+			<field name="arch" type="xml">
+				<data>
+					<field name="name" position="after">
+						<field name="space" />
+						<field name="father_middle_name" />
+						<field name="space" />
+						<field name="father_name" />
+						<field name="family_name" />
+					</field>
+				</data>
+			</field>
+		</record>
+
+		<record id="action_hr_employee_kanban" model="ir.actions.act_window.view">
+			<field name="view_mode">kanban</field>
+			<field name="view_id" ref="hr_kanban_view_employees_inherit" />
+			<field name="act_window_id" ref="action_hr_employee" />
+		</record>
 		<record id="action_hr_employee_tree" model="ir.actions.act_window.view">
 			<field name="view_mode">tree</field>
 			<field name="view_id" ref="view_employee_tree" />
@@ -40,8 +62,16 @@
 			<field name="view_id" ref="hr.view_employee_form" />
 			<field name="act_window_id" ref="action_hr_employee" />
 		</record>
+
+
+
+
+
 		<menuitem id="hr_employee_menu" name="الموظفون" sequence="10"
 			parent="hr_root_employees" action="action_hr_employee" groups="smart_hr.group_employees" />
+
+
+
 
 		<!-- بياناتي -->
 		<record id="view_employee_mine_form" model="ir.ui.view">
@@ -54,14 +84,31 @@
 						<div name="button_box" invisible="1" />
 						<field name="image" widget="image" class="oe_avatar"
 							options="{&quot;preview_image&quot;:&quot;image_medium&quot;}" />
-						<div class="oe_title">
-							<label for="name" class="oe_edit_only" />
-							<h1>
-								<field name="name" placeholder="اسم الموظف" attrs="{'required': 1}" />
-							</h1>
+						<div>
+
+							<group col="13" class='smart_td_label_center'>
+								<label name="name" string="الاسم" colspan="3" />
+								<label name="father_name" string="إسم الأب" colspan="3" />
+								<label name="grandfather_name" string="اسم الجد" colspan="3" />
+								<label name="grandfather2_name" string="اسم الجد الثاني"
+									colspan="3" />
+								<label name="family_name" string="الاسم العائلي" colspan="1" />
+							</group>
+							<group col="13">
+								<field name="name" nolabel="1" colspan="2" />
+								<field name="father_middle_name" nolabel="1" />
+								<field name="father_name" nolabel="1" colspan="2" />
+								<field name="grandfather_middle_name" nolabel="1" />
+								<field name="grandfather_name" nolabel="1" colspan="2" />
+								<field name="grandfather2_middle_name" nolabel="1" />
+								<field name="grandfather2_name" nolabel="1" colspan="2" />
+								<field name="family_name" nolabel="1" colspan="2" />
+							</group>
+
 							<label for="number" class="oe_edit_only" />
 							<h1>
-								<field name="number" placeholder="الرقم الوظيفي" attrs="{'required': 1}" />
+								<field name="number" placeholder="الرقم الوظيفي" attrs="{'required': 1}"
+									class="oe_smart_inline" />
 
 							</h1>
 						</div>
@@ -69,7 +116,7 @@
 							<page string="بيانات شخصية">
 								<group>
 									<group string="بيانات شخصية">
-										<field name="father_name" attrs="{'required': 1}" />
+
 										<field name="country_id" options='{"no_open": True, "no_create": True}'
 											attrs="{'required': 1}" />
 
@@ -117,13 +164,17 @@
 								<group>
 									<group string="بيانات العمل">
 										<field name="department_id" on_change="onchange_department_id(department_id)" />
+										<field name="dep_Side" options="{'no_create': True}" />
+										<field name="dep_city" options="{'no_create': True}" />
 										<field name="job_id"
 											attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 										<field name="parent_id" />
-										<field name="service_years" />
+										<field name="service_duration" attrs="{'readonly': 1}" />
+										<field name="promotion_duration" attrs="{'readonly': 1}" />
+
 										<field name="external_decision" />
 										<field name="traveling_ticket" />
-										<field name="traveling_ticket_familiar" />
+										<field name="traveling_family_ticket" />
 
 									</group>
 									<group string="خصائص أخرى">
@@ -160,8 +211,8 @@
 										<field name="holidays_available_stock" />
 										<field name="token_holidays_sum" />
 										<field name="periode" />
-										<field name="period_id" invisible="1"/>
-										
+										<field name="period_id" invisible="1" />
+
 									</tree>
 								</field>
 								<field name="promotions_history" readonly="1">
@@ -253,14 +304,38 @@
 							<div name="button_box" invisible="1" />
 							<field name="image" widget="image" class="oe_avatar"
 								options="{&quot;preview_image&quot;:&quot;image_medium&quot;}" />
-							<div class="oe_title">
-								<label for="name" class="oe_edit_only" />
-								<h1>
-									<field name="name" placeholder="اسم الموظف" attrs="{'required': 1}" />
-								</h1>
+							<div>
+								<group col="13" class='smart_td_label_center'>
+									<label name="name" string="الاسم" colspan="2" />
+									<label name="space" string=" " colspan="1" />
+									<label name="father_name" string="إسم الأب" colspan="2"
+										class="smart_label_father_name_padding_right" />
+									<label name="space" string=" " colspan="1" />
+									<label name="grandfather_name" string="اسم الجد" colspan="2"
+										class="smart_label_grnad_father_name_padding_left" />
+									<label name="space" string=" " colspan="1" />
+									<label name="grandfather2_name" string="اسم الجد الثاني"
+										class="smart_label_grnad_father2_name_padding_left" colspan="2" />
+									<label name="space" string=" " colspan="1" />
+
+									<label name="family_name" string="الاسم العائلي" colspan="1"
+										class="smart_label_family_name_padding_left" />
+								</group>
+								<group col="13">
+									<field name="name" nolabel="1" colspan="2" />
+									<field name="father_middle_name" nolabel="1" />
+									<field name="father_name" nolabel="1" colspan="2" />
+									<field name="grandfather_middle_name" nolabel="1" />
+									<field name="grandfather_name" nolabel="1" colspan="2" />
+									<field name="grandfather2_middle_name" nolabel="1" />
+									<field name="grandfather2_name" nolabel="1" colspan="2" />
+									<field name="family_name" nolabel="1" colspan="2" />
+								</group>
+
 								<label for="number" class="oe_edit_only" />
 								<h1>
-									<field name="number" placeholder="الرقم الوظيفي" attrs="{'required': 1}" />
+									<field name="number" placeholder="الرقم الوظيفي" attrs="{'required': 1}"
+										class="oe_smart_inline" />
 
 								</h1>
 							</div>
@@ -268,7 +343,6 @@
 								<page name="public" string="بيانات شخصية">
 									<group>
 										<group string="بيانات شخصية">
-											<field name="father_name" attrs="{'required': 1}" />
 											<field name="country_id" options='{"no_open": True, "no_create": True}'
 												attrs="{'required': 1}" />
 
@@ -319,10 +393,13 @@
 									<group>
 										<group string="بيانات العمل">
 											<field name="department_id" on_change="onchange_department_id(department_id)" />
+											<field name="dep_Side" options="{'no_create': True}" />
+											<field name="dep_city" options="{'no_create': True}" />
 											<field name="job_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="parent_id" />
-											<field name="service_years" />
+											<field name="service_duration" attrs="{'readonly': 1}" />
+											<field name="promotion_duration" attrs="{'readonly': 1}" />
 											<field name="external_decision" />
 										</group>
 										<group string="خصائص أخرى">
@@ -330,6 +407,7 @@
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="recruiter" widget="selection" />
 											<field name="recruiter_date" />
+											<field name="begin_work_date" />
 											<field name="calendar_id" />
 
 										</group>
@@ -354,7 +432,8 @@
 									</field>
 								</page>
 								<page string="أرصدة الاجازات والترقيات">
-									<field name="holidays_balance" domain="[('period_id.date_to','&lt;=',context_today())]">
+									<field name="holidays_balance"
+										domain="[('period_id.date_to','&lt;=',context_today())]">
 										<tree string="أرصدة الاجازات ">
 											<field name="holiday_status_id" />
 											<field name="entitlement_name" />
@@ -412,6 +491,7 @@
 			<field name="view_id" ref="view_employee_request_form" />
 			<field name="act_window_id" ref="action_employee_request" />
 		</record>
+
 		<menuitem id="employee_request_menu" name="طلبات تسجيل موظف"
 			groups="smart_hr.group_employee_request" sequence="1" parent="hr_root_employees"
 			action="action_employee_request" />

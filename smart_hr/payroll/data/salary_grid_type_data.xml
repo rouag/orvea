@@ -3,12 +3,8 @@
 	<data noupdate="1">
 
 		<!--الاصناف -->
-		<record id="data_salary_grid_type" model="salary.grid.type">
-			<field name="name"> موظفين رسميين</field>
-			<field name="code">1
-			</field>
-			<field name="far_age">60</field>
-		</record>
+	
+		
 		<record id="data_salary_grid_type" model="salary.grid.type">
 			<field name="name"> الموظفين الرسميين</field>
 			<field name="code">1

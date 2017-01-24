@@ -36,9 +36,9 @@
 										<th width="7%">الخروج</th>
 										<th width="7%">تأخير</th>
 										<th width="7%">خروج مبكر</th>
-										<th width="8%">وقت إضافي</th>
-										<th width="7%">إستئذان</th>
 										<th width="7%">غياب</th>
+										<th width="7%">إستئذان</th>
+										<th width="8%">وقت إضافي</th>
 										<th width="7%">إجازة</th>
 									</tr>
 								</thead>
@@ -107,10 +107,10 @@
 											</t>
 										</td>
 										<td class="text-center">
-											<t t-if="line.hours_supp">
-												<span t-esc="format_time(line.hours_supp)" />
+											<t t-if="line.absence">
+												<span t-field="line.absence" style="color:red;" />
 											</t>
-											<t t-if="not line.hours_supp">
+											<t t-if="not line.absence">
 												-
 											</t>
 										</td>
@@ -123,10 +123,10 @@
 											</t>
 										</td>
 										<td class="text-center">
-											<t t-if="line.absence">
-												<span t-field="line.absence" style="color:red;" />
+											<t t-if="line.hours_supp">
+												<span t-esc="format_time(line.hours_supp)" />
 											</t>
-											<t t-if="not line.absence">
+											<t t-if="not line.hours_supp">
 												-
 											</t>
 										</td>
@@ -149,23 +149,18 @@
 										<td class="text-center">
 											<span t-esc="format_time(total_leave)" />
 										</td>
-
-										<td class="text-center">
-											<span t-esc="format_time(total_hours_supp)" />
-										</td>
-
-										<td class="text-center">
-											<span t-esc="format_time(total_authorization)" />
-										</td>
-
 										<td class="text-center">
 											<span t-esc="format_time(total_absence)" />
 										</td>
-
+										<td class="text-center">
+											<span t-esc="format_time(total_authorization)" />
+										</td>
+										<td class="text-center">
+											<span t-esc="format_time(total_hours_supp)" />
+										</td>
 										<td class="text-center">
 											<span t-esc="format_time(total_holidays)" />
 										</td>
-
 									</tr>
 								</tfoot>
 

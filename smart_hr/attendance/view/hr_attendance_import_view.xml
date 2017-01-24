@@ -56,8 +56,8 @@
 		</record>
 
 		<menuitem action="action_hr_attendance_import" name="تحديث  سجل الحضور والإنصراف"
-			id="menu_hr_attendance_import" parent="menu_attendance_root" groups="smart_hr.group_attandance_update"
-			sequence="10" />
+			id="menu_hr_attendance_import" parent="menu_attendance_configuration" groups="smart_hr.group_attandance_update"
+			sequence="100" />
 
 
 

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_job_grade">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.landscape_layout">
+						<div class="page">
+							<div class="oe_structure" />
+
+							<div class="col-xs-12 text-center">
+								<h3 style="color:#395870;">
+									<strong>
+										تقرير تخفيض وظائف
+									</strong>
+									<br />
+									<br />
+								</h3>
+							</div>
+							<t t-if="data['form']['report_type']=='requested'">
+								<div class="col-xs-12 text-center">
+									<strong>من المرتبة</strong>
+									<span t-esc="data['form']['grade_from_id'][1]" />
+									<strong>إلى المرتبة</strong>
+									<span t-esc="data['form']['grade_to_id'][1]" />
+									<br />
+									<br />
+								</div>
+							</t>
+							<t t-if="data['form']['report_type']=='accepted'">
+								<div class="col-xs-12 text-center">
+									<strong>الوظائف الموافق على تخفيضها</strong>
+									<br />
+									<br />
+								</div>
+							</t>
+							<table class="table table-condensed">
+								<thead>
+									<tr>
+										<th style="text-align:center;" width="50%" colspan="5">
+											<t t-if="data['form']['report_type']=='requested'">الوضع الحالي</t>
+											<t t-if="data['form']['report_type']=='accepted'">الوضع السابق</t>
+										</th>
+										<th style="text-align:center;" colspan="5">
+											<t t-if="data['form']['report_type']=='requested'">الوضع المقترح</t>
+											<t t-if="data['form']['report_type']=='accepted'">الوضع الحالي</t>
+										</th>
+									</tr>
+									<tr>
+										<th>م</th>
+										<th>مسمى الوظيفة</th>
+										<th>الموقع</th>
+										<th>المرتبه</th>
+										<th>الرقم</th>
+										<th>مسمى الوظيفة</th>
+										<th>الموقع</th>
+										<th>المرتبه</th>
+										<th>الرقم</th>
+										<th>الرمز الوظيفي</th>
+									</tr>
+								</thead>
+
+
+								<tbody>
+
+									<t t-set="i" t-value="1" />
+									<tr t-foreach="get_lines(data['form'])" t-as="line">
+
+										<td t-esc="i" />
+										<td t-esc="line.job_id.name.name" />
+										<td t-esc="line.department_id.name" />
+										<td t-esc="line.grade_id.name" />
+										<td t-esc="line.job_id.number" />
+
+										<td t-esc="line.job_id.name.name" />
+										<td t-esc="line.department_id.name" />
+										<td t-esc="line.new_grade_id.name" />
+										<td t-esc="line.job_number" />
+										<td t-esc="line.job_id.name.number" />
+
+										<t t-set="i" t-value="i+1" />
+									</tr>
+								</tbody>
+
+
+							</table>
+						</div>
+					</t>
+
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+								

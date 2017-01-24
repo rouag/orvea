@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<report id="job_grade_report" model="False" report_type="qweb-pdf"
+			string="تقرير تخفيض الوظائف" name="smart_hr.report_job_grade" file="smart_hr.report_job_grade"
+			paperformat="smart_base.paperformat_landscape" />
+
+		<report id="job_update_report" model="False" report_type="qweb-pdf"
+			string="تقرير تحوير الوظائف" name="smart_hr.report_job_update" file="smart_hr.report_job_update"
+			paperformat="smart_base.paperformat_landscape" />
+
+		<report id="job_description_report" model="False" report_type="qweb-pdf"
+			string="تقرير وصف أعمال وظيفة" name="smart_hr.report_job_description"
+			file="smart_hr.report_job_description" />
+
+		<report id="job_move_dep_report" model="False" report_type="qweb-pdf"
+			string="نموذج طلب نقل وظيفة" name="smart_hr.report_job_move_dep"
+			file="smart_hr.report_job_move_dep" />
+
+		<report id="job_update_model_report" model="False" report_type="qweb-pdf"
+			string="نموذج تحوير وظيفة" name="smart_hr.report_job_update_model"
+			file="smart_hr.report_job_update_model" />
+		
+		<report id="job_scale_down_model_report" model="False" report_type="qweb-pdf"
+			string="نموذج تخفيض وظيفة" name="smart_hr.report_job_scale_down_model"
+			file="smart_hr.report_job_scale_down_model" />
+			
+		<report id="job_create_model_report" model="False" report_type="qweb-pdf"
+			string="نموذج تخفيض وظيفة" name="smart_hr.report_job_create_model"
+			file="smart_hr.report_job_create_model" />
+			
+		<report id="job_modifying_model_report" model="False" report_type="qweb-pdf"
+			string="نموذج طلب تعديل وظيفة" name="smart_hr.report_job_modifying_model"
+			file="smart_hr.report_job_modifying_model" />
+
+
+	</data>
+</openerp>
+		

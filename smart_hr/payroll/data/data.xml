@@ -3,116 +3,116 @@
 	<data noupdate="0">
 		<!-- البدلات -->
 
-		<record id="hr_allowance_01" model="hr.allowance">
+		<record id="hr_allowance_type_01" model="hr.allowance.type">
 			<field name="name">بدل‬ ‫نقل‬</field>
 			<field name="code">01</field>
 		</record>
-		<record id="hr_allowance_02" model="hr.allowance">
+		<record id="hr_allowance_type_02" model="hr.allowance.type">
 			<field name="name">‫‫بدل‬ أمانات‬</field>
 			<field name="code">02</field>
 		</record>
-		<record id="hr_allowance_03" model="hr.allowance">
+		<record id="hr_allowance_type_03" model="hr.allowance.type">
 			<field name="name">‫‫بدل‬ سكن‬</field>
 			<field name="code">03</field>
 		</record>
-		<record id="hr_allowance_04" model="hr.allowance">
+		<record id="hr_allowance_type_04" model="hr.allowance.type">
 			<field name="name">‫‫‫بدل‬ مكافحة‬ الإرهاب‬</field>
 			<field name="code">04</field>
 		</record>
 		‫
-		<record id="hr_allowance_05" model="hr.allowance">
+		<record id="hr_allowance_type_05" model="hr.allowance.type">
 			<field name="name">‫‫‫‫بدل‬ مكافأة‬ سائق‬ معالي‬ الرئيس‬</field>
 			<field name="code">05</field>
 		</record>
 		‫
-		<record id="hr_allowance_06" model="hr.allowance">
+		<record id="hr_allowance_type_06" model="hr.allowance.type">
 			<field name="name">‫‫بدل‬ تعيين‬</field>
 			<field name="code">06</field>
 		</record>
-		<record id="hr_allowance_07" model="hr.allowance">
+		<record id="hr_allowance_type_07" model="hr.allowance.type">
 			<field name="name">‫‫بدل ‬طبيعة‬ عمل‬</field>
 			<field name="code">07</field>
 		</record>
 		‫
-		<record id="hr_allowance_08" model="hr.allowance">
+		<record id="hr_allowance_type_08" model="hr.allowance.type">
 			<field name="name">بدل‬ غلاء المعيشة‬</field>
 			<field name="code">08</field>
 		</record>
 		‫
-		<record id="hr_allowance_09" model="hr.allowance">
+		<record id="hr_allowance_type_09" model="hr.allowance.type">
 			<field name="name">بدل‬ ضرر‬</field>
 			<field name="code">09</field>
 		</record>
 		‫
-		<record id="hr_allowance_10" model="hr.allowance">
+		<record id="hr_allowance_type_10" model="hr.allowance.type">
 			<field name="name">علاوة دورية‬</field>
 			<field name="code">10</field>
 		</record>
 
 		<!-- المكافآت‬ -->
-		<record id="hr_reward_01" model="hr.reward">
+		<record id="hr_reward_type_01" model="hr.reward.type">
 			<field name="name">مكافأة‬ نهاية‬ الخدمة‬</field>
 			<field name="code">01</field>
 		</record>
-		<record id="hr_reward_02" model="hr.reward">
+		<record id="hr_reward_type_02" model="hr.reward.type">
 			<field name="name">‬مكافأة‬ خارج الدوام</field>
 			<field name="code">02</field>
 		</record>
-		<record id="hr_reward_03" model="hr.reward">
+		<record id="hr_reward_type_03" model="hr.reward.type">
 			<field name="name">‬مكافأة‬ توزيع البريد</field>
 			<field name="code">03</field>
 		</record>
-		<record id="hr_reward_04" model="hr.reward">
+		<record id="hr_reward_type_04" model="hr.reward.type">
 			<field name="name">مكافأة‬ الإنتداب‬</field>
 			<field name="code">04</field>
 		</record>
-		<record id="hr_reward_05" model="hr.reward">
+		<record id="hr_reward_type_05" model="hr.reward.type">
 			<field name="name">مكافأة‬ تدريبية‬</field>
 			<field name="code">05</field>
 		</record>
-		<record id="hr_reward_06" model="hr.reward">
+		<record id="hr_reward_type_06" model="hr.reward.type">
 			<field name="name">‬مكافأة‬ إتلاف المخدرات</field>
 			<field name="code">06</field>
 		</record>
-		<record id="hr_reward_07" model="hr.reward">
+		<record id="hr_reward_type_07" model="hr.reward.type">
 			<field name="name">‬مكافأة‬ تفوق</field>
 			<field name="code">07</field>
 		</record>
-		<record id="hr_reward_08" model="hr.reward">
+		<record id="hr_reward_type_08" model="hr.reward.type">
 			<field name="name">مكافأة‬ المترجمين‬</field>
 			<field name="code">08</field>
 		</record>
-		<record id="hr_reward_09" model="hr.reward">
+		<record id="hr_reward_type_09" model="hr.reward.type">
 			<field name="name">‬مكافأة‬ العاملين في المشاعر المقدسة</field>
 			<field name="code">09</field>
 		</record>
-		<record id="hr_reward_10" model="hr.reward">
+		<record id="hr_reward_type_10" model="hr.reward.type">
 			<field name="name">مكافأة‬ مباشرة الأموال العامة‬</field>
 			<field name="code">10</field>
 		</record>
-		<record id="hr_reward_11" model="hr.reward">
+		<record id="hr_reward_type_11" model="hr.reward.type">
 			<field name="name">‬مكافأة‬ سائق معالي الرئيس</field>
 			<field name="code">11</field>
 		</record>
-		<record id="hr_reward_12" model="hr.reward">
+		<record id="hr_reward_type_12" model="hr.reward.type">
 			<field name="name">‬مكافأة‬ حسم النزاعات</field>
 			<field name="code">12</field>
 		</record>
-		<record id="hr_reward_13" model="hr.reward">
+		<record id="hr_reward_type_13" model="hr.reward.type">
 			<field name="name">مكافأة‬ ممثلي الإدعاء العام‬</field>
 			<field name="code">13</field>
 		</record>
-		<record id="hr_reward_14" model="hr.reward">
+		<record id="hr_reward_type_14" model="hr.reward.type">
 			<field name="name">مكافأة‬ المتعاونين المستثمرين‬</field>
 			<field name="code">14</field>
 		</record>
 
 		<!-- التعويضات -->
-		<record id="hr_indemnity_01" model="hr.indemnity">
+		<record id="hr_indemnity_type_01" model="hr.indemnity.type">
 			<field name="name">تعويض‬ ‫وفاة‬</field>
 			<field name="code">01</field>
 		</record>
-		<record id="hr_indemnity_02" model="hr.indemnity">
+		<record id="hr_indemnity_type_02" model="hr.indemnity.type">
 			<field name="name">تعويض‬ ‫إصابة‬</field>
 			<field name="code">02</field>
 		</record>

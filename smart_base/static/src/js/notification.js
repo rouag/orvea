@@ -30,7 +30,6 @@ var BaseNotification = Notification.extend({
         this.events = _.extend(this.events || {}, {
             'click .link2event': function() {
                 var self = this;
-
                 this.rpc("/web/action/load", {
                 	action_id: this.action_id,
                 }).then(function(r) {
@@ -41,18 +40,22 @@ var BaseNotification = Notification.extend({
             'click .link2showed': function() {
                 var self = this;
                 console.log(self);
-                console.log(this.eid);
-                this.rpc("/notification/validate", {
-                	notif_id: this.eid,
+                console.log(self.eid);
+                self.destroy(true);
+                self.rpc("/notification/validate", {
+                	notif_id: self.eid,
                 	
                 }).then(function(r) {
                 	
                 	console.log('ok');
                 });
-                this.destroy(true);
+               
             },
 
             'click .link2recall': function() {
+            	console.log('ok55555555555');
+            	var self = this;
+                this.rpc("/notification/snooze",{notif_id :this.eid }) 
                 this.destroy(true);
             },
 
