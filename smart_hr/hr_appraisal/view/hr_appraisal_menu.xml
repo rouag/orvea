@@ -32,11 +32,11 @@
 
 
         <!-- Left menu elements: Technical Configuration -->
-        <menuitem name="إعدادات" id="menu_surveys_configuration" parent="hr_root_evaluation" groups="base.group_no_one" sequence="100" />
-        <menuitem name="Pages" id="menu_survey_page_form1" action="survey.action_survey_page_form" parent="menu_surveys_configuration" sequence="1"/>
-        <menuitem name="Questions" id="menu_survey_question_form1" action="survey.action_survey_question_form" parent="menu_surveys_configuration" sequence="2"/>
-        <menuitem name="Labels" id="menu_survey_label_form1" action="survey.action_survey_label_form" parent="menu_surveys_configuration" sequence="3"/>
-        <menuitem name="User Input Lines" id="menu_survey_response_line_form" action="survey.action_survey_user_input_line" parent="menu_surveys_configuration" sequence="4"/>
+        <menuitem name="إعدادات" id="menu_surveys_configuration_samart" parent="hr_root_evaluation"  sequence="100" />
+        <menuitem name="صفحات" id="menu_survey_page_form1_samart" action="survey.action_survey_page_form" parent="menu_surveys_configuration_samart" sequence="1"/>
+        <menuitem name="الأسئلة" id="menu_survey_question_form1_samart" action="survey.action_survey_question_form" parent="menu_surveys_configuration_samart" sequence="2"/>
+        <menuitem name="التسميات" id="menu_survey_label_form1_samart" action="survey.action_survey_label_form" parent="menu_surveys_configuration_samart" sequence="3"/>
+        <menuitem name="نتائج الإختبار" id="menu_survey_response_line_form_samart" action="survey.action_survey_user_input_line" parent="menu_surveys_configuration_samart" sequence="4"/>
 	
 
 
