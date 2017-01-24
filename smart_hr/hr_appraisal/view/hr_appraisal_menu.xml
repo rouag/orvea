@@ -17,7 +17,7 @@
 		
 		
 <!-- survey -->
-<!-- <delete id="survey.menu_surveys" model="ir.ui.menu"/> -->
+<delete id="survey.menu_surveys" model="ir.ui.menu"/>
 
 
 
