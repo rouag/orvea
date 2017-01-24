@@ -16,6 +16,8 @@
 							<t t-set="job_update_ids" t-value="get_job_update_ids(o.job_id)" />
 							<t t-set="scale_down_ids" t-value="get_scale_down_ids(o.job_id)" />
 							<t t-set="scale_up_ids" t-value="get_scale_up_ids(o.job_id)" />
+							<t t-set="move_dep_ids" t-value="get_move_dep_ids(o.job_id)" />
+							
 							<div class="col-xs-12">
 							<table class="table">
 							<tr>
@@ -128,10 +130,50 @@
 								<td colspan="4" class="text-center"><strong>الرفع على الوظيفة</strong></td>
 							</tr>
 							<tr>
+								<td colspan="4">
+									<div>
+										<div style="width:20%;float:right;"><span>المسمى الوظيفي </span></div>
+										<div style="width:20%;float:right;"><span>رقم القرار</span></div>
+										<div style="width:20%;float:right;"><span>تاريخه</span></div>
+										<div style="width:20%;float:right;"><span>المرتبة</span></div>
+										<div style="width:20%;float:right;"><span>المرتبة الجديدة</span></div>
+									</div>
+									<div>
+										<t  t-foreach="scale_up_ids" t-as="line">
+											<div style="width:20%;float:right;"><span t-esc="line.job_id.name.name" /></div>
+											<div style="width:20%;float:right;"><span t-esc="line.decision_number" /></div>
+											<div style="width:20%;float:right;"><span t-esc="line.decision_date" /></div>
+											<div style="width:20%;float:right;"><span t-esc="line.job_id.grade_id.name" /></div>
+											<div style="width:20%;float:right;"><span t-esc="line.job_id.new_grade_id.name" /></div>
+										</t>
+									</div>
+								</td>
+							</tr>
+							<tr>
 								<td colspan="4" class="text-center"></td>
 							</tr>
 							<tr>
 								<td colspan="4" class="text-center"><strong>الخفض على الوظيفة</strong></td>
+							</tr>
+							<tr>
+								<td colspan="4">
+									<div>
+										<div style="width:20%;float:right;"><span>المسمى الوظيفي </span></div>
+										<div style="width:20%;float:right;"><span>رقم القرار</span></div>
+										<div style="width:20%;float:right;"><span>تاريخه</span></div>
+										<div style="width:20%;float:right;"><span>المرتبة</span></div>
+										<div style="width:20%;float:right;"><span>المرتبة الجديدة</span></div>
+									</div>
+									<div>
+										<t  t-foreach="scale_down_ids" t-as="line">
+											<div style="width:20%;float:right;"><span t-esc="line.job_id.name.name" /></div>
+											<div style="width:20%;float:right;"><span t-esc="line.decision_number" /></div>
+											<div style="width:20%;float:right;"><span t-esc="line.decision_date" /></div>
+											<div style="width:20%;float:right;"><span t-esc="line.job_id.grade_id.name" /></div>
+											<div style="width:20%;float:right;"><span t-esc="line.job_id.new_grade_id.name" /></div>
+										</t>
+									</div>
+								</td>
 							</tr>
 							<tr>
 								<td colspan="4" class="text-center"></td>
@@ -140,7 +182,27 @@
 								<td colspan="4" class="text-center"><strong>النقل على الوظيفة</strong></td>
 							</tr>
 							<tr>
-								<td colspan="4" class="text-center"></td>
+								<td colspan="4">
+									<div>
+										<div style="width:20%;float:right;"><span>المسمى الوظيفي </span></div>
+										<div style="width:20%;float:right;"><span>الصنف</span></div>
+										<div style="width:20%;float:right;"><span>المرتبة</span></div>
+										<div style="width:20%;float:right;"><span>الادارة</span></div>
+										<div style="width:20%;float:right;"><span>الادارة الجديدة</span></div>
+									</div>
+									<div>
+										<t  t-foreach="move_dep_ids" t-as="line">
+											<div style="width:20%;float:right;"><span t-esc="line.job_id.name.name" /></div>
+											<div style="width:20%;float:right;"><span t-esc="line.type_id.name" /></div>
+											<div style="width:20%;float:right;"><span t-esc="line.grade_id.name" /></div>
+											<div style="width:20%;float:right;"><span t-esc="line.department_id.name" /></div>
+											<div style="width:20%;float:right;"><span t-esc="line.new_department_id.name" /></div>
+										</t>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4" ></td>
 							</tr>
 							</table>
 							

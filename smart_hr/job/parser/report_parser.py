@@ -524,7 +524,14 @@ class JobCareerModelReport(report_sxw.rml_parse):
             'get_job_update_ids': self._get_job_update_ids,
             'get_scale_down_ids': self._get_scale_down_ids,
             'get_scale_up_ids': self._get_scale_up_ids,
+            'get_move_dep_ids': self._get_move_dep_ids,
         })
+
+    def _get_move_dep_ids(self, job_id):
+        move_dep_ids = self.pool.get('hr.job.move.department.line').search(self.cr, self.uid, [('job_id', '=', job_id.id)])
+        if move_dep_ids:
+            return self.pool.get('hr.job.move.department.line').browse(self.cr, self.uid, move_dep_ids)
+        return []
 
     def _get_scale_up_ids(self, job_id):
         scale_up_ids = self.pool.get('hr.job.move.grade.line').search(self.cr, self.uid, [('job_id', '=', job_id.id), ('job_move_grade_id.state', '=', 'scale_up')])
