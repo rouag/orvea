@@ -60,6 +60,9 @@ class HrEmployee(models.Model):
     promotion_duration = fields.Integer(string=u'مدة الترقية(يوم)', compute='_compute_promotion_days')
     dep_city = fields.Many2one('res.city', strin=u'المدينة', related="department_id.dep_city")
     dep_Side = fields.Many2one('city.side', string=u'الجهة', related="department_id.dep_Side")
+    history_ids = fields.One2many('hr.employee.history', 'employee_id', string=u'سجل الاجراءات')
+    
+    
     @api.multi
     def name_get(self):
         res = []
