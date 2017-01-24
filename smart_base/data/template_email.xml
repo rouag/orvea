@@ -2,7 +2,7 @@
 <openerp>
     
       <data>
-        <record id="notification_template_warning" model="mail.template">
+       <!--  <record id="notification_template_warning" model="mail.template">
             <field name="name">notif mail Alert</field>
  			<field name="email_from">${object.user_id.partner_id.id}</field>
             <field name="subject">${object.name}</field>
@@ -22,7 +22,7 @@
     </div>
                 ]]>
                 </field>
-        </record>
+        </record> -->
         
         
         

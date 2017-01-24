@@ -1,0 +1,66 @@
+/***************************************************
+****************************************************
+						CSS SEPM
+Version: 1.0
+Date : 2015-01-18
+Projet: SEPM
+*****************************************************
+*****************************************************/
+
+@import url("../repository/bootstrap/css/bootstrap.css");
+@import url("../repository/bootstrap/css/bootstrap-theme.css");
+
+@import url("../repository/css/print.css");
+@import url("../repository/css/bootstrap_rtl.css");
+
+@font-face { font-family: 'Droid Arabic Kufi';font-style: normal;font-weight: 400; src: url(fonts/droidarabickufi/DroidKufi-Regular.eot?#iefix) format('embedded-opentype'), url(fonts/droidarabickufi/DroidKufi-Regular.woff) format('woff'), url(fonts/droidarabickufi/DroidKufi-Regular.ttf) format('truetype'); } 
+@font-face { font-family: 'Droid Arabic Kufi';font-style: normal;font-weight: 700; src: url(fonts/droidarabickufiBold/DroidKufi-Bold.eot?#iefix) format('embedded-opentype'), url(fonts/droidarabickufiBold/DroidKufi-Bold.woff) format('woff'), url(fonts/droidarabickufiBold/DroidKufi-Bold.ttf) format('truetype'); } 
+
+/* ==========================================================================
+   Global
+   ========================================================================== */
+   html, body{direction:rtl;}
+   body{margin:0;background-color:#fff;font-family: 'Droid Arabic Kufi';font-style: normal;font-weight: 400;}
+   a, button, input[type="submit"]{outline: none !important;}
+
+   .text-center{text-align:center;}
+   .text-left{text-align:left;}
+
+	.row {margin-left: -15px;margin-right: -15px;}
+	.row:before,.row:after{content: " ";display: table;}
+	.row:after {clear: both;}
+
+	[class^="col-"], [class*=" col-"]{  position: relative;min-height: 1px;padding-left: 15px;padding-right: 15px;}
+	.col-xs-12 { width: 100%; } .col-xs-11 { width: 91.66666667%; } .col-xs-10 { width: 83.33333333%; } .col-xs-9 { width: 75%; } .col-xs-8 { width: 66.66666667%; } .col-xs-7 { width: 58.33333333%; } .col-xs-6 { width: 50%; } .col-xs-5 { width: 41.66666667%; } .col-xs-4 { width: 33.33333333%; } .col-xs-3 { width: 25%; } .col-xs-2 { width: 16.66666667%; } .col-xs-1 { width: 8.33333333%; }
+	.col-sm-12 { width: 100%; } .col-sm-11 { width: 91.66666667%; } .col-sm-10 { width: 83.33333333%; } .col-sm-9 { width: 75%; } .col-sm-8 { width: 66.66666667%; } .col-sm-7 { width: 58.33333333%; } .col-sm-6 { width: 50%; } .col-sm-5 { width: 41.66666667%; } .col-sm-4 { width: 33.33333333%; } .col-sm-3 { width: 25%; } .col-sm-2 { width: 16.66666667%; } .col-sm-1 { width: 8.33333333%; }
+	.col-md-12 { width: 100%; } .col-md-11 { width: 91.66666667%; } .col-md-10 { width: 83.33333333%; } .col-md-9 { width: 75%; } .col-md-8 { width: 66.66666667%; } .col-md-7 { width: 58.33333333%; } .col-md-6 { width: 50%; } .col-md-5 { width: 41.66666667%; } .col-md-4 { width: 33.33333333%; } .col-md-3 { width: 25%; } .col-md-2 { width: 16.66666667%; } .col-md-1 { width: 8.33333333%; }
+	.col-lg-12 { width: 100%; } .col-lg-11 { width: 91.66666667%; } .col-lg-10 { width: 83.33333333%; } .col-lg-9 { width: 75%; } .col-lg-8 { width: 66.66666667%; } .col-lg-7 { width: 58.33333333%; } .col-lg-6 { width: 50%; } .col-lg-5 { width: 41.66666667%; } .col-lg-4 { width: 33.33333333%; } .col-lg-3 { width: 25%; } .col-lg-2 { width: 16.66666667%; } .col-lg-1 { width: 8.33333333%; }
+	
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+	@page {margin: 0.5cm;}
+	
+	.file-header{text-align:left;}
+	.file-header > p{}
+	.file-header > p span{float:left;display:inline-block;width:200px;text-align:center;}
+	
+	.file-title{text-align:center;}
+	
+	.file-header , .file-body{padding: 15px;}
+	.file-body span{font-weight:700;}
+	
+	.file-details  h2{margin:10px 0;font-size:14px;font-weight: 700;}
+	.file-details  .amount, .file-details  .total{display:inline-block;margin:0;padding-left:10px;line-height:24px;width:200px;text-align:left;vertical-align:top;}
+	.file-details  .total{color: green;}
+	
+	.file-footer{padding: 0 15px;}
+	.file-footer p{color:#6c6c6c;font-size: 12px;font-style:italic;}
+
+@media print {
+	@page {margin: 0.5cm;}
+	
+	.file-header{text-align:left;}
+	.file-header > p{}
+	.file-header > p span{float:left;display:inline-block;width:200px;text-align:center;}
+}
