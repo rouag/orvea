@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data noupdate="1">
+		<record id="smart_theme.new_name" model="ir.config_parameter">
+			<field name="key">smart_theme.new_name</field>
+			<field name="value">
+			</field>
+		</record>
+
+		<record id="smart_theme.custom_title" model="ir.config_parameter">
+			<field name="key">smart_theme.new_title</field>
+			<field name="value">
+			</field>
+		</record>
+
+		<record id="smart_theme.favicon_url" model="ir.config_parameter">
+			<field name="key">smart_theme.favicon_url</field>
+			<field name="value">
+			</field>
+		</record>
+
+		<record id="smart_theme.planner_footer" model="ir.config_parameter">
+			<field name="key">smart_theme.planner_footer</field>
+			<field name="value">
+			</field>
+		</record>
+	</data>
+
+</openerp>

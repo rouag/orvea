@@ -6,10 +6,10 @@
 	   
 		<template id="layout" inherit_id="web.layout" name="Layout Inherit">
 				<xpath expr="//title" position="replace" >
-					<title>your company</title>
+					<title>هيئة التحقيق و الادعاء العام</title>
 				</xpath>
 				<xpath expr="//link" position="replace" >
-					 <link rel="shortcut icon" href="/smart_theme/static/src/img/favicons/faviconDemo.ico" type="image/x-icon"/>
+					 <link rel="shortcut icon" href="/smart_theme/static/src/img/favicons/favicon.png" type="image/x-icon"/>
 				</xpath>
 		</template>
 		
@@ -48,7 +48,7 @@
 			<div id="login" class="row">
 				<div id="boxed" class="col-sm-8 col-md-6 col-lg-4 col-sm-offset-2 col-md-offset-3 col-lg-offset-4">
 					<div class="boxHead">
-						<img src="/smart_theme/static/src/img/logo/logo_demo.png" alt="" />
+						<img src="/smart_theme/static/src/img/logo/logo_h.png" alt="" />
 					</div>
 					<div class="boxBody">
 						<h1>الانظمة الداخلية</h1>

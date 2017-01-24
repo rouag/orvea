@@ -42,7 +42,7 @@ class BaseNotification(models.Model):
     notif = fields.Boolean('إشعار')
     sms = fields.Boolean('رسائل الجوال')
     email = fields.Boolean('البريد الالكتروني')
-    template_id = fields.Many2one('mail.template', string='القالب', default=_template_notif)
+    template_id = fields.Many2one('mail.template', string='القالب')
     date_moins_que = fields.Date( method=True, string="date moins que")
     date_plus_que = fields.Date( method=True, string="date plus que")
     type = fields.Selection([

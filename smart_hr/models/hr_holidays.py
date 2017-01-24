@@ -259,18 +259,32 @@ class HrHolidays(models.Model):
                                                                                     })
         else:
             if self.compensation_type == 'holiday':
-                self.employee_id.compensation_stock-=self.duration
+                self.employee_id.compensation_stock -= self.duration
             if self.compensation_type == 'money':
-                self.employee_id.compensation_stock=0
+                self.employee_id.compensation_stock = 0
 #                 مدة الترقية
-        if self.holiday_status_id.promotion_deductible:   
+        if self.holiday_status_id.promotion_deductible:
             active_promotion = self.env['hr.employee.promotion.history'].search([('active_duration', '=', 'True'), ('employee_id', '=', self.employee_id.id)])
             if active_promotion:
                 for prom in active_promotion:
                     prom.balance -= self.duration
 
         if self.holiday_status_id.deductible_duration_service:
-            self.employee_id.service_duratione -= self.duration
+            self.employee_id.service_duration -= self.duration
+
+
+#             create history_line
+        type=''
+        if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_illness').id:
+            type = '83'
+        elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id:
+            type = '02'
+        elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_sport').id:
+            type = '21'
+        elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional').id:
+            type = '43'
+        if type:
+            self.env['hr.employee.history'].sudo().add_action_line(self.employee_id.id, self.name, self.date, type)
         self.state = 'done'
 
 

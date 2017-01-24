@@ -1,0 +1,141 @@
+/***************************************************
+****************************************************
+						CSS SEPM : Login
+Version: 1.0
+Projet: SEPM : Login
+*****************************************************
+*****************************************************/
+
+@import url("../repository/css/bootstrap_rtl.css");
+@import url("../repository/css/sp2013.css");
+
+@import url("icons.css");
+
+@font-face { font-family: 'Droid Arabic Kufi';font-style: normal;font-weight: 400; src: url(fonts/droidarabickufi/DroidKufi-Regular.eot?#iefix) format('embedded-opentype'), url(fonts/droidarabickufi/DroidKufi-Regular.woff) format('woff'), url(fonts/droidarabickufi/DroidKufi-Regular.ttf) format('truetype'); } 
+@font-face { font-family: 'Droid Arabic Kufi';font-style: normal;font-weight: 700; src: url(fonts/droidarabickufiBold/DroidKufi-Bold.eot?#iefix) format('embedded-opentype'), url(fonts/droidarabickufiBold/DroidKufi-Bold.woff) format('woff'), url(fonts/droidarabickufiBold/DroidKufi-Bold.ttf) format('truetype'); } 
+
+/* ==========================================================================
+   Global
+   ========================================================================== */
+   html, body{direction:rtl;}
+   body{background-color:#fff;font-family: 'Droid Arabic Kufi';font-style: normal;font-weight: 400;}
+   a, button, input[type="submit"]{outline: none !important;}
+
+/* ==========================================================================
+Helper classes
+========================================================================== */
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+	#loginForm{color:#fff;}
+
+   #loginForm .form-horizontal{padding:35px 45px;border-radius:3px;background-color:rgba(0,0,0,0.78);box-shadow:1px 1px 1px #000;}
+   #loginForm .text-center{margin-bottom: 25px;}
+   #loginForm .input-group{position:relative;width:100%;}
+   #loginForm .input-group-addon{position:absolute;right:0;top:15px;padding:0 15px;width:auto;background:none;border:none;border-left:1px solid #a1a2a3;border-radius: 0;}
+   #loginForm .form-control{padding-right:80px;height:70px;color:#fff;font-size:16px;background:none;border:1px solid rgba(255,255,255, 0.8);border-radius: 3px;}
+   #loginForm .has-error .form-control{border-color: red;}
+   #loginForm .has-success .form-control{border-color: green;}
+   #loginForm .form-control:focus{border-color:rgba(102,204,255, 0.8);}
+   #loginForm a{position:absolute;top:0;left: 8px;line-height: 65px;display:inline-block;color:#ffcc00;font-size:18px;z-index: 2;}
+   #loginForm .btn-primary{display:block;width: 100%;color:#fff;font-size:23px;border:none;background: #0099ff;}
+   #loginForm .checkbox{position:relative;}
+   #loginForm .checkbox span{position:absolute;top:0;right:0;display:block;width:35px;height:35px;border:1px solid rgba(255,255,255, 0.8);border-radius:3px;}
+   #loginForm .checkbox span i{float:left;display:none;width:33px;height:33px;background-position: -40px -40px;background-color:#0099ff;}
+   #loginForm .checkbox label{padding-right:50px;}
+   #loginForm .checkbox input{opacity: 0;}
+   
+   #forgotPsswdBox{display:none;}
+
+/* ==========================================================================
+   ripple
+   ========================================================================== */
+button{
+  position: relative;
+  outline:none;
+  cursor: pointer;
+}
+
+.fab{
+  border-radius: 50%;
+  margin:0;
+  padding: 20px;
+}
+
+.material{
+  position:relative;
+  color:white;
+  margin: 20px auto;
+  height:400px;
+  width:500px;
+  background:#f45673;
+  
+}
+
+.ripple{
+  overflow:hidden;
+}
+
+.ripple-effect{
+  position: absolute;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  background: white;
+
+    
+  animation: ripple-animation 2s;
+}
+
+
+@keyframes ripple-animation {
+    from {
+      transform: scale(1);
+      opacity: 0.4;
+    }
+    to {
+      transform: scale(100);
+      opacity: 0;
+    }
+}
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 767px) {
+	#loginDesc h1{margin-left:0;font-size:20px;}
+	#loginDesc h1 span{font-size:24px;font-weight: 700;}
+	#loginDesc p{margin-left:0;line-height:normal;font-size:16px;}
+	
+	#loginForm .form-horizontal{margin-bottom:30px;padding:20px 15px;}
+	#loginForm .form-group{margin:15px 0;}
+	#loginForm .form-control, #loginForm a{font-size:14px;}
+	
+	.input-group {text-align:left;}
+	.input-group .form-control{float:none;text-align:right;}
+	#loginForm a{position:static;top:auto;left:auto;margin-top:10px;line-height: normal;}
+	#loginForm .btn-primary{font-size:18px;}
+	#loginForm .checkbox{text-align:right;}
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+
+}
+
+@media (max-width: 991px) {
+	
+}
+
+@media (min-width: 991px) and (max-width: 1199px) {
+	
+}
+
+@media (min-width: 768px) and (max-width: 991px) {}
+
+@media (min-width: 992px) {}
+
+@media (max-width: 1199px) {}
+
+@media (min-width: 1200px) and (max-width: 1400px) {}
+
+@media (min-width: 1400px) {}

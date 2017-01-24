@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_job_career_model">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.landscape_layout">
+						<div class="page">
+							<div class=" text-center">
+								<h3 style="color:#395870;">
+									نموذج الحياة الوظيفية
+									<br />
+								</h3>
+							</div>
+							<t t-set="recuitments" t-value="get_recuitments(o.job_id)" />
+							<t t-set="job_update_ids" t-value="get_job_update_ids(o.job_id)" />
+							<t t-set="scale_down_ids" t-value="get_scale_down_ids(o.job_id)" />
+							<t t-set="scale_up_ids" t-value="get_scale_up_ids(o.job_id)" />
+							<div class="col-xs-12">
+							<table class="table">
+							<tr>
+								<td colspan="4" class="text-center"><strong>معلومات الوظيفة</strong></td>
+							</tr>
+							<tr>
+								<td><strong>رقم الوظيفة</strong></td>
+								<td><span t-esc="o.job_id.number" /></td>
+								<td><strong>مسمى الوظيفة</strong></td>
+								<td><span t-esc="o.job_id.name.name" /></td>
+							</tr>
+							<tr>
+								<td><strong>الفرع</strong></td>
+								<td></td>
+								<td><strong>الإدارة</strong></td>
+								<td><span t-esc="o.job_id.department_id.name" /></td>
+							</tr>
+							<tr>
+								<td><strong>السلم الوظيفي</strong></td>
+								<td><span t-esc="o.job_id.type_id.name" /></td>
+								<td><strong>المرتبة</strong></td>
+								<td><span t-esc="o.job_id.grade_id.name" /></td>
+							</tr>
+							<tr>
+								<td><strong>رمز الوظيفة</strong></td>
+								<td><span t-esc="o.job_id.name.number" /></td>
+								<td><strong>المجموعة الوظيفية</strong></td>
+								<td><span t-esc="o.job_id.specific_id.name" /></td>
+							</tr>
+							<tr>
+								<td><strong>تاريخ الاستحداث</strong></td>
+								<td><span t-esc="o.job_id.create_date" /></td>
+								<td><strong>حالة الوظيفة</strong></td>
+								<td><t t-esc="dict(o.job_id.fields_get(allfields=['state'])['state']['selection'])[o.job_id.state]" /></td>
+							</tr>
+							<tr>
+								<td colspan="4" class="text-center"><strong>تاريخ الوظيفة</strong></td>
+							</tr>
+							<tr>
+								<td colspan="4">
+									<div>
+										<div style="width:10%;float:right;"><span>المرتبة</span><br></br><span t-esc="o.job_id.grade_id.name" /></div>
+										<div style="width:10%;float:left;"><span>رقمها</span><br></br><span t-esc="o.job_id.number" /></div>
+										<div style="width:10%;float:left;"><span>مسمى الوظيفة</span><br></br><span t-esc="o.job_id.name.name" /></div>
+										<div style="width:10%;float:left;"><span>الفرع</span></div>
+										<div style="width:10%;float:left;"><span>الإدارة</span><br></br><span t-esc="o.job_id.department_id.name" /></div>
+										<div style="width:10%;float:left;"><span>تاريخ الاجراء</span></div>
+										<div style="width:10%;float:left;"><span>الاجراء</span></div>
+										<div style="width:10%;float:left;"><span>المرتبة الجديدة</span></div>
+										<div style="width:10%;float:left;"><span>رقمها</span></div>
+										<div style="width:10%;float:left;"><span>مسمى الوظيفة الجديد</span></div>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4" class="text-center"><strong>بيانات شاغلي الوظيفة</strong></td>
+							</tr>
+							<tr>
+								<td colspan="4">
+									<div>
+										<div style="width:20%;float:right;"><span>رقم الموظف</span></div>
+										<div style="width:20%;float:right;"><span>إسم الموظف</span></div>
+										<div style="width:20%;float:right;"><span>مسمى الوظيفة</span></div>
+										<div style="width:20%;float:right;"><span>تاريخ شغلها</span></div>
+										<div style="width:20%;float:right;"><span>الاجراء</span></div>
+									</div>
+									<div>
+										<t  t-foreach="recuitments" t-as="line">
+											<div style="width:20%;float:right;"><span t-esc="line.employee_id.number"/></div>
+											<div style="width:20%;float:right;"><span t-esc="line.employee_id.name"/></div>
+											<div style="width:20%;float:right;"><span t-esc="line.emp_job_id.name.name"/></div>
+											<div style="width:20%;float:right;"><span t-esc="line.employee_id.recuiter_date"/></div>
+											<div style="width:20%;float:right;"><span t-esc="line.type_appointment.name"/></div>
+										</t>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4" class="text-center"><strong>التحوير على الوظيفة</strong></td>
+							</tr>
+							<tr>
+								<td colspan="4">
+									<div>
+										<div style="width:11.11%;float:right;"><span>المسمى الوظيفي الجديد</span></div>
+										<div style="width:11.11%;float:right;"><span>الفرع الجديد</span></div>
+										<div style="width:11.11%;float:right;"><span>الادارة الجديدة</span></div>
+										<div style="width:11.11%;float:right;"><span>المسمى القديم</span></div>
+										<div style="width:11.11%;float:right;"><span>الفرع القديم</span></div>
+										<div style="width:11.11%;float:right;"><span>الإدارة القديمة</span></div>
+										<div style="width:11.11%;float:right;"><span>تاريخ الاجراء</span></div>
+										<div style="width:11.11%;float:right;"><span>رقم القرار</span></div>
+										<div style="width:11.11%;float:right;"><span>تاريخه</span></div>
+									</div>
+									<div>
+										<t  t-foreach="job_update_ids" t-as="line">
+											<div style="width:11.11%;float:right;"><span t-esc="line.new_name.name" /></div>
+											<div style="width:11.11%;float:right;"><span></span></div>
+											<div style="width:11.11%;float:right;"><span t-esc="line.department_id.name" /></div>
+											<div style="width:11.11%;float:right;"><span t-esc="line.old_name.name" /></div>
+											<div style="width:11.11%;float:right;"><span></span></div>
+											<div style="width:11.11%;float:right;"><span t-esc="line.department_id.name" /></div>
+											<div style="width:11.11%;float:right;"><span t-esc="line.job_update_id.create_date" /></div>
+											<div style="width:11.11%;float:right;"><span t-esc="line.job_update_id.decision_number" /></div>
+											<div style="width:11.11%;float:right;"><span t-esc="line.job_update_id.decision_date" /></div>
+										</t>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4" class="text-center"><strong>الرفع على الوظيفة</strong></td>
+							</tr>
+							<tr>
+								<td colspan="4" class="text-center"></td>
+							</tr>
+							<tr>
+								<td colspan="4" class="text-center"><strong>الخفض على الوظيفة</strong></td>
+							</tr>
+							<tr>
+								<td colspan="4" class="text-center"></td>
+							</tr>
+							<tr>
+								<td colspan="4" class="text-center"><strong>النقل على الوظيفة</strong></td>
+							</tr>
+							<tr>
+								<td colspan="4" class="text-center"></td>
+							</tr>
+							</table>
+							
+							</div>
+
+						</div>
+					</t>
+
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+								
