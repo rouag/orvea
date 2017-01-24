@@ -265,7 +265,7 @@
 								</h1>
 							</div>
 							<notebook>
-								<page string="بيانات شخصية">
+								<page name="public" string="بيانات شخصية">
 									<group>
 										<group string="بيانات شخصية">
 											<field name="father_name" attrs="{'required': 1}" />
