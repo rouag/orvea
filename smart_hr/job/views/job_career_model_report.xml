@@ -31,15 +31,15 @@
 							</tr>
 							<tr>
 								<td><strong>السلم الوظيفي</strong></td>
-								<td></td>
+								<td><span t-esc="o.job_id.type_id.name" /></td>
 								<td><strong>المرتبة</strong></td>
-								<td></td>
+								<td><span t-esc="o.job_id.grade_id.name" /></td>
 							</tr>
 							<tr>
 								<td><strong>رمز الوظيفة</strong></td>
-								<td></td>
+								<td><span t-esc="o.job_id.name.code" /></td>
 								<td><strong>المجموعة الوظيفية</strong></td>
-								<td></td>
+								<td><span t-esc="o.job_id." /></td>
 							</tr>
 							<tr>
 								<td><strong>تاريخ الاستحداث</strong></td>
