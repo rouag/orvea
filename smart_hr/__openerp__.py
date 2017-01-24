@@ -27,7 +27,7 @@
         'data/hr_termination_data.xml',
         'data/decisions_type_data.xml',
         'data/hr_appoint_type_data.xml',
-        # 'data/decision_action_data.xml',
+        'data/hr_sanction_type_data.xml',
 
         # الوظائف
         'job/menu.xml',
@@ -115,7 +115,7 @@
         'view/religion.xml',
         'view/courses_follow_up.xml',
         'view/hr_direct_appoint_view.xml',
-        # 'view/hr_improve_situation_view.xml',
+        'view/hr_sanction_view.xml',
 
         # القرارات
         'view/hr_decision.xml',
