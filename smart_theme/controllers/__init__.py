@@ -1,3 +1,3 @@
 # -*- encoding: utf-8 -*-
 
-#import main
+import main
