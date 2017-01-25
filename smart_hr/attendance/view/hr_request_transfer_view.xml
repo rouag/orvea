@@ -2,14 +2,14 @@
 <openerp>
 	<data>
 
-		<!-- طلبات تحويل ساعات التأخير والغيابات -->
+		<!-- طلبات تحويل ساعات التأخير -->
 
 		<record model="ir.ui.view" id="hr_request_transfer_tree">
 			<field name="name">hr.request.transfer.tree</field>
 			<field name="model">hr.request.transfer</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
-				<tree string="طلبات تحويل ساعات التأخير والغيابات">
+				<tree string="طلبات تحويل ساعات التأخير">
 					<field name="name" />
 					<field name="employee_id" />
 					<field name="date" />
@@ -24,7 +24,7 @@
 			<field name="model">hr.request.transfer</field>
 			<field name="type">form</field>
 			<field name="arch" type="xml">
-				<form string="طلبات تحويل ساعات التأخير والغيابات">
+				<form string="طلبات تحويل ساعات التأخير">
 					<header>
 						<button name="action_waiting" string="إرسال للإعتماد" type="object" states="new" />
 						<button name="action_done" string="إعتماد" type="object" states="waiting"  groups="smart_hr.group_dm"/>
@@ -45,8 +45,8 @@
 							</group>
 							<group string="ساعات التأخير  أو الغيابات ">
 								<field name="date" />
-								<field name="number_request" />
 								<field name="balance" />
+								<field name="number_request" />
 							</group>
 						</group>
 						<group>
@@ -67,7 +67,7 @@
 			<field name="name">hr.request.transfer.search</field>
 			<field name="model">hr.request.transfer</field>
 			<field name="arch" type="xml">
-				<search string="طلبات تحويل ساعات التأخير والغيابات">
+				<search string="طلبات تحويل ساعات التأخير">
 					<field name="name" />
 					<field name="employee_id" />
 					<field name="date" />
@@ -81,14 +81,14 @@
 		</record>
 		
 		<record model="ir.actions.act_window" id="action_hr_request_transfer">
-			<field name="name">طلبات تحويل ساعات التأخير والغيابات</field>
+			<field name="name">طلبات تحويل ساعات التأخير</field>
 			<field name="res_model">hr.request.transfer</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 
-		<menuitem id="hr_request_transfer_menu" name="طلبات تحويل ساعات التأخير والغيابات" groups="smart_hr.group_employee"
+		<menuitem id="hr_request_transfer_menu" name="طلبات تحويل ساعات التأخير" groups="smart_hr.group_employee"
 			sequence="50" parent="menu_attendance_root" action="action_hr_request_transfer" />
 			
 			

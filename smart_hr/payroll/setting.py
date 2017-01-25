@@ -15,9 +15,15 @@ class HrAllowanceType(models.Model):
                                        ('percentage', 'نسبة من الراتب الأساسي'),
                                        ('salary_grid', 'تحتسب من سلم الرواتب'),
                                        ('job', 'تحتسب من  الوظيفة'),
-                                       ('job_location', 'تحتسب  حسب مكان العمل')], string='طريقة الإحتساب')
+                                       ('job_location', 'تحتسب  حسب مكان العمل')], required=1, string='طريقة الإحتساب')
     amount = fields.Float(string='المبلغ')
+    min_amount = fields.Float(string='الحد الأدنى')
     percentage = fields.Float(string='النسبة')
+    line_ids = fields.One2many('hr.allowance.city', 'allowance_id', string='النسب حسب المدينة')
+
+    # TODO: must add this formula in job
+    # نسبة البدل‬ * ‬ راتب‬ الدرجة‬ الاولى ‬من‬ المرتبة‬  التي‬  يشغلها‬ الموظف‬
+    # نسبة البدل‬ * ‬ راتب‬ الدرجة  التي‬  يشغلها‬ الموظف‬
 
     @api.multi
     def name_get(self):
@@ -26,6 +32,14 @@ class HrAllowanceType(models.Model):
             name = '[%s] %s' % (record.code, record.name)
             result.append((record.id, name))
         return result
+
+
+class HrAllowanceCity(models.Model):
+    _name = 'hr.allowance.city'
+
+    allowance_id = fields.Many2one('hr.allowance.type', string='البدل')
+    city_id = fields.Many2one('res.city', string='المدينة', required=1)
+    percentage = fields.Float(string='النسبة', required=1)
 
 
 class HrRewardType(models.Model):

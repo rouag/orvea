@@ -123,7 +123,7 @@
         'view/hr_decision.xml',
         # الرواتب
         'payroll/menu.xml',
-#         'payroll/data/data.xml',
+        # 'payroll/data/data.xml',
         'payroll/data/salary_grid_type_data.xml',
         'payroll/wizard/wizard_bonus_employee.xml',
         'payroll/wizard/wizard_bonus_action.xml',
@@ -134,7 +134,7 @@
         'payroll/view/hr_deduction.xml',
         'payroll/view/hr_bonus_view.xml',
         'payroll/views/report_hr_deduction.xml',
-        'payroll/views/report_hr_deduction_line.xml',
+        'payroll/views/report.xml',
         # الحضور والإنصراف
         'attendance/security/attendance_security.xml',
         'attendance/security/ir.model.access.csv',
