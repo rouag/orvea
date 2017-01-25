@@ -24,7 +24,7 @@ class HrEmployeeFunctionnalCard(models.Model):
     specialization_ids = fields.Many2many('hr.employee.specialization', string=u'الاختصاص',related="employee_id.specialization_ids")
     education_level = fields.Many2one('hr.employee.education.level', string=u'المستوى التعليمي', related="employee_id.education_level")
     history_ids = fields.One2many('hr.employee.history', 'employee_id', string=u'سجل الاجراءات',related="employee_id.history_ids")
-    emp_name = fields.Char(string=u'إسم الموظف', relates="employee_id.name")
+    emp_name = fields.Char(string=u'إسم الموظف', relates="employee_id.display_name")
     emp_age = fields.Char(string=u'السن', relates="employee_id.age")
     department_id = fields.Many2one('hr.department', string=u'مكان العمل', related="employee_id.department_id")
     passport_date = fields.Date(string=u'تاريخ إصدار جواز السفر ',related='employee_id.passport_date')
@@ -48,7 +48,8 @@ class HrEmployeeFunctionnalCard(models.Model):
 class HrEmployeeIssuingFunctionnalCard(models.Model):
     _name = 'hr.employee.issuing.functionnal.card'
     _description = u'اصدار بطاقة موظف' 
-
+    
+    name=fields.Char(string='رقم ')
     employee_ids = fields.Many2many('hr.employee', string=u'الموظف', required=1)    
     date = fields.Date(string=u'التاريخ ', default=fields.Datetime.now(), readonly=1)
     expiration_date = fields.Date(string=u'تاريخ إنتهاء الصلاحية  ')
@@ -76,4 +77,9 @@ class HrEmployeeIssuingFunctionnalCard(models.Model):
     def button_refuse_hrm(self):
         self.ensure_one()
         self.state = 'refuse'
-
+    @api.model
+    def create(self, vals):
+        res = super(HrEmployeeFunctionnalCard, self).create(vals)
+        vals['name'] = self.env['ir.sequence'].get('hr.employye.issuing.card.seq')
+        res.write(vals)
+        return res

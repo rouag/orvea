@@ -11,7 +11,7 @@
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
 				<tree string="بيانات موظف">
-					<field name="name" />
+					<field name="display_name" />
 					<field name="number" />
 					<field name="employee_state" />
 				</tree>
@@ -35,12 +35,11 @@
 			<field name="inherit_id" ref="hr.hr_kanban_view_employees" />
 			<field name="arch" type="xml">
 				<data>
+					<field name="name" position="attributes">
+						<attribute name="invisible">1</attribute>
+					</field>
 					<field name="name" position="after">
-						<field name="space" />
-						<field name="father_middle_name" />
-						<field name="space" />
-						<field name="father_name" />
-						<field name="family_name" />
+						<field name="display_name" />
 					</field>
 				</data>
 			</field>

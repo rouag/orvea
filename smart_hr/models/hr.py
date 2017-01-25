@@ -66,8 +66,21 @@ class HrEmployee(models.Model):
     passport_date = fields.Date(string=u'تاريخ إصدار جواز السفر ')
     passport_place = fields.Char(string=u'مكان إصدار بجواز السفر')
     passport_end_date = fields.Date(string=u'تاريخ انتهاء جواز السفر ')
+    display_name = fields.Char(compute='_compute_display_name', string='display Name', select=True)
 
-    
+    @api.one
+    @api.depends('name', 'father_middle_name', 'father_name', 'family_name')
+    def _compute_display_name(self):
+        display_name = self.name
+        if self.father_name:
+            if self.father_middle_name:
+                display_name += ' '+self.father_middle_name +' '+ self.father_name
+            else:
+                display_name += ' '+self.father_name
+        if self.family_name:
+            display_name += ' '+self.family_name
+        self.display_name = display_name
+
     @api.multi
     def name_get(self):
         res = []
@@ -96,7 +109,7 @@ class HrEmployee(models.Model):
         today_date = fields.Date.from_string(fields.Date.today())
         prev_month_end = date(today_date.year, today_date.month, 1) - relativedelta(days=1)
         prev_month_first = prev_month_end.replace(day=1)
-        
+
         for emp in self.search([ ('state', '=', 'employee')]):
             first_date_direct_action = emp._get_first_decision__apoint_date()
             if first_date_direct_action[0]:

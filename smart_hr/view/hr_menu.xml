@@ -34,5 +34,9 @@
 		<menuitem id="hr_root_decision" parent="hr_root" name="القرارات"  sequence="40" groups="smart_hr.group_hrm"/>		
 
 		<menuitem id="hr_root_functionnal_card_management" name="إدارة البطاقات الوظيفية" sequence="200" parent="hr_root_employees"  />
+		
+		<menuitem id="hr_users_creation" name="المستخدمون" sequence="90" parent="hr_root" groups="smart_hr.group_adm"/>
+		
+		
 	</data>
 </openerp>
