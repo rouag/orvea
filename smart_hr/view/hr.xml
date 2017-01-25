@@ -122,16 +122,23 @@
 
 										<field name="identification_id" groups="base.group_hr_user"
 											attrs="{'required': 1}" />
+										<field name="passport_date" groups="base.group_hr_user"
+											attrs="{'required': 1}" />
 										<field name="passport_id" groups="base.group_hr_user"
 											attrs="{'required': 1}" />
+										<field name="passport_end_date" groups="base.group_hr_user"
+											attrs="{'required': 1}" />
+										<field name="passport_place" groups="base.group_hr_user"
+											attrs="{'required': 1}" />
+
 										<field name="is_resident" attrs="{'required': 1}" />
 										<field name="education_level" options='{"no_open": True, "no_create": True}'
 											attrs="{'required': 1}" />
 
 										<field name="diploma_id" options='{"no_open": True, "no_create": True}' />
-									
-											<field name="specialization_ids" options='{"no_open": True, "no_create": True}'
-												widget="many2many_tags"  />
+
+										<field name="specialization_ids" options='{"no_open": True, "no_create": True}'
+											widget="many2many_tags" />
 
 
 									</group>
@@ -241,6 +248,7 @@
 
 								<field name='history_ids' readonly="1">
 									<tree string="سجل الاجراءات">
+										<field name="job_id" />
 										<field name="type" />
 										<field name="date" />
 										<field name="num_decision" />
@@ -371,9 +379,9 @@
 											<field name="education_level" options='{"no_open": True, "no_create": True}'
 												attrs="{'required': 1}" />
 											<field name="diploma_id" options='{"no_open": True, "no_create": True}' />
-											
+
 											<field name="specialization_ids" options='{"no_open": True, "no_create": True}'
-												widget="many2many_tags"  />
+												widget="many2many_tags" />
 										</group>
 										<group string="الحالة">
 
@@ -480,6 +488,8 @@
 
 									<field name='history_ids' readonly="1">
 										<tree string="سجل الاجراءات">
+											<field name="job_id" />
+
 											<field name="type" />
 											<field name="date" />
 											<field name="num_decision" />

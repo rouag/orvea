@@ -114,8 +114,15 @@
 			
 			<report id="hr_direct_appoint_report" model="hr.direct.appoint" name="smart_hr.report_hr_direct_appoint"
 			report_type="qweb-pdf" string="قرار مباشرة التعين" file="smart_hr.report_hr_direct_appoint" />
-			
-			
+
+
+		<report id="report_hr_employee_functionnal_card_report" model="hr.employee.functionnal.card" string="بطاقة وظيفية"
+			report_type="qweb-pdf" name="smart_hr.hr_employee_functionnal_card_report" file="smart_hr.hr_employee_functionnal_card_report"
+			menu="False" />			
+		<record id="report_hr_employee_functionnal_card_report" model="ir.actions.report.xml">
+			<field name="paperformat_id" ref="smart_base.paperformat_landscape" />
+			<field name="download_filename">${o.employee_id.name}_بطاقة وظيفية.pdf</field>
+		</record>
 	</data>
 </openerp>
 		
