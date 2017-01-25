@@ -81,7 +81,7 @@
         'views/hr_dep_accr_report.xml',
         'views/report_point_decinne.xml',
         'views/report_hr_direct_appoint.xml',
-
+        'views/hr_employee_functionnal_card_report.xml',
         'report/reports.xml',
         'report/hr_suspension_end_report.xml',
         'report/hr_suspension_report.xml',
@@ -118,7 +118,7 @@
         'view/courses_follow_up.xml',
         'view/hr_direct_appoint_view.xml',
         'view/hr_sanction_view.xml',
-
+        'view/hr_employee_functional_card.xml',
         # القرارات
         'view/hr_decision.xml',
         # الرواتب

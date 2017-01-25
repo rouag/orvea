@@ -63,6 +63,10 @@ class HrEmployee(models.Model):
     history_ids = fields.One2many('hr.employee.history', 'employee_id', string=u'سجل الاجراءات')
     diploma_id = fields.Many2one('hr.employee.diploma', string=u'الشهادة')
     specialization_ids = fields.Many2many('hr.employee.specialization', string=u'الاختصاص')
+    passport_date = fields.Date(string=u'تاريخ إصدار جواز السفر ')
+    passport_place = fields.Char(string=u'مكان إصدار بجواز السفر')
+    passport_end_date = fields.Date(string=u'تاريخ انتهاء جواز السفر ')
+
     
     @api.multi
     def name_get(self):

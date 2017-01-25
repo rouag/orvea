@@ -94,11 +94,12 @@ class HrEmployeeHistory(models.Model):
                              ('81', u' تسوية ( تحسين وضع )'),
                              ('82', u'طي قيد '),
                              ('83', u' اجازة مرضية'),
-                             ], string=u'نوع الاجرا ء')
+                             ], string=u'الاجرا ء')
+    job_id = fields.Char(string=u'المسمى الوظيفي')
 
 
     @api.multi
     def add_action_line(self, employee_id, num_decision, date_decision, type):
-        self.create({'employee_id': employee_id, 'date': fields.Datetime.now(),
+        self.create({'employee_id': employee_id.id, 'date': fields.Datetime.now(),
                      'num_decision': num_decision, 'date_decision': date_decision,
-                     'type': type})
+                     'type': type, 'job_id':employee_id.job_id.name.name})

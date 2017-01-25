@@ -132,7 +132,7 @@ class hrHolidaysCancellation(models.Model):
                     else:
                         type = '35'
                     if type:
-                        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id.id, self.name, self.date, type)
+                        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
             if cancellation.type=='cut':
                 for holiday in cancellation.holidays:
                     for holiday_balance in holiday.employee_id.holidays_balance:

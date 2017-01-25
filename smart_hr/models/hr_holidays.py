@@ -284,7 +284,7 @@ class HrHolidays(models.Model):
         elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional').id:
             type = '43'
         if type:
-            self.env['hr.employee.history'].sudo().add_action_line(self.employee_id.id, self.name, self.date, type)
+            self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
         self.state = 'done'
 
 
