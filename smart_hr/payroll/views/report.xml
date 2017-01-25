@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<report id="hr_deduction_report" model="hr.deduction"
+			report_type="qweb-pdf" string="الحسميات" name="smart_hr.report_hr_deduction"
+			file="smart_hr.report_hr_deduction" /> 
+				
+	</data>
+</openerp>
+		

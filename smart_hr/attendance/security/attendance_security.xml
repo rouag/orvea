@@ -69,24 +69,24 @@
 			<field name="groups" eval="[(4,ref('smart_hr.group_hrm'))]" />
 		</record>
 
-	 	<!-- طلبات تحويل ساعات التأخير والغيابات --> 
+	 	<!-- طلبات تحويل ساعات التأخير  --> 
 	 	
 		<record id="employee_request_transfer" model="ir.rule">
-			<field name="name">طلباتي  : طلبات تحويل ساعات التأخير والغيابات </field>
+			<field name="name">طلباتي  : طلبات تحويل ساعات التأخير </field>
 			<field name="model_id" ref="model_hr_request_transfer" />
 			<field name="domain_force">[('employee_id.user_id','=',user.id)]</field>
 			<field name="groups" eval="[(4,ref('smart_hr.group_employee'))]" />
 		</record>
 
 		<record id="dm_request_transfer" model="ir.rule">
-			<field name="name">طلبات تحويل ساعات التأخير والغيابات  موظفي المدير المباشر </field>
+			<field name="name">طلبات تحويل ساعات التأخير  موظفي المدير المباشر </field>
 			<field name="model_id" ref="model_hr_request_transfer" />
 			<field name="domain_force">['|',('employee_id.parent_id.user_id','=',user.id),('employee_id.user_id','=',user.id)]</field>
 			<field name="groups" eval="[(4,ref('smart_hr.group_dm'))]" />
 		</record>
 		
 		<record id="hrm_request_transfer" model="ir.rule">
-			<field name="name">كل طلبات تحويل ساعات التأخير والغيابات </field>
+			<field name="name">كل طلبات تحويل ساعات التأخير </field>
 			<field name="model_id" ref="model_hr_request_transfer" />
 			<field name="domain_force">[(1,'=',1)]</field>
 			<field name="groups" eval="[(4,ref('smart_hr.group_hrm'))]" />

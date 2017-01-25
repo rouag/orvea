@@ -13,7 +13,6 @@ class hrDirectAppoint(models.Model):
     _rec_name = 'employee_id'
 
     employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', required=1)
-    employee_id=fields.Many2one('hr.employee',string='الموظف',required=1)
     number=fields.Char(string='الرقم الوظيفي',readonly=1) 
     code = fields.Char(string=u'رمز الوظيفة ',readonly=1) 
     country_id=fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
@@ -25,8 +24,10 @@ class hrDirectAppoint(models.Model):
     far_age = fields.Float(string=' السن الاقصى',store=True,readonly=1) 
     basic_salary = fields.Float(string='الراتب الأساسي',store=True, readonly=1)   
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة',store=True, readonly=1)
-    date_direct_action=fields.Date(string='تاريخ مباشرة العمل',required=1) 
+    date_direct_action = fields.Date(string='تاريخ مباشرة العمل',) 
+    type_appointment = fields.Char(string=u'نوع التعيين' )
     
+    decision_appoint_ids = fields.One2many('hr.decision.appoint', 'employee_id', string=u'تعيينات الموظف')
     
     date = fields.Date(string=u'تاريخ المباشرة', default=fields.Datetime.now())
     state = fields.Selection([('new', ' ارسال طلب'),
@@ -34,7 +35,19 @@ class hrDirectAppoint(models.Model):
                              ('cancel', 'رفض'),
                              ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
 
-
+    @api.multi
+    def button_cancel_appoint(self):
+        self.ensure_one() 
+        #TODO  
+        self.state_appoint = 'new'
+    
+    
+    @api.multi
+    def button_direct_appoint(self):
+        self.ensure_one()
+        #TODO   
+        self.state_appoint = 'active'
+   
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
         if self.employee_id :
@@ -52,17 +65,24 @@ class hrDirectAppoint(models.Model):
                 self.department_id = appoint_line.department_id.id
                 self.date_direct_action = appoint_line. date_direct_action
       
-      
+
+        
+    @api.model
+    def control_prensence_employee(self):
+        today_date = fields.Date.from_string(fields.Date.today())
+        prev_days_end = fields.Date.from_string(date_direct_action) + relativedelta(days=15)
+        print"prev_days_end",prev_days_end
+        
+        sign_days = self.env['hr.attendance'].search_count([('employee_id', '=', emp.id), ('action', '=', 'sign_in'),
+                                                                            ('date','>=',date_direct_action),('date','<=',prev_days_end)])
+        if sign_days :
+            return true 
+        return false      
+ 
          
-    
-        
-        
     @api.multi
     def action_waiting(self):
-        date_direct_action = datetime.datetime.strptime(date_direct_action, "%m/%d/%y")
-        print"date_direct_action",date_direct_action
-        end_date = date_direct_action + datetime.timedelta(days=15)  
-        print"end_date",end_date
+      
         self.state = 'waiting'
 
     @api.one

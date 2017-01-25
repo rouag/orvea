@@ -80,8 +80,9 @@
 						</group>
 						<group string="المخطط‬‫ الانسيابي‬">
 							<field name="audit" />
-							<field name="recrutment_manager" />
 							<field name="enterview_manager" />
+							<field name="recrutment_manager" />
+							
 							<field name="personnel_hr" />
 							<field name="recrutment_decider" />
 
@@ -111,7 +112,9 @@
 				<tree string="التعيين">
 					<field name="name" />
 					<field name="order_date" />
+					
 					<field name="date_hiring" />
+					<field name="employee_id" />
 					<field name="type_appointment" />
 					<field name="date_direct_action" />
 				</tree>
@@ -176,17 +179,7 @@
 							type="object" states="hrm" groups="smart_hr.group_personnel_hr"
 							icon="fa-times" class="oe_inline oe_stat_button" />
 
-						<button name="button_cancel_appoint" context="{'operation': 'cancel'}"
-							string="إلغاء التعيين" type="object" states="done"
-							groups="smart_hr.group_personnel_hr" icon="fa-times-circle-o"
-							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
-						<button name="button_direct_appoint" context="{'operation': 'cancel'}"
-							string="مباشرة التعيين" type="object" states="done"
-							groups="smart_hr.group_personnel_hr" icon="fa-times-circle-o"
-							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
-
+					
 
 						<field name="state" widget="statusbar"
 							statusbar_visible="draft,audit,waiting,manager,budget,hrm,direct,done,refuse" />
@@ -218,13 +211,13 @@
 							<group string="بيانات التعيين">
 
 								<field name="date_direct_action"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'done'])]}" />
+									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'done'])]}" />
 								<field name="date_hiring_end"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
+									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
 								<field name="state_appoint"
 									attrs="{'invisible':[('state', 'not in', [ 'done'])],'readonly':[('state', 'in', [ 'done'])]}" />
 								<field name="transport_alocation"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
+									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
 								<field name="transport_car"
 									attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
 							</group>

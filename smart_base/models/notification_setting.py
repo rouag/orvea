@@ -40,11 +40,6 @@ class NotificationSetting(models.Model):
 class NotificationSettingLine(models.Model):
     _name = 'notification.setting.line'
 
-    @api.model
-    def _get_notif_setting(self):
-        notification_setting_ids = self.env['notification.setting'].search([])
-        return notification_setting_ids[0].id
-
     type = fields.Selection([('refuse_leave', 'رفض إجازة'),
                              ('accept_refuse', 'موافقة على إجازة'),
                              ('posting', 'تعين')], string='النوع', default='refuse_leave')
@@ -52,4 +47,4 @@ class NotificationSettingLine(models.Model):
     sms = fields.Boolean('رسائل الجوال')
     email = fields.Boolean('البريد الالكتروني')
     interval_between_notif = fields.Integer('المدة')
-    notification_setting_id = fields.Many2one('notification.setting', default=_get_notif_setting)
+    notification_setting_id = fields.Many2one('notification.setting')

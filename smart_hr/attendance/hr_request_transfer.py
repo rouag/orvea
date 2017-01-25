@@ -8,7 +8,7 @@ class HrRequestTransfer(models.Model):
     _name = 'hr.request.transfer'
     _inherit = ['mail.thread']
     _order = 'id desc'
-    _description = u'طلبات تحويل ساعات التأخير والغيابات'
+    _description = u'طلبات تحويل ساعات التأخير'
 
     name = fields.Char(string='التسلسل', readonly=1)
     employee_id = fields.Many2one('hr.employee', string='الموظف', required=1, domain=[('employee_state', '=', 'employee')],
@@ -23,7 +23,7 @@ class HrRequestTransfer(models.Model):
                               ('cancel', 'مرفوض'),
                               ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
     date = fields.Date(string='تاريخ الطلب', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=fields.Datetime.now())
-    number_request = fields.Float(string='العدد', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    number_request = fields.Float(string='عدد الساعات المراد تحويلها', required=1, readonly=1, states={'new': [('readonly', 0)]})
     balance = fields.Float(string='الرصيد الحالي', readonly=1)
 
     @api.onchange('employee_id')

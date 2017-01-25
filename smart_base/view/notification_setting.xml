@@ -55,6 +55,6 @@
 			<field name="condition">True</field>
 			<field name="name">اعدادات الاشعارات</field>
 		</record>
-
+		
 	</data>
 </openerp>
