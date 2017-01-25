@@ -46,7 +46,12 @@ class hrSanction(models.Model):
                              ('done', 'اعتمدت')], string='الحالة', readonly=1, default='draft')
  
     
-    
+    @api.onchange('date_sanction_start')
+    def _onchange_date_sanction_start(self):
+         if self.date_direct_action :
+             if self.date_sanction_end > self.date_sanction_start:
+                 raise ValidationError(u"تاريخ إلغاء العقوبة يجب ان يكون أكبر من تاريخ البدأ")
+        
   
     @api.multi
     def action_draft(self):

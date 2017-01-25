@@ -112,10 +112,11 @@
 				<tree string="التعيين">
 					<field name="name" />
 					<field name="order_date" />
-					
 					<field name="date_hiring" />
 					<field name="employee_id" />
 					<field name="type_appointment" />
+					<field name="state_appoint" />
+						<field name="active" />
 					<field name="date_direct_action" />
 				</tree>
 			</field>
@@ -203,9 +204,9 @@
 								<field name="order_picture"
 									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'done'])]}" />
 								<field name="file_appoint"
-									attrs="{'invisible':[('state', 'not in', ['hrm'])],'required':[('state','=','hrm')]}" />
+									attrs="{'invisible':[('state', 'not in', ['hrm','direct', 'done'])],'required':[('state','=','hrm')],'readonly':[('state', 'in', [ 'direct', 'done'])]}" />
 								<field name="file_decision"
-									attrs="{'invisible':[('state', 'not in', ['hrm'])],'required':[('state','=','hrm')]}" />
+									attrs="{'invisible':[('state', 'not in', ['hrm','direct', 'done'])],'required':[('state','=','hrm')],'readonly':[('state', 'in', [ 'direct', 'done'])]}" />
 
 							</group>
 							<group string="بيانات التعيين">
@@ -289,6 +290,7 @@
 			<field name="res_model">hr.decision.appoint</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
+			<field name="domain">['|',('active' ,'=',True),('active' ,'=',False)]</field>
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 		<menuitem id="hr_decision_appoint_menu" name="التعيين"

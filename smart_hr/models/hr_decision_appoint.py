@@ -19,7 +19,7 @@ class HrDecisionAppoint(models.Model):
     date_hiring_end = fields.Date(string=u'تاريخ إنتهاء التعيين')  
     date_direct_action = fields.Date(string='تاريخ مباشرة العمل', required=1) 
     instead_exchange = fields.Boolean(string='صرف بدل تعيين')
-    active = fields.Boolean(string=u'مفعل', default=True)
+    active = fields.Boolean(string=u'مباشر', default=False)
     # info about employee
     employee_id = fields.Many2one('hr.employee', string='الموظف', required=1)
     number = fields.Char(string='الرقم الوظيفي', readonly=1) 
@@ -56,7 +56,6 @@ class HrDecisionAppoint(models.Model):
                               ('active', u'مفعل'),
                               ('close', u'مغلق'),
                               ('refuse', u'ملغى'),
-                              ('hanging', u'معلق'),
                               ('new', u'جديد'),
                               ], string=u' حالةالتعيين ', default='new', advanced_search=True)
     state = fields.Selection([
@@ -166,7 +165,8 @@ class HrDecisionAppoint(models.Model):
         if self.type_appointment.recrutment_decider and self.type_appointment.personnel_hr:
             self.state = 'hrm'
         if self.type_appointment.recrutment_decider :
-             self.state = 'done'
+            self.state = 'done'
+            self.state_appoint = 'active'
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
@@ -190,7 +190,7 @@ class HrDecisionAppoint(models.Model):
             self.state = 'direct'
         else :
             self.state = 'done'
-            
+            self.state_appoint ='active'
             direct_appoint_obj = self.env['hr.direct.appoint']
             self.env['hr.direct.appoint'].create({'employee_id': self.employee_id.id,
                                                   'number' : self.number,
@@ -223,6 +223,7 @@ class HrDecisionAppoint(models.Model):
         self.ensure_one()
         if self.type_appointment.direct_manager:
             self.state = 'done'
+            self.state_appoint ='active'
             direct_appoint_obj = self.env['hr.direct.appoint']
             self.env['hr.direct.appoint'].create({'employee_id': self.employee_id.id,
                                                   'number' : self.number,
@@ -258,6 +259,7 @@ class HrDecisionAppoint(models.Model):
             line.employee_id.write({'employee_state':'employee', 'job_id':line.job_id.id})
             line.job_id.write({'state': 'occupied', 'employee': line.employee_id.id, 'occupied_date': fields.Datetime.now()})
         self.state = 'done'
+        self.state_appoint ='active'
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت إحداث تعين جديد '" + unicode(user.name) + u"'")
         # update holidays balance for the employee
@@ -278,7 +280,7 @@ class HrDecisionAppoint(models.Model):
             raise ValidationError(u"الرجاء التثبت من سن المترشح تجاوز 60)")
         self.number = self.employee_id.number
         self.country_id = self.employee_id.country_id
-        appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id), ('state', '=', 'done'), ('active', '=', True)], limit=1)
+        appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id), ('state', '=', 'done')], limit=1)
         if appoint_line :
             self.emp_job_id = appoint_line.job_id.id
             self.emp_code = appoint_line.job_id.name.number
