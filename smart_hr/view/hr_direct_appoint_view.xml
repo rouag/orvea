@@ -23,19 +23,16 @@
 					<header>
 						<button name="action_waiting" string=" ارسال طلب" type="object"
 							states="new" />
-						<button name="action_refuse" string="رفض" type="object"
-							states="waiting" />
-						<button name="action_done" string="إعتماد" type="object"
-							states="waiting" />
-						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
+						
+						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done,cancel" />
 
 						<button name="button_cancel_appoint" context="{'operation': 'cancel'}"
-							string="إلغاء التعيين" type="object" states="done"
+							string="إلغاء التعيين" type="object" states="waiting"
 							groups="smart_hr.group_personnel_hr" icon="fa-times-circle-o"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="button_direct_appoint" context="{'operation': 'cancel'}"
-							string="مباشرة التعيين" type="object" states="done"
+							string="مباشرة التعيين" type="object" states="waiting"
 							groups="smart_hr.group_personnel_hr" icon="fa-times-circle-o"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
