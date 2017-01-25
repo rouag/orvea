@@ -17,7 +17,6 @@ class HrGrouupGeneral(models.Model):
         result = dict.fromkeys(self._ids)
         for i in ids:
             result[i] = self.search([('parent_id', 'child_of', i)], context=context)
-
         return result
 
     name = fields.Char(string=u'المسمى', required=1)
