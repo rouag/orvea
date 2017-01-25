@@ -11,15 +11,15 @@ class BaseNotification(models.Model):
     
     @api.model
     def create(self, vals):
-        record = super(BaseNotification, self).create(vals)
-        if record.type:
-            notification_setting_line = self.env['notification.setting.line'].search([('type','=',record.type)])
+        if vals.get("type", False):
+            type = vals.get("type", False)
+            notification_setting_line = self.env['notification.setting.line'].search([('type','=',type)])
             if notification_setting_line :
-                record.notif = notification_setting_line.notif
-                record.email = notification_setting_line.email
-                record.sms = notification_setting_line.sms
-                record.interval_between_notif = notification_setting_line.interval_between_notif
-        return record
+                vals['notif'] = notification_setting_line.notif
+                vals['email'] = notification_setting_line.email
+                vals['sms'] = notification_setting_line.sms
+                vals['interval_between_notif'] = notification_setting_line.interval_between_notif
+        return super(BaseNotification, self).create(vals)
     
     @api.multi
     def resend_notif(self):
@@ -30,15 +30,15 @@ class BaseNotification(models.Model):
         template_id = models_data.get_object_reference('smart_base', 'notification_template_warning')[1]
         return template_id
 
-    user_id = fields.Many2one('res.users', string='employee')
-    show_date = fields.Datetime(string='show date')
-    message = fields.Char(string='Message')
-    title = fields.Char(string='Title')
-    to_read = fields.Boolean(string='To read', default=True)
+    user_id = fields.Many2one('res.users', string='الموظف')
+    show_date = fields.Datetime(string='تاريخ التنبيه')
+    message = fields.Char(string='المحتوى')
+    title = fields.Char(string='العنوان')
+    to_read = fields.Boolean(string='للتنبيه', default=True)
     res_id = fields.Integer(string='Res ID')
     res_action = fields.Char(string='action name (module_name.action_name)')
     interval_between_notif = fields.Integer('المدة')
-    first_notif = fields.Boolean(string='First Notif', default=True)
+    first_notif = fields.Boolean(string='أول تنبيه', default=True)
     notif = fields.Boolean('إشعار')
     sms = fields.Boolean('رسائل الجوال')
     email = fields.Boolean('البريد الالكتروني')

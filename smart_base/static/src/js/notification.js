@@ -94,7 +94,7 @@ WebClient.include({
         this.get_next_notif();
         this.intervalNotif = setInterval(function() {
             self.get_next_notif();
-        }, 1 * 60 * 1000 /4);
+        }, 5 * 60 * 1000 /4);
     },
     //Override the show_application of addons/web/static/src/js/chrome.js       
     show_application: function() {

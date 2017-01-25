@@ -43,7 +43,7 @@ class BaseNotification(http.Controller):
                         'notify_at': notification.show_date
                         })
             
-            if int(daysDiff) <= 0 and notification.email and notification.first_notif is True:
+            if int(daysDiff) <= 0 and notification.email and notification.first_notif is True and notification.template_id:
                 request.env['mail.template'].sudo().browse(notification.template_id.id).send_mail(notification.id)
         return all_notif
 
@@ -51,7 +51,7 @@ class BaseNotification(http.Controller):
     def notify_validate(self, notif_id):
         notification_obj = request.env['base.notification']
         notification = notification_obj.search([('id', '=', notif_id)])
-        notification.write({'to_read': False,'first_notif': False})
+        notification.write({'to_read': False, 'first_notif': False})
         return True
     
     @http.route('/notification/snooze', type='json', auth="user")
@@ -61,5 +61,5 @@ class BaseNotification(http.Controller):
         date_now = datetime.now().strftime(DT_FMT)
         dt_now = datetime.strptime(date_now, "%Y-%m-%d %H:%M:%S")
         next_show_date = (dt_now + timedelta(minutes=notification.interval_between_notif)).strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-        notification.write({'show_date': next_show_date,'first_notif': False})
+        notification.write({'show_date': next_show_date, 'first_notif': False})
         return True
