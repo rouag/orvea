@@ -44,4 +44,5 @@ from . import hr_direct_appoint
 from . import hr_sanction
 
 from . import hr_employee_functional_card
+from . import hr_employee_create_users
 

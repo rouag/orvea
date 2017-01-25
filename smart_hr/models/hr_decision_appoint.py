@@ -238,10 +238,10 @@ class HrDecisionAppoint(models.Model):
                                                   'degree_id' : self.degree_id.id,
                                                   'date_direct_action': self.date_direct_action ,
                                                     })
-                                                  
+
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
-    
+
     @api.multi
     def button_refuse_direct(self):
         self.ensure_one()
@@ -250,9 +250,8 @@ class HrDecisionAppoint(models.Model):
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تم الرفض  من قبل '" + unicode(user.name) + u"'")
-        
-   
-   
+
+
     @api.multi
     def action_done(self):
         self.ensure_one()
@@ -264,8 +263,7 @@ class HrDecisionAppoint(models.Model):
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت إحداث تعين جديد '" + unicode(user.name) + u"'")
         # update holidays balance for the employee
-       
-        
+
         self.env['hr.holidays']._init_balance(self.employee_id)
         # create promotion history line
         promotion_obj = self.env['hr.employee.promotion.history']
@@ -275,15 +273,7 @@ class HrDecisionAppoint(models.Model):
                                                            'active':True,
                                                            'decision_appoint_id':self.id
                                                            })
-    
-  
 
-
-        
-#     
-              
-               
-              
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
         if self.employee_id.age > 60 :
@@ -300,7 +290,7 @@ class HrDecisionAppoint(models.Model):
             self.emp_grade_id = appoint_line.grade_id.id
             self.emp_department_id = appoint_line.department_id.id
             self.emp_date_direct_action = appoint_line. date_direct_action
-               
+
     @api.onchange('job_id')
     def _onchange_job_id(self):
         if self.job_id :
@@ -310,12 +300,10 @@ class HrDecisionAppoint(models.Model):
             self.far_age = self.job_id.type_id.far_age
             self.grade_id = self.job_id.grade_id.id
             self.department_id = self.job_id.department_id.id
-            
-            
+
     @api.onchange('degree_id')
     def _onchange_degree_id(self):
             if self.degree_id:
-            
                 salary_grid_line = self.env['salary.grid.detail'].search([('type_id', '=', self.type_id.id),
                                                 ('grade_id', '=', self.grade_id.id),
                                                   ('degree_id', '=', self.degree_id.id)
@@ -325,8 +313,7 @@ class HrDecisionAppoint(models.Model):
                     self.transport_allow = salary_grid_line.transport_allow
                     self.retirement = salary_grid_line.retirement
                     self.net_salary = salary_grid_line.net_salary
-                
-    
+
     @api.onchange('date_direct_action')
     def _onchange_date_direct_action(self):
          if self.date_direct_action :
@@ -339,16 +326,14 @@ class HrDecisionAppoint(models.Model):
          if self.date_direct_action :
              if self.date_hiring > self.date_hiring_end:
                  raise ValidationError(u"تاريخ إنتهاء التعيين يجب ان يكون أكبر من تاريخ التعيين")  
-                  
+
 class HrTypeAppoint(models.Model):
     _name = 'hr.type.appoint'  
     _description = u'أنواع التعين'
-    
-    
+
     name = fields.Char(string='النوع', required=1)
     date_test = fields.Char(string='فترة التجربة') 
     code = fields.Char(string='الرمز')
-    
     audit = fields.Boolean(string=u'تدقيق', default=False)
     recrutment_manager = fields.Boolean(string=u'موافقة صاحب صلاحية التعين ', default=True)
     enterview_manager = fields.Boolean(string=u'مقابلة شخصية', default=True)

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<menuitem id="users_list" name="المستخدمون" sequence="1"
+			parent="hr_users_creation" action="base.action_res_users" />
+
+
+		<record id="view_form_hr_employee_issuing_functionnal_card"
+			model="ir.ui.view">
+			<field name="name">hr.employee.create.users</field>
+			<field name="model">hr.employee.create.users</field>
+			<field name="arch" type="xml">
+				<form string="انشاء مستخدم">
+					<header name="main">
+						<button name="button_done" string="انشاء مستخدم" type="object"
+							 icon="fa-paper-plane" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+			
+					</header>
+					<sheet>
+
+						<group>
+							<field name="date" />
+							<field name="employee_ids" required="1" />
+
+						</group>
+
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="view_tree_hr_employee_issuing_functionnal_card"
+			model="ir.ui.view">
+			<field name="name">hr.employee.create.users.tree</field>
+			<field name="model">hr.employee.create.users</field>
+			<field name="arch" type="xml">
+				<tree string="انشاء مستخدم" class="oe_tree_view">
+					<field name="employee_ids" required="1" widget="many2many_tags"/>
+					<field name="date" />
+				</tree>
+			</field>
+		</record>
+		<record id="action_hr_employee_issuing_functionnal_card" model="ir.actions.act_window">
+			<field name="name">انشاء مستخدم</field>
+			<field name="res_model">hr.employee.create.users</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		<menuitem id="create_users" name="انشاء مستخدم" sequence="2"
+			parent="hr_users_creation" action="action_hr_employee_issuing_functionnal_card" />
+
+	</data>
+</openerp>

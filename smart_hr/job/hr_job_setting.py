@@ -17,7 +17,6 @@ class HrGrouupGeneral(models.Model):
         result = dict.fromkeys(self._ids)
         for i in ids:
             result[i] = self.search([('parent_id', 'child_of', i)], context=context)
-
         return result
 
     name = fields.Char(string=u'المسمى', required=1)
@@ -37,6 +36,7 @@ class HrGrouupGeneral(models.Model):
     hr_classment_job_ids = fields.One2many('hr.job.classment', 'categorie_serie_id', string=u'الرتبة',)
     department_id = fields.Many2one('hr.department', string='الإدارة', )
     skils_ids = fields.Many2many('hr.skils.job', 'skills_job_rel', 'skil_id', 'job_id', string=u'المهارات‬ ‫و‬ ‫القدرات')
+    job_name_ids = fields.Many2many('hr.job.name', string=u'المسميات الوظيفية')
     group_type = fields.Selection([
         ('general', u'المجموعة العامة‬‬'),
         ('spicific', u'المجموعة النوعية '),

@@ -120,6 +120,8 @@
         'view/hr_sanction_view.xml',
         'view/hr_remove_sanction_view.xml',
         'view/hr_employee_functional_card.xml',
+        'view/res_users.xml',
+
         # القرارات
         'view/hr_decision.xml',
         # الرواتب

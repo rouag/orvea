@@ -11,10 +11,11 @@
 			<field name="arch" type="xml">
 				<tree string="الوظائف" create='0' edit='0' delete='0'
 					duplicate='0'>
-					<field name="number" />
-					<field name="name" />
-					<field name="department_id" />
+					<field name="name" string="المسمى الوظيفي" />
+					<field name="number" string="الرقم الوظيفي" />
+					<field name="job_name_code" string="الرمز" />
 					<field name="type_id" />
+					<field name="department_id" />
 					<field name="grade_id" />
 					<field name="create_date" />
 					<field name="write_date" />
@@ -29,28 +30,22 @@
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="الوظائف" create="0" edit="0" delete="0">
-					<field name="is_occupied" invisible="1" />
 					<field name="is_occupied_compute" invisible="1" />
 					<header>
 						<button name="action_job_reserve" string="حجز الوظيفة"
 							type="object" groups="smart_hr.group_reserve_job"
-							attrs="{'invisible': ['|',('state','=', 'occupied'),('is_occupied','=',True)]}" />
+							attrs="{'invisible': [('state','!=', 'unoccupied')]}" />
 
 						<button name="action_job_unreserve" string="فك حجز الوظيفة"
-							type="object" groups="smart_hr.group_reserve_job" attrs="{'invisible': [('is_occupied','=',False)]}"
+							type="object" groups="smart_hr.group_reserve_job" attrs="{'invisible': [('state','!=','reserved')]}"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<field name="state" widget="statusbar" statusbar_visible="unoccupied,occupied,cancel" />
+						<field name="state" widget="statusbar"
+							statusbar_visible="unoccupied,occupied,reserved,cancel" />
 					</header>
 					<sheet>
-						<div class="oe_title">
-							<label for="name" class="oe_edit_only" />
-							<h1>
-								<field name="name" placeholder="المسمى" />
-							</h1>
-						</div>
 						<group col="4">
-							<field name="name" />
+							<field name="name" string="المسمى الوظيفي" />
 							<field name="number" />
 							<field name="activity_type" />
 							<field name="employee" attrs="{'invisible': [('state','!=', 'occupied')]}" />
@@ -58,14 +53,12 @@
 							<field name="specific_id" />
 							<field name="serie_id" />
 							<field name="department_id" />
-							<field name="type_id" />
+							<field name="type_id" string="الصنف" />
 							<field name="grade_id" />
 							<field name="create_date" />
 							<field name="write_date" />
-							<field name="deputed_employee" />
 
 						</group>
-						<field name="name" placeholder="الوصف" />
 					</sheet>
 					<div class="oe_chatter">
 						<field name="message_follower_ids" widget="mail_followers"
@@ -82,7 +75,7 @@
 			<field name="arch" type="xml">
 				<search string="الوظائف">
 					<field name="number" />
-					<field name="name" />
+					<field name="name" string="المسمى الوظيفي" />
 					<group expand="0" string="تجميع حسب...">
 						<filter name="department_id" string="القسم" domain="[]"
 							context="{'group_by':'department_id'}" />
@@ -120,7 +113,7 @@
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
 				<tree string="إحداث وظائف" delete='0'>
-					<field name="name" />
+					<field name="name" string="المسمى الوظيفي" />
 					<field name="speech_number" />
 					<field name="speech_date" />
 					<field name="state" />
@@ -163,9 +156,14 @@
 							statusbar_visible="new,waiting,budget,communication,external,hrm,done" />
 					</header>
 					<sheet string="إحداث وظائف">
+						<group col="2">
+							<field name="create_date" string="تاريخ الطلب" readonly="1" />
+						</group>
 						<group col="4">
 							<field name="name" />
 							<field name="decision_number" />
+							<field name="decision_date" />
+							<field name="decision_file" />
 							<field name="speech_number"
 								attrs="{'invisible':[('state', 'not in', ['hrm','done'])],'required':[('state','=','hrm')], 'readonly':[('state', '=', 'done')]}" />
 							<field name="speech_date"
@@ -187,11 +185,11 @@
 								attrs="{'readonly':[('state', '!=', 'new')]}" />
 						</group>
 
-						<field name="line_ids" string=" الوظائف">
+						<field name="line_ids" string=" الوظائف" attrs="{'readonly':[('state', '!=', 'new')]}">
 							<tree editable="bottom">
-								<field name="name" options='{"no_open": True, "no_create": True}' />
+								<field name="name" options='{"no_open": True, "no_create": True}' string="المسمى الوظيفي"/>
 								<field name="number" readonly="1" />
-								<field name="activity_type" options='{"no_open": True, "no_create": True}'/>
+								<field name="activity_type" options='{"no_open": True, "no_create": True}' />
 								<field name="grade_id" options='{"no_open": True, "no_create": True}' />
 								<field name="type_id" readonly="1" />
 								<field name="job_number" />
@@ -270,7 +268,11 @@
 							statusbar_visible="new,waiting,hrm1,communication,external,hrm2,done" />
 					</header>
 					<sheet string="سلخ من جهة">
+						<group col="2">
+							<field name="create_date" string="تاريخ الطلب" readonly="1" />
+						</group>
 						<group col="4">
+
 							<field name="employee_id" />
 							<field name="decision_number" />
 							<field name="fiscal_year" />
@@ -299,7 +301,7 @@
 								attrs="{'readonly':[('state', '!=', 'new')]}" />
 						</group>
 
-						<field name="line_ids" string=" الوظائف">
+						<field name="line_ids" string=" الوظائف" attrs="{'readonly':[('state', '!=', 'new')]}">
 							<tree editable="bottom">
 								<field name="name" options='{"no_open": True, "no_create": True}' />
 								<field name="number" readonly="1" />
@@ -327,7 +329,7 @@
 			</field>
 		</record>
 		<menuitem id="hr_job_strip_from_menu" name="سلخ من جهة "
-			sequence="11" parent="hr_root_job" action="action_hr_job_strip_from" />
+			sequence="15" parent="hr_root_job" action="action_hr_job_strip_from" />
 
 		<!-- سلخ وظيفة إلى جهة -->
 		<record model="ir.ui.view" id="hr_job_strip_to_tree">
@@ -380,6 +382,9 @@
 							statusbar_visible="new,waiting,hrm1,communication,external,hrm2,done" />
 					</header>
 					<sheet>
+						<group col="2">
+							<field name="create_date" string="تاريخ الطلب" readonly="1" />
+						</group>
 						<group col="4">
 							<field name="employee_id" />
 							<field name="speech_number"
@@ -405,10 +410,9 @@
 								attrs="{'invisible':[('state', 'not in', ['external','hrm2','done'])],'required':[('state','=','external')], 'readonly':[('state', 'in', ['hrm2','done'])]}" />
 
 						</group>
-						<field name="line_ids" string="إلغاء وظائف">
+						<field name="line_ids" string="إلغاء وظائف" attrs="{'readonly':[('state', '!=', 'new')]}">
 							<tree editable="bottom">
-								<field name="job_id"
-									domain="[('state','=','unoccupied'),('is_occupied','=',False)]" />
+								<field name="job_id" domain="[('state','=','unoccupied')]" />
 								<field name="type_id" />
 								<field name="department_id" />
 								<field name="grade_id" />
@@ -431,7 +435,7 @@
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 		<menuitem id="hr_job_strip_to_menu" name="سلخ إلى جهة"
-			sequence="12" parent="hr_root_job" action="action_hr_job_strip_to" />
+			sequence="16" parent="hr_root_job" action="action_hr_job_strip_to" />
 
 
 
@@ -456,7 +460,7 @@
 			<field name="arch" type="xml">
 				<form string="تعديل وظائف">
 					<header>
-						
+
 						<button name="action_waiting" string="إرسال للإعتماد" type="object"
 							groups="smart_hr.group_job_managment" states="new"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
@@ -466,7 +470,7 @@
 						<button name="action_refuse" string="رفض" type="object"
 							groups="smart_hr.group_update_job" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_budget" string="حجز الوظائف و إرسال الطلب"
+						<button name="action_budget" string="حجز الوظائف"
 							type="object" groups="smart_hr.group_hrm" states="hrm1" />
 						<button name="action_communication" string="موافقة" type="object"
 							groups="smart_hr.group_budget_managment" states="budget"
@@ -486,11 +490,14 @@
 							statusbar_visible="new,waiting,hrm1,budget,communication,external,hrm2,done" />
 					</header>
 					<sheet>
+						<group col="2">
+							<field name="create_date" string="تاريخ الطلب" readonly="1" />
+						</group>
 						<group col="4">
 							<field name="employee_id" />
 							<field name="decision_number" />
 							<field name="decision_date" />
-							
+
 							<field name="out_speech_number"
 								attrs="{'invisible':[('state', 'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" />
 							<field name="out_speech_date"
@@ -505,9 +512,10 @@
 								attrs="{'invisible':[('state', 'not in', ['external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','external')]}" />
 						</group>
 
-						<field name="job_update_ids" string=" تحوير‬  وظائف">
+						<field name="job_update_ids" string=" تحوير‬  وظائف"  attrs="{'readonly':[('state', '!=', 'new')]}">
 							<tree editable="bottom">
 								<field name="job_id" />
+								<field name="job_number" />
 								<field name="old_name" />
 								<field name="new_name" />
 								<field name="old_type_id" />
@@ -533,7 +541,7 @@
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 		<menuitem id="hr_job_update_menu" name="تحوير‬  وظائف"
-			sequence="30" parent="hr_root_job" action="action_hr_job_update" />
+			sequence="11" parent="hr_root_job" action="action_hr_job_update" />
 
 		<!-- نقل وظائف -->
 
@@ -567,7 +575,7 @@
 						<button name="action_refuse" string="رفض" type="object"
 							groups="smart_hr.group_move_job_department" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_budget" string="حجز الوظائف و إرسال الطلب"
+						<button name="action_budget" string="حجز الوظائف"
 							type="object" groups="smart_hr.group_hrm" states="hrm1" />
 						<button name="action_communication" string="موافقة" type="object"
 							groups="smart_hr.group_budget_managment" states="budget"
@@ -587,9 +595,13 @@
 							statusbar_visible="new,waiting,hrm1,budget,communication,external,hrm2,done" />
 					</header>
 					<sheet>
+						<group col="2">
+							<field name="create_date" string="تاريخ الطلب" readonly="1" />
+						</group>
 						<group col="4">
 							<field name="employee_id" />
-							<field name="move_raison" attrs="{'readonly':[('state', '!=','new')],'required':[('state','=','new')]}" />
+							<field name="move_raison"
+								attrs="{'readonly':[('state', '!=','new')],'required':[('state','=','new')]}" />
 							<field name="out_speech_number"
 								attrs="{'invisible':[('state', 'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" />
 							<field name="out_speech_date"
@@ -604,10 +616,9 @@
 								attrs="{'invisible':[('state', 'not in', ['external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','external')]}" />
 						</group>
 						<field name="job_movement_ids" string=" نقل وظائف"
-							context="{'job_movement_ids': job_movement_ids}">
+							context="{'job_movement_ids': job_movement_ids}"  attrs="{'readonly':[('state', '!=', 'new')]}">
 							<tree editable="bottom">
-								<field name="job_id"
-									domain="[('state','=','unoccupied') ,('is_occupied','=',False)]" />
+								<field name="job_id" domain="[('state','=','unoccupied') ]" />
 								<field name="type_id" />
 								<field name="grade_id" />
 								<field name="department_id" />
@@ -631,7 +642,7 @@
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 		<menuitem id="hr_job_move_grade_menu" name="نقل وظائف"
-			sequence="25" parent="hr_root_job" action="action_hr_job_move_grade" />
+			sequence="12" parent="hr_root_job" action="action_hr_job_move_grade" />
 
 		<!-- رفع وظائف -->
 
@@ -665,7 +676,7 @@
 						<button name="action_refuse" string="رفض" type="object"
 							groups="smart_hr.group_move_job_grade" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_budget" string="حجز الوظائف و إرسال الطلب"
+						<button name="action_budget" string="حجز الوظائف"
 							type="object" groups="smart_hr.group_hrm" states="hrm1" />
 						<button name="action_communication" string="موافقة" type="object"
 							groups="smart_hr.group_budget_managment" states="budget"
@@ -685,6 +696,9 @@
 							statusbar_visible="new,waiting,hrm1,budget,communication,external,hrm2,done" />
 					</header>
 					<sheet>
+						<group col="2">
+							<field name="create_date" string="تاريخ الطلب" readonly="1" />
+						</group>
 						<group col="4">
 							<field name="employee_id" />
 							<field name="decision_number" />
@@ -704,7 +718,7 @@
 							<field name="in_speech_file"
 								attrs="{'invisible':[('state', 'not in', ['external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','external')]}" />
 						</group>
-						<field name="job_movement_ids" context="{'operation':'scale_up'}"
+						<field name="job_movement_ids" context="{'operation':'scale_up'}" attrs="{'readonly':[('state', '!=', 'new')]}"
 							string=" الوظائف">
 							<tree editable="bottom">
 								<field name="job_id" />
@@ -748,7 +762,7 @@
 		</record>
 
 		<menuitem id="hr_job_scal_up_department_menu" name="رفع وظائف"
-			sequence="20" parent="hr_root_job" action="action_hr_job_scal_up_department" />
+			sequence="13" parent="hr_root_job" action="action_hr_job_scal_up_department" />
 
 		<!-- خفض وظائف -->
 
@@ -785,7 +799,7 @@
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 
-						<button name="action_budget" string="حجز الوظائف و إرسال الطلب"
+						<button name="action_budget" string="حجز الوظائف"
 							type="object" groups="smart_hr.group_hrm" states="hrm1" />
 
 
@@ -812,6 +826,9 @@
 							statusbar_visible="new,waiting,hrm1,budget,communication,external,hrm2,done" />
 					</header>
 					<sheet>
+						<group col="2">
+							<field name="create_date" string="تاريخ الطلب" readonly="1" />
+						</group>
 						<group col="4">
 							<field name="employee_id" />
 							<field name="decision_number" />
@@ -831,7 +848,7 @@
 							<field name="in_speech_file"
 								attrs="{'invisible':[('state', 'not in', ['external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','external')]}" />
 						</group>
-						<field name="job_movement_ids" context="{'operation':'scale_down'}"
+						<field name="job_movement_ids" context="{'operation':'scale_down'}" attrs="{'readonly':[('state', '!=', 'new')]}"
 							string=" الوظائف">
 							<tree editable="bottom">
 								<field name="job_id" />
@@ -874,7 +891,7 @@
 			<field name="act_window_id" ref="action_hr_job_scal_down_department" />
 		</record>
 		<menuitem id="hr_job_scal_down_department_menu" name="خفض وظائف"
-			sequence="21" parent="hr_root_job" action="action_hr_job_scal_down_department" />
+			sequence="14" parent="hr_root_job" action="action_hr_job_scal_down_department" />
 
 
 
@@ -915,6 +932,9 @@
 						<field name="state" widget="statusbar" statusbar_visible="new,waiting,hrm,done,refused" />
 					</header>
 					<sheet>
+						<group col="2">
+							<field name="create_date" string="تاريخ الطلب" readonly="1" />
+						</group>
 						<group col="4">
 							<field name="employee_id" />
 							<field name="speech_number"
@@ -930,10 +950,9 @@
 							<field name="decision_file"
 								attrs="{'invisible':[('state', 'not in', ['hrm','done'])],'readonly':[('state', '=', 'done')],'required':[('state','=','hrm')]}" />
 						</group>
-						<field name="job_cancel_ids" string="إلغاء وظائف">
+						<field name="job_cancel_ids" string="إلغاء وظائف" attrs="{'readonly':[('state', '!=', 'new')]}">
 							<tree editable="bottom">
-								<field name="job_id"
-									domain="[('state','=','unoccupied'),('is_occupied','=',False)]" />
+								<field name="job_id" domain="[('state','=','unoccupied')]" />
 								<field name="type_id" />
 								<field name="department_id" />
 								<field name="grade_id" />
@@ -956,7 +975,7 @@
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 		<menuitem id="hr_job_cancel_menu" name="إلغاء وظائف"
-			sequence="15" parent="hr_root_job" action="action_hr_job_cancel" />
+			sequence="17" parent="hr_root_job" action="action_hr_job_cancel" />
 
 
 		<!-- حجز وظيفة -->
