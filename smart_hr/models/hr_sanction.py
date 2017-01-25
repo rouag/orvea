@@ -46,9 +46,9 @@ class hrSanction(models.Model):
                              ('done', 'اعتمدت')], string='الحالة', readonly=1, default='draft')
  
     
-    @api.onchange('date_sanction_start')
-    def _onchange_date_sanction_start(self):
-         if self.date_direct_action :
+    @api.onchange('date_sanction_end')
+    def _onchange_date_sanction_end(self):
+         if self.date_sanction_end and self.date_sanction_start :
              if self.date_sanction_end > self.date_sanction_start:
                  raise ValidationError(u"تاريخ إلغاء العقوبة يجب ان يكون أكبر من تاريخ البدأ")
         
@@ -72,6 +72,49 @@ class hrSanction(models.Model):
     @api.multi
     def action_extern(self):
         self.ensure_one()
+        direct_appoint_obj = self.env['hr.employee.sanction']
+        self.env['hr.employee.sanction'].create({'employee_id': self.employee_id.id,
+                                                  'type_sanction' : self.type_sanction.id,
+                                                  'date_sanction_start' : self.date_sanction_start,
+                                                  'date_sanction_end' : self.date_sanction_end,
+                                                 
+                                                           })
         self.state = 'done'
         
+        
+class HrRemoveSanction(models.Model):
+    _name = 'hr.remove.sanction'  
+    _description = u'فسخ عقوبة'
+    _rec_name = 'employee_id'
+    
+    order_date = fields.Date(string='تاريخ الطلب',default=fields.Datetime.now(),readonly=1)
+    employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', required=1) 
+    type_sanction = fields.Many2one('hr.type.sanction',string='العقوبة',required=1)
+  
+    state = fields.Selection([
+                              ('draft', u'طلب'),
+                              ('waiting', u'  صاحب صلاحية العقوبات'),
+                              ('done', u'اعتمدت'),
+                              ('refuse', u'رفض'),
+                             
+                              ], string=u'حالة', default='draft', advanced_search=True)
+    
+    
+    @api.multi
+    def action_draft(self):
+        self.ensure_one()
+        self.state = 'waiting'
+  
+    @api.multi
+    def action_refuse(self):
+        self.ensure_one()
+        self.state = 'draft'
+    
+    
+    @api.multi
+    def action_waiting(self):
+        self.ensure_one()
+        self.state = 'done'
+
+   
    

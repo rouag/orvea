@@ -118,6 +118,7 @@
         'view/courses_follow_up.xml',
         'view/hr_direct_appoint_view.xml',
         'view/hr_sanction_view.xml',
+        'view/hr_remove_sanction_view.xml',
         'view/hr_employee_functional_card.xml',
         # القرارات
         'view/hr_decision.xml',

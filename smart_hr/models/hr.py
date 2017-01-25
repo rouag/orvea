@@ -26,7 +26,11 @@ class HrEmployee(models.Model):
                                        ('update', u'إستكمال البيانات'),
                                        ('done', u'اعتمدت'),
                                        ('refused', u'رفض'),
-                                       ('employee', u'موظف')], string=u'الحالة', default='new')
+                                      ( 'outside_assignment',u'مكلف خارجي'),
+                                      ('non_active',u'مفصول'),
+                                      ('oh',u'كف اليد'),
+                                      ('retired',u'متقاعد'),
+                                      ('employee', u'موظف')], string=u'الحالة', default='new')
     education_level = fields.Many2one('hr.employee.education.level', string=u'المستوى التعليمي')
     # Deputation Stock
     deputation_stock = fields.Integer(string=u'الأنتدابات', default=60)
@@ -66,7 +70,7 @@ class HrEmployee(models.Model):
     passport_date = fields.Date(string=u'تاريخ إصدار جواز السفر ')
     passport_place = fields.Char(string=u'مكان إصدار بجواز السفر')
     passport_end_date = fields.Date(string=u'تاريخ انتهاء جواز السفر ')
-
+    sanction_ids = fields.One2many('hr.employee.sanction', 'employee_id', string=u'العقوبات')
     
     @api.multi
     def name_get(self):
@@ -285,4 +289,14 @@ class HrEmployeeSpecialization(models.Model):
   
     name = fields.Char(string=u'المسمّى')
     code = fields.Char(string=u'الرمز')
+    
+class HrEmployeeSanction(models.Model):
+    _name = 'hr.employee.sanction'  
+    _description = u'العقوبات'
+  
+    employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', )
+    type_sanction = fields.Many2one('hr.type.sanction',string='العقوبة',)
+    date_sanction_start = fields.Date(string='تاريخ بدأ العقوبة') 
+    date_sanction_end = fields.Date(string='تاريخ الإلغاء') 
+
 
