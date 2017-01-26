@@ -9,7 +9,7 @@ class HrEmployeeCreateUsers(models.Model):
     _description = u'انشاء مستخدم' 
 
     name = fields.Char(string='رقم')
-    employee_ids = fields.Many2many('hr.employee', string=u'الموظف', required=1)    
+    employee_ids = fields.Many2many('hr.employee', string=u'الموظف', required=1, domain=[('employee_state', '=','employee'),('user_id','=',False)])   
     date = fields.Date(string=u'التاريخ ', default=fields.Datetime.now(), readonly=1)
 
     @api.multi

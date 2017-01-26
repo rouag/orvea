@@ -75,14 +75,21 @@ class HrDecisionAppoint(models.Model):
    
     # attachments files
     order_picture = fields.Binary(string='صورة القرار', required=1) 
+    order_picture_name = fields.Char(string='صورة القرار', required=1) 
     medical_examination_file = fields.Binary(string='وثيقة الفحص الطبي') 
+    medical_examination_name = fields.Char(string='وثيقة الفحص الطبي') 
     order_enquiry_file = fields.Binary(string='طلب الاستسفار')
     file_salar_recent = fields.Binary(string='تعهد من الموظف')
     file_engagement = fields.Many2many('ir.attachment', string='إرفاق مزيد من الوثائق')
     # file_engagement = fields.Binary(string = 'تعهد من المترشح')
     file_appoint = fields.Binary(string='قرار التعين')
     file_decision = fields.Binary(string='قرار المباشر')
-    
+    order_enquiry_file_name = fields.Char(string='اسم طلب الاستسفار') 
+    file_salar_recent_name = fields.Char(string='اسم تعهد من الموظف') 
+    file_appoint_name = fields.Char(string='اسم قرار التعين') 
+    file_decision_name = fields.Char(string='اسم قرار المباشر') 
+
+
     @api.multi
     def send_appoint_request(self):
         self.ensure_one()
