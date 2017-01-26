@@ -129,7 +129,7 @@ class HrJobCreate(models.Model):
     grade_ids = fields.One2many('salary.grid.grade', 'job_create_id', string='المرتبة')
     draft_budget = fields.Binary(string=u'مشروع الميزانية')
     draft_budget_name = fields.Char(string=u'مشروع الميزانية مسمى ')
-    
+
     @api.onchange('serie_id')
     def onchange_serie_id(self):
         if self.serie_id:
@@ -256,6 +256,9 @@ class HrJobStripFrom(models.Model):
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1, readonly=1)
     fiscal_year = fields.Char(string='السنه المالية', default=(date.today().year), readonly=1)
     decision_number = fields.Char(string=u"رقم القرار", required=1, readonly=1, states={'new': [('readonly', 0)]})
+    source_location = fields.Many2one('res.partner', string=u"المصدر", domain=[('company_type', '=', 'governmental_entity')], required=1, readonly=1, states={'new': [('readonly', 0)]})
+    decision_date = fields.Date(string=u'تاريخ القرار')
+    decision_file = fields.Binary(string=u'ملف القرار')
     speech_number = fields.Char(string=u'رقم الخطاب')
     speech_date = fields.Date(string=u'تاريخ الخطاب')
     speech_file = fields.Binary(string=u'صورة الخطاب')
@@ -403,8 +406,12 @@ class HrJobStripTo(models.Model):
 
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1, readonly=1)
     speech_number = fields.Char(string=u'رقم الخطاب')
+    destination_location = fields.Many2one('res.partner', string=u"الوجهة", domain=[('company_type', '=', 'governmental_entity')], required=1, readonly=1, states={'new': [('readonly', 0)]})
     speech_date = fields.Date(string=u'تاريخ الخطاب')
     speech_file = fields.Binary(string=u'صورة الخطاب')
+    decision_number = fields.Char(string=u"رقم القرار", required=1, readonly=1, states={'new': [('readonly', 0)]})
+    decision_date = fields.Date(string=u'تاريخ القرار')
+    decision_file = fields.Binary(string=u'ملف القرار')
     out_speech_number = fields.Char(string=u'رقم الخطاب الصادر')
     out_speech_date = fields.Date(string=u'تاريخ الخطاب الصادر')
     out_speech_file = fields.Binary(string=u'صورة الخطاب الصادر')
@@ -423,7 +430,7 @@ class HrJobStripTo(models.Model):
     speech_file_name = fields.Char(string=u'مسمى صورة الخطاب')
     out_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الصادر')
     in_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الوارد')
-    
+
     @api.multi
     def action_waiting(self):
         self.ensure_one()
@@ -524,8 +531,7 @@ class HrJobCancel(models.Model):
                              readonly=1, default='new')
     speech_file_name = fields.Char(string=u'مسمى صورة الخطاب')
     decision_file_name = fields.Char(string=u'مسمى ملف القرار')
-    
-    
+
     @api.multi
     def action_waiting(self):
         self.ensure_one()
@@ -603,7 +609,7 @@ class HrJobMoveDeparrtment(models.Model):
                               ], readonly=1, default='new')
     out_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الصادر')
     in_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الوارد')
-    
+
     @api.multi
     def action_waiting(self):
         self.ensure_one()
@@ -721,6 +727,7 @@ class HrJobMoveGrade(models.Model):
                                   ])
     out_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الصادر')
     in_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الوارد')
+
     @api.multi
     def action_waiting(self):
         self.ensure_one()
@@ -850,7 +857,7 @@ class HrJobMoveUpdate(models.Model):
                               ], readonly=1, default='new')
     out_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الصادر')
     in_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الوارد')
-    
+
     @api.multi
     def action_waiting(self):
         self.ensure_one()
@@ -949,3 +956,4 @@ class HrJobTypeActivity(models.Model):
     _description = u'نوع نشاط الوظيفة'
 
     name = fields.Char(string=u'المسمى')
+
