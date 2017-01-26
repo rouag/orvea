@@ -220,8 +220,13 @@ class HrJobCreateLine(models.Model):
 
     @api.onchange('name')
     def onchange_name(self):
+        res = {}
         if self.name:
             self.number = self.name.number
+        if not self.name:
+            name_ids = [rec .id for rec in self.job_create_id.serie_id.job_name_ids]
+            res['domain'] = {'name': [('id', 'in', name_ids)]}
+            return res
 
     @api.constrains('job_number', 'grade_id')
     def _check_grade_id_job_number(self):

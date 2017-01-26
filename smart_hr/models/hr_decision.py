@@ -32,7 +32,8 @@ class HrDecision(models.Model):
     @api.onchange('decision_type_id')
     def onchange_decision_type_id(self):
         
-         employee_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('state', '=', 'done')])
+         employee_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('state', '=', 'done')],limit=1 )
+        
          if employee_line and self.decision_type_id :
                     
             decision_type_line = self.env['hr.decision.type'].search([('id', '=', self.decision_type_id.id)

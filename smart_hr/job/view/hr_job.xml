@@ -160,7 +160,7 @@
 							<field name="create_date" string="تاريخ الطلب" readonly="1" />
 						</group>
 						<group col="4">
-							<field name="name" string="المسمى الوظيفي" />
+							<field name="name" />
 							<field name="decision_number" />
 							<field name="decision_date" />
 							<field name="decision_file" filename="decision_file_name" />
@@ -188,7 +188,7 @@
 						<field name="line_ids" string=" الوظائف"
 							attrs="{'readonly':[('state', '!=', 'new')]}">
 							<tree editable="bottom">
-								<field name="name" options='{"no_open": True, "no_create": True}' />
+								<field name="name" options='{"no_open": True, "no_create": True}' string="المسمى الوظيفي"/>
 								<field name="number" readonly="1" />
 								<field name="activity_type" options='{"no_open": True, "no_create": True}' />
 								<field name="grade_id" options='{"no_open": True, "no_create": True}' />
