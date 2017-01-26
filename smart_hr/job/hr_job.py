@@ -109,9 +109,11 @@ class HrJobCreate(models.Model):
     decision_number = fields.Char(string=u"رقم القرار", required=1, readonly=1, states={'new': [('readonly', 0)]})
     decision_date = fields.Date(string=u'تاريخ القرار', required=1, readonly=1, states={'new': [('readonly', 0)]})
     decision_file = fields.Binary(string=u'ملف القرار', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    decision_file_name = fields.Char(string=u'ملف القرار مسمى')
     speech_number = fields.Char(string=u'رقم الخطاب')
     speech_date = fields.Date(string=u'تاريخ الخطاب')
     speech_file = fields.Binary(string=u'صورة الخطاب')
+    speech_file_name = fields.Char(string=u'مسمى صورة الخطاب')
     line_ids = fields.One2many('hr.job.create.line', 'job_create_id', readonly=1, states={'new': [('readonly', 0)]})
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', u'صاحب الصلاحية'),
@@ -126,7 +128,8 @@ class HrJobCreate(models.Model):
     serie_id = fields.Many2one('hr.groupe.job', ' سلسلة الفئات', ondelete='cascade')
     grade_ids = fields.One2many('salary.grid.grade', 'job_create_id', string='المرتبة')
     draft_budget = fields.Binary(string=u'مشروع الميزانية')
-
+    draft_budget_name = fields.Char(string=u'مشروع الميزانية مسمى ')
+    
     @api.onchange('serie_id')
     def onchange_serie_id(self):
         if self.serie_id:
@@ -270,6 +273,9 @@ class HrJobStripFrom(models.Model):
     specific_id = fields.Many2one('hr.groupe.job', ' المجموعة النوعية', ondelete='cascade')
     serie_id = fields.Many2one('hr.groupe.job', ' سلسلة الفئات', ondelete='cascade')
     grade_ids = fields.One2many('salary.grid.grade', 'job_strip_from_id', string='المرتبة')
+    speech_file_name = fields.Char(string=u'مسمى صورة الخطاب')
+    out_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الصادر')
+    in_speech_name = fields.Char(string=u'مسمى صورة الخطاب الوارد')
 
     @api.onchange('serie_id')
     def onchange_serie_id(self):
@@ -409,7 +415,10 @@ class HrJobStripTo(models.Model):
                               ('hrm2', u'شؤون الموظفين'),
                               ('done', u'اعتمدت')
                               ], readonly=1, default='new')
-
+    speech_file_name = fields.Char(string=u'مسمى صورة الخطاب')
+    out_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الصادر')
+    in_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الوارد')
+    
     @api.multi
     def action_waiting(self):
         self.ensure_one()
@@ -508,7 +517,10 @@ class HrJobCancel(models.Model):
                               ('done', 'اعتمدت'),
                               ('refused', 'رفض')],
                              readonly=1, default='new')
-
+    speech_file_name = fields.Char(string=u'مسمى صورة الخطاب')
+    decision_file_name = fields.Char(string=u'مسمى ملف القرار')
+    
+    
     @api.multi
     def action_waiting(self):
         self.ensure_one()
@@ -584,7 +596,9 @@ class HrJobMoveDeparrtment(models.Model):
                               ('hrm2', u'شؤون الموظفين'),
                               ('done', u'اعتمدت')
                               ], readonly=1, default='new')
-
+    out_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الصادر')
+    in_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الوارد')
+    
     @api.multi
     def action_waiting(self):
         self.ensure_one()
@@ -700,7 +714,8 @@ class HrJobMoveGrade(models.Model):
     move_type = fields.Selection([('scale_up', u'رفع'),
                                   ('scale_down', u'خفض')
                                   ])
-
+    out_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الصادر')
+    in_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الوارد')
     @api.multi
     def action_waiting(self):
         self.ensure_one()
@@ -828,7 +843,9 @@ class HrJobMoveUpdate(models.Model):
                               ('hrm2', u'شؤون الموظفين'),
                               ('done', u'اعتمدت')
                               ], readonly=1, default='new')
-
+    out_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الصادر')
+    in_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الوارد')
+    
     @api.multi
     def action_waiting(self):
         self.ensure_one()

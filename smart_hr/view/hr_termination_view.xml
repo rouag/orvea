@@ -45,7 +45,8 @@
                                 <field name="letter_date" attrs="{'readonly':[('state','!=','draft')]}"/>
                             </group>
                             <group>
-                                <field name="file_attachment" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                <field name="file_attachment" attrs="{'readonly':[('state','!=','draft')]}" filename="file_attachment_name"/>
+                                <field name="file_attachment_name" invisible="1"/>
                             </group>
                         </group>
                         <button name="%(report_hr_termination_report)d" string="طباعة القرار" type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button"/>
