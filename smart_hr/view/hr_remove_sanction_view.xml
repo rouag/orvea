@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
-	
+
 		<record model="ir.ui.view" id="hr_remove_sanction_tree">
 			<field name="name">hr.remove.sanction.tree</field>
 			<field name="model">hr.remove.sanction</field>
@@ -9,7 +9,7 @@
 			<field name="arch" type="xml">
 				<tree string="فسخ عقوبة">
 					<field name="employee_id" />
-								<field name="type_sanction" />
+					<field name="type_sanction" />
 				</tree>
 			</field>
 		</record>
@@ -32,24 +32,14 @@
 
 					</header>
 					<sheet>
-
 						<group>
-							<group>
-
-								<field name="order_date" readonly="1" />
-
-							</group>
+							<field name="name" />
+							<field name="order_date" />
+							<field name="employee_id" />
+							<field name="sanction_ids"   domain="[('employee_id', '=', employee_id),('state', '=', 'done')]"/>
 						</group>
-						<group>
-							<group>
-								<field name="employee_id" />
-								<field name="type_sanction" />
-
-							</group>
-
-						</group>
+						<field name="note" />
 					</sheet>
-
 				</form>
 			</field>
 		</record>

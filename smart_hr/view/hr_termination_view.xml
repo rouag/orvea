@@ -104,9 +104,16 @@
             <field name="arch" type="xml">
                 <form string="نوع طى القيد">
                     <sheet>
-                        <group>
-                            <field name="name" required="1"/>
-                        </group>
+                       
+						<group>
+							 <field name="name" required="1"/>
+							<field name="code" />
+							<field name="nb_salaire"  />
+							<field name="all_holidays" />
+								<field name="max_days" />
+							
+						</group>
+                           
                     </sheet>
                 </form>
             </field>

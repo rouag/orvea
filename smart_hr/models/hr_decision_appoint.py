@@ -165,7 +165,7 @@ class HrDecisionAppoint(models.Model):
         if self.type_appointment.recrutment_decider and self.type_appointment.personnel_hr:
             self.state = 'hrm'
         if self.type_appointment.recrutment_decider :
-            self.state = 'done'
+            self.action_done()
             self.state_appoint = 'active'
         # Add to log
         user = self.env['res.users'].browse(self._uid)
@@ -189,7 +189,7 @@ class HrDecisionAppoint(models.Model):
         if self.type_appointment.personnel_hr and self.type_appointment.direct_manager:
             self.state = 'direct'
         else :
-            self.state = 'done'
+            self.action_done()
             self.state_appoint ='active'
             direct_appoint_obj = self.env['hr.direct.appoint']
             self.env['hr.direct.appoint'].create({'employee_id': self.employee_id.id,
@@ -222,7 +222,7 @@ class HrDecisionAppoint(models.Model):
     def button_accept_direct(self):
         self.ensure_one()
         if self.type_appointment.direct_manager:
-            self.state = 'done'
+            self.action_done()
             self.state_appoint ='active'
             direct_appoint_obj = self.env['hr.direct.appoint']
             self.env['hr.direct.appoint'].create({'employee_id': self.employee_id.id,
@@ -263,7 +263,24 @@ class HrDecisionAppoint(models.Model):
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت إحداث تعين جديد '" + unicode(user.name) + u"'")
         # update holidays balance for the employee
-
+        type=''
+        if self.type_appointment.id == self.env.ref('smart_hr.data_hr_new_agent_public').id:
+            type = '17'
+        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_agent_public').id:
+            type = '59'
+        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_agent_utilisateur').id:
+            type = '84'
+        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_salaire_article').id:
+            type = '85'
+        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_contrat').id:
+            type = '86'
+        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_public_nosoudi').id:
+            type = '87'
+        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_public_retraite').id:
+            type = '88'
+        if type:
+            self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
+        self.state = 'done'
         self.env['hr.holidays']._init_balance(self.employee_id)
         # create promotion history line
         promotion_obj = self.env['hr.employee.promotion.history']

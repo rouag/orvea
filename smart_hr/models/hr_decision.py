@@ -12,7 +12,7 @@ class HrDecision(models.Model):
     name = fields.Char(string='قرار إداري رقم', required=1)
     decision_type_id = fields.Many2one('hr.decision.type', string='نوع القرار', required=1)
     date = fields.Date(string='بتاريخ', required=1)
-    employee_id=fields.Many2one('hr.employee',string='الموظف',required=1,)
+    employee_id=fields.Many2one('hr.employee',string='الموظف',required=1)
     text = fields.Html(string='نص القرار')
     
 #     decision_appoint_id = Many2one('hr.decision.appoint')
@@ -32,12 +32,13 @@ class HrDecision(models.Model):
     @api.onchange('decision_type_id')
     def onchange_decision_type_id(self):
         
-         employee_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('state', '=', 'done')],limit=1 )
-        
-         if employee_line and self.decision_type_id :
-                    
+         employee_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('state', '=', 'done')],limit=1)
+         print"employee_line",employee_line
+         if employee_line :
+            print"ccccccccccccc"       
             decision_type_line = self.env['hr.decision.type'].search([('id', '=', self.decision_type_id.id)
-                                                ])
+                                        ])
+            print"decision_type_line"  ,decision_type_line    
             if decision_type_line :
                     employee = self.employee_id.name or ""
                     dattz = self.date or ""
