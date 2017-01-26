@@ -23,12 +23,11 @@ class HrHolidays(models.Model):
                 ('state', 'not in', ['cancel', 'refuse']),
             ]
             nholidays = self.search_count(cr, uid, domain, context=context)
-            if holiday.compensation_type=='money':
+            if holiday.compensation_type == 'money':
                 return True
             if nholidays:
                 return False
         return True
-
 
     @api.multi
     def _set_external_autoritie(self):
@@ -40,12 +39,9 @@ class HrHolidays(models.Model):
     name = fields.Char(string=u'رقم القرار', advanced_search=True)
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), advanced_search=True)
-    raison = fields.Selection([
-        ('other', u'سبب أخر'),
-        ('husband', u'مرافقة الزوج'),
-        ('wife', u'مرافقة الزوجة'),
-        ('legit', u'مرافقة كمحرم شرعي'),
-        ], default="other", string=u'السبب ')
+    raison = fields.Selection([('other', u'سبب أخر'), ('husband', u'مرافقة الزوج'),
+                               ('wife', u'مرافقة الزوجة'),('legit', u'مرافقة كمحرم شرعي')],
+                               default="other", string=u'السبب ')
     date_from = fields.Date(string=u'التاريخ من ', default=fields.Datetime.now())
     date_to = fields.Date(string=u'التاريخ الى' , compute='_compute_date_to',store=True)
     duration = fields.Integer(string=u'الأيام' ,required=1)
@@ -74,10 +70,12 @@ class HrHolidays(models.Model):
     num_outspeech = fields.Char(string=u'رقم الخطاب الصادر')
     date_outspeech = fields.Date(string=u'تاريخ الخطاب الصادر')
     outspeech_file = fields.Binary(string=u'الخطاب الصادر')
+    outspeech_file_name = fields.Char(string=u'file name')
+
     num_inspeech = fields.Char(string=u'رقم الخطاب الوارد')
     date_inspeech = fields.Date(string=u'تاريخ الخطاب الوارد')
     inspeech_file = fields.Binary(string=u'الخطاب الوارد')
-
+    inspeech_file_name = fields.Char(string=u'الخطاب الوارد name')
     # Cancellation
     is_cancelled = fields.Boolean(string=u'ملغاة', compute='_is_cancelled')
     is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started')
@@ -112,6 +110,14 @@ class HrHolidays(models.Model):
     medical_report = fields.Binary(string=u'التقرير الطبي')
     prove_exam_duration = fields.Binary(string=u'إثبات اداء الامتحان ومدته')
     study_subject = fields.Char(string=u'موضوع‬ ‫الدِّراسة')
+    out_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الصادر')
+    in_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الوارد')
+    birth_certificate_file_name = fields.Char(string=u'مسمى شهادة الميلا')
+    medical_certification_file_name = fields.Char(string=u'الشهادة الطبيةا')
+    medical_report_file_name = fields.Char(string=u'التقرير الطبي')
+    prove_exam_duration_name = fields.Char(string=u'إثبات اداء الامتحان ومدته مسمى')
+
+ 
  
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
