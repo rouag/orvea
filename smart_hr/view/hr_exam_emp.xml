@@ -67,14 +67,12 @@
 			<field name="arch" type="xml">
 				<form string="الفحص الطبي ">
 					<sheet>
-						<group>
-							<group>
-								<field name="employee"
-									domain="['|',('state','=','employee'),('state','=','done'), ('job_id','!=',False)]" />
-							</group>
-							<group>
-								<field name="hospital" domain="[('company_type','=','hospital')]" />
-							</group>
+						<group col="6">
+							<field name="employee"
+								domain="['|',('state','=','employee'),('state','=','done'), ('job_id','!=',False)]" />
+							<field name="hospital" domain="[('company_type','=','hospital')]" />
+							<field name="exam_date" />
+
 						</group>
 
 						<field name="exams_results" string="اﻷختبارات">
@@ -96,7 +94,7 @@
 				<tree string="الفحص الطبي">
 					<field name="sequence" />
 					<field name="employee" />
-					<field name="create_date" string="تاريخ الانشاء" />
+					<field name="exam_date" />
 				</tree>
 			</field>
 		</record>

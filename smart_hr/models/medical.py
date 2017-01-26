@@ -45,6 +45,7 @@ class EmployeeMedicalExam(models.Model):
     hospital = fields.Many2one('res.partner', string = u'المستشفى', required=1)
     job = fields.Many2one('hr.job', string = u'الوظيفة المرشح لها', compute = '_get_job_employee', readonly=True)
     exams_results = fields.One2many('medical.exam.result','employee_exam', string=u'اﻷختبارات')
+    exam_date = fields.Date(string=u'تاريخ الفحص')
     
     @api.depends('employee')
     def _get_job_employee(self):

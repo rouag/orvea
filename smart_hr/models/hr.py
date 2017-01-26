@@ -13,8 +13,8 @@ class HrEmployee(models.Model):
     _inherit = 'hr.employee'
 
     number = fields.Char(string=u'الرقم الوظيفي', required=1)
-    identification_date=fields.Date(string=u'تاريخ إصدار بطاقة الهوية ')
-    identification_place=fields.Char(string=u'مكان إصدار بطاقة الهوية')
+    identification_date = fields.Date(string=u'تاريخ إصدار بطاقة الهوية ')
+    identification_place = fields.Many2one('res.city', string=u'مكان إصدار بطاقة الهوية')
     father_name = fields.Char(string=u'إسم الأب', required=1)
     is_resident = fields.Boolean(string=u'موظف مقيم', required=1)
     birthday_location = fields.Char(string=u'مكان الميلاد')
@@ -68,10 +68,12 @@ class HrEmployee(models.Model):
     diploma_id = fields.Many2one('hr.employee.diploma', string=u'الشهادة')
     specialization_ids = fields.Many2many('hr.employee.specialization', string=u'الاختصاص')
     passport_date = fields.Date(string=u'تاريخ إصدار جواز السفر ')
-    passport_place = fields.Char(string=u'مكان إصدار بجواز السفر')
+    passport_place = fields.Char(string=u'مكان إصدار جواز السفر')
     passport_end_date = fields.Date(string=u'تاريخ انتهاء جواز السفر ')
     display_name = fields.Char(compute='_compute_display_name', string='display Name', select=True)
     sanction_ids = fields.One2many('hr.employee.sanction', 'employee_id', string=u'العقوبات')
+    bank_account_ids = fields.One2many('res.partner.bank','employee_id', string=u'الحسابات البنكِيّة')
+   
     @api.one
     @api.depends('name', 'father_middle_name', 'father_name', 'family_name')
     def _compute_display_name(self):

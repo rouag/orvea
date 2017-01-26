@@ -22,3 +22,11 @@ class ResPartner(models.Model):
             return {'value': {'is_company': company_type == 'company', 'is_hospital': True}}
         else:
             return {'value': {'is_company': company_type == 'company', 'is_hospital': False}}
+
+
+class ResPartnerBank(models.Model):
+    _inherit = 'res.partner.bank'
+
+    account_opening_date = fields.Date(string=u'تاريخ فتح الحساب')
+    is_deposit = fields.Boolean(string='للإيداع')
+    employee_id = fields.Many2one('hr.employee',string=u'الموظف')
