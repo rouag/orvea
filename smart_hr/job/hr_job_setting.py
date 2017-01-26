@@ -52,24 +52,6 @@ class HrGrouupGeneral(models.Model):
         ('name_uniq', 'unique(name)', 'لايمكن اظافة مجموعتين بنفس الإسم'),
     ]
 
-    @api.onchange('rank_to')
-    def onchange_rank(self):
-        if self.rank_from and int(self.rank_from.code) <= 0:
-            raise ValidationError(u'يجب أن تكون المرتبة  أكبر من 0‬')
-        if self.rank_from.code and self.rank_to.code:
-            if int(self.rank_to.code) - int(self.rank_from.code) <= 0:
-                raise ValidationError(u'يجب أن تكون المرتبة ‬إلى أكبر من المرتبة‬ ‫من‬')
-            else:
-                classment_ids = []
-                i = int(self.rank_from.code)
-                while i <= int(self.rank_to.code):
-                    grade = self.env['salary.grid.grade'].search([('code', '=', str(i))], limit=1)
-                    if grade:
-                        classment_id = {'grade_id': grade.id, 'name': grade.name, 'categorie_serie_id': self._origin.id}
-                        classment_ids.append(classment_id)
-                        i += 1
-            self.update({'hr_classment_job_ids': classment_ids})
-
 
 class HrJobTraining(models.Model):
     _name = 'hr.job.training'

@@ -373,47 +373,6 @@
 		<menuitem id="job_type_activity_menu" name="أنواع الأنشطة"
 			sequence="5" parent="hr_job_setting" action="action_hr_job_type_activity" />
 
-		<!-- الجهات -->
-		<record id="hr_job_autoritie_form" model="ir.ui.view">
-			<field name="name">hr.job.authoritie.form</field>
-			<field name="model">hr.job.authoritie</field>
-			<field name="arch" type="xml">
-				<form string="الجهات‬">
-					<sheet>
-						<group>
-							<field name="name" />
-						</group>
-					</sheet>
-				</form>
-			</field>
-		</record>
-
-		<record id="hr_job_autoritie_tree" model="ir.ui.view">
-			<field name="name">hr.job.authoritie.tree</field>
-			<field name="model">hr.job.authoritie</field>
-			<field name="arch" type="xml">
-				<tree string="‫الجهات‬ ">
-					<field name="name" />
-				</tree>
-			</field>
-		</record>
-
-		<record id="hr_job_autoritie_action" model="ir.actions.act_window">
-			<field name="name">الجهات‬‫</field>
-
-			<field name="type">ir.actions.act_window</field>
-			<field name="res_model">hr.job.authoritie</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
-			<field name="view_id" ref="hr_job_autoritie_form" />
-		</record>
-		<record id="action_hr_job_autoritie_tree" model="ir.actions.act_window.view">
-			<field name="view_mode">tree</field>
-			<field name="view_id" ref="hr_job_autoritie_tree" />
-			<field name="act_window_id" ref="hr_job_autoritie_action" />
-		</record>
-		<menuitem id="hr_job_autoritie_menu" name="الجهات" sequence="6"
-			parent="hr_job_setting" action="hr_job_autoritie_action" />
 
 
 

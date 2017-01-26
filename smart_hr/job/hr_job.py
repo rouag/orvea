@@ -256,7 +256,7 @@ class HrJobStripFrom(models.Model):
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1, readonly=1)
     fiscal_year = fields.Char(string='السنه المالية', default=(date.today().year), readonly=1)
     decision_number = fields.Char(string=u"رقم القرار", required=1, readonly=1, states={'new': [('readonly', 0)]})
-    source_location = fields.Many2one('hr.job.authoritie', string=u"المصدر", required=1, readonly=1, states={'new': [('readonly', 0)]})
+    source_location = fields.Many2one('res.partner', string=u"المصدر", domain=[('company_type', '=', 'governmental_entity')], required=1, readonly=1, states={'new': [('readonly', 0)]})
     decision_date = fields.Date(string=u'تاريخ القرار')
     decision_file = fields.Binary(string=u'ملف القرار')
     speech_number = fields.Char(string=u'رقم الخطاب')
@@ -406,7 +406,7 @@ class HrJobStripTo(models.Model):
 
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1, readonly=1)
     speech_number = fields.Char(string=u'رقم الخطاب')
-    destination_location = fields.Many2one('hr.job.authoritie', string=u"الوجهة", required=1, readonly=1, states={'new': [('readonly', 0)]})
+    destination_location = fields.Many2one('res.partner', string=u"الوجهة", domain=[('company_type', '=', 'governmental_entity')], required=1, readonly=1, states={'new': [('readonly', 0)]})
     speech_date = fields.Date(string=u'تاريخ الخطاب')
     speech_file = fields.Binary(string=u'صورة الخطاب')
     decision_number = fields.Char(string=u"رقم القرار", required=1, readonly=1, states={'new': [('readonly', 0)]})
@@ -957,9 +957,3 @@ class HrJobTypeActivity(models.Model):
 
     name = fields.Char(string=u'المسمى')
 
-
-class HrJobAuthoritie(models.Model):
-    _name = 'hr.job.authoritie'
-    _description = u'الجهات'
-
-    name = fields.Char(string=u'المسمى')
