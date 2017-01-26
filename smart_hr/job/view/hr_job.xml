@@ -284,6 +284,7 @@
 	
 								<field name="employee_id" />
 								<field name="fiscal_year" />
+								<field name="source_location" />
 								<field name="speech_number" filename="speech_file_name"
 									attrs="{'invisible':[('state', 'not in', ['hrm1','communication','external','hrm2','done'])],'required':[('state','=','hrm1')], 'readonly':[('state', 'in', ['communication','external','hrm2','done'])]}" />
 								<field name="speech_date"
@@ -418,6 +419,7 @@
 									attrs="{'invisible':[('state', 'not in', ['communication','external','hrm2','done'])],'required':[('state','=','communication')], 'readonly':[('state', 'in', ['external','hrm2','done'])]}" />
 							</group>
 							<group>
+								<field name="destination_location" />
 								<field name="decision_number" />
 								<field name="decision_date" />
 								<field name="decision_file" />

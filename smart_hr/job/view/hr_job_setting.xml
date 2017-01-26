@@ -68,7 +68,8 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">form,tree</field>
 			<field name="context">{'default_group_type':'general','readonly_by_pass':
-				True }</field>
+				True }
+			</field>
 			<field name="domain">[('group_type', '=', 'general')]</field>
 			<field name="view_id" ref="hr_groupe_general_form" />
 		</record>
@@ -130,7 +131,8 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="context">{'default_group_type':'spicific','readonly_by_pass':
-				True}</field>
+				True}
+			</field>
 			<field name="domain">[('group_type', '=', 'spicific')]</field>
 			<field name="view_id" ref="hr_groupe_specific_form" />
 		</record>
@@ -164,7 +166,8 @@
 							</group>
 							<group>
 
-								<field name="parent_id" domain="[('group_type', '=', 'spicific')]" context="{'form_view_ref':'smart_hr.hr_groupe_specific_form'}"
+								<field name="parent_id" domain="[('group_type', '=', 'spicific')]"
+									context="{'form_view_ref':'smart_hr.hr_groupe_specific_form'}"
 									string="المجموعة النوعية" />
 
 								<field name="department_id" />
@@ -250,7 +253,8 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="context">{'default_group_type':'serie','readonly_by_pass':
-				True}</field>
+				True}
+			</field>
 			<field name="domain">[('group_type', '=', 'serie')]</field>
 			<field name="view_id" ref="hr_categorie_serie_form" />
 
@@ -368,6 +372,44 @@
 
 		<menuitem id="job_type_activity_menu" name="أنواع الأنشطة"
 			sequence="5" parent="hr_job_setting" action="action_hr_job_type_activity" />
+
+		<!-- الجهات -->
+		<record id="hr_job_autoritie_form" model="ir.ui.view">
+			<field name="name">hr.job.authoritie.form</field>
+			<field name="model">hr.job.authoritie</field>
+			<field name="arch" type="xml">
+				<form string="الجهات‬">
+					<sheet>
+						<group>
+							<field name="name" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="hr_job_autoritie_tree" model="ir.ui.view">
+			<field name="name">hr.job.authoritie.tree</field>
+			<field name="model">hr.job.authoritie</field>
+			<field name="arch" type="xml">
+				<tree string="‫الجهات‬ ">
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="hr_job_autoritie_action" model="ir.actions.act_window">
+			<field name="name">الجهات‬‫</field>
+
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">hr.job.authoritie</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="hr_job_autoritie_form" />
+		</record>
+
+		<menuitem id="hr_job_autoritie_menu" name="الجهات" sequence="6"
+			parent="hr_job_setting" action="hr_job_autoritie_action" />
 
 
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data noupdate="1">
-		
+
 		<record id="hr_job_type_activity_01" model="hr.job.type.activity">
 			<field name="name">الحرفيّة‬</field>
 		</record>
@@ -11,7 +11,7 @@
 		<record id="hr_job_type_activity_03" model="hr.job.type.activity">
 			<field name="name">الاقتصادية‬</field>
 		</record>
-		
+
 		<!-- المسميات الوظيفية -->
 		<record id="hr_job_name_0000001" model="hr.job.name">
 			<field name="name">عامل فئة (أ)</field>
@@ -482,7 +482,7 @@
 			<field name="number">0130307</field>
 		</record>
 		<record id="hr_job_name_0130400" model="hr.job.name">
-			<field name="name">مدير  شعبة الشئون الماليه</field>
+			<field name="name">مدير شعبة الشئون الماليه</field>
 			<field name="number">0130400</field>
 		</record>
 		<record id="hr_job_name_0130403" model="hr.job.name">
@@ -546,7 +546,7 @@
 			<field name="number">0190201</field>
 		</record>
 		<record id="hr_job_name_0230005" model="hr.job.name">
-			<field name="name">مدير  الشئون الإدارية والمالية</field>
+			<field name="name">مدير الشئون الإدارية والمالية</field>
 			<field name="number">0230005</field>
 		</record>
 		<record id="hr_job_name_0230006" model="hr.job.name">
@@ -957,8 +957,10 @@
 			<field name="name">(معتبرة)</field>
 			<field name="number">9999999</field>
 		</record>
-		
-		
-				
+
+		<!-- الجهات -->
+		<record id="hr_autority_ministry_of_finance" model="hr.job.authoritie">
+			<field name="name">وزارة المالية</field>
+		</record>
 	</data>
 </openerp>
