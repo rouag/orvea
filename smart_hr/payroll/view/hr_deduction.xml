@@ -44,6 +44,7 @@
 						<button name="action_waiting" string="إرسال للإعتماد" type="object" states="new" groups="smart_hr.group_deduction_management" />
 						<button name="action_done" string="إعتماد" type="object" states="waiting" groups="smart_hr.group_deduction_management" />
 						<button name="action_refuse" string="رفض" type="object" states="waiting" groups="smart_hr.group_deduction_management" />
+						<button name="action_cancel" string="إلغاء الحسميات" type="object" states="waiting,done" groups="smart_hr.group_deduction_management" />
 						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done"  />
 					</header>
 					<sheet>
@@ -69,6 +70,12 @@
 											<field name="department_id" invisible="1" />
 											<field name="deduction_type_id" />
 											<field name="amount" />
+											<field name="deduction_state" invisible="1" />
+											<field name="state" />
+										   <button name="%(smart_hr.action_wizard_deducation_action)d" type="action" string="إستبعاد"  icon="STOCK_CANCEL"
+										 		attrs="{'invisible':['|',('deduction_state','!=','done'),('state','not in',('waiting','done'))]}"
+										 		groups="smart_hr.group_deduction_management" />
+											
 										</tree>
 									</field>
 								</group>
@@ -102,6 +109,7 @@
 			parent="hr_deduction_root" action="action_hr_deduction" />
 
 		<!-- الحسميات بالموظف -->
+		
 		<record id="view_search_hr_deduction_line" model="ir.ui.view">
 			<field name="name">hr.deduction.line.search</field>
 			<field name="model">hr.deduction.line</field>
@@ -109,10 +117,12 @@
 				<search string="الحسميات بالموظف">
 					<field name="employee_id" />
 					<field name="deduction_type_id" />
+					<field name="state" />
 					<separator />
 					<group expand="0" string="تجميع حسب">
 						<filter name="employee_id" string="الموظف" context="{'group_by':'employee_id'}" />
-						<filter name="deduction_type_id" string="نوع الحسم" context="{'group_by':'deduction_type_id'}" />						
+						<filter name="deduction_type_id" string="نوع الحسم" context="{'group_by':'deduction_type_id'}" />		
+						<filter name="state" string="الحالة" context="{'group_by':'state'}" />					
 					</group>
 				</search>
 			</field>
@@ -129,6 +139,7 @@
 					<field name="department_id"/>
 					<field name="deduction_type_id" />
 					<field name="amount" />
+					<field name="state" />
 				</tree>
 			</field>
 		</record>

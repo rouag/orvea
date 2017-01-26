@@ -57,7 +57,7 @@ class hrBonusLine(models.Model):
     job_id = fields.Many2one(related='employee_id.job_id', store=True, readonly=True, string=' الوظيفة')
     department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string=' القسم')
     type = fields.Selection(related='bonus_id.type', store=True, string='النوع')
-    state = fields.Selection(related='bonus_id.state', store=True, string='الحالة')
+    bonus_state = fields.Selection(related='bonus_id.state', store=True, string='الحالة')
     allowance_id = fields.Many2one('hr.allowance.type', string='البدل')
     reward_id = fields.Many2one('hr.reward.type', string='المكافأة')
     indemnity_id = fields.Many2one('hr.indemnity.type', string='التعويض')
@@ -70,7 +70,7 @@ class hrBonusLine(models.Model):
                                        ('salary_grid', 'تحتسب من سلم الرواتب'),
                                        ('job', 'تحتسب من  الوظيفة'),
                                        ('job_location', 'تحتسب  حسب مكان العمل')], string='طريقة الإحتساب', required=1)
-    bonus_state = fields.Selection([('progress', 'ساري'),
+    state = fields.Selection([('progress', 'ساري'),
                                     ('stop', 'إيقاف'),
                                     ('expired', 'منتهي')
                                     ], string='الحالة', readonly=1, default='progress')

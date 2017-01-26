@@ -84,6 +84,13 @@ class hrDeduction(models.Model):
     def action_refuse(self):
         self.state = 'cancel'
 
+    @api.one
+    def action_cancel(self):
+        # TODO:
+        self.state = 'cancel'
+        for line in self.line_ids:
+            line.state = 'cancel'
+
 
 class hrDeductionLine(models.Model):
     _name = 'hr.deduction.line'
@@ -95,6 +102,11 @@ class hrDeductionLine(models.Model):
     department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string=' القسم')
     deduction_type_id = fields.Many2one('hr.deduction.type', string='نوع الحسم', required=1)
     amount = fields.Char(string='عدد أيام الحسم', required=1)
+    deduction_state = fields.Selection(related='deduction_id.state', store=True, string='الحالة')
+    state = fields.Selection([('waiting', 'في إنتظار الحسم'),
+                              ('excluded', 'مستبعد'),
+                              ('done', 'تم الحسم'),
+                              ('cancel', 'ملغى')], string='الحالة', readonly=1, default='waiting')
 
 
 class hrDeductionHistory(models.Model):
