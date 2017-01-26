@@ -958,12 +958,5 @@
 			<field name="number">9999999</field>
 		</record>
 
-		<!-- الجهات -->
-		<record id="hr_autority_ministry_of_finance" model="hr.job.authoritie">
-			<field name="name">وزارة المالية</field>
-		</record>
-		<record id="hr_autority_ministry_of_civil_service" model="hr.job.authoritie">
-			<field name="name">وزارة الخدمة المدنية</field>
-		</record>
 	</data>
 </openerp>
