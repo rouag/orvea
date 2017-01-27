@@ -32,6 +32,7 @@ class MedicalExamResult(models.Model):
     _rec_name = 'exam'
     
     exam = fields.Many2one ('medical.exam', string = u'الاختبار') 
+    exam_en = fields.Char(string = u'أسم اﻷختبار باﻷنقلزية',related="exam.name_en")
     result = fields.Boolean(string = u'سليم')
     employee_exam = fields.Many2one('employee.medical.exam', string = u'أختبار الفحص الطبي')
     

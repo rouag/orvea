@@ -14,17 +14,17 @@
 								<div class="row">
 									<div class="col-md-12">
 										<div class="col-md-4">إدارة شؤون الموظفين</div>
-										<div class="col-md-4">قرار إجازة عادية</div>
 										<div class="col-md-4"></div>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-md-12 text-center">
+										<p align="center">قرار إجازة عادية</p>
 										<p align="center">
 											قرار إداري رقم
 											<span t-esc="o.name" />
+											بتاريخ
 											<span t-esc="o.date" />
-											وتاريخ
 										</p>
 									</div>
 								</div>
@@ -36,16 +36,10 @@
 											<table class="table table-bordered">
 												<tr>
 													<td>رقم الهوية الوطنية:</td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
+													<td>
+														<span t-field="o.employee_id.identification_id" />
+													</td>
+
 												</tr>
 											</table>
 										</div>
@@ -79,7 +73,7 @@
 								<p style="font-size:22px;">
 									بإجازة عادية لمده
 									<span t-esc="o.duration" />
-									اعتبارا من
+									يومااعتبارا من
 									<span t-esc="o.date_from" />
 								</p>
 								<p style="font-size:22px;">2) لا يصرف راتبه مقدما.</p>
@@ -98,8 +92,8 @@
 										<p align="center">
 											قرار إداري رقم
 											<span t-esc="o.name" />
+											بتاريخ
 											<span t-esc="o.date" />
-											وتاريخ
 										</p>
 									</div>
 								</div>
@@ -111,16 +105,10 @@
 											<table class="table table-bordered">
 												<tr>
 													<td>رقم الهوية الوطنية:</td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
+													<td>
+														<span t-field="o.employee_id.identification_id" />
+													</td>
+
 												</tr>
 											</table>
 										</div>
@@ -183,17 +171,18 @@
 								<div class="row">
 									<div class="col-md-12">
 										<div class="col-md-4">إدارة شؤون الموظفين</div>
-										<div class="col-md-4">قرار إجازة مرضية</div>
 										<div class="col-md-4"></div>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-md-12 text-center">
+										<p align="center">قرار إجازة مرضية</p>
+
 										<p align="center">
 											قرار إداري رقم
 											<span t-esc="o.name" />
+											بتاريخ
 											<span t-esc="o.date" />
-											وتاريخ
 										</p>
 									</div>
 								</div>
@@ -205,16 +194,10 @@
 											<table class="table table-bordered">
 												<tr>
 													<td>رقم الهوية الوطنية:</td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
+													<td>
+														<span t-field="o.employee_id.identification_id" />
+													</td>
+
 												</tr>
 											</table>
 										</div>
@@ -228,9 +211,11 @@
 								<p style="font-size:22px;">إن مدير شؤون الموظفين</p>
 								<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
 								<p style="font-size:22px;">وبناءً على التقرير الطبي الصادر من رقم و تاريخ القاضي
-									يمنح الموظف إسمه أدناه إجازة مرضية.</p>
+									يمنح الموظف إسمه أدناه إجازة مرضية.
+								</p>
 								<p style="font-size:22px;">وبناءً على المادة (الحادية عشر) من لائحة الإجازات ،
-									ولموافقتنا على ذلك.</p>
+									ولموافقتنا على ذلك.
+								</p>
 								<p align="center">:يقرر ما يلى</p>
 								<p style="font-size:22px;">
 									1) منح المستخدم /
@@ -249,7 +234,7 @@
 								<p style="font-size:22px;">
 									بإجازة مرضية لمده
 									<span t-esc="o.duration" />
-									اعتبارا من
+									يومااعتبارا من
 									<span t-esc="o.date_from" />
 								</p>
 								<p style="font-size:22px;">2) يعامل من حيث راتب الإجازة على أساس 1 راتب كامل..
@@ -266,17 +251,19 @@
 								<div class="row">
 									<div class="col-md-12">
 										<div class="col-md-4">إدارة شؤون الموظفين</div>
-										<div class="col-md-4">قرار إجازة مرافقة</div>
 										<div class="col-md-4"></div>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-md-12 text-center">
+								<p align="center">قرار إجازة مرافقة</p>
+									
 										<p align="center">
 											قرار إداري رقم
 											<span t-esc="o.name" />
+											بتاريخ
 											<span t-esc="o.date" />
-											وتاريخ
+											
 										</p>
 									</div>
 								</div>
@@ -288,16 +275,10 @@
 											<table class="table table-bordered">
 												<tr>
 													<td>رقم الهوية الوطنية:</td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
+													<td>
+														<span t-field="o.employee_id.identification_id" />
+													</td>
+
 												</tr>
 											</table>
 										</div>
@@ -312,7 +293,8 @@
 								<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
 								<p style="font-size:22px;">وبناءً على التقرير الطبي الصادر من رقم و تاريخ.</p>
 								<p style="font-size:22px;">و إستناداً على المادة (الحادية عشر) من لائحة الإجازات
-									.</p>
+									.
+								</p>
 								<p align="center">:يقرر ما يلى</p>
 								<p style="font-size:22px;">
 									1) يمنح الموظف /
@@ -331,7 +313,7 @@
 								<p style="font-size:22px;">
 									بإجازة مرافقة لمده
 									<span t-esc="o.duration" />
-									اعتبارا من
+									يومااعتبارا من
 									<span t-esc="o.date_from" />
 								</p>
 								<p style="font-size:22px;">2) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
@@ -349,8 +331,8 @@
 										<p align="center">
 											قرار إداري رقم
 											<span t-esc="o.name" />
+											بتاريخ
 											<span t-esc="o.date" />
-											وتاريخ
 										</p>
 									</div>
 								</div>
@@ -362,16 +344,10 @@
 											<table class="table table-bordered">
 												<tr>
 													<td>رقم الهوية الوطنية:</td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
+													<td>
+														<span t-field="o.employee_id.identification_id" />
+													</td>
+
 												</tr>
 											</table>
 										</div>
@@ -387,9 +363,11 @@
 								<p style="font-size:22px;">وأشارة إلى خطابات مدير مكتب الرئاسة العامة لرعاية
 									الشباب بمحافظة المجمعة رقم ... ورقم ... بتاريخ .... ورقم ....
 									وتاريخ بشان طلب الموافقة على منح الموظف ، إجازة رياضية لمدة ،
-									للمشاركة في  </p>
+									للمشاركة في
+								</p>
 								<p style="font-size:22px;">ويستنداً للمادة (24) من لائحة الإجازات ولموافقتنا على
-									ذلك. </p>
+									ذلك.
+								</p>
 								<p align="center">:يقرر ما يلى</p>
 								<p style="font-size:22px;">
 									1) منح إجازة رياضية للموظف /

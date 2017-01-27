@@ -116,8 +116,9 @@ class HrHolidays(models.Model):
     medical_certification_file_name = fields.Char(string=u'الشهادة الطبيةا')
     medical_report_file_name = fields.Char(string=u'التقرير الطبي')
     prove_exam_duration_name = fields.Char(string=u'إثبات اداء الامتحان ومدته مسمى')
+    medical_certification_number = fields.Char(string=u'رقم الشهادة الطبية')
+    medical_certification_date = fields.Char(string=u'تاريخ الشهادة الطبية')
 
- 
  
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
