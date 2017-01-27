@@ -14,6 +14,7 @@ class HrDecision(models.Model):
     date = fields.Date(string='بتاريخ', required=1)
     employee_id=fields.Many2one('hr.employee',string='الموظف',required=1)
     text = fields.Html(string='نص القرار')
+<<<<<<< HEAD
     
 #     decision_appoint_id = Many2one('hr.decision.appoint')
 #     job_id=fields.Many2one(related='decision_appoint_id.job_id', store=True, readonly=True, string='الوظيفة')
@@ -29,16 +30,19 @@ class HrDecision(models.Model):
     
            
 
+=======
+             
+>>>>>>> branch '9.0' of https://gitlab.smart-etech.com/smart-dev/addons_smart.git
     @api.onchange('decision_type_id')
     def onchange_decision_type_id(self):
         
          employee_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('state', '=', 'done')],limit=1)
          print"employee_line",employee_line
          if employee_line :
-            print"ccccccccccccc"       
+            
             decision_type_line = self.env['hr.decision.type'].search([('id', '=', self.decision_type_id.id)
                                         ])
-            print"decision_type_line"  ,decision_type_line    
+            
             if decision_type_line :
                     employee = self.employee_id.name or ""
                     dattz = self.date or ""
