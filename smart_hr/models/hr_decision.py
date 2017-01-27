@@ -19,7 +19,7 @@ class HrDecision(models.Model):
 #     job_id=fields.Many2one(related='decision_appoint_id.job_id', store=True, readonly=True, string='الوظيفة')
 #     number_job=fields.Many2one(related='decision_appoint_id.number_job', store=True, readonly=True, string='الرقم الوظيفي')
 #     type_id=fields.Many2one(related='decision_appoint_id.type_id', store=True, readonly=True, string='الصنف')
-#        department_id=fields.Many2one(related='decision_appoint_id.department_id', store=True, readonly=True, string='القسم')
+#        department_id=fields.Many2one(related='decision_appoint_id.department_id', store=True, readonly=True, string='الادارة')
 #     grade_id=fields.Many2one(related='decision_appoint_id.grade_id', store=True, readonly=True, string='المرتبة')
 #     basic_salary=fields.Many2one(related='decision_appoint_id.basic_salary', store=True, readonly=True, string='الراتب الأساسي')
 #     net_salary=fields.Many2one(related='decision_appoint_id.net_salary', store=True, readonly=True, string='صافي الراتب')

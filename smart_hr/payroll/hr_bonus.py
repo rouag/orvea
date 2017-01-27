@@ -55,7 +55,7 @@ class hrBonusLine(models.Model):
     employee_id = fields.Many2one('hr.employee', string='الموظف', required=1)
     number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' الرقم الوظيفي')
     job_id = fields.Many2one(related='employee_id.job_id', store=True, readonly=True, string=' الوظيفة')
-    department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string=' القسم')
+    department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string=' الادارة')
     type = fields.Selection(related='bonus_id.type', store=True, string='النوع')
     bonus_state = fields.Selection(related='bonus_id.state', store=True, string='الحالة')
     allowance_id = fields.Many2one('hr.allowance.type', string='البدل')

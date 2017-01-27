@@ -9,7 +9,7 @@ class hr_department(models.Model):
     # Inherited Fields
     name = fields.Char(advanced_search=True, string=u'المسمّى')
     manager_id = fields.Many2one(advanced_search=True)
-    parent_id = fields.Many2one(advanced_search=True, string=u'القسم الرئيسي')
+    parent_id = fields.Many2one(advanced_search=True, string=u'الادارة الرئيسي')
     dep_city = fields.Many2one('res.city', string=u'المدينة')
     dep_Side = fields.Many2one('city.side', string=u'الجهة')
     code = fields.Char(string=u'الرمز')
@@ -44,7 +44,7 @@ class hr_department(models.Model):
             if self.dep_type.level < self.parent_id.dep_type.level:
                 warning = {
                     'title': _('Warning!'),
-                    'message': _(' القسم مستوى القسم الرئيسي لا يمكن أن يكون أقل من مستوى الطفل '),
+                    'message': _(' الادارة مستوى الادارة الرئيسي لا يمكن أن يكون أقل من مستوى الطفل '),
                 }
                 return {'warning': warning}
             if self.dep_type.level > self.env.ref('smart_hr.data_hr_depatment_type_section').level:

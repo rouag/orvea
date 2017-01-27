@@ -19,7 +19,7 @@ class hrDirectAppoint(models.Model):
     job_id  = fields.Many2one('hr.job', string='الوظيفة',store=True,readonly=1) 
     number_job=fields.Char(string='رقم الوظيفة',store=True,readonly=1) 
     type_id=fields.Many2one('salary.grid.type',string='الصنف',store=True,readonly=1) 
-    department_id=fields.Many2one('hr.department',string='القسم',store=True,readonly=1)
+    department_id=fields.Many2one('hr.department',string='الادارة',store=True,readonly=1)
     grade_id=fields.Many2one('salary.grid.grade',string='المرتبة',store=True,readonly=1)
     far_age = fields.Float(string=' السن الاقصى',store=True,readonly=1) 
     basic_salary = fields.Float(string='الراتب الأساسي',store=True, readonly=1)   

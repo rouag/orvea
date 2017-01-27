@@ -957,6 +957,36 @@
 			<field name="name">(معتبرة)</field>
 			<field name="number">9999999</field>
 		</record>
-
+		
+		<!-- المخطط الإنسيابي الوظائف hr.job.workflow.state-->
+		<record id="work_job_autority_owner" model="hr.job.workflow.state">
+			<field name="name">صاحب صلاحية</field>
+		</record>
+		<record id="work_job_personnel_affairs" model="hr.job.workflow.state">
+			<field name="name">شؤون الموظفين</field>
+		</record>
+		<record id="work_job_budg_dep_minis" model="hr.job.workflow.state">
+			<field name="name">إدارة الميزانية - وزارة الخدمة المدنية</field>
+		</record>
+		<record id="work_job_budg__minis" model="hr.job.workflow.state">
+			<field name="name">إدارة الميزانية - وزارة المالية</field>
+		</record>
+		
+		<!-- المخطط الإنسيابي الوظائف hr.job.workflow-->
+		<record id="work_job_creation_workflow" model="hr.job.workflow">
+			<field name="name">إحداث وظائف</field>
+		</record>
+		<record id="work_job_move_dep_workflow" model="hr.job.workflow">
+			<field name="name">نقل وظائف</field>
+		</record>
+		<record id="work_job_move_grade_workflow" model="hr.job.workflow">
+			<field name="name">رفع/خفض</field>
+		</record>
+		<record id="work_job_scale_workflow" model="hr.job.workflow">
+			<field name="name">سلخ</field>
+		</record>
+		<record id="work_job_cancel_workflow" model="hr.job.workflow">
+			<field name="name">إلغاء وظائف</field>
+		</record>
 	</data>
 </openerp>

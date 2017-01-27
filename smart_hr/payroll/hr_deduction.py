@@ -99,7 +99,7 @@ class hrDeductionLine(models.Model):
     employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', required=1)
     number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' الرقم الوظيفي')
     job_id = fields.Many2one(related='employee_id.job_id', store=True, readonly=True, string=' الوظيفة')
-    department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string=' القسم')
+    department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string=' الادارة')
     deduction_type_id = fields.Many2one('hr.deduction.type', string='نوع الحسم', required=1)
     amount = fields.Char(string='عدد أيام الحسم', required=1)
     deduction_state = fields.Selection(related='deduction_id.state', store=True, string='الحالة')

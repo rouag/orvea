@@ -579,7 +579,7 @@ class HrAttendanceCheck(models.Model):
 
     employee_id = fields.Many2one('hr.employee', string='الموظف', required=1, readonly=1)
     number = fields.Char(string='الرقم الوظيفي', readonly=1)
-    department_id = fields.Many2one('hr.department', string='القسم', readonly=1)
+    department_id = fields.Many2one('hr.department', string='الادارة', readonly=1)
     job_id = fields.Many2one('hr.job', string='الوظيفة', readonly=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
     description = fields.Text(string=' ملاحظات ')
@@ -681,7 +681,7 @@ class HrAttendanceSummary(models.Model):
 
     employee_id = fields.Many2one('hr.employee', string='الموظف', required=1, readonly=1)
     number = fields.Char(string='الرقم الوظيفي', readonly=1)
-    department_id = fields.Many2one('hr.department', string='القسم', readonly=1)
+    department_id = fields.Many2one('hr.department', string='الادارة', readonly=1)
     job_id = fields.Many2one('hr.job', string='الوظيفة', readonly=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
     date = fields.Date(string='التاريخ', required=1, readonly=1)
@@ -810,7 +810,7 @@ class HrMonthlySummaryLine(models.Model):
 
     monthly_summary_id = fields.Many2one('hr.monthly.summary', string='الخلاصة الشهرية', ondelete='cascade')
     employee_id = fields.Many2one('hr.employee', string='الموظف', required=1, readonly=1)
-    department_id = fields.Many2one('hr.department', string='القسم', readonly=1)
+    department_id = fields.Many2one('hr.department', string='الادارة', readonly=1)
     job_id = fields.Many2one('hr.job', string='الوظيفة', readonly=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
     balance_previous_retard = fields.Float(string='رصيد الشهر السابق تأخير وخروج (س.)')
