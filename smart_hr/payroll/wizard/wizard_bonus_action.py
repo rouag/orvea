@@ -25,10 +25,10 @@ class WizardBonusAction(models.TransientModel):
                 'number_decision': self.number_decision,
                 'date_decision': self.date_decision}
             if action == 'start':
-                bonus_line.bonus_state = 'progress'
+                bonus_line.state = 'progress'
                 val.update({'action': u'إعادة تفعيل'})
             elif action == 'stop':
-                bonus_line.bonus_state = 'stop'
+                bonus_line.state = 'stop'
                 val.update({'action': u'إيقاف'})
             self.env['hr.bonus.history'].create(val)
         return {'type': 'ir.actions.act_window_close'}

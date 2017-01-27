@@ -63,10 +63,10 @@
 										<field name="state" invisible="1"/>
 										<field name="bonus_state" invisible="1"/>
 										<button name="%(smart_hr.action_wizard_bonus_action)d" type="action" string="إيقاف"  icon="STOCK_CANCEL"
-										 		attrs="{'invisible':['|',('state','!=','done'),('bonus_state','!=','progress')]}"
+										 		attrs="{'invisible':['|',('bonus_state','!=','done'),('state','!=','progress')]}"
 										 		context="{'action':'stop'}" groups="smart_hr.group_bonus_management" />
 										<button name="%(smart_hr.action_wizard_bonus_action)d" type="action" string="إعادة تفعيل"  icon="gtk-apply" 
-											    attrs="{'invisible':['|',('state','!=','done'),('bonus_state','!=','stop')]}"
+											    attrs="{'invisible':['|',('bonus_state','!=','done'),('state','!=','stop')]}"
 											    context="{'action':'start'}" groups="smart_hr.group_bonus_management" />
 									</tree>
 								</field>
@@ -144,7 +144,7 @@
 					<field name="percentage" />
 					<field name="date_from" />
 					<field name="date_to" />
-					<field name="bonus_state" />
+					<field name="state" />
 				</tree>
 			</field>
 		</record>
@@ -195,7 +195,7 @@
 					<field name="percentage" />
 					<field name="date_from" />
 					<field name="date_to" />
-					<field name="bonus_state" />
+					<field name="state" />
 				</tree>
 			</field>
 		</record>
@@ -245,7 +245,7 @@
 					<field name="percentage" />
 					<field name="date_from" />
 					<field name="date_to" />
-					<field name="bonus_state" />
+					<field name="state" />
 				</tree>
 			</field>
 		</record>

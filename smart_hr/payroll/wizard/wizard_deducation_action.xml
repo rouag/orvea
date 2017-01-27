@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<record id="view_wizard_deducation_action" model="ir.ui.view">
+			<field name="name">wizard.deducation.action.form</field>
+			<field name="model">wizard.deducation.action</field>
+			<field name="arch" type="xml">
+				<form>
+					<group col="4">
+						<field name="number_decision" />
+						<field name="date_decision" />
+					</group>
+					<group>
+						<field name="reason" string="السبب" placeholder="السبب ..." />
+					</group>
+					<footer>
+						<button icon="fa-cogs" string="تأكيد" name="action_exclusion" type="object" class="oe_highlight" />
+						أو
+						<button string="إلغاء" class="oe_link" special="cancel" />
+					</footer>
+				</form>
+			</field>
+		</record>
+
+		<record id="action_wizard_deducation_action" model="ir.actions.act_window">
+			<field name="name">إستبعاد موظف</field>
+			<field name="res_model">wizard.deducation.action</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="view_wizard_deducation_action" />
+			<field name="target">new</field>
+		</record>
+
+	</data>
+</openerp>

@@ -14,6 +14,7 @@ class HrJob(models.Model):
     _description = u'الوظائف'
 
     name = fields.Many2one('hr.job.name', string='المسمى الوظيفي', required=1)
+    name_number = fields.Char(related='name.number', string=u'الرمز الوظيفي', readonly=1)
     job_name_code = fields.Char(related="name.number", string='الرمز', required=1)
     activity_type = fields.Many2one('hr.job.type.activity', string=u'نوع النشاط')
     number = fields.Char(string='الرقم الوظيفي', required=1, states={'unoccupied': [('readonly', 0)]})
@@ -23,15 +24,15 @@ class HrJob(models.Model):
     serie_id = fields.Many2one('hr.groupe.job', ' سلسلة الفئات', ondelete='cascade')
     type_id = fields.Many2one('salary.grid.type', string='الصنف', required=1, states={'unoccupied': [('readonly', 0)]})
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1, states={'unoccupied': [('readonly', 0)]})
-    state = fields.Selection([('unoccupied', u'شاغرة'), ('occupied', u'مشغولة'), ('cancel', u'ملغاة'), ('reserved', u'محجوزة')], readonly=1, default='unoccupied')
+    state = fields.Selection([('unoccupied', u'شاغرة'), ('occupied', u'مشغولة'), ('cancel', u'ملغاة'), ('reserved', u'محجوزة')], string=u'الحالة', readonly=1, default='unoccupied')
     employee = fields.Many2one('hr.employee', string=u'الموظف')
     occupied_date = fields.Date(string=u'تاريخ الشغول')
+    creation_source = fields.Selection([('creation', u'إحداث'), ('striped_from', u'سلخ')], readonly=1, default='creation', string=u'المصدر')
     # حجز الوظيفة
     occupation_date_from = fields.Date(string=u'حجز الوظيفة من')
     occupation_date_to = fields.Date(string=u'حجز الوظيفة الى',)
     is_occupied_compute = fields.Boolean(string='is occupied compute', compute='_compute_is_occupated')
     # سلخ
-    is_striped_from = fields.Boolean(string='is striped from', default=False)
     is_striped_to = fields.Boolean(string='is striped to', default=False)
     # تحوير‬
     update_date = fields.Date(string=u'تاريخ التحوير')
@@ -346,7 +347,7 @@ class HrJobStripFrom(models.Model):
                        'general_id': self.general_id.id,
                        'specific_id': self.specific_id.id,
                        'serie_id': self.serie_id.id,
-                       'is_striped_from': True
+                       'creation_source': 'striped_from'
                        }
             self.env['hr.job'].create(job_val)
         self.state = 'done'
