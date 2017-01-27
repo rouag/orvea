@@ -157,7 +157,7 @@ access_hr_sanction_type_manager,hr_sanction_type,model_hr_sanction_type,group_ma
 access_hr_sanction_type_responsable,hr_sanction_type,model_hr_sanction_type,group_responsable_sanction_type,1,1,1,0
 access_hr_sanction_type_party,hr_sanction_type,model_hr_sanction_type,group_third_party_sanction_type,1,1,1,1
 access_hr_sanction_type_employee,hr_sanction_type,model_hr_sanction_type,group_employee,1,0,0,0
-hr.remove.sanction
+
 ,,,,,,,
 ,,,,,,,
 access_hr_remove_sanction_manager,hr_remove_sanction,model_hr_remove_sanction,group_manager_remove_sanction,1,1,1,1
