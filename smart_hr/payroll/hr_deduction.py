@@ -22,6 +22,8 @@ MONTHS = [('1', 'محرّم'),
 
 class hrDeduction(models.Model):
     _name = 'hr.deduction'
+    _inherit = ['mail.thread']
+    _order = 'id desc'
     _description = u'الحسميات'
 
     name = fields.Char(string=' المسمى', required=1, readonly=1, states={'new': [('readonly', 0)]})
@@ -96,7 +98,7 @@ class hrDeductionLine(models.Model):
     _name = 'hr.deduction.line'
 
     deduction_id = fields.Many2one('hr.deduction', string=' الحسميات')
-    employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', required=1)
+    employee_id = fields.Many2one('hr.employee', string='الموظف', required=1)
     number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' الرقم الوظيفي')
     job_id = fields.Many2one(related='employee_id.job_id', store=True, readonly=True, string=' الوظيفة')
     department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string=' الادارة')

@@ -9,7 +9,9 @@
 		
 		<menuitem id="hr_deduction_root" parent="hr_payroll_root" name="الحسميات" sequence="10" />
 
-		<menuitem id="hr_payroll_reporting" name="التقارير" groups="group_payroll_management" sequence="15" parent="hr_payroll_root" />
+		<menuitem id="hr_loan_root" parent="hr_payroll_root" name="القروض" sequence="15" />
+		
+		<menuitem id="hr_payroll_reporting" name="التقارير" groups="group_payroll_management" sequence="20" parent="hr_payroll_root" />
 			
 		<menuitem id="hr_payroll_setting" name="الإعدادات" groups="group_payroll_setting" sequence="50" parent="hr_payroll_root" />		
 			
