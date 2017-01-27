@@ -14,7 +14,6 @@ class HrDecision(models.Model):
     date = fields.Date(string='بتاريخ', required=1)
     employee_id=fields.Many2one('hr.employee',string='الموظف',required=1)
     text = fields.Html(string='نص القرار')
-<<<<<<< HEAD
     
 #     decision_appoint_id = Many2one('hr.decision.appoint')
 #     job_id=fields.Many2one(related='decision_appoint_id.job_id', store=True, readonly=True, string='الوظيفة')
@@ -30,9 +29,7 @@ class HrDecision(models.Model):
     
            
 
-=======
              
->>>>>>> branch '9.0' of https://gitlab.smart-etech.com/smart-dev/addons_smart.git
     @api.onchange('decision_type_id')
     def onchange_decision_type_id(self):
         
