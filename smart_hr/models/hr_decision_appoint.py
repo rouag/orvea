@@ -286,7 +286,7 @@ class HrDecisionAppoint(models.Model):
         elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_public_retraite').id:
             type = '88'
         if type:
-            self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
+            self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date_hiring, type)
         self.state = 'done'
         self.env['hr.holidays']._init_balance(self.employee_id)
         # create promotion history line
