@@ -6,13 +6,14 @@ from openerp.exceptions import except_orm, Warning, RedirectWarning
 
 
 class ResPartner(models.Model):
-    _inherit = 'res.partner'  
-    
+    _inherit = 'res.partner'
+
     company_type = fields.Selection(
         [('person', u'شخص'),
-          ('hospital', u'مستشفى'),
+         ('hospital', u'مستشفى'),
+         ('governmental_entity', u'جهة حكومية'),
          ('company', u'شركة')])
-    is_hospital = fields.Boolean(string = 'is hospital')
+    is_hospital = fields.Boolean(string='is hospital')
     hospital_director = fields.Char(string=u'مدير المستشفى')
 
     @api.multi
@@ -22,3 +23,11 @@ class ResPartner(models.Model):
             return {'value': {'is_company': company_type == 'company', 'is_hospital': True}}
         else:
             return {'value': {'is_company': company_type == 'company', 'is_hospital': False}}
+
+
+class ResPartnerBank(models.Model):
+    _inherit = 'res.partner.bank'
+
+    account_opening_date = fields.Date(string=u'تاريخ فتح الحساب')
+    is_deposit = fields.Boolean(string='للإيداع')
+    employee_id = fields.Many2one('hr.employee',string=u'الموظف')

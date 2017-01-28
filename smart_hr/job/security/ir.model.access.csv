@@ -30,3 +30,6 @@ access_hr_job_strip_from_line,hr_job_strip_from_line,model_hr_job_strip_from_lin
 ,,,,,,,
 access_hr_job_strip_to,hr_job_strip_from,model_hr_job_strip_to,group_job_managment,1,1,1,1
 access_hr_job_strip_to_line,hr_job_strip_from_line,model_hr_job_strip_to_line,group_job_managment,1,1,1,1
+,,,,,,,
+access_hr_job_workflow,access_hr_job_workflow,model_hr_job_workflow,,1,1,0,0
+access_hr_job_workflow_state,access_hr_job_workflow_state,model_hr_job_workflow_state,,1,1,0,0

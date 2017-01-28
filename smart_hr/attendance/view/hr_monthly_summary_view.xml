@@ -30,30 +30,28 @@
 						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
 					</header>
 					<sheet>
-						<group>
-							<group>
-								<field name="name" />
-								<field name="date" />
-							</group>
-							<group>
-								<field name="date_from" />
-								<field name="date_to" />
-							</group>
+						<group col="4">
+							<field name="name" />
+							<field name="date" />
+							<field name="date_from" invisible="1" />
+							<field name="date_to"  invisible="1"  />
 						</group>
 						
 						<field name="line_ids" >
 							<tree>
 								<field name="employee_id" />
-								<field name="department_id" />
-								<field name="job_id" />
-								<field name="balance_previous"  widget="float_time" />
+								<field name="department_id" invisible="1"/>
+								<field name="job_id" invisible="1" />
+								<field name="balance_previous_retard"  widget="float_time" />
 								<field name="retard" widget="float_time"/>
 								<field name="leave" widget="float_time"/>
-								<field name="absence" widget="float_time"/>
-								<field name="delay_hours" widget="float_time"/>
 								<field name="delay_request" widget="float_time"/>
-								<field name="total_days" />
-								<field name="balance_forward"  widget="float_time" />
+								<field name="days_retard" />
+								<field name="balance_forward_retard"  widget="float_time" />
+								<field name="balance_previous_absence"  widget="float_time" />
+								<field name="absence" widget="float_time"/>
+								<field name="days_absence" />
+								<field name="balance_forward_absence"  widget="float_time" />
 							</tree>
 						</field>
 						

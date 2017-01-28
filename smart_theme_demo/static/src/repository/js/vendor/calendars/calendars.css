@@ -1,0 +1,58 @@
+
+@import url("jquery.calendars.picker.css");
+.calendars {font-family: 'Droid Arabic Kufi';font-style: normal;font-weight: 400;
+	background-clip: padding-box;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.176);
+    font-size: 14px;
+    list-style: outside none none;
+    margin: 2px 0 0;
+    min-width: 160px;
+    padding: 4px;
+}
+
+.calendars-nav{padding-bottom:4px;}
+.calendars-nav, .calendars-ctrl {background: #fff;color: #333;font-weight: 700;}
+a.calendars-cmd{display:inline-block;line-height:25px;height:25px;color:#333;border-radius: 4px;}
+
+a.calendars-cmd:hover, .calendars-month a:hover , .calendars-rtl .calendars-cmd:hover, .calendars-month td .calendars-weekend:hover{background-color:#eee;}
+
+.calendars-month {border: none;}
+
+.calendars-month-header{padding:2px 0;height:30px;color: #333;background-color: #fff;border-top:1px solid rgba(0, 0, 0, 0.15);border-bottom:1px solid rgba(0, 0, 0, 0.15);}
+.calendars-month-header select, .calendars-month-header input {height:24px;color: #333;background-color: #fff;}
+
+.calendars-month thead {border-bottom: none;}
+
+.calendars table {
+  margin: 0;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.calendars table tr td,
+.calendars table tr th {
+  text-align: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
+  border: none;
+}
+.calendars table tr td,
+.calendars table tr th {
+  background-color: transparent;
+}
+.calendars table tr td{padding:1px;}
+.calendars-month td .calendars-weekend {color:#999;background-color: #fff;}
+.calendars-month span {color:#333;font-weight: 700;}
+.calendars-month a {background: none;color: #333;border-radius:4px;}
+
+.calendars-ctrl .calendars-cmd{text-align:center;}
+
+.calendars-month td .calendars-selected {background: #3071a9;color: #fff;}
+.calendars-month td .calendars-today {background: #70b1e9;color: #fff;}

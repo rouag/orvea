@@ -31,7 +31,7 @@
 								<td width="50%" colspan="4">إسم الجهة الحكومية: <span t-esc="company.name" /></td>
 								<td width="16.66%">فصل: <span></span></td>
 								<td width="16.66%">الفرع: <span t-esc="move_line.department_id.dep_section.name" /></td>
-								<td width="16.66%" >القسم: <span t-esc="move_line.department_id.code" /></td>
+								<td width="16.66%" >الادارة: <span t-esc="move_line.department_id.code" /></td>
 							</tr>
 							<tr>
 								<td width="5%">1</td>
@@ -64,8 +64,8 @@
 							</tr>
 							<tr>
 								<td width="5%">4</td>
-								<td width="45%" colspan="3">الشعبة أو القسم: <span></span></td>
-								<td width="50%" colspan="3">الشعبة أو القسم: <span></span></td>
+								<td width="45%" colspan="3">الشعبة أو الادارة: <span></span></td>
+								<td width="50%" colspan="3">الشعبة أو الادارة: <span></span></td>
 							</tr>
 							<tr>
 								<td width="5%">5</td>

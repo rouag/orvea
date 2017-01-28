@@ -255,6 +255,28 @@
             <field name="company_id" ref="base.main_company"/>
         </record>
         	 							
-		‫
+        <!-- أنواع الحسميات-->
+        
+		<record id="hr_deduction_type_01" model="hr.deduction.type">
+			<field name="name">‫‫غياب‬ بعذر‬‬</field>
+			<field name="code">01</field>
+			<field name="type">absence</field>
+		</record>
+		<record id="hr_deduction_type_02" model="hr.deduction.type">
+			<field name="name">‫غياب‬ بدون عذر‬‬</field>
+			<field name="code">02</field>
+			<field name="type">absence</field>
+		</record>		
+		<record id="hr_deduction_type_03" model="hr.deduction.type">
+			<field name="name">‫تأخير‬‬</field>
+			<field name="code">03</field>
+			<field name="type">retard_leave</field>
+		</record>	
+		<record id="hr_deduction_type_04" model="hr.deduction.type">
+			<field name="name">‫خروج مبكر‬‬</field>
+			<field name="code">04</field>
+			<field name="type">retard_leave</field>
+		</record>	
+				‫
 	</data>
 </openerp>

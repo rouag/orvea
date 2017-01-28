@@ -25,8 +25,6 @@ class hr_termination(models.Model):
     # Employee Info
     employee_no = fields.Integer(string=u'رقم الموظف', related='employee_id.employee_no')
     job_id = fields.Many2one(string=u'الوظيفة', related='employee_id.job_id')
-#     level = fields.Char(string=u'المرتبة', related='employee_id.job_id.salary_ladder_id.salary_ladder_level_name')
-#     degree = fields.Char(string=u'الدرجة', related='employee_id.job_id.salary_ladder_id.name')
     join_date = fields.Date(string=u'تاريخ الالتحاق بالجهة', related='employee_id.join_date')
     age = fields.Integer(string=u'السن', related='employee_id.age')
     # Termination Info
@@ -36,6 +34,7 @@ class hr_termination(models.Model):
     letter_no = fields.Char(string=u'رقم الخطاب', advanced_search=True)
     letter_date = fields.Date(string=u'تاريخ الخطاب')
     file_attachment = fields.Binary(string=u'مرفق الصورة الضوئية')
+    file_attachment_name = fields.Char(string=u'مرفق الصورة الضوئية')
     state = fields.Selection([
         ('draft', u'طلب'),
         ('hrm', u'مدير شؤون الموظفين'),
@@ -108,4 +107,10 @@ class hr_termination_type(models.Model):
     _description = 'Termination Type'
 
     name = fields.Char(string=u'اسم')
+    code = fields.Char(string=u'الرمز')
+    nb_salaire = fields.Float(string=u'عدد الرواتب المستحق')
+    all_holidays = fields.Boolean(string=u'كل الإجازة')
+    max_days = fields.Float(string=u'الحد الاقصى لأيام الإجازة')
+    
+  
     

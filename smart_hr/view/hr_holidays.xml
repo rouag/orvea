@@ -150,7 +150,7 @@
 									attrs="{'readonly':[('state','not in',['draft'])],
  								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_accompaniment_exceptional)d)], 
  								'required':[('holiday_status_id','=', %(data_hr_holiday_accompaniment_exceptional)d)]}" />
-								<field name="medical_report"
+								<field name="medical_report" filename="medical_report_file_name"
 									attrs="{'readonly':[('state','not in',['draft'])],
  								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_dialysis)d)], 
  								'required':[('holiday_status_id','=', %(data_hr_holiday_dialysis)d)]}" />
@@ -158,7 +158,7 @@
 									attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_study)d)],
 								'required':[('holiday_status_id','=', %(data_hr_holiday_status_study)d)]}" />
 
-								<field name="prove_exam_duration"
+								<field name="prove_exam_duration" filename="prove_exam_duration_name"
 									attrs="{'readonly':[('state','not in',['draft'])],
  								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_exam)d)],
 								'required':[('holiday_status_id','=', %(data_hr_holiday_exam)d)]}" />
@@ -169,7 +169,7 @@
 							</group>
 							<group>
 
-								<field name="medical_certification"
+								<field name="medical_certification" filename="medical_certification_file_name"
 									attrs="{'readonly':[('state','not in',['draft'])],
 								'invisible':[('holiday_status_id','not in', [%(data_hr_holiday_status_illness)d,%(data_hr_holiday_accompaniment_exceptional)d])],
 								'required':[('holiday_status_id','in', [%(data_hr_holiday_status_illness)d,%(data_hr_holiday_accompaniment_exceptional)d])]}" />
@@ -178,7 +178,7 @@
 								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_death)d)],
 								'required':[('holiday_status_id','=', %(data_hr_holiday_death)d)]}" />
 
-								<field name="birth_certificate"
+								<field name="birth_certificate" filename="birth_certificate_file_name"
 									attrs="{'readonly':[('state','not in',['draft'])],
  								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_child_birth_dad)d),'|',('holiday_status_id','!=', %(data_hr_holiday_accompaniment_exceptional)d),('accompaniment_type','!=','child')],
 								'required':[('holiday_status_id','=', %(data_hr_holiday_child_birth_dad)d),'&amp;',('holiday_status_id','=', %(data_hr_holiday_accompaniment_exceptional)d),('accompaniment_type','=','child')]}" />
@@ -203,19 +203,22 @@
 								attrs="{'invisible':[('compensation_type','=','money')]}" />
 						</group>
 						<group col="4">
-							<field name="num_outspeech"
+							<field name="num_outspeech" filename="out_speech_file_name"
 								attrs="{'readonly':[('state','!=','external_audit')], 'invisible':[('state','not in',['external_audit','revision', 'revision_response','done'])]}" />
 							<field name="date_outspeech"
 								attrs="{'readonly':[('state','!=','external_audit')], 'invisible':[('state','not in',['external_audit','revision', 'revision_response','done'])]}" />
-							<field name="outspeech_file"
+							<field name="outspeech_file_name" invisible="1" />
+							<field name="outspeech_file" filename="outspeech_file_name"
 								attrs="{'readonly':[('state','!=','external_audit')], 'invisible':[('state','not in',['external_audit','revision', 'revision_response','done'])]}" />
 						</group>
 						<group col="4">
-							<field name="num_inspeech" groups="smart_hr.group_holidays_checker"
+							<field name="num_inspeech" groups="smart_hr.group_holidays_checker" filename="in_speech_file_name"
 								attrs="{'readonly':[('state','!=','revision_response')], 'invisible':[('state','not in',['revision_response','done'])]}" />
 							<field name="date_inspeech" groups="smart_hr.group_holidays_checker"
 								attrs="{'readonly':[('state','!=','revision_response')], 'invisible':[('state','not in',['revision_response','done'])]}" />
+							<field name="inspeech_file_name" invisible="1" />
 							<field name="inspeech_file" groups="smart_hr.group_holidays_checker"
+								filename="inspeech_file_name"
 								attrs="{'readonly':[('state','!=','revision_response')], 'invisible':[('state','not in',['revision_response','done'])]}" />
 						</group>
 						<field name="need_decision" invisible="1"></field>
@@ -244,6 +247,13 @@
 							groups="base.group_user" />
 						<field name="message_ids" widget="mail_thread" />
 					</div>
+					<field name="out_speech_file_name" invisible="1" />
+					<field name="in_speech_file_name" invisible="1" />
+					<field name="birth_certificate_file_name" invisible="1" />
+					<field name="medical_certification_file_name" invisible="1" />
+					<field name="medical_report_file_name" invisible="1" />
+					<field name="prove_exam_duration_name" invisible="1" />
+
 				</form>
 			</field>
 		</record>

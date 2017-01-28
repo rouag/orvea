@@ -120,7 +120,7 @@ msgstr "المُسمّى"
 #. module: hr
 #: model:ir.model.fields,field_description:hr.field_hr_department_parent_id
 msgid "Parent Department"
-msgstr "القسم الرئيسي"
+msgstr "الادارة الرئيسي"
 
 
 #. module: hr_appraisal

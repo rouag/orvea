@@ -520,7 +520,42 @@ class JobCareerModelReport(report_sxw.rml_parse):
             'get_company': self._get_company,
             'format_time': self._format_time,
             'get_current_date': self._get_current_date,
+            'get_recuitments': self._get_recuitments,
+            'get_job_update_ids': self._get_job_update_ids,
+            'get_scale_down_ids': self._get_scale_down_ids,
+            'get_scale_up_ids': self._get_scale_up_ids,
+            'get_move_dep_ids': self._get_move_dep_ids,
         })
+
+    def _get_move_dep_ids(self, job_id):
+        move_dep_ids = self.pool.get('hr.job.move.department.line').search(self.cr, self.uid, [('job_id', '=', job_id.id)])
+        if move_dep_ids:
+            return self.pool.get('hr.job.move.department.line').browse(self.cr, self.uid, move_dep_ids)
+        return []
+
+    def _get_scale_up_ids(self, job_id):
+        scale_up_ids = self.pool.get('hr.job.move.grade.line').search(self.cr, self.uid, [('job_id', '=', job_id.id), ('job_move_grade_id.state', '=', 'scale_up')])
+        if scale_up_ids:
+            return self.pool.get('hr.job.move.grade.line').browse(self.cr, self.uid, scale_up_ids)
+        return []
+
+    def _get_scale_down_ids(self, job_id):
+        scale_down_ids = self.pool.get('hr.job.move.grade.line').search(self.cr, self.uid, [('job_id', '=', job_id.id), ('job_move_grade_id.state', '=', 'scale_down')])
+        if scale_down_ids:
+            return self.pool.get('hr.job.move.grade.line').browse(self.cr, self.uid, scale_down_ids)
+        return []
+
+    def _get_job_update_ids(self, job_id):
+        job_update_ids = self.pool.get('hr.job.update.line').search(self.cr, self.uid, [('job_id', '=', job_id.id)])
+        if job_update_ids:
+            return self.pool.get('hr.job.update.line').browse(self.cr, self.uid, job_update_ids)
+        return []
+
+    def _get_recuitments(self, job_id):
+        recuitments_ids = self.pool.get('hr.decision.appoint').search(self.cr, self.uid, [('state', '=', 'done'), ('emp_job_id', '=', job_id.id)])
+        if recuitments_ids:
+            return self.pool.get('hr.decision.appoint').browse(self.cr, self.uid, recuitments_ids)
+        return []
 
     def _get_company(self):
         return self.pool.get('res.users').browse(self.cr, self.uid, [self.uid])[0].company_id

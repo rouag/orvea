@@ -1,6 +1,8 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_hr_allowance_type_setting,name_hr_allowance_type_setting,model_hr_allowance_type,group_payroll_setting,1,1,1,1
 access_hr_allowance_type_payroll,name_hr_allowance_type_payroll,model_hr_allowance_type,group_payroll_management,1,0,0,0
+access_hr_allowance_city_setting,name_hr_allowance_city_setting,model_hr_allowance_city,group_payroll_setting,1,1,1,1
+access_hr_allowance_city_payroll,name_hr_allowance_city_payroll,model_hr_allowance_city,group_payroll_management,1,0,0,0
 access_hr_reward_type_setting,name_hr_reward_type_setting,model_hr_reward_type,group_payroll_setting,1,1,1,1
 access_hr_reward_type_payroll,name_hr_reward_type_payroll,model_hr_reward_type,group_payroll_management,1,0,0,0
 access_hr_indemnity_type_setting,name_hr_indemnity_type_setting,model_hr_indemnity_type,group_payroll_setting,1,1,1,1
@@ -12,6 +14,15 @@ access_hr_bonus_line_all,name_hr_bonus_line_all,model_hr_bonus_line,,1,0,0,0
 access_hr_bonus_line_manager,name_hr_bonus_line_manager,model_hr_bonus_line,group_bonus_management,1,1,1,0
 access_hr_bonus_history_all,name_hr_bonus_history_all,model_hr_bonus_history,,1,0,0,0
 access_hr_bonus_history_manager,name_hr_bonus_history_manager,model_hr_bonus_history,group_bonus_management,1,1,1,0
+,,,,,,,
+access_hr_loan_all,name_hr_loan_all,model_hr_loan,,1,0,0,0
+access_hr_loan_manager,name_hr_loan_manager,model_hr_loan,group_loan_management,1,1,1,0
+access_hr_loan_line_all,name_hr_loan_line_all,model_hr_loan_line,,1,0,0,0
+access_hr_loan_line_manager,name_hr_loan_line_manager,model_hr_loan_line,group_loan_management,1,1,1,0
+access_hr_loan_history_all,name_hr_loan_history_all,model_hr_loan_history,,1,0,0,0
+access_hr_loan_history_manager,name_hr_loan_history_manager,model_hr_loan_history,group_loan_management,1,1,1,0
+access_hr_loan_type_all,name_hr_loan_type_all,model_hr_loan_type,,1,0,0,0
+access_hr_loan_type_manager,name_hr_loan_type_manager,model_hr_loan_type,group_loan_management,1,1,1,0
 ,,,,,,,
 access_hr_payslip_days_off,name_hr_payslip_days_off,model_hr_payslip_days_off,,1,1,1,0
 

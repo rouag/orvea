@@ -1068,3 +1068,20 @@ msgstr "رسالة جديدة"
 #, python-format
 msgid "Write something..."
 msgstr "أكتب شيئا..."
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/views/list_view_editable.js:121
+#, python-format
+msgid "The line has been modified, your changes will be discarded. Are you sure you want to discard the changes ?"
+msgstr "لقد تم تعديل الخط، وسيتم تجاهل التغييرات. هل أنت متأكد أنك تريد تجاهل التغييرات؟"
+
+
+#. module: base
+#: model:ir.actions.act_window,name:base.action_res_bank_form
+#: model:ir.model.fields,field_description:base.field_res_partner_bank_ids
+#: model:ir.model.fields,field_description:base.field_res_users_bank_ids
+#: model:ir.ui.menu,name:base.menu_action_res_bank_form
+#: model:ir.ui.view,arch_db:base.view_res_bank_tree
+msgid "Banks"
+msgstr "البنوك"

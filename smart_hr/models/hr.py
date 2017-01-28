@@ -13,8 +13,8 @@ class HrEmployee(models.Model):
     _inherit = 'hr.employee'
 
     number = fields.Char(string=u'الرقم الوظيفي', required=1)
-    identification_date=fields.Date(string=u'تاريخ إصدار بطاقة الهوية ')
-    identification_place=fields.Char(string=u'مكان إصدار بطاقة الهوية')
+    identification_date = fields.Date(string=u'تاريخ إصدار بطاقة الهوية ')
+    identification_place = fields.Many2one('res.city', string=u'مكان إصدار بطاقة الهوية')
     father_name = fields.Char(string=u'إسم الأب', required=1)
     is_resident = fields.Boolean(string=u'موظف مقيم', required=1)
     birthday_location = fields.Char(string=u'مكان الميلاد')
@@ -26,7 +26,11 @@ class HrEmployee(models.Model):
                                        ('update', u'إستكمال البيانات'),
                                        ('done', u'اعتمدت'),
                                        ('refused', u'رفض'),
-                                       ('employee', u'موظف')], string=u'الحالة', default='new')
+                                      ( 'outside_assignment',u'مكلف خارجي'),
+                                      ('non_active',u'مفصول'),
+                                      ('oh',u'كف اليد'),
+                                      ('retired',u'متقاعد'),
+                                      ('employee', u'موظف')], string=u'الحالة', default='new')
     education_level = fields.Many2one('hr.employee.education.level', string=u'المستوى التعليمي')
     # Deputation Stock
     deputation_stock = fields.Integer(string=u'الأنتدابات', default=60)
@@ -60,6 +64,29 @@ class HrEmployee(models.Model):
     promotion_duration = fields.Integer(string=u'مدة الترقية(يوم)', compute='_compute_promotion_days')
     dep_city = fields.Many2one('res.city', strin=u'المدينة', related="department_id.dep_city")
     dep_Side = fields.Many2one('city.side', string=u'الجهة', related="department_id.dep_Side")
+    history_ids = fields.One2many('hr.employee.history', 'employee_id', string=u'سجل الاجراءات')
+    diploma_id = fields.Many2one('hr.employee.diploma', string=u'الشهادة')
+    specialization_ids = fields.Many2many('hr.employee.specialization', string=u'الاختصاص')
+    passport_date = fields.Date(string=u'تاريخ إصدار جواز السفر ')
+    passport_place = fields.Char(string=u'مكان إصدار جواز السفر')
+    passport_end_date = fields.Date(string=u'تاريخ انتهاء جواز السفر ')
+    display_name = fields.Char(compute='_compute_display_name', string='display Name', select=True)
+    sanction_ids = fields.One2many('hr.employee.sanction', 'employee_id', string=u'العقوبات')
+    bank_account_ids = fields.One2many('res.partner.bank','employee_id', string=u'الحسابات البنكِيّة')
+   
+    @api.one
+    @api.depends('name', 'father_middle_name', 'father_name', 'family_name')
+    def _compute_display_name(self):
+        display_name = self.name
+        if self.father_name:
+            if self.father_middle_name:
+                display_name += ' '+self.father_middle_name +' '+ self.father_name
+            else:
+                display_name += ' '+self.father_name
+        if self.family_name:
+            display_name += ' '+self.family_name
+        self.display_name = display_name
+
     @api.multi
     def name_get(self):
         res = []
@@ -88,7 +115,7 @@ class HrEmployee(models.Model):
         today_date = fields.Date.from_string(fields.Date.today())
         prev_month_end = date(today_date.year, today_date.month, 1) - relativedelta(days=1)
         prev_month_first = prev_month_end.replace(day=1)
-        
+
         for emp in self.search([ ('state', '=', 'employee')]):
             first_date_direct_action = emp._get_first_decision__apoint_date()
             if first_date_direct_action[0]:
@@ -152,7 +179,17 @@ class HrEmployee(models.Model):
                 'res_id': employee.id,
             }
             return value
-        
+
+    @api.onchange('diploma_id')
+    def onchange_diploma_id(self):
+        res = {}
+        if self.diploma_id:
+            specialization_ids = self.diploma_id.specialization_ids.ids
+            res['domain'] = {'specialization_ids': [('id', 'in', specialization_ids)]}
+        return res
+
+
+
 class HrEmployeeHolidaysStock(models.Model):
     _name = 'hr.employee.holidays.stock'
 
@@ -250,3 +287,31 @@ class HrEmployeeEducationLevel(models.Model):
     name = fields.Char(string=u'الإسم')
     sequence = fields.Char(string=u'الرتبة')
     leave_type = fields.Many2one('hr.holidays.status', string='leave type')
+    code = fields.Char(string=u'الرمز')
+    
+class HrEmployeeDiploma(models.Model):
+    _name = 'hr.employee.diploma'  
+    _description = u'الشهادة العلمية'
+
+    name = fields.Char(string=u'المسمّى')
+    specialization_ids = fields.Many2many('hr.employee.specialization',string=u'الاختصاص')
+    code = fields.Char(string=u'الرمز')
+
+
+class HrEmployeeSpecialization(models.Model):
+    _name = 'hr.employee.specialization'  
+    _description = u'الاختصاص'
+  
+    name = fields.Char(string=u'المسمّى')
+    code = fields.Char(string=u'الرمز')
+    
+class HrEmployeeSanction(models.Model):
+    _name = 'hr.employee.sanction'  
+    _description = u'العقوبات'
+  
+    employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', )
+    type_sanction = fields.Many2one('hr.type.sanction',string='العقوبة',)
+    date_sanction_start = fields.Date(string='تاريخ بدأ العقوبة') 
+    date_sanction_end = fields.Date(string='تاريخ الإلغاء') 
+
+

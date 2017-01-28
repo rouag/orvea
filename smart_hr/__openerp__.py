@@ -8,7 +8,7 @@
     'description':
         """
         """,
-    'depends': ['hr', 'hr_holidays', 'odoo_rtl', 'web_readonly_bypass', 'hr_payroll', 'hr_attendance','smart_base','survey','hr_appraisal'],
+    'depends': ['hr', 'hr_holidays', 'odoo_rtl', 'web_readonly_bypass', 'hr_payroll', 'hr_attendance', 'smart_base', 'survey', 'hr_appraisal'],
     'data': [
 
 
@@ -27,7 +27,7 @@
         'data/hr_termination_data.xml',
         'data/decisions_type_data.xml',
         'data/hr_appoint_type_data.xml',
-        # 'data/decision_action_data.xml',
+        'data/hr_sanction_type_data.xml',
 
         # الوظائف
         'job/menu.xml',
@@ -81,7 +81,7 @@
         'views/hr_dep_accr_report.xml',
         'views/report_point_decinne.xml',
         'views/report_hr_direct_appoint.xml',
-
+        'views/hr_employee_functionnal_card_report.xml',
         'report/reports.xml',
         'report/hr_suspension_end_report.xml',
         'report/hr_suspension_report.xml',
@@ -117,24 +117,30 @@
         'view/religion.xml',
         'view/courses_follow_up.xml',
         'view/hr_direct_appoint_view.xml',
-        # 'view/hr_improve_situation_view.xml',
+        'view/hr_sanction_view.xml',
+        'view/hr_remove_sanction_view.xml',
+        'view/hr_employee_functional_card.xml',
+        'view/res_users.xml',
 
         # القرارات
         'view/hr_decision.xml',
         # الرواتب
         'payroll/menu.xml',
-#         'payroll/data/data.xml',
+        # 'payroll/data/data.xml',
         'payroll/data/salary_grid_type_data.xml',
         'payroll/wizard/wizard_bonus_employee.xml',
         'payroll/wizard/wizard_bonus_action.xml',
+        'payroll/wizard/wizard_deducation_action.xml',
+        'payroll/wizard/wizard_loan_action.xml',
         'payroll/view/salary_grid.xml',
         'payroll/view/hr_payroll_view.xml',
         'payroll/view/setting_view.xml',
         'payroll/view/hr_salary_rule_view.xml',
         'payroll/view/hr_deduction.xml',
         'payroll/view/hr_bonus_view.xml',
+        'payroll/view/hr_loan_view.xml',
         'payroll/views/report_hr_deduction.xml',
-        'payroll/views/report_hr_deduction_line.xml',
+        'payroll/views/report.xml',
         # الحضور والإنصراف
         'attendance/security/attendance_security.xml',
         'attendance/security/ir.model.access.csv',
@@ -162,13 +168,14 @@
         'job/view/hr_job_setting.xml',
         'job/view/hr_skils_job.xml',
         'job/view/hr_job.xml',
+        'job/view/hr_job_workflow.xml',
 
         # الاجازات
         'holidays/menu.xml',
         'holidays/wizard/wizard_resume_holidays_view.xml',
         'holidays/views/resume_holidays_report.xml',
         'holidays/views/report.xml',
-        
+
         #apprasal menu
         #التقييم والإختبار
         'hr_appraisal/view/hr_appraisal_menu.xml',

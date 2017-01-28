@@ -24,7 +24,7 @@
                         </h1>
                         <group>
                             <field name="date" readonly="1"/>
-                            <field name="employee_id" required="1" domain="[('job_id.deputed_employee','=',False)]"/>
+                            <field name="employee_id" required="1"/>
                         </group>
                         <group>
                             <group string="معلومات الموظف">
@@ -45,7 +45,8 @@
                                 <field name="letter_date" attrs="{'readonly':[('state','!=','draft')]}"/>
                             </group>
                             <group>
-                                <field name="file_attachment" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                <field name="file_attachment" attrs="{'readonly':[('state','!=','draft')]}" filename="file_attachment_name"/>
+                                <field name="file_attachment_name" invisible="1"/>
                             </group>
                         </group>
                         <button name="%(report_hr_termination_report)d" string="طباعة القرار" type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button"/>
@@ -104,9 +105,16 @@
             <field name="arch" type="xml">
                 <form string="نوع طى القيد">
                     <sheet>
-                        <group>
-                            <field name="name" required="1"/>
-                        </group>
+                       
+						<group>
+							 <field name="name" required="1"/>
+							<field name="code" />
+							<field name="nb_salaire"  />
+							<field name="all_holidays" />
+								<field name="max_days" />
+							
+						</group>
+                           
                     </sheet>
                 </form>
             </field>

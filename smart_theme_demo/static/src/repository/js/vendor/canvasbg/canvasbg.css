@@ -1,0 +1,61 @@
+@charset "UTF-8";
+
+body.utility-page {
+  min-height: 0;
+  overflow: auto;
+}
+body.utility-page #main {
+  overflow: hidden;
+  background: url("../../../img/patterns/backgrounds/1.jpg") no-repeat top center #2d494d;
+}
+body.utility-page #main:before {
+  display: none;
+}
+body.utility-page #canvas-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+}
+body.utility-page #content .allcp-form {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  margin-top: 8%;
+}
+body.utility-page #content .panel {
+  box-shadow: 0 1px 40px 0 rgba(0, 0, 0, 0.3);
+}
+body.utility-page #content .panel-heading {
+  padding: 32px 10px 15px;
+}
+body.utility-page .login-links {
+  font-size: 15px;
+  color: #DDD;
+}
+body.utility-page .login-links a {
+  color: #DDD;
+  font-weight: 300;
+}
+body.utility-page .login-links a.active {
+  color: #FFF;
+  font-weight: 600;
+}
+body.utility-page .login-links a:hover,
+body.utility-page .login-links a:focus {
+  color: #FFF;
+  text-decoration: none;
+}
+body.utility-page .coming-soon-title {
+  text-align: center;
+  color: #FFF;
+  font-size: 40px;
+  font-weight: 400;
+  margin-top: 70px;
+  margin-bottom: 20px;
+}
+/*# sourceMappingURL=maps/theme.css.map */

@@ -80,12 +80,12 @@
 						<group>
 							<group string="الممسؤول على العقد">
 								<field name="employee_id1" string="الممسؤول على العقد" />
-								<field name="department_id1" string="القسم" />
+								<field name="department_id1" string="الادارة" />
 								<field name="job_id1" string="الوظيفة" />
 							</group>
 							<group string="مراجع البيانات">
 								<field name="employee_id2" string="مراجع البيانات" />
-								<field name="department_id2" string="القسم" />
+								<field name="department_id2" string="الادارة" />
 								<field name="job_id2" string="الوظيفة" />
 							</group>
 						</group>

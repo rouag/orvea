@@ -35,14 +35,10 @@
 							<table class="table  table-bordered">
 								<thead>
 									<tr>
-										<th>إسم الموظف</th>
+										<th>الموظف</th>
+										<th>رقم.و</th>
 										<th>نوع الحسم</th>
-										<th>طريقة الحسم</th>
-										<th>القيمة</th>
-										<th>قسط الحسم</th>
-										<th>تاريخ من</th>
-										<th>إلي</th>
-										<th>المتبقي </th>
+										<th>عدد أيام الحسم</th>
 									</tr>
 								</thead>
 								<tr t-foreach="o.line_ids" t-as="l">
@@ -51,30 +47,14 @@
 									</td>
 
 									<td>
-										<span t-field="l.deduction_type" />
+										<span t-field="l.employee_id.number" />
 									</td>
 									<td>
-										<span t-field="l.deduction_way" />
+										<span t-field="l.deduction_type_id" />
 									</td>
 									<td>
-										<span t-field="l.valuer_deduction" />
+										<span t-field="l.amount" />
 									</td>
-
-									<td>
-										<span t-field="l.premium_dedection" />
-									</td>
-
-									<td>
-										<span t-field="l.date_from" />
-									</td>
-
-									<td>
-										<span t-field="l.date_to" />
-									</td>
-									<td>
-										Todo:
-									</td>
-
 								</tr>
 							</table>
 

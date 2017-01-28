@@ -85,7 +85,15 @@
 							<group string="الأثر المالي">
 								<field name="compute_method" />
 								<field name="amount" attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}"/>
-								<field name="percentage" attrs="{'invisible':[('compute_method','!=','percentage')], 'required': [('compute_method','=','percentage')]}"/> />
+								<field name="percentage" attrs="{'invisible':[('compute_method','!=','percentage')], 'required': [('compute_method','=','percentage')]}"/> 
+								<field name="min_amount" />
+								<field name="line_ids"  attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+									<tree editable="buttom"  >
+										<field name="city_id" />
+										<field name="percentage" />
+									</tree>
+								</field>
+								
 							</group>
 						</group>
 						<group>

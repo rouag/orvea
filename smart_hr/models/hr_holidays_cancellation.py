@@ -126,7 +126,13 @@ class hrHolidaysCancellation(models.Model):
                         holiday.open_period.holiday_stock += holiday.duration
                         # Update the holiday state
                     holiday.write({'state': 'cancel'})
-
+                    type=''
+                    if holiday.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_illness').id:
+                        type = '68'
+                    else:
+                        type = '35'
+                    if type:
+                        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
             if cancellation.type=='cut':
                 for holiday in cancellation.holidays:
                     for holiday_balance in holiday.employee_id.holidays_balance:

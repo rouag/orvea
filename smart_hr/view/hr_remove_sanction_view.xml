@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<record model="ir.ui.view" id="hr_remove_sanction_tree">
+			<field name="name">hr.remove.sanction.tree</field>
+			<field name="model">hr.remove.sanction</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="فسخ عقوبة">
+					<field name="employee_id" />
+					<field name="type_sanction" />
+				</tree>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_remove_sanction_form">
+			<field name="name">hr.remove.sanction.form</field>
+			<field name="model">hr.remove.sanction</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="فسخ عقوبة">
+					<header>
+						<button name="action_draft" string=" ارسال طلب" type="object"
+							states="draft" groups="smart_hr.group_manager_sanction" />
+						<button name="action_waiting" string="موافق" type="object"
+							states="waiting" groups="smart_hr.group_responsable_sanction" />
+						<button name="action_refuse" string="رفض" type="object"
+							states="waiting" groups="smart_hr.group_responsable_sanction" />
+
+
+						<field name="state" widget="statusbar" statusbar_visible="draft,waiting,done,refuse" />
+
+					</header>
+					<sheet>
+						<group>
+							<field name="name" />
+							<field name="order_date" />
+							<field name="employee_id" />
+							<field name="sanction_ids"   domain="[('employee_id', '=', employee_id),('state', '=', 'done')]"/>
+						</group>
+						<field name="note" />
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+
+		<record model="ir.actions.act_window" id="action_hr_remove_sanction">
+			<field name="name">فسخ عقوبة</field>
+			<field name="res_model">hr.remove.sanction</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+		<menuitem id="hr_remove_sanction_menu" name="فسخ عقوبة"
+			sequence="12" parent="hr_root_organisation_action" action="action_hr_remove_sanction" />
+
+	</data>
+</openerp>

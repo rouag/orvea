@@ -5,9 +5,9 @@
 	   <menuitem id="hr_configuration_general_root" sequence="40" name="اعدادات عامّة" parent="smart_hr.hr_root_configuration" />
 		
 	
-		<menuitem name="اعدادات الاشعارات" id="notification_setting_menu"
-			parent="hr_configuration_general_root" sequence="100"
-			action="smart_base.ir_actions_server_notification_setting" />
+<!-- 		<menuitem name="اعدادات الاشعارات" id="notification_setting_menu" -->
+<!-- 			parent="hr_configuration_general_root" sequence="100" -->
+<!-- 			action="smart_base.ir_actions_server_notification_setting" /> -->
 			
 		
 			

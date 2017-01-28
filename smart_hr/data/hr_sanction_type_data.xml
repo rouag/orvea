@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data noupdate="1">
+
+		<!-- sanction Types -->
+		<record id="data_hr_sanction_type_alert" model="hr.type.sanction">
+			<field name="name"> إنذار
+			</field>
+			<field name="code" eval="1" />
+
+		</record>
+		<record id="data_hr_sanction_type_blame" model="hr.type.sanction">
+			<field name="name"> لوم
+			</field>
+			<field name="code" eval="2" />
+		</record>
+		<record id="data_hr_sanction_type_displine" model="hr.type.sanction">
+			<field name="name"> حسم تأديبي
+			</field>
+			<field name="code" eval="3" />
+		</record>
+		<record id="data_hr_sanction_type_grade" model="hr.type.sanction">
+			<field name="name"> حرمان من علاوة
+			</field>
+			<field name="code" eval="4" />
+		</record>
+		<record id="data_hr_sanction_type_separation" model="hr.type.sanction">
+			<field name="name"> الفصل
+			</field>
+			<field name="code" eval="5" />
+		</record>
+
+	</data>
+</openerp>
+		
