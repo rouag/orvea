@@ -172,6 +172,7 @@
         #apprasal menu
         #التقييم والإختبار
         'hr_appraisal/view/hr_appraisal_menu.xml',
+        'hr_appraisal/view/hr_appraisal_view.xml',
 
     ],
     'auto_install': False,

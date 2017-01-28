@@ -9,4 +9,4 @@ from . import job
 from . import holidays
 from . import models
 from . import setting
-
+from . import hr_appraisal
