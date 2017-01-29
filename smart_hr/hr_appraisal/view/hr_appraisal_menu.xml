@@ -24,11 +24,11 @@
    <!-- survey MENU ELEMENTS -->
 
         <!-- Left menu categories-->
-        <menuitem name="إعدادات التقييم" id="menu_surveys" sequence="70"  parent="hr_root_evaluation"  groups="base.group_survey_user"  web_icon="survey,static/description/icon.png"/>
+        <menuitem name="إعدادات التقييم" id="menu_surveys_hr" sequence="70"  parent="hr_root_evaluation"  groups="base.group_survey_user"  web_icon="survey,static/description/icon.png"/>
 
         <!-- Left menu elements: Survey -->
-        <menuitem name="اسئلة التقييم" id="menu_survey_form" action="survey.action_survey_form" parent="menu_surveys" sequence="1"/>
-        <menuitem name="الإجابات" id="menu_survey_type_form1" action="survey.action_survey_user_input" parent="menu_surveys" sequence="1"/>
+        <menuitem name="اسئلة التقييم" id="menu_survey_form_hr" action="survey.action_survey_form" parent="menu_surveys_hr" sequence="1"/>
+        <menuitem name="الإجابات" id="menu_survey_type_form1_hr" action="survey.action_survey_user_input" parent="menu_surveys_hr" sequence="1"/>
 
 
         <!-- Left menu elements: Technical Configuration -->
