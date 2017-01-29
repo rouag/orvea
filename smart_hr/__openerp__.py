@@ -126,7 +126,7 @@
         'view/hr_decision.xml',
         # الرواتب
         'payroll/menu.xml',
-        # 'payroll/data/data.xml',
+        'payroll/data/data.xml',
         'payroll/data/salary_grid_type_data.xml',
         'payroll/wizard/wizard_bonus_employee.xml',
         'payroll/wizard/wizard_bonus_action.xml',

@@ -491,6 +491,15 @@
 										</tree>
 									</field>
 								</page>
+								<!-- TODO: dont delete it used by borni in payroll 
+								           we can discuss about it after  -->
+								<page string="بيانات الراتب ">
+									<group>
+										<field name="payroll_structure_id"/>
+									    <field name="wage"/>
+								    </group>
+								</page>
+								
 								<page string="أرصدة الاجازات والترقيات">
 									<separator string="أرصدة الاجازات" />
 									<field name="holidays_balance"

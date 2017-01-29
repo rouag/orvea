@@ -141,6 +141,7 @@
 					<field name="number"/>
 					<field name="job_id"/>
 					<field name="department_id"/>
+					<field name="month" />
 					<field name="deduction_type_id" />
 					<field name="amount" />
 					<field name="state" />
@@ -162,6 +163,7 @@
 								<field name="department_id" />
 							</group>
 							<group string="بيانات الحسمية">
+								<field name="month" />
 								<field name="deduction_type_id" />
 								<field name="amount" />
 							</group>
