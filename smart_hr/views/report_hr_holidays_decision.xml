@@ -5,60 +5,86 @@
 			<t t-call="report.html_container">
 				<t t-foreach="docs" t-as="o">
 					<t t-call="smart_base.external_layout_extend">
+						<br></br>
+						<br></br>
+						<br></br>
+
 						<div class="page">
+							<br></br>
+							<br></br>
+							<br></br>
 							<div class="oe_structure" />
-							<div class="col-xs-12" style="margin-top:20px;">
-								<p style="font-size:22px;" align="center"> قرار مباشرة
-								</p>
-								<p></p>
-								<br></br>
-								<br></br>
-								<p></p>
-								<p style="font-size:22px;" align="center">
-									السلام عليكم ورحمة الله
-									وبركاته و بعد ،
-								</p>
-								<br></br>
-								<br></br>
-								<p style="font-size:22px;">
+							<p align='left'>
+								شؤون الموظفين/الرواتب و الإجازات
+							</p>
+							<br></br>
+							<p align="left">
+								الموضوع: مباشرة عودة بعد
+								<span t-field="o.holidays[0].holiday_status_id.name" />
 
-									يرجي التكرم بالإذن للسيد:
-									<span t-field="o.employee_id.name" />
-								</p>
-								<p style="font-size:22px;">
-									الذى يشغل بوظيفة
-									<span t-field="o.job_id.name" />
-									رقمها:
-									<span t-esc="o.job_id.number" />
-								</p>
-								<p style="font-size:22px;">
-									لمباشرة مهامه
-									بتاريخ
-									<span t-field="o.date" />
-								</p>
 								<br></br>
-								<br></br>
-								<p style="font-size:22px;">
 
-									و لكم جزيل الشكر،،
-								</p>
-								<p></p>
-								<p></p>
-								<br></br>
-								<br></br>
-								<br></br>
-								<p style="font-size:22px;" align="center">
-									و تفضلوا بقبول فائق التقدير و
-									الاحترام
-								</p>
-								<br></br>
-								<br></br>
-								<p style="font-size:22px;" align="left">
-									التوقيع
-									<br></br>
-									.............
-								</p>
-							</div>
+								رقم الهوية الوطنية:
+								<span t-field="o.employee_id.identification_id" />
+							</p>
+							<p></p>
+							<br></br>
+							<br></br>
+							<p style="font-size:22px;">
+								<b>سعادة المشرف العام على الموارد البشرية </b>
+							</p>
+
+							<p style="font-size:22px;">
+								السلام عليكم ورحمة الله
+								وبركاته و بعد ،
+							</p>
+							<br></br>
+							<br></br>
+							<p style="font-size:22px;">
+
+								إشارة إلى القرار الإداري رقم
+								<span t-field="o.holidays[0].name" />
+								و تاريخ
+								<span t-field="o.holidays[0].date" />
+								القاضي بمنح المستخدم بفرع الهيئة ب
+								<span t-field="o.employee_id.dep_city" />
+								<span t-field="o.holidays[0].holiday_status_id.name" />
+								لمدة
+								<span t-field="o.holidays[0].duration" />
+								يوما اعتبارا من يوم
+								<span t-field="o.holidays[0].date_from" />
+								الى نهاية يوم
+								<span t-field="o.holidays[0].date_to" />
+							</p>
+							<p style="font-size:22px;"> و بناء على خطاب .......................
+								رقم.......................... وتاريخ......................
+							</p>
+							<p style="font-size:22px;">
+								المتضمن أن المذكور باشر العمل يوم
+								<span t-field="o.date" />
+							</p>
+							<p style="font-size:22px;">
+
+								نود التسجيل بموجبه لديكم.
+							</p>
+							<br></br>
+							<br></br>
+							<p style="font-size:22px;" align='center'>
+
+								<b>و لكم تحياتنا..</b>
+							</p>
+							<p></p>
+							<p></p>
+							<br></br>
+							<br></br>
+							<br></br>
+							<p style="font-size:22px;" align='left'>
+								<br />
+								..............................................
+								<br />
+								.............................................
+							</p>
+
 						</div>
 					</t>
 				</t>

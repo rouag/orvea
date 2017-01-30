@@ -115,6 +115,11 @@
 			<field name="paperformat_id" ref="smart_base.paperformat_landscape" />
 			<field name="download_filename">${o.employee_id.name}_بطاقة وظيفية.pdf</field>
 		</record>
+		
+				<report id="hr_employee_situation_order" model="hr.employee.situation.order" name="smart_hr.report_hr_employee_situation_order"
+			report_type="qweb-pdf" string="طباعة طلب إفادة عن حالة موظف  " file="smart_hr.report_hr_employee_situation_order" />
+		
+		
 	</data>
 </openerp>
 		

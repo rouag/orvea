@@ -13,13 +13,13 @@ class hrHolidaysDecision(models.Model):
     job_id = fields.Many2one(related='employee_id.job_id', store=True, readonly=True, string=' الوظيفة')
     department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string=' الادارة')
   #  degree_id = fields.Many2one(related='employee_id.degree_id', store=True, readonly=True, string=' الدرجة')
-    date = fields.Date(string=u'تاريخ المباشرة', default=fields.Datetime.now())
+    date = fields.Date(string=u'تاريخ المباشرة', default=fields.Datetime.now(),required=1)
     state = fields.Selection([('new', ' ارسال طلب'),
                              ('waiting', 'في إنتظار الإعتماد'),
                              ('cancel', 'رفض'),
                              ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
 
-    holidays = fields.Many2many('hr.holidays', string=u'الإجازات')
+    holidays = fields.Many2many('hr.holidays', string=u'الإجازات',required=1)
 
 
     @api.one

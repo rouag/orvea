@@ -71,7 +71,7 @@
         'views/report_salary_grid.xml',
         'views/report_medical_examination.xml',
         'views/report_order_enquiry.xml',
-#         'views/hr_holidays_report.xml',
+        'views/hr_holidays_report.xml',
         'views/report_hr_holidays_decision.xml',
         'views/report_hr_decision.xml',
         'views/report.xml',
@@ -86,7 +86,7 @@
         'report/hr_suspension_end_report.xml',
         'report/hr_suspension_report.xml',
         'report/hr_termination_report.xml',
-
+        'views/employee_situation_order_report.xml',
         'wizards/view/hr_refuse_wizard_view.xml',
 
         'view/hr.xml',
@@ -121,7 +121,7 @@
         'view/hr_remove_sanction_view.xml',
         'view/hr_employee_functional_card.xml',
         'view/res_users.xml',
-
+        'view/employee_situation_order.xml',
         # القرارات
         'view/hr_decision.xml',
         # الرواتب
