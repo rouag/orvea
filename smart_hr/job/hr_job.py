@@ -122,11 +122,10 @@ class HrJobCreate(models.Model):
     line_ids = fields.One2many('hr.job.create.line', 'job_create_id', readonly=1, states={'new': [('readonly', 0)]})
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', u'صاحب الصلاحية'),
-                              ('budget', u'إدارة الميزانية'),
-                              ('communication', u'إدارة الإتصالات'),
-                              ('external', u'وزارة المالية'),
+                              ('budget_external', u'إدارة الميزانية - وزارة المالية'),
                               ('hrm', u'شؤون الموظفين'),
-                              ('done', u'اعتمدت')
+                              ('done', u'اعتمدت'),
+                              ('refused', u'رفض')
                               ], readonly=1, default='new', string=u'الحالة')
     general_id = fields.Many2one('hr.groupe.job', ' المجموعة العامة', ondelete='cascade')
     specific_id = fields.Many2one('hr.groupe.job', ' المجموعة النوعية', ondelete='cascade')
@@ -146,40 +145,31 @@ class HrJobCreate(models.Model):
     @api.multi
     def action_waiting(self):
         self.ensure_one()
-        self.state = 'waiting'
+        if self.check_workflow_state(self.env.ref('smart_hr.work_job_autority_owner')):
+            self.state = 'waiting'
+        else:
+            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
 
     @api.multi
     def action_hrm(self):
         self.ensure_one()
-        self.state = 'hrm'
+        if self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm'
+        else:
+            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
         # Add to log
         self.message_post(u"تمت الموافقة من قبل الجهة الخارجية (وزارة المالية)")
 
     @api.multi
     def action_budget(self):
         self.ensure_one()
-        self.state = 'budget'
+        if self.check_workflow_state(self.env.ref('smart_hr.work_job_budg__minis')):
+            self.state = 'budget_external'
+        else:
+            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
-
-    @api.multi
-    def action_external(self):
-        self.ensure_one()
-        if not self.draft_budget:
-            raise ValidationError(u"الرجاء إرفاق مشروع الميزانية.")
-        self.state = 'external'
-        # Add to log
-        user = self.env['res.users'].browse(self._uid)
-        self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"' (إدارة الإتصالات)")
-
-    @api.multi
-    def action_communication(self):
-        self.ensure_one()
-        self.state = 'communication'
-        # Add to log
-        user = self.env['res.users'].browse(self._uid)
-        self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"' (إدارة الميزانية)")
 
     @api.multi
     def action_done(self):
@@ -203,10 +193,21 @@ class HrJobCreate(models.Model):
     @api.multi
     def action_refuse(self):
         self.ensure_one()
-        self.state = 'new'
+        self.state = 'refused'
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
+
+    def check_workflow_state(self, state):
+        '''
+        @param state: hr.job.workflow.state
+        @return Boolean
+        '''
+        work_obj = self.env.ref('smart_hr.work_job_creation_workflow')
+        if work_obj:
+            return state in work_obj.state_ids
+        else:
+            return False
 
 
 class HrJobCreateLine(models.Model):
