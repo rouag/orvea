@@ -99,7 +99,7 @@
         'view/res_partner.xml',
         'view/judicial_precedent.xml',
         'view/recruiter.xml',
-        'view/hr_holidays.xml',
+#         'view/hr_holidays.xml',
         'view/hr_holidays_cancellation_view.xml',
         'view/hr_holidays_decision_view.xml',
         'view/hr_overtime_view.xml',

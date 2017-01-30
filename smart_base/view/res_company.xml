@@ -20,9 +20,9 @@
 						</group>
 					</page>
 				</notebook>
-				<field name="partner_id" position="after">
-				<field name="company_president"></field>
-				</field>
+<!-- 				<field name="partner_id" position="after"> -->
+<!-- 				<field name="company_president"></field> -->
+<!-- 				</field> -->
 			</field>
 		</record>
 	</data>
