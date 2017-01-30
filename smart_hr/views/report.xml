@@ -21,7 +21,7 @@
 
 		<report id="report_hr_holidays_report" model="hr.holidays" string="طلب الاجازة"
 			report_type="qweb-pdf" name="smart_hr.hr_holidays_report" file="smart_hr.hr_holidays_report"
-			attachment_use="True" attachment="('Leave_'+(object.name).replace('/','')+'.pdf')"
+			attachment_use="False" 
 			menu="False" />
 
 		<report id="report_hr_holidays_hospital_transfer_form_report"

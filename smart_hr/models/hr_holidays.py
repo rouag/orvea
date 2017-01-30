@@ -63,7 +63,6 @@ class HrHolidays(models.Model):
         ('validate1', 'Second Approval'),
         ('validate', 'Approved')], string=u'حالة', default='draft', advanced_search=True)
 
-
     is_current_user = fields.Boolean(string='Is Current User', compute='_is_current_user')
     is_direct_manager = fields.Boolean(string='Is Direct Manager', compute='_is_direct_manager')
     is_delayed = fields.Boolean(string='is_delayed', default=False)
@@ -116,14 +115,13 @@ class HrHolidays(models.Model):
     medical_certification_file_name = fields.Char(string=u'الشهادة الطبيةا')
     medical_report_file_name = fields.Char(string=u'التقرير الطبي')
     prove_exam_duration_name = fields.Char(string=u'إثبات اداء الامتحان ومدته مسمى')
-    medical_report_number = fields.Char(string=u'رقم الشهادة الطبية')
-    medical_report_date = fields.Char(string=u'تاريخ الشهادة الطبية')
+    medical_report_number = fields.Char(string=u'رقم التقرير الطبي')
+    medical_report_date = fields.Date(string=u'تاريخ التقرير الطبي')
 
- 
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
-    
+
     @api.one
     @api.depends('date_from')
     def _compute_is_started(self):
@@ -690,32 +688,33 @@ class HrHolidays(models.Model):
         self.ensure_one()
         self.state = 'external_audit'
 
-
-    def create_holiday_periode(self, employee_id,holiday_status_id,entitlement):
+    def create_holiday_periode(self, employee_id, holiday_status_id, entitlement):
         """
-        return: an open periode 
+        return: an open periode
         """
-        holidays_periode_obj=self.env['hr.holidays.periode']
-        if holiday_status_id.id==self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id:
-            decision_appoint_ids = self.env['hr.decision.appoint'].sudo().search([('employee_id.id', '=', self.employee_id.id)])
-            direct_action_date = decision_appoint_ids[0].date_direct_action
-            for decision_appoint in decision_appoint_ids:
-                if fields.Date.from_string(decision_appoint.date_direct_action)<fields.Date.from_string(direct_action_date):
-                    direct_action_date=decision_appoint.date_direct_action
-            date_direct_action = fields.Date.from_string(direct_action_date)
-            date_to = fields.Date.from_string(self.date_to)
-            diff = relativedelta(date_to, date_direct_action).years
-            years = (diff//entitlement.periode)*entitlement.periode
-            date_from = date_direct_action + relativedelta(years=years)
-            open_periode = self.env['hr.holidays.periode'].sudo().create({'holiday_status_id': self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id,
-                                                           'employee_id': employee_id.id,
-                                                            'date_to': date_from + relativedelta(years=entitlement.periode),
-                                                            'date_from': date_from,
-                                                            'entitlement_id':entitlement.id,
-                                                            'holiday_stock':entitlement.holiday_stock_default,
-                                                            'active':True
-                                                            })
-            
+        holidays_periode_obj = self.env['hr.holidays.periode']
+        if holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id:
+            decision_appoint_ids = self.env['hr.decision.appoint'].sudo().search([('employee_id.id', '=', self.employee_id.id), ('state_appoint', '=', 'active')], limit=1)
+            if decision_appoint_ids:
+                direct_action_date = decision_appoint_ids[0].date_direct_action
+                for decision_appoint in decision_appoint_ids:
+                    if fields.Date.from_string(decision_appoint.date_direct_action) < fields.Date.from_string(direct_action_date):
+                        direct_action_date = decision_appoint.date_direct_action
+                date_direct_action = fields.Date.from_string(direct_action_date)
+                date_to = fields.Date.from_string(self.date_to)
+                diff = relativedelta(date_to, date_direct_action).years
+                years = (diff // entitlement.periode) * entitlement.periode
+                date_from = date_direct_action + relativedelta(years=years)
+                open_periode = self.env['hr.holidays.periode'].sudo().create({'holiday_status_id': self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id,
+                                                                              'employee_id': employee_id.id,
+                                                                              'date_to': date_from + relativedelta(years=entitlement.periode),
+                                                                              'date_from': date_from,
+                                                                              'entitlement_id': entitlement.id,
+                                                                              'holiday_stock': entitlement.holiday_stock_default,
+                                                                              'active': True
+                                                                              })
+            else:
+                raise ValidationError(u"لا يوجد تعيين مفعل للموظف.")
         elif holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_illness').id and \
             entitlement.entitlment_category.id in [self.env.ref('smart_hr.data_entitlement_illness_normal').id,self.env.ref('smart_hr.data_entitlement_illness_serious').id]:
             previous_normal_illnes_holidays_ids = holidays_periode_obj.search([('employee_id', '=',employee_id.id),('holiday_status_id', '=', holiday_status_id.id),('entitlement_id', '=', entitlement.id),]).ids
@@ -1027,7 +1026,8 @@ class HrHolidays(models.Model):
                 res = relativedelta(fields.Date.from_string(fields.Datetime.now()), fields.Date.from_string(date_direct_actions_min))
                 if res.years < 3:
                     raise ValidationError(u"ليس لديك ثلاث سنوات خدمة.")  
-            
+            else:
+                raise ValidationError(u"لا يوجد تعيين مفعل للموظف.")           
                       
         # الرصيد الكافي
         if right_entitlement.periode and right_entitlement.periode!=100 and self.holiday_status_id.id!=self.env.ref('smart_hr.data_hr_holiday_compensation').id:
@@ -1054,15 +1054,17 @@ class HrHolidays(models.Model):
                     raise ValidationError(u"ليس لديك الرصيد الكافي")
                 else:
                     if self.holiday_status_id.id==self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id:
-                        date_direct_action_ids = self.env['hr.decision.appoint'].sudo().search([ ('employee_id', '=', self.employee_id.id),('state', '=', 'done')]).ids
+                        date_direct_action_ids = self.env['hr.decision.appoint'].sudo().search([ ('employee_id', '=', self.employee_id.id),('state', '=', 'done')])
                         if date_direct_action_ids:
-                            first_id = date_direct_action_ids and max(date_direct_action_ids)
+                            first_id = date_direct_action_ids.ids and max(date_direct_action_ids).ids
                             direct_action_date = self.env['hr.decision.appoint'].sudo().browse(first_id).date_direct_action
                             date_direct_action = fields.Date.from_string(direct_action_date)
                             h_date_to = fields.Date.from_string(self.date_to)
                             diff = relativedelta(h_date_to, date_direct_action).years
                             years = (diff//right_entitlement.periode)*right_entitlement.periode
                             date_from = date_direct_action + relativedelta(years=years)
+                        else:
+                            raise ValidationError(u"لا يوجد تعيين مفعل للموظف.")
                     else:
                         date_from = date(date.today().year, 1, 1)
                     date_to = date_from + relativedelta(years=right_entitlement.periode)
@@ -1212,7 +1214,7 @@ class HrHolidaysStatus(models.Model):
 class HrHolidaysStatusEntitlement(models.Model):
     _name = 'hr.holidays.status.entitlement'
     _description = u'أنواع الاستحقاقات'
-    entitlment_category = fields.Many2one('hr.holidays.entitlement.config', string=u'فئة الاستحقاق')
+    entitlment_category = fields.Many2one('hr.holidays.entitlement.config', string=u'خاصيّة الإجازة')
     holiday_stock_default = fields.Integer(string=u'الرصيد (يوم)')
     conditionnal = fields.Boolean(string=u'مشروط')
     periode = fields.Selection([

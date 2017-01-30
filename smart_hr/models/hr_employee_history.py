@@ -103,7 +103,6 @@ class HrEmployeeHistory(models.Model):
                              ('90', u'حسم تأديبي '),
                              ('91', u' حرمان من علاوة '),
                              ('92', u'الفصل '),
-                             
                              ], string=u'الاجرا ء')
     job_id = fields.Char(string=u'المسمى الوظيفي')
 
