@@ -12,24 +12,25 @@ class CoursesFollowUp(models.Model):
     _description = u'متابعة الدورات الدراسيّة'
 
     name = fields.Char(string=u' إسم الدورة', required=1)
-    date_from = fields.Date(string=u'التاريخ من ', required=1)
-    date_to = fields.Date(string=u'التاريخ الى', required=1)
     result = fields.Selection([
         ('suceed', u'نجح'),
-        ('not_succeed', u' لم ينجح')], string=u'النتيجة')
+        ('not_succeed', u' لم ينجح')], string=u'النتيجة', readonly=True)
     state = fields.Selection([
-        ('draft', u'طلب'),
         ('progress', u'جارية'),
-        ('done', u'انتهت')], string=u'حالة', default='draft')
+        ('done', u'انتهت'),
+            ('cancel', u'ملغاة'),
+        ('cut', u'قطعت'),
+        ], string=u'حالة', default='draft')
 
-    employee_id = fields.Many2one('hr.employee', string=u'الموظف', advanced_search=True ,required=1)
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف', advanced_search=True , required=1)
+    holiday_id = fields.Many2one('hr.holidays', string=u'الاجازة')
 
     @api.one
-    def action_start(self):
-        self.state = 'progress'
-        
+    def action_succeeded(self):
+        self.result = 'suceed'
+        self.state = 'done'
+
     @api.one
-    def action_done(self):
-        if not self.result:
-            raise ValidationError(u"الرجاء تعبئة النتيجة.")
+    def action_not_succeeded(self):
+        self.result = 'not_succeed'
         self.state = 'done'

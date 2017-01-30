@@ -116,8 +116,8 @@ class HrHolidays(models.Model):
     medical_certification_file_name = fields.Char(string=u'الشهادة الطبيةا')
     medical_report_file_name = fields.Char(string=u'التقرير الطبي')
     prove_exam_duration_name = fields.Char(string=u'إثبات اداء الامتحان ومدته مسمى')
-    medical_certification_number = fields.Char(string=u'رقم الشهادة الطبية')
-    medical_certification_date = fields.Char(string=u'تاريخ الشهادة الطبية')
+    medical_report_number = fields.Char(string=u'رقم الشهادة الطبية')
+    medical_report_date = fields.Char(string=u'تاريخ الشهادة الطبية')
 
  
     _constraints = [
@@ -292,6 +292,13 @@ class HrHolidays(models.Model):
             type = '43'
         if type:
             self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
+
+        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_study'):
+            self.env['courses.followup'].create({'employee_id':self.employee_id.id, 'state':'progress',
+                                                 'holiday_id':self.id, 'name':self.study_subject,
+                                                 })
+        
+        
         self.state = 'done'
 
 
@@ -809,9 +816,7 @@ class HrHolidays(models.Model):
         deput_obj = self.env['hr.deputation']
          
             # Date validation
-        if fields.Date.from_string(self.date_from) < fields.Date.from_string(fields.Date.today()):
-            raise ValidationError(u"تاريخ من يجب ان يكون أكبر من تاريخ اليوم")
-             
+
         if self.date_from > self.date_to:
             raise ValidationError(u"تاريخ من يجب ان يكون أصغر من تاريخ الى")
             # check minimum request validation
@@ -1014,13 +1019,14 @@ class HrHolidays(models.Model):
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_study'):
             # check 3 years of services
             decision_appoint_ids = self.env['hr.decision.appoint'].sudo().search([('employee_id.id', '=', self.employee_id.id)])
-            date_direct_actions_min = decision_appoint_ids[0].date_direct_action
-            for decision_appoint in decision_appoint_ids:
-                if fields.Date.from_string(decision_appoint.date_direct_action)<fields.Date.from_string(date_direct_actions_min):
-                    date_direct_actions_min=decision_appoint.date_direct_action
-            res = relativedelta(fields.Date.from_string(fields.Datetime.now()), fields.Date.from_string(date_direct_actions_min))
-            if res.years < 3:
-                raise ValidationError(u"ليس لديك ثلاث سنوات خدمة.")  
+            if decision_appoint_ids:
+                date_direct_actions_min = decision_appoint_ids[0].date_direct_action
+                for decision_appoint in decision_appoint_ids:
+                    if fields.Date.from_string(decision_appoint.date_direct_action)<fields.Date.from_string(date_direct_actions_min):
+                        date_direct_actions_min=decision_appoint.date_direct_action
+                res = relativedelta(fields.Date.from_string(fields.Datetime.now()), fields.Date.from_string(date_direct_actions_min))
+                if res.years < 3:
+                    raise ValidationError(u"ليس لديك ثلاث سنوات خدمة.")  
             
                       
         # الرصيد الكافي
