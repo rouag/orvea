@@ -151,19 +151,19 @@ access_hr_holidays_extension,hr_holidays_extension,model_hr_holidays_extension,,
 access_hr_sanction_manager,hr_sanction,model_hr_sanction,group_manager_sanction,1,1,1,1
 access_hr_sanction_responsable,hr_sanction,model_hr_sanction,group_responsable_sanction,1,1,1,0
 access_hr_sanction_party,hr_sanction,model_hr_sanction,group_third_party_sanction,1,1,1,1
-access_hr_sanction_employee,hr_sanction,model_hr_sanction,group_employee,1,0,0,0
+access_hr_sanction_employee,hr_sanction,model_hr_sanction,group_employee,0,0,0,0
 ,,,,,,,,,,,,,,,,,,,,,,,,,,
 access_hr_type_sanction_manager,hr_type_sanction,model_hr_type_sanction,group_manager_sanction,1,1,1,1
 access_hr_type_sanction_responsable,hr_type_sanction,model_hr_type_sanction,group_responsable_sanction,1,1,1,0
 access_hr_type_sanction_party,hr_type_sanction,model_hr_type_sanction,group_third_party_sanction,1,1,1,1
-access_hr_type_sanction_employee,hr_type_sanction,model_hr_type_sanction,group_employee,1,0,0,0
+access_hr_type_sanction_employee,hr_type_sanction,model_hr_type_sanction,group_employee,0,0,0,0
 
 ,,,,,,,
 ,,,,,,,
 access_hr_remove_sanction_manager,hr_remove_sanction,model_hr_remove_sanction,group_manager_sanction,1,1,1,1
 access_hr_remove_sanction_responsable,hr_remove_sanction,model_hr_remove_sanction,group_responsable_sanction,1,1,1,0
 access_hr_remove_sanction_party,hr_remove_sanction,model_hr_remove_sanction,group_third_party_sanction,1,1,1,1
-access_hr_remove_sanction_employee,hr_remove_sanction,model_hr_remove_sanction,group_employee,1,0,0,0
+access_hr_remove_sanction_employee,hr_remove_sanction,model_hr_remove_sanction,group_employee,0,0,0,0
 ,,,,,,,,,,,,,,,,
 access_hr_decision_appoint2,hr_decision_appoint,model_hr_decision_appoint,group_enterview_manager,1,1,1,1
 access_hr_decision_appoint3,hr_decision_appoint,model_hr_decision_appoint,group_recrutment_manager,1,1,1,0
@@ -178,4 +178,5 @@ access_hr_type_appoint5,hr_type_appoint,model_hr_type_appoint,group_personnel_hr
 access_hr_employee_history,hr_employee_history,model_hr_employee_history,group_employee,1,0,0,0
 access_hr_employee_diploma,hr_employee_diploma,model_hr_employee_diploma,group_employee,1,0,0,0
 access_hr_employee_specialization,hr_employee_specialization,model_hr_employee_specialization,group_employee,1,0,0,0
+access_hr_employee_sanction,hr_employee_sanction,model_hr_employee_sanction,group_employee,1,0,0,0
 access_hr_employee_notification_setting_line,hr_employee_snotification_setting_line,smart_base.model_notification_setting_line,group_employee,1,0,0,0

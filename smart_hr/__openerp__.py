@@ -126,17 +126,19 @@
         'view/hr_decision.xml',
         # الرواتب
         'payroll/menu.xml',
-        # 'payroll/data/data.xml',
+        'payroll/data/data.xml',
         'payroll/data/salary_grid_type_data.xml',
         'payroll/wizard/wizard_bonus_employee.xml',
         'payroll/wizard/wizard_bonus_action.xml',
         'payroll/wizard/wizard_deducation_action.xml',
+        'payroll/wizard/wizard_loan_action.xml',
         'payroll/view/salary_grid.xml',
         'payroll/view/hr_payroll_view.xml',
         'payroll/view/setting_view.xml',
         'payroll/view/hr_salary_rule_view.xml',
         'payroll/view/hr_deduction.xml',
         'payroll/view/hr_bonus_view.xml',
+        'payroll/view/hr_loan_view.xml',
         'payroll/views/report_hr_deduction.xml',
         'payroll/views/report.xml',
         # الحضور والإنصراف
@@ -166,16 +168,18 @@
         'job/view/hr_job_setting.xml',
         'job/view/hr_skils_job.xml',
         'job/view/hr_job.xml',
+        'job/view/hr_job_workflow.xml',
 
         # الاجازات
         'holidays/menu.xml',
         'holidays/wizard/wizard_resume_holidays_view.xml',
         'holidays/views/resume_holidays_report.xml',
         'holidays/views/report.xml',
-        
+
         #apprasal menu
         #التقييم والإختبار
         'hr_appraisal/view/hr_appraisal_menu.xml',
+        'hr_appraisal/view/hr_appraisal_view.xml',
 
     ],
     'auto_install': False,

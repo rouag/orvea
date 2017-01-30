@@ -14,7 +14,7 @@ class HrRequestTransfer(models.Model):
     employee_id = fields.Many2one('hr.employee', string='الموظف', required=1, domain=[('employee_state', '=', 'employee')],
                                   readonly=1, states={'new': [('readonly', 0)]})
     number = fields.Char(string='الرقم الوظيفي', readonly=1)
-    department_id = fields.Many2one('hr.department', string='القسم', readonly=1)
+    department_id = fields.Many2one('hr.department', string='الادارة', readonly=1)
     job_id = fields.Many2one('hr.job', string='الوظيفة', readonly=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
     description = fields.Text(string=' ملاحظات ')

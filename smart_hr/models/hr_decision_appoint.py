@@ -28,7 +28,7 @@ class HrDecisionAppoint(models.Model):
     emp_job_id = fields.Many2one('hr.job', string='الوظيفة', store=True, readonly=1) 
     emp_number_job = fields.Char(string='رقم الوظيفة', store=True, readonly=1) 
     emp_type_id = fields.Many2one('salary.grid.type', string='الصنف', store=True, readonly=1) 
-    emp_department_id = fields.Many2one('hr.department', string='القسم', store=True, readonly=1)
+    emp_department_id = fields.Many2one('hr.department', string='الادارة', store=True, readonly=1)
     emp_grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', store=True, readonly=1)
     emp_far_age = fields.Float(string=' السن الاقصى', store=True, readonly=1) 
     emp_basic_salary = fields.Float(string='الراتب الأساسي', store=True, readonly=1)   
@@ -38,7 +38,7 @@ class HrDecisionAppoint(models.Model):
     number_job = fields.Char(string='رقم الوظيفة', readonly=1) 
     code = fields.Char(string=u'رمز الوظيفة ', readonly=1) 
     type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1) 
-    department_id = fields.Many2one('hr.department', string='القسم', readonly=1)
+    department_id = fields.Many2one('hr.department', string='الادارة', readonly=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
     far_age = fields.Float(string=' السن الاقصى', readonly=1) 
     basic_salary = fields.Float(string='الراتب الأساسي', readonly=1)   
@@ -286,7 +286,7 @@ class HrDecisionAppoint(models.Model):
         elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_public_retraite').id:
             type = '88'
         if type:
-            self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
+            self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date_hiring, type)
         self.state = 'done'
         self.env['hr.holidays']._init_balance(self.employee_id)
         # create promotion history line

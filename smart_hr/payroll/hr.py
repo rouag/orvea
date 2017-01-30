@@ -19,7 +19,7 @@ class HrEmployee(models.Model):
     wage = fields.Float(string='الراتب الأساسي', digits_compute=dp.get_precision('Payroll'))
     allowance_transport = fields.Float(string='بدل النقل', compute='_compute_amount', store=1, digits_compute=dp.get_precision('Payroll'))
     allowance_house = fields.Float(string='بدل سكن', compute='_compute_amount', store=1, digits_compute=dp.get_precision('Payroll'))
-    allowance_ids = fields.One2many('hr.employee.allowance', 'employee_id', string='البدلات', copy=True)
+    allowance_ids = fields.One2many('hr.bonus.line', 'employee_id', string='البدلات', copy=True)
 
     @api.multi
     def get_reward_amount(self):
@@ -38,12 +38,3 @@ class HrEmployee(models.Model):
         '''احتساب مجموع  حسميات الموظف '''
         # TODO:
         return 0.0
-
-
-class HrEmployeeAllowance(models.Model):
-    _name = 'hr.employee.allowance'
-    _description = u'بدلات الموظف'
-
-    allowance_id = fields.Many2one('hr.allowance.type', 'البدل', required=1)
-    employee_id = fields.Many2one('hr.employee', 'الموظف', required=1)
-    amount = fields.Float(string='القيمة', digits_compute=dp.get_precision('Payroll'), required=1)

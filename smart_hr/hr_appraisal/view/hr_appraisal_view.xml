@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<!--التقييم -->
+
+		<record id="view_hr_appraisal_form_inherite" model="ir.ui.view">
+			<field name="name">hr.appraisal.form.inherite</field>
+			<field name="model">hr.appraisal</field>
+			<field name="inherit_id" ref="hr_appraisal.view_hr_appraisal_form" />
+			<field name="arch" type="xml">
+				<field name="date_close" position="after">
+					<field name="create_date" string="تاريخ الإنشاء" readonly="1" />
+				</field>
+
+
+				<field name="manager_appraisal" position="before">
+					<field name="parent_emplyee" attrs="{'readonly':[('state', '!=', 'new')]}"/>
+                     <field name="parent_emplyee_id" nolabel="1" placeholder="Select Appraisal Reviewer..."  attrs="{'invisible':[('parent_emplyee','=',False)], 'readonly':[('state', '!=', 'new')]}" readonly="0"/>
+                       <field name="parent_emplyee_survey_id" nolabel="1" placeholder="Appraisal Form..." attrs="{'invisible':[('parent_emplyee','=',False)], 'readonly':[('state', '!=', 'new')]}"/>
+				</field>
+				<!-- <xpath expr="//page[@name='Plan']/group" position="after"> -->
+
+
+
+				<!-- <field name="parent_emplyee" attrs="{'readonly':[('state', '!=', 
+					'new')]}" /> -->
+				<!-- </xpath> -->
+			</field>
+
+
+		</record>
+
+
+	</data>
+</openerp>

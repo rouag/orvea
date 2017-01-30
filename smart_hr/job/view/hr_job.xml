@@ -82,7 +82,7 @@
 					<field name="number" />
 					<field name="name" string="المسمى الوظيفي" />
 					<group expand="0" string="تجميع حسب...">
-						<filter name="department_id" string="القسم" domain="[]"
+						<filter name="department_id" string="الادارة" domain="[]"
 							context="{'group_by':'department_id'}" />
 					</group>
 				</search>
@@ -118,10 +118,10 @@
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
 				<tree string="إحداث وظائف" delete='0'>
-					<field name="name" string="المسمى الوظيفي" />
+					<field name="name" string="مسمى الطلب"/>
 					<field name="speech_number" />
 					<field name="speech_date" />
-					<field name="state" />
+					<field name="state"  string="الحالة"/>
 				</tree>
 			</field>
 		</record>
@@ -166,6 +166,7 @@
 						</group>
 						<group col="2">
 							<group>
+								<field name="employee_id" />
 								<field name="name" />
 								<field name="speech_number"
 									attrs="{'invisible':[('state', 'not in', ['hrm','done'])],'required':[('state','=','hrm')], 'readonly':[('state', '=', 'done')]}" />
@@ -197,12 +198,12 @@
 						<field name="line_ids" string=" الوظائف" attrs="{'readonly':[('state', '!=', 'new')]}">
 							<tree editable="bottom">
 								<field name="name" options='{"no_open": True, "no_create": True}' string="المسمى الوظيفي"/>
-								<field name="number" readonly="1" />
-								<field name="activity_type" options='{"no_open": True, "no_create": True}' />
-								<field name="grade_id" options='{"no_open": True, "no_create": True}' />
-								<field name="type_id" readonly="1" />
 								<field name="job_number" />
+								<field name="number" readonly="1" />
+								<field name="type_id" readonly="1" />
 								<field name="department_id" />
+								<field name="grade_id" options='{"no_open": True, "no_create": True}' />
+								<field name="activity_type" options='{"no_open": True, "no_create": True}' />
 							</tree>
 						</field>
 					</sheet>
@@ -326,10 +327,12 @@
 							<tree editable="bottom">
 								<field name="name" options='{"no_open": True, "no_create": True}' />
 								<field name="number" readonly="1" />
-								<field name="grade_id" options='{"no_open": True, "no_create": True}' />
+								<field name="job_name_code" string="الرمز" />
 								<field name="type_id" readonly="1" />
-								<field name="job_number" />
 								<field name="department_id" />
+								<field name="grade_id" options='{"no_open": True, "no_create": True}' />
+								<field name="job_number" />
+								
 							</tree>
 						</field>
 					</sheet>
@@ -439,6 +442,8 @@
 						<field name="line_ids" string="إلغاء وظائف" attrs="{'readonly':[('state', '!=', 'new')]}">
 							<tree editable="bottom">
 								<field name="job_id" domain="[('state','=','unoccupied')]" />
+								<field name="job_number" />
+								<field name="job_name_code" string="الرمز" />
 								<field name="type_id" />
 								<field name="department_id" />
 								<field name="grade_id" />
@@ -548,12 +553,12 @@
 							<tree editable="bottom">
 								<field name="job_id" />
 								<field name="job_number" />
-								<field name="old_name" />
-								<field name="new_name" />
-								<field name="old_type_id" />
-								<field name="new_type_id" />
 								<field name="department_id" />
 								<field name="grade_id" />
+								<field name="old_name" />
+								<field name="old_type_id" />
+								<field name="new_name" />
+								<field name="new_type_id" />
 							</tree>
 						</field>
 					</sheet>
@@ -653,6 +658,8 @@
 							context="{'job_movement_ids': job_movement_ids}"  attrs="{'readonly':[('state', '!=', 'new')]}">
 							<tree editable="bottom">
 								<field name="job_id" domain="[('state','=','unoccupied') ]" />
+								<field name="job_number" />
+								<field name="job_name_code" />
 								<field name="type_id" />
 								<field name="grade_id" />
 								<field name="department_id" />
@@ -763,6 +770,7 @@
 							<tree editable="bottom">
 								<field name="job_id" />
 								<field name="job_number" />
+								<field name="job_name_code" />
 								<field name="type_id" />
 								<field name="department_id" />
 								<field name="grade_id" />
@@ -900,6 +908,7 @@
 							<tree editable="bottom">
 								<field name="job_id" />
 								<field name="job_number" />
+								<field name="job_name_code" />
 								<field name="type_id" />
 								<field name="department_id" />
 								<field name="grade_id" />

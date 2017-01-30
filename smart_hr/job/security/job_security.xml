@@ -44,7 +44,7 @@
 		</record>
 
 		<record id="group_budget_managment" model="res.groups">
-			<field name="name">إدارة الميزانية</field>
+			<field name="name">إدارة الإتصالات - وزارة المالية</field>
 			<field name="category_id" ref="base.module_category_human_resources" />
 		</record>
 
