@@ -782,7 +782,7 @@ class HrJobMoveDeparrtment(models.Model):
                                                   'notif': True
                                                   })
         if self._context['refused_from_state'] == 'communication_external':
-            group_id = self.env.ref('smart_hr.group_hrm')
+            group_id = self.env.ref('smart_hr.group_hr_personnel_officer_jobs')
             self.send_notification_to_group(group_id)
             # send notification to the صاحب الطلب
             if self.employee_id.user_id not in group_id.users:
@@ -965,7 +965,7 @@ class HrJobMoveGrade(models.Model):
                                                   'notif': True
                                                   })
         if self._context['refused_from_state'] == 'budget_external':
-            group_id = self.env.ref('smart_hr.group_hrm')
+            group_id = self.env.ref('smart_hr.group_hr_personnel_officer_jobs')
             self.send_notification_to_group(group_id)
             # send notification to the صاحب الطلب
             if self.move_type == 'scale_up':
@@ -1164,7 +1164,7 @@ class HrJobMoveUpdate(models.Model):
                                                   'notif': True
                                                   })
         if self._context['refused_from_state'] == 'budget_external':
-            group_id = self.env.ref('smart_hr.group_hrm')
+            group_id = self.env.ref('smart_hr.group_hr_personnel_officer_jobs')
             # send notification to group hrm
             self.send_notification_to_group(group_id)
             # send notification to the صاحب الطلب

@@ -8,7 +8,7 @@
 
 
 		<menuitem id="hr_job_setting" sequence="100" name="الإعدادات"
-			parent="hr_root_job" groups="smart_hr.group_hrm" />
+			parent="hr_root_job" groups="smart_hr.group_hr_personnel_officer_jobs" />
 
 	</data>
 </openerp>

@@ -36,7 +36,7 @@
 	</record>
 
 	<menuitem id="wizard_job_grade_menu" name="تقرير تخفيض الوظائف"
-		groups="smart_hr.group_dm,smart_hr.group_hrm" sequence="10"
+		groups="smart_hr.group_dm,smart_hr.group_hr_personnel_officer_jobs" sequence="10"
 		action="wizard_job_grade_action" parent="menu_job_report" />
 
 </odoo>
