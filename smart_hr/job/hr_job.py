@@ -198,6 +198,16 @@ class HrJobCreate(models.Model):
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
 
+        # send notification for the employee
+        self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                              'message': u'لقد تم إشعار رفض طلب إحداث وظائف',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'res_id': self.id,
+                                              'res_action': 'smart_hr.action_hr_job_create',
+                                              'notif': True
+                                              })
+
     def check_workflow_state(self, state):
         '''
         @param state: hr.job.workflow.state
@@ -383,6 +393,15 @@ class HrJobStripFrom(models.Model):
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
+        # send notification for the employee
+        self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                              'message': u'لقد تم إشعار رفض طلب سلخ وظائف من جهة',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'res_id': self.id,
+                                              'res_action': 'smart_hr.action_hr_job_strip_from',
+                                              'notif': True
+                                              })
 
     def check_workflow_state(self, state):
         '''
@@ -534,6 +553,15 @@ class HrJobStripTo(models.Model):
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
+        # send notification for the employee
+        self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                              'message': u'لقد تم إشعار رفض طلب سلخ وظيفة إلى جهة',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'res_id': self.id,
+                                              'res_action': 'smart_hr.action_hr_job_strip_to',
+                                              'notif': True
+                                              })
 
     def check_workflow_state(self, state):
         '''
@@ -625,6 +653,15 @@ class HrJobCancel(models.Model):
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
+        # send notification for the employee
+        self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                              'message': u'لقد تم إشعار رفض طلب إلغاء الوظائف',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'res_id': self.id,
+                                              'res_action': 'smart_hr.action_hr_job_cancel',
+                                              'notif': True
+                                              })
 
 
 class HrJobCancelLine(models.Model):
@@ -733,6 +770,15 @@ class HrJobMoveDeparrtment(models.Model):
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
+        # send notification for the employee
+        self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                              'message': u'لقد تم إشعار رفض طلب نقل وظائف',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'res_id': self.id,
+                                              'res_action': 'smart_hr.action_hr_job_move_department',
+                                              'notif': True
+                                              })
 
     @api.multi
     def action_job_unreserve(self):
@@ -873,6 +919,19 @@ class HrJobMoveGrade(models.Model):
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
+        # send notification for the employee
+        if self.move_type == 'scale_up':
+            action_name = 'smart_hr.action_hr_job_scal_up_grade'
+        else:
+            action_name = 'smart_hr.action_hr_job_scal_down_grade'
+        self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                              'message': u'لقد تم إشعار رفض طلب رفع أو خفض وظائف',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'res_id': self.id,
+                                              'res_action': action_name,
+                                              'notif': True
+                                              })
 
     @api.multi
     def action_job_unreserve(self):
@@ -1025,6 +1084,15 @@ class HrJobMoveUpdate(models.Model):
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
+        # send notification for the employee
+        self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                              'message': u'لقد تم إشعار رفض طلب تحوير‬ وظائف',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'res_id': self.id,
+                                              'res_action': 'smart_hr.action_hr_job_update',
+                                              'notif': True
+                                              })
 
     @api.multi
     def action_job_unreserve(self):
