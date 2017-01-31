@@ -514,7 +514,7 @@
 							groups="smart_hr.group_update_job" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_refuse" string="رفض" type="object"
-							groups="smart_hr.group_update_job" states="waiting"
+							groups="smart_hr.group_update_job" states="waiting" context="{'refused_from_state':'waiting'}"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_budget" string="حجز الوظائف"
 							type="object" groups="smart_hr.group_hrm" states="hrm1" />
@@ -522,7 +522,7 @@
 						<button name="action_hrm2" string="موافقة" type="object"
 							groups="smart_hr.group_budget_civil_service" states="budget_external" />
 						<button name="action_communication" string="رفض" type="object"
-							groups="smart_hr.group_budget_civil_service" states="budget_external"
+							groups="smart_hr.group_budget_civil_service" states="budget_external" context="{'refused_from_state':'budget_external'}"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						
 						<button name="action_job_unreserve" string="فك حجز الوظائف"
@@ -620,7 +620,7 @@
 							groups="smart_hr.group_move_job_department" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_refuse" string="رفض" type="object"
-							groups="smart_hr.group_move_job_department" states="waiting"
+							groups="smart_hr.group_move_job_department" states="waiting" context="{'refused_from_state':'waiting'}"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_budget" string="حجز الوظائف"
 							type="object" groups="smart_hr.group_hrm" states="hrm1" />
@@ -632,7 +632,7 @@
 							groups="smart_hr.group_budget_comm_service" states="communication_external"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_refuse" string="رفض" type="object"
-							groups="smart_hr.group_budget_comm_service" states="communication_external"
+							groups="smart_hr.group_budget_comm_service" states="communication_external" context="{'refused_from_state':'communication_external'}"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_job_unreserve" string="فك حجز الوظيفة"
@@ -731,7 +731,7 @@
 						<button name="action_hrm1" string="موافقة" type="object"
 							groups="smart_hr.group_move_job_grade" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_refuse" string="رفض" type="object"
+						<button name="action_refuse" string="رفض" type="object" context="{'refused_from_state':'waiting'}"
 							groups="smart_hr.group_move_job_grade" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_budget" string="حجز الوظائف"
@@ -740,7 +740,7 @@
 						
 						<button name="action_hrm2" string="موافقة" type="object"
 							groups="smart_hr.group_budget_managment" states="budget_external" />
-						<button name="action_refuse" string="رفض" type="object"
+						<button name="action_refuse" string="رفض" type="object" context="{'refused_from_state':'budget_external'}"
 							groups="smart_hr.group_budget_managment" states="budget_external"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						
@@ -770,6 +770,7 @@
 							<group>
 								<field name="decision_number" />
 								<field name="decision_date" />
+								<field name="decision_file" />
 								<field name="in_speech_number"
 									attrs="{'invisible':[('state', 'not in', ['budget_external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','budget_external')]}" />
 								<field name="in_speech_date"

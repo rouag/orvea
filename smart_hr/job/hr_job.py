@@ -771,14 +771,29 @@ class HrJobMoveDeparrtment(models.Model):
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
         # send notification for the employee
-        self.env['base.notification'].create({'title': u'إشعار برفض طلب',
-                                              'message': u'لقد تم إشعار رفض طلب نقل وظائف',
-                                              'user_id': self.employee_id.user_id.id,
-                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-                                              'res_id': self.id,
-                                              'res_action': 'smart_hr.action_hr_job_move_department',
-                                              'notif': True
-                                              })
+        if self._context['refused_from_state'] == 'waiting':
+            # send notification to the employee
+            self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                                  'message': u'لقد تم إشعار رفض طلب نقل وظائف',
+                                                  'user_id': self.employee_id.user_id.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': self.id,
+                                                  'res_action': 'smart_hr.action_hr_job_move_department',
+                                                  'notif': True
+                                                  })
+        if self._context['refused_from_state'] == 'communication_external':
+            group_id = self.env.ref('smart_hr.group_hrm')
+            self.send_notification_to_group(group_id)
+            # send notification to the صاحب الطلب
+            if self.employee_id.user_id not in group_id.users:
+                self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                                      'message': u'لقد تم إشعار رفض طلب نقل وظائف',
+                                                      'user_id': self.employee_id.user_id.id,
+                                                      'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                      'res_id': self.id,
+                                                      'res_action': 'smart_hr.action_hr_job_move_department',
+                                                      'notif': True
+                                                      })
 
     @api.multi
     def action_job_unreserve(self):
@@ -803,6 +818,20 @@ class HrJobMoveDeparrtment(models.Model):
             return state in work_obj.state_ids
         else:
             return False
+
+    def send_notification_to_group(self, group_id):
+        '''
+        @param group_id: res.groups
+        '''
+        for recipient in group_id.users:
+            self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                                  'message': u'لقد تم إشعار رفض طلب نقل وظائف',
+                                                  'user_id': recipient.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': self.id,
+                                                  'res_action': 'smart_hr.action_hr_job_move_department',
+                                                  'notif': True
+                                                  })
 
 
 class HrJobMoveDeparrtmentLine(models.Model):
@@ -847,6 +876,7 @@ class HrJobMoveGrade(models.Model):
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1, readonly=1)
     decision_number = fields.Char(string=u'رقم القرار', required=1)
     decision_date = fields.Date(string=u'تاريخ القرار', required=1)
+    decision_file = fields.Binary(string=u'نسخة القرار', required=1, readonly=1, states={'new': [('readonly', 0)]})
     move_date = fields.Date(string=u'التاريخ', readonly=1, default=fields.Datetime.now(), required=1)
     fiscal_year = fields.Char(string=u'السنه المالية', default=(date.today().year), readonly=1)
     out_speech_number = fields.Char(string=u'رقم الخطاب الصادر')
@@ -919,19 +949,38 @@ class HrJobMoveGrade(models.Model):
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
-        # send notification for the employee
-        if self.move_type == 'scale_up':
-            action_name = 'smart_hr.action_hr_job_scal_up_grade'
-        else:
-            action_name = 'smart_hr.action_hr_job_scal_down_grade'
-        self.env['base.notification'].create({'title': u'إشعار برفض طلب',
-                                              'message': u'لقد تم إشعار رفض طلب رفع أو خفض وظائف',
-                                              'user_id': self.employee_id.user_id.id,
-                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-                                              'res_id': self.id,
-                                              'res_action': action_name,
-                                              'notif': True
-                                              })
+
+        if self._context['refused_from_state'] == 'waiting':
+            # send notification to the employee
+            if self.move_type == 'scale_up':
+                action_name = 'smart_hr.action_hr_job_scal_up_grade'
+            else:
+                action_name = 'smart_hr.action_hr_job_scal_down_grade'
+            self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                                  'message': u'لقد تم إشعار رفض طلب رفع أو خفض وظائف',
+                                                  'user_id': self.employee_id.user_id.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': self.id,
+                                                  'res_action': action_name,
+                                                  'notif': True
+                                                  })
+        if self._context['refused_from_state'] == 'budget_external':
+            group_id = self.env.ref('smart_hr.group_hrm')
+            self.send_notification_to_group(group_id)
+            # send notification to the صاحب الطلب
+            if self.move_type == 'scale_up':
+                action_name = 'smart_hr.action_hr_job_scal_up_grade'
+            else:
+                action_name = 'smart_hr.action_hr_job_scal_down_grade'
+            if self.employee_id.user_id not in group_id.users:
+                self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                                      'message': u'لقد تم إشعار رفض طلب رفع أو خفض وظائف',
+                                                      'user_id': self.employee_id.user_id.id,
+                                                      'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                      'res_id': self.id,
+                                                      'res_action': action_name,
+                                                      'notif': True
+                                                      })
 
     @api.multi
     def action_job_unreserve(self):
@@ -945,6 +994,26 @@ class HrJobMoveGrade(models.Model):
         self.ensure_one()
         for rec in self.job_movement_ids:
             rec.job_id.write({'state': 'reserved'})
+
+    def send_notification_to_group(self, group_id):
+        '''
+        @param group_id: res.groups
+        '''
+        # send notification to group hrm
+        if self.move_type == 'scale_up':
+            action_name = 'smart_hr.action_hr_job_scal_up_grade'
+        else:
+            action_name = 'smart_hr.action_hr_job_scal_down_grade'
+        for recipient in group_id.users:
+            print recipient
+            self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                                  'message': u'لقد تم إشعار رفض طلب رفع أو خفض وظائف',
+                                                  'user_id': recipient.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': self.id,
+                                                  'res_action': action_name,
+                                                  'notif': True
+                                                  })
 
     def check_workflow_state(self, state):
         '''
@@ -1084,15 +1153,30 @@ class HrJobMoveUpdate(models.Model):
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
-        # send notification for the employee
-        self.env['base.notification'].create({'title': u'إشعار برفض طلب',
-                                              'message': u'لقد تم إشعار رفض طلب تحوير‬ وظائف',
-                                              'user_id': self.employee_id.user_id.id,
-                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-                                              'res_id': self.id,
-                                              'res_action': 'smart_hr.action_hr_job_update',
-                                              'notif': True
-                                              })
+        if self._context['refused_from_state'] == 'waiting':
+            # send notification to the employee
+            self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                                  'message': u'لقد تم إشعار رفض طلب تحوير‬ وظائف',
+                                                  'user_id': self.employee_id.user_id.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': self.id,
+                                                  'res_action': 'smart_hr.action_hr_job_update',
+                                                  'notif': True
+                                                  })
+        if self._context['refused_from_state'] == 'budget_external':
+            group_id = self.env.ref('smart_hr.group_hrm')
+            # send notification to group hrm
+            self.send_notification_to_group(group_id)
+            # send notification to the صاحب الطلب
+            if self.employee_id.user_id not in group_id.users:
+                self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                                      'message': u'لقد تم إشعار رفض طلب تحوير‬ وظائف',
+                                                      'user_id': self.employee_id.user_id.id,
+                                                      'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                      'res_id': self.id,
+                                                      'res_action': 'smart_hr.action_hr_job_update',
+                                                      'notif': True
+                                                      })
 
     @api.multi
     def action_job_unreserve(self):
@@ -1122,6 +1206,20 @@ class HrJobMoveUpdate(models.Model):
             return state in work_obj.state_ids
         else:
             return False
+
+    def send_notification_to_group(self, group_id):
+        '''
+        @param group_id: res.groups
+        '''
+        for recipient in group_id.users:
+            self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                                  'message': u'لقد تم إشعار رفض طلب تحوير‬ وظائف',
+                                                  'user_id': recipient.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': self.id,
+                                                  'res_action': 'smart_hr.action_hr_job_update',
+                                                  'notif': True
+                                                  })
 
 
 class HrJobMoveUpdateLine(models.Model):
