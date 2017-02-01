@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
-
-
 		<record model="ir.ui.view" id="hr_notices_settings_tree">
 			<field name="name">hr.notices.settings.tree</field>
 			<field name="model">hr.notices.settings</field>
@@ -47,13 +45,10 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-
 		<menuitem id="hr_notices_settings_menu" name=" إعدادات الاشعارات"
 			sequence="30" parent="hr_root_organisation_configuration" />
-
 		<menuitem id="hr_notices_settings_menu_sou" name=" اشعارات التعين"
 			sequence="5" parent="hr_notices_settings_menu" action="action_hr_notices_settings" />
-
 		<record model="ir.ui.view" id="hr_type_appoint_tree">
 			<field name="name">hr.type.appoint.tree</field>
 			<field name="model">hr.type.appoint</field>
@@ -82,10 +77,8 @@
 							<field name="audit" />
 							<field name="enterview_manager" />
 							<field name="recrutment_manager" />
-
 							<field name="personnel_hr" />
 							<field name="recrutment_decider" />
-
 						</group>
 					</sheet>
 				</form>
@@ -97,13 +90,9 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-
 		<menuitem id="hr_type_appoint_menu_sou" name=" أنواع التعين"
 			sequence="25" parent="hr_root_organisation_configuration" action="action_hr_type_appoint" />
-
-
 		<!-- التعيين -->
-
 		<record model="ir.ui.view" id="hr_decision_appoint_tree">
 			<field name="name">hr.decision.appoint.tree</field>
 			<field name="model">hr.decision.appoint</field>
@@ -131,7 +120,6 @@
 						<button name="send_appoint_request" string="إرسال " type="object"
 							groups="smart_hr.group_manager_appointment" states="draft"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
 						<button name="button_accept_audit" string="موافق" type="object" attrs="{'invisible':['|',('type_appointment', '=', %(data_hr_recrute_Members)d), ('state','!=', 'audit')]}"
 							groups="smart_hr.group_audit_appointment" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
@@ -146,53 +134,39 @@
 						<button name="button_refuse_audit" string="رفض" type="object" attrs="{'invisible':['|',('type_appointment', '!=', %(data_hr_recrute_Members)d), ('state','!=', 'audit')]}"
 							groups="smart_hr.group_committee_members_recruiter" icon="fa-times"
 							class="oe_inline oe_stat_button" />
-
 						<button name="button_accept_enterview_manager" string="موافق"
 							type="object" states="waiting" groups="smart_hr.group_enterview_manager"
 							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="button_refuse_enterview_manager" string="رفض"
 							type="object" states="waiting" groups="smart_hr.group_enterview_manager"
 							icon="fa-times" class="oe_inline oe_stat_button" />
-
 						<button name="button_accept_recrutment_manager" string="موافق"
 							type="object" states="manager" groups="smart_hr.group_recrutment_manager"
 							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="button_refuse_recrutment_manager" string="رفض"
 							type="object" states="manager" groups="smart_hr.group_recrutment_manager"
 							icon="fa-times" class="oe_inline oe_stat_button" />
-
 						<button name="button_accept_recrutment_decider" string="موافق"
 							type="object" states="budget" groups="smart_hr.group_recrutment_decider"
 							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="button_refuse_recrutment_decider" string="رفض"
 							type="object" states="budget" groups="smart_hr.group_recrutment_decider"
 							icon="fa-times" class="oe_inline oe_stat_button" />
-
-
-
-
 						<button name="button_accept_direct" string="موافق" type="object"
 							states="direct" groups="smart_hr.group_dm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="button_refuse_direct" string="رفض" type="object"
 							states="direct" groups="smart_hr.group_dm" icon="fa-times"
 							class="oe_inline oe_stat_button" />
-
-
-
 						<button name="button_accept_personnel_hr" string="موافق"
 							type="object" states="hrm" groups="smart_hr.group_personnel_hr"
 							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="button_refuse_personnel_hr" string="رفض"
 							type="object" states="hrm" groups="smart_hr.group_personnel_hr"
 							icon="fa-times" class="oe_inline oe_stat_button" />
-
-
-
 						<field name="state" widget="statusbar"
 							statusbar_visible="draft,audit,waiting,manager,budget,hrm,direct,done,refuse" />
 					</header>
-
 					<sheet>
 						<group string="بيانات التعيين">
 							<field name="date_hiring" readonly="1"
@@ -207,24 +181,6 @@
 								<field name="transport_car"
 									attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
 							</group>
-						</group>
-						<group>
-							<group string="بيانات القرار">
-								<field name="name"
-									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'done'])]}" />
-								<field name="order_date"
-									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'done'])]}" />
-								<field name="order_picture" filename="order_picture_name"
-									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'done'])]}" />
-								<field name="order_picture_name" invisible="1"/>
-								<field name="file_appoint" filename="file_appoint_name"
-									attrs="{'invisible':[('state', 'not in', ['hrm','direct', 'done'])],'required':[('state','=','hrm')],'readonly':[('state', 'in', [ 'direct', 'done'])]}" />
-								<field name="file_decision" filename="file_decision_name"
-									attrs="{'invisible':[('state', 'not in', ['hrm','direct', 'done'])],'required':[('state','=','hrm')],'readonly':[('state', 'in', [ 'direct', 'done'])]}" />
-
-							</group>
-							<group string="بيانات التعيين">
-
 							<group>
 								<field name="state_appoint"
 									attrs="{'invisible':[('state', 'not in', [ 'done'])],'readonly':[('state', 'in', [ 'done'])]}" />
@@ -254,12 +210,10 @@
 										<field name="emp_degree_id" />
 										<field name="emp_far_age" />
 										<field name="emp_basic_salary" />
-
 										<field name="medical_examination_file" filename="medical_examination_name"
 											attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done']),
 											('type_appointment','not in', [%(data_hr_new_agent_public)d])],
 											'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done']),('type_appointment','not in', [%(data_hr_recrute_agent_public)d])]}" />
-
 										<field name="medical_examination_name" invisible="1" />
 										<field name="order_enquiry_file" filename="order_enquiry_file_name"
 											attrs="{'invisible':[('state', 'not in', ['waiting', 'hrm', 'budget', 'done']),('type_appointment','not in', [%(data_hr_new_agent_public)d])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
@@ -269,7 +223,6 @@
 											filename="file_engagement_name"
 											attrs="{'invisible':[('state', 'not in', ['waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
 									</group>
-
 								</group>
 								<button name="%(smart_hr.report_hr_direct_appoint)d"
 									string="طباعة القرار" groups="smart_hr.group_hrm" type="action"
@@ -319,7 +272,6 @@
 										<field name="basic_salary" />
 										<field name="transport_allow" />
 										<field name="retirement" />
-
 									</group>
 								</group>
 							</page>
@@ -345,7 +297,6 @@
 					<field name="file_salar_recent_name" invisible="1" />
 					<field name="file_appoint_name" invisible="1" />
 					<field name="file_decision_name" invisible="1" />
-
 				</form>
 			</field>
 		</record>
