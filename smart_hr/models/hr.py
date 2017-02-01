@@ -12,6 +12,11 @@ from datetime import date, datetime, timedelta
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'
 
+    @api.multi
+    def _compute_loans_count(self):
+        for rec in self:
+            rec.loan_count = self.env['hr.loan'].search_count([('employee_id', '=', rec.id)])
+
     number = fields.Char(string=u'الرقم الوظيفي', required=1)
     identification_date = fields.Date(string=u'تاريخ إصدار بطاقة الهوية ')
     identification_place = fields.Many2one('res.city', string=u'مكان إصدار بطاقة الهوية')
@@ -73,6 +78,7 @@ class HrEmployee(models.Model):
     display_name = fields.Char(compute='_compute_display_name', string='display Name', select=True)
     sanction_ids = fields.One2many('hr.employee.sanction', 'employee_id', string=u'العقوبات')
     bank_account_ids = fields.One2many('res.partner.bank','employee_id', string=u'الحسابات البنكِيّة')
+    loan_count = fields.Integer(string=u'عدد القروض', compute='_compute_loans_count')
 
     @api.constrains('recruiter_date','begin_work_date')
     def recruiter_date_begin_work_date(self):

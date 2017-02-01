@@ -72,6 +72,17 @@
 			<field name="direct_manager" eval="False" />
 			<field name="recrutment_decider" eval="True" />
 		</record>
+		
+			<record id="data_hr_recrute_Members" model="hr.type.appoint">
+			<field name="name">تعين أعضاء</field>
+			<field name="code">MR01</field>
+			<field name="audit" eval="True" />
+			<field name="recrutment_manager" eval="True" />
+			<field name="enterview_manager" eval="True" />
+			<field name="personnel_hr" eval="True" />
+			<field name="direct_manager" eval="False" />
+			<field name="recrutment_decider" eval="True" />
+		</record>
 	</data>
 </openerp>
 		

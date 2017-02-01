@@ -65,7 +65,7 @@ class HrJob(models.Model):
             'type': 'ir.actions.act_window',
             'context': context,
             'target': 'new',
-            }
+        }
 
 
 class HrJobName(models.Model):
@@ -198,6 +198,16 @@ class HrJobCreate(models.Model):
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
 
+        # send notification for the employee
+        self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                              'message': u'لقد تم إشعار رفض طلب إحداث وظائف',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'res_id': self.id,
+                                              'res_action': 'smart_hr.action_hr_job_create',
+                                              'notif': True
+                                              })
+
     def check_workflow_state(self, state):
         '''
         @param state: hr.job.workflow.state
@@ -279,10 +289,11 @@ class HrJobStripFrom(models.Model):
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', u'صاحب الصلاحية'),
                               ('hrm1', u'شؤون الموظفين'),
-                              ('communication', u'إدارة الإتصالات'),
+                              ('communication', u'إدارة الاتصالات - جهة التوظيف الأصلية'),
                               ('external', u'وزارة المالية'),
                               ('hrm2', u'شؤون الموظفين'),
-                              ('done', u'اعتمدت')
+                              ('done', u'اعتمدت'),
+                              ('refused', u'رفض')
                               ], readonly=1, default='new')
     general_id = fields.Many2one('hr.groupe.job', ' المجموعة العامة', ondelete='cascade')
     specific_id = fields.Many2one('hr.groupe.job', ' المجموعة النوعية', ondelete='cascade')
@@ -303,12 +314,18 @@ class HrJobStripFrom(models.Model):
     @api.multi
     def action_waiting(self):
         self.ensure_one()
-        self.state = 'waiting'
+        if self.check_workflow_state(self.env.ref('smart_hr.work_job_autority_owner')):
+            self.state = 'waiting'
+        else:
+            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
 
     @api.multi
     def action_hrm1(self):
         self.ensure_one()
-        self.state = 'hrm1'
+        if self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm1'
+        else:
+            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت المصادقة من قبل '" + unicode(user.name) + u"'")
 
@@ -329,20 +346,26 @@ class HrJobStripFrom(models.Model):
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
 
     @api.multi
-    def action_external(self):
-        self.ensure_one()
-        self.state = 'external'
-        # Add to log
-        user = self.env['res.users'].browse(self._uid)
-        self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"' (إدارة الإتصالات)")
-
-    @api.multi
     def action_communication(self):
         self.ensure_one()
-        self.state = 'communication'
+        if self.check_workflow_state(self.env.ref('smart_hr.work_job_comm_orig_employer')):
+            self.state = 'communication'
+        else:
+            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"' (إدارة الميزانية)")
+
+    @api.multi
+    def action_external(self):
+        self.ensure_one()
+        if self.check_workflow_state(self.env.ref('smart_hr.work_job_budg')):
+            self.state = 'external'
+        else:
+            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
+        # Add to log
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"' (إدارة الإتصالات)")
 
     @api.multi
     def action_done(self):
@@ -366,10 +389,30 @@ class HrJobStripFrom(models.Model):
     @api.multi
     def action_refuse(self):
         self.ensure_one()
-        self.state = 'new'
+        self.state = 'refused'
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
+        # send notification for the employee
+        self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                              'message': u'لقد تم إشعار رفض طلب سلخ وظائف من جهة',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'res_id': self.id,
+                                              'res_action': 'smart_hr.action_hr_job_strip_from',
+                                              'notif': True
+                                              })
+
+    def check_workflow_state(self, state):
+        '''
+        @param state: hr.job.workflow.state
+        @return Boolean
+        '''
+        work_obj = self.env.ref('smart_hr.work_job_scale_workflow')
+        if work_obj:
+            return state in work_obj.state_ids
+        else:
+            return False
 
 
 class HrJobStripFromLine(models.Model):
@@ -421,9 +464,14 @@ class HrJobStripTo(models.Model):
     destination_location = fields.Many2one('res.partner', string=u"الوجهة", domain=[('company_type', '=', 'governmental_entity')], required=1, readonly=1, states={'new': [('readonly', 0)]})
     speech_date = fields.Date(string=u'تاريخ الخطاب')
     speech_file = fields.Binary(string=u'صورة الخطاب')
-    decision_number = fields.Char(string=u"رقم القرار", required=1, readonly=1, states={'new': [('readonly', 0)]})
+    decision_number = fields.Char(string=u"رقم القرار")
     decision_date = fields.Date(string=u'تاريخ القرار')
     decision_file = fields.Binary(string=u'نسخة القرار')
+    # قرار طي القيد
+    decision_col_const_number = fields.Char(string=u"رقم قرار طي القيد")
+    decision_col_const_date = fields.Date(string=u'تاريخ قرار طي القيد')
+    decision_col_const_file = fields.Binary(string=u'نسخة قرار طي القيد')
+
     out_speech_number = fields.Char(string=u'رقم الخطاب الصادر')
     out_speech_date = fields.Date(string=u'تاريخ الخطاب الصادر')
     out_speech_file = fields.Binary(string=u'صورة الخطاب الصادر')
@@ -434,10 +482,10 @@ class HrJobStripTo(models.Model):
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', u'صاحب الصلاحية'),
                               ('hrm1', u'شؤون الموظفين'),
-                              ('communication', u'إدارة الإتصالات'),
-                              ('external', u'وزارة المالية'),
+                              ('communication_external', u'إدارة الإتصالات - وزارة المالية'),
                               ('hrm2', u'شؤون الموظفين'),
-                              ('done', u'اعتمدت')
+                              ('done', u'اعتمدت'),
+                              ('refused', u'رفض')
                               ], readonly=1, default='new')
     speech_file_name = fields.Char(string=u'مسمى صورة الخطاب')
     out_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الصادر')
@@ -446,19 +494,28 @@ class HrJobStripTo(models.Model):
     @api.multi
     def action_waiting(self):
         self.ensure_one()
-        self.state = 'waiting'
+        if self.check_workflow_state(self.env.ref('smart_hr.work_job_autority_owner')):
+            self.state = 'waiting'
+        else:
+            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
 
     @api.multi
     def action_hrm1(self):
         self.ensure_one()
-        self.state = 'hrm1'
+        if self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm1'
+        else:
+            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
 
     @api.multi
     def action_hrm2(self):
         self.ensure_one()
-        self.state = 'hrm2'
-        # Add to log
-        self.message_post(u"تمت الموافقة من قبل الجهة الخارجية (وزارة المالية)")
+        if self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm2'
+            # Add to log
+            self.message_post(u"تمت الموافقة من قبل الجهة الخارجية (وزارة المالية)")
+        else:
+            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
 
     @api.multi
     def action_budget(self):
@@ -469,17 +526,12 @@ class HrJobStripTo(models.Model):
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
 
     @api.multi
-    def action_external(self):
-        self.ensure_one()
-        self.state = 'external'
-        # Add to log
-        user = self.env['res.users'].browse(self._uid)
-        self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"' (إدارة الإتصالات)")
-
-    @api.multi
     def action_communication(self):
         self.ensure_one()
-        self.state = 'communication'
+        if self.check_workflow_state(self.env.ref('smart_hr.work_job_budg__comm')):
+            self.state = 'communication_external'
+        else:
+            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"' (إدارة الميزانية)")
@@ -497,10 +549,30 @@ class HrJobStripTo(models.Model):
     @api.multi
     def action_refuse(self):
         self.ensure_one()
-        self.state = 'new'
+        self.state = 'refused'
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
+        # send notification for the employee
+        self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                              'message': u'لقد تم إشعار رفض طلب سلخ وظيفة إلى جهة',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'res_id': self.id,
+                                              'res_action': 'smart_hr.action_hr_job_strip_to',
+                                              'notif': True
+                                              })
+
+    def check_workflow_state(self, state):
+        '''
+        @param state: hr.job.workflow.state
+        @return Boolean
+        '''
+        work_obj = self.env.ref('smart_hr.work_job_scale_workflow')
+        if work_obj:
+            return state in work_obj.state_ids
+        else:
+            return False
 
 
 class HrJobStripToLine(models.Model):
@@ -578,6 +650,18 @@ class HrJobCancel(models.Model):
                                               'res_model': 'hr.job.cancel',
                                               'res_id': self.id,
                                               'res_action': 'smart_hr.action_hr_job_cancel'})
+        # Add to log
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
+        # send notification for the employee
+        self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                              'message': u'لقد تم إشعار رفض طلب إلغاء الوظائف',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'res_id': self.id,
+                                              'res_action': 'smart_hr.action_hr_job_cancel',
+                                              'notif': True
+                                              })
 
 
 class HrJobCancelLine(models.Model):
@@ -619,10 +703,10 @@ class HrJobMoveDeparrtment(models.Model):
                               ('waiting', u'صاحب الصلاحية'),
                               ('hrm1', u'شؤون الموظفين'),
                               ('budget', u'إدارة الميزانية'),
-                              ('communication', u'إدارة الإتصالات'),
-                              ('external', u'وزارة الخدمة المدنية'),
+                              ('communication_external', u'إدارة الإتصالات - وزارة الخدمة المدنية'),
                               ('hrm2', u'شؤون الموظفين'),
-                              ('done', u'اعتمدت')
+                              ('done', u'اعتمدت'),
+                              ('refused', u'رفض')
                               ], readonly=1, default='new')
     out_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الصادر')
     in_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الوارد')
@@ -630,23 +714,35 @@ class HrJobMoveDeparrtment(models.Model):
     @api.multi
     def action_waiting(self):
         self.ensure_one()
-        self.state = 'waiting'
+        if self.check_workflow_state(self.env.ref('smart_hr.work_job_autority_owner')):
+            self.state = 'waiting'
+        else:
+            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
 
     @api.multi
     def action_hrm1(self):
         self.ensure_one()
-        self.state = 'hrm1'
+        if self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm1'
+        else:
+            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
 
     @api.multi
     def action_budget(self):
         self.ensure_one()
         self.action_job_reserve()
-        self.state = 'budget'
+        if self.check_workflow_state(self.env.ref('smart_hr.work_job_budg_dep')):
+            self.state = 'budget'
+        else:
+            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
 
     @api.multi
     def action_communication(self):
         self.ensure_one()
-        self.state = 'communication'
+        if self.check_workflow_state(self.env.ref('smart_hr.work_budget_civil_service')):
+            self.state = 'communication_external'
+        else:
+            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
 
     @api.multi
     def action_external(self):
@@ -670,7 +766,34 @@ class HrJobMoveDeparrtment(models.Model):
     @api.multi
     def action_refuse(self):
         self.ensure_one()
-        self.state = 'new'
+        self.state = 'refused'
+        # Add to log
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
+        # send notification for the employee
+        if self._context['refused_from_state'] == 'waiting':
+            # send notification to the employee
+            self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                                  'message': u'لقد تم إشعار رفض طلب نقل وظائف',
+                                                  'user_id': self.employee_id.user_id.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': self.id,
+                                                  'res_action': 'smart_hr.action_hr_job_move_department',
+                                                  'notif': True
+                                                  })
+        if self._context['refused_from_state'] == 'communication_external':
+            group_id = self.env.ref('smart_hr.group_hr_personnel_officer_jobs')
+            self.send_notification_to_group(group_id)
+            # send notification to the صاحب الطلب
+            if self.employee_id.user_id not in group_id.users:
+                self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                                      'message': u'لقد تم إشعار رفض طلب نقل وظائف',
+                                                      'user_id': self.employee_id.user_id.id,
+                                                      'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                      'res_id': self.id,
+                                                      'res_action': 'smart_hr.action_hr_job_move_department',
+                                                      'notif': True
+                                                      })
 
     @api.multi
     def action_job_unreserve(self):
@@ -684,6 +807,31 @@ class HrJobMoveDeparrtment(models.Model):
         self.ensure_one()
         for rec in self.job_movement_ids:
             rec.job_id.write({'state': 'reserved'})
+
+    def check_workflow_state(self, state):
+        '''
+        @param state: hr.job.workflow.state
+        @return Boolean
+        '''
+        work_obj = self.env.ref('smart_hr.work_job_move_dep_workflow')
+        if work_obj:
+            return state in work_obj.state_ids
+        else:
+            return False
+
+    def send_notification_to_group(self, group_id):
+        '''
+        @param group_id: res.groups
+        '''
+        for recipient in group_id.users:
+            self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                                  'message': u'لقد تم إشعار رفض طلب نقل وظائف',
+                                                  'user_id': recipient.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': self.id,
+                                                  'res_action': 'smart_hr.action_hr_job_move_department',
+                                                  'notif': True
+                                                  })
 
 
 class HrJobMoveDeparrtmentLine(models.Model):
@@ -728,8 +876,9 @@ class HrJobMoveGrade(models.Model):
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1, readonly=1)
     decision_number = fields.Char(string=u'رقم القرار', required=1)
     decision_date = fields.Date(string=u'تاريخ القرار', required=1)
+    decision_file = fields.Binary(string=u'نسخة القرار', required=1, readonly=1, states={'new': [('readonly', 0)]})
     move_date = fields.Date(string=u'التاريخ', readonly=1, default=fields.Datetime.now(), required=1)
-    fiscal_year = fields.Char(string='السنه المالية', default=(date.today().year), readonly=1)
+    fiscal_year = fields.Char(string=u'السنه المالية', default=(date.today().year), readonly=1)
     out_speech_number = fields.Char(string=u'رقم الخطاب الصادر')
     out_speech_date = fields.Date(string=u'تاريخ الخطاب الصادر')
     out_speech_file = fields.Binary(string=u'صورة الخطاب الصادر')
@@ -740,11 +889,10 @@ class HrJobMoveGrade(models.Model):
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', u'صاحب الصلاحية'),
                               ('hrm1', u'شؤون الموظفين'),
-                              ('budget', u'إدارة الميزانية'),
-                              ('communication', u'إدارة الإتصالات'),
-                              ('external', u'وزارة المالية'),
+                              ('budget_external', u'إدارة الميزانية - وزارة المالية'),
                               ('hrm2', u'شؤون الموظفين'),
-                              ('done', u'اعتمدت')
+                              ('done', u'اعتمدت'),
+                              ('refused', u'رفض'),
                               ], readonly=1, default='new')
     move_type = fields.Selection([('scale_up', u'رفع'),
                                   ('scale_down', u'خفض')
@@ -755,33 +903,35 @@ class HrJobMoveGrade(models.Model):
     @api.multi
     def action_waiting(self):
         self.ensure_one()
-        self.state = 'waiting'
+        if self.check_workflow_state(self.env.ref('smart_hr.work_job_autority_owner')):
+            self.state = 'waiting'
+        else:
+            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
 
     @api.multi
     def action_hrm1(self):
         self.ensure_one()
-        self.state = 'hrm1'
+        if self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm1'
+        else:
+            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
 
     @api.multi
     def action_budget(self):
         self.ensure_one()
         self.action_job_reserve()
-        self.state = 'budget'
-
-    @api.multi
-    def action_communication(self):
-        self.ensure_one()
-        self.state = 'communication'
-
-    @api.multi
-    def action_external(self):
-        self.ensure_one()
-        self.state = 'external'
+        if self.check_workflow_state(self.env.ref('smart_hr.work_job_budg__minis')):
+            self.state = 'budget_external'
+        else:
+            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
 
     @api.multi
     def action_hrm2(self):
         self.ensure_one()
-        self.state = 'hrm2'
+        if self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm2'
+        else:
+            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
 
     @api.multi
     def action_done(self):
@@ -795,7 +945,42 @@ class HrJobMoveGrade(models.Model):
     @api.multi
     def action_refuse(self):
         self.ensure_one()
-        self.state = 'new'
+        self.state = 'refused'
+        # Add to log
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
+
+        if self._context['refused_from_state'] == 'waiting':
+            # send notification to the employee
+            if self.move_type == 'scale_up':
+                action_name = 'smart_hr.action_hr_job_scal_up_grade'
+            else:
+                action_name = 'smart_hr.action_hr_job_scal_down_grade'
+            self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                                  'message': u'لقد تم إشعار رفض طلب رفع أو خفض وظائف',
+                                                  'user_id': self.employee_id.user_id.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': self.id,
+                                                  'res_action': action_name,
+                                                  'notif': True
+                                                  })
+        if self._context['refused_from_state'] == 'budget_external':
+            group_id = self.env.ref('smart_hr.group_hr_personnel_officer_jobs')
+            self.send_notification_to_group(group_id)
+            # send notification to the صاحب الطلب
+            if self.move_type == 'scale_up':
+                action_name = 'smart_hr.action_hr_job_scal_up_grade'
+            else:
+                action_name = 'smart_hr.action_hr_job_scal_down_grade'
+            if self.employee_id.user_id not in group_id.users:
+                self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                                      'message': u'لقد تم إشعار رفض طلب رفع أو خفض وظائف',
+                                                      'user_id': self.employee_id.user_id.id,
+                                                      'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                      'res_id': self.id,
+                                                      'res_action': action_name,
+                                                      'notif': True
+                                                      })
 
     @api.multi
     def action_job_unreserve(self):
@@ -809,6 +994,37 @@ class HrJobMoveGrade(models.Model):
         self.ensure_one()
         for rec in self.job_movement_ids:
             rec.job_id.write({'state': 'reserved'})
+
+    def send_notification_to_group(self, group_id):
+        '''
+        @param group_id: res.groups
+        '''
+        # send notification to group hrm
+        if self.move_type == 'scale_up':
+            action_name = 'smart_hr.action_hr_job_scal_up_grade'
+        else:
+            action_name = 'smart_hr.action_hr_job_scal_down_grade'
+        for recipient in group_id.users:
+            print recipient
+            self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                                  'message': u'لقد تم إشعار رفض طلب رفع أو خفض وظائف',
+                                                  'user_id': recipient.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': self.id,
+                                                  'res_action': action_name,
+                                                  'notif': True
+                                                  })
+
+    def check_workflow_state(self, state):
+        '''
+        @param state: hr.job.workflow.state
+        @return Boolean
+        '''
+        work_obj = self.env.ref('smart_hr.work_job_move_grade_workflow')
+        if work_obj:
+            return state in work_obj.state_ids
+        else:
+            return False
 
 
 class HrJobMoveGradeLine(models.Model):
@@ -889,11 +1105,10 @@ class HrJobMoveUpdate(models.Model):
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', u'صاحب الصلاحية'),
                               ('hrm1', u'شؤون الموظفين'),
-                              ('budget', u'إدارة الميزانية'),
-                              ('communication', u'إدارة الإتصالات'),
-                              ('external', u'وزارة الخدمة المدنية'),
+                              ('budget_external', u'إدارة الميزانية - وزارة الخدمة المدنية'),
                               ('hrm2', u'شؤون الموظفين'),
-                              ('done', u'اعتمدت')
+                              ('done', u'اعتمدت'),
+                              ('refused', u'رفض')
                               ], readonly=1, default='new')
     out_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الصادر')
     in_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الوارد')
@@ -901,38 +1116,67 @@ class HrJobMoveUpdate(models.Model):
     @api.multi
     def action_waiting(self):
         self.ensure_one()
-        self.state = 'waiting'
+        if self.check_workflow_state(self.env.ref('smart_hr.work_job_autority_owner')):
+            self.state = 'waiting'
+        else:
+            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
 
     @api.multi
     def action_hrm1(self):
         self.ensure_one()
-        self.state = 'hrm1'
+        if self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm1'
+        else:
+            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
 
     @api.multi
     def action_budget(self):
         self.ensure_one()
         self.action_job_reserve()
-        self.state = 'budget'
-
-    @api.multi
-    def action_communication(self):
-        self.ensure_one()
-        self.state = 'communication'
-
-    @api.multi
-    def action_external(self):
-        self.ensure_one()
-        self.state = 'external'
+        if self.check_workflow_state(self.env.ref('smart_hr.work_job_budg_dep_minis')):
+            self.state = 'budget_external'
+        else:
+            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
 
     @api.multi
     def action_hrm2(self):
         self.ensure_one()
-        self.state = 'hrm2'
+        if self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm2'
+        else:
+            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
 
     @api.multi
     def action_refuse(self):
         self.ensure_one()
-        self.state = 'new'
+        self.state = 'refused'
+        # Add to log
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
+        if self._context['refused_from_state'] == 'waiting':
+            # send notification to the employee
+            self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                                  'message': u'لقد تم إشعار رفض طلب تحوير‬ وظائف',
+                                                  'user_id': self.employee_id.user_id.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': self.id,
+                                                  'res_action': 'smart_hr.action_hr_job_update',
+                                                  'notif': True
+                                                  })
+        if self._context['refused_from_state'] == 'budget_external':
+            group_id = self.env.ref('smart_hr.group_hr_personnel_officer_jobs')
+            # send notification to group hrm
+            self.send_notification_to_group(group_id)
+            # send notification to the صاحب الطلب
+            if self.employee_id.user_id not in group_id.users:
+                self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                                      'message': u'لقد تم إشعار رفض طلب تحوير‬ وظائف',
+                                                      'user_id': self.employee_id.user_id.id,
+                                                      'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                      'res_id': self.id,
+                                                      'res_action': 'smart_hr.action_hr_job_update',
+                                                      'notif': True
+                                                      })
 
     @api.multi
     def action_job_unreserve(self):
@@ -951,6 +1195,31 @@ class HrJobMoveUpdate(models.Model):
         self.ensure_one()
         for rec in self.job_update_ids:
             rec.job_id.write({'is_occupied': True})
+
+    def check_workflow_state(self, state):
+        '''
+        @param state: hr.job.workflow.state
+        @return Boolean
+        '''
+        work_obj = self.env.ref('smart_hr.work_job_update_workflow')
+        if work_obj:
+            return state in work_obj.state_ids
+        else:
+            return False
+
+    def send_notification_to_group(self, group_id):
+        '''
+        @param group_id: res.groups
+        '''
+        for recipient in group_id.users:
+            self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                                  'message': u'لقد تم إشعار رفض طلب تحوير‬ وظائف',
+                                                  'user_id': recipient.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': self.id,
+                                                  'res_action': 'smart_hr.action_hr_job_update',
+                                                  'notif': True
+                                                  })
 
 
 class HrJobMoveUpdateLine(models.Model):
