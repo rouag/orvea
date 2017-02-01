@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<record id="view_wizard_sanction_action" model="ir.ui.view">
+			<field name="name">wizard.sanction.action.form</field>
+			<field name="model">wizard.sanction.action</field>
+			<field name="arch" type="xml">
+				<form>
+					<header>
+						<button name="action_draft" string=" ارسال طلب" type="object"
+							states="draft" groups="smart_hr.group_manager_sanction" />
+						<button name="action_waiting" string="موافق" type="object"
+							states="waiting" groups="smart_hr.group_responsable_sanction" />
+						<button name="action_refuse" string="رفض" type="object"
+							states="waiting" groups="smart_hr.group_responsable_sanction" />
+						<field name="state" widget="statusbar" statusbar_visible="draft,waiting,done,refuse" />
+					</header>
+					<sheet>
+						<group>
+							<field name="name" />
+							<field name="order_date" />
+							<field name="employee_id" />
+
+						</group>
+
+						<group>
+							<field name="reason" string="السبب" placeholder="السبب ..." />
+						</group>
+						<footer>
+							<button icon="fa-cogs" string="تأكيد" name="action_exclusion"
+								type="object" class="oe_highlight" />
+							أو
+							<button string="إلغاء" class="oe_link" special="cancel" />
+						</footer>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="action_wizard_sanction_action" model="ir.actions.act_window">
+			<field name="name">إستبعاد موظف</field>
+			<field name="res_model">wizard.sanction.action</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="view_wizard_sanction_action" />
+			<field name="target">new</field>
+		</record>
+
+	</data>
+</openerp>

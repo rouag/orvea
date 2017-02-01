@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<record model="ir.ui.view" id="hr_difference_sanction_tree">
+			<field name="name">hr.difference.sanction.tree</field>
+			<field name="model">hr.difference.sanction</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="فروقات العقوبات">
+					<field name="name" />
+					<field name="order_new" />
+					<field name="date_sanction_start_old" />
+					<field name="date_sanction_end_old" />
+					<field name="date_sanction_start_new" />
+					<field name="date_sanction_end_new" />
+					<field name="type_sanction_old" />
+					<field name="type_sanction_new" />
+					<field name="employee_id" />
+					<field name="state" />
+					<field name="nb_days_old" />
+					<field name="nb_days_new" />
+					<field name="diff_days" />
+				
+
+
+
+					
+
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_difference_sanction">
+			<field name="name">فروقات العقوبات</field>
+			<field name="res_model">hr.difference.sanction</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+		<menuitem id="hr_difference_sanction_menu" name="فروقات العقوبات"
+			sequence="12" parent="hr_root_organisation_action" action="action_hr_difference_sanction" />
+
+	</data>
+</openerp>
