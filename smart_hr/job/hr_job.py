@@ -65,7 +65,7 @@ class HrJob(models.Model):
             'type': 'ir.actions.act_window',
             'context': context,
             'target': 'new',
-            }
+        }
 
 
 class HrJobName(models.Model):
