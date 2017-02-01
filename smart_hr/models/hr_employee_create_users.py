@@ -9,7 +9,7 @@ class HrEmployeeCreateUsers(models.Model):
     _description = u'انشاء مستخدم' 
 
     name = fields.Char(string='رقم')
-    employee_ids = fields.Many2many('hr.employee', string=u'الموظف', required=1, domain=[('employee_state', '=','employee'),('user_id','=',False)])   
+    employee_ids = fields.Many2many('hr.employee', string=u'الموظف', required=1)
     date = fields.Date(string=u'التاريخ ', default=fields.Datetime.now(), readonly=1)
 
     @api.multi
@@ -17,7 +17,17 @@ class HrEmployeeCreateUsers(models.Model):
         self.ensure_one()
         for emp in self.employee_ids:
             if emp.work_email:
-                user = self.env['res.users'].create({'name': emp.display_name, 'login': emp.work_email, 'email': emp.work_email})
+                user = self.env['res.users'].create({'name': emp.display_name,
+                                                      'login': emp.work_email,
+                                                      'email': emp.work_email,
+                                                      'lang':'ar_SY'})
                 emp.user_id = user
             else:
                 raise Warning(_('الرجاء تعبئة البريد الإلكتروني.'))
+            
+    @api.model
+    def create(self, vals):
+        res = super(HrEmployeeCreateUsers, self).create(vals)
+        vals['name'] = self.env['ir.sequence'].get('hr.employee.create.users.seq')
+        res.write(vals)
+        return res

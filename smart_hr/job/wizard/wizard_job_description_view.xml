@@ -32,7 +32,7 @@
 	</record>
 
 	<menuitem id="wizard_job_description_menu" name="تقرير وصف وظيفة"
-		groups="smart_hr.group_dm,smart_hr.group_hrm" sequence="30"
+		groups="smart_hr.group_dm,smart_hr.group_hr_personnel_officer_jobs" sequence="30"
 		action="wizard_job_description_action" parent="menu_job_report" />
 
 </odoo>

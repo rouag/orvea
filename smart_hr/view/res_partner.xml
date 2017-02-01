@@ -58,7 +58,7 @@
 							<field name="is_deposit" />
 							<field name="company_id" groups="base.group_multi_company"
 								options="{'no_create': True}" />
-							<field name="currency_id" groups="base.group_multi_currency"
+							<field name="currency_id" 
 								options="{'no_create': True}" />
 						</group>
 					</form>

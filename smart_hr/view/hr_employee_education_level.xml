@@ -85,7 +85,7 @@
 			<field name="name">hr.employee.specialization.form</field>
 			<field name="model">hr.employee.specialization</field>
 			<field name="arch" type="xml">
-				<form string="الاختصاص">
+				<form string="التخصص">
 					<sheet>
 						<group>
 							<field name="name" required="1" />
@@ -101,13 +101,13 @@
 			<field name="name">hr.employee.specialization.tree</field>
 			<field name="model">hr.employee.specialization</field>
 			<field name="arch" type="xml">
-				<tree string="الاختصاص" class="oe_tree_view">
+				<tree string="التخصص" class="oe_tree_view">
 					<field name="name" />
 				</tree>
 			</field>
 		</record>
 		<record id="action_hr_employee_specialization" model="ir.actions.act_window">
-			<field name="name">الاختصاص</field>
+			<field name="name">التخصص</field>
 			<field name="res_model">hr.employee.specialization</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>

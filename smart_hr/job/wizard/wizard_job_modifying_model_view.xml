@@ -37,7 +37,7 @@
 	</record>
 
 	<menuitem id="wizard_job_modifying_model_menu" name="نموذج طلب تعديل وظيفة"
-		groups="smart_hr.group_dm,smart_hr.group_hrm" sequence="50"
+		groups="smart_hr.group_dm,smart_hr.group_hr_personnel_officer_jobs" sequence="50"
 		action="wizard_job_modifying_model_action" parent="menu_job_report" />
 
 </odoo>

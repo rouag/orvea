@@ -28,7 +28,7 @@ class HrDecisionAppoint(models.Model):
    
     emp_job_id = fields.Many2one('hr.job', string='الوظيفة', store=True, readonly=1) 
     emp_number_job = fields.Char(string='رقم الوظيفة', store=True, readonly=1) 
-    emp_type_id = fields.Many2one('salary.grid.type', string='الصنف', store=True, readonly=1) 
+    emp_type_id = fields.Many2one('salary.grid.type', string='الصنف', store=True, readonly=1)
     emp_department_id = fields.Many2one('hr.department', string='الادارة', store=True, readonly=1)
     emp_grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', store=True, readonly=1)
     emp_far_age = fields.Float(string=' السن الاقصى', store=True, readonly=1) 
@@ -36,6 +36,7 @@ class HrDecisionAppoint(models.Model):
     emp_degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', store=True, readonly=1)
     # info about job
     job_id = fields.Many2one('hr.job', string='الوظيفة', required=1)
+    passing_score = fields.Float(related='type_id.passing_score', string=u'الدرجة المطلوبه', readonly=1)
     number_job = fields.Char(string='رقم الوظيفة', readonly=1) 
     code = fields.Char(string=u'رمز الوظيفة ', readonly=1) 
     type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1) 
@@ -88,8 +89,16 @@ class HrDecisionAppoint(models.Model):
     order_enquiry_file_name = fields.Char(string='اسم طلب الاستسفار') 
     file_salar_recent_name = fields.Char(string='اسم تعهد من الموظف') 
     file_appoint_name = fields.Char(string='اسم قرار التعين') 
-    file_decision_name = fields.Char(string='اسم قرار المباشر') 
+    file_decision_name = fields.Char(string='اسم قرار المباشر')
+    score = fields.Float(string=u'نتيجة المترشح', readonly=1, states={'draft': [('readonly', 0)]})
 
+    @api.multi
+    @api.onchange('score')
+    def onchange_score(self):
+        self.ensure_one()
+        if self.score and self.passing_score > 0:
+            if self.score < self.passing_score:
+                raise ValidationError(u"لا يمكن تعين عضو دون الدرجة المطلوبة")
 
     @api.multi
     def send_appoint_request(self):
@@ -295,9 +304,12 @@ class HrDecisionAppoint(models.Model):
         self.env['hr.employee.promotion.history'].create({'employee_id': self.employee_id.id,
                                                            'salary_grid_id': self.employee_id.job_id.grade_id.id,
                                                            'date_from': self.date_direct_action ,
-                                                           'active':True,
+                                                           'active_duration':True,
                                                            'decision_appoint_id':self.id
                                                            })
+        previous_promotion = self.env['hr.employee.promotion.history'].search([('employee_id', '=', self.employee_id.id),('active_duration', '=',True)],limit=1)
+        if previous_promotion:
+             previous_promotion
 
     @api.onchange('employee_id')
     def _onchange_employee_id(self):

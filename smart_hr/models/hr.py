@@ -12,6 +12,11 @@ from datetime import date, datetime, timedelta
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'
 
+    @api.multi
+    def _compute_loans_count(self):
+        for rec in self:
+            rec.loan_count = self.env['hr.loan'].search_count([('employee_id', '=', rec.id)])
+
     number = fields.Char(string=u'الرقم الوظيفي', required=1)
     identification_date = fields.Date(string=u'تاريخ إصدار بطاقة الهوية ')
     identification_place = fields.Many2one('res.city', string=u'مكان إصدار بطاقة الهوية')
@@ -34,7 +39,7 @@ class HrEmployee(models.Model):
     education_level = fields.Many2one('hr.employee.education.level', string=u'المستوى التعليمي')
     # Deputation Stock
     deputation_stock = fields.Integer(string=u'الأنتدابات', default=60)
-    service_duration = fields.Integer(string=u'مدة الخدمة(يوم)', readonly=True)
+    service_duration = fields.Integer(string=u'مدة الخدمة(يوم)', readonly=True, size=4)
     religion_state = fields.Many2one('religion.religion',string=u'الديانة', required=1)
     emp_state = fields.Selection([('working', u'على رأس العمل'),
                                   ('suspended', u'مكفوف اليد'),
@@ -56,24 +61,31 @@ class HrEmployee(models.Model):
     grandfather_name = fields.Char(string=u'اسم الجد', required=1)
     grandfather2_name = fields.Char(string=u'  اسم الجد الثاني ')
     family_name = fields.Char(string=u'الاسم العائلي', required=1)
-    father_middle_name = fields.Char(string=u'middle_name')
-    grandfather_middle_name = fields.Char(string=u'middle_name2')
-    grandfather2_middle_name = fields.Char(string=u'  middle_name3')
+    father_middle_name = fields.Char(string=u'middle_name', default=u"بن")
+    grandfather_middle_name = fields.Char(string=u'middle_name2', default=u"بن")
+    grandfather2_middle_name = fields.Char(string=u'  middle_name3', default=u"بن")
     space = fields.Char(string=' ', default=" ", readonly=True)
     begin_work_date = fields.Date(string=u' تاريخ بداية العمل الحكومي', required=1)
-    promotion_duration = fields.Integer(string=u'مدة الترقية(يوم)', compute='_compute_promotion_days')
+    promotion_duration = fields.Integer(string=u'مدة الترقية(يوم)', compute='_compute_promotion_days',store=True)
     dep_city = fields.Many2one('res.city', strin=u'المدينة', related="department_id.dep_city")
     dep_Side = fields.Many2one('city.side', string=u'الجهة', related="department_id.dep_Side")
     history_ids = fields.One2many('hr.employee.history', 'employee_id', string=u'سجل الاجراءات')
     diploma_id = fields.Many2one('hr.employee.diploma', string=u'الشهادة')
-    specialization_ids = fields.Many2many('hr.employee.specialization', string=u'الاختصاص')
+    specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص')
     passport_date = fields.Date(string=u'تاريخ إصدار جواز السفر ')
     passport_place = fields.Char(string=u'مكان إصدار جواز السفر')
     passport_end_date = fields.Date(string=u'تاريخ انتهاء جواز السفر ')
     display_name = fields.Char(compute='_compute_display_name', string='display Name', select=True)
     sanction_ids = fields.One2many('hr.employee.sanction', 'employee_id', string=u'العقوبات')
     bank_account_ids = fields.One2many('res.partner.bank','employee_id', string=u'الحسابات البنكِيّة')
-   
+    loan_count = fields.Integer(string=u'عدد القروض', compute='_compute_loans_count')
+
+    @api.constrains('recruiter_date','begin_work_date')
+    def recruiter_date_begin_work_date(self):
+        
+        if self.recruiter_date > self.begin_work_date:
+            raise ValidationError(u"تاريخ بداية العمل الحكومي يجب ان يكون اكبر من تاريخ التعيين بالجهة ")
+
     @api.one
     @api.depends('name', 'father_middle_name', 'father_name', 'family_name')
     def _compute_display_name(self):
@@ -232,7 +244,7 @@ class HrEmployeePromotionHistory(models.Model):
         prev_month_end = date(today.year, today.month, 1) - relativedelta(days=1)
         prev_month_first = prev_month_end.replace(day=1)
         suspension_obj = self.env['hr.suspension']
-        for promotion in self.search([('active_duration','=','True')]):
+        for promotion in self.search([('active_duration','=',True)]):
             if promotion.decision_appoint_id.state_appoint =='active' and promotion.decision_appoint_id.active==True:
                 promotion_date_from = fields.Date.from_string(promotion.decision_appoint_id.date_direct_action)
                 if promotion.date_from  != promotion_date_from :
@@ -294,13 +306,13 @@ class HrEmployeeDiploma(models.Model):
     _description = u'الشهادة العلمية'
 
     name = fields.Char(string=u'المسمّى')
-    specialization_ids = fields.Many2many('hr.employee.specialization',string=u'الاختصاص')
+    specialization_ids = fields.Many2many('hr.employee.specialization',string=u'التخصص')
     code = fields.Char(string=u'الرمز')
 
 
 class HrEmployeeSpecialization(models.Model):
     _name = 'hr.employee.specialization'  
-    _description = u'الاختصاص'
+    _description = u'التخصص'
   
     name = fields.Char(string=u'المسمّى')
     code = fields.Char(string=u'الرمز')

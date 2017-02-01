@@ -32,6 +32,7 @@ class SalaryGridType(models.Model):
     retrait_monthly = fields.Integer(string='نسبة الحسم الشهري على التقاعد:')
     assurance_monthly = fields.Integer(string='نسبة التامين الشهري  من الراتب الاساسي:')
     salary_recent = fields.Float(string=' أخر راتب شهري')
+    passing_score = fields.Float(string=u'الدرجة المطلوبة للتعين')
 
 
 class SalaryGridGrade(models.Model):
