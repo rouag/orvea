@@ -203,7 +203,7 @@
 									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'done'])]}" />
 								<field name="order_picture" filename="order_picture_name"
 									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'done'])]}" />
-								<field name="order_picture_name" />
+								<field name="order_picture_name" invisible="1"/>
 								<field name="file_appoint" filename="file_appoint_name"
 									attrs="{'invisible':[('state', 'not in', ['hrm','direct', 'done'])],'required':[('state','=','hrm')],'readonly':[('state', 'in', [ 'direct', 'done'])]}" />
 								<field name="file_decision" filename="file_decision_name"
@@ -237,7 +237,6 @@
 								<field name="emp_degree_id" />
 								<field name="emp_far_age" />
 								<field name="emp_basic_salary" />
-
 								<field name="medical_examination_file" filename="medical_examination_name"
 									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done']),
 									('type_appointment','not in', [%(data_hr_new_agent_public)d])],

@@ -91,7 +91,7 @@
 										</tr>
 										<tr>
 											<td>
-												رقم الحفيظة
+												رقم جواز السفر
 											</td>
 											<td>
 												<span t-field="o.passport_id" />

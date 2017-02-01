@@ -294,9 +294,12 @@ class HrDecisionAppoint(models.Model):
         self.env['hr.employee.promotion.history'].create({'employee_id': self.employee_id.id,
                                                            'salary_grid_id': self.employee_id.job_id.grade_id.id,
                                                            'date_from': self.date_direct_action ,
-                                                           'active':True,
+                                                           'active_duration':True,
                                                            'decision_appoint_id':self.id
                                                            })
+        previous_promotion = self.env['hr.employee.promotion.history'].search([('employee_id', '=', self.employee_id.id),('active_duration', '=',True)],limit=1)
+        if previous_promotion:
+             previous_promotion
 
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
