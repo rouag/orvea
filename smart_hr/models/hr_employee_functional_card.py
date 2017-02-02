@@ -8,7 +8,7 @@ from openerp import models, fields, api, _
 class HrEmployeeFunctionnalCard(models.Model):
     _name = 'hr.employee.functionnal.card'
     _description = u'بطاقة موظف' 
-    
+
     name=fields.Char(string='رقم بطاقة')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1, readonly=1)
     number = fields.Char(string=u'الرقم الوظيفي', related="employee_id.number", readonly=1)
@@ -31,17 +31,17 @@ class HrEmployeeFunctionnalCard(models.Model):
     passport_place = fields.Char(string=u'مكان إصدار جواز السفر', related='employee_id.passport_place', readonly=1)
     date = fields.Date(string=u'التاريخ ', default=fields.Datetime.now(), readonly=1)
     expiration_date = fields.Date(string=u'تاريخ إنتهاء الصلاحية  ')
-    state = fields.Selection([
-        ('draft', u'طلب'),
-        ('hrm', u'مدير شؤون الموظفين'),
-       ('done', u'اعتمدت'),
-        ('refuse', u'رفض'),
- ], string=u'حالة', default='draft', advanced_search=True)
+    state = fields.Selection([('draft', u'طلب'),
+                              ('hrm', u'مدير شؤون الموظفين'),
+                              ('done', u'اعتمدت'),
+                              ('refuse', u'رفض'),
+                              ], string=u'الحالة', default='draft', advanced_search=True)
+    training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'التدريب')
 
     @api.one
     @api.depends('employee_id')
     def _compute_last_degree_salary(self):
-        last_decision_appoint =self.env['hr.decision.appoint'].search([('employee_id','=',self.employee_id.id),('state_appoint','=','active')],limit=1)
+        last_decision_appoint = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id), ('state_appoint','=', 'active')], limit=1)
         if last_decision_appoint:
             self.last_salary = last_decision_appoint.basic_salary
             self.degree_id = last_decision_appoint.degree_id.id
@@ -67,4 +67,3 @@ class HrEmployeeFunctionnalCard(models.Model):
     def button_refuse_hrm(self):
         self.ensure_one()
         self.state = 'refuse'
-

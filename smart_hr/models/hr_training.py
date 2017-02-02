@@ -112,6 +112,8 @@ class HrCandidates(models.Model):
                              ('waiting', 'في إنتظار الإعتماد'),
                              ('cancel', 'رفض'),
                              ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
+    number_of_days = fields.Float(string=' المدة',related='training_id.number_of_days' )
+    place = fields.Char(string=' المكان',related='training_id.place' )
 
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
