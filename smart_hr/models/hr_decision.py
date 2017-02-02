@@ -15,20 +15,6 @@ class HrDecision(models.Model):
     employee_id=fields.Many2one('hr.employee',string='الموظف',required=1)
     text = fields.Html(string='نص القرار')
     
-#     decision_appoint_id = Many2one('hr.decision.appoint')
-#     job_id=fields.Many2one(related='decision_appoint_id.job_id', store=True, readonly=True, string='الوظيفة')
-#     number_job=fields.Many2one(related='decision_appoint_id.number_job', store=True, readonly=True, string='الرقم الوظيفي')
-#     type_id=fields.Many2one(related='decision_appoint_id.type_id', store=True, readonly=True, string='الصنف')
-#        department_id=fields.Many2one(related='decision_appoint_id.department_id', store=True, readonly=True, string='الادارة')
-#     grade_id=fields.Many2one(related='decision_appoint_id.grade_id', store=True, readonly=True, string='المرتبة')
-#     basic_salary=fields.Many2one(related='decision_appoint_id.basic_salary', store=True, readonly=True, string='الراتب الأساسي')
-#     net_salary=fields.Many2one(related='decision_appoint_id.net_salary', store=True, readonly=True, string='صافي الراتب')
-#     degree_id=fields.Many2one(related='decision_appoint_id.degree_id', store=True, readonly=True, string='الدرجة')
-#   
-    
-    
-           
-
              
     @api.onchange('decision_type_id')
     def onchange_decision_type_id(self):
@@ -41,15 +27,25 @@ class HrDecision(models.Model):
                                         ])
             
             if decision_type_line :
-                #information employee  new job
+                #information employee  old job
                     employee = self.employee_id.name or ""
                     dattz = self.date or ""
                     carte_id = self.employee_id.identification_id or ""
                     birthday = self.employee_id.birthday or ""
+                    emp_job_id = employee_line.emp_job_id.name.name or ""
+                    emp_number_job = employee_line.emp_number_job or ""
+                    emp_code = employee_line.emp_code or ""
+                    emp_department_id = employee_line.emp_department_id.name or ""
+                    emp_type_id = employee_line.emp_type_id.name or ""
+                    emp_grade_id = employee_line.emp_grade_id.name or ""
+                    emp_degree_id = employee_line.emp_degree_id.name or ""
+                    emp_basic_salary = employee_line.emp_basic_salary   or ""
+                    
+                #information employee  new job  
                     numero = self.name or ""
                     job_id = employee_line.job_id.name.name or ""
-                    number = employee_line.job_id.name.number or ""
-                    code = employee_line.number_job or ""
+                    number = employee_line.number_job or ""
+                    code = employee_line.code or ""
                     department_id = employee_line.department_id.name or ""
                     type_job_id = employee_line.type_id.name or ""
                     grade_id = employee_line.grade_id.name or ""
@@ -58,7 +54,6 @@ class HrDecision(models.Model):
                     transport_allow = employee_line.transport_allow or ""
                     retirement = employee_line.retirement or ""
                     net_salary = employee_line.net_salary or ""
-                #
                     
                     if decision_type_line.text:
                         rel_text = decision_type_line.text
@@ -67,12 +62,22 @@ class HrDecision(models.Model):
                         rep_text = rep_text.replace('DATE',unicode(dattz))
                         rep_text = rep_text.replace('CARTEID',unicode(carte_id))
                         rep_text = rep_text.replace('NUMERO',unicode(numero))
+                        rep_text = rep_text.replace('NUMBER',unicode(number))
+                        
                         rep_text = rep_text.replace('JOB',unicode(job_id))
                         rep_text = rep_text.replace('CODE',unicode(code))
                         rep_text = rep_text.replace('DEGREE',unicode(degree_id))
                         rep_text = rep_text.replace('GRADE',unicode(grade_id))
                         rep_text = rep_text.replace('BASICSALAIRE',unicode(salary))
                         rep_text = rep_text.replace('DEPARTEMENT',unicode(department_id))
+                        
+                        rep_text = rep_text.replace('job',unicode(emp_job_id))
+                        rep_text = rep_text.replace('code',unicode(emp_code))
+                        rep_text = rep_text.replace('numero',unicode(emp_number_job))
+                        rep_text = rep_text.replace('degree',unicode(emp_degree_id))
+                        rep_text = rep_text.replace('grade',unicode(emp_grade_id))
+                        rep_text = rep_text.replace('basicsalaire',unicode(emp_basic_salary))
+                        rep_text = rep_text.replace('department',unicode(emp_department_id))
                         self.text = rep_text
                 
 class HrDecisionType(models.Model):
@@ -84,10 +89,4 @@ class HrDecisionType(models.Model):
     note = fields.Text(string='ملاحظات')
     text = fields.Html(string='نص القرار')
 
-#     @api.multi
-#     def name_get(self):
-#         result = []
-#         for record in self:
-#             name = '[%s] %s' % (record.code, record.name)
-#             result.append((record.id, name))
-#         return result
+

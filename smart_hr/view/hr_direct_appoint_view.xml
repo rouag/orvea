@@ -78,7 +78,7 @@
 		</record>
 
 		<menuitem id="hr_direct_appoint_menu_sou" name=" قرار مباشرة التعين"
-			sequence="22" parent="hr_root_organisation_configuration" action="action_hr_direct_appoint" />
+			sequence="8" parent="hr_root_organisation_action" action="action_hr_direct_appoint" />
 
 	</data>
 </openerp>

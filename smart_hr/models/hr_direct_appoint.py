@@ -70,7 +70,7 @@ class hrDirectAppoint(models.Model):
             print"sign_days",sign_days
             appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('state','=','done'),('active','=',False),('state_appoint','=','active')], limit=1)
             print"appoint_line",appoint_line
-            if sign_days != 0 :
+            if sign_days != 0   :
                 raise ValidationError(u"لا يمكن إلغاء قرار المباشرة لوجود حضور قبل المدة المسموح بها")
                 self.state = 'waiting'
                    
