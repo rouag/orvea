@@ -25,6 +25,7 @@ class HrDecisionAppoint(models.Model):
     number = fields.Char(string='الرقم الوظيفي', readonly=1) 
     emp_code = fields.Char(string=u'رمز الوظيفة ', readonly=1) 
     country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
+   
     emp_job_id = fields.Many2one('hr.job', string='الوظيفة', store=True, readonly=1) 
     emp_number_job = fields.Char(string='رقم الوظيفة', store=True, readonly=1) 
     emp_type_id = fields.Many2one('salary.grid.type', string='الصنف', store=True, readonly=1)
@@ -271,9 +272,9 @@ class HrDecisionAppoint(models.Model):
     @api.multi
     def action_done(self):
         self.ensure_one()
-        for line in self:
-            line.employee_id.write({'employee_state':'employee', 'job_id':line.job_id.id})
-            line.job_id.write({'state': 'occupied', 'employee': line.employee_id.id, 'occupied_date': fields.Datetime.now()})
+        
+        self.employee_id.write({'employee_state':'employee', 'job_id':self.job_id.id})
+        self.job_id.write({'state': 'occupied', 'employee': self.employee_id.id, 'occupied_date': fields.Datetime.now()})
         self.state = 'done'
         self.state_appoint ='active'
         user = self.env['res.users'].browse(self._uid)

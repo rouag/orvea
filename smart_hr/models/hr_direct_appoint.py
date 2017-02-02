@@ -24,12 +24,11 @@ class hrDirectAppoint(models.Model):
     far_age = fields.Float(string=' السن الاقصى',store=True,readonly=1) 
     basic_salary = fields.Float(string='الراتب الأساسي',store=True, readonly=1)   
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة',store=True, readonly=1)
-    date_direct_action = fields.Date(string='تاريخ مباشرة العمل',) 
+    date_direct_action = fields.Date(string='تاريخ المباشرة المنصوص في التعين ') 
     type_appointment = fields.Char(string=u'نوع التعيين' )
-    
     decision_appoint_ids = fields.One2many('hr.decision.appoint', 'employee_id', string=u'تعيينات الموظف')
     
-    date = fields.Date(string=u'تاريخ المباشرة', default=fields.Datetime.now())
+    date = fields.Date(string=u'تاريخ المباشرة الفعلي', default=fields.Datetime.now())
     state = fields.Selection([('new', '  طلب'),
                              ('waiting', 'في إنتظار الإعتماد'),
                              ('cancel', 'رفض'),

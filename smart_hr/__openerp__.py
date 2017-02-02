@@ -88,6 +88,10 @@
         'report/hr_termination_report.xml',
         'views/employee_situation_order_report.xml',
         'wizards/view/hr_refuse_wizard_view.xml',
+        'wizards/view/hr_sanction_wizard_view.xml',
+        'wizards/view/hr_sanction_update_wizard_view.xml',
+        
+        
 
         'view/hr.xml',
 
@@ -118,7 +122,7 @@
         'view/courses_follow_up.xml',
         'view/hr_direct_appoint_view.xml',
         'view/hr_sanction_view.xml',
-        'view/hr_remove_sanction_view.xml',
+        'view/hr_difference_sanction_view.xml',
         'view/hr_employee_functional_card.xml',
         'view/res_users.xml',
         'view/employee_situation_order.xml',

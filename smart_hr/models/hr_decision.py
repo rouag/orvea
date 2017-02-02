@@ -41,9 +41,11 @@ class HrDecision(models.Model):
                                         ])
             
             if decision_type_line :
+                #information employee  new job
                     employee = self.employee_id.name or ""
                     dattz = self.date or ""
                     carte_id = self.employee_id.identification_id or ""
+                    birthday = self.employee_id.birthday or ""
                     numero = self.name or ""
                     job_id = employee_line.job_id.name.name or ""
                     number = employee_line.job_id.name.number or ""
@@ -56,10 +58,12 @@ class HrDecision(models.Model):
                     transport_allow = employee_line.transport_allow or ""
                     retirement = employee_line.retirement or ""
                     net_salary = employee_line.net_salary or ""
+                #
                     
                     if decision_type_line.text:
                         rel_text = decision_type_line.text
                         rep_text = rel_text.replace('EMPLOYEE',unicode(employee))
+                        rep_text = rep_text.replace('BIRTHDAY',unicode(birthday))
                         rep_text = rep_text.replace('DATE',unicode(dattz))
                         rep_text = rep_text.replace('CARTEID',unicode(carte_id))
                         rep_text = rep_text.replace('NUMERO',unicode(numero))

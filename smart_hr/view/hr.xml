@@ -344,8 +344,8 @@
 						</header>
 
 						<sheet>
-						
-							<div class="oe_button_box" name="button_box">
+
+							<div class="oe_button_box" name="button_box" position="inside" >
 								<button name="%(smart_hr.action_hr_loan)d" class="oe_stat_button" context="{'search_default_employee_id': id}"
 									icon="fa-money" type="action">
 									<field name="loan_count" widget="statinfo" string="القروض" />
@@ -356,8 +356,7 @@
 									<span>الحضور </span>
 								</button>
 							</div>
-
-							<div name="button_box" invisible="1" />
+							
 							<field name="image" widget="image" class="oe_avatar"
 								options="{&quot;preview_image&quot;:&quot;image_medium&quot;}" />
 							<div class="col-xs-12 div_paddig_right_null">
