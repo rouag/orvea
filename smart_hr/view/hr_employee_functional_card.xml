@@ -27,13 +27,14 @@
 
 
 					<sheet>
-						
-							<group attrs="{'invisible':[('state','=', 'done')]}">
-								<field name="date" />
-							</group>
+
+						<group attrs="{'invisible':[('state','=', 'done')]}">
+							<field name="date" />
+						</group>
+						<group>
 							<group>
-							<group>
-								<field name="employee_id" required="1"  attrs="{'readonly':[('state','=', 'done')]}"/>
+								<field name="employee_id" required="1"
+									attrs="{'readonly':[('state','=', 'done')]}" />
 							</group>
 							<group attrs="{'invisible':[('state','!=', 'done')]}">
 								<field name="number" />
@@ -44,39 +45,65 @@
 							<field name="expiration_date"
 								attrs="{'invisible':[('state','=', 'draft')],'required':[('state','=', 'hrm')], 'readonly':[('state','=', 'done')]}" />
 						</group>
+						<notebook>
 
-						<group attrs="{'invisible':[('state','!=', 'done')], 'readonly':[('state','=', 'done')]}">
-							<group string="بيانات شخصية">
-								<field name="birthday" />
-								<field name="emp_age" />
-								<field name="birthday_location" />
-								<field name="identification_id" />
-								<field name="passport_id" />
-								<field name="passport_place" />
-								<field name="passport_date" />
-								<field name="education_level" />
-								<field name="specialization_ids" widget="many2many_tags" />
-							</group>
-							<group string="بيانات العمل">
-								<field name="employee_state" />
-								<field name="degree_id" />
-								<field name="department_id" />
-								<field name="begin_work_date" />
-								<field name="join_date" />
-							</group>
-						</group>
-						<group string="الحياة الوظيفية" attrs="{'invisible':[('state','!=', 'done')]}">
-							<field name="history_ids">
-								<tree string="سجل الاجراءات">
-									<field name="job_id" />
-									<field name="type" />
-									<field name="date" />
-									<field name="num_decision" />
-									<field name="date_decision" />
-								</tree>
+							<page string="البيانات الشخصية"
+								attrs="{'invisible':[('state','!=', 'done')], 'readonly':[('state','=', 'done')]}">
+								<group>
+									<field name="birthday" />
+									<field name="emp_age" />
+									<field name="birthday_location" />
+									<field name="identification_id" />
+									<field name="passport_id" />
+									<field name="passport_place" />
+									<field name="passport_date" />
+									<field name="education_level" />
+									<field name="specialization_ids" widget="many2many_tags" />
+								</group>
+							</page>
+							<page
+								attrs="{'invisible':[('state','!=', 'done')], 'readonly':[('state','=', 'done')]}"
+								string="بيانات العمل">
+								<group>
 
-							</field>
-						</group>
+									<field name="employee_state" />
+									<field name="degree_id" />
+									<field name="department_id" />
+									<field name="begin_work_date" />
+									<field name="join_date" />
+								</group>
+							</page>
+							<page string="الحياة الوظيفية" attrs="{'invisible':[('state','!=', 'done')]}">
+								<group>
+									<field name="history_ids">
+										<tree string="سجل الاجراءات">
+											<field name="job_id" />
+											<field name="grade_id" />
+											<field name="number" />
+											<field name="dep_Side" />
+											<field name="department_id" />
+											<field name="type" />
+											<field name="date" />
+											<field name="num_decision" />
+											<field name="date_decision" />
+										</tree>
+
+									</field>
+								</group>
+							</page>
+							<page string="التدريب" attrs="{'invisible':[('state','!=', 'done')]}">
+								<group>
+									<field name="training_ids">
+									<tree>
+											<field name="training_id" string="الدورة"/>
+											<field name="date_from" string="التاريخ"/>
+											<field name="number_of_days" />
+											<field name="place" />
+											</tree>
+									</field>
+								</group>
+							</page>
+						</notebook>
 					</sheet>
 				</form>
 			</field>

@@ -104,11 +104,19 @@ class HrEmployeeHistory(models.Model):
                              ('91', u' حرمان من علاوة '),
                              ('92', u'الفصل '),
                              ], string=u'الاجرا ء')
-    job_id = fields.Char(string=u'المسمى الوظيفي')
-
+    job_id = fields.Many2one('hr.job',string=u'المسمى الوظيفي')
+    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
+    number = fields.Char(string='الرقم الوظيفي', required=1,)
+    department_id = fields.Many2one('hr.department', string='الفرع')
+    dep_Side = fields.Char(string=u'الجهة', related='employee_id.user_id.company_id.name')
 
     @api.multi
     def add_action_line(self, employee_id, num_decision, date_decision, type):
         self.create({'employee_id': employee_id.id, 'date': fields.Datetime.now(),
                      'num_decision': num_decision, 'date_decision': date_decision,
-                     'type': type, 'job_id':employee_id.job_id.name.name})
+                     'type': type, 'job_id':employee_id.job_id.id,
+                     'grade_id':employee_id.job_id.grade_id,
+                     'number':employee_id.job_id.number,
+                     'department_id':employee_id.department_id.id,
+                     })
+
