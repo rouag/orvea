@@ -121,7 +121,7 @@ class HrHolidays(models.Model):
     courses_city = fields.Char(string=u'المدينة')
     courses_country = fields.Char(string=u'الدولة')
     current_holiday_stock = fields.Char(string=u'الرصيد الحالي',compute='_compute_current_holiday_stock')
-
+    sport_participation_topic = fields.Char(string=u'موضوع المشاركة')
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]

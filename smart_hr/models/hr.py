@@ -237,7 +237,7 @@ class HrEmployeePromotionHistory(models.Model):
     balance = fields.Integer(string=u'رصيد الترقية (يوم)',store=True)
     active_duration = fields.Boolean(string=u'نشط')
     decision_appoint_id = fields.Many2one('hr.decision.appoint', string=u'  التعيين')
-    
+
     @api.model
     def update_promotion_duration(self):
         today = date.today()

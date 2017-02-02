@@ -180,7 +180,7 @@
 										<field name="dep_city" options="{'no_create': True}" />
 										<field name="job_id"
 											attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
-										<field name="parent_id" />
+										<field name="parent_id" string="المدير المباشر"/>
 										<field name="service_duration" attrs="{'readonly': 1}" />
 										<field name="promotion_duration" attrs="{'readonly': 1}" />
 
@@ -460,7 +460,7 @@
 											<field name="dep_city" options="{'no_create': True}" />
 											<field name="job_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
-											<field name="parent_id" />
+											<field name="parent_id" string="المدير المباشر"/>
 											<field name="service_duration" attrs="{'readonly': 1}" />
 											<field name="promotion_duration" attrs="{'readonly': 1}" />
 											<field name="external_decision" />
