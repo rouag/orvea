@@ -46,7 +46,8 @@ class HrEmployee(models.Model):
                                   ('terminated', u'مطوي قيده'),
                                   ], string=u'الحالة', default='working', advanced_search=True)
     decision_appoint_ids = fields.One2many('hr.decision.appoint', 'employee_id', string=u'تعيينات الموظف')
-    job_id = fields.Many2one('hr.job', advanced_search=True)
+    job_id = fields.Many2one('hr.job', advanced_search=True, string=u'الوظيفة')
+    type_id = fields.Many2one('salary.grid.type', related="job_id.type_id", advanced_search=True)
     age = fields.Integer(string=u'السن', compute='_compute_age')
     employee_no = fields.Integer(string=u'رقم الموظف', advanced_search=True)
     join_date = fields.Date(string=u'تاريخ الالتحاق بالجهة')
@@ -79,6 +80,7 @@ class HrEmployee(models.Model):
     sanction_ids = fields.One2many('hr.employee.sanction', 'employee_id', string=u'العقوبات')
     bank_account_ids = fields.One2many('res.partner.bank','employee_id', string=u'الحسابات البنكِيّة')
     loan_count = fields.Integer(string=u'عدد القروض', compute='_compute_loans_count')
+    is_member = fields.Boolean(string=u'عضو في الهيئة', default=False, required=1)
 
     @api.constrains('recruiter_date','begin_work_date')
     def recruiter_date_begin_work_date(self):

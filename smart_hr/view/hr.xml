@@ -180,11 +180,14 @@
 										<field name="dep_city" options="{'no_create': True}" />
 										<field name="job_id"
 											attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+										<field name="type_id"
+											attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 										<field name="parent_id" string="المدير المباشر" />
 										<field name="service_duration" attrs="{'readonly': 1}" />
 										<field name="promotion_duration" attrs="{'readonly': 1}" />
 
 										<field name="external_decision" />
+										<field name="is_member" attrs="{'readonly': [('employee_state','!=', 'new')]}" />
 										<field name="traveling_ticket" />
 										<field name="traveling_family_ticket" />
 
@@ -464,10 +467,13 @@
 											<field name="dep_city" options="{'no_create': True}" />
 											<field name="job_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+											<field name="type_id"
+												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="parent_id" string="المدير المباشر" />
 											<field name="service_duration" attrs="{'readonly': 1}" />
 											<field name="promotion_duration" attrs="{'readonly': 1}" />
 											<field name="external_decision" />
+											<field name="is_member" attrs="{'readonly': [('employee_state','!=', 'new')]}" />
 										</group>
 										<group string="خصائص أخرى">
 											<field name="user_id"
@@ -558,17 +564,17 @@
 								<page string="سجل الاجراءات" readonly='True'>
 
 									<field name='history_ids' readonly="1">
-									<tree string="سجل الاجراءات">
-										<field name="job_id" />
-										<field name="grade_id" />
-										<field name="number" />
-										<field name="dep_Side" />
-										<field name="department_id" />
-										<field name="type" />
-										<field name="date" />
-										<field name="num_decision" />
-										<field name="date_decision" />
-									</tree>
+										<tree string="سجل الاجراءات">
+											<field name="job_id" />
+											<field name="grade_id" />
+											<field name="number" />
+											<field name="dep_Side" />
+											<field name="department_id" />
+											<field name="type" />
+											<field name="date" />
+											<field name="num_decision" />
+											<field name="date_decision" />
+										</tree>
 									</field>
 
 								</page>

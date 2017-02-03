@@ -93,6 +93,20 @@ class HrDecisionAppoint(models.Model):
     score = fields.Float(string=u'نتيجة المترشح', readonly=1, states={'draft': [('readonly', 0)]})
 
     @api.multi
+    @api.onchange('type_appointment')
+    def _onchange_type_appointment(self):
+        # get list of employee depend on type_appointment
+        res = {}
+        if self.type_appointment and self.type_appointment == self.env.ref('smart_hr.data_hr_recrute_Members'):
+            employee_ids = [rec .id for rec in self.env['hr.employee'].search([('is_member', '=', True), ('employee_state', 'in', ['done', 'employee'])])]
+            res['domain'] = {'employee_id': [('id', 'in', employee_ids)]}
+            return res
+        if self.type_appointment and self.type_appointment != self.env.ref('smart_hr.data_hr_recrute_Members'):
+            employee_ids = [rec .id for rec in self.env['hr.employee'].search([('is_member', '=', False), ('employee_state', 'in', ['done', 'employee'])])]
+            res['domain'] = {'employee_id': [('id', 'in', employee_ids)]}
+            return res
+
+    @api.multi
     @api.onchange('score')
     def onchange_score(self):
         self.ensure_one()
