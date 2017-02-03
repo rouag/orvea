@@ -595,6 +595,13 @@ class HrHolidays(models.Model):
             # check if the holiday status is supposed to be confirmed by direct manager
         if self.holiday_status_id.direct_director_decision:
             self.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"' إلى المدير المباشر")
+            self.env['base.notification'].create({'title': u'إشعار بوجود طلب اجازة',
+                                              'message': u"لقد تم تقديم  طلب اجازة من طرف الموظف"+unicode(self.employee_id.user_id.id),
+                                              'user_id': self.employee_id.parent_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'notif': True,
+                                              'res_id': self.id,
+                                             'res_action': 'smart_hr.action_hr_holidays_form'})
             self.state = 'dm'
         elif self.holiday_status_id.audit:
             self.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"' إلى مرحلة التدقيق")
@@ -631,6 +638,7 @@ class HrHolidays(models.Model):
             
     @api.multi
     def action_delay_holiday(self):
+        
         self.ensure_one()
         context = {};
         context['holiday_id'] = self.id
@@ -647,10 +655,25 @@ class HrHolidays(models.Model):
     @api.multi
     def button_delay_dm(self):
         self.ensure_one()
+        self.env['base.notification'].create({'title': u'إشعار برفض إجازة',
+                                              'message': u'لقد تم رفض الإجازة من طرف المدير المباشر',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'notif': True,
+                                              'res_id': self.id,
+                                             'res_action': 'smart_hr.action_hr_holidays_form'})
         self.state = 'draft'
         
     @api.multi
     def button_accept_audit(self):
+        self.ensure_one()
+        self.env['base.notification'].create({'title': u'إشعار بقبول إجازة',
+                                              'message': u'لقد تم قبول الإجازة من طرف مدقق الاجازات',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'notif': True,
+                                              'res_id': self.id,
+                                             'res_action': 'smart_hr.action_hr_holidays_form'})
         if self.holiday_status_id.need_decision:
             if not self.num_decision:
                 raise ValidationError(u"الرجاء تعبئة رقم القرار.")
@@ -666,6 +689,13 @@ class HrHolidays(models.Model):
     @api.multi
     def button_refuse_audit(self):
         self.ensure_one()
+        self.env['base.notification'].create({'title': u'إشعار برفض إجازة',
+                                              'message': u'لقد تم رفض الإجازة من طرف مدقق الاجازات',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'notif': True,
+                                              'res_id': self.id,
+                                             'res_action': 'smart_hr.action_hr_holidays_form'})
         if self.holiday_status_id.direct_director_decision:
             self.state = 'dm'
         else:
@@ -685,24 +715,28 @@ class HrHolidays(models.Model):
                                               'res_id': self.id,
                                               'res_action': 'smart_hr.action_hr_holidays_form',
                                               'notif': True})
-
-                        
         if self.holiday_status_id.external_decision and not self.employee_id.external_decision:
             raise ValidationError(u"الموظف يحتاج إلى موافقة جهة خارجية.")
         if self.holiday_status_id.external_decision and self.employee_id.external_decision:
             self.state = 'external_audit'
-            
+
     @api.multi
     def button_delay_hrm(self):
-        
         self.ensure_one()
+        self.env['base.notification'].create({'title': u'إشعار برفض إجازة',
+                                              'message': u'لقد تم رفض الإجازة من طرف مدير شؤون الموظفين',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'res_id': self.id,
+                                              'res_action': 'smart_hr.action_hr_holidays_form',
+                                              'notif': True})
         if self.holiday_status_id.audit:
             self.state = 'audit'
         elif self.holiday_status_id.direct_director_decision:
             self.state = 'dm'
         else:
             self.state = 'draft'
-            
+
     @api.multi
     def button_accept_external_audit(self):
         self.ensure_one()

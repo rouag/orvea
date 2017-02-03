@@ -47,7 +47,9 @@
 						<button name="button_accept_dm" string="موافق" type="object"
 							states="dm" groups="smart_hr.group_dm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
+						<button name="button_delay_dm" string="رفض" type="object"
+							states="dm" groups="smart_hr.group_dm" icon="fa-check"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_delay_holiday" string="تأجيل" type="object"
 							states="dm" groups="smart_hr.group_dm" icon="fa-times"
 							class="oe_inline oe_stat_button" />
