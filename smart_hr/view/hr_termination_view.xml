@@ -9,7 +9,7 @@
             <field name="name">hr.termination.form</field>
             <field name="model">hr.termination</field>
             <field name="arch" type="xml">
-                <form string="قرار طى القيد">
+                <form string=" طى القيد">
                     <header>
                         <button name="button_hrm" string="ارسال الطلب" type="object" states="draft" groups="smart_hr.group_hr" icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
                         <button name="button_done" string="موافق" type="object" states="hrm" groups="smart_hr.group_hrm" icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
@@ -58,7 +58,7 @@
             <field name="name">hr.termination.tree</field>
             <field name="model">hr.termination</field>
             <field name="arch" type="xml">
-                <tree string="قرارات طى القيد" class="oe_tree_view">
+                <tree string=" طى القيد" class="oe_tree_view">
                     <field name="name"/>
                     <field name="date"/>
                     <field name="employee_id"/>
@@ -71,7 +71,7 @@
             <field name="name">hr.termination.search</field>
             <field name="model">hr.termination</field>
             <field name="arch" type="xml">
-                <search string="قرارات طى القيد">
+                <search string=" طى القيد">
                     <field name="name"/>
                     <field name="date"/>
                     <field name="employee_id"/>
@@ -86,7 +86,7 @@
             </field>
         </record>
         <record id="action_hr_termination" model="ir.actions.act_window">
-            <field name="name">قرارات طى القيد</field>
+            <field name="name"> طى القيد</field>
             <field name="res_model">hr.termination</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
@@ -94,7 +94,7 @@
         <menuitem id="menu_hr_termination" sequence="25"
                   action="action_hr_termination"
                   parent="hr_root_organisation_action"
-                  name="قرارات طى القيد"/>
+                  name=" طى القيد"/>
 
         <!--
             Termination Type
