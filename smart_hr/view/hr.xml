@@ -176,7 +176,7 @@
 										<field name="dep_city" options="{'no_create': True}" />
 										<field name="job_id"
 											attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
-										<field name="parent_id" />
+										<field name="parent_id" string="المدير المباشر" />
 										<field name="service_duration" attrs="{'readonly': 1}" />
 										<field name="promotion_duration" attrs="{'readonly': 1}" />
 
@@ -265,6 +265,10 @@
 								<field name='history_ids' readonly="1">
 									<tree string="سجل الاجراءات">
 										<field name="job_id" />
+										<field name="grade_id" />
+										<field name="number" />
+										<field name="dep_Side" />
+										<field name="department_id" />
 										<field name="type" />
 										<field name="date" />
 										<field name="num_decision" />
@@ -321,7 +325,6 @@
 		<record id="view_employee_request_form" model="ir.ui.view">
 			<field name="name">hr.employee.request.form</field>
 			<field name="model">hr.employee</field>
-			<field name="sequence" eval="100" />
 			<field name="inherit_id" ref="hr.view_employee_form" />
 			<field name="arch" type="xml">
 				<xpath expr="/form" position='replace'>
@@ -340,7 +343,21 @@
 						</header>
 
 						<sheet>
-							<div name="button_box" invisible="1" />
+
+							<div class="oe_button_box" name="button_box" position="inside">
+								<button name="%(smart_hr.action_hr_loan)d" class="oe_stat_button"
+									context="{'search_default_employee_id': id}" icon="fa-money"
+									type="action">
+									<field name="loan_count" widget="statinfo" string="القروض" />
+								</button>
+
+								<button name="%(smart_hr.open_view_attendance_inherite)d"
+									class="oe_stat_button" context="{'search_default_employee_id': id}"
+									icon="fa-clock-o" type="action">
+									<span>الحضور </span>
+								</button>
+							</div>
+
 							<field name="image" widget="image" class="oe_avatar"
 								options="{&quot;preview_image&quot;:&quot;image_medium&quot;}" />
 							<div class="col-xs-12 div_paddig_right_null">
@@ -443,7 +460,7 @@
 											<field name="dep_city" options="{'no_create': True}" />
 											<field name="job_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
-											<field name="parent_id" />
+											<field name="parent_id" string="المدير المباشر" />
 											<field name="service_duration" attrs="{'readonly': 1}" />
 											<field name="promotion_duration" attrs="{'readonly': 1}" />
 											<field name="external_decision" />
@@ -487,6 +504,15 @@
 										</tree>
 									</field>
 								</page>
+								<!-- TODO: dont delete it used by borni in payroll we can discuss 
+									about it after -->
+								<page string="بيانات الراتب ">
+									<group>
+										<field name="payroll_structure_id" />
+										<field name="wage" />
+									</group>
+								</page>
+
 								<page string="أرصدة الاجازات والترقيات">
 									<separator string="أرصدة الاجازات" />
 									<field name="holidays_balance"
@@ -528,14 +554,17 @@
 								<page string="سجل الاجراءات" readonly='True'>
 
 									<field name='history_ids' readonly="1">
-										<tree string="سجل الاجراءات">
-											<field name="job_id" />
-
-											<field name="type" />
-											<field name="date" />
-											<field name="num_decision" />
-											<field name="date_decision" />
-										</tree>
+									<tree string="سجل الاجراءات">
+										<field name="job_id" />
+										<field name="grade_id" />
+										<field name="number" />
+										<field name="dep_Side" />
+										<field name="department_id" />
+										<field name="type" />
+										<field name="date" />
+										<field name="num_decision" />
+										<field name="date_decision" />
+									</tree>
 									</field>
 
 								</page>

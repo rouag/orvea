@@ -37,7 +37,7 @@
 	</record>
 
 	<menuitem id="wizard_job_update_menu" name="تقرير تحوير الوظائف"
-		groups="smart_hr.group_dm,smart_hr.group_hrm" sequence="20"
+		groups="smart_hr.group_dm,smart_hr.group_hr_personnel_officer_jobs" sequence="20"
 		action="wizard_job_update_action" parent="menu_job_report" />
 
 </odoo>

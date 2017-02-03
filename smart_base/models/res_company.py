@@ -11,3 +11,4 @@ class ResCompany(models.Model):
     report_footer = fields.Binary(string=' صورة أخر الصفحة ', attachment=1)
     report_header_speech = fields.Binary(string=' صورة رأس الصفحة ', attachment=1)
     report_footer_speech = fields.Binary(string=' صورة أخر الصفحة ', attachment=1)
+    company_president = fields.Many2one('res.users', string=' الرئيس' )

@@ -28,6 +28,7 @@ class hr_suspension_end(models.Model):
         ('done', u'اعتمدت'),
         ('refuse', u'رفض'),
     ], string=u'الحالة', default='draft', advanced_search=True)
+    condemned = fields.Boolean(string=u'مُدان', default=False)
 
     @api.model
     def create(self, vals):
@@ -51,13 +52,27 @@ class hr_suspension_end(models.Model):
         for rec in self:
             rec.state = 'hrm'
 
-    @api.one
+    @api.multi
     def button_done(self):
-        for rec in self:
-            rec.employee_id.emp_state = 'working'
-            rec.state = 'done'
-        self.create_report_attachment()
-
+        self.ensure_one()
+        self.employee_id.employee_state = 'employee'
+        if self.condemned:
+            active_promotions = self.env['hr.employee.promotion.history'].search([('active_duration', '=', 'True'), ('employee_id', '=', self.employee_id.id)])
+            active_prom = False
+            if active_promotions:
+                for promotion in active_promotions:
+                    if not promotion.date_to:
+                        active_prom = promotion
+                        break
+                if active_prom:
+                    release_date = fields.Date.from_string(self.release_date)
+                    suspension_date = fields.Date.from_string(self.suspension_id.suspension_date)
+                    active_prom.balance -= (release_date-suspension_date).days
+                    self.employee_id.service_duration-= (release_date-suspension_date).days
+#         self.create_report_attachment()
+        self.state = 'done'
+        
+        
     @api.one
     def button_refuse(self):
         for rec in self:

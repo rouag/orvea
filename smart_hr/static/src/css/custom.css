@@ -19,3 +19,18 @@ float: left !important;
 .div_paddig_right_null{
 padding-right: 0px !important;
 }
+.note_field_width{
+ width: 100% !important;
+}
+.td_label_width{
+	    width: 2% !important;;
+}
+
+.required_field_border{
+	
+	    border: 1px solid rgba(179, 31, 31, 0.8) !important;
+}
+.selection_field_height{
+	
+height: 44px;}
+

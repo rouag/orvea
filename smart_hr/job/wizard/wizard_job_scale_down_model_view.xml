@@ -33,7 +33,7 @@
 	</record>
 
 	<menuitem id="wizard_job_scale_down_model_menu" name="نموذج تخفيض وظيفة"
-		groups="smart_hr.group_dm,smart_hr.group_hrm" sequence="40"
+		groups="smart_hr.group_dm,smart_hr.group_hr_personnel_officer_jobs" sequence="40"
 		action="wizard_job_scale_down_model_action" parent="menu_job_report" />
 
 </odoo>

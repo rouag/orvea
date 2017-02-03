@@ -78,6 +78,7 @@
 						<field name="exams_results" string="اﻷختبارات">
 							<tree editable="bottom">
 								<field name="exam" />
+								<field name="exam_en" />
 								<field name="result" />
 							</tree>
 						</field>

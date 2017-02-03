@@ -84,8 +84,7 @@
 								<field name="basic_salary" />
 								<field name="retrait_monthly" />
 								<field name="assurance_monthly" />
-								 
-								
+								<field name="passing_score" />
 							</group>
 						</group>
 						<group string="البدلات و المكافآت‬">

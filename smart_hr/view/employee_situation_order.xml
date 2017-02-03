@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<record model="ir.actions.act_window" id="action_hr_employee_situation_order">
+			<field name="name">طلب إفادة عن حالة موظف‬‬</field>
+			<field name="res_model">hr.employee.situation.order</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="menu_hr_employee_situation_order" parent="menu_hr_holiday_root"
+			name="طلب إفادة عن حالة موظف" sequence="110" action="action_hr_employee_situation_order" groups="smart_hr.group_hrm"/>
+			
+			</data>
+			</openerp>

@@ -25,33 +25,97 @@ class HrTypeSanction(models.Model):
     sanction_responsable = fields.Boolean(string=u' مسؤول على العقوبات ', default=True)
     sanction_decider = fields.Boolean(string=u' موافقة المقام السامي  ', default=False)
     
+    
+class hrSanctionHistory(models.Model):
+    _name = 'hr.sanction.history'
+  
+   
+    name = fields.Char(string='رقم القرار' )
+    sanction_id = fields.Many2one('hr.sanction', string=' العقوبات', ondelete='cascade')
+    employee_id = fields.Many2one('hr.employee', string=' الموظف', required=1)
+    action = fields.Char(string='الإجراء')
+    reason = fields.Char(string='السبب', required=1,)
+    order_date = fields.Date(string='تاريخ القرار')
+    
+
+
+    
+class HrSanctionLigne(models.Model):
+    _name = 'hr.sanction.ligne'  
+    _description = u' العقوبات'
+    
+    
+    employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف', required=1)
+    type_sanction = fields.Many2one('hr.type.sanction',string=u'العقوبة')
+    active = fields.Boolean(string=u'سارية', default=True)
+    nb_days = fields.Integer(related='sanction_id.nb_days', store=True, readonly=True, string='عدد الأيام')
+    sanction_id = fields.Many2one('hr.sanction', string=' العقوبات', ondelete='cascade')
+   # wizard_sanction_id = fields.Many2one('wizard.sanction.update', string=' العقوبات', ondelete='cascade')
+#     sanction_state = fields.Selection(related='sanction_id.state', store=True, string='الحالة')
+    state = fields.Selection([('waiting', 'في إنتظار العقوبة'),
+                               ('excluded', 'مستبعد'),
+                               ('done', 'تم العقوبة'),
+                               ('cancel', 'ملغى')], string='الحالة', readonly=1, default='waiting')
+
+    
 class hrSanction(models.Model):
     _name = 'hr.sanction'
     _description = u'إجراء العقوبات'
     
     name = fields.Char(string='رقم القرار', required=1 )
-    order_date = fields.Date(string='تاريخ الطلب',default=fields.Datetime.now(),readonly=1) 
-    employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', required=1)
-    type_sanction = fields.Many2one('hr.type.sanction',string='العقوبة',required=1)
+    order_date = fields.Date(string='تاريخ العقوبة',default=fields.Datetime.now(),readonly=1) 
     sanction_text = fields.Text(string=u'محتوى العقوبة' )
+    order_picture = fields.Binary(string='صورة القرار', required=1) 
+    order_picture_name = fields.Char(string='صورة القرار') 
+    sanction_id = fields.Many2one('hr.difference.sanction',string='العقوبة')
+    type_sanction = fields.Many2one('hr.type.sanction',string=u'العقوبة',required=1)
     date_sanction_start = fields.Date(string='تاريخ بدأ العقوبة') 
     date_sanction_end = fields.Date(string='تاريخ الإلغاء') 
-    active = fields.Boolean(string=u'سارية', default=True)
-    date_sanction = fields.Date(string='تاريخ العقوبة', default=fields.Datetime.now(),)
-    financial_impact = fields.Float(string='  الأثر المالي  %من الراتب') 
-    financial_amount = fields.Float(string='  المبلغ') 
-    sanction_id = fields.Many2one('hr.remove.sanction',string='العقوبة')
-    note = fields.Text(string = u'الملاحظات', required = True)
+    line_ids = fields.One2many('hr.sanction.ligne', 'sanction_id', string=u'العقوبات')
+    note = fields.Text(string = u'الملاحظات')
+    nb_days = fields.Integer(string=u'عدد أيام ')
+    history_ids = fields.One2many('hr.sanction.history', 'sanction_id', string='سجل التغييرات', readonly=1)
+    
     state = fields.Selection([('draft', '  طلب'),
                              ('waiting', '  صاحب صلاحية العقوبات'),
                              ('extern', 'جهة خارجية'),
+                        
+                             ('cancel','مرفوض'),
                              ('done', 'اعتمدت')], string='الحالة', readonly=1, default='draft')
  
     
+    
+    
+    @api.depends('date_sanction_start', 'date_sanction_end')
+    def _compute_delay_days(self):
+        if self.date_sanction_start and self.date_sanction_end:
+            date_sanction_start = fields.Date.from_string(self.date_sanction_start)
+            date_sanction_end = fields.Date.from_string(self.date_sanction_end)
+            if date_sanction_end < date_sanction_start:
+                raise ValidationError(u"الرجاء التأكد من تاريخ الإلغاء.")
+            nb_days = (date_sanction_end - date_sanction_start).days 
+            
+    
+    @api.multi
+    def button_cancel_sanction(self):
+        self.ensure_one() 
+        #TODO  
+        sanction=self.search([('state','=','done')])
+        
+    @api.multi
+    def button_update_sanction(self):
+        self.ensure_one()
+        #TODO   
+        sanction=self.search([('state','=','done')])
+       
+    
+    
+    
+    
     @api.onchange('date_sanction_end')
     def _onchange_date_sanction_end(self):
-         if self.date_sanction_end and self.date_sanction_start :
-             if self.date_sanction_end > self.date_sanction_start:
+         if self.date_sanction_end :
+             if self.date_sanction_end < self.date_sanction_start:
                  raise ValidationError(u"تاريخ إلغاء العقوبة يجب ان يكون أكبر من تاريخ البدأ")
         
   
@@ -75,92 +139,102 @@ class hrSanction(models.Model):
     def action_extern(self):
         self.ensure_one()
         direct_appoint_obj = self.env['hr.employee.sanction']
-        self.env['hr.employee.sanction'].create({ 'employee_id': self.employee_id.id,
-                                                  'type_sanction' : self.type_sanction.id,
+        for rec in self.line_ids:
+            self.env['hr.employee.sanction'].create({ 'employee_id': rec.employee_id.id,
+                                                  'type_sanction' : rec.type_sanction.id,
                                                   'date_sanction_start' : self.date_sanction_start,
                                                   'date_sanction_end' : self.date_sanction_end,
                                                  
-                                                           })
-        type=''
-        if self.type_appointment.id == self.env.ref('smart_hr.data_hr_sanction_type_alert').id:
-            type = '40'
-        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_sanction_type_blame').id:
-            type = '89'
-        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_sanction_type_displine').id:
-            type = '90'
-        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_sanction_type_grade').id:
-            type = '91'
-        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_sanction_type_separation').id:
-            type = '92'
-       
-        if type:
-            self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
-        self.state = 'done'
+                                                          })
+            type=''
+            if rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_alert').id:
+                type = '40'
+            elif rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_blame').id:
+                type = '89'
+            elif rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_displine').id:
+                type = '90'
+            elif rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_grade').id:
+                type = '91'
+            elif rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_separation').id:
+                type = '92'
+        
+            if type:
+                self.env['hr.employee.history'].sudo().add_action_line(rec.employee_id, rec.type_sanction.id, self.date_sanction_start, type)
+                  
+            self.state = 'done'
+            
+    @api.multi
+    def action_cancel(self):
+        self.ensure_one()
+        self.state = 'cancel'
+        for line in self.line_ids:
+            
+            line.state = 'cancel'
+
         
         
-class HrRemoveSanction(models.Model):
-    _name = 'hr.remove.sanction'  
-    _description = u'فسخ عقوبة'
+class HrDifferenceSanction(models.Model):
+    _name = 'hr.difference.sanction'  
+    _description = u'فروقات العقوبات'
     
     name = fields.Char(string='رقم القرار', required=1 )
-    order_date = fields.Date(string='تاريخ الطلب',default=fields.Datetime.now(),readonly=1)
+    order_new = fields.Char(string=u'قرار العقوبة الجديد')
+    order_update = fields.Char(string=u'خطاب تعديل الجزاء')
+    date_sanction_start_old = fields.Date(string='تاريخ بدأ العقوبةالقديم') 
+    date_sanction_end_old = fields.Date(string='تاريخ الإلغاءالقديم') 
+    date_sanction_start_new = fields.Date(string='تاريخ بدأ العقوبةالجديد') 
+    date_sanction_end_new = fields.Date(string='تاريخ الإلغاءالجديد') 
+    order_date = fields.Date(string='تاريخ القرار',readonly=1)
     employee_id = fields.Many2one('hr.employee',  string=u'الموظف', domain=[('employee_state','=','employee')], advanced_search=True)
-    type_sanction = fields.Many2one('hr.type.sanction',string=u'العقوبة')
+    type_sanction_old = fields.Many2one('hr.type.sanction',string=u'العقوبة')
+    type_sanction_new = fields.Many2one('hr.type.sanction',string=u'العقوبةالجديدة')
     sanction_ids = fields.One2many('hr.sanction', 'sanction_id', string=u'العقوبات')
-    note = fields.Text(string = u'الملاحظات')
-    state = fields.Selection([
-                              ('draft', u'طلب'),
-                              ('waiting', u'  صاحب صلاحية العقوبات'),
-                              ('done', u'اعتمدت'),
-                              ('refuse', u'رفض'),
-                             
-                              ], string=u'حالة', default='draft', advanced_search=True)
-    
-    
-    
-   
-    
-    @api.multi
-    def action_draft(self):
-        self.ensure_one()
-        
-        self.state = 'waiting'
-  
-    @api.multi
-    def action_refuse(self):
-        self.ensure_one()
-        self.state = 'draft'
+    nb_days_old = fields.Float(string=u'   القديم') 
+    nb_days_new = fields.Float(string=u'   الجديد') 
+    diff_days = fields.Float(string=u' الفرق',compute="_compute_diff_days")
+    deduction = fields.Boolean(string=u'حسم')
+    state = fields.Selection([('waiting', 'في إنتظار العقوبة'),
+                               ('excluded', 'مستبعد'),
+                               ('done', 'تم العقوبة'),
+                               ('cancel', 'ملغى')], string='الحالة', readonly=1, default='waiting')
     
     
     @api.multi
-    def action_waiting(self):
-        self.ensure_one()
-        
-        
-        type=''
-        if self.type_appointment.id == self.env.ref('smart_hr.data_hr_sanction_type_alert').id:
-            type = '40'
-        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_sanction_type_blame').id:
-            type = '89'
-        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_sanction_type_displine').id:
-            type = '90'
-        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_sanction_type_grade').id:
-            type = '91'
-        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_sanction_type_separation').id:
-            type = '92'
-       
-        if type:
-            self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
+    @api.depends('nb_days_old', 'nb_days_new')
+    def _compute_diff_days(self):
+       for rec in self :
+           if rec.nb_days_old and rec.nb_days_new :
+               rec.diff_days = (rec.nb_days_old - rec.nb_days_new)
             
             
-        remove_sanction = self.env['hr.employee.sanction'].search([('employee_id', '=', self.employee_id.id),
-                                                           ('type_sanction', '=', self.type_sanction.id,),
-                                                           ('date_sanction_start', '=', self.date_sanction_start),
-                                                           ('date_sanction_end', '=', self.date_sanction_end)
-                                                           ])
-        if remove_sanction :
-            remove_sanction.unlink()
-        self.state = 'done'
-
-   
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
    

@@ -32,7 +32,10 @@ class HrHolidaysExtension(models.Model):
     open_period = fields.Many2one('hr.holidays.periode', string=u'periode')
     num_decision = fields.Char(string=u'رقم القرار')
     date_decision = fields.Date(string=u'تاريخ القرار')
-        
+    decision_file = fields.Binary(string=u'القرار')
+    decision_file_name = fields.Char(string=u'file name')
+    
+    
     @api.depends('employee_id')
     def _employee_is_the_creator(self):
         for rec in self:
@@ -50,14 +53,18 @@ class HrHolidaysExtension(models.Model):
     def check_constrains(self):
         current_holiday_status_stock = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.holiday_status_id.id)])
 
-
+        right_entitlement=False
         for en in self.holiday_status_id.entitlements:
             if en.entitlment_category.id == self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id:
                 right_entitlement = en
+                break
+        if right_entitlement:
             if current_holiday_status_stock:
                 if current_holiday_status_stock.holidays_available_stock>0 :
                     if current_holiday_status_stock.token_holidays_sum<right_entitlement.extension_period*365:
-                        raise ValidationError(u'لا يمكن تمديد إجازة قبل إنتهاء رصيدها')
+                        raise ValidationError(u'لا يمكن تمديد  رصيد إجازة قبل إنتهاء رصيدها')
+            else:
+                raise ValidationError(u'لا يمكن تمديد  رصيد إجازة قبل إنتهاء رصيدها')
 
             extension_period =  right_entitlement.extension_period
             today = datetime.today()
@@ -81,7 +88,8 @@ class HrHolidaysExtension(models.Model):
                     sum_days += extension.duration
                 if extension_period*365 < sum_days+self.duration:
                     raise ValidationError(u'ليس لديك الرصيد الكافي للتمديد')
-                
+        else:
+            raise ValidationError(u'لا يمكن تمديد  استحقاق هذه الاجازة')
     @api.one
     def button_send(self):
        
@@ -94,9 +102,10 @@ class HrHolidaysExtension(models.Model):
                 self.env['base.notification'].create({'title': u'إشعار بتمديد إجازة',
                                                       'message': u'الرجاء مراجعة طلب اتمديد',
                                                       'user_id': self.employee_id.parent_id.user_id.id,
-                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-                                                  'res_model':'hr.holidays.extension',
-                                                  'res_id': self.id,
+                                                      'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                      'notif': True,
+                                                      'res_id': self.id,
+                                                      'res_action':' smart_hr.action_hr_holidays_extension_form',
                                                   })
             else:
                 # send notification for requested employee
@@ -105,19 +114,22 @@ class HrHolidaysExtension(models.Model):
                                                   'message': u'الرجاء مراجعة طلب اتمديد',
                                                   'user_id': self.employee_id.user_id.id,
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-                                                  'res_model':'hr.holidays.extension',
+                                                  'notif': True,
                                                   'res_id': self.id,
-                                                  'res_action': res_model})
+                                                  'res_action':' smart_hr.action_hr_holidays_extension_form',
+})
                 
             extension.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"'")
 
     @api.one
     def button_done(self):
+        self.ensure_one()
         for extension in self:
             holidays_available_stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
                                                            ('holiday_status_id', '=', self.holiday_status_id.id)])
-            holidays_available_stock_line.holidays_available_stock+=extension.duration
-            extension.open_period.holiday_stock += extension.duration
+            if holidays_available_stock_line:
+                holidays_available_stock_line.holidays_available_stock+=extension.duration
+                extension.open_period.holiday_stock += extension.duration
             extension.state = 'done'
 
     @api.one
@@ -129,8 +141,10 @@ class HrHolidaysExtension(models.Model):
                                                   'message': u' '+self.employee_id.name +u'لقد تم الرفض من قبل ',
                                                   'user_id': self.employee_id.user_id.id,
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-                                                  'res_model':'hr.holidays.extension',
+                                                  'notif': True,
                                                   'res_id': self.id,
+                                                  'res_action':' smart_hr.action_hr_holidays_extension_form',
+
                                                   })
 
     @api.model

@@ -11,7 +11,7 @@
 			<field name="model">hr.holidays.extension</field>
 			<field name="sequence" eval="10" />
 			<field name="arch" type="xml">
-				<form string="تمديد  مدّة صلاحيّة إجازة">
+				<form string="تمديد  رصيد الاجازات">
 					<field name="is_the_creator" invisible="1" />
 					<header>
 						<button name="button_send" string="إرسال طلب" type="object"
@@ -39,26 +39,32 @@
 							<group />
 						</group>
 						<group>
-							<group col="2">
-								<field name="num_decision" required="1" class="oe_smart_inline"/>
+							<group>
+								<field name="employee_id" readonly="1" required="1"
+									options="{'no_create': True}" />
+								<field name="holiday_status_id" required="1"
+									options="{'no_create': True}" />
+								<field name="duration" required="1" />
 							</group>
-							<group col="2">
+							<group>
+								<field name="decision_file" filename="decision_file_name" />
+								<field name="decision_file_name" invisible="1" />
+								<field name="num_decision" required="1" class="oe_smart_inline" />
 								<field name="date_decision" required="1" />
 							</group>
 						</group>
 						<group>
-						<group>
-							<field name="employee_id" readonly="1" required="1" options="{'no_create': True}"/>
-							<field name="holiday_status_id" required="1" options="{'no_create': True}"/>
-							<field name="duration" required="1" />
-							<field name="note" />
+							<group>
+								<field name="note" />
 							</group>
-							<group/>
 						</group>
-						<div>
-							<field name="message_ids" widget="mail_thread" readonly="1" />
-						</div>
+
 					</sheet>
+						<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"
+							groups="base.group_user" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
 				</form>
 			</field>
 		</record>
@@ -78,22 +84,22 @@
 			<field name="name">hr.holidays.extension.tree</field>
 			<field name="model">hr.holidays.extension</field>
 			<field name="arch" type="xml">
-				<tree string="تمديد إجازات" class="oe_tree_view"
+				<tree string="تمديد رصيد الاجازات" class="oe_tree_view"
 					fonts="bold:state in ['draft','done']"
 					row_classes="state-refuse:state=='refuse';state-in-progress:state not in ['draft','refuse','done'];">
 					<field name="name" />
 					<field name="date" />
-					<field name="holiday_status_id" />
 					<field name="employee_id" />
-					<field name="state" />
+					<field name="holiday_status_id" />
 					<field name="duration" />
+					<field name="state" />
 
 				</tree>
 			</field>
 		</record>
 
 		<record id="action_hr_holidays_extension_employees" model="ir.actions.act_window">
-			<field name="name">تمديد مدّة صلاحيّة إجازات الموظفين</field>
+			<field name="name">تمديد رصيد الاجازات</field>
 			<field name="res_model">hr.holidays.extension</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
@@ -112,9 +118,25 @@
 			<field name="view_id" ref="hr_holidays_extension_employee_form" />
 			<field name="act_window_id" ref="action_hr_holidays_extension_employees" />
 		</record>
+
+
 		<menuitem id="menu_hr_holidays_extension_employees" action="action_hr_holidays_extension_employees"
-			parent="menu_hr_holiday_root" sequence="52"
-			name="طلبات تمديد مدّة صلاحيّة الإجازات" />
+			parent="menu_hr_holiday_root" sequence="52" name="طلبات تمديد رصيد الاجازات" />
+
+
+		<record id="action_hr_holidays_extension_form" model="ir.actions.act_window">
+			<field name="name">تمديد رصيد الاجازات</field>
+			<field name="res_model">hr.holidays.extension</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+		</record>
+
+		<record id="action_hr_holidays_extension_employees_form_notification"
+			model="ir.actions.act_window.view">
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="hr_holidays_extension_employee_form" />
+			<field name="act_window_id" ref="action_hr_holidays_extension_form" />
+		</record>
 
 	</data>
 </openerp>

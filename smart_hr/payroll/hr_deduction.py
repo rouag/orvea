@@ -64,7 +64,8 @@ class hrDeduction(models.Model):
                        'employee_id': employee.id,
                        'department_id': employee.department_id and employee.department_id.id or False,
                        'job_id': employee.job_id and employee.job_id.id or False,
-                       'number': employee.number}
+                       'number': employee.number,
+                       'state': 'waiting'}
                 if summary.days_retard:
                     val.update({'amount': summary.days_retard, 'deduction_type_id': retard_leave_type.id})
                     line_ids.append(val)
@@ -97,13 +98,16 @@ class hrDeduction(models.Model):
 class hrDeductionLine(models.Model):
     _name = 'hr.deduction.line'
 
-    deduction_id = fields.Many2one('hr.deduction', string=' الحسميات')
+    # TODO: get name
+    deduction_id = fields.Many2one('hr.deduction', string=' الحسميات', ondelete='cascade')
     employee_id = fields.Many2one('hr.employee', string='الموظف', required=1)
     number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' الرقم الوظيفي')
     job_id = fields.Many2one(related='employee_id.job_id', store=True, readonly=True, string=' الوظيفة')
     department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string=' الادارة')
     deduction_type_id = fields.Many2one('hr.deduction.type', string='نوع الحسم', required=1)
     amount = fields.Char(string='عدد أيام الحسم', required=1)
+    month = fields.Selection(MONTHS, related='deduction_id.month', store=True, readonly=True, string='الشهر')
+    # do the store=True
     deduction_state = fields.Selection(related='deduction_id.state', store=True, string='الحالة')
     state = fields.Selection([('waiting', 'في إنتظار الحسم'),
                               ('excluded', 'مستبعد'),
@@ -114,7 +118,7 @@ class hrDeductionLine(models.Model):
 class hrDeductionHistory(models.Model):
     _name = 'hr.deduction.history'
 
-    deduction_id = fields.Many2one('hr.deduction', string=' الحسميات')
+    deduction_id = fields.Many2one('hr.deduction', string=' الحسميات', ondelete='cascade')
     employee_id = fields.Many2one('hr.employee', string=' الموظف', required=1)
     action = fields.Char(string='الإجراء')
     reason = fields.Char(string='السبب', required=1,)

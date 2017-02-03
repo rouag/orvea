@@ -42,6 +42,9 @@
 											المحترم
 										</p>
 										<p class="text-center">السلام عليكم ورحمة الله وبركاته :-</p>
+										<p>نأمل إجراء الفحوص الطبية اللازمة للموظح اسمه لمعرفة مدى
+											لياقته الصحية لشغل الوظيفة المرشح لها  </p>
+
 									</div>
 								</div>
 
@@ -95,19 +98,23 @@
 										<t t-set="exams" t-value="get_exams_by_category(o.exams_results, c)" />
 
 										<!-- right side -->
-										<td>
+										<td colspan="2">
 											<div class="rotate text-center">
 												<strong>
 													<span t-field="c.name" />
 												</strong>
 											</div>
 										</td>
-										<td colspan="3">
+										<td colspan="1">
 											<div t-foreach="exams" t-as="e">
 												<span t-field="e.exam" />
 											</div>
 										</td>
-
+										<td colspan="1">
+											<div t-foreach="exams" t-as="e">
+												<span t-field="e.exam_en" />
+											</div>
+										</td>
 										<td>
 											<t t-foreach="exams" t-as="e">
 												<div class="caret">
@@ -165,19 +172,23 @@
 										<t t-set="exams" t-value="get_exams_by_category(o.exams_results, c)" />
 
 										<!-- right side -->
-										<td>
+										<td colspan="2">
 											<div class="rotate text-center">
 												<strong>
 													<span t-field="c.name" />
 												</strong>
 											</div>
 										</td>
-										<td colspan="3">
+										<td colspan="1">
 											<div t-foreach="exams" t-as="e">
 												<span t-field="e.exam" />
 											</div>
 										</td>
-
+										<td colspan="1">
+											<div t-foreach="exams" t-as="e">
+												<span t-field="e.exam_en" />
+											</div>
+										</td>
 										<td>
 											<t t-foreach="exams" t-as="e">
 												<div class="caret">
@@ -206,7 +217,10 @@
 									<tr>
 										<td width="85%" colspan="2" rowspan="2">
 											<strong>* تضاف الفحوصات الأتية للمتقدمين لشغل الوظائف الحصيه
-												:
+												:</strong>
+												<br></br>
+												<strong>
+												* to be performed for health care applications only
 											</strong>
 										</td>
 

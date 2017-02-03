@@ -21,7 +21,7 @@
 
 		<report id="report_hr_holidays_report" model="hr.holidays" string="طلب الاجازة"
 			report_type="qweb-pdf" name="smart_hr.hr_holidays_report" file="smart_hr.hr_holidays_report"
-			attachment_use="True" attachment="('Leave_'+(object.name).replace('/','')+'.pdf')"
+			attachment_use="False" 
 			menu="False" />
 
 		<report id="report_hr_holidays_hospital_transfer_form_report"
@@ -115,6 +115,11 @@
 			<field name="paperformat_id" ref="smart_base.paperformat_landscape" />
 			<field name="download_filename">${o.employee_id.name}_بطاقة وظيفية.pdf</field>
 		</record>
+		
+				<report id="hr_employee_situation_order" model="hr.employee.situation.order" name="smart_hr.report_hr_employee_situation_order"
+			report_type="qweb-pdf" string="طباعة طلب إفادة عن حالة موظف  " file="smart_hr.report_hr_employee_situation_order" />
+		
+		
 	</data>
 </openerp>
 		

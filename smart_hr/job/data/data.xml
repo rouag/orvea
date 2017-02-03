@@ -965,11 +965,26 @@
 		<record id="work_job_personnel_affairs" model="hr.job.workflow.state">
 			<field name="name">شؤون الموظفين</field>
 		</record>
+		<record id="work_job_budg_dep" model="hr.job.workflow.state">
+			<field name="name">إدارة الميزانية</field>
+		</record>
 		<record id="work_job_budg_dep_minis" model="hr.job.workflow.state">
 			<field name="name">إدارة الميزانية - وزارة الخدمة المدنية</field>
 		</record>
+		<record id="work_budget_civil_service" model="hr.job.workflow.state">
+			<field name="name">إدارة الإتصالات - وزارة الخدمة المدنية</field>
+		</record>
 		<record id="work_job_budg__minis" model="hr.job.workflow.state">
 			<field name="name">إدارة الميزانية - وزارة المالية</field>
+		</record>
+		<record id="work_job_budg__comm" model="hr.job.workflow.state">
+			<field name="name">إدارة الإتصالات - وزارة المالية</field>
+		</record>
+		<record id="work_job_comm_orig_employer" model="hr.job.workflow.state">
+			<field name="name">إدارة الإتصالات - جهة التوظيف الأصلية</field>
+		</record>
+		<record id="work_job_budg" model="hr.job.workflow.state">
+			<field name="name">وزارة المالية</field>
 		</record>
 		
 		<!-- المخطط الإنسيابي الوظائف hr.job.workflow-->
@@ -987,6 +1002,9 @@
 		</record>
 		<record id="work_job_cancel_workflow" model="hr.job.workflow">
 			<field name="name">إلغاء وظائف</field>
+		</record>
+		<record id="work_job_update_workflow" model="hr.job.workflow">
+			<field name="name">تحوير وظائف</field>
 		</record>
 	</data>
 </openerp>

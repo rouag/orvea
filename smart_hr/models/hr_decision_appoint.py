@@ -25,9 +25,10 @@ class HrDecisionAppoint(models.Model):
     number = fields.Char(string='الرقم الوظيفي', readonly=1) 
     emp_code = fields.Char(string=u'رمز الوظيفة ', readonly=1) 
     country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
+   
     emp_job_id = fields.Many2one('hr.job', string='الوظيفة', store=True, readonly=1) 
     emp_number_job = fields.Char(string='رقم الوظيفة', store=True, readonly=1) 
-    emp_type_id = fields.Many2one('salary.grid.type', string='الصنف', store=True, readonly=1) 
+    emp_type_id = fields.Many2one('salary.grid.type', string='الصنف', store=True, readonly=1)
     emp_department_id = fields.Many2one('hr.department', string='الادارة', store=True, readonly=1)
     emp_grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', store=True, readonly=1)
     emp_far_age = fields.Float(string=' السن الاقصى', store=True, readonly=1) 
@@ -35,6 +36,7 @@ class HrDecisionAppoint(models.Model):
     emp_degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', store=True, readonly=1)
     # info about job
     job_id = fields.Many2one('hr.job', string='الوظيفة', required=1)
+    passing_score = fields.Float(related='type_id.passing_score', string=u'الدرجة المطلوبه', readonly=1)
     number_job = fields.Char(string='رقم الوظيفة', readonly=1) 
     code = fields.Char(string=u'رمز الوظيفة ', readonly=1) 
     type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1) 
@@ -87,8 +89,16 @@ class HrDecisionAppoint(models.Model):
     order_enquiry_file_name = fields.Char(string='اسم طلب الاستسفار') 
     file_salar_recent_name = fields.Char(string='اسم تعهد من الموظف') 
     file_appoint_name = fields.Char(string='اسم قرار التعين') 
-    file_decision_name = fields.Char(string='اسم قرار المباشر') 
+    file_decision_name = fields.Char(string='اسم قرار المباشر')
+    score = fields.Float(string=u'نتيجة المترشح', readonly=1, states={'draft': [('readonly', 0)]})
 
+    @api.multi
+    @api.onchange('score')
+    def onchange_score(self):
+        self.ensure_one()
+        if self.score and self.passing_score > 0:
+            if self.score < self.passing_score:
+                raise ValidationError(u"لا يمكن تعين عضو دون الدرجة المطلوبة")
 
     @api.multi
     def send_appoint_request(self):
@@ -262,9 +272,9 @@ class HrDecisionAppoint(models.Model):
     @api.multi
     def action_done(self):
         self.ensure_one()
-        for line in self:
-            line.employee_id.write({'employee_state':'employee', 'job_id':line.job_id.id})
-            line.job_id.write({'state': 'occupied', 'employee': line.employee_id.id, 'occupied_date': fields.Datetime.now()})
+        
+        self.employee_id.write({'employee_state':'employee', 'job_id':self.job_id.id})
+        self.job_id.write({'state': 'occupied', 'employee': self.employee_id.id, 'occupied_date': fields.Datetime.now()})
         self.state = 'done'
         self.state_appoint ='active'
         user = self.env['res.users'].browse(self._uid)
@@ -291,10 +301,14 @@ class HrDecisionAppoint(models.Model):
         self.env['hr.holidays']._init_balance(self.employee_id)
         # create promotion history line
         promotion_obj = self.env['hr.employee.promotion.history']
+        previous_promotion = self.env['hr.employee.promotion.history'].search([('employee_id', '=', self.employee_id.id),('active_duration', '=',True)],limit=1)
+        if previous_promotion:
+             previous_decsion_appoint = previous_promotion.decision_appoint_id
+             previous_promotion.date_to = previous_decsion_appoint.date_hiring_end
         self.env['hr.employee.promotion.history'].create({'employee_id': self.employee_id.id,
                                                            'salary_grid_id': self.employee_id.job_id.grade_id.id,
                                                            'date_from': self.date_direct_action ,
-                                                           'active':True,
+                                                           'active_duration':True,
                                                            'decision_appoint_id':self.id
                                                            })
 
@@ -343,8 +357,8 @@ class HrDecisionAppoint(models.Model):
          if self.date_direct_action :
              if self.date_hiring > self.date_direct_action:
                  raise ValidationError(u"تاريخ مباشرة العمل يجب ان يكون أكبر من تاريخ التعيين")
-        
-       
+
+
     @api.onchange('date_hiring_end')
     def _onchange_date_hiring_end(self):
          if self.date_direct_action :

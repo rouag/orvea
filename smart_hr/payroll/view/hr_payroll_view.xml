@@ -52,6 +52,7 @@
 								</button>
 							</div>
 							<group col="4">
+								<field name="month" />
 								<field name="employee_id" />
 								<label for="date_from" string="الفترة" />
 								<div>
@@ -63,11 +64,12 @@
 								<field name="number" string="التسلسل" readonly="1"/>
 								<field name="credit_note" invisible="1" />
 								<field name="struct_id" invisible="1" />
+								<field name="contract_id" invisible="1" />
 							</group>
 							<notebook>
 								<page string="أيام العمل">
 									<separator string="أيام العمل" />
-									<field name="worked_days_line_ids">
+									<field name="worked_days_line_ids" readonly='1'>
 										<tree string="أيام العمل" editable="bottom">
 											<field name="name" />
 											<field name="code" invisible="0" />
@@ -87,15 +89,15 @@
 											</group>
 										</form>
 									</field>
-									<separator string="الإجازات والغيابات" />
-									<field name="days_off_line_ids" colspan="4" nolabel="1">
+									<separator string="الإجازات والحسميات" />
+									<field name="days_off_line_ids" colspan="4" nolabel="1"  readonly='1'>
 										<tree string="الإجازات والغيابات" editable="bottom">
 											<field name="name" />
 											<field name="code" />
 											<field name="number_of_days" />
 											<field name="number_of_hours" />
 										</tree>
-										<form string="الإجازات والغيابات">
+										<form string="الإجازات والحسميات">
 											<group col="4">
 												<field name="name" />
 												<field name="code" />
