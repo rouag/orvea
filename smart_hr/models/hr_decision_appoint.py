@@ -7,6 +7,7 @@ from openerp.exceptions import Warning
 from dateutil.relativedelta import relativedelta
 from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 class HrDecisionAppoint(models.Model):
     _name = 'hr.decision.appoint'  
@@ -22,7 +23,7 @@ class HrDecisionAppoint(models.Model):
     active = fields.Boolean(string=u'مباشر', default=False)
     # info about employee
     employee_id = fields.Many2one('hr.employee', string='الموظف', required=1)
-    number = fields.Char(string='الرقم الوظيفي', readonly=1) 
+    number = fields.Char(related='employee_id.number', store=True, readonly=True, string=u'الرقم الوظيفي') 
     emp_code = fields.Char(string=u'رمز الوظيفة ', readonly=1) 
     country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
    
@@ -276,13 +277,18 @@ class HrDecisionAppoint(models.Model):
         self.employee_id.write({'employee_state':'employee', 'job_id':self.job_id.id})
         self.job_id.write({'state': 'occupied', 'employee': self.employee_id.id, 'occupied_date': fields.Datetime.now()})
         self.state = 'done'
+         #send notification to hr personnel
+        group_id = self.env.ref('smart_hr.group_personnel_hr')
+        self.send_notification_to_group(group_id)
         self.state_appoint ='active'
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت إحداث تعين جديد '" + unicode(user.name) + u"'")
         # update holidays balance for the employee
+        
         type=''
         if self.type_appointment.id == self.env.ref('smart_hr.data_hr_new_agent_public').id:
             type = '17'
+            
         elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_agent_public').id:
             type = '59'
         elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_agent_utilisateur').id:
@@ -311,6 +317,29 @@ class HrDecisionAppoint(models.Model):
                                                            'active_duration':True,
                                                            'decision_appoint_id':self.id
                                                            })
+       
+           
+
+
+    def send_notification_to_group(self, group_id):
+        '''
+        @param group_id: res.groups
+        '''
+        for recipient in group_id.users:
+            self.env['base.notification'].create({'title': u'  إشعار بإحداث تعين جديد  ',
+                                                  'message': u'لقد تم  إحداث تعين جديد ',
+                                                  'user_id': recipient.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': self.id,
+                                                  'res_action': 'smart_hr.action_hr_decision_appoint',
+                                                  'notif': True
+                                                  })
+
+
+
+
+
+
 
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
