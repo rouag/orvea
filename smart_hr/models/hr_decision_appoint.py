@@ -93,6 +93,20 @@ class HrDecisionAppoint(models.Model):
     score = fields.Float(string=u'نتيجة المترشح', readonly=1, states={'draft': [('readonly', 0)]})
 
     @api.multi
+    @api.onchange('type_appointment')
+    def _onchange_type_appointment(self):
+        # get list of employee depend on type_appointment
+        res = {}
+        if self.type_appointment and self.type_appointment == self.env.ref('smart_hr.data_hr_recrute_Members'):
+            employee_ids = [rec .id for rec in self.env['hr.employee'].search([('is_member', '=', True), ('employee_state', 'in', ['done', 'employee'])])]
+            res['domain'] = {'employee_id': [('id', 'in', employee_ids)]}
+            return res
+        if self.type_appointment and self.type_appointment != self.env.ref('smart_hr.data_hr_recrute_Members'):
+            employee_ids = [rec .id for rec in self.env['hr.employee'].search([('is_member', '=', False), ('employee_state', 'in', ['done', 'employee'])])]
+            res['domain'] = {'employee_id': [('id', 'in', employee_ids)]}
+            return res
+
+    @api.multi
     @api.onchange('score')
     def onchange_score(self):
         self.ensure_one()
@@ -352,18 +366,32 @@ class HrDecisionAppoint(models.Model):
                     self.retirement = salary_grid_line.retirement
                     self.net_salary = salary_grid_line.net_salary
 
-    @api.onchange('date_direct_action')
-    def _onchange_date_direct_action(self):
-         if self.date_direct_action :
-             if self.date_hiring > self.date_direct_action:
+
+    @api.one
+    @api.constrains('date_direct_action', 'date_hiring')
+    def check_dates_periode(self):
+          if self.date_hiring > self.date_direct_action:
                  raise ValidationError(u"تاريخ مباشرة العمل يجب ان يكون أكبر من تاريخ التعيين")
 
+    @api.one
+    @api.constrains('date_hiring', 'date_hiring_end')
+    def check_dates_end(self):
+          if self.date_hiring > self.date_hiring_end:
+                  raise ValidationError(u"تاريخ إنتهاء التعيين يجب ان يكون أكبر من تاريخ التعيين")  
 
-    @api.onchange('date_hiring_end')
-    def _onchange_date_hiring_end(self):
-         if self.date_direct_action :
-             if self.date_hiring > self.date_hiring_end:
-                 raise ValidationError(u"تاريخ إنتهاء التعيين يجب ان يكون أكبر من تاريخ التعيين")  
+
+#     @api.onchange('date_direct_action')
+#     def _onchange_date_direct_action(self):
+#          if self.date_direct_action :
+#              if self.date_hiring > self.date_direct_action:
+#                  raise ValidationError(u"تاريخ مباشرة العمل يجب ان يكون أكبر من تاريخ التعيين")
+# 
+# 
+#     @api.onchange('date_hiring_end')
+#     def _onchange_date_hiring_end(self):
+#          if self.date_hiring_end :
+#              if self.date_hiring > self.date_hiring_end:
+#                  raise ValidationError(u"تاريخ إنتهاء التعيين يجب ان يكون أكبر من تاريخ التعيين")  
 
 class HrTypeAppoint(models.Model):
     _name = 'hr.type.appoint'  

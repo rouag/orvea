@@ -120,18 +120,22 @@
 						<button name="send_appoint_request" string="إرسال " type="object"
 							groups="smart_hr.group_manager_appointment" states="draft"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_accept_audit" string="موافق" type="object" attrs="{'invisible':['|',('type_appointment', '=', %(data_hr_recrute_Members)d), ('state','!=', 'audit')]}"
+						<button name="button_accept_audit" string="موافق" type="object"
+							attrs="{'invisible':['|',('type_appointment', '=', %(data_hr_recrute_Members)d), ('state','!=', 'audit')]}"
 							groups="smart_hr.group_audit_appointment" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_refuse_audit" string="رفض" type="object" attrs="{'invisible':['|',('type_appointment', '=', %(data_hr_recrute_Members)d), ('state','!=', 'audit')]}"
+						<button name="button_refuse_audit" string="رفض" type="object"
+							attrs="{'invisible':['|',('type_appointment', '=', %(data_hr_recrute_Members)d), ('state','!=', 'audit')]}"
 							groups="smart_hr.group_audit_appointment" icon="fa-times"
 							class="oe_inline oe_stat_button" />
-						
+
 						<!-- button accept for لجنة تعين الأعضاء -->
-						<button name="button_accept_audit" string="موافق" type="object" attrs="{'invisible':['|',('type_appointment', '!=', %(data_hr_recrute_Members)d), ('state','!=', 'audit')]}"
+						<button name="button_accept_audit" string="موافق" type="object"
+							attrs="{'invisible':['|',('type_appointment', '!=', %(data_hr_recrute_Members)d), ('state','!=', 'audit')]}"
 							groups="smart_hr.group_committee_members_recruiter" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_refuse_audit" string="رفض" type="object" attrs="{'invisible':['|',('type_appointment', '!=', %(data_hr_recrute_Members)d), ('state','!=', 'audit')]}"
+						<button name="button_refuse_audit" string="رفض" type="object"
+							attrs="{'invisible':['|',('type_appointment', '!=', %(data_hr_recrute_Members)d), ('state','!=', 'audit')]}"
 							groups="smart_hr.group_committee_members_recruiter" icon="fa-times"
 							class="oe_inline oe_stat_button" />
 						<button name="button_accept_enterview_manager" string="موافق"
@@ -180,6 +184,10 @@
 									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
 								<field name="transport_car"
 									attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
+								<field name="medical_examination_file" filename="medical_examination_name"
+									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done']),
+											('type_appointment','not in', [%(data_hr_new_agent_public)d])],
+											'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done']),('type_appointment','not in', [%(data_hr_recrute_agent_public)d])]}" />
 							</group>
 							<group>
 								<field name="state_appoint"
@@ -195,8 +203,8 @@
 								<br></br>
 								<group>
 									<group>
-										<field name="employee_id"
-											attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'done'])]}" />
+										<field name="employee_id" options="{'no_create_edit': True}"
+											attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],'readonly':['|',('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'done']), ('type_appointment','=',False)]}" />
 										<field name="number" />
 										<field name="country_id" />
 										<field name="emp_job_id" />
@@ -210,10 +218,6 @@
 										<field name="emp_degree_id" />
 										<field name="emp_far_age" />
 										<field name="emp_basic_salary" />
-										<field name="medical_examination_file" filename="medical_examination_name"
-											attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done']),
-											('type_appointment','not in', [%(data_hr_new_agent_public)d])],
-											'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done']),('type_appointment','not in', [%(data_hr_recrute_agent_public)d])]}" />
 										<field name="medical_examination_name" invisible="1" />
 										<field name="order_enquiry_file" filename="order_enquiry_file_name"
 											attrs="{'invisible':[('state', 'not in', ['waiting', 'hrm', 'budget', 'done']),('type_appointment','not in', [%(data_hr_new_agent_public)d])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
@@ -271,12 +275,13 @@
 											attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
 										<field name="far_age" />
 										<field name="basic_salary" />
-										<field name="transport_allow" />
 										<field name="retirement" />
+										<field name="transport_allow"
+											attrs="{'invisible':[('transport_car', '=', True)]}" />
 									</group>
 								</group>
 							</page>
-							<page name="public" string="بيانات التقييم">
+							<page name="public" string="بيانات تقييم مترشح">
 								<br></br>
 								<group>
 									<group>
