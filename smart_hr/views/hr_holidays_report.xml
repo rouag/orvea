@@ -374,7 +374,7 @@
 								<div class="row">
 									<div class="col-md-12 text-center">
 										<b>
-											<p align="center">قرار إجازة مرافقة</p>
+											<p align="center">قرار إجازة رياضية</p>
 
 											<p align="center">
 												قرار إداري رقم
@@ -402,17 +402,28 @@
 									<p style="font-size:22px;">
 										وأشارة إلى خطابات مدير مكتب الرئاسة العامة لرعاية
 										الشباب
-										بمحافظة ........ رقم ... ورقم ... بتاريخ .... ورقم ....
-										وتاريخ............
-										بشان طلب الموافقة على منح الموظف
+										بمحافظة ........ رقم
+										<span t-field="o.num_outspeech" />
+										بتاريخ
+										<span t-field="o.num_outspeech" />
+										ورقم
+										<span t-field="o.num_inspeech" />
+
+										وتاريخ
+										<span t-field="o.num_inspeech" />
+
+										بشان طلب
+										الموافقة على منح الموظف
 										<span t-field="o.employee_id.display_name" />
 										،
 
 										إجازة رياضية لمدة ،
 										<span t-esc="o.duration" />
 										<br />
-										....................... يوم للمشاركة في
-										....................................................................
+										يوم ل
+
+										<span t-field="o.sport_participation_topic" />
+
 									</p>
 
 									<p style="font-size:22px;">واستنادا للمادة (٢٤) من لائحة الإجازات ولموافقتنا
@@ -421,29 +432,22 @@
 									</p>
 									<p align="center" style="font-size:22px;">:يقرر ما يلى</p>
 									<p style="font-size:22px;">
-										١) يمنح إجازة رياضية للموظف /
+										١) يمنح الموظف /
 										<span t-field="o.employee_id.display_name" />
-										المثبت على وظيفة
-										<span t-field="o.employee_id.job_id.name" />
-
-										المرتبة:
-										<span t-esc="o.employee_id.job_id.grade_id.name" />
-										رقمها:
-										<span t-esc="o.employee_id.job_id.number" />
-										بالدرجة:
-										<span t-esc="decision_appoint.degree_id.name" />
+										إجازة رياضية لمدة
+										<span t-esc="o.duration" />
+										يوما اعتبارا من
+										<span t-esc="o.date_from" />
 									</p>
 									<p style="font-size:22px;">٢) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
 								</div>
 								<br />
 								<br />
 								<br />
-								<br />
-								<br />
 								<div class="col-xs-5 pull-right" style="font-size:22px;">
 									<span>رئيس هيئة التحقيق والإدعاء العام</span>
 									<br></br>
-									<span t-field="o.employee_id.user_id.company_id.company_president" />
+									<span t-field="o.employee_id.user_id.company_id.company_president.display_name" />
 
 								</div>
 							</div>

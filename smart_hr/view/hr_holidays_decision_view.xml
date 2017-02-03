@@ -18,19 +18,27 @@
 					</header>
 					<sheet>
 						<group>
+							<field name="name" />
+							<field name="order_date" />
+							<field name="file_decision" filename="file_decision" />
+							<field name="file_decision_name" invisible="1" />
+
+						</group>
+						<group>
 							<group string="بيانات الموظف">
 								<field name="employee_id" />
 								<field name="number" />
 								<field name="job_id" />
 								<field name="department_id" />
-								
+
 							</group>
 							<group>
 								<field name="date" />
 
-							<field name="holidays" domain="[('employee_id', '=', employee_id.id),('state', '=', 'done'),('holiday_status_id.direct_decision', '=', True)]"/>
-								
-								
+								<field name="holidays"
+									domain="[('employee_id', '=', employee_id),('state', '=', 'done'),('holiday_status_id.direct_decision', '=', True)]" />
+
+
 							</group>
 						</group>
 					</sheet>
@@ -60,7 +68,8 @@
 		</record>
 
 		<menuitem id="menu_hr_holidays_decision" parent="menu_hr_holiday_root"
-			name="قرار مباشرة" sequence="100" action="action_hr_holidays_decision" groups="smart_hr.group_hrm"/>
+			name="قرار مباشرة" sequence="100" action="action_hr_holidays_decision"
+			groups="smart_hr.group_hrm" />
 
 
 

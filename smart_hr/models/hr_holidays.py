@@ -337,6 +337,10 @@ class HrHolidays(models.Model):
             type = '21'
         elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional').id:
             type = '43'
+        elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_normal').id:
+            type = '01'
+        elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_study').id:
+            type = '30'            
         if type:
             self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
 
@@ -1201,12 +1205,11 @@ class HrDelayHoliday(models.Model):
                 raise ValidationError(u"لا يمكن تأجيل هذا النوع من الاجازة أكثر من " + str(holiday.holiday_status_id.postponement_period) + u"يوماً.")
         else:
             raise ValidationError(u"لا يمكن تأجيل هذا النوع من الاجازة. ")
-            
+
 class HrHolidaysStatus(models.Model):
     _name = 'hr.holidays.status'
     _inherit = 'hr.holidays.status'
     _description = 'holidays status'
-
 
     name = fields.Char(string=u'نوع الاجازة')
     minimum = fields.Integer(string=u'الحد الأدنى في المرة الواحدة')

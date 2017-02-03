@@ -4,16 +4,15 @@
 from openerp import models, fields, api, _
 
 
-
 class HrEmployeeHistory(models.Model):
     _name = 'hr.employee.history'
-    _description = u'سجل الاجراءات' 
+    _description = u'سجل الاجراءات'
 
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1)
     date = fields.Date(string=u'التاريخ')
     num_decision = fields.Char(string=u'رقم القرار')
     date_decision = fields.Date(string=u'تاريخ القرار')
-    type = fields.Selection([('01', u'منح إجازة عادية براتب مقدم'),
+    type = fields.Selection([('01', u'منح إجازة عادية'),
                              ('02', u'منح إجازة استثنائية بدون راتب'),
                              ('03', u'عودة بعد لإجازة'),
                              ('04', u'حسم غياب'),
@@ -41,7 +40,7 @@ class HrEmployeeHistory(models.Model):
                              ('27', u' تقاعد لسبب العجز'),
                              ('28', u' خفض وظيفة'),
                              ('29', u' منح إجازة مرضية بدون راتـب'),
-                             ('30', u' منح إجازة دراسية براتــــب'),
+                             ('30', u' منح إجازة دراسية '),
                              ('31', u'تخفيض وظيفة '),
                              ('32', u' منح إجازة بعثة دراسية بنصف راتب'),
                              ('33', u' منح إجازة بعثة دراسية بدون راتب'),
@@ -94,17 +93,17 @@ class HrEmployeeHistory(models.Model):
                              ('81', u' تسوية ( تحسين وضع )'),
                              ('82', u'طي قيد '),
                              ('83', u' اجازة مرضية'),
-                             ('84',u' تعيين الموظفين المستخدمين'),
-                             ('85',u'تعيين عمال بند الأجور'),
-                             ('86',u' تعيين بعقد'),
-                             ('87',u'  تعيين غير سعودي على مرتبة رسمية'),
-                             ('88',u' تعيين المحالين على التقاعد'),
+                             ('84', u' تعيين الموظفين المستخدمين'),
+                             ('85', u'تعيين عمال بند الأجور'),
+                             ('86', u' تعيين بعقد'),
+                             ('87', u'  تعيين غير سعودي على مرتبة رسمية'),
+                             ('88', u' تعيين المحالين على التقاعد'),
                              ('89', u'لوم '),
                              ('90', u'حسم تأديبي '),
                              ('91', u' حرمان من علاوة '),
                              ('92', u'الفصل '),
                              ], string=u'الاجرا ء')
-    job_id = fields.Many2one('hr.job',string=u'المسمى الوظيفي')
+    job_id = fields.Many2one('hr.job', string=u'المسمى الوظيفي')
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
     number = fields.Char(string='الرقم الوظيفي', required=1,)
     department_id = fields.Many2one('hr.department', string='الفرع')
@@ -114,9 +113,8 @@ class HrEmployeeHistory(models.Model):
     def add_action_line(self, employee_id, num_decision, date_decision, type):
         self.create({'employee_id': employee_id.id, 'date': fields.Datetime.now(),
                      'num_decision': num_decision, 'date_decision': date_decision,
-                     'type': type, 'job_id':employee_id.job_id.id,
-                     'grade_id':employee_id.job_id.grade_id,
-                     'number':employee_id.job_id.number,
-                     'department_id':employee_id.department_id.id,
+                     'type': type, 'job_id': employee_id.job_id.id,
+                     'grade_id': employee_id.job_id.grade_id.id,
+                     'number': employee_id.job_id.number,
+                     'department_id': employee_id.department_id.id,
                      })
-

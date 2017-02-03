@@ -301,15 +301,16 @@ class HrDecisionAppoint(models.Model):
         self.env['hr.holidays']._init_balance(self.employee_id)
         # create promotion history line
         promotion_obj = self.env['hr.employee.promotion.history']
+        previous_promotion = self.env['hr.employee.promotion.history'].search([('employee_id', '=', self.employee_id.id),('active_duration', '=',True)],limit=1)
+        if previous_promotion:
+             previous_decsion_appoint = previous_promotion.decision_appoint_id
+             previous_promotion.date_to = previous_decsion_appoint.date_hiring_end
         self.env['hr.employee.promotion.history'].create({'employee_id': self.employee_id.id,
                                                            'salary_grid_id': self.employee_id.job_id.grade_id.id,
                                                            'date_from': self.date_direct_action ,
                                                            'active_duration':True,
                                                            'decision_appoint_id':self.id
                                                            })
-        previous_promotion = self.env['hr.employee.promotion.history'].search([('employee_id', '=', self.employee_id.id),('active_duration', '=',True)],limit=1)
-        if previous_promotion:
-             previous_promotion
 
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
@@ -356,8 +357,8 @@ class HrDecisionAppoint(models.Model):
          if self.date_direct_action :
              if self.date_hiring > self.date_direct_action:
                  raise ValidationError(u"تاريخ مباشرة العمل يجب ان يكون أكبر من تاريخ التعيين")
-        
-       
+
+
     @api.onchange('date_hiring_end')
     def _onchange_date_hiring_end(self):
          if self.date_direct_action :
