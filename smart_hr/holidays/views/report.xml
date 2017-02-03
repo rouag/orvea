@@ -3,10 +3,12 @@
 	<data>
 
 		<report id="resume_holidays_report" model="False"
-			report_type="qweb-pdf" string="تقرير ملخص الاجازات" name="smart_hr.report_resume_holidays"
+			report_type="qweb-pdf" string="تقرير حصر الاجازات" name="smart_hr.report_resume_holidays"
 			file="smart_hr.report_resume_holidays" paperformat="smart_base.paperformat_landscape" />
 		
-
+		<report id="resume_normal_holidays_report" model="False"
+			report_type="qweb-pdf" string="تقرير حصر الاجازات العادية" name="smart_hr.report_normal_resume_holidays"
+			file="smart_hr.report_normal_resume_holidays" paperformat="smart_base.paperformat_landscape" />
 	</data>
 </openerp>
 		
