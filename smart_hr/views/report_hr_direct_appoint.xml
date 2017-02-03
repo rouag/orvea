@@ -13,6 +13,12 @@
 								<p></p>
 								<br></br>
 								<br></br>
+
+								رقم الهوية الوطنية:
+								<span t-field="o.employee_id.identification_id" />
+							
+							<p></p>
+								<br></br>
 								<p></p>
 								<p style="font-size:22px;" align="center">
 									السلام عليكم ورحمة الله
