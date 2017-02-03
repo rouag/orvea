@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data noupdate="0">
+
+		<record id="group_tranfert_employee_owner" model="res.groups">
+			<field name="category_id" ref="base.module_category_human_resources" />
+			<field name="name">صاحب صلاحية - نقل موظفين</field>
+			<field name="implied_ids"
+				eval="[(4, ref('base.group_user')),(4, ref('smart_hr.group_employees'))]" />
+		</record>
+
+	</data>
+
+</openerp>

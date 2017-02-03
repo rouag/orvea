@@ -59,6 +59,8 @@
         'setting/menu.xml',
 
         # الإدارات
+        'hr/security/hr_security.xml',
+        'hr/security/ir.model.access.csv',
         'hr/menu.xml',
         'hr/view/hierarchy_level.xml',
         'hr/view/hr_department_view.xml',
@@ -67,6 +69,7 @@
         'hr/views/report_hr_contract.xml',
         'hr/views/report.xml',
         'hr/data/hr_department_type_data.xml',
+        'hr/view/hr_employee_transfert_view.xml',
 
         'views/report_salary_grid.xml',
         'views/report_medical_examination.xml',
