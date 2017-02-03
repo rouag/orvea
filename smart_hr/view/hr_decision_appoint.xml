@@ -188,6 +188,7 @@
 									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done']),
 											('type_appointment','not in', [%(data_hr_new_agent_public)d])],
 											'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done']),('type_appointment','not in', [%(data_hr_recrute_agent_public)d])]}" />
+								<field name="depend_on_test_periode" />
 							</group>
 							<group>
 								<field name="state_appoint"
@@ -196,6 +197,8 @@
 									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'done'])]}" />
 								<field name="date_hiring_end"
 									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
+								<field name="testing_date_from" attrs="{'invisible':[('depend_on_test_periode', '=', False)],'readonly':[('state', '!=', 'draft')]}" />
+								<field name="testing_date_to" attrs="{'invisible':[('depend_on_test_periode', '=', False)],'readonly':[('state', '!=', 'draft')]}" />
 							</group>
 						</group>
 						<notebook>
