@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+    <data>
+
+        <!--
+            Promotion Decision
+        -->
+        <record id="view_form_hr_promotions" model="ir.ui.view">
+            <field name="name">hr.promotion.form</field>
+            <field name="model">hr.promotion</field>
+            <field name="arch" type="xml">
+                <form string="قرار ترقية">
+                    <header> 
+                        <button name="button_demande_employee" string="إرسال طلب إلى الموظف" type="object" states="draft" groups="onaizah_hrs.group_hr" icon="fa-paper-plane" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/> 
+<!--                          <button name="button_done" string="موافق" type="object" states="hrm" groups="onaizah_hrs.group_hrm" icon="fa-check" class="oe_inline oe_stat_button"/> -->
+<!--                         <button name="button_refuse" string="رفض" type="object" states="hrm" groups="onaizah_hrs.group_hrm" icon="fa-times" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/> -->
+                        
+<!--                         <button name="button_done" string="موافق" type="object" states="hrm" groups="onaizah_hrs.group_hrm" icon="fa-check" class="oe_inline oe_stat_button"/> -->
+<!--                         <button name="button_refuse" string="رفض" type="object" states="hrm" groups="onaizah_hrs.group_hrm" icon="fa-times" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/> -->
+                        <field name="state" widget="statusbar" statusbar_visible="draft,employee_done,manager,minister,hrm,done,refuse,cancel"/> 
+                     </header> 
+                    <sheet>
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                        <group>
+                            <field name="date" readonly="1"/>
+                            <field name="state" invisible="1"/>
+                        </group>
+                        <group>بيانات الموظف
+	                       	<group string="معلومات ">
+	                       		<field name="employee_id" required="1" attrs="{'readonly':[('state','!=','draft')]}"/>
+	                            <field name="date" readonly="1" attrs="{'readonly':[('state','!=','draft')]}"/>
+	                            <field name="promotion_type" required="1" attrs="{'readonly':[('state','!=','draft')]}"/>
+	                        </group>
+	                        </group>
+	                        <group>
+	                        <group string="بيانات الوظيفة الحالية">
+	                            <field name="old_job_id" required="1" attrs="{'readonly':[('state','!=','draft')]}"/>
+	                            <field name="old_number_job" required="1" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                <field name="emp_grade_id_old" required="1" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                <field name="emp_grade_id_old" required="1" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                
+	                        </group>
+	                        <group string="بيانات الوظيفة الجديدة">
+	                            <field name="new_job_id" required="1" attrs="{'readonly':[('state','!=','draft')]}"/>
+	                            <field name="new_number_job" required="1" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                <field name="new_number_job" required="1" attrs="{'readonly':[('state','!=','draft')]}"/>
+                                <field name="emp_grade_id_new" required="1" attrs="{'readonly':[('state','!=','draft')]}"/>
+	                        </group>
+                        </group>
+                       
+                    </sheet>
+                </form>
+            </field>
+        </record>
+        <record id="view_tree_hr_promotions" model="ir.ui.view">
+            <field name="name">hr.promotion.tree</field>
+            <field name="model">hr.promotion</field>
+            <field name="arch" type="xml">
+                <tree string="قرارات الترقيات" class="oe_tree_view">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="employee_id"/>
+                    <field name="state"/>
+                    <field name="emp_grade_id_old"/>
+                    <field name="emp_grade_id_new"/>
+                    <field name="state"/>
+                </tree>
+            </field>
+        </record>
+        <record id="view_search_hr_promotion" model="ir.ui.view">
+            <field name="name">hr.promotion.search</field>
+            <field name="model">hr.promotion</field>
+            <field name="arch" type="xml">
+                <search string="قرارات الترقيات">
+                    <field name="name"/>
+                    <field name="date"/>
+                    <field name="employee_id"/>
+                    <field name="state"/>
+                    <separator/>
+                    <filter string="طلب" domain="[('state','=','draft')]"/>
+                    <filter string="مدير شؤون الموظفين" domain="[('state','=','hrm')]"/>
+                    <filter string="اعتمدت" domain="[('state','=','done')]"/>
+                    <filter string="رفض" domain="[('state','=','refuse')]"/>
+                </search>
+            </field>
+        </record>
+        <record id="action_hr_promotions" model="ir.actions.act_window">
+            <field name="name">قرارات الترقيات</field>
+            <field name="res_model">hr.promotion</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+              	<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+            </field>
+        </record>
+        
+        
+        
+        <record model="ir.actions.act_window.view" id="action_hr_promotions_tree">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="view_tree_hr_promotions"/>
+            <field name="act_window_id" ref="action_hr_promotions"/>
+        </record>
+
+        <record model="ir.actions.act_window.view" id="action_hr_promotions_form_view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_form_hr_promotions"/>
+            <field name="act_window_id" ref="action_hr_promotions"/>
+        </record>
+        <menuitem id="menu_hr_promotions" action="action_hr_promotions" parent="hr_root_promotion" name="قرارات الترقيات" sequence="1"/>
+<!--           <menuitem id="menu_hr_promotion"  parent="hr_root_promotion" name="قرارات الترقيات" sequence="1"/> -->
+
+
+	<record id="promotion_type_form" model="ir.ui.view">
+			<field name="name">hr.promotion.type.form</field>
+			<field name="model">hr.promotion.type</field>
+			<field name="arch" type="xml">
+				<form string="أنواع الترقيات">
+					<sheet>
+						<group>
+							<group>
+								<field name="name" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="promotion_type_tree" model="ir.ui.view">
+			<field name="name">hr.promotion.type.tree</field>
+			<field name="model">hr.promotion.type</field>
+			<field name="arch" type="xml">
+				<tree string="أنواع الترقيات">
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_promotion_type">
+			<field name="name">أنواع الترقيات</field>
+			<field name="res_model">hr.promotion.type</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+ <menuitem id="menu_hr_promotions_type" action="action_promotion_type" parent="hr_root_promotion" name="أنواع الترقيات" sequence="2"/>
+
+    </data>
+</openerp>

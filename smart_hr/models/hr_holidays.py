@@ -318,10 +318,7 @@ class HrHolidays(models.Model):
                 self.employee_id.compensation_stock = 0
 #                 مدة الترقية
         if self.holiday_status_id.promotion_deductible:
-            active_promotion = self.env['hr.employee.promotion.history'].search([('active_duration', '=', 'True'), ('employee_id', '=', self.employee_id.id)])
-            if active_promotion:
-                for prom in active_promotion:
-                    prom.balance -= self.duration
+            self.env['hr.employee.promotion.history'].decrement_promotion_duration(self.employee_id,self.duration)
 
         if self.holiday_status_id.deductible_duration_service:
             self.employee_id.service_duration -= self.duration

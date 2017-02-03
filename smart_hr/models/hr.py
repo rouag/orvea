@@ -36,7 +36,6 @@ class HrEmployee(models.Model):
                                       ('oh',u'كف اليد'),
                                       ('retired',u'متقاعد'),
                                       ('employee', u'موظف')], string=u'الحالة', default='new')
-    education_level = fields.Many2one('hr.employee.education.level', string=u'المستوى التعليمي')
     # Deputation Stock
     deputation_stock = fields.Integer(string=u'الأنتدابات', default=60)
     service_duration = fields.Integer(string=u'مدة الخدمة(يوم)', readonly=True, size=4)
@@ -78,11 +77,12 @@ class HrEmployee(models.Model):
     display_name = fields.Char(compute='_compute_display_name', string='display Name', select=True)
     sanction_ids = fields.One2many('hr.employee.sanction', 'employee_id', string=u'العقوبات')
     bank_account_ids = fields.One2many('res.partner.bank','employee_id', string=u'الحسابات البنكِيّة')
+    education_level_ids = fields.One2many('hr.employee.education.level', 'employee_id', string=u'المستوى التعليمي')
+    education_level_id = fields.Many2one('hr.employee.education.level', string=u'المستوى التعليمي ')
     loan_count = fields.Integer(string=u'عدد القروض', compute='_compute_loans_count')
 
     @api.constrains('recruiter_date','begin_work_date')
     def recruiter_date_begin_work_date(self):
-        
         if self.recruiter_date > self.begin_work_date:
             raise ValidationError(u"تاريخ بداية العمل الحكومي يجب ان يكون اكبر من تاريخ التعيين بالجهة ")
 
@@ -106,7 +106,8 @@ class HrEmployee(models.Model):
             res.append((emp.id, "%s %s %s %s" % (emp.name or '', emp.father_middle_name or '', emp.father_name or '', emp.family_name or '')))
         return res
 
-    @api.one
+    @api.multi
+    @api.depends('promotions_history.balance')
     def _compute_promotion_days(self):
         active_promotions = self.env['hr.employee.promotion.history'].search([('active_duration', '=', 'True'), ('employee_id', '=', self.id)])
         active_prom = False
@@ -243,7 +244,7 @@ class HrEmployeePromotionHistory(models.Model):
     balance = fields.Integer(string=u'رصيد الترقية (يوم)',store=True)
     active_duration = fields.Boolean(string=u'نشط')
     decision_appoint_id = fields.Many2one('hr.decision.appoint', string=u'  التعيين')
-
+    
     @api.model
     def update_promotion_duration(self):
         today = date.today()
@@ -265,6 +266,7 @@ class HrEmployeePromotionHistory(models.Model):
                 uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', promotion.employee_id.id),('action','=','absence'),
                                                                             ('date','>=',prev_month_first),('date','<=',prev_month_end)])
                 promotion.balance -= uncounted_absence_days
+           
 
             elif promotion.decision_appoint_id.state_appoint =='close':
                 date_hiring_end= fields.Date.from_string(promotion.decision_appoint_id.date_hiring_end)
@@ -274,15 +276,42 @@ class HrEmployeePromotionHistory(models.Model):
                 promotion.balance -= uncounted_absence_days
                 promotion.active_duration = False
 
-                                
+
+    @api.multi
+    def decrement_promotion_duration(self,employee_id,duration_days):
+        active_promotions = self.env['hr.employee.promotion.history'].search([('active_duration', '=', 'True'), ('employee_id', '=', employee_id.id)])
+        active_prom = False
+        if active_promotions:
+            for promotion in active_promotions:
+                if not promotion.date_to:
+                    active_prom = promotion
+                    break
+        if active_prom:
+            active_prom.balance -= duration_days
+
+
 class HrEmployeeEducationLevel(models.Model):
     _name = 'hr.employee.education.level'  
     _description = u'مستويات التعليم'
-  
-    name = fields.Char(string=u'الإسم')
+   
+    name=fields.Char(string='رقم ')
+    employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف')
     sequence = fields.Char(string=u'الرتبة')
     leave_type = fields.Many2one('hr.holidays.status', string='leave type')
     code = fields.Char(string=u'الرمز')
+    nomber_year_education=fields.Integer(string=u'عدد سنوات الدراسة', )
+    diploma_id = fields.Many2one('hr.employee.diploma', string=u'الشهادة')
+    specialization_ids = fields.Many2many('hr.employee.specialization', string=u'الاختصاص')
+    job_specialite = fields.Boolean(string=u'في طبيعة العمل', required=1)
+    
+
+    @api.onchange('diploma_id')
+    def onchange_diploma_id(self):
+        res = {}
+        if self.diploma_id:
+            specialization_ids = self.diploma_id.specialization_ids.ids
+            res['domain'] = {'specialization_ids': [('id', 'in', specialization_ids)]}
+        return res
     
 class HrEmployeeDiploma(models.Model):
     _name = 'hr.employee.diploma'  
@@ -308,5 +337,6 @@ class HrEmployeeSanction(models.Model):
     type_sanction = fields.Many2one('hr.type.sanction',string='العقوبة',)
     date_sanction_start = fields.Date(string='تاريخ بدأ العقوبة') 
     date_sanction_end = fields.Date(string='تاريخ الإلغاء') 
+    
 
 

@@ -140,11 +140,6 @@
 										<field name="passport_place" groups="base.group_hr_user"
 											attrs="{'required': 1}" />
 										<field name="is_resident" attrs="{'required': 1}" />
-										<field name="education_level" options='{"no_open": True, "no_create": True}'
-											attrs="{'required': 1}" />
-										<field name="diploma_id" options='{"no_open": True, "no_create": True}' />
-										<field name="specialization_ids" options='{"no_open": True, "no_create": True}'
-											widget="many2many_tags" />
 									</group>
 									<group>
 										<separator string="الحالة" colspan="6" />
@@ -172,6 +167,7 @@
 									</group>
 								</group>
 							</page>
+						
 							<page string="بيانات العمل">
 								<group>
 									<group string="بيانات العمل">
@@ -421,11 +417,6 @@
 												attrs="{'required': 1}" />
 											<field name="passport_place" groups="base.group_hr_user"
 												attrs="{'required': 1}" />
-											<field name="education_level" options='{"no_open": True, "no_create": True}'
-												attrs="{'required': 1}" />
-											<field name="diploma_id" options='{"no_open": True, "no_create": True}' />
-											<field name="specialization_ids" options='{"no_open": True, "no_create": True}'
-												widget="many2many_tags" />
 											<field name="is_resident" attrs="{'required': 1}" />
 										</group>
 									</group>
@@ -456,6 +447,11 @@
 										</group>
 									</group>
 								</page>
+									<page string="مستويات التعليم">
+								<field name="education_level_ids">
+									
+								</field>
+							</page>
 								<page string="بيانات العمل">
 									<group>
 										<group string="بيانات العمل">
