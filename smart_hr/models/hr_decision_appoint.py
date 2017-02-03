@@ -187,6 +187,12 @@ class HrDecisionAppoint(models.Model):
     def button_refuse_recrutment_manager(self):
         self.ensure_one()
         if self.type_appointment.recrutment_manager:
+            if  self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_agent_utilisateur') : 
+                group_id = self.env.ref('smart_hr.group_personnel_hr')
+                self.send_notification_refuse_to_group(group_id)
+            if  self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_public_retraite')  :
+                group_id = self.env.ref('smart_hr.group_personnel_hr')
+                self.send_notification_refuse_to_group(group_id)
             self.state = 'refuse'
         
         user = self.env['res.users'].browse(self._uid)
@@ -292,8 +298,7 @@ class HrDecisionAppoint(models.Model):
         self.job_id.write({'state': 'occupied', 'employee': self.employee_id.id, 'occupied_date': fields.Datetime.now()})
         self.state = 'done'
          #send notification to hr personnel
-        group_id = self.env.ref('smart_hr.group_personnel_hr')
-        self.send_notification_to_group(group_id)
+        
         self.state_appoint ='active'
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت إحداث تعين جديد '" + unicode(user.name) + u"'")
@@ -332,7 +337,17 @@ class HrDecisionAppoint(models.Model):
                                                            'decision_appoint_id':self.id
                                                            })
        
-           
+    def send_notification_refuse_to_group(self, group_id):    
+        for recipient in group_id.users:  
+            self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                              'message': u'لقد تم إشعار رفض طلب تعين',
+                                              'user_id': recipient.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'res_id': self.id,
+                                              'res_action': 'smart_hr.action_hr_decision_appoint',
+                                              'notif': True
+                                              })
+
 
 
     def send_notification_to_group(self, group_id):
