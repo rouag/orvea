@@ -79,6 +79,7 @@ class hrSanction(models.Model):
     state = fields.Selection([('draft', '  طلب'),
                              ('waiting', '  صاحب صلاحية العقوبات'),
                              ('extern', 'جهة خارجية'),
+                        
                              ('cancel','مرفوض'),
                              ('done', 'اعتمدت')], string='الحالة', readonly=1, default='draft')
  

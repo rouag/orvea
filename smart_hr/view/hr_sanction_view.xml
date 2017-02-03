@@ -80,9 +80,9 @@
 							states="waiting" groups="smart_hr.group_responsable_sanction" />
 						<button name="action_extern" string="موافق" type="object"
 							states="extern" groups="smart_hr.group_third_party_sanction" />
-							<button name="action_cancel" string="إلغاء " type="object" states="done" groups="smart_hr.group_third_party_sanction" />
-
-						<field name="state" widget="statusbar" statusbar_visible="draft,waiting,extern,done" />
+							
+							
+						<field name="state" widget="statusbar" statusbar_visible="draft,waiting,extern,decider,done" />
 						
 						
 					
