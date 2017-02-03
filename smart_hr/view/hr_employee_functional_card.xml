@@ -14,7 +14,7 @@
 							string="طباعة بطاقة وظيفية" type="action" icon="fa-print"
 							class="oe_inline oe_stat_button" states="done" />
 						<button name="button_send_request" string="إرسال طلب" type="object"
-							states="draft" icon="fa-paper-plane" class="oe_inline oe_stat_button"
+							states="draft" icon="fa-paper-plane" class="oe_inline oe_stat_button" groups="smart_hr.group_employee_request,smart_hr.group_hrm"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="button_accept_hrm" string="موافق" type="object"
 							states="hrm" groups="smart_hr.group_hrm" icon="fa-check"
@@ -135,7 +135,7 @@
 		</record>
 
 		<menuitem id="menu_hr_employee_functionnal_card" action="action_hr_employee_functionnal_card"
-			sequence="10" parent="smart_hr.hr_root_functionnal_card_management" />
+			sequence="10" parent="smart_hr.hr_root_functionnal_card_management" groups="smart_hr.group_employee_request,smart_hr.group_hrm"/>
 	</data>
 </openerp>
 			
