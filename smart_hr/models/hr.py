@@ -31,7 +31,6 @@ class HrEmployee(models.Model):
                                       ('oh',u'كف اليد'),
                                       ('retired',u'متقاعد'),
                                       ('employee', u'موظف')], string=u'الحالة', default='new')
-    education_level = fields.Many2one('hr.employee.education.level', string=u'المستوى التعليمي')
     # Deputation Stock
     deputation_stock = fields.Integer(string=u'الأنتدابات', default=60)
     service_duration = fields.Integer(string=u'مدة الخدمة(يوم)', readonly=True)
@@ -73,6 +72,8 @@ class HrEmployee(models.Model):
     display_name = fields.Char(compute='_compute_display_name', string='display Name', select=True)
     sanction_ids = fields.One2many('hr.employee.sanction', 'employee_id', string=u'العقوبات')
     bank_account_ids = fields.One2many('res.partner.bank','employee_id', string=u'الحسابات البنكِيّة')
+    education_level_ids = fields.One2many('hr.employee.education.level', 'employee_id', string=u'المستوى التعليمي')
+    education_level_id = fields.Many2one('hr.employee.education.level', string=u'المستوى التعليمي ')
    
     @api.one
     @api.depends('name', 'father_middle_name', 'father_name', 'family_name')
@@ -283,11 +284,25 @@ class HrEmployeePromotionHistory(models.Model):
 class HrEmployeeEducationLevel(models.Model):
     _name = 'hr.employee.education.level'  
     _description = u'مستويات التعليم'
-  
-    name = fields.Char(string=u'الإسم')
+   
+    name=fields.Char(string='رقم ')
+    employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف')
     sequence = fields.Char(string=u'الرتبة')
     leave_type = fields.Many2one('hr.holidays.status', string='leave type')
     code = fields.Char(string=u'الرمز')
+    nomber_year_education=fields.Integer(string=u'عدد سنوات الدراسة', )
+    diploma_id = fields.Many2one('hr.employee.diploma', string=u'الشهادة')
+    specialization_ids = fields.Many2many('hr.employee.specialization', string=u'الاختصاص')
+    job_specialite = fields.Boolean(string=u'في طبيعة العمل', required=1)
+    
+
+    @api.onchange('diploma_id')
+    def onchange_diploma_id(self):
+        res = {}
+        if self.diploma_id:
+            specialization_ids = self.diploma_id.specialization_ids.ids
+            res['domain'] = {'specialization_ids': [('id', 'in', specialization_ids)]}
+        return res
     
 class HrEmployeeDiploma(models.Model):
     _name = 'hr.employee.diploma'  
@@ -313,5 +328,6 @@ class HrEmployeeSanction(models.Model):
     type_sanction = fields.Many2one('hr.type.sanction',string='العقوبة',)
     date_sanction_start = fields.Date(string='تاريخ بدأ العقوبة') 
     date_sanction_end = fields.Date(string='تاريخ الإلغاء') 
+    
 
 

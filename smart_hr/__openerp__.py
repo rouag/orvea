@@ -92,7 +92,7 @@
         'view/hr.xml',
 
         'view/hr_decision_appoint.xml',
-        'view/hr_promotion.xml',
+#         'view/hr_promotion.xml',
         'view/hr_training.xml',
         'view/hr_training_setting.xml',
         'view/hr_exam_emp.xml',
@@ -180,6 +180,10 @@
         #التقييم والإختبار
         'hr_appraisal/view/hr_appraisal_menu.xml',
         'hr_appraisal/view/hr_appraisal_view.xml',
+        'hr_appraisal/view/hr_evaluation_point_view.xml',
+        
+        #promotion
+        'hr_promotions/view/hr_promotion_view.xml',
 
     ],
     'auto_install': False,

@@ -152,6 +152,7 @@
 								<field name="code" />
 								<field name="annual_premium" />
 								<field name="type_id" />
+								<field name="years_job" />
 							</group>
 
 						</group>
@@ -169,6 +170,7 @@
 					<field name="code" />
 					<field name="annual_premium" />
 					<field name="type_id" />
+					<field name="years_job" />
 				</tree>
 			</field>
 		</record>
