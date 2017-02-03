@@ -62,6 +62,8 @@ class hrDirectAppoint(models.Model):
         self.ensure_one() 
         #TODO  
         appoints=self.search([('state','=','waiting')])
+        date_courant=  fields.Date.from_string(datetime.today().strftime('%Y-%m-%d'))
+        print"date_courant",date_courant
         for appoint in appoints :
             prev_days_end = fields.Date.from_string(appoint.date_direct_action) + relativedelta(days=15)
             print"prev_days_end",prev_days_end
@@ -74,7 +76,8 @@ class hrDirectAppoint(models.Model):
                 raise ValidationError(u"لا يمكن إلغاء قرار المباشرة لوجود حضور قبل المدة المسموح بها")
                 self.state = 'waiting'
                    
-            else :   
+            if prev_days_end <= date_courant :   
+                raise ValidationError(u"لا يمكن إلغاء قرار المباشرة لعدم بلوغ المدة المسموح بها")
                 appoint_line.write({'active': False ,'state_appoint' : 'refuse'})
                 self.state = 'cancel'
     @api.multi

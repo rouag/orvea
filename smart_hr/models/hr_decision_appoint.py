@@ -352,18 +352,32 @@ class HrDecisionAppoint(models.Model):
                     self.retirement = salary_grid_line.retirement
                     self.net_salary = salary_grid_line.net_salary
 
-    @api.onchange('date_direct_action')
-    def _onchange_date_direct_action(self):
-         if self.date_direct_action :
-             if self.date_hiring > self.date_direct_action:
+
+    @api.one
+    @api.constrains('date_direct_action', 'date_hiring')
+    def check_dates_periode(self):
+          if self.date_hiring > self.date_direct_action:
                  raise ValidationError(u"تاريخ مباشرة العمل يجب ان يكون أكبر من تاريخ التعيين")
 
+    @api.one
+    @api.constrains('date_hiring', 'date_hiring_end')
+    def check_dates_end(self):
+          if self.date_hiring > self.date_hiring_end:
+                  raise ValidationError(u"تاريخ إنتهاء التعيين يجب ان يكون أكبر من تاريخ التعيين")  
 
-    @api.onchange('date_hiring_end')
-    def _onchange_date_hiring_end(self):
-         if self.date_direct_action :
-             if self.date_hiring > self.date_hiring_end:
-                 raise ValidationError(u"تاريخ إنتهاء التعيين يجب ان يكون أكبر من تاريخ التعيين")  
+
+#     @api.onchange('date_direct_action')
+#     def _onchange_date_direct_action(self):
+#          if self.date_direct_action :
+#              if self.date_hiring > self.date_direct_action:
+#                  raise ValidationError(u"تاريخ مباشرة العمل يجب ان يكون أكبر من تاريخ التعيين")
+# 
+# 
+#     @api.onchange('date_hiring_end')
+#     def _onchange_date_hiring_end(self):
+#          if self.date_hiring_end :
+#              if self.date_hiring > self.date_hiring_end:
+#                  raise ValidationError(u"تاريخ إنتهاء التعيين يجب ان يكون أكبر من تاريخ التعيين")  
 
 class HrTypeAppoint(models.Model):
     _name = 'hr.type.appoint'  
