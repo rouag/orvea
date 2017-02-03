@@ -15,7 +15,11 @@ class HrPublicHoliday(models.Model):
     date_from = fields.Date(string='من', required=1)
     date_to = fields.Date(string=' إلى', required=1)
     number_of_days = fields.Float(string=' المدة', required=1)
-
+    state = fields.Selection([('draft', u'طلب'),
+                              ('hrm', u'مدير شؤون الموظفين'),
+                              ('done', u'اعتمدت'),
+                              ], string=u'الحالة', default='draft', advanced_search=True)
+    
     def _onchange_date_from(self):
         date_from = self.date_from
         date_to = self.date_to
@@ -48,3 +52,20 @@ class HrPublicHoliday(models.Model):
         to_dt = fields.Datetime.from_string(date_to)
         time_delta = to_dt - from_dt
         return math.ceil(time_delta.days + float(time_delta.seconds) / 86400) + 1
+    
+    
+    @api.multi
+    def button_send_request(self):
+        self.ensure_one()
+        self.state = 'hrm'
+        
+    @api.multi
+    def button_accept_hrm(self):
+        self.ensure_one()
+        self.state = 'done'
+
+    @api.multi
+    def button_refuse_hrm(self):
+        self.ensure_one()
+        self.state = 'draft'
+          
