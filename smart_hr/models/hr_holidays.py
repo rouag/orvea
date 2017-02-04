@@ -122,6 +122,10 @@ class HrHolidays(models.Model):
     courses_country = fields.Char(string=u'الدولة')
     current_holiday_stock = fields.Char(string=u'الرصيد الحالي',compute='_compute_current_holiday_stock')
     sport_participation_topic = fields.Char(string=u'موضوع المشاركة')
+    birth_certificate_child_birth_dad = fields.Binary(string=u'شهادة الميلاد')
+    birth_certificate_file_name_file_name= fields.Char(string=u'شهادة الميلاد')
+    
+    
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
@@ -152,7 +156,7 @@ class HrHolidays(models.Model):
             if not_all_entitlement_line == 0:
                     entitlement_line = self.env['hr.holidays.status.entitlement'].search([('leave_type', '=', self.holiday_status_id.id),
                                                                ('entitlment_category.id', '=',self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)])
-                    
+
                     if entitlement_line and  entitlement_line.periode == 100:
                         stock_line =  self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
                                                                ('holiday_status_id', '=', self.holiday_status_id.id),('entitlement_id.entitlment_category.id', '=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)

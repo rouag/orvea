@@ -229,6 +229,11 @@
 										<field name="emp_far_age" />
 										<field name="emp_basic_salary" />
 
+										<field name="order_picture" filename="order_picture_name"
+											attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'done'])]}" />
+										<field name="order_picture_name" invisible="1"/>
+										<field name="file_decision" filename="file_decision_name"
+											attrs="{'invisible':[('state', 'not in', ['hrm','direct', 'done'])],'required':[('state','=','hrm')],'readonly':[('state', 'in', [ 'direct', 'done'])]}" />
 									</group>
 								</group>
 								
