@@ -83,42 +83,42 @@
 						<div name="button_box" invisible="1" />
 						<field name="image" widget="image" class="oe_avatar"
 							options="{&quot;preview_image&quot;:&quot;image_medium&quot;}" />
-								<div class="col-xs-12 div_paddig_right_null">
-								<div class="col-xs-3 div_paddig_right_null" style="text-align:right;width:23%;">
-									<label name="name" string="الاسم"  />
-								</div>
-								<div class="col-xs-3 div_paddig_right_null" style="text-align:right;width:23%;">
-									<label name="father_name" string="إسم الأب" />
-								</div >
-								<div class="col-xs-3 div_paddig_right_null" style="text-align:right;width:23%;">
-									<label name="grandfather_name" string="اسم الجد" />
-								</div>
-								<div class="col-xs-2 div_paddig_right_null" style="text-align:right;width:15.5%;">
-									<label name="grandfather2_name" string="اسم الجد الثاني"/>
-								</div>
-								<div class="col-xs-1 div_paddig_right_null" style="text-align:right;width:15.5%;">
-									<label name="family_name" string="الاسم العائلي" />
-								</div>
-
+						<div class="col-xs-12 div_paddig_right_null">
+							<div class="col-xs-3 div_paddig_right_null" style="text-align:right;width:23%;">
+								<label name="name" string="الاسم" />
 							</div>
-							<group col="13">
+							<div class="col-xs-3 div_paddig_right_null" style="text-align:right;width:23%;">
+								<label name="father_name" string="إسم الأب" />
+							</div>
+							<div class="col-xs-3 div_paddig_right_null" style="text-align:right;width:23%;">
+								<label name="grandfather_name" string="اسم الجد" />
+							</div>
+							<div class="col-xs-2 div_paddig_right_null" style="text-align:right;width:15.5%;">
+								<label name="grandfather2_name" string="اسم الجد الثاني" />
+							</div>
+							<div class="col-xs-1 div_paddig_right_null" style="text-align:right;width:15.5%;">
+								<label name="family_name" string="الاسم العائلي" />
+							</div>
 
-								<field name="name" nolabel="1" colspan="2" />
-								<field name="father_middle_name" nolabel="1" />
-								<field name="father_name" nolabel="1" colspan="2" />
-								<field name="grandfather_middle_name" nolabel="1" />
-								<field name="grandfather_name" nolabel="1" colspan="2" />
-								<field name="grandfather2_middle_name" nolabel="1" />
-								<field name="grandfather2_name" nolabel="1" colspan="2" />
-								<field name="family_name" nolabel="1" colspan="2" />
-							</group>
+						</div>
+						<group col="13">
 
-							<label for="number" class="oe_edit_only" />
-							<h1>
-								<field name="number" placeholder="الرقم الوظيفي" attrs="{'required': 1}"
-									class="oe_smart_inline" />
+							<field name="name" nolabel="1" colspan="2" />
+							<field name="father_middle_name" nolabel="1" />
+							<field name="father_name" nolabel="1" colspan="2" />
+							<field name="grandfather_middle_name" nolabel="1" />
+							<field name="grandfather_name" nolabel="1" colspan="2" />
+							<field name="grandfather2_middle_name" nolabel="1" />
+							<field name="grandfather2_name" nolabel="1" colspan="2" />
+							<field name="family_name" nolabel="1" colspan="2" />
+						</group>
 
-							</h1>
+						<label for="number" class="oe_edit_only" />
+						<h1>
+							<field name="number" placeholder="الرقم الوظيفي" attrs="{'required': 1}"
+								class="oe_smart_inline" />
+
+						</h1>
 						<notebook>
 							<page name="public" string="بيانات شخصية">
 								<group>
@@ -140,11 +140,6 @@
 										<field name="passport_place" groups="base.group_hr_user"
 											attrs="{'required': 1}" />
 										<field name="is_resident" attrs="{'required': 1}" />
-										<field name="education_level" options='{"no_open": True, "no_create": True}'
-											attrs="{'required': 1}" />
-										<field name="diploma_id" options='{"no_open": True, "no_create": True}' />
-										<field name="specialization_ids" options='{"no_open": True, "no_create": True}'
-											widget="many2many_tags" />
 									</group>
 									<group>
 										<separator string="الحالة" colspan="6" />
@@ -172,6 +167,7 @@
 									</group>
 								</group>
 							</page>
+						
 							<page string="بيانات العمل">
 								<group>
 									<group string="بيانات العمل">
@@ -180,11 +176,14 @@
 										<field name="dep_city" options="{'no_create': True}" />
 										<field name="job_id"
 											attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
-										<field name="parent_id" />
+										<field name="type_id"
+											attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+										<field name="parent_id" string="المدير المباشر" />
 										<field name="service_duration" attrs="{'readonly': 1}" />
 										<field name="promotion_duration" attrs="{'readonly': 1}" />
 
 										<field name="external_decision" />
+										<field name="is_member" attrs="{'readonly': [('employee_state','!=', 'new')]}" />
 										<field name="traveling_ticket" />
 										<field name="traveling_family_ticket" />
 
@@ -269,6 +268,10 @@
 								<field name='history_ids' readonly="1">
 									<tree string="سجل الاجراءات">
 										<field name="job_id" />
+										<field name="grade_id" />
+										<field name="number" />
+										<field name="dep_Side" />
+										<field name="department_id" />
 										<field name="type" />
 										<field name="date" />
 										<field name="num_decision" />
@@ -325,7 +328,6 @@
 		<record id="view_employee_request_form" model="ir.ui.view">
 			<field name="name">hr.employee.request.form</field>
 			<field name="model">hr.employee</field>
-			<field name="sequence" eval="100" />
 			<field name="inherit_id" ref="hr.view_employee_form" />
 			<field name="arch" type="xml">
 				<xpath expr="/form" position='replace'>
@@ -344,21 +346,35 @@
 						</header>
 
 						<sheet>
-							<div name="button_box" invisible="1" />
+
+							<div class="oe_button_box" name="button_box" position="inside">
+								<button name="%(smart_hr.action_hr_loan)d" class="oe_stat_button"
+									context="{'search_default_employee_id': id}" icon="fa-money"
+									type="action">
+									<field name="loan_count" widget="statinfo" string="القروض" />
+								</button>
+
+								<button name="%(smart_hr.open_view_attendance_inherite)d"
+									class="oe_stat_button" context="{'search_default_employee_id': id}"
+									icon="fa-clock-o" type="action">
+									<span>الحضور </span>
+								</button>
+							</div>
+
 							<field name="image" widget="image" class="oe_avatar"
 								options="{&quot;preview_image&quot;:&quot;image_medium&quot;}" />
 							<div class="col-xs-12 div_paddig_right_null">
 								<div class="col-xs-3" style="text-align:right;width:23%;">
-									<label name="name" string="الاسم"  />
+									<label name="name" string="الاسم" />
 								</div>
 								<div class="col-xs-3 div_paddig_right_null" style="text-align:right;width:23%;">
 									<label name="father_name" string="إسم الأب" />
-								</div >
+								</div>
 								<div class="col-xs-3 div_paddig_right_null" style="text-align:right;width:23%;">
 									<label name="grandfather_name" string="اسم الجد" />
 								</div>
 								<div class="col-xs-2 div_paddig_right_null" style="text-align:right;width:15.5%;">
-									<label name="grandfather2_name" string="اسم الجد الثاني"/>
+									<label name="grandfather2_name" string="اسم الجد الثاني" />
 								</div>
 								<div class="col-xs-1 div_paddig_right_null" style="text-align:right;width:15.5%;">
 									<label name="family_name" string="الاسم العائلي" />
@@ -404,11 +420,6 @@
 												attrs="{'required': 1}" />
 											<field name="passport_place" groups="base.group_hr_user"
 												attrs="{'required': 1}" />
-											<field name="education_level" options='{"no_open": True, "no_create": True}'
-												attrs="{'required': 1}" />
-											<field name="diploma_id" options='{"no_open": True, "no_create": True}' />
-											<field name="specialization_ids" options='{"no_open": True, "no_create": True}'
-												widget="many2many_tags" />
 											<field name="is_resident" attrs="{'required': 1}" />
 										</group>
 									</group>
@@ -439,6 +450,11 @@
 										</group>
 									</group>
 								</page>
+									<page string="مستويات التعليم">
+								<field name="education_level_ids">
+									
+								</field>
+							</page>
 								<page string="بيانات العمل">
 									<group>
 										<group string="بيانات العمل">
@@ -447,10 +463,13 @@
 											<field name="dep_city" options="{'no_create': True}" />
 											<field name="job_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
-											<field name="parent_id" />
+											<field name="type_id"
+												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+											<field name="parent_id" string="المدير المباشر" />
 											<field name="service_duration" attrs="{'readonly': 1}" />
 											<field name="promotion_duration" attrs="{'readonly': 1}" />
 											<field name="external_decision" />
+											<field name="is_member" attrs="{'readonly': [('employee_state','!=', 'new')]}" />
 										</group>
 										<group string="خصائص أخرى">
 											<field name="user_id"
@@ -491,8 +510,8 @@
 										</tree>
 									</field>
 								</page>
-								<!-- TODO: dont delete it used by borni in payroll 
-								           we can discuss about it after  -->
+								<!-- TODO: dont delete it used by borni in payroll we can discuss 
+									about it after -->
 								<page string="بيانات الراتب ">
 									<group>
 										<field name="payroll_structure_id"/>
@@ -500,7 +519,7 @@
 									    <field name="degree_id"/>
 								    </group>
 								</page>
-								
+
 								<page string="أرصدة الاجازات والترقيات">
 									<separator string="أرصدة الاجازات" />
 									<field name="holidays_balance"
@@ -544,7 +563,10 @@
 									<field name='history_ids' readonly="1">
 										<tree string="سجل الاجراءات">
 											<field name="job_id" />
-
+											<field name="grade_id" />
+											<field name="number" />
+											<field name="dep_Side" />
+											<field name="department_id" />
 											<field name="type" />
 											<field name="date" />
 											<field name="num_decision" />

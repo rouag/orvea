@@ -3,7 +3,6 @@
 
 from . import hr
 from . import hr_decision_appoint
-from . import hr_promotion
 from . import hr_training
 from . import medical
 from . import res_partner
@@ -45,4 +44,5 @@ from . import hr_sanction
 
 from . import hr_employee_functional_card
 from . import hr_employee_create_users
+from . import employee_situation_order
 

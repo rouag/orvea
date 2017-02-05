@@ -153,6 +153,11 @@ access_hr_sanction_responsable,hr_sanction,model_hr_sanction,group_responsable_s
 access_hr_sanction_party,hr_sanction,model_hr_sanction,group_third_party_sanction,1,1,1,1
 access_hr_sanction_employee,hr_sanction,model_hr_sanction,group_employee,0,0,0,0
 ,,,,,,,,,,,,,,,,,,,,,,,,,,
+access_hr_sanction_ligne_manager,hr_sanction_ligne,model_hr_sanction_ligne,group_manager_sanction,1,1,1,1
+access_hr_sanction_ligne_responsable,hr_sanction_ligne,model_hr_sanction_ligne,group_responsable_sanction,1,1,1,0
+access_hr_sanction_ligne_party,hr_sanction_ligne,model_hr_sanction_ligne,group_third_party_sanction,1,1,1,1
+access_hr_sanction_ligne_employee,hr_sanction_ligne,model_hr_sanction_ligne,group_employee,0,0,0,0
+,,,,,,,,,,,,,,,,,,,,,,,,,,
 access_hr_type_sanction_manager,hr_type_sanction,model_hr_type_sanction,group_manager_sanction,1,1,1,1
 access_hr_type_sanction_responsable,hr_type_sanction,model_hr_type_sanction,group_responsable_sanction,1,1,1,0
 access_hr_type_sanction_party,hr_type_sanction,model_hr_type_sanction,group_third_party_sanction,1,1,1,1
@@ -160,20 +165,23 @@ access_hr_type_sanction_employee,hr_type_sanction,model_hr_type_sanction,group_e
 
 ,,,,,,,
 ,,,,,,,
-access_hr_remove_sanction_manager,hr_remove_sanction,model_hr_remove_sanction,group_manager_sanction,1,1,1,1
-access_hr_remove_sanction_responsable,hr_remove_sanction,model_hr_remove_sanction,group_responsable_sanction,1,1,1,0
-access_hr_remove_sanction_party,hr_remove_sanction,model_hr_remove_sanction,group_third_party_sanction,1,1,1,1
-access_hr_remove_sanction_employee,hr_remove_sanction,model_hr_remove_sanction,group_employee,0,0,0,0
+access_hr_difference_sanction_manager,hr_difference_sanction,model_hr_difference_sanction,group_manager_sanction,1,1,1,1
+access_hr_difference_sanction_responsable,hr_difference_sanction,model_hr_difference_sanction,group_responsable_sanction,1,1,1,0
+access_hr_difference_sanction_party,hr_difference_sanction,model_hr_difference_sanction,group_third_party_sanction,1,1,1,1
+access_hr_difference_sanction_employee,hr_difference_sanction,model_hr_difference_sanction,group_employee,0,0,0,0
 ,,,,,,,,,,,,,,,,
+
 access_hr_decision_appoint2,hr_decision_appoint,model_hr_decision_appoint,group_enterview_manager,1,1,1,1
 access_hr_decision_appoint3,hr_decision_appoint,model_hr_decision_appoint,group_recrutment_manager,1,1,1,0
 access_hr_decision_appoint4,hr_decision_appoint,model_hr_decision_appoint,group_recrutment_decider,1,1,1,1
 access_hr_decision_appoint5,hr_decision_appoint,model_hr_decision_appoint,group_personnel_hr,1,1,1,1
+access_hr_decision_appoint6,hr_decision_appoint,model_hr_decision_appoint,group_ministry_civil,1,1,1,1
 
 access_hr_type_appoint2,hr_type_appoint,model_hr_type_appoint,group_enterview_manager,1,1,1,1
 access_hr_type_appoint3,hr_type_appoint,model_hr_type_appoint,group_recrutment_manager,1,0,0,0
 access_hr_type_appoint4,hr_type_appoint,model_hr_type_appoint,group_recrutment_decider,1,1,1,1
 access_hr_type_appoint5,hr_type_appoint,model_hr_type_appoint,group_personnel_hr,1,0,0,0
+access_hr_type_appoint6,hr_type_appoint,model_hr_type_appoint,group_ministry_civil,1,0,0,0
 
 access_hr_employee_history,hr_employee_history,model_hr_employee_history,group_employee,1,0,0,0
 access_hr_employee_diploma,hr_employee_diploma,model_hr_employee_diploma,group_employee,1,0,0,0

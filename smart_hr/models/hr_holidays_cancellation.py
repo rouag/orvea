@@ -109,12 +109,13 @@ class hrHolidaysCancellation(models.Model):
             if cancellation.type=='cancellation':
                 for holiday in cancellation.holidays:
                     for en in holiday.holiday_status_id.entitlements:
-                        if en.entitlment_category.id == holiday.entitlement_type.id:
-                            right_entitlement = en
-                            break
-                    if not right_entitlement:
+                        right_entitlement = False
+                        if not holiday.entitlement_type:
+                            entitlement_type = self.env.ref('smart_hr.data_hr_holiday_entitlement_all')
+                        else:
+                            entitlement_type = holiday.entitlement_type
                         for en in holiday.holiday_status_id.entitlements:
-                            if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
+                            if en.entitlment_category.id == entitlement_type.id:
                                 right_entitlement = en
                                 break
                     for holiday_balance in holiday.employee_id.holidays_balance:
@@ -133,6 +134,13 @@ class hrHolidaysCancellation(models.Model):
                         type = '35'
                     if type:
                         self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
+                    if holiday.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_study'):
+                        study_followup = self.env['courses.followup'].search([('employee_id','=','holiday.employee_id.id'),
+                                                                              ('state','=','progress'),
+                                                                              ('holiday_id','=','holiday.id'),
+                                                                              ])
+                        if study_followup:
+                            study_followup.state='cancel'
             if cancellation.type=='cut':
                 for holiday in cancellation.holidays:
                     for holiday_balance in holiday.employee_id.holidays_balance:
@@ -146,7 +154,13 @@ class hrHolidaysCancellation(models.Model):
                     if holiday.open_period:
                         holiday.open_period.holiday_stock += cuted_duration
                     holiday.write({'state': 'cancel'})
-                                    
+                    if holiday.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_study'):
+                        study_followup = self.env['courses.followup'].search([('employee_id','=','holiday.employee_id.id'),
+                                                                              ('state','=','progress'),
+                                                                              ('holiday_id','=','holiday.id'),
+                                                                              ])
+                        if study_followup:
+                            study_followup.state='cut'     
             cancellation.state = 'done'
 
     @api.one

@@ -27,13 +27,17 @@
 		<menuitem id="menu_hr_deputation_root" parent="hr_root" name="الأنتدابات" sequence="17" />
 
 		<menuitem id="hr_root_evaluation" parent="hr_root" name="التقييم "  sequence="89" groups="smart_hr.group_hrm"/>	
+		
+				<menuitem id="hr_root_promotion" parent="hr_root" name="الترقيات "  sequence="85" groups="smart_hr.group_hrm"/>	
+		
+		
 		<menuitem id="hr_root_evaluation_configuration" parent="hr_root_evaluation" name="الاعدادات "  sequence="2" groups="smart_hr.group_hrm"/>	
 		
 		<menuitem id="hr_root_job" name="إدارة الوظائف" sequence="15" parent="hr_root" />	
 		
 		<menuitem id="hr_root_decision" parent="hr_root" name="القرارات"  sequence="40" groups="smart_hr.group_hrm"/>		
 
-		<menuitem id="hr_root_functionnal_card_management" name="إدارة البطاقات الوظيفية" sequence="200" parent="hr_root_employees"  />
+		<menuitem id="hr_root_functionnal_card_management" name="إدارة البطاقات الوظيفية" sequence="200" parent="hr_root_employees"  groups="smart_hr.group_employee_request,smart_hr.group_hrm"/>
 		
 		<menuitem id="hr_users_creation" name="المستخدمون" sequence="90" parent="hr_root" groups="smart_hr.group_adm"/>
 		<menuitem id="hr_other_services" name="خدمات اخرى" sequence="89" parent="hr_root" groups="smart_hr.group_hrm"/>

@@ -13,13 +13,18 @@ class hrHolidaysDecision(models.Model):
     job_id = fields.Many2one(related='employee_id.job_id', store=True, readonly=True, string=' الوظيفة')
     department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string=' الادارة')
   #  degree_id = fields.Many2one(related='employee_id.degree_id', store=True, readonly=True, string=' الدرجة')
-    date = fields.Date(string=u'تاريخ المباشرة', default=fields.Datetime.now())
+    date = fields.Date(string=u'تاريخ المباشرة', default=fields.Datetime.now(),required=1)
     state = fields.Selection([('new', ' ارسال طلب'),
                              ('waiting', 'في إنتظار الإعتماد'),
                              ('cancel', 'رفض'),
                              ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
 
-    holidays = fields.Many2many('hr.holidays', string=u'الإجازات')
+    holidays = fields.Many2many('hr.holidays', string=u'الإجازات',required=1,
+                               )
+    name = fields.Char(string='رقم الخطاب', required=1)
+    order_date = fields.Date(string='تاريخ الخطاب', required=1) 
+    file_decision = fields.Binary(string='الخطاب')
+    file_decision_name = fields.Char(string='اسم الخطاب')
 
 
     @api.one
@@ -32,6 +37,13 @@ class hrHolidaysDecision(models.Model):
 
     @api.one
     def action_done(self):
+        type = ''
+        for holiday in self.holidays:
+            if holiday.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_illness').id:
+                type = '37'
+            else:
+                type = '36'
+            self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
         self.state = 'done'
 
     @api.one

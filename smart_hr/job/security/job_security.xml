@@ -6,7 +6,12 @@
 			<field name="name"> إدارة الوظائف</field>
 			<field name="category_id" ref="base.module_category_human_resources" />
 		</record>
-
+		
+		<record id="group_hr_personnel_officer_jobs" model="res.groups">
+			<field name="category_id" ref="base.module_category_human_resources" />
+			<field name="name">موظف شؤون الموظفين - الوظائف</field>
+			<field name="implied_ids" eval="[(4, ref('group_employee'))]" />
+		</record>
 
 		<record id="group_new_job_confirmation" model="res.groups">
 			<field name="name">صاحب صلاحية - إعتماد إحداث وظائف</field>
@@ -42,15 +47,29 @@
 			<field name="name">صاحب صلاحية - تحوير‬ وظيفة</field>
 			<field name="category_id" ref="base.module_category_human_resources" />
 		</record>
-
-		<record id="group_budget_managment" model="res.groups">
+		
+		<record id="group_budget_communication" model="res.groups">
 			<field name="name">إدارة الإتصالات - وزارة المالية</field>
 			<field name="category_id" ref="base.module_category_human_resources" />
 		</record>
-
+		
+		<record id="group_budget_managment" model="res.groups">
+			<field name="name">إدارة الميزانية - وزارة المالية</field>
+			<field name="category_id" ref="base.module_category_human_resources" />
+		</record>
+		
+		<record id="group_budget_civil_service" model="res.groups">
+			<field name="name">إدارة الميزانية - وزارة الخدمة المدنية</field>
+			<field name="category_id" ref="base.module_category_human_resources" />
+		</record>
 
 		<record id="group_communication_managment" model="res.groups">
 			<field name="name">إدارة الإتصالات</field>
+			<field name="category_id" ref="base.module_category_human_resources" />
+		</record>
+		
+		<record id="group_budget_comm_service" model="res.groups">
+			<field name="name">إدارة الإتصالات - وزارة الخدمة المدنية</field>
 			<field name="category_id" ref="base.module_category_human_resources" />
 		</record>
 

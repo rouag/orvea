@@ -9,12 +9,17 @@
 				<form string="المستوى التعليمي">
 					<sheet>
 						<group>
-							<group>
+							<group col="6">
 								<field name="sequence" required="1" />
 								<field name="code" required="1" />
-							</group>
-							<group>
 								<field name="name" required="1" />
+							</group>
+							<group col="8">
+								
+								<field name="diploma_id"  />
+								<field name="specialization_ids" widget="many2many_tags"  />
+								<field name="nomber_year_education"  />
+								<field name="job_specialite"  />
 								
 							</group>
 						</group>
@@ -29,6 +34,10 @@
 				<tree string="المستوى التعليمي" class="oe_tree_view">
 					<field name="sequence" />
 					<field name="name" />
+					<field name="diploma_id"  />
+					<field name="specialization_ids"  />
+					<field name="nomber_year_education"  />
+					<field name="job_specialite"  />
 				</tree>
 			</field>
 		</record>
@@ -85,7 +94,7 @@
 			<field name="name">hr.employee.specialization.form</field>
 			<field name="model">hr.employee.specialization</field>
 			<field name="arch" type="xml">
-				<form string="الاختصاص">
+				<form string="التخصص">
 					<sheet>
 						<group>
 							<field name="name" required="1" />
@@ -101,13 +110,13 @@
 			<field name="name">hr.employee.specialization.tree</field>
 			<field name="model">hr.employee.specialization</field>
 			<field name="arch" type="xml">
-				<tree string="الاختصاص" class="oe_tree_view">
+				<tree string="التخصص" class="oe_tree_view">
 					<field name="name" />
 				</tree>
 			</field>
 		</record>
 		<record id="action_hr_employee_specialization" model="ir.actions.act_window">
-			<field name="name">الاختصاص</field>
+			<field name="name">التخصص</field>
 			<field name="res_model">hr.employee.specialization</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>

@@ -91,7 +91,7 @@
 										</tr>
 										<tr>
 											<td>
-												رقم الحفيظة
+												رقم جواز السفر
 											</td>
 											<td>
 												<span t-field="o.passport_id" />
@@ -194,6 +194,43 @@
 									<td>
 										<span t-esc="line.date_decision" />
 									</td>
+								</tr>
+							</table>
+							<div class="col-xs-12 text-center" style=" background-color:#9CB071">
+								<h3>
+									التدريب
+								</h3>
+							</div>
+							<table class="table table-condensed">
+								<tr>
+									<th>
+										الدورة
+									</th>
+									<th>
+										التاريخ 
+									</th>
+									<th>
+										المدة
+									</th>
+									<th>
+										المكان
+									</th>
+								
+								</tr>
+								<tr t-foreach="o.training_ids" t-as="line">
+									<td>
+										<span t-esc="line.training_id" />
+									</td>
+									<td>
+										<span t-esc="line.date_from" />
+									</td>
+									<td>
+										<span t-esc="line.number_of_days" />
+									</td>
+									<td>
+										<span t-esc="line.place" />
+									</td>
+								
 								</tr>
 							</table>
 						</div>

@@ -12,80 +12,82 @@
 							t-if="o.holiday_status_id == docs.env.ref('smart_hr.data_hr_holiday_status_normal')">
 							<div class="page" style="direction:rtl;">
 								<div class="row">
-									<div class="col-md-12">
-										<div class="col-md-4">إدارة شؤون الموظفين</div>
-										<div class="col-md-4">قرار إجازة عادية</div>
-										<div class="col-md-4"></div>
-									</div>
-								</div>
-								<div class="row">
 									<div class="col-md-12 text-center">
-										<p align="center">
-											قرار إداري رقم
-											<span t-esc="o.name" />
-											<span t-esc="o.date" />
-											وتاريخ
-										</p>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-12">
-										<div class="col-md-4"></div>
-										<div class="col-md-4"></div>
-										<div class="col-md-4 pull-left">
-											<table class="table table-bordered">
-												<tr>
-													<td>رقم الهوية الوطنية:</td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-												</tr>
-											</table>
-										</div>
-									</div>
-								</div>
-								<br />
-								<br />
-								<br />
-								<t t-set="decision_appoint"
-									t-value="docs.env['hr.decision.appoint'].search([('employee_id','=',o.employee_id.id)],limit=1)" />
-								<p style="font-size:22px;">إن مدير شؤون الموظفين</p>
-								<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
-								<p style="font-size:22px;"> و إشارة إلى طلب الإجازة المرفق و استنادا إلى المادة
-									رقم (الثانية) من لائحة الاجازات
-								</p>
-								<p align="center">:يقرر ما يلى</p>
-								<p style="font-size:22px;">
-									1) الموافقة على تمتع الموظف /
-									<span t-field="o.employee_id.name" />
-									الذى يشغل وظيفة
-									<span t-field="o.employee_id.job_id.name" />
-								</p>
-								<p style="font-size:22px;">
-									المرتبة:
-									<span t-esc="o.employee_id.job_id.grade_id.name" />
-									رقمها:
-									<span t-esc="o.employee_id.job_id.number" />
-									بالدرجة:
-									<span t-esc="decision_appoint.degree_id.name" />
-								</p>
-								<p style="font-size:22px;">
-									بإجازة عادية لمده
-									<span t-esc="o.duration" />
-									اعتبارا من
-									<span t-esc="o.date_from" />
-								</p>
-								<p style="font-size:22px;">2) لا يصرف راتبه مقدما.</p>
-								<p style="font-size:22px;">3) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-							</div>
+										<b>
+											<p align="center">قرار إجازة عادية</p>
 
+											<p align="center">
+												قرار إداري رقم
+												<span t-esc="o.name" />
+												بتاريخ
+												<span t-esc="o.date" />
+											</p>
+											<p align="left">
+												رقم الهوية الوطنية:
+												<span t-field="o.employee_id.identification_id" />
+
+											</p>
+										</b>
+									</div>
+								</div>
+
+								<div class="row">
+
+									<br />
+									<br />
+									<t t-set="decision_appoint"
+										t-value="docs.env['hr.decision.appoint'].search([('employee_id','=',o.employee_id.id)],limit=1)" />
+									<p style="font-size:22px;">إن .........................</p>
+									<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
+									<p style="font-size:22px;"> و إشارة إلى طلب الإجازة المرفق و استنادا إلى المادة
+										رقم (الثانية) من لائحة الاجازات
+									</p>
+									<p align="center" style="font-size:22px;">:يقرر ما يلى</p>
+									<p style="font-size:22px;">
+										1) الموافقة على تمتع الموظف /
+										<span t-field="o.employee_id.display_name" />
+										الذى يشغل وظيفة
+										<span t-field="o.employee_id.job_id.name.name" />
+
+										المرتبة
+										<span t-esc="o.employee_id.job_id.grade_id.name" />
+										رقمها
+										<span t-esc="o.employee_id.job_id.number" />
+										بالدرجة
+										<span t-esc="decision_appoint.degree_id.name" />
+										بإجازة عادية لمده
+										<span t-esc="o.duration" />
+										يوما اعتبارا من
+										<span t-esc="o.date_from" />
+									</p>
+									<p style="font-size:22px;">2) لا يصرف راتبه مقدما.</p>
+									<p style="font-size:22px;">3) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
+								</div>
+								<br></br>
+								<br></br>
+								<p align="left">
+									<br />
+									..................................
+									<br />
+									..................................
+								</p>
+								<p>
+									<br />
+									صورة مع التحية لسعادة مدير عام شؤون الموظفين برئاسة الهيئة
+									<br />
+									الاصل مع الاساس لملف المذكور(
+									<span t-field="o.employee_id.number"></span>
+									)
+									<br />
+									للإفادة عن تاريخ عودته
+									<br />
+									ص/للارشيف
+									<br />
+									صورة للاتصالات الادارية لتسديد القيد رقم.....و تاريخ ../../..ه
+
+
+								</p>
+							</div>
 						</t>
 
 						<!-- إجازة استثنائية -->
@@ -95,35 +97,21 @@
 
 								<div class="row">
 									<div class="col-md-12 text-center">
-										<p align="center">
-											قرار إداري رقم
-											<span t-esc="o.name" />
-											<span t-esc="o.date" />
-											وتاريخ
-										</p>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-12">
-										<div class="col-md-4"></div>
-										<div class="col-md-4"></div>
-										<div class="col-md-4 pull-left">
-											<table class="table table-bordered">
-												<tr>
-													<td>رقم الهوية الوطنية:</td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-												</tr>
-											</table>
-										</div>
+										<b>
+											<p align="center">قرار إجازة استثنائية</p>
+
+											<p align="center">
+												قرار إداري رقم
+												<span t-esc="o.name" />
+												بتاريخ
+												<span t-esc="o.date" />
+											</p>
+											<p align="left">
+												رقم الهوية الوطنية:
+												<span t-field="o.employee_id.identification_id" />
+
+											</p>
+										</b>
 									</div>
 								</div>
 								<br />
@@ -134,44 +122,59 @@
 								<p style="font-size:22px;">إن رئيس هيئة التحقيق والإدعاء العام</p>
 								<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
 								<p style="font-size:22px;">و إشارة إلى طلب الإجازة المرفق و استنادا إلى المادة
-									(العشرين) من لائحة الإجازة
+									(العشرين) من لائحة الإجازات
 								</p>
-								<p align="center">:يقرر ما يلى</p>
+								<p align="center" style="font-size:22px;">:يقرر ما يلى</p>
 								<p style="font-size:22px;">
-									1) منح إجازة استثنائية للموظف /
-									<span t-field="o.employee_id.name" />
+									١) منح إجازة استثنائية للموظف
+									<span t-field="o.employee_id.display_name" />
 									المثبت على وظيفة
-									<span t-field="o.employee_id.job_id.name" />
-								</p>
-								<p style="font-size:22px;">
-									المرتبة:
+									<span t-field="o.employee_id.job_id.name.name" />
+									و مرتبته
 									<span t-esc="o.employee_id.job_id.grade_id.name" />
-									رقمها:
+									رقمها
 									<span t-esc="o.employee_id.job_id.number" />
-									بالدرجة:
+									بالدرجة
 									<span t-esc="decision_appoint.degree_id.name" />
-								</p>
-								<p style="font-size:22px;">
-									بفرع الهيئة بمنطقة مكة المكرمة وراتبه
-									<span t-esc="o.employee_id.wage" />
+
+									بفرع الهيئة بمنطقة
+									<span t-field="o.employee_id.dep_city.name" />
 									لمدة
 									<span t-esc="o.duration" />
-									اعتبارا من
+									يوم اعتبارا من
 									<span t-esc="o.date_from" />
 									وحتى نهاية يوم
 									<span t-esc="o.date_to" />
 								</p>
-								<p style="font-size:22px;">2) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-							</div>
-							<br />
-							<br />
-							<br />
-							<br />
-							<br />
-							<div class="col-xs-5 pull-right" style="font-size:22px;">
-								<span>رئيس هيئة التحقيق والإدعاء العام</span>
-								<br></br>
-								<span t-if="user.name" t-field="user.name" />
+								<p style="font-size:22px;">٢ ) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
+
+								<br />
+								<br />
+								<br />
+								<p align="left" style="font-size:22px;">
+
+									رئيس هيئة التحقيق والإدعاء العام
+									<br></br>
+									<span t-field="o.employee_id.user_id.company_id.company_president" />
+
+								</p>
+								<p>
+									<br />
+									ص/ مع التحية لوزارة الخدمة المدنية
+									<br />
+									الاصل مع الاساس لملف المذكور(
+									<span t-field="o.employee_id.number"></span>
+									)
+									<br />
+
+									<br />
+									ص/ للرواتب و الإجازات ص/للارشيف ص/للموظف
+									<br />
+									ص/ لفرع الهيئة بمنطقة
+									<span t-field="o.employee_id.dep_city.name" />
+									للإفادة عن تاريخ عودته
+
+								</p>
 							</div>
 						</t>
 
@@ -181,43 +184,22 @@
 							t-if="o.holiday_status_id in [docs.env.ref('smart_hr.data_hr_holiday_status_illness')]">
 							<div class="page" style="direction:rtl;">
 								<div class="row">
-									<div class="col-md-12">
-										<div class="col-md-4">إدارة شؤون الموظفين</div>
-										<div class="col-md-4">قرار إجازة مرضية</div>
-										<div class="col-md-4"></div>
-									</div>
-								</div>
-								<div class="row">
 									<div class="col-md-12 text-center">
-										<p align="center">
-											قرار إداري رقم
-											<span t-esc="o.name" />
-											<span t-esc="o.date" />
-											وتاريخ
-										</p>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-12">
-										<div class="col-md-4"></div>
-										<div class="col-md-4"></div>
-										<div class="col-md-4 pull-left">
-											<table class="table table-bordered">
-												<tr>
-													<td>رقم الهوية الوطنية:</td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-												</tr>
-											</table>
-										</div>
+										<b>
+											<p align="center">قرار إجازة مرضية</p>
+
+											<p align="center">
+												قرار إداري رقم
+												<span t-esc="o.name" />
+												بتاريخ
+												<span t-esc="o.date" />
+											</p>
+											<p align="left">
+												رقم الهوية الوطنية:
+												<span t-field="o.employee_id.identification_id" />
+
+											</p>
+										</b>
 									</div>
 								</div>
 								<br />
@@ -225,36 +207,64 @@
 								<br />
 								<t t-set="decision_appoint"
 									t-value="docs.env['hr.decision.appoint'].search([('employee_id','=',o.employee_id.id)],limit=1)" />
-								<p style="font-size:22px;">إن مدير شؤون الموظفين</p>
+								<p style="font-size:22px;">إن ................</p>
 								<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
-								<p style="font-size:22px;">وبناءً على التقرير الطبي الصادر من رقم و تاريخ القاضي
-									يمنح الموظف إسمه أدناه إجازة مرضية.</p>
+								<p style="font-size:22px;">
+									وبناءً على التقرير الطبي الصادر من رقم
+									<span t-field="o.medical_report_number" />
+
+									و تاريخ
+									<span t-field="o.medical_report_date" />
+									القاضي
+									يمنح الموظف إسمه أدناه إجازة مرضية.
+								</p>
 								<p style="font-size:22px;">وبناءً على المادة (الحادية عشر) من لائحة الإجازات ،
-									ولموافقتنا على ذلك.</p>
-								<p align="center">:يقرر ما يلى</p>
+									ولموافقتنا على ذلك.
+								</p>
+								<p align="center" style="font-size:22px;">:يقرر ما يلى</p>
 								<p style="font-size:22px;">
-									1) منح المستخدم /
-									<span t-field="o.employee_id.name" />
+									١) منح المستخدم /
+									<span t-field="o.employee_id.display_name" />
 									المثبت على وظيفة
-									<span t-field="o.employee_id.job_id.name" />
-								</p>
-								<p style="font-size:22px;">
-									المرتبة:
+									<span t-field="o.employee_id.job_id.name.name" />
+
+									المرتبة
 									<span t-esc="o.employee_id.job_id.grade_id.name" />
-									رقمها:
+									رقمها
 									<span t-esc="o.employee_id.job_id.number" />
-									بالدرجة:
+									بالدرجة
 									<span t-esc="decision_appoint.degree_id.name" />
-								</p>
-								<p style="font-size:22px;">
-									بإجازة مرضية لمده
+
+									إجازة مرضية لمده
 									<span t-esc="o.duration" />
-									اعتبارا من
+									يومااعتبارا من
 									<span t-esc="o.date_from" />
 								</p>
-								<p style="font-size:22px;">2) يعامل من حيث راتب الإجازة على أساس 1 راتب كامل..
+								<p style="font-size:22px;">٢) يعامل من حيث راتب الإجازة على أساس ..............
 								</p>
-								<p style="font-size:22px;">3) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
+								<p style="font-size:22px;">٣) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
+								<p align="left">
+									<br />
+									..................................
+									<br />
+									..................................
+								</p>
+								<p>
+									<br />
+									صورة مع التحية لسعادة مدير عام شؤون الموظفين برئاسة الهيئة
+									<br />
+									الاصل مع الاساس لملف المذكور(
+									<span t-field="o.employee_id.number"></span>
+									)
+									<br />
+									صورة للاحاطة
+									<br />
+									ص/للارشيف
+									<br />
+									صورة للاتصالات الادارية لتسديد القيد رقم.....و تاريخ ../../..ه
+
+
+								</p>
 							</div>
 
 						</t>
@@ -266,41 +276,26 @@
 								<div class="row">
 									<div class="col-md-12">
 										<div class="col-md-4">إدارة شؤون الموظفين</div>
-										<div class="col-md-4">قرار إجازة مرافقة</div>
 										<div class="col-md-4"></div>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-md-12 text-center">
-										<p align="center">
-											قرار إداري رقم
-											<span t-esc="o.name" />
-											<span t-esc="o.date" />
-											وتاريخ
-										</p>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-12">
-										<div class="col-md-4"></div>
-										<div class="col-md-4"></div>
-										<div class="col-md-4 pull-left">
-											<table class="table table-bordered">
-												<tr>
-													<td>رقم الهوية الوطنية:</td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-												</tr>
-											</table>
-										</div>
+										<b>
+											<p align="center">قرار إجازة مرافقة</p>
+
+											<p align="center">
+												قرار إداري رقم
+												<span t-esc="o.name" />
+												بتاريخ
+												<span t-esc="o.date" />
+											</p>
+											<p align="left">
+												رقم الهوية الوطنية:
+												<span t-field="o.employee_id.identification_id" />
+
+											</p>
+										</b>
 									</div>
 								</div>
 								<br />
@@ -310,15 +305,24 @@
 									t-value="docs.env['hr.decision.appoint'].search([('employee_id','=',o.employee_id.id)],limit=1)" />
 								<p style="font-size:22px;">إن مدير شؤون الموظفين</p>
 								<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
-								<p style="font-size:22px;">وبناءً على التقرير الطبي الصادر من رقم و تاريخ.</p>
-								<p style="font-size:22px;">و إستناداً على المادة (الحادية عشر) من لائحة الإجازات
-									.</p>
-								<p align="center">:يقرر ما يلى</p>
+								<p style="font-size:22px;">
+									وبناءً على التقرير الطبي الصادر من رقم
+									<span t-field="o.medical_report_number" />
+
+									و تاريخ
+									<span t-field="o.medical_report_date" />
+								</p>
+
+
+								<p style="font-size:22px;">و إستناداً على المادة (الخامسة عشر) من لائحة الإجازات
+									.
+								</p>
+								<p align="center" style="font-size:22px;">:يقرر ما يلى</p>
 								<p style="font-size:22px;">
 									1) يمنح الموظف /
-									<span t-field="o.employee_id.name" />
+									<span t-field="o.employee_id.display_name" />
 									المثبت على وظيفة
-									<span t-field="o.employee_id.job_id.name" />
+									<span t-field="o.employee_id.job_id.name.name" />
 								</p>
 								<p style="font-size:22px;">
 									المرتبة:
@@ -329,12 +333,35 @@
 									<span t-esc="decision_appoint.degree_id.name" />
 								</p>
 								<p style="font-size:22px;">
-									بإجازة مرافقة لمده
+									إجازة مرافقة لمده
 									<span t-esc="o.duration" />
-									اعتبارا من
+									يوم اعتبارا من
 									<span t-esc="o.date_from" />
 								</p>
 								<p style="font-size:22px;">2) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
+								<br></br>
+								<br></br>
+								<p align="left">
+									<br />
+									..................................
+									<br />
+									..................................
+								</p>
+								<p>
+									<br />
+									صورة مع التحية لسعادة مدير عام شؤون الموظفين برئاسة الهيئة
+									<br />
+									الاصل مع الاساس لملف المذكور(
+									<span t-field="o.employee_id.number"></span>
+									)
+									<br />
+									ص/................. للإحاطة و الإفادة عن تاريخ عودته
+									<br />
+									ص/للارشيف
+									<br />
+									ص/لتسديد القيد رقم.....و تاريخ ../../..ه
+
+								</p>
 							</div>
 
 						</t>
@@ -346,76 +373,83 @@
 
 								<div class="row">
 									<div class="col-md-12 text-center">
-										<p align="center">
-											قرار إداري رقم
-											<span t-esc="o.name" />
-											<span t-esc="o.date" />
-											وتاريخ
-										</p>
+										<b>
+											<p align="center">قرار إجازة رياضية</p>
+
+											<p align="center">
+												قرار إداري رقم
+												<span t-esc="o.name" />
+												بتاريخ
+												<span t-esc="o.date" />
+											</p>
+											<p align="left">
+												رقم الهوية الوطنية:
+												<span t-field="o.employee_id.identification_id" />
+
+											</p>
+										</b>
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-md-12">
-										<div class="col-md-4"></div>
-										<div class="col-md-4"></div>
-										<div class="col-md-4 pull-left">
-											<table class="table table-bordered">
-												<tr>
-													<td>رقم الهوية الوطنية:</td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-													<td></td>
-												</tr>
-											</table>
-										</div>
-									</div>
+
+									<br />
+									<br />
+									<br />
+									<t t-set="decision_appoint"
+										t-value="docs.env['hr.decision.appoint'].search([('employee_id','=',o.employee_id.id)],limit=1)" />
+									<p style="font-size:22px;">إن رئيس هيئة التحقيق والإدعاء العام</p>
+									<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له,</p>
+									<p style="font-size:22px;">
+										وأشارة إلى خطابات مدير مكتب الرئاسة العامة لرعاية
+										الشباب
+										بمحافظة ........ رقم
+										<span t-field="o.num_outspeech" />
+										بتاريخ
+										<span t-field="o.num_outspeech" />
+										ورقم
+										<span t-field="o.num_inspeech" />
+
+										وتاريخ
+										<span t-field="o.num_inspeech" />
+
+										بشان طلب
+										الموافقة على منح الموظف
+										<span t-field="o.employee_id.display_name" />
+										،
+
+										إجازة رياضية لمدة ،
+										<span t-esc="o.duration" />
+										<br />
+										يوم ل
+
+										<span t-field="o.sport_participation_topic" />
+
+									</p>
+
+									<p style="font-size:22px;">واستنادا للمادة (٢٤) من لائحة الإجازات ولموافقتنا
+										على
+										ذلك.
+									</p>
+									<p align="center" style="font-size:22px;">:يقرر ما يلى</p>
+									<p style="font-size:22px;">
+										١) يمنح الموظف /
+										<span t-field="o.employee_id.display_name" />
+										إجازة رياضية لمدة
+										<span t-esc="o.duration" />
+										يوما اعتبارا من
+										<span t-esc="o.date_from" />
+									</p>
+									<p style="font-size:22px;">٢) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
 								</div>
 								<br />
 								<br />
 								<br />
-								<t t-set="decision_appoint"
-									t-value="docs.env['hr.decision.appoint'].search([('employee_id','=',o.employee_id.id)],limit=1)" />
-								<p style="font-size:22px;">إن رئيس هيئة التحقيق والإدعاء العام</p>
-								<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
-								<p style="font-size:22px;">وأشارة إلى خطابات مدير مكتب الرئاسة العامة لرعاية
-									الشباب بمحافظة المجمعة رقم ... ورقم ... بتاريخ .... ورقم ....
-									وتاريخ بشان طلب الموافقة على منح الموظف ، إجازة رياضية لمدة ،
-									للمشاركة في  </p>
-								<p style="font-size:22px;">ويستنداً للمادة (24) من لائحة الإجازات ولموافقتنا على
-									ذلك. </p>
-								<p align="center">:يقرر ما يلى</p>
-								<p style="font-size:22px;">
-									1) منح إجازة رياضية للموظف /
-									<span t-field="o.employee_id.name" />
-									المثبت على وظيفة
-									<span t-field="o.employee_id.job_id.name" />
-								</p>
-								<p style="font-size:22px;">
-									المرتبة:
-									<span t-esc="o.employee_id.job_id.grade_id.name" />
-									رقمها:
-									<span t-esc="o.employee_id.job_id.number" />
-									بالدرجة:
-									<span t-esc="decision_appoint.degree_id.name" />
-								</p>
-								<p style="font-size:22px;">2) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-							</div>
-							<br />
-							<br />
-							<br />
-							<br />
-							<br />
-							<div class="col-xs-5 pull-right" style="font-size:22px;">
-								<span>رئيس هيئة التحقيق والإدعاء العام</span>
-								<br></br>
-								<span t-if="user.name" t-field="user.name" />
+								<div class="col-xs-5 pull-right" style="font-size:22px;">
+									<span>رئيس هيئة التحقيق والإدعاء العام</span>
+									<br></br>
+									<span t-field="o.employee_id.user_id.company_id.company_president.display_name" />
+
+								</div>
 							</div>
 						</t>
 

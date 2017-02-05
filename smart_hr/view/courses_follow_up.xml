@@ -9,43 +9,42 @@
 			<field name="arch" type="xml">
 				<form string="الدورات الدراسيّة ">
 					<header>
-						<button name="action_start" string="إرسال طلب" type="object"
-							attrs="{'invisible':[('state','!=','draft')]}" icon="fa-paper-plane"
-							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_succeeded" string="نجح" type="object"
+							states="progress" icon="fa-paper-plane" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 
-						<button name="action_done" string="نهاية الدورة" type="object"
+						<button name="action_not_succeeded" string="لم ينجح" type="object"
 							states="progress" icon="fa-times" class="oe_inline oe_stat_button"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<field name="state" widget="statusbar" statusbar_visible="draft,progress,done" />
+						<field name="state" widget="statusbar" statusbar_visible="progress,done,cut,cancel" />
 					</header>
 					<sheet>
-						<group >
-							<group >
+						<group>
+							<group>
 								<field name="name" />
 							</group>
 							<group></group>
 						</group>
-						<group >
-							<group >
+						<group>
+							<group>
 								<field name="employee_id" />
 							</group>
 							<group></group>
 						</group>
-						<group >
-						<group >
-							<field name="date_from"/>
+						<group>
+							<group>
+								<field name="holiday_id" />
 							</group>
 							<group>
-							<field name="date_to"  />
-						</group>
-						</group>
-							<group >
-							<group >
-								<field name="result" />
+								<field name="result" attrs="{'invisible':[('state','!=','done')]}" />
 							</group>
-							<group></group>
+						</group>
+						<group string="مكان الدورة">
+							<field name="courses_city" />
+							<field name="courses_country" />
+
 						</group>
 					</sheet>
 				</form>
@@ -57,10 +56,12 @@
 			<field name="model">courses.followup</field>
 			<field name="arch" type="xml">
 				<tree string="الدورات الدراسيّة">
-					<field name="employee_id" />
 					<field name="name" />
+					<field name="employee_id" />
+					<field name="holiday_id" />
 					<field name="date_from" />
 					<field name="date_to" />
+					<field name="duration" />
 					<field name="result" />
 					<field name="state" />
 				</tree>
@@ -72,8 +73,9 @@
 			<field name="res_model">courses.followup</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
-			<field name="domain">[('result','=',False)]</field>
 		</record>
+		
+		
 		<!-- config menu -->
 		<menuitem id="hr_configuration_courses_followup" name="الدورات الدراسيّة"
 			parent="menu_hr_holiday_root" sequence="54" action="action_courses_followup" />

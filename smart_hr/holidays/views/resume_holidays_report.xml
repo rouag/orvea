@@ -7,63 +7,124 @@
 					<t t-call="smart_base.landscape_layout">
 						<div class="page">
 							<div class="oe_structure" />
+							<br></br>
+							<br></br>
 
 							<div class="col-xs-12 text-center">
 								<h3 style="color:#395870;">
 									<strong>
-										تقرير ملخص الاجازات
+										حصر اجازات  موظف
 									</strong>
 									<br />
 									<br />
 								</h3>
 							</div>
+
+
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th>اسم الموظف</th>
+										<th> الوظيفة</th>
+										<th> المرتبة</th>
+										<th> الرقم</th>
+										<th> القسم</th>
+										<th> الجهة</th>
+										<th> المدينة</th>
+
+									</tr>
+								</thead>
+								<tbody>
+									<t t-set="employee_id" t-value="get_employee(data['form'])" />
+									<tr>
+
+										<td>
+											<span t-esc="employee_id.display_name" />
+										</td>
+										<td>
+											<span t-esc="employee_id.job_id.name.name" />
+										</td>
+										<td>
+											<span t-esc="employee_id.job_id.grade_id.name" />
+										</td>
+										<td>
+											<span t-esc="employee_id.job_id.number" />
+										</td>
+										<td>
+											<span t-esc="employee_id.department_id.name" />
+										</td>
+										<td>
+											<span t-esc="employee_id.dep_Side.name" />
+										</td>
+										<td>
+											<span t-esc="employee_id.dep_city.name" />
+										</td>
+
+
+									</tr>
+								</tbody>
+
+							</table>
+
 							<div class="col-xs-12 text-center">
-								<strong>التاريخ :</strong>
-								<span t-esc="data['form']['date_from']" />
-								-
-								<span t-esc="data['form']['date_to']" />
+								<strong>الاجازات التي تمتع بها </strong>
+								<p>
+									من
+									<u>
+										<span t-esc="formatLang(data['form']['date_from'], date=True)" />
+									</u>
+									الى
+									<u>
+										<span t-esc="formatLang(data['form']['date_to'], date=True)" />
+									</u>
+
+								</p>
+
+
 								<br />
 								<br />
 							</div>
 
-							<table class="table table-condensed">
+
+							<table class="table table-bordered">
+								<!-- head table -->
 								<thead>
 									<tr>
-										<th width="25%">الموظف</th>
-										<th width="15%">رقم الوظيفة</th>
-										<th width="15%">الادارة</th>
-										<th width="15%"> التاريخ من</th>
-										<th width="15%">التاريخ الى</th>
-											<th width="15%">المدة</th>
-										
+										<th>نوع الاجازة</th>
+										<th> مدة الاجازة</th>
+										<th> تاريخ بدئها</th>
+										<th> تاريخ انتهائها</th>
+										<th> رقم القرار</th>
+										<th> تاريخ القرار</th>
 
 									</tr>
 								</thead>
 								<tbody>
 									<tr t-foreach="get_lines(data['form'])" t-as="line">
 										<td>
-											<span t-field="line.employee_id.name" />
+											<span t-esc="line.holiday_status_id.name" />
 										</td>
 										<td>
-											<span t-field="line.employee_id.number" />
+											<span t-esc="line.duration" />
 										</td>
 										<td>
-											<span t-field="line.employee_id.department_id.name" />
-										</td>
-										<field name="date_from" />
-										<td>
-											<span t-field="line.date_from" />
+											<span t-esc="line.date_from" />
 										</td>
 										<td>
-											<span t-field="line.date_to" />
+											<span t-esc="line.date_to" />
 										</td>
 										<td>
-											<span t-field="line.duration" />
+											<span t-esc="line.name" />
 										</td>
-										
+										<td>
+											<span t-esc="line.date" />
+										</td>
 									</tr>
+
 								</tbody>
+
 							</table>
+
 						</div>
 					</t>
 

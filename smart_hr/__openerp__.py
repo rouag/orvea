@@ -86,13 +86,17 @@
         'report/hr_suspension_end_report.xml',
         'report/hr_suspension_report.xml',
         'report/hr_termination_report.xml',
-
+        'views/employee_situation_order_report.xml',
         'wizards/view/hr_refuse_wizard_view.xml',
+        'wizards/view/hr_sanction_wizard_view.xml',
+        'wizards/view/hr_sanction_update_wizard_view.xml',
+        
+        
 
         'view/hr.xml',
 
         'view/hr_decision_appoint.xml',
-        'view/hr_promotion.xml',
+#         'view/hr_promotion.xml',
         'view/hr_training.xml',
         'view/hr_training_setting.xml',
         'view/hr_exam_emp.xml',
@@ -118,10 +122,10 @@
         'view/courses_follow_up.xml',
         'view/hr_direct_appoint_view.xml',
         'view/hr_sanction_view.xml',
-        'view/hr_remove_sanction_view.xml',
+        'view/hr_difference_sanction_view.xml',
         'view/hr_employee_functional_card.xml',
         'view/res_users.xml',
-
+        'view/employee_situation_order.xml',
         # القرارات
         'view/hr_decision.xml',
         # الرواتب
@@ -174,12 +178,17 @@
         'holidays/menu.xml',
         'holidays/wizard/wizard_resume_holidays_view.xml',
         'holidays/views/resume_holidays_report.xml',
+        'holidays/views/resume_normal_holidays_report.xml',
         'holidays/views/report.xml',
 
-        #apprasal menu
-        #التقييم والإختبار
+        # apprasal menu
+        # التقييم والإختبار
         'hr_appraisal/view/hr_appraisal_menu.xml',
         'hr_appraisal/view/hr_appraisal_view.xml',
+        'hr_appraisal/view/hr_evaluation_point_view.xml',
+        
+        # promotion
+        'hr_promotions/view/hr_promotion_view.xml',
 
     ],
     'auto_install': False,
