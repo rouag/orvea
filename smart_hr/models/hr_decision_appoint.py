@@ -52,6 +52,7 @@ class HrDecisionAppoint(models.Model):
     salary_recent = fields.Float(string=' أخر راتب شهري ')
     transport_alocation = fields.Boolean(string='بدل نقل')
     transport_car = fields.Boolean(string='سيارة')
+    option_contract = fields.Boolean(string='قرار التعاقد')
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
     # other info
     type_appointment = fields.Many2one('hr.type.appoint', string=u'نوع التعيين' , required=1,default=lambda self: self.env.ref('smart_hr.data_hr_recrute_agent_public'), advanced_search=True)
@@ -67,9 +68,11 @@ class HrDecisionAppoint(models.Model):
                               ('audit', u'تدقيق'),
                               ('waiting', u'مقابلة شخصية'),
                             ('manager', u'صاحب صلاحية التعين'),
-                             ('direct', u'مدير مباشر'),
+                           
                              ('budget', u'رئيس الهيئة'),
                               ('hrm', u'شؤون الموظفين'),
+                                ('civil', u'وزارة الخدمة المدنية'),
+                                ('direct', u'إدارة الموظف'),
                               ('done', u'اعتمدت'),
                                ('refuse', u'رفض'),
                                ('cancel', u'ملغاة'),
@@ -148,16 +151,33 @@ class HrDecisionAppoint(models.Model):
     @api.multi
     def button_accept_audit(self):
         self.ensure_one()
-        if self.type_appointment.audit:
+        if self.type_appointment.audit and self.type_appointment.enterview_manager:
             self.state = 'waiting'
-        else :
-            self.state = 'draft'
+        if self.type_appointment.audit and self.type_appointment.recrutment_manager:
+            self.state = 'manager'
+       
         
     @api.multi
     def button_refuse_audit(self):
         self.ensure_one()
         if self.type_appointment.audit:
             self.state = 'draft'
+            
+            
+            
+    @api.multi
+    def button_accept_civil(self):
+        self.ensure_one()
+        if self.type_appointment.ministry_civil and self.type_appointment.personnel_hr:
+            self.option_contract= True
+            self.state = 'hrm'
+        
+    @api.multi
+    def button_refuse_civil(self):
+        self.ensure_one()
+        if self.type_appointment.ministry_civil:
+            self.state = 'manager'
+            
     # control enterview manager  group_enterview_manager
     @api.multi
     def button_accept_enterview_manager(self):
@@ -231,27 +251,33 @@ class HrDecisionAppoint(models.Model):
     @api.multi
     def button_accept_personnel_hr(self):
         self.ensure_one()
-        if self.type_appointment.direct_manager:
-            self.state = 'direct'
-        if self.type_appointment.recrutment_decider:
+       
+        if self.type_appointment.personnel_hr and self.type_appointment.recrutment_decider:
             self.state = 'budget'
-        else :
-            self.action_done()
-            self.state_appoint ='active'
-            direct_appoint_obj = self.env['hr.direct.appoint']
-            self.env['hr.direct.appoint'].create({'employee_id': self.employee_id.id,
-                                                  'number' : self.number,
-                                                  'country_id' : self.country_id.id,
-                                                  'date_hiring' : self.date_hiring,
-                                                  'type_id' : self.type_id.id,
-                                                  'job_id' : self.job_id.id,
-                                                   'number_job' : self.number_job,
-                                                  'state_appoint' : self.state_appoint,
-                                                  'grade_id' : self.grade_id.id,
-                                                  'type_appointment' : self.type_appointment.name,
-                                                  'degree_id' : self.degree_id.id,
-                                                  'date_direct_action': self.date_direct_action 
-                                                           })
+        elif self.type_appointment.personnel_hr and self.type_appointment.ministry_civil and self.option_contract == False :
+            self.state = 'civil'
+        elif self.type_appointment.personnel_hr and self.type_appointment.ministry_civil and self.option_contract == True :
+            self.state = 'direct'
+        elif self.type_appointment.personnel_hr and self.type_appointment.direct_manager:
+            print"dddddddddddd"
+            self.state = 'direct'   
+        elif self.type_appointment.personnel_hr :
+             self.action_done()
+             self.state_appoint ='active'
+             direct_appoint_obj = self.env['hr.direct.appoint']
+             self.env['hr.direct.appoint'].create({'employee_id': self.employee_id.id,
+                                                   'number' : self.number,
+                                                   'country_id' : self.country_id.id,
+                                                   'date_hiring' : self.date_hiring,
+                                                   'type_id' : self.type_id.id,
+                                                   'job_id' : self.job_id.id,
+                                                    'number_job' : self.number_job,
+                                                   'state_appoint' : self.state_appoint,
+                                                   'grade_id' : self.grade_id.id,
+                                                   'type_appointment' : self.type_appointment.name,
+                                                   'degree_id' : self.degree_id.id,
+                                                   'date_direct_action': self.date_direct_action 
+                                                            })
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
         
@@ -501,13 +527,14 @@ class HrTypeAppoint(models.Model):
     name = fields.Char(string='النوع', required=1)
     date_test = fields.Char(string='فترة التجربة') 
     code = fields.Char(string='الرمز')
-    audit = fields.Boolean(string=u'تدقيق', default=False)
-    recrutment_manager = fields.Boolean(string=u'موافقة صاحب صلاحية التعين ', default=True)
-    enterview_manager = fields.Boolean(string=u'مقابلة شخصية', default=True)
-    personnel_hr = fields.Boolean(string=u'شؤون الموظفين', default=True)
-    direct_manager = fields.Boolean(string=u'  موافقة مدير مباشر ', default=True)
-    recrutment_decider = fields.Boolean(string=u' موافقة رئيس الهيئة  ', default=True)
-    can_be_cancelled = fields.Boolean(string=u'يمكن الغاؤها', default=True)
+    audit = fields.Boolean(string=u'تدقيق')
+    recrutment_manager = fields.Boolean(string=u'موافقة صاحب صلاحية التعين ')
+    enterview_manager = fields.Boolean(string=u'مقابلة شخصية')
+    personnel_hr = fields.Boolean(string=u'شؤون الموظفين')
+    direct_manager = fields.Boolean(string=u'  موافقة إدارة الموظف ')
+    recrutment_decider = fields.Boolean(string=u' موافقة رئيس الهيئة  ')
+    ministry_civil = fields.Boolean(string=u' موافقة وزارة الخدمة المدنية')
+    can_be_cancelled = fields.Boolean(string=u'يمكن الغاؤها')
     
 class HrNoticesSettings(models.Model):
     _name = 'hr.notices.settings'  
