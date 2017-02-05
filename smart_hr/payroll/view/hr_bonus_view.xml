@@ -35,18 +35,35 @@
 					<sheet>
 						<group>
 							<group>
+								<separator colspan="2" string="بيانات البدل"/>
 								<field name="name" />
 								<field name="date" />
-								<field name="number_decision" />
-								<field name="date_decision" />
-							</group>
-							<group>
-								<field name="type" />
+							 	<field name="type" />
 								<field name="allowance_id" attrs="{'invisible':[('type','!=','allowance')], 'required': [('type','=','allowance')]}" />
 								<field name="reward_id" attrs="{'invisible':[('type','!=','reward')], 'required': [('type','=','reward')]}" />
 								<field name="indemnity_id" attrs="{'invisible':[('type','!=','indemnity')], 'required': [('type','=','indemnity')]}" />
-								<field name="date_from" />
-								<field name="date_to" />
+								<label for="month_from" />
+								<div>
+									<field name="month_from" class="oe_inline" />
+									<label string="-" class="oe_inline" />
+									<field name="month_to" class="oe_inline" />
+								</div>
+							</group>
+							<group>
+								<separator colspan="2" string="الأثر المالي"/>
+								<field name="compute_method" />
+								<field name="amount" attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}"/>
+								<field name="percentage" attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}"/> 
+								<field name="min_amount" />
+								<field name="city_ids"  attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+									<tree editable="buttom"  >
+										<field name="city_id" />
+										<field name="percentage" />
+									</tree>
+								</field>
+								<separator colspan="2" string="بيانات القرار"/>
+								<field name="number_decision" />
+								<field name="date_decision" />
 							</group>
 						</group>
 						<notebook>
@@ -56,10 +73,10 @@
 										<field name="employee_id" />
 										<field name="number" invisible="1" />
 										<field name="job_id" invisible="1" />
-										<field name="department_id" invisible="1" />
-										<field name="compute_method" />
-										<field name="amount" />
-										<field name="percentage" />
+										<field name="department_id"/>
+										<field name="compute_method" invisible="1" />
+										<field name="amount" invisible="1" />
+										<field name="percentage" invisible="1" />
 										<field name="state" invisible="1"/>
 										<field name="bonus_state" invisible="1"/>
 										<button name="%(smart_hr.action_wizard_bonus_action)d" type="action" string="إيقاف"  icon="STOCK_CANCEL"
@@ -141,8 +158,8 @@
 					<field name="compute_method" />
 					<field name="amount" />
 					<field name="percentage" />
-					<field name="date_from" />
-					<field name="date_to" />
+					<field name="month_from" />
+					<field name="month_to" />
 					<field name="state" />
 				</tree>
 			</field>
@@ -192,8 +209,8 @@
 					<field name="compute_method" />
 					<field name="amount" />
 					<field name="percentage" />
-					<field name="date_from" />
-					<field name="date_to" />
+					<field name="month_from" />
+					<field name="month_to" />
 					<field name="state" />
 				</tree>
 			</field>
@@ -242,8 +259,8 @@
 					<field name="compute_method" />
 					<field name="amount" />
 					<field name="percentage" />
-					<field name="date_from" />
-					<field name="date_to" />
+					<field name="month_from" />
+					<field name="month_to" />
 					<field name="state" />
 				</tree>
 			</field>

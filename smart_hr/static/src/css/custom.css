@@ -1,6 +1,7 @@
 .o_form_field_number {
   text-align: right !important;
  width:60px !important;
+ direction: !important;
 }
 
 .oe_smart_inline {

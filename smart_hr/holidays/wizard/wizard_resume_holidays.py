@@ -12,12 +12,7 @@ class WizardResumeHolidays(models.TransientModel):
     employee_id = fields.Many2one('hr.employee', string='موظف')
    # department_id = fields.Many2one('hr.department', string='قسم')
 
-    #===========================================================================
-    # def print_report(self, data):
-    #     data = self.pre_print_report(data)
-    #     data['form'].update(self.read(['date_from', 'date_to', 'employee_id', 'department_id'])[0])
-    #     return self.env['report'].with_context(landscape=True).get_action(self, 'smart_hr.report_attendance_summary', data=data)
-    #===========================================================================
+
 
     @api.multi
     def print_report(self):
@@ -26,3 +21,9 @@ class WizardResumeHolidays(models.TransientModel):
         report_action['data'] = data
         return report_action
 
+    @api.multi
+    def print_report_normal_holidays(self):
+        report_action = self.env['report'].get_action(self, 'smart_hr.report_normal_resume_holidays')
+        data = {'ids': [],'form': self.read([])[0]}
+        report_action['data'] = data
+        return report_action

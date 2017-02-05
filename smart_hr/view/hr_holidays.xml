@@ -47,7 +47,9 @@
 						<button name="button_accept_dm" string="موافق" type="object"
 							states="dm" groups="smart_hr.group_dm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
+						<button name="button_delay_dm" string="رفض" type="object"
+							states="dm" groups="smart_hr.group_dm" icon="fa-check"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_delay_holiday" string="تأجيل" type="object"
 							states="dm" groups="smart_hr.group_dm" icon="fa-times"
 							class="oe_inline oe_stat_button" />
@@ -161,21 +163,20 @@
 
 
 						<group
-							attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_accompaniment_exceptional)d)], 'readonly':[('is_extension','!=', True)]}">
+							attrs="{'invisible':[('holiday_status_id','not in', [%(data_hr_holiday_accompaniment_exceptional)d,%(data_hr_holiday_status_illness)d])] }">
 							<group>
 								<field name="medical_report_number"
 									attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)],
- 								'required':[('holiday_status_id','=', %(data_hr_holiday_accompaniment_exceptional)d)]}" />
+ 								'required':[('holiday_status_id','in', [%(data_hr_holiday_status_illness)d,%(data_hr_holiday_accompaniment_exceptional)d])]}" />
 								<field name="medical_report_date"
 									attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)],
- 								'required':[('holiday_status_id','=', %(data_hr_holiday_accompaniment_exceptional)d)]}" />
+ 								'required':[('holiday_status_id','in', [%(data_hr_holiday_status_illness)d,%(data_hr_holiday_accompaniment_exceptional)d])]}" />
 								<field name="medical_report" filename="medical_report_file_name"
 									attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)],
- 								'required':[('holiday_status_id','=', %(data_hr_holiday_accompaniment_exceptional)d)]}" />
+ 								'required':[('holiday_status_id','in', [%(data_hr_holiday_status_illness)d,%(data_hr_holiday_accompaniment_exceptional)d])]}" />
 							</group>
 
-							<group>
-
+							<group 	attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_accompaniment_exceptional)d )]}">
 								<field name="accompaniment_type" class="selection_field_height"
 									attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)],
  								'required':[('holiday_status_id','=', %(data_hr_holiday_accompaniment_exceptional)d)]}" />
@@ -193,23 +194,6 @@
 
 
 						<group
-							attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_illness)d)], 'readonly':[('is_extension','!=', True)]}">
-							<group>
-
-								<field name="medical_report_number"
-									attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)],
- 								'required':[('holiday_status_id','=', %(data_hr_holiday_status_illness)d)]}" />
-								<field name="medical_report_date"
-									attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)],
- 								'required':[('holiday_status_id','=', %(data_hr_holiday_status_illness)d)]}" />
-								<field name="medical_report" filename="medical_report_file_name"
-									attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)],
- 								'required':[('holiday_status_id','=', %(data_hr_holiday_status_illness)d)]}" />
-							</group>
-							<group />
-						</group>
-
-						<group
 							attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_sport)d )], 'readonly':[('is_extension','!=', True)]}">
 
 							<field name="sport_participation_topic"
@@ -220,18 +204,19 @@
 
 
 						<group
-							attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_child_birth_dad)d)], 'readonly':[('is_extension','!=', True)]}">
+							attrs="{'invisible':[('holiday_status_id','not in', [%(data_hr_holiday_child_birth_dad)d, %(data_hr_holiday_status_maternity)d])] }">
 							<group>
 								<field name="childbirth_date"
 									attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)],
-								'required':[('holiday_status_id','=', %(data_hr_holiday_child_birth_dad)d)]}" />
+								'required':[('holiday_status_id','in', [%(data_hr_holiday_child_birth_dad)d, %(data_hr_holiday_status_maternity)d])]}" />
 							</group>
 
-							<group>
+							<group
+								attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_child_birth_dad)d )]}">
 
-								<field name="birth_certificate" filename="birth_certificate_file_name"
+								<field name="birth_certificate_child_birth_dad" filename="birth_certificate_file_name_file_name"
 									attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)],
-								'required':[('holiday_status_id','=', %(data_hr_holiday_child_birth_dad)d)]}" />
+								'required':[('holiday_status_id','=', %(data_hr_holiday_child_birth_dad)d )]}" />
 							</group>
 						</group>
 
@@ -287,12 +272,7 @@
 						</group>
 
 
-						<group
-							attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_status_maternity)d)], 'readonly':[('is_extension','!=', True)]}">
-							<field name="childbirth_date"
-								attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)],
- 								'required':[('holiday_status_id','in', (%(data_hr_holiday_status_maternity)d))]}" />
-						</group>
+
 
 						<group
 							attrs="{'invisible':[('holiday_status_id','!=', %(data_hr_holiday_compensation)d)], 'readonly':[('is_extension','!=', True)]}">
@@ -352,6 +332,8 @@
 					<field name="birth_certificate_file_name" invisible="1" />
 					<field name="medical_report_file_name" invisible="1" />
 					<field name="prove_exam_duration_name" invisible="1" />
+					
+					<field name="birth_certificate_file_name_file_name" invisible="1" />
 
 				</form>
 			</field>

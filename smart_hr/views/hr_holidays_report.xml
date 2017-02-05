@@ -47,7 +47,7 @@
 										1) الموافقة على تمتع الموظف /
 										<span t-field="o.employee_id.display_name" />
 										الذى يشغل وظيفة
-										<span t-field="o.employee_id.job_id.name" />
+										<span t-field="o.employee_id.job_id.name.name" />
 
 										المرتبة
 										<span t-esc="o.employee_id.job_id.grade_id.name" />
@@ -129,7 +129,7 @@
 									١) منح إجازة استثنائية للموظف
 									<span t-field="o.employee_id.display_name" />
 									المثبت على وظيفة
-									<span t-field="o.employee_id.job_id.name" />
+									<span t-field="o.employee_id.job_id.name.name" />
 									و مرتبته
 									<span t-esc="o.employee_id.job_id.grade_id.name" />
 									رقمها
@@ -226,7 +226,7 @@
 									١) منح المستخدم /
 									<span t-field="o.employee_id.display_name" />
 									المثبت على وظيفة
-									<span t-field="o.employee_id.job_id.name" />
+									<span t-field="o.employee_id.job_id.name.name" />
 
 									المرتبة
 									<span t-esc="o.employee_id.job_id.grade_id.name" />
@@ -322,7 +322,7 @@
 									1) يمنح الموظف /
 									<span t-field="o.employee_id.display_name" />
 									المثبت على وظيفة
-									<span t-field="o.employee_id.job_id.name" />
+									<span t-field="o.employee_id.job_id.name.name" />
 								</p>
 								<p style="font-size:22px;">
 									المرتبة:

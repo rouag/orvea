@@ -161,7 +161,6 @@ class hrHolidaysCancellation(models.Model):
                                                                               ])
                         if study_followup:
                             study_followup.state='cut'     
-                                  
             cancellation.state = 'done'
 
     @api.one

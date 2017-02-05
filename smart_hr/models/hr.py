@@ -45,7 +45,8 @@ class HrEmployee(models.Model):
                                   ('terminated', u'مطوي قيده'),
                                   ], string=u'الحالة', default='working', advanced_search=True)
     decision_appoint_ids = fields.One2many('hr.decision.appoint', 'employee_id', string=u'تعيينات الموظف')
-    job_id = fields.Many2one('hr.job', advanced_search=True)
+    job_id = fields.Many2one('hr.job', advanced_search=True, string=u'الوظيفة')
+    type_id = fields.Many2one('salary.grid.type', related="job_id.type_id", advanced_search=True)
     age = fields.Integer(string=u'السن', compute='_compute_age')
     employee_no = fields.Integer(string=u'رقم الموظف', advanced_search=True)
     join_date = fields.Date(string=u'تاريخ الالتحاق بالجهة')
@@ -84,10 +85,10 @@ class HrEmployee(models.Model):
     point_education=fields.Integer(string=u'نقاط التعليم',)
     point_training=fields.Integer(string=u'نقاط التدريب',)
     point_functionality=fields.Integer(string=u'نقاط  الإداء الوظيفي',)
+    is_member = fields.Boolean(string=u'عضو في الهيئة', default=False, required=1)
 
     @api.constrains('recruiter_date','begin_work_date')
     def recruiter_date_begin_work_date(self):
-        
         if self.recruiter_date > self.begin_work_date:
             raise ValidationError(u"تاريخ بداية العمل الحكومي يجب ان يكون اكبر من تاريخ التعيين بالجهة ")
 
@@ -111,7 +112,8 @@ class HrEmployee(models.Model):
             res.append((emp.id, "%s %s %s %s" % (emp.name or '', emp.father_middle_name or '', emp.father_name or '', emp.family_name or '')))
         return res
 
-    @api.one
+    @api.multi
+    @api.depends('promotions_history.balance')
     def _compute_promotion_days(self):
         active_promotions = self.env['hr.employee.promotion.history'].search([('active_duration', '=', 'True'), ('employee_id', '=', self.id)])
         active_prom = False
@@ -295,7 +297,20 @@ class HrEmployeePromotionHistory(models.Model):
                 promotion.balance -= uncounted_absence_days
                 promotion.active_duration = False
 
-                                
+
+    @api.multi
+    def decrement_promotion_duration(self,employee_id,duration_days):
+        active_promotions = self.env['hr.employee.promotion.history'].search([('active_duration', '=', 'True'), ('employee_id', '=', employee_id.id)])
+        active_prom = False
+        if active_promotions:
+            for promotion in active_promotions:
+                if not promotion.date_to:
+                    active_prom = promotion
+                    break
+        if active_prom:
+            active_prom.balance -= duration_days
+
+
 class HrEmployeeEducationLevel(models.Model):
     _name = 'hr.employee.education.level'  
     _description = u'مستويات التعليم'

@@ -23,13 +23,26 @@
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="الأعياد و العطل الرسمية">
+					<header>
+
+						<button name="button_send_request" string="إرسال طلب" type="object" groups="smart_hr.group_sys_manager"
+							states="draft" icon="fa-paper-plane" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="button_accept_hrm" string="موافق" type="object"
+							states="hrm" groups="smart_hr.group_hrm" icon="fa-check"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="button_refuse_hrm" string="رفض" type="object"
+							states="hrm" groups="smart_hr.group_hrm" icon="fa-times"
+							class="oe_inline oe_stat_button" />
+						<field name="state" widget="statusbar" statusbar_visible="draft,hrm,done" />
+					</header>
 					<sheet>
 						<group col="4">
-							<field name="name" />
-							<newline/>
-							<field name="date_from" />
-							<field name="date_to" />
-							<field name="number_of_days" />
+							<field name="name" attrs="{'readonly':[('state','!=', 'draft')]}"/>
+							<newline />
+							<field name="date_from" attrs="{'readonly':[('state','!=', 'draft')]}" />
+							<field name="date_to" attrs="{'readonly':[('state','!=', 'draft')]}"/>
+							<field name="number_of_days" attrs="{'readonly':[('state','!=', 'draft')]}"/>
 						</group>
 					</sheet>
 				</form>
@@ -44,7 +57,7 @@
 		</record>
 
 		<menuitem id="hr_public_holiday_menu" name="الأعياد و العطل الرسمية"
-			groups="smart_hr.group_sys_manager" sequence="15"
+			groups="smart_hr.group_sys_manager,smart_hr.group_hrm" sequence="15"
 			parent="menu_attendance_configuration" action="action_hr_public_holiday" />
 
 

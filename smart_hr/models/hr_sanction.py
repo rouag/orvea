@@ -109,15 +109,20 @@ class hrSanction(models.Model):
         sanction=self.search([('state','=','done')])
        
     
-    
-    
-    
-    @api.onchange('date_sanction_end')
-    def _onchange_date_sanction_end(self):
-         if self.date_sanction_end :
-             if self.date_sanction_end < self.date_sanction_start:
+    @api.one
+    @api.constrains('date_sanction_start', 'date_sanction_end')
+    def check_dates_period(self):
+          if self.date_sanction_start > self.date_sanction_end:
                  raise ValidationError(u"تاريخ إلغاء العقوبة يجب ان يكون أكبر من تاريخ البدأ")
-        
+
+    
+    
+#     @api.onchange('date_sanction_end')
+#     def _onchange_date_sanction_end(self):
+#          if self.date_sanction_end :
+#              if self.date_sanction_end < self.date_sanction_start:
+#                  raise ValidationError(u"تاريخ إلغاء العقوبة يجب ان يكون أكبر من تاريخ البدأ")
+#         
   
     @api.multi
     def action_draft(self):

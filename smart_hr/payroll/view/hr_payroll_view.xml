@@ -110,33 +110,25 @@
 								<page string="تفاصيل الراتب">
 									<field name="line_ids" colspan="4" nolabel="1">
 										<tree string="تفاصيل الراتب" editable="bottom"
-											decoration-info="total == 0">
+											decoration-info="amount == 0">
 											<field name="name" string="المسمى" />
 											<field name="code" invisible="1" />
-											<field name="category_id" />
+											<field name="category" />
 											<field name="sequence" invisible="1" />
-											<field name="quantity" />
-											<field name="rate" />
-											<field name="salary_rule_id" invisible="1"/>
 											<field name="amount" />
-											<field name="total" />
 										</tree>
 										<form string="تفاصيل الراتب">
 											<group col="4">
 												<field name="name" string="المسمى" />
-												<field name="code"  invisible="0" />
-												<field name="category_id" />
-												<field name="sequence" />
-												<field name="quantity" />
-												<field name="rate" />
+												<field name="code" invisible="1" />
+												<field name="category" readonly='0' />
+												<field name="sequence" invisible="1" />
 												<field name="amount" />
-												<field name="total" />
-												<field name="salary_rule_id"  invisible="0" />
 											</group>
 										</form>
 									</field>
 								</page>
-								<page string="تفاصيل حسب فئات قواعد الراتب">
+								<page string="تفاصيل حسب فئات قواعد الراتب"  invisible="1">
 									<field name="details_by_salary_rule_category" context="{'group_by':'category_id'}"
 										domain="[('appears_on_payslip', '=', True)]">
 										<tree string="Payslip Lines" decoration-info="total == 0">

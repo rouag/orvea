@@ -180,15 +180,16 @@
         'holidays/menu.xml',
         'holidays/wizard/wizard_resume_holidays_view.xml',
         'holidays/views/resume_holidays_report.xml',
+        'holidays/views/resume_normal_holidays_report.xml',
         'holidays/views/report.xml',
 
-        #apprasal menu
-        #التقييم والإختبار
+        # apprasal menu
+        # التقييم والإختبار
         'hr_appraisal/view/hr_appraisal_menu.xml',
         'hr_appraisal/view/hr_appraisal_view.xml',
         'hr_appraisal/view/hr_evaluation_point_view.xml',
         
-        #promotion
+        # promotion
         'hr_promotions/view/hr_promotion_view.xml',
         'hr_promotions/view/hr_employee_promotion_view.xml',
 
