@@ -38,7 +38,8 @@ class HrDecisionAppoint(models.Model):
     emp_degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', store=True, readonly=1)
     # info about job
     job_id = fields.Many2one('hr.job', string='الوظيفة', required=1)
-    passing_score = fields.Float(related='type_id.passing_score', string=u'الدرجة المطلوبه', readonly=1)
+    #passing_score = fields.Float(related='type_id.passing_score', string=u'الدرجة المطلوبه', readonly=1)
+    passing_score = fields.Char(string='الدرجة المطلوبه') 
     number_job = fields.Char(string='رقم الوظيفة', readonly=1) 
     code = fields.Char(string=u'رمز الوظيفة ', readonly=1) 
     type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1) 
