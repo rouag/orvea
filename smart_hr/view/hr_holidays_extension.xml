@@ -73,7 +73,6 @@
 			<field name="inherit_id" ref="smart_hr.hr_holidays_extension_employee_form" />
 			<field name="groups_id" eval="[(6, 0, [ref('smart_hr.group_dm')])]" />
 			<field name="arch" type="xml">
-
 				<field name="employee_id" position="attributes">
 					<attribute name="readonly">False</attribute>
 				</field>

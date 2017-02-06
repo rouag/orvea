@@ -86,7 +86,17 @@ class HrEmployee(models.Model):
     point_training=fields.Integer(string=u'نقاط التدريب',)
     point_functionality=fields.Integer(string=u'نقاط  الإداء الوظيفي',)
     is_member = fields.Boolean(string=u'عضو في الهيئة', default=False, required=1)
-    insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين', readonly='1')
+    insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين', readonly='1',compute='_compute_insurance_type',
+                                     )
+    @api.one
+    @api.depends('job_id')
+    def _compute_insurance_type(self):
+        if self.job_id:
+            salary_grids = self.env['salary.grid.detail'].search([('type_id', '=', self.job_id.type_id.id),
+                                                                  ('grade_id', '=', self.job_id.grade_id.id),
+                                                                   ('degree_id', '=', self.degree_id.id)])
+            if salary_grids:
+                self.insurance_type =  salary_grids[0].insurance_type
 
     @api.constrains('recruiter_date', 'begin_work_date')
     def recruiter_date_begin_work_date(self):

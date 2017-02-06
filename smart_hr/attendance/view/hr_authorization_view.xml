@@ -14,8 +14,8 @@
 					<field name="employee_id" />
 					<field name="date" />
 					<field name="hour_from" widget="float_time" />
-					<field name="hour_to"  widget="float_time" />
-					<field name="hour_number"  widget="float_time" />
+					<field name="hour_to" widget="float_time" />
+					<field name="hour_number" widget="float_time" />
 					<field name="state" />
 				</tree>
 			</field>
@@ -28,9 +28,12 @@
 			<field name="arch" type="xml">
 				<form string="طلبات الإستئذان">
 					<header>
-						<button name="action_waiting" string="إرسال للإعتماد" type="object" states="new" />
-						<button name="action_done" string="إعتماد" type="object" states="waiting"  groups="smart_hr.group_dm"/>
-						<button name="action_refuse" string="رفض" type="object" states="waiting" groups="smart_hr.group_dm" />
+						<button name="action_waiting" string="إرسال للإعتماد" type="object"
+							states="new" />
+						<button name="action_done" string="إعتماد" type="object"
+							states="waiting" groups="smart_hr.group_dm" />
+						<button name="action_refuse" string="رفض" type="object"
+							states="waiting" groups="smart_hr.group_dm" />
 						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
 					</header>
 					<sheet>
@@ -41,22 +44,23 @@
 							<group string="بيانات الموظف">
 								<field name="employee_id" />
 								<field name="number" />
-								<field name="department_id" />
+								<field name="department_id" readonly="1" />
 								<field name="job_id" />
 								<field name="grade_id" />
 							</group>
 							<group string="بيانات العمل">
 								<field name="type_id" />
 								<field name="date" />
+								<field name="current_autorization_stock" />
 								<label for="hour_from" string="الفترة" />
 								<div>
 									<div>
-										<field name="hour_from" class="oe_inline"  widget="float_time" />
+										<field name="hour_from" class="oe_inline" widget="float_time" />
 										<label string="-" class="oe_inline" />
-										<field name="hour_to" class="oe_inline"  widget="float_time" />
+										<field name="hour_to" class="oe_inline" widget="float_time" />
 									</div>
 									<div>
-										<field name="hour_number" widget="float_time"  class="oe_inline" />
+										<field name="hour_number" widget="float_time" class="oe_inline" />
 										ساعة
 									</div>
 								</div>
@@ -66,6 +70,20 @@
 							<field name="description" placeholder="ملاحظات ..."
 								colspan="4" />
 						</group>
+						<notebook>
+							<page string="سجل الاستئذانات‬ ‫الشهرية  ">
+								<group>
+
+									<field name="authorisation_ids"
+										domain="[('date', ' &lt;', datetime.now()), ('date', ' &gt;', datetime.now().replace(day=1)),('employee_id', '=', employee_id)]">
+										<tree>
+											<field name="date" />
+											<field name="hour_number" />
+										</tree>
+									</field>
+								</group>
+							</page>
+						</notebook>
 					</sheet>
 					<div class="oe_chatter">
 						<field name="message_follower_ids" widget="mail_followers"
@@ -73,6 +91,17 @@
 						<field name="message_ids" widget="mail_thread" />
 					</div>
 				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_authorization_form_employee_form_inherited">
+			<field name="model">hr.authorization</field>
+			<field name="inherit_id" ref="smart_hr.hr_authorization_form" />
+			<field name="groups_id" eval="[(6, 0, [ref('smart_hr.group_hrm')])]" />
+			<field name="arch" type="xml">
+				<field name="employee_id" position="attributes">
+					<attribute name="readonly">False</attribute>
+				</field>
 			</field>
 		</record>
 
@@ -85,14 +114,15 @@
 					<field name="employee_id" />
 					<field name="date" />
 					<group expand="0" string="تجميع حسب...">
-						<filter name="employee_id" string="الموظف" context="{'group_by':'employee_id'}" />
-						<filter name="date"  string="التاريخ" context="{'group_by':'date'}" />
-						<filter name="state"  string="الحالة" context="{'group_by':'state'}" />
+						<filter name="employee_id" string="الموظف"
+							context="{'group_by':'employee_id'}" />
+						<filter name="date" string="التاريخ" context="{'group_by':'date'}" />
+						<filter name="state" string="الحالة" context="{'group_by':'state'}" />
 					</group>
 				</search>
 			</field>
 		</record>
-		
+
 		<record model="ir.actions.act_window" id="action_hr_authorization">
 			<field name="name">طلبات الإستئذان</field>
 			<field name="res_model">hr.authorization</field>
@@ -101,11 +131,25 @@
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 
-		<menuitem id="hr_authorization_menu" name="طلبات الإستئذان" groups="smart_hr.group_employee"
-			sequence="25" parent="menu_attendance_root" action="action_hr_authorization" />
-			
-		<!-- أنواع الإستئذانات  -->	
-		
+		<menuitem id="hr_authorization_menu" name="طلبات الإستئذان"
+			groups="smart_hr.group_employee" sequence="25" parent="menu_attendance_root"
+			action="action_hr_authorization" />
+
+
+		<record model="ir.actions.act_window" id="action_hr_authorization_form">
+			<field name="name">طلبات الإستئذان</field>
+			<field name="res_model">hr.authorization</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+		<record id="action_hr_authorization_form_view" model="ir.actions.act_window.view">
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="smart_hr.hr_authorization_form" />
+			<field name="act_window_id" ref="action_hr_authorization_form" />
+		</record>
+		<!-- أنواع الإستئذانات -->
+
 		<record model="ir.ui.view" id="hr_authorization_type_tree">
 			<field name="name">hr.authorization.type.tree</field>
 			<field name="model">hr.authorization.type</field>
@@ -145,9 +189,50 @@
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 
-		<menuitem id="hr_authorization_type_menu" name="أنواع الإستئذانات" sequence="30"
-			groups="smart_hr.group_sys_manager" parent="menu_attendance_configuration" action="action_hr_authorization_type" />
+		<menuitem id="hr_authorization_type_menu" name="أنواع الإستئذانات"
+			sequence="30" groups="smart_hr.group_sys_manager" parent="menu_attendance_configuration"
+			action="action_hr_authorization_type" />
 
-			
+		<!-- اعداد رصيد الاستئذان‬ات -->
+
+		<record model="ir.ui.view" id="hr_authorization_stock_tree">
+			<field name="name">hr.authorization.stock.setting.tree</field>
+			<field name="model">hr.authorization.stock.setting</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="رصيد الاستئذان‬ات">
+					<field name="hours_stock" widget="handle" />
+					<field name="create_date" string="تاريخ الإنشاء" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_authorization_stock_form">
+			<field name="name">hr.authorization.stock.setting.form</field>
+			<field name="model">hr.authorization.stock.setting</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="رصيد الاستئذان‬ات">
+					<sheet>
+						<group>
+							<field name="hours_stock" class="oe_inline" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_authorization_stock">
+			<field name="name">رصيد الاستئذان‬ات</field>
+			<field name="res_model">hr.authorization.stock.setting</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+
+		<menuitem id="hr_authorization_stock_menu" name="رصيد الاستئذان‬ات"
+			sequence="35" groups="smart_hr.group_sys_manager" parent="menu_attendance_configuration"
+			action="action_hr_authorization_stock" />
+
 	</data>
 </openerp>

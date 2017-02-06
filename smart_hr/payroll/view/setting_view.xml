@@ -244,7 +244,7 @@
 		</record>
 
 		<menuitem id="hr_insurance_type_menu" name="أنواع التأمين"
-			sequence="40" groups="group_payroll_setting" parent="hr_payroll_setting"
+			sequence="45" groups="group_payroll_setting" parent="hr_payroll_setting"
 			action="action_hr_insurance_type" />
 
 	</data>
