@@ -84,16 +84,19 @@
 							</group>
 							<group string="الأثر المالي">
 								<field name="compute_method" />
-								<field name="amount" attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}"/>
-								<field name="percentage" attrs="{'invisible':[('compute_method','!=','percentage')], 'required': [('compute_method','=','percentage')]}"/> 
+								<field name="amount"
+									attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}" />
+								<field name="percentage"
+									attrs="{'invisible':[('compute_method','!=','percentage')], 'required': [('compute_method','=','percentage')]}" />
 								<field name="min_amount" />
-								<field name="line_ids"  attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
-									<tree editable="buttom"  >
+								<field name="line_ids"
+									attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+									<tree editable="buttom">
 										<field name="city_id" />
 										<field name="percentage" />
 									</tree>
 								</field>
-								
+
 							</group>
 						</group>
 						<group>
@@ -139,18 +142,21 @@
 			<field name="arch" type="xml">
 				<form string="أنواع المكافآت">
 					<sheet>
-					<group>
-						<group string="بيانات النوع">
-							<field name="name" />
-							<field name="code" />
-							<field name="type_id" />
-							<field name="min_degree_id" />
-							<field name="max_degree_id" />
-						</group>
-						<group string="الأثر المالي">
+						<group>
+							<group string="بيانات النوع">
+								<field name="name" />
+								<field name="code" />
+								<field name="type_id" />
+								<field name="min_degree_id" />
+								<field name="max_degree_id" />
+							</group>
+							<group string="الأثر المالي">
 								<field name="compute_method" />
-								<field name="amount" attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}"/>
-								<field name="percentage" attrs="{'invisible':[('compute_method','!=','percentage')], 'required': [('compute_method','=','percentage')]}"/> />
+								<field name="amount"
+									attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}" />
+								<field name="percentage"
+									attrs="{'invisible':[('compute_method','!=','percentage')], 'required': [('compute_method','=','percentage')]}" />
+								/>
 							</group>
 						</group>
 						<group>
@@ -205,10 +211,13 @@
 								<field name="type_id" />
 							</group>
 							<group string="الأثر المالي">
-									<field name="compute_method" />
-									<field name="amount" attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}"/>
-									<field name="percentage" attrs="{'invisible':[('compute_method','!=','percentage')], 'required': [('compute_method','=','percentage')]}"/> />
-								</group>
+								<field name="compute_method" />
+								<field name="amount"
+									attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}" />
+								<field name="percentage"
+									attrs="{'invisible':[('compute_method','!=','percentage')], 'required': [('compute_method','=','percentage')]}" />
+								/>
+							</group>
 						</group>
 						<group>
 							<field name="note" string="ملاحظات" placeholder="ملاحظات ..." />
@@ -229,6 +238,55 @@
 		<menuitem id="hr_indemnity_type_menu" name="أنواع التعويضات"
 			sequence="35" groups="group_payroll_setting" parent="hr_payroll_setting"
 			action="action_hr_indemnity_type" />
+
+		<!-- أنواع التأمين -->
+		<record model="ir.ui.view" id="hr_assurance_type_tree">
+			<field name="name">hr.assurance.type.tree</field>
+			<field name="model">hr.assurance.type</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="أنواع التأمين">
+					<field name="sequence" widget="handle" />
+					<field name="name" />
+					<field name="code" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_assurance_type_form">
+			<field name="name">hr.assurance.type.form</field>
+			<field name="model">hr.assurance.type</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="أنواع التأمين">
+					<sheet>
+						<group string="بيانات النوع">
+							<group >
+								<field name="name" />
+							</group>
+							<group>
+								<field name="code" />
+							</group>
+						</group>
+						<group>
+							<field name="note" string="ملاحظات" placeholder="ملاحظات ..." />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_assurance_type">
+			<field name="name">أنواع التأمين</field>
+			<field name="res_model">hr.assurance.type</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+
+		<menuitem id="hr_assurance_type_menu" name="أنواع التأمين"
+			sequence="40" groups="group_payroll_setting" parent="hr_payroll_setting"
+			action="action_hr_assurance_type" />
 
 
 

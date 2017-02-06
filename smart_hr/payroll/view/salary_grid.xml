@@ -83,6 +83,7 @@
 							<group string="المستحقات  المالية عند التعين">
 								<field name="basic_salary" />
 								<field name="retrait_monthly" />
+								<field name="assurance_type" />
 								<field name="assurance_monthly" />
 								<field name="passing_score" />
 							</group>
