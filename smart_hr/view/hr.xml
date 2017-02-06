@@ -167,7 +167,7 @@
 									</group>
 								</group>
 							</page>
-						
+
 							<page string="بيانات العمل">
 								<group>
 									<group string="بيانات العمل">
@@ -183,7 +183,8 @@
 										<field name="promotion_duration" attrs="{'readonly': 1}" />
 
 										<field name="external_decision" />
-										<field name="is_member" attrs="{'readonly': [('employee_state','!=', 'new')]}" />
+										<field name="is_member"
+											attrs="{'readonly': [('employee_state','!=', 'new')]}" />
 										<field name="traveling_ticket" />
 										<field name="traveling_family_ticket" />
 
@@ -450,11 +451,11 @@
 										</group>
 									</group>
 								</page>
-									<page string="مستويات التعليم">
-								<field name="education_level_ids">
-									
-								</field>
-							</page>
+								<page string="مستويات التعليم">
+									<field name="education_level_ids">
+
+									</field>
+								</page>
 								<page string="بيانات العمل">
 									<group>
 										<group string="بيانات العمل">
@@ -469,7 +470,8 @@
 											<field name="service_duration" attrs="{'readonly': 1}" />
 											<field name="promotion_duration" attrs="{'readonly': 1}" />
 											<field name="external_decision" />
-											<field name="is_member" attrs="{'readonly': [('employee_state','!=', 'new')]}" />
+											<field name="is_member"
+												attrs="{'readonly': [('employee_state','!=', 'new')]}" />
 										</group>
 										<group string="خصائص أخرى">
 											<field name="user_id"
@@ -478,7 +480,7 @@
 											<field name="recruiter_date" />
 											<field name="begin_work_date" />
 											<field name="calendar_id" />
-
+											<field name="insurance_type" />
 										</group>
 									</group>
 								</page>

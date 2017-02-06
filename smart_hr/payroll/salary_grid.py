@@ -24,6 +24,15 @@ class SalaryGridType(models.Model):
     name = fields.Char(string='الصنف', required=1)
     code = fields.Integer(string='الرمز')
     grid_id = fields.Many2one('salary.grid', string='سلّم الرواتب')
+    basic_salary = fields.Float(string='الراتب الأساسي')
+    allowance_ids = fields.Many2many('hr.allowance.type', string=u'البدلات')
+    far_age = fields.Float(string=' السن الاقصى')
+    code = fields.Char(string='الرمز')
+    reward_ids = fields.Many2many('hr.reward.type', string=u'المكافآت‬')
+    retrait_monthly = fields.Integer(string='نسبة الحسم الشهري على التقاعد:')
+    assurance_monthly = fields.Integer(string='نسبة التامين الشهري  من الراتب الاساسي:')
+    salary_recent = fields.Float(string=' أخر راتب شهري')
+    passing_score = fields.Float(string=u'المجموع المطلوبة للتعين')
 
 
 class SalaryGridGrade(models.Model):
@@ -71,6 +80,7 @@ class SalaryGridDetail(models.Model):
     allowance_ids = fields.One2many('salary.grid.detail.allowance', 'grid_detail_id', string='البدلات')
     reward_ids = fields.One2many('salary.grid.detail.reward', 'grid_detail_id', string='المكافآت‬')
     indemnity_ids = fields.One2many('salary.grid.detail.indemnity', 'grid_detail_id', string='التعويضات')
+    insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين')
 
 
 class SalaryGridDetailAllowance(models.Model):
