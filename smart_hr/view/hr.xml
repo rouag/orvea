@@ -480,7 +480,7 @@
 											<field name="recruiter_date" />
 											<field name="begin_work_date" />
 											<field name="calendar_id" />
-											<field name="assurance_type" />
+											<field name="insurance_type" />
 										</group>
 									</group>
 								</page>

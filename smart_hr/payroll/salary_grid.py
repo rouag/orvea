@@ -71,6 +71,7 @@ class SalaryGridDetail(models.Model):
     allowance_ids = fields.One2many('salary.grid.detail.allowance', 'grid_detail_id', string='البدلات')
     reward_ids = fields.One2many('salary.grid.detail.reward', 'grid_detail_id', string='المكافآت‬')
     indemnity_ids = fields.One2many('salary.grid.detail.indemnity', 'grid_detail_id', string='التعويضات')
+    insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين')
 
 
 class SalaryGridDetailAllowance(models.Model):

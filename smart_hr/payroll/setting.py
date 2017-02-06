@@ -57,15 +57,14 @@ class HrIndemnity(models.Model):
         return result
 
 
-class HrAsuuranceType(models.Model):
-    _name = 'hr.assurance.type'
+class HrInsuranceType(models.Model):
+    _name = 'hr.insurance.type'
     _description = u'أنواع التأمين'
 
     name = fields.Char(string='المسمى', required=1)
     code = fields.Char(string='الرمز')
     note = fields.Text(string='ملاحظات')
-    sequence = fields.Integer(string='الترتيب')
-    
+
     @api.multi
     def name_get(self):
         result = []

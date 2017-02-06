@@ -199,7 +199,53 @@
 			sequence="35" groups="group_payroll_setting" parent="hr_payroll_setting"
 			action="action_hr_indemnity_type" />
 
+		<!-- أنواع التأمين -->
+		<record model="ir.ui.view" id="hr_insurance_type_tree">
+			<field name="name">hr.insurance.type.tree</field>
+			<field name="model">hr.insurance.type</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="أنواع التأمين">
+					<field name="name" />
+					<field name="code" />
+				</tree>
+			</field>
+		</record>
 
+		<record model="ir.ui.view" id="hr_insurance_type_form">
+			<field name="name">hr.insurance.type.form</field>
+			<field name="model">hr.insurance.type</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="أنواع التأمين">
+					<sheet>
+						<group string="بيانات النوع">
+							<group >
+								<field name="name" />
+							</group>
+							<group>
+								<field name="code" />
+							</group>
+						</group>
+						<group>
+							<field name="note" string="ملاحظات" placeholder="ملاحظات ..." />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_insurance_type">
+			<field name="name">أنواع التأمين</field>
+			<field name="res_model">hr.insurance.type</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+
+		<menuitem id="hr_insurance_type_menu" name="أنواع التأمين"
+			sequence="40" groups="group_payroll_setting" parent="hr_payroll_setting"
+			action="action_hr_insurance_type" />
 
 	</data>
 </openerp>

@@ -86,7 +86,7 @@ class HrEmployee(models.Model):
     point_training=fields.Integer(string=u'نقاط التدريب',)
     point_functionality=fields.Integer(string=u'نقاط  الإداء الوظيفي',)
     is_member = fields.Boolean(string=u'عضو في الهيئة', default=False, required=1)
-    assurance_type = fields.Many2one('hr.assurance.type', string=u'نوع التأمين', readonly='1')
+    insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين', readonly='1')
 
     @api.constrains('recruiter_date', 'begin_work_date')
     def recruiter_date_begin_work_date(self):
