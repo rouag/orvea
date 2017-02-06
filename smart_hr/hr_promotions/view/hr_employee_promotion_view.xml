@@ -26,23 +26,21 @@
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form>
-					
 					<sheet>
-						<group>
-							<group string="بيانات الموظف" col="6">
+					<grou >
+							<group string="طلبات الترقية" col="6" >
 								<field name="name" />
-								<field name="description1" />
-								<field name="description2" />
-								<field name="description3" />
-								<field name="description4" />
-								<field name="description5" />
+								<field name="city_fovorite" />
+								<field name="hr_allowance_type_id" />
 							</group>
-							
+							<group col="1" string="رغبات الموظف" >
+							<field name="description1"  nolabel="1" />
+							<field name="description2" nolabel="1" />
+							<field name="description3" nolabel="1" />
+							<field name="description4"  nolabel="1"/>
+							<field name="description5"  nolabel="1"/>
 							</group>
-							<group>
-							<field name="city_fovorite" />
-							<field name="hr_allowance_type_id" />
-							</group>
+							</grou>
 							</sheet>
 							</form>
 							
