@@ -6,6 +6,7 @@ from openerp.exceptions import Warning
 from dateutil.relativedelta import relativedelta
 from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class hrDirectAppoint(models.Model):
@@ -69,7 +70,13 @@ class hrDirectAppoint(models.Model):
         
         appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('state','=','done'),('is_started','=',False),('state_appoint','=','active')], limit=1)
         for line in  appoint_line :
-                line.write({'appoint': False ,'state_appoint' : 'refuse'})
+            line.write({'is_started': False ,'state_appoint' : 'refuse'})
+        
+            title= u"' إشعار بعدم مباشرة التعين'"
+            print"title",title
+            msg= u"' إشعار بعدم مباشرة التعين'"  + unicode(line.employee_id.name) + u"'"
+            group_id = self.env.ref('smart_hr.group_department_employee')
+            self.send_appoint_group(group_id,title,msg)
         self.state = 'cancel'
         self.state_direct = 'done'  
     @api.multi
@@ -78,7 +85,13 @@ class hrDirectAppoint(models.Model):
         #TODO   
         appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('state','=','done'),('is_started','=',False),('state_appoint','=','active')], limit=1)
         for line in  appoint_line :
-            line.write({'appoint': True ,'state_appoint' : 'active'})
+            line.write({'is_started': True ,'state_appoint' : 'active'})
+        
+            title= u"' إشعار بمباشرة التعين'"
+            print"title",title
+            msg= u"' إشعار بمباشرة التعين'"  + unicode(line.employee_id.name) + u"'"
+            group_id = self.env.ref('smart_hr.group_department_employee')
+            self.send_appoint_group(group_id,title,msg)
         self.state = 'done'  
         self.state_direct = 'done'         
    
@@ -99,6 +112,18 @@ class hrDirectAppoint(models.Model):
                 self.department_id = appoint_line.department_id.id
                 self.date_direct_action = appoint_line. date_direct_action
       
-
+    def send_appoint_group(self, group_id, title, msg):
+        '''
+        @param group_id: res.groups
+        '''
+        for recipient in group_id.users:
+            self.env['base.notification'].create({'title': title,
+                                                  'message': msg,
+                                                  'user_id': recipient.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': self.id,
+                                                  'res_action': 'smart_hr.action_hr_direct_appoint',
+                                                  'notif': True
+                                                  })
         
    

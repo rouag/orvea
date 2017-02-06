@@ -320,12 +320,40 @@ class HrDecisionAppoint(models.Model):
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
 
+    @api.model
+    def control_test_periode_employee(self):
+        today_date = fields.Date.from_string(fields.Date.today())
+        print"today_date",type(today_date)
+        appoints= self.env['hr.decision.appoint'].search([('employee_id', '=', contrat.employee_id.id),('state','=','done'),('is_started','=',True),('testing_date_to','=', today_date)])
+        for line in appoints :
+            title= u"' إشعار نهاية مدة التجربة'"
+            print"title",title
+            msg= u"' إشعار نهاية مدة التجربة'"  + unicode(line.employee_id.name) + u"'"
+            group_id = self.env.ref('smart_hr.group_department_employee')
+            self.send_test_periode_group(group_id,title,msg)
+            
 
+            
+    def send_test_periode_group(self, group_id, title, msg):
+        '''
+        @param group_id: res.groups
+        '''
+        for recipient in group_id.users:
+            self.env['base.notification'].create({'title': title,
+                                                  'message': msg,
+                                                  'user_id': recipient.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': self.id,
+                                                  'res_action': 'smart_hr.action_hr_decision_appoint',
+                                                  'notif': True
+                                                  })
+
+             
     @api.model
     def control_prensence_employee(self):
         today_date = fields.Date.from_string(fields.Date.today())
         print"today_date",type(today_date)
-        appoints= self.env['hr.decision.appoint'].search([('state_appoint','=','active'),('is_started','=',False)])
+        appoints= self.env['hr.decision.appoint'].search([('state_appoint','=','active'),('state','=','done'),('is_started','=',False)])
         print"appoints",appoints
         for appoint in appoints :
             prev_days_end = fields.Date.from_string(appoint.date_direct_action) + relativedelta(days=15)
@@ -339,26 +367,28 @@ class HrDecisionAppoint(models.Model):
             if sign_days != 0 or (today_date < prev_days_end) :
                 directs= self.env['hr.direct.appoint'].search([('employee_id','=',appoint.employee_id.id),('state','=','waiting')])
                 print"directs",directs
-                for direct in directs :
-                    direct.write({'state_direct':'confirm'
-                                                    })
-                print"sign_days1111",sign_days
-               # appoint.appoint =True
-              #  appoint.state_appoint ='active'
-                group_id = self.env.ref('smart_hr.group_personnel_hr')
-                self.send_notification_to_group(group_id)
+                if directs:
+#                 for direct in directs :
+#                     direct.write({'state_direct':'confirm'
+#                                                     })
+#                 print"sign_days1111",sign_days
+#                 appoint.is_started =True
+#                 appoint.state_appoint ='active'
+                     group_id = self.env.ref('smart_hr.group_personnel_hr')
+                     self.send_notification_to_group(group_id)
                 
             if sign_days == 0 or (today_date > prev_days_end) :
                 directs= self.env['hr.direct.appoint'].search([('employee_id','=',appoint.employee_id.id),('state','=','waiting')])
-                print"directs",directs
-                for direct in directs :
-                    direct.write({'state_direct':'cancel'
-                                                    })
-                print"sign_days2222",sign_days
-               # appoint.appoint =False
-              #  appoint.state_appoint ='refuse'
-                group_id = self.env.ref('smart_hr.group_personnel_hr')
-                self.send_notification_refuse_to_group(group_id)
+                if directs :
+#                 print"directs",directs
+#                 for direct in directs :
+#                     direct.write({'state_direct':'cancel'
+#                                                     })
+#                 print"sign_days2222",sign_days
+#                 appoint.is_started =False
+#                 appoint.state_appoint ='refuse'
+                    group_id = self.env.ref('smart_hr.group_personnel_hr')
+                    self.send_notification_refuse_to_group(group_id)
 
     @api.multi
     def button_refuse_direct(self):
@@ -519,7 +549,8 @@ class HrDecisionAppoint(models.Model):
     @api.one
     @api.constrains('date_hiring', 'date_hiring_end')
     def check_dates_end(self):
-          if self.date_hiring > self.date_hiring_end:
+        if self.date_hiring_end :
+            if self.date_hiring > self.date_hiring_end:
                   raise ValidationError(u"تاريخ إنتهاء التعيين يجب ان يكون أكبر من تاريخ التعيين")  
 
 

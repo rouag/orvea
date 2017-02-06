@@ -71,14 +71,14 @@
 			<field name="args">()</field>
 		</record>
 		
-		<record id="ir_cron_hr_contract_employee" model="ir.cron">
-			<field name="name">employee end contract</field>
+		<record id="ir_cron_control_test_periode_employee" model="ir.cron">
+			<field name="name">employee test periode exprience</field>
 			<field name="interval_number">1</field>
 			<field name="interval_type">days</field>
 			<field name="numbercall">-1</field>
 			<field name="doall">0</field>
-			<field name="model">hr.contractt</field>
-			<field name="function">control_contract_employee</field>
+			<field name="model">hr.contract</field>
+			<field name="function">control_test_periode_employee</field>
 			<field name="args">()</field>
 		</record>
 		

@@ -341,7 +341,7 @@
 			<field name="res_model">hr.decision.appoint</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
-			<field name="domain">['|',('appoint' ,'=',True),('appoint' ,'=',False)]
+			<field name="domain">['|',('is_started' ,'=',True),('is_started' ,'=',False)]
 			</field>
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
