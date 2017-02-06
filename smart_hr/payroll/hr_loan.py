@@ -3,16 +3,17 @@
 from openerp import models, api, fields, _
 from openerp.exceptions import ValidationError
 from dateutil.relativedelta import relativedelta
+from umalqurra.hijri_date import HijriDate
 
-MONTHS = [('1', 'محرّم'),
-          ('2', 'صفر'),
-          ('3', 'ربيع الأول'),
-          ('4', 'ربيع الثاني'),
-          ('5', 'جمادي الأولى'),
-          ('6', 'جمادي الآخرة'),
-          ('7', 'رجب'),
-          ('8', 'شعبان'),
-          ('9', 'رمضان'),
+MONTHS = [('01', 'محرّم'),
+          ('02', 'صفر'),
+          ('03', 'ربيع الأول'),
+          ('04', 'ربيع الثاني'),
+          ('05', 'جمادي الأولى'),
+          ('06', 'جمادي الآخرة'),
+          ('07', 'رجب'),
+          ('08', 'شعبان'),
+          ('09', 'رمضان'),
           ('10', 'شوال'),
           ('11', 'ذو القعدة'),
           ('12', 'ذو الحجة')]
@@ -23,6 +24,8 @@ class hrLoan(models.Model):
     _inherit = ['mail.thread']
     _description = u'القرض'
     _order = 'id desc'
+
+    # TODO: refaire les actions apres la modification des lifges par month
 
     @api.one
     @api.depends('line_ids', 'amount')
@@ -69,6 +72,20 @@ class hrLoan(models.Model):
             self.installment_number = installment_number
             # TODO: review the * 30
             self.date_to = fields.Date.from_string(self.date_from) + relativedelta(days=installment_number * 30)
+            # get lines
+            dt = fields.Date.from_string(self.date_from)
+            months = []
+            while dt < fields.Date.from_string(self.date_to):
+                um = HijriDate()
+                dates = str(dt).split('-')
+                um.set_date_from_gr(int(dates[0]), int(dates[1]), int(dates[2]))
+                month_val = {'loan_id': self.id,
+                             'amount': self.monthly_amount,
+                             'month': str(int(um.month)).zfill(2)
+                             }
+                months.append(month_val)
+                dt = fields.Date.from_string(str(dt)) + relativedelta(days=30)
+            self.line_ids = months
 
     @api.one
     def copy(self, default=None):
@@ -101,7 +118,7 @@ class hrLoanLine(models.Model):
     job_id = fields.Many2one(related='loan_id.employee_id.job_id', store=True, readonly=True, string=' الوظيفة')
     department_id = fields.Many2one(related='loan_id.employee_id.department_id', store=True, readonly=True, string=' الادارة')
     amount = fields.Float(string='قيمة القسط', required=1)
-    date = fields.Date('تاريخ الحسم', required=1)
+    date = fields.Date('تاريخ الحسم', required=False)
     month = fields.Selection(MONTHS, string='الشهر')
 
 

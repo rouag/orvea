@@ -17,6 +17,8 @@ class HrEmployee(models.Model):
 
     payroll_structure_id = fields.Many2one('hr.payroll.structure', 'هيكل الراتب')
     wage = fields.Float(string='الراتب الأساسي', digits_compute=dp.get_precision('Payroll'))
+    degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
+
     allowance_transport = fields.Float(string='بدل النقل', compute='_compute_amount', store=1, digits_compute=dp.get_precision('Payroll'))
     allowance_house = fields.Float(string='بدل سكن', compute='_compute_amount', store=1, digits_compute=dp.get_precision('Payroll'))
     allowance_ids = fields.One2many('hr.bonus.line', 'employee_id', string='البدلات', copy=True)

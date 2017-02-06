@@ -514,9 +514,10 @@
 									about it after -->
 								<page string="بيانات الراتب ">
 									<group>
-										<field name="payroll_structure_id" />
-										<field name="wage" />
-									</group>
+										<field name="payroll_structure_id"/>
+									    <field name="wage"/>
+									    <field name="degree_id"/>
+								    </group>
 								</page>
 
 								<page string="أرصدة الاجازات والترقيات">

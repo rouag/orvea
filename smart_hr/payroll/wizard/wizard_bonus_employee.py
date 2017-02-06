@@ -19,19 +19,18 @@ class WizardBonusEmployee(models.TransientModel):
             for employee in self.employee_ids:
                 compute_method = False
                 amount = percentage = 0.0
-                if bonus.type == 'allowance':
-                    compute_method = bonus.allowance_id.compute_method
-                    amount = bonus.allowance_id.amount
-                    percentage = bonus.allowance_id.percentage
-                if bonus.type == 'reward':
-                    compute_method = bonus.reward_id.compute_method
-                    amount = bonus.reward_id.amount
-                    percentage = bonus.reward_id.percentage
-                if bonus.type == 'indemnity':
-                    compute_method = bonus.indemnity_id.compute_method
-                    amount = bonus.indemnity_id.amount
-                    percentage = bonus.indemnity_id.percentage
+                compute_method = bonus.compute_method
+                amount = bonus.amount
+                percentage = bonus.percentage
+                name = ''
+                if bonus.allowance_id:
+                    name = bonus.allowance_id.name
+                if bonus.reward_id:
+                    name = bonus.reward_id.name
+                if bonus.indemnity_id:
+                    name = bonus.indemnity_id.name
                 val = {
+                    'name': name,
                     'bonus_id': bonus_id,
                     'employee_id': employee.id,
                     'number': employee.number,
@@ -41,10 +40,11 @@ class WizardBonusEmployee(models.TransientModel):
                     'allowance_id': bonus.allowance_id and bonus.allowance_id.id or False,
                     'reward_id': bonus.reward_id and bonus.reward_id.id or False,
                     'indemnity_id': bonus.indemnity_id and bonus.indemnity_id.id or False,
-                    'date_from': bonus.date_from,
-                    'date_to': bonus.date_to,
+                    'month_from': bonus.month_from,
+                    'month_to': bonus.month_to,
                     'compute_method': compute_method,
                     'amount': amount,
-                    'percentage': percentage}
+                    'percentage': percentage,
+                    'min_amount': bonus.min_amount}
                 self.env['hr.bonus.line'].create(val)
         return {'type': 'ir.actions.act_window_close'}

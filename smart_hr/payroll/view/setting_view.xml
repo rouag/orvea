@@ -78,23 +78,8 @@
 				<form string="أنواع البدلات">
 					<sheet>
 						<group>
-							<group string="بيانات النوع">
-								<field name="name" />
-								<field name="code" />
-							</group>
-							<group string="الأثر المالي">
-								<field name="compute_method" />
-								<field name="amount" attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}"/>
-								<field name="percentage" attrs="{'invisible':[('compute_method','!=','percentage')], 'required': [('compute_method','=','percentage')]}"/> 
-								<field name="min_amount" />
-								<field name="line_ids"  attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
-									<tree editable="buttom"  >
-										<field name="city_id" />
-										<field name="percentage" />
-									</tree>
-								</field>
-								
-							</group>
+							<field name="name" />
+							<field name="code" />
 						</group>
 						<group>
 							<field name="note" string="ملاحظات" placeholder="ملاحظات ..." />
@@ -139,22 +124,14 @@
 			<field name="arch" type="xml">
 				<form string="أنواع المكافآت">
 					<sheet>
-					<group>
-						<group string="بيانات النوع">
-							<field name="name" />
-							<field name="code" />
-							<field name="type_id" />
-							<field name="min_degree_id" />
-							<field name="max_degree_id" />
-						</group>
-						<group string="الأثر المالي">
-								<field name="compute_method" />
-								<field name="amount" attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}"/>
-								<field name="percentage" attrs="{'invisible':[('compute_method','!=','percentage')], 'required': [('compute_method','=','percentage')]}"/> />
-							</group>
-						</group>
 						<group>
-							<field name="note" string="ملاحظات" placeholder="ملاحظات ..." />
+							<group>
+								<field name="name" />
+								<field name="code" />
+							</group>
+							<group>
+								<field name="note" string="ملاحظات" placeholder="ملاحظات ..." />
+							</group>
 						</group>
 					</sheet>
 				</form>
@@ -197,18 +174,10 @@
 				<form string="أنواع التعويضات">
 					<sheet>
 						<group>
-							<group string="بيانات النوع">
+							<group>
 								<field name="name" />
-								<field name="min_degree_id" />
 								<field name="code" />
-								<field name="max_degree_id" />
-								<field name="type_id" />
 							</group>
-							<group string="الأثر المالي">
-									<field name="compute_method" />
-									<field name="amount" attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}"/>
-									<field name="percentage" attrs="{'invisible':[('compute_method','!=','percentage')], 'required': [('compute_method','=','percentage')]}"/> />
-								</group>
 						</group>
 						<group>
 							<field name="note" string="ملاحظات" placeholder="ملاحظات ..." />

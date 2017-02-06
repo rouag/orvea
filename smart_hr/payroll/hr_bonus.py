@@ -3,6 +3,19 @@
 from openerp import models, api, fields, _
 from openerp.exceptions import ValidationError
 
+MONTHS = [('01', 'محرّم'),
+          ('02', 'صفر'),
+          ('03', 'ربيع الأول'),
+          ('04', 'ربيع الثاني'),
+          ('05', 'جمادي الأولى'),
+          ('06', 'جمادي الآخرة'),
+          ('07', 'رجب'),
+          ('08', 'شعبان'),
+          ('09', 'رمضان'),
+          ('10', 'شوال'),
+          ('11', 'ذو القعدة'),
+          ('12', 'ذو الحجة')]
+
 
 class hrBonus(models.Model):
     _name = 'hr.bonus'
@@ -10,16 +23,27 @@ class hrBonus(models.Model):
     _order = 'id desc'
     _description = u'المزايا المالية'
 
+    # TODO: must add current year
+
     name = fields.Char(string=' المسمى', required=1, readonly=1, states={'new': [('readonly', 0)]})
     number_decision = fields.Char(string='رقم القرار', required=1, readonly=1, states={'new': [('readonly', 0)]})
     date_decision = fields.Date(string=' تاريخ القرار', required=1, readonly=1, states={'new': [('readonly', 0)]})
     date = fields.Date(string=' التاريخ ', required=1, readonly=1, states={'new': [('readonly', 0)]})
-    date_from = fields.Date(string='تاريخ من', required=1, readonly=1, states={'new': [('readonly', 0)]})
-    date_to = fields.Date(string='إلى', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    month_from = fields.Selection(MONTHS, string='الفترة', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    month_to = fields.Selection(MONTHS, string='إلى', required=1, readonly=1, states={'new': [('readonly', 0)]})
     type = fields.Selection([('allowance', 'بدل'), ('reward', 'مكافأة'), ('indemnity', 'تعويض')], string='النوع', required=1, readonly=1, states={'new': [('readonly', 0)]})
     allowance_id = fields.Many2one('hr.allowance.type', string='البدل', readonly=1, states={'new': [('readonly', 0)]})
     reward_id = fields.Many2one('hr.reward.type', string='المكافأة', readonly=1, states={'new': [('readonly', 0)]})
     indemnity_id = fields.Many2one('hr.indemnity.type', string='التعويض', readonly=1, states={'new': [('readonly', 0)]})
+    compute_method = fields.Selection([('amount', 'مبلغ'),
+                                       ('percentage', 'نسبة من الراتب الأساسي'),
+                                       ('formula_1', 'نسبة‬ البدل‬ * راتب‬  الدرجة‬ الاولى‬  من‬ المرتبة‬  التي‬ يشغلها‬ الموظف‬'),
+                                       ('formula_2', 'نسبة‬ البدل‬ * راتب‬  الدرجة‬ التي ‬ يشغلها‬ الموظف‬'),
+                                       ('job_location', 'تحتسب  حسب مكان العمل')], required=1, string='طريقة الإحتساب')
+    amount = fields.Float(string='المبلغ')
+    min_amount = fields.Float(string='الحد الأدنى')
+    percentage = fields.Float(string='النسبة')
+    city_ids = fields.One2many('hr.bonus.city', 'bonus_id', string='النسب حسب المدينة')
     state = fields.Selection([('new', 'طلب'),
                               ('waiting', 'في إنتظار الإعتماد'),
                               ('cancel', 'مرفوض'),
@@ -27,11 +51,11 @@ class hrBonus(models.Model):
     line_ids = fields.One2many('hr.bonus.line', 'bonus_id', string='التفاصيل', readonly=1, states={'new': [('readonly', 0)]})
     history_ids = fields.One2many('hr.bonus.history', 'bonus_id', string='سجل التغييرات', readonly=1)
 
-    @api.onchange('date_from', 'date_to')
+    @api.onchange('month_from', 'month_to')
     def onchange_date(self):
-        if self.date_from and self.date_to and self.date_from >= self.date_to:
-            self.date_to = False
-            warning = {'title': _('تحذير!'), 'message': _(u'تاريخ من يجب ان يكون أصغر من تاريخ الى')}
+        if self.month_from and self.month_to and int(self.month_from) > int(self.month_to):
+            self.month_to = False
+            warning = {'title': _('تحذير!'), 'message': _(u'الرجاء التثبت من الفترة المختارة')}
             return {'warning': warning}
 
     @api.one
@@ -47,11 +71,20 @@ class hrBonus(models.Model):
         self.state = 'cancel'
 
 
+class hrBonusCity(models.Model):
+    _name = 'hr.bonus.city'
+
+    bonus_id = fields.Many2one('hr.bonus', string='المزايا المالية', ondelete='cascade')
+    city_id = fields.Many2one('res.city', string='المدينة', required=1)
+    percentage = fields.Float(string='النسبة', required=1)
+
+
 class hrBonusLine(models.Model):
     _name = 'hr.bonus.line'
     _description = u'تفاصيل المزايا المالية'
 
     bonus_id = fields.Many2one('hr.bonus', string='المزايا المالية', ondelete='cascade')
+    name = fields.Char(string='المسمى')
     employee_id = fields.Many2one('hr.employee', string='الموظف', required=1)
     number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' الرقم الوظيفي')
     job_id = fields.Many2one(related='employee_id.job_id', store=True, readonly=True, string=' الوظيفة')
@@ -61,19 +94,59 @@ class hrBonusLine(models.Model):
     allowance_id = fields.Many2one('hr.allowance.type', string='البدل')
     reward_id = fields.Many2one('hr.reward.type', string='المكافأة')
     indemnity_id = fields.Many2one('hr.indemnity.type', string='التعويض')
-    date_from = fields.Date(string='تاريخ من')
-    date_to = fields.Date(string='إلى')
+    month_from = fields.Selection(MONTHS, string='الفترة', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    month_to = fields.Selection(MONTHS, string='إلى', required=1, readonly=1, states={'new': [('readonly', 0)]})
     amount = fields.Float(string='القيمة')
     percentage = fields.Float(string='النسبة')
+    min_amount = fields.Float(string='الحد الأدنى')
     compute_method = fields.Selection([('amount', 'مبلغ'),
                                        ('percentage', 'نسبة من الراتب الأساسي'),
                                        ('salary_grid', 'تحتسب من سلم الرواتب'),
                                        ('job', 'تحتسب من  الوظيفة'),
                                        ('job_location', 'تحتسب  حسب مكان العمل')], string='طريقة الإحتساب', required=1)
     state = fields.Selection([('progress', 'ساري'),
-                                    ('stop', 'إيقاف'),
-                                    ('expired', 'منتهي')
-                                    ], string='الحالة', readonly=1, default='progress')
+                              ('stop', 'إيقاف'),
+                              ('expired', 'منتهي')
+                              ], string='الحالة', readonly=1, default='progress')
+
+    @api.model
+    def get_value(self, employee_id):
+        bonus_city_obj = self.env['hr.bonus.city']
+        degree_obj = self.env['salary.grid.degree']
+        salary_grid_obj = self.env['salary.grid.detail']
+        # employee info
+        employee = self.env['hr.employee'].browse(employee_id)
+        ttype = employee.job_id.type_id
+        grade = employee.job_id.grade_id
+        degree = employee.degree_id
+        amount = 0.0
+        # search the correct salary_grid for this employee
+        salary_grids = salary_grid_obj.search([('type_id', '=', ttype.id), ('grade_id', '=', grade.id), ('degree_id', '=', degree.id)])
+        if not salary_grids:
+            return
+        basic_salary = salary_grids[0].basic_salary
+        # compute
+        if self.compute_method == 'amount':
+            amount = self.amount
+        if self.compute_method == 'percentage':
+            amount = self.percentage * basic_salary / 100.0
+        if self.compute_method == 'job_location':
+            if employee.dep_city:
+                citys = bonus_city_obj.search([('bonus_id', '=', self.bonus_id.id), ('city_id', '=', employee.dep_city.id)])
+                if citys:
+                    amount = citys[0].percentage * basic_salary / 100.0
+        if self.compute_method == 'formula_1':
+            # get first degree for the grade
+            degrees = degree_obj.search([('grade_id', '=', grade.id)])
+            if degrees:
+                salary_grids = salary_grid_obj.search([('type_id', '=', ttype.id), ('grade_id', '=', grade.id), ('degree_id', '=', degrees[0].id)])
+                if salary_grids:
+                    amount = salary_grids[0].basic_salary * self.percentage / 100.0
+        if self.compute_method == 'formula_2':
+            amount = self.percentage * basic_salary / 100.0
+        if self.min_amount and amount < self.min_amount:
+            amount = self.min_amount
+        return amount
 
 
 class hrBonusHistory(models.Model):

@@ -8,6 +8,115 @@
 
 		<!-- سلّم الرواتب -->
 
+		<record id="salary_grid_detail_form" model="ir.ui.view">
+			<field name="name">salary.grid.detail.form</field>
+			<field name="model">salary.grid.detail</field>
+			<field name="arch" type="xml">
+				<form>
+					<sheet>
+						<group>
+							<group>
+								<field name="type_id" />
+								<field name="grade_id" domain="[('type_id','=',type_id)]" />
+								<field name="degree_id" domain="[('grade_id','=',grade_id)]" />
+							</group>
+							<group>
+								<field name="basic_salary" />
+								<field name="retirement" />
+								<field name="insurance" />
+								<field name="net_salary" />
+							</group>
+						</group>
+						<notebook>
+							<page string="البدلات">
+								<field name="allowance_ids" nolabel="1">
+									<tree>
+										<field name="allowance_id" />
+									</tree>
+									<form string="البدلات">
+										<group>
+											<group>
+												<field name="allowance_id" />
+											</group>
+											<group>
+												<field name="compute_method" />
+												<field name="amount" attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}"/>
+												<field name="percentage" attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}"/> 
+												<field name="min_amount" />
+												<field name="line_ids"  attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+													<tree editable="buttom"  >
+														<field name="city_id" />
+														<field name="percentage" />
+													</tree>
+												</field>
+												
+											</group>
+										</group>
+									</form>
+								</field>
+							</page>
+							<page string="المكافآت‬">
+								<field name="reward_ids" nolabel="1">
+									<tree>
+										<field name="reward_id" />
+									</tree>
+									<form string="المكافآت‬">
+										<group>
+											<group>
+												<field name="reward_id" />
+											</group>
+											<group>
+												<field name="compute_method" />
+												<field name="amount" attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}"/>
+												<field name="percentage" attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}"/> 
+												<field name="min_amount" />
+												<field name="line_ids"  attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+													<tree editable="buttom"  >
+														<field name="city_id" />
+														<field name="percentage" />
+													</tree>
+												</field>
+												
+											</group>
+									</group>
+								</form>									
+								</field>
+							</page>	
+							<page string="التعويضات">
+								<field name="indemnity_ids" nolabel="1">
+									<tree editable="bottom">
+										<field name="indemnity_id" />
+									</tree>
+									<form string="التعويضات">
+										<group>
+											<group>
+												<field name="indemnity_id" />
+											</group>
+											<group>
+												<field name="compute_method" />
+												<field name="amount" attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}"/>
+												<field name="percentage" attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}"/> 
+												<field name="min_amount" />
+												<field name="line_ids"  attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+													<tree editable="buttom"  >
+														<field name="city_id" />
+														<field name="percentage" />
+													</tree>
+												</field>
+												
+											</group>
+									</group>
+								</form>										
+								</field>
+								
+							</page>														
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+
 		<record id="salary_grid_form" model="ir.ui.view">
 			<field name="name">salary.grid.form</field>
 			<field name="model">salary.grid</field>
@@ -25,18 +134,16 @@
 							</group>
 						</group>
 						<field name="grid_ids" string=" سلّم الرواتب">
-							<tree editable="bottom">
+							<tree>
 								<field name="type_id" />
 								<field name="grade_id" domain="[('type_id','=',type_id)]" />
 								<field name="degree_id" domain="[('grade_id','=',grade_id)]" />
 								<field name="basic_salary" />
-								<field name="transport_allow" />
+								<field name="insurance" />
 								<field name="retirement" />
 								<field name="net_salary" />
 							</tree>
 						</field>
-
-
 					</sheet>
 				</form>
 			</field>
@@ -77,37 +184,8 @@
 							<group string="الصنف">
 								<field name="name" />
 								<field name="code" />
-								<field name="grid_id" />
-								<field name="far_age" />
-							</group>
-							<group string="المستحقات  المالية عند التعين">
-								<field name="basic_salary" />
-								<field name="retrait_monthly" />
-								<field name="assurance_monthly" />
-								<field name="passing_score" />
 							</group>
 						</group>
-						<group string="البدلات و المكافآت‬">
-							<group>
-								<field name="allowance_ids" widget="many2many"
-									domain="[('type_id', '=', id)]">
-									<tree>
-										<field name="name" />
-										<field name="code" />
-									</tree>
-								</field>
-							</group>
-							<group>
-								<field name="reward_ids" widget="many2many" domain="[('type_id', '=', id)]">
-									<tree>
-										<field name="name" />
-										<field name="code" />
-									</tree>
-								</field>
-							</group>
-						</group>
-
-
 					</sheet>
 				</form>
 			</field>
@@ -120,8 +198,6 @@
 				<tree string="الأصناف">
 					<field name="name" />
 					<field name="code" />
-					<field name="basic_salary" />
-					<field name="grid_id" />
 				</tree>
 			</field>
 		</record>
@@ -149,9 +225,7 @@
 							<group>
 								<field name="name" />
 								<field name="code" />
-								<field name="annual_premium" />
 								<field name="type_id" />
-								<field name="years_job" />
 							</group>
 
 						</group>
@@ -167,9 +241,7 @@
 				<tree string="المراتب">
 					<field name="name" />
 					<field name="code" />
-					<field name="annual_premium" />
 					<field name="type_id" />
-					<field name="years_job" />
 				</tree>
 			</field>
 		</record>
@@ -195,7 +267,6 @@
 						<group>
 							<group>
 								<field name="sequence" widget="handle" />
-
 								<field name="name" />
 								<field name="code" />
 								<field name="grade_id" />

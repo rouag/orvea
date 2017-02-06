@@ -96,7 +96,7 @@
         
         
 
-        'view/hr.xml',
+       
 
         'view/hr_decision_appoint.xml',
 #         'view/hr_promotion.xml',
@@ -147,6 +147,8 @@
         'payroll/view/hr_bonus_view.xml',
         'payroll/view/hr_loan_view.xml',
         'payroll/views/report_hr_deduction.xml',
+        
+         'view/hr.xml',
         'payroll/views/report.xml',
         # الحضور والإنصراف
         'attendance/security/attendance_security.xml',
@@ -192,6 +194,7 @@
         
         # promotion
         'hr_promotions/view/hr_promotion_view.xml',
+        'hr_promotions/view/hr_employee_promotion_view.xml',
 
     ],
     'auto_install': False,
