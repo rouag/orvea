@@ -21,7 +21,7 @@ class HrDecisionAppoint(models.Model):
     date_hiring_end = fields.Date(string=u'تاريخ إنتهاء التعيين')  
     date_direct_action = fields.Date(string='تاريخ مباشرة العمل', required=1) 
     instead_exchange = fields.Boolean(string='صرف بدل تعيين')
-    appoint = fields.Boolean(string=u'مباشر', default=False)
+    is_started = fields.Boolean(string=u'مباشر', default=False)
     # info about employee
     employee_id = fields.Many2one('hr.employee', string='الموظف', required=1)
     number = fields.Char(related='employee_id.number', store=True, readonly=True, string=u'الرقم الوظيفي') 
@@ -322,7 +322,7 @@ class HrDecisionAppoint(models.Model):
     def control_prensence_employee(self):
         today_date = fields.Date.from_string(fields.Date.today())
         print"today_date",type(today_date)
-        appoints= self.env['hr.decision.appoint'].search([('state_appoint','=','active'),('appoint','=',False)])
+        appoints= self.env['hr.decision.appoint'].search([('state_appoint','=','active'),('is_started','=',False)])
         print"appoints",appoints
         for appoint in appoints :
             prev_days_end = fields.Date.from_string(appoint.date_direct_action) + relativedelta(days=15)
