@@ -2,8 +2,9 @@
 
 from openerp import models, fields, api, _
 from dateutil.relativedelta import relativedelta
-from datetime import date
 from openerp.exceptions import ValidationError
+from datetime import date, datetime, timedelta
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class HrEmployeeTransfert(models.Model):
@@ -20,13 +21,21 @@ class HrEmployeeTransfert(models.Model):
     new_specific_id = fields.Many2one('hr.groupe.job', related='new_job_id.specific_id', readonly=1, string=u'المجموعة النوعية')
     new_type_id = fields.Many2one('salary.grid.type', related='new_job_id.type_id', readonly=1, string=u'الصنف')
     justification_text = fields.Text(string=u'مبررات النقل', readonly=1, required=1, states={'new': [('readonly', 0)]})
+    same_group = fields.Boolean(compute='_compute_same_specific_group', default=False)
+    decision_number = fields.Char(string=u"رقم القرار")
+    decision_date = fields.Date(string=u'تاريخ القرار')
+    decision_file = fields.Binary(string=u'نسخة القرار')
+    degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة')
+    date_direct_action = fields.Date(string=u'تاريخ مباشرة العمل', required=1) 
+    
     # ‫المدنتية‬ ‫الخدمة‬ ‫موافلقة‬
     speech_number = fields.Char(string=u'رقم الخطاب')
     speech_date = fields.Date(string=u'تاريخ الخطاب')
-    speech_file = fields.Binary(string=u'صورة الخطاب')
+    speech_file = fields.Binary(string=u'نسخة الخطاب')
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', u'صاحب الصلاحية'),
-                              ('pending', u'شؤون الموظفين'),
+                              ('pm', u'شؤون الموظفين'),
+                              ('pending', u'في الإنتظار'),
                               ('done', u'اعتمدت'),
                               ('refused', u'رفض')
                               ], readonly=1, default='new', string=u'الحالة')
@@ -34,6 +43,15 @@ class HrEmployeeTransfert(models.Model):
                                        ('external_transfert_out', u'نقل خارجي (من الهيئة إلى جهة أخرى)'),
                                        ('external_transfert_in', u'نقل خارجي (إلى الهيئة)'),
                                        ], readonly=1, states={'new': [('readonly', 0)]}, default='internal_transfert', string=u'طبيعة النقل')
+
+    @api.multi
+    @api.depends('new_specific_id', 'specific_id')
+    def _compute_same_specific_group(self):
+        self.ensure_one()
+        print self.same_group
+        if self.specific_id and self.new_specific_id:
+            self.same_group = self.specific_id == self.new_specific_id
+            print self.same_group
 
     @api.multi
     @api.constrains('transfert_type')
@@ -65,6 +83,25 @@ class HrEmployeeTransfert(models.Model):
         self.state = 'waiting'
 
     @api.multi
+    def action_notif(self):
+        self.ensure_one()
+        self.state = 'pending'
+        # send notification for the employee
+        self.env['base.notification'].create({'title': u'إشعار بعدم وجود وظيفة مناسبة',
+                                              'message': u'لا يوجد وظيفة مناسبة لطلبك حالياً.',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'res_id': self.id,
+                                              'res_action': 'smart_hr.action_hr_employee_transfert',
+                                              'notif': True
+                                              })
+
+    @api.multi
+    def action_pm(self):
+        self.ensure_one()
+        self.state = 'pm'
+
+    @api.multi
     def action_pending(self):
         self.ensure_one()
         self.state = 'pending'
@@ -73,8 +110,21 @@ class HrEmployeeTransfert(models.Model):
     def action_refused(self):
         self.ensure_one()
         self.state = 'refused'
+        # send notification for the employee
+        self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                              'message': u'لقد تم رفض طلب نقل',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'res_id': self.id,
+                                              'res_action': 'smart_hr.action_hr_employee_transfert',
+                                              'notif': True
+                                              })
 
     @api.multi
     def action_done(self):
         self.ensure_one()
+        if not self.new_job_id:
+                    raise ValidationError(u"الرجاء التثبت من حقل الوظيفة المنقول إليها.")
+        if not self.degree_id:
+                    raise ValidationError(u"الرجاء التثبت من حقل الدرجة.")
         self.state = 'done'
