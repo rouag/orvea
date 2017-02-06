@@ -103,6 +103,9 @@ class HrDecisionAppoint(models.Model):
     file_salar_recent_name = fields.Char(string=' تعهد من الموظف') 
     file_appoint_name = fields.Char(string='اسم قرار التعين') 
     score = fields.Float(string=u'نتيجة المترشح', readonly=1, states={'draft': [('readonly', 0)]})
+    depend_on_test_periode = fields.Boolean(string=u'مدة التجربة', required=1, readonly=1, states={'draft': [('readonly', 0)]}, default=False)
+    testing_date_from = fields.Date(string=u'مدة التجربة (من)')
+    testing_date_to = fields.Date(string=u'مدة التجربة (إلى)')
 
     @api.multi
     @api.onchange('type_appointment')
