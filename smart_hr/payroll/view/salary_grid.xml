@@ -184,18 +184,6 @@
 							<group string="الصنف">
 								<field name="name" />
 								<field name="code" />
-<<<<<<< HEAD
-								<field name="grid_id" />
-								<field name="far_age" />
-							</group>
-							<group string="المستحقات  المالية عند التعين">
-								<field name="basic_salary" />
-								<field name="retrait_monthly" />
-								<field name="assurance_type" />
-								<field name="assurance_monthly" />
-								<field name="passing_score" />
-=======
->>>>>>> branch '9.0' of https://gitlab.smart-etech.com/smart-dev/addons_smart.git
 							</group>
 						</group>
 					</sheet>
