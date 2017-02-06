@@ -199,11 +199,6 @@
 									attrs="{'invisible':['|',('transport_car','!=',False),('state', 'not in', ['draft','audit','waiting','manager',  'budget','civil','hrm','direct', 'done']) ],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
 								<field name="transport_car"
 									attrs="{'invisible':[ '|',('transport_alocation','!=',False),('state', 'not in', ['draft','waiting', 'hrm', 'civil','budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />
-								<field name="medical_examination_file" filename="medical_examination_name"
-									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done']),
-											('type_appointment','not in', [%(data_hr_new_agent_public)d])],
-											'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done']),('type_appointment','not in', [%(data_hr_recrute_agent_public)d])]}" />
-								<field name="depend_on_test_periode" />
 							</group>
 							<group>
 								<field name="state_appoint"
@@ -212,9 +207,6 @@
 									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','civil','direct', 'done','refuse'])],'readonly':[('state', 'in', [ 'waiting', 'done','refuse'])]}" />
 								<field name="date_hiring_end"
 									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','civil','direct', 'done','refuse'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done','refuse'])]}" />
-								<field name="testing_date_from" attrs="{'invisible':[('depend_on_test_periode', '=', False)],'readonly':[('state', '!=', 'draft')]}" />
-								<field name="testing_date_to" attrs="{'invisible':[('depend_on_test_periode', '=', False)],'readonly':[('state', '!=', 'draft')]}" />
-
 							</group>
 						</group>
 						<notebook>
