@@ -67,7 +67,7 @@ class hrDirectAppoint(models.Model):
     def button_cancel_appoint(self):
         self.ensure_one() 
         
-        appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('state','=','done'),('appoint','=',False),('state_appoint','=','active')], limit=1)
+        appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('state','=','done'),('is_started','=',False),('state_appoint','=','active')], limit=1)
         for line in  appoint_line :
                 line.write({'appoint': False ,'state_appoint' : 'refuse'})
         self.state = 'cancel'
@@ -76,7 +76,7 @@ class hrDirectAppoint(models.Model):
     def button_direct_appoint(self):
         self.ensure_one()
         #TODO   
-        appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('state','=','done'),('appoint','=',False),('state_appoint','=','active')], limit=1)
+        appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('state','=','done'),('is_started','=',False),('state_appoint','=','active')], limit=1)
         for line in  appoint_line :
             line.write({'appoint': True ,'state_appoint' : 'active'})
         self.state = 'done'  

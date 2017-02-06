@@ -1,7 +1,7 @@
 .o_form_field_number {
   text-align: right !important;
  width:60px !important;
- direction: !important;
+ direction:ltr !important;
 }
 
 .oe_smart_inline {
@@ -34,4 +34,10 @@ padding-right: 0px !important;
 .selection_field_height{
 	
 height: 44px;}
+
+.o_list_number_direction{
+	 direction:ltr !important;
+	
+	
+}
 
