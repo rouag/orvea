@@ -40,7 +40,7 @@ class HrEmployeeTransfert(models.Model):
     def check_constrains(self):
         self.ensure_one()
         # ‫التجربة‬ ‫سنة‬ ‫إستلكمال‬
-        recruitement_decision = self.employee_id.decision_appoint_ids.search([('active', '=', True)], limit=1)
+        recruitement_decision = self.employee_id.decision_appoint_ids.search([('is_started', '=', True)], limit=1)
         if recruitement_decision and recruitement_decision.depend_on_test_periode:
             testing_date_to = recruitement_decision.testing_date_to
             if fields.Date.from_string(testing_date_to) >= fields.Date.from_string(fields.Datetime.now()):

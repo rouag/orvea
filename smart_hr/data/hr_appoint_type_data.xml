@@ -71,10 +71,10 @@
 			<field name="personnel_hr" eval="True" />
 			<field name="direct_manager" eval="True" />
 			<field name="recrutment_decider" eval="False" />
-				<field name="ministry_civil" eval="True" />
+			<field name="ministry_civil" eval="True" />
 		</record>
-		
-			<record id="data_hr_recrute_Members" model="hr.type.appoint">
+
+		<record id="data_hr_recrute_Members" model="hr.type.appoint">
 			<field name="name">تعين أعضاء</field>
 			<field name="code">MR01</field>
 			<field name="audit" eval="True" />
@@ -83,6 +83,11 @@
 			<field name="personnel_hr" eval="True" />
 			<field name="direct_manager" eval="False" />
 			<field name="recrutment_decider" eval="True" />
+		</record>
+
+		<record id="data_hr_recrute_from_transfert" model="hr.type.appoint">
+			<field name="name">تعين النقل</field>
+			<field name="code">TR01</field>
 		</record>
 	</data>
 </openerp>
