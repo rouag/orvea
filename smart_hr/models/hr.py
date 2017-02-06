@@ -81,6 +81,10 @@ class HrEmployee(models.Model):
     education_level_ids = fields.One2many('hr.employee.education.level', 'employee_id', string=u'المستوى التعليمي')
     education_level_id = fields.Many2one('hr.employee.education.level', string=u'المستوى التعليمي ')
     loan_count = fields.Integer(string=u'عدد القروض', compute='_compute_loans_count')
+    point_seniority=fields.Integer(string=u'نقاط الأقدمية',)
+    point_education=fields.Integer(string=u'نقاط التعليم',)
+    point_training=fields.Integer(string=u'نقاط التدريب',)
+    point_functionality=fields.Integer(string=u'نقاط  الإداء الوظيفي',)
     is_member = fields.Boolean(string=u'عضو في الهيئة', default=False, required=1)
     assurance_type = fields.Many2one('hr.assurance.type', string=u'نوع التأمين', readonly='1', related='job_id.type_id.assurance_type')
 
@@ -207,6 +211,21 @@ class HrEmployee(models.Model):
             specialization_ids = self.diploma_id.specialization_ids.ids
             res['domain'] = {'specialization_ids': [('id', 'in', specialization_ids)]}
         return res
+    
+    
+    @api.multi
+    def _compute_point(self):
+       if self.job_id:
+           if self.job_id.grade_id.years_job:
+               years_supp=(self.service_duration/365)-self.job_id.grade_id.years_job
+               if years_supp > 0 :
+                   regle_point=self.env['hr.evaluation.point'].search([('grade_id','=',self.job_id.grade_id)])
+                   for seniority in regle_point.seniority_ids:
+                       if years_supp < seniority.year_to and years_supp > seniority.year_from:
+                           self.point_seniority=years_supp*seniority.point
+                           
+               
+            
 
 
 class HrEmployeeHolidaysStock(models.Model):

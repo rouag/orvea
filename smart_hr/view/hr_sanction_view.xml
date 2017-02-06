@@ -103,23 +103,23 @@
 						<group>
 							<group>
 								<field name="name"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','cancel', 'done'])],'readonly':[('state', 'in', [ 'waiting','extern', 'cancel','done'])]}" />
-								<field name="order_date" attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern', 'cancel','done'])],'readonly':[('state', 'in', [ 'waiting','extern','cancel', 'done'])]}" />
-								<field name="order_picture" filename="order_picture_name" attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern', 'cancel','done'])],'readonly':[('state', 'in', [ 'waiting','extern', 'cancel','done'])]}" />
+									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','done','cancel'])],'readonly':[('state', 'in', [ 'waiting','extern', 'done','cancel'])]}" />
+								<field name="order_date" attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern', 'done','cancel'])],'readonly':[('state', 'in', [ 'waiting','extern','done','cancel'])]}" />
+								<field name="order_picture" filename="order_picture_name" attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern', 'done','cancel'])],'readonly':[('state', 'in', [ 'waiting','extern', 'done','cancel'])]}" />
 									<field name="order_picture_name" invisible="1" />
 							</group>
 							<group>
 							
 							<field name="type_sanction"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','cancel', 'done'])],'readonly':[('state', 'in', [ 'waiting','extern' ,'cancel','done'])]}" />
+									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','done','cancel'])],'readonly':[('state', 'in', [ 'waiting','extern' ,'done','cancel'])]}" />
 								<field name="nb_days"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','cancel', 'done'])],'readonly':[('state', 'in', [ 'waiting','extern' ,'cancel','done'])]}" />
+									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','done','cancel'])],'readonly':[('state', 'in', [ 'waiting','extern' ,'done','cancel'])]}" />
 								
 								
 								<field name="date_sanction_start"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern' ,'cancel','done'])],'readonly':[('state', 'in', [ 'waiting','extern', 'cancel','done'])]}" />
+									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern' ,'done','cancel'])],'readonly':[('state', 'in', [ 'waiting','extern', 'done','cancel'])]}" />
 								<field name="date_sanction_end"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','cancel', 'done'])],'readonly':[('state', 'in', [ 'waiting','extern' ,'cancel','done'])]}" />
+									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','done','cancel'])],'readonly':[('state', 'in', [ 'waiting','extern' ,'done','cancel'])]}" />
 							</group>
 						</group>
 						

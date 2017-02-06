@@ -36,6 +36,7 @@ class HrJob(models.Model):
     is_striped_to = fields.Boolean(string='is striped to', default=False)
     # تحوير‬
     update_date = fields.Date(string=u'تاريخ التحوير')
+    type_resevation = fields.Selection([('promotion', u'للترقية'),],string=u'نوع الحجز',)
 
     @api.depends('occupation_date_to')
     def _compute_is_occupated(self):
@@ -88,6 +89,7 @@ class HrJobReservation(models.Model):
 
     date_from = fields.Date(string=u'التاريخ من', readonly=1, default=fields.Datetime.now())
     date_to = fields.Date(string=u'التاريخ الى')
+    type_resevation = fields.Selection([('promotion', u'للترقية'),],string=u'نوع الحجز',)
 
     @api.onchange('date_from', 'date_to')
     def onchange_dates(self):
@@ -99,7 +101,7 @@ class HrJobReservation(models.Model):
     @api.multi
     def action_job_reserve_confirm(self):
         if self.date_from and self.date_to:
-            self.env['hr.job'].search([('id', '=', self._context['job_id'])]).write({'occupation_date_from': self.date_from, 'occupation_date_to': self.date_to, 'state': 'reserved'})
+            self.env['hr.job'].search([('id', '=', self._context['job_id'])]).write({'occupation_date_from': self.date_from, 'occupation_date_to': self.date_to, 'state': 'reserved','type_resevation':self.type_resevation})
 
 
 class HrJobCreate(models.Model):

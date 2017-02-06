@@ -5,15 +5,16 @@ from openerp import models, fields, api, tools, _
 import openerp.addons.decimal_precision as dp
 from datetime import datetime
 from datetime import timedelta
-MONTHS = [('1', 'محرّم'),
-          ('2', 'صفر'),
-          ('3', 'ربيع الأول'),
-          ('4', 'ربيع الثاني'),
-          ('5', 'جمادي الأولى'),
-          ('6', 'جمادي الآخرة'),
-          ('7', 'رجب'),
-          ('8', 'شعبان'),
-          ('9', 'رمضان'),
+
+MONTHS = [('01', 'محرّم'),
+          ('02', 'صفر'),
+          ('03', 'ربيع الأول'),
+          ('04', 'ربيع الثاني'),
+          ('05', 'جمادي الأولى'),
+          ('06', 'جمادي الآخرة'),
+          ('07', 'رجب'),
+          ('08', 'شعبان'),
+          ('09', 'رمضان'),
           ('10', 'شوال'),
           ('11', 'ذو القعدة'),
           ('12', 'ذو الحجة')]
@@ -100,7 +101,7 @@ class HrPayslip(models.Model):
         self.worked_days_line_ids = worked_days_line_ids
         self.days_off_line_ids = leaves + deductions
 
-    def get_worked_day_lines_without_contract(self, employee_id, working_hours, date_from, date_to):
+    def get_worked_day_lines_without_contract(self, employee_id, working_hours, date_from, date_to, compute_leave=True):
         '''
         احتساب عدد الأيام المدفوعة الأجر
         احتساب عدد أيام الإجازات
@@ -137,7 +138,7 @@ class HrPayslip(models.Model):
             if working_hours_on_day:
                 # the employee had to work
                 leave_type = employee_was_on_leave(employee_id, day_from + timedelta(days=day))
-                if leave_type:
+                if leave_type and compute_leave:
                     # if he was on leave, fill the leaves dict
                     if leave_type in leaves:
                         leaves[leave_type]['number_of_days'] += 1.0
@@ -150,6 +151,7 @@ class HrPayslip(models.Model):
                             'number_of_days': 1.0,
                             'number_of_hours': working_hours_on_day,
                             'contract_id': False,
+                            'type': 'holiday',
                         }
                 else:
                     # add the input vals to tmp (increment if existing)
@@ -167,6 +169,7 @@ class HrPayslip(models.Model):
         deduction_ids = self.env['hr.deduction.line'].search([('state', '=', 'waiting'),
                                                               ('employee_id', '=', employee_id),
                                                               ('month', '=', month)])
+        print '--deduction_ids----', deduction_ids
         # deduction_type
         deductions = {}
         for deduction in deduction_ids:
@@ -177,6 +180,7 @@ class HrPayslip(models.Model):
                                                               'sequence': 5,
                                                               'code': deduction.deduction_type_id.id,
                                                               'number_of_days': deduction.amount,
+                                                              'type': deduction.deduction_type_id.type,
                                                               # 'number_of_hours': working_hours_on_day,you can get the working_hours_on_day only for day
                                                               }
         deductions = [value for key, value in deductions.items()]
@@ -188,158 +192,213 @@ class HrPayslip(models.Model):
             return []
         return list(set(self.pool.get('hr.payroll.structure')._get_parent_structure(cr, uid, structure_ids, context=context)))
 
-    # rewrite this function just to get a correct rules id == dont use a contract_ids
-    # you find the modified lines marked by #UPDATE
-    def get_payslip_lines(self, cr, uid, contract_ids, payslip_id, context):
+    @api.multi
+    def compute_sheet(self):
+        print '----new compute_sheet ---------'
+        salary_grid_obj = self.env['salary.grid.detail']
+        bonus_line_obj = self.env['hr.bonus.line']
+        loan_line_obj = self.env['hr.loan.line']
+        for payslip in self:
+            # delete old line
+            payslip.line_ids.unlink()
+            # generate  lines
+            employee = payslip.employee_id
+            ttype = employee.job_id.type_id
+            grade = employee.job_id.grade_id
+            degree = employee.degree_id
+            # search the correct salary_grid for this employee
+            salary_grids = salary_grid_obj.search([('type_id', '=', ttype.id), ('grade_id', '=', grade.id), ('degree_id', '=', degree.id)])
+            if not salary_grids:
+                return
+            salary_grid = salary_grids[0]
+            basic_salary = salary_grid.basic_salary
+            # compute
+            lines = []
+            sequence = 1
+            allowance_total = 0.0
+            deduction_total = 0.0
+            # 1- الراتب الأساسي
+            basic_salary_val = {'name': u'الراتب الأساسي',
+                                'slip_id': payslip.id,
+                                'employee_id': employee.id,
+                                'rate': 0.0,
+                                'amount': basic_salary,
+                                'category': 'basic_salary',
+                                'type': 'basic_salary',
+                                'sequence': sequence,
+                                }
+            lines.append(basic_salary_val)
+            # 2- البدلات القارة
+            for allowance in salary_grid.allowance_ids:
+                sequence += 1
+                amount = allowance.get_value(employee.id)
+                allowance_val = {'name': allowance.allowance_id.name,
+                                 'slip_id': payslip.id,
+                                 'employee_id': employee.id,
+                                 'rate': 0.0,
+                                 'amount': amount,
+                                 'category': 'allowance',
+                                 'type': 'allowance',
+                                 'sequence': sequence,
+                                 }
+                lines.append(allowance_val)
+                allowance_total += amount
+            for reward in salary_grid.reward_ids:
+                sequence += 1
+                amount = reward.get_value(employee.id)
+                reward_val = {'name': reward.reward_id.name,
+                              'slip_id': payslip.id,
+                              'employee_id': employee.id,
+                              'rate': 0.0,
+                              'amount': amount,
+                              'category': 'allowance',
+                              'type': 'reward',
+                              'sequence': sequence,
+                              }
+                lines.append(reward_val)
+                allowance_total += amount
+            sequence += 1
+            for indemnity in salary_grid.indemnity_ids:
+                amount = indemnity.get_value(employee.id)
+                indemnity_val = {'name': indemnity.indemnity_id.name,
+                                 'slip_id': payslip.id,
+                                 'employee_id': employee.id,
+                                 'rate': 0.0,
+                                 'amount': amount,
+                                 'category': 'allowance',
+                                 'type': 'indemnity',
+                                 'sequence': sequence,
+                                 }
+                lines.append(indemnity_val)
+                allowance_total += amount
+                sequence += 1
+            # 3- البدلات المتغيرة
+            bonus_lines = bonus_line_obj.search([('employee_id', '=', employee.id), ('state', '=', 'progress'),
+                                                ('month_from', '<=', payslip.month), ('month_to', '>=', payslip.month)])
+            for bonus in bonus_lines:
+                bonus_type = 'allowance'
+                if bonus.reward_id:
+                    bonus_type = 'reward'
+                if bonus.indemnity_id:
+                    bonus_type = 'indemnity'
+                bonus_amount = bonus.get_value(employee.id)
+                bonus_val = {'name': bonus.name,
+                             'slip_id': payslip.id,
+                             'employee_id': employee.id,
+                             'rate': 0.0,
+                             'amount': bonus_amount,
+                             'category': 'allowance',
+                             'type': bonus_type,
+                             'sequence': sequence
+                             }
+                lines.append(bonus_val)
+                allowance_total += bonus_amount
+                sequence += 1
+            # 4- الحسميات
+            deduction_retard_leave = 0.0
+            deduction_absence = 0.0
 
-        def _sum_salary_rule_category(localdict, category, amount):
-            if category.parent_id:
-                localdict = _sum_salary_rule_category(localdict, category.parent_id, amount)
-            localdict['categories'].dict[category.code] = category.code in localdict['categories'].dict and localdict['categories'].dict[category.code] + amount or amount
-            return localdict
+            retard_leave_days = 0
+            absence_days = 0
+            holiday_days = 0
 
-        class BrowsableObject(object):
-            def __init__(self, pool, cr, uid, employee_id, dict):
-                self.pool = pool
-                self.cr = cr
-                self.uid = uid
-                self.employee_id = employee_id
-                self.dict = dict
+            for line in payslip.days_off_line_ids:
+                if line.type == 'retard_leave':
+                    retard_leave_days += line.number_of_days
+                elif line.type == 'absence':
+                    absence_days += line.number_of_days
+                elif line.type == 'holiday':
+                    holiday_days += line.number_of_days
 
-            def __getattr__(self, attr):
-                return attr in self.dict and self.dict.__getitem__(attr) or 0.0
-
-        class InputLine(BrowsableObject):
-            """a class that will be used into the python code, mainly for usability purposes"""
-            def sum(self, code, from_date, to_date=None):
-                if to_date is None:
-                    to_date = datetime.now().strftime('%Y-%m-%d')
-                result = 0.0
-                self.cr.execute("SELECT sum(amount) as sum\
-                            FROM hr_payslip as hp, hr_payslip_input as pi \
-                            WHERE hp.employee_id = %s AND hp.state = 'done' \
-                            AND hp.date_from >= %s AND hp.date_to <= %s AND hp.id = pi.payslip_id AND pi.code = %s",
-                           (self.employee_id, from_date, to_date, code))
-                res = self.cr.fetchone()[0]
-                return res or 0.0
-
-        class WorkedDays(BrowsableObject):
-            """a class that will be used into the python code, mainly for usability purposes"""
-            def _sum(self, code, from_date, to_date=None):
-                if to_date is None:
-                    to_date = datetime.now().strftime('%Y-%m-%d')
-                result = 0.0
-                self.cr.execute("SELECT sum(number_of_days) as number_of_days, sum(number_of_hours) as number_of_hours\
-                            FROM hr_payslip as hp, hr_payslip_worked_days as pi \
-                            WHERE hp.employee_id = %s AND hp.state = 'done'\
-                            AND hp.date_from >= %s AND hp.date_to <= %s AND hp.id = pi.payslip_id AND pi.code = %s",
-                           (self.employee_id, from_date, to_date, code))
-                return self.cr.fetchone()
-
-            def sum(self, code, from_date, to_date=None):
-                res = self._sum(code, from_date, to_date)
-                return res and res[0] or 0.0
-
-            def sum_hours(self, code, from_date, to_date=None):
-                res = self._sum(code, from_date, to_date)
-                return res and res[1] or 0.0
-
-        class Payslips(BrowsableObject):
-            """a class that will be used into the python code, mainly for usability purposes"""
-
-            def sum(self, code, from_date, to_date=None):
-                if to_date is None:
-                    to_date = datetime.now().strftime('%Y-%m-%d')
-                self.cr.execute("SELECT sum(case when hp.credit_note = False then (pl.total) else (-pl.total) end)\
-                            FROM hr_payslip as hp, hr_payslip_line as pl \
-                            WHERE hp.employee_id = %s AND hp.state = 'done' \
-                            AND hp.date_from >= %s AND hp.date_to <= %s AND hp.id = pl.slip_id AND pl.code = %s",
-                            (self.employee_id, from_date, to_date, code))
-                res = self.cr.fetchone()
-                return res and res[0] or 0.0
-
-        # we keep a dict with the result because a value can be overwritten by another rule with the same code
-        result_dict = {}
-        rules = {}
-        categories_dict = {}
-        blacklist = []
-        payslip_obj = self.pool.get('hr.payslip')
-        inputs_obj = self.pool.get('hr.payslip.worked_days')
-        obj_rule = self.pool.get('hr.salary.rule')
-        payslip = payslip_obj.browse(cr, uid, payslip_id, context=context)
-        worked_days = {}
-        for worked_days_line in payslip.worked_days_line_ids:
-            worked_days[worked_days_line.code] = worked_days_line
-        inputs = {}
-        for input_line in payslip.input_line_ids:
-            inputs[input_line.code] = input_line
-
-        categories_obj = BrowsableObject(self.pool, cr, uid, payslip.employee_id.id, categories_dict)
-        input_obj = InputLine(self.pool, cr, uid, payslip.employee_id.id, inputs)
-        worked_days_obj = WorkedDays(self.pool, cr, uid, payslip.employee_id.id, worked_days)
-        payslip_obj = Payslips(self.pool, cr, uid, payslip.employee_id.id, payslip)
-        rules_obj = BrowsableObject(self.pool, cr, uid, payslip.employee_id.id, rules)
-
-        baselocaldict = {'categories': categories_obj, 'rules': rules_obj, 'payslip': payslip_obj, 'worked_days': worked_days_obj, 'inputs': input_obj}
-        # get the ids of the structures on the contracts and their parent id as well
-        # structure_ids = self.pool.get('hr.contract').get_all_structures(cr, uid, contract_ids, context=context)
-        structure_ids = self.get_all_structures_for_payslip(cr, uid, payslip.struct_id.id, context=context)
-        # get the rules of the structure and thier children
-        rule_ids = self.pool.get('hr.payroll.structure').get_all_rules(cr, uid, structure_ids, context=context)
-        # run the rules by sequence
-        sorted_rule_ids = [id for id, sequence in sorted(rule_ids, key=lambda x:x[1])]
-        # for contract in self.pool.get('hr.contract').browse(cr, uid, contract_ids, context=context): #UPDATED
-        employee = payslip.employee_id  # UPDATED contract.employee_id
-        localdict = dict(baselocaldict, employee=employee, contract=False)  # UPDATED contract=contract
-        for rule in obj_rule.browse(cr, uid, sorted_rule_ids, context=context):
-            key = rule.code + '-' + str(payslip.employee_id.id)  # UPDATED str(contract.id)
-            localdict['result'] = None
-            localdict['result_qty'] = 1.0
-            localdict['result_rate'] = 100
-            # check if the rule can be applied
-            if obj_rule.satisfy_condition(cr, uid, rule.id, localdict, context=context) and rule.id not in blacklist:
-                print '---rule-----', rule.code
-                # compute the amount of the rule
-                amount, qty, rate = obj_rule.compute_rule(cr, uid, rule.id, localdict, context=context)
-                # check if there is already a rule computed with that code
-                previous_amount = rule.code in localdict and localdict[rule.code] or 0.0
-                # set/overwrite the amount computed for this rule in the localdict
-                tot_rule = amount * qty * rate / 100.0
-                localdict[rule.code] = tot_rule
-                rules[rule.code] = rule
-                # sum the amount for its salary category
-                localdict = _sum_salary_rule_category(localdict, rule.category_id, tot_rule - previous_amount)
-                # create/overwrite the rule in the temporary results
-                result_dict[key] = {
-                    'salary_rule_id': rule.id,
-                    'contract_id': False,  # UPDATED contract.id
-                    'name': rule.name,
-                    'code': rule.code,
-                    'category_id': rule.category_id.id,
-                    'sequence': rule.sequence,
-                    'appears_on_payslip': rule.appears_on_payslip,
-                    'condition_select': rule.condition_select,
-                    'condition_python': rule.condition_python,
-                    'condition_range': rule.condition_range,
-                    'condition_range_min': rule.condition_range_min,
-                    'condition_range_max': rule.condition_range_max,
-                    'amount_select': rule.amount_select,
-                    'amount_fix': rule.amount_fix,
-                    'amount_python_compute': rule.amount_python_compute,
-                    'amount_percentage': rule.amount_percentage,
-                    'amount_percentage_base': rule.amount_percentage_base,
-                    'register_id': rule.register_id.id,
-                    'amount': amount,
-                    'employee_id': payslip.employee_id.id,
-                    'quantity': qty,
-                    'rate': rate,
-                }
-            else:
-                # blacklist this rule and its children
-                blacklist += [id for id, seq in self.pool.get('hr.salary.rule')._recursive_search_of_rules(cr, uid, [rule], context=context)]
-
-        result = [value for code, value in result_dict.items()]
-        return result
+            # get number of days by month
+            worked_days_line_ids, leaves = self.get_worked_day_lines_without_contract(employee.id, employee.calendar_id, payslip.date_from, payslip.date_to, False)
+            days_by_month = worked_days_line_ids and worked_days_line_ids[0].get('number_of_days', 22)
+            # حسم‬  التأخير يكون‬ من‬  الراتب‬ الأساسي فقط
+            if retard_leave_days:
+                deduction_retard_leave = basic_salary / days_by_month * retard_leave_days
+                retard_leave_val = {'name': u'تأخير وخروج مبكر',
+                                    'slip_id': payslip.id,
+                                    'employee_id': employee.id,
+                                    'rate': retard_leave_days,
+                                    'amount': deduction_retard_leave,
+                                    'category': 'deduction',
+                                    'type': 'retard_leave',
+                                    'sequence': sequence
+                                    }
+                lines.append(retard_leave_val)
+                deduction_total += deduction_retard_leave
+                sequence += 1
+            #  حسم‬  الغياب‬ يكون‬ من‬  جميع البدلات . و  الراتب‬ الأساسي للموظفين‬ الرسميين‬ والمستخدمين
+            if absence_days:
+                deduction_absence = (basic_salary + allowance_total) / days_by_month * absence_days
+                retard_leave_val = {'name': u'غياب',
+                                    'slip_id': payslip.id,
+                                    'employee_id': employee.id,
+                                    'rate': absence_days,
+                                    'amount': deduction_absence,
+                                    'category': 'deduction',
+                                    'type': 'absence',
+                                    'sequence': sequence
+                                    }
+                lines.append(retard_leave_val)
+                deduction_total += deduction_absence
+                sequence += 1
+            # 5- القروض
+            loan_lines = loan_line_obj.search([('employee_id', '=', employee.id), ('loan_id.state', '=', 'progress'),
+                                               ('month', '=', payslip.month)])
+            for loan in loan_lines:
+                loan_val = {'name': u'قرض  رقم : %s' % loan.loan_id.name,
+                            'slip_id': payslip.id,
+                            'employee_id': employee.id,
+                            'rate': 0.0,
+                            'amount': loan.amount,
+                            'category': 'deduction',
+                            'type': 'loan',
+                            'sequence': sequence
+                            }
+                lines.append(loan_val)
+                deduction_total += loan.amount
+                sequence += 1
+            # 6- التقاعد‬
+            retirement_amount = (basic_salary + allowance_total - deduction_total) * salary_grid.retirement / 100.0
+            retirement_val = {'name': 'التقاعد',
+                              'slip_id': payslip.id,
+                              'employee_id': employee.id,
+                              'rate': 0.0,
+                              'amount': retirement_amount,
+                              'category': 'deduction',
+                              'type': 'retirement',
+                              'sequence': sequence}
+            lines.append(retirement_val)
+            deduction_total += retirement_amount
+            sequence += 1
+            # 7- التأمينات‬
+            insurance_amount = (basic_salary + allowance_total) * salary_grid.insurance / 100.0
+            insurance_val = {'name': 'التأمين',
+                             'slip_id': payslip.id,
+                             'employee_id': employee.id,
+                             'rate': 0.0,
+                             'amount': insurance_amount,
+                             'category': 'deduction',
+                             'type': 'insurance',
+                             'sequence': sequence}
+            lines.append(insurance_val)
+            deduction_total += insurance_amount
+            sequence += 1
+            # 0- صافي الراتب
+            salary_net = basic_salary + allowance_total - deduction_total
+            salary_net_val = {'name': u'صافي الراتب',
+                              'slip_id': payslip.id,
+                              'employee_id': employee.id,
+                              'rate': 0.0,
+                              'amount': salary_net,
+                              'category': 'salary_net',
+                              'type': 'salary_net',
+                              'sequence': sequence,
+                              }
+            lines.append(salary_net_val)
+            # print '---------------', lines
+            payslip.line_ids = lines
 
 
 class HrPayslipWorkedDays(models.Model):
@@ -352,8 +411,33 @@ class HrPayslipWorkedDays(models.Model):
 class HrPayslipLine(models.Model):
     _inherit = 'hr.payslip.line'
 
-    # make contract_id not required
+    # make theses fields  not required
     contract_id = fields.Many2one('hr.contract', 'Contract', required=False)
+    salary_rule_id = fields.Many2one('hr.salary.rule', 'Rule', required=False)
+    code = fields.Char('Code', size=64, required=False)
+    category_id = fields.Many2one('hr.salary.rule.category', 'Category', required=False)
+
+    # added
+    category = fields.Selection([('basic_salary', 'الراتب الأساسي'),
+                                 ('allowance', 'البدلات'),
+                                 ('deduction', 'الحسميات'),
+                                 ('retirement', 'التقاعد'),
+                                 ('insurance', 'التأمين'),
+                                 ('salary_net', 'صافي الراتب'),
+                                 ], string='الفئة', select=1, readonly=1)
+
+    type = fields.Selection([('basic_salary', 'الراتب الأساسي'),
+                             ('allowance', 'البدلات'),
+                             ('reward', u'المكافآت‬'),
+                             ('indemnity', 'التعويضات'),
+                             ('retard_leave', 'تأخير وخروج'),
+                             ('absence', 'غياب'),
+                             ('holiday', 'إجازة'),
+                             ('loan', 'قروض'),
+                             ('retirement', 'التقاعد'),
+                             ('insurance', 'التأمين'),
+                             ('salary_net', 'صافي الراتب'),
+                             ], string='النوع', select=1, readonly=1)
 
 
 class HrPayslipDaysOff(models.Model):
@@ -365,6 +449,7 @@ class HrPayslipDaysOff(models.Model):
     code = fields.Char('الرمز', required=0)
     number_of_days = fields.Float('عدد الأيام')
     number_of_hours = fields.Float('عدد الساعات')
+    type = fields.Selection([('retard_leave', 'تأخير وخروج'), ('absence', 'غياب'), ('holiday', 'إجازة')], string='النوع', required=1)
 
 
 class HrSalaryRule(models.Model):

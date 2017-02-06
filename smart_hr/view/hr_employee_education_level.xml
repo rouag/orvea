@@ -8,7 +8,7 @@
 			<field name="arch" type="xml">
 				<form string="المستوى التعليمي">
 					<sheet>
-						<group>
+						
 							<group col="6">
 								<field name="sequence" required="1" />
 								<field name="code" required="1" />
@@ -16,13 +16,12 @@
 							</group>
 							<group col="8">
 								
-								<field name="diploma_id"  />
-								<field name="specialization_ids" widget="many2many_tags"  />
+								<field name="diploma_id"  options='{"no_open": True, "no_create": True}'/>
+								<field name="specialization_ids" widget="many2many_tags" options='{"no_open": True, "no_create": True}' />
 								<field name="nomber_year_education"  />
 								<field name="job_specialite"  />
 								
 							</group>
-						</group>
 					</sheet>
 				</form>
 			</field>

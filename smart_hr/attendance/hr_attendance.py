@@ -11,18 +11,19 @@ from umalqurra.hijri_date import HijriDate
 from openerp.addons.smart_base.util.time_util import float_time_convert
 from openerp.addons.smart_base.util.time_util import time_float_convert
 from openerp.addons.smart_base.util.time_util import float_time_convert_str
+
 from dateutil import relativedelta
 
 FORMAT_TIME = '%H:%M:%S'
-MONTHS = [('1', 'محرّم'),
-          ('2', 'صفر'),
-          ('3', 'ربيع الأول'),
-          ('4', 'ربيع الثاني'),
-          ('5', 'جمادي الأولى'),
-          ('6', 'جمادي الآخرة'),
-          ('7', 'رجب'),
-          ('8', 'شعبان'),
-          ('9', 'رمضان'),
+MONTHS = [('01', 'محرّم'),
+          ('02', 'صفر'),
+          ('03', 'ربيع الأول'),
+          ('04', 'ربيع الثاني'),
+          ('05', 'جمادي الأولى'),
+          ('06', 'جمادي الآخرة'),
+          ('07', 'رجب'),
+          ('08', 'شعبان'),
+          ('09', 'رمضان'),
           ('10', 'شوال'),
           ('11', 'ذو القعدة'),
           ('12', 'ذو الحجة')]
@@ -701,6 +702,7 @@ class HrMonthlySummary(models.Model):
     _description = u'الخلاصة الشهرية للغيابات والتأخير'
     _order = 'id desc'
     # TODO: get default MONTH
+    # TODO: get date start , date end for this month
 
     name = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'new': [('readonly', 0)]})
     date = fields.Date(string='التاريخ', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=fields.Datetime.now())
@@ -717,13 +719,14 @@ class HrMonthlySummary(models.Model):
 
     @api.onchange('name')
     def onchange_month(self):
-        if self.month:
+        if self.name:
             line_ids = []
             # delete current line
             self.line_ids.unlink()
             # get all line
             attendance_summary_obj = self.env['hr.attendance.summary']
             all_attendances = attendance_summary_obj.search([('date', '>=', self.date_from), ('date', '<=', self.date_to)])
+            print '-----all_attendances-----',all_attendances
             monthly_summary = {}
             for attendance in all_attendances:
                 if attendance.retard or attendance.leave or attendance.absence:

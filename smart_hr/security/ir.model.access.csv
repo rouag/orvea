@@ -170,15 +170,18 @@ access_hr_difference_sanction_responsable,hr_difference_sanction,model_hr_differ
 access_hr_difference_sanction_party,hr_difference_sanction,model_hr_difference_sanction,group_third_party_sanction,1,1,1,1
 access_hr_difference_sanction_employee,hr_difference_sanction,model_hr_difference_sanction,group_employee,0,0,0,0
 ,,,,,,,,,,,,,,,,
+
 access_hr_decision_appoint2,hr_decision_appoint,model_hr_decision_appoint,group_enterview_manager,1,1,1,1
 access_hr_decision_appoint3,hr_decision_appoint,model_hr_decision_appoint,group_recrutment_manager,1,1,1,0
 access_hr_decision_appoint4,hr_decision_appoint,model_hr_decision_appoint,group_recrutment_decider,1,1,1,1
 access_hr_decision_appoint5,hr_decision_appoint,model_hr_decision_appoint,group_personnel_hr,1,1,1,1
+access_hr_decision_appoint6,hr_decision_appoint,model_hr_decision_appoint,group_ministry_civil,1,1,1,1
 
 access_hr_type_appoint2,hr_type_appoint,model_hr_type_appoint,group_enterview_manager,1,1,1,1
 access_hr_type_appoint3,hr_type_appoint,model_hr_type_appoint,group_recrutment_manager,1,0,0,0
 access_hr_type_appoint4,hr_type_appoint,model_hr_type_appoint,group_recrutment_decider,1,1,1,1
 access_hr_type_appoint5,hr_type_appoint,model_hr_type_appoint,group_personnel_hr,1,0,0,0
+access_hr_type_appoint6,hr_type_appoint,model_hr_type_appoint,group_ministry_civil,1,0,0,0
 
 access_hr_employee_history,hr_employee_history,model_hr_employee_history,group_employee,1,0,0,0
 access_hr_employee_diploma,hr_employee_diploma,model_hr_employee_diploma,group_employee,1,0,0,0

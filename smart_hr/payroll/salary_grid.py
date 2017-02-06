@@ -23,16 +23,7 @@ class SalaryGridType(models.Model):
 
     name = fields.Char(string='الصنف', required=1)
     code = fields.Integer(string='الرمز')
-    basic_salary = fields.Float(string='الراتب الأساسي')
-    allowance_ids = fields.Many2many('hr.allowance.type', string=u'البدلات')
-    far_age = fields.Float(string=' السن الاقصى')
-    code = fields.Char(string='الرمز')
-    reward_ids = fields.Many2many('hr.reward.type', string=u'المكافآت‬')
     grid_id = fields.Many2one('salary.grid', string='سلّم الرواتب')
-    retrait_monthly = fields.Integer(string='نسبة الحسم الشهري على التقاعد:')
-    assurance_monthly = fields.Integer(string='نسبة التامين الشهري  من الراتب الاساسي:')
-    salary_recent = fields.Float(string=' أخر راتب شهري')
-    passing_score = fields.Float(string=u'المجموع المطلوبة للتعين')
     assurance_type = fields.Many2one('hr.assurance.type', string=u'نوع التأمين')
 
 
@@ -51,6 +42,7 @@ class SalaryGridGrade(models.Model):
 
 class SalaryGridDegree(models.Model):
     _name = 'salary.grid.degree'
+    _order = 'sequence'
     _description = u'الدرجة'
 
     name = fields.Char(string='الإسم', required=1)
@@ -71,11 +63,11 @@ class SalaryGridDetail(models.Model):
     _name = 'salary.grid.detail'
     _description = u'تفاصيل سلم الرواتب'
 
-    grid_id = fields.Many2one('salary.grid', string='سلّم الرواتب', required=1)
+    grid_id = fields.Many2one('salary.grid', string='سلّم الرواتب', required=1, ondelete='cascade')
     type_id = fields.Many2one('salary.grid.type', string='الصنف', required=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1)
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
     basic_salary = fields.Float(string='الراتب الأساسي', required=1)
-    transport_allow = fields.Float(string='بدل النقل')
-    retirement = fields.Float(string='المحسوم للتقاعد')
+    retirement = fields.Float(string='نسبة المحسوم للتقاعد')
+    insurance = fields.Float(string='نسبة  التأمين')
     net_salary = fields.Float(string='صافي الراتب', required=1)

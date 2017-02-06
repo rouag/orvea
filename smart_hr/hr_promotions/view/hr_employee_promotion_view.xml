@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+    <data>
+
+
+
+		<record model="ir.ui.view" id="hr_promotion_employee_demande_tree_view">
+			<field name="name">hr.promotion.employee.demande.tree</field>
+			<field name="model">hr.promotion.employee.demande</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="طلبات الترقية"  delete='0'
+					duplicate='0'>
+					<field name="name"  />
+					<field name="employee_id" />
+					<field name="hr_allowance_type_id" />
+					<field name="city_fovorite" />
+				</tree>
+			</field>
+		</record>
+		
+		
+		<record model="ir.ui.view" id="hr_promotion_employee_demande_form_view">
+			<field name="name">hr.promotion.employee.demande.form</field>
+			<field name="model">hr.promotion.employee.demande</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form>
+					
+					<sheet>
+						<group>
+							<group string="بيانات الموظف" col="6">
+								<field name="name" />
+								<field name="description1" />
+								<field name="description2" />
+								<field name="description3" />
+								<field name="description4" />
+								<field name="description5" />
+							</group>
+							
+							</group>
+							<group>
+							<field name="city_fovorite" />
+							<field name="hr_allowance_type_id" />
+							</group>
+							</sheet>
+							</form>
+							
+			</field>
+		</record>
+		
+
+		<record model="ir.actions.act_window" id="action_promotion_demande">
+			<field name="name">طلبات الترقية</field>
+			<field name="res_model">hr.promotion.employee.demande</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+ 		<menuitem id="menu_promotion_demande" action="action_promotion_demande" parent="hr_root_promotion" name="طلبات الترقيات" sequence="3"/>
+
+    </data>
+</openerp>

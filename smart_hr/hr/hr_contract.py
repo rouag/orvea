@@ -62,7 +62,7 @@ class HrContract(models.Model):
        
             if self.employee_id:
                 
-                employee_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('active', '=', True)])
+                employee_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('is_started', '=', True)])
                 print"employee_line" ,employee_line   
                 if employee_line:
                     self.job_id = employee_line.job_id.id
@@ -74,7 +74,17 @@ class HrContract(models.Model):
                     self.retirement = employee_line.retirement
                     self.net_salary = employee_line.net_salary
                     
-  
+    @api.model
+    def control_contract_employee(self):
+        today_date = fields.Date.from_string(fields.Date.today())
+        print"today_date",type(today_date)
+        appoints= self.env['hr.contract'].search([('date_contract_to','=',today_date)])
+        print"appoints",appoints
+        for appoint in appoints :
+            directs= self.env['hr.decision.appoint'].search([('employee_id','=',appoint.employee_id.id),('state','=','done'),('is_started','=',True)])
+            group_id = self.env.ref('smart_hr.group_personnel_hr')
+            self.send_notification_to_group(group_id)
+             
                      
 class hrContractPayement(models.Model):
     _name = 'hr.contract.payement'

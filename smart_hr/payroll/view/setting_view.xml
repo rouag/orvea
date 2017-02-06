@@ -98,6 +98,8 @@
 								</field>
 
 							</group>
+							<field name="name" />
+							<field name="code" />
 						</group>
 						<group>
 							<field name="note" string="ملاحظات" placeholder="ملاحظات ..." />
@@ -157,10 +159,14 @@
 								<field name="percentage"
 									attrs="{'invisible':[('compute_method','!=','percentage')], 'required': [('compute_method','=','percentage')]}" />
 								/>
-							</group>
-						</group>
 						<group>
-							<field name="note" string="ملاحظات" placeholder="ملاحظات ..." />
+							<group>
+								<field name="name" />
+								<field name="code" />
+							</group>
+							<group>
+								<field name="note" string="ملاحظات" placeholder="ملاحظات ..." />
+							</group>
 						</group>
 					</sheet>
 				</form>
@@ -203,12 +209,9 @@
 				<form string="أنواع التعويضات">
 					<sheet>
 						<group>
-							<group string="بيانات النوع">
+							<group>
 								<field name="name" />
-								<field name="min_degree_id" />
 								<field name="code" />
-								<field name="max_degree_id" />
-								<field name="type_id" />
 							</group>
 							<group string="الأثر المالي">
 								<field name="compute_method" />

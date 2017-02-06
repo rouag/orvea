@@ -192,7 +192,7 @@
 								<field name="name" options='{"no_open": True, "no_create": True}' string="المسمى الوظيفي"/>
 								<field name="job_number" />
 								<field name="number" readonly="1" />
-								<field name="type_id" readonly="1" />
+								<field name="type_id" />
 								<field name="department_id" />
 								<field name="grade_id" options='{"no_open": True, "no_create": True}' />
 								<field name="activity_type" options='{"no_open": True, "no_create": True}' />
@@ -1052,9 +1052,10 @@
 			<field name="arch" type="xml">
 				<form string="حجز وظيفة">
 					<sheet>
-						<group col="4">
+						<group col="6">
 							<field name="date_from" />
 							<field name="date_to" />
+							<field name="type_resevation" />
 						</group>
 					</sheet>
 					<footer>

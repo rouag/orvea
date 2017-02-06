@@ -124,6 +124,7 @@
 			<field name="res_model">hr.loan</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 			
 		<menuitem id="hr_loan_menu" name=" القروض" sequence="25" groups="group_loan_management"
