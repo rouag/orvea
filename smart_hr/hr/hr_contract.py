@@ -83,7 +83,22 @@ class HrContract(models.Model):
         for appoint in appoints :
             directs= self.env['hr.decision.appoint'].search([('employee_id','=',appoint.employee_id.id),('state','=','done'),('is_started','=',True)])
             group_id = self.env.ref('smart_hr.group_personnel_hr')
-            self.send_notification_to_group(group_id)
+            self.send_contract_to_group(group_id)
+            
+    def send_contract_to_group(self, group_id):
+        '''
+        @param group_id: res.groups
+        '''
+        for recipient in group_id.users:
+            self.env['base.notification'].create({'title': u'إشعار نهاية مدة التجربة  ',
+                                                  'message': u'إشعار نهاية مدة التجربة',
+                                                  'user_id': recipient.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': self.id,
+                                                  'res_action': 'smart_hr.action_hr_contract_view',
+                                                  'notif': True
+                                                  })
+
              
                      
 class hrContractPayement(models.Model):

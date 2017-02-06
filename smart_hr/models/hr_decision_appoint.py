@@ -459,10 +459,10 @@ class HrDecisionAppoint(models.Model):
         appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id), ('state', '=', 'done')], limit=1)
         if appoint_line :
             self.emp_job_id = appoint_line.job_id.id
-            self.emp_code = appoint_line.job_id.name.number
-            self.emp_number_job = appoint_line.number
+            self.emp_code = appoint_line.code
+            self.emp_number_job = appoint_line.job_id.name.number
             self.emp_type_id = appoint_line.type_id.id
-            self.emp_far_age = appoint_line.type_id.far_age
+            self.emp_far_age = appoint_line.far_age
             self.emp_grade_id = appoint_line.grade_id.id
             self.emp_department_id = appoint_line.department_id.id
             self.emp_date_direct_action = appoint_line. date_direct_action
