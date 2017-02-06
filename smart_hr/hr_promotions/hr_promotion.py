@@ -55,13 +55,12 @@ class hr_promotion(models.Model):
         for emp in employees:
             print emp.job_id
             if emp.job_id.grade_id: 
-                print 'servive' ,emp.service_duration
-                if  emp.service_duration/365 >  emp.job_id.grade_id.years_job and not emp.sanction_ids  :
-                    print 22222
-                    if not emp.sanction_ids:
-                        print 55555
-                        employee_promotion.append(emp)
-                        print   'employee_promotion' ,employee_promotion
+                if  emp.promotion_duration/365 >  emp.job_id.grade_id.years_job  :
+                    if  emp.sanction_ids:
+                        for saction in sanction_ids:
+                            if sanction.date_sanction_start > (date.today().year -1):
+                                if not sanction.nb_days >  15  and  not sanction.type_sanction.code == "4" and not self.env['hr.suspension'].search([('employee_id', '=', emp.id), ('suspension_date', '<=', fields.Datetime.now()),('suspension_end_id.release_date', '=>', fields.Datetime.now())]):
+                                    employee_promotion.append(emp)
         for emp_promotion in employee_promotion :
             id_emp= self.env['hr.promotion.employee'].create({'employee_id': emp_promotion.id,
                                                            'old_job_id': emp_promotion.job_id.id,
@@ -72,8 +71,6 @@ class hr_promotion(models.Model):
             employee_promotion_job.append(id_emp.id)
         res['employee_promotion_line_ids'] = [(6, 0, employee_promotion_job)]
         return res
-  
-  
     
     @api.multi
     def unlink(self):
@@ -110,7 +107,7 @@ class hr_promotion_ligne(models.Model):
 class hr_promotion_demande(models.Model):
     _name = 'hr.promotion.employee.demande'
     
-    employee_id = fields.Many2one('hr.employee', string=u'الموظف')
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف',default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1))
     name = fields.Char(string=u'رقم الطلب', advanced_search=True)
     description1 = fields.Text(string='رغبات الموظف', ) 
     description2 = fields.Text(string='رغبات الموظف', ) 
@@ -118,5 +115,6 @@ class hr_promotion_demande(models.Model):
     description4 = fields.Text(string='رغبات الموظف', ) 
     description5 = fields.Text(string='رغبات الموظف', ) 
     city_fovorite = fields.Char(string='المدينة المفضلة',) 
-    hr_allowance_type_id = fields.Many2one('hr.allowance.type', string='الادارة', store=True, readonly=1)
+    hr_allowance_type_id = fields.Many2one('hr.allowance.type', string='أنواع البدلات(بدل طبيعة عمل )',)
+
 

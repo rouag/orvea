@@ -19,7 +19,7 @@ class hr_suspension_end(models.Model):
     letter_sender = fields.Char(string=u'جهة الخطاب', advanced_search=True)
     letter_no = fields.Char(string=u'رقم الخطاب', advanced_search=True)
     letter_date = fields.Date(string=u'تاريخ الخطاب', default=fields.Datetime.now())
-    release_date = fields.Date(string=u'تاريخ إطلاك السراح', default=fields.Datetime.now())
+    release_date = fields.Date(string=u'تاريخ إطلاق السراح', default=fields.Datetime.now())
     release_reason = fields.Text(string=u'سبب إطلاق السراح')
     suspension_id = fields.Many2one('hr.suspension', string=u'قرار كف اليد')
     state = fields.Selection([
