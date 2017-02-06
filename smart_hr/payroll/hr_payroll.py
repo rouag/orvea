@@ -54,7 +54,9 @@ class HrPayslipRun(models.Model):
 class HrPayslip(models.Model):
     _inherit = 'hr.payslip'
 
-    month = fields.Selection(MONTHS, string='الشهر', required=1)
+    # TODO: generate التسلسل
+
+    month = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'draft': [('readonly', 0)]})
     days_off_line_ids = fields.One2many('hr.payslip.days_off', 'payslip_id', 'الإجازات والغيابات', readonly=True, states={'draft': [('readonly', False)]})
     state = fields.Selection([('draft', 'مسودة'),
                               ('verify', 'في إنتظار الإعتماد'),
@@ -69,6 +71,8 @@ class HrPayslip(models.Model):
     @api.one
     def action_done(self):
         self.state = 'done'
+        # update_loan_date
+        self.env['hr.loan'].update_loan_date(self.month, self.employee_id.id)
 
     @api.one
     def action_cancel(self):
@@ -197,7 +201,7 @@ class HrPayslip(models.Model):
         print '----new compute_sheet ---------'
         salary_grid_obj = self.env['salary.grid.detail']
         bonus_line_obj = self.env['hr.bonus.line']
-        loan_line_obj = self.env['hr.loan.line']
+        loan_obj = self.env['hr.loan']
         for payslip in self:
             # delete old line
             payslip.line_ids.unlink()
@@ -344,20 +348,19 @@ class HrPayslip(models.Model):
                 deduction_total += deduction_absence
                 sequence += 1
             # 5- القروض
-            loan_lines = loan_line_obj.search([('employee_id', '=', employee.id), ('loan_id.state', '=', 'progress'),
-                                               ('month', '=', payslip.month)])
-            for loan in loan_lines:
-                loan_val = {'name': u'قرض  رقم : %s' % loan.loan_id.name,
+            loans = loan_obj.get_loan_employee_month(payslip.month, employee.id)
+            for loan in loans:
+                loan_val = {'name': loan['name'],
                             'slip_id': payslip.id,
                             'employee_id': employee.id,
                             'rate': 0.0,
-                            'amount': loan.amount,
+                            'amount': loan['amount'],
                             'category': 'deduction',
                             'type': 'loan',
                             'sequence': sequence
                             }
                 lines.append(loan_val)
-                deduction_total += loan.amount
+                deduction_total += loan['amount']
                 sequence += 1
             # 6- التقاعد‬
             retirement_amount = (basic_salary + allowance_total - deduction_total) * salary_grid.retirement / 100.0

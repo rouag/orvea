@@ -108,7 +108,7 @@
 									</field>
 								</page>
 								<page string="تفاصيل الراتب">
-									<field name="line_ids" colspan="4" nolabel="1">
+									<field name="line_ids" colspan="4" nolabel="1" readonly='1'>
 										<tree string="تفاصيل الراتب" editable="bottom"
 											decoration-info="amount == 0">
 											<field name="name" string="المسمى" />
