@@ -410,7 +410,7 @@ class HrDecisionAppoint(models.Model):
         # close last active appoint for the employee
         last_appoint = self.employee_id.decision_appoint_ids.search([('state_appoint', '=', 'active')], limit=1)
         if last_appoint:
-            last_appoint.write({'state_appoint': 'close'})
+            last_appoint.write({'state_appoint': 'close', 'date_hiring_end': fields.Datetime.now()})
         
          #send notification to hr personnel
         
