@@ -411,7 +411,7 @@ class HrDecisionAppoint(models.Model):
         last_appoint = self.employee_id.decision_appoint_ids.search([('state_appoint', '=', 'active')], limit=1)
         if last_appoint:
             last_appoint.write({'state_appoint': 'close'})
-        
+
          #send notification to hr personnel
         
         self.state_appoint ='active'
@@ -439,12 +439,12 @@ class HrDecisionAppoint(models.Model):
             self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date_hiring, type)
         self.state = 'done'
         self.env['hr.holidays']._init_balance(self.employee_id)
-        # create promotion history line
+         # close last active promotion line for the employee
         promotion_obj = self.env['hr.employee.promotion.history']
         previous_promotion = self.env['hr.employee.promotion.history'].search([('employee_id', '=', self.employee_id.id),('active_duration', '=',True)],limit=1)
         if previous_promotion:
-             previous_decsion_appoint = previous_promotion.decision_appoint_id
-             previous_promotion.date_to = previous_decsion_appoint.date_hiring_end
+            previous_promotion.close_promotion_line()
+                   # create promotion history line
         self.env['hr.employee.promotion.history'].create({'employee_id': self.employee_id.id,
                                                            'salary_grid_id': self.employee_id.job_id.grade_id.id,
                                                            'date_from': self.date_direct_action ,
