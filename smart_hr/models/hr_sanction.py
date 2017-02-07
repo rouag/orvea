@@ -120,7 +120,7 @@ class hrSanction(models.Model):
     @api.multi
     def action_update(self):
         self.ensure_one()
-        print "hhhh",self._context
+        
         for rec in self.line_ids:
             self.env['hr.difference.sanction'].create({
                                                         'name': self.name ,
@@ -170,27 +170,21 @@ class hrSanction(models.Model):
     def action_extern(self):
         self.ensure_one()
         direct_appoint_obj = self.env['hr.employee.sanction']
-       
-        for rec in self.line_ids:
-            self.env['hr.employee.sanction'].create({ 'employee_id': rec.employee_id.id,
+        if self.type_sanction_up.id == self.env.ref('smart_hr.data_hr_sanction_type_separation').id or self.type_sanction_up.id != self.env.ref('smart_hr.data_hr_sanction_type_grade').id :
+            for rec in self.line_ids:
+                self.env['hr.employee.sanction'].create({ 'employee_id': rec.employee_id.id,
                                                   'type_sanction' : rec.type_sanction.id,
                                                   'date_sanction_start' : self.date_sanction_start,
                                                   'date_sanction_end' : self.date_sanction_end,
                                                           })
-            type=''
-            if rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_alert').id:
-                type = '40'
-            elif rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_blame').id:
-                type = '89'
-            elif rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_displine').id:
-                type = '90'
-            elif rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_grade').id:
-                type = '91'
-            elif rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_separation').id:
-                type = '92'
+          
+                if rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_grade').id:
+                     type = '91'
+                elif rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_separation').id:
+                    type = '92'
         
-            if type:
-                self.env['hr.employee.history'].sudo().add_action_line(rec.employee_id.id, rec.type_sanction.id, self.date_sanction_start, type)
+        if type:
+             self.env['hr.employee.history'].sudo().add_action_line(rec.employee_id.id, rec.type_sanction.id, self.date_sanction_start, type)
            
         self.state = 'done'
             

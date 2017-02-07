@@ -82,7 +82,7 @@
 						<button name="action_refuse" string="رفض" type="object"
 							states="waiting" groups="smart_hr.group_responsable_sanction" />
 
-						<button name="action_extern" string="موافق" type="object" context="{'numero_order1': 'name','nb_days': 'nb_days'}"
+						<button name="action_extern" string="موافق" type="object" 
 							states="extern" groups="smart_hr.group_third_party_sanction" />
 						
 						<button name="action_update" string="موافق" type="object"
@@ -104,10 +104,7 @@
 							groups="smart_hr.group_third_party_sanction" icon="fa-times-circle-o"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<!-- <button name="%(smart_hr.action_wizard_sanction_update)d" context="{'operation': 
-							'cancel'}" string=" تعديل" type="action" states="done" groups="smart_hr.group_third_party_sanction" 
-							icon="fa-times-circle-o" class="oe_inline oe_stat_button" confirm="هل أنت 
-							متأكد من القيام بهذا الإجراء ؟" /> -->
+					
 
 
 					</header>
