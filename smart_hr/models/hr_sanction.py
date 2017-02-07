@@ -178,13 +178,13 @@ class hrSanction(models.Model):
                                                   'date_sanction_end' : self.date_sanction_end,
                                                           })
           
-                if rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_grade').id:
-                     type = '91'
-                elif rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_separation').id:
-                    type = '92'
+        if rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_grade').id:
+            type = '91'
+        elif rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_separation').id:
+            type = '92'
         
         if type:
-             self.env['hr.employee.history'].sudo().add_action_line(rec.employee_id.id, rec.type_sanction.id, self.date_sanction_start, type)
+            self.env['hr.employee.history'].sudo().add_action_line(rec.employee_id.id, rec.type_sanction.id, self.date_sanction_start, type)
            
         self.state = 'done'
             
