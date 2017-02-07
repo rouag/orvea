@@ -85,7 +85,7 @@ class HrDecisionAppoint(models.Model):
     order_picture = fields.Binary(string='صورة الخطاب', required=1) 
     order_picture_name = fields.Char(string='صورة الخطاب') 
     medical_examination_file = fields.Binary(string='وثيقة الفحص الطبي') 
-    date_medical_examination = fields.Binary(string='تاريخ الفحص الطبي') 
+    date_medical_examination = fields.Date(string='تاريخ الفحص الطبي') 
     medical_examination_name = fields.Char(string='وثيقة الفحص الطبي') 
     order_enquiry_file = fields.Binary(string='طلب الاستسفار')
     file_salar_recent = fields.Binary(string='تعهد من الموظف')
