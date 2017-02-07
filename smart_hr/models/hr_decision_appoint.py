@@ -379,7 +379,7 @@ class HrDecisionAppoint(models.Model):
                     group_id = self.env.ref('smart_hr.group_personnel_hr')
                     self.send_notification_refuse_to_group(group_id)
                     
-        for contrat in prev_days_contract_end :
+        for contrat in appoints_contract :
             prev_days_contract_end = fields.Date.from_string(appoint.date_direct_action) + relativedelta(days=30)
             print"prev_days_end",type(prev_days_contract_end)
             sign_days = self.env['hr.attendance'].search_count([('employee_id', '=', appoint.employee_id.id), ('name','<=',str(prev_days_contract_end))])
