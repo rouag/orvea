@@ -155,10 +155,10 @@
 											<tree editable="bottom">
 												<field name="employee_id"  />
 												<field name="type_sanction" invisible="1" />
-													<field name="option_update_line" invisible="1" />
-												<field name="nb_days_old"  />
-												<field name="nb_days_new"   />
-												<field name="active" />
+												
+												<field name="state_sanction" invisible="1" />
+												<field name="nb_days_old"  attrs="{'invisible':[('state_sanction', 'in', ['update'])]}" />
+												<field name="nb_days_new"    attrs="{'invisible':[('state_sanction', 'not in', ['update'])]}" />
 												<field name="state" />
 
 												<button name="%(smart_hr.action_wizard_sanction_action)d"
