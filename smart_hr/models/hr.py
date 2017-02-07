@@ -86,8 +86,8 @@ class HrEmployee(models.Model):
     point_training=fields.Integer(string=u'نقاط التدريب',)
     point_functionality=fields.Integer(string=u'نقاط  الإداء الوظيفي',)
     is_member = fields.Boolean(string=u'عضو في الهيئة', default=False, required=1)
-    insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين', readonly='1',compute='_compute_insurance_type',
-                                     )
+    insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين', readonly='1',compute='_compute_insurance_type')
+    
     @api.one
     @api.depends('job_id')
     def _compute_insurance_type(self):
@@ -274,6 +274,7 @@ class HrEmployeePromotionHistory(models.Model):
     balance = fields.Integer(string=u'رصيد الترقية (يوم)',store=True)
     active_duration = fields.Boolean(string=u'نشط')
     decision_appoint_id = fields.Many2one('hr.decision.appoint', string=u'  التعيين')
+    appoint_type = fields.Char(string=u'نوع التعيين')
     
     @api.model
     def update_promotion_duration(self):
