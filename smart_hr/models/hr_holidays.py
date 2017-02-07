@@ -96,7 +96,7 @@ class HrHolidays(models.Model):
     birth_certificate = fields.Binary(string=u'شهادة الميلاد')
     extension_period = fields.Integer(string=u'مدة التمديد', default=0)
     external_authoritie = fields.Many2one('external.authorities', string=u'الجهة الخارجية', compute="_set_external_autoritie")
-    entitlement_type = fields.Many2one('hr.holidays.entitlement.config', string=u'الصنف')
+    entitlement_type = fields.Many2one('hr.holidays.entitlement.config', string=u'خاصيّة الإجازة')
     death_person = fields.Char(string=u'المتوفي')
     medical_certification = fields.Binary(string=u'الشهادة الطبية')
     compensation_type = fields.Selection([
@@ -124,7 +124,7 @@ class HrHolidays(models.Model):
     sport_participation_topic = fields.Char(string=u'موضوع المشاركة')
     birth_certificate_child_birth_dad = fields.Binary(string=u'شهادة الميلاد')
     birth_certificate_file_name_file_name= fields.Char(string=u'شهادة الميلاد')
-    
+    speech_source = fields.Char(string=u'مصدر الخطابات')
     
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
@@ -349,11 +349,15 @@ class HrHolidays(models.Model):
             self.env['courses.followup'].create({'employee_id':self.employee_id.id, 'state':'progress',
                                                  'holiday_id':self.id, 'name':self.study_subject,
                                                  })
-        
-        
+
         self.state = 'done'
-
-
+        self.env['base.notification'].create({'title': u'إشعار بقبول إجازة',
+                                              'message': u'لقد تم قبول الإجازة',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'notif': True,
+                                              'res_id': self.id,
+                                             'res_action': 'smart_hr.action_hr_holidays_form'})
     @api.model
     def update_normal_holidays_stock(self):
         right_entitlement = False

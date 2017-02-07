@@ -36,7 +36,7 @@ class HrEmployeeFunctionnalCard(models.Model):
                               ('done', u'اعتمدت'),
                               ('refuse', u'رفض'),
                               ], string=u'الحالة', default='draft', advanced_search=True)
-    training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'التدريب')
+    training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'التدريب', readonly=1)
 
     @api.one
     @api.depends('employee_id')

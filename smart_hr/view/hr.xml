@@ -18,9 +18,6 @@
 			</field>
 		</record>
 
-
-
-
 		<record model="ir.actions.act_window" id="action_hr_employee">
 			<field name="name">الموظفون</field>
 			<field name="res_model">hr.employee</field>
@@ -62,236 +59,10 @@
 			<field name="act_window_id" ref="action_hr_employee" />
 		</record>
 
-
-
-
-
 		<menuitem id="hr_employee_menu" name="الموظفون" sequence="1"
 			parent="hr_root_employees" action="action_hr_employee" groups="smart_hr.group_employees" />
 
 
-
-
-		<!-- بياناتي -->
-		<record id="view_employee_mine_form" model="ir.ui.view">
-			<field name="name">hr.employee.form</field>
-			<field name="model">hr.employee</field>
-			<field name="arch" type="xml">
-				<form string="بياناتي" create='0' delete='0' duplicate='0'>
-
-					<sheet>
-						<div name="button_box" invisible="1" />
-						<field name="image" widget="image" class="oe_avatar"
-							options="{&quot;preview_image&quot;:&quot;image_medium&quot;}" />
-						<div class="col-xs-12 div_paddig_right_null">
-							<div class="col-xs-3 div_paddig_right_null" style="text-align:right;width:23%;">
-								<label name="name" string="الاسم" />
-							</div>
-							<div class="col-xs-3 div_paddig_right_null" style="text-align:right;width:23%;">
-								<label name="father_name" string="إسم الأب" />
-							</div>
-							<div class="col-xs-3 div_paddig_right_null" style="text-align:right;width:23%;">
-								<label name="grandfather_name" string="اسم الجد" />
-							</div>
-							<div class="col-xs-2 div_paddig_right_null" style="text-align:right;width:15.5%;">
-								<label name="grandfather2_name" string="اسم الجد الثاني" />
-							</div>
-							<div class="col-xs-1 div_paddig_right_null" style="text-align:right;width:15.5%;">
-								<label name="family_name" string="الاسم العائلي" />
-							</div>
-
-						</div>
-						<group col="13">
-
-							<field name="name" nolabel="1" colspan="2" />
-							<field name="father_middle_name" nolabel="1" />
-							<field name="father_name" nolabel="1" colspan="2" />
-							<field name="grandfather_middle_name" nolabel="1" />
-							<field name="grandfather_name" nolabel="1" colspan="2" />
-							<field name="grandfather2_middle_name" nolabel="1" />
-							<field name="grandfather2_name" nolabel="1" colspan="2" />
-							<field name="family_name" nolabel="1" colspan="2" />
-						</group>
-
-						<label for="number" class="oe_edit_only" />
-						<h1>
-							<field name="number" placeholder="الرقم الوظيفي" attrs="{'required': 1}"
-								class="oe_smart_inline" />
-
-						</h1>
-						<notebook>
-							<page name="public" string="بيانات شخصية">
-								<group>
-									<group string="بيانات شخصية">
-										<field name="country_id" options='{"no_open": True, "no_create": True}'
-											attrs="{'required': 1}" />
-
-										<field name="identification_id" groups="base.group_hr_user"
-											attrs="{'required': 1}" />
-										<field name="identification_date" groups="base.group_hr_user" />
-										<field name="identification_place" groups="base.group_hr_user" />
-
-										<field name="passport_id" groups="base.group_hr_user"
-											attrs="{'required': 1}" />
-										<field name="passport_date" groups="base.group_hr_user"
-											attrs="{'required': 1}" />
-										<field name="passport_end_date" groups="base.group_hr_user"
-											attrs="{'required': 1}" />
-										<field name="passport_place" groups="base.group_hr_user"
-											attrs="{'required': 1}" />
-										<field name="is_resident" attrs="{'required': 1}" />
-									</group>
-									<group>
-										<separator string="الحالة" colspan="6" />
-										<field name="gender" attrs="{'required': 1}" colspan="6" />
-										<field name="religion_state" colspan="6" />
-										<field name="marital" attrs="{'required': 1}" colspan="6" />
-										<separator string="الميلاد" colspan="6" />
-										<field name="birthday" attrs="{'required': 1}" colspan="6" />
-										<separator string="المرفقات" colspan="6" />
-										<field name="attachments" widget="many2many_binary"
-											nolabel="1" colspan="6" />
-										<field name="notes" placeholder="معلومات أخرى ..."
-											colspan="6" />
-									</group>
-								</group>
-							</page>
-							<page string="بيانات التواصل">
-								<group>
-									<group string="بيانات التواصل">
-										<field name="mobile_phone" attrs="{'required': 1}" />
-										<field name="work_location" attrs="{'required': 1}" />
-										<field name="work_email" widget="email" attrs="{'required': 1}" />
-										<field name="work_phone" />
-										<field name="coach_id" invisible="1" />
-									</group>
-								</group>
-							</page>
-
-							<page string="بيانات العمل">
-								<group>
-									<group string="بيانات العمل">
-										<field name="department_id" on_change="onchange_department_id(department_id)" />
-										<field name="dep_Side" options="{'no_create': True}" />
-										<field name="dep_city" options="{'no_create': True}" />
-										<field name="job_id"
-											attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
-										<field name="type_id"
-											attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
-										<field name="parent_id" string="المدير المباشر" />
-										<field name="service_duration" attrs="{'readonly': 1}" />
-										<field name="promotion_duration" attrs="{'readonly': 1}" />
-
-										<field name="external_decision" />
-										<field name="is_member"
-											attrs="{'readonly': [('employee_state','!=', 'new')]}" />
-										<field name="traveling_ticket" />
-										<field name="traveling_family_ticket" />
-
-									</group>
-									<group string="خصائص أخرى">
-										<field name="user_id"
-											attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
-										<field name="recruiter" widget="selection" />
-
-									</group>
-								</group>
-							</page>
-							<page string="بيانات البنك">
-								<group>
-									<group string="بيانات البنك">
-										<field name="address_home_id" invisible="1" />
-										<field name="bank_account_id" invisible="1" />
-										<field name="bank_account_ids" options="{'no_create': True}">
-											<tree create="false" delete="false">
-												<field name="acc_number" />
-												<field name="bank_id" />
-												<field name="currency_id" />
-												<field name="account_opening_date" />
-												<field name="is_deposit" />
-
-											</tree>
-										</field>
-									</group>
-								</group>
-								<group name="active_group" invisible="1" />
-							</page>
-
-							<page string="البدلات">
-								<field name="allowance_ids">
-									<tree editable="buttom">
-										<field name="allowance_id" />
-										<field name="amount" />
-									</tree>
-								</field>
-							</page>
-							<page string="أرصدة الاجازات والترقيات">
-								<separator string="أرصدة الاجازات" />
-								<field name="holidays_balance" domain="[('period_id.date_to','>',context_today())]">
-									<tree string="أرصدة الاجازات ">
-										<field name="holiday_status_id" />
-										<field name="entitlement_name" />
-										<field name="holidays_available_stock" />
-										<field name="token_holidays_sum" />
-										<field name="periode" />
-										<field name="period_id" invisible="1" />
-
-									</tree>
-								</field>
-								<separator string="أرصدة الترقيات" />
-								<field name="promotions_history" readonly="1">
-									<tree string="أرصدة الترقيات">
-										<field name="salary_grid_id" />
-										<field name="date_from" />
-										<field name="date_to" />
-										<field name="balance" />
-									</tree>
-								</field>
-								<group>
-									<field name="compensation_stock" />
-								</group>
-							</page>
-							<page string="الحسميات">
-
-							</page>
-							<page string="العقوبات">
-								<field name='sanction_ids' string="العقوبات" readonly="1">
-									<tree string="العقوبات">
-										<field name="employee_id" />
-										<field name="type_sanction" />
-										<field name="date_sanction_start" />
-										<field name="date_sanction_end" />
-									</tree>
-								</field>
-							</page>
-							<page string="سجل الاجراءات">
-
-								<field name='history_ids' readonly="1">
-									<tree string="سجل الاجراءات">
-										<field name="job_id" />
-										<field name="grade_id" />
-										<field name="number" />
-										<field name="dep_Side" />
-										<field name="department_id" />
-										<field name="type" />
-										<field name="date" />
-										<field name="num_decision" />
-										<field name="date_decision" />
-									</tree>
-								</field>
-
-							</page>
-
-						</notebook>
-					</sheet>
-					<div class="oe_chatter">
-						<field name="message_follower_ids" widget="mail_followers"
-							groups="base.group_user" />
-						<field name="message_ids" widget="mail_thread" />
-					</div>
-				</form>
-			</field>
-		</record>
 
 		<record id="ir_actions_button_my_info" model="ir.actions.server">
 			<field name="sequence" eval="5" />
@@ -359,6 +130,11 @@
 									class="oe_stat_button" context="{'search_default_employee_id': id}"
 									icon="fa-clock-o" type="action">
 									<span>الحضور </span>
+								</button>
+								<button name="%(smart_hr.action_hr_holidays)d" class="oe_stat_button"
+									context="{'search_default_employee_id': id}" icon="fa-clock-o"
+									type="action">
+									<span>الإجازات </span>
 								</button>
 							</div>
 
@@ -453,7 +229,6 @@
 								</page>
 								<page string="مستويات التعليم">
 									<field name="education_level_ids">
-
 									</field>
 								</page>
 								<page string="بيانات العمل">
@@ -516,10 +291,10 @@
 									about it after -->
 								<page string="بيانات الراتب ">
 									<group>
-										<field name="payroll_structure_id"/>
-									    <field name="wage"/>
-									    <field name="degree_id"/>
-								    </group>
+										<field name="payroll_structure_id" />
+										<field name="wage" />
+										<field name="degree_id" />
+									</group>
 								</page>
 
 								<page string="أرصدة الاجازات والترقيات">
@@ -534,18 +309,20 @@
 											<field name="periode" />
 										</tree>
 									</field>
-									<separator string="أرصدة الترقيات" />
+									<group>
+										<field name="compensation_stock" readonly="1" class="oe_inline"/>
+									</group>
+									<separator string="سِجل التعيينات" />
 									<field name="promotions_history" readonly="1">
-										<tree string="أرصدة الترقيات">
+										<tree string="سِجل التعيينات">
+										<field name="appoint_type" />
 											<field name="salary_grid_id" />
 											<field name="date_from" />
 											<field name="date_to" />
 											<field name="balance" />
 										</tree>
 									</field>
-									<group>
-										<field name="compensation_stock" />
-									</group>
+
 								</page>
 								<page string="الحسميات">
 								</page>
