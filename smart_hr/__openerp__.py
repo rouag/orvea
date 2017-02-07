@@ -92,7 +92,6 @@
         'views/employee_situation_order_report.xml',
         'wizards/view/hr_refuse_wizard_view.xml',
         'wizards/view/hr_sanction_wizard_view.xml',
-        'wizards/view/hr_sanction_update_wizard_view.xml',
         
         
 

@@ -227,10 +227,13 @@
 										<field name="emp_job_id" />
 										<field name="emp_number_job" />
 										<field name="emp_code" />
+										<field name="date_medical_examination"
+											attrs="{'invisible':['|',('state', 'not in', ['draft','waiting', 'manager','hrm', 'budget', 'done']),('type_appointment', '!=', %(data_hr_new_agent_public)d)],'required':[('type_appointment', '=', %(data_hr_new_agent_public)d)],'readonly':[('state', 'in', [ 'waiting','manager',  'hrm', 'budget', 'done'])]}" />
 										<field name="medical_examination_file" filename="medical_examination_name"
 											attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done']),
 											('type_appointment','not in', [%(data_hr_new_agent_public)d])],
 											'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done']),('type_appointment','not in', [%(data_hr_recrute_agent_public)d])]}" />
+
 										<field name="order_enquiry_file" filename="order_enquiry_file_name"
 											attrs="{'invisible':['|',('state', 'not in', ['draft','waiting', 'manager','hrm', 'budget', 'done']),('type_appointment', '!=', %(data_hr_new_agent_public)d)],'required':[('type_appointment', '=', %(data_hr_new_agent_public)d)],'readonly':[('state', 'in', [ 'waiting','manager',  'hrm', 'budget', 'done'])]}" />
 										<field name="file_salar_recent" filename="file_salar_recent_name"
@@ -342,7 +345,8 @@
 			<field name="res_model">hr.decision.appoint</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
-			<field name="domain">['|',('is_started' ,'=',True),('is_started' ,'=',False)]
+			<field name="domain">['|',('is_started' ,'=',True),('is_started'
+				,'=',False)]
 			</field>
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>

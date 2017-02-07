@@ -71,9 +71,7 @@ class hrDirectAppoint(models.Model):
         appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('state','=','done'),('is_started','=',False),('state_appoint','=','active')], limit=1)
         for line in  appoint_line :
             line.write({'is_started': False ,'state_appoint' : 'refuse'})
-        
             title= u"' إشعار بعدم مباشرة التعين'"
-            print"title",title
             msg= u"' إشعار بعدم مباشرة التعين'"  + unicode(line.employee_id.name) + u"'"
             group_id = self.env.ref('smart_hr.group_department_employee')
             self.send_appoint_group(group_id,title,msg)
@@ -86,9 +84,7 @@ class hrDirectAppoint(models.Model):
         appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('state','=','done'),('is_started','=',False),('state_appoint','=','active')], limit=1)
         for line in  appoint_line :
             line.write({'is_started': True ,'state_appoint' : 'active'})
-        
             title= u"' إشعار بمباشرة التعين'"
-            print"title",title
             msg= u"' إشعار بمباشرة التعين'"  + unicode(line.employee_id.name) + u"'"
             group_id = self.env.ref('smart_hr.group_department_employee')
             self.send_appoint_group(group_id,title,msg)
@@ -102,7 +98,6 @@ class hrDirectAppoint(models.Model):
             self.country_id = self.employee_id.country_id
             appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('state','=','done')],limit=1 )
             if appoint_line :
-                
                 self.job_id = appoint_line.job_id.id
                 self.code = appoint_line.job_id.name.number
                 self.number_job =appoint_line.number

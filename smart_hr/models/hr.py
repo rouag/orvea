@@ -78,8 +78,9 @@ class HrEmployee(models.Model):
     display_name = fields.Char(compute='_compute_display_name', string='display Name', select=True)
     sanction_ids = fields.One2many('hr.employee.sanction', 'employee_id', string=u'العقوبات')
     bank_account_ids = fields.One2many('res.partner.bank', 'employee_id', string=u'الحسابات البنكِيّة')
-    education_level_ids = fields.One2many('hr.employee.education.level', 'employee_id', string=u'المستوى التعليمي')
+    education_level_ids = fields.One2many('hr.employee.job.education.level', 'employee_id', string=u'المستوى التعليمي')
     education_level_id = fields.Many2one('hr.employee.education.level', string=u'المستوى التعليمي ')
+    evaluation_level_id = fields.Many2one('hr.employee.evaluation.level', string=u'المستوى التعليمي ')
     loan_count = fields.Integer(string=u'عدد القروض', compute='_compute_loans_count')
     point_seniority=fields.Integer(string=u'نقاط الأقدمية',)
     point_education=fields.Integer(string=u'نقاط التعليم',)
@@ -330,16 +331,40 @@ class HrEmployeeEducationLevel(models.Model):
     _description = u'مستويات التعليم'
 
     name=fields.Char(string='رقم ')
-    employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف')
     sequence = fields.Char(string=u'الرتبة')
     leave_type = fields.Many2one('hr.holidays.status', string='leave type')
     code = fields.Char(string=u'الرمز')
     nomber_year_education=fields.Integer(string=u'عدد سنوات الدراسة', )
     diploma_id = fields.Many2one('hr.employee.diploma', string=u'الشهادة')
     specialization_ids = fields.Many2many('hr.employee.specialization', string=u'الاختصاص')
-    job_specialite = fields.Boolean(string=u'في طبيعة العمل', required=1)
+    secondary = fields.Boolean(string=u'بعد‬ الثانوية', required=1)
+    not_secondary = fields.Boolean(string=u'قبل الثانوية', required=1)
     
+    @api.onchange('secondary')
+    def onchange_secondry(self):
+        if self.secondary:
+            self.not_secondary = False
+            
+    @api.onchange('not_secondary')
+    def onchange_not_secondry(self):
+        if self.not_secondary:
+            self.secondary = False
+       
+class HrEmployeeEducationLevelEmployee(models.Model):
+    _name = 'hr.employee.job.education.level'  
+    _description = u'مستويات التعليم'
+   
+    name=fields.Char(string='رقم ')
+    employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف')
+    level_education_id = fields.Many2one('hr.employee.education.level', string=u' مستوى التعليم')
+    job_specialite = fields.Boolean(string=u'في طبيعة العمل', required=1)
 
+class HrEmployeeEvaluation(models.Model):
+    _name = 'hr.employee.evaluation.level'  
+    _description = u'التقييم الوظيفي'
+    years = fields.Date(string=u'التاريخ من', default=fields.Datetime.now())
+    degre_id = fields.Many2one('hr.evaluation.result.foctionality', string=u' الدرجة')
+    
     @api.onchange('diploma_id')
     def onchange_diploma_id(self):
         res = {}

@@ -9,13 +9,14 @@ from openerp.tools import SUPERUSER_ID
 
 class hr_termination(models.Model):
     _name = 'hr.termination'
+    _order = 'id desc'
     _inherit = ['ir.needaction_mixin']
     _description = 'Termination'
 
-    name = fields.Char(string=u'رقم القرار', advanced_search=True)
+    name = fields.Char(string=u'رقم القرار', required=1)
     date = fields.Date(string=u'تاريخ', default=fields.Datetime.now())
     termination_date = fields.Date(string=u'تاريخ الإعتماد')
-    employee_id = fields.Many2one('hr.employee', string=u'الموظف', advanced_search=True)
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف',  required=1)
     employee_state = fields.Selection([('new', u'جديد'),
                                        ('waiting', u'في إنتظار الموافقة'),
                                        ('update', u'إستكمال البيانات'),
@@ -28,10 +29,10 @@ class hr_termination(models.Model):
     join_date = fields.Date(string=u'تاريخ الالتحاق بالجهة', related='employee_id.join_date')
     age = fields.Integer(string=u'السن', related='employee_id.age')
     # Termination Info
-    termination_type_id = fields.Many2one('hr.termination.type', string=u'نوع الطى', advanced_search=True)
+    termination_type_id = fields.Many2one('hr.termination.type', string=u'نوع الطى', required=1)
     reason = fields.Char(string=u'السبب')
-    letter_source = fields.Char(string=u'جهة الخطاب', advanced_search=True)
-    letter_no = fields.Char(string=u'رقم الخطاب', advanced_search=True)
+    letter_source = fields.Char(string=u'جهة الخطاب', required=1)
+    letter_no = fields.Char(string=u'رقم الخطاب',  required=1)
     letter_date = fields.Date(string=u'تاريخ الخطاب')
     file_attachment = fields.Binary(string=u'مرفق الصورة الضوئية')
     file_attachment_name = fields.Char(string=u'مرفق الصورة الضوئية')
@@ -42,14 +43,14 @@ class hr_termination(models.Model):
         ('refuse', u'رفض'),
     ], string=u'الحالة', default='draft', advanced_search=True)
 
-    @api.model
-    def create(self, vals):
-        ret = super(hr_termination, self).create(vals)
-        # Sequence
-        vals = {}
-        vals['name'] = self.env['ir.sequence'].get('hr.term.seq')
-        ret.write(vals)
-        return ret
+#     @api.model
+#     def create(self, vals):
+#         ret = super(hr_termination, self).create(vals)
+#         # Sequence
+#         vals = {}
+#         vals['name'] = self.env['ir.sequence'].get('hr.term.seq')
+#         ret.write(vals)
+#         return ret
 
     @api.multi
     def unlink(self):

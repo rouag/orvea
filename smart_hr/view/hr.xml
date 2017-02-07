@@ -229,7 +229,6 @@
 								</page>
 								<page string="مستويات التعليم">
 									<field name="education_level_ids">
-
 									</field>
 								</page>
 								<page string="بيانات العمل">

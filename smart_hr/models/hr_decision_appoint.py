@@ -85,6 +85,7 @@ class HrDecisionAppoint(models.Model):
     order_picture = fields.Binary(string='صورة الخطاب', required=1) 
     order_picture_name = fields.Char(string='صورة الخطاب') 
     medical_examination_file = fields.Binary(string='وثيقة الفحص الطبي') 
+    date_medical_examination = fields.Binary(string='تاريخ الفحص الطبي') 
     medical_examination_name = fields.Char(string='وثيقة الفحص الطبي') 
     order_enquiry_file = fields.Binary(string='طلب الاستسفار')
     file_salar_recent = fields.Binary(string='تعهد من الموظف')
@@ -353,14 +354,15 @@ class HrDecisionAppoint(models.Model):
     def control_prensence_employee(self):
         today_date = fields.Date.from_string(fields.Date.today())
         print"today_date",type(today_date)
-        appoints= self.env['hr.decision.appoint'].search([('state_appoint','=','active'),('state','=','done'),('is_started','=',False)])
+        appoints= self.env['hr.decision.appoint'].search([('state_appoint','=','active'),('state','=','done'),('is_started','=',False), ('type_appointment.id', '!=',self.env.ref('smart_hr.data_hr_recrute_contrat').id)])
         print"appoints",appoints
+        appoints_contract= self.env['hr.decision.appoint'].search([('state_appoint','=','active'),('state','=','done'),('is_started','=',False),('type_appointment.id', '=',self.env.ref('smart_hr.data_hr_recrute_contrat').id)])
+       
         for appoint in appoints :
             prev_days_end = fields.Date.from_string(appoint.date_direct_action) + relativedelta(days=15)
             print"prev_days_end",type(prev_days_end)
-            sign_days = self.env['hr.attendance'].search_count([('employee_id', '=', appoint.employee_id.id),
-                                                                     
-                                                                            ('name','<=',str(prev_days_end))])
+            sign_days = self.env['hr.attendance'].search_count([('employee_id', '=', appoint.employee_id.id), ('name','<=',str(prev_days_end))])
+                                                                          
             today_date=str(today_date) 
             prev_days_end=str(prev_days_end)
             print"sign_days",sign_days
@@ -368,25 +370,32 @@ class HrDecisionAppoint(models.Model):
                 directs= self.env['hr.direct.appoint'].search([('employee_id','=',appoint.employee_id.id),('state','=','waiting')])
                 print"directs",directs
                 if directs:
-#                 for direct in directs :
-#                     direct.write({'state_direct':'confirm'
-#                                                     })
-#                 print"sign_days1111",sign_days
-#                 appoint.is_started =True
-#                 appoint.state_appoint ='active'
                      group_id = self.env.ref('smart_hr.group_personnel_hr')
                      self.send_notification_to_group(group_id)
                 
             if sign_days == 0 or (today_date > prev_days_end) :
                 directs= self.env['hr.direct.appoint'].search([('employee_id','=',appoint.employee_id.id),('state','=','waiting')])
                 if directs :
-#                 print"directs",directs
-#                 for direct in directs :
-#                     direct.write({'state_direct':'cancel'
-#                                                     })
-#                 print"sign_days2222",sign_days
-#                 appoint.is_started =False
-#                 appoint.state_appoint ='refuse'
+                    group_id = self.env.ref('smart_hr.group_personnel_hr')
+                    self.send_notification_refuse_to_group(group_id)
+                    
+        for contrat in prev_days_contract_end :
+            prev_days_contract_end = fields.Date.from_string(appoint.date_direct_action) + relativedelta(days=30)
+            print"prev_days_end",type(prev_days_contract_end)
+            sign_days = self.env['hr.attendance'].search_count([('employee_id', '=', appoint.employee_id.id), ('name','<=',str(prev_days_contract_end))])
+            today_date=str(today_date) 
+            prev_days_end=str(prev_days_end)
+            print"sign_days",sign_days
+            if sign_days != 0 or (today_date < prev_days_contract_end) :
+                direct_ids= self.env['hr.direct.appoint'].search([('employee_id','=',appoint.employee_id.id),('state','=','waiting')])
+                print"directs",directs
+                if direct_ids:
+                     group_id = self.env.ref('smart_hr.group_personnel_hr')
+                     self.send_notification_to_group(group_id)
+                
+            if sign_days == 0 or (today_date > prev_days_contract_end) :
+                direct_ids= self.env['hr.direct.appoint'].search([('employee_id','=',appoint.employee_id.id),('state','=','waiting')])
+                if direct_ids :
                     group_id = self.env.ref('smart_hr.group_personnel_hr')
                     self.send_notification_refuse_to_group(group_id)
 
@@ -522,7 +531,7 @@ class HrDecisionAppoint(models.Model):
                                                 ])
                 if salary_grid_line:
                     self.basic_salary = salary_grid_line.basic_salary  
-                    self.transport_allow = salary_grid_line.transport_allow
+                 #   self.transport_allow = salary_grid_line.transport_allow
                     self.retirement = salary_grid_line.retirement
                     self.net_salary = salary_grid_line.net_salary
 
