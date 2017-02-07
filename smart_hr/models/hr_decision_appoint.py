@@ -85,6 +85,7 @@ class HrDecisionAppoint(models.Model):
     order_picture = fields.Binary(string='صورة الخطاب', required=1) 
     order_picture_name = fields.Char(string='صورة الخطاب') 
     medical_examination_file = fields.Binary(string='وثيقة الفحص الطبي') 
+    date_medical_examination = fields.Binary(string='تاريخ الفحص الطبي') 
     medical_examination_name = fields.Char(string='وثيقة الفحص الطبي') 
     order_enquiry_file = fields.Binary(string='طلب الاستسفار')
     file_salar_recent = fields.Binary(string='تعهد من الموظف')
@@ -324,7 +325,7 @@ class HrDecisionAppoint(models.Model):
     def control_test_periode_employee(self):
         today_date = fields.Date.from_string(fields.Date.today())
         print"today_date",type(today_date)
-        appoints= self.env['hr.decision.appoint'].search([('employee_id', '=', contrat.employee_id.id),('state','=','done'),('is_started','=',True),('testing_date_to','=', today_date)])
+        appoints= self.env['hr.decision.appoint'].search([('state','=','done'),('is_started','=',True),('testing_date_to','=', today_date)])
         for line in appoints :
             title= u"' إشعار نهاية مدة التجربة'"
             print"title",title
@@ -516,7 +517,7 @@ class HrDecisionAppoint(models.Model):
                                                 ])
                 if salary_grid_line:
                     self.basic_salary = salary_grid_line.basic_salary  
-                    self.transport_allow = salary_grid_line.transport_allow
+                 #   self.transport_allow = salary_grid_line.transport_allow
                     self.retirement = salary_grid_line.retirement
                     self.net_salary = salary_grid_line.net_salary
 

@@ -62,6 +62,9 @@
 					<field name="order_date" />
 					<field name="date_sanction_start" />
 					<field name="date_sanction_end" />
+					<field name="option_update" invisible="1" />
+
+
 				</tree>
 			</field>
 		</record>
@@ -78,24 +81,34 @@
 							states="waiting" groups="smart_hr.group_responsable_sanction" />
 						<button name="action_refuse" string="رفض" type="object"
 							states="waiting" groups="smart_hr.group_responsable_sanction" />
-						<button name="action_extern" string="موافق" type="object"
+
+						<button name="action_extern" string="موافق" type="object" context="{'numero_order1': 'name','nb_days': 'nb_days'}"
 							states="extern" groups="smart_hr.group_third_party_sanction" />
 						
+						<button name="action_update" string="موافق" type="object"
+							states="update" groups="smart_hr.group_third_party_sanction" />
+						<button name="action_refuse_update" string="رفض" type="object"
+							states="update" groups="smart_hr.group_responsable_sanction" />
+
 
 						<field name="state" widget="statusbar" statusbar_visible="draft,waiting,extern,done" />
-						
-						
+
+
 						<button name="action_cancel" context="{'operation': 'cancel'}"
 							string="إلغاء" type="object" states="done"
 							groups="smart_hr.group_third_party_sanction" icon="fa-times-circle-o"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<button name="%(smart_hr.action_wizard_sanction_update)d" context="{'operation': 'cancel'}"
-							string=" تعديل" type="action" states="done"
+						<button name="button_update_sanction" context="{'operation': 'cancel'}"
+							string=" تعديل" type="object" states="done"
 							groups="smart_hr.group_third_party_sanction" icon="fa-times-circle-o"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						
+						<!-- <button name="%(smart_hr.action_wizard_sanction_update)d" context="{'operation': 
+							'cancel'}" string=" تعديل" type="action" states="done" groups="smart_hr.group_third_party_sanction" 
+							icon="fa-times-circle-o" class="oe_inline oe_stat_button" confirm="هل أنت 
+							متأكد من القيام بهذا الإجراء ؟" /> -->
+
 
 					</header>
 					<sheet>
@@ -103,59 +116,75 @@
 						<group>
 							<group>
 								<field name="name"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','done','cancel'])],'readonly':[('state', 'in', [ 'waiting','extern', 'done','cancel'])]}" />
-								<field name="order_date" attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern', 'done','cancel'])],'readonly':[('state', 'in', [ 'waiting','extern','done','cancel'])]}" />
-								<field name="order_picture" filename="order_picture_name" attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern', 'done','cancel'])],'readonly':[('state', 'in', [ 'waiting','extern', 'done','cancel'])]}" />
-									<field name="order_picture_name" invisible="1" />
+									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','done','cancel'])],'readonly':[('state', 'not in', ['draft','update']),('option_update', '=', False)]}" />
+								<field name="number_order"
+									attrs="{'invisible':[('state', 'not in', ['update'])]}" />
+								<field name="order_date"
+									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','done','cancel'])],'readonly':[('state', 'not in',  ['draft','update']),('option_update', '=', False)]}" />
+							
+								<field name="order_date_up"
+									attrs="{'invisible':[('state', 'not in', ['update'])]}" />
+							
+								<field name="order_picture" filename="order_picture_name"
+									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','done','cancel'])],'readonly':[('state', 'not in', ['draft','update']),('option_update', '=', False)]}" />
+								<field name="order_picture_up"
+									attrs="{'invisible':[('state', 'not in', ['update'])]}" />
+								<field name="order_picture_name" invisible="1" />
+								<field name="order_picture_up_name" invisible="1" />
 							</group>
 							<group>
-							
-							<field name="type_sanction"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','done','cancel'])],'readonly':[('state', 'in', [ 'waiting','extern' ,'done','cancel'])]}" />
-								<field name="nb_days"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','done','cancel'])],'readonly':[('state', 'in', [ 'waiting','extern' ,'done','cancel'])]}" />
-								
-								
+								<field name="type_sanction"
+									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','done','cancel'])],'readonly':[('state', 'not in', ['draft','update']),('option_update', '=', False)]}" />
+								<field name="type_sanction_up"
+									attrs="{'invisible':[('state', 'not in', ['update'])]}" />
 								<field name="date_sanction_start"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern' ,'done','cancel'])],'readonly':[('state', 'in', [ 'waiting','extern', 'done','cancel'])]}" />
+									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','done','cancel'])],'readonly':[('state', 'not in', ['draft','update']),('option_update', '=', False)]}" />
+								<field name="date_sanction_start_up"
+									attrs="{'invisible':[('state', 'not in', ['update'])]}" />
 								<field name="date_sanction_end"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','done','cancel'])],'readonly':[('state', 'in', [ 'waiting','extern' ,'done','cancel'])]}" />
+									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','done','cancel'])],'readonly':[('state', 'not in', ['draft','update']),('option_update', '=', False)]}" />
+								<field name="date_sanction_end_up"
+									attrs="{'invisible':[('state', 'not in', ['update'])]}" />
+								<field name="option_update" invisible="1" />
 							</group>
 						</group>
-						
+
 						<group>
 							<notebook>
 								<page string="التفاصيل">
 									<group>
-										<field name="line_ids" nolabel="1" >
-												<tree editable="bottom">
+										<field name="line_ids" nolabel="1"
+											attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','done','update','cancel'])],'readonly':[('state', 'not in', ['draft','update'])]}">
+											<tree editable="bottom">
 												<field name="employee_id"  />
-												<field name="type_sanction" invisible="1"/>
-												<field name="nb_days" />
+												<field name="type_sanction" invisible="1" />
+													<field name="option_update_line" invisible="1" />
+												<field name="nb_days_old"  />
+												<field name="nb_days_new"   />
 												<field name="active" />
-											    <field name="state" />
-												
-												 <button name="%(smart_hr.action_wizard_sanction_action)d" type="action" string="إستبعاد"  icon="STOCK_CANCEL"
-										 	
-										 		 />
-											
-										
+												<field name="state" />
+
+												<button name="%(smart_hr.action_wizard_sanction_action)d"
+													type="action" string="إستبعاد" icon="STOCK_CANCEL" />
+
 											</tree>
 										</field>
+										
+										
 									</group>
 								</page>
-									<page string="سجل التغييرات">
-								<field name="history_ids" nolabel="1"  readonly="1">
-									<tree editable="bottom">
-										<field name="action" />
-										<field name="create_date" string="التاريخ" />
-										<field name="create_uid" string="المستخدم" />
-										<field name="order_date" />
-										<field name="employee_id" />
-										<field name="reason" />
-									</tree>
-								</field>
-							</page>
+								<page string="سجل التغييرات">
+									<field name="history_ids" nolabel="1" readonly="1">
+										<tree editable="bottom">
+											<field name="action" />
+											<field name="create_date" string="التاريخ" />
+											<field name="create_uid" string="المستخدم" />
+											<field name="order_date" />
+											<field name="employee_id"  />
+											<field name="reason" />
+										</tree>
+									</field>
+								</page>
 							</notebook>
 						</group>
 						<field name="sanction_text" />

@@ -47,7 +47,7 @@ class WizardSanctionAction(models.TransientModel):
             val = {
                 'sanction_id': sanction_line.sanction_id.id,
                 'employee_id': sanction_line.employee_id.id,
-               'name' : self.name,
+                'name' : self.name,
                 'reason': self.reason,
                 'order_date': self.order_date,
                 'action': u'إستبعاد موظف'
