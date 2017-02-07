@@ -19,7 +19,7 @@
                     <sheet>
                         <label for="name" class="oe_edit_only"/>
                         <h1>
-                            <field name="name" readonly="1"/>
+                            <field name="name" />
                              <field name="employee_state" invisible="1"/>
                         </h1>
                         <group>
