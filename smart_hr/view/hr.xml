@@ -239,8 +239,7 @@
 									</tree>
 								</field>
 								<group>
-									<separator string="رصيد إجازات التعويض" />
-									<field name="compensation_stock" class="oe_inline" />
+									<field name="compensation_stock" readonly="1"  class="oe_inline"/>
 								</group>
 								<separator string="سِجل التعيينات" />
 								<field name="promotions_history" readonly="1">
@@ -252,7 +251,7 @@
 										<field name="balance" />
 									</tree>
 								</field>
-
+								>
 							</page>
 							<page string="الحسميات">
 
@@ -305,10 +304,6 @@
 			</field>
 			<field name="condition">True</field>
 			<field name="name">بياناتي</field>
-			<group>
-				<separator string="رصيد إجازات التعويض" />
-				<field name="compensation_stock" class="oe_inline" />
-			</group>
 		</record>
 
 		<menuitem name="بياناتي" id="hr_employee_mine_menu" parent="hr_root_employees"
@@ -547,13 +542,12 @@
 										</tree>
 									</field>
 									<group>
-										<separator string="رصيد إجازات التعويض" />
-										<field name="compensation_stock" class="oe_inline" />
+										<field name="compensation_stock" readonly="1" class="oe_inline"/>
 									</group>
 									<separator string="سِجل التعيينات" />
 									<field name="promotions_history" readonly="1">
 										<tree string="سِجل التعيينات">
-											<field name="appoint_type" />
+										<field name="appoint_type" />
 											<field name="salary_grid_id" />
 											<field name="date_from" />
 											<field name="date_to" />

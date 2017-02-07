@@ -324,7 +324,7 @@ class HrDecisionAppoint(models.Model):
     def control_test_periode_employee(self):
         today_date = fields.Date.from_string(fields.Date.today())
         print"today_date",type(today_date)
-        appoints= self.env['hr.decision.appoint'].search([('employee_id', '=', contrat.employee_id.id),('state','=','done'),('is_started','=',True),('testing_date_to','=', today_date)])
+        appoints= self.env['hr.decision.appoint'].search([('state','=','done'),('is_started','=',True),('testing_date_to','=', today_date)])
         for line in appoints :
             title= u"' إشعار نهاية مدة التجربة'"
             print"title",title
@@ -444,7 +444,8 @@ class HrDecisionAppoint(models.Model):
                                                            'salary_grid_id': self.employee_id.job_id.grade_id.id,
                                                            'date_from': self.date_direct_action ,
                                                            'active_duration':True,
-                                                           'decision_appoint_id':self.id
+                                                           'decision_appoint_id':self.id,
+                                                           'appoint_type': self.type_appointment.name
                                                            })
        
     def send_notification_refuse_to_group(self, group_id):    
