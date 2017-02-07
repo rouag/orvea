@@ -8,6 +8,7 @@
 			<field name="model">hr.employee.functionnal.card</field>
 			<field name="arch" type="xml">
 				<form string=" بطاقة وظيفية">
+				<button accesskey="E" invisible="1"></button>
 					<header>
 
 						<button name="%(report_hr_employee_functionnal_card_report)d"
@@ -34,9 +35,9 @@
 						<group>
 							<group>
 								<field name="employee_id" required="1"
-									attrs="{'readonly':[('state','=', 'done')]}" />
+									attrs="{'readonly':[('state','!=', 'draft')]}" />
 							</group>
-							<group attrs="{'invisible':[('state','!=', 'done')]}">
+							<group attrs="{'invisible':[('state','=', 'draft')]}">
 								<field name="number" />
 							</group>
 						</group>
@@ -48,7 +49,7 @@
 						<notebook>
 
 							<page string="البيانات الشخصية"
-								attrs="{'invisible':[('state','!=', 'done')], 'readonly':[('state','=', 'done')]}">
+								attrs="{'invisible':[('state','=', 'draft')]}">
 								<group>
 									<field name="birthday" />
 									<field name="emp_age" />
@@ -62,7 +63,7 @@
 								</group>
 							</page>
 							<page
-								attrs="{'invisible':[('state','!=', 'done')], 'readonly':[('state','=', 'done')]}"
+								attrs="{'invisible':[('state','=', 'draft')]}">
 								string="بيانات العمل">
 								<group>
 
@@ -73,7 +74,8 @@
 									<field name="join_date" />
 								</group>
 							</page>
-							<page string="الحياة الوظيفية" attrs="{'invisible':[('state','!=', 'done')]}">
+							<page string="الحياة الوظيفية" attrs="{'invisible':[('state','=', 'draft')]}">
+
 								<group>
 									<field name="history_ids">
 										<tree string="سجل الاجراءات">
@@ -91,7 +93,8 @@
 									</field>
 								</group>
 							</page>
-							<page string="التدريب" attrs="{'invisible':[('state','!=', 'done')]}">
+							<page string="التدريب" 	attrs="{'invisible':[('state','=', 'draft')]}">
+
 								<group>
 									<field name="training_ids">
 									<tree>

@@ -100,8 +100,8 @@ class HrEmployee(models.Model):
 
     @api.constrains('recruiter_date', 'begin_work_date')
     def recruiter_date_begin_work_date(self):
-        if self.recruiter_date > self.begin_work_date:
-            raise ValidationError(u"تاريخ بداية العمل الحكومي يجب ان يكون اكبر من تاريخ التعيين بالجهة ")
+        if self.recruiter_date < self.begin_work_date:
+            raise ValidationError(u"تاريخ بداية العمل الحكومي يجب ان يكون اصغر من تاريخ التعيين بالجهة ")
 
     @api.one
     @api.depends('name', 'father_middle_name', 'father_name', 'family_name')
@@ -312,16 +312,17 @@ class HrEmployeePromotionHistory(models.Model):
         self.ensure_one()
         promotion_date_from = fields.Date.from_string(self.date_from)
         promotion_date_to = fields.Date.from_string(self.date_to)
-        months = (promotion_date_to.year - promotion_date_from.year) * 12 + (promotion_date_to.month - promotion_date_from.month)
-        prom_month_first = promotion_date_to.replace(day=1)
-        if months < 1:
-            self.balance += (promotion_date_to - promotion_date_from).days
-        else:
-            self.balance += (promotion_date_to - prom_month_first).days
-        self.active_duration = False
-        uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', self.employee_id.id), ('action','=', 'absence'),
+        if promotion_date_from and promotion_date_to:
+            months = (promotion_date_to.year - promotion_date_from.year) * 12 + (promotion_date_to.month - promotion_date_from.month)
+            prom_month_first = promotion_date_to.replace(day=1)
+            if months < 1:
+                self.balance += (promotion_date_to - promotion_date_from).days
+            else:
+                self.balance += (promotion_date_to - prom_month_first).days
+            self.active_duration = False
+            uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', self.employee_id.id), ('action','=', 'absence'),
                                                                                     ('date', '>=', prom_month_first), ('date', '<=', promotion_date_to)])
-        self.balance -= uncounted_absence_days
+            self.balance -= uncounted_absence_days
 
 
 class HrEmployeeEducationLevel(models.Model):
