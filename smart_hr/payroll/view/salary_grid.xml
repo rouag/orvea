@@ -23,6 +23,7 @@
 							<group>
 								<field name="basic_salary" />
 								<field name="retirement" />
+								<field name="insurance_type" />
 								<field name="insurance" />
 								<field name="net_salary" />
 							</group>
@@ -139,6 +140,7 @@
 								<field name="grade_id" domain="[('type_id','=',type_id)]" />
 								<field name="degree_id" domain="[('grade_id','=',grade_id)]" />
 								<field name="basic_salary" />
+								<field name="insurance_type" />
 								<field name="insurance" />
 								<field name="retirement" />
 								<field name="net_salary" />

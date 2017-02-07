@@ -147,6 +147,9 @@ access_hr_training_type,hr_training_type,model_hr_training_type,,1,1,1,1
 ,,,,,,,
 access_hr_holidays_extension,hr_holidays_extension,model_hr_holidays_extension,,1,1,1,1
 ,,,,,,,
+access_hr_contract,hr_contract,model_hr_contract,,group_department_employee,1,1,1,1
+access_hr_contract_payement,hr_contract_payement,model_hr_contract_payement,group_department_employee,1,1,1,1
+access_hr_contract_item,hr_contract_item,model_hr_contract_item,group_department_employee,1,1,1,1
 ,,,,,,,
 access_hr_sanction_manager,hr_sanction,model_hr_sanction,group_manager_sanction,1,1,1,1
 access_hr_sanction_responsable,hr_sanction,model_hr_sanction,group_responsable_sanction,1,1,1,0
@@ -170,18 +173,23 @@ access_hr_difference_sanction_responsable,hr_difference_sanction,model_hr_differ
 access_hr_difference_sanction_party,hr_difference_sanction,model_hr_difference_sanction,group_third_party_sanction,1,1,1,1
 access_hr_difference_sanction_employee,hr_difference_sanction,model_hr_difference_sanction,group_employee,0,0,0,0
 ,,,,,,,,,,,,,,,,
+access_hr_direct_appoint,hr_direct_appoint,model_hr_direct_appoint,group_personnel_hr,1,1,1,1
+access_hr_direct_appoint1,hr_direct_appoint,model_hr_direct_appoint,group_department_employee,1,1,1,1
+,,,,,,,,,,,,,,,,,,,
 
 access_hr_decision_appoint2,hr_decision_appoint,model_hr_decision_appoint,group_enterview_manager,1,1,1,1
 access_hr_decision_appoint3,hr_decision_appoint,model_hr_decision_appoint,group_recrutment_manager,1,1,1,0
 access_hr_decision_appoint4,hr_decision_appoint,model_hr_decision_appoint,group_recrutment_decider,1,1,1,1
 access_hr_decision_appoint5,hr_decision_appoint,model_hr_decision_appoint,group_personnel_hr,1,1,1,1
 access_hr_decision_appoint6,hr_decision_appoint,model_hr_decision_appoint,group_ministry_civil,1,1,1,1
+access_hr_decision_appoint7,hr_decision_appoint,model_hr_decision_appoint,group_department_employee,1,1,1,1
 
 access_hr_type_appoint2,hr_type_appoint,model_hr_type_appoint,group_enterview_manager,1,1,1,1
 access_hr_type_appoint3,hr_type_appoint,model_hr_type_appoint,group_recrutment_manager,1,0,0,0
 access_hr_type_appoint4,hr_type_appoint,model_hr_type_appoint,group_recrutment_decider,1,1,1,1
 access_hr_type_appoint5,hr_type_appoint,model_hr_type_appoint,group_personnel_hr,1,0,0,0
 access_hr_type_appoint6,hr_type_appoint,model_hr_type_appoint,group_ministry_civil,1,0,0,0
+access_hr_type_appoint7,hr_type_appoint,model_hr_type_appoint,group_department_employee,1,0,0,0
 
 access_hr_employee_history,hr_employee_history,model_hr_employee_history,group_employee,1,0,0,0
 access_hr_employee_diploma,hr_employee_diploma,model_hr_employee_diploma,group_employee,1,0,0,0

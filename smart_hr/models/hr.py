@@ -87,7 +87,17 @@ class HrEmployee(models.Model):
     point_training=fields.Integer(string=u'نقاط التدريب',)
     point_functionality=fields.Integer(string=u'نقاط  الإداء الوظيفي',)
     is_member = fields.Boolean(string=u'عضو في الهيئة', default=False, required=1)
-    assurance_type = fields.Many2one('hr.assurance.type', string=u'نوع التأمين', readonly='1')
+    insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين', readonly='1',compute='_compute_insurance_type')
+    
+    @api.one
+    @api.depends('job_id')
+    def _compute_insurance_type(self):
+        if self.job_id:
+            salary_grids = self.env['salary.grid.detail'].search([('type_id', '=', self.job_id.type_id.id),
+                                                                  ('grade_id', '=', self.job_id.grade_id.id),
+                                                                   ('degree_id', '=', self.degree_id.id)])
+            if salary_grids:
+                self.insurance_type =  salary_grids[0].insurance_type
 
     @api.constrains('recruiter_date', 'begin_work_date')
     def recruiter_date_begin_work_date(self):
@@ -260,46 +270,34 @@ class HrEmployeePromotionHistory(models.Model):
 
     employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف')
     salary_grid_id = fields.Many2one('salary.grid.grade', string=u'الرتبة')
-    date_from = fields.Date(string=u'التاريخ من', default=fields.Datetime.now())
-    date_to = fields.Date(string=u'التاريخ الى')
-    balance = fields.Integer(string=u'رصيد الترقية (يوم)',store=True)
+    date_from = fields.Date(string=u'التاريخ من', default=fields.Datetime.now(), related='decision_appoint_id.date_direct_action')
+    date_to = fields.Date(string=u'التاريخ الى', related='decision_appoint_id.date_hiring_end')
+    balance = fields.Integer(string=u'رصيد الترقية (يوم)', store=True)
     active_duration = fields.Boolean(string=u'نشط')
     decision_appoint_id = fields.Many2one('hr.decision.appoint', string=u'  التعيين')
-    
+    appoint_type = fields.Char(string=u'نوع التعيين')
+
     @api.model
     def update_promotion_duration(self):
         today = date.today()
         prev_month_end = date(today.year, today.month, 1) - relativedelta(days=1)
         prev_month_first = prev_month_end.replace(day=1)
-        suspension_obj = self.env['hr.suspension']
-        for promotion in self.search([('active_duration','=',True)]):
-            if promotion.decision_appoint_id.state_appoint =='active' and promotion.decision_appoint_id.is_started==True:
+        active_promotions = self.search([('active_duration', '=', True)])
+        for promotion in active_promotions:
+            if promotion.decision_appoint_id.state_appoint == 'active' and promotion.decision_appoint_id.is_started is True:
                 promotion_date_from = fields.Date.from_string(promotion.decision_appoint_id.date_direct_action)
-                if promotion.date_from  != promotion_date_from :
-                    promotion.date_from  = promotion_date_from 
                 months = (today.year - promotion_date_from.year) * 12 + (today.month - promotion_date_from.month)
                 if months < 1:
                     promotion.balance += (today - promotion_date_from).days
                 else:
                     promotion.balance += (prev_month_end - prev_month_first).days
-
                 # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
-                uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', promotion.employee_id.id),('action','=','absence'),
-                                                                            ('date','>=',prev_month_first),('date','<=',prev_month_end)])
+                uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', promotion.employee_id.id), ('action', '=', 'absence'),
+                                                                                            ('date', '>=', prev_month_first), ('date', '<=', prev_month_end)])
                 promotion.balance -= uncounted_absence_days
-           
-
-            elif promotion.decision_appoint_id.state_appoint =='close':
-                date_hiring_end= fields.Date.from_string(promotion.decision_appoint_id.date_hiring_end)
-                promotion.balance += (date_hiring_end - prev_month_first).days
-                uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', promotion.employee_id.id),('action','=','absence'),
-                                                                            ('date','>=',prev_month_first),('date','<=',date_hiring_end)])
-                promotion.balance -= uncounted_absence_days
-                promotion.active_duration = False
-
 
     @api.multi
-    def decrement_promotion_duration(self,employee_id,duration_days):
+    def decrement_promotion_duration(self, employee_id, duration_days):
         active_promotions = self.env['hr.employee.promotion.history'].search([('active_duration', '=', 'True'), ('employee_id', '=', employee_id.id)])
         active_prom = False
         if active_promotions:
@@ -310,11 +308,27 @@ class HrEmployeePromotionHistory(models.Model):
         if active_prom:
             active_prom.balance -= duration_days
 
+    @api.multi
+    def close_promotion_line(self):
+        self.ensure_one()
+        promotion_date_from = fields.Date.from_string(self.date_from)
+        promotion_date_to = fields.Date.from_string(self.date_to)
+        months = (promotion_date_to.year - promotion_date_from.year) * 12 + (promotion_date_to.month - promotion_date_from.month)
+        prom_month_first = promotion_date_to.replace(day=1)
+        if months < 1:
+            self.balance += (promotion_date_to - promotion_date_from).days
+        else:
+            self.balance += (promotion_date_to - prom_month_first).days
+        self.active_duration = False
+        uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', self.employee_id.id), ('action','=', 'absence'),
+                                                                                    ('date', '>=', prom_month_first), ('date', '<=', promotion_date_to)])
+        self.balance -= uncounted_absence_days
+
 
 class HrEmployeeEducationLevel(models.Model):
     _name = 'hr.employee.education.level'  
     _description = u'مستويات التعليم'
-   
+
     name=fields.Char(string='رقم ')
     sequence = fields.Char(string=u'الرتبة')
     leave_type = fields.Many2one('hr.holidays.status', string='leave type')

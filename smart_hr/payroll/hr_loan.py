@@ -4,6 +4,8 @@ from openerp import models, api, fields, _
 from openerp.exceptions import ValidationError
 from dateutil.relativedelta import relativedelta
 from umalqurra.hijri_date import HijriDate
+from openerp.exceptions import UserError
+from datetime import datetime
 
 MONTHS = [('01', 'محرّم'),
           ('02', 'صفر'),
@@ -26,29 +28,31 @@ class hrLoan(models.Model):
     _order = 'id desc'
 
     # TODO: refaire les actions apres la modification des lifges par month
+    # TODO: il faut ajouter l annee par exemple pour un loan sur deux annees
 
     @api.one
-    @api.depends('line_ids', 'amount')
+    @api.depends('line_ids.date', 'amount', 'state')
     def _compute_residual_amount(self):
         residual_amount = self.amount
         for line in self.line_ids:
-            residual_amount -= line.amount
+            if line.date:
+                residual_amount -= line.amount
         self.residual_amount = residual_amount
 
     name = fields.Char(string='رقم القرض', required=1, readonly=1, states={'new': [('readonly', 0)]})
-    employee_id = fields.Many2one('hr.employee', string='الموظف', required=1)
+    employee_id = fields.Many2one('hr.employee', string='الموظف', required=1, readonly=1, states={'new': [('readonly', 0)]})
     number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' الرقم الوظيفي')
     job_id = fields.Many2one(related='employee_id.job_id', store=True, readonly=True, string=' الوظيفة')
     department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string=' الادارة')
-    loan_type_id = fields.Many2one('hr.loan.type', string='نوع القرض', required=1)
+    loan_type_id = fields.Many2one('hr.loan.type', string='نوع القرض', required=1, readonly=1, states={'new': [('readonly', 0)]})
     date = fields.Date('تاريخ الطلب', default=lambda *a: fields.Datetime.now(), readonly=1, states={'new': [('readonly', 0)]})
     date_from = fields.Date('تاريخ بداية الخصم', readonly=1, states={'new': [('readonly', 0)]})
     date_to = fields.Date('القسط الأخير', readonly=1, states={'new': [('readonly', 0)]})
-    installment_number = fields.Integer(string='عدد الأقساط', required=1)
-    amount = fields.Float(string='مبلغ القرض', required=1)
-    monthly_amount = fields.Float(string='قيمة القسط الشهري', required=1)
+    installment_number = fields.Integer(string='عدد الأقساط', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    amount = fields.Float(string='مبلغ القرض', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    monthly_amount = fields.Float(string='قيمة القسط الشهري', required=1, readonly=1, states={'new': [('readonly', 0)]})
     residual_amount = fields.Float(string='المبلغ المتبقي', compute='_compute_residual_amount', store=1)
-    bank_id = fields.Many2one('res.bank', string='البنك', required=1)
+    bank_id = fields.Many2one('res.bank', string='البنك', required=1, readonly=1, states={'new': [('readonly', 0)]})
     number_decision = fields.Char(string='رقم القرار', required=1, readonly=1, states={'new': [('readonly', 0)]})
     date_decision = fields.Date(string=' تاريخ القرار', required=1, readonly=1, states={'new': [('readonly', 0)]})
     note = fields.Text(string='ملاحظات')
@@ -93,6 +97,13 @@ class hrLoan(models.Model):
         default.update(payment_full_amount=False)
         return super(hrLoan, self).copy(default)
 
+    @api.multi
+    def unlink(self):
+        for loan in self:
+            if loan.state != 'new':
+                raise UserError(_(u'لا يمكن حذف قرض  إلا في حالة طلب !'))
+        return super(hrLoan, self).unlink()
+
     @api.one
     def action_waiting(self):
         self.state = 'waiting'
@@ -109,11 +120,44 @@ class hrLoan(models.Model):
     def action_done(self):
         self.state = 'done'
 
+    @api.multi
+    def get_loan_employee_month(self, month, employee_id):
+        # search all loan for this employee
+        loans = self.search([('employee_id', '=', employee_id), ('state', '=', 'progress')])
+        res = []
+        for loan in loans:
+            # إذا تم تجاوز هذا الشهر  لا يؤخذ بعين الإعتبار لأنه تم حذفه وتعويضه بشهر أخر
+            # إذا تم سداد كامل المبلغ يجب أن يؤخذ باقي المبلغ
+            if loan.payment_full_amount:
+                res.append({'name': u'سداد كامل المبلغ  القرض رقم %s' % loan.name, 'amount': loan.residual_amount})
+            else:
+                # just add amount for current month
+                lines = loan.line_ids.search([('month', '=', month)])
+                if lines:
+                    res.append({'name': u'قرض  رقم : %s' % loan.name, 'amount': lines[0].amount})
+        return res
+
+    @api.multi
+    def update_loan_date(self, month, employee_id):
+        # search all loan for this employee
+        loans = self.search([('employee_id', '=', employee_id), ('state', '=', 'progress')])
+        for loan in loans:
+            # إذا تم سداد كامل المبلغ يجب أن يتم تعديل التاريخ في كل الأشهر
+            if loan.payment_full_amount:
+                loan.line_ids.write({'date': datetime.now().date()})
+            # else just update date for current month
+            else:
+                lines = loan.line_ids.search([('month', '=', month)])
+                lines.write({'date': datetime.now().date()})
+            # if residual_amount = 0 make this loan as done
+            if loan.residual_amount == 0.0:
+                loan.state = 'done'
+
 
 class hrLoanLine(models.Model):
     _name = 'hr.loan.line'
 
-    loan_id = fields.Many2one('hr.loan', string='القرض')
+    loan_id = fields.Many2one('hr.loan', string='القرض', ondelete='cascade')
     employee_id = fields.Many2one(related='loan_id.employee_id', store=True, readonly=True, string='الموظف')
     job_id = fields.Many2one(related='loan_id.employee_id.job_id', store=True, readonly=True, string=' الوظيفة')
     department_id = fields.Many2one(related='loan_id.employee_id.department_id', store=True, readonly=True, string=' الادارة')
@@ -125,8 +169,8 @@ class hrLoanLine(models.Model):
 class hrLoanHistory(models.Model):
     _name = 'hr.loan.history'
 
-    loan_id = fields.Many2one('hr.loan', string='القرض')
-    action = fields.Char(string='الإجراء')
+    loan_id = fields.Many2one('hr.loan', string='القرض', ondelete='cascade')
+    action = fields.Selection([('across', 'تجاوز شهر'), ('full_amount', 'سداد كامل المبلغ')], string='الإجراء')
     reason = fields.Char(string='السبب')
     month = fields.Selection(MONTHS, string='الشهر')
     number_decision = fields.Char(string='رقم القرار')

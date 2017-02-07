@@ -238,18 +238,20 @@
 
 									</tree>
 								</field>
-								<separator string="أرصدة الترقيات" />
+								<group>
+									<field name="compensation_stock" readonly="1"  class="oe_inline"/>
+								</group>
+								<separator string="سِجل التعيينات" />
 								<field name="promotions_history" readonly="1">
-									<tree string="أرصدة الترقيات">
+									<tree string="سِجل التعيينات">
+										<field name="appoint_type" />
 										<field name="salary_grid_id" />
 										<field name="date_from" />
 										<field name="date_to" />
 										<field name="balance" />
 									</tree>
 								</field>
-								<group>
-									<field name="compensation_stock" />
-								</group>
+								>
 							</page>
 							<page string="الحسميات">
 
@@ -359,6 +361,11 @@
 									class="oe_stat_button" context="{'search_default_employee_id': id}"
 									icon="fa-clock-o" type="action">
 									<span>الحضور </span>
+								</button>
+								<button name="%(smart_hr.action_hr_holidays)d" class="oe_stat_button"
+									context="{'search_default_employee_id': id}" icon="fa-clock-o"
+									type="action">
+									<span>الإجازات </span>
 								</button>
 							</div>
 
@@ -479,7 +486,7 @@
 											<field name="recruiter_date" />
 											<field name="begin_work_date" />
 											<field name="calendar_id" />
-											<field name="assurance_type" />
+											<field name="insurance_type" />
 										</group>
 									</group>
 								</page>
@@ -515,10 +522,10 @@
 									about it after -->
 								<page string="بيانات الراتب ">
 									<group>
-										<field name="payroll_structure_id"/>
-									    <field name="wage"/>
-									    <field name="degree_id"/>
-								    </group>
+										<field name="payroll_structure_id" />
+										<field name="wage" />
+										<field name="degree_id" />
+									</group>
 								</page>
 
 								<page string="أرصدة الاجازات والترقيات">
@@ -533,18 +540,20 @@
 											<field name="periode" />
 										</tree>
 									</field>
-									<separator string="أرصدة الترقيات" />
+									<group>
+										<field name="compensation_stock" readonly="1" class="oe_inline"/>
+									</group>
+									<separator string="سِجل التعيينات" />
 									<field name="promotions_history" readonly="1">
-										<tree string="أرصدة الترقيات">
+										<tree string="سِجل التعيينات">
+										<field name="appoint_type" />
 											<field name="salary_grid_id" />
 											<field name="date_from" />
 											<field name="date_to" />
 											<field name="balance" />
 										</tree>
 									</field>
-									<group>
-										<field name="compensation_stock" />
-									</group>
+
 								</page>
 								<page string="الحسميات">
 								</page>

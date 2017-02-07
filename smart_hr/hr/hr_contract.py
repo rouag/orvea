@@ -5,7 +5,8 @@ from openerp import models, fields, api, _
 from openerp.exceptions import Warning
 from dateutil.relativedelta import relativedelta
 from openerp.exceptions import ValidationError
-from datetime import date
+from datetime import date, datetime, timedelta
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class HrContract(models.Model):
@@ -78,12 +79,33 @@ class HrContract(models.Model):
     def control_contract_employee(self):
         today_date = fields.Date.from_string(fields.Date.today())
         print"today_date",type(today_date)
-        appoints= self.env['hr.contract'].search([('date_contract_to','=',today_date)])
-        print"appoints",appoints
-        for appoint in appoints :
-            directs= self.env['hr.decision.appoint'].search([('employee_id','=',appoint.employee_id.id),('state','=','done'),('is_started','=',True)])
-            group_id = self.env.ref('smart_hr.group_personnel_hr')
-            self.send_notification_to_group(group_id)
+        contracts= self.env['hr.contract'].search([('date_contract_end','=', today_date)])
+        print"contracts",contracts
+        for contrat in contracts :
+            appoints= self.env['hr.decision.appoint'].search([('employee_id', '=', contrat.employee_id.id),('state','=','done'),('is_started','=',True)],limit=1)
+            if appoints :
+                title= u"' إشعار نهاية العقد'"
+                print"title",title
+                msg= u"' إشعار نهاية العقد'"  + unicode(contrat.employee_id.name) + u"'"
+                group_id = self.env.ref('smart_hr.group_department_employee')
+                self.send_end_contract_group(group_id,title,msg)
+            
+
+            
+    def send_end_contract_group(self, group_id, title, msg):
+        '''
+        @param group_id: res.groups
+        '''
+        for recipient in group_id.users:
+            self.env['base.notification'].create({'title': title,
+                                                  'message': msg,
+                                                  'user_id': recipient.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': self.id,
+                                                  'res_action': 'smart_hr.action_hr_contract_view',
+                                                  'notif': True
+                                                  })
+
              
                      
 class hrContractPayement(models.Model):
