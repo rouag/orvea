@@ -407,6 +407,11 @@ class HrDecisionAppoint(models.Model):
         self.employee_id.write({'employee_state':'employee', 'job_id':self.job_id.id})
         self.job_id.write({'state': 'occupied', 'employee': self.employee_id.id, 'occupied_date': fields.Datetime.now()})
         self.state = 'done'
+        # close last active appoint for the employee
+        last_appoint = self.employee_id.decision_appoint_ids.search([('state_appoint', '=', 'active')], limit=1)
+        if last_appoint:
+            last_appoint.write({'state_appoint': 'close'})
+        
          #send notification to hr personnel
         
         self.state_appoint ='active'
@@ -563,6 +568,7 @@ class HrTypeAppoint(models.Model):
     date_test = fields.Char(string='فترة التجربة') 
     code = fields.Char(string='الرمز')
     audit = fields.Boolean(string=u'تدقيق')
+    show_in_apoint = fields.Boolean(string=u'إظهار في تعيين', default=True)
     recrutment_manager = fields.Boolean(string=u'موافقة صاحب صلاحية التعين ')
     enterview_manager = fields.Boolean(string=u'مقابلة شخصية')
     personnel_hr = fields.Boolean(string=u'شؤون الموظفين')
