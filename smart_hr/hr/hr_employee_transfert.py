@@ -26,9 +26,8 @@ class HrEmployeeTransfert(models.Model):
     decision_date = fields.Date(string=u'تاريخ القرار')
     decision_file = fields.Binary(string=u'نسخة القرار')
     degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة')
-    date_direct_action = fields.Date(string=u'تاريخ مباشرة العمل', required=1) 
-    
-    # ‫المدنتية‬ ‫الخدمة‬ ‫موافلقة‬
+    date_direct_action = fields.Date(string=u'تاريخ مباشرة العمل') 
+    # ‫المدنتية ‫الخدمة‬ ‫موافلقة‬
     speech_number = fields.Char(string=u'رقم الخطاب')
     speech_date = fields.Date(string=u'تاريخ الخطاب')
     speech_file = fields.Binary(string=u'نسخة الخطاب')
@@ -48,10 +47,10 @@ class HrEmployeeTransfert(models.Model):
     @api.depends('new_specific_id', 'specific_id')
     def _compute_same_specific_group(self):
         self.ensure_one()
-        print self.same_group
         if self.specific_id and self.new_specific_id:
             self.same_group = self.specific_id == self.new_specific_id
-            print self.same_group
+        else:
+            self.same_group = False
 
     @api.multi
     @api.constrains('transfert_type')
@@ -127,4 +126,33 @@ class HrEmployeeTransfert(models.Model):
                     raise ValidationError(u"الرجاء التثبت من حقل الوظيفة المنقول إليها.")
         if not self.degree_id:
                     raise ValidationError(u"الرجاء التثبت من حقل الدرجة.")
+
+        # create hr.decision.appoint object
+        # with decision file
+        if self.new_specific_id == self.specific_id:
+            vals = {
+                'type_appointment': self.env.ref('smart_hr.data_hr_recrute_from_transfert').id,
+                'date_direct_action': self.date_direct_action,
+                'employee_id': self.employee_id.id,
+                'job_id': self.new_job_id.id,
+                'degree_id': self.degree_id.id,
+                'name': self.decision_number,
+                'order_date': self.decision_date,
+                'order_picture': self.decision_file
+            }
+        else:
+            # with speech file
+            vals = {
+                'type_appointment': self.env.ref('smart_hr.data_hr_recrute_from_transfert').id,
+                'date_direct_action': self.date_direct_action,
+                'employee_id': self.employee_id.id,
+                'job_id': self.new_job_id.id,
+                'degree_id': self.degree_id.id,
+                'name': self.speech_number,
+                'order_date': self.speech_date,
+                'order_picture': self.speech_file
+            }
+        recruiter_id = self.env['hr.decision.appoint'].create(vals)
+        print recruiter_id
+        recruiter_id.action_done()
         self.state = 'done'

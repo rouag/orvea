@@ -408,6 +408,11 @@ class HrDecisionAppoint(models.Model):
         self.employee_id.write({'employee_state':'employee', 'job_id':self.job_id.id})
         self.job_id.write({'state': 'occupied', 'employee': self.employee_id.id, 'occupied_date': fields.Datetime.now()})
         self.state = 'done'
+        # close last active appoint for the employee
+        last_appoint = self.employee_id.decision_appoint_ids.search([('state_appoint', '=', 'active')], limit=1)
+        if last_appoint:
+            last_appoint.write({'state_appoint': 'close'})
+
          #send notification to hr personnel
         
         self.state_appoint ='active'
@@ -435,17 +440,18 @@ class HrDecisionAppoint(models.Model):
             self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date_hiring, type)
         self.state = 'done'
         self.env['hr.holidays']._init_balance(self.employee_id)
-        # create promotion history line
+         # close last active promotion line for the employee
         promotion_obj = self.env['hr.employee.promotion.history']
         previous_promotion = self.env['hr.employee.promotion.history'].search([('employee_id', '=', self.employee_id.id),('active_duration', '=',True)],limit=1)
         if previous_promotion:
-             previous_decsion_appoint = previous_promotion.decision_appoint_id
-             previous_promotion.date_to = previous_decsion_appoint.date_hiring_end
+            previous_promotion.close_promotion_line()
+                   # create promotion history line
         self.env['hr.employee.promotion.history'].create({'employee_id': self.employee_id.id,
                                                            'salary_grid_id': self.employee_id.job_id.grade_id.id,
                                                            'date_from': self.date_direct_action ,
                                                            'active_duration':True,
-                                                           'decision_appoint_id':self.id
+                                                           'decision_appoint_id':self.id,
+                                                           'appoint_type': self.type_appointment.name
                                                            })
        
     def send_notification_refuse_to_group(self, group_id):    
@@ -564,6 +570,7 @@ class HrTypeAppoint(models.Model):
     date_test = fields.Char(string='فترة التجربة') 
     code = fields.Char(string='الرمز')
     audit = fields.Boolean(string=u'تدقيق')
+    show_in_apoint = fields.Boolean(string=u'إظهار في تعيين', default=True)
     recrutment_manager = fields.Boolean(string=u'موافقة صاحب صلاحية التعين ')
     enterview_manager = fields.Boolean(string=u'مقابلة شخصية')
     personnel_hr = fields.Boolean(string=u'شؤون الموظفين')

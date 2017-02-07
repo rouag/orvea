@@ -76,8 +76,8 @@ class hr_evaluationResultfoctionality(models.Model):
     _description = u'إعدادات نتائج تقييم الوظيفي'
    
     name = fields.Char(string = u'النتيجة', advanced_search=True)
-    point_from = fields.Float(string=u"من ",required=1)
-    point_to = fields.Float(string=u"إلى ",required=1)
+    point_from = fields.Float(string=u"من درجة ",required=1)
+    point_to = fields.Float(string=u"إلى درجة ",required=1)
     
 
     

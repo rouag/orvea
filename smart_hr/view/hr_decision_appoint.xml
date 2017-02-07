@@ -72,6 +72,7 @@
 							<field name="name" />
 							<field name="date_test" string="فترة التجربة بالشهر" />
 							<field name="code" />
+							<field name="show_in_apoint" />
 						</group>
 						<group string="المخطط‬‫ الانسيابي‬">
 							<field name="audit" />
@@ -193,7 +194,7 @@
 						</group>
 						<group>
 							<group>
-								<field name="type_appointment" options="{'no_create_edit': True}"
+								<field name="type_appointment" options="{'no_create_edit': True}" domain="[('show_in_apoint', '=', True)]"
 									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'done'])]}" />
 								<field name="transport_alocation"
 									attrs="{'invisible':['|',('transport_car','!=',False),('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done']) ],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done'])]}" />

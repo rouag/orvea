@@ -91,6 +91,24 @@
 			<field eval="1" name="number_increment" />
 			<field name="padding">5</field>
 		</record>
+		
+		
+		<record id="hr_employee_create_promotion_seq" forcecreate="1"
+			model="ir.sequence">
+			<field name="name">Employee Create  Promotion</field>
+			<field name="code">hr.employee.promotion.seq</field>
+			<field eval="1" name="number_increment" />
+			<field name="padding">5</field>
+		</record>
+		
+		<record id="hr_employee_create_demande_promotion_seq" forcecreate="1"
+			model="ir.sequence">
+			<field name="name">Employee Create Demande Promotion</field>
+			<field name="code">hr.employee.demande.promotion.seq</field>
+			<field eval="1" name="number_increment" />
+			<field name="padding">5</field>
+		</record>
+		
 
 	</data>
 </openerp>
