@@ -16,6 +16,7 @@ class HrEmployeeTransfert(models.Model):
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1, readonly=1)
     job_id = fields.Many2one('hr.job', related='employee_id.job_id', string=u'الوظيفة', readonly=1, required=1)
     specific_id = fields.Many2one('hr.groupe.job', related='job_id.specific_id', string=u'المجموعة النوعية', readonly=1, required=1)
+    occupied_date = fields.Date(related='job_id.occupied_date', string=u'تاريخ الشغول')
     type_id = fields.Many2one('salary.grid.type', related='employee_id.type_id', string=u'الصنف', readonly=1, required=1)
     new_job_id = fields.Many2one('hr.job', domain=[('state', '=', 'unoccupied')], string=u'الوظيفة المنقول إليها')
     new_specific_id = fields.Many2one('hr.groupe.job', related='new_job_id.specific_id', readonly=1, string=u'المجموعة النوعية')
@@ -38,7 +39,6 @@ class HrEmployeeTransfert(models.Model):
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', u'صاحب الصلاحية'),
                               ('pm', u'شؤون الموظفين'),
-                              ('pending', u'في الإنتظار'),
                               ('done', u'اعتمدت'),
                               ('refused', u'رفض'),
                               ('cancelled', u'ملغى')
@@ -114,7 +114,6 @@ class HrEmployeeTransfert(models.Model):
     @api.multi
     def action_notif(self):
         self.ensure_one()
-        self.state = 'pending'
         # send notification for the employee
         self.env['base.notification'].create({'title': u'إشعار بعدم وجود وظيفة مناسبة',
                                               'message': u'لا يوجد وظيفة مناسبة لطلبك حالياً.',
@@ -129,11 +128,10 @@ class HrEmployeeTransfert(models.Model):
     def action_pm(self):
         self.ensure_one()
         self.state = 'pm'
-
-    @api.multi
-    def action_pending(self):
-        self.ensure_one()
-        self.state = 'pending'
+        # add this demand to hr.transfert.sorting
+        trans_sort_obj = self.env['hr.transfert.sorting'].search([], limit=1)
+        if trans_sort_obj:
+            trans_sort_obj.hr_transfert_ids = [(4, self.id)]
 
     @api.multi
     def action_refused(self):
@@ -191,6 +189,10 @@ class HrEmployeeTransfert(models.Model):
         recruiter_id = self.env['hr.decision.appoint'].create(vals)
         recruiter_id.action_done()
         self.state = 'done'
+        # remove this demand from hr.transfert.sorting 
+        trans_sort_obj = self.env['hr.transfert.sorting'].search([], limit=1)
+        if trans_sort_obj:
+            trans_sort_obj.hr_transfert_ids = [(3, self.id)]
         if self.transfert_type == 'internal_transfert':
             # send notification for the employee
             self.env['base.notification'].create({'title': u'إشعار بموافقة طلب',
@@ -212,6 +214,13 @@ class HrEmployeeTransfert(models.Model):
                                                   'notif': True
                                                   })
 
+    @api.multi
+    def action_pick_job(self):
+        self.ensure_one()
+        hr_emp_tran_obj = self.env['hr.employee.transfert'].search([('id', '=', int(self._context['rec_id']))])
+        if hr_emp_tran_obj:
+            hr_emp_tran_obj.write({'new_job_id': int(self._context['new_job_id'])})
+
     def check_judicial_precedent(self, employee_id):
         emp_jud_prec_ids = self.env['employee.judicial.precedent.order'].search([('employee', '=', employee_id.id)])
         if emp_jud_prec_ids:
@@ -227,3 +236,33 @@ class HrEmployeeTransfertPeriode(models.Model):
 
     date_from = fields.Date(string=u'التاريخ من ', default=fields.Datetime.now())
     date_to = fields.Date(string=u'التاريخ الى')
+
+
+class HrTransfertSorting(models.Model):
+    _name = 'hr.transfert.sorting'
+    _description = u'‫ترتيب طلبات النقل مع الوظائف المناسبة‬‬'
+
+    name = fields.Char(string='name')
+    hr_transfert_ids = fields.Many2many('hr.employee.transfert', string=u'طلبات النقل')
+
+    @api.multi
+    def button_transfert_sorting(self):
+        hr_transfert_sorting = self.env['hr.transfert.sorting'].search([], limit=1)
+        if hr_transfert_sorting:
+            value = {
+                'name': u'ترتيب طلبات النقل مع الوظائف المناسبة',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': 'hr.transfert.sorting',
+                'view_id': False,
+                'type': 'ir.actions.act_window',
+                'res_id': hr_transfert_sorting.id,
+            }
+            return value
+
+    @api.multi
+    def write(self, vals):
+        # recalculate the right sequence for each hr_transfert_id
+        hr_transfert_ids = vals['hr_transfert_ids'][0][2]
+        print hr_transfert_ids
+        return models.Model.write(self, vals)
