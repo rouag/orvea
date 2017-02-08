@@ -19,10 +19,19 @@
 						<button name="action_refused" string="رفض" type="object"
 							states="waiting" groups="smart_hr.group_tranfert_employee_owner"
 							icon="fa-times" class="oe_inline oe_stat_button" />
+						<!-- رئيس الهيئة -->
+						<button name="action_choose" string="إختيار هذا الطلب"
+							type="object" groups="smart_hr.group_decision_select_candidate"
+							attrs="{'invisible':['|',('state', '!=', 'commission_president')]}"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_done" string="إعتماد" type="object"
 							groups="smart_hr.group_hr_personnel_officer_jobs"
-							attrs="{'invisible':['|', ('state', '!=', 'pm'), ('new_job_id', '=', False)]}"
+							attrs="{'invisible':['|','|', ('state', '!=', 'pm'), ('new_job_id', '=', False), ('conflicted_emp_trans_id', '!=', False)]}"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_com_president" string="إرسال" type="object"
+							groups="smart_hr.group_hr_personnel_officer_jobs"
+							attrs="{'invisible':['|','|', ('state', '!=', 'pm'), ('new_job_id', '=', False), ('conflicted_emp_trans_id', '=', False)]}"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_notif" string="تنبيه صاحب الطلب" type="object"
 							groups="smart_hr.group_hr_personnel_officer_jobs"
@@ -32,16 +41,19 @@
 
 
 						<field name="state" widget="statusbar"
-							statusbar_visible="new,waiting,pm,pending,done,refused,cancelled" />
+							statusbar_visible="new,waiting,pm,commission_president,done,refused,cancelled" />
 					</header>
 					<sheet>
 						<field name="same_group" invisible="1" />
+						<field name="comm_president_accept" invisible="0" />
 						<group>
 							<field name="create_date" />
 						</group>
 						<group>
 							<group>
 								<field name="employee_id" />
+								<field name="conflicted_emp_trans_id"
+									attrs="{'invisible':[('state', '!=', 'commission_president')],'readonly': True}" />
 								<field name="justification_text" />
 								<field name="transfert_type" />
 								<field name="governmental_entity"
@@ -52,22 +64,22 @@
 								<field name="refusing_date" attrs="{'invisible':[('state', '!=', 'refused')]}" />
 							</group>
 							<group string="قرار الجهة المختصة"
-								attrs="{'invisible':['|','|', ('state', 'not in', ['pm','done']), ('same_group', '=', False),('decision_number','=',False),('state','!=','pm')]}">
+								attrs="{'invisible':['|','|', ('state', 'not in', ['pm','commission_president','done']), ('same_group', '=', False),('decision_number','=',False),('state','!=','pm')]}">
 								<field name="decision_number"
-									attrs="{'required':[('same_group', '=', True),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm')]}" />
+									attrs="{'required':[('same_group', '=', True),('conflicted_emp_trans_id', '=', False),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm')]}" />
 								<field name="decision_date"
-									attrs="{'required':[('same_group', '=', True),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm')]}" />
+									attrs="{'required':[('same_group', '=', True),('conflicted_emp_trans_id', '=', False),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm')]}" />
 								<field name="decision_file"
-									attrs="{'required':[('same_group', '=', True),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm'),]}" />
+									attrs="{'required':[('same_group', '=', True),('conflicted_emp_trans_id', '=', False),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm'),]}" />
 							</group>
 							<group string="موافقة الخدمة المدنية"
-								attrs="{'invisible':['|', '|', ('state', 'not in', ['pm','done']), ('same_group', '=', True), ('new_job_id', '=', False),('speech_number','=',False)]}">
+								attrs="{'invisible':['|', '|', ('state', 'not in', ['pm','commission_president','done']), ('same_group', '=', True), ('new_job_id', '=', False),('speech_number','=',False)]}">
 								<field name="speech_number"
-									attrs="{'required':[('same_group', '=', False),('state', '=', 'pm'),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm')]}" />
+									attrs="{'required':[('same_group', '=', False),('conflicted_emp_trans_id', '=', False),('state', '=', 'pm'),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm')]}" />
 								<field name="speech_date"
-									attrs="{'required':[('same_group', '=', False),('state', '=', 'pm'),('new_job_id', '!=', False) ],'readonly':[('state', '!=', 'pm')]}" />
+									attrs="{'required':[('same_group', '=', False),('conflicted_emp_trans_id', '=', False),('state', '=', 'pm'),('new_job_id', '!=', False) ],'readonly':[('state', '!=', 'pm')]}" />
 								<field name="speech_file"
-									attrs="{'required':[('same_group', '=', False),('state', '=', 'pm'),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm')]}" />
+									attrs="{'required':[('same_group', '=', False),('conflicted_emp_trans_id', '=', False),('state', '=', 'pm'),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm')]}" />
 							</group>
 						</group>
 						<notebook>
@@ -96,7 +108,7 @@
 									<group>
 										<field name="date_direct_action" attrs="{'readonly':[('state', '!=', 'pm')]}" />
 										<field name="degree_id" options="{'no_create_edit': True}"
-											attrs="{'readonly':[('state', '!=', 'pm')],'required':[('state', '=', 'pm'),('new_job_id', '!=', False)]}" />
+											attrs="{'readonly':[('state', '!=', 'pm')],'required':[('state', '=', 'pm'),('conflicted_emp_trans_id', '=', False),('new_job_id', '!=', False)]}" />
 									</group>
 								</group>
 							</page>
@@ -199,14 +211,17 @@
 								<field name="sequence" readonly="1" />
 								<field name="employee_id" readonly="1" />
 								<field name="job_id" readonly="1" />
+								<field name="occupied_date" readonly="1" />
+								<field name="create_date" readonly="1" />
+								<field name="last_evaluation_result" readonly="1" />
 								<field name="new_job_id" />
-								<field name="occupied_date" />
-								<field name="create_date" />
+								<field name="conflicted_emp_trans_id" />
 								<button name="action_notif" string="تنبيه صاحب الطلب بعدم توفر وظيفة مناسبة"
 									type="object" groups="smart_hr.group_hr_personnel_officer_jobs"
 									attrs="{'invisible':[('new_job_id', '!=', False)]}" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 								<button name="action_pick_job" attrs="{'invisible':[('new_job_id', '=', False)]}"
-									groups="smart_hr.group_hr_personnel_officer_jobs" context="{'rec_id': id, 'new_job_id':new_job_id}"
+									groups="smart_hr.group_hr_personnel_officer_jobs"
+									context="{'rec_id': id, 'new_job_id': new_job_id, 'conflicted_emp_trans_id': conflicted_emp_trans_id}"
 									string="إنتقاء الوظيفة" type="object" />
 								<field name="state" invisible="1" />
 							</tree>
