@@ -323,12 +323,7 @@
 
 								<page string="العقوبات">
 									<field name='sanction_ids' string="العقوبات" readonly="1">
-										<tree string="العقوبات">
-											<field name="employee_id" />
-											<field name="type_sanction" />
-											<field name="date_sanction_start" />
-											<field name="date_sanction_end" />
-										</tree>
+										
 									</field>
 								</page>
 								<page string="سجل الاجراءات" readonly='True'>

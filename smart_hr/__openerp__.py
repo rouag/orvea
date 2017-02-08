@@ -70,6 +70,8 @@
         'hr/views/report.xml',
         'hr/data/hr_department_type_data.xml',
         'hr/view/hr_employee_transfert_view.xml',
+        'hr/view/hr_employee_desire_view.xml',
+        'hr/view/hr_setting.xml',
 
         'views/report_salary_grid.xml',
         'views/report_medical_examination.xml',

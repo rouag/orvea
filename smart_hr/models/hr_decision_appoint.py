@@ -85,7 +85,7 @@ class HrDecisionAppoint(models.Model):
     order_picture = fields.Binary(string='صورة الخطاب', required=1) 
     order_picture_name = fields.Char(string='صورة الخطاب') 
     medical_examination_file = fields.Binary(string='وثيقة الفحص الطبي') 
-    date_medical_examination = fields.Binary(string='تاريخ الفحص الطبي') 
+    date_medical_examination = fields.Date(string='تاريخ الفحص الطبي') 
     medical_examination_name = fields.Char(string='وثيقة الفحص الطبي') 
     order_enquiry_file = fields.Binary(string='طلب الاستسفار')
     file_salar_recent = fields.Binary(string='تعهد من الموظف')
@@ -379,7 +379,7 @@ class HrDecisionAppoint(models.Model):
                     group_id = self.env.ref('smart_hr.group_personnel_hr')
                     self.send_notification_refuse_to_group(group_id)
                     
-        for contrat in prev_days_contract_end :
+        for contrat in appoints_contract :
             prev_days_contract_end = fields.Date.from_string(appoint.date_direct_action) + relativedelta(days=30)
             print"prev_days_end",type(prev_days_contract_end)
             sign_days = self.env['hr.attendance'].search_count([('employee_id', '=', appoint.employee_id.id), ('name','<=',str(prev_days_contract_end))])
@@ -419,7 +419,7 @@ class HrDecisionAppoint(models.Model):
         # close last active appoint for the employee
         last_appoint = self.employee_id.decision_appoint_ids.search([('state_appoint', '=', 'active')], limit=1)
         if last_appoint:
-            last_appoint.write({'state_appoint': 'close'})
+            last_appoint.write({'state_appoint': 'close', 'date_hiring_end': fields.Datetime.now()})
 
          #send notification to hr personnel
         

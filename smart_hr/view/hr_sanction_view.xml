@@ -82,7 +82,7 @@
 						<button name="action_refuse" string="رفض" type="object"
 							states="waiting" groups="smart_hr.group_responsable_sanction" />
 
-						<button name="action_extern" string="موافق" type="object" context="{'numero_order1': 'name','nb_days': 'nb_days'}"
+						<button name="action_extern" string="موافق" type="object" 
 							states="extern" groups="smart_hr.group_third_party_sanction" />
 						
 						<button name="action_update" string="موافق" type="object"
@@ -103,6 +103,9 @@
 							string=" تعديل" type="object" states="done"
 							groups="smart_hr.group_third_party_sanction" icon="fa-times-circle-o"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+
+					
 
 
 					</header>
@@ -153,10 +156,10 @@
 											<tree editable="bottom">
 												<field name="employee_id"  />
 												<field name="type_sanction" invisible="1" />
-													<field name="option_update_line" invisible="1" />
-												<field name="nb_days_old"  />
-												<field name="nb_days_new"   />
-												<field name="active" />
+												
+												<field name="state_sanction" invisible="1" />
+												<field name="nb_days_old"  attrs="{'invisible':[('state_sanction', 'in', ['update'])]}" />
+												<field name="nb_days_new"    attrs="{'invisible':[('state_sanction', 'not in', ['update'])]}" />
 												<field name="state" />
 
 												<button name="%(smart_hr.action_wizard_sanction_action)d"
