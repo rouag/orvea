@@ -2,6 +2,8 @@
 <openerp>
 	<data>
 
+	<!-- أنواع العقوبات -->
+
 		<record model="ir.ui.view" id="hr_type_sanction_tree">
 			<field name="name">hr.type.sanction.tree</field>
 			<field name="model">hr.type.sanction</field>
@@ -15,6 +17,7 @@
 				</tree>
 			</field>
 		</record>
+		
 		<record model="ir.ui.view" id="hr_type_sanction_form">
 			<field name="name">hr.type.sanction.form</field>
 			<field name="model">hr.type.sanction</field>
@@ -25,21 +28,20 @@
 						<group>
 							<field name="name" />
 							<field name="code" />
+							<field name="deduction" />
 							<field name="min_grade_id" options="{'no_create_edit': True}" />
 							<field name="max_grade_id" options="{'no_create_edit': True}" />
 						</group>
 						<group string="المخطط‬‫ الانسيابي‬">
-
-
 							<field name="sanction_manager" />
 							<field name="sanction_responsable" />
 							<field name="sanction_decider" />
-
 						</group>
 					</sheet>
 				</form>
 			</field>
 		</record>
+		
 		<record model="ir.actions.act_window" id="action_hr_type_sanction">
 			<field name="name"> أنواع العقوبات</field>
 			<field name="res_model">hr.type.sanction</field>
@@ -50,24 +52,23 @@
 		<menuitem id="hr_type_sanction_menu_sou" name=" أنواع العقوبات"
 			sequence="28" parent="hr_root_organisation_configuration" action="action_hr_type_sanction" />
 
-
-
+		<!-- العقوبات -->
+		
 		<record model="ir.ui.view" id="hr_sanction_tree">
 			<field name="name">hr.sanction.tree</field>
 			<field name="model">hr.sanction</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
-				<tree string="إجراء عقوبة">
+				<tree string="العقوبات">
 					<field name="name" />
 					<field name="order_date" />
 					<field name="date_sanction_start" />
 					<field name="date_sanction_end" />
-					<field name="option_update" invisible="1" />
-
-
+					<field name="state" />
 				</tree>
 			</field>
 		</record>
+		
 		<record model="ir.ui.view" id="hr_sanction_form">
 			<field name="name">hr.sanction.form</field>
 			<field name="model">hr.sanction</field>
@@ -90,60 +91,30 @@
 						<button name="action_refuse_update" string="رفض" type="object"
 							states="update" groups="smart_hr.group_responsable_sanction" />
 
-
-						<field name="state" widget="statusbar" statusbar_visible="draft,waiting,extern,done" />
-
-
 						<button name="action_cancel" context="{'operation': 'cancel'}"
 							string="إلغاء" type="object" states="done"
 							groups="smart_hr.group_third_party_sanction" icon="fa-times-circle-o"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<button name="button_update_sanction" context="{'operation': 'cancel'}"
-							string=" تعديل" type="object" states="done"
-							groups="smart_hr.group_third_party_sanction" icon="fa-times-circle-o"
-							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
-
-					
-
+ 						<button name="%(smart_hr.action_wizard_sanction_action_update_all)d" type="action" string="تعديل"  icon="fa-times-circle-o" 
+							  context="{'action':'update_all'}" 	groups="smart_hr.group_third_party_sanction" 
+							  class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							  
+						<field name="state" widget="statusbar" statusbar_visible="draft,waiting,extern,done" />  
 
 					</header>
 					<sheet>
 
 						<group>
 							<group>
-								<field name="name"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','done','cancel'])],'readonly':[('state', 'not in', ['draft','update']),('option_update', '=', False)]}" />
-								<field name="number_order"
-									attrs="{'invisible':[('state', 'not in', ['update'])]}" />
-								<field name="order_date"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','done','cancel'])],'readonly':[('state', 'not in',  ['draft','update']),('option_update', '=', False)]}" />
-							
-								<field name="order_date_up"
-									attrs="{'invisible':[('state', 'not in', ['update'])]}" />
-							
-								<field name="order_picture" filename="order_picture_name"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','done','cancel'])],'readonly':[('state', 'not in', ['draft','update']),('option_update', '=', False)]}" />
-								<field name="order_picture_up"
-									attrs="{'invisible':[('state', 'not in', ['update'])]}" />
-								<field name="order_picture_name" invisible="1" />
-								<field name="order_picture_up_name" invisible="1" />
+								<field name="name" />
+								<field name="order_date" /> 
+								<field name="order_picture"  />
 							</group>
 							<group>
-								<field name="type_sanction"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','done','cancel'])],'readonly':[('state', 'not in', ['draft','update']),('option_update', '=', False)]}" />
-								<field name="type_sanction_up"
-									attrs="{'invisible':[('state', 'not in', ['update'])]}" />
-								<field name="date_sanction_start"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','done','cancel'])],'readonly':[('state', 'not in', ['draft','update']),('option_update', '=', False)]}" />
-								<field name="date_sanction_start_up"
-									attrs="{'invisible':[('state', 'not in', ['update'])]}" />
-								<field name="date_sanction_end"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','done','cancel'])],'readonly':[('state', 'not in', ['draft','update']),('option_update', '=', False)]}" />
-								<field name="date_sanction_end_up"
-									attrs="{'invisible':[('state', 'not in', ['update'])]}" />
-								<field name="option_update" invisible="1" />
+								<field name="type_sanction"/>
+								<field name="date_sanction_start" />
+								<field name="date_sanction_end"/>
 							</group>
 						</group>
 
@@ -151,20 +122,19 @@
 							<notebook>
 								<page string="التفاصيل">
 									<group>
-										<field name="line_ids" nolabel="1"
-											attrs="{'invisible':[('state', 'not in', ['draft','waiting','extern','done','update','cancel'])],'readonly':[('state', 'not in', ['draft','update'])]}">
+										<field name="line_ids" nolabel="1">
 											<tree editable="bottom">
 												<field name="employee_id"  />
 												<field name="type_sanction" invisible="1" />
-												
 												<field name="state_sanction" invisible="1" />
-												<field name="nb_days_old"  attrs="{'invisible':[('state_sanction', 'in', ['update'])]}" />
-												<field name="nb_days_new"    attrs="{'invisible':[('state_sanction', 'not in', ['update'])]}" />
+												<field name="days_number"  />
+												<field name="amount" />
 												<field name="state" />
-
-												<button name="%(smart_hr.action_wizard_sanction_action)d"
-													type="action" string="إستبعاد" icon="STOCK_CANCEL" />
-
+												<button name="%(smart_hr.action_wizard_sanction_action_exclusion)d" type="action" string="إستبعاد"  icon="STOCK_CANCEL" 
+											    attrs="{'invisible':[('state_sanction','!=','done')]}" context="{'action':'exclusion'}"  />
+											    <button name="%(smart_hr.action_wizard_sanction_action_update)d" type="action" string="تعديل"  icon="fa-times-circle-o" 
+											    attrs="{'invisible':[('state_sanction','!=','done')]}" context="{'action':'update'}"  />
+											    
 											</tree>
 										</field>
 										
@@ -194,13 +164,13 @@
 
 
 		<record model="ir.actions.act_window" id="action_hr_sanction">
-			<field name="name">إجراء عقوبة</field>
+			<field name="name">العقوبات</field>
 			<field name="res_model">hr.sanction</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
-		<menuitem id="hr_sanction_menu" name="إجراء عقوبة" sequence="10"
+		<menuitem id="hr_sanction_menu" name="العقوبات" sequence="10"
 			parent="hr_root_organisation_action" action="action_hr_sanction" />
 
 	</data>
