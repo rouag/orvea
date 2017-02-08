@@ -138,11 +138,25 @@
 					<sheet>
 						<group>
 							<field name="name" />
+							<field name="code" />
+
 						</group>
 					</sheet>
 				</form>
 			</field>
 		</record>
+		
+				<record id="view_side_tree" model="ir.ui.view">
+			<field name="name">city.side.tree</field>
+			<field name="model">city.side</field>
+			<field name="arch" type="xml">
+				<tree string="الجهات">
+							<field name="name" />
+							<field name="code" />
+				</tree>
+			</field>
+		</record>
+		
 		<record model="ir.actions.act_window" id="action_side">
 			<field name="name">الجهات</field>
 			<field name="res_model">city.side</field>

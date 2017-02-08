@@ -116,7 +116,6 @@
 							<field name="employee_state" widget="statusbar"
 								statusbar_visible="new,waiting,done,refused" />
 						</header>
-
 						<sheet>
 
 							<div class="oe_button_box" name="button_box" position="inside">
@@ -185,11 +184,11 @@
 											<field name="identification_id" attrs="{'required': 1}" />
 											<field name="identification_date" />
 											<field name="identification_place" />
-											<field name="passport_id" attrs="{'required': 1}" />
-											<field name="passport_date" attrs="{'required': 1}" />
+
 										</group>
 										<group>
-
+											<field name="passport_id" attrs="{'required': 1}" />
+											<field name="passport_date" attrs="{'required': 1}" />
 											<field name="passport_end_date" attrs="{'required': 1}" />
 											<field name="passport_place" attrs="{'required': 1}" />
 											<field name="is_resident" attrs="{'required': 1}" />
@@ -250,109 +249,112 @@
 											<field name="begin_work_date" />
 											<field name="calendar_id" />
 											<field name="insurance_type" />
-										</group>
-									</group>
-								</page>
-								<page string="بيانات البنك">
-									<group>
-										<group string="بيانات البنك">
-											<field name="address_home_id" invisible="1" />
-											<field name="bank_account_id" invisible="1" />
-											<field name="bank_account_ids" options="{'no_create': True}">
-												<tree create="false" delete="false">
-													<field name="acc_number" />
-													<field name="bank_name" string="البنك" />
-													<field name="currency_id" />
-													<field name="account_opening_date" />
-													<field name="is_deposit" />
+											<field name="medic_exam" string="تاريخ الفحص الطبي" />
+											<field name="vehicle" />
+											<field name="vehicle_distance" />
+			</group>
+			</group>
+			</page>
+				<page string="بيانات البنك">
+					<group>
+						<group string="بيانات البنك">
+							<field name="address_home_id" invisible="1" />
+							<field name="bank_account_id" invisible="1" />
+							<field name="bank_account_ids" options="{'no_create': True}">
+								<tree create="false" delete="false">
+									<field name="acc_number" />
+									<field name="bank_name" string="البنك" />
+									<field name="currency_id" />
+									<field name="account_opening_date" />
+									<field name="is_deposit" />
 
-												</tree>
-											</field>
-										</group>
-									</group>
-									<group name="active_group" invisible="1" />
-								</page>
+								</tree>
+							</field>
+						</group>
+					</group>
+					<group name="active_group" invisible="1" />
+				</page>
 
-								<page string="البدلات">
-									<field name="allowance_ids">
-										<tree editable="buttom">
-											<field name="allowance_id" />
-											<field name="amount" />
-										</tree>
-									</field>
-								</page>
-								<!-- TODO: dont delete it used by borni in payroll we can discuss 
-									about it after -->
-								<page string="بيانات الراتب ">
-									<group>
-										<field name="payroll_structure_id" />
-										<field name="wage" />
-										<field name="degree_id" />
-									</group>
-								</page>
+				<page string="البدلات">
+					<field name="allowance_ids">
+						<tree editable="buttom">
+							<field name="allowance_id" />
+							<field name="amount" />
+						</tree>
+					</field>
+				</page>
+				<!-- TODO: dont delete it used by borni in payroll we can discuss about 
+					it after -->
+				<page string="بيانات الراتب ">
+					<group>
+						<field name="payroll_structure_id" />
+						<field name="wage" />
+						<field name="degree_id" />
+					</group>
+				</page>
 
-								<page string="أرصدة الاجازات والترقيات">
-									<separator string="أرصدة الاجازات" />
-									<field name="holidays_balance"
-										domain="[('period_id.date_to','&lt;=',context_today())]">
-										<tree string="أرصدة الاجازات ">
-											<field name="holiday_status_id" />
-											<field name="entitlement_name" />
-											<field name="holidays_available_stock" />
-											<field name="token_holidays_sum" />
-											<field name="periode" />
-										</tree>
-									</field>
-									<group>
-										<field name="compensation_stock" readonly="1" class="oe_inline" />
-									</group>
-									<separator string="سِجل التعيينات" />
-									<field name="promotions_history" readonly="1">
-										<tree string="سِجل التعيينات">
-											<field name="appoint_type" />
-											<field name="salary_grid_id" />
-											<field name="date_from" />
-											<field name="date_to" />
-											<field name="balance" />
-										</tree>
-									</field>
+				<page string="أرصدة الاجازات والترقيات">
+					<separator string="أرصدة الاجازات" />
+					<field name="holidays_balance" domain="[('period_id.date_to','&lt;=',context_today())]">
+						<tree string="أرصدة الاجازات ">
+							<field name="holiday_status_id" />
+							<field name="entitlement_name" />
+							<field name="holidays_available_stock" />
+							<field name="token_holidays_sum" />
+							<field name="periode" />
+						</tree>
+					</field>
+					<group>
+						<field name="compensation_stock" readonly="1" class="oe_inline" />
+					</group>
+					<separator string="سِجل التعيينات" />
+					<field name="promotions_history" readonly="1">
+						<tree string="سِجل التعيينات">
+							<field name="appoint_type" />
+							<field name="salary_grid_id" />
+							<field name="date_from" />
+							<field name="date_to" />
+							<field name="balance" />
+						</tree>
+					</field>
 
-								</page>
-								<page string="الحسميات">
-								</page>
+				</page>
+				<page string="الحسميات">
+				</page>
 
-								<page string="العقوبات">
-									<field name='sanction_ids' string="العقوبات" readonly="1">
-										
-									</field>
-								</page>
-								<page string="سجل الاجراءات" readonly='True'>
+				<page string="العقوبات">
+					<field name='sanction_ids' string="العقوبات" readonly="1">
 
-									<field name='history_ids' readonly="1">
-										<tree string="سجل الاجراءات">
-											<field name="job_id" />
-											<field name="grade_id" />
-											<field name="number" />
-											<field name="dep_Side" />
-											<field name="department_id" />
-											<field name="type" />
-											<field name="date" />
-											<field name="num_decision" />
-											<field name="date_decision" />
-										</tree>
-									</field>
+					</field>
+				</page>
+				<page string="سجل الاجراءات" readonly='True'>
 
-								</page>
+					<field name='history_ids' readonly="1">
+						<tree string="سجل الاجراءات">
+							<field name="job_id" />
+							<field name="grade_id" />
+							<field name="number" />
+							<field name="dep_Side" />
+							<field name="department_id" />
+							<field name="type" />
+							<field name="date" />
+							<field name="num_decision" />
+							<field name="date_decision" />
+						</tree>
+					</field>
 
-							</notebook>
-						</sheet>
-						<div class="oe_chatter">
-							<field name="message_follower_ids" widget="mail_followers" />
-							<field name="message_ids" widget="mail_thread" />
-						</div>
-					</form>
+				</page>
 
-				</xpath>
+			</notebook>
+				<xpath expr="//group[@name='active_group']/group[1]" position="replace" />
+			</sheet>
+				<div class="oe_chatter">
+					<field name="message_follower_ids" widget="mail_followers" />
+					<field name="message_ids" widget="mail_thread" />
+				</div>
+			</form>
+
+			</xpath>
 			</field>
 		</record>
 
@@ -380,14 +382,32 @@
 
 
 
-		<record id="hr_hr_employee_view_form2_inherit" model="ir.ui.view">
+		<record id="hr_contract.hr_hr_employee_view_form2" model="ir.ui.view">
 			<field name="name">hr.hr.employee.view.form2</field>
 			<field name="model">hr.employee</field>
-			<field name="inherit_id" ref="hr_contract.hr_hr_employee_view_form2" />
 			<field name="arch" type="xml">
-				<field name="bank_account_id" position="attributes">
-					<attribute name="invisible">1</attribute>
-				</field>
+				<form>
+					<div name="button_box" position="inside">
+						<button name="%(hr_contract.act_hr_employee_2_hr_contract)d"
+							class="oe_stat_button" icon="fa-book" type="action"
+							groups="base.group_hr_manager">
+							<field name="contracts_count" widget="statinfo" string="Contracts" />
+						</button>
+					</div>
+					<xpath expr="//field[@name='coach_id']" position="after">
+						<field name="manager" groups="base.group_no_one" />
+					</xpath>
+
+					<field name="marital" position="after">
+						<field name="children" />
+					</field>
+					<field name="birthday" position="after">
+						<field name="place_of_birth" />
+					</field>
+					<field name="bank_account_id" position="attributes">
+						<attribute name="invisible">1</attribute>
+					</field>
+					</form>
 			</field>
 		</record>
 

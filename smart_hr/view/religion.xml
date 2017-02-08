@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
- 
+
 		<!--أنواع الديانات -->
 
 		<record id="religions_form" model="ir.ui.view">
@@ -11,7 +11,8 @@
 				<form string="الديانات ">
 					<sheet>
 						<group>
-							<field name="name" />							
+							<field name="name" />
+							<field name="code" />
 						</group>
 					</sheet>
 				</form>
@@ -24,6 +25,7 @@
 			<field name="arch" type="xml">
 				<tree string="الديانات">
 					<field name="name" />
+					<field name="code" />
 				</tree>
 			</field>
 		</record>
@@ -34,11 +36,10 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-		
+
 		<!-- config menu -->
 		<menuitem id="hr_configuration_religions" name="الديانات"
-			sequence="50" parent="hr_root_employee_configuration"
-			action="action_religions" />
+			sequence="50" parent="hr_root_employee_configuration" action="action_religions" />
 
 
 

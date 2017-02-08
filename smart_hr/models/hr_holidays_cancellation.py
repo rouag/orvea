@@ -127,13 +127,8 @@ class hrHolidaysCancellation(models.Model):
                         holiday.open_period.holiday_stock += holiday.duration
                         # Update the holiday state
                     holiday.write({'state': 'cancel'})
-                    type=''
-                    if holiday.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_illness').id:
-                        type = '68'
-                    else:
-                        type = '35'
-                    if type:
-                        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
+                    type = " إلغاء"+" " +holiday.holiday_status_id.name.encode('utf-8')
+                    self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
                     if holiday.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_study'):
                         study_followup = self.env['courses.followup'].search([('employee_id','=','holiday.employee_id.id'),
                                                                               ('state','=','progress'),
@@ -156,6 +151,9 @@ class hrHolidaysCancellation(models.Model):
                     if holiday.open_period:
                         holiday.open_period.holiday_stock += cuted_duration
                     holiday.write({'state': 'cut'})
+                    holiday.write({'state': 'cancel'})
+                    type = " قطع"+" " +holiday.holiday_status_id.name.encode('utf-8')
+                    self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
                     if holiday.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_study'):
                         study_followup = self.env['courses.followup'].search([('employee_id','=','holiday.employee_id.id'),
                                                                               ('state','=','progress'),

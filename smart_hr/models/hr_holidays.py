@@ -329,21 +329,8 @@ class HrHolidays(models.Model):
 
 
 #             create history_line
-        type = ''
-        if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_illness').id:
-            type = '83'
-        elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id:
-            type = '02'
-        elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_sport').id:
-            type = '21'
-        elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional').id:
-            type = '43'
-        elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_normal').id:
-            type = '01'
-        elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_study').id:
-            type = '30'            
-        if type:
-            self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
+        type = " منح"+" " +self.holiday_status_id.name.encode('utf-8')
+        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
 
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_study'):
             self.env['courses.followup'].create({'employee_id':self.employee_id.id, 'state':'progress',

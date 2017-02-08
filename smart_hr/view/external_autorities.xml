@@ -13,7 +13,9 @@
 					<sheet>
 						<group>
 							<field name="name" />
+							<field name="code" />
 							<field name="holiday_status" />
+							
 						</group>
 					</sheet>
 				</form>
@@ -26,6 +28,7 @@
 			<field name="arch" type="xml">
 				<tree string="الجهات الخارجية‬">
 							<field name="name" />
+							<field name="code" />
 							<field name="holiday_status" />
 				</tree>
 			</field>

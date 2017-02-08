@@ -32,7 +32,7 @@
 							<field name="employee_id" />
 							<field name="holidays"  />
 						</group>
-						<group>
+						<group col="8">
 							<field name="note"/>
 						</group>
 						<!-- <button name="%(report_hr_holidays_report)d" string="طباعة القرار" type="action"

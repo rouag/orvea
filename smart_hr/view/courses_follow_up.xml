@@ -7,7 +7,7 @@
 			<field name="name">courses.followup.form</field>
 			<field name="model">courses.followup</field>
 			<field name="arch" type="xml">
-				<form string="الدورات الدراسيّة ">
+				<form string="الدورات الدراسيّة " create='false' edit='false'>
 					<header>
 						<button name="action_succeeded" string="نجح" type="object"
 							states="progress" icon="fa-paper-plane" class="oe_inline oe_stat_button"
@@ -55,7 +55,7 @@
 			<field name="name">courses.followup.tree</field>
 			<field name="model">courses.followup</field>
 			<field name="arch" type="xml">
-				<tree string="الدورات الدراسيّة">
+				<tree string="الدورات الدراسيّة" create='false' edit='false'>
 					<field name="name" />
 					<field name="employee_id" />
 					<field name="holiday_id" />
@@ -69,7 +69,7 @@
 		</record>
 
 		<record model="ir.actions.act_window" id="action_courses_followup">
-			<field name="name">متابعة الدورات الدراسيّة</field>
+			<field name="name">الدورات الدراسيّة</field>
 			<field name="res_model">courses.followup</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
