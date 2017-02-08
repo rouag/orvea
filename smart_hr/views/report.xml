@@ -99,7 +99,7 @@
 		
 		
 			<report id="hr_holidays_decision_report" model="hr.holidays.decision" name="smart_hr.report_hr_holidays_decision"
-			report_type="qweb-pdf" string="طباعة" file="smart_hr.report_hr_holidays_decision" />
+			report_type="qweb-pdf" string="طباعة قرار مباشرة" file="smart_hr.report_hr_holidays_decision" />
 			
 			<report id="hr_decision_report" model="hr.decision" name="smart_hr.report_hr_decision"
 			report_type="qweb-pdf" string="طباعة" file="smart_hr.report_hr_decision" />

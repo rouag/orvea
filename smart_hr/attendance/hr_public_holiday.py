@@ -4,6 +4,7 @@
 from openerp import models, fields, api, _
 from datetime import timedelta
 import math
+from openerp.exceptions import ValidationError
 
 HOURS_PER_DAY = 7
 
@@ -11,7 +12,7 @@ HOURS_PER_DAY = 7
 class HrPublicHoliday(models.Model):
     _name = 'hr.public.holiday'
 
-    name = fields.Char(string='المسمى', required=1)
+    name = fields.Char(string='العيد/العطلة', required=1)
     date_from = fields.Date(string='من', required=1)
     date_to = fields.Date(string=' إلى', required=1)
     number_of_days = fields.Float(string=' المدة', required=1)
@@ -19,7 +20,20 @@ class HrPublicHoliday(models.Model):
                               ('hrm', u'مدير شؤون الموظفين'),
                               ('done', u'اعتمدت'),
                               ], string=u'الحالة', default='draft', advanced_search=True)
-    
+
+    @api.one
+    @api.constrains('date_from', 'date_to')
+    def _check_date(self):
+        for holiday in self.search([]):
+            domain = [
+                ('date_from', '<=', holiday.date_to),
+                ('date_to', '>=', holiday.date_from),
+                ('id', '!=', holiday.id),
+            ]
+            nholidays = self.search_count(domain)
+            if nholidays:
+                raise ValidationError(u"هناك تداخل في التواريخ مع عيد/عطلة سابقة")
+
     def _onchange_date_from(self):
         date_from = self.date_from
         date_to = self.date_to

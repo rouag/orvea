@@ -10,11 +10,12 @@
 					<header>
 						<button name="action_waiting" string=" ارسال طلب" type="object"
 							states="new" />
-						<button name="action_refuse" string="رفض" type="object"
-							states="waiting" />
 						<button name="action_done" string="إعتماد" type="object"
 							states="waiting" />
-						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
+						<button name="action_refuse" string="رفض" type="object"
+							states="waiting" />
+
+						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done,cancel" />
 					</header>
 					<sheet>
 						<group>

@@ -9,7 +9,7 @@ class WizardResumeHolidays(models.TransientModel):
 
     date_from = fields.Date(string='التاريخ من', default=lambda *a: time.strftime('%Y-%m-%d'), required=1)
     date_to = fields.Date(string='إلى', default=lambda *a: time.strftime('%Y-%m-%d'), required=1)
-    employee_id = fields.Many2one('hr.employee', string='موظف')
+    employee_id = fields.Many2one('hr.employee', string='موظف', required=1)
    # department_id = fields.Many2one('hr.department', string='قسم')
 
 

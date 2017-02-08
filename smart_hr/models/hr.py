@@ -17,6 +17,11 @@ class HrEmployee(models.Model):
         for rec in self:
             rec.loan_count = self.env['hr.loan'].search_count([('employee_id', '=', rec.id)])
 
+    @api.multi
+    def _compute_holidays_count(self):
+        for rec in self:
+            rec.holiday_count = self.env['hr.holidays'].search_count([('employee_id', '=', rec.id)])
+            
     number = fields.Char(string=u'الرقم الوظيفي', required=1)
     identification_date = fields.Date(string=u'تاريخ إصدار بطاقة الهوية ')
     identification_place = fields.Many2one('res.city', string=u'مكان إصدار بطاقة الهوية')
@@ -88,7 +93,7 @@ class HrEmployee(models.Model):
     point_functionality=fields.Integer(string=u'نقاط  الإداء الوظيفي',)
     is_member = fields.Boolean(string=u'عضو في الهيئة', default=False, required=1)
     insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين', readonly='1',compute='_compute_insurance_type')
-    
+    holiday_count = fields.Integer(string=u'عدد الاجازات', compute='_compute_holidays_count')
     @api.one
     @api.depends('job_id')
     def _compute_insurance_type(self):
@@ -354,7 +359,7 @@ class HrEmployeeEducationLevelEmployee(models.Model):
     _name = 'hr.employee.job.education.level'  
     _description = u'مستويات التعليم'
    
-    name=fields.Char(string='رقم ')
+    name=fields.Char(string='المستوى')
     employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف')
     level_education_id = fields.Many2one('hr.employee.education.level', string=u' مستوى التعليم')
     job_specialite = fields.Boolean(string=u'في طبيعة العمل', required=1)

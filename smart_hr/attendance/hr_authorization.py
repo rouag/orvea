@@ -33,6 +33,14 @@ class HrAuthorization(models.Model):
     current_autorization_stock = fields.Float(string=u'الرصيد الحالي', compute='_compute_current_autorization_stock')
     authorisation_ids = fields.One2many('hr.employee.authorization.history', 'autorisation_id', string=u'سجل الاستئذانات‬ ‫الشهرية‬')
 
+    @api.one
+    @api.constrains('hour_from', 'hour_to')
+    def check_hours(self):
+
+        if self.hour_from > self.hour_to:
+            raise ValidationError(u"الساعة من يجب ان تكون أصغر من الساعة الى")
+        
+        
     @api.onchange('employee_id')
     def onchange_employee_id(self):
         if self.employee_id:

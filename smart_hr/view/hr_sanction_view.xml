@@ -104,11 +104,6 @@
 							groups="smart_hr.group_third_party_sanction" icon="fa-times-circle-o"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<!-- <button name="%(smart_hr.action_wizard_sanction_update)d" context="{'operation': 
-							'cancel'}" string=" تعديل" type="action" states="done" groups="smart_hr.group_third_party_sanction" 
-							icon="fa-times-circle-o" class="oe_inline oe_stat_button" confirm="هل أنت 
-							متأكد من القيام بهذا الإجراء ؟" /> -->
-
 
 					</header>
 					<sheet>

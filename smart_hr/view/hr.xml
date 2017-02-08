@@ -134,7 +134,7 @@
 								<button name="%(smart_hr.action_hr_holidays)d" class="oe_stat_button"
 									context="{'search_default_employee_id': id}" icon="fa-clock-o"
 									type="action">
-									<span>الإجازات </span>
+									<field name="holiday_count" widget="statinfo" string="الإجازات" />
 								</button>
 							</div>
 
@@ -182,21 +182,16 @@
 										<group>
 											<field name="country_id" options='{"no_open": True, "no_create": True}'
 												attrs="{'required': 1}" />
-											<field name="identification_id" groups="base.group_hr_user"
-												attrs="{'required': 1}" />
-											<field name="identification_date" groups="base.group_hr_user" />
-											<field name="identification_place" groups="base.group_hr_user" />
-											<field name="passport_id" groups="base.group_hr_user"
-												attrs="{'required': 1}" />
-											<field name="passport_date" groups="base.group_hr_user"
-												attrs="{'required': 1}" />
+											<field name="identification_id" attrs="{'required': 1}" />
+											<field name="identification_date" />
+											<field name="identification_place" />
+											<field name="passport_id" attrs="{'required': 1}" />
+											<field name="passport_date" attrs="{'required': 1}" />
 										</group>
 										<group>
 
-											<field name="passport_end_date" groups="base.group_hr_user"
-												attrs="{'required': 1}" />
-											<field name="passport_place" groups="base.group_hr_user"
-												attrs="{'required': 1}" />
+											<field name="passport_end_date" attrs="{'required': 1}" />
+											<field name="passport_place" attrs="{'required': 1}" />
 											<field name="is_resident" attrs="{'required': 1}" />
 										</group>
 									</group>
@@ -245,8 +240,7 @@
 											<field name="service_duration" attrs="{'readonly': 1}" />
 											<field name="promotion_duration" attrs="{'readonly': 1}" />
 											<field name="external_decision" />
-											<field name="is_member"
-												attrs="{'readonly': [('employee_state','!=', 'new')]}" />
+											<field name="is_member" />
 										</group>
 										<group string="خصائص أخرى">
 											<field name="user_id"
@@ -310,12 +304,12 @@
 										</tree>
 									</field>
 									<group>
-										<field name="compensation_stock" readonly="1" class="oe_inline"/>
+										<field name="compensation_stock" readonly="1" class="oe_inline" />
 									</group>
 									<separator string="سِجل التعيينات" />
 									<field name="promotions_history" readonly="1">
 										<tree string="سِجل التعيينات">
-										<field name="appoint_type" />
+											<field name="appoint_type" />
 											<field name="salary_grid_id" />
 											<field name="date_from" />
 											<field name="date_to" />
@@ -358,8 +352,7 @@
 							</notebook>
 						</sheet>
 						<div class="oe_chatter">
-							<field name="message_follower_ids" widget="mail_followers"
-								groups="base.group_user" />
+							<field name="message_follower_ids" widget="mail_followers" />
 							<field name="message_ids" widget="mail_thread" />
 						</div>
 					</form>
