@@ -368,7 +368,7 @@ class HrEmployeeEducationLevelEmployee(models.Model):
 class HrEmployeeEvaluation(models.Model):
     _name = 'hr.employee.evaluation.level'  
     _description = u'التقييم الوظيفي'
-    date = fields.Date(string=u'التاريخ من', default=fields.Datetime.now())
+    year = fields.Integer(string=u'سنة التقييم', default=int(date.today().year))
     degree_id = fields.Many2one('hr.evaluation.result.foctionality', string=u' الدرجة')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف')
 
