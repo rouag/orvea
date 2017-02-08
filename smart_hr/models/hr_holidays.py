@@ -1026,15 +1026,16 @@ class HrHolidays(models.Model):
             # check education level
                 raise ValidationError(u" ليس لديك"+ str(self.holiday_status_id.service_years_required)+u"سنوات خدمة  ")
             
-         # Constraintes for assessments_required
-#         if self.holiday_status_id.assessments_required:
-#             employee_assessment_ids=self.env['hr.assessment.probation'].search[(('employee_id', '=', self.employee_id.id))].ids
-#             if employee_assessment_ids:
-#                 last_id = max(employee_assessment_ids)
-#                 performance_report = self.env['hr.assessment.probation'].browse(last_id).performance_report
-#                 if performance_report not in self.holiday_status_id.assesments_required.name:
-#                     raise ValidationError(u"لم تتحصل على تقويم‬ أدائ وظيفي‬ المطلوب.")
-
+         # Constraintes for evaluation_required
+        if self.holiday_status_id.evaluation_condition:
+            employee_evaluation_id = self.env['hr.employee.evaluation.level'].search([('employee_id', '=', self.employee_id.id),('year', '=',date_from.year-1)], limit=1)
+            if employee_evaluation_id:
+                if employee_evaluation_id.degree_id.id not in self.holiday_status_id.evaluation_required.ids:
+                    raise ValidationError(u"لم تتحصل على تقييم أدائ وظيفي‬ المطلوب.")
+            else:
+                raise ValidationError(u"لا يوجد تقييم وظيفي خاص بالموظف للسنة الفارطة")
+            
+            
         holiday_status_normal_stock = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id), ('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id)]).holidays_available_stock
 
         # Constraintes for maximum_days_by_year
@@ -1252,10 +1253,10 @@ class HrHolidaysStatus(models.Model):
     salary_spending = fields.Boolean(string=u'يجوز صرف راتبها')
     employees_director_decision = fields.Boolean(string=u'موافقة مدير شؤون الموظفين', default=True)
     can_be_cancelled = fields.Boolean(string=u'يمكن الغاؤها', default=True)
-    evaluation_condition = fields.Boolean(string=u'يطبق شرط تقويم الأداء')
+    evaluation_condition = fields.Boolean(string=u'يطبق شرط تقييم الأداء')
     education_levels = fields.One2many('hr.employee.education.level', 'leave_type', string=u'المستويات التعليمية')
     entitlements = fields.One2many('hr.holidays.status.entitlement', 'leave_type', string=u'أنواع الاستحقاقات')
-    assessments_required = fields.One2many('hr.assessment.result.config', 'leave_type', string=u'التقييمات المطلوبة')
+    evaluation_required = fields.Many2many('hr.evaluation.result.foctionality', string=u'التقييمات المطلوبة')
     percentages = fields.One2many('hr.holidays.status.salary.percentage', 'holiday_status', string=u'نسب الراتب المحتسبة')
     for_saudi = fields.Boolean(string=u'تنطبق على السعوديين', default=True)
     for_other = fields.Boolean(string=u'تنطبق على غير السعوديين', default=True)

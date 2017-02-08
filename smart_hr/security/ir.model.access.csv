@@ -209,3 +209,6 @@ access_hr_employee_situation_order_employee,access_hr_employee_situation_order_e
 
 access_hr_sanction_ligne_read,access_hr_sanction_ligne_read,model_hr_sanction_ligne,group_employee,1,0,0,0
 
+access_hr_employee_evaluation_level_read,access_hr_employee_evaluation_level_read,model_hr_employee_evaluation_level,group_employee,1,0,0,0
+
+
