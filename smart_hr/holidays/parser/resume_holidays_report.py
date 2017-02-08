@@ -18,7 +18,7 @@ class ResumeHoldaysReport(report_sxw.rml_parse):
         date_from = data['date_from']
         date_to = data['date_to']
         employee_id = data['employee_id'] and data['employee_id'][0] or False
-        domain = [('date_from', '<=', date_to), ('date_to', '>=', date_from)]
+        domain = [('date_from', '<=', date_to), ('date_to', '>=', date_from),('state', 'in',['done','cut'])]
         if employee_id:
             domain.append(('employee_id', '=', employee_id))
         holidays_obj = self.pool.get('hr.holidays')

@@ -14,7 +14,7 @@ class hrHolidaysCancellation(models.Model):
 
     name = fields.Char(string=u'رقم القرار', advanced_search=True)
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now())
-    employee_id = fields.Many2one('hr.employee',  string=u'الموظف', domain=[('employee_state','=','employee')], advanced_search=True)
+    employee_id = fields.Many2one('hr.employee',  string=u'الموظف', domain=[('employee_state','=','employee')], advanced_search=True, required=1)
     is_the_creator = fields.Boolean(string='Is Current User', compute='_employee_is_the_creator')
     
     holidays = fields.One2many('hr.holidays', 'holiday_cancellation', string=u'الإجازات')
@@ -127,13 +127,8 @@ class hrHolidaysCancellation(models.Model):
                         holiday.open_period.holiday_stock += holiday.duration
                         # Update the holiday state
                     holiday.write({'state': 'cancel'})
-                    type=''
-                    if holiday.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_illness').id:
-                        type = '68'
-                    else:
-                        type = '35'
-                    if type:
-                        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
+                    type = " إلغاء"+" " +holiday.holiday_status_id.name.encode('utf-8')
+                    self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
                     if holiday.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_study'):
                         study_followup = self.env['courses.followup'].search([('employee_id','=','holiday.employee_id.id'),
                                                                               ('state','=','progress'),
@@ -150,17 +145,23 @@ class hrHolidaysCancellation(models.Model):
                         if holiday_balance.holiday_status_id.id == holiday.holiday_status_id.id:
                             holiday_balance.holidays_available_stock += cuted_duration
                             holiday_balance.token_holidays_sum -= cuted_duration
+                            holiday.duration -= cuted_duration
                             break
+                        
                     if holiday.open_period:
                         holiday.open_period.holiday_stock += cuted_duration
+                    holiday.write({'state': 'cut'})
                     holiday.write({'state': 'cancel'})
+                    type = " قطع"+" " +holiday.holiday_status_id.name.encode('utf-8')
+                    self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
                     if holiday.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_study'):
                         study_followup = self.env['courses.followup'].search([('employee_id','=','holiday.employee_id.id'),
                                                                               ('state','=','progress'),
                                                                               ('holiday_id','=','holiday.id'),
                                                                               ])
                         if study_followup:
-                            study_followup.state='cut'     
+                            study_followup.state='cut'
+                    
             cancellation.state = 'done'
 
     @api.one

@@ -10,7 +10,6 @@
 
 							<!-- head -->
 
-							<div class="col-xs-12 head">
 								<div class="col-xs-12">
 									<div class="col-xs-9 info">
 										<div class="col-xs-6" style="">
@@ -22,7 +21,6 @@
 											<span t-esc="get_current_date()" />
 										</div>
 									</div>
-								</div>
 								<div class="col-xs-9 headerright">
 									<div class="col-xs-12">
 										<div class="col-xs-6">
@@ -48,7 +46,7 @@
 									</div>
 								</div>
 
-								<div class="col-xs-3 picture">
+								<div class="col-xs-3 picture" align="left">
 									<img t-attf-src="data:image/*;base64,{{o.employee.image}}" />
 								</div>
 								<div class="col-xs-12">

@@ -57,6 +57,15 @@ class CitySide(models.Model):
     _description = u'الجهة'
     
     name = fields.Char(advanced_search=True, string=u'المسمّى')
+    code = fields.Char(string='الرمز')
+    
+    @api.multi
+    def name_get(self):
+        result = []
+        for record in self:
+            name = '[%s] %s' % (record.code, record.name)
+            result.append((record.id, name))
+        return result
     
 class HrDepartmentType(models.Model):
     
@@ -65,6 +74,14 @@ class HrDepartmentType(models.Model):
     
     name = fields.Char(advanced_search=True, string=u'المسمّى')
     level = fields.Integer(string=u'العمق')
-
+    code = fields.Char(string='الرمز')
+    
+    @api.multi
+    def name_get(self):
+        result = []
+        for record in self:
+            name = '[%s] %s' % (record.code, record.name)
+            result.append((record.id, name))
+        return result
 
     

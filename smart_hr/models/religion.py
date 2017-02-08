@@ -11,3 +11,12 @@ class Religion(models.Model):
     _description = u'الديانات'
 
     name = fields.Char(string=u'الإسم', required=1)
+    code = fields.Char(string='الرمز')
+    
+    @api.multi
+    def name_get(self):
+        result = []
+        for record in self:
+            name = '[%s] %s' % (record.code, record.name)
+            result.append((record.id, name))
+        return result

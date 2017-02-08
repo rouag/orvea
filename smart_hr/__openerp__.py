@@ -70,6 +70,8 @@
         'hr/views/report.xml',
         'hr/data/hr_department_type_data.xml',
         'hr/view/hr_employee_transfert_view.xml',
+        'hr/view/hr_employee_desire_view.xml',
+        'hr/view/hr_setting.xml',
 
         'views/report_salary_grid.xml',
         'views/report_medical_examination.xml',
@@ -92,7 +94,6 @@
         'views/employee_situation_order_report.xml',
         'wizards/view/hr_refuse_wizard_view.xml',
         'wizards/view/hr_sanction_wizard_view.xml',
-        'wizards/view/hr_sanction_update_wizard_view.xml',
         
         
 

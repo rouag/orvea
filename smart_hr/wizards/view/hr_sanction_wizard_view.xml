@@ -7,20 +7,12 @@
 			<field name="model">wizard.sanction.action</field>
 			<field name="arch" type="xml">
 				<form>
-					<header>
-						<button name="action_draft" string=" ارسال طلب" type="object"
-							states="draft" groups="smart_hr.group_manager_sanction" />
-						<button name="action_waiting" string="موافق" type="object"
-							states="waiting" groups="smart_hr.group_responsable_sanction" />
-						<button name="action_refuse" string="رفض" type="object"
-							states="waiting" groups="smart_hr.group_responsable_sanction" />
-						<field name="state" widget="statusbar" statusbar_visible="draft,waiting,done,refuse" />
-					</header>
+					
 					<sheet>
 						<group>
 							<field name="name" />
 							<field name="order_date" />
-							<field name="employee_id" />
+						
 
 						</group>
 

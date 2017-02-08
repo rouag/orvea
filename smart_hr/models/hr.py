@@ -17,6 +17,11 @@ class HrEmployee(models.Model):
         for rec in self:
             rec.loan_count = self.env['hr.loan'].search_count([('employee_id', '=', rec.id)])
 
+    @api.multi
+    def _compute_holidays_count(self):
+        for rec in self:
+            rec.holiday_count = self.env['hr.holidays'].search_count([('employee_id', '=', rec.id)])
+            
     number = fields.Char(string=u'الرقم الوظيفي', required=1)
     identification_date = fields.Date(string=u'تاريخ إصدار بطاقة الهوية ')
     identification_place = fields.Many2one('res.city', string=u'مكان إصدار بطاقة الهوية')
@@ -76,7 +81,7 @@ class HrEmployee(models.Model):
     passport_place = fields.Char(string=u'مكان إصدار جواز السفر')
     passport_end_date = fields.Date(string=u'تاريخ انتهاء جواز السفر ')
     display_name = fields.Char(compute='_compute_display_name', string='display Name', select=True)
-    sanction_ids = fields.One2many('hr.employee.sanction', 'employee_id', string=u'العقوبات')
+    sanction_ids = fields.One2many('hr.sanction.ligne', 'employee_id', string=u'العقوبات')
     bank_account_ids = fields.One2many('res.partner.bank', 'employee_id', string=u'الحسابات البنكِيّة')
     education_level_ids = fields.One2many('hr.employee.job.education.level', 'employee_id', string=u'المستوى التعليمي')
     education_level_id = fields.Many2one('hr.employee.education.level', string=u'المستوى التعليمي ')
@@ -88,6 +93,8 @@ class HrEmployee(models.Model):
     point_functionality=fields.Integer(string=u'نقاط  الإداء الوظيفي',)
     is_member = fields.Boolean(string=u'عضو في الهيئة', default=False, required=1)
     insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين', readonly='1',compute='_compute_insurance_type')
+
+    holiday_count = fields.Integer(string=u'عدد الاجازات', compute='_compute_holidays_count')
     @api.one
     @api.depends('job_id')
     def _compute_insurance_type(self):
@@ -100,8 +107,8 @@ class HrEmployee(models.Model):
 
     @api.constrains('recruiter_date', 'begin_work_date')
     def recruiter_date_begin_work_date(self):
-        if self.recruiter_date > self.begin_work_date:
-            raise ValidationError(u"تاريخ بداية العمل الحكومي يجب ان يكون اكبر من تاريخ التعيين بالجهة ")
+        if self.recruiter_date < self.begin_work_date:
+            raise ValidationError(u"تاريخ بداية العمل الحكومي يجب ان يكون اصغر من تاريخ التعيين بالجهة ")
 
     @api.one
     @api.depends('name', 'father_middle_name', 'father_name', 'family_name')
@@ -312,16 +319,17 @@ class HrEmployeePromotionHistory(models.Model):
         self.ensure_one()
         promotion_date_from = fields.Date.from_string(self.date_from)
         promotion_date_to = fields.Date.from_string(self.date_to)
-        months = (promotion_date_to.year - promotion_date_from.year) * 12 + (promotion_date_to.month - promotion_date_from.month)
-        prom_month_first = promotion_date_to.replace(day=1)
-        if months < 1:
-            self.balance += (promotion_date_to - promotion_date_from).days
-        else:
-            self.balance += (promotion_date_to - prom_month_first).days
-        self.active_duration = False
-        uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', self.employee_id.id), ('action','=', 'absence'),
+        if promotion_date_from and promotion_date_to:
+            months = (promotion_date_to.year - promotion_date_from.year) * 12 + (promotion_date_to.month - promotion_date_from.month)
+            prom_month_first = promotion_date_to.replace(day=1)
+            if months < 1:
+                self.balance += (promotion_date_to - promotion_date_from).days
+            else:
+                self.balance += (promotion_date_to - prom_month_first).days
+            self.active_duration = False
+            uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', self.employee_id.id), ('action','=', 'absence'),
                                                                                     ('date', '>=', prom_month_first), ('date', '<=', promotion_date_to)])
-        self.balance -= uncounted_absence_days
+            self.balance -= uncounted_absence_days
 
 
 class HrEmployeeEducationLevel(models.Model):
@@ -352,7 +360,7 @@ class HrEmployeeEducationLevelEmployee(models.Model):
     _name = 'hr.employee.job.education.level'  
     _description = u'مستويات التعليم'
    
-    name=fields.Char(string='رقم ')
+    name=fields.Char(string='المستوى')
     employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف')
     level_education_id = fields.Many2one('hr.employee.education.level', string=u' مستوى التعليم')
     job_specialite = fields.Boolean(string=u'في طبيعة العمل', required=1)

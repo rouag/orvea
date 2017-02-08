@@ -96,7 +96,7 @@ class HrHolidays(models.Model):
     birth_certificate = fields.Binary(string=u'شهادة الميلاد')
     extension_period = fields.Integer(string=u'مدة التمديد', default=0)
     external_authoritie = fields.Many2one('external.authorities', string=u'الجهة الخارجية', compute="_set_external_autoritie")
-    entitlement_type = fields.Many2one('hr.holidays.entitlement.config', string=u'الصنف')
+    entitlement_type = fields.Many2one('hr.holidays.entitlement.config', string=u'خاصيّة الإجازة')
     death_person = fields.Char(string=u'المتوفي')
     medical_certification = fields.Binary(string=u'الشهادة الطبية')
     compensation_type = fields.Selection([
@@ -124,7 +124,7 @@ class HrHolidays(models.Model):
     sport_participation_topic = fields.Char(string=u'موضوع المشاركة')
     birth_certificate_child_birth_dad = fields.Binary(string=u'شهادة الميلاد')
     birth_certificate_file_name_file_name= fields.Char(string=u'شهادة الميلاد')
-    
+    speech_source = fields.Char(string=u'مصدر الخطابات')
     
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
@@ -329,31 +329,22 @@ class HrHolidays(models.Model):
 
 
 #             create history_line
-        type = ''
-        if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_illness').id:
-            type = '83'
-        elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id:
-            type = '02'
-        elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_sport').id:
-            type = '21'
-        elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional').id:
-            type = '43'
-        elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_normal').id:
-            type = '01'
-        elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_study').id:
-            type = '30'            
-        if type:
-            self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
+        type = " منح"+" " +self.holiday_status_id.name.encode('utf-8')
+        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
 
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_study'):
             self.env['courses.followup'].create({'employee_id':self.employee_id.id, 'state':'progress',
                                                  'holiday_id':self.id, 'name':self.study_subject,
                                                  })
-        
-        
+
         self.state = 'done'
-
-
+        self.env['base.notification'].create({'title': u'إشعار بقبول إجازة',
+                                              'message': u'لقد تم قبول الإجازة',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'notif': True,
+                                              'res_id': self.id,
+                                             'res_action': 'smart_hr.action_hr_holidays_form'})
     @api.model
     def update_normal_holidays_stock(self):
         right_entitlement = False
@@ -965,13 +956,13 @@ class HrHolidays(models.Model):
             raise ValidationError(u"هناك تداخل في تاريخ البدء مع عطلة نهاية الاسبوع  ")
         if fields.Date.from_string(self.date_to).weekday() in [4, 5]:
             raise ValidationError(u"هناك تداخل في تاريخ الإنتهاء مع عطلة نهاية الاسبوع")
-        for public_holiday in hr_public_holiday_obj.search([]):
+        for public_holiday in hr_public_holiday_obj.search([('state', '=', 'done')]):
             if not self.is_extension:
                 if public_holiday.date_from <= self.date_from <= public_holiday.date_to or \
                     public_holiday.date_from <= self.date_to <= public_holiday.date_to or \
                     self.date_from <= public_holiday.date_from <= self.date_to or \
                     self.date_from <= public_holiday.date_to <= self.date_to :
-                    raise ValidationError(u"هناك تداخل فى التواريخ مع اعياد و مناسبات رسمية")
+                    raise ValidationError(u"هناك تداخل فى التواريخ مع اعياد و عطل رسمية")
                 
             # خارج الدوام
         if self.holiday_status_id != self.env.ref('smart_hr.data_hr_holiday_status_compelling'):

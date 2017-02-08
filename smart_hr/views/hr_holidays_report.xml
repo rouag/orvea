@@ -400,28 +400,24 @@
 									<p style="font-size:22px;">إن رئيس هيئة التحقيق والإدعاء العام</p>
 									<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له,</p>
 									<p style="font-size:22px;">
-										وأشارة إلى خطابات مدير مكتب الرئاسة العامة لرعاية
-										الشباب
-										بمحافظة ........ رقم
+										واشارة إلى خطابات
+										<span t-field="o.speech_source" />
+										رقم
 										<span t-field="o.num_outspeech" />
 										بتاريخ
-										<span t-field="o.num_outspeech" />
+										<span t-field="o.date_outspeech" />
 										ورقم
 										<span t-field="o.num_inspeech" />
 
 										وتاريخ
-										<span t-field="o.num_inspeech" />
+										<span t-field="o.date_inspeech" />
 
 										بشان طلب
 										الموافقة على منح الموظف
 										<span t-field="o.employee_id.display_name" />
-										،
-
-										إجازة رياضية لمدة ،
+										إجازة رياضية لمدة
 										<span t-esc="o.duration" />
-										<br />
-										يوم ل
-
+										يوم للمشاركة في
 										<span t-field="o.sport_participation_topic" />
 
 									</p>
@@ -447,7 +443,8 @@
 								<div class="col-xs-5 pull-right" style="font-size:22px;">
 									<span>رئيس هيئة التحقيق والإدعاء العام</span>
 									<br></br>
-									<span t-field="o.employee_id.user_id.company_id.company_president.display_name" />
+									<span
+										t-field="o.employee_id.user_id.company_id.company_president.display_name" />
 
 								</div>
 							</div>

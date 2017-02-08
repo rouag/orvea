@@ -37,12 +37,8 @@ class hrHolidaysDecision(models.Model):
 
     @api.one
     def action_done(self):
-        type = ''
         for holiday in self.holidays:
-            if holiday.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_illness').id:
-                type = '37'
-            else:
-                type = '36'
+            type = " مباشرة بعد"+" " +holiday.holiday_status_id.name.name.encode('utf-8')
             self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
         self.state = 'done'
 

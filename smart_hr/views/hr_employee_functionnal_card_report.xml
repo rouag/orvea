@@ -36,6 +36,7 @@
 														<div class="col-xs-4">
 															السن:
 															<span t-field="o.emp_age" />
+															سنة
 														</div>
 
 														<div class="col-xs-4">
@@ -166,6 +167,18 @@
 										المسمى الوظيفي
 									</th>
 									<th>
+										المرتبة
+									</th>
+									<th>
+										الرقم الوظيفي
+									</th>
+									<th>
+										الجهة
+									</th>
+									<th>
+										الفرع
+									</th>
+									<th>
 										الاجرا ء
 									</th>
 									<th>
@@ -180,11 +193,25 @@
 								</tr>
 								<tr t-foreach="o.history_ids" t-as="line">
 									<td>
-										<span t-esc="line.job_id" />
+										<span t-esc="line.job_id.name.name" />
+									</td>
+									<td>
+										<span t-esc="grade_id" />
+									</td>
+									<td>
+										<span t-esc="number" />
+									</td>
+									<td>
+										<span t-esc="dep_Side" />
+
+									</td>
+									<td>
+										<span t-esc="department_id" />
 									</td>
 									<td>
 										<span t-esc="line.type" />
 									</td>
+
 									<td>
 										<span t-esc="line.date" />
 									</td>
@@ -207,7 +234,7 @@
 										الدورة
 									</th>
 									<th>
-										التاريخ 
+										التاريخ
 									</th>
 									<th>
 										المدة
@@ -215,7 +242,7 @@
 									<th>
 										المكان
 									</th>
-								
+
 								</tr>
 								<tr t-foreach="o.training_ids" t-as="line">
 									<td>
@@ -230,7 +257,7 @@
 									<td>
 										<span t-esc="line.place" />
 									</td>
-								
+
 								</tr>
 							</table>
 						</div>

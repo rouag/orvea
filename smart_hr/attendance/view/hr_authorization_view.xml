@@ -37,9 +37,6 @@
 						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
 					</header>
 					<sheet>
-						<h3>
-							<field name="name" />
-						</h3>
 						<group>
 							<group string="بيانات الموظف">
 								<field name="employee_id" />

@@ -10,11 +10,12 @@
 					<header>
 						<button name="action_waiting" string=" ارسال طلب" type="object"
 							states="new" />
-						<button name="action_refuse" string="رفض" type="object"
-							states="waiting" />
 						<button name="action_done" string="إعتماد" type="object"
 							states="waiting" />
-						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
+						<button name="action_refuse" string="رفض" type="object"
+							states="waiting" />
+
+						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done,cancel" />
 					</header>
 					<sheet>
 						<group>
@@ -68,7 +69,7 @@
 		</record>
 
 		<menuitem id="menu_hr_holidays_decision" parent="menu_hr_holiday_root"
-			name="قرار مباشرة" sequence="100" action="action_hr_holidays_decision"
+			name="قرار مباشرة" sequence="60" action="action_hr_holidays_decision"
 			groups="smart_hr.group_hrm" />
 
 

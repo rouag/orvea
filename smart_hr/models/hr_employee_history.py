@@ -12,7 +12,7 @@ class HrEmployeeHistory(models.Model):
     date = fields.Date(string=u'التاريخ')
     num_decision = fields.Char(string=u'رقم القرار')
     date_decision = fields.Date(string=u'تاريخ القرار')
-    type = fields.Selection([('01', u'منح إجازة عادية'),
+    operation_type = fields.Selection([('01', u'منح إجازة عادية'),
                              ('02', u'منح إجازة استثنائية بدون راتب'),
                              ('03', u'عودة بعد لإجازة'),
                              ('04', u'حسم غياب'),
@@ -108,12 +108,13 @@ class HrEmployeeHistory(models.Model):
     number = fields.Char(string='الرقم الوظيفي', required=1,)
     department_id = fields.Many2one('hr.department', string='الفرع')
     dep_Side = fields.Char(string=u'الجهة', related='employee_id.user_id.company_id.name')
-
+    type = fields.Char('الاجرا ء')
+    
     @api.multi
-    def add_action_line(self, employee_id, num_decision, date_decision, type):
+    def add_action_line(self, employee_id, num_decision, date_decision, operation_type):
         self.create({'employee_id': employee_id.id, 'date': fields.Datetime.now(),
                      'num_decision': num_decision, 'date_decision': date_decision,
-                     'type': type, 'job_id': employee_id.job_id.id,
+                     'type': operation_type, 'job_id': employee_id.job_id.id,
                      'grade_id': employee_id.job_id.grade_id.id,
                      'number': employee_id.job_id.number,
                      'department_id': employee_id.department_id.id,
