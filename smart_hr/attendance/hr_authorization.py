@@ -31,7 +31,7 @@ class HrAuthorization(models.Model):
     hour_to = fields.Float(string='إلى', required=1, readonly=1, states={'new': [('readonly', 0)]})
     hour_number = fields.Float(string='عدد الساعات', required=1, readonly=1)
     current_autorization_stock = fields.Float(string=u'الرصيد الحالي', compute='_compute_current_autorization_stock')
-    authorisation_ids = fields.One2many('hr.employee.authorization.history', 'autorisation_id', string=u'سجل الاستئذانات‬ ‫الشهرية‬')
+    authorisation_ids = fields.One2many('hr.employee.authorization.history', 'autorisation_id', string=u'سجل الاستئذانات‬ ‫الشهرية‬', readonly=1)
 
     @api.one
     @api.constrains('hour_from', 'hour_to')

@@ -63,23 +63,22 @@
 								<p style="font-size:22px;">
 									حرر في:
 									<span t-field="o.date" />
-								</p>
 								<br></br>
 								<br></br>
 								<br></br>
 
-								<p style="font-size:22px;" align='left'>
+								<p style="font-size:22px;" align='center'>
 
 									المشرف العام على ادارة الموارد
 									البشرية
 									<br></br>
 									<br></br>
 									<br></br>
-	</p>
-									<p style="font-size:22px;" align='center'>
-	
-									<span t-field="o.employee_id.user_id.name" />
-							</p>
+								</p>
+								</p>
+								<p style="font-size:22px;" align='left'>
+									<span t-esc="user.name" />
+								</p>
 							</div>
 						</div>
 					</t>
