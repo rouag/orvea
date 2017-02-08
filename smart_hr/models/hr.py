@@ -371,15 +371,7 @@ class HrEmployeeEvaluation(models.Model):
     date = fields.Date(string=u'التاريخ من', default=fields.Datetime.now())
     degree_id = fields.Many2one('hr.evaluation.result.foctionality', string=u' الدرجة')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف')
-    
-    @api.onchange('diploma_id')
-    def onchange_diploma_id(self):
-        res = {}
-        if self.diploma_id:
-            specialization_ids = self.diploma_id.specialization_ids.ids
-            res['domain'] = {'specialization_ids': [('id', 'in', specialization_ids)]}
-        return res
-    
+
 class HrEmployeeDiploma(models.Model):
     _name = 'hr.employee.diploma'  
     _description = u'الشهادة العلمية'
