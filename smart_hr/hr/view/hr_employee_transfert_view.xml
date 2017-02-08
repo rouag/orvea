@@ -21,16 +21,14 @@
 							icon="fa-times" class="oe_inline oe_stat_button" />
 
 						<button name="action_done" string="إعتماد" type="object"
-							groups="smart_hr.group_hr_personnel_officer_jobs" states="pm"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_notif" string="تنبيه صاحب الطلب" type="object"
 							groups="smart_hr.group_hr_personnel_officer_jobs"
 							attrs="{'invisible':['|', ('state', '!=', 'pm'), ('new_job_id', '=', False)]}"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_notif" string="تنبيه صاحب الطلب" type="object"
+							groups="smart_hr.group_hr_personnel_officer_jobs"
+							attrs="{'invisible':['|', ('state', '!=', 'pm'), ('new_job_id', '!=', False)]}"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<!--شؤون الموظفين -->
-
-						<button name="action_pm" string="إنتقاء وظيفة" type="object"
-							groups="smart_hr.group_hr_personnel_officer_jobs" states="pending" />
 
 
 						<field name="state" widget="statusbar"
@@ -56,20 +54,20 @@
 							<group string="قرار الجهة المختصة"
 								attrs="{'invisible':['|','|', ('state', 'not in', ['pm','done']), ('same_group', '=', False),('decision_number','=',False),('state','!=','pm')]}">
 								<field name="decision_number"
-									attrs="{'required':[('same_group', '=', True)],'readonly':[('state', '!=', 'pm')]}" />
+									attrs="{'required':[('same_group', '=', True),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm')]}" />
 								<field name="decision_date"
-									attrs="{'required':[('same_group', '=', True)],'readonly':[('state', '!=', 'pm')]}" />
+									attrs="{'required':[('same_group', '=', True),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm')]}" />
 								<field name="decision_file"
-									attrs="{'required':[('same_group', '=', True)],'readonly':[('state', '!=', 'pm')]}" />
+									attrs="{'required':[('same_group', '=', True),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm'),]}" />
 							</group>
 							<group string="موافقة الخدمة المدنية"
 								attrs="{'invisible':['|', '|', ('state', 'not in', ['pm','done']), ('same_group', '=', True), ('new_job_id', '=', False),('speech_number','=',False)]}">
 								<field name="speech_number"
-									attrs="{'required':[('same_group', '=', False),('state', '=', 'pm')],'readonly':[('state', '!=', 'pm')]}" />
+									attrs="{'required':[('same_group', '=', False),('state', '=', 'pm'),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm')]}" />
 								<field name="speech_date"
-									attrs="{'required':[('same_group', '=', False),('state', '=', 'pm') ],'readonly':[('state', '!=', 'pm')]}" />
+									attrs="{'required':[('same_group', '=', False),('state', '=', 'pm'),('new_job_id', '!=', False) ],'readonly':[('state', '!=', 'pm')]}" />
 								<field name="speech_file"
-									attrs="{'required':[('same_group', '=', False),('state', '=', 'pm')],'readonly':[('state', '!=', 'pm')]}" />
+									attrs="{'required':[('same_group', '=', False),('state', '=', 'pm'),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm')]}" />
 							</group>
 						</group>
 						<notebook>
@@ -98,7 +96,7 @@
 									<group>
 										<field name="date_direct_action" attrs="{'readonly':[('state', '!=', 'pm')]}" />
 										<field name="degree_id" options="{'no_create_edit': True}"
-											attrs="{'readonly':[('state', '!=', 'pm')],'required':[('state', '=', 'pm')]}" />
+											attrs="{'readonly':[('state', '!=', 'pm')],'required':[('state', '=', 'pm'),('new_job_id', '!=', False)]}" />
 									</group>
 								</group>
 							</page>
@@ -123,7 +121,6 @@
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
 				<tree string=" طلب نقل موظف">
-					<field name="sequence" />
 					<field name="employee_id" />
 					<field name="transfert_type" />
 					<field name="state" />
@@ -181,5 +178,57 @@
 		<menuitem action="action_hr_employee_transfert_periode" id="hr_menu_employee_transfert_periode"
 			parent="hr_root_organisation_configuration" name="فترات النقل"
 			sequence="3" />
+
+		<!-- ترتيب طلبات النقل -->
+
+		<record id="view_hr_transfert_sorting" model="ir.ui.view">
+			<field name="name">hr.transfert.sorting.form</field>
+			<field name="model">hr.transfert.sorting</field>
+			<field name="arch" type="xml">
+				<form string="ترتيب طلبات النقل" create='0' delete='0'
+					duplicate='0'>
+
+					<sheet>
+						<group string="ترتيب طلبات النقل">
+							<field name="name" invisible="1" />
+						</group>
+						<field name="hr_transfert_ids" string=" طلبات النقل">
+							<tree editable="bottom" create="false">
+
+								<field name="sequence" widget="handle" />
+								<field name="sequence" readonly="1" />
+								<field name="employee_id" readonly="1" />
+								<field name="job_id" readonly="1" />
+								<field name="new_job_id" />
+								<field name="occupied_date" />
+								<field name="create_date" />
+								<button name="action_notif" string="تنبيه صاحب الطلب بعدم توفر وظيفة مناسبة"
+									type="object" groups="smart_hr.group_hr_personnel_officer_jobs"
+									attrs="{'invisible':[('new_job_id', '!=', False)]}" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+								<button name="action_pick_job" attrs="{'invisible':[('new_job_id', '=', False)]}"
+									groups="smart_hr.group_hr_personnel_officer_jobs" context="{'rec_id': id, 'new_job_id':new_job_id}"
+									string="إنتقاء الوظيفة" type="object" />
+								<field name="state" invisible="1" />
+							</tree>
+						</field>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="ir_actions_button_hr_transfert_sorting" model="ir.actions.server">
+			<field name="sequence" eval="5" />
+			<field name="state">code</field>
+			<field name="type">ir.actions.server</field>
+			<field name="model_id" ref="model_hr_transfert_sorting" />
+			<field name="code">action=pool.get('hr.transfert.sorting').button_transfert_sorting(cr,uid,None,)
+			</field>
+			<field name="condition">True</field>
+			<field name="name">ترتيب طلبات النقل</field>
+		</record>
+
+		<menuitem name="ترتيب طلبات النقل" id="hr_transfert_sorting_menu"
+			parent="hr_root_employees" sequence="3"
+			action="ir_actions_button_hr_transfert_sorting" />
+
 	</data>
 </openerp>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data noupdate="1">
+
+		<!-- hr setting -->
+		<record id="data_hr_setting" model="hr.setting">
+			<field name="name">إعدادات عامة</field>
+		</record>
+		
+		<!-- hr setting -->
+		<record id="data_hr_transfert_sorting" model="hr.transfert.sorting">
+			<field name="name">‫ترتيب طلبات النقل مع الوظائف المناسبة</field>
+		</record>
+
+	</data>
+</openerp>
+		

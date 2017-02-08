@@ -69,6 +69,7 @@
         'hr/views/report_hr_contract.xml',
         'hr/views/report.xml',
         'hr/data/hr_department_type_data.xml',
+        'hr/data/hr_data.xml',
         'hr/view/hr_employee_transfert_view.xml',
         'hr/view/hr_employee_desire_view.xml',
         'hr/view/hr_setting.xml',
