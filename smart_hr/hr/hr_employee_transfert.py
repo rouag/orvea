@@ -14,6 +14,7 @@ class HrEmployeeTransfert(models.Model):
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
     sequence = fields.Integer(string=u'رتبة الطلب')
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1, readonly=1)
+    evaluation_result_last = fields.Many2one('hr.employee.evaluation.level')
     job_id = fields.Many2one('hr.job', related='employee_id.job_id', string=u'الوظيفة', readonly=1, required=1)
     specific_id = fields.Many2one('hr.groupe.job', related='job_id.specific_id', string=u'المجموعة النوعية', readonly=1, required=1)
     occupied_date = fields.Date(related='job_id.occupied_date', string=u'تاريخ الشغول')
@@ -56,6 +57,13 @@ class HrEmployeeTransfert(models.Model):
             self.same_group = self.specific_id == self.new_specific_id
         else:
             self.same_group = False
+
+    @api.onchange('employee_id')
+    def _onchange_employee_id(self):
+        # get last evaluation result
+        if self.employee_id:
+            previews_year = datetime.datetime.now() - datetime.timedelta(days=365)
+            print self.employee_id.evaluation_level_ids.search([('year', '=', int(previews_year))])
 
     @api.onchange('desire_ids')
     def _onchange_desire_ids(self):
