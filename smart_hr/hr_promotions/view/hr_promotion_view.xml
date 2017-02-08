@@ -9,30 +9,49 @@
             <field name="name">hr.promotion.form</field>
             <field name="model">hr.promotion</field>
             <field name="arch" type="xml">
-                <form string="محضر ترقية">
-                    <header> 
-                        <field name="state" widget="statusbar" statusbar_visible="draf,done,refuse,cancel"/> 
+                <form string="محضر ترقية ">
+                    
+					<header>
+						<button name="button_confirmed" string="تدقيق" type="object" states="draft" />
+						<button name="button_transfer_manager" string="موافقة و إرسال " type="object" states="confirmed" />
+						<button name="button_transfer_minister" string="موافقة و إرسال " type="object" states="manager" />
+						<button name="button_transfer_hrm" string="موافقة و إرسال " type="object" states="minister" />
+						<button name="button_done" string="موافقة " type="object" states="hrm" />
+						<button name="button_refused" string="رفض " type="object"   attrs="{'invisible': [('state', '=', 'draft'),('state', '=', 'done')]}" />
+						<button name="button_conceled" string="إلغاء " type="cancel"  attrs="{'invisible': [('state', '=', 'draft'),('state', '=', 'done')]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,manager,minister,hrm,done,refuse,cancel"/> 
                      </header> 
                     <sheet>
-                        <label for="name" class="oe_edit_only"/>
-                        <h1>
+                    <group>
                             <field name="name" readonly="1"/>
                             <field name="date" readonly="1"/>
-                        </h1>
+                        </group>
+                        
 	                       
 	                       <notebook>
 							<page string="قائمة الموظفين المؤهلين للترقية">
 	                       <field name="employee_promotion_line_ids">
-									<tree editable="buttom"  >
+									<tree editable="buttom" create = "0" delete="0" >
 										<field name="employee_id" readonly="1"/>
 										<field name="demande_promotion_id" readonly="1"/>
 										<field name="old_job_id" readonly="1"/>
 										<field name="old_number_job" readonly="1"/>
 										<field name="emp_department_old_id" readonly="1"/>
-										<field name="emp_grade_id_old" />
-										<field name="new_job_id" domain="[('state','=','unoccupied')]"/>
-										<field name="new_number_job" />
-										<field name="emp_grade_id_new" />
+										<field name="emp_grade_id_old" readonly="1" />
+										<field name="point_seniority" readonly="1"/>
+										<field name="point_education" readonly="1"/>
+										<field name="point_training" readonly="1"/>
+										<field name="point_functionality" readonly="1"/>
+										<field name="sum_point" readonly="1"/>
+										<field name="etape" invisible="1" />
+										<field name="new_job_id" domain="[('state','=','unoccupied')]" attrs="{'invisible': [('etape', '=', 'draft')]}"/>
+										<field name="new_number_job" attrs="{'invisible': [('etape', '=', 'draft')]}"/>
+										<field name="emp_grade_id_new"  attrs="{'invisible': [('etape', '=', 'draft')]}"/>
+										<field name="etape" readonly="1" />
+										<button name="job_reserved" string="حجز" type="object" attrs="{'invisible': [('etape', '!=', 'confirmed')]}" />
+										<button name="job_confirmed" string="موافقة" type="object" attrs="{'invisible': [('etape', '!=', 'reserved')]}" />
+										<button name="job_refused" string="رفض" type="object" attrs="{'invisible': [('etape', '!=', 'reserved')]}" />
+										
 									</tree>
 								</field>
 	                       </page>

@@ -41,7 +41,7 @@ class hr_evaluation_point_education(models.Model):
     name = fields.Char(string=u'المسمى',required=1)
     hr_evaluation_point_id = fields.Many2one('hr.evaluation.point', string='المرتبة',)
     nature_education = fields.Selection([('after_secondry', 'كل سنة دراسية بعد الثانوية'), ('before_secondry', 'كل سنة دراسية قبل الثانوية')], string='المؤهل',required=1 )
-    type_education = fields.Selection([('in_speciality_job', 'في طبيعة العمل'), ('bot_speciality_job', ' ليست في طبيعة العمل')], string='إختصاص الدراسة',required=1 )
+    type_education = fields.Selection([('in_speciality_job', 'في طبيعة العمل'), ('not_speciality_job', ' ليست في طبيعة العمل')], string='إختصاص الدراسة',required=1 )
     year_point = fields.Float(string=u"نقاط في السنة",required=1)
     
     
@@ -67,8 +67,9 @@ class hr_evaluation_point_functionality(models.Model):
     _name = 'hr.evaluation.point.functionality'
     _description = 'functionality Performance Points'
 
-    name = fields.Char(string=u'التقدير',required=1)
+   
     hr_evaluation_point_id = fields.Many2one('hr.evaluation.point', string='المرتبة',)
+    degree_id = fields.Many2one('hr.evaluation.result.foctionality', string='التقدير',)
     point = fields.Float(string=u"نقاط ",required=1)
     
 class hr_evaluationResultfoctionality(models.Model):

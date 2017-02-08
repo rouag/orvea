@@ -79,7 +79,7 @@
 							<page string="قواعد احتساب النقاط الإداء الوظيفي">
 								<field name="functionality_ids">
 								<tree editable="buttom">
-									<field name="name" />
+									<field name="degree_id" />
 									<field name="point" />
 								</tree>
 									

@@ -26,6 +26,9 @@ class HrTraining(models.Model):
     date_from = fields.Date(string='تاريخ من', required=1, states={'new': [('readonly', 0)]})
     date_to = fields.Date(string=' إلى', required=1, states={'new': [('readonly', 0)]})
     number_of_days = fields.Float(string=' المدة', required=1, states={'new': [('readonly', 0)]})
+    experience = fields.Selection([('experience_directe', 'الخبرات‬  المباشرة'),
+                              ('experience_in_directe', 'الخبرات الغير المباشرة'),
+                              ],  string=' نوع الخبرة المكتسبة',)
     department = fields.Char(string=' الجهة', required=1, states={'new': [('readonly', 0)]})
     place = fields.Char(string=' المكان', required=1, states={'new': [('readonly', 0)]})
     number_place = fields.Integer(string='عدد المقاعد', required=1, states={'new': [('readonly', 0)]})
@@ -114,6 +117,9 @@ class HrCandidates(models.Model):
                              ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
     number_of_days = fields.Float(string=' المدة',related='training_id.number_of_days' )
     place = fields.Char(string=' المكان',related='training_id.place' )
+    experience = fields.Selection([('experience_directe', 'الخبرات‬  المباشرة'),
+                              ('experience_in_directe', 'الخبرات الغير المباشرة'),
+                              ],  string=' نوع الخبرة المكتسبة',)
 
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
@@ -125,9 +131,10 @@ class HrCandidates(models.Model):
     @api.onchange('training_id')
     def _onchange_training_id(self):
         if self.training_id:
-            self.date_from = self.date_from
-            self.date_to = self.date_to
-            self.department = self.department
+            self.date_from = self.training_id.date_from
+            self.date_to = self.training_id.date_to
+            self.department = self.training_id.department
+            self.experience=self.training_id.experience
 
     @api.one
     def action_waiting(self):

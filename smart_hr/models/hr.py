@@ -80,7 +80,7 @@ class HrEmployee(models.Model):
     bank_account_ids = fields.One2many('res.partner.bank', 'employee_id', string=u'الحسابات البنكِيّة')
     education_level_ids = fields.One2many('hr.employee.job.education.level', 'employee_id', string=u'المستوى التعليمي')
     education_level_id = fields.Many2one('hr.employee.education.level', string=u'المستوى التعليمي ')
-    evaluation_level_id = fields.Many2one('hr.employee.evaluation.level', string=u'المستوى التعليمي ')
+    evaluation_level_ids = fields.One2many('hr.employee.evaluation.level','employee_id', u'التقييم الوظيفي')
     loan_count = fields.Integer(string=u'عدد القروض', compute='_compute_loans_count')
     point_seniority=fields.Integer(string=u'نقاط الأقدمية',)
     point_education=fields.Integer(string=u'نقاط التعليم',)
@@ -88,7 +88,6 @@ class HrEmployee(models.Model):
     point_functionality=fields.Integer(string=u'نقاط  الإداء الوظيفي',)
     is_member = fields.Boolean(string=u'عضو في الهيئة', default=False, required=1)
     insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين', readonly='1',compute='_compute_insurance_type')
-    
     @api.one
     @api.depends('job_id')
     def _compute_insurance_type(self):
@@ -363,6 +362,7 @@ class HrEmployeeEvaluation(models.Model):
     _description = u'التقييم الوظيفي'
     years = fields.Date(string=u'التاريخ من', default=fields.Datetime.now())
     degre_id = fields.Many2one('hr.evaluation.result.foctionality', string=u' الدرجة')
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف')
     
     @api.onchange('diploma_id')
     def onchange_diploma_id(self):

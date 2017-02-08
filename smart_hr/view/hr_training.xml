@@ -81,6 +81,7 @@
 								<field name="department" />
 								<field name="number_place" />
 								<field name="number_participant" />
+								<field name="experience" />
 							</group>
 						</group>
 						<group string="المترشحين" >

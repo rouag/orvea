@@ -19,15 +19,10 @@ class hr_promotion(models.Model):
     letter_date = fields.Date(string=u'تاريخ الخطاب')
     employee_promotion_line_ids = fields.One2many('hr.promotion.employee', 'promotion_id', string=' قائمة الموظفين',)
 
+ 
     state = fields.Selection([
                               ('draft', u'طلب'),
-                              ('done', u'مفعل'),
-                              ('refuse', u'رفض'),
-                              ('cancel', u'ملغاة'),
-                              ], string=u'حالة', default='draft', advanced_search=True)
-    etape = fields.Selection([
-                              ('draft', u'طلب'),
-                              ('employee_done', u'موافقة صاحب الترقية'),
+                              ('confirmed', u'مدقق'),
                               ('manager', u'صاحب صلاحية التعين'),
                               ('minister', u'وزارة الخدمة المدنية'),
                               ('hrm', u'شؤون الموظفين'),
@@ -44,7 +39,45 @@ class hr_promotion(models.Model):
         vals['name'] = self.env['ir.sequence'].get('hr.employee.promotion.seq')
         ret.write(vals)
         return ret
-   
+    
+    
+    @api.one
+    def button_confirmed(self):
+        for promo in self:
+            self.state='confirmed'
+            for promo in promo.employee_promotion_line_ids :
+                promo.etape='confirmed'
+    @api.one
+    def button_transfer_manager(self):
+        for promo in self:
+            self.state='manager'
+    
+    @api.one
+    def button_transfer_minister(self):
+        for promo in self:
+            self.state='minister'
+            
+    
+    @api.one
+    def button_transfer_hrm(self):
+        for promo in self:
+            self.state='hrm'
+    
+    @api.one
+    def button_done(self):
+        for promo in self:
+            self.state='done'
+    
+    @api.one
+    def button_refused(self):
+        for promo in self:
+            self.state='refuse'
+            
+    @api.one
+    def button_conceled(self):
+        for promo in self:
+            self.state='cancel'
+           
     @api.model
     def default_get(self,fields):
         res = super(hr_promotion, self).default_get(fields)
@@ -70,43 +103,96 @@ class hr_promotion(models.Model):
                                 if  days <  15  and  not sanction.type_sanction.code == "4" :
                                     employee_promotion.append(emp)
                         else:
-                            print 6666
                             employee_promotion.append(emp)
                             
         for emp_promotion in employee_promotion :
-            regle_point=self.env['hr.evaluation.point'].search([('grade_id','=',self.job_id.grade_id)])
+            print emp_promotion
+            regle_point=self.env['hr.evaluation.point'].search([('grade_id','=',emp_promotion.job_id.grade_id.id)])
             demande_promotion_id=self.env['hr.promotion.employee.demande'].search([('employee_id','=',emp_promotion.id)])
-            years_point=0
+            point_seniority=0
             education_point=0
-            years_supp=(emp_promotion.service_duration/365)-self.job_id.grade_id.years_job
+            trining_point=0
+            point_functionality=0
+            years_supp=(emp_promotion.service_duration/365)-emp_promotion.job_id.grade_id.years_job
             if years_supp > 0 :
                 
                 for year in   xrange(1, years_supp):
                     for seniority in regle_point.seniority_ids :
                         if  (year >= seniority.year_from )and (year <= seniority.year_to) :
-                            years_point= years_point + (year*seniority.point)
-            education_level_job= emp.job_id.serie_id.hr_classment_job_ids[0].education_level_id.nomber_year_education
+                            point_seniority= point_seniority + (seniority.point)
+            print "111",emp_promotion.job_id.serie_id
+            print "2222" ,emp_promotion.job_id.name
+            print "2222" ,emp_promotion.job_id.id
+            education_level_job= emp_promotion.job_id.serie_id.hr_classment_job_ids[0].education_level_id.nomber_year_education
             for education_level_emp in emp_promotion.education_level_ids:
                 if education_level_emp.nomber_year_education - education_level_job >0:
                     if education_level_emp.job_specialite:
                         if education_level_emp.level_education_id.secondary:
                             for education in regle_point.education_ids :
-                                if education.nature_education=='after_secondry':
-                                    print'1'
-                            
- 
-        
+                                if education.nature_education=='after_secondry' and   education.type_education=="in_speciality_job":
+                                    education_point = education_point + (education.year_point* (education_level_emp.nomber_year_education - education_level_job))
+                        else:   
+                            for education in regle_point.education_ids :
+                                if education.nature_education=='before_secondry' and   education.type_education=="in_speciality_job":
+                                    education_point = education_point + (education.year_point* (education_level_emp.nomber_year_education - education_level_job))  
+                           
+                    else:
+                        if education_level_emp.level_education_id.secondary:
+                            for education in regle_point.education_ids :
+                                if education.nature_education=='after_secondry' and   education.type_education=="not_speciality_job":
+                                    education_point = education_point + (education.year_point* (education_level_emp.nomber_year_education - education_level_job))
+                                        
+                        else:   
+                            for education in regle_point.education_ids :
+                                if education.nature_education=='before_secondry' and   education.type_education=="not_speciality_job":
+                                    education_point = education_point + (education.year_point* (education_level_emp.nomber_year_education - education_level_job))  
             
+            
+            for evaluation in emp_promotion.evaluation_level_ids:
+                point_functionality=0
+            trainings=self.env['hr.candidates'].search([('employee_id','=',emp_promotion.id),('state','=','done')])
+            for training in trainings:
+                if training.number_of_days>12 and training.experience=='experience_directe':
+                    for trainig in regle_point.training_ids :
+                        if trainig.type_training=='direct_experience':
+                            trining_point=trining_point + trainig.point
+                elif training.number_of_days>12 and training.experience=='experience_in_directe':
+                    for trainig in regle_point.training_ids :
+                        if trainig.type_training=='indirect_experience':
+                            trining_point=trining_point + trainig.point
+                
               
+            list_job=[]
+            grade_id_employee=emp_promotion.job_id.grade_id.code
+            try:
+                grade_id_employee = int(grade_id_employee)
+            except ValueError: 
+                print 'error'
+            print 'grade_id_employee',grade_id_employee
+            for job in self.env['hr.job'].search([('state','=','unoccupied')]):
+                if int(job.grade_id.code) == (grade_id_employee+1):
+                    print int(job.grade_id.code)
+                    list_job.append(job.id)
+            print 'list',list_job
             id_emp= self.env['hr.promotion.employee'].create({'employee_id': emp_promotion.id,
                                                            'old_job_id': emp_promotion.job_id.id,
                                                            'old_number_job': emp_promotion.job_id.number ,
                                                            'emp_department_old_id':emp_promotion.department_id.id,
                                                            'emp_grade_id_old':emp_promotion.job_id.grade_id.id,
                                                            'promotion_id':demande_promotion_id[0].id if demande_promotion_id else False,
+                                                           'point_seniority':point_seniority,
+                                                           'point_education':education_point,
+                                                           'point_training':trining_point,
+                                                           'point_functionality':point_functionality,
+                                                           'sum_point':education_point+trining_point+point_seniority+point_functionality,
+                                                           'etape': 'draft',
+                                                           
                                                            }) 
             employee_promotion_job.append(id_emp.id)
         res['employee_promotion_line_ids'] = [(6, 0, employee_promotion_job)]
+        res.update(domain={
+        'new_job_id': ['id', 'in',list_job ]
+    })
         return res
     
     
@@ -136,32 +222,60 @@ class hr_promotion_ligne(models.Model):
     promotion_id = fields.Many2one('hr.promotion', string=u'الترقية ')
     demande_promotion_id = fields.Many2one('hr.promotion.employee.demande', string=u'طلب الترقية  ')
     old_job_id = fields.Many2one('hr.job', string=u'الوظيفة الحالية')
-    new_job_id = fields.Many2one('hr.job', string=u'الوظيفة المرقى عليها')
+    new_job_id = fields.Many2one('hr.job', string=u'الوظيفة المرقى عليها',)
     old_number_job = fields.Char(string='رقم الوظيفة', store=True, readonly=1) 
     new_number_job = fields.Char(string='رقم الوظيفة', store=True, readonly=1) 
     emp_department_old_id = fields.Many2one('hr.department', string='الادارة', store=True, readonly=1)
     emp_grade_id_old = fields.Many2one('salary.grid.grade', string='المرتبةالحالية ', store=True, readonly=1)
-    emp_grade_id_new = fields.Many2one('salary.grid.grade', string='المرتبة الجديدة', store=True, readonly=1)
-    point_seniority=fields.Integer(string=u'نقاط الأقدمية',related='employee_id.point_seniority')
-    point_education=fields.Integer(string=u'نقاط التعليم',related='employee_id.point_education')
-    point_training=fields.Integer(string=u'نقاط التدريب',related='employee_id.point_training')
-    point_functionality=fields.Integer(string=u'نقاط  الإداء الوظيفي',related='employee_id.point_functionality')
-    @api.multi
-    def _get_default_sum(self):
-        sum_point=self.point_seniority+self.point_education+self.point_training+self.point_functionality
-        return sum_point
-    sum_point=fields.Integer(string=u'المجموع', default=_get_default_sum,)
+    emp_grade_id_new = fields.Many2one('salary.grid.grade', string='المرتبة الجديدة', store=True, readonly=1,domain=[('state','=','unoccupied'),])
+    point_seniority=fields.Integer(string=u'نقاط الأقدمية',)
+    point_education=fields.Integer(string=u'نقاط التعليم',)
+    point_training=fields.Integer(string=u'نقاط التدريب',)
+    point_functionality=fields.Integer(string=u'نقاط  الإداء الوظيفي',)
+    sum_point=fields.Integer(string=u'المجموع',)
+    etape = fields.Selection([
+                              ('draft', u'طلب'),
+                              ('confirmed', u'مدقق'),
+                              ('reserved', u'محجوزة'),
+                              ('done', u'اعتمدت'),
+                              ('refuse', u'رفض'),
+                              ('cancel', u'ملغاة'),
+                              ], string=u'حالة', default='draft', advanced_search=True)
+    state = fields.Selection([
+                              ('draft', u'طلب'),
+                              ('confirmed', u'مدقق'),
+                              ('reserved', u'محجوزة'),
+                              ('done', u'اعتمدت'),
+                              ('refuse', u'رفض'),
+                              ('cancel', u'ملغاة'),
+                              ], string=u'حالة', default='draft', advanced_search=True)
     
-   
-
-
+    
     @api.onchange('new_job_id')
     def onchange_job_id(self):
         if self.new_job_id:
             self.emp_grade_id_new = self.new_job_id.grade_id.id
             self.new_number_job = self.new_job_id.number
+            
+    @api.multi
+    def job_reserved(self):
+        if self.new_job_id:
+            self.new_job_id.state='reserved'
+            self.etape="reserved"
     
-
+    @api.multi
+    def job_confirmed(self):
+        if self.new_job_id:
+            self.new_job_id.state='occupied'
+            self.etape="done"
+           
+            
+    @api.multi
+    def job_refused(self):
+        if self.new_job_id:
+            self.new_job_id.state='unoccupied'
+            self.etape="refuse"
+            
 
 class hr_promotion_demande(models.Model):
     _name = 'hr.promotion.employee.demande'
