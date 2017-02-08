@@ -368,8 +368,8 @@ class HrEmployeeEducationLevelEmployee(models.Model):
 class HrEmployeeEvaluation(models.Model):
     _name = 'hr.employee.evaluation.level'  
     _description = u'التقييم الوظيفي'
-    years = fields.Date(string=u'التاريخ من', default=fields.Datetime.now())
-    degre_id = fields.Many2one('hr.evaluation.result.foctionality', string=u' الدرجة')
+    date = fields.Date(string=u'التاريخ من', default=fields.Datetime.now())
+    degree_id = fields.Many2one('hr.evaluation.result.foctionality', string=u' الدرجة')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف')
     
     @api.onchange('diploma_id')
