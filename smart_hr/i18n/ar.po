@@ -311,3 +311,8 @@ msgstr "نقاط  لهذا الاختيار"
 msgid "Quiz mode"
 msgstr "وضع الاختبار"
 
+#. module: smart_hr
+#: selection:hr.holidays,state:0
+msgid "done"
+msgstr "اعتمدت"
+

@@ -38,7 +38,7 @@ class hrHolidaysDecision(models.Model):
     @api.one
     def action_done(self):
         for holiday in self.holidays:
-            type = " مباشرة بعد"+" " +holiday.holiday_status_id.name.name.encode('utf-8')
+            type = " مباشرة بعد"+" " +holiday.holiday_status_id.name.encode('utf-8')
             self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
         self.state = 'done'
 

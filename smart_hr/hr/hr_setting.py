@@ -19,9 +19,6 @@ class HrSetting(models.Model):
     @api.multi
     def button_setting(self):
         hr_setting = self.env['hr.setting'].search([], limit=1)
-        if not hr_setting:
-            # if there is no setting record, than create onoe
-            hr_setting = self.env['hr.setting'].sudo().create({'name': u'إعدادات عامة'})
         if hr_setting:
             value = {
                 'name': u'إعدادات عامة',
