@@ -148,26 +148,31 @@ class HrHolidays(models.Model):
                     current_stock = entitlement_line.holiday_stock_default
                 else:
                     current_stock = str("لا تحتاج رصيد")
+            if current_stock == 0:
+                if entitlement_line and not entitlement_line.periode and entitlement_line.holiday_stock_default == 0:
+                    current_stock = str("لا تحتاج رصيد")
 
         elif not self.entitlement_type and self.holiday_status_id.id != self.env.ref('smart_hr.data_hr_holiday_compensation').id:
             not_all_entitlement_line = self.env['hr.holidays.status.entitlement'].search_count([('leave_type', '=', self.holiday_status_id.id),
                 ('entitlment_category.id', '!=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)
                 ])
             if not_all_entitlement_line == 0:
-                    entitlement_line = self.env['hr.holidays.status.entitlement'].search([('leave_type', '=', self.holiday_status_id.id),
-                                                               ('entitlment_category.id', '=',self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)])
-
-                    if entitlement_line and  entitlement_line.periode == 100:
-                        stock_line =  self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
+                entitlement_line = self.env['hr.holidays.status.entitlement'].search([('leave_type', '=', self.holiday_status_id.id),
+                                                               ('entitlment_category.id', '=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)])
+                if entitlement_line and entitlement_line.periode == 100:
+                    stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
                                                                ('holiday_status_id', '=', self.holiday_status_id.id),('entitlement_id.entitlment_category.id', '=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)
                                                                 ])
-                        if stock_line:
-                            current_stock = stock_line.holidays_available_stock
+                    if stock_line:
+                        current_stock = stock_line.holidays_available_stock
+                    else:
+                        if entitlement_line.holiday_stock_default==0:
+                            current_stock = str("لا تحتاج رصيد")
                         else:
-                            if entitlement_line.holiday_stock_default==0:
-                                current_stock = str("لا تحتاج رصيد")
-                            else:
-                                current_stock = entitlement_line.holiday_stock_default
+                            current_stock = entitlement_line.holiday_stock_default
+                if current_stock == 0:
+                    if entitlement_line and not entitlement_line.periode and entitlement_line.holiday_stock_default == 0:
+                        current_stock = str("لا تحتاج رصيد")
         if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_compensation').id:
             current_stock = self.employee_id.compensation_stock
         self.current_holiday_stock = current_stock
@@ -192,6 +197,7 @@ class HrHolidays(models.Model):
             res['domain'] = {'entitlement_type': [('code', '=', 'accompaniment_exceptional')]}
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_sport'):
             res['domain'] = {'entitlement_type': [('code', '=', 'sport')]}
+        self.entitlement_type = False
         return res
 
     @api.multi
@@ -1018,7 +1024,12 @@ class HrHolidays(models.Model):
         # Constraintes for studyinglevel
         if self.holiday_status_id.educ_lvl_req:
             # check education level
-            if self.employee_id.education_level not in self.holiday_status_id.education_levels:
+            level_fount = False
+            for educ_level in self.employee_id.education_level_ids:
+                if educ_level.level_education_id.id in self.holiday_status_id.education_levels.ids:
+                    level_fount=True
+                    break
+            if not level_fount:
                 raise ValidationError(u"لم تتحصل على المستوى الدراسي المطلوب.")
             
         # Constraintes for service years required

@@ -336,7 +336,7 @@ class HrEmployeeEducationLevel(models.Model):
     _name = 'hr.employee.education.level'  
     _description = u'مستويات التعليم'
 
-    name=fields.Char(string='رقم ')
+    name=fields.Char(string='المستوى ')
     sequence = fields.Char(string=u'الرتبة')
     leave_type = fields.Many2one('hr.holidays.status', string='leave type')
     code = fields.Char(string=u'الرمز')
