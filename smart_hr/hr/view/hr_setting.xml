@@ -21,6 +21,7 @@
 								<field name="lend_number" />
 								<field name="periode_between_lend" />
 								<field name="max_lend_duration_sum" />
+								<field name="extend_lend_duration" />
 							</group>
 						</group>
 					</sheet>

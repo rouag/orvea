@@ -8,22 +8,31 @@
 			<field name="arch" type="xml">
 				<form string="طلب إعارة موظف">
 					<header>
+						<button name="action_done" string="إعتماد " type="object"
+							groups="smart_hr.group_hr_personnel_officer_lends" states="new"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="button_extend" string="تمديد الإعارة" type="object"
+							groups="smart_hr.group_hr_personnel_officer_lends" states="done"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_sectioned" string="قطع الإعارة" type="object"
+							groups="smart_hr.group_cut_lend_employee" states="done"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-
-						<field name="state" widget="statusbar"
-							statusbar_visible="new,waiting,pm,commission_president,done,refused,cancelled" />
+						<field name="state" widget="statusbar" statusbar_visible="new,done,sectioned" />
 					</header>
 					<sheet>
 						<group>
 							<field name="create_date" />
 						</group>
+						<group col="6">
+							<field name="date_from" required="1" />
+							<field name="duration" />
+							<field name="date_to" />
+						</group>
 						<group>
 							<group>
 								<field name="employee_id" />
 								<field name="insurance_entity" options='{"no_open": True, "no_create": True}' />
-								<field name="date_from" required="1" />
-								<field name="duration" />
-								<field name="date_to" />
 							</group>
 							<group>
 								<field name="decision_number" />
@@ -31,17 +40,6 @@
 								<field name="decision_file" />
 							</group>
 						</group>
-						<notebook>
-							<page>
-								<br></br>
-								<group>
-									<group>
-									</group>
-									<group>
-									</group>
-								</group>
-							</page>
-						</notebook>
 					</sheet>
 				</form>
 			</field>
@@ -71,7 +69,28 @@
 		<menuitem action="action_hr_employee_lend" id="hr_menu_employee_lend"
 			parent="hr_root_employees" name="طلبات الإعارة" sequence="18" />
 
+		<!-- تمديد إعارة -->
+		<record model="ir.ui.view" id="hr_employee_lend_extend_form">
+			<field name="name">hr.employee.lend.extend.form</field>
+			<field name="model">hr.employee.lend.extend</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="تمديد إعارة">
+					<sheet>
+						<group>
+							<field name="old_date_to" />
+							<field name="new_date_to" />
+						</group>
+					</sheet>
+					<footer>
+						<button name="action_confirm" string="موافق" type="object" />
+						أو
 
+						<button string="إلغاء" class="oe_link" special="cancel" />
+					</footer>
+				</form>
+			</field>
+		</record>
 
 	</data>
 </openerp>

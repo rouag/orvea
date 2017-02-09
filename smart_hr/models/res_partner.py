@@ -15,6 +15,7 @@ class ResPartner(models.Model):
          ('insurance', u'تابعة للتأمين'),
          ('company', u'شركة')])
     is_hospital = fields.Boolean(string='is hospital')
+    inter_reg_org = fields.Boolean(string=u'منظمة دولية أو اقليمية', default=False)
     hospital_director = fields.Char(string=u'مدير المستشفى')
 
     @api.multi

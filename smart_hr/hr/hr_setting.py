@@ -22,6 +22,7 @@ class HrSetting(models.Model):
     max_lend_duration_sum = fields.Integer(string=u'الحد الأقصى لمجموع الاعارات (بالسنة)', default=365)
     lend_number = fields.Integer(string=u'عدد مرات التمديد', default=3)
     periode_between_lend = fields.Integer(string=u'المدة بين إعارتين (بالسنة)', default=3)
+    extend_lend_duration = fields.Integer(string=u'مدة تمديد الإعارة (باليوم)', default=365)
 
     @api.multi
     def button_setting(self):

@@ -38,11 +38,12 @@ class HrJob(models.Model):
     update_date = fields.Date(string=u'تاريخ التحوير')
     type_resevation = fields.Selection([('promotion', u'للترقية')], string=u'نوع الحجز')
 
+    @api.multi
     @api.depends('occupation_date_to')
     def _compute_is_occupated(self):
-
-        if self.occupation_date_to < datetime.today().strftime('%Y-%m-%d') and self.state == 'reserved':
-            self.action_job_unreserve()
+        for rec in self:
+            if rec.occupation_date_to < datetime.today().strftime('%Y-%m-%d') and rec.state == 'reserved':
+                rec.action_job_unreserve()
 
     @api.multi
     def action_job_unreserve(self):

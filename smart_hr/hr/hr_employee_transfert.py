@@ -98,24 +98,14 @@ class HrEmployeeTransfert(models.Model):
                 if days < hr_config.needed_days:
                     raise ValidationError(u"لا يمكن تقديم طلب إلى بعد " + str(hr_config.needed_days) + u" يوماً.")
         # ‫التجربة‬ ‫سنة‬ ‫إستلكمال‬
-        recruitement_decision = self.employee_id.decision_appoint_ids.search([('is_started', '=', True)], limit=1)
+        recruitement_decision = self.employee_id.decision_appoint_ids.search([('is_started', '=', True), ('state_appoint', '=', 'active')], limit=1)
         if recruitement_decision and recruitement_decision.depend_on_test_periode:
             testing_date_to = recruitement_decision.testing_date_to
             if fields.Date.from_string(testing_date_to) >= fields.Date.from_string(fields.Datetime.now()):
                 raise ValidationError(u"لايمكن طلب نقل خلال فترة التجربة")
         # ‫التترقية‬ ‫سنة‬ ‫إستلكمال‬
-        if self.employee_id.promotions_history:
-            # get last promotion
-            last_promotion_ids = self.employee_id.promotions_history.search([('date_to', '!=', False)])
-            if last_promotion_ids:
-                promotion_id = last_promotion_ids[0]
-                for rec in last_promotion_ids:
-                    if fields.Date.from_string(promotion_id.date_to) < fields.Date.from_string(rec.date_to):
-                        promotion_id = rec
-                date_to = promotion_id.date_to
-                diff = relativedelta(fields.Date.from_string(fields.Datetime.now()), fields.Date.from_string(date_to)).years
-                if diff < 1:
-                    raise ValidationError(u"لايمكن طلب نقل خلال أقل من سنة منذ أخر ترقية")
+        if self.employee_id.promotion_duration < 1:
+                        raise ValidationError(u"لايمكن طلب نقل خلال أقل من سنة منذ أخر ترقية")
         # check desire_ids length from config
         if hr_config:
             if len(self.desire_ids) > hr_config.desire_number:
