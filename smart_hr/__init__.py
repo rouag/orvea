@@ -11,3 +11,4 @@ from . import models
 from . import setting
 from . import hr_appraisal
 from . import hr_promotions
+from . import sanction

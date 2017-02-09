@@ -12,8 +12,8 @@
 						<group>
 							<field name="name" />
 							<field name="order_date" />
-						
-
+							<field name="days_number" />
+							<field name="amount" />
 						</group>
 
 						<group>
@@ -30,7 +30,7 @@
 			</field>
 		</record>
 
-		<record id="action_wizard_sanction_action" model="ir.actions.act_window">
+		<record id="action_wizard_sanction_action_exclusion" model="ir.actions.act_window">
 			<field name="name">إستبعاد موظف</field>
 			<field name="res_model">wizard.sanction.action</field>
 			<field name="view_type">form</field>
@@ -39,5 +39,23 @@
 			<field name="target">new</field>
 		</record>
 
+		<record id="action_wizard_sanction_action_update" model="ir.actions.act_window">
+			<field name="name">تعديل موظف</field>
+			<field name="res_model">wizard.sanction.action</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="view_wizard_sanction_action" />
+			<field name="target">new</field>
+		</record>
+
+		<record id="action_wizard_sanction_action_update_all" model="ir.actions.act_window">
+			<field name="name">تعديل عقوبة</field>
+			<field name="res_model">wizard.sanction.action</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="view_wizard_sanction_action" />
+			<field name="target">new</field>
+		</record>
+				
 	</data>
 </openerp>

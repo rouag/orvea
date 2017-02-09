@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<!-- طلب إعارة موظف -->
+		<record id="view_hr_employee_lend_form" model="ir.ui.view">
+			<field name="name">hr.employee.lend.form</field>
+			<field name="model">hr.employee.lend</field>
+			<field name="arch" type="xml">
+				<form string="طلب إعارة موظف">
+					<header>
+
+
+						<field name="state" widget="statusbar"
+							statusbar_visible="new,waiting,pm,commission_president,done,refused,cancelled" />
+					</header>
+					<sheet>
+						<group>
+							<field name="create_date" />
+						</group>
+						<group>
+							<group>
+								<field name="employee_id" />
+								<field name="insurance_entity" options='{"no_open": True, "no_create": True}' />
+								<field name="date_from" required="1" />
+								<field name="duration" />
+								<field name="date_to" />
+							</group>
+							<group>
+								<field name="decision_number" />
+								<field name="decision_date" />
+								<field name="decision_file" />
+							</group>
+						</group>
+						<notebook>
+							<page>
+								<br></br>
+								<group>
+									<group>
+									</group>
+									<group>
+									</group>
+								</group>
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_hr_employee_lend_tree" model="ir.ui.view">
+			<field name="name">hr.employee.lend.tree</field>
+			<field name="model">hr.employee.lend</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string=" طلب نقل موظف">
+					<field name="employee_id" />
+					<field name="insurance_entity" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="action_hr_employee_lend" model="ir.actions.act_window">
+			<field name="name">طلب إعارة موظف</field>
+			<field name="res_model">hr.employee.lend</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+
+		<menuitem action="action_hr_employee_lend" id="hr_menu_employee_lend"
+			parent="hr_root_employees" name="طلبات الإعارة" sequence="18" />
+
+
+
+	</data>
+</openerp>

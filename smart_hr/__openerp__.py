@@ -27,8 +27,6 @@
         'data/hr_termination_data.xml',
         'data/decisions_type_data.xml',
         'data/hr_appoint_type_data.xml',
-        'data/hr_sanction_type_data.xml',
-
         # الوظائف
         'job/menu.xml',
         'job/security/job_security.xml',
@@ -73,6 +71,7 @@
         'hr/view/hr_employee_transfert_view.xml',
         'hr/view/hr_employee_desire_view.xml',
         'hr/view/hr_setting.xml',
+        'hr/view/hr_employee_lend_view.xml',
 
         'views/report_salary_grid.xml',
         'views/report_medical_examination.xml',
@@ -94,10 +93,6 @@
         'report/hr_termination_report.xml',
         'views/employee_situation_order_report.xml',
         'wizards/view/hr_refuse_wizard_view.xml',
-        'wizards/view/hr_sanction_wizard_view.xml',
-        
-        
-
        
 
         'view/hr_decision_appoint.xml',
@@ -126,11 +121,16 @@
         'view/religion.xml',
         'view/courses_follow_up.xml',
         'view/hr_direct_appoint_view.xml',
-        'view/hr_sanction_view.xml',
-        'view/hr_difference_sanction_view.xml',
         'view/hr_employee_functional_card.xml',
         'view/res_users.xml',
         'view/employee_situation_order.xml',
+        # sanction
+        'sanction/security/ir.model.access.csv',
+        'sanction/security/sanction_security.xml',
+        'sanction/wizard/wizard_sanction_action.xml',
+        'sanction/hr_sanction_type_data.xml',
+        'sanction/hr_sanction_view.xml',
+
         # القرارات
         'view/hr_decision.xml',
         # الرواتب
