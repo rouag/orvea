@@ -26,6 +26,7 @@ class hrSanction(models.Model):
     file_sanction = fields.Binary(string='صورة الخطاب ')
     
     # update sanction
+    difference_ids = fields.One2many('hr.sanction.ligne', 'sanction_id', string=u'العقوبات', readonly=1, states={'draft': [('readonly', 0)]})
     line_ids = fields.One2many('hr.sanction.ligne', 'sanction_id', string=u'العقوبات', readonly=1, states={'draft': [('readonly', 0)]})
     history_ids = fields.One2many('hr.sanction.history', 'sanction_id', string='سجل التغييرات', readonly=1)
     state = fields.Selection([('draft', '  طلب'),
