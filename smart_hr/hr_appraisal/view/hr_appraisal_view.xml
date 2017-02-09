@@ -15,22 +15,55 @@
 
 
 				<field name="manager_appraisal" position="before">
-					<field name="parent_emplyee" attrs="{'readonly':[('state', '!=', 'new')]}"/>
-                     <field name="parent_emplyee_id" nolabel="1" placeholder="Select Appraisal Reviewer..."  attrs="{'invisible':[('parent_emplyee','=',False)], 'readonly':[('state', '!=', 'new')]}" readonly="0"/>
-                       <field name="parent_emplyee_survey_id" nolabel="1" placeholder="Appraisal Form..." attrs="{'invisible':[('parent_emplyee','=',False)], 'readonly':[('state', '!=', 'new')]}"/>
+					<field name="parent_emplyee" attrs="{'readonly':[('state', '!=', 'new')]}" />
+					<field name="parent_emplyee_id" nolabel="1"
+						placeholder="Select Appraisal Reviewer..."
+						attrs="{'invisible':[('parent_emplyee','=',False)], 'readonly':[('state', '!=', 'new')]}"
+						readonly="0" />
+					<field name="parent_emplyee_survey_id" nolabel="1"
+						placeholder="Appraisal Form..."
+						attrs="{'invisible':[('parent_emplyee','=',False)], 'readonly':[('state', '!=', 'new')]}" />
 				</field>
-				<!-- <xpath expr="//page[@name='Plan']/group" position="after"> -->
 
-
-
-				<!-- <field name="parent_emplyee" attrs="{'readonly':[('state', '!=', 
-					'new')]}" /> -->
-				<!-- </xpath> -->
 			</field>
 
 
 		</record>
 
+
+		<record model="ir.ui.view" id="survey_form_inherite">
+			<field name="name">survey.survey.inherite</field>
+			<field name="model">survey.survey</field>
+			<field name="inherit_id" ref="survey.survey_form" />
+			<field name="arch" type="xml">
+
+
+
+				<button name="action_test_survey" position="attributes">
+					<attribute name='invisible'>1</attribute>
+				</button>
+
+			</field>
+		</record>
+
+
+
+		<record model="ir.ui.view" id="survey_response_line_tree_inherite">
+			<field name="name">survey_response_line_tree_inherite</field>
+			<field name="model">survey.user_input_line</field>
+			<field name="inherit_id" ref="survey.survey_response_line_tree" />
+			<field name="arch" type="xml">
+
+				<xpath expr="/tree/field[@name='quizz_mark']" position="after">
+					<field name="quizz_mark" />
+				</xpath>
+					
+
+
+
+
+			</field>
+		</record>
 
 	</data>
 </openerp>

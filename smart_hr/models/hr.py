@@ -366,7 +366,8 @@ class HrEmployeeEducationLevelEmployee(models.Model):
     job_specialite = fields.Boolean(string=u'في طبيعة العمل', required=1)
 
 class HrEmployeeEvaluation(models.Model):
-    _name = 'hr.employee.evaluation.level'  
+    _name = 'hr.employee.evaluation.level' 
+    _rec_name = 'degree_id' 
     _description = u'التقييم الوظيفي'
     year = fields.Integer(string=u'سنة التقييم', default=int(date.today().year))
     degree_id = fields.Many2one('hr.evaluation.result.foctionality', string=u' الدرجة')

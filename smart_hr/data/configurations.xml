@@ -12,16 +12,34 @@
 		</record>
 
 		<!-- إعدادات نتائج تقييم موظف -->
-		<record id="assessment_good" model="hr.assessment.result.config">
+		<record id="assessment_very_excelent" model="hr.evaluation.result.foctionality">
+			<field name="name">ممتاز</field>
+			<field name="point_from">90</field>
+			<field name="point_to">100</field>
+		</record>
+		
+		<record id="assessment_very_good" model="hr.evaluation.result.foctionality">
+			<field name="name">جيد جداً</field>
+			<field name="point_from">75</field>
+			<field name="point_to">90</field>
+		</record>
+		
+		<record id="assessment_good" model="hr.evaluation.result.foctionality" >
 			<field name="name">جيد</field>
+			<field name="point_from">60</field>
+			<field name="point_to">75</field>
 		</record>
 
-		<record id="assessment_medium" model="hr.assessment.result.config">
+		<record id="assessment_medium" model="hr.evaluation.result.foctionality" >
 			<field name="name">متوسط</field>
+			<field name="point_from">40</field>
+			<field name="point_to">60</field>
 		</record>
 
-		<record id="assessment_bad" model="hr.assessment.result.config">
+		<record id="assessment_bad" model="hr.evaluation.result.foctionality">
 			<field name="name">سيئ</field>
+			<field name="point_from">0</field>
+			<field name="point_to">40</field>
 		</record>
 
 		<!-- إعدادات مستويات التعليم -->
