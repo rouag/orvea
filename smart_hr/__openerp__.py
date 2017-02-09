@@ -71,6 +71,7 @@
         'hr/view/hr_employee_transfert_view.xml',
         'hr/view/hr_employee_desire_view.xml',
         'hr/view/hr_setting.xml',
+        'hr/view/hr_employee_lend_view.xml',
 
         'views/report_salary_grid.xml',
         'views/report_medical_examination.xml',
