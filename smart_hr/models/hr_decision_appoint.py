@@ -264,7 +264,6 @@ class HrDecisionAppoint(models.Model):
         elif self.type_appointment.personnel_hr and self.type_appointment.ministry_civil and self.option_contract == True :
             self.state = 'direct'
         elif self.type_appointment.personnel_hr and self.type_appointment.direct_manager:
-            print"dddddddddddd"
             self.state = 'direct'   
         elif self.type_appointment.personnel_hr :
              self.action_done()
@@ -328,7 +327,6 @@ class HrDecisionAppoint(models.Model):
         appoints= self.env['hr.decision.appoint'].search([('state','=','done'),('is_started','=',True),('testing_date_to','=', today_date)])
         for line in appoints :
             title= u"' إشعار نهاية مدة التجربة'"
-            print"title",title
             msg= u"' إشعار نهاية مدة التجربة'"  + unicode(line.employee_id.name) + u"'"
             group_id = self.env.ref('smart_hr.group_department_employee')
             self.send_test_periode_group(group_id,title,msg)
@@ -353,51 +351,50 @@ class HrDecisionAppoint(models.Model):
     @api.model
     def control_prensence_employee(self):
         today_date = fields.Date.from_string(fields.Date.today())
-        print"today_date",type(today_date)
         appoints= self.env['hr.decision.appoint'].search([('state_appoint','=','active'),('state','=','done'),('is_started','=',False), ('type_appointment.id', '!=',self.env.ref('smart_hr.data_hr_recrute_contrat').id)])
-        print"appoints",appoints
         appoints_contract= self.env['hr.decision.appoint'].search([('state_appoint','=','active'),('state','=','done'),('is_started','=',False),('type_appointment.id', '=',self.env.ref('smart_hr.data_hr_recrute_contrat').id)])
-       
         for appoint in appoints :
             prev_days_end = fields.Date.from_string(appoint.date_direct_action) + relativedelta(days=15)
-            print"prev_days_end",type(prev_days_end)
             sign_days = self.env['hr.attendance'].search_count([('employee_id', '=', appoint.employee_id.id), ('name','<=',str(prev_days_end))])
-                                                                          
-            today_date=str(today_date) 
-            prev_days_end=str(prev_days_end)
-            print"sign_days",sign_days
+            today_date = str(today_date) 
+            prev_days_end = str(prev_days_end)
             if sign_days != 0 or (today_date < prev_days_end) :
-                directs= self.env['hr.direct.appoint'].search([('employee_id','=',appoint.employee_id.id),('state','=','waiting')])
+                directs= self.env['hr.direct.appoint'].search([('employee_id','=',appoint.employee_id.id),('state','=','waiting')],limit=1)
                 print"directs",directs
                 if directs:
-                     group_id = self.env.ref('smart_hr.group_personnel_hr')
-                     self.send_notification_to_group(group_id)
+                    for rec in  directs:
+                        rec.write({'state_direct':'confirm' })
+                        group_id = self.env.ref('smart_hr.group_personnel_hr')
+                        self.send_notification_to_group(group_id)
                 
             if sign_days == 0 or (today_date > prev_days_end) :
-                directs= self.env['hr.direct.appoint'].search([('employee_id','=',appoint.employee_id.id),('state','=','waiting')])
+                directs= self.env['hr.direct.appoint'].search([('employee_id','=',appoint.employee_id.id),('state','=','waiting')],limit=1)
                 if directs :
-                    group_id = self.env.ref('smart_hr.group_personnel_hr')
-                    self.send_notification_refuse_to_group(group_id)
+                    for rec in  directs:
+                        rec.write({'state_direct':'cancel' })
+                        group_id = self.env.ref('smart_hr.group_personnel_hr')
+                        self.send_notification_refuse_to_group(group_id)
                     
         for contrat in appoints_contract :
-            prev_days_contract_end = fields.Date.from_string(appoint.date_direct_action) + relativedelta(days=30)
-            print"prev_days_end",type(prev_days_contract_end)
-            sign_days = self.env['hr.attendance'].search_count([('employee_id', '=', appoint.employee_id.id), ('name','<=',str(prev_days_contract_end))])
-            today_date=str(today_date) 
-            prev_days_end=str(prev_days_end)
-            print"sign_days",sign_days
+            prev_days_contract_end = fields.Date.from_string(contrat.date_direct_action) + relativedelta(days=30)
+            sign_days = self.env['hr.attendance'].search_count([('employee_id', '=', contrat.employee_id.id), ('name','<=',str(prev_days_contract_end))])
+            today_date = str(today_date) 
+            prev_days_contract_end = str(prev_days_contract_end)
             if sign_days != 0 or (today_date < prev_days_contract_end) :
-                direct_ids= self.env['hr.direct.appoint'].search([('employee_id','=',appoint.employee_id.id),('state','=','waiting')])
-                print"directs",directs
+                direct_ids= self.env['hr.direct.appoint'].search([('employee_id','=',contrat.employee_id.id),('state','=','waiting')],limit=1)
                 if direct_ids:
-                     group_id = self.env.ref('smart_hr.group_personnel_hr')
-                     self.send_notification_to_group(group_id)
+                    for rec in  direct_ids:
+                        rec.write({'state_direct':'confirm' })
+                        group_id = self.env.ref('smart_hr.group_personnel_hr')
+                        self.send_notification_to_group(group_id)
                 
             if sign_days == 0 or (today_date > prev_days_contract_end) :
-                direct_ids= self.env['hr.direct.appoint'].search([('employee_id','=',appoint.employee_id.id),('state','=','waiting')])
+                direct_ids= self.env['hr.direct.appoint'].search([('employee_id','=',contrat.employee_id.id),('state','=','waiting')],limit=1)
                 if direct_ids :
-                    group_id = self.env.ref('smart_hr.group_personnel_hr')
-                    self.send_notification_refuse_to_group(group_id)
+                    for rec in  direct_ids:
+                        rec.write({'state_direct':'cancel' })
+                        group_id = self.env.ref('smart_hr.group_personnel_hr')
+                        self.send_notification_refuse_to_group(group_id)
 
     @api.multi
     def button_refuse_direct(self):
@@ -417,15 +414,12 @@ class HrDecisionAppoint(models.Model):
         if self.date_medical_examination:
             self.employee_id.write({'medical_exam': self.date_medical_examination})
         self.job_id.write({'state': 'occupied', 'employee': self.employee_id.id, 'occupied_date': fields.Datetime.now()})
-        
         self.state = 'done'
         # close last active appoint for the employee
         last_appoint = self.employee_id.decision_appoint_ids.search([('state_appoint', '=', 'active')], limit=1)
         if last_appoint:
             last_appoint.write({'state_appoint': 'close', 'date_hiring_end': fields.Datetime.now()})
-
          #send notification to hr personnel
-        
         self.state_appoint ='active'
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت إحداث تعين جديد '" + unicode(user.name) + u"'")
@@ -500,8 +494,7 @@ class HrDecisionAppoint(models.Model):
 
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
-        if self.employee_id.age > 60 :
-            raise ValidationError(u"الرجاء التثبت من سن المترشح تجاوز 60)")
+       
         self.number = self.employee_id.number
         self.country_id = self.employee_id.country_id
         appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id), ('state', '=', 'done')], limit=1)
@@ -571,7 +564,12 @@ class HrDecisionAppoint(models.Model):
             if self.date_hiring > self.date_hiring_end:
                   raise ValidationError(u"تاريخ إنتهاء التعيين يجب ان يكون أكبر من تاريخ التعيين")  
 
-
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'draft'  :
+                raise UserError(_(u'لا يمكن حذف قرار  التعين  إلا في حالة طلب !'))
+        return super(HrDecisionAppoint, self).unlink()
 
 class HrTypeAppoint(models.Model):
     _name = 'hr.type.appoint'  

@@ -69,6 +69,7 @@ class hrDirectAppoint(models.Model):
         self.ensure_one() 
         
         appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('state','=','done'),('is_started','=',False),('state_appoint','=','active')], limit=1)
+        print"cancel",appoint_line
         for line in  appoint_line :
             line.write({'is_started': False ,'state_appoint' : 'refuse'})
             title= u"' إشعار بعدم مباشرة التعين'"
@@ -77,11 +78,13 @@ class hrDirectAppoint(models.Model):
             self.send_appoint_group(group_id,title,msg)
         self.state = 'cancel'
         self.state_direct = 'done'  
+        
     @api.multi
     def button_direct_appoint(self):
         self.ensure_one()
         #TODO   
         appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('state','=','done'),('is_started','=',False),('state_appoint','=','active')], limit=1)
+        print"direct",appoint_line
         for line in  appoint_line :
             line.write({'is_started': True ,'state_appoint' : 'active'})
             title= u"' إشعار بمباشرة التعين'"
@@ -120,5 +123,10 @@ class hrDirectAppoint(models.Model):
                                                   'res_action': 'smart_hr.action_hr_direct_appoint',
                                                   'notif': True
                                                   })
-        
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'new'  :
+                raise UserError(_(u'لا يمكن حذف قرار مباشرة التعين  إلا في حالة طلب !'))
+        return super(hrDirectAppoint, self).unlink()
    
