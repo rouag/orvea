@@ -41,8 +41,8 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 
-		<menuitem id="menu_external_autorities_conf" parent="menu_hr_holidays_status_root"
-			name="الجهات الخارجية‬" sequence="100" action="action_external_autorities"/>
+		<menuitem id="menu_external_autorities_conf" parent="hr_configuration_general_root"
+			name="الجهات الخارجية‬" sequence="40" action="action_external_autorities"/>
 
 
 

@@ -45,7 +45,7 @@
 					</header>
 					<sheet>
 						<field name="same_group" invisible="1" />
-						<field name="comm_president_accept" invisible="0" />
+						<field name="comm_president_accept" invisible="1" />
 						<group>
 							<field name="create_date" />
 						</group>
@@ -149,7 +149,7 @@
 		</record>
 
 		<menuitem action="action_hr_employee_transfert" id="hr_menu_employee_transfert"
-			parent="hr_root_employees" name="طلبات النقل" sequence="2" />
+			parent="hr_root_employees" name="طلبات النقل" sequence="15" />
 
 		<!-- فترات النقل -->
 		<record id="view_hr_employee_transfert_periode_form" model="ir.ui.view">
@@ -189,7 +189,7 @@
 
 		<menuitem action="action_hr_employee_transfert_periode" id="hr_menu_employee_transfert_periode"
 			parent="hr_root_organisation_configuration" name="فترات النقل"
-			sequence="3" />
+			sequence="17" />
 
 		<!-- ترتيب طلبات النقل -->
 
@@ -242,7 +242,7 @@
 		</record>
 
 		<menuitem name="ترتيب طلبات النقل" id="hr_transfert_sorting_menu"
-			parent="hr_root_employees" sequence="3"
+			parent="hr_root_employees" sequence="16"
 			action="ir_actions_button_hr_transfert_sorting" />
 
 	</data>

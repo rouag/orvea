@@ -34,6 +34,13 @@ class HrPublicHoliday(models.Model):
             if nholidays:
                 raise ValidationError(u"هناك تداخل في التواريخ مع عيد/عطلة سابقة")
 
+    @api.one
+    @api.constrains('date_from', 'date_to')
+    def check_dates_periode(self):
+
+        if self.date_from > self.date_to:
+            raise ValidationError(u"تاريخ من يجب ان يكون أصغر من تاريخ الى")
+
     def _onchange_date_from(self):
         date_from = self.date_from
         date_to = self.date_to
