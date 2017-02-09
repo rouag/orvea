@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<!-- طلب تكليف موظف -->
+		<record id="view_hr_employee_commissioning_form" model="ir.ui.view">
+			<field name="name">hr.employee.commissioning.form</field>
+			<field name="model">hr.employee.commissioning</field>
+			<field name="arch" type="xml">
+				<form string="طلب تكليف موظف">
+					<header>
+						<button name="action_pm" string="إرسال" type="object"
+							groups="smart_hr.group_hr_commissioning_requests" states="new"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_done" string="إعتماد" type="object"
+							groups="smart_hr.group_hr_personnel_officer_commissioning"
+							states="pm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_new" string="تعديل" type="object"
+							groups="smart_hr.group_hr_personnel_officer_commissioning"
+							states="pm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_refused" string="رفض" type="object"
+							groups="smart_hr.group_hr_personnel_officer_commissioning"
+							states="pm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<field name="state" widget="statusbar" statusbar_visible="new,pm,done,refused" />
+					</header>
+					<sheet>
+						<group>
+							<field name="create_date" />
+						</group>
+						<group>
+							<field name="demand_owner_id" />
+						</group>
+						<group col="6">
+							<field name="date_from" required="1" />
+							<field name="duration" />
+							<field name="date_to" />
+						</group>
+						<group>
+							<group>
+								<field name="employee_id" options='{"no_open": True, "no_create": True}' />
+								<field name="governmental_entity" options='{"no_open": True, "no_create": True}'
+									attrs="{'invisible':[('comm_type', '!=', %(data_hr_commissioning_type_02)d)]}" />
+							</group>
+							<group>
+								<field name="comm_type" options='{"no_open": True, "no_create": True}' />
+							</group>
+						</group>
+						<field name="task_ids">
+							<tree editable="bottom">
+								<field name="name" required="1" />
+								<field name="date_from" required="1" />
+								<field name="duration" required="1" />
+								<field name="date_to" />
+								<field name="governmental_entity" />
+								<field name="description" />
+							</tree>
+						</field>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_hr_employee_commissioning_tree" model="ir.ui.view">
+			<field name="name">hr.employee.commissioning.tree</field>
+			<field name="model">hr.employee.commissioning</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string=" طلب تكليف موظف">
+					<field name="employee_id" />
+					<field name="comm_type" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="action_hr_employee_commissioning" model="ir.actions.act_window">
+			<field name="name">طلب تكليف موظف</field>
+			<field name="res_model">hr.employee.commissioning</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+
+		<menuitem action="action_hr_employee_commissioning" id="hr_menu_employee_commissioning"
+			parent="hr_root_employees" name="طلبات التكليف" sequence="20" />
+
+
+	</data>
+</openerp>
