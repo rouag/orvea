@@ -408,7 +408,7 @@
 									<field name="education_levels"
 										attrs="{'invisible':[('educ_lvl_req', '=', False)]}" widget="many2many" />
 									<field name="evaluation_condition" />
-									<field name="assessments_required"
+									<field name="evaluation_required"
 										attrs="{'invisible':[('evaluation_condition', '=', False)]}"
 										widget="many2many" />
 									<field name="extension_number" />

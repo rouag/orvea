@@ -28,8 +28,14 @@ class hr_termination(models.Model):
     job_id = fields.Many2one(string=u'الوظيفة', related='employee_id.job_id')
     join_date = fields.Date(string=u'تاريخ الالتحاق بالجهة', related='employee_id.join_date')
     age = fields.Integer(string=u'السن', related='employee_id.age')
+    country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
     # Termination Info
     termination_type_id = fields.Many2one('hr.termination.type', string=u'نوع الطى', required=1)
+    
+    nb_salaire = fields.Float(related='termination_type_id.nb_salaire', store=True, readonly=True, string=u'عدد الرواتب المستحق')
+    all_holidays = fields.Boolean(related='termination_type_id.all_holidays', store=True, readonly=True,string=u'كل الإجازة')
+    max_days = fields.Float(related='termination_type_id.max_days', store=True, readonly=True, string=u'الحد الاقصى لأيام الإجازة')
+    
     reason = fields.Char(string=u'السبب')
     letter_source = fields.Char(string=u'جهة الخطاب', required=1)
     letter_no = fields.Char(string=u'رقم الخطاب',  required=1)
@@ -42,15 +48,17 @@ class hr_termination(models.Model):
         ('done', u'اعتمدت'),
         ('refuse', u'رفض'),
     ], string=u'الحالة', default='draft', advanced_search=True)
-
-#     @api.model
-#     def create(self, vals):
-#         ret = super(hr_termination, self).create(vals)
-#         # Sequence
-#         vals = {}
-#         vals['name'] = self.env['ir.sequence'].get('hr.term.seq')
-#         ret.write(vals)
-#         return ret
+  
+   
+    @api.onchange('termination_type_id')
+    def _onchange_termination_type_id(self):
+        
+        if self.employee_id.country_id != self.env.ref('base.sa'):
+                for rec in self.termination_type_id: 
+                    rec.nb_salaire = 0 
+                    rec.all_holidays = 0
+                    rec.max_days = 0
+                    rec.nationality = True  
 
     @api.multi
     def unlink(self):
@@ -112,6 +120,8 @@ class hr_termination_type(models.Model):
     nb_salaire = fields.Float(string=u'عدد الرواتب المستحق')
     all_holidays = fields.Boolean(string=u'كل الإجازة')
     max_days = fields.Float(string=u'الحد الاقصى لأيام الإجازة')
+    nationality = fields.Boolean(string=u'غير سعودي')
+    contract = fields.Boolean(string=u'متعاقد')
     
   
     

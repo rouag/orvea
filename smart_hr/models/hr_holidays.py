@@ -148,26 +148,31 @@ class HrHolidays(models.Model):
                     current_stock = entitlement_line.holiday_stock_default
                 else:
                     current_stock = str("لا تحتاج رصيد")
+            if current_stock == 0:
+                if entitlement_line and not entitlement_line.periode and entitlement_line.holiday_stock_default == 0:
+                    current_stock = str("لا تحتاج رصيد")
 
         elif not self.entitlement_type and self.holiday_status_id.id != self.env.ref('smart_hr.data_hr_holiday_compensation').id:
             not_all_entitlement_line = self.env['hr.holidays.status.entitlement'].search_count([('leave_type', '=', self.holiday_status_id.id),
                 ('entitlment_category.id', '!=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)
                 ])
             if not_all_entitlement_line == 0:
-                    entitlement_line = self.env['hr.holidays.status.entitlement'].search([('leave_type', '=', self.holiday_status_id.id),
-                                                               ('entitlment_category.id', '=',self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)])
-
-                    if entitlement_line and  entitlement_line.periode == 100:
-                        stock_line =  self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
+                entitlement_line = self.env['hr.holidays.status.entitlement'].search([('leave_type', '=', self.holiday_status_id.id),
+                                                               ('entitlment_category.id', '=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)])
+                if entitlement_line and entitlement_line.periode == 100:
+                    stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
                                                                ('holiday_status_id', '=', self.holiday_status_id.id),('entitlement_id.entitlment_category.id', '=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)
                                                                 ])
-                        if stock_line:
-                            current_stock = stock_line.holidays_available_stock
+                    if stock_line:
+                        current_stock = stock_line.holidays_available_stock
+                    else:
+                        if entitlement_line.holiday_stock_default==0:
+                            current_stock = str("لا تحتاج رصيد")
                         else:
-                            if entitlement_line.holiday_stock_default==0:
-                                current_stock = str("لا تحتاج رصيد")
-                            else:
-                                current_stock = entitlement_line.holiday_stock_default
+                            current_stock = entitlement_line.holiday_stock_default
+                if current_stock == 0:
+                    if entitlement_line and not entitlement_line.periode and entitlement_line.holiday_stock_default == 0:
+                        current_stock = str("لا تحتاج رصيد")
         if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_compensation').id:
             current_stock = self.employee_id.compensation_stock
         self.current_holiday_stock = current_stock
@@ -192,6 +197,7 @@ class HrHolidays(models.Model):
             res['domain'] = {'entitlement_type': [('code', '=', 'accompaniment_exceptional')]}
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_sport'):
             res['domain'] = {'entitlement_type': [('code', '=', 'sport')]}
+        self.entitlement_type = False
         return res
 
     @api.multi
@@ -1018,7 +1024,12 @@ class HrHolidays(models.Model):
         # Constraintes for studyinglevel
         if self.holiday_status_id.educ_lvl_req:
             # check education level
-            if self.employee_id.education_level not in self.holiday_status_id.education_levels:
+            level_fount = False
+            for educ_level in self.employee_id.education_level_ids:
+                if educ_level.level_education_id.id in self.holiday_status_id.education_levels.ids:
+                    level_fount=True
+                    break
+            if not level_fount:
                 raise ValidationError(u"لم تتحصل على المستوى الدراسي المطلوب.")
             
         # Constraintes for service years required
@@ -1026,15 +1037,16 @@ class HrHolidays(models.Model):
             # check education level
                 raise ValidationError(u" ليس لديك"+ str(self.holiday_status_id.service_years_required)+u"سنوات خدمة  ")
             
-         # Constraintes for assessments_required
-#         if self.holiday_status_id.assessments_required:
-#             employee_assessment_ids=self.env['hr.assessment.probation'].search[(('employee_id', '=', self.employee_id.id))].ids
-#             if employee_assessment_ids:
-#                 last_id = max(employee_assessment_ids)
-#                 performance_report = self.env['hr.assessment.probation'].browse(last_id).performance_report
-#                 if performance_report not in self.holiday_status_id.assesments_required.name:
-#                     raise ValidationError(u"لم تتحصل على تقويم‬ أدائ وظيفي‬ المطلوب.")
-
+         # Constraintes for evaluation_required
+        if self.holiday_status_id.evaluation_condition:
+            employee_evaluation_id = self.env['hr.employee.evaluation.level'].search([('employee_id', '=', self.employee_id.id),('year', '=',date_from.year-1)], limit=1)
+            if employee_evaluation_id:
+                if employee_evaluation_id.degree_id.id not in self.holiday_status_id.evaluation_required.ids:
+                    raise ValidationError(u"لم تتحصل على تقييم أدائ وظيفي‬ المطلوب.")
+            else:
+                raise ValidationError(u"لا يوجد تقييم وظيفي خاص بالموظف للسنة الفارطة")
+            
+            
         holiday_status_normal_stock = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id), ('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id)]).holidays_available_stock
 
         # Constraintes for maximum_days_by_year
@@ -1252,10 +1264,10 @@ class HrHolidaysStatus(models.Model):
     salary_spending = fields.Boolean(string=u'يجوز صرف راتبها')
     employees_director_decision = fields.Boolean(string=u'موافقة مدير شؤون الموظفين', default=True)
     can_be_cancelled = fields.Boolean(string=u'يمكن الغاؤها', default=True)
-    evaluation_condition = fields.Boolean(string=u'يطبق شرط تقويم الأداء')
+    evaluation_condition = fields.Boolean(string=u'يطبق شرط تقييم الأداء')
     education_levels = fields.One2many('hr.employee.education.level', 'leave_type', string=u'المستويات التعليمية')
     entitlements = fields.One2many('hr.holidays.status.entitlement', 'leave_type', string=u'أنواع الاستحقاقات')
-    assessments_required = fields.One2many('hr.assessment.result.config', 'leave_type', string=u'التقييمات المطلوبة')
+    evaluation_required = fields.Many2many('hr.evaluation.result.foctionality', string=u'التقييمات المطلوبة')
     percentages = fields.One2many('hr.holidays.status.salary.percentage', 'holiday_status', string=u'نسب الراتب المحتسبة')
     for_saudi = fields.Boolean(string=u'تنطبق على السعوديين', default=True)
     for_other = fields.Boolean(string=u'تنطبق على غير السعوديين', default=True)

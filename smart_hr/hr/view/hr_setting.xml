@@ -15,6 +15,14 @@
 								<field name="desire_number" />
 								<field name="needed_days" />
 							</group>
+							<group string="إعدادات الإعارة">
+								<field name="lend_duration" />
+								<field name="one_max_lend_duration" />
+								<field name="lend_number" />
+								<field name="periode_between_lend" />
+								<field name="max_lend_duration_sum" />
+								<field name="extend_lend_duration" />
+							</group>
 						</group>
 					</sheet>
 				</form>
@@ -32,7 +40,7 @@
 			<field name="name">إعدادات عامة</field>
 		</record>
 
-		<menuitem name="إعدادات عامة" id="hr_setting_menu"
+		<menuitem name="النقل، الإعارة والتكليف" id="hr_setting_menu"
 			parent="hr_root_organisation_configuration" sequence="1"
 			action="ir_actions_button_hr_setting" />
 	</data>

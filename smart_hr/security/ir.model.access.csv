@@ -164,14 +164,7 @@ access_hr_type_sanction_manager,hr_type_sanction,model_hr_type_sanction,group_ma
 access_hr_type_sanction_responsable,hr_type_sanction,model_hr_type_sanction,group_responsable_sanction,1,1,1,0
 access_hr_type_sanction_party,hr_type_sanction,model_hr_type_sanction,group_third_party_sanction,1,1,1,1
 access_hr_type_sanction_employee,hr_type_sanction,model_hr_type_sanction,group_employee,0,0,0,0
-
 ,,,,,,,
-,,,,,,,
-access_hr_difference_sanction_manager,hr_difference_sanction,model_hr_difference_sanction,group_manager_sanction,1,1,1,1
-access_hr_difference_sanction_responsable,hr_difference_sanction,model_hr_difference_sanction,group_responsable_sanction,1,1,1,0
-access_hr_difference_sanction_party,hr_difference_sanction,model_hr_difference_sanction,group_third_party_sanction,1,1,1,1
-access_hr_difference_sanction_employee,hr_difference_sanction,model_hr_difference_sanction,group_employee,0,0,0,0
-,,,,,,,,,,,,,,,,
 access_hr_direct_appoint,hr_direct_appoint,model_hr_direct_appoint,group_personnel_hr,1,1,1,1
 access_hr_direct_appoint1,hr_direct_appoint,model_hr_direct_appoint,group_department_employee,1,1,1,1
 ,,,,,,,,,,,,,,,,,,,
@@ -206,5 +199,9 @@ access_hr_employee_job_education_level_read,access_hr_employee_job_education_lev
 
 hr.access_hr_employee_user,hr.employee user,model_hr_employee,base.group_hr_user,1,0,0,0
 access_hr_employee_situation_order_employee,access_hr_employee_situation_order_employee,model_hr_employee_situation_order,group_hrm,1,1,1,1
+
+access_hr_sanction_ligne_read,access_hr_sanction_ligne_read,model_hr_sanction_ligne,group_employee,1,0,0,0
+
+access_hr_employee_evaluation_level_read,access_hr_employee_evaluation_level_read,model_hr_employee_evaluation_level,group_employee,1,0,0,0
 
 

@@ -3,3 +3,7 @@ access_hr_employee_transfert,hr_employee_transfert,model_hr_employee_transfert,,
 access_hr_employee_transfert_periode,hr_employee_transfert_periode,model_hr_employee_transfert_periode,,1,1,1,1
 access_hr_employee_desire,hr_employee_desire,model_hr_employee_desire,,1,1,1,1
 access_hr_setting,hr_setting,model_hr_setting,,1,1,1,1
+access_hr_employee_lend,hr_employee_lend,model_hr_employee_lend,,1,1,1,
+access_hr_employee_commissioning,hr_employee_commissioning,model_hr_employee_commissioning,,1,1,1,
+access_hr_employee_commissioning_type,hr_employee_commissioning_type,model_hr_employee_commissioning_type,,1,1,1,1
+access_hr_employee_task,hr_employee_task,model_hr_employee_task,,1,1,1,1

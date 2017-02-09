@@ -12,8 +12,10 @@ class ResPartner(models.Model):
         [('person', u'شخص'),
          ('hospital', u'مستشفى'),
          ('governmental_entity', u'جهة حكومية'),
+         ('insurance', u'تابعة للتأمين'),
          ('company', u'شركة')])
     is_hospital = fields.Boolean(string='is hospital')
+    inter_reg_org = fields.Boolean(string=u'منظمة دولية أو اقليمية', default=False)
     hospital_director = fields.Char(string=u'مدير المستشفى')
 
     @api.multi
@@ -30,4 +32,4 @@ class ResPartnerBank(models.Model):
 
     account_opening_date = fields.Date(string=u'تاريخ فتح الحساب')
     is_deposit = fields.Boolean(string='للإيداع')
-    employee_id = fields.Many2one('hr.employee',string=u'الموظف')
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف')

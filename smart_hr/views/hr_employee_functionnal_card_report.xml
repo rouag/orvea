@@ -30,17 +30,17 @@
 												<div class="col-xs-12">
 													<b>
 														<div class="col-xs-4">
-															اسم الموظف:
+															<b>اسم الموظف:</b>
 															<span t-field="o.emp_name" />
 														</div>
 														<div class="col-xs-4">
-															السن:
+															<b>السن:</b>
 															<span t-field="o.emp_age" />
 															سنة
 														</div>
 
 														<div class="col-xs-4">
-															مكان العمل:
+															<b>مكان العمل:</b>
 															<span t-field="o.department_id" />
 														</div>
 													</b>
@@ -156,10 +156,9 @@
 							<br />
 							<br />
 							<br />
-							<div class="col-xs-12 text-center" style=" background-color:#9CB071">
-								<h3>
-									الحياة الوظيفية
-								</h3>
+							<div class="col-xs-8 text-center"
+								style=" background-color:#9CB071; height: 25px; width:100%">
+								<b>الحياة الوظيفية</b>
 							</div>
 							<table class="table table-condensed">
 								<tr>
@@ -196,17 +195,17 @@
 										<span t-esc="line.job_id.name.name" />
 									</td>
 									<td>
-										<span t-esc="grade_id" />
+										<span t-esc="line.grade_id.name" />
 									</td>
 									<td>
-										<span t-esc="number" />
+										<span t-esc="line.number" />
 									</td>
 									<td>
-										<span t-esc="dep_Side" />
+										<span t-esc="line.dep_Side" />
 
 									</td>
 									<td>
-										<span t-esc="department_id" />
+										<span t-esc="line.department_id.name" />
 									</td>
 									<td>
 										<span t-esc="line.type" />
@@ -223,11 +222,13 @@
 									</td>
 								</tr>
 							</table>
-							<div class="col-xs-12 text-center" style=" background-color:#9CB071">
-								<h3>
+							<div class="col-xs-8 text-center"
+								style=" background-color:#9CB071; height: 25px; width:100%">
+								<b>
 									التدريب
-								</h3>
+								</b>
 							</div>
+							<br/>
 							<table class="table table-condensed">
 								<tr>
 									<th>
