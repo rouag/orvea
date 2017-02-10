@@ -149,8 +149,8 @@
         'payroll/view/hr_bonus_view.xml',
         'payroll/view/hr_loan_view.xml',
         'payroll/views/report_hr_deduction.xml',
-        
-         'view/hr.xml',
+        'payroll/view/hr_increase_view.xml',
+        'view/hr.xml',
         'payroll/views/report.xml',
         # الحضور والإنصراف
         'attendance/security/attendance_security.xml',

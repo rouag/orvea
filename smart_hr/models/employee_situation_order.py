@@ -12,3 +12,5 @@ class hrEmployeesituation(models.Model):
     employee_id = fields.Many2one('hr.employee', string='الموظف', required=1)
     hospital_name = fields.Many2one('res.partner', string=u'المستشفى ', required=1, domain="[('company_type','=','hospital')]")
     date_hospitalisation = fields.Date(string=u'تاريخ مراجعةا لمستشفى ', default=fields.Datetime.now(), required=1)
+
+
