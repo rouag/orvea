@@ -180,33 +180,36 @@ class hr_promotion(models.Model):
                     for seniority in regle_point.seniority_ids :
                         if  (year >= seniority.year_from )and (year <= seniority.year_to) :
                             point_seniority= point_seniority + (seniority.point)
-            education_level_job= emp_promotion.job_id.serie_id.hr_classment_job_ids[0].education_level_id.nomber_year_education
-            for education_level_emp in emp_promotion.education_level_ids:
-                if education_level_emp.nomber_year_education - education_level_job >0:
-                    if education_level_emp.job_specialite:
-                        if education_level_emp.level_education_id.secondary:
-                            for education in regle_point.education_ids :
-                                if education.nature_education=='after_secondry' and   education.type_education=="in_speciality_job":
-                                    education_point = education_point + (education.year_point* (education_level_emp.nomber_year_education - education_level_job))
-                        else:   
-                            for education in regle_point.education_ids :
-                                if education.nature_education=='before_secondry' and   education.type_education=="in_speciality_job":
-                                    education_point = education_point + (education.year_point* (education_level_emp.nomber_year_education - education_level_job))  
-                           
-                    else:
-                        if education_level_emp.level_education_id.secondary:
-                            for education in regle_point.education_ids :
-                                if education.nature_education=='after_secondry' and   education.type_education=="not_speciality_job":
-                                    education_point = education_point + (education.year_point* (education_level_emp.nomber_year_education - education_level_job))
-                                        
-                        else:   
-                            for education in regle_point.education_ids :
-                                if education.nature_education=='before_secondry' and   education.type_education=="not_speciality_job":
-                                    education_point = education_point + (education.year_point* (education_level_emp.nomber_year_education - education_level_job))  
+            try:    
+                education_level_job= emp_promotion.job_id.serie_id.hr_classment_job_ids[0].level_education_id.nomber_year_education 
+            except:
+                education_level_job=false
+            if education_level_job:
+                for education_level_emp in emp_promotion.education_level_ids:
+                    if education_level_emp.level_education_id.nomber_year_education - education_level_job >0:
+                        if education_level_emp.job_specialite:
+                            if education_level_emp.level_education_id.secondary:
+                                for education in regle_point.education_ids :
+                                    if education.nature_education=='after_secondry' and   education.type_education=="in_speciality_job":
+                                        education_point = education_point + (education.year_point* (education_level_emp.nomber_year_education - education_level_job))
+                            else:   
+                                for education in regle_point.education_ids :
+                                    if education.nature_education=='before_secondry' and   education.type_education=="in_speciality_job":
+                                        education_point = education_point + (education.year_point* (education_level_emp.nomber_year_education - education_level_job))  
+                               
+                        else:
+                            if education_level_emp.level_education_id.secondary:
+                                for education in regle_point.education_ids :
+                                    if education.nature_education=='after_secondry' and   education.type_education=="not_speciality_job":
+                                        education_point = education_point + (education.year_point* (education_level_emp.nomber_year_education - education_level_job))
+                                            
+                            else:   
+                                for education in regle_point.education_ids :
+                                    if education.nature_education=='before_secondry' and   education.type_education=="not_speciality_job":
+                                        education_point = education_point + (education.year_point* (education_level_emp.nomber_year_education - education_level_job))  
+                
             
             
-            for evaluation in emp_promotion.evaluation_level_ids:
-                point_functionality=0
             trainings=self.env['hr.candidates'].search([('employee_id','=',emp_promotion.id),('state','=','done')])
             for training in trainings:
                 if training.number_of_days>12 and training.experience=='experience_directe':
@@ -260,11 +263,7 @@ class hr_promotion(models.Model):
     
 
 
-class hr_promotion_type(models.Model):
-    _name = 'hr.promotion.type'
-     
-    name = fields.Char(string=u'نوع الترقية', advanced_search=True)
-    code = fields.Char(string=u'الرمز')
+
     
 class hr_promotion_ligne_employee(models.Model):
     _name = 'hr.promotion.employee'
@@ -369,7 +368,14 @@ class hr_promotion_ligne_employee_job(models.Model):
             self.emp_grade_id_new = self.new_job_id.grade_id.id
             self.new_number_job = self.new_job_id.number
   
-
+class hr_promotion_type(models.Model):
+    _name = 'hr.promotion.type'
+     
+    name = fields.Char(string=u'نوع الترقية', advanced_search=True)
+    code = fields.Char(string=u'الرمز')
+    hr_allowance_type_id = fields.Many2one('hr.allowance.type', string='أنواع البدلات',)
+    percent_salaire = fields.Float(string=u' علاوة إضافية نسبة من الراتب  ',)
+   
 class hr_promotion_demande(models.Model):
     _name = 'hr.promotion.employee.demande'
     _order = 'id desc'
