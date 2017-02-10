@@ -12,3 +12,4 @@ from . import setting
 from . import hr_appraisal
 from . import hr_promotions
 from . import sanction
+from . import deputation

@@ -17,6 +17,9 @@ class HrEmployeeTask(models.Model):
     comm_id = fields.Many2one('hr.employee.commissioning', string=u'طلب تكليف موظف')
     governmental_entity = fields.Many2one('res.partner', string=u'الجهة الحكومية', domain=[('company_type', '=', 'governmental_entity')])
     description = fields.Text(string=u'الوصف')
+    state = fields.Selection([('new', u'طلب'),
+                              ('done', u'اعتمدت'),
+                              ], readonly=1, default='new', string=u'الحالة')
 
     @api.multi
     @api.depends('date_from', 'duration')
@@ -27,3 +30,8 @@ class HrEmployeeTask(models.Model):
             self.date_to = new_date_to
         elif self.date_from:
                 self.date_to = self.date_from
+
+    @api.multi
+    def action_done(self):
+        self.ensure_one()
+        self.state = "done"
