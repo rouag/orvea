@@ -147,18 +147,21 @@ class hr_promotion(models.Model):
                 holidays_status_exceptiona=self.env['hr.holidays'].search([('employee_id', '=', emp.id),('date_from', '<', date.today()),('date_to', '<', date.today()),('holiday_status_id.id','=',self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id)])
                 holidays_status_study=self.env['hr.holidays'].search([('employee_id', '=', emp.id),('date_from', '<', date.today()),('date_to', '<', date.today()),('holiday_status_id.id','=',self.env.ref('smart_hr.data_hr_holiday_status_study').id),('duration','>',180)])
                 sanctions=self.env['hr.sanction'].search([('state','=','done'),('date_sanction_start','>',datetime.now()+relativedelta(years=-1))])
+                saanction_days=True
                 if not suspend and not holidays_status_exceptiona and not holidays_status_study:
                     if  emp.promotion_duration/365 >  emp.job_id.grade_id.years_job  :
                         days=0
                         print  emp.promotion_duration
                         if  emp.sanction_ids:
                             for sanction in sanctions:
-                                if sanction.state=="done":
+                                if sanction.state=="done" and  not sanction.type_sanction.code == "4" :
                                     for line in sanction.line_ids:
                                         if line.state=='done':
                                             if line.employee_id.id==emp.id:
                                                 days=days + line.nb_days_old
-                            if  days <  15  and  not sanction.type_sanction.code == "4" :
+                                    if sanction.type_sanction.code == "4":
+                                         saanction_days=False
+                            if  days <  15  and saanction_days: 
                                         employee_promotion.append(emp)
                         else:
                             employee_promotion.append(emp)
