@@ -194,12 +194,18 @@
 			<field name="arch" type="xml">
 				<form string="أنواع الترقيات">
 					<sheet>
-						<group>
-							<group>
-								<field name="name" />
-								<field name="code" />
+						<group col ="2">
+							<group  string="أنواع الترقيات">
+								<field name="name" required='1'/>
+								<field name="code" required='1'/>
 							</group>
+							<group string="الأثر المالي" >
+									<field name="hr_allowance_type_id" />
+									<field name="percent_salaire" />
+								</group>
+							
 						</group>
+						
 					</sheet>
 				</form>
 			</field>

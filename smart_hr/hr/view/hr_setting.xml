@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
-		<!-- بياناتي -->
+		<!-- إعدادات النقل -->
 		<record id="view_hr_setting" model="ir.ui.view">
 			<field name="name">hr.setting.form</field>
 			<field name="model">hr.setting</field>

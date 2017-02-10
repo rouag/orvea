@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!-- إعدادات الانتدابات -->
+		<record id="view_hr_deputation_setting" model="ir.ui.view">
+			<field name="name">hr.deputation.setting.form</field>
+			<field name="model">hr.deputation.setting</field>
+			<field name="arch" type="xml">
+				<form string="إعدادات عامة" create='0' delete='0' duplicate='0'>
+
+					<sheet>
+						<group>
+								<field name="name" invisible="1" />
+								<field name="deputation_distance" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="ir_actions_button_hr_deputation_setting" model="ir.actions.server">
+			<field name="sequence" eval="5" />
+			<field name="state">code</field>
+			<field name="type">ir.actions.server</field>
+			<field name="model_id" ref="model_hr_deputation_setting" />
+			<field name="code">action=pool.get('hr.deputation.setting').button_setting(cr,uid,None,)
+			</field>
+			<field name="condition">True</field>
+			<field name="name">إعدادات عامة</field>
+		</record>
+
+		<menuitem name="إعدادات عامة" id="hr_deputation_setting_menu"
+			parent="hr_root_deputation_configuration" sequence="1"
+			action="ir_actions_button_hr_deputation_setting" />
+	</data>
+</openerp>

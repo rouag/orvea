@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data noupdate="1">
+		<!-- المسافات بين المدن -->
+		<record id="res_city_01" model="res.city">
+			<field name="name" >الحوطة</field>
+			
+		</record>
+		<record id="res_city_02" model="res.city">
+			<field name="name" >الرياض</field>
+			
+		</record>
+		<record id="res_city_03" model="res.city">
+			<field name="name" >جدة</field>
+			
+		</record>
+		<record id="res_city_04" model="res.city">
+			<field name="name" >مكة</field>
+			
+		</record>
+		<record id="res_city_05" model="res.city">
+			<field name="name" >المدينة المنورة</field>
+			
+		</record>
+		<record id="res_city_06" model="res.city">
+			<field name="name" >تبوك</field>
+			
+		</record>
+		<record id="res_city_07" model="res.city">
+			<field name="name" >الدمام</field>
+			
+		</record>
+		<record id="res_city_08" model="res.city">
+			<field name="name" >الأحساء</field>
+			
+		</record>
+		<record id="res_city_09" model="res.city">
+			<field name="name" >القطيف</field>
+			
+		</record>
+		<record id="res_city_10" model="res.city">
+			<field name="name" >خميس مشيط</field>
+			
+		</record>
+		<record id="res_city_11" model="res.city">
+			<field name="name" >المظيلف</field>
+			
+		</record>
+		<record id="res_city_12" model="res.city">
+			<field name="name" >الهفوف</field>
+			
+		</record>
+		<record id="res_city_13" model="res.city">
+			<field name="name" >المبرز</field>
+			
+		</record>
+		<record id="res_city_14" model="res.city">
+			<field name="name" >الطائف</field>
+			
+		</record>
+		<record id="res_city_15" model="res.city">
+			<field name="name" >نجران</field>
+			
+		</record>
+		<record id="res_city_16" model="res.city">
+			<field name="name" >حفر الباطن</field>
+			
+		</record>
+		<record id="res_city_17" model="res.city">
+			<field name="name" >الجبيل</field>
+			
+		</record>
+		<record id="res_city_18" model="res.city">
+			<field name="name" >ضبا</field>
+			
+		</record>
+		<record id="res_city_19" model="res.city">
+			<field name="name" >الخرج</field>
+			
+		</record>
+		<record id="res_city_20" model="res.city">
+			<field name="name" >الثقبة</field>
+			
+		</record>
+		<record id="res_city_21" model="res.city">
+			<field name="name" >ينبع</field>
+			
+		</record>
+		<record id="res_city_22" model="res.city">
+			<field name="name" >خبر</field>
+			
+		</record>
+		<record id="res_city_23" model="res.city">
+			<field name="name" >عرعر</field>
+			
+		</record>
+		<record id="res_city_24" model="res.city">
+			<field name="name" >الحوية</field>
+			
+		</record>
+		<record id="res_city_25" model="res.city">
+			<field name="name" >عنيزة</field>
+			
+		</record>
+		<record id="res_city_26" model="res.city">
+			<field name="name" >سكاكا</field>
+			
+		</record>
+		<record id="res_city_27" model="res.city">
+			<field name="name" >جازان</field>
+			
+		</record>
+		<record id="res_city_28" model="res.city">
+			<field name="name" >القريات</field>
+			
+		</record>
+		<record id="res_city_29" model="res.city">
+			<field name="name" >الظهران</field>
+			
+		</record>
+		<record id="res_city_30" model="res.city">
+			<field name="name" >الباحة</field>
+			
+		</record>
+		<record id="res_city_32" model="res.city">
+			<field name="name" >الزلفي</field>
+			
+		</record>
+		<record id="res_city_33" model="res.city">
+			<field name="name" >الرس</field>
+			
+		</record>
+		<record id="res_city_34" model="res.city">
+			<field name="name" >وادي الدواسر</field>
+			
+		</record>
+		<record id="res_city_35" model="res.city">
+			<field name="name" >بيشة</field>
+			
+		</record>
+		<record id="res_city_36" model="res.city">
+			<field name="name" >سيهات</field>
+			
+		</record>
+		<record id="res_city_37" model="res.city">
+			<field name="name" >شرورة</field>
+			
+		</record>
+		<record id="res_city_38" model="res.city">
+			<field name="name" >بحرة</field>
+			
+		</record>
+		<record id="res_city_39" model="res.city">
+			<field name="name" >تاروت</field>
+			
+		</record>
+		<record id="res_city_40" model="res.city">
+			<field name="name" >الدوادمي</field>
+			
+		</record>
+		<record id="res_city_41" model="res.city">
+			<field name="name" >صبيا</field>
+			
+		</record>
+		<record id="res_city_42" model="res.city">
+			<field name="name" >بيش</field>
+			
+		</record>
+		<record id="res_city_43" model="res.city">
+			<field name="name" >أحد رفيدة</field>
+			
+		</record>
+		<record id="res_city_44" model="res.city">
+			<field name="name" >الفريش</field>
+			
+		</record>
+		<record id="res_city_45" model="res.city">
+			<field name="name" >بارق</field>
+			
+		</record>
+		
+				<!-- المسافات بين المدن -->
+	<!-- 	<record id="res_city_distance_01" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_01"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_02" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_02"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_03" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_03"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_04" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_04"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_05" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_05"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_06" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_06"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_07" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_07"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_08" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_08"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_09" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_09"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_10" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_10"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_11" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_11"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_12" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_12"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_13" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_13"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_14" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_14"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_15" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_15"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_16" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_16"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_17" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_17"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_18" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_18"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_19" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_19"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_20" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_20"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_21" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_21"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_22" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_22"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_23" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_23"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_24" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_24"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_25" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_25"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_26" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_26"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_27" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_27"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_28" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_28"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_29" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_29"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_30" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_30"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_32" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_32"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_33" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_33"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_34" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_34"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_35" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_35"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_36" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_36"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_37" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_37"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_38" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_38"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_39" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_39"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_40" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_40"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_41" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_41"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_42" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_42"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_43" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_43"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_44" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_44"/>
+			<field name="distance">0.0</field>
+		</record>
+		<record id="res_city_distance_45" model="res.city.distance">
+			<field name="city_id" ref="smart_hr.res_city_45"/>
+			<field name="distance">0.0</field>
+		</record> -->
+		
+	</data>
+</openerp>
+		
