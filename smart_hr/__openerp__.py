@@ -27,6 +27,8 @@
         'data/hr_termination_data.xml',
         'data/decisions_type_data.xml',
         'data/hr_appoint_type_data.xml',
+        'data/scholarship_data.xml',
+
         # الوظائف
         'job/menu.xml',
         'job/security/job_security.xml',
@@ -125,7 +127,7 @@
         'view/hr_employee_functional_card.xml',
         'view/res_users.xml',
         'view/employee_situation_order.xml',
-        # sanction
+        'view/hr_scholarship.xml',  # sanction
         'sanction/security/ir.model.access.csv',
         'sanction/security/sanction_security.xml',
         'sanction/wizard/wizard_sanction_action.xml',

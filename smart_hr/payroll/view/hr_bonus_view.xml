@@ -79,9 +79,7 @@
 						</group>
 						<notebook>
 							<page string="التفاصيل">
-													<button name="import_employee_beneficiaries_ids"
-									type="object" string="استيراد الموظفين المستحقين"
-									attrs="{'invisible':['|',('type','!=','increase'),'|',('percentage','=',0), ('state','!=','new')]}" />
+													
 								<field name="line_ids" nolabel="1">
 									<tree editable="bottom" create="0" edit="0">
 										<field name="employee_id" />
@@ -105,7 +103,7 @@
 								</field>
 								<button name="%(smart_hr.action_wizard_bonus_employee)d"
 									type="action" string="إضافة موظفون" class="oe_link oe_edit_only"
-									attrs="{'invisible':['|',('type','=','increase'), ('state','!=','new')]}" />
+									attrs="{'invisible':[('state','!=','new')]}" />
 		
 							</page>
 							<page string="سجل التغييرات">

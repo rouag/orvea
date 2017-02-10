@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+
+		<record id="hr_scholarship_form" model="ir.ui.view">
+			<field name="name">hr.scholarship.form</field>
+			<field name="model">hr.scholarship</field>
+			<field name="arch" type="xml">
+				<form string="الابتعاث">
+					<header>
+						<button name="action_psm" string="إرسال طلب" type="object"
+							states="draft" icon="fa-paper-plane" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+
+						<button name="action_done" string="موافق" type="object"
+							groups="smart_hr.group_scholarship_manager" states="psm" icon="fa-check"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+
+						<button name="action_refuse" string="رفض" type="object"
+							states="psm" groups="smart_hr.group_scholarship_manager" icon="fa-check"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+
+						<button name="action_succeeded" string="نجح" type="object"
+							groups="smart_hr.group_scholarship_manager,smart_hr.group_hrm"
+							states="done" icon="fa-paper-plane" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+
+						<button name="action_not_succeeded" string="لم ينجح" type="object"
+							groups="smart_hr.group_scholarship_manager,smart_hr.group_hrm"
+							states="done" icon="fa-times" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_cutoff" string="قطع" type="object"
+							states="done" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_cancel" string="الغاء" type="object"
+							states="done" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+
+						<field name="state" widget="statusbar"
+							statusbar_visible="draft,psm,done,finished,cutoff,cancel" />
+					</header>
+					<sheet>
+						<field name="name" invisible="1" />
+						<group>
+							<field name="date" />
+							<field name="employee_id" options="{'no_create_edit': True}"/>
+							<field name="scholarship_type" options="{'no_create_edit': True}"/>
+						</group>
+
+						<group col="6">
+							<field name="date_from" />
+							<field name="date_to" />
+							<field name="duration" />
+						</group>
+						<group>
+							<field name="note" />
+						</group>
+						<notebook>
+							<page string="بيانات الدبلوم">
+								<group>
+									<field name="diplom_type" options="{'no_create_edit': True}"/>
+									<field name="diplom_id" options="{'no_create_edit': True}"/>
+									<field name="Faculty_id" options="{'no_create_edit': True}"/>
+
+								</group>
+							</page>
+							<page string="المرفقات">
+								<group>
+									<group>
+										<field name="num_speech" />
+										<field name="date_speech" />
+										<field name="speech_file" filename="speech_file_name" />
+										<field name="speech_file_name" invisible="1" />
+									</group>
+									<group>
+										<field name="acceptance_certificate" filename="acceptance_certificate_name" />
+										<field name="acceptance_certificate_name" invisible="1" />
+										<field name="language_exam" filename="language_exam_file_name" />
+										<field name="language_exam_file_name" invisible="1" />
+									</group>
+
+								</group>
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="hr_scholarship_tree" model="ir.ui.view">
+			<field name="name">hr.scholarship.tree</field>
+			<field name="model">hr.scholarship</field>
+			<field name="arch" type="xml">
+				<tree string="الابتعاث">
+					<field name="name" />
+					<field name="date" />
+					<field name="date_from" />
+					<field name="date_to" />
+					<field name="duration" />
+					<field name="note" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_scholarship">
+			<field name="name">الابتعاث</field>
+			<field name="res_model">hr.scholarship</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+
+		<menuitem id="hr_scholarship" name="الابتعاث" parent="menu_hr_scholarship"
+			sequence="5" action="action_hr_scholarship" />
+
+		<record id="hr_scholarship_type_form" model="ir.ui.view">
+			<field name="name">hr.scholarship.type.form</field>
+			<field name="model">hr.scholarship.type</field>
+			<field name="arch" type="xml">
+				<form string="انواع الابتعاث">
+
+					<sheet>
+						<group>
+							<field name="name" />
+							<field name="code" />
+							<field name="pension_percent" />
+							<field name="salary_percent" />
+							<field name="traveling_family_ticket" />
+							<field name="hr_allowance_type_id" />
+							<field name="note" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="hr_scholarship_type_tree" model="ir.ui.view">
+			<field name="name">hr.scholarship.type.tree</field>
+			<field name="model">hr.scholarship.type</field>
+			<field name="arch" type="xml">
+				<tree string="انواع الابتعاث">
+					<field name="name" />
+					<field name="code" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_scholarship_type">
+			<field name="name">الابتعاث</field>
+			<field name="res_model">hr.scholarship.type</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+
+		<!-- config menu -->
+		<menuitem id="hr_scholarship_configuration" name="الاعدادات"
+			parent="menu_hr_scholarship" sequence="100" />
+
+		<menuitem id="hr_scholarship_type" name="انواع الابتعاث"
+			parent="hr_scholarship_configuration" sequence="5"
+			action="action_hr_scholarship_type" />
+	</data>
+</openerp>
