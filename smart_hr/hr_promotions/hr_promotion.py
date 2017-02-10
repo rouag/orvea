@@ -91,6 +91,11 @@ class hr_promotion(models.Model):
     def button_transfer_minister(self):
         for promo in self:
             self.state='minister'
+        for promotion in self.employee_job_promotion_line_ids:
+            if not promotion.new_job_id:
+                employee_job_promotion_line_ids=[(3,promotion.id)]
+                
+            
             
     
     @api.one
@@ -103,7 +108,6 @@ class hr_promotion(models.Model):
         for promo in self:
             self.state='done'
             for emp in self.employee_job_promotion_line_ids:
-                
                 print self.env.ref('smart_hr.data_hr_promotion_agent')
                 apoint=self.env["hr.decision.appoint"].create({'name':self.speech_number,
                                                            'order_date': self.speech_date,
@@ -310,6 +314,7 @@ class hr_promotion_ligne_jobs(models.Model):
         if self.new_job_id:
             self.emp_grade_id_new = self.new_job_id.grade_id.id
             self.new_number_job = self.new_job_id.number
+        
     
     @api.multi
     def job_reserved(self):
@@ -357,7 +362,7 @@ class hr_promotion_ligne_employee_job(models.Model):
     
    
     @api.multi
-    def job_refuse(self):
+    def promotion_refuse(self):
         if self.new_job_id:
             self.new_job_id.state='unoccupied'
             self.state="refuse"
@@ -365,8 +370,17 @@ class hr_promotion_ligne_employee_job(models.Model):
     @api.onchange('new_job_id')
     def onchange_job_id(self):
         if self.new_job_id:
+            self.new_job_id.state='reserved'
             self.emp_grade_id_new = self.new_job_id.grade_id.id
             self.new_number_job = self.new_job_id.number
+            try:
+                if int(self.new_job_id.grade_id)<int(self.emp_grade_id_old.code):
+                    raise ValidationError(u"يجب أن تكون المرتبة أكبر من المرتبة  الحالية ")
+                if int(self.new_job_id.grade_id)> int(self.emp_grade_id_old.code)+1 :
+                    raise ValidationError(u"يجب أن تكون المرتبة أكبر من المرتبة  الحالية مباشرة  ")
+            except:
+                print "error"
+                
   
 class hr_promotion_type(models.Model):
     _name = 'hr.promotion.type'
