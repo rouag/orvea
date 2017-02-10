@@ -21,6 +21,19 @@
                 attachment_use="True"
                 attachment="('Suspension_End_'+(object.name).replace('/','')+'.pdf')"
                 menu="False"/>
+                
+                
+        <report id="report_hr_promotion_report"
+                model="hr.promotion"
+                string="محضر الترقيات"
+                report_type="qweb-pdf"
+                name="smart_hr.hr_promotion_report"
+                file="smart_hr.hr_promotion_report"
+                attachment_use="False"
+               />
+                
+                
+                
          <report id="report_hr_termination_report"
                 model="hr.termination"
                 string="قرار طى القيد"

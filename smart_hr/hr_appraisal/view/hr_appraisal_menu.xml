@@ -12,8 +12,6 @@
     	<menuitem name="التقييم الدوري" id="menu_hr_appraisal_configuration" sequence="4" parent="hr_root_evaluation"/>
     	<menuitem name="التقييم" parent="hr_root_evaluation" id="menu_open_view_hr_appraisal_tree"
         action="hr_appraisal.open_view_hr_appraisal_tree" groups="base.group_user"/>
-        <menuitem id="menu_hr_appraisal_report" parent="hr_root_evaluation" sequence="15"
-        name="التقارير" action="hr_appraisal.action_appraisal_report_all" groups="base.group_hr_manager"/>
 		
 		
 <!-- survey -->
@@ -27,16 +25,8 @@
         <menuitem name="إعدادات التقييم" id="menu_surveys_hr" sequence="70"  parent="hr_root_evaluation"  groups="base.group_survey_user"  web_icon="survey,static/description/icon.png"/>
 
         <!-- Left menu elements: Survey -->
-        <menuitem name="اسئلة التقييم" id="menu_survey_form_hr" action="survey.action_survey_form" parent="menu_surveys_hr" sequence="1"/>
-        <menuitem name="الإجابات" id="menu_survey_type_form1_hr" action="survey.action_survey_user_input" parent="menu_surveys_hr" sequence="1"/>
-
-
-        <!-- Left menu elements: Technical Configuration -->
-        <menuitem name="إعدادات" id="menu_surveys_configuration_samart" parent="hr_root_evaluation"  sequence="100" />
-        <menuitem name="صفحات" id="menu_survey_page_form1_samart" action="survey.action_survey_page_form" parent="menu_surveys_configuration_samart" sequence="1"/>
-        <menuitem name="الأسئلة" id="menu_survey_question_form1_samart" action="survey.action_survey_question_form" parent="menu_surveys_configuration_samart" sequence="2"/>
-        <menuitem name="التسميات" id="menu_survey_label_form1_samart" action="survey.action_survey_label_form" parent="menu_surveys_configuration_samart" sequence="3"/>
-        <menuitem name="نتائج الإختبار" id="menu_survey_response_line_form_samart" action="survey.action_survey_user_input_line" parent="menu_surveys_configuration_samart" sequence="4"/>
+        <menuitem name="إعدادات اسئلة التقييم " id="menu_survey_form_hr" action="survey.action_survey_form" parent="menu_surveys_hr" sequence="1"/>
+        <menuitem name="نتائج الإختبار" id="menu_survey_response_line_form_samart" action="survey.action_survey_user_input_line" parent="hr_root_evaluation" sequence="4"/>
 	
 
 

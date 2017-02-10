@@ -28,21 +28,19 @@
 				<form string=" قرار مباشرة التعين" create='0' delete='0' edit='0'
 					duplicate='0'>
 					<header>
-
-
-						<field name="state" widget="statusbar" statusbar_visible="waiting,done,cancel" />
-
 						<button name="button_cancel_appoint" 
 							string="إلغاء التعين لعدم المباشرة" type="object" 
-							groups="smart_hr.group_personnel_hr" icon="fa-times-circle-o" 
+							groups="smart_hr.group_department_employee" icon="fa-times-circle-o" 
 							attrs="{'invisible':['|',('state', 'not in ',['waiting']),('state_direct', '!=', 'cancel')]}" 
 							class="oe_inline oe_stat_button" />
 
 						<button name="button_direct_appoint" 
 							string="تفعيل التعين بالمباشرة" type="object" 
-							groups="smart_hr.group_personnel_hr" icon="fa-times-circle-o"
+							groups="smart_hr.group_department_employee" icon="fa-times-circle-o"
 							attrs="{'invisible':['|',('state', 'not in ',['waiting']),('state_direct', '!=', 'confirm')]}"
 							class="oe_inline oe_stat_button" />
+							
+								<field name="state" widget="statusbar" statusbar_visible="waiting,done,cancel" />
 					</header>
 					<sheet>
 						<group>

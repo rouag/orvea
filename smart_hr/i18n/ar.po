@@ -222,6 +222,11 @@ msgid "Collaborators"
 msgstr "المتعاونين"
 
 #. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_collaborators_appraisal
+msgid "Collaborator"
+msgstr "المتعاونين"
+
+#. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_collaborators_ids
 msgid "Appraisal colleagues ids"
 msgstr "المتعاونين"
@@ -315,4 +320,60 @@ msgstr "وضع الاختبار"
 #: selection:hr.holidays,state:0
 msgid "done"
 msgstr "اعتمدت"
+
+#. module: hr_appraisal
+#: code:addons/hr_appraisal/models/hr_appraisal.py:192
+#, python-format
+msgid "The appraisal deadline must be in the future to allow employees to answer the survey."
+msgstr "يجب أن يكون موعد التقييم في المستقبل "
+
+#. module: survey
+#: selection:survey.question,type:0
+msgid "Multiple Lines Text Box"
+msgstr "مربع النص خطوط متعددة"
+
+#. module: survey
+#: selection:survey.question,type:0
+msgid "Multiple choice: multiple answers allowed"
+msgstr "إجابات متعددة"
+
+#. module: survey
+#: selection:survey.question,type:0
+msgid "Multiple choice: only one answer"
+msgstr "الاختيار من متعدد: إجابة واحدة فقط"
+
+#. module: survey
+#: selection:survey.question,matrix_subtype:0
+msgid "Multiple choices per row"
+msgstr "خيارات متعددة لكل صف"
+
+#. module: survey
+#: model:ir.actions.act_window,help:survey.action_selected_survey_user_input
+msgid "Nobody has replied to your survey yet."
+msgstr "لا أحد قد ردت على الدراسة الاستقصائية الخاصة بك حتى الآن"
+
+#. module: survey
+#: model:ir.actions.act_window,help:survey.action_survey_user_input
+msgid "Nobody has replied to your surveys yet."
+msgstr "لا أحد قد ردت على الدراسة الاستقصائية الخاصة بك حتى الآن"
+
+#. module: survey
+#: selection:survey.question,type:0
+msgid "Single Line Text Box"
+msgstr "سطر واحد"
+
+#. module: survey
+#: selection:survey.question,type:0
+msgid "Matrix"
+msgstr "مصفوفة"
+
+#. module: survey
+#: model:ir.model.fields,field_description:survey.field_survey_question_matrix_subtype
+msgid "Matrix Type"
+msgstr "مصفوفة"
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.result
+msgid "Matrix:"
+msgstr "مصفوفة"
 

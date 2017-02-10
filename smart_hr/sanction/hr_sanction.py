@@ -3,6 +3,8 @@
 from openerp import models, fields, api, _
 from openerp.exceptions import Warning
 from openerp.exceptions import ValidationError
+from openerp.exceptions import UserError
+from datetime import date, datetime, timedelta
 
 
 class hrSanction(models.Model):
@@ -19,7 +21,12 @@ class hrSanction(models.Model):
     date_sanction_start = fields.Date(string='تاريخ بدأ العقوبة', readonly=1, states={'draft': [('readonly', 0)]})
     date_sanction_end = fields.Date(string='تاريخ الإلغاء', readonly=1, states={'draft': [('readonly', 0)]})
     note = fields.Text(string=u'الملاحظات', readonly=1, states={'draft': [('readonly', 0)]})
+    number_sanction = fields.Char(string='رقم الخطاب  ')
+    date_sanction = fields.Date(string='تاريخ الخطاب ')
+    file_sanction = fields.Binary(string='صورة الخطاب ')
+    
     # update sanction
+    difference_ids = fields.One2many('hr.sanction.ligne', 'sanction_id', string=u'العقوبات', readonly=1, states={'draft': [('readonly', 0)]})
     line_ids = fields.One2many('hr.sanction.ligne', 'sanction_id', string=u'العقوبات', readonly=1, states={'draft': [('readonly', 0)]})
     history_ids = fields.One2many('hr.sanction.history', 'sanction_id', string='سجل التغييرات', readonly=1)
     state = fields.Selection([('draft', '  طلب'),
@@ -27,7 +34,7 @@ class hrSanction(models.Model):
                              ('extern', 'جهة خارجية'),
                              ('done', 'اعتمدت'),
                              ('update', 'تعديل'),
-                             ('cancel', 'مرفوض')], string='الحالة', readonly=1, default='draft')
+                             ('cancel', 'ملغاة')], string='الحالة', readonly=1, default='draft')
 
     @api.multi
     def button_cancel_sanction(self):
@@ -75,15 +82,23 @@ class hrSanction(models.Model):
                 type = '92'
             if type:
                 self.env['hr.employee.history'].sudo().add_action_line(rec.employee_id, self.type_sanction.id, self.date_sanction_start, type)
+            rec.state = 'done'
         self.state = 'done'
 
     @api.multi
     def action_cancel(self):
         self.state = 'cancel'
+        self.date_sanction_end = fields.Date.from_string(fields.Date.today())
         for line in self.line_ids:
             line.state = 'cancel'
 
-
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'draft'  :
+                raise UserError(_(u'لا يمكن حذف العقوبة  إلا في حالة طلب !'))
+        return super(hrSanction, self).unlink()
+    
 class HrSanctionLigne(models.Model):
     _name = 'hr.sanction.ligne'
     _description = u' العقوبات'
@@ -91,11 +106,12 @@ class HrSanctionLigne(models.Model):
     sanction_id = fields.Many2one('hr.sanction', string=' العقوبات', ondelete='cascade')
     employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف', required=1)
     type_sanction = fields.Many2one(related='sanction_id.type_sanction', string=u'العقوبة')
-    active = fields.Boolean(string='سارية', default=True)
+    mast = fields.Boolean(string='سارية', default=True)
+    deduction = fields.Boolean(string=u'حسم', default=False)
     days_number = fields.Integer(string='عدد أيام ')
     amount = fields.Integer(string='مبلغ')
-    days_difference = fields.Integer(string='الفروقات ')
-    amount_difference = fields.Integer(string='الفروقات ')
+    days_difference = fields.Integer(string='الفروقات بالأيام ')
+    amount_difference = fields.Integer(string='الفروقات بالمبلغ ')
     state_sanction = fields.Selection(related='sanction_id.state', store=True, readonly=True, string='الحالة')
     state = fields.Selection([('waiting', 'في إنتظار العقوبة'),
                               ('excluded', 'مستبعد'),

@@ -335,8 +335,20 @@
 								</page>
 
 								<page string="العقوبات">
-									<field name='sanction_ids' string="العقوبات" readonly="1">
+									<field name='sanction_ids' string="العقوبات" readonly="1" 	
+									
+											>
+										<tree string="سجل العقوبات">
+											<field name="employee_id" />
+											<field name="type_sanction" />
 
+											<field name="days_number" />
+											<field name="amount" />
+											<field name="mast" />
+											<field name="deduction" />
+											<field name="state_sanction" />
+											<field name="state" />
+										</tree>
 									</field>
 								</page>
 								<page string="سجل الاجراءات" readonly='True'>

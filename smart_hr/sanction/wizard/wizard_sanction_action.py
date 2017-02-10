@@ -6,8 +6,8 @@ from openerp import api, fields, models, _
 class WizardSanctionAction(models.TransientModel):
     _name = 'wizard.sanction.action'
 
-    name = fields.Char(string='رقم القرار')
-    order_date = fields.Date(string='تاريخ القرار')
+    name = fields.Char(string='رقم قرار التعديل')
+    order_date = fields.Date(string='تاريخ قرار التعديل')
     employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف')
     reason = fields.Text(string='السبب')
     days_number = fields.Integer(string='عدد أيام ')
@@ -23,7 +23,7 @@ class WizardSanctionAction(models.TransientModel):
             sanction_line = self.env['hr.sanction.ligne'].browse(active_id)
             description = ''
             field_updated = ''
-            if sanction_line.days_number != self.days_number:
+            if sanction_line.days_number != self.days_number :
                 field_updated += u'عدد أيام من %s  إلى %s' % (sanction_line.days_number, self.days_number)
             if sanction_line.amount != self.amount:
                 field_updated += u'مبلغ من %s  إلى %s' % (sanction_line.amount, self.amount)
@@ -53,9 +53,9 @@ class WizardSanctionAction(models.TransientModel):
         elif active_model == 'hr.sanction' and active_id:
             sanction = self.env['hr.sanction'].browse(active_id)
             field_updated = ''
-            if self.days_number:
+            if self.days_number and sanction.type_sanction.deduction == True :
                 field_updated += u'عدد أيام : %s ' % self.days_number
-            if self.amount:
+            if self.amount and sanction.type_sanction.deduction == True :
                 field_updated += u'مبلغ : %s ' % self.amount
             description = u'تعديل العقوبة لجميع الموظفين ' + field_updated
             val = {
@@ -65,11 +65,11 @@ class WizardSanctionAction(models.TransientModel):
                 'order_date': self.order_date,
                 'action': description
             }
-            if self.days_number:
+            if self.days_number and sanction.type_sanction.deduction == True :
                 for line in sanction.line_ids:
                     line.days_difference = line.days_number - self.days_number
                     line.days_number = self.days_number
-            if self.amount:
+            if self.amount and sanction.type_sanction.deduction == True :
                 for line in sanction.line_ids:
                     line.amount_difference = line.amount - self.amount
                     line.amount = self.amount

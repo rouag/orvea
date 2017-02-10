@@ -2,7 +2,7 @@
 <openerp>
 	<data>
 
-	<!-- أنواع العقوبات -->
+		<!-- أنواع العقوبات -->
 
 		<record model="ir.ui.view" id="hr_type_sanction_tree">
 			<field name="name">hr.type.sanction.tree</field>
@@ -14,10 +14,12 @@
 					<field name="code" />
 					<field name="min_grade_id" />
 					<field name="max_grade_id" />
+					<field name="deduction" />
+
 				</tree>
 			</field>
 		</record>
-		
+
 		<record model="ir.ui.view" id="hr_type_sanction_form">
 			<field name="name">hr.type.sanction.form</field>
 			<field name="model">hr.type.sanction</field>
@@ -41,7 +43,7 @@
 				</form>
 			</field>
 		</record>
-		
+
 		<record model="ir.actions.act_window" id="action_hr_type_sanction">
 			<field name="name"> أنواع العقوبات</field>
 			<field name="res_model">hr.type.sanction</field>
@@ -53,7 +55,7 @@
 			sequence="28" parent="hr_root_organisation_configuration" action="action_hr_type_sanction" />
 
 		<!-- العقوبات -->
-		
+
 		<record model="ir.ui.view" id="hr_sanction_tree">
 			<field name="name">hr.sanction.tree</field>
 			<field name="model">hr.sanction</field>
@@ -62,13 +64,14 @@
 				<tree string="العقوبات">
 					<field name="name" />
 					<field name="order_date" />
+					<field name="type_sanction" />
 					<field name="date_sanction_start" />
 					<field name="date_sanction_end" />
 					<field name="state" />
 				</tree>
 			</field>
 		</record>
-		
+
 		<record model="ir.ui.view" id="hr_sanction_form">
 			<field name="name">hr.sanction.form</field>
 			<field name="model">hr.sanction</field>
@@ -83,9 +86,9 @@
 						<button name="action_refuse" string="رفض" type="object"
 							states="waiting" groups="smart_hr.group_responsable_sanction" />
 
-						<button name="action_extern" string="موافق" type="object" 
+						<button name="action_extern" string="موافق" type="object"
 							states="extern" groups="smart_hr.group_third_party_sanction" />
-						
+
 						<button name="action_update" string="موافق" type="object"
 							states="update" groups="smart_hr.group_third_party_sanction" />
 						<button name="action_refuse_update" string="رفض" type="object"
@@ -96,25 +99,34 @@
 							groups="smart_hr.group_third_party_sanction" icon="fa-times-circle-o"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
- 						<button name="%(smart_hr.action_wizard_sanction_action_update_all)d" type="action" string="تعديل"  icon="fa-times-circle-o" 
-							  context="{'action':'update_all'}" 	groups="smart_hr.group_third_party_sanction" 
-							  class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-							  
-						<field name="state" widget="statusbar" statusbar_visible="draft,waiting,extern,done" />  
+						<button name="%(smart_hr.action_wizard_sanction_action_update_all)d"
+							type="action" string="تعديل" icon="fa-refresh" states="done"
+							context="{'action':'update_all'}" groups="smart_hr.group_third_party_sanction"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<field name="state" widget="statusbar" statusbar_visible="draft,waiting,extern,done" />
 
 					</header>
 					<sheet>
-
 						<group>
 							<group>
 								<field name="name" />
-								<field name="order_date" /> 
-								<field name="order_picture"  />
+								<field name="order_date" />
+								<field name="order_picture" />
 							</group>
 							<group>
-								<field name="type_sanction"/>
+								<field name="type_sanction" />
 								<field name="date_sanction_start" />
-								<field name="date_sanction_end"/>
+								<field name="date_sanction_end"
+									attrs="{'invisible':[('state', 'not in', ['cancel'])] ,'readonly':[('state', 'in', ['cancel'])]}" />
+							</group>
+							<group>
+								<field name="number_sanction"
+									attrs="{'invisible':[('state', 'not in', ['extern', 'done'])],'required':[('state','=','extern')],'readonly':[('state', 'in', ['done'])]}" />
+								<field name="date_sanction"
+									attrs="{'invisible':[('state', 'not in', ['extern', 'done'])],'required':[('state','=','extern')],'readonly':[('state', 'in', ['done'])]}" />
+								<field name="file_sanction"
+									attrs="{'invisible':[('state', 'not in', ['extern', 'done'])],'required':[('state','=','extern')],'readonly':[('state', 'in', ['done'])]}" />
 							</group>
 						</group>
 
@@ -124,23 +136,45 @@
 									<group>
 										<field name="line_ids" nolabel="1">
 											<tree editable="bottom">
-												<field name="employee_id"  />
+												<field name="employee_id" />
 												<field name="type_sanction" invisible="1" />
 												<field name="state_sanction" invisible="1" />
-												<field name="days_number"  />
+												<field name="days_number" />
 												<field name="amount" />
+												<field name="mast" />
+												<field name="deduction" />
 												<field name="state" />
-												<button name="%(smart_hr.action_wizard_sanction_action_exclusion)d" type="action" string="إستبعاد"  icon="STOCK_CANCEL" 
-											    attrs="{'invisible':[('state_sanction','!=','done')]}" context="{'action':'exclusion'}"  />
-											    <button name="%(smart_hr.action_wizard_sanction_action_update)d" type="action" string="تعديل"  icon="fa-times-circle-o" 
-											    attrs="{'invisible':[('state_sanction','!=','done')]}" context="{'action':'update'}"  />
-											    
+												<button
+													name="%(smart_hr.action_wizard_sanction_action_exclusion)d"
+													type="action" string="إستبعاد" icon="STOCK_CANCEL"
+													attrs="{'invisible':[('state_sanction','!=','done')]}"
+													context="{'action':'exclusion'}" />
+												<button name="%(smart_hr.action_wizard_sanction_action_update)d"
+													type="action" string="تعديل" icon="fa-refresh"
+													attrs="{'invisible':[('state_sanction','!=','done')]}"
+													context="{'action':'update'}" />
 											</tree>
 										</field>
-										
-										
 									</group>
+									
 								</page>
+								<page string=" الفروقات">
+									<field name="difference_ids" nolabel="1" readonly="1" attrs="{'invisible':[('state', 'not in', ['done'])]}">
+											<tree editable="bottom">
+												<field name="employee_id" />
+												<field name="type_sanction" invisible="1" />
+												<field name="state_sanction" invisible="1" />
+												<field name="days_number" />
+												<field name="amount" />
+												<field name="mast" />
+												<field name="deduction" />
+												<field name="days_difference" />
+													<field name="amount_difference" />
+												
+										</tree>
+									</field>
+								</page>
+								
 								<page string="سجل التغييرات">
 									<field name="history_ids" nolabel="1" readonly="1">
 										<tree editable="bottom">
@@ -148,7 +182,7 @@
 											<field name="create_date" string="التاريخ" />
 											<field name="create_uid" string="المستخدم" />
 											<field name="order_date" />
-											<field name="employee_id"  />
+											<field name="employee_id" />
 											<field name="reason" />
 										</tree>
 									</field>

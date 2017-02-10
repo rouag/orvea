@@ -13,7 +13,7 @@ class HrAppraisal(models.Model):
     _rec_name = 'employee_id'
 
 
-    parent_emplyee_id  = fields.Many2one('hr.employee', related='employee_id.parent_id', string='المدير المباشر', store=True)
+    parent_emplyee_id  = fields.Many2one('hr.employee', string='المدير المباشر', store=True)
     parent_emplyee = fields.Boolean(string='المدير المباشر', help="This employee will be appraised by his colleagues")
     parent_emplyee_survey_id = fields.Many2one('survey.survey', string="المدير المباشر")
 

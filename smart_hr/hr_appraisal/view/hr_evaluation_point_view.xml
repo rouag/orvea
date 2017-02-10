@@ -102,7 +102,7 @@
 			</field>
 		</record>
 		<menuitem id="menu_hr_evaluation" action="action_hr_evaluation"
-			parent="menu_surveys_configuration_samart" sequence="10" name="عناصر المفاضلة" />
+			parent="menu_surveys_hr" sequence="10" name="عناصر المفاضلة" />
 			
 			<!-- إعدادات نتائج تقييم موظف -->
 
@@ -143,7 +143,7 @@
 			</field>
 		</record>
 		<menuitem id="menu_hr_evaluation_result_foctionality" action="action__hr_evaluation_result_foctionality"
-			parent="menu_surveys_configuration_samart" sequence="11" />
+			parent="menu_surveys_hr" sequence="11" />
 
 		
 
