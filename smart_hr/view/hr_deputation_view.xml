@@ -237,6 +237,11 @@
                   sequence="35"
                   parent="hr_root_employee_configuration"
                   name="فئات الدول"/>
+                  
+                  
+                  
+         <!-- الإعدادات -->
+         <menuitem id="hr_root_deputation_configuration" name="الإعدادات" sequence="100" parent="menu_hr_deputation_root" groups="smart_hr.group_hrm"/>
 
     </data>
 </openerp>
