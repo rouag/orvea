@@ -30,6 +30,10 @@
 							<field name="date" />
 							<field name="employee_id" />
 							<field name="decision_type_id" />
+							<field name="num_speech" attrs="{'invisible':[('decision_type_id', '!=',%(data_decision_type38)d)],
+							'required':[('decision_type_id', '=',%(data_decision_type38)d)]}"/>
+							<field name="date_speech" attrs="{'invisible':[('decision_type_id', '!=',%(data_decision_type38)d)],
+							'required':[('decision_type_id', '=',%(data_decision_type38)d)]}"/>
 						</group>
 						<field name="text" />
 					</sheet>

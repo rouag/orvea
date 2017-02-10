@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data noupdate="0">
-	
+
 		<record id="group_payroll_management" model="res.groups">
 			<field name="category_id" ref="base.module_category_human_resources" />
 			<field name="name">إدارة الرواتب</field>
 		</record>
- 
- 		<record id="group_payroll_setting" model="res.groups">
+
+		<record id="group_payroll_setting" model="res.groups">
 			<field name="category_id" ref="base.module_category_human_resources" />
 			<field name="name">إعدادات الرواتب</field>
 		</record>
-		
- 		<record id="group_bonus_management" model="res.groups">
+
+		<record id="group_bonus_management" model="res.groups">
 			<field name="category_id" ref="base.module_category_human_resources" />
 			<field name="name">إسناد المزايا المالية</field>
 		</record>
@@ -21,7 +21,18 @@
 			<field name="category_id" ref="base.module_category_human_resources" />
 			<field name="name">إدارة القروض</field>
 		</record>
-		 
- 
- </data>
+		
+		<record id="group_increase_employee" model="res.groups">
+			<field name="category_id" ref="base.module_category_human_resources" />
+			<field name="name">الموظف المختص-العلاوة</field>
+		</record>
+		
+		<record id="group_increase_manager" model="res.groups">
+			<field name="category_id" ref="base.module_category_human_resources" />
+			<field name="name">صاحب صلاحية-العلاوة</field>
+			<field name="implied_ids" eval="[(4, ref('group_increase_employee'))]"></field>
+		</record>
+
+
+	</data>
 </openerp>

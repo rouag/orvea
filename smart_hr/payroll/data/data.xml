@@ -151,9 +151,9 @@
 			<field name="name">الصافي المستحق</field>
 			<field name="code">NET</field>
 		</record>
-		
+
 		<!-- قواعد إحتساب الرواتب -->
-		
+
 		<record id="hr_rule_basic" model="hr.salary.rule">
 			<field name="name">الراتب الأساسي</field>
 			<field name="sequence" eval="1" />
@@ -211,9 +211,10 @@
 			<field name="category_id" ref="smart_hr.TOT" />
 			<field name="condition_select">none</field>
 			<field name="amount_select">code</field>
-			<field name="amount_python_compute">result = categories.BASIC + categories.ALW + categories.REW + categories.INDE</field>
+			<field name="amount_python_compute">result = categories.BASIC + categories.ALW +
+				categories.REW + categories.INDE</field>
 		</record>
-		
+
 		<record id="hr_rule_deduction" model="hr.salary.rule">
 			<field name="name">الحسميات</field>
 			<field name="sequence" eval="7" />
@@ -222,7 +223,7 @@
 			<field name="condition_select">none</field>
 			<field name="amount_select">code</field>
 			<field name="amount_python_compute">result = employee.get_deduction_amount()</field>
-		</record>		
+		</record>
 
 		<record id="hr_rule_insurance" model="hr.salary.rule">
 			<field name="name">التأمين</field>
@@ -234,8 +235,8 @@
 			<field name="amount_percentage_base">employee.wage</field>
 			<field name="quantity">1</field>
 			<field name="amount_percentage">-10.0</field>
-		</record>		
-		
+		</record>
+
 		<record id="hr_rule_net" model="hr.salary.rule">
 			<field name="name">الصافي المستحق</field>
 			<field name="sequence" eval="9" />
@@ -243,20 +244,24 @@
 			<field name="category_id" ref="smart_hr.NET" />
 			<field name="condition_select">none</field>
 			<field name="amount_select">code</field>
-			<field name="amount_python_compute">result = categories.BASIC + categories.ALW + categories.REW + categories.INDE + categories.DED + categories.INS</field>
+			<field name="amount_python_compute">result = categories.BASIC + categories.ALW +
+				categories.REW + categories.INDE + categories.DED + categories.INS
+			</field>
 		</record>
 
-        <!-- هياكل الرواتب -->
+		<!-- هياكل الرواتب -->
 
-         <record id="structure_base_hr" model="hr.payroll.structure">
-            <field name="code">BASE-HR</field>
-            <field name="name">الهيكل الأساسي</field>
-            <field eval="[(6, 0, [ref('hr_rule_basic'), ref('hr_rule_allowance_transport'),ref('hr_rule_allowance_house'),ref('hr_rule_reward'),ref('hr_rule_indemnity'),ref('hr_rule_total'),ref('hr_rule_deduction'),ref('hr_rule_insurance'),ref('hr_rule_net')])]" name="rule_ids"/>
-            <field name="company_id" ref="base.main_company"/>
-        </record>
-        	 							
-        <!-- أنواع الحسميات-->
-        
+		<record id="structure_base_hr" model="hr.payroll.structure">
+			<field name="code">BASE-HR</field>
+			<field name="name">الهيكل الأساسي</field>
+			<field
+				eval="[(6, 0, [ref('hr_rule_basic'), ref('hr_rule_allowance_transport'),ref('hr_rule_allowance_house'),ref('hr_rule_reward'),ref('hr_rule_indemnity'),ref('hr_rule_total'),ref('hr_rule_deduction'),ref('hr_rule_insurance'),ref('hr_rule_net')])]"
+				name="rule_ids" />
+			<field name="company_id" ref="base.main_company" />
+		</record>
+
+		<!-- أنواع الحسميات -->
+
 		<record id="hr_deduction_type_01" model="hr.deduction.type">
 			<field name="name">‫‫غياب‬ بعذر‬‬</field>
 			<field name="code">01</field>
@@ -266,17 +271,25 @@
 			<field name="name">‫غياب‬ بدون عذر‬‬</field>
 			<field name="code">02</field>
 			<field name="type">absence</field>
-		</record>		
+		</record>
 		<record id="hr_deduction_type_03" model="hr.deduction.type">
 			<field name="name">‫تأخير‬‬</field>
 			<field name="code">03</field>
 			<field name="type">retard_leave</field>
-		</record>	
+		</record>
 		<record id="hr_deduction_type_04" model="hr.deduction.type">
 			<field name="name">‫خروج مبكر‬‬</field>
 			<field name="code">04</field>
 			<field name="type">retard_leave</field>
-		</record>	
-				‫
+		</record>
+
+
+		<!-- أنواع العلاوة -->
+
+		<record id="hr_increase_type_01" model="hr.increase.type">
+			<field name="name">‫‫علاوة سنويّة‬‬</field>
+			<field name="code">01</field>
+		</record>
+		‫
 	</data>
 </openerp>

@@ -2,6 +2,7 @@
 
 from openerp import models, api, fields, _
 from openerp.exceptions import ValidationError
+from datetime import date, datetime, timedelta
 
 MONTHS = [('01', 'محرّم'),
           ('02', 'صفر'),
@@ -31,10 +32,11 @@ class hrBonus(models.Model):
     date = fields.Date(string=' التاريخ ', required=1, readonly=1, states={'new': [('readonly', 0)]})
     month_from = fields.Selection(MONTHS, string='الفترة', required=1, readonly=1, states={'new': [('readonly', 0)]})
     month_to = fields.Selection(MONTHS, string='إلى', required=1, readonly=1, states={'new': [('readonly', 0)]})
-    type = fields.Selection([('allowance', 'بدل'), ('reward', 'مكافأة'), ('indemnity', 'تعويض')], string='النوع', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    type = fields.Selection([('allowance', 'بدل'), ('reward', 'مكافأة'), ('indemnity', 'تعويض'), ('increase', 'علاوة')], string='النوع', required=1, readonly=1, states={'new': [('readonly', 0)]})
     allowance_id = fields.Many2one('hr.allowance.type', string='البدل', readonly=1, states={'new': [('readonly', 0)]})
     reward_id = fields.Many2one('hr.reward.type', string='المكافأة', readonly=1, states={'new': [('readonly', 0)]})
     indemnity_id = fields.Many2one('hr.indemnity.type', string='التعويض', readonly=1, states={'new': [('readonly', 0)]})
+    increase_id = fields.Many2one('hr.increase.type', string='العلاوة', readonly=1, states={'new': [('readonly', 0)]})
     compute_method = fields.Selection([('amount', 'مبلغ'),
                                        ('percentage', 'نسبة من الراتب الأساسي'),
                                        ('formula_1', 'نسبة‬ البدل‬ * راتب‬  الدرجة‬ الاولى‬  من‬ المرتبة‬  التي‬ يشغلها‬ الموظف‬'),
@@ -70,6 +72,21 @@ class hrBonus(models.Model):
     def action_refuse(self):
         self.state = 'cancel'
 
+    @api.multi
+    def import_employee_beneficiaries_ids(self):
+        self.ensure_one()
+        line_ids = self.line_ids
+        employee_ids = []
+        increase_ids = self.env['hr.employee.increase.percent'].search([('increase_id.date', '<=', datetime.now()), ('increase_id.date', '>=', datetime.now().replace(day=1, month=1)), ('increase_id.state', '=', 'done'),
+                                                       ('increase_percent', '=', self.percentage)])
+        for emp in increase_ids:
+            self.env['hr.bonus.line'].create({'bonus_id': self.id,
+                                              'employee_id': emp.employee_id.id,
+                                              'compute_method':self.compute_method,
+                                              'month_from': self.month_from,
+                                              'month_to': self.month_to,
+                                          })
+
 
 class hrBonusCity(models.Model):
     _name = 'hr.bonus.city'
@@ -94,6 +111,7 @@ class hrBonusLine(models.Model):
     allowance_id = fields.Many2one('hr.allowance.type', string='البدل')
     reward_id = fields.Many2one('hr.reward.type', string='المكافأة')
     indemnity_id = fields.Many2one('hr.indemnity.type', string='التعويض')
+    increase_id = fields.Many2one('hr.increase.type', string='العلاوة')
     month_from = fields.Selection(MONTHS, string='الفترة', required=1, readonly=1, states={'new': [('readonly', 0)]})
     month_to = fields.Selection(MONTHS, string='إلى', required=1, readonly=1, states={'new': [('readonly', 0)]})
     amount = fields.Float(string='القيمة')

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<!-- العلاوة -->
+
+		<record model="ir.ui.view" id="hr_increase_tree">
+			<field name="name">hr.increase.tree</field>
+			<field name="model">hr.increase</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="العلاوة">
+					<field name="name" invisible="1" />
+					<field name="date" />
+					<field name="number_decision" />
+					<field name="date_decision" />
+					<field name="increase_id" />
+					<field name="reasons" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_increase_form">
+			<field name="name">hr.increase.form</field>
+			<field name="model">hr.increase</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="العلاوة">
+					<header>
+						<button name="action_pim" string="إرسال للإعتماد" type="object"
+							states="draft" groups="smart_hr.group_increase_employee" />
+						<button name="action_hrm" string="إعتماد" type="object"
+							states="pim" groups="smart_hr.group_increase_manager" />
+						<button name="action_refuse" string="رفض" type="object"
+							states="pim" groups="smart_hr.group_increase_manager" />
+						<button name="action_pim2" string="إعتماد" type="object"
+							states="hrm" groups="smart_hr.group_hrm" />
+						<button name="action_done" string="إعتماد" type="object"
+							states="pim2" groups="smart_hr.group_increase_manager" />
+						<button name="action_refuse_pim2" string="رفض" type="object"
+							states="pim2" groups="smart_hr.group_increase_manager" />
+
+						<field name="state" widget="statusbar" statusbar_visible="draft,pim,hrm,pim2,done" />
+					</header>
+					<sheet>
+						<group>
+							<group>
+								<field name="name" invisible="1" />
+								<field name="date" />
+								<field name="number_decision" />
+								<field name="date_decision" />
+								<field name="increase_id" options="{'no_create_edit': True}"/>
+								<field name="reasons" />
+							</group>
+							<group />
+						</group>
+
+						<notebook>
+							<page string="الموظفين المستثنين من العلاوة">
+								<field name="employee_deprivated_ids" nolabel="1" options="{'no_create_edit': True}" domain="[('type_id','!=',%(data_salary_grid_type6)d)]"
+									 attrs="{'readonly':[('state','not in',['draft','pim'])]}">
+									<tree>
+										<field name="name" />
+										<field name="department_id" />
+									</tree>
+								</field>
+							</page>
+							<page string="الموظفين المستحقين للعلاوة"
+								attrs="{'invisible':[('state','not in',['hrm','pim2','done'])]}">
+								<field name="employee_beneficiaries_ids"
+									attrs="{'required':[('state','=','hrm')],'readonly':[('state','=','done')]}"
+									nolabel="1">
+									<tree editable="bottom">
+										<field name="employee_id" />
+										<field name="increase_percent" />
+
+									</tree>
+								</field>
+							</page>
+						</notebook>
+						<group>
+							<field name="note" />
+						</group>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"
+							groups="base.group_user" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+				</form>
+			</field>
+		</record>
+
+
+		<record model="ir.actions.act_window" id="action_hr_increase">
+			<field name="name">العلاوة</field>
+			<field name="res_model">hr.increase</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="hr_increase_menu" name="العلاوة" sequence="10"
+			groups="smart_hr.group_increase_employee,smart_hr.group_hrm" parent="hr_root_organisation_action"
+			action="action_hr_increase" />
+
+
+		<record model="ir.ui.view" id="hr_increase_percent_tree">
+			<field name="name">hr.employee.increase.percent.tree</field>
+			<field name="model">hr.employee.increase.percent</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="employee_id" />
+					<field name="increase_percent" />
+
+				</tree>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_increase_percent_form">
+			<field name="name">hr.employee.increase.percent.form</field>
+			<field name="model">hr.employee.increase.percent</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form>
+					<group>
+						<field name="employee_id" />
+						<field name="increase_percent" />
+					</group>
+				</form>
+			</field>
+		</record>
+	</data>
+</openerp>
+

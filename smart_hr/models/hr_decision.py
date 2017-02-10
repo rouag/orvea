@@ -2,6 +2,7 @@
 
 
 from openerp import models, fields, api, _
+from datetime import date, datetime, timedelta
 
 
 class HrDecision(models.Model):
@@ -12,21 +13,25 @@ class HrDecision(models.Model):
     name = fields.Char(string='قرار إداري رقم', required=1)
     decision_type_id = fields.Many2one('hr.decision.type', string='نوع القرار', required=1)
     date = fields.Date(string='بتاريخ', required=1)
-    employee_id=fields.Many2one('hr.employee',string='الموظف',required=1)
+    employee_id = fields.Many2one('hr.employee', string='الموظف', required=1)
     text = fields.Html(string='نص القرار')
-    
-             
+    num_speech = fields.Char(string='رقم الخطاب', required=1)
+    date_speech = fields.Date(string='تاريخ الخطاب', required=1)
+
+    @api.onchange('num_speech')
+    def onchange_num_speech(self):
+        self.onchange_decision_type_id()
+
+    @api.onchange('date_speech')
+    def onchange_date_speech(self):
+        self.onchange_decision_type_id()
+
     @api.onchange('decision_type_id')
     def onchange_decision_type_id(self):
-        
-         employee_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('state', '=', 'done')],limit=1)
-         print"employee_line",employee_line
-         if employee_line :
-            
-            decision_type_line = self.env['hr.decision.type'].search([('id', '=', self.decision_type_id.id)
-                                        ])
-            
-            if decision_type_line :
+        employee_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id), ('state', '=', 'done')], limit=1)
+        if employee_line:
+            decision_type_line = self.env['hr.decision.type'].search([('id', '=', self.decision_type_id.id)])
+            if decision_type_line:
                 #information employee  old job
                     employee = self.employee_id.name or ""
                     dattz = self.date or ""
@@ -40,7 +45,8 @@ class HrDecision(models.Model):
                     emp_grade_id = employee_line.emp_grade_id.name or ""
                     emp_degree_id = employee_line.emp_degree_id.name or ""
                     emp_basic_salary = employee_line.emp_basic_salary   or ""
-                    
+                    current_year = datetime.now().year
+                    emp_city = self.employee_id.dep_city.name or ""
                 #information employee  new job  
                     numero = self.name or ""
                     job_id = employee_line.job_id.name.name or ""
@@ -54,7 +60,8 @@ class HrDecision(models.Model):
                     transport_allow = employee_line.transport_allow or ""
                     retirement = employee_line.retirement or ""
                     net_salary = employee_line.net_salary or ""
-                    
+                    num_speech = self.num_speech or ""
+                    date_speech = self.date_speech or ""
                     if decision_type_line.text:
                         rel_text = decision_type_line.text
                         rep_text = rel_text.replace('EMPLOYEE',unicode(employee))
@@ -78,6 +85,10 @@ class HrDecision(models.Model):
                         rep_text = rep_text.replace('grade',unicode(emp_grade_id))
                         rep_text = rep_text.replace('basicsalaire',unicode(emp_basic_salary))
                         rep_text = rep_text.replace('department',unicode(emp_department_id))
+                        rep_text = rep_text.replace('DATESTARTINCREASE',unicode(current_year))
+                        rep_text = rep_text.replace('CITY',unicode(emp_city))
+                        rep_text = rep_text.replace('NumSpeech',unicode(num_speech))
+                        rep_text = rep_text.replace('DateSpeech',unicode(date_speech))
                         self.text = rep_text
                 
 class HrDecisionType(models.Model):

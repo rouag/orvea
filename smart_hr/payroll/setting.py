@@ -72,3 +72,22 @@ class HrInsuranceType(models.Model):
             name = '[%s] %s' % (record.code, record.name)
             result.append((record.id, name))
         return result
+
+
+class HrIncrease(models.Model):
+    _name = 'hr.increase.type'
+    _description = u'أنواع العلاوة'
+
+    name = fields.Char(string='المسمى', required=1)
+    code = fields.Char(string='الرمز')
+    note = fields.Text(string='ملاحظات')
+
+    @api.multi
+    def name_get(self):
+        result = []
+        for record in self:
+            name = '[%s] %s' % (record.code, record.name)
+            result.append((record.id, name))
+        return result
+    
+    
