@@ -183,7 +183,7 @@ class hr_promotion(models.Model):
             try:    
                 education_level_job= emp_promotion.job_id.serie_id.hr_classment_job_ids[0].level_education_id.nomber_year_education 
             except:
-                education_level_job=false
+                education_level_job=False
             if education_level_job:
                 for education_level_emp in emp_promotion.education_level_ids:
                     if education_level_emp.level_education_id.nomber_year_education - education_level_job >0:
