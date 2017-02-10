@@ -1,171 +1,194 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <openerp>
-    <data>
+	<data>
 
-        <!--
-            Promotion Decision
-        -->
-        <record id="view_form_hr_promotions" model="ir.ui.view">
-            <field name="name">hr.promotion.form</field>
-            <field name="model">hr.promotion</field>
-            <field name="arch" type="xml">
-                <form string="محضر ترقية ">
-                    
+		<!-- Promotion Decision -->
+		<record id="view_form_hr_promotions" model="ir.ui.view">
+			<field name="name">hr.promotion.form</field>
+			<field name="model">hr.promotion</field>
+			<field name="arch" type="xml">
+				<form string="محضر ترقية ">
+
 					<header>
-						<button name="button_confirmed" string="تدقيق" type="object" states="draft" />
-						<button name="button_employee_promotion" string="إرسال" type="object" states="confirmed" />
-						<button name="button_job_promotion" string="إرسال" type="object" states="employee_promotion" />
-						<button name="button_transfer_manager" string="إرسال  " type="object" states="job_promotion" />
-						<button name="button_transfer_minister" string="إرسال " type="object" states="manager" />
-						<button name="button_transfer_hrm" string="إرسال" type="object" states="minister" />
-						<button name="button_done" string="موافقة " type="object" states="hrm" />
-						<button name="button_refused" string="رفض " type="object"   attrs="{'invisible': ['|',('state', '=', 'draft'),('state', '=', 'done')]}" />
-                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,employee_promotion,job_promotion,manager,minister,hrm,done,refuse"/> 
-                     </header> 
-                    <sheet>
-                    <group>
-                    		<field name="date" readonly="1"/>
-                            <field name="name" readonly="1" attrs="{'invisible': [('state', '=', 'draft')]}"/>
-                            
-                        </group>
-                       <group string="بيانات الخطاب" col="6" attrs="{'invisible':[('state','!=','minister'),('state','!=','hrm'),('state', '!=', 'done')]}">
-								<field name="speech_number" 
-									attrs="{'invisible':[('state','!=','minister'),('state','!=','hrm'),('state', '!=', 'done')],'required' :[('state','=','minister')]}" />
-								<field name="speech_date" 
-									attrs="{'invisible':[('state','!=','minister')],'required' :[('state','=','minister')]}" />
-								<field name="speech_file" 
-									attrs="{'invisible':[('state','!=','minister')],'required' :[('state','=','minister')]}" />
+						<button name="button_confirmed" string="تدقيق" type="object"
+							states="draft" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="button_employee_promotion" string="إرسال"
+							type="object" states="confirmed" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="button_job_promotion" string="إرسال" type="object"
+							states="employee_promotion" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="button_transfer_manager" string="إرسال  "
+							type="object" states="job_promotion" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="button_transfer_minister" string="إرسال "
+							type="object" states="manager" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="button_transfer_hrm" string="إرسال" type="object"
+							states="minister" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="button_done" string="موافقة " type="object"
+							states="hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="%(action_hr_refuse_wizard)d" string="رفض" type="action"
+							attrs="{'invisible': ['|',('state', '=', 'draft'),('state', '=', 'done')]}"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<field name="state" widget="statusbar"
+							statusbar_visible="draft,confirmed,employee_promotion,job_promotion,manager,minister,hrm,done,refuse" />
+					</header>
+					<sheet>
+						<group>
+							<field name="date" readonly="1" />
+							<field name="name" readonly="1"
+								attrs="{'invisible': [('state', '=', 'draft')]}" />
 
-							</group>
-	                       
-	                        <group string="بيانات القرار" col="6" attrs="{'invisible':[('state','!=','minister'),('state','!=','hrm'),('state', '!=', 'done')]}">
-								<field name="decision_number" 
-									attrs="{'invisible':[('state','!=','hrm'),('state', '!=', 'done')],'required' :[('state','=','hrm')]}" />
-								<field name="dicision_date" 
-									attrs="{'invisible':[('state','!=','hrm'),('state', '!=', 'done')],'required' :[('state','=','hrm')]}" />
-								<field name="dicision_file" 
-									attrs="{'invisible':[('state','!=','hrm'),('state', '!=', 'done')],'required' :[('state','=','hrm')]}" />
-									<field name="date_direct_action" 
-									attrs="{'invisible':[('state','!=','hrm'),('state', '!=', 'done')],'required' :[('state','=','hrm')]}" />
-									
+						</group>
+						<group string="بيانات الخطاب" col="6"
+							attrs="{'invisible':[('state','!=','minister'),('state','!=','hrm'),('state', '!=', 'done')]}">
+							<field name="speech_number"
+								attrs="{'invisible':[('state','!=','minister'),('state','!=','hrm'),('state', '!=', 'done')],'required' :[('state','=','minister')]}" />
+							<field name="speech_date"
+								attrs="{'invisible':[('state','!=','minister')],'required' :[('state','=','minister')]}" />
+							<field name="speech_file"
+								attrs="{'invisible':[('state','!=','minister')],'required' :[('state','=','minister')]}" />
 
-							</group>
-	                       
-	                       <notebook>
-							<page string="قائمة الموظفين المؤهلين للترقية" attrs="{'invisible': [('state', '!=', 'draft'),('state', '!=', 'confirmed')]}">
-	                       <field name="employee_promotion_line_ids" >
-									<tree  >
-										<field name="employee_id" readonly="1"/>
-										<field name="demande_promotion_id" readonly="1"/>
-										<field name="old_job_id" readonly="1"/>
-										<field name="old_number_job" readonly="1"/>
-										<field name="emp_department_old_id" readonly="1"/>
+						</group>
+
+						<group string="بيانات القرار" col="6"
+							attrs="{'invisible':[('state','!=','minister'),('state','!=','hrm'),('state', '!=', 'done')]}">
+							<field name="decision_number"
+								attrs="{'invisible':[('state','!=','hrm'),('state', '!=', 'done')],'required' :[('state','=','hrm')]}" />
+							<field name="dicision_date"
+								attrs="{'invisible':[('state','!=','hrm'),('state', '!=', 'done')],'required' :[('state','=','hrm')]}" />
+							<field name="dicision_file"
+								attrs="{'invisible':[('state','!=','hrm'),('state', '!=', 'done')],'required' :[('state','=','hrm')]}" />
+							<field name="date_direct_action"
+								attrs="{'invisible':[('state','!=','hrm'),('state', '!=', 'done')],'required' :[('state','=','hrm')]}" />
+
+
+						</group>
+
+						<notebook>
+							<page string="قائمة الموظفين المؤهلين للترقية"
+								attrs="{'invisible': [('state', '!=', 'draft'),('state', '!=', 'confirmed')]}">
+								<field name="employee_promotion_line_ids">
+									<tree>
+										<field name="employee_id" readonly="1" />
+										<field name="demande_promotion_id" readonly="1" />
+										<field name="old_job_id" readonly="1" />
+										<field name="old_number_job" readonly="1" />
+										<field name="emp_department_old_id" readonly="1" />
 										<field name="emp_grade_id_old" readonly="1" />
-										<field name="point_seniority" readonly="1"/>
-										<field name="point_education" readonly="1"/>
-										<field name="point_training" readonly="1"/>
-										<field name="point_functionality" readonly="1"/>
-										<field name="sum_point" readonly="1"/>
-										<field name="state" invisible="1"/>
-										<button name="employee_pause"  class="oe_highlight" type="object" string="تأجيل" attrs="{'invisible': [('state', '=', 'draft')]}"/>
-										<field name="emplyoee_state" readonly="1"/>
+										<field name="point_seniority" readonly="1" />
+										<field name="point_education" readonly="1" />
+										<field name="point_training" readonly="1" />
+										<field name="point_functionality" readonly="1" />
+										<field name="sum_point" readonly="1" />
+										<field name="state" invisible="1" />
+										<button name="employee_pause" class="oe_highlight"
+											type="object" string="تأجيل"
+											attrs="{'invisible': [('state', '=', 'draft')]}" />
+										<field name="emplyoee_state" readonly="1" />
 									</tree>
 								</field>
-	                       </page>
-	                       
-	                       <page string="قائمة الوظائف الشاغرة" attrs="{'invisible': [('state', '!=', 'employee_promotion')]}" >
-	                       <field name="job_promotion_line_ids">
-									<tree editable="buttom" create = "0" delete="0" >
+							</page>
+
+							<page string="قائمة الوظائف الشاغرة"
+								attrs="{'invisible': [('state', '!=', 'employee_promotion')]}">
+								<field name="job_promotion_line_ids">
+									<tree editable="buttom" create="0" delete="0">
 										<field name="new_job_id" domain="[('state','=','unoccupied')]" />
 										<field name="new_number_job" />
 										<field name="emp_grade_id_new" />
-										<button name="job_reserved"  class="oe_highlight" type="object" string="حجز" attrs="{'invisible': [('job_state', '=', True)]}"/>
-										<button name="job_in_reserved"  class="oe_highlight" type="object" string="فك حجز" attrs="{'invisible': [('job_state', '!=', True)]}"/>
-										<field name="job_state" readonly="1"/>
-										
+										<button name="job_reserved" class="oe_highlight" type="object"
+											string="حجز" attrs="{'invisible': [('job_state', '=', True)]}" />
+										<button name="job_in_reserved" class="oe_highlight"
+											type="object" string="فك حجز"
+											attrs="{'invisible': [('job_state', '!=', True)]}" />
+										<field name="job_state" readonly="1" />
+
 									</tree>
 								</field>
-	                       </page>
-	                       <page string="قائمة الترشيحات" attrs="{'invisible': [('state', '!=', 'job_promotion'),('state', '!=', 'manager'),('state', '!=', 'minister'),('state', '!=', 'hrm'),('state', '!=', 'done')]}">
-	                       <field name="employee_job_promotion_line_ids">
-	                       <tree  editable="buttom" create = "0" delete="0">
-										<field name="employee_id" readonly="1"/>
-										<field name="demande_promotion_id" readonly="1"/>
-										<field name="old_job_id" readonly="1"/>
-										<field name="old_number_job" readonly="1"/>
-										<field name="emp_department_old_id" readonly="1"/>
+							</page>
+							<page string="قائمة الترشيحات"
+								attrs="{'invisible': [('state', '!=', 'job_promotion'),('state', '!=', 'manager'),('state', '!=', 'minister'),('state', '!=', 'hrm'),('state', '!=', 'done')]}">
+								<field name="employee_job_promotion_line_ids">
+									<tree editable="buttom" create="0" delete="0">
+										<field name="employee_id" readonly="1" />
+										<field name="demande_promotion_id" readonly="1" />
+										<field name="old_job_id" readonly="1" />
+										<field name="old_number_job" readonly="1" />
+										<field name="emp_department_old_id" readonly="1" />
 										<field name="emp_grade_id_old" readonly="1" />
-										<field name="point_seniority" readonly="1"/>
-										<field name="point_education" readonly="1"/>
-										<field name="point_training" readonly="1"/>
-										<field name="point_functionality" readonly="1"/>
-										<field name="sum_point" readonly="1"/>
+										<field name="point_seniority" readonly="1" />
+										<field name="point_education" readonly="1" />
+										<field name="point_training" readonly="1" />
+										<field name="point_functionality" readonly="1" />
+										<field name="sum_point" readonly="1" />
 										<field name="new_job_id" />
-										<field name="new_number_job" readonly="1"/>
-										<field name="emp_grade_id_new"  readonly="1"/>
-										</tree>
-										
-									
+										<field name="new_number_job" readonly="1" />
+										<field name="emp_grade_id_new" readonly="1" />
+									</tree>
+
+
 								</field>
-	                       </page>
-	                       </notebook>
-                       
-                    </sheet>
-                </form>
-            </field>
-        </record>
-        <record id="view_tree_hr_promotions" model="ir.ui.view">
-            <field name="name">hr.promotion.tree</field>
-            <field name="model">hr.promotion</field>
-            <field name="arch" type="xml">
-                <tree string="محضر الترقية" class="oe_tree_view">
-                    <field name="name"/>
-                    <field name="date"/>
-                    <field name="state"/>
-                </tree>
-            </field>
-        </record>
-        <record id="view_search_hr_promotion" model="ir.ui.view">
-            <field name="name">hr.promotion.search</field>
-            <field name="model">hr.promotion</field>
-            <field name="arch" type="xml">
-                <search string="محضر الترقية">
-                    <field name="name" />
-                    <field name="date"/>
-                </search>
-            </field>
-        </record>
-        <record id="action_hr_promotions" model="ir.actions.act_window">
-            <field name="name">محضر الترقية</field>
-            <field name="res_model">hr.promotion</field>
-            <field name="view_type">form</field>
-            <field name="view_mode">tree,form</field>
-            <field name="context">{'readonly_by_pass': True}</field>
-            <field name="help" type="html">
-              	<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
-            </field>
-        </record>
-        
-        
-        
-        <record model="ir.actions.act_window.view" id="action_hr_promotions_tree">
-            <field eval="1" name="sequence"/>
-            <field name="view_mode">tree</field>
-            <field name="view_id" ref="view_tree_hr_promotions"/>
-            <field name="act_window_id" ref="action_hr_promotions"/>
-        </record>
+							</page>
+						</notebook>
+						
+						<button name="create_report_promotion" string="طباعة محضر الترقيات" type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button"/>
 
-        <record model="ir.actions.act_window.view" id="action_hr_promotions_form_view">
-            <field eval="2" name="sequence"/>
-            <field name="view_mode">form</field>
-            <field name="view_id" ref="view_form_hr_promotions"/>
-            <field name="act_window_id" ref="action_hr_promotions"/>
-        </record>
-        <menuitem id="menu_hr_promotions" action="action_hr_promotions" parent="hr_root_promotion" name="محاضر الترقيات" sequence="2"/>
-<!--           <menuitem id="menu_hr_promotion"  parent="hr_root_promotion" name="قرارات الترقيات" sequence="1"/> -->
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="view_tree_hr_promotions" model="ir.ui.view">
+			<field name="name">hr.promotion.tree</field>
+			<field name="model">hr.promotion</field>
+			<field name="arch" type="xml">
+				<tree string="محضر الترقية" class="oe_tree_view">
+					<field name="name" />
+					<field name="date" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+		<record id="view_search_hr_promotion" model="ir.ui.view">
+			<field name="name">hr.promotion.search</field>
+			<field name="model">hr.promotion</field>
+			<field name="arch" type="xml">
+				<search string="محضر الترقية">
+					<field name="name" />
+					<field name="date" />
+				</search>
+			</field>
+		</record>
+		<record id="action_hr_promotions" model="ir.actions.act_window">
+			<field name="name">محضر الترقية</field>
+			<field name="res_model">hr.promotion</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
 
 
-	<record id="promotion_type_form" model="ir.ui.view">
+
+		<record model="ir.actions.act_window.view" id="action_hr_promotions_tree">
+			<field eval="1" name="sequence" />
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="view_tree_hr_promotions" />
+			<field name="act_window_id" ref="action_hr_promotions" />
+		</record>
+
+		<record model="ir.actions.act_window.view" id="action_hr_promotions_form_view">
+			<field eval="2" name="sequence" />
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="view_form_hr_promotions" />
+			<field name="act_window_id" ref="action_hr_promotions" />
+		</record>
+		<menuitem id="menu_hr_promotions" action="action_hr_promotions"
+			parent="hr_root_promotion" name="محاضر الترقيات" sequence="2" />
+		<!-- <menuitem id="menu_hr_promotion" parent="hr_root_promotion" name="قرارات 
+			الترقيات" sequence="1"/> -->
+
+
+		<record id="promotion_type_form" model="ir.ui.view">
 			<field name="name">hr.promotion.type.form</field>
 			<field name="model">hr.promotion.type</field>
 			<field name="arch" type="xml">
@@ -198,7 +221,10 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-	<menuitem id="menu_hr_promotions_type_configuration"  parent="hr_root_promotion" name="الإعدادات" sequence="3"/>	
-	 <menuitem id="menu_hr_promotions_type" action="action_promotion_type" parent="menu_hr_promotions_type_configuration" name="أنواع الترقيات" sequence="4"/>
-    </data>
+		<menuitem id="menu_hr_promotions_type_configuration" parent="hr_root_promotion"
+			name="الإعدادات" sequence="3" />
+		<menuitem id="menu_hr_promotions_type" action="action_promotion_type"
+			parent="menu_hr_promotions_type_configuration" name="أنواع الترقيات"
+			sequence="4" />
+	</data>
 </openerp>

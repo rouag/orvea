@@ -19,6 +19,7 @@ class hr_promotion(models.Model):
     speech_file = fields.Binary(string=u'نسخة الخطاب')
     
     decision_number = fields.Char(string=u'رقم قرار الترقية')
+    message=fields.Char(string=u'سبب الرفض')
     dicision_date = fields.Date(string=u'تاريخ القرار')
     dicision_file = fields.Binary(string=u'نسخة القرار')
     date_direct_action = fields.Date(string='تاريخ مباشرة العمل',) 
@@ -118,14 +119,21 @@ class hr_promotion(models.Model):
                 apoint.action_done() 
     
     @api.one
-    def button_refused(self):
+    def button_refuse(self):
         for promo in self:
             self.state='draft'
+            self.employee_job_promotion_line_ids=[]
+            self.job_promotion_line_ids=[]
             
     @api.one
     def button_conceled(self):
         for promo in self:
             self.state='draft'
+    
+    
+    @api.multi
+    def create_report_promotion(self):
+        self.env['report'].get_pdf(self, 'smart_hr.hr_promotion_report')
            
     @api.model
     def default_get(self,fields):
@@ -223,6 +231,8 @@ class hr_promotion(models.Model):
          
             employee_promotion_job.append(id_emp.id)
         res['employee_promotion_line_ids'] = [(6, 0, employee_promotion_job)]
+        if not employee_promotion_job :
+            raise ValidationError(u"لا يوجد موظفون مؤهلون للترقية")
         job_promotion=[]
         for job in self.env['hr.job'].search([('state','=','unoccupied')]) :
             id_job= self.env['hr.promotion.job'].create({'new_job_id': job.id,
@@ -232,6 +242,10 @@ class hr_promotion(models.Model):
                                                            }) 
             job_promotion.append(id_job.id)
         res['job_promotion_line_ids'] = [(6, 0, job_promotion)]
+        if not employee_promotion_job :
+            raise ValidationError(u"لا توجد وظائف شاغرة")
+        
+       
         return res
     @api.multi
     def unlink(self):
@@ -326,16 +340,25 @@ class hr_promotion_ligne_employee_job(models.Model):
     new_number_job = fields.Char(string='رقم الوظيفة', store=True, readonly=1)
     department = fields.Many2one('hr.department', string='الادارة', store=True, readonly=1)
     emp_grade_id_new = fields.Many2one('salary.grid.grade', string='المرتبة ', store=True, readonly=1,)
+    promotion_supp = fields.Boolean(string='علاوة إضافية',)
+    state = fields.Selection([('draft', u'طلب'),
+                              ('refuse', u'رفض'),
+                              ('done', u'اعتمدت'),
+                              ], string=u'حالة', default='draft', advanced_search=True)
+    
 
     @api.multi
-    def job_confirmed(self):
+    def promotion_confirmed(self):
         if self.new_job_id:
             self.new_job_id.state='occupied'
+            self.state="done"
+    
    
     @api.multi
-    def job_refused(self):
+    def job_refuse(self):
         if self.new_job_id:
             self.new_job_id.state='unoccupied'
+            self.state="refuse"
             
     @api.onchange('new_job_id')
     def onchange_job_id(self):

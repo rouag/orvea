@@ -73,7 +73,7 @@
         'hr/view/hr_setting.xml',
         'hr/view/hr_employee_lend_view.xml',
         'hr/view/hr_employee_comm_view.xml',
-
+        "hr_promotions/views/report_promotion.xml",
         'views/report_salary_grid.xml',
         'views/report_medical_examination.xml',
         'views/report_order_enquiry.xml',
