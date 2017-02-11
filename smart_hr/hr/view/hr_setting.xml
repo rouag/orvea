@@ -23,6 +23,9 @@
 								<field name="max_lend_duration_sum" />
 								<field name="extend_lend_duration" />
 							</group>
+							<group string="إعدادات التكليف‬‬">
+								<field name="assign_duration" />
+							</group>
 						</group>
 					</sheet>
 				</form>

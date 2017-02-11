@@ -39,4 +39,4 @@ Todo
 Configuration
 --------------
 
-Todo
+1) You need to install the package "xlrd" to read xls files
