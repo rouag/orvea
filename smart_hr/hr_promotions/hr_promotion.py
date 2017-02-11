@@ -102,7 +102,6 @@ class hr_promotion(models.Model):
             if not job.job_state:
                 self.job_promotion_line_ids=[(3,job.id)]
             else:
-                self.employee_job_promotion_line_ids.job_promotion_id=[(4,job.new_job_id.id)]
                 job.new_job_id.occupied_promotion=True
             if not self.job_promotion_line_ids:
                  raise ValidationError(u"لم يقع إحتجاز أي وظيفة")
@@ -283,7 +282,7 @@ class hr_promotion(models.Model):
                     for trainig in regle_point.training_ids :
                         if trainig.type_training=='indirect_experience':
                             trining_point=trining_point + trainig.point
-            print "555555555555555555",demande_promotion_id[0].id
+
             id_emp= self.env['hr.promotion.employee'].create({'employee_id': emp_promotion.id,
                                                            'old_job_id': emp_promotion.job_id.id,
                                                            'old_number_job': emp_promotion.job_id.number ,

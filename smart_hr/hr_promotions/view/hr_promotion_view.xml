@@ -122,9 +122,9 @@
 								</field>
 							</page>
 						</notebook>
-
-						<button name="create_report_promotion" string="طباعة محضر الترقيات"
-							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+<button name="%(report_hr_promotion_report)d" string="طباعة محضر الترقيات" states="done"
+							type="action" invisivble="1" icon="fa-print" class="oe_inline oe_stat_button"  />
+						
 
 					</sheet>
 				</form>
