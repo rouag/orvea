@@ -19,7 +19,6 @@
 			</field>
 		</record>
 		
-		
 		<record model="ir.ui.view" id="hr_promotion_employee_demande_form_view">
 			<field name="name">hr.promotion.employee.demande.form</field>
 			<field name="model">hr.promotion.employee.demande</field>
@@ -65,7 +64,7 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
- 		<menuitem id="menu_promotion_demande" action="action_promotion_demande" parent="hr_root_promotion" name="طلبات الترقيات" sequence="1"/>
+ 		<menuitem id="menu_promotion_demande" action="action_promotion_demande" parent="hr_root_organisation_action" name="طلبات الترقيات" sequence="13"/>
 
     </data>
 </openerp>

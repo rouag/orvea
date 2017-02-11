@@ -37,6 +37,7 @@ class HrJob(models.Model):
     # تحوير‬
     update_date = fields.Date(string=u'تاريخ التحوير')
     type_resevation = fields.Selection([('promotion', u'للترقية')], string=u'نوع الحجز')
+    occupied_promotion = fields.Boolean(string='للترقية',)
 
     @api.multi
     @api.depends('occupation_date_to')

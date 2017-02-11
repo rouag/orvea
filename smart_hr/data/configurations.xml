@@ -24,19 +24,19 @@
 			<field name="point_to">90</field>
 		</record>
 		
-		<record id="assessment_good" model="hr.evaluation.result.foctionality" >
+		<record id="assessment_hr_good" model="hr.evaluation.result.foctionality" >
 			<field name="name">جيد</field>
 			<field name="point_from">60</field>
 			<field name="point_to">75</field>
 		</record>
 
-		<record id="assessment_medium" model="hr.evaluation.result.foctionality" >
+		<record id="assessment_hr_medium" model="hr.evaluation.result.foctionality" >
 			<field name="name">متوسط</field>
 			<field name="point_from">40</field>
 			<field name="point_to">60</field>
 		</record>
 
-		<record id="assessment_bad" model="hr.evaluation.result.foctionality">
+		<record id="assessment_hr_bad" model="hr.evaluation.result.foctionality">
 			<field name="name">سيئ</field>
 			<field name="point_from">0</field>
 			<field name="point_to">40</field>
