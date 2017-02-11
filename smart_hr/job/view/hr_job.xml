@@ -177,12 +177,12 @@
 							</group>
 						</group>
 						<group col="6">
-							<field name="general_id" domain="[('group_type', '=', 'general')]"
+							<field name="general_id" domain="[('group_type', '=', 'general')]" required="1"
 								attrs="{'readonly':[('state', '!=', 'new')]}" />
-							<field name="specific_id"
+							<field name="specific_id" required="1"
 								domain="[('parent_id', '=', general_id),('group_type', '=', 'spicific')]"
 								attrs="{'readonly':[('state', '!=', 'new')]}" />
-							<field name="serie_id"
+							<field name="serie_id" required="1"
 								domain="[('parent_id', '=',specific_id), ('group_type', '=', 'serie')]"
 								attrs="{'readonly':[('state', '!=', 'new')]}" />
 						</group>
@@ -322,12 +322,12 @@
 							
 						</group>
 						<group col="6">
-							<field name="general_id" domain="[('group_type', '=', 'general')]"
+							<field name="general_id" domain="[('group_type', '=', 'general')]" required="1"
 								attrs="{'readonly':[('state', '!=', 'new')]}" />
-							<field name="specific_id"
+							<field name="specific_id" required="1"
 								domain="[('parent_id', '=', general_id),('group_type', '=', 'spicific')]"
 								attrs="{'readonly':[('state', '!=', 'new')]}" />
-							<field name="serie_id"
+							<field name="serie_id" required="1"
 								domain="[('parent_id', '=',specific_id), ('group_type', '=', 'serie')]"
 								attrs="{'readonly':[('state', '!=', 'new')]}" />
 						</group>
@@ -337,7 +337,7 @@
 								<field name="name" options='{"no_open": True, "no_create": True}' />
 								<field name="number" readonly="1" />
 								<field name="job_name_code" string="الرمز" />
-								<field name="type_id" readonly="1" />
+								<field name="type_id" />
 								<field name="department_id" />
 								<field name="grade_id" options='{"no_open": True, "no_create": True}' />
 								<field name="job_number" />
@@ -456,7 +456,7 @@
 								<field name="job_id" domain="[('state','=','unoccupied')]" />
 								<field name="job_number" />
 								<field name="job_name_code" string="الرمز" />
-								<field name="type_id" />
+								<field name="type_id" readonly="1"/>
 								<field name="department_id" />
 								<field name="grade_id" />
 							</tree>

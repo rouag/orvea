@@ -19,9 +19,9 @@ class HrJob(models.Model):
     activity_type = fields.Many2one('hr.job.type.activity', string=u'نوع النشاط')
     number = fields.Char(string='الرقم الوظيفي', required=1, states={'unoccupied': [('readonly', 0)]})
     department_id = fields.Many2one('hr.department', string='الإدارة', required=1, states={'unoccupied': [('readonly', 0)]})
-    general_id = fields.Many2one('hr.groupe.job', ' المجموعة العامة', ondelete='cascade')
-    specific_id = fields.Many2one('hr.groupe.job', ' المجموعة النوعية', ondelete='cascade')
-    serie_id = fields.Many2one('hr.groupe.job', ' سلسلة الفئات', ondelete='cascade')
+    general_id = fields.Many2one('hr.groupe.job', ' المجموعة العامة', ondelete='cascade', required=1)
+    specific_id = fields.Many2one('hr.groupe.job', ' المجموعة النوعية', ondelete='cascade', required=1)
+    serie_id = fields.Many2one('hr.groupe.job', ' سلسلة الفئات', ondelete='cascade', required=1)
     type_id = fields.Many2one('salary.grid.type', string='الصنف', required=1, states={'unoccupied': [('readonly', 0)]})
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1, states={'unoccupied': [('readonly', 0)]})
     state = fields.Selection([('unoccupied', u'شاغرة'), ('occupied', u'مشغولة'), ('cancel', u'ملغاة'), ('reserved', u'محجوزة')], string=u'الحالة', readonly=1, default='unoccupied')
@@ -142,8 +142,10 @@ class HrJobCreate(models.Model):
     def onchange_serie_id(self):
         if self.serie_id:
             grides = []
-            for classment in self.serie_id.hr_classment_job_ids:
-                grides.append(classment.grade_id.id)
+            # get grades in job_create_id
+            for rec in self.env['salary.grid.grade'].search([]):
+                if int(rec.code) >= int(self.serie_id.rank_from.code) and int(rec.code) <= int(self.serie_id.rank_to.code):
+                    grides.append(rec.id)
             self.grade_ids = grides
 
     @api.multi
@@ -233,7 +235,7 @@ class HrJobCreateLine(models.Model):
     activity_type = fields.Many2one('hr.job.type.activity', string=u'نوع النشاط', required=1)
     job_nature = fields.Selection([('supervisory', u'اشرافية'), ('not_supervisory', u'غير اشرافية')], string=u'طبيعة الوظيفة', default='not_supervisory')
     job_number = fields.Char(string='الرقم الوظيفي', required=1)
-    type_id = fields.Many2one('salary.grid.type', related="grade_id.type_id", string='الصنف', required=1)
+    type_id = fields.Many2one('salary.grid.type', string='الصنف', required=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1)
     department_id = fields.Many2one('hr.department', string='الإدارة', required=1)
     job_create_id = fields.Many2one('hr.job.create', string=' وظائف')
@@ -311,8 +313,10 @@ class HrJobStripFrom(models.Model):
     def onchange_serie_id(self):
         if self.serie_id:
             grides = []
-            for classment in self.serie_id.hr_classment_job_ids:
-                grides.append(classment.grade_id.id)
+            # get grades in job_create_id
+            for rec in self.env['salary.grid.grade'].search([]):
+                if int(rec.code) >= int(self.serie_id.rank_from.code) and int(rec.code) <= int(self.serie_id.rank_to.code):
+                    grides.append(rec.id)
             self.grade_ids = grides
 
     @api.multi
@@ -427,7 +431,7 @@ class HrJobStripFromLine(models.Model):
     job_name_code = fields.Char(related="name.number", string='الرمز', required=1)
     number = fields.Char(string=u'الرمز', required=1)
     job_number = fields.Char(string=u'الرقم الوظيفي', required=1)
-    type_id = fields.Many2one('salary.grid.type', related="grade_id.type_id", string=u'الصنف', required=1)
+    type_id = fields.Many2one('salary.grid.type', string=u'الصنف', required=1)
     grade_id = fields.Many2one('salary.grid.grade', string=u'المرتبة', required=1)
     department_id = fields.Many2one('hr.department', string=u'الإدارة', required=1)
     job_strip_from_id = fields.Many2one('hr.job.strip.from', string=u' وظائف')
@@ -586,7 +590,7 @@ class HrJobStripToLine(models.Model):
     job_strip_to_id = fields.Many2one('hr.job.strip.to', string='الوظيفة', required=1)
     job_id = fields.Many2one('hr.job', string='الوظيفة', required=1)
     job_number = fields.Char(related='job_id.number', string='الرقم الوظيفي', readonly=1)
-    job_name_code = fields.Char(related="job_id.name.number", string='الرمز', required=1)
+    job_name_code = fields.Char(related="job_id.name.number", string='الرمز', required=1, readonly=1)
     type_id = fields.Many2one('salary.grid.type', string='الصنف', required=1, readonly=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1, readonly=1)
     department_id = fields.Many2one('hr.department', string='الإدارة', required=1, readonly=1)
@@ -1053,9 +1057,13 @@ class HrJobMoveGradeLine(models.Model):
             self.job_number = self.job_id.number
             res = {}
             grade_ids = []
+            grides = []
+            # get grades
+            for rec in self.env['salary.grid.grade'].search([]):
+                if int(rec.code) >= int(self.job_id.serie_id.rank_from.code) and int(rec.code) <= int(self.job_id.serie_id.rank_to.code):
+                    grides.append(rec)
             # get availble grades depend on move_type type رفع أو خفض
-            for rec in self.job_id.serie_id.hr_classment_job_ids:
-                print self._context
+            for rec in grides:
                 if self._context['operation'] == 'scale_down':
                     if int(self.job_id.grade_id.code) > int(rec.grade_id.code):
                         grade_ids.append(rec.grade_id.id)
@@ -1074,8 +1082,6 @@ class HrJobMoveGradeLine(models.Model):
                     job_ids.append(rec.id)
                 if self._context['operation'] == 'scale_up' and int(rec.grade_id.code) < 99:
                     job_ids.append(rec.id)
-            print self._context['operation']
-            print job_ids
             res['domain'] = {'job_id': [('id', 'in', job_ids)]}
             return res
 
@@ -1236,8 +1242,8 @@ class HrJobMoveUpdateLine(models.Model):
     job_number = fields.Char(related='job_id.number', string=u'رقم الوظيفة', readonly=1)
     old_name = fields.Many2one('hr.job.name', readonly=1, string=u'المسمى', required=1)
     new_name = fields.Many2one('hr.job.name', string=u'المسمى الجديد', required=1)
-    old_type_id = fields.Many2one('salary.grid.type', string=u'التصنيف', readonly=1, required=1)
-    new_type_id = fields.Many2one('salary.grid.type', string=u'التصنيف الجديد', required=1)
+    old_type_id = fields.Many2one('salary.grid.type', string=u'الصنف', readonly=1, required=1)
+    new_type_id = fields.Many2one('salary.grid.type', string=u'الصنف الجديد', required=1)
     grade_id = fields.Many2one('salary.grid.grade', related='job_id.grade_id', string=u'المرتبة', readonly=1, required=1)
     department_id = fields.Many2one('hr.department', related='job_id.department_id', string=u'الإدارة', readonly=1, required=1)
 
@@ -1280,4 +1286,4 @@ class HrJobTypeActivity(models.Model):
     _description = u'نوع نشاط الوظيفة'
 
     name = fields.Char(string=u'المسمى')
-
+    code = fields.Char(string=u'الرمز')

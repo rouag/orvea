@@ -53,6 +53,8 @@ class HrEmployeeTransfert(models.Model):
                                        ('external_transfert_in', u'نقل خارجي (إلى الهيئة)'),
                                        ], readonly=1, states={'new': [('readonly', 0)]}, default='internal_transfert', string=u'طبيعة النقل')
 
+    transfert_periode_id = fields.Many2one('hr.employee.transfert.periode', string=u'فترة النقل', required=1, readonly=1, states={'new': [('readonly', 0)]})
+
     @api.multi
     @api.depends('new_specific_id', 'specific_id')
     def _compute_same_specific_group(self):
@@ -62,10 +64,23 @@ class HrEmployeeTransfert(models.Model):
             else:
                 rec.same_group = False
 
+    @api.onchange('transfert_periode_id')
+    def _onchange_transfert_periode_id(self):
+        if not self.transfert_periode_id:
+            # do not allow creating tranfert if there is no open periode
+            res = {}
+            open_periodes = self.env['hr.employee.transfert.periode'].search([('date_to', '>=', datetime.today().strftime('%Y-%m-%d'))])
+            if open_periodes:
+                open_periodes_ids = [rec.id for rec in open_periodes]
+                res['domain'] = {'transfert_periode_id': [('id', 'in', open_periodes_ids)]}
+                return res
+            else:
+                res['domain'] = {'transfert_periode_id': [('id', '=', -1)]}
+                return res
+
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
         # get last evaluation result
-        print self.conflicted_emp_trans_id
         if self.employee_id:
             previews_year = int(date.today().year) - 1
             last_evaluation_result = self.employee_id.evaluation_level_ids.search([('year', '=', int(previews_year))])
@@ -85,10 +100,7 @@ class HrEmployeeTransfert(models.Model):
     def check_constrains(self):
         self.ensure_one()
         hr_config = self.env['hr.setting'].search([], limit=1)
-        # do not allow creating tranfert if there is no open periode
-        open_periodes = self.env['hr.employee.transfert.periode'].search([('date_to', '>=', datetime.today().strftime('%Y-%m-%d'))])
-        if not open_periodes and self.state == 'new':
-            raise ValidationError(u"لا يوجة فترة مفتوحة لإستقبال الطلبات.")
+
         # check if there is a refused transfert demand before 45days
         transferts = self.env['hr.employee.transfert'].search([('employee_id', '=', self.employee_id.id), ('state', '=', 'refused')])
         for transfert in transferts:
@@ -262,33 +274,20 @@ class HrEmployeeTransfertPeriode(models.Model):
     date_from = fields.Date(string=u'التاريخ من ', default=fields.Datetime.now())
     date_to = fields.Date(string=u'التاريخ الى')
 
+    """
+    add computed is_ended
+    """
+
 
 class HrTransfertSorting(models.Model):
     _name = 'hr.transfert.sorting'
     _description = u'‫ترتيب طلبات النقل مع الوظائف المناسبة‬‬'
 
-    name = fields.Char(string='name')
+    name = fields.Char(string=u'المسمى')
+    create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
     hr_transfert_ids = fields.Many2many('hr.employee.transfert', string=u'طلبات النقل')
+    state = fields.Selection([('new', u'طلب'),
+                              ('commission_president', u'رئيس الجهة'),
+                              ('done', u'اعتمدت'),
+                              ], readonly=1, default='new', string=u'الحالة')
 
-    @api.multi
-    def button_transfert_sorting(self):
-        hr_transfert_sorting = self.env['hr.transfert.sorting'].search([], limit=1)
-        if hr_transfert_sorting:
-            value = {
-                'name': u'ترتيب طلبات النقل مع الوظائف المناسبة',
-                'view_type': 'form',
-                'view_mode': 'form',
-                'res_model': 'hr.transfert.sorting',
-                'view_id': False,
-                'type': 'ir.actions.act_window',
-                'res_id': hr_transfert_sorting.id,
-            }
-            return value
-
-    @api.multi
-    def write(self, vals):
-        # hr_transfert_ids = vals['hr_transfert_ids'][0][2]
-        """
-        TODO: recalculate the right sequence for each hr_transfert_id
-        """
-        return models.Model.write(self, vals)

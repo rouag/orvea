@@ -11,7 +11,7 @@
 			<field name="model">hr.groupe.job</field>
 			<field name="field_parent">child_ids</field>
 			<field name="arch" type="xml">
-				<tree class="oe_tree_view" string="هيكل التصنيف الوظيفي">
+				<tree class="oe_tree_view" string="هيكل الصنف الوظيفي">
 					<field name="name" />
 					<field name="parent_id" invisible="1" />
 				</tree>
@@ -27,7 +27,7 @@
 			<field name="view_id" ref="hr_groupe_categorie_tree" />
 		</record>
 
-		<menuitem id="groupe_general_hearchi_menu" name="  هيكل التصنيف الوظيفي"
+		<menuitem id="groupe_general_hearchi_menu" name="  هيكل الصنف الوظيفي"
 			sequence="1" parent="hr_job_setting" action="groupe_category_action" />
 
 		<!-- ‫المجموعة العامة -->
@@ -179,13 +179,6 @@
 							</group>
 
 
-							<group col="10">
-								<field name="instead_risk" />
-								<field name="instead_damage" />
-								<field name="instead_job_nature" />
-								<field name="reward_postman" />
-								<field name="direct_public_funds_reward" />
-							</group>
 							<group>
 							</group>
 
@@ -195,7 +188,8 @@
 								<field name="skils_ids" widget="many2many_tags" options="{'no_create_edit': True}" />
 							</group>
 							<group>
-
+								<field name="allowanse_ids" widget="many2many_tags"
+									options="{'no_create_edit': True}" />
 							</group>
 
 						</group>
@@ -289,7 +283,6 @@
 								<field name="number" />
 								<field name="job_supervisory_name_id" />
 							</group>
-							<field name="job_supervised_name_ids" />
 							<field name="job_description" />
 
 						</group>
@@ -337,6 +330,7 @@
 				<form string="نوع نشاط الوظيفة‬">
 					<sheet>
 						<group col="2">
+							<field name="code" />
 							<field name="name" />
 						</group>
 
@@ -349,6 +343,7 @@
 			<field name="model">hr.job.type.activity</field>
 			<field name="arch" type="xml">
 				<tree string="نوع نشاط الوظيفة">
+					<field name="code" />
 					<field name="name" />
 				</tree>
 			</field>

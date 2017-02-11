@@ -38,7 +38,7 @@
 								<td width="45%" colspan="3">المسمى الوظيفي:<span t-esc="job.name.name" /></td>
 								<td width="16.66%">المرتبة: <span t-esc="job.grade_id.name" /></td>
 								<td width="16.66%">الرقم: <span t-esc="job.number" /></td>
-								<td width="16.66%" >الرمز التصنيفي: <span t-esc="job.type_id.code" /></td>
+								<td width="16.66%" >الرمز الصنفي: <span t-esc="job.type_id.code" /></td>
 							</tr>
 							<tr>
 								<td width="5%" rowspan="3">2</td>

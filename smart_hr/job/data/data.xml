@@ -4,12 +4,15 @@
 
 		<record id="hr_job_type_activity_01" model="hr.job.type.activity">
 			<field name="name">الحرفيّة‬</field>
+			<field name="code">act01</field>
 		</record>
 		<record id="hr_job_type_activity_02" model="hr.job.type.activity">
 			<field name="name">الثّقافيّة</field>
+			<field name="code">act02</field>
 		</record>
 		<record id="hr_job_type_activity_03" model="hr.job.type.activity">
 			<field name="name">الاقتصادية‬</field>
+			<field name="code">act03</field>
 		</record>
 
 		<!-- المسميات الوظيفية -->

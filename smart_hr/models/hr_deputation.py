@@ -42,7 +42,7 @@ class hr_deputation(models.Model):
         ('external', u'خارجى'),
     ], string=u'نوع الأنتداب', default='internal', advanced_search=True)
     city_id = fields.Many2one('res.city', string=u'المدينة')
-    deputation_category_id = fields.Many2one('hr.deputation.category', string=u'فئة التصنيف')
+    deputation_category_id = fields.Many2one('hr.deputation.category', string=u'فئة الصنف')
     task_description = fields.Text(string=u'وصف المهمة')
     period_line_ids = fields.One2many('hr.period.line', 'deputation_id', string=u'الفترة')
     is_same_employee = fields.Boolean(string=u'نفس الموظف', compute='_compute_is_same_employee')
