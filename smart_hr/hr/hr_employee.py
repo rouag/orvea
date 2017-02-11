@@ -4,6 +4,7 @@ from openerp import models, fields, api, _
 from dateutil.relativedelta import relativedelta
 from datetime import date
 
+
 class HrEmployee(models.Model):
     _inherit = 'hr.employee'
 

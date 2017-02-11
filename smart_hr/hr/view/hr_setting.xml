@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
-		<!-- بياناتي -->
+		<!-- إعدادات النقل -->
 		<record id="view_hr_setting" model="ir.ui.view">
 			<field name="name">hr.setting.form</field>
 			<field name="model">hr.setting</field>
@@ -22,6 +22,9 @@
 								<field name="periode_between_lend" />
 								<field name="max_lend_duration_sum" />
 								<field name="extend_lend_duration" />
+							</group>
+							<group string="إعدادات التكليف‬‬">
+								<field name="assign_duration" />
 							</group>
 						</group>
 					</sheet>

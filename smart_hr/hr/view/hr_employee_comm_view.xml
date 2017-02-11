@@ -13,8 +13,20 @@
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_done" string="إعتماد" type="object"
+							attrs="{'invisible':['|',('state','!=','pm'),('current_city', '!=', 'city')]}"
 							groups="smart_hr.group_hr_personnel_officer_commissioning"
-							states="pm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_accept" string="إرسال" type="object"
+							groups="smart_hr.group_hr_commissioning_requests"
+							attrs="{'invisible':['|',('state','!=','pm'),('current_city', '=', 'city')]}"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<!-- employee -->
+						<button name="action_done" string="موافق" type="object"
+							states="accept" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_refused" string="رفض" type="object"
+							states="accept" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+
 						<button name="action_new" string="تعديل" type="object"
 							groups="smart_hr.group_hr_personnel_officer_commissioning"
 							states="pm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
@@ -22,9 +34,10 @@
 							groups="smart_hr.group_hr_personnel_officer_commissioning"
 							states="pm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<field name="state" widget="statusbar" statusbar_visible="new,pm,done,refused" />
+						<field name="state" widget="statusbar" statusbar_visible="new,pm,accept,done,refused" />
 					</header>
 					<sheet>
+						<field name="current_city" invisible="1" />
 						<group>
 							<field name="create_date" />
 						</group>
@@ -40,20 +53,22 @@
 							<group>
 								<field name="employee_id" options='{"no_open": True, "no_create": True}' />
 								<field name="governmental_entity" options='{"no_open": True, "no_create": True}'
-									attrs="{'invisible':[('comm_type', '!=', %(data_hr_commissioning_type_02)d)]}" />
+									attrs="{'invisible':[('comm_type', '!=', %(data_hr_commissioning_type_02)d)], 'required':[('comm_type', '=', %(data_hr_commissioning_type_02)d)]}" />
 							</group>
 							<group>
 								<field name="comm_type" options='{"no_open": True, "no_create": True}' />
+								<field name="city" options='{"no_open": True, "no_create": True}' />
 							</group>
+							<field name="note" />
 						</group>
-						<field name="task_ids">
+						<field name="task_ids" widget="many2many"
+							domain="[('state', '=', 'done'), ('governmental_entity', '=', governmental_entity)]">
 							<tree editable="bottom">
-								<field name="name" required="1" />
-								<field name="date_from" required="1" />
-								<field name="duration" required="1" />
-								<field name="date_to" />
-								<field name="governmental_entity" />
-								<field name="description" />
+								<field name="name" readonly="1" />
+								<field name="date_from" readonly="1" />
+								<field name="duration" readonly="1" />
+								<field name="date_to" readonly="1" />
+								<field name="governmental_entity" readonly="1" />
 							</tree>
 						</field>
 					</sheet>
@@ -85,6 +100,42 @@
 		<menuitem action="action_hr_employee_commissioning" id="hr_menu_employee_commissioning"
 			parent="hr_root_employees" name="طلبات التكليف" sequence="20" />
 
+		<!-- أنواع التكليف -->
+		<record id="view_hr_comm_type_form" model="ir.ui.view">
+			<field name="name">hr.employee.commissioning.type.form</field>
+			<field name="model">hr.employee.commissioning.type</field>
+			<field name="arch" type="xml">
+				<form string="أنواع التكليف">
+					<sheet>
+						<group>
+							<field name="name" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
 
+		<record id="view_hr_comm_type_tree" model="ir.ui.view">
+			<field name="name">hr.employee.commissioning.type.tree</field>
+			<field name="model">hr.employee.commissioning.type</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="أنواع التكليف">
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="action_hr_comm_type" model="ir.actions.act_window">
+			<field name="name">أنواع التكليف</field>
+			<field name="res_model">hr.employee.commissioning.type</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+
+		<menuitem action="action_hr_comm_type" id="hr_menu_comm_type"
+			parent="hr_root_organisation_configuration" name="أنواع التكليف"
+			sequence="10" />
 	</data>
 </openerp>

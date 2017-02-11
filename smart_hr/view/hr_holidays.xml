@@ -38,22 +38,19 @@
 					<field name="is_delayed" invisible="1" />
 					<field name="is_extensible" invisible="1" />
 					<header name="main">
-						<button name="send_holiday_request" string="إرسال طلب"
-							type="object"
-							attrs="{'invisible':['|',('state','!=','draft'),('is_current_user','=',False)]}"
+						
+						<button name="action_psm" string="إرسال طلب"
+							type="object" states="draft"
 							icon="fa-paper-plane" class="oe_inline oe_stat_button"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<button name="button_accept_dm" string="موافق" type="object"
-							states="dm" groups="smart_hr.group_dm" icon="fa-check"
+						<button name="action_done" string="موافق" type="object"
+							states="psm" groups="smart_hr.group_dm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_delay_dm" string="رفض" type="object"
-							states="dm" groups="smart_hr.group_dm" icon="fa-check"
+						
+						<button name="button_refuse" string="رفض" type="object"
+							states="psm" groups="smart_hr.group_dm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_delay_holiday" string="تأجيل" type="object"
-							states="dm" groups="smart_hr.group_dm" icon="fa-times"
-							class="oe_inline oe_stat_button" />
-
 
 						<button name="button_accept_audit" string="موافق" type="object"
 							states="audit" groups="smart_hr.group_holidays_checker" icon="fa-check"

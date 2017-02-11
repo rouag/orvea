@@ -23,10 +23,12 @@
         'data/configurations.xml',
         'data/hr_holidays_data.xml',
         'data/schedulers.xml',
-        'data/res.city.csv',
+        'data/res_city_data.xml',
         'data/hr_termination_data.xml',
         'data/decisions_type_data.xml',
         'data/hr_appoint_type_data.xml',
+        'data/scholarship_data.xml',
+
         # الوظائف
         'job/menu.xml',
         'job/security/job_security.xml',
@@ -74,6 +76,7 @@
         'hr/view/hr_employee_lend_view.xml',
         'hr/view/hr_employee_comm_view.xml',
         "hr_promotions/views/report_promotion.xml",
+        'hr/view/hr_employee_task_view.xml',
         'views/report_salary_grid.xml',
         'views/report_medical_examination.xml',
         'views/report_order_enquiry.xml',
@@ -125,7 +128,7 @@
         'view/hr_employee_functional_card.xml',
         'view/res_users.xml',
         'view/employee_situation_order.xml',
-        # sanction
+        'view/hr_scholarship.xml',  # sanction
         'sanction/security/ir.model.access.csv',
         'sanction/security/sanction_security.xml',
         'sanction/wizard/wizard_sanction_action.xml',
@@ -194,10 +197,15 @@
         'hr_appraisal/view/hr_appraisal_menu.xml',
         'hr_appraisal/view/hr_appraisal_view.xml',
         'hr_appraisal/view/hr_evaluation_point_view.xml',
-        
+
         # promotion
         'hr_promotions/view/hr_promotion_view.xml',
         'hr_promotions/view/hr_employee_promotion_view.xml',
+
+        # deputation
+        'deputation/view/hr_deputation_setting.xml',
+        'deputation/security/ir.model.access.csv',
+        'deputation/data/data.xml',
 
     ],
     'auto_install': False,

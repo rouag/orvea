@@ -1224,11 +1224,10 @@ class HrDelayHoliday(models.Model):
                 new_start_date = fields.Date.from_string(holidayDelay.date_from)
                 if new_start_date < start_date:
                     raise ValidationError(u"الرجاء التأكد من تاريخ بد الإجازة.")
-                delay_days = (new_start_date - start_date).days 
+                delay_days = (new_start_date - start_date).days
                 holidayDelay.delay_days = delay_days
                 holidayDelay.date_to = fields.Date.from_string(holiday.date_to) + timedelta(days=self.delay_days)
-    
-    
+
     @api.multi
     def action_delay_holiday_confirm(self):
         holiday = self.env['hr.holidays'].search([('id', '=', self._context['holiday_id'])])
@@ -1238,7 +1237,7 @@ class HrDelayHoliday(models.Model):
                 new_date_from = fields.Date.from_string(holiday.date_from) + timedelta(days=self.delay_days)
                 new_date_to = fields.Date.from_string(holiday.date_to) + timedelta(days=self.delay_days)
                 holiday.write({'date_from': new_date_from, 'date_to': new_date_to, 'state': 'draft'})
-    
+
             if self.delay_days > 0 and self.delay_days > holiday.holiday_status_id.postponement_period:
                 raise ValidationError(u"لا يمكن تأجيل هذا النوع من الاجازة أكثر من " + str(holiday.holiday_status_id.postponement_period) + u"يوماً.")
         else:
