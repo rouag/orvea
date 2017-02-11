@@ -18,7 +18,7 @@
 
 		<menuitem id="hr_root_training" name="التدريب" sequence="30" parent="hr_root" />
 
-		<menuitem id="menu_hr_assessment_root" parent="hr_root" name="التقييم" sequence="90" groups="smart_hr.group_hrm"/>
+<!-- 		<menuitem id="menu_hr_assessment_root" parent="hr_root" name="التقييم" sequence="90" groups="smart_hr.group_hrm"/> -->
 		
 		<menuitem id="hr_root_configuration" name="الإعدادات" sequence="100" parent="hr_root" groups="smart_hr.group_hrm"/>
 		
@@ -28,8 +28,7 @@
 
 		<menuitem id="hr_root_evaluation" parent="hr_root" name="التقييم "  sequence="89" groups="smart_hr.group_hrm"/>	
 		
-				<menuitem id="hr_root_promotion" parent="hr_root" name="الترقيات "  sequence="85" groups="smart_hr.group_hrm"/>	
-		
+				
 		
 		<menuitem id="hr_root_evaluation_configuration" parent="hr_root_evaluation" name="الاعدادات "  sequence="2" groups="smart_hr.group_hrm"/>	
 		
