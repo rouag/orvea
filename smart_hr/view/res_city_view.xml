@@ -12,13 +12,8 @@
 						<group>
 							<field name="name" required="1" />
 							<field name="city_side" required="1" />
+							<field name="code" invisible="1" />
 						</group>
-						<field name="distance_ids" required="1">
-							<tree editable="bottom">
-								<field name="name"  readonly="1"/>
-								<field name="distance" required="1" />
-							</tree>
-						</field>
 					</sheet>
 				</form>
 			</field>
