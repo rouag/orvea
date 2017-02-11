@@ -81,7 +81,7 @@ class hr_promotion(models.Model):
                                 for line in sanction.line_ids:
                                     if line.state=='done':
                                         if line.employee_id.id==employee_line.employee_id.id:
-                                            days=days + line.nb_days_old
+                                            days_numbers=days + line.days_number
                         if days <15:
                             emp_id.promotion_supp=True
                             
@@ -221,7 +221,7 @@ class hr_promotion(models.Model):
                                     for line in sanction.line_ids:
                                         if line.state=='done':
                                             if line.employee_id.id==emp.id:
-                                                days=days + line.nb_days_old
+                                                days=days + line.days_number
                                     if sanction.type_sanction.code == "4":
                                          saanction_days=False
                             if  days <  15  and saanction_days: 
