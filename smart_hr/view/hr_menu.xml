@@ -26,7 +26,7 @@
 			
 		<menuitem id="menu_hr_deputation_root" parent="hr_root" name="الأنتدابات" sequence="17" />
 
-		<menuitem id="hr_root_evaluation" parent="hr_root" name="التقييم "  sequence="89" groups="smart_hr.group_hrm"/>	
+		<menuitem id="hr_root_evaluation" parent="hr_root" name="التقييم "  sequence="89" groups="smart_hr.group_hrm,smart_hr.group_evaluation_specialiter"/>	
 		
 				
 		

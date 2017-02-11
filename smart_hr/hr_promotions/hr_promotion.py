@@ -118,7 +118,6 @@ class hr_promotion(models.Model):
             self.state='minister'
         for promotion in self.employee_job_promotion_line_ids:
             if not promotion.new_job_id:
-                print 1111111
                 self.employee_job_promotion_line_ids=[(3,promotion.id)]
         
         if not self.employee_job_promotion_line_ids:
@@ -141,7 +140,7 @@ class hr_promotion(models.Model):
  
     @api.one
     @api.constrains('speech_date')
-    def check_order_date(self):
+    def check_order_chek_date(self):
         if self.speech_date > datetime.today().strftime('%Y-%m-%d'):
             raise ValidationError(u"تاريخ الخطاب  يجب ان يكون أصغر من تاريخ اليوم")
      
@@ -184,8 +183,10 @@ class hr_promotion(models.Model):
     def button_refuse(self):
         for promo in self:
             self.state='draft'
-            self.employee_job_promotion_line_ids=[]
-            self.job_promotion_line_ids=[]
+            self.employee_job_promotion_line_ids=False
+            self.job_promotion_line_ids=False
+            self.job_promotion_line_ids=False
+      
             
     @api.one
     def button_conceled(self):
@@ -434,12 +435,17 @@ class hr_promotion_ligne_employee_job(models.Model):
             self.new_job_id.state='reserved'
             self.emp_grade_id_new = self.new_job_id.grade_id.id
             self.new_number_job = self.new_job_id.number
-            if int(self.new_job_id.grade_id) <= int(self.emp_grade_id_old.code):
+            print 1111
+            if int(self.new_job_id.grade_id.code) <= int(self.emp_grade_id_old.code):
                 raise ValidationError(u"يجب أن تكون المرتبة أكبر من المرتبة  الحالية ")
+                self.new_job_id=False
                 self.new_number_job=False
-            if int(self.new_job_id.grade_id) > int(self.emp_grade_id_old.code)+1 :
+                self.emp_grade_id_new =False
+            if int(self.new_job_id.grade_id.code) > int(self.emp_grade_id_old.code)+1 :
                 raise ValidationError(u"يجب أن تكون المرتبة أكبر من المرتبة  الحالية مباشرة  ")
+                self.new_job_id=False
                 self.new_number_job=False
+                self.emp_grade_id_new =False
                 
          
     @api.one

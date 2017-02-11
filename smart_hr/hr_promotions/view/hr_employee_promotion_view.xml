@@ -64,7 +64,7 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
- 		<menuitem id="menu_promotion_demande" action="action_promotion_demande" parent="hr_root_organisation_action" name="طلبات الترقيات" sequence="13"/>
+ 		<menuitem id="menu_promotion_demande" action="action_promotion_demande" parent="hr_root_organisation_action" name="طلبات الترقية" sequence="13"/>
 
     </data>
 </openerp>
