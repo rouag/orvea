@@ -55,10 +55,10 @@
 								</tr>
 								<tr>
 									<td><strong>2</strong></td>
-									<td ><strong>الرمز التصنيفي:</strong></td>
+									<td ><strong>الرمز الصنفي:</strong></td>
 									<td colspan="4"><span t-esc="move_line.old_type_id.code"/></td>
 									<td></td>
-									<td ><strong>الرمز التصنيفي:</strong></td>
+									<td ><strong>الرمز الصنفي:</strong></td>
 									<td colspan="4"><span t-esc="move_line.new_type_id.code"/></td>
 								</tr>
 								<tr>

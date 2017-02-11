@@ -269,6 +269,10 @@ class HrTransfertSorting(models.Model):
 
     name = fields.Char(string='name')
     hr_transfert_ids = fields.Many2many('hr.employee.transfert', string=u'طلبات النقل')
+    state = fields.Selection([('new', u'طلب'),
+                              ('commission_president', u'رئيس الجهة'),
+                              ('done', u'اعتمدت'),
+                              ], readonly=1, default='new', string=u'الحالة')
 
     @api.multi
     def button_transfert_sorting(self):
