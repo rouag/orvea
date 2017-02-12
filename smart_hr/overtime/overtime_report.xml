@@ -6,12 +6,24 @@
 				<t t-foreach="docs" t-as="o">
 					<t t-call="smart_base.external_layout_extend">
 						<div class="page">
-							<div class="oe_structure" />
-							<p>قرار إداري رقم
+						<div class="oe_structure" />
+							<p>الموارد البشرية/ البدلات و المكافآت</p>
+							<p></p>
+							<p></p>
+							<p style="text-align: center;">خارج دوام(أيام عادية )</p>
+							<p></p>
+							<p></p>
+							<p style="text-align: center;">
+								<strong>
+									قرار إداري رقم
+
+								</strong>
 							</p>
+
+							<p></p>
 							
 							<p>
-								<strong>....... إن....... صاحب الصلاحية  </strong>
+								<strong>....... إن صاحب الصلاحية  </strong>
 							</p>
 							<p>بناء على صلاحيات الممنوحة له</p>
 

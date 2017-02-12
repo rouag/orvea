@@ -5,6 +5,8 @@ from openerp.exceptions import Warning
 from openerp.exceptions import ValidationError
 from openerp.exceptions import UserError
 from datetime import date, datetime, timedelta
+from dateutil.relativedelta import relativedelta
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 class HrDeputation(models.Model):
     _name = 'hr.deputation'
@@ -29,6 +31,7 @@ class HrDeputation(models.Model):
     file_decision = fields.Binary(string='صورة قرار ')
     transport_alocation = fields.Boolean(string='بدل نقل')
     net_salary = fields.Boolean(string=' الراتب')
+    anual_balance = fields.Boolean(string=' الرصيد السنوي')
     alowance_bonus = fields.Boolean(string=' البدلات و التعويضات و المكافات')
     the_availability = fields.Selection([
         ('hosing_and_food', u'السكن و الطعام '),
@@ -37,12 +40,12 @@ class HrDeputation(models.Model):
          ], string=u'الجهة توفر', default='hosing_and_food')
     type = fields.Selection([
         ('internal', u'داخلى'),
-        ('external', u'خارجى')], string=u'نوع الأنتداب', default='internal')
+        ('external', u'خارجى')], string=u'نوع الإنتداب', default='internal')
     city_id = fields.Many2one('res.city', string=u'المدينة')
     category_id = fields.Many2one('hr.deputation.category', string=u'فئة التصنيف')
     state = fields.Selection([
                               ('draft', u'طلب'),
-                              ('audit', u'دراسة طلب'),
+                              ('audit', u'دراسة الطلب'),
                               ('waiting', u'اللجنة'),
                               ('done', u'اعتمدت'),
                               ('refuse', u'رفض'),
@@ -58,9 +61,14 @@ class HrDeputation(models.Model):
             deputation.state = 'audit'
          
     @api.multi
-    def action_audit(self):
+    def action_commission(self):
         for deputation in self:
             deputation.state = 'waiting'   
+   
+    @api.multi
+    def action_audit(self):
+        for deputation in self:
+            deputation.state = 'done'   
     @api.multi
     def action_waiting(self):
         for deputation in self:
@@ -104,6 +112,56 @@ class HrDeputation(models.Model):
                 self.type_id = appoint_line.type_id.id
                 self.grade_id = appoint_line.grade_id.id
                 self.department_id = appoint_line.department_id.id
+                
+                
+                
+    @api.one
+    @api.constrains('date_from', 'date_to')
+    def check_dates_periode(self):
+        # Objects
+        holiday_obj = self.env['hr.holidays']
+        candidate_obj = self.env['hr.candidates']
+        deput_obj = self.env['hr.deputation']
+         
+            # Date validation
+
+        if self.date_from > self.date_to:
+            raise ValidationError(u"تاريخ من يجب ان يكون أصغر من تاريخ الى")
+            # check minimum request validation
+       
+            # التدريب
+        search_domain = [
+                ('employee_id', '=', self.employee_id.id),
+                ('state', '=', 'done'),
+            ]
+ 
+        for rec in candidate_obj.search(search_domain):
+            dateto = fields.Date.from_string(rec.date_to)
+            datefrom = fields.Date.from_string(rec.date_from)
+            res = relativedelta(dateto, datefrom)
+            months = res.months
+            days = res.days
+                # for none normal holidays test
+        for rec in holiday_obj.search(search_domain):
+            if rec.date_from <= self.date_from <= rec.date_to or \
+                rec.date_from <= self.date_to <= rec.date_to or \
+                self.date_from <= rec.date_from <= self.date_to or \
+                self.date_from <= rec.date_to <= self.date_to:
+                raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الإجازة")
+ 
+        
+            # الإنتداب
+        search_domain = [
+                ('employee_id', '=', self.employee_id.id),
+                ('state', '=', 'done'),
+            ]
+        for rec in deput_obj.search(search_domain):
+            if rec.date_from <= self.date_from <= rec.date_to or \
+                    rec.date_from <= self.date_to <= rec.date_to or \
+                    self.date_from <= rec.date_from <= self.date_to or \
+                    self.date_from <= rec.date_to <= self.date_to:
+                raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الإنتداب")
+ 
     
 class HrDeputationCategory(models.Model):
     _name = 'hr.deputation.category'
