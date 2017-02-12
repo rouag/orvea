@@ -5,6 +5,7 @@ from openerp.exceptions import Warning
 from openerp.exceptions import ValidationError
 from openerp.exceptions import UserError
 from datetime import date, datetime, timedelta
+from umalqurra.hijri_date import HijriDate
 
 class HrDeputation(models.Model):
     _name = 'hr.deputation'
@@ -104,7 +105,23 @@ class HrDeputation(models.Model):
                 self.type_id = appoint_line.type_id.id
                 self.grade_id = appoint_line.grade_id.id
                 self.department_id = appoint_line.department_id.id
-    
+
+    """
+        Scheduler function
+    """
+    @api.model
+    def update_deputation_stock(self):
+        # Objects
+        employee_obj = self.env['hr.employee']
+        # Check first day of new hijri month
+        today_date = fields.Date.from_string(fields.Date.today())
+        hijri_date = HijriDate(today_date.year, today_date.month, today_date.day, gr=True)
+        if int(hijri_date.day) == 1 and int(hijri_date.month) == 1:
+            # Loop all employees
+            for emp in employee_obj.search([]):
+                # Update Deputation Stock
+                emp.deputation_stock = 60
+                    
 class HrDeputationCategory(models.Model):
     _name = 'hr.deputation.category'
 
