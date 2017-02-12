@@ -18,7 +18,7 @@
         'payroll/security/payroll_security.xml',
         'payroll/security/ir.model.access.csv',
 
-        'view/hr_menu.xml',
+        'hr_menu.xml',
         'data/sequences.xml',
         'data/configurations.xml',
         'data/hr_holidays_data.xml',
@@ -86,7 +86,6 @@
         'views/report.xml',
         'views/templates.xml',
         'views/layout.xml',
-        'views/hr_deputation_report.xml',
         'views/hr_dep_accr_report.xml',
         'views/report_point_decinne.xml',
         'views/report_hr_direct_appoint.xml',
@@ -97,7 +96,7 @@
         'report/hr_termination_report.xml',
         'views/employee_situation_order_report.xml',
         'wizards/view/hr_refuse_wizard_view.xml',
-       
+
 
         'view/hr_decision_appoint.xml',
 #         'view/hr_promotion.xml',
@@ -110,11 +109,9 @@
         'view/hr_holidays.xml',
         'view/hr_holidays_cancellation_view.xml',
         'view/hr_holidays_decision_view.xml',
-        'view/hr_overtime_view.xml',
         'view/hr_employee_education_level.xml',
         'view/hr_assessment_view.xml',
         'view/hr_assessment_point_view.xml',
-        'view/hr_deputation_view.xml',
         'view/res_city_view.xml',
         'view/hr_termination_view.xml',
         'view/hr_suspension_view.xml',
@@ -211,7 +208,7 @@
         'deputation/view/hr_deputation_setting.xml',
         'deputation/security/ir.model.access.csv',
         'deputation/data/data.xml',
-        'hr_survey/views/website_templates.xml',
+        #'hr_survey/views/website_templates.xml',
 
     ],
     'auto_install': False,

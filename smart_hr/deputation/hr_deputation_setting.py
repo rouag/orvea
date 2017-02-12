@@ -3,16 +3,14 @@
 
 from openerp import models, fields, api, _
 from openerp.exceptions import Warning
-from dateutil.relativedelta import relativedelta
 from openerp.exceptions import ValidationError
-from datetime import date
 
 
 class HrDeputationSetting(models.Model):
     _name = 'hr.deputation.setting'
     _description = u'‫إعدادات الانتدابات‬‬'
 
-    name = fields.Char(string='name')
+    name = fields.Char(string='name', default=u'إعدادات الانتدابات')
     deputation_distance = fields.Float(string=u'المسافة المحدد للإنتداب', default=75)
 
     @api.multi
