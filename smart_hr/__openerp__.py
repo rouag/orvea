@@ -202,13 +202,16 @@
         'deputation/security/ir.model.access.csv',
         'deputation/view/hr_deputation_setting.xml',
         'deputation/view/hr_deputation_view.xml',
+        'deputation/view/transport_decision_view.xml',
         'deputation/views/deputation_report.xml',
         'deputation/views/report.xml',
         #overtime
-        'overtime/ir.model.access.csv',
-        'overtime/hr_overtime_view.xml',
-        'overtime/overtime_report.xml',
-        'overtime/report.xml',
+        'overtime/data/data.xml',
+        'overtime/security/ir.model.access.csv',
+        'overtime/view/hr_overtime_view.xml',
+        'overtime/view/hr_overtime_setting.xml',
+        'overtime/views/overtime_report.xml',
+        'overtime/views/report.xml',
           
         
         #'hr_survey/views/website_templates.xml',

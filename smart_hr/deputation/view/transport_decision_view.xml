@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="hr_transport_decision_tree">
+			<field name="name">hr.transport.decision.tree</field>
+			<field name="model">hr.transport.decision</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="أوامر الإركاب">
+					<field name="order_date" />
+					<field name="employee_id" />
+					<field name="airline" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_transport_decision_form">
+			<field name="name">hr.transport.decision.form</field>
+			<field name="model">hr.transport.decision</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="أوامر الإركاب">
+					<header>
+						<button name="action_audit" string="ارسال الطلب" type="object"
+							states="draft" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_done" string="موافق" type="object"
+							states="audit" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							
+						<button name="action_refuse" string="رفض" type="object"
+							states="audit" icon="fa-times" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+  
+						<button name="action_finish" string="إنهاء" type="object"
+							states="done" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_cancel" string="إلغاء أمر الإركاب" type="object"
+							states="done,audit" icon="fa-times" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<field name="state" widget="statusbar"
+							statusbar_visible="draft,audit,done,finish,refuse" />
+					</header>
+					<sheet>
+						<group>
+							<group>
+								<field name="order_date" />
+								<field name="airline" />
+							</group>
+							<group>
+							</group>
+						</group>
+
+						<group>
+							<group string="بيانات الموظف">
+								<field name="employee_id" />
+								<field name="number" />
+								<field name="department_id" />
+								<field name="job_id" />
+								<field name="number_job" />
+								<field name="code" />
+								<field name="type_id" />
+								<field name="grade_id" />
+								<field name="degree_id" />
+							</group>
+
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_transport_decision">
+			<field name="name">أوامر الإركاب</field>
+			<field name="res_model">hr.transport.decision</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		
+		 		
+		<menuitem id="hr_transport_decision_menu" name="أوامر الإركاب" sequence="20"
+			parent="menu_hr_deputation_root" action="action_hr_transport_decision" />
+
+	</data>
+</openerp>

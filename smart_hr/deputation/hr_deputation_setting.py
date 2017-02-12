@@ -12,6 +12,8 @@ class HrDeputationSetting(models.Model):
 
     name = fields.Char(string='name', default=u'إعدادات الانتدابات')
     deputation_distance = fields.Float(string=u'المسافة المحدد للإنتداب', default=75)
+    annual_balance = fields.Integer(string='الرصيد السنوي')
+    line_ids = fields.One2many('hr.deputation.allowance', 'deputation_setting_id', string=u'تفاصيل البدلات')
 
     @api.multi
     def button_setting(self):
@@ -27,3 +29,15 @@ class HrDeputationSetting(models.Model):
                 'res_id': deputation_setting.id,
             }
             return value
+
+
+class HrDeputationAllowance(models.Model):
+    _name = 'hr.deputation.allowance'
+
+    deputation_setting_id = fields.Many2one('hr.deputation.setting', string='Setting', ondelete='cascade')
+    internal_transport_amount = fields.Float(string='بدل نقل داخلي')
+    external_transport_amount = fields.Float(string='بدل نقل خارجي')
+    internal_deputation_amount = fields.Float(string='بدل إنتداب داخلي')
+    grade_ids = fields.Many2many('salary.grid.grade', 'deputation_allowance_grade_rel', 'deputation_allowance_id', 'grade_id', string=u'المراتب')
+
+
