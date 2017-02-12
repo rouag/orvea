@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<report id="overtime_report" model="hr.overtime"
+			name="smart_hr.report_overtime" report_type="qweb-pdf" string="قرار خارج الدوام"
+			file="smart_hr.report_overtime" />
+	
+	</data>
+</openerp>

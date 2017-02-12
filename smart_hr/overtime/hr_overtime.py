@@ -7,8 +7,8 @@ from openerp.exceptions import UserError
 from datetime import date, datetime, timedelta
 
 
-class hrTimeOut(models.Model):
-    _name = 'hr.time.out'
+class HrOvertime(models.Model):
+    _name = 'hr.overtime'
     _order = 'id desc'
     _rec_name = 'number_time_out'
     _description = u'إجراء خارج دوام'
@@ -23,7 +23,7 @@ class hrTimeOut(models.Model):
     number_order = fields.Char(string='رقم قرارموافقة خارج الدوام  ')
     date_time_out = fields.Date(string='تاريخ قرارموافقة خارج الدوام ')
     file_time_out = fields.Binary(string='صورة قرارموافقة خارج الدوام ')
-    line_ids = fields.One2many('hr.time.out.ligne', 'time_out_id', string=u'خارج دوام', states={'draft': [('readonly', 0)]})
+    line_ids = fields.One2many('hr.overtime.ligne', 'overtime_id', string=u'خارج دوام', states={'draft': [('readonly', 0)]})
     state = fields.Selection([('draft', '  طلب'),
                              ('waiting', '  المعالي أو اللجنة'),
                              ('extern', 'جهة خارجية'),
@@ -58,13 +58,13 @@ class hrTimeOut(models.Model):
         for rec in self:
             if rec.state != 'draft'  :
                 raise UserError(_(u'لا يمكن حذف خارج دوام  إلا في حالة طلب !'))
-        return super(HrTimeOut, self).unlink()
+        return super(HrOvertime, self).unlink()
     
-class HrTimeOutLigne(models.Model):
-    _name = 'hr.time.out.ligne'
+class HrOvertimeLigne(models.Model):
+    _name = 'hr.overtime.ligne'
     _description = u' خارج دوام'
 
-    time_out_id = fields.Many2one('hr.time.out', string=' خارج دوام', ondelete='cascade')
+    overtime_id = fields.Many2one('hr.overtime', string=' خارج دوام', ondelete='cascade')
     employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف', required=1)
     type_time_out = fields.Selection([('friday_saturday', ' أيام الجمعة والسبت'),
                                     ('holidays', 'أيام الأعياد'),

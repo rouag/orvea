@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
-		<record model="ir.ui.view" id="hr_mandate_task_tree">
-			<field name="name">hr.mandate.task.tree</field>
-			<field name="model">hr.mandate.task</field>
+		<record model="ir.ui.view" id="hr_deputation_tree">
+			<field name="name">hr.deputation.tree</field>
+			<field name="model">hr.deputation</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
-				<tree string="الانتداب">
-					<field name="number_order" />
+				<tree string="الإنتدابات">
 					<field name="order_date" />
-					<field name="mandate_type" />
+					<field name="type" />
 					<field name="city_id" />
-					<field name="mandate_category_id" />
+					<field name="category_id" />
 				</tree>
 			</field>
 		</record>
 
-		<record model="ir.ui.view" id="hr_mandate_task_form">
-			<field name="name">hr.mandate.task.form</field>
-			<field name="model">hr.mandate.task</field>
+		<record model="ir.ui.view" id="hr_deputation_form">
+			<field name="name">hr.deputation.form</field>
+			<field name="model">hr.deputation</field>
 			<field name="type">form</field>
 			<field name="arch" type="xml">
-				<form string="الانتداب">
+				<form string="الإنتدابات">
 					<header>
 						<button name="action_draf" string="ارسال الطلب" type="object"
 							states="draft" icon="fa-check" class="oe_inline oe_stat_button"
@@ -56,14 +55,13 @@
 					<sheet>
 						<group>
 							<group>
-								<field name="number_order" />
 								<field name="order_date" />
-								<field name="order_picture" />
+								<field name="file_decision" />
 							</group>
 							<group>
-								<field name="mandate_type" />
+								<field name="type" />
 								<field name="city_id" />
-								<field name="mandate_category_id" />
+								<field name="category_id" />
 								<field name="the_availability" />
 								<field name="transport_alocation" />
 								<field name="net_salary" />
@@ -100,14 +98,16 @@
 				</form>
 			</field>
 		</record>
-		<record model="ir.actions.act_window" id="action_hr_mandate_task">
-			<field name="name">الانتداب</field>
-			<field name="res_model">hr.mandate.task</field>
+		<record model="ir.actions.act_window" id="action_hr_deputation">
+			<field name="name">الإنتدابات</field>
+			<field name="res_model">hr.deputation</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-		<menuitem id="hr_mandate_task_menu" name="الانتداب" sequence="20"
-			parent="menu_hr_overtime_root" action="action_hr_mandate_task" />
+		
+		 		
+		<menuitem id="hr_deputation_menu" name="الإنتدابات" sequence="5"
+			parent="menu_hr_deputation_root" action="action_hr_deputation" />
 
 	</data>
 </openerp>

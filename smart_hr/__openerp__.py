@@ -60,7 +60,6 @@
 
         # الإدارات
         'hr/security/hr_security.xml',
-        'hr/security/ir.model.access.csv',
         'hr/menu.xml',
         'hr/view/hierarchy_level.xml',
         'hr/view/hr_department_view.xml',
@@ -131,12 +130,6 @@
         'sanction/wizard/wizard_sanction_action.xml',
         'sanction/hr_sanction_type_data.xml',
         'sanction/hr_sanction_view.xml',
-        #       القرارات
-        'hr_time_out/view/hr_time_out_view.xml',
-        'hr_time_out/view/hr_mandate_task_view.xml',
-        'hr_time_out/views/report_hr_mandate_task.xml',
-        'hr_time_out/views/report_hr_time_out.xml',
-          'hr_time_out/views/report.xml',
         # القرارات
         'view/hr_decision.xml',
         # الرواتب
@@ -205,9 +198,19 @@
         'hr_promotions/view/hr_employee_promotion_view.xml',
 
         # deputation
-        'deputation/view/hr_deputation_setting.xml',
-        'deputation/security/ir.model.access.csv',
         'deputation/data/data.xml',
+        'deputation/security/ir.model.access.csv',
+        'deputation/view/hr_deputation_setting.xml',
+        'deputation/view/hr_deputation_view.xml',
+        'deputation/views/deputation_report.xml',
+        'deputation/views/report.xml',
+        #overtime
+        'overtime/ir.model.access.csv',
+        'overtime/hr_overtime_view.xml',
+        'overtime/overtime_report.xml',
+        'overtime/report.xml',
+          
+        
         #'hr_survey/views/website_templates.xml',
 
     ],

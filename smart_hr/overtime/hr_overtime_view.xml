@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
-		<record model="ir.ui.view" id="hr_time_out_tree">
-			<field name="name">hr.time.out.tree</field>
-			<field name="model">hr.time.out</field>
+		<record model="ir.ui.view" id="hr_overtime_tree">
+			<field name="name">hr.overtime.tree</field>
+			<field name="model">hr.overtime</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
 				<tree string="خارج الدوام">
@@ -16,9 +16,9 @@
 			</field>
 		</record>
 
-		<record model="ir.ui.view" id="hr_time_out_form">
-			<field name="name">hr.time.out.form</field>
-			<field name="model">hr.time.out</field>
+		<record model="ir.ui.view" id="hr_overtime_form">
+			<field name="name">hr.overtime.form</field>
+			<field name="model">hr.overtime</field>
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="خارج الدوام">
@@ -63,14 +63,14 @@
 				</form>
 			</field>
 		</record>
-		<record model="ir.actions.act_window" id="action_hr_time_outt">
+		<record model="ir.actions.act_window" id="action_hr_overtime">
 			<field name="name">خارج دوام</field>
-			<field name="res_model">hr.time.out</field>
+			<field name="res_model">hr.overtime</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-		<menuitem id="hr_time_out_menu" name="خارج دوام" sequence="18"
-			parent="menu_hr_overtime_root" action="action_hr_time_outt" />
+		<menuitem id="hr_overtime_menu" name="خارج دوام" sequence="5"
+			parent="menu_hr_overtime_root" action="action_hr_overtime" />
 
 	</data>
 </openerp>
