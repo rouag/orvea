@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="hr_mandate_task_tree">
+			<field name="name">hr.mandate.task.tree</field>
+			<field name="model">hr.mandate.task</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="الانتداب">
+					<field name="number_order" />
+					<field name="order_date" />
+					<field name="mandate_type" />
+					<field name="city_id" />
+					<field name="mandate_category_id" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_mandate_task_form">
+			<field name="name">hr.mandate.task.form</field>
+			<field name="model">hr.mandate.task</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="الانتداب">
+					<header>
+						<button name="action_draf" string="ارسال الطلب" type="object"
+							states="draft" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_waiting" string="موافق" type="object"
+							states="waiting" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_refuse" string="رفض" type="object"
+							states="waiting" icon="fa-times" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_extern" string="موافق" type="object"
+							states="extern" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_refuse" string="رفض" type="object"
+							states="extern" icon="fa-times" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+
+						<field name="state" widget="statusbar" statusbar_visible="draft,waiting,extern,done" />
+					</header>
+					<sheet>
+						<group>
+							<group>
+								<field name="number_order" />
+								<field name="order_date" />
+								<field name="order_picture" />
+							</group>
+							<group>
+								<field name="mandate_type" />
+								<field name="city_id" />
+								<field name="mandate_category_id" />
+							</group>
+						</group>
+
+						<group>
+							<group string="بيانات الموظف">
+								<field name="employee_id" />
+								<field name="number" />
+								<field name="country_id" />
+								<field name="department_id" />
+								<field name="job_id" />
+								<field name="number_job" />
+								<field name="code" />
+								<field name="type_id" />
+								<field name="grade_id" />
+								<field name="degree_id" />
+							</group>
+
+							<group string="بيانات المهمة">
+								<field name="task_name" />
+								<field name="date_from" />
+								<field name="date_to" />
+								<field name="duration" />
+							</group>
+
+
+
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_mandate_task">
+			<field name="name">الانتداب</field>
+			<field name="res_model">hr.mandate.task</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<menuitem id="hr_mandate_task_menu" name="الانتداب" sequence="20"
+			parent="menu_hr_overtime_root" action="action_hr_mandate_task" />
+
+	</data>
+</openerp>

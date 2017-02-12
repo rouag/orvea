@@ -134,7 +134,12 @@
         'sanction/wizard/wizard_sanction_action.xml',
         'sanction/hr_sanction_type_data.xml',
         'sanction/hr_sanction_view.xml',
-
+        #       القرارات
+        'hr_time_out/view/hr_time_out_view.xml',
+        'hr_time_out/view/hr_mandate_task_view.xml',
+        'hr_time_out/views/report_hr_mandate_task.xml',
+        'hr_time_out/views/report_hr_time_out.xml',
+          'hr_time_out/views/report.xml',
         # القرارات
         'view/hr_decision.xml',
         # الرواتب

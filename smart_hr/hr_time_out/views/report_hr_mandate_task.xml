@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_hr_mandate_task">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.external_layout_extend">
+						<div class="page">
+							<div class="oe_structure" />
+							<div class="col-xs-12" style="margin-top:20px;">
+								<p style="font-size:22px;" align="center"> قرارإنتداب
+								</p>
+								
+
+
+<p>و بناءا على مقتضى  مصلحة العمل و على  ما وقع لنا من .....</p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+<p></p>
+							</div>
+						</div>
+					</t>
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+								
+							
+								
