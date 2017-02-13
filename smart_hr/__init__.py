@@ -13,3 +13,4 @@ from . import hr_appraisal
 from . import hr_promotions
 from . import sanction
 from . import deputation
+from . import overtime

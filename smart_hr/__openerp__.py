@@ -18,7 +18,7 @@
         'payroll/security/payroll_security.xml',
         'payroll/security/ir.model.access.csv',
 
-        'view/hr_menu.xml',
+        'hr_menu.xml',
         'data/sequences.xml',
         'data/configurations.xml',
         'data/hr_holidays_data.xml',
@@ -60,7 +60,6 @@
 
         # الإدارات
         'hr/security/hr_security.xml',
-        'hr/security/ir.model.access.csv',
         'hr/menu.xml',
         'hr/view/hierarchy_level.xml',
         'hr/view/hr_department_view.xml',
@@ -86,7 +85,6 @@
         'views/report.xml',
         'views/templates.xml',
         'views/layout.xml',
-        'views/hr_deputation_report.xml',
         'views/hr_dep_accr_report.xml',
         'views/report_point_decinne.xml',
         'views/report_hr_direct_appoint.xml',
@@ -97,7 +95,7 @@
         'report/hr_termination_report.xml',
         'views/employee_situation_order_report.xml',
         'wizards/view/hr_refuse_wizard_view.xml',
-       
+
 
         'view/hr_decision_appoint.xml',
 #         'view/hr_promotion.xml',
@@ -110,11 +108,9 @@
         'view/hr_holidays.xml',
         'view/hr_holidays_cancellation_view.xml',
         'view/hr_holidays_decision_view.xml',
-        'view/hr_overtime_view.xml',
         'view/hr_employee_education_level.xml',
         'view/hr_assessment_view.xml',
         'view/hr_assessment_point_view.xml',
-        'view/hr_deputation_view.xml',
         'view/res_city_view.xml',
         'view/hr_termination_view.xml',
         'view/hr_suspension_view.xml',
@@ -134,7 +130,6 @@
         'sanction/wizard/wizard_sanction_action.xml',
         'sanction/hr_sanction_type_data.xml',
         'sanction/hr_sanction_view.xml',
-
         # القرارات
         'view/hr_decision.xml',
         # الرواتب
@@ -203,10 +198,23 @@
         'hr_promotions/view/hr_employee_promotion_view.xml',
 
         # deputation
-        'deputation/view/hr_deputation_setting.xml',
-        'deputation/security/ir.model.access.csv',
         'deputation/data/data.xml',
-        'hr_survey/views/website_templates.xml',
+        'deputation/security/ir.model.access.csv',
+        'deputation/view/hr_deputation_setting.xml',
+        'deputation/view/hr_deputation_view.xml',
+        'deputation/view/transport_decision_view.xml',
+        'deputation/views/deputation_report.xml',
+        'deputation/views/report.xml',
+        #overtime
+        'overtime/data/data.xml',
+        'overtime/security/ir.model.access.csv',
+        'overtime/view/hr_overtime_view.xml',
+        'overtime/view/hr_overtime_setting.xml',
+        'overtime/views/overtime_report.xml',
+        'overtime/views/report.xml',
+          
+        
+        #'hr_survey/views/website_templates.xml',
 
     ],
     'auto_install': False,

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="hr_deputation_tree">
+			<field name="name">hr.deputation.tree</field>
+			<field name="model">hr.deputation</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="الإنتدابات">
+					<field name="order_date" />
+					<field name="type" />
+					<field name="city_id" />
+					<field name="category_id" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_deputation_form">
+			<field name="name">hr.deputation.form</field>
+			<field name="model">hr.deputation</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="الإنتدابات">
+					<header>
+						<button name="action_draft" string="ارسال الطلب" type="object"
+							states="draft" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_commission" string="إحالة للجنة" type="object"
+							states="audit" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_audit" string="موافق" type="object"
+							states="audit" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_refuse" string="رفض" type="object"
+							states="audit" icon="fa-times" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_waiting" string="موافق" type="object"
+							states="waiting" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_refuse" string="رفض" type="object"
+							states="waiting" icon="fa-times" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+
+						<button name="action_done" string="إنهاء مهمة" type="object"
+							states="done" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_order" string="إعتماد التقرير" type="object"
+							states="order" icon="fa-times" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<field name="state" widget="statusbar"
+							statusbar_visible="draft,audit,waiting,done,order,finish,refuse" />
+					</header>
+					<sheet>
+						<group>
+							<group>
+								<field name="order_date" />
+								<field name="file_decision" />
+								<field name="decision_number"
+									attrs="{'invisible':[('state', 'not in', [ 'done','order','finish'])],'required':[('state','=','done')],'readonly':[('state', 'in', ['order','finish'])]}" />
+								<field name="decision_date"
+									attrs="{'invisible':[('state', 'not in', ['done','order','finish'])],'required':[('state','=','done')],'readonly':[('state', 'in', ['order','finish'])]}" />
+								<field name="file_order"
+									attrs="{'invisible':[('state', 'not in', [ 'done','order','finish'])],'required':[('state','=','done')],'readonly':[('state', 'in', ['order','finish'])]}" />
+								<field name="amount"
+									attrs="{'invisible':[('state', 'not in', [ 'done','order','finish'])],'required':[('state','=','done')],'readonly':[('state', 'in', ['order','finish'])]}" />
+							</group>
+						<group string="الإنتداب">
+							<field name="type" />
+							<field name="city_id" attrs="{'invisible':[('type', '!=','internal')]}" />
+							<field name="category_id" attrs="{'invisible':[('type', '=','internal')]}" />
+							<field name="the_availability" />
+							<field name="transport_alocation" />
+							<field name="net_salary" />
+							<field name="alowance_bonus" />
+							<field name="anual_balance" />
+
+						</group>
+					</group>
+
+						<group>
+							<group string="بيانات الموظف">
+								<field name="employee_id" />
+								<field name="number" />
+								<field name="country_id" />
+								<field name="department_id" />
+								<field name="job_id" />
+								<field name="number_job" />
+								<field name="code" />
+								<field name="type_id" />
+								<field name="grade_id" />
+								<field name="degree_id" />
+							</group>
+
+							<group string="بيانات المهمة">
+								<field name="task_name" />
+								<field name="date_from" />
+								<field name="date_to" />
+								<field name="duration" />
+							</group>
+
+
+
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_deputation">
+			<field name="name">الإنتدابات</field>
+			<field name="res_model">hr.deputation</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+
+		<menuitem id="hr_deputation_menu" name="الإنتدابات" sequence="5"
+			parent="menu_hr_deputation_root" action="action_hr_deputation" />
+
+	</data>
+</openerp>

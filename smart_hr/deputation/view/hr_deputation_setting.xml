@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
+
+		<menuitem name="الإعدادات" id="hr_deputation_setting" parent="menu_hr_deputation_root"
+			sequence="100" />
+
 		<!-- إعدادات الانتدابات -->
 		<record id="view_hr_deputation_setting" model="ir.ui.view">
 			<field name="name">hr.deputation.setting.form</field>
@@ -10,9 +14,37 @@
 
 					<sheet>
 						<group>
-								<field name="name" invisible="1" />
-								<field name="deputation_distance" />
+							<field name="name" invisible="1" />
+							<field name="deputation_distance" />
+							<field name="annual_balance" />
 						</group>
+						<notebook>
+							<page string="بدل النقل والإنتداب">
+								<field name="line_ids">
+									<tree>
+										<field name="grade_ids" />
+										<field name="internal_transport_amount" />
+										<field name="external_transport_amount" />
+										<field name="internal_deputation_amount" />
+									</tree>
+									<form>
+										<group>
+											<field name="grade_ids" />
+										</group>
+										<group>
+											<group string="بدل النقل">
+												<field name="internal_transport_amount" />
+												<field name="external_transport_amount" />
+											</group>
+											<group string="بدل الإنتداب">
+												<field name="internal_deputation_amount" />
+												 <div>إضافة فئات الدول</div>
+											</group>
+										</group>
+									</form>
+								</field>
+							</page>
+						</notebook>
 					</sheet>
 				</form>
 			</field>
@@ -30,7 +62,7 @@
 		</record>
 
 		<menuitem name="إعدادات عامة" id="hr_deputation_setting_menu"
-			parent="hr_root_deputation_configuration" sequence="1"
+			parent="hr_deputation_setting" sequence="5"
 			action="ir_actions_button_hr_deputation_setting" />
 	</data>
 </openerp>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="hr_overtime_tree">
+			<field name="name">hr.overtime.tree</field>
+			<field name="model">hr.overtime</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="خارج الدوام">
+					<field name="order_date" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_overtime_form">
+			<field name="name">hr.overtime.form</field>
+			<field name="model">hr.overtime</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="خارج الدوام">
+					<header>
+
+						<button name="action_draft" string="ارسال الطلب" type="object"
+							states="draft" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_commission" string="إحالة للجنة" type="object"
+							states="audit" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_audit" string="موافق" type="object"
+							states="audit" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_refuse" string="رفض" type="object"
+							states="audit" icon="fa-times" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_waiting" string="موافق" type="object"
+							states="waiting" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_refuse" string="رفض" type="object"
+							states="waiting" icon="fa-times" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+
+						<button name="action_done" string="إنهاء مهمة" type="object"
+							states="done" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_order" string="إعتماد التقرير" type="object"
+							states="order" icon="fa-times" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<field name="state" widget="statusbar"
+							statusbar_visible="draft,audit,waiting,done,order,finish,refuse" />
+					</header>
+					<sheet>
+						<group>
+							<group>
+								<field name="order_date" />
+								<field name="file_order" />
+							</group>
+							<group>
+								<field name="decision_number"
+									attrs="{'invisible':[('state', 'not in', [ 'done','order','finish'])],'required':[('state','=','done')],'readonly':[('state', 'in', ['order','finish'])]}" />
+								<field name="decision_date"
+									attrs="{'invisible':[('state', 'not in', ['done','order','finish'])],'required':[('state','=','done')],'readonly':[('state', 'in', ['order','finish'])]}" />
+								<field name="file_decision"
+									attrs="{'invisible':[('state', 'not in', [ 'done','order','finish'])],'required':[('state','=','done')],'readonly':[('state', 'in', ['order','finish'])]}" />
+								<field name="amount"
+									attrs="{'invisible':[('state', 'not in', [ 'done','order','finish'])],'required':[('state','=','done')],'readonly':[('state', 'in', ['order','finish'])]}" />
+
+							</group>
+						</group>
+						<group>
+							<notebook>
+								<page string="المكلفين بخارج الدوام">
+									<group>
+										<field name="line_ids" nolabel="1">
+											<tree>
+												<field name="employee_id" />
+												<field name="type" />
+												<field name="date_from" />
+												<field name="date_to" />
+												<field name="days_number" />
+												<field name="heure_number" />
+												<field name="mission" />
+											</tree>
+											<form>
+												<group>
+													<group>
+														<field name="employee_id" />
+														<field name="type" />
+														<field name="mission" />
+													</group>
+													<group>
+														<field name="date_from" />
+														<field name="date_to" />
+														<field name="days_number" />
+														<field name="heure_number" />
+													</group>
+												</group>
+											</form>
+										</field>
+									</group>
+								</page>
+							</notebook>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_overtime">
+			<field name="name">خارج دوام</field>
+			<field name="res_model">hr.overtime</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<menuitem id="hr_overtime_menu" name="خارج دوام" sequence="5"
+			parent="menu_hr_overtime_root" action="action_hr_overtime" />
+
+	</data>
+</openerp>

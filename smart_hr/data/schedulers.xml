@@ -20,7 +20,7 @@
 			<field name="args">()</field>
 		</record>
 
-		<record id="ir_cron_hr_deputation_stock" model="ir.cron">
+		<!--  <record id="ir_cron_hr_deputation_stock" model="ir.cron">
 			<field name="name">Deputation Stock Updater</field>
 			<field name="interval_number">1</field>
 			<field name="interval_type">days</field>
@@ -29,7 +29,7 @@
 			<field name="model">hr.deputation</field>
 			<field name="function">update_deputation_stock</field>
 			<field name="args">()</field>
-		</record>
+		</record>-->
 		<record id="ir_cron_hr_holidays_periodes" model="ir.cron">
 			<field name="name">Holiday periode Updater</field>
 			<field name="interval_number">1</field>
