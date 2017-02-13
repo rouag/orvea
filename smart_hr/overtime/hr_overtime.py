@@ -119,4 +119,4 @@ class HrOvertimeLigne(models.Model):
             start_date = fields.Date.from_string(self.date_from)
             end_date = fields.Date.from_string(self.date_to)
             diff = end_date - start_date
-            self.duration = diff.days + 1
+            self.days_number = diff.days + 1
