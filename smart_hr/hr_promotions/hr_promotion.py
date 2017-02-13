@@ -451,22 +451,22 @@ class hr_promotion_ligne_employee_job(models.Model):
             res['domain'] = {'new_job_id': [('id', 'in', job_ids)]}
             return res
             
-#     @api.onchange('new_job_id')
-#     def onchange_job_id(self):
-#         if self.new_job_id:
-#             if int(self.new_job_id.grade_id.code) <= int(self.emp_grade_id_old.code):
-#                 self.new_job_id = False
-#                 self.new_number_job = False
-#                 self.emp_grade_id_new = False
-#                 raise ValidationError(u"يجب أن تكون المرتبة أكبر من المرتبة  الحالية ")
-#             if int(self.new_job_id.grade_id.code) > int(self.emp_grade_id_old.code) + 1 :
-#                 self.new_job_id = False
-#                 self.new_number_job = False
-#                 self.emp_grade_id_new = False
-#                 raise ValidationError(u"يجب أن تكون المرتبة أكبر من المرتبة  الحالية مباشرة  ")
-#             self.new_job_id.state = 'reserved'
-#             self.emp_grade_id_new = self.new_job_id.grade_id.id
-#             self.new_number_job = self.new_job_id.number
+    @api.onchange('new_job_id')
+    def onchange_job_id(self):
+        if self.new_job_id:
+            if int(self.new_job_id.grade_id.code) <= int(self.emp_grade_id_old.code):
+                self.new_job_id = False
+                self.new_number_job = False
+                self.emp_grade_id_new = False
+                raise ValidationError(u"يجب أن تكون المرتبة أكبر من المرتبة  الحالية ")
+            if int(self.new_job_id.grade_id.code) > int(self.emp_grade_id_old.code) + 1 :
+                self.new_job_id = False
+                self.new_number_job = False
+                self.emp_grade_id_new = False
+                raise ValidationError(u"يجب أن تكون المرتبة أكبر من المرتبة  الحالية مباشرة  ")
+            self.new_job_id.state = 'reserved'
+            self.emp_grade_id_new = self.new_job_id.grade_id.id
+            self.new_number_job = self.new_job_id.number
                 
          
     @api.onchange('date_direct_action')
