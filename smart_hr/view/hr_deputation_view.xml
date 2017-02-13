@@ -199,7 +199,7 @@
             <field name="name">hr.deputation.category.form</field>
             <field name="model">hr.deputation.category</field>
             <field name="arch" type="xml">
-                <form string="فئة الدول  ">
+                <form string="فئة الدول">
                     <sheet>
                         <group>
                             <field name="category" required="1"/>
