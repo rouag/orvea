@@ -12,6 +12,7 @@ from umalqurra.hijri_date import HijriDate
 class HrDeputation(models.Model):
     _name = 'hr.deputation'
     _order = 'id desc'
+    _rec_name = 'order_date'
     _description = u'الانتدابات'
 
     order_date = fields.Date(string='تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
@@ -28,8 +29,11 @@ class HrDeputation(models.Model):
     date_from = fields.Date(string=u'من')
     date_to = fields.Date(string=u'الى')
     note = fields.Text(string=u'الملاحظات', readonly=1, states={'draft': [('readonly', 0)]})
-    date_decision = fields.Date(string='تاريخ قرار ')
-    file_decision = fields.Binary(string='صورة قرار ')
+    decision_number = fields.Char(string='رقم القرار')
+    decision_date = fields.Date(string='تاريخ القرار', default=fields.Datetime.now(), readonly=1)
+    file_decision = fields.Binary(string='صورة الطلب')
+    amount = fields.Float(string='المبلغ')
+    file_order = fields.Binary(string='صورة القرار ')
     transport_alocation = fields.Boolean(string='بدل نقل')
     net_salary = fields.Boolean(string=' الراتب')
     anual_balance = fields.Boolean(string=' الرصيد السنوي')

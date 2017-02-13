@@ -21,10 +21,10 @@
 				<form string="خارج الدوام">
 					<header>
 
-<button name="action_draft" string="ارسال الطلب" type="object"
+						<button name="action_draft" string="ارسال الطلب" type="object"
 							states="draft" icon="fa-check" class="oe_inline oe_stat_button"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-                       <button name="action_commission" string="إحالة للجنة" type="object"
+						<button name="action_commission" string="إحالة للجنة" type="object"
 							states="audit" icon="fa-check" class="oe_inline oe_stat_button"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
@@ -58,7 +58,18 @@
 						<group>
 							<group>
 								<field name="order_date" />
-										<field name="file_decision"/>
+								<field name="file_order" />
+							</group>
+							<group>
+								<field name="decision_number"
+									attrs="{'invisible':[('state', 'not in', [ 'done','order','finish'])],'required':[('state','=','done')],'readonly':[('state', 'in', ['order','finish'])]}" />
+								<field name="decision_date"
+									attrs="{'invisible':[('state', 'not in', ['done','order','finish'])],'required':[('state','=','done')],'readonly':[('state', 'in', ['order','finish'])]}" />
+								<field name="file_decision"
+									attrs="{'invisible':[('state', 'not in', [ 'done','order','finish'])],'required':[('state','=','done')],'readonly':[('state', 'in', ['order','finish'])]}" />
+								<field name="amount"
+									attrs="{'invisible':[('state', 'not in', [ 'done','order','finish'])],'required':[('state','=','done')],'readonly':[('state', 'in', ['order','finish'])]}" />
+
 							</group>
 						</group>
 						<group>

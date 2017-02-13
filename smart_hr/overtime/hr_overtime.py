@@ -4,17 +4,24 @@ from openerp import models, fields, api, _
 from openerp.exceptions import Warning
 from openerp.exceptions import ValidationError
 from openerp.exceptions import UserError
+from datetime import date, datetime, timedelta
+from dateutil.relativedelta import relativedelta
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
+from umalqurra.hijri_date import HijriDate
 
 
 class HrOvertime(models.Model):
     _name = 'hr.overtime'
     _order = 'id desc'
+    _rec_name = 'order_date'
     _description = u'إجراء خارج دوام'
 
     order_date = fields.Date(string='تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
+    file_order = fields.Binary(string='صورة الطلب')
     decision_number = fields.Char(string='رقم القرار')
     decision_date = fields.Date(string='تاريخ القرار', default=fields.Datetime.now(), readonly=1)
     file_decision = fields.Binary(string='صورة القرار')
+    amount = fields.Float(string='المبلغ')
     note = fields.Text(string=u'الملاحظات', readonly=1, states={'draft': [('readonly', 0)]})
     line_ids = fields.One2many('hr.overtime.ligne', 'overtime_id', string=u'خارج دوام', states={'draft': [('readonly', 0)]})
     state = fields.Selection([
@@ -48,6 +55,14 @@ class HrOvertime(models.Model):
     @api.multi
     def action_done(self):
         for deputation in self:
+            for line in deputation.line_ids :
+                self.env['base.notification'].create({'title': u'إشعار إشعار بقبول  خارج الدوام',
+                                              'message': u'لقد تم إشعار بقبول  خارج الدوام',
+                                              'user_id': line.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'notif': True,
+                                              'res_id': line.id,
+                                             'res_action': 'smart_hr.action_hr_overtime'})
             deputation.state = 'order'
     
     @api.multi
@@ -59,35 +74,18 @@ class HrOvertime(models.Model):
     @api.multi
     def action_refuse(self):
         for deputation in self:
+            for line in deputation.line_ids :
+                self.env['base.notification'].create({'title': u'إشعار إشعار برفض  خارج الدوام',
+                                              'message': u'لقد تم إشعار برفض  خارج الدوام',
+                                              'user_id': line.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'notif': True,
+                                              'res_id': line.id,
+                                             'res_action': 'smart_hr.action_hr_overtime'})
             deputation.state = 'refuse'
     
     
-    
-#     state = fields.Selection([('draft', '  طلب'),
-#                              ('waiting', '  المعالي أو اللجنة'),
-#                              ('extern', 'جهة خارجية'),
-#                              ('done', 'اعتمدت'),
-#                              ('cancel', 'ملغاة')], string='الحالة')
-# 
-#     @api.multi
-#     def action_draft(self):
-#         for overtime in self:
-#             overtime.state = 'waiting'
-# 
-#     @api.multi
-#     def action_waiting(self):
-#         for overtime in self:
-#             overtime.state = 'extern'
-# 
-#     @api.multi
-#     def action_refuse(self):
-#         for overtime in self:
-#             overtime.state = 'draft'
-# 
-#     @api.multi
-#     def action_extern(self):
-#         for overtime in self:
-#             overtime.state = 'extern'
+   
 
     @api.multi
     def unlink(self):
@@ -100,6 +98,7 @@ class HrOvertime(models.Model):
 class HrOvertimeLigne(models.Model):
     _name = 'hr.overtime.ligne'
     _description = u' خارج دوام'
+    
 
     overtime_id = fields.Many2one('hr.overtime', string=' خارج دوام', ondelete='cascade')
     employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف', required=1)
@@ -115,8 +114,12 @@ class HrOvertimeLigne(models.Model):
     
     @api.depends('date_from', 'date_to')
     def _compute_duration(self):
-        if self.date_from and self.date_to :
-            start_date = fields.Date.from_string(self.date_from)
-            end_date = fields.Date.from_string(self.date_to)
+        for rec in self :
+            if rec.date_from > rec.date_to :
+                raise ValidationError(u"تاريخ من  يجب ان يكون أكبر من تاريخ الى")
+
+            start_date = fields.Date.from_string(rec.date_from)
+            end_date = fields.Date.from_string(rec.date_to)
             diff = end_date - start_date
-            self.days_number = diff.days + 1
+            rec.days_number = diff.days + 1
+      

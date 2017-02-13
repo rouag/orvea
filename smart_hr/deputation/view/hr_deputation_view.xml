@@ -25,7 +25,7 @@
 						<button name="action_draft" string="ارسال الطلب" type="object"
 							states="draft" icon="fa-check" class="oe_inline oe_stat_button"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-                       <button name="action_commission" string="إحالة للجنة" type="object"
+						<button name="action_commission" string="إحالة للجنة" type="object"
 							states="audit" icon="fa-check" class="oe_inline oe_stat_button"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
@@ -59,21 +59,28 @@
 						<group>
 							<group>
 								<field name="order_date" />
-								<field name="file_decision"/>
+								<field name="file_decision" />
+								<field name="decision_number"
+									attrs="{'invisible':[('state', 'not in', [ 'done','order','finish'])],'required':[('state','=','done')],'readonly':[('state', 'in', ['order','finish'])]}" />
+								<field name="decision_date"
+									attrs="{'invisible':[('state', 'not in', ['done','order','finish'])],'required':[('state','=','done')],'readonly':[('state', 'in', ['order','finish'])]}" />
+								<field name="file_order"
+									attrs="{'invisible':[('state', 'not in', [ 'done','order','finish'])],'required':[('state','=','done')],'readonly':[('state', 'in', ['order','finish'])]}" />
+								<field name="amount"
+									attrs="{'invisible':[('state', 'not in', [ 'done','order','finish'])],'required':[('state','=','done')],'readonly':[('state', 'in', ['order','finish'])]}" />
 							</group>
-							<group>
-								<field name="type" />
-								<field name="city_id" attrs="{'invisible':[('type', '!=','internal')]}" />
-								<field name="category_id"  attrs="{'invisible':[('type', '=','internal')]}" />
-								<field name="the_availability" />
-								<field name="transport_alocation" />
-								<field name="net_salary" />
-								<field name="alowance_bonus" />
-								<field name="anual_balance" />
-								
+						<group string="الإنتداب">
+							<field name="type" />
+							<field name="city_id" attrs="{'invisible':[('type', '!=','internal')]}" />
+							<field name="category_id" attrs="{'invisible':[('type', '=','internal')]}" />
+							<field name="the_availability" />
+							<field name="transport_alocation" />
+							<field name="net_salary" />
+							<field name="alowance_bonus" />
+							<field name="anual_balance" />
 
-							</group>
 						</group>
+					</group>
 
 						<group>
 							<group string="بيانات الموظف">
@@ -109,8 +116,8 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-		
-		 		
+
+
 		<menuitem id="hr_deputation_menu" name="الإنتدابات" sequence="5"
 			parent="menu_hr_deputation_root" action="action_hr_deputation" />
 
