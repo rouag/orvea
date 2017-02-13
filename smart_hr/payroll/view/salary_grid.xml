@@ -228,6 +228,7 @@
 								<field name="name" />
 								<field name="code" />
 								<field name="type_id" />
+								<field name="years_job" />
 							</group>
 
 						</group>

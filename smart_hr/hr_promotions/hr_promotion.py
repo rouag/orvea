@@ -98,14 +98,15 @@ class hr_promotion(models.Model):
         self.state='employee_promotion'
     @api.one
     def button_job_promotion(self):
-        self.state='manager'
-        for job in self.job_promotion_line_ids:
-            if not job.job_state:
-                self.job_promotion_line_ids=[(3,job.id)]
-            else:
-                job.new_job_id.occupied_promotion=True
-            if not self.job_promotion_line_ids:
-                 raise ValidationError(u"لم يقع إحتجاز أي وظيفة")
+        for promo in self:
+            self.state='manager'
+            for job in self.job_promotion_line_ids:
+                if not job.job_state:
+                    self.job_promotion_line_ids=[(3,job.id)]
+                else:
+                    job.new_job_id.occupied_promotion=True
+                if not self.job_promotion_line_ids:
+                     raise ValidationError(u"لم يقع إحتجاز أي وظيفة")
                 
         
     @api.one
@@ -235,6 +236,7 @@ class hr_promotion(models.Model):
                                         employee_promotion.append(emp)
                         else:
                             employee_promotion.append(emp)
+        
         for emp_promotion in employee_promotion :
             print emp_promotion
             regle_point=self.env['hr.evaluation.point'].search([('grade_id','=',emp_promotion.job_id.grade_id.id)])
