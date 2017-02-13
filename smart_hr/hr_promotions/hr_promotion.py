@@ -167,6 +167,10 @@ class hr_promotion(models.Model):
                                                            'degree_id':emp.new_job_id.grade_id.id,
                                                            })
                 apoint.action_done() 
+                
+                #             create history_line
+                type = " ترقية"+" " + self.name.encode('utf-8')
+                self.env['hr.employee.history'].sudo().add_action_line(self.emp.employee_id.id, self.decision_number, emp.dicision_date, type)
                 self.env['base.notification'].create({'title': u'إشعار بالترقية',
                                               'message': u'لقد تم ترقيتكم على وظيفة جديدة',
                                               'user_id': emp.employee_id.user_id.id,
@@ -406,7 +410,7 @@ class hr_promotion_ligne_employee_job(models.Model):
     point_functionality=fields.Integer(string=u'نقاط  الإداء الوظيفي',)
     sum_point=fields.Integer(string=u'المجموع',)
     demande_promotion_id = fields.Many2one('hr.promotion.employee.demande', string=u'طلب الترقية  ')
-    new_job_id = fields.Many2one('hr.job', string=u'الوظيفة المرقى عليها')
+    new_job_id = fields.Many2one('hr.job', string=u'الوظيفة المرقى عليها',domain=[('int(code)','=','int(self.')])
     new_number_job = fields.Char(string='رقم الوظيفة', store=True, readonly=1)
     department = fields.Many2one('hr.department', string='الادارة', store=True, readonly=1)
     emp_grade_id_new = fields.Many2one('salary.grid.grade', string='المرتبة ', store=True, readonly=1,)
@@ -442,32 +446,27 @@ class hr_promotion_ligne_employee_job(models.Model):
     def change_employee_id(self):
         res = {}
         if self.employee_id:
-            job_id=[]
-            print 'graaaaade ',int(self.emp_grade_id_old.code)+1
-            job_ids=self.env['hr.job'].search([('grade_id.code', '=',  int(self.emp_grade_id_old.code)+1),('occupied_promotion','=',True)])
-            if job_ids:
-                for job in job_ids:
-                    job_id.append(job.id)
-            print 'job_ids',job.id
-            res['domain'] = {'new_job_id': [('id', 'in', job_id)]}
+            job_ids = self.env['hr.job'].search([('grade_id.code', '=',  int(self.emp_grade_id_old.code)+1),('occupied_promotion','=',True)]).ids
+            print 'job_ids',job_ids
+            res['domain'] = {'new_job_id': [('id', 'in', job_ids)]}
             return res
             
-    @api.onchange('new_job_id')
-    def onchange_job_id(self):
-        if self.new_job_id:
-            if int(self.new_job_id.grade_id.code) <= int(self.emp_grade_id_old.code):
-                self.new_job_id=False
-                self.new_number_job=False
-                self.emp_grade_id_new =False
-                raise ValidationError(u"يجب أن تكون المرتبة أكبر من المرتبة  الحالية ")
-            if int(self.new_job_id.grade_id.code) > int(self.emp_grade_id_old.code)+1 :
-                self.new_job_id=False
-                self.new_number_job=False
-                self.emp_grade_id_new =False
-                raise ValidationError(u"يجب أن تكون المرتبة أكبر من المرتبة  الحالية مباشرة  ")
-            self.new_job_id.state='reserved'
-            self.emp_grade_id_new = self.new_job_id.grade_id.id
-            self.new_number_job = self.new_job_id.number
+#     @api.onchange('new_job_id')
+#     def onchange_job_id(self):
+#         if self.new_job_id:
+#             if int(self.new_job_id.grade_id.code) <= int(self.emp_grade_id_old.code):
+#                 self.new_job_id = False
+#                 self.new_number_job = False
+#                 self.emp_grade_id_new = False
+#                 raise ValidationError(u"يجب أن تكون المرتبة أكبر من المرتبة  الحالية ")
+#             if int(self.new_job_id.grade_id.code) > int(self.emp_grade_id_old.code) + 1 :
+#                 self.new_job_id = False
+#                 self.new_number_job = False
+#                 self.emp_grade_id_new = False
+#                 raise ValidationError(u"يجب أن تكون المرتبة أكبر من المرتبة  الحالية مباشرة  ")
+#             self.new_job_id.state = 'reserved'
+#             self.emp_grade_id_new = self.new_job_id.grade_id.id
+#             self.new_number_job = self.new_job_id.number
                 
          
     @api.onchange('date_direct_action')
