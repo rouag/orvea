@@ -67,6 +67,7 @@
         'hr/view/hr_contract_inherit_view.xml',
         'hr/view/hr_contract_item_view.xml',
         'hr/views/report_hr_contract.xml',
+        'hr/views/report_hr_employee_lend.xml',
         'hr/views/report.xml',
         'hr/data/hr_department_type_data.xml',
         'hr/data/hr_data.xml',
