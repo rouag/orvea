@@ -59,7 +59,7 @@
 						<group>
 							<group>
 								<field name="order_date" />
-								<field name="file_decision" />
+								<field name="file_decision"/>
 							</group>
 							<group>
 								<field name="type" />

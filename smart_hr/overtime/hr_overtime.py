@@ -12,9 +12,9 @@ class HrOvertime(models.Model):
     _description = u'إجراء خارج دوام'
 
     order_date = fields.Date(string='تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
-    decision_number = fields.Char(string='رقم القرار', required=1)
+    decision_number = fields.Char(string='رقم القرار')
     decision_date = fields.Date(string='تاريخ القرار', default=fields.Datetime.now(), readonly=1)
-    decision_picture = fields.Binary(string='صورة القرار', required=1, readonly=1, states={'draft': [('readonly', 0)]})
+    file_decision = fields.Binary(string='صورة القرار')
     note = fields.Text(string=u'الملاحظات', readonly=1, states={'draft': [('readonly', 0)]})
     line_ids = fields.One2many('hr.overtime.ligne', 'overtime_id', string=u'خارج دوام', states={'draft': [('readonly', 0)]})
     state = fields.Selection([
