@@ -49,9 +49,9 @@ class HrDeputation(models.Model):
                               ('audit', u'دراسة الطلب'),
                               ('waiting', u'اللجنة'),
                               ('done', u'اعتمدت'),
-                              ('refuse', u'رفض'),
                               ('order', u'دراسة التقرير'),
-                              ('finish', u'منتهية')
+                              ('finish', u'منتهية'),
+                               ('refuse', u'مرفوض')
                               ], string=u'حالة', default='draft', advanced_search=True)
     task_name = fields.Char(string=u'وصف المهمة')
     duration = fields.Integer(string=u'المدة', compute='_compute_duration')
@@ -94,11 +94,11 @@ class HrDeputation(models.Model):
 
     @api.depends('date_from', 'date_to')
     def _compute_duration(self):
-        for rec in self:
-            start_date = fields.Date.from_string(rec.date_from)
-            end_date = fields.Date.from_string(rec.date_to)
+        if self.date_from and self.date_to :
+            start_date = fields.Date.from_string(self.date_from)
+            end_date = fields.Date.from_string(self.date_to)
             diff = end_date - start_date
-            rec.duration = diff.days + 1
+            self.duration = diff.days + 1
             
     @api.onchange('employee_id')
     def _onchange_employee_id(self):

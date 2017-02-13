@@ -21,8 +21,38 @@
 				<form string="خارج الدوام">
 					<header>
 
+<button name="action_draft" string="ارسال الطلب" type="object"
+							states="draft" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+                       <button name="action_commission" string="إحالة للجنة" type="object"
+							states="audit" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<field name="state" widget="statusbar" statusbar_visible="draft,waiting,extern,done" />
+						<button name="action_audit" string="موافق" type="object"
+							states="audit" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_refuse" string="رفض" type="object"
+							states="audit" icon="fa-times" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_waiting" string="موافق" type="object"
+							states="waiting" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_refuse" string="رفض" type="object"
+							states="waiting" icon="fa-times" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+
+						<button name="action_done" string="إنهاء مهمة" type="object"
+							states="done" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_order" string="إعتماد التقرير" type="object"
+							states="order" icon="fa-times" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<field name="state" widget="statusbar"
+							statusbar_visible="draft,audit,waiting,done,order,finish,refuse" />
 					</header>
 					<sheet>
 						<group>
