@@ -98,11 +98,14 @@ class HrDeputation(models.Model):
 
     @api.depends('date_from', 'date_to')
     def _compute_duration(self):
-        if self.date_from and self.date_to :
-            start_date = fields.Date.from_string(self.date_from)
-            end_date = fields.Date.from_string(self.date_to)
+      for rec in self :
+            if rec.date_from > rec.date_to :
+                raise ValidationError(u"تاريخ من  يجب ان يكون أكبر من تاريخ الى")
+
+            start_date = fields.Date.from_string(rec.date_from)
+            end_date = fields.Date.from_string(rec.date_to)
             diff = end_date - start_date
-            self.duration = diff.days + 1
+            rec.duration = diff.days + 1
             
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
