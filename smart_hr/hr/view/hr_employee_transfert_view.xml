@@ -47,9 +47,9 @@
 									attrs="{'invisible':[('transfert_type', '=', 'internal_transfert')]}"
 									options='{"no_open": True, "no_create": True}' />
 								<field name="transfert_periode_id" options='{"no_open": True, "no_create": True}' />
-								<field name="justification_text" />
+								<field name="justification_text" /> 
 								<field name="note"
-									attrs="{'invisible':[('state', 'in', ['waiting','new'])]}" />
+									attrs="{'invisible':[('state', 'in', ['waiting','new'])],'readonly':[('state', 'in', ['done', 'refused'])]}" />
 								<field name="refusing_date" attrs="{'invisible':[('state', '!=', 'refused')]}" />
 							</group>
 							<group string="قرار الجهة المختصة"
