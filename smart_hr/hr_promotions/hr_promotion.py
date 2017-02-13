@@ -170,7 +170,7 @@ class hr_promotion(models.Model):
                 
                 #             create history_line
                 type = " ترقية"+" " + self.name.encode('utf-8')
-                self.env['hr.employee.history'].sudo().add_action_line(self.emp.employee_id.id, self.decision_number, emp.dicision_date, type)
+                self.env['hr.employee.history'].sudo().add_action_line(emp.employee_id, self.decision_number, self.date , type)
                 self.env['base.notification'].create({'title': u'إشعار بالترقية',
                                               'message': u'لقد تم ترقيتكم على وظيفة جديدة',
                                               'user_id': emp.employee_id.user_id.id,
@@ -402,7 +402,7 @@ class hr_promotion_ligne_employee_job(models.Model):
     promotion_id = fields.Many2one('hr.promotion', string=u'الترقية ')
     old_job_id = fields.Many2one('hr.job', string=u'الوظيفة الحالية')
     old_number_job = fields.Char(string='رقم الوظيفة', store=True, readonly=1) 
-    emp_department_old_id = fields.Many2one('hr.department', string='الادارة', store=True, readonly=1)
+    emp_department_old_id = fields.Many2one(related='employee_id.department_id', string='الادارة', store=True, readonly=1)
     emp_grade_id_old = fields.Many2one('salary.grid.grade', string='المرتبةالحالية ', store=True, readonly=1)
     point_seniority=fields.Integer(string=u'نقاط الأقدمية',)
     point_education=fields.Integer(string=u'نقاط التعليم',)
@@ -410,9 +410,9 @@ class hr_promotion_ligne_employee_job(models.Model):
     point_functionality=fields.Integer(string=u'نقاط  الإداء الوظيفي',)
     sum_point=fields.Integer(string=u'المجموع',)
     demande_promotion_id = fields.Many2one('hr.promotion.employee.demande', string=u'طلب الترقية  ')
-    new_job_id = fields.Many2one('hr.job', string=u'الوظيفة المرقى عليها',domain=[('int(code)','=','int(self.')])
+    new_job_id = fields.Many2one('hr.job', string=u'الوظيفة المرقى عليها',domain=[('code','=','str(int(self.emp_grade_id_old)+1)')])
     new_number_job = fields.Char(string='رقم الوظيفة', store=True, readonly=1)
-    department = fields.Many2one('hr.department', string='الادارة', store=True, readonly=1)
+    department = fields.Many2one(related='employee_id.department_id', string='الادارة', store=True, readonly=1)
     emp_grade_id_new = fields.Many2one('salary.grid.grade', string='المرتبة ', store=True, readonly=1,)
     promotion_supp = fields.Boolean(string='علاوة إضافية',)
     date_direct_action = fields.Date(string='تاريخ مباشرة العمل',related='promotion_id.dicision_date') 
@@ -469,11 +469,7 @@ class hr_promotion_ligne_employee_job(models.Model):
             self.new_number_job = self.new_job_id.number
                 
          
-    @api.onchange('date_direct_action')
-    def _onchange_date_direct_action(self):
-         if self.date_direct_action :
-            if self.date > self.date_direct_action:
-                raise ValidationError(u"تاريخ مباشرة العمل يجب ان يكون أكبر من تاريخ الترقية")
+   
  
   
 class hr_promotion_type(models.Model):

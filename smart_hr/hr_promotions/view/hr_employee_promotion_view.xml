@@ -28,7 +28,7 @@
 				<button name="button_confirmed" string="إرسال" type="object"
 							states="new" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"  />
 				<field name="state" widget="statusbar"
-							statusbar_visible="new,waiting,cancel,done" />
+							statusbar_visible="new,waiting" />
 					</header>
 					<sheet string="طلبات الترقية">
 						<group col="2">
