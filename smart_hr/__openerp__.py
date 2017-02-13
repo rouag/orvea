@@ -60,6 +60,7 @@
 
         # الإدارات
         'hr/security/hr_security.xml',
+        'hr/security/ir.model.access.csv',
         'hr/menu.xml',
         'hr/view/hierarchy_level.xml',
         'hr/view/hr_department_view.xml',

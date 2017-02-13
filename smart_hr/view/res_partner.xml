@@ -13,6 +13,7 @@
 				</field>
 				<field name="website" position="after">
 					<field name="inter_reg_org" />
+					<field name="insurance" />
 				</field>
 				
 			</field>
