@@ -341,7 +341,7 @@ class hr_deputation_category(models.Model):
     country_ids = fields.Many2many('res.country', 'deputation_country_rel', 'count_id', 'dep_id', string=u'البلاد')
 
     _sql_constraints = [
-        ('unique_category', 'UNIQUE(category)', u"لا يمكن تكرار الفئات"),
+        ('unique_category', 'UNIQUE(category)', u"لا يمكن تكرار الفئات  "),
     ]
 
     @api.multi
