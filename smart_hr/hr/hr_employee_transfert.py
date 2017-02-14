@@ -159,11 +159,11 @@ class HrEmployeeTransfert(models.Model):
         self.refusing_date = datetime.now()
         self.state = 'refused'
         # send notification for the employee
-        msg = ""
+        msg = u', '
         if self.note:
-            msg = self.note
+            msg += self.note
         self.env['base.notification'].create({'title': u'إشعار برفض طلب',
-                                              'message': u'لقد تم رفض طلب نقل, ' + str(msg),
+                                              'message': u'لقد تم رفض طلب نقل ' + str(msg),
                                               'user_id': self.employee_id.user_id.id,
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                               'res_id': self.id,

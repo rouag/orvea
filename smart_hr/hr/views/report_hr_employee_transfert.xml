@@ -5,13 +5,11 @@
 			<t t-call="report.html_container">
 				<t t-foreach="docs" t-as="o">
 					<t t-call="smart_base.external_layout_extend">
-						<div class="page">
+						<div class="page" style="font-size:14px;">
 
 							<div class="col-xs-12 text-center">
 								<strong>قرار نقل</strong>
 							</div>
-							<br></br>
-							<br></br>
 							<p class="text-center">
 								قرار إداري رقم
 								<span t-esc="o.decision_number" />
@@ -26,14 +24,12 @@
 									<span t-esc="o.employee_id.identification_id" />
 								</div>
 								<br></br>
-								<br></br>
 								<p>
 									<strong>إن رئيس هيئة التحقيق والإدعاء العام</strong>
 								</p>
 								<p>
 									<strong>بناءً على الصلاحيات الممنوحة له</strong>
 								</p>
-								<br></br>
 								<p>
 									ولما تقتضيه مصلحة العمل، و أسنداً لموافقات وزارة الخدمة
 									المدنية
@@ -47,7 +43,6 @@
 								<p class="text-center">
 									يقرر مايلي:
 								</p>
-								<br></br>
 								<p>
 									1- نقل الموظف /
 									<t t-esc="o.employee_id.name" />
@@ -61,7 +56,6 @@
 									<p>مسماها : <t t-esc="o.employee_id.job_id.name.name" /></p>
 									<p>مرتبتها : <t t-esc="o.employee_id.job_id.grade_id.name" /></p>
 									<p>رقمها : <t t-esc="o.employee_id.job_id.number" /></p>
-									<p>درجتها :</p>
 									<p>مقر العمل : <t t-esc="o.employee_id.job_id.department_id.name" /></p>
 								</div>
 								<div class="col-xs-6">
@@ -71,7 +65,6 @@
 									<p>مسماها : <t t-esc="o.new_job_id.name.name" /></p>
 									<p>مرتبتها : <t t-esc="o.new_job_id.grade_id.name" /></p>
 									<p>رقمها : <t t-esc="o.new_job_id.number" /></p>
-									<p>درجتها :</p>
 									<p>مقر العمل : <t t-esc="o.new_job_id.department_id.name" /></p>
 								</div>
 								<p>2- يصرف له نفس الراتب السابق إعتباراً من تاريخ صدور هذا
@@ -86,10 +79,9 @@
 								<div class="col-xs-3"></div>
 								<div class="col-xs-6">
 									<strong> رئيس هيئة التحقيق والإدعاء العام</strong>
-									<br></br>
 									<p class="text-center"><t t-esc="user.company_id.company_president.name" /></p>
 								</div>
-								<div class="col-xs-12" style="border-style: solid; border-width: 1px;">
+								<div class="col-xs-12" style="border-style: solid; border-width: 1px;margin-bottom:15px;">
 									<p class="text-center">
 										مباشرة
 									</p>
