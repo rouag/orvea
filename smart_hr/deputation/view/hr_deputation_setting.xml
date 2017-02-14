@@ -16,6 +16,7 @@
 						<group>
 							<field name="name" invisible="1" />
 							<field name="deputation_distance" />
+							<field name="period_decision" />
 							<field name="annual_balance" />
 						</group>
 						<notebook>
@@ -38,7 +39,7 @@
 											</group>
 											<group string="بدل الإنتداب">
 												<field name="internal_deputation_amount" />
-												 <div>إضافة فئات الدول</div>
+												<div>إضافة فئات الدول</div>
 											</group>
 										</group>
 									</form>

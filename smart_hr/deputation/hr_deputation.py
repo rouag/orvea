@@ -26,6 +26,8 @@ class HrDeputation(models.Model):
     job_id = fields.Many2one('hr.job', string='الوظيفة', store=True, readonly=1)
     type_id = fields.Many2one('salary.grid.type', string='الصنف', store=True, readonly=1)
     department_id = fields.Many2one('hr.department', string='الادارة', store=True, readonly=1)
+    department_inter_id = fields.Many2one('hr.department', string='الادارة',)
+    city_id = fields.Many2one(related='department_inter_id.dep_city', store=True, readonly=True, string='المدينة')
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', store=True, readonly=1)
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', store=True, readonly=1)
     date_from = fields.Date(string=u'تاريخ البدء')
@@ -33,6 +35,9 @@ class HrDeputation(models.Model):
     date_start = fields.Date(string=u'من')
     date_end = fields.Date(string=u'الى')
     note = fields.Text(string=u'الملاحظات', readonly=1, states={'draft': [('readonly', 0)]})
+    
+    ministre_report = fields.Boolean(string='  قرار من الوزير المختص',default=False)
+   
     decision_number = fields.Char(string='رقم القرار')
     decision_date = fields.Date(string='تاريخ القرار', default=fields.Datetime.now(), readonly=1)
     file_decision = fields.Binary(string='نسخة من الحالة الميزانية')
@@ -52,6 +57,7 @@ class HrDeputation(models.Model):
     file_order = fields.Binary(string='صورة القرار ')
     transport_alocation = fields.Boolean(string='بدل نقل')
     net_salary = fields.Boolean(string=' الراتب')
+    secret_report = fields.Boolean(string=' سري')
     anual_balance = fields.Boolean(string=' الرصيد السنوي')
     alowance_bonus = fields.Boolean(string=' البدلات و التعويضات و المكافات')
     the_availability = fields.Selection([
@@ -62,17 +68,17 @@ class HrDeputation(models.Model):
     type = fields.Selection([
         ('internal', u'داخلى'),
         ('external', u'خارجى')], string=u'نوع الإنتداب', default='internal')
-    city_id = fields.Many2one('res.city', string=u'المدينة')
+   # city_id = fields.Many2one('res.city', string=u'المدينة')
     category_id = fields.Many2one('hr.deputation.category', string=u'فئة التصنيف')
     state = fields.Selection([
                               ('draft', u'طلب'),
                               ('audit', u'دراسة الطلب'),
                               ('waiting', u'اللجنة'),
-                              ('done', u'اعتمدت'),
                               ('order', u'إصدار التقرير'),
                               ('humain', u'موارد البشرية'),
+                            ('done', u'اعتمدت'),
                               ('finish', u'منتهية'),
-                               ('refuse', u'مرفوض')
+                               ('refuse', u'مرفوضة')
                               ], string=u'حالة', default='draft', advanced_search=True)
     task_name = fields.Char(string=u' المهمة', required=1)
     duration = fields.Integer(string=u'المدة', compute='_compute_duration',readonly=1)
@@ -160,8 +166,15 @@ class HrDeputation(models.Model):
 
     @api.multi
     def action_done(self):
-        for deputation in self:
-            deputation.state = 'order'
+        self.ensure_one()
+        dep_setting = self.env['hr.deputation.setting'].search([], limit=1)
+        if dep_setting:
+            # check duration
+            if self.duration > dep_setting.period_decision:
+                self.ministre_report = True
+                print"hhhhhhh",self.ministre_report
+              
+        self.state = 'order'
             
     @api.multi
     def action_refuse_audit(self):
