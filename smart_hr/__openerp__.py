@@ -198,8 +198,9 @@
         'hr_promotions/view/hr_employee_promotion_view.xml',
 
         # deputation
-        'deputation/data/data.xml',
+        'deputation/security/hr_security.xml',
         'deputation/security/ir.model.access.csv',
+        'deputation/data/data.xml',
         'deputation/view/hr_deputation_setting.xml',
         'deputation/view/hr_deputation_view.xml',
         'deputation/view/transport_decision_view.xml',

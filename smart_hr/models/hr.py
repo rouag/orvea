@@ -21,6 +21,24 @@ class HrEmployee(models.Model):
     def _compute_holidays_count(self):
         for rec in self:
             rec.holiday_count = self.env['hr.holidays'].search_count([('employee_id', '=', rec.id)])
+    
+    
+    @api.multi
+    def _compute_sanction_count(self):
+        for rec in self:
+            rec.sanction_count = self.env['hr.sanction'].search_count([('line_ids.employee_id', '=', rec.id)])
+       
+       
+       
+    @api.multi
+    def _sanction_line(self):
+        sanction_obj = self.env['hr.sanction.ligne']
+        search_domain = [
+                ('employee_id', '=', self.employee_id.id),
+                ('state', '=', 'done'),
+            ]
+        for rec in sanction_obj.search(search_domain): 
+            self.sanction_ids = rec.sanction_ids     
             
     number = fields.Char(string=u'الرقم الوظيفي', required=1)
     identification_date = fields.Date(string=u'تاريخ إصدار بطاقة الهوية ')
@@ -82,6 +100,7 @@ class HrEmployee(models.Model):
     passport_end_date = fields.Date(string=u'تاريخ انتهاء جواز السفر ')
     display_name = fields.Char(compute='_compute_display_name', string='display Name', select=True)
     sanction_ids = fields.One2many('hr.sanction.ligne', 'employee_id', string=u'العقوبات' )
+    sanction_count = fields.Integer(string=u'عدد  العقوبات',)
     bank_account_ids = fields.One2many('res.partner.bank', 'employee_id', string=u'الحسابات البنكِيّة')
     education_level_ids = fields.One2many('hr.employee.job.education.level', 'employee_id', string=u'المستوى التعليمي')
     education_level_id = fields.Many2one('hr.employee.education.level', string=u'المستوى التعليمي ')
@@ -181,6 +200,10 @@ class HrEmployee(models.Model):
                 years = (today_date - birthday).days / 365
                 if years > -1:
                     emp.age = years
+
+
+
+
 
     @api.one
     @api.constrains('number', 'identification_id')
