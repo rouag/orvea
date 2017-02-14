@@ -2,13 +2,27 @@
 <openerp>
 	<data>
 
-		<report id="resume_holidays_report" model="False"
-			report_type="qweb-pdf" string="تقرير حصر الاجازات" name="smart_hr.report_resume_holidays"
+		<report id="resume_holidays_report" model="False" report_type="qweb-pdf"
+			string="تقرير حصر الاجازات" name="smart_hr.report_resume_holidays"
 			file="smart_hr.report_resume_holidays" paperformat="smart_base.paperformat_landscape" />
-		
+
 		<report id="resume_normal_holidays_report" model="False"
-			report_type="qweb-pdf" string="تقرير حصر الاجازات العادية" name="smart_hr.report_normal_resume_holidays"
-			file="smart_hr.report_normal_resume_holidays" paperformat="smart_base.paperformat_landscape" />
+			report_type="qweb-pdf" string="تقرير حصر الاجازات العادية"
+			name="smart_hr.report_normal_resume_holidays" file="smart_hr.report_normal_resume_holidays"
+			paperformat="smart_base.paperformat_landscape" />
+		<report id="report_hr_holidays_report" model="hr.holidays"
+			string="طلب الاجازة" report_type="qweb-pdf" name="smart_hr.hr_holidays_report"
+			file="smart_hr.hr_holidays_report" attachment_use="False" menu="False" />
+
+		<record id="report_hr_holidays_report" model="ir.actions.report.xml">
+			<field name="paperformat_id" ref="report.paperformat_euro" />
+			<field name="download_filename">${o.name}_قرار إجازة.pdf</field>
+		</record>
+
+		<report id="hr_holidays_decision_report" model="hr.holidays.decision"
+			name="smart_hr.report_hr_holidays_decision" report_type="qweb-pdf"
+			string="طباعة قرار مباشرة" file="smart_hr.report_hr_holidays_decision" />
+			
 	</data>
 </openerp>
 		
