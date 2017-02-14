@@ -135,6 +135,7 @@
 									type="action">
 									<field name="holiday_count" widget="statinfo" string="الإجازات" />
 								</button>
+							
 								<button name="%(hr_contract.act_hr_employee_2_hr_contract)d"
 									class="oe_stat_button" icon="fa-book" type="action"
 									groups="base.group_hr_manager">
@@ -163,7 +164,7 @@
 
 							</div>
 							<group col="13">
-
+								<field name="id" invisible="1" />
 								<field name="name" nolabel="1" colspan="2" />
 								<field name="father_middle_name" nolabel="1" />
 								<field name="father_name" nolabel="1" colspan="2" />
@@ -335,6 +336,7 @@
 								</page>
 
 								<page string="العقوبات">
+									
 									<field name='sanction_ids' string="العقوبات" readonly="1" 	
 											>
 										<tree string="سجل العقوبات" domain="[('type_sanction.id','=',%(data_hr_sanction_type_alert)d)]}">

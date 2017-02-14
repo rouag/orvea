@@ -69,6 +69,8 @@
         'hr/view/hr_contract_item_view.xml',
         'hr/views/report_hr_contract.xml',
         'hr/views/report_hr_employee_lend.xml',
+        'hr/views/report_hr_employee_transfert.xml',
+        'hr/views/report_hr_employee_assign.xml',
         'hr/views/report.xml',
         'hr/data/hr_department_type_data.xml',
         'hr/data/hr_data.xml',
@@ -210,8 +212,9 @@
         'hr_promotions/view/hr_employee_promotion_view.xml',
 
         # deputation
-        'deputation/data/data.xml',
+        'deputation/security/hr_security.xml',
         'deputation/security/ir.model.access.csv',
+        'deputation/data/data.xml',
         'deputation/view/hr_deputation_setting.xml',
         'deputation/view/hr_deputation_view.xml',
         'deputation/view/transport_decision_view.xml',

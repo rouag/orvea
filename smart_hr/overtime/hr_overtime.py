@@ -112,14 +112,14 @@ class HrOvertimeLigne(models.Model):
     date_to = fields.Date(string=u'الى')
     mission = fields.Text(string='المهمة')
     
+    
+    @api.one
     @api.depends('date_from', 'date_to')
     def _compute_duration(self):
-        for rec in self :
-            if rec.date_from > rec.date_to :
-                raise ValidationError(u"تاريخ من  يجب ان يكون أكبر من تاريخ الى")
+        if self.date_from and self.date_to:
+            date_from = fields.Date.from_string(self.date_from)
+            date_to = fields.Date.from_string(self.date_to)
+            self.days_number = (date_to - date_from).days + 1
+    
 
-            start_date = fields.Date.from_string(rec.date_from)
-            end_date = fields.Date.from_string(rec.date_to)
-            diff = end_date - start_date
-            rec.days_number = diff.days + 1
       

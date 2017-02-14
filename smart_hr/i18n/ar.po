@@ -417,3 +417,172 @@ msgstr "هيئة التحقيق والإدعاء العام"
 #: model:ir.ui.view,arch_db:website.footer_default
 msgid "Our products &amp; Services"
 msgstr " هيئة التحقيق والإدعاء العام "
+
+#. module: base
+#: code:addons/base/res/res_company.py:103
+#: model:ir.model.fields,field_description:base.field_res_bank_phone
+#: model:ir.model.fields,field_description:base.field_res_company_phone
+#: model:ir.model.fields,field_description:base.field_res_partner_phone
+#: model:ir.model.fields,field_description:base.field_res_users_phone
+#, python-format
+msgid "Phone"
+msgstr "الهاتف"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_partner_form
+msgid "Phone:"
+msgstr "الهاتف:"
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_partner_mobile
+#: model:ir.model.fields,field_description:base.field_res_users_mobile
+msgid "Mobile"
+msgstr "النقال"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_partner_form
+msgid "Mobile:"
+msgstr "النقال:"
+
+#. module: base
+#: code:addons/base/res/res_company.py:104
+#: model:ir.model.fields,field_description:base.field_res_bank_fax
+#: model:ir.model.fields,field_description:base.field_res_company_fax
+#: model:ir.model.fields,field_description:base.field_res_partner_fax
+#: model:ir.model.fields,field_description:base.field_res_users_fax
+#, python-format
+msgid "Fax"
+msgstr "الفاكس"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_partner_form
+msgid "Fax:"
+msgstr "الفاكس:"
+
+#. module: base
+#: code:addons/base/res/res_company.py:105
+#: model:ir.model.fields,field_description:base.field_res_bank_email
+#: model:ir.model.fields,field_description:base.field_res_company_email
+#: model:ir.model.fields,field_description:base.field_res_partner_email
+#: model:ir.model.fields,field_description:base.field_res_users_email
+#: model:ir.ui.menu,name:base.menu_email
+#, python-format
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_users_form
+#: model:ir.ui.view,arch_db:base.view_users_simple_form
+msgid "Email Address"
+msgstr "البريد الإلكتروني"
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_partner_title
+#: model:ir.model.fields,field_description:base.field_res_partner_title_name
+#: model:ir.model.fields,field_description:base.field_res_users_title
+msgid "Title"
+msgstr "اللقب"
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_partner_function
+#: model:ir.model.fields,field_description:base.field_res_users_function
+msgid "Job Position"
+msgstr "الوظيفة"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_partner_form
+msgid "Contacts & Addresses"
+msgstr "الأسماء والعناوين"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_partner_form
+msgid "Internal Notes"
+msgstr "ملاحظات داخلية"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_partner_form
+msgid "Sales & Purchases"
+msgstr "مبيعات ومشتريات"
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_bank_street
+#: model:ir.model.fields,field_description:base.field_res_company_street
+#: model:ir.model.fields,field_description:base.field_res_partner_street
+#: model:ir.model.fields,field_description:base.field_res_users_street
+msgid "Street"
+msgstr "شارع"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_company_form
+#: model:ir.ui.view,arch_db:base.view_partner_address_form
+#: model:ir.ui.view,arch_db:base.view_partner_form
+#: model:ir.ui.view,arch_db:base.view_res_bank_form
+msgid "Street 2..."
+msgstr "شارع 2..."
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_company_form
+#: model:ir.ui.view,arch_db:base.view_partner_address_form
+#: model:ir.ui.view,arch_db:base.view_partner_form
+#: model:ir.ui.view,arch_db:base.view_res_bank_form
+msgid "Street..."
+msgstr "شارع..."
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_bank_street2
+#: model:ir.model.fields,field_description:base.field_res_company_street2
+#: model:ir.model.fields,field_description:base.field_res_partner_street2
+#: model:ir.model.fields,field_description:base.field_res_users_street2
+msgid "Street2"
+msgstr "شارع 2"
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_partner_state_id
+#: model:ir.model.fields,field_description:base.field_res_users_state_id
+#: model:ir.ui.view,arch_db:base.view_company_form
+#: model:ir.ui.view,arch_db:base.view_country_state_form
+#: model:ir.ui.view,arch_db:base.view_country_state_tree
+#: model:ir.ui.view,arch_db:base.view_partner_address_form
+#: model:ir.ui.view,arch_db:base.view_partner_form
+#: model:ir.ui.view,arch_db:base.view_res_bank_form
+msgid "State"
+msgstr "دولة"
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_country_state_code
+msgid "State Code"
+msgstr "كود الدولة"
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_country_state_name
+msgid "State Name"
+msgstr "اسم الولاية"
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_country_state_ids
+msgid "States"
+msgstr "الدول"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_partner_form
+#: model:ir.ui.view,arch_db:base.view_partner_simple_form
+msgid "e.g. Sales Director"
+msgstr "على سبيل المثال مدير مبيعات"
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_partner_customer
+#: model:ir.model.fields,field_description:base.field_res_users_customer
+msgid "Is a Customer"
+msgstr "هو عميل"
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_partner_ref
+#: model:ir.model.fields,field_description:base.field_res_users_ref
+msgid "Internal Reference"
+msgstr "المرجع الداخلي"
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_partner_supplier
+#: model:ir.model.fields,field_description:base.field_res_users_supplier
+msgid "Is a Vendor"
+msgstr "هو بائع"

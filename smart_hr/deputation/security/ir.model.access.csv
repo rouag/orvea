@@ -1,2 +1,12 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_hr_deputation_setting,hr_deputation_setting,model_hr_deputation_setting,,1,1,1,1
+access_hr_deputation_setting1,hr_deputation_setting,model_hr_deputation_setting,group_exelence_employee,1,1,1,1
+access_hr_deputation_setting2,hr_deputation_setting,model_hr_deputation_setting,group_deputation_department,1,1,1,1
+access_hr_deputation_setting3,hr_deputation_setting,model_hr_deputation_setting,group_deputation_hr,1,1,1,1
+,,,,,,,,,,,,,
+access_hr_deputation1,hr_deputation,model_hr_deputation,group_exelence_employee,1,1,1,1
+access_hr_deputation2,hr_deputation,model_hr_deputation,group_deputation_department,1,1,1,1
+access_hr_deputation3,hr_deputation,model_hr_deputation,group_deputation_hr,1,1,1,1
+,,,,,,,,,,,,,,,,,,,,
+access_hr_deputation_category1,hr_deputation_category,model_hr_deputation_category,group_exelence_employee,1,1,1,1
+access_hr_deputation_category2,hr_deputation_category,model_hr_deputation_category,group_deputation_department,1,1,1,1
+access_hr_deputation_category3,hr_deputation_category,model_hr_deputation_category,group_deputation_hr,1,1,1,1

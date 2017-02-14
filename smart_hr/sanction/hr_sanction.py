@@ -24,6 +24,7 @@ class hrSanction(models.Model):
     number_sanction = fields.Char(string='رقم الخطاب  ')
     date_sanction = fields.Date(string='تاريخ الخطاب ')
     file_sanction = fields.Binary(string='صورة الخطاب ')
+    file_sanction_name = fields.Char(string='صورة الخطاب ')
     
     # update sanction
     difference_ids = fields.One2many('hr.sanction.ligne', 'sanction_id', string=u'العقوبات', readonly=1, states={'draft': [('readonly', 0)]})
