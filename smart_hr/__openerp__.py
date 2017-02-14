@@ -61,12 +61,14 @@
 
         # الإدارات
         'hr/security/hr_security.xml',
+        'hr/security/ir.model.access.csv',
         'hr/menu.xml',
         'hr/view/hierarchy_level.xml',
         'hr/view/hr_department_view.xml',
         'hr/view/hr_contract_inherit_view.xml',
         'hr/view/hr_contract_item_view.xml',
         'hr/views/report_hr_contract.xml',
+        'hr/views/report_hr_employee_lend.xml',
         'hr/views/report.xml',
         'hr/data/hr_department_type_data.xml',
         'hr/data/hr_data.xml',

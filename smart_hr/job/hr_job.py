@@ -1065,11 +1065,11 @@ class HrJobMoveGradeLine(models.Model):
             # get availble grades depend on move_type type رفع أو خفض
             for rec in grides:
                 if self._context['operation'] == 'scale_down':
-                    if int(self.job_id.grade_id.code) > int(rec.grade_id.code):
-                        grade_ids.append(rec.grade_id.id)
+                    if int(self.job_id.grade_id.code) > int(rec.code):
+                        grade_ids.append(rec.id)
                 if self._context['operation'] == 'scale_up':
-                    if int(self.job_id.grade_id.code) < int(rec.grade_id.code):
-                        grade_ids.append(rec.grade_id.id)
+                    if int(self.job_id.grade_id.code) < int(rec.code):
+                        grade_ids.append(rec.id)
             res['domain'] = {'new_grade_id': [('id', 'in', grade_ids)]}
             return res
 

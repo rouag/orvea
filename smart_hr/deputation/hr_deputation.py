@@ -12,6 +12,7 @@ from umalqurra.hijri_date import HijriDate
 class HrDeputation(models.Model):
     _name = 'hr.deputation'
     _order = 'id desc'
+    _rec_name = 'order_date'
     _description = u'الانتدابات'
 
     order_date = fields.Date(string='تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
@@ -28,8 +29,11 @@ class HrDeputation(models.Model):
     date_from = fields.Date(string=u'من')
     date_to = fields.Date(string=u'الى')
     note = fields.Text(string=u'الملاحظات', readonly=1, states={'draft': [('readonly', 0)]})
-    date_decision = fields.Date(string='تاريخ قرار ')
-    file_decision = fields.Binary(string='صورة قرار ')
+    decision_number = fields.Char(string='رقم القرار')
+    decision_date = fields.Date(string='تاريخ القرار', default=fields.Datetime.now(), readonly=1)
+    file_decision = fields.Binary(string='صورة الطلب')
+    amount = fields.Float(string='المبلغ')
+    file_order = fields.Binary(string='صورة القرار ')
     transport_alocation = fields.Boolean(string='بدل نقل')
     net_salary = fields.Boolean(string=' الراتب')
     anual_balance = fields.Boolean(string=' الرصيد السنوي')
@@ -49,9 +53,9 @@ class HrDeputation(models.Model):
                               ('audit', u'دراسة الطلب'),
                               ('waiting', u'اللجنة'),
                               ('done', u'اعتمدت'),
-                              ('refuse', u'رفض'),
                               ('order', u'دراسة التقرير'),
-                              ('finish', u'منتهية')
+                              ('finish', u'منتهية'),
+                               ('refuse', u'مرفوض')
                               ], string=u'حالة', default='draft', advanced_search=True)
     task_name = fields.Char(string=u'وصف المهمة')
     duration = fields.Integer(string=u'المدة', compute='_compute_duration')
@@ -94,7 +98,10 @@ class HrDeputation(models.Model):
 
     @api.depends('date_from', 'date_to')
     def _compute_duration(self):
-        for rec in self:
+      for rec in self :
+            if rec.date_from > rec.date_to :
+                raise ValidationError(u"تاريخ من  يجب ان يكون أكبر من تاريخ الى")
+
             start_date = fields.Date.from_string(rec.date_from)
             end_date = fields.Date.from_string(rec.date_to)
             diff = end_date - start_date

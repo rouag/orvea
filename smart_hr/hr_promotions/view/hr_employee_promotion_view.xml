@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <openerp>
-    <data>
+	<data>
 
 
 
@@ -9,54 +9,59 @@
 			<field name="model">hr.promotion.employee.demande</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
-				<tree string="طلبات الترقية"  delete='0'
-					duplicate='0'>
-					<field name="name"  />
+				<tree string="طلبات الترقية" delete='0' duplicate='0'>
+					<field name="name" />
 					<field name="employee_id" />
 					<field name="hr_allowance_type_id" />
 					<field name="city_fovorite" />
 				</tree>
 			</field>
 		</record>
-		
+
 		<record model="ir.ui.view" id="hr_promotion_employee_demande_form_view">
 			<field name="name">hr.promotion.employee.demande.form</field>
 			<field name="model">hr.promotion.employee.demande</field>
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form>
+				<header>
+				<button name="button_confirmed" string="إرسال" type="object"
+							states="new" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"  />
+				<field name="state" widget="statusbar"
+							statusbar_visible="new,waiting" />
+					</header>
 					<sheet string="طلبات الترقية">
 						<group col="2">
 							<field name="create_date" string="تاريخ الطلب" readonly="1" />
 						</group>
-						<group col="3">
+						<group col="2">
 							<group>
 								<field name="employee_id" />
-								<field name="name" readonly="1"/>
-								<field name="city_fovorite" options="{'no_create': True}" required="1"/>
-								<field name="hr_allowance_type_id" required="1" />
+								<field name="name" readonly="1" attrs="{'invisible': [('state', '=', 'new')]}" />
 							</group>
-							</group>
-							<group col="3" string="رغبات الموظف" >
 							<group>
-							<field name="description1"  nolabel="1" />
-							<field name="description2" nolabel="1" />
+								<field name="city_fovorite" options="{'no_create': True}"
+									required="1" attrs="{'readonly': [('state', '!=', 'new')]}"/>
+								<field name="hr_allowance_type_id" required="1" attrs="{'readonly': [('state', '!=', 'new')]}" options='{"no_open": True, "no_create": True}' />
 							</group>
-							<group >
-							<field name="description3" nolabel="1" />
-							<field name="description4"  nolabel="1"/>
-							</group >
-							<group >
-							<field name="description5"  nolabel="1"/>
+						</group>
+						<group col="2" string="رغبات الموظف">
+							<group col="1">
+								<field name="description1" nolabel="1" attrs="{'readonly': [('state', '!=', 'new')]}"/>
+								<field name="description2" nolabel="1" attrs="{'readonly': [('state', '!=', 'new')]}"/>
+								<field name="description5" nolabel="1" attrs="{'readonly': [('state', '!=', 'new')]}" />
 							</group>
+							<group col="1" >
+								<field name="description3" nolabel="1" attrs="{'readonly': [('state', '!=', 'new')]}"/>
+								<field name="description4" nolabel="1" attrs="{'readonly': [('state', '!=', 'new')]}" />
 							</group>
-					
-							</sheet>
-							</form>
-							
+						</group>
+					</sheet>
+				</form>
+
 			</field>
 		</record>
-		
+
 
 		<record model="ir.actions.act_window" id="action_promotion_demande">
 			<field name="name">طلبات الترقية</field>
@@ -64,7 +69,18 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
- 		<menuitem id="menu_promotion_demande" action="action_promotion_demande" parent="hr_root_organisation_action" name="طلبات الترقية" sequence="13"/>
+		
+		<record model="ir.actions.act_window" id="action_employee_promotion_demande">
+			<field name="name">طلباتي فالترقية</field>
+			<field name="res_model">hr.promotion.employee.demande</field>
+			<field name="domain">[('employee_id.user_id', '=', uid)]</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<menuitem id="menu_promotion_demande" action="action_promotion_demande"
+			parent="hr_root_organisation_action" name="طلبات الترقية" sequence="12" groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion"/>
+		<menuitem id="menu_my_promotion_demande" action="action_employee_promotion_demande"
+			parent="hr_root_organisation_action" name="طلباتي للترقية" sequence="13" />
 
-    </data>
+	</data>
 </openerp>
