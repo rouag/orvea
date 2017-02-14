@@ -136,7 +136,7 @@
 			<field name="model">hr.deduction.line</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
-				<tree string="الحسميات بالموظف">
+				<tree string="الحسميات بالموظف"  create='0' edit='0' delete='0' duplicate='0'>
 					<field name="employee_id" />
 					<field name="number"/>
 					<field name="job_id"/>
@@ -153,7 +153,7 @@
 			<field name="model">hr.deduction.line</field>
 			<field name="type">form</field>
 			<field name="arch" type="xml">
-				<form string="الحسميات بالموظف">
+				<form string="الحسميات بالموظف"  create='0' edit='0' delete='0' duplicate='0'>
 					<sheet>
 						<group>
 							<group string="بيانات الموظف">

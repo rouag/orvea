@@ -18,6 +18,8 @@
 							<field name="normal_days" />
 							<field name="friday_saturday" />
 							<field name="holidays" />
+							<field name="allowance_transport_id" />
+							<field name="allowance_overtime_id" />
 						</group>
 						<group>
 							<field name="grade_ids" />

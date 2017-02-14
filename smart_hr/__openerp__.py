@@ -29,7 +29,7 @@
         'data/hr_termination_data.xml',
         'data/decisions_type_data.xml',
         'data/hr_appoint_type_data.xml',
-        'data/scholarship_data.xml',
+        #'data/scholarship_data.xml',
         'hr_appraisal/data/hr_appraisal_data.xml',
 
         # الوظائف
@@ -153,11 +153,12 @@
         'payroll/view/hr_deduction.xml',
         'payroll/view/hr_bonus_view.xml',
         'payroll/view/hr_loan_view.xml',
-        'payroll/views/report_hr_deduction.xml',
         'payroll/view/hr_increase_view.xml',
-        'view/hr.xml',
+        'payroll/view/hr_difference.xml',
+        'view/hr.xml',  # TODO: ??
+        'payroll/views/report_hr_deduction.xml',
         'payroll/views/report.xml',
-       
+
         # الحضور والإنصراف
         'attendance/security/attendance_security.xml',
         'attendance/security/ir.model.access.csv',
