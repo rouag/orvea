@@ -16,8 +16,9 @@ class hrHolidaysDecision(models.Model):
     date = fields.Date(string=u'تاريخ المباشرة', default=fields.Datetime.now(),required=1)
     state = fields.Selection([('new', ' ارسال طلب'),
                              ('waiting', 'في إنتظار الإعتماد'),
-                             ('cancel', 'رفض'),
-                             ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
+                             ('done', 'اعتمدت'),
+                             ('cancel', 'رفض')
+                             ], string='الحالة', readonly=1, default='new')
 
     holidays = fields.Many2many('hr.holidays', string=u'الإجازات',required=1,
                                )

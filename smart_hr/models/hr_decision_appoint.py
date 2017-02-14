@@ -503,6 +503,7 @@ class HrDecisionAppoint(models.Model):
             self.emp_type_id = appoint_line.type_id.id
             self.emp_far_age = appoint_line.far_age
             self.emp_grade_id = appoint_line.grade_id.id
+            self.emp_degree_id = appoint_line.degree_id.id
             self.emp_department_id = appoint_line.department_id.id
             self.emp_date_direct_action = appoint_line. date_direct_action
 
