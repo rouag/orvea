@@ -29,6 +29,8 @@ class HrDeputation(models.Model):
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', store=True, readonly=1)
     date_from = fields.Date(string=u'من')
     date_to = fields.Date(string=u'الى')
+    date_start = fields.Date(string=u'من')
+    date_end = fields.Date(string=u'الى')
     note = fields.Text(string=u'الملاحظات', readonly=1, states={'draft': [('readonly', 0)]})
     decision_number = fields.Char(string='رقم القرار')
     decision_date = fields.Date(string='تاريخ القرار', default=fields.Datetime.now(), readonly=1)
