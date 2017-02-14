@@ -13,7 +13,10 @@ class ResPartner(models.Model):
          ('hospital', u'مستشفى'),
          ('governmental_entity', u'جهة حكومية'),
          ('insurance', u'تابعة للتأمين'),
-         ('company', u'شركة')])
+         ('company', u'شركة'),
+         ('faculty',u'جامعة'),
+         ('school',u'معهد'),
+         ])
     is_hospital = fields.Boolean(string='is hospital')
     inter_reg_org = fields.Boolean(string=u'منظمة دولية أو اقليمية', default=False)
     hospital_director = fields.Char(string=u'مدير المستشفى')

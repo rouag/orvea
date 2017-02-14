@@ -9,6 +9,9 @@
 			<field name="arch" type="xml">
 				<form string="الابتعاث">
 					<header>
+						<field name="is_started" invisible="1"/>
+						<field name="state" widget="statusbar"
+							statusbar_visible="draft,psm,done,finished,cutoff,cancel" />
 						<button name="action_psm" string="إرسال طلب" type="object"
 							states="draft" icon="fa-paper-plane" class="oe_inline oe_stat_button"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
@@ -25,51 +28,62 @@
 
 
 						<button name="action_succeeded" string="نجح" type="object"
-							groups="smart_hr.group_scholarship_manager,smart_hr.group_hrm"
-							states="done" icon="fa-paper-plane" class="oe_inline oe_stat_button"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							groups="smart_hr.group_scholarship_manager,smart_hr.group_personnel_hr_scholarship"
+							states="done" icon="fa-paper-plane" class="oe_inline oe_stat_button" />
 
 
 						<button name="action_not_succeeded" string="لم ينجح" type="object"
-							groups="smart_hr.group_scholarship_manager,smart_hr.group_hrm"
+							groups="smart_hr.group_scholarship_manager,smart_hr.group_personnel_hr_scholarship"
 							states="done" icon="fa-times" class="oe_inline oe_stat_button"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<button name="action_cutoff" string="قطع" type="object"
+						<button name="action_cutoff" string=" قطع الابتعاث" type="object"
+							states="done" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							 />
+
+						<button name="action_cancel" string=" الغاءالابتعاث" type="object"
 							states="done" icon="fa-check" class="oe_inline oe_stat_button"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<button name="action_cancel" string="الغاء" type="object"
-							states="done" icon="fa-check" class="oe_inline oe_stat_button"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="button_extend" string="تمديد الابتعاث"
+							attrs="{'invisible':[('state', 'not in', ['done'])]} " type="object"
+							icon="fa-check" class="oe_inline oe_stat_button" />
 
 
-						<field name="state" widget="statusbar"
-							statusbar_visible="draft,psm,done,finished,cutoff,cancel" />
 					</header>
 					<sheet>
 						<field name="name" invisible="1" />
-						<group>
-							<field name="date" />
-							<field name="employee_id" options="{'no_create_edit': True}"/>
-							<field name="scholarship_type" options="{'no_create_edit': True}"/>
-						</group>
+						<field name="is_extension" invisible="1" />
 
+						<group>
+							<group>
+								<field name="date" />
+								<field name="employee_id" options="{'no_create_edit': True}" readonly="True"
+									/>
+								<field name="scholarship_type" options="{'no_create_edit': True}"
+									attrs="{'readonly':[('is_extension','=',True)]}" />
+							</group>
+							<group />
+						</group>
 						<group col="6">
-							<field name="date_from" />
+							<field name="date_from" attrs="{'readonly':[('is_extension','=',True)]}" />
 							<field name="date_to" />
 							<field name="duration" />
 						</group>
-						<group>
-							<field name="note" />
-						</group>
+
 						<notebook>
 							<page string="بيانات الدبلوم">
 								<group>
-									<field name="diplom_type" options="{'no_create_edit': True}"/>
-									<field name="diplom_id" options="{'no_create_edit': True}"/>
-									<field name="Faculty_id" options="{'no_create_edit': True}"/>
-
+									<group>
+										<field name="diplom_type" options="{'no_create_edit': True}"
+											attrs="{'readonly':[('is_extension','=',True)]}" />
+										<field name="diplom_id" options="{'no_create_edit': True}"
+											attrs="{'readonly':[('is_extension','=',True)]}" />
+										<field name="Faculty_id" options="{'no_create_edit': True}"
+											attrs="{'readonly':[('is_extension','=',True)]}" />
+									</group>
+									<group></group>
 								</group>
 							</page>
 							<page string="المرفقات">
@@ -81,20 +95,58 @@
 										<field name="speech_file_name" invisible="1" />
 									</group>
 									<group>
-										<field name="acceptance_certificate" filename="acceptance_certificate_name" />
+										<field name="acceptance_certificate" filename="acceptance_certificate_name"
+											attrs="{'readonly':[('is_extension','=',True)]}" />
 										<field name="acceptance_certificate_name" invisible="1" />
-										<field name="language_exam" filename="language_exam_file_name" />
+										<field name="language_exam" filename="language_exam_file_name"
+											attrs="{'readonly':[('is_extension','=',True)]}" />
 										<field name="language_exam_file_name" invisible="1" />
 									</group>
 
 								</group>
 							</page>
+							<page string="بيانات الخطاب" attrs="{'invisible':[('is_extension','=',False)]}">
+								<group>
+									<group>
+										<field name="order_source"
+											attrs="{'readonly':[('state','=','done')], 'required':[('is_extension','=',True)]}" />
+										<field name="order_number"
+											attrs="{'readonly':[('state','=','done')], 'required':[('is_extension','=',True)]}" />
+										<field name="order_date"
+											attrs="{'readonly':[('state','=','done')], 'required':[('is_extension','=',True)]}" />
+										<field name="file_decision" filename="file_decision_name"
+											attrs="{'readonly':[('state','=','done')], 'required':[('is_extension','=',True)]}" />
+										<field name="file_decision_name" invisible="1" />
+									</group>
+									<group />
+								</group>
+							</page>
 						</notebook>
+						<group>
+							<field name="note" />
+						</group>
+						<button style="padding-right:10px," name="%(report_hr_scholarship_extension_report)d"
+							string="طباعة قرار التمديد"
+							attrs="{'invisible':['|',('is_extension','=',False),('state','not in',['done','finished'])]}"
+							type="action" icon="fa-print" class="oe_inline oe_stat_button" />
+
 					</sheet>
 				</form>
 			</field>
 		</record>
 
+
+		<record model="ir.ui.view" id="hr_scholarship_form_inherited">
+			<field name="model">hr.scholarship</field>
+			<field name="inherit_id" ref="smart_hr.hr_scholarship_form" />
+			<field name="groups_id" eval="[(6, 0, [ref('smart_hr.group_scholarship_manager')]),(6, 0, [ref('smart_hr.group_personnel_hr_scholarship')])]" />
+			<field name="arch" type="xml">
+				<field name="employee_id" position="attributes">
+					<attribute name="readonly">False</attribute>
+				</field>
+			</field>
+		</record>
+		
 		<record id="hr_scholarship_tree" model="ir.ui.view">
 			<field name="name">hr.scholarship.tree</field>
 			<field name="model">hr.scholarship</field>
@@ -105,7 +157,8 @@
 					<field name="date_from" />
 					<field name="date_to" />
 					<field name="duration" />
-					<field name="note" />
+					<field name="result" />
+					<field name="state" />
 				</tree>
 			</field>
 		</record>
@@ -126,13 +179,12 @@
 			<field name="model">hr.scholarship.type</field>
 			<field name="arch" type="xml">
 				<form string="انواع الابتعاث">
-
 					<sheet>
 						<group>
 							<field name="name" />
 							<field name="code" />
-							<field name="pension_percent" />
 							<field name="salary_percent" />
+							<field name="pension_percent" />
 							<field name="traveling_family_ticket" />
 							<field name="hr_allowance_type_id" />
 							<field name="note" />
