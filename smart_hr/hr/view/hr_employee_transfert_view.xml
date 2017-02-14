@@ -28,8 +28,9 @@
 							groups="smart_hr.group_hr_personnel_officer_jobs"
 							attrs="{'invisible':['|', ('state', '!=', 'pm'), ('new_job_id', '!=', False)]}"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<!--شؤون الموظفين -->
-
+						
+						<button name="%(hr_employee_transfert_report)d" string="طباعة القرار"
+							type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
 
 						<field name="state" widget="statusbar" statusbar_visible="new,waiting,pm,done,refused" />
 					</header>
@@ -47,7 +48,7 @@
 									attrs="{'invisible':[('transfert_type', '=', 'internal_transfert')]}"
 									options='{"no_open": True, "no_create": True}' />
 								<field name="transfert_periode_id" options='{"no_open": True, "no_create": True}' />
-								<field name="justification_text" /> 
+								<field name="justification_text" />
 								<field name="note"
 									attrs="{'invisible':[('state', 'in', ['waiting','new'])],'readonly':[('state', 'in', ['done', 'refused'])]}" />
 								<field name="refusing_date" attrs="{'invisible':[('state', '!=', 'refused')]}" />
@@ -197,12 +198,12 @@
 			<field name="arch" type="xml">
 				<form string="ترتيب طلبات النقل" delete='0' duplicate='0'>
 					<header>
-						<button name="action_commission_president" string="إرسال " type="object"
-							groups="smart_hr.group_hr_personnel_officer_commissioning"
+						<button name="action_commission_president" string="إرسال "
+							type="object" groups="smart_hr.group_hr_personnel_officer_commissioning"
 							states="new" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-							<button name="action_done" string="إعتماد " type="object"
-							groups="smart_hr.group_hr_commissioning_requests"
-							states="commission_president" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_done" string="إعتماد " type="object"
+							groups="smart_hr.group_hr_commissioning_requests" states="commission_president"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 
 
@@ -216,12 +217,12 @@
 						</group>
 						<field name="line_ids" string=" طلبات النقل">
 							<tree editable="bottom" colors="red:is_conflected==True;">
-								<field name="hr_employee_transfert_id" options='{"no_open": True, "no_create": True}'/>
+								<field name="hr_employee_transfert_id" options='{"no_open": True, "no_create": True}' />
 								<field name="job_id" readonly="1" />
 								<field name="occupied_date" readonly="1" />
 								<field name="transfert_create_date" readonly="1" />
 								<field name="last_evaluation_result" readonly="1" />
-								<field name="new_job_id" options='{"no_open": True, "no_create": True}'/>
+								<field name="new_job_id" options='{"no_open": True, "no_create": True}' />
 								<field name="is_conflected" invisible="1" />
 							</tree>
 						</field>

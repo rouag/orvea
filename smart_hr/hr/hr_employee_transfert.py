@@ -155,8 +155,11 @@ class HrEmployeeTransfert(models.Model):
         self.refusing_date = datetime.now()
         self.state = 'refused'
         # send notification for the employee
+        msg = ""
+        if self.note:
+            msg = self.note
         self.env['base.notification'].create({'title': u'إشعار برفض طلب',
-                                              'message': u'لقد تم رفض طلب نقل, ' + str(self.note),
+                                              'message': u'لقد تم رفض طلب نقل, ' + str(msg),
                                               'user_id': self.employee_id.user_id.id,
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                               'res_id': self.id,
@@ -281,8 +284,6 @@ class HrTransfertSorting(models.Model):
         for rec in self.line_ids:
             rec.hr_employee_transfert_id.write({'new_job_id': rec.new_job_id.id, 'ready_tobe_done': True})
         self.state = 'done'
-        # create history_line
-        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, False, False, self._description)
 
 
 class HrTransfertSortingLine(models.Model):
