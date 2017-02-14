@@ -19,6 +19,7 @@ class HrDeputation(models.Model):
     employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', required=1)
     number = fields.Char(string='الرقم الوظيفي', readonly=1)
     code = fields.Char(string=u'رمز الوظيفة ', readonly=1)
+    governmental_entity = fields.Many2one('res.partner', string=u'الجهة ', domain=['|',('company_type', '=', 'governmental_entity'),('company_type', '=', 'company')])
     country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
   
     number_job = fields.Char(string='رقم الوظيفة', store=True, readonly=1)
@@ -27,8 +28,8 @@ class HrDeputation(models.Model):
     department_id = fields.Many2one('hr.department', string='الادارة', store=True, readonly=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', store=True, readonly=1)
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', store=True, readonly=1)
-    date_from = fields.Date(string=u'من')
-    date_to = fields.Date(string=u'الى')
+    date_from = fields.Date(string=u'تاريخ البدء')
+    date_to = fields.Date(string=u'تاريخ الإنتهاء')
     date_start = fields.Date(string=u'من')
     date_end = fields.Date(string=u'الى')
     note = fields.Text(string=u'الملاحظات', readonly=1, states={'draft': [('readonly', 0)]})
@@ -73,29 +74,75 @@ class HrDeputation(models.Model):
                               ('finish', u'منتهية'),
                                ('refuse', u'مرفوض')
                               ], string=u'حالة', default='draft', advanced_search=True)
-    task_name = fields.Many2one('hr.employee.task',string=u' المهمة')
-    duration = fields.Integer(string=u'المدة', compute='_compute_duration')
-
-
-    @api.onchange('task_name')
-    def _onchange_task_name(self):
-        if self.task_name :
-            self.date_from = self.task_name.date_from
-            self.date_to = self.task_name.date_to
-#             self.employee_id = self.task_name.employee_id.id
-#             self.number = self.task_name.employee_id.number
-#             self.country_id = self.task_name.employee_id.country_id.id
-#             self.department_id = self.task_name.employee_id.department_id.id
-#             self.job_id = self.task_name.employee_id.job_id.id
-#             self.type_id = self.task_name.employee_id.type_id.id
-
-
-
+    task_name = fields.Char(string=u' المهمة', required=1)
+    duration = fields.Integer(string=u'المدة', compute='_compute_duration',readonly=1)
 
     @api.multi
     def action_draft(self):
-        for deputation in self:
-            deputation.state = 'audit'
+        self.ensure_one()
+        dep_setting = self.env['hr.deputation.setting'].search([], limit=1)
+        if dep_setting:
+            # check duration
+            if self.duration > dep_setting.annual_balance:
+                raise ValidationError(u"لقد تم تجاوز الحد الأقصى للإنتداب في المرة الواحدة.")
+            # check maximum lends duration in employee's service
+            old_deputation = self.env['hr.deputation'].search([('state', '=', 'finish'), ('employee_id', '=', self.employee_id.id)])
+            sum_duration = self.duration
+            
+            for lend in old_deputation:
+                sum_duration += lend.duration
+            if sum_duration > 0 and dep_setting.annual_balance <= sum_duration :
+                raise ValidationError(u"لقد تم تجاوز الحد الأقصى للإنتداب.")
+            # check duration bettween accepted lend and new one
+            for lend in old_deputation:
+                date_to = lend.date_to
+                diff = relativedelta(fields.Date.from_string(fields.Datetime.now()), fields.Date.from_string(date_to)).years
+                if diff >= dep_setting.annual_balance:
+                    raise ValidationError(u"لا يمكن طلب إنتداب هذا الموظف قبل إنتهاء الفترة اللازمة بين طلب أخر.")
+            # ‫check completion of essay periode            
+                
+            task_obj = self.env['hr.employee.task']
+            self.env['hr.employee.task'].create({'name' : self.task_name,
+                                            'employee_id': self.employee_id.id,
+                                            'date_from' : self.date_from,
+                                            'date_to' : self.date_to,
+                                            'duration' : self.duration,
+                                            'governmental_entity' : self.governmental_entity.id,
+                                            'type_procedure' :'deputation',
+             })
+            title= u"' إشعار  بطلب إنتداب '"
+            msg= u"' لقد تم  إشعار  بطلب إنتداب '"  + unicode(self.employee_id.name) + u"'"
+            group_id = self.env.ref('smart_hr.group_exelence_employee')
+            self.send_exelence_group(group_id,title,msg)
+            self.state = 'audit'
+            
+            
+    def send_exelence_group(self, group_id,title,msg):
+        '''
+        @param group_id: res.groups
+        '''
+        for recipient in group_id.users:
+            self.env['base.notification'].create({'title': title,
+                                                  'message': msg,
+                                                  'user_id': recipient.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': self.id,
+                                                  'res_action': 'smart_hr.action_hr_deputation',
+                                                  'notif': True
+                                                  })
+    def send_refuse_dep_group(self, group_id,title,msg):
+        '''
+        @param group_id: res.groups
+        '''
+        for recipient in group_id.users:
+            self.env['base.notification'].create({'title': title,
+                                                  'message': msg,
+                                                  'user_id': recipient.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': self.id,
+                                                  'res_action': 'smart_hr.action_hr_deputation',
+                                                  'notif': True
+                                                  })
          
     @api.multi
     def action_commission(self):
@@ -115,6 +162,16 @@ class HrDeputation(models.Model):
     def action_done(self):
         for deputation in self:
             deputation.state = 'order'
+            
+    @api.multi
+    def action_refuse_audit(self):
+        for deputation in self:
+            title= u"' إشعار برفض  الإنتداب'"
+            msg= u"' لقد تم إشعار  برفض  الإنتداب  '"  + unicode(self.employee_id.name) + u"'"
+            group_id = self.env.ref('smart_hr.group_deputation_department')
+            self.send_exelence_group(group_id,title,msg)
+            deputation.state = 'refuse' 
+             
     
     @api.multi
     def action_order(self):
@@ -138,9 +195,6 @@ class HrDeputation(models.Model):
             date_from = fields.Date.from_string(self.date_from)
             date_to = fields.Date.from_string(self.date_to)
             self.duration = (date_to - date_from).days + 1
-    
-
-   
             
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
@@ -155,9 +209,7 @@ class HrDeputation(models.Model):
                 self.type_id = appoint_line.type_id.id
                 self.grade_id = appoint_line.grade_id.id
                 self.department_id = appoint_line.department_id.id
-                
-                
-                
+             
     @api.one
     @api.constrains('date_from', 'date_to')
     def check_dates_periode(self):
@@ -165,13 +217,16 @@ class HrDeputation(models.Model):
         holiday_obj = self.env['hr.holidays']
         candidate_obj = self.env['hr.candidates']
         deput_obj = self.env['hr.deputation']
-         
-            # Date validation
-
-        if self.date_from > self.date_to:
-            raise ValidationError(u"تاريخ من يجب ان يكون أصغر من تاريخ الى")
-            # check minimum request validation
+        comm_obj = self.env['hr.employee.commissioning']
+        lend_obj = self.env['hr.employee.lend']
+        schol_obj = self.env['hr.scholarship']
+        termination_obj = self.env['hr.termination']
+        #TODO  الدورات التدربية
        
+            # Date validation
+        if self.date_from > self.date_to:
+            raise ValidationError(u"تاريخ البدء يجب ان يكون أصغر من تاريخ الإنتهاء")
+            # check minimum request validation
             # التدريب
         search_domain = [
                 ('employee_id', '=', self.employee_id.id),
@@ -184,26 +239,44 @@ class HrDeputation(models.Model):
             res = relativedelta(dateto, datefrom)
             months = res.months
             days = res.days
-                # for none normal holidays test
+        # for none normal holidays test
         for rec in holiday_obj.search(search_domain):
             if rec.date_from <= self.date_from <= rec.date_to or \
                 rec.date_from <= self.date_to <= rec.date_to or \
                 self.date_from <= rec.date_from <= self.date_to or \
                 self.date_from <= rec.date_to <= self.date_to:
                 raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الإجازة")
- 
-        
             # الإنتداب
-        search_domain = [
-                ('employee_id', '=', self.employee_id.id),
-                ('state', '=', 'done'),
-            ]
         for rec in deput_obj.search(search_domain):
             if rec.date_from <= self.date_from <= rec.date_to or \
                     rec.date_from <= self.date_to <= rec.date_to or \
                     self.date_from <= rec.date_from <= self.date_to or \
                     self.date_from <= rec.date_to <= self.date_to:
                 raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الإنتداب")
+        # تكليف
+        for rec in comm_obj.search(search_domain):
+            if rec.date_from <= self.date_from <= rec.date_to or \
+                    rec.date_from <= self.date_to <= rec.date_to or \
+                    self.date_from <= rec.date_from <= self.date_to or \
+                    self.date_from <= rec.date_to <= self.date_to:
+                raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في التكليف")
+        # إعارة
+        for rec in lend_obj.search(search_domain):
+            if rec.date_from <= self.date_from <= rec.date_to or \
+                    rec.date_from <= self.date_to <= rec.date_to or \
+                    self.date_from <= rec.date_from <= self.date_to or \
+                    self.date_from <= rec.date_to <= self.date_to:
+                raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الإعارة")
+        #الابتعاث
+        for rec in schol_obj.search(search_domain):
+            if rec.date_from <= self.date_from <= rec.date_to or \
+                    rec.date_from <= self.date_to <= rec.date_to or \
+                    self.date_from <= rec.date_from <= self.date_to or \
+                    self.date_from <= rec.date_to <= self.date_to:
+                raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الإعارة")
+        for rec in termination_obj.search(search_domain):
+            if rec.date <= self.date_from :
+                raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في طى القيد")
  
     
 class HrDeputationCategory(models.Model):

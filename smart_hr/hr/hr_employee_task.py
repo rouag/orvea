@@ -16,7 +16,7 @@ class HrEmployeeTask(models.Model):
     duration = fields.Integer(string=u'الأيام', required=1)
     comm_id = fields.Many2one('hr.employee.commissioning', string=u'طلب تكليف موظف')
     employee_id = fields.Many2one('hr.employee', string=u'صاحب المهمة', required=1)
-    governmental_entity = fields.Many2one('res.partner', string=u'الجهة الحكومية', domain=[('company_type', '=', 'governmental_entity')])
+    governmental_entity = fields.Many2one('res.partner', string=u'الجهة الحكومية', domain=['|',('company_type', '=', 'governmental_entity'),('company_type', '=', 'company')])
     description = fields.Text(string=u'الوصف')
     type_procedure = fields.Selection([('deputation', u'الإنتداب'),
                               ('commission', u'تكليف'),
