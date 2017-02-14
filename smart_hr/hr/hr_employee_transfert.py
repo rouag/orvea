@@ -73,7 +73,7 @@ class HrEmployeeTransfert(models.Model):
             open_periodes = self.env['hr.employee.transfert.periode'].search([('date_to', '>=', datetime.today().strftime('%Y-%m-%d'))])
             if open_periodes:
                 open_periodes_ids = [rec.id for rec in open_periodes]
-                res['domain'] = {'transfert_periode_id': [('id', 'in', open_periodes_ids)]}
+                res['domain'] = {'transfert_periode_id': [('id', 'in', open_periodes_ids),('for_member', '=', False)]}
                 return res
             else:
                 res['domain'] = {'transfert_periode_id': [('id', '=', -1)]}
@@ -117,8 +117,8 @@ class HrEmployeeTransfert(models.Model):
             if fields.Date.from_string(testing_date_to) >= fields.Date.from_string(fields.Datetime.now()):
                 raise ValidationError(u"لايمكن طلب نقل خلال فترة التجربة")
         # ‫التترقية‬ ‫سنة‬ ‫إستلكمال‬
-#         if self.employee_id.promotion_duration < 1:
-#                         raise ValidationError(u"لايمكن طلب نقل خلال أقل من سنة منذ أخر ترقية")
+        if self.employee_id.promotion_duration < 1:
+                        raise ValidationError(u"لايمكن طلب نقل خلال أقل من سنة منذ أخر ترقية")
         # check desire_ids length from config
         if hr_config:
             if len(self.desire_ids) > hr_config.desire_number:
@@ -249,6 +249,7 @@ class HrEmployeeTransfertPeriode(models.Model):
     name = fields.Char(string=u'المسمى', required=1)
     date_from = fields.Date(string=u'التاريخ من ', default=fields.Datetime.now())
     date_to = fields.Date(string=u'التاريخ الى')
+    for_member = fields.Boolean(string=u'للأعضاء', default=False)
     is_ended_compute = fields.Boolean(string=u'بدأت', compute='_compute_is_ended')
     is_ended = fields.Boolean(string=u'بدأت')
 

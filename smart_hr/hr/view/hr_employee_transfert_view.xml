@@ -152,8 +152,9 @@
 						<group>
 							<group>
 								<field name="name" />
+								<field name="for_member" />
 								<field name="is_ended_compute" invisible="1" />
-								<field name="is_ended" readonly="1" />
+								<field name="is_ended" invisible="1" />
 							</group>
 						</group>
 						<group col="4">
@@ -172,6 +173,7 @@
 			<field name="arch" type="xml">
 				<tree string="فترات النقل">
 					<field name="name" />
+					<field name="for_member" />
 					<field name="date_from" />
 					<field name="date_to" />
 				</tree>
