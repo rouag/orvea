@@ -19,9 +19,7 @@
 			report_type="qweb-pdf" name="smart_hr.order_enquiry_report_template"
 			attachment_use="False" file="smart_hr.order_enquiry_report_template" />
 
-		<report id="report_hr_holidays_report" model="hr.holidays"
-			string="طلب الاجازة" report_type="qweb-pdf" name="smart_hr.hr_holidays_report"
-			file="smart_hr.hr_holidays_report" attachment_use="False" menu="False" />
+
 
 		<report id="report_hr_holidays_hospital_transfer_form_report"
 			model="hr.holidays" string="نموذج تحويل مستوصف" report_type="qweb-pdf"
@@ -63,10 +61,7 @@
 
 		<!-- Update Reports Paper Format -->
 
-		<record id="report_hr_holidays_report" model="ir.actions.report.xml">
-			<field name="paperformat_id" ref="report.paperformat_euro" />
-			<field name="download_filename">${o.name}_قرار إجازة.pdf</field>
-		</record>
+
 
 		<record id="report_hr_holidays_hospital_transfer_form_report"
 			model="ir.actions.report.xml">
@@ -79,9 +74,7 @@
 			<field name="download_filename">${o.name}_قرار خارج دوام.pdf</field>
 		</record>
 
-		<report id="hr_holidays_decision_report" model="hr.holidays.decision"
-			name="smart_hr.report_hr_holidays_decision" report_type="qweb-pdf"
-			string="طباعة قرار مباشرة" file="smart_hr.report_hr_holidays_decision" />
+
 
 		<report id="hr_decision_report" model="hr.decision"
 			name="smart_hr.report_hr_decision" report_type="qweb-pdf" string="طباعة"

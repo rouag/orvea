@@ -11,6 +11,11 @@
 			<field name="arch" type="xml">
 				<field name="date_close" position="after">
 					<field name="create_date" string="تاريخ الإنشاء" readonly="1" />
+					<field name="adopted" string="إعتماد"  />
+				</field>
+				
+				<field name="mail_template_id"  position="attributes">
+					<attribute name='readonly'>1</attribute>
 				</field>
 
 
@@ -45,17 +50,51 @@
 
 			</field>
 		</record>
+		
+		
+		<record model="ir.ui.view" id="view_hr_appraisal_tree_inherite">
+        <field name="name">hr.appraisal.tree.inherite</field>
+        <field name="model">hr.appraisal</field>
+        <field name="inherit_id" ref="hr_appraisal.view_hr_appraisal_tree" />
+        <field name="arch" type="xml">
+           
+               
+            <field name="count_completed_survey" position="after">
+					<field name="note_final" string="نتيجة التقييم" readonly="1" />
+					<field name="adopted" string="إعتماد" readonly="1" />
+					
+					
+				</field>
+        </field>
+    </record>
 
-
-
-		<record model="ir.ui.view" id="survey_response_line_tree_inherite">
+	<record model="ir.ui.view" id="survey_response_line_tree_inherite">
 			<field name="name">survey_response_line_tree_inherite</field>
 			<field name="model">survey.user_input_line</field>
 			<field name="inherit_id" ref="survey.survey_response_line_tree" />
 			<field name="arch" type="xml">
+				<field name="quizz_mark" position="before">
 
-				<xpath expr="/tree/field[@name='quizz_mark']" position="after">
 					<field name="quizz_mark" />
+				</field>
+
+
+
+
+
+			</field>
+		</record>
+		
+		
+		
+		<record model="ir.ui.view" id="survey_user_input_tree_inherite">
+			<field name="name">survey_user_input_tree_inherite</field>
+			<field name="model">survey.user_input</field>
+			<field name="inherit_id" ref="survey.survey_user_input_tree" />
+			<field name="arch" type="xml">
+
+				<xpath expr="/tree/field[@name='quizz_score']" position="after">
+					<field name="quizz_score" string="نتيجة التقييم"/>
 				</xpath>
 					
 
@@ -64,6 +103,76 @@
 
 			</field>
 		</record>
+		
+		
+
+		<record model="ir.ui.view" id="survey_response_line_tree_inherite">
+			<field name="name">survey_response_line_tree_inherite</field>
+			<field name="model">survey.user_input_line</field>
+			<field name="inherit_id" ref="survey.survey_response_line_tree" />
+			<field name="arch" type="xml">
+
+				<xpath expr="/tree/field[@name='quizz_mark']" position="after">
+					<field name="quizz_mark" string="نتيجة التقييم"/>
+				</xpath>
+					
+
+
+
+
+			</field>
+		</record>
+		
+		
+		
+		 <record model="ir.ui.view" id="survey_user_input_form_inherite">
+            <field name="name">survey_user_input_form_inherite</field>
+            <field name="model">survey.user_input</field>
+            <field name="inherit_id" ref="survey.survey_user_input_form" />
+            <field name="arch" type="xml">
+            
+            <field name="test_entry" position="after">
+                    <field name="quizz_score" string="نتيجة التقييم"/>
+				</field>
+            
+				<xpath expr="//field[@name='user_input_line_ids']" position="replace">
+				   <field name="user_input_line_ids" mode="tree" attrs="{'readonly': False}">
+                            <tree>
+                                <field name="page_id"/>
+                                <field name="question_id"/>
+                                <field name="answer_type"/>
+                                <field name="skipped"/>
+                                <field name="date_create"/>
+                                <field name="quizz_mark" string="نتيجة التقييم"/>
+                            </tree>
+                        </field>
+				 </xpath>
+           
+
+         
+
+
+
+
+			</field>
+		</record>
+		
+		<record model="ir.ui.view" id="survey_question_form_inherite">
+            <field name="name">Form view for survey question</field>
+            <field name="model">survey.question</field>
+             <field name="inherit_id" ref="survey.survey_question_form" />
+            <field name="arch" type="xml">
+            <xpath expr="//field[@name='labels_ids']" position="replace">
+				    <field name="labels_ids" string="Type of answers" context="{'default_question_id': active_id}" attrs="{'invisible': [('type', 'not in', ['simple_choice', 'multiple_choice', 'matrix'])]}">
+                                    <tree editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="value" string="Choices"/>
+                                        <field name="quizz_mark" />
+                                    </tree>
+                                </field>
+				 </xpath>
+				 </field>
+				 </record>
 
 	</data>
 </openerp>

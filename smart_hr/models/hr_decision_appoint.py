@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-
+from openerp.exceptions import UserError
 from openerp import models, fields, api, _
 from openerp.exceptions import Warning
 from dateutil.relativedelta import relativedelta
@@ -56,7 +56,7 @@ class HrDecisionAppoint(models.Model):
     option_contract = fields.Boolean(string='قرار التعاقد')
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
     # other info
-    type_appointment = fields.Many2one('hr.type.appoint', string=u'نوع التعيين' , required=1,default=lambda self: self.env.ref('smart_hr.data_hr_recrute_agent_public'), advanced_search=True)
+    type_appointment = fields.Many2one('hr.type.appoint', string=u'نوع التعيين' , required=1, advanced_search=True)
     description = fields.Text(string=' ملاحظات ') 
     state_appoint = fields.Selection([
                               ('active', u'مفعل'),
