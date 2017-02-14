@@ -13,7 +13,7 @@ class HrEmployeeTransfert(models.Model):
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
     sequence = fields.Integer(string=u'رتبة الطلب')
-    employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1, readonly=1)
+    employee_id = fields.Many2one('hr.employee', string=u'صاحب الطلب', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1, readonly=1)
     last_evaluation_result = fields.Many2one('hr.employee.evaluation.level', string=u'أخر تقييم إداء')
     job_id = fields.Many2one('hr.job', related='employee_id.job_id', string=u'الوظيفة', readonly=1, required=1)
     specific_id = fields.Many2one('hr.groupe.job', related='job_id.specific_id', string=u'المجموعة النوعية', readonly=1, required=1)
@@ -24,8 +24,8 @@ class HrEmployeeTransfert(models.Model):
     new_type_id = fields.Many2one('salary.grid.type', related='new_job_id.type_id', readonly=1, string=u'الصنف')
     justification_text = fields.Text(string=u'مبررات النقل', readonly=1, required=1, states={'new': [('readonly', 0)]})
     note = fields.Text(string=u'ملاحظات')
-    comm_president_accept = fields.Boolean(string=u'موافقة رئيس الجهة', default=False)
     same_group = fields.Boolean(compute='_compute_same_specific_group', default=False)
+    ready_tobe_done = fields.Boolean(default=False)
     decision_number = fields.Char(string=u"رقم القرار")
     decision_date = fields.Date(string=u'تاريخ القرار')
     decision_file = fields.Binary(string=u'نسخة القرار')
@@ -35,7 +35,6 @@ class HrEmployeeTransfert(models.Model):
     desire_ids = fields.Many2many('hr.employee.desire', required=1, readonly=1, states={'new': [('readonly', 0)]})
     refusing_date = fields.Date(string=u'تاريخ الرفض', readonly=1)
     # conflicted with
-    conflicted_emp_trans_id = fields.Many2one('hr.employee.transfert', domain=[('state', '=', 'pm')], string=u'الطلب المتعارض معه')
     # ‫المدنتية ‫الخدمة‬ ‫موافلقة‬
     speech_number = fields.Char(string=u'رقم الخطاب')
     speech_date = fields.Date(string=u'تاريخ الخطاب')
@@ -43,15 +42,13 @@ class HrEmployeeTransfert(models.Model):
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', u'صاحب الصلاحية'),
                               ('pm', u'شؤون الموظفين'),
-                              ('commission_president', u'رئيس الجهة'),
                               ('done', u'اعتمدت'),
                               ('refused', u'رفض'),
-                              ('cancelled', u'ملغى')
                               ], readonly=1, default='new', string=u'الحالة')
     transfert_type = fields.Selection([('internal_transfert', u'نقل داخلي'),
                                        ('external_transfert_out', u'نقل خارجي (من الهيئة إلى جهة أخرى)'),
                                        ('external_transfert_in', u'نقل خارجي (إلى الهيئة)'),
-                                       ], readonly=1, states={'new': [('readonly', 0)]}, default='internal_transfert', string=u'طبيعة النقل')
+                                       ], readonly=1, states={'new': [('readonly', 0)]}, default='internal_transfert', required=1, string=u'طبيعة النقل')
 
     transfert_periode_id = fields.Many2one('hr.employee.transfert.periode', string=u'فترة النقل', required=1, readonly=1, states={'new': [('readonly', 0)]})
 
@@ -116,8 +113,8 @@ class HrEmployeeTransfert(models.Model):
             if fields.Date.from_string(testing_date_to) >= fields.Date.from_string(fields.Datetime.now()):
                 raise ValidationError(u"لايمكن طلب نقل خلال فترة التجربة")
         # ‫التترقية‬ ‫سنة‬ ‫إستلكمال‬
-        if self.employee_id.promotion_duration < 1:
-                        raise ValidationError(u"لايمكن طلب نقل خلال أقل من سنة منذ أخر ترقية")
+#         if self.employee_id.promotion_duration < 1:
+#                         raise ValidationError(u"لايمكن طلب نقل خلال أقل من سنة منذ أخر ترقية")
         # check desire_ids length from config
         if hr_config:
             if len(self.desire_ids) > hr_config.desire_number:
@@ -144,17 +141,13 @@ class HrEmployeeTransfert(models.Model):
     @api.multi
     def action_pm(self):
         self.ensure_one()
-        self.state = 'pm'
-        if not self.new_job_id:
-            # add this demand to hr.transfert.sorting for the first time
-            trans_sort_obj = self.env['hr.transfert.sorting'].search([], limit=1)
-            if trans_sort_obj:
-                trans_sort_obj.hr_transfert_ids = [(4, self.id)]
+        if self.transfert_type == 'external_transfert_out':
+                if self.check_judicial_precedent(self.employee_id):
+                    self.note = u'الموظف لديه سوابق عدلية'
+                    self.action_refused()
+                    return
 
-    @api.multi
-    def action_com_president(self):
-        self.ensure_one()
-        self.state = 'commission_president'
+        self.state = 'pm'
 
     @api.multi
     def action_refused(self):
@@ -178,12 +171,6 @@ class HrEmployeeTransfert(models.Model):
                         raise ValidationError(u"الرجاء التثبت من حقل الوظيفة المنقول إليها.")
             if not rec.degree_id:
                         raise ValidationError(u"الرجاء التثبت من حقل الدرجة.")
-            if rec.transfert_type == 'external_transfert_out':
-                if rec.check_judicial_precedent(self.employee_id):
-                    rec.note = u'الموظف لديه سوابق عدلية'
-                    rec.action_refused()
-                    return
-
             # create hr.decision.appoint object
             # with decision file
             if rec.new_specific_id == rec.specific_id:
@@ -216,10 +203,8 @@ class HrEmployeeTransfert(models.Model):
             recruiter_id = self.env['hr.decision.appoint'].create(vals)
             recruiter_id.action_done()
             rec.state = 'done'
-            # remove this demand from hr.transfert.sorting
-            trans_sort_obj = self.env['hr.transfert.sorting'].search([], limit=1)
-            if trans_sort_obj:
-                trans_sort_obj.hr_transfert_ids = [(3, rec.id)]
+            # create history_line
+            self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, False, False, self._description)
             if rec.transfert_type == 'internal_transfert':
                 # send notification for the employee
                 self.env['base.notification'].create({'title': u'إشعار بموافقة طلب',
@@ -241,23 +226,6 @@ class HrEmployeeTransfert(models.Model):
                                                       'notif': True
                                                       })
 
-    @api.multi
-    def action_pick_job(self):
-        self.ensure_one()
-        hr_emp_tran_obj = self.env['hr.employee.transfert'].search([('id', '=', int(self._context['rec_id']))])
-        if hr_emp_tran_obj:
-            hr_emp_tran_obj.write({'new_job_id': int(self._context['new_job_id']), 'conflicted_emp_trans_id': int(self._context['conflicted_emp_trans_id'])})
-
-    @api.multi
-    def action_choose(self):
-        self.comm_president_accept = True
-        self.conflicted_emp_trans_id.comm_president_accept = False
-        self.conflicted_emp_trans_id.conflicted_emp_trans_id = False
-        self.conflicted_emp_trans_id.new_job_id = False
-        self.conflicted_emp_trans_id.action_notif()
-        self.conflicted_emp_trans_id = False
-        self.action_pm()
-
     def check_judicial_precedent(self, employee_id):
         emp_jud_prec_ids = self.env['employee.judicial.precedent.order'].search([('employee', '=', employee_id.id)])
         if emp_jud_prec_ids:
@@ -269,25 +237,90 @@ class HrEmployeeTransfert(models.Model):
 class HrEmployeeTransfertPeriode(models.Model):
     _name = 'hr.employee.transfert.periode'
     _description = u'فترات النقل'
-    _rec_name = "date_from"
+    _rec_name = "name"
 
+    name = fields.Char(string=u'المسمى', required=1)
     date_from = fields.Date(string=u'التاريخ من ', default=fields.Datetime.now())
     date_to = fields.Date(string=u'التاريخ الى')
+    is_ended_compute = fields.Boolean(string=u'بدأت', compute='_compute_is_ended')
+    is_ended = fields.Boolean(string=u'بدأت')
 
-    """
-    add computed is_ended
-    """
+    @api.multi
+    @api.depends('date_from')
+    def _compute_is_ended(self):
+        for rec in self:
+            if rec.date_to < datetime.today().strftime('%Y-%m-%d'):
+                rec.is_ended = True
+            else:
+                rec.is_ended = False
 
 
 class HrTransfertSorting(models.Model):
     _name = 'hr.transfert.sorting'
     _description = u'‫ترتيب طلبات النقل مع الوظائف المناسبة‬‬'
 
-    name = fields.Char(string=u'المسمى')
+    name = fields.Char(string=u'المسمى', required=1, readonly=1, states={'new': [('readonly', 0)]})
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
-    hr_transfert_ids = fields.Many2many('hr.employee.transfert', string=u'طلبات النقل')
+    line_ids = fields.One2many('hr.transfert.sorting.line', 'hr_transfert_sorting_id', string=u'طلبات النقل', readonly=0, states={'done': [('readonly', 1)]})
     state = fields.Selection([('new', u'طلب'),
                               ('commission_president', u'رئيس الجهة'),
                               ('done', u'اعتمدت'),
                               ], readonly=1, default='new', string=u'الحالة')
+
+    @api.multi
+    def action_commission_president(self):
+        self.ensure_one()
+        self.state = 'commission_president'
+
+    @api.multi
+    def action_done(self):
+        self.ensure_one()
+        for rec in self.line_ids:
+            if rec.is_conflected:
+                raise ValidationError(u"الرجاء حل الخلاف في الوظائف المختارة.")
+        for rec in self.line_ids:
+            rec.hr_employee_transfert_id.write({'new_job_id': rec.new_job_id.id, 'ready_tobe_done': True})
+        self.state = 'done'
+        # create history_line
+        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, False, False, self._description)
+
+
+class HrTransfertSortingLine(models.Model):
+    _name = 'hr.transfert.sorting.line'
+    _description = u'‫طلبات النقل‬‬'
+
+    hr_transfert_sorting_id = fields.Many2one('hr.transfert.sorting', string=u'إجراء الترتيب')
+    hr_employee_transfert_id = fields.Many2one('hr.employee.transfert', string=u'طلب نقل موظف')
+    job_id = fields.Many2one('hr.job', related='hr_employee_transfert_id.job_id', string=u'الوظيفة')
+    occupied_date = fields.Date(related='job_id.occupied_date', string=u'تاريخ الشغول')
+    transfert_create_date = fields.Datetime(string=u'تاريخ الطلب', related="hr_employee_transfert_id.create_date", readonly=1)
+    last_evaluation_result = fields.Many2one('hr.employee.evaluation.level', related="hr_employee_transfert_id.last_evaluation_result", string=u'أخر تقييم إداء')
+    new_job_id = fields.Many2one('hr.job', domain=[('state', '=', 'unoccupied')], string=u'الوظيفة المنقول إليها')
+    is_conflected = fields.Boolean(compute='_compute_is_conflected')
+
+    @api.multi
+    def _compute_is_conflected(self):
+        for rec in self:
+            for line in rec.hr_transfert_sorting_id.line_ids:
+                count = rec.hr_transfert_sorting_id.line_ids.search_count([('new_job_id', '=', line.new_job_id.id),
+                                                                           ('hr_transfert_sorting_id', '=', line.hr_transfert_sorting_id.id)
+                                                                           ])
+                if count > 1:
+                    line.is_conflected = True
+                else:
+                    line.is_conflected = False
+
+    @api.onchange('hr_employee_transfert_id')
+    def _onchange_hr_employee_transfert_id(self):
+        # get all pending transfert demands in closed_periodes
+        res = {}
+        closed_periodes = self.env['hr.employee.transfert.periode'].search([('date_to', '<', datetime.today().strftime('%Y-%m-%d'))])
+        closed_periodes_ids = [rec.id for rec in closed_periodes]
+        hr_transferts = self.env['hr.employee.transfert'].search([('transfert_periode_id', 'in', closed_periodes_ids), ('state', '=', 'pm'), ('new_job_id', '=', False)])
+        hr_transfert_ids = [rec.id for rec in hr_transferts]
+        res['domain'] = {'hr_employee_transfert_id': [('id', 'in', hr_transfert_ids)]}
+        return res
+
+
+
 

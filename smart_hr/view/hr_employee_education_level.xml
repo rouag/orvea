@@ -1,35 +1,40 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <openerp>
 	<data>
-	
+
 		<record id="view_form_hr_employee_education_job_level" model="ir.ui.view">
 			<field name="name">hr.employee.education.level.job.form</field>
 			<field name="model">hr.employee.job.education.level</field>
 			<field name="arch" type="xml">
 				<form string="المستوى التعليمي">
 					<sheet>
-						
-							<group col="4">
-								<field name="level_education_id" required="1" />
-								<field name="job_specialite" required="1" />
-							</group>
-							
+
+						<group col="4">
+							<field name="level_education_id" required="1" />
+							<field name="job_specialite" required="1" />
+							<field name="diploma_id" />
+							<field name="diploma_date" />
+						</group>
+
 					</sheet>
 				</form>
 			</field>
 		</record>
-		
-			<record id="view_tree_hr_employee__job_education_level" model="ir.ui.view">
+
+		<record id="view_tree_hr_employee__job_education_level" model="ir.ui.view">
 			<field name="name">hr.employee.education.level.job.tree</field>
 			<field name="model">hr.employee.job.education.level</field>
 			<field name="arch" type="xml">
 				<tree string="المستوى التعليمي" class="oe_tree_view">
 					<field name="level_education_id" />
+					<field name="diploma_id" />
+					<field name="diploma_date" />
 					<field name="job_specialite" />
+
 				</tree>
 			</field>
 		</record>
-	
+
 
 		<record id="view_form_hr_employee_education_level" model="ir.ui.view">
 			<field name="name">hr.employee.education.level.form</field>
@@ -37,20 +42,21 @@
 			<field name="arch" type="xml">
 				<form string="المستوى التعليمي">
 					<sheet>
-						
-							<group col="6">
-								<field name="sequence" required="1" />
-								<field name="code" required="1" />
-								<field name="name" required="1" />
-							</group>
-							<group col="10">
-								
-								<field name="diploma_id"  options='{"no_open": True, "no_create": True}'/>
-								<field name="specialization_ids" widget="many2many_tags" options='{"no_open": True, "no_create": True}' />
-								<field name="nomber_year_education"  />
-								<field name="secondary"  />
-								<field name="not_secondary"  />
-							</group>
+
+						<group col="6">
+							<field name="sequence" required="1" />
+							<field name="code" required="1" />
+							<field name="name" required="1" />
+						</group>
+						<group col="10">
+
+							<field name="diploma_id" options='{"no_open": True, "no_create": True}' />
+							<field name="specialization_ids" widget="many2many_tags"
+								options='{"no_open": True, "no_create": True}' />
+							<field name="nomber_year_education" />
+							<field name="secondary" />
+							<field name="not_secondary" />
+						</group>
 					</sheet>
 				</form>
 			</field>
@@ -62,9 +68,9 @@
 				<tree string="المستوى التعليمي" class="oe_tree_view">
 					<field name="sequence" />
 					<field name="name" />
-					<field name="diploma_id"  />
-					<field name="specialization_ids"  />
-					<field name="nomber_year_education"  />
+					<field name="diploma_id" />
+					<field name="specialization_ids" />
+					<field name="nomber_year_education" />
 				</tree>
 			</field>
 		</record>
@@ -126,7 +132,7 @@
 						<group>
 							<field name="name" required="1" />
 							<field name="code" required="1" />
-							
+
 						</group>
 
 					</sheet>

@@ -8,7 +8,7 @@
     'description':
         """
         """,
-    'depends': ['hr', 'hr_holidays', 'odoo_rtl', 'web_readonly_bypass', 'hr_payroll', 'hr_attendance', 'smart_base', 'survey', 'hr_appraisal','website'],
+    'depends': ['hr', 'hr_holidays', 'odoo_rtl', 'web_readonly_bypass', 'hr_payroll', 'hr_attendance', 'smart_base', 'survey', 'hr_appraisal', 'website'],
     'data': [
 
 
@@ -17,6 +17,8 @@
         'security/ir.model.access.csv',
         'payroll/security/payroll_security.xml',
         'payroll/security/ir.model.access.csv',
+        'hr_scholarship/security/ir.model.access.csv',
+        'hr_scholarship/security/hr_security.xml',
 
         'hr_menu.xml',
         'data/sequences.xml',
@@ -27,7 +29,6 @@
         'data/hr_termination_data.xml',
         'data/decisions_type_data.xml',
         'data/hr_appoint_type_data.xml',
-        'data/scholarship_data.xml',
 
         # الوظائف
         'job/menu.xml',
@@ -60,12 +61,14 @@
 
         # الإدارات
         'hr/security/hr_security.xml',
+        'hr/security/ir.model.access.csv',
         'hr/menu.xml',
         'hr/view/hierarchy_level.xml',
         'hr/view/hr_department_view.xml',
         'hr/view/hr_contract_inherit_view.xml',
         'hr/view/hr_contract_item_view.xml',
         'hr/views/report_hr_contract.xml',
+        'hr/views/report_hr_employee_lend.xml',
         'hr/views/report.xml',
         'hr/data/hr_department_type_data.xml',
         'hr/data/hr_data.xml',
@@ -124,7 +127,7 @@
         'view/hr_employee_functional_card.xml',
         'view/res_users.xml',
         'view/employee_situation_order.xml',
-        'view/hr_scholarship.xml',  # sanction
+          # sanction
         'sanction/security/ir.model.access.csv',
         'sanction/security/sanction_security.xml',
         'sanction/wizard/wizard_sanction_action.xml',
@@ -206,16 +209,24 @@
         'deputation/view/transport_decision_view.xml',
         'deputation/views/deputation_report.xml',
         'deputation/views/report.xml',
-        #overtime
+        # overtime
         'overtime/data/data.xml',
         'overtime/security/ir.model.access.csv',
         'overtime/view/hr_overtime_view.xml',
         'overtime/view/hr_overtime_setting.xml',
         'overtime/views/overtime_report.xml',
         'overtime/views/report.xml',
-          
-        
-        #'hr_survey/views/website_templates.xml',
+        # hr_scholarship
+        'hr_scholarship/data/sequences.xml',
+        'hr_scholarship/views/report.xml',
+        'hr_scholarship/data/scholarship_data.xml',
+        'hr_scholarship/views/report_hr_scholarship_decision.xml',
+        'hr_scholarship/view/hr_scholarship.xml',
+        'hr_scholarship/view/hr_scholarship_decision_view.xml',
+        'hr_scholarship/wizards/view/hr_scholarship_succeed_wizard.xml',
+        'hr_scholarship/views/hr_scholarship_extension_report.xml',
+
+        # 'hr_survey/views/website_templates.xml',
 
     ],
     'auto_install': False,

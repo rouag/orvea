@@ -2,10 +2,15 @@
 <openerp>
 	<data>
 
-<report id="hr_contract_report" model="hr.contract" name="smart_hr.report_hr_contract"
-			report_type="qweb-pdf" string="طباعة العقد" file="smart_hr.report_hr_contract" />
+		<report id="hr_contract_report" model="hr.contract"
+			name="smart_hr.report_hr_contract" report_type="qweb-pdf" string="طباعة العقد"
+			file="smart_hr.report_hr_contract" />
 			
-			
+		<report id="hr_employee_lend_report" model="hr.employee.lend"
+			name="smart_hr.report_hr_employee_lend" report_type="qweb-pdf" string="طباعة القرار" attachment_use="False" 
+			menu="False"
+			file="smart_hr.report_hr_employee_lend" />
+
 	</data>
 </openerp>
 		

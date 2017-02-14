@@ -14,3 +14,4 @@ from . import hr_promotions
 from . import sanction
 from . import deputation
 from . import overtime
+from . import hr_scholarship

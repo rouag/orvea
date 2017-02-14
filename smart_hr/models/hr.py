@@ -356,70 +356,73 @@ class HrEmployeePromotionHistory(models.Model):
 
 
 class HrEmployeeEducationLevel(models.Model):
-    _name = 'hr.employee.education.level'  
+    _name = 'hr.employee.education.level'
     _description = u'مستويات التعليم'
 
-    name=fields.Char(string='المستوى ')
+    name = fields.Char(string='المستوى ')
     sequence = fields.Char(string=u'الرتبة')
     leave_type = fields.Many2one('hr.holidays.status', string='leave type')
     code = fields.Char(string=u'الرمز')
-    nomber_year_education=fields.Integer(string=u'عدد سنوات الدراسة', )
+    nomber_year_education = fields.Integer(string=u'عدد سنوات الدراسة', )
     diploma_id = fields.Many2one('hr.employee.diploma', string=u'الشهادة')
     specialization_ids = fields.Many2many('hr.employee.specialization', string=u'الاختصاص')
     secondary = fields.Boolean(string=u'بعد‬ الثانوية', required=1)
     not_secondary = fields.Boolean(string=u'قبل الثانوية', required=1)
-    
+
     @api.onchange('secondary')
     def onchange_secondry(self):
         if self.secondary:
             self.not_secondary = False
-            
+
     @api.onchange('not_secondary')
     def onchange_not_secondry(self):
         if self.not_secondary:
             self.secondary = False
-       
+
+
 class HrEmployeeEducationLevelEmployee(models.Model):
-    _name = 'hr.employee.job.education.level'  
+    _name = 'hr.employee.job.education.level'
     _description = u'مستويات التعليم'
-   
-    name=fields.Char(string='المستوى')
+
+    name = fields.Char(string='المستوى')
     employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف')
     level_education_id = fields.Many2one('hr.employee.education.level', string=u' مستوى التعليم')
+    diploma_id = fields.Many2one('hr.employee.diploma', related='level_education_id.diploma_id', string=u'الشهادة')
     job_specialite = fields.Boolean(string=u'في طبيعة العمل', required=1)
+    diploma_date = fields.Date(string=u'تاريخ الحصول على الشهادة')
+
 
 class HrEmployeeEvaluation(models.Model):
-    _name = 'hr.employee.evaluation.level' 
-    _rec_name = 'degree_id' 
+    _name = 'hr.employee.evaluation.level'
+    _rec_name = 'degree_id'
     _description = u'التقييم الوظيفي'
     year = fields.Integer(string=u'سنة التقييم', default=int(date.today().year))
     degree_id = fields.Many2one('hr.evaluation.result.foctionality', string=u' الدرجة')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف')
 
+
 class HrEmployeeDiploma(models.Model):
-    _name = 'hr.employee.diploma'  
+    _name = 'hr.employee.diploma'
     _description = u'الشهادة العلمية'
 
     name = fields.Char(string=u'المسمّى')
-    specialization_ids = fields.Many2many('hr.employee.specialization',string=u'التخصص')
+    specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص')
     code = fields.Char(string=u'الرمز')
 
 
 class HrEmployeeSpecialization(models.Model):
-    _name = 'hr.employee.specialization'  
+    _name = 'hr.employee.specialization'
     _description = u'التخصص'
-  
+
     name = fields.Char(string=u'المسمّى')
     code = fields.Char(string=u'الرمز')
-    
+
+
 class HrEmployeeSanction(models.Model):
-    _name = 'hr.employee.sanction'  
+    _name = 'hr.employee.sanction'
     _description = u'العقوبات'
-  
+
     employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', )
-    type_sanction = fields.Many2one('hr.type.sanction',string='العقوبة',)
-    date_sanction_start = fields.Date(string='تاريخ بدأ العقوبة') 
+    type_sanction = fields.Many2one('hr.type.sanction', string='العقوبة')
+    date_sanction_start = fields.Date(string='تاريخ بدأ العقوبة')
     date_sanction_end = fields.Date(string='تاريخ الإلغاء') 
-    
-
-

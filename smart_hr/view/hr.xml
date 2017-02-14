@@ -336,8 +336,10 @@
 								</page>
 
 								<page string="العقوبات">
-									<field name='sanction_ids' string="العقوبات" readonly="1">
-										<tree string="سجل العقوبات">
+									
+									<field name='sanction_ids' string="العقوبات" readonly="1" 	
+											>
+										<tree string="سجل العقوبات" domain="[('type_sanction.id','=',%(data_hr_sanction_type_alert)d)]}">
 											<field name="employee_id" />
 											<field name="type_sanction" />
 

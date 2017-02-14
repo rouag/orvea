@@ -313,10 +313,8 @@ class HrDecisionAppoint(models.Model):
                                                   'grade_id' : self.grade_id.id,
                                                   'type_appointment' : self.type_appointment.name,
                                                   'degree_id' : self.degree_id.id,
-                                                  
                                                   'date_direct_action': self.date_direct_action ,
                                                     })
-
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
 

@@ -40,3 +40,5 @@ class HrEmployeeTask(models.Model):
     def action_done(self):
         self.ensure_one()
         self.state = "done"
+        # create history_line
+        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, False, False, self._description)

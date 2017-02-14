@@ -14,7 +14,7 @@
 			<field name="prefix"></field>
 			<field name="padding">3</field>
 		</record>
-		
+
 		<record id="hr_authorization_type_01" model="hr.authorization.type">
 			<field name="name">إستئذان لعمل‬</field>
 			<field name="code">01</field>
@@ -34,6 +34,10 @@
 			<field name="prefix"></field>
 			<field name="padding">3</field>
 		</record>
-				
+		
+		<record id="data_hr_autorization_stock_setting" model="hr.authorization.stock.setting">
+			<field name="name">اعداد رصيد الاستئذان‬ات</field>
+		</record>
+		
 	</data>
 </openerp>

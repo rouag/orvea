@@ -95,22 +95,19 @@
 			<field name="padding">5</field>
 		</record>
 
-		<record id="hr_hr_increase_seq" forcecreate="1"
-			model="ir.sequence">
-			<field name="name">Increase  sequence</field>
+		<record id="hr_hr_increase_seq" forcecreate="1" model="ir.sequence">
+			<field name="name">Increase sequence</field>
 			<field name="code">hr.increase.seq</field>
 			<field eval="1" name="number_increment" />
 			<field name="padding">5</field>
 		</record>
 
-		<record id="hr_scholarship_seq" forcecreate="1"
-			model="ir.sequence">
-			<field name="name">scholarship  sequence</field>
+		<record id="hr_scholarship_seq" forcecreate="1" model="ir.sequence">
+			<field name="name">scholarship sequence</field>
 			<field name="code">hr.scholarship.seq</field>
 			<field eval="1" name="number_increment" />
 			<field name="padding">5</field>
 		</record>
-		
-		
+
 	</data>
 </openerp>

@@ -13,7 +13,7 @@ class HrEmployeeLend(models.Model):
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', required=1, readonly=1, states={'new': [('readonly', 0)]})
-    insurance_entity = fields.Many2one('res.partner', string=u'الجهة المعار إليها', domain=[('company_type', '=', 'insurance')], required=1, readonly=1, states={'new': [('readonly', 0)]})
+    insurance_entity = fields.Many2one('res.partner', string=u'الجهة المعار إليها', domain=[('insurance', '=', True)], required=1, readonly=1, states={'new': [('readonly', 0)]})
     decision_number = fields.Char(string=u"رقم القرار", required=1, readonly=1, states={'new': [('readonly', 0)]})
     decision_date = fields.Date(string=u'تاريخ القرار', required=1, readonly=1, states={'new': [('readonly', 0)]})
     decision_file = fields.Binary(string=u'نسخة القرار', required=1, readonly=1, states={'new': [('readonly', 0)]})
@@ -71,6 +71,8 @@ class HrEmployeeLend(models.Model):
     def action_done(self):
         self.ensure_one()
         self.state = 'done'
+        # create history_line
+        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, False, False, self._description)
 
     @api.multi
     def button_extend(self):

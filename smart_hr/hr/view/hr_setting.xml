@@ -26,6 +26,9 @@
 							<group string="إعدادات التكليف‬‬">
 								<field name="assign_duration" />
 							</group>
+							
+							<group string="إعدادات الرواتب">
+							</group>
 						</group>
 					</sheet>
 				</form>

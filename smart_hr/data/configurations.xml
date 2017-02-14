@@ -17,20 +17,20 @@
 			<field name="point_from">90</field>
 			<field name="point_to">100</field>
 		</record>
-		
+
 		<record id="assessment_very_good" model="hr.evaluation.result.foctionality">
 			<field name="name">جيد جداً</field>
 			<field name="point_from">75</field>
 			<field name="point_to">90</field>
 		</record>
-		
-		<record id="assessment_hr_good" model="hr.evaluation.result.foctionality" >
+
+		<record id="assessment_hr_good" model="hr.evaluation.result.foctionality">
 			<field name="name">جيد</field>
 			<field name="point_from">60</field>
 			<field name="point_to">75</field>
 		</record>
 
-		<record id="assessment_hr_medium" model="hr.evaluation.result.foctionality" >
+		<record id="assessment_hr_medium" model="hr.evaluation.result.foctionality">
 			<field name="name">متوسط</field>
 			<field name="point_from">40</field>
 			<field name="point_to">60</field>
@@ -82,7 +82,10 @@
 			<field name="sequence" eval="110" />
 			<field name="name">دبلوم بعد الثانوية</field>
 		</record>
-
+		<record id="certificate_baccalaureate" model="hr.employee.education.level">
+			<field name="sequence" eval="112" />
+			<field name="name">بكالوريوس</field>
+		</record>
 		<record id="university_education" model="hr.employee.education.level">
 			<field name="sequence" eval="120" />
 			<field name="name">جامعية</field>
@@ -91,6 +94,11 @@
 		<record id="certificate_after_university_education" model="hr.employee.education.level">
 			<field name="sequence" eval="130" />
 			<field name="name">دبلوم بعد الجامعية</field>
+		</record>
+		
+		<record id="certificate_licence" model="hr.employee.education.level">
+			<field name="sequence" eval="132" />
+			<field name="name">ليسانس</field>
 		</record>
 		
 		<record id="ma_education" model="hr.employee.education.level">
@@ -102,13 +110,13 @@
 			<field name="sequence" eval="150" />
 			<field name="name">دبلوم بعد الماجستير</field>
 		</record>
-		
+
 		<record id="certificate_doctorate_education" model="hr.employee.education.level">
 			<field name="sequence" eval="160" />
 			<field name="name">دكتوراه</field>
 		</record>
-		
-		
+
+
 		<!-- أنواع خاصيّة الإجازة -->
 		<record id="data_hr_holiday_accompaniment_exceptional" model="hr.holidays.status">
 			<field name="name">اجازة مرافقة استثنائية</field>
