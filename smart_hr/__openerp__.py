@@ -23,7 +23,7 @@
         'hr_menu.xml',
         'data/sequences.xml',
         'data/configurations.xml',
-        'data/hr_holidays_data.xml',
+        'holidays/data/hr_holidays_data.xml',
         'data/schedulers.xml',
         'data/res_city_data.xml',
         'data/hr_termination_data.xml',
@@ -81,11 +81,12 @@
         'hr/view/hr_employee_comm_view.xml',
         "hr_promotions/views/report_promotion.xml",
         'hr/view/hr_employee_task_view.xml',
+        
+        
         'views/report_salary_grid.xml',
         'views/report_medical_examination.xml',
         'views/report_order_enquiry.xml',
-        'views/hr_holidays_report.xml',
-        'views/report_hr_holidays_decision.xml',
+     
         'views/report_hr_decision.xml',
         'views/report.xml',
         'views/templates.xml',
@@ -100,9 +101,11 @@
         'report/hr_termination_report.xml',
         'views/employee_situation_order_report.xml',
         'wizards/view/hr_refuse_wizard_view.xml',
-
-
         'view/hr_decision_appoint.xml',
+
+
+
+        
 #         'view/hr_promotion.xml',
         'view/hr_training.xml',
         'view/hr_training_setting.xml',
@@ -110,9 +113,7 @@
         'view/res_partner.xml',
         'view/judicial_precedent.xml',
         'view/recruiter.xml',
-        'view/hr_holidays.xml',
-        'view/hr_holidays_cancellation_view.xml',
-        'view/hr_holidays_decision_view.xml',
+
         'view/hr_employee_education_level.xml',
         'view/hr_assessment_view.xml',
         'view/hr_assessment_point_view.xml',
@@ -121,8 +122,6 @@
         'view/hr_suspension_view.xml',
         'view/hr_suspension_end_view.xml',
         'view/external_autorities.xml',
-        'view/holiday_entitlement_types.xml',
-        'view/hr_holidays_extension.xml',
         'view/religion.xml',
         'view/courses_follow_up.xml',
         'view/hr_direct_appoint_view.xml',
@@ -137,6 +136,7 @@
         'sanction/hr_sanction_view.xml',
         # القرارات
         'view/hr_decision.xml',
+       
         # الرواتب
         'payroll/menu.xml',
         'payroll/data/data.xml',
@@ -156,6 +156,7 @@
         'payroll/view/hr_increase_view.xml',
         'view/hr.xml',
         'payroll/views/report.xml',
+       
         # الحضور والإنصراف
         'attendance/security/attendance_security.xml',
         'attendance/security/ir.model.access.csv',
@@ -179,11 +180,13 @@
         'attendance/views/monthly_summary_report.xml',
         'attendance/views/monthly_summary_report_all.xml',
         'attendance/views/report.xml',
+        
         # تصنيف الوظائف
         'job/view/hr_job_setting.xml',
         'job/view/hr_skils_job.xml',
         'job/view/hr_job.xml',
         'job/view/hr_job_workflow.xml',
+
 
         # الاجازات
         'holidays/menu.xml',
@@ -191,8 +194,14 @@
         'holidays/views/resume_holidays_report.xml',
         'holidays/views/resume_normal_holidays_report.xml',
         'holidays/views/report.xml',
+        'holidays/view/hr_holidays.xml',
+        'holidays/view/hr_holidays_cancellation_view.xml',
+        'holidays/view/hr_holidays_decision_view.xml',
+        'holidays/view/holiday_entitlement_types.xml',
+        'holidays/view/hr_holidays_extension.xml',
+        'holidays/views/hr_holidays_report.xml',
+        'holidays/views/report_hr_holidays_decision.xml',
 
-        # apprasal menu
         # التقييم والإختبار
         'hr_appraisal/view/hr_appraisal_menu.xml',
         'hr_appraisal/view/hr_appraisal_view.xml',
