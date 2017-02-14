@@ -18,7 +18,7 @@
 								وتاريخ
 								<span t-esc="o.decision_date" />
 							</p>
-							<div class="col-xs-12">
+							<div class="col-xs-12" style="border-style: solid; border-width: 3px; border-radius: 25px;">
 								<div class="col-xs-3"></div>
 								<div class="col-xs-3"></div>
 								<div class="col-xs-6">
@@ -68,16 +68,19 @@
 									<p class="text-center">
 										الوظيفة المنقول إليها :
 									</p>
-									<p>مسماها : <t t-esc="o.employee_id.job_id.name.name" /></p>
-									<p>مرتبتها : <t t-esc="o.employee_id.job_id.grade_id.name" /></p>
-									<p>رقمها : <t t-esc="o.employee_id.job_id.number" /></p>
+									<p>مسماها : <t t-esc="o.new_job_id.name.name" /></p>
+									<p>مرتبتها : <t t-esc="o.new_job_id.grade_id.name" /></p>
+									<p>رقمها : <t t-esc="o.new_job_id.number" /></p>
 									<p>درجتها :</p>
-									<p>مقر العمل : <t t-esc="o.employee_id.job_id.department_id.name" /></p>
+									<p>مقر العمل : <t t-esc="o.new_job_id.department_id.name" /></p>
 								</div>
 								<p>2- يصرف له نفس الراتب السابق إعتباراً من تاريخ صدور هذا
 									القرار.
 								</p>
-								<p>3- يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
+								<p>3- يصرف له النسبة المقررة لطبيعة العمل بواقع (15%) من أول مربوط المرتبة</p>
+								<p>4- يصرف له إنتداب لمدة (3) أيام وفقاً للمادة (23) من لائحة الحقوق والمزايا المالية.</p>
+								<p>5- ليصرف له بدل ترحيل لتنازله أنه بموجب اقراره وفقاً للمادة (58) من لائحة الحقوق والمزايا المالية.</p>
+								<p>6- يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
 								<div class="col-xs-3">
 								</div>
 								<div class="col-xs-3"></div>
@@ -85,6 +88,22 @@
 									<strong> رئيس هيئة التحقيق والإدعاء العام</strong>
 									<br></br>
 									<p class="text-center"><t t-esc="user.company_id.company_president.name" /></p>
+								</div>
+								<div class="col-xs-12" style="border-style: solid; border-width: 1px;">
+									<p class="text-center">
+										مباشرة
+									</p>
+									<p>سعادة المشرف العام على إدارة الموارد البشرية</p>
+									<p>السلام عليكم ورحمة الله وبركاته ..</p>
+									<p>الموضح إسمه بعلية باشر العمل بتاريخ / / </p>
+									<p class="text-center">
+										ولكم تحياتي
+									</p>
+									<div class="col-xs-3"></div>
+									<div class="col-xs-3"></div>
+									<div class="col-xs-6">
+										<strong>مدير عام الشؤون الإدارية والمالية المكلف</strong><br></br>
+									</div>
 								</div>
 							</div>
 						</div>
