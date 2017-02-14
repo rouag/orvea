@@ -11,11 +11,15 @@ class HrEmployeeTransfert(models.Model):
     _description = u'طلب نقل موظف'
     _rec_name = 'employee_id'
 
+    @api.multi
+    def _get_default_employee_job(self):
+        return self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1).job_id
+
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
     sequence = fields.Integer(string=u'رتبة الطلب')
     employee_id = fields.Many2one('hr.employee', string=u'صاحب الطلب', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1, readonly=1)
     last_evaluation_result = fields.Many2one('hr.employee.evaluation.level', string=u'أخر تقييم إداء')
-    job_id = fields.Many2one('hr.job', related='employee_id.job_id', string=u'الوظيفة', readonly=1, required=1)
+    job_id = fields.Many2one('hr.job', default=_get_default_employee_job, string=u'الوظيفة', readonly=1, required=1)
     specific_id = fields.Many2one('hr.groupe.job', related='job_id.specific_id', string=u'المجموعة النوعية', readonly=1, required=1)
     occupied_date = fields.Date(related='job_id.occupied_date', string=u'تاريخ الشغول')
     type_id = fields.Many2one('salary.grid.type', related='employee_id.type_id', string=u'الصنف', readonly=1, required=1)
@@ -69,7 +73,7 @@ class HrEmployeeTransfert(models.Model):
             open_periodes = self.env['hr.employee.transfert.periode'].search([('date_to', '>=', datetime.today().strftime('%Y-%m-%d'))])
             if open_periodes:
                 open_periodes_ids = [rec.id for rec in open_periodes]
-                res['domain'] = {'transfert_periode_id': [('id', 'in', open_periodes_ids)]}
+                res['domain'] = {'transfert_periode_id': [('id', 'in', open_periodes_ids),('for_member', '=', False)]}
                 return res
             else:
                 res['domain'] = {'transfert_periode_id': [('id', '=', -1)]}
@@ -113,8 +117,8 @@ class HrEmployeeTransfert(models.Model):
             if fields.Date.from_string(testing_date_to) >= fields.Date.from_string(fields.Datetime.now()):
                 raise ValidationError(u"لايمكن طلب نقل خلال فترة التجربة")
         # ‫التترقية‬ ‫سنة‬ ‫إستلكمال‬
-#         if self.employee_id.promotion_duration < 1:
-#                         raise ValidationError(u"لايمكن طلب نقل خلال أقل من سنة منذ أخر ترقية")
+        if self.employee_id.promotion_duration < 1:
+                        raise ValidationError(u"لايمكن طلب نقل خلال أقل من سنة منذ أخر ترقية")
         # check desire_ids length from config
         if hr_config:
             if len(self.desire_ids) > hr_config.desire_number:
@@ -155,8 +159,11 @@ class HrEmployeeTransfert(models.Model):
         self.refusing_date = datetime.now()
         self.state = 'refused'
         # send notification for the employee
+        msg = u', '
+        if self.note:
+            msg += self.note
         self.env['base.notification'].create({'title': u'إشعار برفض طلب',
-                                              'message': u'لقد تم رفض طلب نقل, ' + str(self.note),
+                                              'message': u'لقد تم رفض طلب نقل ' + str(msg),
                                               'user_id': self.employee_id.user_id.id,
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                               'res_id': self.id,
@@ -242,6 +249,7 @@ class HrEmployeeTransfertPeriode(models.Model):
     name = fields.Char(string=u'المسمى', required=1)
     date_from = fields.Date(string=u'التاريخ من ', default=fields.Datetime.now())
     date_to = fields.Date(string=u'التاريخ الى')
+    for_member = fields.Boolean(string=u'للأعضاء', default=False)
     is_ended_compute = fields.Boolean(string=u'بدأت', compute='_compute_is_ended')
     is_ended = fields.Boolean(string=u'بدأت')
 
@@ -281,8 +289,6 @@ class HrTransfertSorting(models.Model):
         for rec in self.line_ids:
             rec.hr_employee_transfert_id.write({'new_job_id': rec.new_job_id.id, 'ready_tobe_done': True})
         self.state = 'done'
-        # create history_line
-        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, False, False, self._description)
 
 
 class HrTransfertSortingLine(models.Model):

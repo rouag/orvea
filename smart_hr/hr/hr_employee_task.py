@@ -19,8 +19,8 @@ class HrEmployeeTask(models.Model):
     governmental_entity = fields.Many2one('res.partner', string=u'الجهة الحكومية', domain=['|',('company_type', '=', 'governmental_entity'),('company_type', '=', 'company')])
     description = fields.Text(string=u'الوصف')
     type_procedure = fields.Selection([('deputation', u'الإنتداب'),
-                              ('commission', u'تكليف'),
-                              ],  default='deputation', string=u'نوع الاجراء')
+                                       ('commission', u'تكليف'),
+                                       ], default='deputation', string=u'نوع الاجراء')
     state = fields.Selection([('new', u'طلب'),
                               ('done', u'اعتمدت'),
                               ], readonly=1, default='new', string=u'الحالة')
@@ -29,7 +29,6 @@ class HrEmployeeTask(models.Model):
     @api.depends('date_from', 'duration')
     def _compute_date_to(self):
         self.ensure_one()
-        
         if self.date_from and self.duration:
             new_date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration)
             self.date_to = new_date_to

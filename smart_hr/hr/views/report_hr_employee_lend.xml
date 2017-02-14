@@ -47,7 +47,7 @@
 								<p>
 									1- إعارة خادم الموظف بالهيئة/
 									<strong><t t-esc="o.employee_id.name" /></strong>
-									، بالمرتبة(<t t-esc="o.employee_id.job_id.grade_id.code" />) رقمها (<t t-esc="o.employee_id.job_id.number" />) الدرجة () الراتب () ريالات إلى
+									، بالمرتبة(<t t-esc="o.employee_id.job_id.grade_id.code" />) رقمها (<t t-esc="o.employee_id.job_id.number" />)  الراتب () ريالات إلى
 									<t t-esc="o.insurance_entity.name" />
 									لمدة
 									<t t-esc="o.duration" />
@@ -63,6 +63,7 @@
 								<div class="col-xs-3"></div>
 								<div class="col-xs-6">
 									<strong> رئيس هيئة التحقيق والإدعاء العام</strong><br></br>
+									<p class="text-center"><t t-esc="user.company_id.company_president.name" /></p>
 								</div>
 								<div class="col-xs-12">
 									<p class="text-center">
