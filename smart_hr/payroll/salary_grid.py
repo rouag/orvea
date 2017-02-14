@@ -44,7 +44,7 @@ class SalaryGridGrade(models.Model):
     type_id = fields.Many2one('salary.grid.type', string='الصنف')
     job_create_id = fields.Many2one('hr.job.create', string=' وظائف')
     job_strip_from_id = fields.Many2one('hr.job.strip.from', string=' وظائف')
-    years_job=fields.Integer(string='مدة البقاء فالمرتبة')
+    years_job=fields.Integer(string='مدة استحقاق المرتبة')
 
 
 class SalaryGridDegree(models.Model):

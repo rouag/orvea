@@ -101,6 +101,7 @@
 								<field name="employee_job_promotion_line_ids"  options="{'no_open': True}" >
 									<tree create="false"  editable="bottom"   delete="0">
 										<field name="employee_id" readonly="1" />
+										<field name="employee_job_ids"  invisible="1"/>
 										<field name="demande_promotion_id"  readonly="1" options='{"no_open": True, "no_create": True}' />
 										<field name="old_job_id" readonly="1" />
 										<field name="old_number_job" readonly="1" />
@@ -111,7 +112,7 @@
 										<field name="point_training" readonly="1" />
 										<field name="point_functionality" readonly="1" />
 										<field name="sum_point" readonly="1" />
-										<field name="new_job_id" domain="[('occupied_promotion','=',True)]" options='{ "no_create": True}' attrs="{'readonly' :[('state','!=','manager')]}" />
+										<field name="new_job_id" domain="[('occupied_promotion','=',True),('id','in',employee_job_ids)]" options='{ "no_create": True}' attrs="{'readonly' :[('state','!=','manager')]}" />
 										<field name="new_number_job" />
 										<field name="state"  invisible="1"/>
 										<field name="emp_grade_id_new" readonly="1" />

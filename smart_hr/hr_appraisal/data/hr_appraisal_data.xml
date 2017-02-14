@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- After installation of the module, open the related menu -->
+      
+
+       
+
+        <record id="send_appraisal_templates" model="mail.template">
+            <field name="name">تقييم الموظف</field>
+            <field name="model_id" ref="hr_appraisal.model_hr_appraisal" />
+            <field name="auto_delete" eval="True" />
+            <field name="subject">Appraisal Regarding</field>
+            <field name="email_to">${ctx['email']}</field>
+            <field name="body_html">
+                <![CDATA[
+                <div style="font-family: 'Lucida Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); ">
+                     <p>بسم الله الرحمان الرحيم</p>
+                     <p>السَّلامُ عَلَيْكُم ورَحْمَةُ اللهِ وَبَرَكاتُهُ</p>
+                     
+                    <p>السيد ${ctx.get('employee').name},</p>
+                    % if ctx.get('employee').id == object.employee_id.id:
+                        <p>الرجاء تعبية تقييم الموظف .</p>
+                    % else:
+                        <p>الرجاء تعبية تقييم الموظف  ${object.employee_id.name}.</p>
+                    % endif
+                    <p><a href="__URL__">انقر هنا.</a></p>
+                    <p> وذلك قبل تاريخ : ${object.date_close}</p>
+                    <p>مع الشكر .</p>
+                </div>
+                ]]>
+            </field>
+        </record>
+      
+    </data>
+</odoo>
