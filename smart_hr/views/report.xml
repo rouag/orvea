@@ -19,10 +19,7 @@
 			report_type="qweb-pdf" name="smart_hr.order_enquiry_report_template"
 			attachment_use="False" file="smart_hr.order_enquiry_report_template" />
 
-		<report id="report_hr_holidays_report" model="hr.holidays" string="طلب الاجازة"
-			report_type="qweb-pdf" name="smart_hr.hr_holidays_report" file="smart_hr.hr_holidays_report"
-			attachment_use="False" 
-			menu="False" />
+
 
 		<report id="report_hr_holidays_hospital_transfer_form_report"
 			model="hr.holidays" string="نموذج تحويل مستوصف" report_type="qweb-pdf"
@@ -64,10 +61,7 @@
 
 		<!-- Update Reports Paper Format -->
 
-		<record id="report_hr_holidays_report" model="ir.actions.report.xml">
-			<field name="paperformat_id" ref="report.paperformat_euro" />
-			<field name="download_filename">${o.name}_قرار إجازة.pdf</field>
-		</record>
+
 
 		<record id="report_hr_holidays_hospital_transfer_form_report"
 			model="ir.actions.report.xml">
@@ -78,30 +72,37 @@
 		<record id="report_hr_overtime_report" model="ir.actions.report.xml">
 			<field name="paperformat_id" ref="report.paperformat_euro" />
 			<field name="download_filename">${o.name}_قرار خارج دوام.pdf</field>
-		</record>		
-		
-			<report id="hr_holidays_decision_report" model="hr.holidays.decision" name="smart_hr.report_hr_holidays_decision"
-			report_type="qweb-pdf" string="طباعة قرار مباشرة" file="smart_hr.report_hr_holidays_decision" />
-			
-			<report id="hr_decision_report" model="hr.decision" name="smart_hr.report_hr_decision"
-			report_type="qweb-pdf" string="طباعة" file="smart_hr.report_hr_decision" />
-			
-			<report id="hr_direct_appoint_report" model="hr.direct.appoint" name="smart_hr.report_hr_direct_appoint"
-			report_type="qweb-pdf" string="قرار مباشرة التعين" file="smart_hr.report_hr_direct_appoint" />
+		</record>
 
 
-		<report id="report_hr_employee_functionnal_card_report" model="hr.employee.functionnal.card" string="بطاقة وظيفية"
-			report_type="qweb-pdf" name="smart_hr.hr_employee_functionnal_card_report" file="smart_hr.hr_employee_functionnal_card_report"
-			menu="False" />			
+
+		<report id="hr_decision_report" model="hr.decision"
+			name="smart_hr.report_hr_decision" report_type="qweb-pdf" string="طباعة"
+			file="smart_hr.report_hr_decision" />
+
+		<report id="hr_direct_appoint_report" model="hr.direct.appoint"
+			name="smart_hr.report_hr_direct_appoint" report_type="qweb-pdf"
+			string="قرار مباشرة التعين" file="smart_hr.report_hr_direct_appoint" />
+
+
+		<report id="report_hr_employee_functionnal_card_report" model="hr.employee.functionnal.card"
+			string="بطاقة وظيفية" report_type="qweb-pdf"
+			name="smart_hr.hr_employee_functionnal_card_report" file="smart_hr.hr_employee_functionnal_card_report"
+			menu="False" />
 		<record id="report_hr_employee_functionnal_card_report" model="ir.actions.report.xml">
 			<field name="paperformat_id" ref="smart_base.paperformat_landscape" />
 			<field name="download_filename">${o.employee_id.name}_بطاقة وظيفية.pdf</field>
 		</record>
-		
-				<report id="hr_employee_situation_order" model="hr.employee.situation.order" name="smart_hr.report_hr_employee_situation_order"
-			report_type="qweb-pdf" string="طباعة طلب إفادة عن حالة موظف  " file="smart_hr.report_hr_employee_situation_order" />
-		
-		
+
+		<report id="hr_employee_situation_order" model="hr.employee.situation.order"
+			name="smart_hr.report_hr_employee_situation_order" report_type="qweb-pdf"
+			string="طباعة طلب إفادة عن حالة موظف  " file="smart_hr.report_hr_employee_situation_order" />
+
+		<report id="hr_scholarship_decision_report" model="hr.scholarship.decision"
+			name="smart_hr.report_hr_scholarship_decision" report_type="qweb-pdf"
+			string="طباعة قرار مباشرة" file="smart_hr.report_hr_scholarship_decision" />
+
+
 	</data>
 </openerp>
 		

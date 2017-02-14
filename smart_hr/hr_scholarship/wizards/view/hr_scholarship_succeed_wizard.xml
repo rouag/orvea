@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+
+		<!-- Refuse Wizard -->
+		<record id="view_form_hr_scholarship_succced_wizard" model="ir.ui.view">
+			<field name="name">hr.scholarship.succced.wizard.form</field>
+			<field name="model">hr.scholarship.succced.wizard</field>
+			<field name="arch" type="xml">
+				<form string="احتساب مؤهل علمي جديد">
+					<separator string="بيانات المؤهل الجديد" />
+					<group>
+						<field name="level_education_id" />
+						<field name="diploma_id" />
+						<field name="diploma_date" />
+					</group>
+					<footer>
+						<button name="button_add_employee_education_level" string="حفظ"
+							type="object" icon="fa-floppy-o" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						أو
+						<button string="إلغاء" class="oe_link" special="cancel" />
+					</footer>
+				</form>
+			</field>
+		</record>
+		<record id="action_hr_scholarship_succced_wizard" model="ir.actions.act_window">
+			<field name="name">احتساب مؤهل علمي جديد</field>
+			<field name="res_model">hr.scholarship.succced.wizard</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="view_form_hr_scholarship_succced_wizard" />
+			<field name="target">new</field>
+		</record>
+
+	</data>
+</openerp>

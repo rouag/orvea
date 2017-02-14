@@ -39,7 +39,7 @@ class SalaryGridGrade(models.Model):
     _name = 'salary.grid.grade'
     _description = u'المراتب'
 
-    name = fields.Char(string='الإسم', required=1)
+    name = fields.Char(string='المسمى', required=1)
     code = fields.Char(string='الرمز')
     type_id = fields.Many2one('salary.grid.type', string='الصنف')
     job_create_id = fields.Many2one('hr.job.create', string=' وظائف')
@@ -52,7 +52,7 @@ class SalaryGridDegree(models.Model):
     _order = 'sequence'
     _description = u'الدرجة'
 
-    name = fields.Char(string='الإسم', required=1)
+    name = fields.Char(string='المسمى', required=1)
     code = fields.Char(string='الرمز')
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة')
     sequence = fields.Integer(string='الترتيب')

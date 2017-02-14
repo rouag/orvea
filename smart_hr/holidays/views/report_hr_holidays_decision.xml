@@ -19,7 +19,7 @@
 							</p>
 							<br></br>
 							<p align="left">
-								الموضوع: مباشرة عودة بعد
+								الموضوع: مباشرة  بعد
 								<span t-field="o.holidays[0].holiday_status_id.name" />
 
 								<br></br>

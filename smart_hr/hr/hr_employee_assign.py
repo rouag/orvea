@@ -34,8 +34,11 @@ class HrEmployeeCommissioning(models.Model):
     governmental_entity = fields.Many2one('res.partner', string=u'الجهة الحكومية', domain=[('company_type', '=', 'governmental_entity')], default=_get_default_company)
     task_ids = fields.One2many('hr.employee.task', 'comm_id', string=u'المهام')
     note = fields.Text(string=u'ملاحظات')
-    current_city = fields.Many2one('res.city', string=u'المدينة', related='employee_id.dep_city', required=1)
-    city = fields.Many2one('res.city', string=u'المدينة', required=1)
+    current_city = fields.Many2one('res.city', string=u'مقر الموظف', related='employee_id.dep_city', required=1)
+    city = fields.Many2one('res.city', string=u'مقر التكليف', required=1)
+    decision_number = fields.Char(string=u"رقم القرار", required=1, readonly=1, states={'new': [('readonly', 0)]})
+    decision_date = fields.Date(string=u'تاريخ القرار', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    decision_file = fields.Binary(string=u'نسخة القرار', required=1, readonly=1, states={'new': [('readonly', 0)]})
 
     @api.multi
     @api.depends('date_from', 'duration')

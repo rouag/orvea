@@ -135,9 +135,26 @@ class HrAuthorizationType(models.Model):
 class HrAuthorizationStockSetting(models.Model):
     _name = 'hr.authorization.stock.setting'
     _description = u'اعداد رصيد الاستئذان‬ات'
-
+    
+    
+    name = fields.Char(string='name', default=u'اعداد رصيد الاستئذان‬ات')
     hours_stock = fields.Float(string='عدد‬ ساعات‬ الاستئذان‬ المسموح‬ بها‬ شهريا')
-
+    
+    
+    @api.multi
+    def button_setting(self):
+        auth_stock_setting = self.env['hr.authorization.stock.setting'].search([], limit=1)
+        if auth_stock_setting:
+            value = {
+                'name': u'رصيد الاستئذان‬ات',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': 'hr.authorization.stock.setting',
+                'view_id': False,
+                'type': 'ir.actions.act_window',
+                'res_id': auth_stock_setting.id,
+            }
+            return value
 
 class HrEmployeeAuthorizationHistory(models.Model):
     _name = 'hr.employee.authorization.history'

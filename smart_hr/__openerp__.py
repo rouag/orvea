@@ -8,7 +8,7 @@
     'description':
         """
         """,
-    'depends': ['hr', 'hr_holidays', 'odoo_rtl', 'web_readonly_bypass', 'hr_payroll', 'hr_attendance', 'smart_base', 'survey', 'hr_appraisal','website'],
+    'depends': ['hr', 'hr_holidays', 'odoo_rtl', 'web_readonly_bypass', 'hr_payroll', 'hr_attendance', 'smart_base', 'survey', 'hr_appraisal', 'website'],
     'data': [
 
 
@@ -17,11 +17,13 @@
         'security/ir.model.access.csv',
         'payroll/security/payroll_security.xml',
         'payroll/security/ir.model.access.csv',
+        'hr_scholarship/security/hr_security.xml',
+        'hr_scholarship/security/ir.model.access.csv',
 
         'hr_menu.xml',
         'data/sequences.xml',
         'data/configurations.xml',
-        'data/hr_holidays_data.xml',
+            'holidays/data/hr_holidays_data.xml',
         'data/schedulers.xml',
         'data/res_city_data.xml',
         'data/hr_termination_data.xml',
@@ -68,6 +70,9 @@
         'hr/view/hr_contract_inherit_view.xml',
         'hr/view/hr_contract_item_view.xml',
         'hr/views/report_hr_contract.xml',
+        'hr/views/report_hr_employee_lend.xml',
+        'hr/views/report_hr_employee_transfert.xml',
+        'hr/views/report_hr_employee_assign.xml',
         'hr/views/report.xml',
         'hr/data/hr_department_type_data.xml',
         'hr/data/hr_data.xml',
@@ -78,11 +83,12 @@
         'hr/view/hr_employee_comm_view.xml',
         "hr_promotions/views/report_promotion.xml",
         'hr/view/hr_employee_task_view.xml',
+        
+        
         'views/report_salary_grid.xml',
         'views/report_medical_examination.xml',
         'views/report_order_enquiry.xml',
-        'views/hr_holidays_report.xml',
-        'views/report_hr_holidays_decision.xml',
+     
         'views/report_hr_decision.xml',
         'views/report.xml',
         'views/templates.xml',
@@ -97,9 +103,11 @@
         'report/hr_termination_report.xml',
         'views/employee_situation_order_report.xml',
         'wizards/view/hr_refuse_wizard_view.xml',
-
-
         'view/hr_decision_appoint.xml',
+
+
+
+
 #         'view/hr_promotion.xml',
         'view/hr_training.xml',
         'view/hr_training_setting.xml',
@@ -107,9 +115,7 @@
         'view/res_partner.xml',
         'view/judicial_precedent.xml',
         'view/recruiter.xml',
-        'view/hr_holidays.xml',
-        'view/hr_holidays_cancellation_view.xml',
-        'view/hr_holidays_decision_view.xml',
+
         'view/hr_employee_education_level.xml',
         'view/hr_assessment_view.xml',
         'view/hr_assessment_point_view.xml',
@@ -118,15 +124,13 @@
         'view/hr_suspension_view.xml',
         'view/hr_suspension_end_view.xml',
         'view/external_autorities.xml',
-        'view/holiday_entitlement_types.xml',
-        'view/hr_holidays_extension.xml',
         'view/religion.xml',
         'view/courses_follow_up.xml',
         'view/hr_direct_appoint_view.xml',
         'view/hr_employee_functional_card.xml',
         'view/res_users.xml',
         'view/employee_situation_order.xml',
-        'view/hr_scholarship.xml',  # sanction
+          # sanction
         'sanction/security/ir.model.access.csv',
         'sanction/security/sanction_security.xml',
         'sanction/wizard/wizard_sanction_action.xml',
@@ -153,6 +157,7 @@
         'payroll/view/hr_increase_view.xml',
         'view/hr.xml',
         'payroll/views/report.xml',
+       
         # الحضور والإنصراف
         'attendance/security/attendance_security.xml',
         'attendance/security/ir.model.access.csv',
@@ -176,6 +181,7 @@
         'attendance/views/monthly_summary_report.xml',
         'attendance/views/monthly_summary_report_all.xml',
         'attendance/views/report.xml',
+        
         # تصنيف الوظائف
         'job/view/hr_job_setting.xml',
         'job/view/hr_skils_job.xml',
@@ -188,8 +194,14 @@
         'holidays/views/resume_holidays_report.xml',
         'holidays/views/resume_normal_holidays_report.xml',
         'holidays/views/report.xml',
+        'holidays/view/hr_holidays.xml',
+        'holidays/view/hr_holidays_cancellation_view.xml',
+        'holidays/view/hr_holidays_decision_view.xml',
+        'holidays/view/holiday_entitlement_types.xml',
+        'holidays/view/hr_holidays_extension.xml',
+        'holidays/views/hr_holidays_report.xml',
+        'holidays/views/report_hr_holidays_decision.xml',
 
-        # apprasal menu
         # التقييم والإختبار
         'hr_appraisal/view/hr_appraisal_menu.xml',
         'hr_appraisal/view/hr_appraisal_view.xml',
@@ -200,23 +212,32 @@
         'hr_promotions/view/hr_employee_promotion_view.xml',
 
         # deputation
-        'deputation/data/data.xml',
+        'deputation/security/hr_security.xml',
         'deputation/security/ir.model.access.csv',
+        'deputation/data/data.xml',
         'deputation/view/hr_deputation_setting.xml',
         'deputation/view/hr_deputation_view.xml',
         'deputation/view/transport_decision_view.xml',
         'deputation/views/deputation_report.xml',
         'deputation/views/report.xml',
-        #overtime
+        # overtime
         'overtime/data/data.xml',
         'overtime/security/ir.model.access.csv',
         'overtime/view/hr_overtime_view.xml',
         'overtime/view/hr_overtime_setting.xml',
         'overtime/views/overtime_report.xml',
         'overtime/views/report.xml',
-          
-        
-        #'hr_survey/views/website_templates.xml',
+        # hr_scholarship
+        'hr_scholarship/data/sequences.xml',
+        'hr_scholarship/views/report.xml',
+        'hr_scholarship/data/scholarship_data.xml',
+        'hr_scholarship/views/report_hr_scholarship_decision.xml',
+        'hr_scholarship/view/hr_scholarship.xml',
+        'hr_scholarship/view/hr_scholarship_decision_view.xml',
+        'hr_scholarship/wizards/view/hr_scholarship_succeed_wizard.xml',
+        'hr_scholarship/views/hr_scholarship_extension_report.xml',
+
+        # 'hr_survey/views/website_templates.xml',
 
     ],
     'auto_install': False,

@@ -9,9 +9,6 @@ from . import res_partner
 from . import judicial_precedent
 from . import recruiter
 
-from . import hr_holidays
-from . import hr_holidays_cancellation
-from . import hr_holidays_decision
 
 from . import hr_assessment
 from . import hr_assessment_point
@@ -29,7 +26,6 @@ from . import hr_decision
 from . import hierarchy_level
 
 from . import external_authorities
-from . import hr_holidays_extension
 
 from . import religion
 
@@ -41,5 +37,3 @@ from . import hr_direct_appoint
 from . import hr_employee_functional_card
 from . import hr_employee_create_users
 from . import employee_situation_order
-from . import hr_scholarship
-

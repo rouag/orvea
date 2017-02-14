@@ -33,7 +33,9 @@
 						<button name="action_refused" string="رفض" type="object"
 							groups="smart_hr.group_hr_personnel_officer_commissioning"
 							states="pm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
+						
+						<button name="%(hr_employee_assign_report)d" string="طباعة القرار"
+							type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
 						<field name="state" widget="statusbar" statusbar_visible="new,pm,accept,done,refused" />
 					</header>
 					<sheet>
@@ -54,6 +56,9 @@
 								<field name="employee_id" options='{"no_open": True, "no_create": True}' />
 								<field name="governmental_entity" options='{"no_open": True, "no_create": True}'
 									attrs="{'invisible':[('comm_type', '!=', %(data_hr_commissioning_type_02)d)], 'required':[('comm_type', '=', %(data_hr_commissioning_type_02)d)]}" />
+									<field name="decision_number" />
+								    <field name="decision_date" />
+								    <field name="decision_file" />
 							</group>
 							<group>
 								<field name="comm_type" options='{"no_open": True, "no_create": True}' />
@@ -62,13 +67,14 @@
 							<field name="note" />
 						</group>
 						<field name="task_ids" widget="many2many"
-							domain="[('state', '=', 'done'), ('governmental_entity', '=', governmental_entity)]">
+							domain="[('state', '=', 'done'), ('governmental_entity', '=', governmental_entity), ('employee_id', '=', employee_id">
 							<tree editable="bottom">
 								<field name="name" readonly="1" />
 								<field name="date_from" readonly="1" />
 								<field name="duration" readonly="1" />
 								<field name="date_to" readonly="1" />
 								<field name="governmental_entity" readonly="1" />
+								<field name="employee_id" invisible="1" />
 							</tree>
 						</field>
 					</sheet>

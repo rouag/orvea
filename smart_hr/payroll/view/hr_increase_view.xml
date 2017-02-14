@@ -45,7 +45,7 @@
 					</header>
 					<sheet>
 						<group string="قائمة الموظفين المستثنين من العلاوة" states="draft,pim" />
-						<group string="نسبة العلاوة لكل موظف" states="hrm,pim2" />
+						<group string="الموظفين المستحقين للعلاوة" states="hrm,pim2" />
 						<group>
 							<group>
 								<field name="name" invisible="1" />
