@@ -586,3 +586,34 @@ msgstr "المرجع الداخلي"
 #: model:ir.model.fields,field_description:base.field_res_users_supplier
 msgid "Is a Vendor"
 msgstr "هو بائع"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_partner_form
+#: model:ir.ui.view,arch_db:base.view_partner_simple_form
+msgid "Tags..."
+msgstr "الوسوم..."
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_company_form
+#: model:ir.ui.view,arch_db:base.view_partner_address_form
+#: model:ir.ui.view,arch_db:base.view_partner_form
+#: model:ir.ui.view,arch_db:base.view_res_bank_form
+msgid "ZIP"
+msgstr "الرمز البريدي"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_partner_form
+msgid "internal note..."
+msgstr "مذكرة داخلية ..."
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_base_language_install
+msgid "Load"
+msgstr "حمل"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_company_form
+#: model:ir.ui.view,arch_db:base.view_partner_address_form
+#: model:ir.ui.view,arch_db:base.view_partner_form
+msgid "e.g. www.odoo.com"
+msgstr ""
