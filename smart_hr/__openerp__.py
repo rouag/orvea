@@ -17,8 +17,8 @@
         'security/ir.model.access.csv',
         'payroll/security/payroll_security.xml',
         'payroll/security/ir.model.access.csv',
-        'hr_scholarship/security/ir.model.access.csv',
         'hr_scholarship/security/hr_security.xml',
+        'hr_scholarship/security/ir.model.access.csv',
 
         'hr_menu.xml',
         'data/sequences.xml',
