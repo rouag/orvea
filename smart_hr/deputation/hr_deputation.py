@@ -35,14 +35,12 @@ class HrDeputation(models.Model):
     date_start = fields.Date(string=u'من')
     date_end = fields.Date(string=u'الى')
     note = fields.Text(string=u'الملاحظات', readonly=1, states={'draft': [('readonly', 0)]})
-    
     ministre_report = fields.Boolean(string='  قرار من الوزير المختص',default=False)
-   
     decision_number = fields.Char(string='رقم القرار')
     decision_date = fields.Date(string='تاريخ القرار', default=fields.Datetime.now(), readonly=1)
     file_decision = fields.Binary(string='نسخة من الحالة الميزانية')
     file_decision_name = fields.Char(string='نسخة من الحالة الميزانية')
-    
+
     lettre_number = fields.Char(string='رقم خطاب التغطية')
     lettre_date = fields.Date(string='تاريخ خطاب التغطية', default=fields.Datetime.now(), readonly=1)
     file_lettre = fields.Binary(string='نسخة خطاب التغطية')
