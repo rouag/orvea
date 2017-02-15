@@ -72,7 +72,7 @@
 									</td>
 									<td width="23.75%">
 										<t t-if="job.update_date">
-											<span t-esc="job.update_date" />
+											<span t-esc="get_hijri_date(job.update_date, '-')" />
 										</t>
 										<t t-if="not job.update_date">
 											<span>-</span>
@@ -87,13 +87,13 @@
 										<strong>تاريخ إحداث الوظيفة:</strong>
 									</td>
 									<td width="23.75%">
-										<span t-esc="get_job_create_date(job)" />
+										<span t-esc="get_hijri_date(get_job_create_date(job), '-')" />
 									</td>
 									<td width="23.75%">
 										<strong>تاريخ شغورها:</strong>
 									</td>
 									<td width="23.75%">
-										<span t-esc="job.occupied_date" />
+										<span t-esc="get_hijri_date(job.occupied_date, '-')" />
 									</td>
 								</tr>
 								<tr>
@@ -132,7 +132,7 @@
 									</td>
 									<td width="71.25%" colspan="3">
 										<t t-if="decision_appoint">
-											<spant t-esc="decision_appoint.employee_id.education_level.name" />
+											<spant t-esc="decision_appoint.employee_id.education_level_id.name" />
 										</t>
 									</td>
 
@@ -227,10 +227,10 @@
 										<span t-esc="line.job_id.grade_id.name" />
 									</td>
 									<td width="23.75%">
-										<span t-esc="line.date_hiring" />
+										<span t-esc="get_hijri_date(line.date_hiring, '-')" />
 									</td>
 									<td width="23.75%">
-										<span t-esc="line.date_hiring_end" />
+										<span t-esc="get_hijri_date(line.date_hiring_end, '-')" />
 									</td>
 								</tr>
 								<tr>

@@ -7,7 +7,6 @@
 		<field name="arch" type="xml">
 			<form>
 				<group col="2" string="الوظيفة">
-					<field name="job_create_id" options='{"no_open": True, "no_create": True}' />
 					<field name="job_create_line_id" options='{"no_open": True, "no_create": True}' />
 				</group>
 				<footer>

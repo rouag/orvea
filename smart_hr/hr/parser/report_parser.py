@@ -5,7 +5,6 @@ from openerp.report import report_sxw
 from openerp import fields
 from dateutil.relativedelta import relativedelta
 from umalqurra.hijri_date import HijriDate
-from openerp import api
 
 
 class EmployeeTransfert(report_sxw.rml_parse):
