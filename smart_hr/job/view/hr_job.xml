@@ -45,7 +45,7 @@
 							statusbar_visible="unoccupied,occupied,reserved,cancel" />
 					</header>
 					<sheet>
-					<group col="2">
+						<group col="2">
 							<group>
 								<field name="name" string="المسمى الوظيفي" />
 								<field name="employee" attrs="{'invisible': [('state','!=', 'occupied')]}" />
@@ -118,10 +118,11 @@
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
 				<tree string="إحداث وظائف" delete='0'>
-					<field name="name" string="مسمى الطلب"/>
+					<field name="name" string="مسمى الطلب" />
 					<field name="speech_number" />
 					<field name="speech_date" />
-					<field name="state"  string="الحالة"/>
+					<field name="members_job" />
+					<field name="state" string="الحالة" />
 				</tree>
 			</field>
 		</record>
@@ -147,7 +148,7 @@
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_refuse" string="رفض" type="object"
 							groups="smart_hr.group_budget_managment" states="budget_external" />
-						
+
 						<button name="action_done" string="موافقة" type="object"
 							groups="smart_hr.group_job_external_managment" states="hrm" />
 
@@ -162,13 +163,14 @@
 							<group>
 								<field name="employee_id" />
 								<field name="name" />
+								<field name="members_job" />
 								<field name="speech_number"
 									attrs="{'invisible':[('state', 'not in', ['budget_external','hrm','done'])],'required':[('state','=','budget_external')], 'readonly':[('state', 'in', ['hrm','done'])]}" />
 								<field name="speech_date"
 									attrs="{'invisible':[('state', 'not in', ['budget_external','hrm','done'])],'required':[('state','=','budget_external')], 'readonly':[('state', 'in', ['hrm','done'])]}" />
 								<field name="speech_file" filename="speech_file_name"
 									attrs="{'invisible':[('state', 'not in', ['budget_external','hrm','done'])],'required':[('state','=','budget_external')], 'readonly':[('state', 'in', ['hrm','done'])]}" />
-								</group>
+							</group>
 							<group>
 								<field name="decision_number" />
 								<field name="decision_date" />
@@ -177,8 +179,8 @@
 							</group>
 						</group>
 						<group col="6">
-							<field name="general_id" domain="[('group_type', '=', 'general')]" required="1"
-								attrs="{'readonly':[('state', '!=', 'new')]}" />
+							<field name="general_id" domain="[('group_type', '=', 'general')]"
+								required="1" attrs="{'readonly':[('state', '!=', 'new')]}" />
 							<field name="specific_id" required="1"
 								domain="[('parent_id', '=', general_id),('group_type', '=', 'spicific')]"
 								attrs="{'readonly':[('state', '!=', 'new')]}" />
@@ -187,9 +189,12 @@
 								attrs="{'readonly':[('state', '!=', 'new')]}" />
 						</group>
 
-						<field name="line_ids" string=" الوظائف" attrs="{'readonly':[('state', '!=', 'new')]}">
+						<field name="line_ids" string=" الوظائف"
+							attrs="{'readonly':[('state', '!=', 'new')]}">
 							<tree editable="bottom">
-								<field name="name" options='{"no_open": True, "no_create": True}' string="المسمى الوظيفي"/>
+								<field name="job_create_id" invisible="1" />
+								<field name="name" options='{"no_open": True, "no_create": True}'
+									string="المسمى الوظيفي"/>
 								<field name="job_number" />
 								<field name="number" readonly="1" />
 								<field name="type_id" />
@@ -218,7 +223,7 @@
 			<field name="view_mode">tree,form</field>
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
-		
+
 		<menuitem id="hr_job_create_menu" name="إحداث وظائف"
 			sequence="10" parent="hr_root_job" action="action_hr_job_create" />
 
@@ -286,7 +291,7 @@
 						</group>
 						<group col="2">
 							<group>
-	
+
 								<field name="employee_id" />
 								<field name="fiscal_year" />
 								<field name="source_location" />
@@ -297,33 +302,30 @@
 								<field name="out_speech_file" filename="in_speech_file_name"
 									attrs="{'invisible':[('state', 'not in', ['communication','external','hrm2','done'])],'required':[('state','=','communication')], 'readonly':[('state', 'in', ['external','hrm2','done'])]}" />
 							</group>
-							
+
 							<group>
-								<!-- 
-								<field name="decision_number" />
-								<field name="decision_date" />
-								<field name="decision_file" />
-								 -->
+								<!-- <field name="decision_number" /> <field name="decision_date" 
+									/> <field name="decision_file" /> -->
 								<field name="speech_number" filename="speech_file_name"
 									attrs="{'invisible':[('state', 'not in', ['hrm1','communication','external','hrm2','done'])],'required':[('state','=','hrm1')], 'readonly':[('state', 'in', ['communication','external','hrm2','done'])]}" />
 								<field name="speech_date"
 									attrs="{'invisible':[('state', 'not in', ['hrm1','communication','external','hrm2','done'])],'required':[('state','=','hrm1')], 'readonly':[('state', 'in', ['communication','external','hrm2','done'])]}" />
 								<field name="speech_file"
 									attrs="{'invisible':[('state', 'not in', ['hrm1','communication','external','hrm2','done'])],'required':[('state','=','hrm1')], 'readonly':[('state', 'in', ['communication','external','hrm2','done'])]}" />
-								
+
 								<field name="in_speech_number"
 									attrs="{'invisible':[('state', 'not in', ['external','hrm2','done'])],'required':[('state','=','external')], 'readonly':[('state', 'in', ['hrm2','done'])]}" />
 								<field name="in_speech_date"
 									attrs="{'invisible':[('state', 'not in', ['external','hrm2','done'])],'required':[('state','=','external')], 'readonly':[('state', 'in', ['hrm2','done'])]}" />
 								<field name="in_speech_file" filename="in_speech_file_name"
 									attrs="{'invisible':[('state', 'not in', ['external','hrm2','done'])],'required':[('state','=','external')], 'readonly':[('state', 'in', ['hrm2','done'])]}" />
-									
+
 							</group>
-							
+
 						</group>
 						<group col="6">
-							<field name="general_id" domain="[('group_type', '=', 'general')]" required="1"
-								attrs="{'readonly':[('state', '!=', 'new')]}" />
+							<field name="general_id" domain="[('group_type', '=', 'general')]"
+								required="1" attrs="{'readonly':[('state', '!=', 'new')]}" />
 							<field name="specific_id" required="1"
 								domain="[('parent_id', '=', general_id),('group_type', '=', 'spicific')]"
 								attrs="{'readonly':[('state', '!=', 'new')]}" />
@@ -332,7 +334,8 @@
 								attrs="{'readonly':[('state', '!=', 'new')]}" />
 						</group>
 
-						<field name="line_ids" string=" الوظائف" attrs="{'readonly':[('state', '!=', 'new')]}">
+						<field name="line_ids" string=" الوظائف"
+							attrs="{'readonly':[('state', '!=', 'new')]}" >
 							<tree editable="bottom">
 								<field name="name" options='{"no_open": True, "no_create": True}' />
 								<field name="number" readonly="1" />
@@ -341,7 +344,7 @@
 								<field name="department_id" />
 								<field name="grade_id" options='{"no_open": True, "no_create": True}' />
 								<field name="job_number" />
-								
+
 							</tree>
 						</field>
 					</sheet>
@@ -407,7 +410,7 @@
 						<button name="action_refuse" string="رفض" type="object"
 							groups="smart_hr.group_budget_communication" states="communication_external"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						
+
 						<button name="action_done" string="إلغاء الوظائف" type="object"
 							groups="smart_hr.group_hr_personnel_officer_jobs" states="hrm2" />
 
@@ -427,16 +430,21 @@
 									attrs="{'invisible':[('state', 'not in', ['hrm1','communication_external','hrm2','done'])],'required':[('state','=','hrm1')], 'readonly':[('state', '!=', 'hrm1')]}" />
 								<field name="speech_file" filename="speech_file_name"
 									attrs="{'invisible':[('state', 'not in', ['hrm1','communication_external','hrm2','done'])],'required':[('state','=','hrm1')], 'readonly':[('state', '!=', 'hrm1')]}" />
-								
-								<field name="decision_number" attrs="{'invisible':[('state', 'not in', ['communication_external','hrm2','done'])], 'readonly':[('state', 'in', ['hrm2','done'])]}" />
-								<field name="decision_date" attrs="{'invisible':[('state', 'not in', ['communication_external','hrm2','done'])], 'readonly':[('state', 'in', ['hrm2','done'])]}" />
-								<field name="decision_file" attrs="{'invisible':[('state', 'not in', ['communication_external','hrm2','done'])], 'readonly':[('state', 'in', ['hrm2','done'])]}" />
-								<!-- <field name="out_speech_number"
-									attrs="{'invisible':[('state', 'not in', ['communication','external','hrm2','done'])],'required':[('state','=','communication')], 'readonly':[('state', 'in', ['external','hrm2','done'])]}" />
-								<field name="out_speech_date"
-									attrs="{'invisible':[('state', 'not in', ['communication','external','hrm2','done'])],'required':[('state','=','communication')], 'readonly':[('state', 'in', ['external','hrm2','done'])]}" />
-								<field name="out_speech_file" filename="out_speech_file_name"
-									attrs="{'invisible':[('state', 'not in', ['communication','external','hrm2','done'])],'required':[('state','=','communication')], 'readonly':[('state', 'in', ['external','hrm2','done'])]}" /> -->
+
+								<field name="decision_number"
+									attrs="{'invisible':[('state', 'not in', ['communication_external','hrm2','done'])], 'readonly':[('state', 'in', ['hrm2','done'])]}" />
+								<field name="decision_date"
+									attrs="{'invisible':[('state', 'not in', ['communication_external','hrm2','done'])], 'readonly':[('state', 'in', ['hrm2','done'])]}" />
+								<field name="decision_file"
+									attrs="{'invisible':[('state', 'not in', ['communication_external','hrm2','done'])], 'readonly':[('state', 'in', ['hrm2','done'])]}" />
+								<!-- <field name="out_speech_number" attrs="{'invisible':[('state', 
+									'not in', ['communication','external','hrm2','done'])],'required':[('state','=','communication')], 
+									'readonly':[('state', 'in', ['external','hrm2','done'])]}" /> <field name="out_speech_date" 
+									attrs="{'invisible':[('state', 'not in', ['communication','external','hrm2','done'])],'required':[('state','=','communication')], 
+									'readonly':[('state', 'in', ['external','hrm2','done'])]}" /> <field name="out_speech_file" 
+									filename="out_speech_file_name" attrs="{'invisible':[('state', 'not in', 
+									['communication','external','hrm2','done'])],'required':[('state','=','communication')], 
+									'readonly':[('state', 'in', ['external','hrm2','done'])]}" /> -->
 							</group>
 							<group>
 								<field name="destination_location" />
@@ -446,17 +454,21 @@
 									attrs="{'invisible':[('state', 'not in', ['communication_external','hrm2','done'])],'required':[('state','=','communication_external')], 'readonly':[('state', 'in', ['hrm2','done'])]}" />
 								<field name="in_speech_file" filename="in_speech_file_name"
 									attrs="{'invisible':[('state', 'not in', ['communication_external','hrm2','done'])],'required':[('state','=','communication_external')], 'readonly':[('state', 'in', ['hrm2','done'])]}" />
-								<field name="decision_col_const_number" attrs="{'invisible':[('state', 'not in', ['hrm2','done'])], 'readonly':[('state', '!=', 'hrm2')], 'required':[('state','=','hrm2')]}" />
-								<field name="decision_col_const_date" attrs="{'invisible':[('state', 'not in', ['hrm2','done'])], 'readonly':[('state', '!=', 'hrm2')], 'required':[('state','=','hrm2')]}" />
-								<field name="decision_col_const_file" attrs="{'invisible':[('state', 'not in', ['hrm2','done'])], 'readonly':[('state', '!=', 'hrm2')], 'required':[('state','=','hrm2')]}" />
+								<field name="decision_col_const_number"
+									attrs="{'invisible':[('state', 'not in', ['hrm2','done'])], 'readonly':[('state', '!=', 'hrm2')], 'required':[('state','=','hrm2')]}" />
+								<field name="decision_col_const_date"
+									attrs="{'invisible':[('state', 'not in', ['hrm2','done'])], 'readonly':[('state', '!=', 'hrm2')], 'required':[('state','=','hrm2')]}" />
+								<field name="decision_col_const_file"
+									attrs="{'invisible':[('state', 'not in', ['hrm2','done'])], 'readonly':[('state', '!=', 'hrm2')], 'required':[('state','=','hrm2')]}" />
 							</group>
 						</group>
-						<field name="line_ids" string="إلغاء وظائف" attrs="{'readonly':[('state', '!=', 'new')]}">
+						<field name="line_ids" string="إلغاء وظائف"
+							attrs="{'readonly':[('state', '!=', 'new')]}">
 							<tree editable="bottom">
 								<field name="job_id" domain="[('state','=','unoccupied')]" />
 								<field name="job_number" />
 								<field name="job_name_code" string="الرمز" />
-								<field name="type_id" readonly="1"/>
+								<field name="type_id" readonly="1" />
 								<field name="department_id" />
 								<field name="grade_id" />
 							</tree>
@@ -514,20 +526,20 @@
 							groups="smart_hr.group_update_job" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_refuse" string="رفض" type="object"
-							groups="smart_hr.group_update_job" states="waiting" context="{'refused_from_state':'waiting'}"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_budget" string="حجز الوظائف"
-							type="object" groups="smart_hr.group_hr_personnel_officer_jobs" states="hrm1" />
-						
+							groups="smart_hr.group_update_job" states="waiting"
+							context="{'refused_from_state':'waiting'}" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_budget" string="حجز الوظائف" type="object"
+							groups="smart_hr.group_hr_personnel_officer_jobs" states="hrm1" />
+
 						<button name="action_hrm2" string="موافقة" type="object"
 							groups="smart_hr.group_budget_civil_service" states="budget_external" />
 						<button name="action_communication" string="رفض" type="object"
-							groups="smart_hr.group_budget_civil_service" states="budget_external" context="{'refused_from_state':'budget_external'}"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						
+							groups="smart_hr.group_budget_civil_service" states="budget_external"
+							context="{'refused_from_state':'budget_external'}" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
 						<button name="action_job_unreserve" string="فك حجز الوظائف"
-							type="object" groups="smart_hr.group_hr_personnel_officer_jobs" states="hrm2"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							type="object" groups="smart_hr.group_hr_personnel_officer_jobs"
+							states="hrm2" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<field name="state" widget="statusbar"
 							statusbar_visible="new,waiting,hrm1,budget_external,hrm2,done,refused" />
 					</header>
@@ -557,7 +569,8 @@
 							</group>
 						</group>
 
-						<field name="job_update_ids" string=" تحوير‬  وظائف"  attrs="{'readonly':[('state', '!=', 'new')]}">
+						<field name="job_update_ids" string=" تحوير‬  وظائف"
+							attrs="{'readonly':[('state', '!=', 'new')]}">
 							<tree editable="bottom">
 								<field name="job_id" />
 								<field name="job_number" />
@@ -620,25 +633,26 @@
 							groups="smart_hr.group_move_job_department" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_refuse" string="رفض" type="object"
-							groups="smart_hr.group_move_job_department" states="waiting" context="{'refused_from_state':'waiting'}"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_budget" string="حجز الوظائف"
-							type="object" groups="smart_hr.group_hr_personnel_officer_jobs" states="hrm1" />
+							groups="smart_hr.group_move_job_department" states="waiting"
+							context="{'refused_from_state':'waiting'}" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_budget" string="حجز الوظائف" type="object"
+							groups="smart_hr.group_hr_personnel_officer_jobs" states="hrm1" />
 						<button name="action_communication" string="موافقة" type="object"
 							groups="smart_hr.group_budget_managment" states="budget"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						
+
 						<button name="action_hrm2" string="موافقة" type="object"
 							groups="smart_hr.group_budget_comm_service" states="communication_external"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_refuse" string="رفض" type="object"
-							groups="smart_hr.group_budget_comm_service" states="communication_external" context="{'refused_from_state':'communication_external'}"
+							groups="smart_hr.group_budget_comm_service" states="communication_external"
+							context="{'refused_from_state':'communication_external'}"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_job_unreserve" string="فك حجز الوظيفة"
-							type="object" groups="smart_hr.group_hr_personnel_officer_jobs" states="hrm2"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-							
+							type="object" groups="smart_hr.group_hr_personnel_officer_jobs"
+							states="hrm2" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
 						<field name="state" widget="statusbar"
 							statusbar_visible="new,waiting,hrm1,budget,communication_external,hrm2,done,refused" />
 					</header>
@@ -647,30 +661,30 @@
 							<field name="create_date" string="تاريخ الطلب" readonly="1" />
 						</group>
 						<group col="2">
-						<group >
-							<field name="employee_id" />
-							
-							<field name="out_speech_number"
-								attrs="{'invisible':[('state', 'not in', ['budget', 'communication_external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['communication_external', 'hrm2', 'done'])],'required':[('state','=','budget')]}" />
-							<field name="out_speech_date"
-								attrs="{'invisible':[('state', 'not in', ['budget','communication_external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['communication_external', 'hrm2', 'done'])],'required':[('state','=','budget')]}" />
-							<field name="out_speech_file" filename="out_speech_file_name"
-								attrs="{'invisible':[('state', 'not in', ['budget','communication_external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['communication_external', 'hrm2', 'done'])],'required':[('state','=','budget')]}" />
-							
-						</group>
-						<group>
-							<field name="move_raison"
-								attrs="{'readonly':[('state', '!=','new')],'required':[('state','=','new')]}" />
-							<field name="in_speech_number"
-								attrs="{'invisible':[('state', 'not in', ['communication_external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','communication_external')]}" />
-							<field name="in_speech_date"
-								attrs="{'invisible':[('state', 'not in', ['communication_external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','communication_external')]}" />
-							<field name="in_speech_file" filename="in_speech_file_name"
-								attrs="{'invisible':[('state', 'not in', ['communication_external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','communication_external')]}" />
-						</group>
+							<group>
+								<field name="employee_id" />
+
+								<field name="out_speech_number"
+									attrs="{'invisible':[('state', 'not in', ['budget', 'communication_external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['communication_external', 'hrm2', 'done'])],'required':[('state','=','budget')]}" />
+								<field name="out_speech_date"
+									attrs="{'invisible':[('state', 'not in', ['budget','communication_external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['communication_external', 'hrm2', 'done'])],'required':[('state','=','budget')]}" />
+								<field name="out_speech_file" filename="out_speech_file_name"
+									attrs="{'invisible':[('state', 'not in', ['budget','communication_external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['communication_external', 'hrm2', 'done'])],'required':[('state','=','budget')]}" />
+
+							</group>
+							<group>
+								<field name="move_raison"
+									attrs="{'readonly':[('state', '!=','new')],'required':[('state','=','new')]}" />
+								<field name="in_speech_number"
+									attrs="{'invisible':[('state', 'not in', ['communication_external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','communication_external')]}" />
+								<field name="in_speech_date"
+									attrs="{'invisible':[('state', 'not in', ['communication_external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','communication_external')]}" />
+								<field name="in_speech_file" filename="in_speech_file_name"
+									attrs="{'invisible':[('state', 'not in', ['communication_external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','communication_external')]}" />
+							</group>
 						</group>
 						<field name="job_movement_ids" string="نقل وظائف"
-							context="{'job_movement_ids': job_movement_ids}"  attrs="{'readonly':[('state', '!=', 'new')]}">
+							context="{'job_movement_ids': job_movement_ids}" attrs="{'readonly':[('state', '!=', 'new')]}">
 							<tree editable="bottom">
 								<field name="job_id" domain="[('state','=','unoccupied') ]" />
 								<field name="job_number" />
@@ -731,23 +745,23 @@
 						<button name="action_hrm1" string="موافقة" type="object"
 							groups="smart_hr.group_move_job_grade" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_refuse" string="رفض" type="object" context="{'refused_from_state':'waiting'}"
-							groups="smart_hr.group_move_job_grade" states="waiting"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_budget" string="حجز الوظائف"
-							type="object" groups="smart_hr.group_hr_personnel_officer_jobs" states="hrm1" />
-						
-						
+						<button name="action_refuse" string="رفض" type="object"
+							context="{'refused_from_state':'waiting'}" groups="smart_hr.group_move_job_grade"
+							states="waiting" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_budget" string="حجز الوظائف" type="object"
+							groups="smart_hr.group_hr_personnel_officer_jobs" states="hrm1" />
+
+
 						<button name="action_hrm2" string="موافقة" type="object"
 							groups="smart_hr.group_budget_managment" states="budget_external" />
-						<button name="action_refuse" string="رفض" type="object" context="{'refused_from_state':'budget_external'}"
-							groups="smart_hr.group_budget_managment" states="budget_external"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						
+						<button name="action_refuse" string="رفض" type="object"
+							context="{'refused_from_state':'budget_external'}" groups="smart_hr.group_budget_managment"
+							states="budget_external" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
 						<button name="action_job_unreserve" string="فك حجز الوظيفة"
-							type="object" groups="smart_hr.group_hr_personnel_officer_jobs" states="hrm2"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						
+							type="object" groups="smart_hr.group_hr_personnel_officer_jobs"
+							states="hrm2" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
 						<field name="state" widget="statusbar"
 							statusbar_visible="new,waiting,hrm1,budget_external,hrm2,done,refused" />
 					</header>
@@ -760,12 +774,16 @@
 								<field name="employee_id" />
 								<field name="move_date" />
 								<field name="fiscal_year" />
-								<!-- <field name="out_speech_number"
-									attrs="{'invisible':[('state', 'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" />
-								<field name="out_speech_date"
-									attrs="{'invisible':[('state', 'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" />
-								<field name="out_speech_file" filename="out_speech_file_name"
-									attrs="{'invisible':[('state', 'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" /> -->
+								<!-- <field name="out_speech_number" attrs="{'invisible':[('state', 
+									'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 
+									'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" 
+									/> <field name="out_speech_date" attrs="{'invisible':[('state', 'not in', 
+									['communication','external', 'hrm2', 'done'])],'readonly':[('state', 'in', 
+									['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" 
+									/> <field name="out_speech_file" filename="out_speech_file_name" attrs="{'invisible':[('state', 
+									'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 
+									'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" 
+									/> -->
 							</group>
 							<group>
 								<field name="decision_number" />
@@ -779,8 +797,8 @@
 									attrs="{'invisible':[('state', 'not in', ['budget_external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','budget_external')]}" />
 							</group>
 						</group>
-						<field name="job_movement_ids" context="{'operation':'scale_up'}" attrs="{'readonly':[('state', '!=', 'new')]}"
-							string=" الوظائف">
+						<field name="job_movement_ids" context="{'operation':'scale_up'}"
+							attrs="{'readonly':[('state', '!=', 'new')]}" string=" الوظائف">
 							<tree editable="bottom">
 								<field name="job_id" />
 								<field name="job_number" />
@@ -797,7 +815,7 @@
 							groups="base.group_user" />
 						<field name="message_ids" widget="mail_thread" />
 					</div>
-										<field name="in_speech_file_name" invisible="1" />
+					<field name="in_speech_file_name" invisible="1" />
 					<field name="out_speech_file_name" invisible="1" />
 				</form>
 			</field>
@@ -859,20 +877,20 @@
 						<button name="action_refuse" string="رفض" type="object"
 							groups="smart_hr.group_move_job_grade" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_budget" string="حجز الوظائف"
-							type="object" groups="smart_hr.group_hr_personnel_officer_jobs" states="hrm1" />
-						
-						
+						<button name="action_budget" string="حجز الوظائف" type="object"
+							groups="smart_hr.group_hr_personnel_officer_jobs" states="hrm1" />
+
+
 						<button name="action_hrm2" string="موافقة" type="object"
 							groups="smart_hr.group_budget_managment" states="budget_external" />
 						<button name="action_refuse" string="رفض" type="object"
 							groups="smart_hr.group_budget_managment" states="budget_external"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						
+
 						<button name="action_job_unreserve" string="فك حجز الوظيفة"
-							type="object" groups="smart_hr.group_hr_personnel_officer_jobs" states="hrm2"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						
+							type="object" groups="smart_hr.group_hr_personnel_officer_jobs"
+							states="hrm2" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
 						<field name="state" widget="statusbar"
 							statusbar_visible="new,waiting,hrm1,budget_external,hrm2,done,refused" />
 					</header>
@@ -885,12 +903,16 @@
 								<field name="employee_id" />
 								<field name="move_date" />
 								<field name="fiscal_year" />
-								<!-- <field name="out_speech_number"
-									attrs="{'invisible':[('state', 'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" />
-								<field name="out_speech_date"
-									attrs="{'invisible':[('state', 'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" />
-								<field name="out_speech_file" filename="out_speech_file_name"
-									attrs="{'invisible':[('state', 'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" /> -->
+								<!-- <field name="out_speech_number" attrs="{'invisible':[('state', 
+									'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 
+									'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" 
+									/> <field name="out_speech_date" attrs="{'invisible':[('state', 'not in', 
+									['communication','external', 'hrm2', 'done'])],'readonly':[('state', 'in', 
+									['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" 
+									/> <field name="out_speech_file" filename="out_speech_file_name" attrs="{'invisible':[('state', 
+									'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 
+									'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" 
+									/> -->
 							</group>
 							<group>
 								<field name="decision_number" />
@@ -903,8 +925,8 @@
 									attrs="{'invisible':[('state', 'not in', ['budget_external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','budget_external')]}" />
 							</group>
 						</group>
-						<field name="job_movement_ids" context="{'operation':'scale_down'}" attrs="{'readonly':[('state', '!=', 'new')]}"
-							string=" الوظائف">
+						<field name="job_movement_ids" context="{'operation':'scale_down'}"
+							attrs="{'readonly':[('state', '!=', 'new')]}" string=" الوظائف">
 							<tree editable="bottom">
 								<field name="job_id" />
 								<field name="job_number" />
@@ -1002,7 +1024,7 @@
 									attrs="{'readonly':[('state', '!=', 'new')],'required':[('state','=','new')]}" />
 								<field name="speech_file" filename="speech_file_name"
 									attrs="{'readonly':[('state', '!=', 'new')],'required':[('state','=','new')]}" />
-								
+
 							</group>
 							<group>
 								<field name="decision_number"
@@ -1013,7 +1035,8 @@
 									attrs="{'invisible':[('state', 'not in', ['hrm','done'])],'readonly':[('state', '=', 'done')],'required':[('state','=','hrm')]}" />
 							</group>
 						</group>
-						<field name="job_cancel_ids" string="إلغاء وظائف" attrs="{'readonly':[('state', '!=', 'new')]}">
+						<field name="job_cancel_ids" string="إلغاء وظائف"
+							attrs="{'readonly':[('state', '!=', 'new')]}">
 							<tree editable="bottom">
 								<field name="job_id" domain="[('state','=','unoccupied')]" />
 								<field name="type_id" />
@@ -1027,9 +1050,9 @@
 							groups="base.group_user" />
 						<field name="message_ids" widget="mail_thread" />
 					</div>
-					<field name="speech_file_name" invisible="1"/>
-					<field name="decision_file_name" invisible="1"/>
-					
+					<field name="speech_file_name" invisible="1" />
+					<field name="decision_file_name" invisible="1" />
+
 				</form>
 			</field>
 		</record>
