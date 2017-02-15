@@ -67,7 +67,7 @@
 							<field name="note" />
 						</group>
 						<field name="task_ids" widget="many2many"
-							domain="[('state', '=', 'done'), ('governmental_entity', '=', governmental_entity), ('employee_id', '=', employee_id">
+							domain="[('state', '=', 'done'), ('governmental_entity', '=', governmental_entity), ('employee_id', '=', employee_id)]">
 							<tree editable="bottom">
 								<field name="name" readonly="1" />
 								<field name="date_from" readonly="1" />

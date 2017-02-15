@@ -25,6 +25,14 @@ class HrSetting(models.Model):
     extend_lend_duration = fields.Integer(string=u'مدة تمديد الإعارة (باليوم)', default=365)
     # والتكليف‬‬
     assign_duration = fields.Integer(string=u'مدة والتكليف‬‬ (باليوم)', default=365)
+    # الرواتب
+    salary_proportion = fields.Float(string=u'نسبة الراتب (%)', default=100)
+    allowance_job_nature = fields.Many2one('hr.allowance.type', string=u'بدل طبيعة العمل')
+    allowance_proportion = fields.Float(string=u'نسبة البدل (%)', default=15)
+    allowance_deputation = fields.Many2one('hr.allowance.type', string=u'بدل إنتداب')
+    deputation_days = fields.Integer(string=u'عدد الايام', default=3)
+    allowance_deportation = fields.Many2one('hr.allowance.type', string=u'بدل ترحيل')
+    deportation_amount = fields.Float(string=u'المبلغ', default=0.0)
 
     @api.multi
     def button_setting(self):

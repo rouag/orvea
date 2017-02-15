@@ -117,7 +117,7 @@ class JobDescriptionReport(report_sxw.rml_parse):
         return False
 
     def _get_employee_job_decision_history(self, job):
-        hr_decision_appoint_ids = self.pool.get('hr.decision.appoint').search(self.cr, self.uid, [('employee_id', '=', job.employee.id), ('state', '=', 'done'), ('active', '=', False)])
+        hr_decision_appoint_ids = self.pool.get('hr.decision.appoint').search(self.cr, self.uid, [('employee_id', '=', job.employee.id), ('state', '=', 'done'), ('is_started', '=', True), ('state_appoint', '!=', 'active')])
         if hr_decision_appoint_ids:
             res = []
             hr_decision_appoints = self.pool.get('hr.decision.appoint').browse(self.cr, self.uid, hr_decision_appoint_ids)
