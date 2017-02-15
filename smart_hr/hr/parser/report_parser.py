@@ -5,6 +5,7 @@ from openerp.report import report_sxw
 from openerp import fields
 from dateutil.relativedelta import relativedelta
 from umalqurra.hijri_date import HijriDate
+from openerp import api
 
 
 class EmployeeTransfert(report_sxw.rml_parse):
@@ -13,6 +14,7 @@ class EmployeeTransfert(report_sxw.rml_parse):
         super(EmployeeTransfert, self).__init__(cr, uid, name, context=context)
         self.localcontext.update({
             'get_hijri_date': self._get_hijri_date,
+            'get_setting': self._get_setting,
         })
 
     def _get_hijri_date(self, date, separator):
@@ -25,6 +27,10 @@ class EmployeeTransfert(report_sxw.rml_parse):
             hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
             return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
         return None
+
+    def _get_setting(self):
+        setting_id = self.pool.get('hr.setting').search(self.cr, self.uid, [], limit=1)
+        return self.pool.get('hr.setting').browse(self.cr, self.uid, setting_id)
 
 
 class ReportEmployeeTransfert(osv.AbstractModel):
