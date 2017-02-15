@@ -103,7 +103,7 @@ class HrCandidates(models.Model):
     _description = u'المترشحين'
     _rec_name = 'employee_id'
 
-    employee_id = fields.Many2one('hr.employee', string=' إسم الموظف')
+    employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1)
     number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' الرقم الوظيفي')
     job_id = fields.Many2one(related='employee_id.job_id', store=True, readonly=True, string=' الوظيفة')
     department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string=' الادارة')
