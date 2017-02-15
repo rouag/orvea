@@ -38,7 +38,6 @@ class HrEmployeeTransfert(models.Model):
     governmental_entity = fields.Many2one('res.partner', string=u'الجهة الحكومية', domain=[('company_type', '=', 'governmental_entity')])
     desire_ids = fields.Many2many('hr.employee.desire', required=1, readonly=1, states={'new': [('readonly', 0)]})
     refusing_date = fields.Date(string=u'تاريخ الرفض', readonly=1)
-    # conflicted with
     # ‫المدنتية ‫الخدمة‬ ‫موافلقة‬
     speech_number = fields.Char(string=u'رقم الخطاب')
     speech_date = fields.Date(string=u'تاريخ الخطاب')
@@ -55,6 +54,18 @@ class HrEmployeeTransfert(models.Model):
                                        ], readonly=1, states={'new': [('readonly', 0)]}, default='internal_transfert', required=1, string=u'طبيعة النقل')
 
     transfert_periode_id = fields.Many2one('hr.employee.transfert.periode', string=u'فترة النقل', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    is_ended = fields.Boolean(string=u'انتهت', compute='_compute_is_ended')
+
+    @api.multi
+    def _compute_is_ended(self):
+        for rec in self:
+            # compute is_ended periode
+            print rec.is_ended
+            if rec.transfert_periode_id.date_to < datetime.today().strftime('%Y-%m-%d'):
+                rec.is_ended = True
+            else:
+                rec.is_ended = False
+            print rec.is_ended
 
     @api.multi
     @api.depends('new_specific_id', 'specific_id')
@@ -73,7 +84,7 @@ class HrEmployeeTransfert(models.Model):
             open_periodes = self.env['hr.employee.transfert.periode'].search([('date_to', '>=', datetime.today().strftime('%Y-%m-%d'))])
             if open_periodes:
                 open_periodes_ids = [rec.id for rec in open_periodes]
-                res['domain'] = {'transfert_periode_id': [('id', 'in', open_periodes_ids),('for_member', '=', False)]}
+                res['domain'] = {'transfert_periode_id': [('id', 'in', open_periodes_ids), ('for_member', '=', False)]}
                 return res
             else:
                 res['domain'] = {'transfert_periode_id': [('id', '=', -1)]}
@@ -120,8 +131,8 @@ class HrEmployeeTransfert(models.Model):
                 if fields.Date.from_string(testing_date_to) >= fields.Date.from_string(fields.Datetime.now()):
                     raise ValidationError(u"لايمكن طلب نقل خلال فترة التجربة")
         # ‫التترقية‬ ‫سنة‬ ‫إستلكمال‬
-#         if self.employee_id.promotion_duration < 1:
-#                         raise ValidationError(u"لايمكن طلب نقل خلال أقل من سنة منذ أخر ترقية")
+        if self.employee_id.promotion_duration < 1:
+                        raise ValidationError(u"لايمكن طلب نقل خلال أقل من سنة منذ أخر ترقية")
         # check desire_ids length from config
         if hr_config:
             if len(self.desire_ids) > hr_config.desire_number:
@@ -253,8 +264,8 @@ class HrEmployeeTransfertPeriode(models.Model):
     date_from = fields.Date(string=u'التاريخ من ', default=fields.Datetime.now())
     date_to = fields.Date(string=u'التاريخ الى')
     for_member = fields.Boolean(string=u'للأعضاء', default=False)
-    is_ended_compute = fields.Boolean(string=u'بدأت', compute='_compute_is_ended')
-    is_ended = fields.Boolean(string=u'بدأت')
+    is_ended_compute = fields.Boolean(string=u'انتهت', compute='_compute_is_ended')
+    is_ended = fields.Boolean(string=u'انتهت')
 
     @api.multi
     @api.depends('date_from')
