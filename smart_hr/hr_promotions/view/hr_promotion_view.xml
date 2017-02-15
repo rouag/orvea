@@ -332,7 +332,7 @@
 			<field name="domain">[('employee_id.user_id', '=', uid),('state', '=', 'employee_confirmed')]</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-
+		
 
 		<menuitem id="menu_my_promotion_affecteds" action="action_hr_promotion_employee_affected"
 			parent="hr_root_organisation_action" name="ترشيحاتي فالترقية"
