@@ -83,7 +83,7 @@ class HrJobName(models.Model):
     job_supervised_name_ids = fields.One2many('hr.job.name', 'job_supervisory_name_id', string=u'المسميات المشرف عليها', readonlly=1)
 
     job_description = fields.Text(string=u'متطلبات الوظيفية')
-    member_job =  fields.Boolean(string=u'وظيفية للاعضاء')
+    members_job =  fields.Boolean(string=u'وظيفية للاعضاء')
     
     _sql_constraints = [('number_uniq', 'unique(number)', 'رمز هذا المسمى موجود.')]
 
@@ -141,6 +141,7 @@ class HrJobCreate(models.Model):
     grade_ids = fields.One2many('salary.grid.grade', 'job_create_id', string='المرتبة')
     draft_budget = fields.Binary(string=u'مشروع الميزانية')
     draft_budget_name = fields.Char(string=u'مشروع الميزانية مسمى ')
+    members_job = fields.Boolean(string=u'وظيفية للاعضاء')
 
     @api.onchange('serie_id')
     def onchange_serie_id(self):
@@ -251,7 +252,12 @@ class HrJobCreateLine(models.Model):
             self.number = self.name.number
         if not self.name:
             name_ids = [rec .id for rec in self.job_create_id.serie_id.job_name_ids]
-            res['domain'] = {'name': [('id', 'in', name_ids)]}
+            if self.job_create_id.members_job is True:
+                new_name_ids = self.env['hr.job.name'].search([('members_job', '=', True), ('id', 'in', name_ids)])
+                res['domain'] = {'name': [('id', 'in', new_name_ids.ids)]}
+            else:
+                new_name_ids = self.env['hr.job.name'].search([('members_job', '=', False), ('id', 'in', name_ids)])
+                res['domain'] = {'name': [('id', 'in', new_name_ids.ids)]}
             return res
 
     @api.constrains('job_number', 'grade_id')
