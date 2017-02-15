@@ -10,17 +10,35 @@
 				<form string="محضر ترقية ">
 
 					<header>
+						<field name="emplyoee_state" invisible="1" />
 						<button name="button_confirmed" string="إرسال" type="object"
-							states="draft" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion,smart_hr.group_promotion_checker" />
+							states="draft" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion,smart_hr.group_promotion_checker" />
+						
 						<button name="button_job_promotion" string="إرسال" type="object"
-							states="job_promotion" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" groups="smart_hr.group_responsable_promotion"/>
-						<button name="button_transfer_minister" string="إرسال " groups="smart_hr.group_responsable_promotion"
-							type="object" states="manager" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_transfer_hrm" string="موافقة" type="object" groups="smart_hr.group_third_party_promotion"
-							states="minister" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_done" string="إعتماد " type="object" groups="smart_hr.group_promotion_specialiter,smart_hr.group_hrm"
+							states="job_promotion" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							groups="smart_hr.group_responsable_promotion" />
+							
+						
+							
+						<button name="button_transfer_employee" string=" إرسال للموظفين "
+							groups="smart_hr.group_responsable_promotion" type="object" attrs="{'invisible': ['|',('emplyoee_state', '=', True ),('state', '!=', 'manager' )]}" 
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							
+							
+							
+						<button name="button_transfer_minister" string="إرسال "
+							groups="smart_hr.group_responsable_promotion" type="object"
+							 confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" attrs="{'invisible': ['|',('emplyoee_state', '=', False ),('state', '!=','manager' )]}" />
+						
+						<button name="button_transfer_hrm" string="موافقة" type="object"
+							groups="smart_hr.group_third_party_promotion" states="minister"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="button_done" string="إعتماد " type="object"
+							groups="smart_hr.group_promotion_specialiter,smart_hr.group_hrm"
 							states="hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="%(action_hr_refuse_wizard)d" string="رفض" groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion,smart_hr.group_promotion_checker"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion,smart_hr.group_promotion_checker"
 							type="action"
 							attrs="{'invisible': ['|',('state', '=', 'draft'),('state', '=', 'done')]}"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
@@ -32,42 +50,46 @@
 							<field name="date" readonly="1" />
 							<field name="name" readonly="1"
 								attrs="{'invisible': [('state', '=', 'draft')]}" />
+							<field name="date_reponse_employee" 
+								attrs="{'invisible': [('state', '!=', 'manager')],'required' :[('state','=','manager')],'readonly' :[('emplyoee_state','=',True)]}"  />
 
 						</group>
-						<group >
-							<group string="بيانات الخطاب" 
+						<group>
+							<group string="بيانات الخطاب"
 								attrs="{'invisible':[('state','!=','minister'),('state','!=','hrm'),('state', '!=', 'done')]}">
 								<field name="speech_number"
 									attrs="{'invisible':[('state','!=','minister'),('state','!=','hrm'),('state', '!=', 'done')],'required' :[('state','=','minister')],'readonly' :[('state','!=','minister')]}" />
 								<field name="speech_date"
 									attrs="{'invisible':[('state','!=','minister'),('state','!=','hrm'),('state', '!=', 'done')],'required' :[('state','=','minister')],'readonly' :[('state','!=','minister')]}" />
 								<field name="speech_file"
-									attrs="{'invisible':[('state','!=','minister'),('state','!=','hrm'),('state', '!=', 'done')],'required' :[('state','=','minister')],'readonly' :[('state','!=','minister')]}" filename="data_name_speech"/>
-								<field name="data_name_speech" invisible='1'/>
+									attrs="{'invisible':[('state','!=','minister'),('state','!=','hrm'),('state', '!=', 'done')],'required' :[('state','=','minister')],'readonly' :[('state','!=','minister')]}"
+									filename="data_name_speech" />
+								<field name="data_name_speech" invisible='1' />
 							</group>
 
-							<group string="بيانات القرار" 
+							<group string="بيانات القرار"
 								attrs="{'invisible':[('state','!=','hrm'),('state', '!=', 'done')]}">
 								<field name="decision_number"
 									attrs="{'invisible':[('state','!=','hrm'),('state', '!=', 'done')],'required' :[('state','=','hrm')],'readonly' :[('state','!=','hrm')]}" />
 								<field name="dicision_date"
 									attrs="{'invisible':[('state','!=','hrm'),('state', '!=', 'done')],'required' :[('state','=','hrm')],'readonly' :[('state','!=','hrm')]}" />
 								<field name="dicision_file"
-									attrs="{'invisible':[('state','!=','hrm'),('state', '!=', 'done')],'required' :[('state','=','hrm')],'readonly' :[('state','!=','hrm')]}" filename="data_name_decision" />
-								<field name="data_name_decision" invisible='1'/>
+									attrs="{'invisible':[('state','!=','hrm'),('state', '!=', 'done')],'required' :[('state','=','hrm')],'readonly' :[('state','!=','hrm')]}"
+									filename="data_name_decision" />
+								<field name="data_name_decision" invisible='1' />
 							</group>
 
 						</group>
 						<group>
-							
+
 						</group>
 						<notebook>
 							<page string="قائمة الموظفين المؤهلين للترقية"
 								attrs="{'invisible': [('state', '!=', 'draft'),('state', '!=', 'confirmed')]}">
-								<field name="employee_promotion_line_ids" options="{'no_open': True}"  >
-									<tree  editable="bottom" create="0" >
-										<field name="employee_id" readonly="1" />
-										<field name="demande_promotion_id"   readonly="1"/>
+								<field name="employee_promotion_line_ids" options="{'no_open': True}">
+									<tree editable="bottom" create="0">
+										<field name="employee_id" readonly="1" style="width:30%;" />
+										<field name="demande_promotion_id" readonly="1" />
 										<field name="old_job_id" readonly="1" />
 										<field name="old_number_job" readonly="1" />
 										<field name="emp_department_old_id" readonly="1" />
@@ -84,13 +106,16 @@
 
 							<page string="قائمة الوظائف الشاغرة"
 								attrs="{'invisible': [('state', '!=', 'job_promotion')],'readonly' :[('state','!=','job_promotion')]}">
-								<field name="job_promotion_line_ids" options="{'no_open': True}"  >
+								<field name="job_promotion_line_ids" options="{'no_open': True}">
 									<tree editable="buttom" create="0" delete="0">
-										<field name="new_job_id" domain="[('state','=','unoccupied')]" options='{"no_open": True, "no_create": True}' />
+										<field name="new_job_id" domain="[('state','=','unoccupied')]"
+											options='{"no_open": True, "no_create": True}' />
 										<field name="new_number_job" />
 										<field name="emp_grade_id_new" />
-										<button string="حجز" name="job_reserved" class="oe_highlight btn" type="object"  attrs="{'readonly': [('job_state', '=', True)]}"   />
-										<button string="فك حجز" name="job_in_reserved" class="oe_highlight btn" type="object" attrs="{'readonly': [('job_state', '!=', True)]}"   />
+										<button string="حجز" name="job_reserved" class="oe_highlight btn"
+											type="object" attrs="{'readonly': [('job_state', '=', True)]}" />
+										<button string="فك حجز" name="job_in_reserved" class="oe_highlight btn"
+											type="object" attrs="{'readonly': [('job_state', '!=', True)]}" />
 										<field name="job_state" readonly="1" />
 
 									</tree>
@@ -98,11 +123,14 @@
 							</page>
 							<page string="قائمة الترشيحات"
 								attrs="{'invisible': [('state', '!=', 'manager'),('state', '!=', 'minister'),('state', '!=', 'hrm'),('state', '!=', 'done')],}">
-								<field name="employee_job_promotion_line_ids"  options="{'no_open': True}" >
-									<tree create="false"  editable="bottom"   delete="0">
-										<field name="employee_id" readonly="1" />
-										<field name="employee_job_ids"  invisible="1"/>
-										<field name="demande_promotion_id"  readonly="1" options='{"no_open": True, "no_create": True}' />
+								<field name="employee_job_promotion_line_ids" options="{'no_open': True}">
+									<tree create="false" editable="bottom" delete="0">
+										<field name="employee_id" options='{"no_open": True, "no_create": True}' readonly="1" style="width:40%;" />
+										<field name="employee_job_ids" invisible="1" />
+										<field name="demande_promotion_id" readonly="1"
+											options='{"no_open": True, "no_create": True}' />
+										<field name="city_fovorite" readonly="1"
+											options='{"no_open": True, "no_create": True}' />
 										<field name="old_job_id" readonly="1" />
 										<field name="old_number_job" readonly="1" />
 										<field name="emp_department_old_id" readonly="1" />
@@ -112,11 +140,13 @@
 										<field name="point_training" readonly="1" />
 										<field name="point_functionality" readonly="1" />
 										<field name="sum_point" readonly="1" />
-										<field name="new_job_id" domain="[('occupied_promotion','=',True),('id','in',employee_job_ids)]" options='{ "no_create": True}' attrs="{'readonly' :[('state','!=','manager')]}" />
-										<field name="new_number_job" />
-										<field name="state"  invisible="1"/>
+										<field name="new_job_id" options='{"no_open": True, "no_create": True}' domain="[('occupied_promotion','=',True)]"/>
+										<field name="new_number_job" readonly="1" />
+										<field name="new_city_jobs" readonly="1" />
 										<field name="emp_grade_id_new" readonly="1" />
-										<field name="promotion_supp" readonly="1" attrs="{'invisible': [('state', '!=', 'hrm'),('state', '!=', 'done')],}" />
+										<field name="state"  readonly="1" />
+										<field name="promotion_supp" readonly="1"
+											attrs="{'invisible': [('state', '!=', 'hrm'),('state', '!=', 'done')],}" />
 										<field name="date_direct_action" readonly="1" />
 									</tree>
 
@@ -124,11 +154,12 @@
 								</field>
 							</page>
 						</notebook>
-						
-					<div class="oe_chatter">
-						<field name="message_follower_ids" widget="mail_followers" groups="base.group_user" />
-						<field name="message_ids" widget="mail_thread" />
-					</div>
+
+						<div class="oe_chatter">
+							<field name="message_follower_ids" widget="mail_followers"
+								groups="base.group_user" />
+							<field name="message_ids" widget="mail_thread" />
+						</div>
 					</sheet>
 				</form>
 			</field>
@@ -181,7 +212,8 @@
 			<field name="act_window_id" ref="action_hr_promotions" />
 		</record>
 		<menuitem id="menu_hr_promotions" action="action_hr_promotions"
-			parent="hr_root_organisation_action" name="محاضر الترقية" sequence="14" groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion,smart_hr.group_promotion_checker" />
+			parent="hr_root_organisation_action" name="محاضر الترقية" sequence="14"
+			groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion,smart_hr.group_promotion_checker" />
 		<!-- <menuitem id="menu_hr_promotion" parent="hr_root_promotion" name="قرارات 
 			الترقيات" sequence="1"/> -->
 
@@ -192,12 +224,12 @@
 			<field name="arch" type="xml">
 				<form string="أنواع الترقية">
 					<sheet>
-						<group >
+						<group>
 							<group string="أنواع الترقية">
 								<field name="name" required='1' />
 								<field name="code" required='1' />
 							</group>
-							
+
 
 						</group>
 
@@ -225,6 +257,88 @@
 
 		<menuitem id="menu_hr_promotions_type" action="action_promotion_type"
 			parent="hr_root_organisation_configuration" name="أنواع الترقية"
-			sequence="5"  groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion" />
+			sequence="5"
+			groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion" />
+		
+
+		<record model="ir.ui.view" id="hr_promotion_employee_affected_tree_view">
+			<field name="name">hr.promotion.employee.job.tree</field>
+			<field name="model">hr.promotion.employee.job</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="ترشيحاتي فالترقية"  create="0" delete='0' duplicate='0'>
+
+					<field name="employee_id" readonly="1" />
+					<field name="demande_promotion_id" readonly="1"
+						options='{"no_open": True, "no_create": True}' />
+					<field name="city_fovorite" readonly="1"
+						options='{"no_open": True, "no_create": True}' />
+					<field name="old_job_id" readonly="1" />
+					<field name="old_number_job" readonly="1" />
+					<field name="emp_department_old_id" readonly="1" />
+					<field name="emp_grade_id_old" readonly="1" />
+					<field name="point_seniority" readonly="1" />
+					<field name="point_education" readonly="1" />
+					<field name="point_training" readonly="1" />
+					<field name="point_functionality" readonly="1" />
+					<field name="sum_point" readonly="1" />
+					<field name="new_job_id" readonly="1" />
+					<field name="new_number_job" readonly="1" />
+					<field name="new_city_jobs" readonly="1" />
+					<field name="state"  readonly="1" />
+					<field name="emp_grade_id_new" readonly="1" />
+					<field name="promotion_supp" readonly="1"
+					 />
+					 <field name="state" readonly="1"
+					 />
+					<field name="date_direct_action" readonly="1" />
+
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_promotion_employee_affected_form_view">
+			<field name="name">hr.promotion.employee.job.form</field>
+			<field name="model">hr.promotion.employee.job</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form create="0" delete='0' duplicate='0'>
+				<header>
+				<button name="promotion_confirmed" string="موافقة" type="object"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" states="employee_confirmed" />
+				
+				<button name="promotion_refuse" string="رفض" type="object"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" states="employee_confirmed" />
+				<field name="state" widget="statusbar"
+							statusbar_visible="employee_confirmed,done,refuse" />
+				</header>
+					<sheet string="ترشيحاتي فالترقية">
+						<group string="الوظيفة التي تم ترشيحك عليها" >
+							<field name="new_job_id" readonly="1" />
+							<field name="new_number_job" readonly="1" />
+							<field name="emp_grade_id_new" readonly="1" />
+							<field name="new_city_jobs" readonly="1" />
+						</group>
+					</sheet>
+				</form>
+
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_promotion_employee_affected">
+			<field name="name">ترشيحاتي فالترقية</field>
+			<field name="res_model">hr.promotion.employee.job</field>
+			<field name="view_type">form</field>
+			<field name="domain">[('employee_id.user_id', '=', uid),('state', '=', 'employee_confirmed')]</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+
+		<menuitem id="menu_my_promotion_affecteds" action="action_hr_promotion_employee_affected"
+			parent="hr_root_organisation_action" name="ترشيحاتي فالترقية"
+			sequence="15" />
+
+
+
 	</data>
 </openerp>
