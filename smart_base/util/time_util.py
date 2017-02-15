@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import math
+from datetime import datetime
 
 
 def time_float_convert(time_val):
@@ -21,3 +22,9 @@ def float_time_convert_str(float_val):
     hour = factor * int(math.floor(val))
     minute = int(round((val % 1) * 60))
     return '%s:%s' % (str(hour).zfill(2), str(minute).zfill(2))
+
+
+def days_between(d1, d2):
+    d1 = datetime.strptime(d1, "%Y-%m-%d")
+    d2 = datetime.strptime(d2, "%Y-%m-%d")
+    return abs((d2 - d1).days + 1)

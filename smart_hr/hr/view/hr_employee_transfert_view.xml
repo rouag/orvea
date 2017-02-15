@@ -90,14 +90,14 @@
 								<br></br>
 								<group>
 									<group>
-										<field name="new_job_id" options="{'no_create_edit': True}"
+										<field name="new_job_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 											readonly="1" />
 										<field name="new_specific_id" />
 										<field name="new_type_id" />
 									</group>
 									<group>
 										<field name="date_direct_action" attrs="{'readonly':[('state', '!=', 'pm')]}" />
-										<field name="degree_id" options="{'no_create_edit': True}"
+										<field name="degree_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 											attrs="{'readonly':[('state', '!=', 'pm')],'required':[('state', '=', 'pm'),('new_job_id', '!=', False)]}" />
 									</group>
 								</group>

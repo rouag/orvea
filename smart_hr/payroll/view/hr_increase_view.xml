@@ -52,7 +52,7 @@
 								<field name="date" />
 								<field name="number_decision" />
 								<field name="date_decision" />
-								<field name="increase_id" options="{'no_create_edit': True}" />
+								<field name="increase_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="reasons" />
 							</group>
 							<group />
@@ -61,7 +61,7 @@
 						<notebook>
 							<page string="الموظفين المستثنين من العلاوة">
 								<field name="employee_deprivated_ids" nolabel="1"
-									options="{'no_create_edit': True}" domain="[('type_id','!=',%(data_salary_grid_type6)d)]"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" domain="[('type_id','!=',%(data_salary_grid_type6)d)]"
 									attrs="{'readonly':[('state','not in',['draft','pim'])]}">
 									<tree>
 										<field name="name" />

@@ -9,6 +9,7 @@ from dateutil.relativedelta import relativedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 from umalqurra.hijri_date import HijriDate
 
+
 class HrDeputation(models.Model):
     _name = 'hr.deputation'
     _order = 'id desc'

@@ -83,6 +83,8 @@ class HrJobName(models.Model):
     job_supervised_name_ids = fields.One2many('hr.job.name', 'job_supervisory_name_id', string=u'المسميات المشرف عليها', readonlly=1)
 
     job_description = fields.Text(string=u'متطلبات الوظيفية')
+    member_job =  fields.Boolean(string=u'وظيفية للاعضاء')
+    
     _sql_constraints = [('number_uniq', 'unique(number)', 'رمز هذا المسمى موجود.')]
 
 

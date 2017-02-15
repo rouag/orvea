@@ -9,3 +9,4 @@ from . import hr_bonus
 from . import hr_loan
 from . import wizard
 from . import hr_increase
+from . import hr_difference

@@ -9,10 +9,11 @@ from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
+
 class HrDecisionAppoint(models.Model):
-    _name = 'hr.decision.appoint'  
+    _name = 'hr.decision.appoint'
     _order = 'id desc'
-    _inherit = ['mail.thread'] 
+    _inherit = ['mail.thread']
     _description = u'قرار تعيين'
     
     name = fields.Char(string='رقم الخطاب', required=1 , states={'draft': [('readonly', 0)]})
@@ -113,13 +114,13 @@ class HrDecisionAppoint(models.Model):
     def _onchange_type_appointment(self):
         # get list of employee depend on type_appointment
         res = {}
-        if self.type_appointment and self.type_appointment == self.env.ref('smart_hr.data_hr_recrute_Members'):
-            employee_ids = [rec .id for rec in self.env['hr.employee'].search([('is_member', '=', True), ('employee_state', 'in', ['done', 'employee'])])]
-            res['domain'] = {'employee_id': [('id', 'in', employee_ids)]}
+        if self.type_appointment and self.type_appointment.for_members is True:
+            employee_ids = self.env['hr.employee'].search([('is_member', '=', True), ('employee_state', 'in', ['done', 'employee'])])
+            res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)]}
             return res
-        if self.type_appointment and self.type_appointment != self.env.ref('smart_hr.data_hr_recrute_Members'):
-            employee_ids = [rec .id for rec in self.env['hr.employee'].search([('is_member', '=', False), ('employee_state', 'in', ['done', 'employee'])])]
-            res['domain'] = {'employee_id': [('id', 'in', employee_ids)]}
+        if self.type_appointment and self.type_appointment.for_members is False:
+            employee_ids = self.env['hr.employee'].search([('is_member', '=', False), ('employee_state', 'in', ['done', 'employee'])])
+            res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)]}
             return res
 
     @api.multi
@@ -408,7 +409,8 @@ class HrDecisionAppoint(models.Model):
     def action_done(self):
         self.ensure_one()
         self.employee_id.write({'employee_state': 'employee','job_id': self.job_id.id,
-                                'department_id': self.department_id.id, 'degree_id': self.degree_id.id, 'wage': self.basic_salary})
+                                'department_id': self.department_id.id, 'degree_id': self.degree_id.id,
+                                 'wage': self.basic_salary, 'grade_id':self.grade_id.id})
         if self.date_medical_examination:
             self.employee_id.write({'medical_exam': self.date_medical_examination})
         self.job_id.write({'state': 'occupied', 'employee': self.employee_id.id, 'occupied_date': fields.Datetime.now()})
@@ -586,17 +588,17 @@ class HrTypeAppoint(models.Model):
     recrutment_decider = fields.Boolean(string=u' موافقة رئيس الهيئة  ')
     ministry_civil = fields.Boolean(string=u' موافقة وزارة الخدمة المدنية')
     can_be_cancelled = fields.Boolean(string=u'يمكن الغاؤها')
-    
+    for_members = fields.Boolean(string=u'للاعضاء')
+
+
 class HrNoticesSettings(models.Model):
-    _name = 'hr.notices.settings'  
+    _name = 'hr.notices.settings'
     _description = u'اشعارات التعين'
-    
-    
+
     name = fields.Char(string='المسمى ', required=1)
-    description = fields.Char(string='المحتوى') 
-    group_notice = fields.Many2many('res.groups', string='إلى') 
+    description = fields.Char(string='المحتوى')
+    group_notice = fields.Many2many('res.groups', string='إلى')
     tye_notice_mail = fields.Boolean(string='إشعار عن طريق  بريد إلكتروني ')
     tye_notice_sms = fields.Boolean(string='إشعار عن طريق   إرسال رسالة قصيرة ')
     tye_notice_event = fields.Boolean(string=' عن طريق الإشعار ')
     tyooe_notice = fields.Char(string='طريقة الإشعار')
-    

@@ -185,11 +185,11 @@
 						</group>
 						<group>
 							<group>
-								<field name="skils_ids" widget="many2many_tags" options="{'no_create_edit': True}" />
+								<field name="skils_ids" widget="many2many_tags" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 							</group>
 							<group>
 								<field name="allowanse_ids" widget="many2many_tags"
-									options="{'no_create_edit': True}" />
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 							</group>
 
 						</group>
@@ -278,6 +278,8 @@
 							<group>
 								<field name="name" />
 								<field name="job_nature" />
+								<field name="member_job" />
+
 							</group>
 							<group>
 								<field name="number" />

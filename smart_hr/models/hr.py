@@ -112,8 +112,10 @@ class HrEmployee(models.Model):
     point_functionality=fields.Integer(string=u'نقاط  الإداء الوظيفي',)
     is_member = fields.Boolean(string=u'عضو في الهيئة', default=False, required=1)
     insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين', readonly='1',compute='_compute_insurance_type')
-
     holiday_count = fields.Integer(string=u'عدد الاجازات', compute='_compute_holidays_count')
+    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
+
+    
     @api.one
     @api.depends('job_id')
     def _compute_insurance_type(self):

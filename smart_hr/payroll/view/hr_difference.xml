@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+	
+		<!-- الفروقات -->
+		
+		<record model="ir.ui.view" id="hr_difference_tree">
+			<field name="name">hr.difference.tree</field>
+			<field name="model">hr.difference</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string=" الفروقات">
+					<field name="name" />
+					<field name="date" />
+					<field name="month" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+		
+		<record model="ir.ui.view" id="hr_difference_form">
+			<field name="name">hr.difference.form</field>
+			<field name="model">hr.difference</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="الفروقات">
+					<header>
+						<button name="action_waiting" string="إرسال للإعتماد" type="object" states="new" groups="smart_hr.group_difference_management" />
+						<button name="action_done" string="إعتماد" type="object" states="waiting" groups="smart_hr.group_difference_management" />
+						<button name="action_refuse" string="رفض" type="object" states="waiting" groups="smart_hr.group_difference_management" />
+						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done"  />
+					</header>
+					<sheet>
+						<group>
+							<group>
+								<field name="month" />
+								<field name="name" />
+							</group>
+							<group>
+								<field name="date" />
+								<field name="date_from" invisible='1' />
+								<field name="date_to" invisible='1' />
+							</group>
+						</group>
+						<notebook>
+							<page string="التفاصيل">
+								<group>
+									<field name="line_ids" nolabel="1">
+										<tree editable="bottom">
+											<field name="employee_id" />
+											<field name="name" />
+											<field name="job_id" invisible="1" />
+											<field name="department_id" invisible="1" />
+											<field name="type" />
+											<field name="number_of_days" /> 
+											<field name="number_of_hours" /> 
+											<field name="amount" /> 
+										</tree>
+									</field>
+								</group>
+							</page>
+						</notebook>						
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" groups="base.group_user" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+				</form>
+			</field>
+		</record>
+		
+		<record id="view_search_hr_difference" model="ir.ui.view">
+			<field name="name">hr.difference.search</field>
+			<field name="model">hr.difference</field>
+			<field name="arch" type="xml">
+				<search string=" الفروقات">
+					<field name="name" />
+					<field name="date" />
+					<field name="month" />
+					<separator />
+					<group expand="0" string="تجميع حسب">
+						<filter name="date" string="التاريخ" context="{'group_by':'date'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+				
+		<record model="ir.actions.act_window" id="action_hr_difference">
+			<field name="name"> الفروقات</field>
+			<field name="res_model">hr.difference</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+			
+		<menuitem id="hr_difference_menu" name=" الفروقات" sequence="25" groups="group_difference_management"
+			parent="hr_difference_root" action="action_hr_difference" />
+
+		<!-- الفروقات بالموظف -->
+		
+		<record model="ir.ui.view" id="hr_difference_line_tree">
+			<field name="name">hr.difference.line.tree</field>
+			<field name="model">hr.difference.line</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="الفروقات بالموظف" create='0' edit='0' delete='0' duplicate='0'>
+					<field name="employee_id" />
+					<field name="job_id"/>
+					<field name="department_id"/>
+					<field name="month" />
+					<field name="type" />
+					<field name="amount" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_difference_line_form">
+			<field name="name">hr.difference.line.form</field>
+			<field name="model">hr.difference.line</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="الفروقات بالموظف"  create='0' edit='0' delete='0' duplicate='0'>
+					<sheet>
+						<group>
+							<group string="بيانات الموظف">
+								<field name="employee_id" />
+								<field name="job_id" />
+								<field name="department_id" />
+							</group>
+							<group string="بيانات الفروقات">
+								<field name="month" />
+								<field name="type" />
+								<field name="amount" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_search_hr_difference_line" model="ir.ui.view">
+			<field name="name">hr.difference.line.search</field>
+			<field name="model">hr.difference.line</field>
+			<field name="arch" type="xml">
+				<search string="الفروقات بالموظف">
+					<field name="employee_id" />
+					<field name="type" />
+					<field name="month" />
+					<separator />
+					<group expand="0" string="تجميع حسب">
+						<filter name="employee_id" string="الموظف" context="{'group_by':'employee_id'}" />
+						<filter name="type" string="النوع" context="{'group_by':'type'}" />		
+						<filter name="state" string="الحالة" context="{'group_by':'state'}" />					
+					</group>
+				</search>
+			</field>
+		</record>
+				
+		<record model="ir.actions.act_window" id="action_hr_difference_line">
+			<field name="name">الفروقات بالموظف</field>
+			<field name="res_model">hr.difference.line</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="hr_difference_line_menu" name="الفروقات بالموظف" groups="smart_hr.group_difference_management"
+			sequence="35" parent="hr_difference_root" action="action_hr_difference_line" />
+
+ 
+
+	</data>
+</openerp>
+			
