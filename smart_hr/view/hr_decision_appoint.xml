@@ -270,7 +270,7 @@
 								<br></br>
 								<group>
 									<group>
-										<field name="job_id" domain="[('state','=','unoccupied')]" widget="selection"
+										<field name="job_id" domain="[('state','=','unoccupied')]"
 											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 											attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'manager', 'hrm', 'budget', 'done','refuse'])],'readonly':[('state', 'in', [ 'waiting', 'manager', 'hrm', 'budget', 'done','refuse'])]}" />
 										<field name="number_job" />
@@ -280,7 +280,7 @@
 									</group>
 									<group>
 										<field name="grade_id" />
-										<field name="degree_id" domain="[('grade_id','=',grade_id)]" widget="selection"
+										<field name="degree_id" domain="[('grade_id','=',grade_id)]" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 											attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'manager', 'budget', 'done','refuse'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'manager', 'budget', 'done','refuse'])]}" />
 										<field name="far_age" />
 										<field name="basic_salary" />

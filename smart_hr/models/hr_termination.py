@@ -31,7 +31,6 @@ class hr_termination(models.Model):
     country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
     # Termination Info
     termination_type_id = fields.Many2one('hr.termination.type', string=u'نوع الطى', required=1)
-    
     nb_salaire = fields.Float(related='termination_type_id.nb_salaire', store=True, readonly=True, string=u'عدد الرواتب المستحق')
     all_holidays = fields.Boolean(related='termination_type_id.all_holidays', store=True, readonly=True,string=u'كل الإجازة')
     max_days = fields.Float(related='termination_type_id.max_days', store=True, readonly=True, string=u'الحد الاقصى لأيام الإجازة')
@@ -122,6 +121,9 @@ class hr_termination_type(models.Model):
     max_days = fields.Float(string=u'الحد الاقصى لأيام الإجازة')
     nationality = fields.Boolean(string=u'غير سعودي')
     contract = fields.Boolean(string=u'متعاقد')
+    evaluation_condition = fields.Boolean(string=u'يطبق شرط تقييم الأداء')
+    years_progress = fields.Integer(string=u'عدد سنوات التقيم')
+    evaluation_required = fields.Many2many('hr.evaluation.result.foctionality', string=u'التقييمات المطلوبة')
     
   
     

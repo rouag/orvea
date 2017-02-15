@@ -40,5 +40,22 @@
 			</field>
 			<field name="code" eval="7" />
 		</record>
+		<record id="data_hr_ending_period_experience" model="hr.termination.type">
+			<field name="name"> عدم صلاحيته أثناء فترة التجربة
+			</field>
+			<field name="code" eval="8" />
+		</record>
+		<record id="data_hr_ending_estimite_less" model="hr.termination.type">
+			<field name="name">  حصوله على تقدير أقل من المتوسط
+			</field>
+			<field name="code" eval="9" />
+		</record>
+		
+		<record id="data_hr_ending_reason_todbeah" model="hr.termination.type">
+			<field name="name"> أسباب تأدبيّية
+			</field>
+			<field name="code" eval="10" />
+		</record>
+		
 	</data>
 </openerp>
