@@ -38,6 +38,8 @@ class HrJob(models.Model):
     update_date = fields.Date(string=u'تاريخ التحوير')
     type_resevation = fields.Selection([('promotion', u'للترقية')], string=u'نوع الحجز')
     occupied_promotion = fields.Boolean(string='للترقية',)
+    promotion_employee_id= fields.Many2one('hr.promotion.employee.job', string=u'الموظف')
+
 
     @api.multi
     @api.depends('occupation_date_to')

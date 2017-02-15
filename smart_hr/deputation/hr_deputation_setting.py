@@ -13,6 +13,8 @@ class HrDeputationSetting(models.Model):
     name = fields.Char(string='name', default=u'إعدادات الانتدابات')
     deputation_distance = fields.Float(string=u'المسافة المحدد للإنتداب', default=75)
     annual_balance = fields.Integer(string='الرصيد السنوي')
+    period_decision = fields.Integer(string=' مدة الإنتداب التي تستوجب قرار من الوزير المختص')
+   
     line_ids = fields.One2many('hr.deputation.allowance', 'deputation_setting_id', string=u'تفاصيل البدلات')
 
     @api.multi

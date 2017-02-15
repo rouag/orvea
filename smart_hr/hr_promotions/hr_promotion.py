@@ -69,10 +69,12 @@ class hr_promotion(models.Model):
                                                                'point_training':employee_line.point_training,
                                                                'point_functionality':employee_line.point_functionality,
                                                                'demande_promotion_id':employee_line.demande_promotion_id.id if employee_line.demande_promotion_id else False,
-                                                               'sum_point':employee_line.sum_point,}) 
+                                                               'sum_point':employee_line.sum_point,
+                                                               }) 
                 sanctions=self.env['hr.sanction'].search([('state','=','done'),('date_sanction_start','>',datetime.now()+relativedelta(years=-2))])
                 days=0
-                emp_id.change_employee_id()
+                emp_id.employee_job_ids=emp_id.change_employee_id()
+                print '111116544456511111', emp_id.employee_job_ids
                 print employee_line.employee_id.type_id.id
                 print self.env.ref('smart_hr.data_salary_grid_type').id
                 if employee_line.employee_id.type_id.id==self.env.ref('smart_hr.data_salary_grid_type').id:
@@ -142,11 +144,7 @@ class hr_promotion(models.Model):
             raise ValidationError(u"تاريخ الخطاب  يجب ان يكون أصغر من تاريخ اليوم")
      
              
-    @api.one
-    @api.constrains('dicision_date')
-    def check_order_date(self):
-        if self.dicision_date > datetime.today().strftime('%Y-%m-%d'):
-            raise ValidationError(u"تاريخ قرار الترقية  يجب ان يكون أصغر من تاريخ اليوم")
+    
     
     @api.one
     def button_done(self):
@@ -188,8 +186,7 @@ class hr_promotion(models.Model):
         for promo in self:
             self.state='draft'
             self.employee_job_promotion_line_ids=False
-            self.job_promotion_line_ids=False
-            self.job_promotion_line_ids=False
+           
       
             
     @api.one
@@ -247,7 +244,7 @@ class hr_promotion(models.Model):
             point_functionality=0
             years_supp=(emp_promotion.service_duration/365)-emp_promotion.job_id.grade_id.years_job
             if years_supp > 0 :
-                
+                print '11111'
                 for year in   xrange(1, years_supp):
                     for seniority in regle_point.seniority_ids :
                         if  (year >= seniority.year_from )and (year <= seniority.year_to) :
@@ -419,6 +416,7 @@ class hr_promotion_ligne_employee_job(models.Model):
     promotion_supp = fields.Boolean(string='علاوة إضافية',)
     date_direct_action = fields.Date(string='تاريخ مباشرة العمل',related='promotion_id.dicision_date') 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(),)
+    employee_job_ids = fields.One2many('hr.job', 'promotion_employee_id', string=' قائمة الوظائف',)
     
     state = fields.Selection([
                           ('draft', u'طلب'),
@@ -446,15 +444,24 @@ class hr_promotion_ligne_employee_job(models.Model):
             
     @api.onchange('employee_id')
     def change_employee_id(self):
-        res = {}
         if self.employee_id:
-            job_ids = self.env['hr.job'].search([('grade_id.code', '=',  int(self.emp_grade_id_old.code)+1),('occupied_promotion','=',True)]).ids
-            print 'job_ids',job_ids
-            res['domain'] = {'new_job_id': [('id', 'in', job_ids)]}
-            return res
+            print int(self.emp_grade_id_old.code)+1
+            jobs=self.env['hr.job'].search([])
+            for job in jobs:
+                print '565555665565',job.grade_id.code
+            job_ids = self.env['hr.job'].search([('grade_id.code', '=',  int(self.emp_grade_id_old.code)+1)]).ids
+            return job_ids
             
     @api.onchange('new_job_id')
     def onchange_job_id(self):
+        res={}
+        
+        if not self.new_job_id:
+            print 111111111
+            job_ids = self.env['hr.job'].search([('grade_id.code', '=',  int(self.emp_grade_id_old.code)+1)]).ids
+            print 'job_ids',job_ids
+            res['domain'] = {'new_job_id': [('id', 'in', job_ids)]}
+            return res
         if self.new_job_id:
             if int(self.new_job_id.grade_id.code) <= int(self.emp_grade_id_old.code):
                 self.new_job_id = False
@@ -469,10 +476,6 @@ class hr_promotion_ligne_employee_job(models.Model):
             self.new_job_id.state = 'reserved'
             self.emp_grade_id_new = self.new_job_id.grade_id.id
             self.new_number_job = self.new_job_id.number
-                
-         
-   
- 
   
 class hr_promotion_type(models.Model):
     _name = 'hr.promotion.type'
@@ -498,7 +501,7 @@ class hr_promotion_demande(models.Model):
     hr_allowance_type_id = fields.Many2one('hr.allowance.type', string='أنواع البدلات(بدل طبيعة عمل )',)
     old_job_id=fields.Many2one(related='employee_id.job_id', store=True, readonly=True,string=u'الوظيفة الحالية',)
     department_id=fields.Many2one(related='employee_id.department_id', store=True, readonly=True,string='الادارة',)
-    state = fields.Selection([('new', ' ارسال طلب'),
+    state = fields.Selection([ ('new', u'طلب'),
                              ('waiting', 'في إنتظار الإعتماد'),
                              ('cancel', 'رفض'),
                              ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')

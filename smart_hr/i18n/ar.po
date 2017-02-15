@@ -418,6 +418,62 @@ msgstr "هيئة التحقيق والإدعاء العام"
 msgid "Our products &amp; Services"
 msgstr " هيئة التحقيق والإدعاء العام "
 
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_count_completed_survey
+msgid "Number of Answers"
+msgstr "عدد الإجابات"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_count_sent_survey
+msgid "Number of Sent Forms"
+msgstr "عدد النماذج المرسلة"
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.survey_user_input_form
+msgid "View Results"
+msgstr "عرض النتائج"
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.survey_form
+msgid "View results"
+msgstr "عرض النتائج"
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.survey_user_input_form
+msgid "Print These Answers"
+msgstr "طباعة هذه الأجوبة"
+
+#. module: survey
+#: model:ir.model.fields,field_description:survey.field_survey_user_input_token
+msgid "Identification token"
+msgstr "تحديد الرمز "
+
+#. module: survey
+#: model:ir.model.fields,field_description:survey.field_survey_user_input_line_skipped
+#: model:ir.ui.view,arch_db:survey.result
+msgid "Skipped"
+msgstr "تخطي"
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.survey_user_input_search
+#: selection:survey.user_input,state:0
+msgid "Partially completed"
+msgstr "مكتمل جزئيا"
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.page
+msgid "Submit survey"
+msgstr " إرسال التقييم"
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.sfinished
+msgid "review your answers"
+msgstr "استعراض الإجابات الخاصة بك"
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.survey_question_form
+msgid "Choices"
+msgstr "الاختيارات"
 #. module: base
 #: code:addons/base/res/res_company.py:103
 #: model:ir.model.fields,field_description:base.field_res_bank_phone
@@ -586,3 +642,36 @@ msgstr "المرجع الداخلي"
 #: model:ir.model.fields,field_description:base.field_res_users_supplier
 msgid "Is a Vendor"
 msgstr "هو بائع"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_partner_form
+#: model:ir.ui.view,arch_db:base.view_partner_simple_form
+msgid "Tags..."
+msgstr "الوسوم..."
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_company_form
+#: model:ir.ui.view,arch_db:base.view_partner_address_form
+#: model:ir.ui.view,arch_db:base.view_partner_form
+#: model:ir.ui.view,arch_db:base.view_res_bank_form
+msgid "ZIP"
+msgstr "الرمز البريدي"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_partner_form
+msgid "internal note..."
+msgstr "مذكرة داخلية ..."
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_base_language_install
+msgid "Load"
+msgstr "حمل"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_company_form
+#: model:ir.ui.view,arch_db:base.view_partner_address_form
+#: model:ir.ui.view,arch_db:base.view_partner_form
+msgid "e.g. www.odoo.com"
+msgstr ""
+
+
