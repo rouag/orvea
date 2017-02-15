@@ -7,8 +7,7 @@
 		<field name="arch" type="xml">
 			<form>
 				<group col="2" string="الوظيفة">
-					<field name="job_move_grade_id" options='{"no_open": True, "no_create": True}' />
-					<field name="job_id" options='{"no_open": True, "no_create": True}' />
+					<field name="line_id" options='{"no_open": True, "no_create": True}' />
 				</group>
 				<footer>
 					<button name="print_report" string="طباعة النموذج" type="object"
@@ -23,7 +22,7 @@
 	</record>
 
 	<record id="wizard_job_scale_down_model_action" model="ir.actions.act_window">
-		<field name="name">طباعة نموذج تخفيض وظيفة</field>
+		<field name="name">طباعة نموذج خفض وظيفة</field>
 		<field name="res_model">wizard.job.scale.down.model</field>
 		<field name="type">ir.actions.act_window</field>
 		<field name="view_type">form</field>
@@ -32,7 +31,7 @@
 		<field name="target">new</field>
 	</record>
 
-	<menuitem id="wizard_job_scale_down_model_menu" name="نموذج تخفيض وظيفة"
+	<menuitem id="wizard_job_scale_down_model_menu" name="نموذج خفض وظيفة"
 		groups="smart_hr.group_dm,smart_hr.group_hr_personnel_officer_jobs" sequence="40"
 		action="wizard_job_scale_down_model_action" parent="menu_job_report" />
 

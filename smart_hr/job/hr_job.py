@@ -83,6 +83,8 @@ class HrJobName(models.Model):
     job_supervised_name_ids = fields.One2many('hr.job.name', 'job_supervisory_name_id', string=u'المسميات المشرف عليها', readonlly=1)
 
     job_description = fields.Text(string=u'متطلبات الوظيفية')
+    members_job =  fields.Boolean(string=u'وظيفية للاعضاء')
+    
     _sql_constraints = [('number_uniq', 'unique(number)', 'رمز هذا المسمى موجود.')]
 
 
@@ -139,6 +141,7 @@ class HrJobCreate(models.Model):
     grade_ids = fields.One2many('salary.grid.grade', 'job_create_id', string='المرتبة')
     draft_budget = fields.Binary(string=u'مشروع الميزانية')
     draft_budget_name = fields.Char(string=u'مشروع الميزانية مسمى ')
+    members_job = fields.Boolean(string=u'وظيفية للاعضاء')
 
     @api.onchange('serie_id')
     def onchange_serie_id(self):
@@ -231,6 +234,7 @@ class HrJobCreate(models.Model):
 class HrJobCreateLine(models.Model):
     _name = 'hr.job.create.line'
     _description = u'الوظائف'
+    _rec_name = 'name'
 
     name = fields.Many2one('hr.job.name', string='الوظيفة', required=1)
     number = fields.Char(string='الرمز', required=1)
@@ -249,7 +253,12 @@ class HrJobCreateLine(models.Model):
             self.number = self.name.number
         if not self.name:
             name_ids = [rec .id for rec in self.job_create_id.serie_id.job_name_ids]
-            res['domain'] = {'name': [('id', 'in', name_ids)]}
+            if self.job_create_id.members_job is True:
+                new_name_ids = self.env['hr.job.name'].search([('members_job', '=', True), ('id', 'in', name_ids)])
+                res['domain'] = {'name': [('id', 'in', new_name_ids.ids)]}
+            else:
+                new_name_ids = self.env['hr.job.name'].search([('members_job', '=', False), ('id', 'in', name_ids)])
+                res['domain'] = {'name': [('id', 'in', new_name_ids.ids)]}
             return res
 
     @api.constrains('job_number', 'grade_id')
@@ -428,6 +437,7 @@ class HrJobStripFrom(models.Model):
 class HrJobStripFromLine(models.Model):
     _name = 'hr.job.strip.from.line'
     _description = u'الوظائف'
+    _rec_name = 'name'
 
     name = fields.Many2one('hr.job.name', string=u'الوظيفة', required=1)
     job_name_code = fields.Char(related="name.number", string='الرمز', required=1)
@@ -588,6 +598,7 @@ class HrJobStripTo(models.Model):
 class HrJobStripToLine(models.Model):
     _name = 'hr.job.strip.to.line'
     _description = u'الوظائف'
+    _rec_name = 'job_id'
 
     job_strip_to_id = fields.Many2one('hr.job.strip.to', string='الوظيفة', required=1)
     job_id = fields.Many2one('hr.job', string='الوظيفة', required=1)
@@ -677,6 +688,7 @@ class HrJobCancel(models.Model):
 class HrJobCancelLine(models.Model):
     _name = 'hr.job.cancel.line'
     _description = u'الوظائف'
+    _rec_name = 'job_id'
 
     job_cancel_line_id = fields.Many2one('hr.job.cancel', string='الوظيفة', required=1)
     job_id = fields.Many2one('hr.job', string='الوظيفة', required=1)
@@ -847,6 +859,7 @@ class HrJobMoveDeparrtment(models.Model):
 class HrJobMoveDeparrtmentLine(models.Model):
     _name = 'hr.job.move.department.line'
     _description = u'نقل وظائف'
+    _rec_name = 'job_id'
 
     job_id = fields.Many2one('hr.job', string='الوظيفة', required=1)
     job_number = fields.Char(related='job_id.number', string='الرقم الوظيفي', readonly=1)
@@ -1040,6 +1053,7 @@ class HrJobMoveGrade(models.Model):
 class HrJobMoveGradeLine(models.Model):
     _name = 'hr.job.move.grade.line'
     _description = u'رفع أو خفض وظائف'
+    _rec_name = 'job_id'
 
     job_move_grade_id = fields.Many2one('hr.job.move.grade', string='الوظيفة', required=1, ondelete="cascade")
     job_id = fields.Many2one('hr.job', string='الوظيفة', required=1)
@@ -1237,6 +1251,7 @@ class HrJobMoveUpdate(models.Model):
 class HrJobMoveUpdateLine(models.Model):
     _name = 'hr.job.update.line'
     _description = u'تحوير‬ وظيفة'
+    _rec_name = 'job_id'
 
     job_update_id = fields.Many2one('hr.job.update', string=u'التحوير‬')
     job_id = fields.Many2one('hr.job', string=u'الوظيفة', required=1)

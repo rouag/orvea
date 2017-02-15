@@ -1,6 +1,6 @@
 .o_form_field_number {
 	text-align: right !important;
-	width: 60px !important;
+	max-width: 200px !important;
 	direction: ltr !important;
 }
 

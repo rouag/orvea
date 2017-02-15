@@ -22,15 +22,17 @@
 		<template id="external_layout_header_extend">
 			<div class="header">
 				<div class="row">
-					<img t-if="company.report_header" t-att-src="'data:image/png;base64,%s' % company.report_header" width="100%" />
+					<img t-if="company.report_header" t-att-src="'data:image/png;base64,%s' % company.report_header"
+						width="100%" />
 				</div>
 			</div>
 		</template>
-		
+
 		<template id="external_layout_footer_extend">
 			<div class="footer">
 				<div class="row">
-					<img t-if="company.report_footer" t-att-src="'data:image/png;base64,%s' % company.report_footer" width="100%" />
+					<img t-if="company.report_footer" t-att-src="'data:image/png;base64,%s' % company.report_footer"
+						width="100%" />
 				</div>
 			</div>
 		</template>
@@ -55,25 +57,28 @@
 		<template id="landscape_layout_header">
 			<div class="header">
 				<div class="col-xs-3">
-					<img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" width="100%" style="max-height:85px !important;"/>
+					<img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo"
+						width="100%" style="max-height:85px !important;" />
 				</div>
 				<div class="col-xs-7 text-center">
-                	<span t-esc="company.name"/>
-            	</div>
-            	<div class="col-xs-2">
-                	<span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M')"/>
-           		 </div>
+					<span t-esc="company.name" />
+				</div>
+				<div class="col-xs-2">
+					<span
+						t-esc="get_hijri_date(context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M'), '-')" />
+				</div>
 			</div>
 		</template>
-		
+
 		<template id="landscape_layout_footer">
 			<div class="footer">
 				<div class="row">
-					<img t-if="company.report_footer" t-att-src="'data:image/png;base64,%s' % company.report_footer" width="100%" />
+					<img t-if="company.report_footer" t-att-src="'data:image/png;base64,%s' % company.report_footer"
+						width="100%" />
 				</div>
 			</div>
 		</template>
- 
+
 		<!-- layout Speech -->
 
 		<template id="layout_speech">
@@ -94,20 +99,24 @@
 		<template id="layout_header_speech">
 			<div class="header">
 				<div class="col-xs-9">
-					<img t-if="company.report_header_speech" t-att-src="'data:image/png;base64,%s' % company.report_header_speech" width="100%" />
+					<img t-if="company.report_header_speech"
+						t-att-src="'data:image/png;base64,%s' % company.report_header_speech"
+						width="100%" />
 				</div>
 				<div class="col-xs-3">
 				</div>
 			</div>
 		</template>
-		
+
 		<template id="layout_footer_speech">
 			<div class="footer">
 				<div class="row">
-					<img t-if="company.report_footer_speech" t-att-src="'data:image/png;base64,%s' % company.report_footer_speech" width="100%" />
+					<img t-if="company.report_footer_speech"
+						t-att-src="'data:image/png;base64,%s' % company.report_footer_speech"
+						width="100%" />
 				</div>
 			</div>
 		</template>
-				
+
 	</data>
 </openerp>

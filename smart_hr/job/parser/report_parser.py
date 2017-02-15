@@ -5,6 +5,7 @@ from openerp.report import report_sxw
 from openerp.addons.smart_base.util.time_util import float_time_convert
 from openerp import fields
 from dateutil.relativedelta import relativedelta
+from umalqurra.hijri_date import HijriDate
 
 
 class JobGradeReport(report_sxw.rml_parse):
@@ -15,7 +16,19 @@ class JobGradeReport(report_sxw.rml_parse):
             'get_lines': self._get_lines,
             'format_time': self._format_time,
             'get_current_date': self._get_current_date,
+            'get_hijri_date': self._get_hijri_date,
         })
+
+    def _get_hijri_date(self, date, separator):
+        '''
+        convert georging date to hijri date
+        :return hijri date as a string value
+        '''
+        if date:
+            date = fields.Date.from_string(date)
+            hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
+            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+        return None
 
     def _get_current_date(self):
         now = datetime.datetime.now()
@@ -59,7 +72,19 @@ class JobUpdateReport(report_sxw.rml_parse):
             'get_lines': self._get_lines,
             'format_time': self._format_time,
             'get_current_date': self._get_current_date,
+            'get_hijri_date': self._get_hijri_date,
         })
+
+    def _get_hijri_date(self, date, separator):
+        '''
+        convert georging date to hijri date
+        :return hijri date as a string value
+        '''
+        if date:
+            date = fields.Date.from_string(date)
+            hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
+            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+        return None
 
     def _get_current_date(self):
         now = datetime.datetime.now()
@@ -104,8 +129,20 @@ class JobDescriptionReport(report_sxw.rml_parse):
             'get_job_create_date': self._get_job_create_date,
             'get_employee_job_decision': self._get_employee_job_decision,
             'get_employee_job_decision_history': self._get_employee_job_decision_history,
-            'get_employee_last_training': self._get_employee_last_training
+            'get_employee_last_training': self._get_employee_last_training,
+            'get_hijri_date': self._get_hijri_date,
         })
+
+    def _get_hijri_date(self, date, separator):
+        '''
+        convert georging date to hijri date
+        :return hijri date as a string value
+        '''
+        if date:
+            date = fields.Date.from_string(date)
+            hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
+            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+        return None
 
     def _get_employee_last_training(self, job):
         hr_candidates_ids = self.pool.get('hr.candidates').search(self.cr, self.uid, [('training_id.state', '=', 'done'), ('employee_id', '=', job.employee.id)])
@@ -117,7 +154,7 @@ class JobDescriptionReport(report_sxw.rml_parse):
         return False
 
     def _get_employee_job_decision_history(self, job):
-        hr_decision_appoint_ids = self.pool.get('hr.decision.appoint').search(self.cr, self.uid, [('employee_id', '=', job.employee.id), ('state', '=', 'done'), ('active', '=', False)])
+        hr_decision_appoint_ids = self.pool.get('hr.decision.appoint').search(self.cr, self.uid, [('employee_id', '=', job.employee.id), ('state', '=', 'done'), ('is_started', '=', True), ('state_appoint', '!=', 'active')])
         if hr_decision_appoint_ids:
             res = []
             hr_decision_appoints = self.pool.get('hr.decision.appoint').browse(self.cr, self.uid, hr_decision_appoint_ids)
@@ -175,18 +212,28 @@ class JobMoveDepReport(report_sxw.rml_parse):
             'get_job': self._get_job,
             'get_job_create_date': self._get_job_create_date,
             'get_move_line': self._get_move_line,
+            'get_hijri_date': self._get_hijri_date,
         })
+
+    def _get_hijri_date(self, date, separator):
+        '''
+        convert georging date to hijri date
+        :return hijri date as a string value
+        '''
+        if date:
+            date = fields.Date.from_string(date)
+            hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
+            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+        return None
 
     def _get_company(self):
         return self.pool.get('res.users').browse(self.cr, self.uid, [self.uid])[0].company_id
 
     def _get_move_line(self, data, job):
-        job_move_department_id = data['job_move_department_id'][0]
-        job_move_department_obj = self.pool.get('hr.job.move.department').browse(self.cr, self.uid, [job_move_department_id])[0]
-        if job_move_department_obj:
-            for line in job_move_department_obj.job_movement_ids:
-                if line.job_id.id == job.id:
-                    return line
+        line_id = data['line_id'][0]
+        line_id = self.pool.get('hr.job.move.department.line').browse(self.cr, self.uid, [line_id])[0]
+        if line_id:
+            return line_id
         return False
 
     def _get_job_create_date(self, job):
@@ -226,8 +273,20 @@ class JobUpdateModelReport(report_sxw.rml_parse):
             'get_job': self._get_job,
             'get_job_create_date': self._get_job_create_date,
             'get_same_activity_depart_job': self._get_same_activity_depart_job,
-            'get_move_line': self._get_move_line
+            'get_move_line': self._get_move_line,
+            'get_hijri_date': self._get_hijri_date,
         })
+
+    def _get_hijri_date(self, date, separator):
+        '''
+        convert georging date to hijri date
+        :return hijri date as a string value
+        '''
+        if date:
+            date = fields.Date.from_string(date)
+            hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
+            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+        return None
 
     def _get_company(self):
         return self.pool.get('res.users').browse(self.cr, self.uid, [self.uid])[0].company_id
@@ -284,19 +343,29 @@ class JobScaleDownModelReport(report_sxw.rml_parse):
             'get_job': self._get_job,
             'get_job_create_date': self._get_job_create_date,
             'get_same_activity_depart_job': self._get_same_activity_depart_job,
-            'get_move_line': self._get_move_line
+            'get_move_line': self._get_move_line,
+            'get_hijri_date': self._get_hijri_date,
         })
+
+    def _get_hijri_date(self, date, separator):
+        '''
+        convert georging date to hijri date
+        :return hijri date as a string value
+        '''
+        if date:
+            date = fields.Date.from_string(date)
+            hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
+            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+        return None
 
     def _get_company(self):
         return self.pool.get('res.users').browse(self.cr, self.uid, [self.uid])[0].company_id
 
     def _get_move_line(self, data, job):
-        job_move_grade_id = data['job_move_grade_id'][0]
-        job_move_grade_obj = self.pool.get('hr.job.move.grade').browse(self.cr, self.uid, [job_move_grade_id])[0]
-        if job_move_grade_obj:
-            for line in job_move_grade_obj.job_movement_ids:
-                if line.job_id.id == job.id:
-                    return line
+        line_id = data['line_id'][0]
+        line_id = self.pool.get('hr.job.move.grade.line').browse(self.cr, self.uid, [line_id])[0]
+        if line_id:
+            return line_id
         return False
 
     def _get_same_activity_depart_job(self, job_id, job_name_id):
@@ -342,7 +411,19 @@ class JobCreateModelReport(report_sxw.rml_parse):
             'get_jobs_with_same_name': self._get_jobs_with_same_name,
             'get_statstics_by_grade_type': self._get_statstics_by_grade_type,
             'get_statstics_by_grade': self._get_statstics_by_grade,
+            'get_hijri_date': self._get_hijri_date,
         })
+
+    def _get_hijri_date(self, date, separator):
+        '''
+        convert georging date to hijri date
+        :return hijri date as a string value
+        '''
+        if date:
+            date = fields.Date.from_string(date)
+            hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
+            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+        return None
 
     def _get_statstics_by_grade(self, grade_number):
         res = {'occupied': 0, 'unoccupied': 0, 'sum': 0, 'create_request': 0, 'modify_request': 0}
@@ -421,7 +502,19 @@ class JobModifyingModelReport(report_sxw.rml_parse):
             'get_jobs_with_same_name': self._get_jobs_with_same_name,
             'get_statstics_by_grade_type': self._get_statstics_by_grade_type,
             'get_statstics_by_grade': self._get_statstics_by_grade,
+            'get_hijri_date': self._get_hijri_date,
         })
+
+    def _get_hijri_date(self, date, separator):
+        '''
+        convert georging date to hijri date
+        :return hijri date as a string value
+        '''
+        if date:
+            date = fields.Date.from_string(date)
+            hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
+            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+        return None
 
     def _get_statstics_by_grade(self, grade_number):
         res = {'occupied': 0, 'unoccupied': 0, 'sum': 0, 'create_request': 0, 'modify_request': 0}
@@ -525,7 +618,19 @@ class JobCareerModelReport(report_sxw.rml_parse):
             'get_scale_down_ids': self._get_scale_down_ids,
             'get_scale_up_ids': self._get_scale_up_ids,
             'get_move_dep_ids': self._get_move_dep_ids,
+            'get_hijri_date': self._get_hijri_date,
         })
+
+    def _get_hijri_date(self, date, separator):
+        '''
+        convert georging date to hijri date
+        :return hijri date as a string value
+        '''
+        if date:
+            date = fields.Date.from_string(date)
+            hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
+            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+        return None
 
     def _get_move_dep_ids(self, job_id):
         move_dep_ids = self.pool.get('hr.job.move.department.line').search(self.cr, self.uid, [('job_id', '=', job_id.id)])

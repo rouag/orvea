@@ -26,15 +26,16 @@
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_notif" string="تنبيه صاحب الطلب" type="object"
 							groups="smart_hr.group_hr_personnel_officer_jobs"
-							attrs="{'invisible':['|', ('state', '!=', 'pm'), ('new_job_id', '!=', False)]}"
+							attrs="{'invisible':['|','|', ('state', '!=', 'pm'), ('is_ended', '=', False), ('ready_tobe_done', '=', True)]}"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						
+
 						<button name="%(hr_employee_transfert_report)d" string="طباعة القرار"
 							type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
 
 						<field name="state" widget="statusbar" statusbar_visible="new,waiting,pm,done,refused" />
 					</header>
 					<sheet>
+						<field name="is_ended" invisible="1" />
 						<field name="same_group" invisible="1" />
 						<field name="ready_tobe_done" invisible="1" />
 						<group>
@@ -86,19 +87,22 @@
 								</group>
 							</page>
 							<page name="new job" string="بيانات الوظيفة المنقول إليها"
-								attrs="{'invisible':[('state', 'in', ['new', 'waiting'])]}">
+								attrs="{'invisible':[('ready_tobe_done', '=', False)]}">
 								<br></br>
 								<group>
 									<group>
-										<field name="new_job_id" options="{'no_create_edit': True}"
+										<field name="new_job_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 											readonly="1" />
 										<field name="new_specific_id" />
 										<field name="new_type_id" />
 									</group>
 									<group>
-										<field name="date_direct_action" attrs="{'readonly':[('state', '!=', 'pm')]}" />
-										<field name="degree_id" options="{'no_create_edit': True}"
-											attrs="{'readonly':[('state', '!=', 'pm')],'required':[('state', '=', 'pm'),('new_job_id', '!=', False)]}" />
+										<field name="date_direct_action"
+											attrs="{'readonly':[('state', '!=', 'pm')], 'invisible':[('ready_tobe_done', '=', False)]}" />
+										<field name="degree_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+											attrs="{'readonly':[('state', '!=', 'pm')],'required':[('state', '=', 'pm'),('new_job_id', '!=', False)], 'invisible':[('ready_tobe_done', '=', False)]}" />
 									</group>
 								</group>
 							</page>

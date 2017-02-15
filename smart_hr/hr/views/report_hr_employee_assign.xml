@@ -16,7 +16,7 @@
 								قرار إداري رقم
 								<span t-esc="o.decision_number" />
 								وتاريخ
-								<span t-esc="o.decision_date" />
+								<span t-esc="get_hijri_date(o.decision_date, '-')" />
 							</p>
 							<div class="col-xs-12">
 								<div class="col-xs-3"></div>

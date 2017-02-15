@@ -30,7 +30,7 @@
 							<tr>
 								<td width="50%" colspan="4">إسم الجهة الحكومية: <span t-esc="company.name" /></td>
 								<td width="16.66%">فصل: <span></span></td>
-								<td width="16.66%">الفرع: <span t-esc="move_line.department_id.dep_section.name" /></td>
+								<td width="16.66%">الفرع: <span t-esc="move_line.department_id.name" /></td>
 								<td width="16.66%" >الادارة: <span t-esc="move_line.department_id.code" /></td>
 							</tr>
 							<tr>
@@ -47,7 +47,7 @@
 											<t t-if="job.state=='occupied'"><span class="notokradio"></span></t><t t-if="job.state=='unoccupied'"><span class="okradio"></span></t>شاغرة
 													<t t-if="job.state=='occupied'"><span class="okradio"></span></t><t t-if="job.state=='unoccupied'"><span class="notokradio"></span></t>مشغولة
 											</td>
-								<td width="50%" colspan="3">تاريخ شغلها: <span t-esc="job.occupied_date" /></td>
+								<td width="50%" colspan="3">تاريخ شغلها: <span t-esc="get_hijri_date(job.occupied_date, '-')" /></td>
 							</tr>
 							<tr>
 								<td width="45%" colspan="3">إسم شغلها: <span t-esc="job.employee.name" /></td>

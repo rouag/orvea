@@ -135,7 +135,7 @@
 									type="action">
 									<field name="holiday_count" widget="statinfo" string="الإجازات" />
 								</button>
-							
+
 								<button name="%(hr_contract.act_hr_employee_2_hr_contract)d"
 									class="oe_stat_button" icon="fa-book" type="action"
 									groups="base.group_hr_manager">
@@ -247,6 +247,10 @@
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="type_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+											<field name="degree_id"
+												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+											<field name="grade_id"
+												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="parent_id" string="المدير المباشر" />
 											<field name="service_duration" attrs="{'readonly': 1}" />
 											<field name="promotion_duration" attrs="{'readonly': 1}" />
@@ -336,10 +340,10 @@
 								</page>
 
 								<page string="العقوبات">
-									
-									<field name='sanction_ids' string="العقوبات" readonly="1" 	
-											>
-										<tree string="سجل العقوبات" domain="[('type_sanction.id','=',%(data_hr_sanction_type_alert)d)]}">
+
+									<field name='sanction_ids' string="العقوبات" readonly="1">
+										<tree string="سجل العقوبات"
+											domain="[('type_sanction.id','=',%(data_hr_sanction_type_alert)d)]}">
 											<field name="employee_id" />
 											<field name="type_sanction" />
 
