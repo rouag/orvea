@@ -39,3 +39,10 @@ class ReportEmployeeLend(osv.AbstractModel):
     _inherit = 'report.abstract_report'
     _template = 'smart_hr.report_hr_employee_lend'
     _wrapped_report_class = DateHijriParser
+
+
+class ReportEmployeeAssign(osv.AbstractModel):
+    _name = 'report.smart_hr.report_hr_employee_assign'
+    _inherit = 'report.abstract_report'
+    _template = 'smart_hr.report_hr_employee_assign'
+    _wrapped_report_class = DateHijriParser

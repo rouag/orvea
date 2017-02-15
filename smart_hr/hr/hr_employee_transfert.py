@@ -106,16 +106,19 @@ class HrEmployeeTransfert(models.Model):
         transferts = self.env['hr.employee.transfert'].search([('employee_id', '=', self.employee_id.id), ('state', '=', 'refused')])
         for transfert in transferts:
             today = date.today()
-            days = (today - fields.Date.from_string(transfert.refusing_date)).days
-            if hr_config:
-                if days < hr_config.needed_days:
-                    raise ValidationError(u"لا يمكن تقديم طلب إلى بعد " + str(hr_config.needed_days) + u" يوماً.")
+            refusing_date = fields.Date.from_string(transfert.refusing_date)
+            if refusing_date:
+                days = (today - refusing_date).days
+                if hr_config:
+                    if days < hr_config.needed_days:
+                        raise ValidationError(u"لا يمكن تقديم طلب إلى بعد " + str(hr_config.needed_days) + u" يوماً.")
         # ‫التجربة‬ ‫سنة‬ ‫إستلكمال‬
         recruitement_decision = self.employee_id.decision_appoint_ids.search([('is_started', '=', True), ('state_appoint', '=', 'active')], limit=1)
         if recruitement_decision and recruitement_decision.depend_on_test_periode:
             testing_date_to = recruitement_decision.testing_date_to
-            if fields.Date.from_string(testing_date_to) >= fields.Date.from_string(fields.Datetime.now()):
-                raise ValidationError(u"لايمكن طلب نقل خلال فترة التجربة")
+            if testing_date_to:
+                if fields.Date.from_string(testing_date_to) >= fields.Date.from_string(fields.Datetime.now()):
+                    raise ValidationError(u"لايمكن طلب نقل خلال فترة التجربة")
         # ‫التترقية‬ ‫سنة‬ ‫إستلكمال‬
         if self.employee_id.promotion_duration < 1:
                         raise ValidationError(u"لايمكن طلب نقل خلال أقل من سنة منذ أخر ترقية")
