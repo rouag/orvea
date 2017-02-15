@@ -12,6 +12,8 @@
 			<field name="personnel_hr" eval="True" />
 			<field name="direct_manager" eval="False" />
 			<field name="recrutment_decider" eval="True" />
+			
+
 		</record>
 
 		<record id="data_hr_recrute_agent_public" model="hr.type.appoint">
@@ -23,8 +25,10 @@
 			<field name="direct_manager" eval="True" />
 			<field name="recrutment_decider" eval="False" />
 			<field name="show_in_apoint" eval="False" />
+			
+
 		</record>
-		
+
 		<record id="data_hr_promotion_agent" model="hr.type.appoint">
 			<field name="name">تعيين بالترقية</field>
 
@@ -44,6 +48,8 @@
 			<field name="personnel_hr" eval="True" />
 			<field name="direct_manager" eval="True" />
 			<field name="recrutment_decider" eval="False" />
+			
+
 		</record>
 
 		<record id="data_hr_recrute_salaire_article" model="hr.type.appoint">
@@ -54,6 +60,8 @@
 			<field name="personnel_hr" eval="True" />
 			<field name="direct_manager" eval="True" />
 			<field name="recrutment_decider" eval="False" />
+			
+
 		</record>
 		<record id="data_hr_recrute_contrat" model="hr.type.appoint">
 			<field name="name">تعيين بعقد</field>
@@ -63,6 +71,8 @@
 			<field name="personnel_hr" eval="True" />
 			<field name="direct_manager" eval="False" />
 			<field name="recrutment_decider" eval="False" />
+			
+
 		</record>
 		<record id="data_hr_recrute_public_nosoudi" model="hr.type.appoint">
 			<field name="name"> تعيين غير سعودي على مرتبة رسمية</field>
@@ -72,6 +82,8 @@
 			<field name="personnel_hr" eval="True" />
 			<field name="direct_manager" eval="False" />
 			<field name="recrutment_decider" eval="False" />
+			
+
 		</record>
 
 		<record id="data_hr_recrute_public_retraite" model="hr.type.appoint">
@@ -83,6 +95,8 @@
 			<field name="direct_manager" eval="True" />
 			<field name="recrutment_decider" eval="False" />
 			<field name="ministry_civil" eval="True" />
+			
+
 		</record>
 
 		<record id="data_hr_recrute_Members" model="hr.type.appoint">
@@ -94,13 +108,19 @@
 			<field name="personnel_hr" eval="True" />
 			<field name="direct_manager" eval="False" />
 			<field name="recrutment_decider" eval="True" />
+			
 		</record>
 
 		<record id="data_hr_recrute_from_transfert" model="hr.type.appoint">
 			<field name="name">تعين النقل</field>
 			<field name="code">TR01</field>
 			<field name="show_in_apoint">False</field>
+			</record>
+
+		<record id="data_allowance_appoint" model="hr.allowance.appoint">
+			<field name="hr_allowance_type_id" ref="smart_hr.hr_allowance_type_06" />
 		</record>
+
 	</data>
 </openerp>
 		

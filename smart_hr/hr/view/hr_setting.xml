@@ -26,8 +26,15 @@
 							<group string="إعدادات التكليف‬‬">
 								<field name="assign_duration" />
 							</group>
-							
+
 							<group string="إعدادات الرواتب">
+								<field name="salary_proportion" />
+								<field name="allowance_job_nature" options='{"no_open": True, "no_create": True}' />
+								<field name="allowance_proportion" />
+								<field name="allowance_deputation" options='{"no_open": True, "no_create": True}' />
+								<field name="deputation_days" />
+								<field name="allowance_deportation" options='{"no_open": True, "no_create": True}' />
+								<field name="deportation_amount" />
 							</group>
 						</group>
 					</sheet>

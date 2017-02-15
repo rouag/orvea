@@ -73,7 +73,14 @@
 							<field name="date_test" string="فترة التجربة بالشهر" />
 							<field name="code" />
 							<field name="show_in_apoint" />
-							<field name="for_members"/>
+							<field name="direct_appoint_period"/>
+							<field name="for_members" />
+							<field name="hr_allowance_appoint_id">
+							<tree editable="botttom">
+							<field name="hr_allowance_type_id"/>
+							<field name="salary_number"/>
+							</tree>
+						</field>
 						</group>
 						<group string="المخطط‬‫ الانسيابي‬">
 							<field name="audit" />
@@ -83,8 +90,6 @@
 							<field name="recrutment_decider" />
 							<field name="ministry_civil" />
 							<field name="direct_manager" />
-
-
 
 						</group>
 					</sheet>
@@ -195,7 +200,8 @@
 						</group>
 						<group>
 							<group>
-								<field name="type_appointment" widget="selection"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+								<field name="type_appointment"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 									domain="[('show_in_apoint', '=', True)]"
 									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'done','refuse'])]}" />
 								<field name="transport_alocation"
@@ -222,7 +228,8 @@
 								<br></br>
 								<group>
 									<group>
-										<field name="employee_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+										<field name="employee_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 											attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done','refuse'])],'readonly':['|',('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'done','refuse']), ('type_appointment','=',False)]}" />
 										<field name="number" />
 										<field name="country_id" />
@@ -281,6 +288,7 @@
 									<group>
 										<field name="grade_id" />
 										<field name="degree_id" domain="[('grade_id','=',grade_id)]" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+									
 											attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'manager', 'budget', 'done','refuse'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'manager', 'budget', 'done','refuse'])]}" />
 										<field name="far_age" />
 										<field name="basic_salary" />
@@ -327,14 +335,15 @@
 								</group>
 							</page>
 
-							<page name="public" string="بيانات تقييم مترشح">
+							<page name="public" string="بيانات تقييم مترشح"
+								attrs="{'invisible':[('type_appointment', '!=', %(data_hr_recrute_Members)d)]}">
 								<br></br>
 								<group>
 									<group>
 										<field name="passing_score"
-											attrs="{'invisible':[('type_appointment', '!=', %(data_hr_recrute_Members)d)]}" />
+											attrs="{'readonly':[('state', 'not in',['draft','audit'])],'required':[('state', 'in',['draft','audit'])]}" />
 										<field name="score"
-											attrs="{'invisible':[('type_appointment', '!=', %(data_hr_recrute_Members)d)]}" />
+											attrs="{'readonly':[('state', 'not in',['draft','audit'])],'required':[('state', 'in',['draft','audit'])]}" />
 									</group>
 								</group>
 							</page>
