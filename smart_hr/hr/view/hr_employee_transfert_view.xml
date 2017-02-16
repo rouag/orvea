@@ -25,9 +25,9 @@
 							attrs="{'invisible':['|', ('state', '!=', 'pm'), ('new_job_id', '=', False)]}"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<button name="action_tobe_cancelled_confirm" string="طلب إلغاء"
+						<button name="action_tobe_cancelled_confirm" string="إلغاء"
 							type="object"
-							attrs="{'invisible':['|', ('state', '!=', 'done'), ('is_current_user', '=', False)]}"
+							attrs="{'invisible':['|','|', ('state', '!=', 'done'), ('is_current_user', '=', False), ('tobe_cancelled', '=', True)]}"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_cancelled" string="إعتماد الالغاء"
