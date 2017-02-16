@@ -55,6 +55,7 @@ class HrEmployeeTransfert(models.Model):
 
     transfert_periode_id = fields.Many2one('hr.employee.transfert.periode', string=u'فترة النقل', required=1, readonly=1, states={'new': [('readonly', 0)]})
     is_ended = fields.Boolean(string=u'انتهت', compute='_compute_is_ended')
+    for_members = fields.Boolean(string=u'للاعضاء')
 
     @api.multi
     def _compute_is_ended(self):
@@ -266,6 +267,7 @@ class HrEmployeeTransfertPeriode(models.Model):
     for_member = fields.Boolean(string=u'للأعضاء', default=False)
     is_ended_compute = fields.Boolean(string=u'انتهت', compute='_compute_is_ended')
     is_ended = fields.Boolean(string=u'انتهت')
+    for_members = fields.Boolean(string=u'للاعضاء')
 
     @api.multi
     @api.depends('date_from')

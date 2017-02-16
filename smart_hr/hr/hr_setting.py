@@ -48,3 +48,26 @@ class HrSetting(models.Model):
                 'res_id': hr_setting.id,
             }
             return value
+
+
+class HrAuthorityBoardSetting(models.Model):
+    _name = 'hr.authority.board.setting'
+    _description = u'‫إعدادات مجلس الهيئة‬‬'
+
+    users_number = fields.Integer(string=u'عدد اعضاء الهيئة')
+    job_required_ids = fields.Many2many('hr.job', string='وظائف اعضاء مجلس الهيئة')
+
+    @api.multi
+    def button_authority_board_setting(self):
+        hr_authority_board_setting = self.env['hr.authority.board.setting'].search([], limit=1)
+        if hr_authority_board_setting:
+            value = {
+                'name': u'إعدادات  مجلس الهيئة',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': 'hr.authority.board.setting',
+                'view_id': False,
+                'type': 'ir.actions.act_window',
+                'res_id': hr_authority_board_setting.id,
+            }
+            return value
