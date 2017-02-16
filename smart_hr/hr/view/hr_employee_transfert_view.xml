@@ -24,15 +24,17 @@
 							groups="smart_hr.group_hr_personnel_officer_jobs"
 							attrs="{'invisible':['|', ('state', '!=', 'pm'), ('new_job_id', '=', False)]}"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-							
-						<button name="action_tobe_cancelled_confirm" string="طلب إلغاء" type="object"
+
+						<button name="action_tobe_cancelled_confirm" string="طلب إلغاء"
+							type="object"
 							attrs="{'invisible':['|', ('state', '!=', 'done'), ('is_current_user', '=', False)]}"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						
-						<button name="action_cancelled" string="إعتماد الالغاء" type="object"
+
+						<button name="action_cancelled" string="إعتماد الالغاء"
+							type="object" groups="smart_hr.group_hr_authority_board"
 							attrs="{'invisible':['|', ('state', '!=', 'done'), ('tobe_cancelled', '=', False)]}"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						
+
 						<button name="action_notif" string="تنبيه صاحب الطلب" type="object"
 							groups="smart_hr.group_hr_personnel_officer_jobs"
 							attrs="{'invisible':['|','|', ('state', '!=', 'pm'), ('is_ended', '=', False), ('ready_tobe_done', '=', True)]}"
@@ -41,7 +43,8 @@
 						<button name="%(hr_employee_transfert_report)d" string="طباعة القرار"
 							type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
 
-						<field name="state" widget="statusbar" statusbar_visible="new,waiting,pm,done,refused,cancelled" />
+						<field name="state" widget="statusbar"
+							statusbar_visible="new,waiting,pm,done,refused,cancelled" />
 					</header>
 					<sheet>
 						<field name="is_ended" invisible="1" />
@@ -57,14 +60,17 @@
 								<field name="employee_id" />
 								<field name="transfert_nature" />
 								<field name="transfert_type" />
-								<field name="special_conditions" attrs="{'invisible':[('transfert_type', '!=', 'member')]}" />
+								<field name="special_conditions"
+									attrs="{'invisible':[('transfert_type', '!=', 'member')]}" />
 								<field name="governmental_entity"
 									attrs="{'invisible':[('transfert_nature', '=', 'internal_transfert')]}"
 									options='{"no_open": True, "no_create": True}' />
 								<field name="transfert_periode_id" options='{"no_open": True, "no_create": True}' />
-								<field name="justification_text" attrs="{'invisible':[('special_conditions', '=', True)],'required':[('special_conditions', '=', False)]}" />
-								<field name="special_justification_text" attrs="{'invisible':[('special_conditions', '=', False)],'required':[('special_conditions', '=', True)]}" />
-								
+								<field name="justification_text"
+									attrs="{'invisible':[('special_conditions', '=', True)],'required':[('special_conditions', '=', False)]}" />
+								<field name="special_justification_text"
+									attrs="{'invisible':[('special_conditions', '=', False)],'required':[('special_conditions', '=', True)]}" />
+
 								<field name="note"
 									attrs="{'invisible':[('state', 'in', ['waiting','new'])],'readonly':[('state', 'in', ['done', 'refused'])]}" />
 								<field name="refusing_date" attrs="{'invisible':[('state', '!=', 'refused')]}" />
