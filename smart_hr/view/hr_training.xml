@@ -195,7 +195,7 @@
 							<field name="department_id" readonly="1" options='{"no_open": True, "no_create": True}'/>
 						</group>
 						<group string="الدورات التدربية" attrs="{'readonly' :[('state','!=','new')]}" >
-							<field name="training_id" domain="[('state','=','candidat')]" options='{"no_open": True, "no_create": True}'/>
+							<field name="training_id" domain="[('state','=','candidat')]" options='{"no_open": True, "no_create": True}' attrs="{'readonly' :[('state','!=','new')]}"/>
 							<field name="date_from" readonly="1"/>
 							<field name="date_to" readonly="1"/>
 							<field name="department" readonly="1" />
