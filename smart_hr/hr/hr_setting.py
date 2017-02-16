@@ -16,6 +16,8 @@ class HrSetting(models.Model):
     # النقل
     desire_number = fields.Integer(string=u'عدد الرغبات', default=5)
     needed_days = fields.Integer(string=u'المدة بين رفض طلب نقل وطلب جديد (باليوم)', default=45)
+    years_last_transfert = fields.Integer(string=u'عدد السنوات من أخر نقل', default=3)
+
     # الإعارة
     lend_duration = fields.Integer(string=u'مدة الإعارة (باليوم)', default=365)
     one_max_lend_duration = fields.Integer(string=u'الحد الأقصى للتمديد في المرة (بالأيام)', default=365)
@@ -24,7 +26,7 @@ class HrSetting(models.Model):
     periode_between_lend = fields.Integer(string=u'المدة بين إعارتين (بالسنة)', default=3)
     extend_lend_duration = fields.Integer(string=u'مدة تمديد الإعارة (باليوم)', default=365)
     # والتكليف‬‬
-    assign_duration = fields.Integer(string=u'مدة والتكليف‬‬ (باليوم)', default=365)
+    assign_duration = fields.Integer(string=u'مدة التكليف‬‬ (باليوم)', default=365)
     # الرواتب
     salary_proportion = fields.Float(string=u'نسبة الراتب (%)', default=100)
     allowance_job_nature = fields.Many2one('hr.allowance.type', string=u'بدل طبيعة العمل')
