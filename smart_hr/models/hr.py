@@ -154,15 +154,10 @@ class HrEmployee(models.Model):
     @api.multi
     @api.depends('promotions_history.balance')
     def _compute_promotion_days(self):
-        active_promotions = self.env['hr.employee.promotion.history'].search([('active_duration', '=', 'True'), ('employee_id', '=', self.id)])
-        active_prom = False
-        if active_promotions:
-            for promotion in active_promotions:
-                if not promotion.date_to:
-                    active_prom = promotion
-                    break
-        if active_prom:
-            self.promotion_duration = active_prom.balance
+        for emp in self:
+            active_promotion = self.env['hr.employee.promotion.history'].search([('active_duration', '=', 'True'), ('employee_id', '=', emp.id)], limit=1)
+            if active_promotion:
+                emp.promotion_duration = active_promotion.balance
 
     @api.one
     def _get_first_decision__apoint_date(self):

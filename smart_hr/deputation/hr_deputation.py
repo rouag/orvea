@@ -69,6 +69,7 @@ class HrDeputation(models.Model):
         ('external', u'خارجى')], string=u'نوع الإنتداب', default='internal')
    # city_id = fields.Many2one('res.city', string=u'المدينة')
     category_id = fields.Many2one('hr.deputation.category', string=u'فئة التصنيف')
+    country_ids  = fields.Many2one('res.country',  string=u'البلاد')
     state = fields.Selection([
                               ('draft', u'طلب'),
                               ('audit', u'دراسة الطلب'),
@@ -157,11 +158,24 @@ class HrDeputation(models.Model):
     @api.multi
     def action_audit(self):
         for deputation in self:
-            deputation.state = 'done'   
+            dep_setting = self.env['hr.deputation.setting'].search([], limit=1)
+            if dep_setting:
+            # check duration
+                if deputation.duration > dep_setting.period_decision:
+                    deputation.ministre_report = True
+                    print"hhhhhhh",deputation.ministre_report
+            deputation.state = 'done' 
+              
     @api.multi
     def action_waiting(self):
         for deputation in self:
-            deputation.state = 'done'
+            dep_setting = self.env['hr.deputation.setting'].search([], limit=1)
+            if dep_setting:
+            # check duration
+                if deputation.duration > dep_setting.period_decision:
+                    deputation.ministre_report = True
+                    print"hhhhhhh",deputation.ministre_report
+            deputation.state = 'done' 
 
     @api.multi
     def action_done(self):
@@ -301,3 +315,15 @@ class HrDeputationCategory(models.Model):
         ('c', u'ج'),
     ], string=u'الفئات', default='c')
     country_ids = fields.Many2many('res.country', 'category_deputation_country_rel', 'country_id', 'category_id', string=u'البلاد')
+    
+    _sql_constraints = [
+        ('unique_category', 'UNIQUE(category)', u"لا يمكن تكرار الفئات  "),
+    ]
+    
+    @api.multi
+    def name_get(self):
+        res = []
+        for rec in self:
+            name = dict(self.env['hr.deputation.category'].fields_get(allfields=['category'])['category']['selection'])[str(rec.category)]
+            res.append((rec.id, name))
+        return res

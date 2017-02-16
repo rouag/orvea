@@ -26,7 +26,7 @@ class HrEmployeeTransfert(models.Model):
     new_job_id = fields.Many2one('hr.job', domain=[('state', '=', 'unoccupied')], string=u'الوظيفة المنقول إليها')
     new_specific_id = fields.Many2one('hr.groupe.job', related='new_job_id.specific_id', readonly=1, string=u'المجموعة النوعية')
     new_type_id = fields.Many2one('salary.grid.type', related='new_job_id.type_id', readonly=1, string=u'الصنف')
-    justification_text = fields.Text(string=u'مبررات النقل', readonly=1, required=1, states={'new': [('readonly', 0)]})
+    justification_text = fields.Text(string=u'مبررات النقل', readonly=1, states={'new': [('readonly', 0)]})
     note = fields.Text(string=u'ملاحظات')
     same_group = fields.Boolean(compute='_compute_same_specific_group', default=False)
     ready_tobe_done = fields.Boolean(default=False)
@@ -47,25 +47,40 @@ class HrEmployeeTransfert(models.Model):
                               ('pm', u'شؤون الموظفين'),
                               ('done', u'اعتمدت'),
                               ('refused', u'رفض'),
+                              ('cancelled', u'ملغى'),
                               ], readonly=1, default='new', string=u'الحالة')
-    transfert_type = fields.Selection([('internal_transfert', u'نقل داخلي'),
-                                       ('external_transfert_out', u'نقل خارجي (من الهيئة إلى جهة أخرى)'),
-                                       ('external_transfert_in', u'نقل خارجي (إلى الهيئة)'),
-                                       ], readonly=1, states={'new': [('readonly', 0)]}, default='internal_transfert', required=1, string=u'طبيعة النقل')
+    transfert_nature = fields.Selection([('internal_transfert', u'نقل داخلي'),
+                                         ('external_transfert_out', u'نقل خارجي (من الهيئة إلى جهة أخرى)'),
+                                         ('external_transfert_in', u'نقل خارجي (إلى الهيئة)'),
+                                         ], readonly=1, states={'new': [('readonly', 0)]}, default='internal_transfert', required=1, string=u'طبيعة النقل')
+
+    transfert_type = fields.Selection([('employee', u'نقل موظفين'),
+                                       ('member', u'نقل أعضاء'),
+                                       ], readonly=1, states={'new': [('readonly', 0)]}, default='employee', required=1, string=u'نوع النقل')
+    special_conditions = fields.Boolean(string=u'ضروف خاصة', default=False)
+    special_justification_text = fields.Text(string=u'مبررات الظروف الخاصة', readonly=1, states={'new': [('readonly', 0)]})
 
     transfert_periode_id = fields.Many2one('hr.employee.transfert.periode', string=u'فترة النقل', required=1, readonly=1, states={'new': [('readonly', 0)]})
     is_ended = fields.Boolean(string=u'انتهت', compute='_compute_is_ended')
+    for_members = fields.Boolean(string=u'للاعضاء')
+    tobe_cancelled = fields.Boolean(string=u'سيلغى', default=False)
+    is_current_user = fields.Boolean(string='Is Current User', compute='_is_current_user')
+
+    @api.multi
+    @api.depends('employee_id')
+    def _is_current_user(self):
+        for rec in self:
+            if rec.employee_id.user_id.id == rec._uid:
+                rec.is_current_user = True
 
     @api.multi
     def _compute_is_ended(self):
         for rec in self:
             # compute is_ended periode
-            print rec.is_ended
             if rec.transfert_periode_id.date_to < datetime.today().strftime('%Y-%m-%d'):
                 rec.is_ended = True
             else:
                 rec.is_ended = False
-            print rec.is_ended
 
     @api.multi
     @api.depends('new_specific_id', 'specific_id')
@@ -76,7 +91,7 @@ class HrEmployeeTransfert(models.Model):
             else:
                 rec.same_group = False
 
-    @api.onchange('transfert_periode_id')
+    @api.onchange('transfert_periode_id', 'transfert_type')
     def _onchange_transfert_periode_id(self):
         if not self.transfert_periode_id:
             # do not allow creating tranfert if there is no open periode
@@ -84,7 +99,7 @@ class HrEmployeeTransfert(models.Model):
             open_periodes = self.env['hr.employee.transfert.periode'].search([('date_to', '>=', datetime.today().strftime('%Y-%m-%d'))])
             if open_periodes:
                 open_periodes_ids = [rec.id for rec in open_periodes]
-                res['domain'] = {'transfert_periode_id': [('id', 'in', open_periodes_ids), ('for_member', '=', False)]}
+                res['domain'] = {'transfert_periode_id': [('id', 'in', open_periodes_ids), ('for_member', '=', (self.transfert_type == 'member'))]}
                 return res
             else:
                 res['domain'] = {'transfert_periode_id': [('id', '=', -1)]}
@@ -108,40 +123,69 @@ class HrEmployeeTransfert(models.Model):
                 raise ValidationError(u"لا يمكن إضافة أكثر من " + str(hr_config.desire_number) + u" رغبات.")
 
     @api.multi
-    @api.constrains('transfert_type', 'desire_ids')
+    @api.constrains('transfert_nature', 'desire_ids')
     def check_constrains(self):
         self.ensure_one()
         hr_config = self.env['hr.setting'].search([], limit=1)
+        # 1- constrainte for normal employees without special conditions
+        if self.transfert_type == 'employee' and self.special_conditions is False:
+            # check if there is a refused transfert demand before 45days
+            transferts = self.env['hr.employee.transfert'].search([('employee_id', '=', self.employee_id.id), ('state', '=', 'refused')])
+            for transfert in transferts:
+                today = date.today()
+                refusing_date = fields.Date.from_string(transfert.refusing_date)
+                if refusing_date:
+                    days = (today - refusing_date).days
+                    if hr_config:
+                        if days < hr_config.needed_days:
+                            raise ValidationError(u"لا يمكن تقديم طلب إلى بعد " + str(hr_config.needed_days) + u" يوماً.")
+            # ‫التجربة‬ ‫سنة‬ ‫إستلكمال‬
+            recruitement_decision = self.employee_id.decision_appoint_ids.search([('is_started', '=', True), ('state_appoint', '=', 'active')], limit=1)
+            if recruitement_decision and recruitement_decision.depend_on_test_periode:
+                testing_date_to = recruitement_decision.testing_date_to
+                if testing_date_to:
+                    if fields.Date.from_string(testing_date_to) >= fields.Date.from_string(fields.Datetime.now()):
+                        raise ValidationError(u"لايمكن طلب نقل خلال فترة التجربة")
+            # ‫التترقية‬ ‫سنة‬ ‫إستلكمال‬
+            if self.employee_id.promotion_duration < 1:
+                            raise ValidationError(u"لايمكن طلب نقل خلال أقل من سنة منذ أخر ترقية")
+            # check desire_ids length from config
+            if hr_config:
+                if len(self.desire_ids) > hr_config.desire_number:
+                    raise ValidationError(u"لا يمكن إضافة أكثر من " + str(hr_config.desire_number) + u" رغبات.")
 
-        # check if there is a refused transfert demand before 45days
-        transferts = self.env['hr.employee.transfert'].search([('employee_id', '=', self.employee_id.id), ('state', '=', 'refused')])
-        for transfert in transferts:
+        # 2- constraintes for members without special conditions
+        if self.transfert_type == 'member' and self.special_conditions is False:
+            # ‫التترقية‬ ‫سنة‬ ‫إستلكمال‬
+            if self.employee_id.promotion_duration < 1:
+                            raise ValidationError(u"لايمكن طلب نقل خلال أقل من سنة منذ أخر ترقية أو تعين")
+            # check 3 years constrainte from last transfert
+            last_transfert_id = self.env['hr.employee.transfert'].search([('id', '!=', self.id)], order="create_date desc", limit=1)
             today = date.today()
-            refusing_date = fields.Date.from_string(transfert.refusing_date)
-            if refusing_date:
-                days = (today - refusing_date).days
+            create_date = fields.Date.from_string(last_transfert_id.create_date)
+            if create_date:
+                years = relativedelta(today - create_date).years
                 if hr_config:
-                    if days < hr_config.needed_days:
-                        raise ValidationError(u"لا يمكن تقديم طلب إلى بعد " + str(hr_config.needed_days) + u" يوماً.")
-        # ‫التجربة‬ ‫سنة‬ ‫إستلكمال‬
-        recruitement_decision = self.employee_id.decision_appoint_ids.search([('is_started', '=', True), ('state_appoint', '=', 'active')], limit=1)
-        if recruitement_decision and recruitement_decision.depend_on_test_periode:
-            testing_date_to = recruitement_decision.testing_date_to
-            if testing_date_to:
-                if fields.Date.from_string(testing_date_to) >= fields.Date.from_string(fields.Datetime.now()):
-                    raise ValidationError(u"لايمكن طلب نقل خلال فترة التجربة")
-        # ‫التترقية‬ ‫سنة‬ ‫إستلكمال‬
-        if self.employee_id.promotion_duration < 1:
-                        raise ValidationError(u"لايمكن طلب نقل خلال أقل من سنة منذ أخر ترقية")
-        # check desire_ids length from config
-        if hr_config:
-            if len(self.desire_ids) > hr_config.desire_number:
-                raise ValidationError(u"لا يمكن إضافة أكثر من " + str(hr_config.desire_number) + u" رغبات.")
+                    if years < hr_config.years_last_transfert:
+                        raise ValidationError(u"لم تتم " + str(hr_config.years_last_transfert) + u" سنوات من أخر نقل.")
+            # chek if there is any sanction for the emmployee
+            if len(self.employee_id.sanction_ids) > 0:
+                raise ValidationError(u"لدى الموظف عقوبات.")
 
     @api.multi
     def action_waiting(self):
         self.ensure_one()
         self.state = 'waiting'
+
+    @api.multi
+    def action_cancelled(self):
+        self.ensure_one()
+        self.state = 'cancelled'
+
+    @api.multi
+    def action_tobe_cancelled_confirm(self):
+        self.ensure_one()
+        self.tobe_cancelled = True
 
     @api.multi
     def action_notif(self):
@@ -236,7 +280,7 @@ class HrEmployeeTransfert(models.Model):
                                                       'res_action': 'smart_hr.action_hr_employee_transfert',
                                                       'notif': True
                                                       })
-            if rec.transfert_type == 'external_transfert_out':
+            if rec.transfert_nature == 'external_transfert_out':
                 # send notification for the employee
                 self.env['base.notification'].create({'title': u'إشعار بموافقة طلب',
                                                       'message': u'لقد تمت الموافقة على طلب النقل - الرجاء جلب طلب النقل من الجهة.',
@@ -266,6 +310,7 @@ class HrEmployeeTransfertPeriode(models.Model):
     for_member = fields.Boolean(string=u'للأعضاء', default=False)
     is_ended_compute = fields.Boolean(string=u'انتهت', compute='_compute_is_ended')
     is_ended = fields.Boolean(string=u'انتهت')
+    for_members = fields.Boolean(string=u'للاعضاء')
 
     @api.multi
     @api.depends('date_from')
@@ -311,6 +356,8 @@ class HrTransfertSortingLine(models.Model):
 
     hr_transfert_sorting_id = fields.Many2one('hr.transfert.sorting', string=u'إجراء الترتيب')
     hr_employee_transfert_id = fields.Many2one('hr.employee.transfert', string=u'طلب نقل موظف')
+    recruiter_date = fields.Date(string=u'تاريخ التعين بالجهة', related='hr_employee_transfert_id.employee_id.recruiter_date')
+    age = fields.Integer(string=u'السن', related='hr_employee_transfert_id.employee_id.age')
     job_id = fields.Many2one('hr.job', related='hr_employee_transfert_id.job_id', string=u'الوظيفة')
     occupied_date = fields.Date(related='job_id.occupied_date', string=u'تاريخ الشغول')
     transfert_create_date = fields.Datetime(string=u'تاريخ الطلب', related="hr_employee_transfert_id.create_date", readonly=1)
@@ -342,5 +389,29 @@ class HrTransfertSortingLine(models.Model):
         return res
 
 
+class HrTransfertCancel(models.Model):
+    _name = 'hr.transfert.cancel'
+    _description = u'‫إلغاء نقل أعضاء‬‬'
 
+    name = fields.Char(string=u'المسمى', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
+    line_ids = fields.One2many('hr.transfert.sorting.line', 'hr_transfert_sorting_id', string=u'طلبات النقل', readonly=0, states={'done': [('readonly', 1)]})
+    state = fields.Selection([('new', u'طلب'),
+                              ('commission_president', u'رئيس الجهة'),
+                              ('done', u'اعتمدت'),
+                              ], readonly=1, default='new', string=u'الحالة')
 
+    @api.multi
+    def action_commission_president(self):
+        self.ensure_one()
+        self.state = 'commission_president'
+
+    @api.multi
+    def action_done(self):
+        self.ensure_one()
+        for rec in self.line_ids:
+            if rec.is_conflected:
+                raise ValidationError(u"الرجاء حل الخلاف في الوظائف المختارة.")
+        for rec in self.line_ids:
+            rec.hr_employee_transfert_id.write({'new_job_id': rec.new_job_id.id, 'ready_tobe_done': True})
+        self.state = 'done'

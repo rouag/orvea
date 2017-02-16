@@ -243,9 +243,7 @@
 											'required':[('type_appointment', '=', %(data_hr_new_agent_public)d)],'readonly':[('state', 'in', [ 'waiting','manager',  'hrm', 'budget', 'done'])]}" />
 
 										<field name="order_enquiry_file" filename="order_enquiry_file_name"
-											attrs="{'invisible':['|',('state', 'not in', ['draft','waiting', 'manager','hrm', 'budget', 'done']),
-											('type_appointment', 'not in',[ %(data_hr_new_agent_public)d,%(data_hr_recrute_Members)d])],
-											'required':[('type_appointment', 'in', [ %(data_hr_new_agent_public)d,%(data_hr_recrute_Members)d])],'readonly':[('state', 'in', [ 'waiting','manager',  'hrm', 'budget', 'done'])]}" />
+											attrs="{'invisible':['|',('state', 'not in', ['draft','waiting', 'manager','hrm', 'budget', 'done']),('type_appointment', '!=', %(data_hr_new_agent_public)d)],'required':[('type_appointment', '=', %(data_hr_new_agent_public)d)],'readonly':[('state', 'in', [ 'waiting','manager',  'hrm', 'budget', 'done'])]}" />
 										<field name="file_salar_recent" filename="file_salar_recent_name"
 											attrs="{'invisible':['|',('state', 'not in', ['draft','waiting','manager', 'hrm', 'budget', 'done']),('type_appointment', '!=', %(data_hr_new_agent_public)d)],'required':[('type_appointment', '=', %(data_hr_new_agent_public)d)],'readonly':[('state', 'in', [ 'waiting','manager',  'hrm', 'budget', 'done'])]}" />
 										<field name="file_engagement" widget="many2many_binary"
@@ -289,8 +287,8 @@
 									</group>
 									<group>
 										<field name="grade_id" />
-										<field name="degree_id" domain="[('grade_id','=',grade_id)]"
-											widget="selection"
+										<field name="degree_id" domain="[('grade_id','=',grade_id)]" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+									
 											attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'manager', 'budget', 'done','refuse'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'manager', 'budget', 'done','refuse'])]}" />
 										<field name="far_age" />
 										<field name="basic_salary" />
@@ -323,11 +321,11 @@
 											attrs="{'invisible':[('state', 'not in', ['hrm','direct',  'budget', 'done','refuse'])],'required':[('state','=','hrm')],'readonly':[('state', 'in', [ 'direct',   'budget','done','refuse'])]}" />
 
 										<field name="number_direct_appoint"
-											attrs="{'invisible':['|',('state', 'not in', ['hrm','direct',  'budget', 'done','refuse']),('type_appointment', '=', %(data_hr_recrute_Members)d)],'required':[('state','=','hrm'),('type_appointment', '!=', %(data_hr_recrute_Members)d)],'readonly':[('state', 'in', [ 'direct', 'done',  'budget','refuse'])]}" />
+											attrs="{'invisible':[('state', 'not in', ['hrm','direct',  'budget', 'done','refuse'])],'required':[('state','=','hrm')],'readonly':[('state', 'in', [ 'direct', 'done',  'budget','refuse'])]}" />
 										<field name="date_direct_appoint"
-											attrs="{'invisible':['|',('state', 'not in', ['hrm','direct',  'budget','done','refuse']),('type_appointment', '=', %(data_hr_recrute_Members)d)],'required':[('state','=','hrm'),('type_appointment', '!=', %(data_hr_recrute_Members)d)],'readonly':[('state', 'in', [ 'direct', 'done',  'budget','refuse'])]}" />
+											attrs="{'invisible':[('state', 'not in', ['hrm','direct',  'budget','done','refuse'])],'required':[('state','=','hrm')],'readonly':[('state', 'in', [ 'direct', 'done',  'budget','refuse'])]}" />
 										<field name="file_direct_appoint" filename="file_direct_appoint_name"
-											attrs="{'invisible':['|',('state', 'not in', ['hrm','direct', 'budget', 'done','refuse']),('type_appointment', '=', %(data_hr_recrute_Members)d)],'required':[('state','=','hrm'),('type_appointment', '!=', %(data_hr_recrute_Members)d)],'readonly':[('state', 'in', [ 'direct', 'budget', 'done','refuse'])]}" />
+											attrs="{'invisible':[('state', 'not in', ['hrm','direct', 'budget', 'done','refuse'])],'required':[('state','=','hrm')],'readonly':[('state', 'in', [ 'direct', 'budget', 'done','refuse'])]}" />
 									</group>
 
 
