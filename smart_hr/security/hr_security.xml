@@ -274,6 +274,13 @@
 			<field name="implied_ids"
 				eval="[(4, ref('base.group_user')),(4, ref('smart_hr.group_employees'))]" />
 		</record>
+		
+		<record id="group_training_specialiter" model="res.groups">
+			<field name="category_id" ref="base.module_category_human_resources" />
+			<field name="name">أخصائي شؤون الموظفون -التدريب</field>
+			<field name="implied_ids"
+				eval="[(4, ref('base.group_user')),(4, ref('smart_hr.group_employees'))]" />
+		</record>
 
 	</data>
 
