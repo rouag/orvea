@@ -336,9 +336,7 @@
 									</field>
 
 								</page>
-								<page string="الحسميات">
-								</page>
-
+	
 								<page string="العقوبات">
 
 									<field name='sanction_ids' string="العقوبات" readonly="1">

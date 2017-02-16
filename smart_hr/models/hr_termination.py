@@ -6,6 +6,8 @@
 from openerp import fields, models, api, _
 from openerp.exceptions import ValidationError
 from openerp.tools import SUPERUSER_ID
+from datetime import date, datetime, timedelta
+
 
 class hr_termination(models.Model):
     _name = 'hr.termination'
@@ -74,19 +76,19 @@ class hr_termination(models.Model):
 
     @api.multi
     def check_constraintes(self):
-        if self.termination_type_id.id == self.env.ref['smart_hr.data_hr_ending_service_type_normal']\
-         and self.employee_id.is_member is True and self.termination_type_id.include_members:
+        if self.termination_type_id.years>0:
             if self.employee_id.age < self.termination_type_id.years:
-                raise ValidationError(u"السن الادنى لتقاعد عضو هو %s"%self.termination_type_id.years)
+                raise ValidationError(u" السن الادنى  هو %s سنة"%self.termination_type_id.years)
+
         if self.termination_type_id.evaluation_condition:
             years_progress = self.termination_type_id.years_progress
             for year in range(1,years_progress):
                 employee_evaluation_id = self.env['hr.employee.evaluation.level'].search([('employee_id', '=', self.employee_id.id),('year', '=',date.today().year-year)], limit=1)
-            if employee_evaluation_id:
-                if employee_evaluation_id.degree_id.id not in self.holiday_status_id.evaluation_required.ids:
-                    raise ValidationError(u"لم تتحصل على تقييم أدائ وظيفي‬ المطلوب.")
-            else:
-                raise ValidationError(u"لا يوجد تقييم وظيفي خاص بالموظف للسنة الفارطة")
+                if employee_evaluation_id:
+                    if employee_evaluation_id.degree_id.id not in self.termination_type_id.evaluation_required.ids:
+                        raise ValidationError(u"الرجاء مراجعة تقييم وظيفي خاص لنوع طي القيد")
+                else:
+                    raise ValidationError(u"لا يوجد تقييم وظيفي خاص بالموظف ل%sسنة"%years_progress)
 
 
     @api.multi
