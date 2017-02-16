@@ -6,6 +6,7 @@ from dateutil import relativedelta
 import time as time_date
 from datetime import datetime
 from openerp.addons.smart_base.util.time_util import days_between
+from docutils.nodes import line
 
 MONTHS = [('01', 'محرّم'),
           ('02', 'صفر'),
@@ -129,6 +130,8 @@ class hrDifference(models.Model):
                                   'type': 'deputation'}
                 line_ids.append(deputation_val)
 
+            # فروقات النقل
+            line_ids += self.get_difference_transfert()
             self.line_ids = line_ids
 
     @api.one
@@ -142,6 +145,54 @@ class hrDifference(models.Model):
     @api.one
     def action_refuse(self):
         self.state = 'cancel'
+
+    @api.multi
+    def get_difference_transfert(self):
+        self.ensure_one()
+        line_ids = []
+        hr_setting = self.env['hr.setting'].search([], limit=1)
+        if hr_setting:
+            transfert_ids = self.env['hr.employee.transfert'].search([('create_date', '>=', self.date_from),
+                                                                      ('create_date', '<=', self.date_to),
+                                                                      ('state', '=', 'done')])
+            for transfert in transfert_ids:
+                # 1- بدل طبيعة العمل
+                amount = (hr_setting.allowance_proportion * transfert.employee_id.wage)
+                if amount > 0:
+                    amount = amount / 100
+                vals = {'difference_id': self.id,
+                        'name': hr_setting.allowance_job_nature.name,
+                        'employee_id': transfert.employee_id.id,
+                        'number_of_days': 0,
+                        'number_of_hours': 0.0,
+                        'amount': amount,
+                        'type': 'transfert'}
+                line_ids.append(vals)
+
+                # 2- بدل إنتداب
+                amount = (hr_setting.deputation_days * (transfert.employee_id.wage / 22))
+                if amount > 0:
+                    amount = amount / 100
+                vals = {'difference_id': self.id,
+                        'name': hr_setting.allowance_deputation.name,
+                        'employee_id': transfert.employee_id.id,
+                        'number_of_days': hr_setting.deputation_days,
+                        'number_of_hours': 0.0,
+                        'amount': amount,
+                        'type': 'transfert'}
+                line_ids.append(vals)
+                # 2- بدل ترحيل
+                amount = (hr_setting.deportation_amount)
+                vals = {'difference_id': self.id,
+                        'name': hr_setting.allowance_deportation.name,
+                        'employee_id': transfert.employee_id.id,
+                        'number_of_days': 0,
+                        'number_of_hours': 0.0,
+                        'amount': amount,
+                        'type': 'transfert'}
+                line_ids.append(vals)
+        print line_ids
+        return line_ids
 
 
 class hrDifferenceLine(models.Model):
@@ -167,4 +218,5 @@ class hrDifferenceLine(models.Model):
                              ('commissioning', 'تكليف'),
                              ('deputation', 'إنتداب'),
                              ('overtime', 'خارج الدوام'),
+                             ('transfert', 'نقل'),
                              ('training', 'تدريب')], string='النوع', readonly=1)
