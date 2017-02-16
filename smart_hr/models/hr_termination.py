@@ -30,7 +30,7 @@ class hr_termination(models.Model):
     age = fields.Integer(string=u'السن', related='employee_id.age')
     country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
     # Termination Info
-    termination_type_id = fields.Many2one('hr.termination.type', string=u'نوع الطى', required=1)
+    termination_type_id = fields.Many2one('hr.termination.type', string=u'نوع الطي', required=1)
     nb_salaire = fields.Float(related='termination_type_id.nb_salaire', store=True, readonly=True, string=u'عدد الرواتب المستحق')
     all_holidays = fields.Boolean(related='termination_type_id.all_holidays', store=True, readonly=True,string=u'كل الإجازة')
     max_days = fields.Float(related='termination_type_id.max_days', store=True, readonly=True, string=u'الحد الاقصى لأيام الإجازة')
@@ -63,19 +63,37 @@ class hr_termination(models.Model):
     def unlink(self):
         for rec in self:
             if rec.state != 'draft' and self._uid != SUPERUSER_ID:
-                raise ValidationError(u'لا يمكن حذف طى القيد فى هذه المرحلة يرجى مراجعة مدير النظام')
+                raise ValidationError(u'لا يمكن حذف طي القيد فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(hr_termination, self).unlink()
 
     @api.constrains('employee_id')
     def check_employee_id(self):
         for ter in self:
             if self.search_count([('employee_id', '=', ter.employee_id.id), ('state', '=', 'done')]):
-                raise ValidationError(u"هذا الموظف تم أعتماد طى قيد لديه من قبل")
+                raise ValidationError(u"هذا الموظف تم أعتماد طي قيد لديه من قبل")
 
-    @api.one
+    @api.multi
+    def check_constraintes(self):
+        if self.termination_type_id.id == self.env.ref['smart_hr.data_hr_ending_service_type_normal']\
+         and self.employee_id.is_member is True and self.termination_type_id.include_members:
+            if self.employee_id.age < self.termination_type_id.years:
+                raise ValidationError(u"السن الادنى لتقاعد عضو هو %s"%self.termination_type_id.years)
+        if self.termination_type_id.evaluation_condition:
+            years_progress = self.termination_type_id.years_progress
+            for year in range(1,years_progress):
+                employee_evaluation_id = self.env['hr.employee.evaluation.level'].search([('employee_id', '=', self.employee_id.id),('year', '=',date.today().year-year)], limit=1)
+            if employee_evaluation_id:
+                if employee_evaluation_id.degree_id.id not in self.holiday_status_id.evaluation_required.ids:
+                    raise ValidationError(u"لم تتحصل على تقييم أدائ وظيفي‬ المطلوب.")
+            else:
+                raise ValidationError(u"لا يوجد تقييم وظيفي خاص بالموظف للسنة الفارطة")
+
+
+    @api.multi
     def button_hrm(self):
-        for ter in self:
-            ter.state = 'hrm'
+        self.ensure_one()
+        self.check_constraintes()
+        self.state = 'hrm'
 
     @api.one
     def button_done(self):
@@ -124,6 +142,5 @@ class hr_termination_type(models.Model):
     evaluation_condition = fields.Boolean(string=u'يطبق شرط تقييم الأداء')
     years_progress = fields.Integer(string=u'عدد سنوات التقيم')
     evaluation_required = fields.Many2many('hr.evaluation.result.foctionality', string=u'التقييمات المطلوبة')
-    
-  
-    
+    include_members = fields.Boolean(string=u'تشمل اعضاء الهيئة')
+    years = fields.Integer(string=u'السن')

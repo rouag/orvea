@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data noupdate="0">
+	
+			<record id="group_hr_authority_board" model="res.groups">
+			<field name="category_id" ref="base.module_category_human_resources" />
+			<field name="name">مجلس الهيئة</field>
+			<field name="implied_ids" eval="[(4, ref('group_employee'))]" />
+		</record>
 		<record id="group_employees" model="res.groups">
 			<field name="name">الموظفون</field>
 			<field name="category_id" ref="base.module_category_human_resources" />
