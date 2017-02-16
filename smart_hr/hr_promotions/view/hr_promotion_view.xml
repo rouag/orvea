@@ -11,26 +11,32 @@
 
 					<header>
 						<field name="emplyoee_state" invisible="1" />
+						<button name="button_promotion_type" string="إرسال" type="object"
+							states="promotion_type" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion,smart_hr.group_promotion_checker" />
+						/>
 						<button name="button_confirmed" string="إرسال" type="object"
 							states="draft" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 							groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion,smart_hr.group_promotion_checker" />
-						
+
 						<button name="button_job_promotion" string="إرسال" type="object"
 							states="job_promotion" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 							groups="smart_hr.group_responsable_promotion" />
-							
-						
-							
+
+
+
 						<button name="button_transfer_employee" string=" إرسال للموظفين "
-							groups="smart_hr.group_responsable_promotion" type="object" attrs="{'invisible': ['|',('emplyoee_state', '=', True ),('state', '!=', 'manager' )]}" 
+							groups="smart_hr.group_responsable_promotion" type="object"
+							attrs="{'invisible': ['|',('emplyoee_state', '=', True ),('state', '!=', 'manager' )]}"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-							
-							
-							
+
+
+
 						<button name="button_transfer_minister" string="إرسال "
 							groups="smart_hr.group_responsable_promotion" type="object"
-							 confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" attrs="{'invisible': ['|',('emplyoee_state', '=', False ),('state', '!=','manager' )]}" />
-						
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							attrs="{'invisible': ['|',('emplyoee_state', '=', False ),('state', '!=','manager' )]}" />
+
 						<button name="button_transfer_hrm" string="موافقة" type="object"
 							groups="smart_hr.group_third_party_promotion" states="minister"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
@@ -43,15 +49,16 @@
 							attrs="{'invisible': ['|',('state', '=', 'draft'),('state', '=', 'done')]}"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<field name="state" widget="statusbar"
-							statusbar_visible="draft,job_promotion,manager,minister,hrm,done" />
+							statusbar_visible="promotion_type,draft,job_promotion,manager,minister,hrm,done" />
 					</header>
 					<sheet>
 						<group>
 							<field name="date" readonly="1" />
+							<field name="members_promotion" states='promotion_type' />
 							<field name="name" readonly="1"
-								attrs="{'invisible': [('state', '=', 'draft')]}" />
-							<field name="date_reponse_employee" 
-								attrs="{'invisible': [('state', '!=', 'manager')],'required' :[('state','=','manager')],'readonly' :[('emplyoee_state','=',True)]}"  />
+								attrs="{'invisible': [('state', 'in',['draft','promotion_type'] )]}" />
+							<field name="date_reponse_employee"
+								attrs="{'invisible': [('state', '!=', 'manager')],'required' :[('state','=','manager')],'readonly' :[('emplyoee_state','=',True)]}" />
 
 						</group>
 						<group>
@@ -89,9 +96,12 @@
 								<field name="employee_promotion_line_ids" options="{'no_open': True}">
 									<tree editable="bottom" create="0">
 										<field name="employee_id" readonly="1" style="width:30%;" />
+										<field name="identification_id" readonly="1" />
+										<field name="begin_work_date" readonly="1" />
 										<field name="demande_promotion_id" readonly="1" />
 										<field name="old_job_id" readonly="1" />
 										<field name="old_number_job" readonly="1" />
+										<field name="decision_appoint_date" readonly="1" />
 										<field name="emp_department_old_id" readonly="1" />
 										<field name="emp_grade_id_old" readonly="1" />
 										<field name="point_seniority" readonly="1" />
@@ -125,7 +135,8 @@
 								attrs="{'invisible': [('state', '!=', 'manager'),('state', '!=', 'minister'),('state', '!=', 'hrm'),('state', '!=', 'done')],}">
 								<field name="employee_job_promotion_line_ids" options="{'no_open': True}">
 									<tree create="false" editable="bottom" delete="0">
-										<field name="employee_id" options='{"no_open": True, "no_create": True}' readonly="1" style="width:40%;" />
+										<field name="employee_id" options='{"no_open": True, "no_create": True}'
+											readonly="1" style="width:40%;" />
 										<field name="employee_job_ids" invisible="1" />
 										<field name="demande_promotion_id" readonly="1"
 											options='{"no_open": True, "no_create": True}' />
@@ -140,11 +151,12 @@
 										<field name="point_training" readonly="1" />
 										<field name="point_functionality" readonly="1" />
 										<field name="sum_point" readonly="1" />
-										<field name="new_job_id" options='{"no_open": True, "no_create": True}' domain="[('occupied_promotion','=',True)]"/>
+										<field name="new_job_id" options='{"no_open": True, "no_create": True}'
+											domain="[('occupied_promotion','=',True)]" />
 										<field name="new_number_job" readonly="1" />
 										<field name="new_city_jobs" readonly="1" />
 										<field name="emp_grade_id_new" readonly="1" />
-										<field name="state"  readonly="1" />
+										<field name="state" readonly="1" />
 										<field name="promotion_supp" readonly="1"
 											attrs="{'invisible': [('state', '!=', 'hrm'),('state', '!=', 'done')],}" />
 										<field name="date_direct_action" readonly="1" />
@@ -259,14 +271,15 @@
 			parent="hr_root_organisation_configuration" name="أنواع الترقية"
 			sequence="5"
 			groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion" />
-		
+
 
 		<record model="ir.ui.view" id="hr_promotion_employee_affected_tree_view">
 			<field name="name">hr.promotion.employee.job.tree</field>
 			<field name="model">hr.promotion.employee.job</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
-				<tree string="ترشيحاتي فالترقية"  create="0" delete='0' duplicate='0'>
+				<tree string="ترشيحاتي فالترقية" create="0" delete='0'
+					duplicate='0'>
 
 					<field name="employee_id" readonly="1" />
 					<field name="demande_promotion_id" readonly="1"
@@ -285,12 +298,10 @@
 					<field name="new_job_id" readonly="1" />
 					<field name="new_number_job" readonly="1" />
 					<field name="new_city_jobs" readonly="1" />
-					<field name="state"  readonly="1" />
+					<field name="state" readonly="1" />
 					<field name="emp_grade_id_new" readonly="1" />
-					<field name="promotion_supp" readonly="1"
-					 />
-					 <field name="state" readonly="1"
-					 />
+					<field name="promotion_supp" readonly="1" />
+					<field name="state" readonly="1" />
 					<field name="date_direct_action" readonly="1" />
 
 				</tree>
@@ -303,17 +314,16 @@
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form create="0" delete='0' duplicate='0'>
-				<header>
-				<button name="promotion_confirmed" string="موافقة" type="object"
+					<header>
+						<button name="promotion_confirmed" string="موافقة" type="object"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" states="employee_confirmed" />
-				
-				<button name="promotion_refuse" string="رفض" type="object"
+
+						<button name="promotion_refuse" string="رفض" type="object"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" states="employee_confirmed" />
-				<field name="state" widget="statusbar"
-							statusbar_visible="employee_confirmed,done,refuse" />
-				</header>
+						<field name="state" widget="statusbar" statusbar_visible="employee_confirmed,done,refuse" />
+					</header>
 					<sheet string="ترشيحاتي فالترقية">
-						<group string="الوظيفة التي تم ترشيحك عليها" >
+						<group string="الوظيفة التي تم ترشيحك عليها">
 							<field name="new_job_id" readonly="1" />
 							<field name="new_number_job" readonly="1" />
 							<field name="emp_grade_id_new" readonly="1" />
@@ -329,10 +339,12 @@
 			<field name="name">ترشيحاتي فالترقية</field>
 			<field name="res_model">hr.promotion.employee.job</field>
 			<field name="view_type">form</field>
-			<field name="domain">[('employee_id.user_id', '=', uid),('state', '=', 'employee_confirmed')]</field>
+			<field name="domain">[('employee_id.user_id', '=', uid),('state', '=',
+				'employee_confirmed')]
+			</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-		
+
 
 		<menuitem id="menu_my_promotion_affecteds" action="action_hr_promotion_employee_affected"
 			parent="hr_root_organisation_action" name="ترشيحاتي فالترقية"
