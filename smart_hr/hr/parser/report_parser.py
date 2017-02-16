@@ -5,7 +5,6 @@ from openerp.report import report_sxw
 from openerp import fields
 from dateutil.relativedelta import relativedelta
 from umalqurra.hijri_date import HijriDate
-from openerp import api
 
 
 class EmployeeTransfert(report_sxw.rml_parse):
@@ -46,6 +45,7 @@ class EmployeeLend(report_sxw.rml_parse):
         super(EmployeeLend, self).__init__(cr, uid, name, context=context)
         self.localcontext.update({
             'get_hijri_date': self._get_hijri_date,
+            'get_decision_appoint': self._get_decision_appoint,
         })
 
     def _get_hijri_date(self, date, separator):
@@ -57,6 +57,13 @@ class EmployeeLend(report_sxw.rml_parse):
             date = fields.Date.from_string(date)
             hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
             return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+        return None
+
+    def _get_decision_appoint(self, employee_id):
+        if employee_id:
+            decision_appoint_id = self.pool.get('hr.decision.appoint').search(self.cr, self.uid, [('employee_id', '=', employee_id.id), ('is_started', '=', True), ('state_appoint', '=', 'active')], limit=1)
+            if decision_appoint_id:
+                return self.pool.get('hr.decision.appoint').browse(self.cr, self.uid, decision_appoint_id)
         return None
 
 

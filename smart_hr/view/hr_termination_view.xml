@@ -122,10 +122,12 @@
 							<field name="max_days" />
 							<field name="nationality" />
 							<field name="contract" />
-
-
+							<field name="years_progress" />
+							<field name="evaluation_condition" />
+							<field name="evaluation_required"
+										attrs="{'invisible':[('evaluation_condition', '=', False)]}"
+										widget="many2many" />
 						</group>
-
 					</sheet>
 				</form>
 			</field>

@@ -57,21 +57,13 @@
 							statusbar_visible="new,candidat,review,confirm,done" />
 					</header>
 					<sheet>
-						<group>
-							<group>
+						<group >
+							<group >
 								<field name="name" />
-								<label for="number_of_days" />
-								<div>
-									<div>
-										<field name="date_from" class="oe_inline" />
-										<label string="-" class="oe_inline" />
-										<field name="date_to" class="oe_inline" />
-									</div>
-									<div>
-										<field name="number_of_days" class="oe_inline" />
+s								<field name="date_from" class="oe_inline" />
+								<field name="date_to" class="oe_inline" />
+								<field name="number_of_days" class="oe_inline" />
 										يوم
-									</div>
-								</div>
 								<field name="place" />
 							</group>
 
@@ -122,6 +114,8 @@
 				</tree>
 			</field>
 		</record>
+		
+		
 		<record model="ir.ui.view" id="hr_candidates_form">
 			<field name="name">hr.candidates.form</field>
 			<field name="model">hr.candidates</field>
@@ -161,6 +155,67 @@
 		</record>
 		<menuitem id="hr_training_candidat_menu_2" name="الترشيحات" 
 			sequence="15" parent="hr_root_training" action="action_hr_candidates_candidat" />
+
+
+
+<!-- الترشيحات -->
+
+		
+		<record model="ir.ui.view" id="hr_my_condidature_form">
+			<field name="name">hr.candidates.form</field>
+			<field name="model">hr.candidates</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="الترشيحات">
+					<header>
+						<button name="action_waiting" string=" ارسال طلب" type="object" states="new" />
+						<button name="action_refuse" string="رفض" type="object" states="waiting" />
+						<button name="action_done" string="إعتماد" type="object" states="waiting" />
+						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
+					</header>
+					<sheet>
+
+						<group string="بيانات الموظف">
+							<field name="employee_id" readonly="1" />
+							<field name="number" />
+							<field name="job_id" />
+							<field name="department_id" />
+						</group>
+						<group string="الدورات التدربية">
+							<field name="training_id" domain="[('state','=','candidat')]" />
+							<field name="date_from" />
+							<field name="date_to" />
+							<field name="department" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_my_candidates">
+			<field name="name">الترشيحات</field>
+			<field name="res_model">hr.candidates</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('employee_id.user_id', '=', uid)]</field>
+		</record>
+		
+		
+		<record model="ir.actions.act_window.view" id="action_hr_my_candidates_form_view">
+			<field name="sequence" eval="2" />
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="hr_my_condidature_form" />
+			<field name="act_window_id" ref="action_hr_my_candidates" />
+		</record>
+
+		<record model="ir.actions.act_window.view" id="action_hr_my_candidates_tree_view">
+			<field name="sequence" eval="1" />
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="hr_candidates_tree" />
+			<field name="act_window_id" ref="action_hr_my_candidates" />
+		</record>
+		<menuitem id="hr_training_my_candidate_" name="الترشح للدورات التدريبية" 
+			sequence="16" parent="hr_root_training" action="action_hr_my_candidates" />
 
 
 

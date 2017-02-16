@@ -13,9 +13,13 @@ class hr_promotion(models.Model):
     _order = 'id desc'
     _inherit = ['mail.thread', 'ir.needaction_mixin']
     _description = 'Promotion Decision'
-
+    
+    
+      
+   
     name = fields.Char(string=u'رقم محضر الترقيات', advanced_search=True)
     date = fields.Date(string=u'تاريخ ', default=fields.Datetime.now())
+    date_reponse_employee = fields.Date(string=u'تاريخ الأقصى لموافقة الموظف ',)
     speech_number = fields.Char(string=u'رقم الخطاب')
     speech_date = fields.Date(string=u'تاريخ الخطاب')
     speech_file = fields.Binary(string=u'نسخة الخطاب')
@@ -30,7 +34,8 @@ class hr_promotion(models.Model):
     employee_promotion_line_ids = fields.One2many('hr.promotion.employee', 'promotion_id', string=' قائمة الموظفين',)
     job_promotion_line_ids = fields.One2many('hr.promotion.job', 'promotion_id', string='قائمة الوظائف',)
     employee_job_promotion_line_ids = fields.One2many('hr.promotion.employee.job', 'promotion_id', string=' قائمة الترشيحات',)
- 
+    
+    emplyoee_state = fields.Boolean(string='قرار الموظف',)
     state = fields.Selection([
                               ('draft', u'طلب'),
                               ('job_promotion', u'الوظائف المحجوزة للترقية'),
@@ -57,7 +62,6 @@ class hr_promotion(models.Model):
             self.state='job_promotion'
             employee_line_list=[]
             for employee_line in self.employee_promotion_line_ids:
-                employee_line.state="done"
                 emp_id=self.env['hr.promotion.employee.job'].create({'employee_id':employee_line.employee_id.id,
                                                                'old_job_id': employee_line.old_job_id.id,
                                                                'old_number_job': employee_line.old_number_job ,
@@ -74,9 +78,6 @@ class hr_promotion(models.Model):
                 sanctions=self.env['hr.sanction'].search([('state','=','done'),('date_sanction_start','>',datetime.now()+relativedelta(years=-2))])
                 days=0
                 emp_id.employee_job_ids=emp_id.change_employee_id()
-                print '111116544456511111', emp_id.employee_job_ids
-                print employee_line.employee_id.type_id.id
-                print self.env.ref('smart_hr.data_salary_grid_type').id
                 if employee_line.employee_id.type_id.id==self.env.ref('smart_hr.data_salary_grid_type').id:
                    if  employee_line.employee_id.sanction_ids:
                         for sanction in sanctions:
@@ -98,6 +99,11 @@ class hr_promotion(models.Model):
     @api.one
     def button_employee_promotion(self):
         self.state='employee_promotion'
+        
+  
+        
+        
+        
     @api.one
     def button_job_promotion(self):
         for promo in self:
@@ -109,23 +115,42 @@ class hr_promotion(models.Model):
                     job.new_job_id.occupied_promotion=True
                 if not self.job_promotion_line_ids:
                      raise ValidationError(u"لم يقع إحتجاز أي وظيفة")
+    
                 
         
+   
+                 
     @api.one
-    def button_transfer_manager(self):
-        for promo in self:
-            self.state='manager'
-    
-    @api.one
-    def button_transfer_minister(self):
-        for promo in self:
-            self.state='minister'
+    def button_transfer_employee(self):
+        self.emplyoee_state=True
+        
         for promotion in self.employee_job_promotion_line_ids:
             if not promotion.new_job_id:
                 self.employee_job_promotion_line_ids=[(3,promotion.id)]
         
         if not self.employee_job_promotion_line_ids:
-                 raise ValidationError(u"لم يقع أي إختيار وظيفة جديدة للموظف")
+                raise ValidationError(u"لم يقع أي إختيار وظيفة جديدة للموظف")
+        if  self.employee_job_promotion_line_ids:
+             for promotion in self.employee_job_promotion_line_ids:
+                 print 'state'
+                 promotion.state="employee_confirmed"  
+        
+    
+    
+    @api.one
+    def button_transfer_minister(self):
+        for promo in self:
+            date_now = datetime.now()
+            if datetime.today().strftime('%Y-%m-%d') < self.date_reponse_employee:
+                raise ValidationError(u"يجب انتهاء فترة موافقة الموظف")
+            else:
+                self.state='minister'
+        for promotion in self.employee_job_promotion_line_ids:
+            if not promotion.done:
+                self.employee_job_promotion_line_ids=[(3,promotion.id)]
+        
+        if not self.employee_job_promotion_line_ids:
+                 raise ValidationError(u"لم يوافق أي موظف على الترقية")
                 
             
             
@@ -143,8 +168,6 @@ class hr_promotion(models.Model):
         if self.speech_date > datetime.today().strftime('%Y-%m-%d'):
             raise ValidationError(u"تاريخ الخطاب  يجب ان يكون أصغر من تاريخ اليوم")
      
-             
-    
     
     @api.one
     def button_done(self):
@@ -187,13 +210,10 @@ class hr_promotion(models.Model):
             self.state='draft'
             self.employee_job_promotion_line_ids=False
            
-      
-            
     @api.one
     def button_conceled(self):
         for promo in self:
             self.state='draft'
-    
     
     @api.multi
     def create_report_promotion(self):
@@ -329,8 +349,7 @@ class hr_promotion(models.Model):
                 raise ValidationError(u'لا يمكن حذف قرار الترقية في هذه المرحلة يرجى مراجعة مدير النظام')
         return super(hr_promotion, self).unlink()
     
-    
-
+  
 
 
     
@@ -396,6 +415,13 @@ class hr_promotion_ligne_employee_job(models.Model):
     _name = 'hr.promotion.employee.job'
     _order = 'id desc'
     
+    
+    @api.model
+    def _getUserGroupId(self):
+        job_ids = self.env['hr.job'].search([('grade_id.code', '=',  int(self.emp_grade_id_old.code)+1),('occupied_promotion','=',True)]).ids
+        job=self.env['hr.job'].search([('occupied_promotion','=',True)])
+        return [('id', 'in', job_ids)]
+    
     employee_id = fields.Many2one('hr.employee', string=u'الموظف')
     job_promotion_id = fields.Many2one('hr.promotion.job', string=u'الوظيفة المرقى عليها',)
     promotion_id = fields.Many2one('hr.promotion', string=u'الترقية ')
@@ -409,31 +435,29 @@ class hr_promotion_ligne_employee_job(models.Model):
     point_functionality=fields.Integer(string=u'نقاط  الإداء الوظيفي',)
     sum_point=fields.Integer(string=u'المجموع',)
     demande_promotion_id = fields.Many2one('hr.promotion.employee.demande', string=u'طلب الترقية  ')
-    new_job_id = fields.Many2one('hr.job', string=u'الوظيفة المرقى عليها',domain=[('code','=','str(int(self.emp_grade_id_old)+1)')])
+    city_fovorite = fields.Many2one(related='demande_promotion_id.city_fovorite', string=u'المدينة المفضلة')
+    employee_job_ids = fields.One2many('hr.job', 'promotion_employee_id', string=' قائمة الوظائف',)
+    new_job_id = fields.Many2one('hr.job', string=u'الوظيفة المرقى عليها',)
     new_number_job = fields.Char(string='رقم الوظيفة', store=True, readonly=1)
-    department = fields.Many2one(related='employee_id.department_id', string='الادارة', store=True, readonly=1)
+    new_department = fields.Many2one(related='new_job_id.department_id', string='الادارة', store=True, readonly=1)
     emp_grade_id_new = fields.Many2one('salary.grid.grade', string='المرتبة ', store=True, readonly=1,)
     promotion_supp = fields.Boolean(string='علاوة إضافية',)
     date_direct_action = fields.Date(string='تاريخ مباشرة العمل',related='promotion_id.dicision_date') 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(),)
-    employee_job_ids = fields.One2many('hr.job', 'promotion_employee_id', string=' قائمة الوظائف',)
-    
+    done = fields.Boolean(string='موافقة الموظف',)
+    new_city_jobs = fields.Many2one(related='new_department.dep_city', string=u'المدينة ')
     state = fields.Selection([
-                          ('draft', u'طلب'),
-                          ('job_promotion', u'الوظائف المحجوزة للترقية'),
-                          ('manager', u'صاحب صلاحية التعين'),
-                          ('minister', u'وزارة الخدمة المدنية'),
-                          ('hrm', u'شؤون الموظفين'),
-                          ('done', u'اعتمدت'),
-                          ('cancel', u'ملغاة'),
-                          ], string=u'حالة', default='draft', related='promotion_id.state')
+                          ('employee_confirmed', u' في إنتظار قرار الموظف'),
+                          ('done', u'موافقة'),
+                          ('refuse', u'رفض'),
+                          ], string=u'حالة',)
     
-
     @api.multi
     def promotion_confirmed(self):
         if self.new_job_id:
-            self.new_job_id.state='occupied'
             self.state="done"
+            self.done=True
+    
     
    
     @api.multi
@@ -451,15 +475,21 @@ class hr_promotion_ligne_employee_job(models.Model):
                 print '565555665565',job.grade_id.code
             job_ids = self.env['hr.job'].search([('grade_id.code', '=',  int(self.emp_grade_id_old.code)+1)]).ids
             return job_ids
+        
+        
+  
+         
+        
+        
+
+        
             
     @api.onchange('new_job_id')
     def onchange_job_id(self):
         res={}
         
         if not self.new_job_id:
-            print 111111111
             job_ids = self.env['hr.job'].search([('grade_id.code', '=',  int(self.emp_grade_id_old.code)+1)]).ids
-            print 'job_ids',job_ids
             res['domain'] = {'new_job_id': [('id', 'in', job_ids)]}
             return res
         if self.new_job_id:
@@ -474,6 +504,7 @@ class hr_promotion_ligne_employee_job(models.Model):
                 self.emp_grade_id_new = False
                 raise ValidationError(u"يجب أن تكون المرتبة أكبر من المرتبة  الحالية مباشرة  ")
             self.new_job_id.state = 'reserved'
+            self.occupied_promotion = False
             self.emp_grade_id_new = self.new_job_id.grade_id.id
             self.new_number_job = self.new_job_id.number
   

@@ -49,7 +49,7 @@
 							</tr>
 							<tr>
 								<td><strong>تاريخ الاستحداث</strong></td>
-								<td><span t-esc="o.job_id.create_date" /></td>
+								<td><span t-esc="get_hijri_date(o.job_id.create_date, '-')" /></td>
 								<td><strong>حالة الوظيفة</strong></td>
 								<td><t t-esc="dict(o.job_id.fields_get(allfields=['state'])['state']['selection'])[o.job_id.state]" /></td>
 							</tr>
@@ -89,7 +89,7 @@
 											<div style="width:20%;float:right;"><span t-esc="line.employee_id.number"/></div>
 											<div style="width:20%;float:right;"><span t-esc="line.employee_id.name"/></div>
 											<div style="width:20%;float:right;"><span t-esc="line.emp_job_id.name.name"/></div>
-											<div style="width:20%;float:right;"><span t-esc="line.employee_id.recuiter_date"/></div>
+											<div style="width:20%;float:right;"><span t-esc="get_hijri_date(line.employee_id.recuiter_date, '-')" /></div>
 											<div style="width:20%;float:right;"><span t-esc="line.type_appointment.name"/></div>
 										</t>
 									</div>
@@ -121,7 +121,7 @@
 											<div style="width:11.11%;float:right;"><span t-esc="line.department_id.name" /></div>
 											<div style="width:11.11%;float:right;"><span t-esc="line.job_update_id.create_date" /></div>
 											<div style="width:11.11%;float:right;"><span t-esc="line.job_update_id.decision_number" /></div>
-											<div style="width:11.11%;float:right;"><span t-esc="line.job_update_id.decision_date" /></div>
+											<div style="width:11.11%;float:right;"><span t-esc="get_hijri_date(line.job_update_id.decision_date, '-')" /></div>
 										</t>
 									</div>
 								</td>
@@ -142,7 +142,7 @@
 										<t  t-foreach="scale_up_ids" t-as="line">
 											<div style="width:20%;float:right;"><span t-esc="line.job_id.name.name" /></div>
 											<div style="width:20%;float:right;"><span t-esc="line.decision_number" /></div>
-											<div style="width:20%;float:right;"><span t-esc="line.decision_date" /></div>
+											<div style="width:20%;float:right;"><span t-esc="get_hijri_date(line.decision_date, '-')" /></div>
 											<div style="width:20%;float:right;"><span t-esc="line.job_id.grade_id.name" /></div>
 											<div style="width:20%;float:right;"><span t-esc="line.job_id.new_grade_id.name" /></div>
 										</t>
@@ -168,7 +168,7 @@
 										<t  t-foreach="scale_down_ids" t-as="line">
 											<div style="width:20%;float:right;"><span t-esc="line.job_id.name.name" /></div>
 											<div style="width:20%;float:right;"><span t-esc="line.decision_number" /></div>
-											<div style="width:20%;float:right;"><span t-esc="line.decision_date" /></div>
+											<div style="width:20%;float:right;"><span t-esc="get_hijri_date(line.decision_date, '-')" /></div>
 											<div style="width:20%;float:right;"><span t-esc="line.job_id.grade_id.name" /></div>
 											<div style="width:20%;float:right;"><span t-esc="line.job_id.new_grade_id.name" /></div>
 										</t>
