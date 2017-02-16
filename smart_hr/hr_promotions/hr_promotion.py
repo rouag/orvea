@@ -304,21 +304,25 @@ class hr_promotion(models.Model):
                 employee_hilday=self.env['hr.holidays'].search([('employee_id', '=', emp.employee_id.id),('date_from', '<=', date.today()),('date_to', '>=', date.today())])
                 if employee_hilday:
                     emp.date_direct_action=employee_hilday.date_to
+                if self.members_promotion is True:
+                    appoint_type = self.env.ref('smart_hr.data_hr_promotion_member').id
+                    type = "ترقية عضو"+" " + self.name.encode('utf-8')
+                else:
+                    appoint_type = self.env.ref('smart_hr.data_hr_promotion_agent').id
+                    type = "ترقية "+" " + self.name.encode('utf-8')
                 apoint=self.env["hr.decision.appoint"].create({'name':self.speech_number,
                                                            'order_date': self.speech_date,
                                                            'date_direct_action': emp.date_direct_action ,
                                                            'job_id':emp.new_job_id.id,
                                                            'degree_id':emp.emp_grade_id_new.id,
-                                                           'type_appointment':self.env.ref('smart_hr.data_hr_promotion_agent').id,
+                                                           'type_appointment':appoint_type,
                                                            'order_picture':self.dicision_file,
                                                            'depend_on_test_periode':True,
                                                            'employee_id':emp.employee_id.id,
                                                            'degree_id':emp.new_job_id.grade_id.id,
                                                            })
                 apoint.action_done() 
-                
                 #             create history_line
-                type = " ترقية"+" " + self.name.encode('utf-8')
                 self.env['hr.employee.history'].sudo().add_action_line(emp.employee_id, self.decision_number, self.date , type)
                 self.env['base.notification'].create({'title': u'إشعار بالترقية',
                                               'message': u'لقد تم ترقيتكم على وظيفة جديدة',

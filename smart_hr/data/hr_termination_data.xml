@@ -46,7 +46,8 @@
 			<field name="code" eval="8" />
 		</record>
 		<record id="data_hr_ending_estimite_less" model="hr.termination.type">
-			<field name="name">  حصوله على تقدير أقل من المتوسط
+			<field name="name">  ‫‫نتيجة ‬ ‫تقدير‬ الكفاية
+‬
 			</field>
 			<field name="code" eval="9" />
 		</record>

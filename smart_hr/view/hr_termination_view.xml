@@ -42,11 +42,11 @@
 								<field name="termination_type_id" widget="selection"
 
 									required="1" attrs="{'readonly':[('state','!=','draft')]}" />
-									<field name="nb_salaire" />
-									<field name="all_holidays" />
-									<field name="max_days" />
-									<field name="reason" required="1"
-										attrs="{'readonly':[('state','!=','draft')]}" />
+								<field name="nb_salaire" />
+								<field name="all_holidays" />
+								<field name="max_days" />
+								<field name="reason" required="1"
+									attrs="{'readonly':[('state','!=','draft')]}" />
 							</group>
 							<group string="معلومات الخطاب">
 								<field name="letter_source" attrs="{'readonly':[('state','!=','draft')]}" />
@@ -118,15 +118,18 @@
 							<field name="name" required="1" />
 							<field name="code" />
 							<field name="nb_salaire" />
-							<field name="all_holidays" />
+							<field name="years_progress" />
+							<field name="years" />
 							<field name="max_days" />
 							<field name="nationality" />
 							<field name="contract" />
-							<field name="years_progress" />
+							<field name="all_holidays" />
 							<field name="evaluation_condition" />
 							<field name="evaluation_required"
-										attrs="{'invisible':[('evaluation_condition', '=', False)]}"
-										widget="many2many" />
+								attrs="{'invisible':[('evaluation_condition', '=', False)]}"
+								widget="many2many" />
+							<field name="include_members" />
+
 						</group>
 					</sheet>
 				</form>
@@ -137,13 +140,17 @@
 			<field name="model">hr.termination.type</field>
 			<field name="arch" type="xml">
 				<tree string="أنواع طى القيد" class="oe_tree_view">
-					<field name="name" />
-					<field name="code" />
-					<field name="nb_salaire" />
-					<field name="all_holidays" />
-					<field name="max_days" />
-					<field name="nationality" />
-					<field name="contract" />
+							<field name="name"/>
+							<field name="code" />
+							<field name="nb_salaire" />
+							<field name="years_progress" />
+							<field name="years" />
+							<field name="max_days" />
+							<field name="nationality" />
+							<field name="contract" />
+							<field name="all_holidays" />
+							<field name="evaluation_condition" />
+							<field name="include_members" />
 				</tree>
 			</field>
 		</record>
