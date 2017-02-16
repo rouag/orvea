@@ -106,8 +106,7 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 		<menuitem id="hr_training_menu_2" name="الدورات التدربية"
-			sequence="5" parent="hr_root_training" action="action_hr_training" />
-
+			sequence="5" parent="hr_root_training" action="action_hr_training"  groups="smart_hr.group_hrm,smart_hr.group_training_specialiter" />
 		<!-- الترشيحات -->
 
 		<record model="ir.ui.view" id="hr_candidates_tree">
@@ -191,9 +190,9 @@
 
 						<group string="بيانات الموظف" attrs="{'readonly' :[('state','!=','new')]}">
 							<field name="employee_id" readonly="1" />
-							<field name="number" />
-							<field name="job_id" />
-							<field name="department_id" />
+							<field name="number" readonly="1"/>
+							<field name="job_id" readonly="1"/>
+							<field name="department_id" readonly="1"/>
 						</group>
 						<group string="الدورات التدربية" attrs="{'readonly' :[('state','!=','new')]}" >
 							<field name="training_id" domain="[('state','=','candidat')]" />
