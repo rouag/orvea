@@ -181,7 +181,7 @@ class hrDifference(models.Model):
                         'amount': amount,
                         'type': 'transfert'}
                 line_ids.append(vals)
-                # 2- بدل ترحيل
+                # 3- بدل ترحيل
                 amount = (hr_setting.deportation_amount)
                 vals = {'difference_id': self.id,
                         'name': hr_setting.allowance_deportation.name,
@@ -191,7 +191,16 @@ class hrDifference(models.Model):
                         'amount': amount,
                         'type': 'transfert'}
                 line_ids.append(vals)
-        print line_ids
+                # 4- نسبة الراتب
+                amount = ((100 - hr_setting.salary_proportion) * transfert.employee_id.wage) / 100
+                vals = {'difference_id': self.id,
+                        'name': u'نسبة الراتب',
+                        'employee_id': transfert.employee_id.id,
+                        'number_of_days': 0,
+                        'number_of_hours': 0.0,
+                        'amount': amount,
+                        'type': 'transfert'}
+                line_ids.append(vals)
         return line_ids
 
 
