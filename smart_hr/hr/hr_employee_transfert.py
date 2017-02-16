@@ -162,9 +162,9 @@ class HrEmployeeTransfert(models.Model):
             # check 3 years constrainte from last transfert
             last_transfert_id = self.env['hr.employee.transfert'].search([('id', '!=', self.id)], order="create_date desc", limit=1)
             today = date.today()
-            refusing_date = fields.Date.from_string(transfert.refusing_date)
-            if refusing_date:
-                days = (today - refusing_date).days
+            create_date = fields.Date.from_string(last_transfert_id.create_date)
+            if create_date:
+                years = relativedelta(today - create_date).years
                 if hr_config:
                     if years < hr_config.years_last_transfert:
                         raise ValidationError(u"لم تتم " + str(hr_config.years_last_transfert) + u" سنوات من أخر نقل.")
