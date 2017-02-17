@@ -138,6 +138,8 @@ class hrDifference(models.Model):
             line_ids += self.get_difference_assign()
             # فروقات الإبتعاث
             line_ids += self.get_difference_scholarship()
+            # فروقات الإعارة
+            line_ids += self.get_difference_lend()
             self.line_ids = line_ids
 
     @api.one
@@ -308,7 +310,6 @@ class hrDifference(models.Model):
                     # تعويضات
                     for indemnity in indemnity_ids:
                         amount = indemnity.get_value(assign_id.employee_id.id)
-                        print "تعويضات"
                         if amount:
                             vals = {'difference_id': self.id,
                                     'name': indemnity.indemnity_id.name,
@@ -355,7 +356,7 @@ class hrDifference(models.Model):
                                     'number_of_days': 0,
                                     'number_of_hours': 0.0,
                                     'amount': amount * -1,
-                                    'type': 'commissioning'}
+                                    'type': 'scholarship'}
                             line_ids.append(vals)
             # ابتعاث خارجي
             if scholarship_id.scholarship_type == self.env.ref('smart_hr.data_hr_shcolaship_external') and scholarship_id.duration > 365:
@@ -367,8 +368,29 @@ class hrDifference(models.Model):
                             'number_of_days': 0,
                             'number_of_hours': 0.0,
                             'amount': (amount / 2) * -1,
-                            'type': 'appoint'}
+                            'type': 'scholarship'}
                     line_ids.append(vals)
+        return line_ids
+
+    @api.multi
+    def get_difference_lend(self):
+        self.ensure_one()
+        line_ids = []
+        lend_ids = self.env['hr.employee.lend'].search([('date_to', '>=', self.date_from),
+                                                        ('date_to', '<=', self.date_to),
+                                                        ('state', '=', 'done')
+                                                        ])
+        for lend_id in lend_ids:
+            amount = lend_id.employee_id.wage
+            if amount > 0:
+                vals = {'difference_id': self.id,
+                        'name': 'راتب',
+                        'employee_id': lend_id.employee_id.id,
+                        'number_of_days': 0,
+                        'number_of_hours': 0.0,
+                        'amount': (amount) * -1,
+                        'type': 'lend'}
+                line_ids.append(vals)
         return line_ids
 
 
