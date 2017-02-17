@@ -17,9 +17,12 @@
 					<field name="identification_place" />
 					<field name="passport_id" />
 				</field>
-				<label for="name" position="replace">
-					<label string="مسمى العقد" for="name" />
-				</label>
+				<div class="oe_title"  position="replace">
+				<group>
+						<field name="name" string="مسمى العقد" />
+				</group>
+				</div>
+		
 
 
 				<field name="department_id" position="replace">
@@ -48,9 +51,9 @@
 
 
 					<group name="periode" string=" خصائص العقد  ">
-						<field name="date_to" string="مدة التجربة         من "/>
+						<field name="date_to" string="مدة التجربة         من " />
 						<field name="date_endd" />
-						<field name="date_contract_to" string="مدة العقد         من "/>
+						<field name="date_contract_to" string="مدة العقد         من " />
 						<field name="date_contract_end" />
 						<field name="calendar_id" />
 						<field name="payement_emploi" />
@@ -120,7 +123,7 @@
 					<field name="employee_id" />
 					<field name="job_id" />
 					<field name="type_job_id" />
-					<field name="date_contract_to"  string="تاريخ إمضاء العقد"/>
+					<field name="date_contract_to" string="تاريخ إمضاء العقد" />
 				</tree>
 			</field>
 		</record>

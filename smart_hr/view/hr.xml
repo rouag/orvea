@@ -115,7 +115,10 @@
 							<button name="action_refuse" string="رفض" type="object"
 								groups="smart_hr.group_employee_registration" attrs="{'invisible': [('employee_state', '!=', 'waiting')]}" />
 							<field name="employee_state" widget="statusbar"
+								attrs="{'invisible': [('employee_state', '=', 'employee')]}"
 								statusbar_visible="new,waiting,done,refused" />
+							<field name="emp_state"
+								attrs="{'invisible': [('employee_state', '!=', 'employee')]}" />
 						</header>
 						<sheet>
 
@@ -142,6 +145,7 @@
 									groups="base.group_hr_manager">
 									<field name="contracts_count" widget="statinfo" string="العقود" />
 								</button>
+
 							</div>
 
 							<field name="image" widget="image" class="oe_avatar"
@@ -151,7 +155,7 @@
 									<label name="name" string="الاسم" />
 								</div>
 								<div class="col-xs-3 div_paddig_right_null" style="text-align:right;width:23.5%;">
-									<label name="father_name" string="إسم الأب" class="div_paddig_right_null"/>
+									<label name="father_name" string="إسم الأب" class="div_paddig_right_null" />
 								</div>
 								<div class="col-xs-3 div_paddig_right_null" style="text-align:right;width:23%;">
 									<label name="grandfather_name" string="اسم الجد" />
@@ -247,10 +251,12 @@
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="type_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
-											<field name="degree_id"
-												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="grade_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+											<field name="degree_id"
+												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+
+
 											<field name="parent_id" string="المدير المباشر" />
 											<field name="service_duration" attrs="{'readonly': 1}" />
 											<field name="promotion_duration" attrs="{'readonly': 1}" />
@@ -276,7 +282,8 @@
 										<group string="بيانات البنك">
 											<field name="address_home_id" invisible="1" />
 											<field name="bank_account_id" invisible="1" />
-											<field name="bank_account_ids" options="{'no_create': True}">
+											<field name="bank_account_ids" options="{'no_create': True}"
+												nolabel="1">
 												<tree create="false" delete="false">
 													<field name="acc_number" />
 													<field name="bank_name" string="البنك" />
@@ -290,7 +297,7 @@
 									</group>
 									<group name="active_group" invisible="1" />
 								</page>
- 
+
 								<page string="أرصدة الاجازات والترقيات">
 									<separator string="أرصدة الاجازات" />
 									<field name="holidays_balance"
@@ -321,23 +328,7 @@
 
 
 
-								<page string="العقوبات">
 
-									<field name='sanction_ids' string="العقوبات" readonly="1">
-										<tree string="سجل العقوبات"
-											domain="[('type_sanction.id','=',%(data_hr_sanction_type_alert)d)]}">
-											<field name="employee_id" />
-											<field name="type_sanction" />
-
-											<field name="days_number" />
-											<field name="amount" />
-											<field name="mast" />
-											<field name="deduction" />
-											<field name="state_sanction" />
-											<field name="state" />
-										</tree>
-									</field>
-								</page>
 								<page string="سجل الاجراءات" readonly='True'>
 
 									<field name='history_ids' readonly="1">
@@ -401,6 +392,18 @@
 				</form>
 			</field>
 		</record>
-
+		<record id="hr_appraisal.hr_employee_view_form" model="ir.ui.view">
+			<field name="name">hr.employee.view.form.inherit.appraisal</field>
+			<field name="model">hr.employee</field>
+			<field name="inherit_id" ref="hr.view_employee_form" />
+			<field name="arch" type="xml">
+				<xpath expr="//div[@name='button_box']" position="inside">
+					<button name="%(hr_appraisal.open_view_hr_appraisal_tree2)d" class="oe_inline oe_stat_button"
+						icon="fa-sitemap" type="action">
+						<field name="appraisal_count" widget="statinfo" />
+					</button>
+				</xpath>
+			</field>
+		</record>
 	</data>
 </openerp>

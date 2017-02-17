@@ -64,7 +64,7 @@
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" domain="[('type_id','!=',%(data_salary_grid_type6)d)]"
 									attrs="{'readonly':[('state','not in',['draft','pim'])]}">
 									<tree>
-										<field name="name" />
+										<field name="display_name" string="الاسم"/>
 										<field name="department_id" />
 									</tree>
 								</field>

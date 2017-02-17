@@ -247,7 +247,7 @@
 								</tr>
 								<tr t-foreach="o.training_ids" t-as="line">
 									<td>
-										<span t-esc="line.training_id" />
+										<span t-esc="line.training_id.name" />
 									</td>
 									<td>
 										<span t-esc="get_hijri_date(line.date_from, '-')" />
@@ -257,7 +257,7 @@
 										
 									</td>
 									<td>
-										<span t-esc="line.place" />
+										<span t-esc="line.place.name" />
 									</td>
 
 								</tr>
