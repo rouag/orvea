@@ -3,6 +3,7 @@
 
 from openerp import models, fields, api, _
 from openerp.exceptions import except_orm, Warning, RedirectWarning
+from openerp.exceptions import ValidationError
 
 
 class SalaryGrid(models.Model):
@@ -110,10 +111,11 @@ class SalaryGridDetailAllowance(models.Model):
         degree = employee.degree_id
         amount = 0.0
         # search the correct salary_grid for this employee
-        salary_grids = salary_grid_obj.search([('type_id', '=', ttype.id), ('grade_id', '=', grade.id), ('degree_id', '=', degree.id)])
+        salary_grids = employee.salary_grid_id
+        
         if not salary_grids:
-            return
-        basic_salary = salary_grids[0].basic_salary
+            raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
+        basic_salary = salary_grids.basic_salary
         # compute
         if self.compute_method == 'amount':
             amount = self.amount
@@ -173,10 +175,10 @@ class SalaryGridDetailReward(models.Model):
         degree = employee.degree_id
         amount = 0.0
         # search the correct salary_grid for this employee
-        salary_grids = salary_grid_obj.search([('type_id', '=', ttype.id), ('grade_id', '=', grade.id), ('degree_id', '=', degree.id)])
+        salary_grids = employee.salary_grid_id
         if not salary_grids:
-            return
-        basic_salary = salary_grids[0].basic_salary
+            raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
+        basic_salary = salary_grids.basic_salary
         # compute
         if self.compute_method == 'amount':
             amount = self.amount
@@ -236,10 +238,10 @@ class SalaryGridDetailIndemnity(models.Model):
         degree = employee.degree_id
         amount = 0.0
         # search the correct salary_grid for this employee
-        salary_grids = salary_grid_obj.search([('type_id', '=', ttype.id), ('grade_id', '=', grade.id), ('degree_id', '=', degree.id)])
+        salary_grids = employee.salary_grid_id
         if not salary_grids:
-            return
-        basic_salary = salary_grids[0].basic_salary
+            raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
+        basic_salary = salary_grids.basic_salary
         # compute
         if self.compute_method == 'amount':
             amount = self.amount
