@@ -591,7 +591,7 @@ class HrTypeAppoint(models.Model):
 class HrAllowanceAppoint(models.Model):
     _name = 'hr.allowance.appoint'
     _description = u'بدل التعين'
-    hr_allowance_type_id = fields.Many2one('hr.allowance.type', string=u'بدل التعيين', readonly=1)
+    hr_allowance_type_id = fields.Many2one('hr.allowance.type', string=u'بدل التعيين')
     salary_number = fields.Float(string=u'عدد الرواتب')
     appoint_type_id = fields.Many2one('hr.type.appoint')
 

@@ -132,6 +132,8 @@ class hrDifference(models.Model):
 
             # فروقات النقل
             line_ids += self.get_difference_transfert()
+            # فروقات التعين
+            line_ids += self.get_difference_decision_appoint()
             self.line_ids = line_ids
 
     @api.one
@@ -191,15 +193,37 @@ class hrDifference(models.Model):
                         'amount': amount,
                         'type': 'transfert'}
                 line_ids.append(vals)
-                # 4- نسبة الراتب
-                amount = ((100 - hr_setting.salary_proportion) * transfert.employee_id.wage) / 100
+#                 # 4- نسبة الراتب
+#                 amount = ((100 - hr_setting.salary_proportion) * transfert.employee_id.wage) / 100
+#                 vals = {'difference_id': self.id,
+#                         'name': u'نسبة الراتب',
+#                         'employee_id': transfert.employee_id.id,
+#                         'number_of_days': 0,
+#                         'number_of_hours': 0.0,
+#                         'amount': amount,
+#                         'type': 'transfert'}
+                line_ids.append(vals)
+        return line_ids
+
+    @api.multi
+    def get_difference_decision_appoint(self):
+        self.ensure_one()
+        line_ids = []
+        last_decision_appoint_ids = self.env['hr.decision.appoint'].search([('is_started', '=', True),
+                                                                            ('state_appoint', '=', 'active'),
+                                                                            ], order="date_direct_action desc")
+        for last_decision_appoint_id in last_decision_appoint_ids:
+            print 'last_decision_appoint_id', last_decision_appoint_id
+            for allowance in last_decision_appoint_id.type_appointment.hr_allowance_appoint_id:
+                amount = allowance.salary_number
+                print allowance
                 vals = {'difference_id': self.id,
-                        'name': u'نسبة الراتب',
-                        'employee_id': transfert.employee_id.id,
+                        'name': allowance.hr_allowance_type_id.name,
+                        'employee_id': last_decision_appoint_id.employee_id.id,
                         'number_of_days': 0,
                         'number_of_hours': 0.0,
                         'amount': amount,
-                        'type': 'transfert'}
+                        'type': 'appoint'}
                 line_ids.append(vals)
         return line_ids
 
