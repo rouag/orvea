@@ -227,7 +227,6 @@
         'overtime/security/security_view.xml',
         'overtime/security/ir.model.access.csv',
         'overtime/data/data.xml',
-        'overtime/security/ir.model.access.csv',
         'overtime/view/hr_overtime_view.xml',
         'overtime/view/hr_overtime_setting.xml',
         'overtime/views/overtime_report.xml',
