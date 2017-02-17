@@ -98,10 +98,6 @@
 			name="smart_hr.report_hr_employee_situation_order" report_type="qweb-pdf"
 			string="طباعة طلب إفادة عن حالة موظف  " file="smart_hr.report_hr_employee_situation_order" />
 
-		<report id="hr_scholarship_decision_report" model="hr.scholarship.decision"
-			name="smart_hr.report_hr_scholarship_decision" report_type="qweb-pdf"
-			string="طباعة قرار مباشرة" file="smart_hr.report_hr_scholarship_decision" />
-
 
 	</data>
 </openerp>

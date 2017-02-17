@@ -19,7 +19,7 @@ class HrScholarshipDecision(models.Model):
                              ('done', 'اعتمدت'),
                              ('cancel', 'رفض'),], string='الحالة', readonly=1, default='new')
 
-    scholarship_ids = fields.Many2many('hr.scholarship', string=u'الابتعاث', required=1)
+    scholarship_ids = fields.Many2many('hr.scholarship', string=u'الابتعاث', required=True)
     order_number = fields.Char(string=u'رقم الخطاب', required=1)
     order_date = fields.Date(string=u'تاريخ الخطاب', required=1) 
     file_decision = fields.Binary(string=u'الخطاب', required=1)
