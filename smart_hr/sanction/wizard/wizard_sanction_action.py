@@ -6,8 +6,8 @@ from openerp import api, fields, models, _
 class WizardSanctionAction(models.TransientModel):
     _name = 'wizard.sanction.action'
 
-    name = fields.Char(string='رقم قرار التعديل')
-    order_date = fields.Date(string='تاريخ قرار التعديل')
+    name = fields.Char(string='رقم قرار التعديل', required=1)
+    order_date = fields.Date(string='تاريخ قرار التعديل', required=1)
     employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف')
     reason = fields.Text(string='السبب')
     days_number = fields.Integer(string='عدد أيام ')
@@ -29,7 +29,7 @@ class WizardSanctionAction(models.TransientModel):
                 field_updated += u'مبلغ من %s  إلى %s' % (sanction_line.amount, self.amount)
             if action == 'exclusion':
                 description = u'إستبعاد موظف'
-            elif action == 'update':
+            elif action == 'update'  :
                 description = u'تعديل عقوبة : ' + field_updated
             val = {
                 'sanction_id': sanction_line.sanction_id.id,
@@ -42,10 +42,30 @@ class WizardSanctionAction(models.TransientModel):
             if action == 'exclusion':
                 sanction_line.state = 'excluded'
             elif action == 'update':
-                if sanction_line.days_number != self.days_number:
-                    sanction_line.days_difference = sanction_line.days_number - self.days_number
+                if sanction_line.days_number != self.days_number and sanction_line.deduction == False and sanction_line.days_difference == 0 :
+                   # sanction_line.days_difference = sanction_line.days_difference + compt_diff
                     sanction_line.days_number = self.days_number
-                if sanction_line.amount != self.amount:
+                if sanction_line.days_number != self.days_number and sanction_line.deduction == False and sanction_line.days_difference != 0 :
+                    compt_dif = sanction_line.days_number - self.days_number
+                    sanction_line.days_difference = sanction_line.days_difference + compt_dif
+                    sanction_line.days_number = self.days_number
+                    
+                if sanction_line.days_number != self.days_number and sanction_line.deduction == True and sanction_line.days_difference == 0 :
+                    compt_dif =  -sanction_line.days_number 
+                    sanction_line.days_difference = sanction_line.days_number - self.days_number + compt_dif
+                    sanction_line.days_number = self.days_number
+                    sanction_line.deduction = False
+                if sanction_line.days_number != self.days_number and sanction_line.deduction == True and sanction_line.days_difference != 0 :
+                    compt_dif = sanction_line.days_number - self.days_number
+                    
+                    compt_dif = compt_dif + sanction_line.days_difference
+                    sanction_line.days_difference = compt_dif
+                    sanction_line.days_number = compt_dif -self.days_number 
+                  
+                    sanction_line.deduction = False
+               
+                
+                if sanction_line.amount != self.amount and sanction_line.deduction == True :
                     sanction_line.amount_difference = sanction_line.amount - self.amount
                     sanction_line.amount = self.amount
             self.env['hr.sanction.history'].create(val)

@@ -2,7 +2,6 @@
 
 
 from openerp import models, fields, api, _
-from Crypto.Util.number import inverse
 
 
 
@@ -37,7 +36,7 @@ class HrEmployeeFunctionnalCard(models.Model):
                               ('done', u'اعتمدت'),
                               ('refuse', u'رفض'),
                               ], string=u'الحالة', default='draft', advanced_search=True)
-    training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'التدريب', readonly=1)
+    training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'التدريب', readonly=1, related="employee_id.training_ids")
 
 
     @api.multi

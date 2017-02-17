@@ -48,7 +48,7 @@
 								<span t-field="o.scholarship_ids[0].num_speech" />
 								)
 								و تاريخ
-								<span t-field="o.scholarship_ids[0].date_speech" />
+									<span t-esc="get_hijri_date(o.scholarship_ids[0].date_speech, '-')" />
 								القاضي بايفاد الموظف
 								<span t-field="o.employee_id.name" />
 								للدراسة ب
@@ -63,11 +63,11 @@
 								(<span t-field="o.order_number" />)
 
 								وتاريخ
-								<span t-field="o.order_date" />
+									<span t-esc="get_hijri_date(o.order_date, '-')" />
 
 
 								المتضمن أن المذكور باشر العمل يوم
-								<span t-field="o.date" />
+									<span t-esc="get_hijri_date(o.date, '-')" />
 							</p>
 							<p style="font-size:12px;">
 

@@ -20,6 +20,7 @@ class HrEmployeeTask(models.Model):
     description = fields.Text(string=u'الوصف')
     type_procedure = fields.Selection([('deputation', u'الإنتداب'),
                                        ('commission', u'تكليف'),
+                                        ('overtime', u'خارج دوام'),
                                        ], default='deputation', string=u'نوع الاجراء')
     state = fields.Selection([('new', u'طلب'),
                               ('done', u'اعتمدت'),

@@ -10,7 +10,7 @@
 			<field name="name">hr.deputation.setting.form</field>
 			<field name="model">hr.deputation.setting</field>
 			<field name="arch" type="xml">
-				<form string="إعدادات عامة" create='0' delete='0' duplicate='0'>
+				<form string="إعدادات الانتداب" create='0' delete='0' duplicate='0'>
 
 					<sheet>
 						<group>
@@ -34,12 +34,23 @@
 										</group>
 										<group>
 											<group string="بدل النقل">
+												<field name="allowance_transport_id" />
+												<field name="internal_transport_type" />
 												<field name="internal_transport_amount" />
+												<field name="external_transport_type" />
 												<field name="external_transport_amount" />
 											</group>
 											<group string="بدل الإنتداب">
+												<field name="allowance_deputation_id" />
+												<field name="internal_deputation_type" />
 												<field name="internal_deputation_amount" />
-												<div>إضافة فئات الدول</div>
+												<field name="external_deputation_type" />
+												<field name="category_ids" >
+													<tree editable="buttom">
+														<field name="category_id" />
+														<field name="amount" />
+													</tree>
+												</field>
 											</group>
 										</group>
 									</form>
@@ -59,10 +70,10 @@
 			<field name="code">action=pool.get('hr.deputation.setting').button_setting(cr,uid,None,)
 			</field>
 			<field name="condition">True</field>
-			<field name="name">إعدادات عامة</field>
+			<field name="name">إعدادات الانتداب</field>
 		</record>
 
-		<menuitem name="إعدادات عامة" id="hr_deputation_setting_menu"
+		<menuitem name="إعدادات الانتداب" id="hr_deputation_setting_menu"
 			parent="hr_deputation_setting" sequence="5"
 			action="ir_actions_button_hr_deputation_setting" />
 	</data>

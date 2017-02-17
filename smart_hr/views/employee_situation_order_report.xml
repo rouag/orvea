@@ -36,9 +36,9 @@
 								<p style="font-size:22px;">
 									أفاد الموظف بالهيئة
 									<span t-field="o.employee_id.display_name" />
+									
 									انه راجعكم يوم
-									<span t-field="o.date_hospitalisation" />
-
+		<span t-esc="get_hijri_date(o.date_hospitalisation , '-')" />
 									نأمل الافادة عن حالة المذكور الصحية و
 									في حال استحقاقه اجازة
 									مرضية
@@ -62,7 +62,7 @@
 								<br></br>
 								<p style="font-size:22px;">
 									حرر في:
-									<span t-field="o.date" />
+									<span t-esc="get_hijri_date(o.date , '-')" />
 								<br></br>
 								<br></br>
 								<br></br>

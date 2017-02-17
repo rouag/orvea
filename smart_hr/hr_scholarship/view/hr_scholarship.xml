@@ -125,10 +125,6 @@
 						<group>
 							<field name="note" />
 						</group>
-						<button style="padding-right:10px," name="%(report_hr_scholarship_extension_report)d"
-							string="طباعة قرار التمديد"
-							attrs="{'invisible':['|',('is_extension','=',False),('state','not in',['done','finished'])]}"
-							type="action" icon="fa-print" class="oe_inline oe_stat_button" />
 
 					</sheet>
 				</form>

@@ -24,6 +24,7 @@ class HrEmployeeLend(models.Model):
                               ('done', u'اعتمدت'),
                               ('sectioned', u'مقطوعة')
                               ], readonly=1, default='new', string=u'الحالة')
+    decision_file_name = fields.Char()
 
     @api.multi
     @api.depends('date_from', 'duration')

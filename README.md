@@ -40,3 +40,4 @@ Configuration
 --------------
 
 1) You need to install the package "xlrd" to read xls files
+2) you need to install the package "umalqurra" for hijri converting date

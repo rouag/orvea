@@ -8,7 +8,8 @@
 						<div class="page" style="font-size:14px;">
 							<t t-set="setting" t-value="get_setting()" />
 							<div class="col-xs-12 text-center">
-								<strong>قرار نقل</strong>
+								<t t-if="o.transfert_type == 'employee'"><strong>قرار نقل موظف</strong></t>
+								<t t-if="o.transfert_type == 'member'"><strong>قرار نقل عضو</strong></t>
 							</div>
 							<p class="text-center">
 								قرار إداري رقم

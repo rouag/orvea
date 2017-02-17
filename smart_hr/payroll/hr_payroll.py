@@ -82,10 +82,6 @@ class HrPayslip(models.Model):
     def onchange_employee(self):
         if (not self.employee_id) or (not self.date_from) or (not self.date_to):
             return
-        if not self.employee_id.payroll_structure_id:
-            warning = {'title': _('تحذير!'), 'message': _(u'يجب تحديد هيكل الراتب للموظف %s' % self.employee_id.name)}
-            self.employee_id = False
-            return {'warning': warning}
         employee_id = self.employee_id
         date_from = self.date_from
         date_to = self.date_to
@@ -94,7 +90,6 @@ class HrPayslip(models.Model):
         # tools.ustr(ttyme.strftime('%B-%Y')
         self.name = _('راتب الموظف %s للفترة : %s - %s') % (employee_id.name, date_from, date_to)
         self.company_id = employee_id.company_id
-        self.struct_id = self.employee_id.payroll_structure_id
         # computation of أيام العمل
         worked_days_line_ids, leaves = self.get_worked_day_lines_without_contract(self.employee_id.id, self.employee_id.calendar_id, self.date_from, self.date_to)
         deductions = self.get_all_deduction(self.employee_id.id, self.month)

@@ -93,8 +93,8 @@ class HrEmployee(models.Model):
     space = fields.Char(string=' ', default=" ", readonly=True)
     begin_work_date = fields.Date(string=u' تاريخ بداية العمل الحكومي', required=1)
     promotion_duration = fields.Integer(string=u'مدة الترقية(يوم)', compute='_compute_promotion_days', store=True)
-    dep_city = fields.Many2one('res.city', strin=u'المدينة', related="department_id.dep_city", required=1)
-    dep_Side = fields.Many2one('city.side', string=u'الجهة', related="department_id.dep_Side")
+    dep_city = fields.Many2one('res.city', strin=u'المدينة', related="department_id.dep_city", readonly=True)
+    dep_Side = fields.Many2one('city.side', string=u'الجهة', related="department_id.dep_Side", readonly=True)
     history_ids = fields.One2many('hr.employee.history', 'employee_id', string=u'سجل الاجراءات')
     diploma_id = fields.Many2one('hr.employee.diploma', string=u'الشهادة')
     specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص')
@@ -119,7 +119,7 @@ class HrEmployee(models.Model):
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
     royal_decree_number = fields.Char(string=u'رقم الأمر الملكي')
     royal_decree_date = fields.Date(string=u'تاريخ الأمر الملكي ')
-
+    training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'سجل التدريبات')
     
     @api.one
     @api.depends('job_id')

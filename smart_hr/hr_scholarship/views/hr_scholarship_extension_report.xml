@@ -2,7 +2,7 @@
 <openerp>
 	<data>
 
-		<template id="hr_scholarship_report">
+		<template id="hr_scholarship_extension_report">
 			<t t-call="report.html_container">
 				<t t-foreach="docs" t-as="o">
 					<t t-call="smart_hr.external_layout_hr">
@@ -44,7 +44,7 @@
 									)
 									بتاريخ
 									(
-									<span t-field="o.date_speech" />
+									<span t-esc="get_hijri_date(o.date_speech, '-')" />
 									)
 									القاضي بتمديد ابتعاث الموظف
 									<span t-field="o.employee_id.display_name" />
@@ -57,9 +57,9 @@
 									لمده
 									<span t-esc="o.extended_scholarship_id.duration" />
 									يوم اعتبارا من
-									<span t-esc="o.date_from" />
+									<span t-esc="get_hijri_date(o.date_from, '-')" />
 									و حتى
-									<span t-esc="o.date_to" />
+									<span t-esc="get_hijri_date(o.date_to, '-')" />
 									و اشارة الى خطاب
 									<span t-esc="o.order_source" />
 									رقم
@@ -68,7 +68,7 @@
 
 									و تاريخ
 									(
-									<span t-field="o.order_date" />
+									<span t-esc="get_hijri_date(o.order_date, '-')" />
 									)
 									المتضمن الموافقة على تمديد فترة ابتعاثه لمدة
 									<span t-esc="o.duration" />
@@ -88,9 +88,9 @@
 									لمده
 									<span t-esc="o.extended_scholarship_id.duration" />
 									يوم اعتبارا من
-									<span t-esc="o.date_from" />
+									<span t-esc="get_hijri_date(o.date_from, '-')" />
 									و حتى
-									<span t-esc="o.date_to" />
+									<span t-esc="get_hijri_date(o.date_to, '-')" />
 								</p>
 								<p style="font-size:12px;">٢) على الجهات المختصة اعتماد و تنفيذ موجبه</p>
 							</div>
