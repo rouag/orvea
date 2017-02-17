@@ -3,6 +3,8 @@ import datetime
 from openerp.osv import osv
 from openerp.report import report_sxw
 from openerp.addons.smart_base.util.time_util import float_time_convert
+from openerp import fields
+from umalqurra.hijri_date import HijriDate
 
 
 class ResumeNormalHoldaysReport(report_sxw.rml_parse):
@@ -14,6 +16,7 @@ class ResumeNormalHoldaysReport(report_sxw.rml_parse):
             'get_employee': self._get_employee,
             'get_sum_holiday': self._get_sum_holiday,
             'get_current_stock': self._get_current_stock,
+            'get_hijri_date': self._get_hijri_date,
         })
 
     def _get_normal_holiday(self, data):
@@ -55,6 +58,17 @@ class ResumeNormalHoldaysReport(report_sxw.rml_parse):
         else:
             return 0
     
+    def _get_hijri_date(self, date, separator):
+        '''
+        convert georging date to hijri date
+        :return hijri date as a string value
+        '''
+        if date:
+            date = fields.Date.from_string(date)
+            hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
+            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+        return None   
+     
 class ReportResumeNormalHolidays(osv.AbstractModel):
     _name = 'report.smart_hr.report_normal_resume_holidays'
     _inherit = 'report.abstract_report'

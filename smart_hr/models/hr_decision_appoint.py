@@ -248,7 +248,7 @@ class HrDecisionAppoint(models.Model):
                                                     'number_job' : self.number_job,
                                                    'state_appoint' : self.state_appoint,
                                                    'grade_id' : self.grade_id.id,
-                                                   'type_appointment' : self.type_appointment.name,
+                                                   'type_appointment' : self.type_appointment.id,
                                                    'degree_id' : self.degree_id.id,
                                                    'date_direct_action': self.date_direct_action 
                                                             })
@@ -294,7 +294,7 @@ class HrDecisionAppoint(models.Model):
                                                     'number_job' : self.number_job,
                                                    'state_appoint' : self.state_appoint,
                                                    'grade_id' : self.grade_id.id,
-                                                   'type_appointment' : self.type_appointment.name,
+                                                   'type_appointment' : self.type_appointment.id,
                                                    'degree_id' : self.degree_id.id,
                                                    'date_direct_action': self.date_direct_action 
                                                             })
@@ -327,7 +327,7 @@ class HrDecisionAppoint(models.Model):
                                                   'type_id' : self.type_id.id,
                                                   'state_appoint' : self.state_appoint,
                                                   'grade_id' : self.grade_id.id,
-                                                  'type_appointment' : self.type_appointment.name,
+                                                  'type_appointment' : self.type_appointment.id,
                                                   'degree_id' : self.degree_id.id,
                                                   'date_direct_action': self.date_direct_action ,
                                                     })

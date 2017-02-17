@@ -82,7 +82,22 @@ class HrDeputation(models.Model):
                               ], string=u'حالة', default='draft', advanced_search=True)
     task_name = fields.Char(string=u' المهمة', required=1)
     duration = fields.Integer(string=u'المدة', compute='_compute_duration',readonly=1)
+    
+    member_deputation = fields.Selection([
+        ('member', u'انتداب عضو'),
+        ('notmember', u'انتداب غيرعضو')
+    ], string=u'انتداب عضو', default='notmember', advanced_search=True, required=1)
 
+
+    @api.onchange('member_deputation')
+    def onchange_member_deputation(self):
+        res = {}
+        if self.member_deputation == 'member':
+            res['domain'] = {'employee_id': [('is_member', '=', True)]}
+        else:
+            res['domain'] = {'employee_id': [('is_member', '=', False)]}
+        return res
+    
     @api.multi
     def action_draft(self):
         self.ensure_one()

@@ -20,7 +20,7 @@
 												قرار إداري رقم
 												<span t-esc="o.name" />
 												بتاريخ
-												<span t-esc="o.date" />
+												<span t-esc="get_hijri_date(o.date, '-')" />
 											</p>
 											<p align="left">
 												رقم الهوية الوطنية:
@@ -58,7 +58,7 @@
 										بإجازة عادية لمده
 										<span t-esc="o.duration" />
 										يوما اعتبارا من
-										<span t-esc="o.date_from" />
+										<span t-esc="get_hijri_date(o.date_from, '-')" />
 									</p>
 									<p style="font-size:22px;">2) لا يصرف راتبه مقدما.</p>
 									<p style="font-size:22px;">3) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
@@ -104,7 +104,7 @@
 												قرار إداري رقم
 												<span t-esc="o.name" />
 												بتاريخ
-												<span t-esc="o.date" />
+												<span t-esc="get_hijri_date(o.date, '-')" />
 											</p>
 											<p align="left">
 												رقم الهوية الوطنية:
@@ -142,9 +142,9 @@
 									لمدة
 									<span t-esc="o.duration" />
 									يوم اعتبارا من
-									<span t-esc="o.date_from" />
+									<span t-esc="get_hijri_date(o.date_from, '-')" />
 									وحتى نهاية يوم
-									<span t-esc="o.date_to" />
+									<span t-esc="get_hijri_date(o.date_to, '-')" />
 								</p>
 								<p style="font-size:22px;">٢ ) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
 
@@ -192,7 +192,7 @@
 												قرار إداري رقم
 												<span t-esc="o.name" />
 												بتاريخ
-												<span t-esc="o.date" />
+												<span t-esc="get_hijri_date(o.date, '-')" />
 											</p>
 											<p align="left">
 												رقم الهوية الوطنية:
@@ -238,7 +238,7 @@
 									إجازة مرضية لمده
 									<span t-esc="o.duration" />
 									يومااعتبارا من
-									<span t-esc="o.date_from" />
+									<span t-esc="get_hijri_date(o.date_from, '-')" />
 								</p>
 								<p style="font-size:22px;">٢) يعامل من حيث راتب الإجازة على أساس ..............
 								</p>
@@ -288,7 +288,7 @@
 												قرار إداري رقم
 												<span t-esc="o.name" />
 												بتاريخ
-												<span t-esc="o.date" />
+												<span t-esc="get_hijri_date(o.date, '-')" />
 											</p>
 											<p align="left">
 												رقم الهوية الوطنية:
@@ -336,7 +336,7 @@
 									إجازة مرافقة لمده
 									<span t-esc="o.duration" />
 									يوم اعتبارا من
-									<span t-esc="o.date_from" />
+									<span t-esc="get_hijri_date(o.date_from, '-')" />
 								</p>
 								<p style="font-size:22px;">2) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
 								<br></br>
@@ -380,7 +380,7 @@
 												قرار إداري رقم
 												<span t-esc="o.name" />
 												بتاريخ
-												<span t-esc="o.date" />
+												<span t-esc="get_hijri_date(o.date, '-')" />
 											</p>
 											<p align="left">
 												رقم الهوية الوطنية:
@@ -405,12 +405,12 @@
 										رقم
 										<span t-field="o.num_outspeech" />
 										بتاريخ
-										<span t-field="o.date_outspeech" />
+										<span t-esc="get_hijri_date(o.date_outspeech, '-')" />
 										ورقم
 										<span t-field="o.num_inspeech" />
 
 										وتاريخ
-										<span t-field="o.date_inspeech" />
+										<span t-esc="get_hijri_date(o.date_inspeech, '-')" />
 
 										بشان طلب
 										الموافقة على منح الموظف
@@ -433,7 +433,7 @@
 										إجازة رياضية لمدة
 										<span t-esc="o.duration" />
 										يوما اعتبارا من
-										<span t-esc="o.date_from" />
+										<span t-esc="get_hijri_date(o.date_from, '-')" />
 									</p>
 									<p style="font-size:22px;">٢) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
 								</div>

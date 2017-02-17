@@ -55,6 +55,7 @@ class hr_deputation(models.Model):
         ('refuse', u'رفض'),
     ], string=u'حالة', default='draft', advanced_search=True)
 
+    
     @api.model
     def create(self, vals):
         ret = super(hr_deputation, self).create(vals)
