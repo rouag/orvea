@@ -25,10 +25,7 @@
 			<field name="code">05</field>
 		</record>
 		‫
-		<record id="hr_allowance_type_06" model="hr.allowance.type">
-			<field name="name">‫‫بدل‬ تعيين‬</field>
-			<field name="code">06</field>
-		</record>
+
 		<record id="hr_allowance_type_07" model="hr.allowance.type">
 			<field name="name">‫‫بدل ‬طبيعة‬ عمل‬</field>
 			<field name="code">07</field>
@@ -212,7 +209,8 @@
 			<field name="condition_select">none</field>
 			<field name="amount_select">code</field>
 			<field name="amount_python_compute">result = categories.BASIC + categories.ALW +
-				categories.REW + categories.INDE</field>
+				categories.REW + categories.INDE
+			</field>
 		</record>
 
 		<record id="hr_rule_deduction" model="hr.salary.rule">

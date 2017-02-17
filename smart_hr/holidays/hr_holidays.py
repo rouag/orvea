@@ -970,21 +970,21 @@ class HrHolidays(models.Model):
                     self.date_from <= public_holiday.date_to <= self.date_to :
                     raise ValidationError(u"هناك تداخل فى التواريخ مع اعياد و عطل رسمية")
                 
-            # خارج الدوام
-        if self.holiday_status_id != self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
-            search_domain = [
-                ('employee_id', '=', self.employee_id.id),
-                ('overtime_id.state', '=', 'done'),
-                ]
-            overtime_line_obj = self.env['hr.overtime.line']
-
-            for rec in overtime_line_obj.search(search_domain):
-                if rec.date_from <= self.date_from <= rec.date_to or \
-                        rec.date_from <= self.date_to <= rec.date_to or \
-                        self.date_from <= rec.date_from <= self.date_to or \
-                        self.date_from <= rec.date_to <= self.date_to:
-                    raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في تكليف")
-                                      
+#             # تكليف
+#         if self.holiday_status_id != self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
+#             search_domain = [
+#                 ('employee_id', '=', self.employee_id.id),
+#                 ('overtime_id.state', '=', 'done'),
+#                 ]
+#             overtime_line_obj = self.env['hr.overtime.line']
+# 
+#             for rec in overtime_line_obj.search(search_domain):
+#                 if rec.date_from <= self.date_from <= rec.date_to or \
+#                         rec.date_from <= self.date_to <= rec.date_to or \
+#                         self.date_from <= rec.date_from <= self.date_to or \
+#                         self.date_from <= rec.date_to <= self.date_to:
+#                     raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في تكليف")
+#                                       
     @api.multi
     def check_constraintes(self):
         """

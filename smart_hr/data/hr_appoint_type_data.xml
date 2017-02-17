@@ -2,6 +2,13 @@
 <openerp>
 	<data noupdate="1">
 
+		<record id="hr_allowance_type_06" model="hr.allowance.type">
+			<field name="name">‫‫بدل‬ تعيين‬</field>
+			<field name="code">06</field>
+		</record>
+		<record id="data_allowance_appoint" model="hr.allowance.appoint">
+			<field name="hr_allowance_type_id" ref="smart_hr.hr_allowance_type_06" />
+		</record>
 		<!-- appoint Types -->
 		<record id="data_hr_new_agent_public" model="hr.type.appoint">
 			<field name="name"> تعيين موظف جديد
@@ -12,7 +19,7 @@
 			<field name="personnel_hr" eval="True" />
 			<field name="direct_manager" eval="False" />
 			<field name="recrutment_decider" eval="True" />
-			
+
 
 		</record>
 
@@ -25,7 +32,7 @@
 			<field name="direct_manager" eval="True" />
 			<field name="recrutment_decider" eval="False" />
 			<field name="show_in_apoint" eval="False" />
-			
+
 
 		</record>
 
@@ -48,7 +55,7 @@
 			<field name="personnel_hr" eval="True" />
 			<field name="direct_manager" eval="True" />
 			<field name="recrutment_decider" eval="False" />
-			
+
 
 		</record>
 
@@ -60,7 +67,7 @@
 			<field name="personnel_hr" eval="True" />
 			<field name="direct_manager" eval="True" />
 			<field name="recrutment_decider" eval="False" />
-			
+
 
 		</record>
 		<record id="data_hr_recrute_contrat" model="hr.type.appoint">
@@ -71,7 +78,7 @@
 			<field name="personnel_hr" eval="True" />
 			<field name="direct_manager" eval="False" />
 			<field name="recrutment_decider" eval="False" />
-			
+
 
 		</record>
 		<record id="data_hr_recrute_public_nosoudi" model="hr.type.appoint">
@@ -82,7 +89,7 @@
 			<field name="personnel_hr" eval="True" />
 			<field name="direct_manager" eval="False" />
 			<field name="recrutment_decider" eval="False" />
-			
+
 
 		</record>
 
@@ -95,7 +102,7 @@
 			<field name="direct_manager" eval="True" />
 			<field name="recrutment_decider" eval="False" />
 			<field name="ministry_civil" eval="True" />
-			
+
 
 		</record>
 
@@ -108,17 +115,17 @@
 			<field name="personnel_hr" eval="True" />
 			<field name="direct_manager" eval="False" />
 			<field name="recrutment_decider" eval="True" />
-			
+
 		</record>
 
 		<record id="data_hr_recrute_from_transfert" model="hr.type.appoint">
 			<field name="name">تعين النقل</field>
 			<field name="code">TR01</field>
 			<field name="show_in_apoint">False</field>
-			</record>
-			
+		</record>
+
 		<record id="data_hr_promotion_member" model="hr.type.appoint">
-			<field name="name">تعيين عضو  بالترقية</field>
+			<field name="name">تعيين عضو بالترقية</field>
 			<field name="audit" eval="True" />
 			<field name="recrutment_manager" eval="True" />
 			<field name="enterview_manager" eval="False" />
@@ -126,11 +133,9 @@
 			<field name="direct_manager" eval="True" />
 			<field name="recrutment_decider" eval="False" />
 		</record>
-		
-		
-		<record id="data_allowance_appoint" model="hr.allowance.appoint">
-			<field name="hr_allowance_type_id" ref="smart_hr.hr_allowance_type_06" />
-		</record>
+
+
+
 
 	</data>
 </openerp>
