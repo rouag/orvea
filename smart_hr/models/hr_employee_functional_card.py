@@ -2,7 +2,6 @@
 
 
 from openerp import models, fields, api, _
-from Crypto.Util.number import inverse
 
 
 
