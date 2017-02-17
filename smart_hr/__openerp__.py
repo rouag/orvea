@@ -19,6 +19,7 @@
         'payroll/security/ir.model.access.csv',
         'hr_scholarship/security/hr_security.xml',
         'hr_scholarship/security/ir.model.access.csv',
+        'data/relegion_data.xml',
 
         'hr_menu.xml',
         'data/sequences.xml',
