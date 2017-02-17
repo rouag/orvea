@@ -20,7 +20,9 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 ,,,,,,,
 ,,,,,,,
 ,,,,,,,
-access_hr_training,hr_training,model_hr_training,,1,1,1,1
+access_hr_training,hr_training,model_hr_training,group_training_specialiter,1,1,1,1
+access_hr_training_employe,hr_training_employee,model_hr_training,group_employee,1,0,0,0
+
 access_hr_candidates_training,hr_condidate_training,model_hr_candidates,,1,1,1,1
 ,,,,,,,
 access_hr_candidates,hr_candidates,model_hr_candidates,,1,1,1,1

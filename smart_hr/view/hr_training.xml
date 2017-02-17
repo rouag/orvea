@@ -45,53 +45,58 @@
 			<field name="arch" type="xml">
 				<form string="الدورات التدربية">
 					<header>
-						<button name="action_candidat" string="فتح الترشحات" type="object"
-							states="new" />
-						
-						<button name="action_review" string="إنهاء الترشحات" type="object"
-							states="candidat" />
-						<button name="action_done" string="موافقة" type="object"
-							states="review" />
-						<button name="action_refused" string="رفض" type="object" attrs="{'invisible': ['|','|','|',('state', '=', 'done'),('state', '=', 'refused'),('state', '=', 'cancel')]}" />
-						
-						<button name="action_cancel" string="إلغاء" type="object"
-							states="review" />
 						<field name="state" widget="statusbar"
 							statusbar_visible="new,candidat,review,done,refused,cancel" />
+						<button name="action_candidat" string="فتح الترشحات" type="object"
+							states="new" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_review" string="إنهاء الترشحات" type="object"
+							states="candidat" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_done" string="إعتماد" type="object"
+							states="review" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_refused" string="رفض" type="object" attrs="{'invisible': ['|','|','|',('state', '=', 'done'),('state', '=', 'refused'),('state', '=', 'cancel')]}"
+							
+
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_cancel" string="إلغاء" type="object"
+							states="review" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
 					</header>
 					<sheet>
 						<group>
 							<group>
 								<field name="name" attrs="{'readonly' :[('state','!=','new')]}" />
-								<field name="date_from" class="oe_inline"  attrs="{'readonly':[('state', 'in', ['candidat','review','done','refused','cancel'])]}" />
-								<field name="date_to" class="oe_inline" attrs="{'readonly' :[('state','!=','new')]}" />
-								<field name="number_of_days" class="oe_inline"  attrs="{'readonly' :[('state','!=','new')]}"/>
+								<field name="date_from" class="oe_inline"
+									attrs="{'readonly':[('state', 'in', ['candidat','review','done','refused','cancel'])]}" />
+								<field name="date_to" class="oe_inline"
+									attrs="{'readonly' :[('state','!=','new')]}" />
+								<field name="number_of_days" class="oe_inline"
+									attrs="{'readonly' :[('state','!=','new')]}" />
 								يوم
-								<field name="place"  attrs="{'readonly' :[('state','!=','new')]}" />
+								<field name="place" attrs="{'readonly' :[('state','!=','new')]}" />
 							</group>
 
 							<group>
-								<field name="number"  attrs="{'readonly' :[('state','!=','new')]}" />
-								<field name="date"  attrs="{'readonly' :[('state','!=','new')]}" />
-								<field name="department"  attrs="{'readonly' :[('state','!=','new')]}" />
-								<field name="number_place"  attrs="{'readonly' :[('state','!=','new')]}"  />
-								<field name="number_participant"  attrs="{'readonly' :[('state','!=','new')]}"/>
-								<field name="experience" attrs="{'readonly' :[('state','!=','new')]}"/>
+								<field name="number" attrs="{'readonly' :[('state','!=','new')]}" />
+								<field name="date" attrs="{'readonly' :[('state','!=','new')]}" />
+								<field name="department" attrs="{'readonly' :[('state','!=','new')]}" />
+								<field name="number_place" attrs="{'readonly' :[('state','!=','new')]}" />
+								<field name="number_participant" attrs="{'readonly' :[('state','!=','new')]}" />
+								<field name="experience" attrs="{'readonly' :[('state','!=','new')]}" />
 							</group>
 						</group>
-						<group string="المترشحين"
-							attrs="{'invisible': [('state', '=', 'new')],'readonly' :[('state','!=','candidat'),('state','!=','new')]}">
-							<field name="line_ids" string="المترشحين" nolabel="1">
+						<group string="المترشحين" attrs="{'invisible': [('state', '=', 'new')]}">
+							<field name="line_ids" string="المترشحين" nolabel="1" attrs="{'readonly' :[('state','!=','candidat')]}">
 								<tree string="بيانات الموظف">
 									<field name="employee_id" />
 									<field name="number" />
 									<field name="job_id" />
 									<field name="department_id" />
 									<field name="state" />
-									<button string="موافقة" name="action_done" class="oe_highlight btn"
-									type="object" attrs="{'readonly': ['|','|',('state', '=', 'new'),('state', '=', 'done'),('state', '=', 'cancel')]}" />
-									<button  name="%(action_hr_refuse_training_wizard)d" string="رفض" type="action" class="oe_highlight btn" attrs="{'readonly': ['|','|',('state', '=', 'new'),('state', '=', 'done'),('state', '=', 'cancel')]}"
-									   />
+									<button name="%(action_hr_refuse_training_wizard)d"
+										string="رفض" type="action" class="oe_highlight btn" attrs="{'readonly' :[('state','!=','waiting')]}"
+										/>
 								</tree>
 							</field>
 						</group>
@@ -106,7 +111,7 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 		<menuitem id="hr_training_menu_2" name="الدورات التدربية"
-			sequence="5" parent="hr_root_training" action="action_hr_training"  groups="smart_hr.group_hrm,smart_hr.group_training_specialiter" />
+			sequence="5" parent="hr_root_training" action="action_hr_training" />
 		<!-- الترشيحات -->
 
 		<record model="ir.ui.view" id="hr_candidates_tree">
@@ -131,18 +136,20 @@
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="الترشيحات">
-					<header>
-						<button name="action_waiting" string=" ارسال طلب" type="object"
-							states="new" />
-						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
-					</header>
+
 					<sheet>
 
-						<group string="بيانات الموظف" attrs="{'readonly' :[('state','!=','new')]}">>
-							<field name="employee_id" />
-							<field name="number" />
-							<field name="job_id" />
-							<field name="department_id" />
+						<group string="بيانات الموظف" attrs="{'readonly' :[('state','!=','new')]}">
+							
+							<field name="employee_id" options='{"no_open": True, "no_create": True}' />
+							<field name="number" readonly="1"
+								options='{"no_open": True, "no_create": True}' />
+							<field name="job_id" readonly="1"
+								options='{"no_open": True, "no_create": True}' />
+							<field name="department_id" readonly="1"
+								options='{"no_open": True, "no_create": True}' />
+								<field name="state" invisible="1"
+								 />
 						</group>
 					</sheet>
 				</form>
@@ -170,6 +177,7 @@
 					<field name="date_to" />
 					<field name="department" />
 					<field name="state" />
+					<field name="cause" />
 				</tree>
 			</field>
 		</record>
@@ -189,15 +197,19 @@
 					<sheet>
 
 						<group string="بيانات الموظف" attrs="{'readonly' :[('state','!=','new')]}">
-							<field name="employee_id" readonly="1" options='{"no_open": True, "no_create": True}'/>
-							<field name="number" readonly="1"/>
-							<field name="job_id" readonly="1" options='{"no_open": True, "no_create": True}'/>
-							<field name="department_id" readonly="1" options='{"no_open": True, "no_create": True}'/>
+							<field name="employee_id" readonly="1"
+								options='{"no_open": True, "no_create": True}' />
+							<field name="number" readonly="1" />
+							<field name="job_id" readonly="1"
+								options='{"no_open": True, "no_create": True}' />
+							<field name="department_id" readonly="1"
+								options='{"no_open": True, "no_create": True}' />
 						</group>
-						<group string="الدورات التدربية" attrs="{'readonly' :[('state','!=','new')]}" >
-							<field name="training_id" domain="[('state','=','candidat')]" options='{"no_open": True, "no_create": True}'/>
-							<field name="date_from" readonly="1"/>
-							<field name="date_to" readonly="1"/>
+						<group string="الدورات التدربية" attrs="{'readonly' :[('state','!=','new')]}">
+							<field name="training_id" domain="[('state','=','candidat')]"
+								options='{"no_open": True, "no_create": True}' attrs="{'readonly' :[('state','!=','new')]}" />
+							<field name="date_from" readonly="1" />
+							<field name="date_to" readonly="1" />
 							<field name="department" readonly="1" />
 						</group>
 					</sheet>

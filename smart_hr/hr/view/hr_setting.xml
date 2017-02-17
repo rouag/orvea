@@ -53,7 +53,7 @@
 			<field name="name">إعدادات عامة</field>
 		</record>
 
-		<menuitem name="النقل، الإعارة والتكليف" id="hr_setting_menu"
+		<menuitem name="النقل، الإعارة والتكليف" id="hr_setting_menu" groups="smart_hr.group_configuration"
 			parent="hr_root_organisation_configuration" sequence="1"
 			action="ir_actions_button_hr_setting" />
 
