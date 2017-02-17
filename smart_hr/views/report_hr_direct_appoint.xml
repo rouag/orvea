@@ -158,7 +158,7 @@
 									<p style="font-size:22px;">
 										لمباشرة مهامه
 										بتاريخ
-									 <span t-esc="get_hijri_date(o.date, '-')" />
+										<span t-field="o.date" />
 									</p>
 									<br></br>
 									<br></br>
