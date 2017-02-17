@@ -136,6 +136,8 @@ class hrDifference(models.Model):
             line_ids += self.get_difference_decision_appoint()
             # فروقات التكليف
             line_ids += self.get_difference_assign()
+            # فروقات الإبتعاث
+            line_ids += self.get_difference_scholarship()
             self.line_ids = line_ids
 
     @api.one
@@ -316,6 +318,57 @@ class hrDifference(models.Model):
                                     'amount': amount * -1,
                                     'type': 'commissioning'}
                             line_ids.append(vals)
+        return line_ids
+
+    @api.multi
+    def get_difference_scholarship(self):
+        self.ensure_one()
+        line_ids = []
+        scholarship_ids = self.env['hr.scholarship'].search([('date_to', '>=', self.date_from),
+                                                             ('date_to', '<=', self.date_to),
+                                                             ('state', '=', 'done')
+                                                             ])
+        for scholarship_id in scholarship_ids:
+            # ابتعاث داخلي
+            if scholarship_id.scholarship_type == self.env.ref('smart_hr.data_hr_shcolaship_internal'):
+                # get تفاصيل سلم الرواتب
+                grid_id = self.env['salary.grid.detail'].search([('grid_id.enabled', '=', True),
+                                                                 ('type_id', '=', scholarship_id.employee_id.job_id.type_id.id),
+                                                                 ('degree_id', '=', scholarship_id.employee_id.degree_id.id),
+                                                                 ('grade_id', '=', scholarship_id.employee_id.job_id.grade_id.id)
+                                                                 ])
+                if grid_id:
+                    # تفاصيل سلم الرواتب
+                    allowance_ids = grid_id.allowance_ids
+                    # بدل النقل
+                    allowance_transport_id = self.env.ref('smart_hr.hr_allowance_type_01')
+                    if allowance_transport_id:
+                        amount = 0.0
+                        for allow in allowance_ids:
+                            if allow.allowance_id == allowance_transport_id:
+                                amount = allow.get_value(scholarship_id.employee_id.id)
+                                break
+                        if amount:
+                            vals = {'difference_id': self.id,
+                                    'name': allowance_transport_id.name,
+                                    'employee_id': scholarship_id.employee_id.id,
+                                    'number_of_days': 0,
+                                    'number_of_hours': 0.0,
+                                    'amount': amount * -1,
+                                    'type': 'commissioning'}
+                            line_ids.append(vals)
+            # ابتعاث خارجي
+            if scholarship_id.scholarship_type == self.env.ref('smart_hr.data_hr_shcolaship_external') and scholarship_id.duration > 365:
+                amount = scholarship_id.employee_id.wage
+                if amount > 0:
+                    vals = {'difference_id': self.id,
+                            'name': 'راتب',
+                            'employee_id': scholarship_id.employee_id.id,
+                            'number_of_days': 0,
+                            'number_of_hours': 0.0,
+                            'amount': (amount / 2) * -1,
+                            'type': 'appoint'}
+                    line_ids.append(vals)
         return line_ids
 
 
