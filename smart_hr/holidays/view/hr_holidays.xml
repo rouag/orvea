@@ -39,17 +39,17 @@
 					<field name="is_extensible" invisible="1" />
 					<header name="main">
 						
-						<button name="action_psm" string="إرسال طلب"
+						<button name="send_holiday_request" string="إرسال طلب"
 							type="object" states="draft"
 							icon="fa-paper-plane" class="oe_inline oe_stat_button"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<button name="action_done" string="موافق" type="object"
-							states="psm" groups="smart_hr.group_dm" icon="fa-check"
+						<button name="button_accept_dm" string="موافق" type="object"
+							states="dm" groups="smart_hr.group_dm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						
-						<button name="button_refuse" string="رفض" type="object"
-							states="psm" groups="smart_hr.group_dm" icon="fa-check"
+						<button name="button_delay_dm" string="رفض" type="object"
+							states="dm" groups="smart_hr.group_dm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="button_accept_audit" string="موافق" type="object"
@@ -311,7 +311,7 @@
 							<field name="notes" string="ملاحظات"
 								attrs="{'readonly':[('state','!=','draft')]}" />
 						</group>
-						<button name="%(report_hr_holidays_report)d" string="طباعة القرار"
+						<button name="%(report_hr_holidays)d" string="طباعة القرار"
 							groups="smart_hr.group_hrm" type="action" states="done" icon="fa-print"
 							class="oe_inline oe_stat_button" />
 
@@ -329,7 +329,6 @@
 
 					<field name="birth_certificate_file_name_file_name"
 						invisible="1" />
-
 				</form>
 			</field>
 		</record>

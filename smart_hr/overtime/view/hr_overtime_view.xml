@@ -8,6 +8,8 @@
 			<field name="arch" type="xml">
 				<tree string="خارج الدوام">
 					<field name="order_date" />
+					<field name="decision_number" />
+					<field name="decision_date" />
 					<field name="state" />
 				</tree>
 			</field>
@@ -23,52 +25,67 @@
 
 						<button name="action_draft" string="ارسال الطلب" type="object"
 							states="draft" icon="fa-check" class="oe_inline oe_stat_button"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							groups="smart_hr.group_overtime_department"	confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							
 						<button name="action_commission" string="إحالة للجنة" type="object"
 							states="audit" icon="fa-check" class="oe_inline oe_stat_button"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							groups="smart_hr.group_overtime_exelence_employee"	confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_audit" string="موافق" type="object"
 							states="audit" icon="fa-check" class="oe_inline oe_stat_button"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							groups="smart_hr.group_overtime_exelence_employee"	confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_refuse" string="رفض" type="object"
 							states="audit" icon="fa-times" class="oe_inline oe_stat_button"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							groups="smart_hr.group_overtime_exelence_employee"	confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_waiting" string="موافق" type="object"
 							states="waiting" icon="fa-check" class="oe_inline oe_stat_button"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							groups="smart_hr.group_overtime_hr"	confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_refuse" string="رفض" type="object"
 							states="waiting" icon="fa-times" class="oe_inline oe_stat_button"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							groups="smart_hr.group_overtime_hr"	confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 
 						<button name="action_done" string="إنهاء مهمة" type="object"
 							states="done" icon="fa-check" class="oe_inline oe_stat_button"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						groups="smart_hr.group_overtime_hr"		confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<button name="action_order" string="إعتماد التقرير" type="object"
-							states="order" icon="fa-times" class="oe_inline oe_stat_button"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_humain" string="إعتماد " type="object"
+							states="humain" icon="fa-times" class="oe_inline oe_stat_button"
+						groups="smart_hr.group_overtime_hr"	confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+							<button name="%(action_overtime_cut_wizard)d" string="قطع"
+							type="action" states="done"
+							groups="smart_hr.group_overtime_hr"	icon="fa-times" class="oe_inline oe_stat_button" />
+
+
+						<button name="button_cancel_overtime" context="{'operation': 'cancel'}"
+							string="إلغاء" type="object" states="done" icon="fa-times-circle-o"
+							groups="smart_hr.group_overtime_hr"	class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						
+					
 
 						<field name="state" widget="statusbar"
-							statusbar_visible="draft,audit,waiting,done,order,finish,refuse" />
+							statusbar_visible="draft,audit,waiting,humain,done,finish,cut,cancel,refuse" />
 					</header>
 					<sheet>
 						<group>
 							<group>
 								<field name="order_date" />
-							
-							</group>
-							<group>
+
 								<field name="decision_number"
-									attrs="{'invisible':[('state', 'not in', [ 'done','order','finish'])],'required':[('state','=','done')],'readonly':[('state', 'in', ['order','finish'])]}" />
+									attrs="{'invisible':[('state', 'not in', [ 'humain','done','finish'])],'required':[('state','=','humain')],'readonly':[('state', 'in', ['done','finish'])]}" />
 								<field name="decision_date"
-									attrs="{'invisible':[('state', 'not in', ['done','order','finish'])],'required':[('state','=','done')],'readonly':[('state', 'in', ['order','finish'])]}" />
-								<field name="file_decision"
-									attrs="{'invisible':[('state', 'not in', [ 'done','order','finish'])],'required':[('state','=','done')],'readonly':[('state', 'in', ['order','finish'])]}" />
-								<field name="amount"
-									attrs="{'invisible':[('state', 'not in', [ 'done','order','finish'])],'required':[('state','=','done')],'readonly':[('state', 'in', ['order','finish'])]}" />
+									attrs="{'invisible':[('state', 'not in', [ 'humain','done','finish'])],'required':[('state','=','humain')],'readonly':[('state', 'in', ['done','finish'])]}" />
+								<field name="file_decision" filename="file_decision_name"
+									attrs="{'invisible':[('state', 'not in', [ 'humain','done','finish'])],'required':[('state','=','humain')],'readonly':[('state', 'in', ['done','finish'])]}" />
+
+								<field name="lettre_number"
+									attrs="{'invisible':[('state', 'not in', [ 'humain','done','finish'])],'required':[('state','=','humain')],'readonly':[('state', 'in', ['done','finish'])]}" />
+								<field name="lettre_date"
+									attrs="{'invisible':[('state', 'not in', [ 'humain','done','finish'])],'required':[('state','=','humain')],'readonly':[('state', 'in', ['done','finish'])]}" />
+								<field name="file_lettre" filename="file_lettre_name"
+									attrs="{'invisible':[('state', 'not in', ['humain','done','finish'])],'required':[('state','=','humain')],'readonly':[('state', 'in', ['done','finish'])]}" />
 
 							</group>
 						</group>
@@ -106,6 +123,11 @@
 								</page>
 							</notebook>
 						</group>
+						
+						
+						 <div>
+                            <field name="message_ids" widget="mail_thread" readonly="1"/>
+                        </div>
 					</sheet>
 				</form>
 			</field>

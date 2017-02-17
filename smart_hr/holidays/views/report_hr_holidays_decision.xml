@@ -8,7 +8,9 @@
 						<br></br>
 						<br></br>
 						<br></br>
-
+	<t
+							t-if="o.holidays[0]">
+				
 						<div class="page">
 							<br></br>
 							<br></br>
@@ -19,7 +21,7 @@
 							</p>
 							<br></br>
 							<p align="left">
-								الموضوع: مباشرة  بعد
+								الموضوع: مباشرة بعد
 								<span t-field="o.holidays[0].holiday_status_id.name" />
 
 								<br></br>
@@ -42,29 +44,30 @@
 							<br></br>
 							<p style="font-size:22px;">
 
+
 								إشارة إلى القرار الإداري رقم
 								<span t-field="o.holidays[0].name" />
 								و تاريخ
-								<span t-field="o.holidays[0].date" />
+								<span t-esc="get_hijri_date(o.holidays[0].date, '-')" />
 								القاضي بمنح المستخدم بفرع الهيئة ب
 								<span t-field="o.employee_id.dep_city" />
 								<span t-field="o.holidays[0].holiday_status_id.name" />
 								لمدة
 								<span t-field="o.holidays[0].duration" />
 								يوما اعتبارا من يوم
-								<span t-field="o.holidays[0].date_from" />
+								<span t-esc="get_hijri_date(o.holidays[0].date_from, '-')" />
 								الى نهاية يوم
-								<span t-field="o.holidays[0].date_to" />
+								<span t-esc="get_hijri_date(o.holidays[0].date_to, '-')" />
 							</p>
 							<p style="font-size:22px;">
 								و بناء على خطاب رقم
 								<span t-field="o.name" />
 								وتاريخ
-								<span t-field="o.order_date" />
+								<span t-esc="get_hijri_date(o.order_date, '-')" />
 
 
 								المتضمن أن المذكور باشر العمل يوم
-								<span t-field="o.date" />
+								<span t-esc="get_hijri_date(o.date, '-')" />
 							</p>
 							<p style="font-size:22px;">
 
@@ -110,6 +113,7 @@
 
 							</p>
 						</div>
+						</t>
 					</t>
 				</t>
 			</t>

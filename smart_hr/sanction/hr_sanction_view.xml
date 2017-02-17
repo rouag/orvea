@@ -165,16 +165,21 @@
 												<field name="state_sanction" invisible="1" />
 												<field name="days_number" />
 												<field name="amount" />
+												
 												<field name="mast" />
+												<field name="days_difference" />
+													<field name="amount_difference" />
+												
 												<field name="deduction" />
+												
 												<field name="state" />
 												<button
 													name="%(smart_hr.action_wizard_sanction_action_exclusion)d"
 													type="action" string="إستبعاد" icon="STOCK_CANCEL"
-													attrs="{'invisible':[('state_sanction','!=','done')]}"
+													attrs="{'invisible':[('state_sanction','!=','done')]}" 
 													context="{'action':'exclusion'}" />
 												<button name="%(smart_hr.action_wizard_sanction_action_update)d"
-													type="action" string="تعديل" icon="fa-refresh"
+													type="action" string="تعديل" icon="fa-refresh" 
 													attrs="{'invisible':[('state_sanction','!=','done')]}"
 													context="{'action':'update'}" />
 											</tree>

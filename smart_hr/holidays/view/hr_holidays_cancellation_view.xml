@@ -38,9 +38,7 @@
 						<group col="8">
 							<field name="note" />
 						</group>
-						<!-- <button name="%(report_hr_holidays_report)d" string="طباعة القرار" 
-							type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button" 
-							/> -->
+
 					</sheet>
 				</form>
 			</field>
@@ -133,9 +131,6 @@
 						<group col="8">
 							<field name="note" colspan="8" />
 						</group>
-						<!-- <button name="%(report_hr_holidays_report)d" string="طباعة القرار" 
-							type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button" 
-							/> -->
 
 					</sheet>
 					<div>
@@ -229,9 +224,7 @@
 						<group col="8">
 							<field name="note" colspan="8" />
 						</group>
-						<!-- <button name="%(report_hr_holidays_report)d" string="طباعة القرار" 
-							type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button" 
-							/> -->
+
 
 					</sheet>
 					<div>

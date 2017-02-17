@@ -33,7 +33,7 @@
 						<button name="action_refused" string="رفض" type="object"
 							groups="smart_hr.group_hr_personnel_officer_commissioning"
 							states="pm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						
+
 						<button name="%(hr_employee_assign_report)d" string="طباعة القرار"
 							type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
 						<field name="state" widget="statusbar" statusbar_visible="new,pm,accept,done,refused" />
@@ -56,13 +56,18 @@
 								<field name="employee_id" options='{"no_open": True, "no_create": True}' />
 								<field name="governmental_entity" options='{"no_open": True, "no_create": True}'
 									attrs="{'invisible':[('comm_type', '!=', %(data_hr_commissioning_type_02)d)], 'required':[('comm_type', '=', %(data_hr_commissioning_type_02)d)]}" />
-									<field name="decision_number" />
-								    <field name="decision_date" />
-								    <field name="decision_file" />
+								<field name="decision_number" />
+								<field name="decision_date" />
+								<field name="decision_file" />
 							</group>
 							<group>
 								<field name="comm_type" options='{"no_open": True, "no_create": True}' />
 								<field name="city" options='{"no_open": True, "no_create": True}' />
+								<group col="6">
+									<field name="give_allowance_transport" attrs="{'invisible':[('state', '=', 'new')]}" />
+									<field name="give_allow" attrs="{'invisible':[('state', '=', 'new')]}" />
+									<field name="give_salary" attrs="{'invisible':[('state', '=', 'new')]}" />
+								</group>
 							</group>
 							<field name="note" />
 						</group>
@@ -142,6 +147,6 @@
 
 		<menuitem action="action_hr_comm_type" id="hr_menu_comm_type"
 			parent="hr_root_organisation_configuration" name="أنواع التكليف"
-			sequence="10" />
+			groups="smart_hr.group_configuration" sequence="10" />
 	</data>
 </openerp>

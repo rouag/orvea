@@ -13,6 +13,7 @@
 				<tree string="بيانات موظف">
 					<field name="display_name" />
 					<field name="number" />
+					<field name="is_member" />
 					<field name="employee_state" />
 				</tree>
 			</field>
@@ -149,8 +150,8 @@
 								<div class="col-xs-3" style="text-align:right;width:23%;">
 									<label name="name" string="الاسم" />
 								</div>
-								<div class="col-xs-3 div_paddig_right_null" style="text-align:right;width:23%;">
-									<label name="father_name" string="إسم الأب" />
+								<div class="col-xs-3 div_paddig_right_null" style="text-align:right;width:23.5%;">
+									<label name="father_name" string="إسم الأب" class="div_paddig_right_null"/>
 								</div>
 								<div class="col-xs-3 div_paddig_right_null" style="text-align:right;width:23%;">
 									<label name="grandfather_name" string="اسم الجد" />
@@ -158,13 +159,12 @@
 								<div class="col-xs-2 div_paddig_right_null" style="text-align:right;width:15.5%;">
 									<label name="grandfather2_name" string="اسم الجد الثاني" />
 								</div>
-								<div class="col-xs-1 div_paddig_right_null" style="text-align:right;width:15.5%;">
+								<div class="col-xs-1 div_paddig_right_null" style="text-align:right;width:15%;">
 									<label name="family_name" string="الاسم العائلي" />
 								</div>
 
 							</div>
 							<group col="13">
-								<field name="id" invisible="1" />
 								<field name="name" nolabel="1" colspan="2" />
 								<field name="father_middle_name" nolabel="1" />
 								<field name="father_name" nolabel="1" colspan="2" />
@@ -318,8 +318,8 @@
 									</field>
 
 								</page>
-	
-								
+
+
 
 								<page string="العقوبات">
 

@@ -248,7 +248,7 @@ class HrDecisionAppoint(models.Model):
                                                     'number_job' : self.number_job,
                                                    'state_appoint' : self.state_appoint,
                                                    'grade_id' : self.grade_id.id,
-                                                   'type_appointment' : self.type_appointment.name,
+                                                   'type_appointment' : self.type_appointment.id,
                                                    'degree_id' : self.degree_id.id,
                                                    'date_direct_action': self.date_direct_action 
                                                             })
@@ -294,7 +294,7 @@ class HrDecisionAppoint(models.Model):
                                                     'number_job' : self.number_job,
                                                    'state_appoint' : self.state_appoint,
                                                    'grade_id' : self.grade_id.id,
-                                                   'type_appointment' : self.type_appointment.name,
+                                                   'type_appointment' : self.type_appointment.id,
                                                    'degree_id' : self.degree_id.id,
                                                    'date_direct_action': self.date_direct_action 
                                                             })
@@ -327,7 +327,7 @@ class HrDecisionAppoint(models.Model):
                                                   'type_id' : self.type_id.id,
                                                   'state_appoint' : self.state_appoint,
                                                   'grade_id' : self.grade_id.id,
-                                                  'type_appointment' : self.type_appointment.name,
+                                                  'type_appointment' : self.type_appointment.id,
                                                   'degree_id' : self.degree_id.id,
                                                   'date_direct_action': self.date_direct_action ,
                                                     })
@@ -421,20 +421,20 @@ class HrDecisionAppoint(models.Model):
         
         type=''
         if self.type_appointment.id == self.env.ref('smart_hr.data_hr_new_agent_public').id:
-            type = '17'
+            type = 'تعيين موظف جديد'
             
         elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_agent_public').id:
-            type = '59'
+            type = 'تعيين موظف رسمي'
         elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_agent_utilisateur').id:
-            type = '84'
+            type = 'تعيين الموظفين المستخدمين'
         elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_salaire_article').id:
-            type = '85'
+            type = 'تعيين عمال بند الأجور'
         elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_contrat').id:
-            type = '86'
+            type = 'تعيين بعقد'
         elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_public_nosoudi').id:
-            type = '87'
+            type = 'تعيين غير سعودي على مرتبة رسمية'
         elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_public_retraite').id:
-            type = '88'
+            type = 'تعيين المحالين على التقاعد'
         if type:
             self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date_hiring, type)
         self.state = 'done'
@@ -591,7 +591,7 @@ class HrTypeAppoint(models.Model):
 class HrAllowanceAppoint(models.Model):
     _name = 'hr.allowance.appoint'
     _description = u'بدل التعين'
-    hr_allowance_type_id = fields.Many2one('hr.allowance.type', string=u'بدل التعيين', readonly=1)
+    hr_allowance_type_id = fields.Many2one('hr.allowance.type', string=u'بدل التعيين')
     salary_number = fields.Float(string=u'عدد الرواتب')
     appoint_type_id = fields.Many2one('hr.type.appoint')
 

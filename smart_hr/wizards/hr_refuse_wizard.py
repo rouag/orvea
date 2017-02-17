@@ -35,4 +35,5 @@ class hr_refuse_wizard(models.TransientModel):
             if cx.get('active_id', False) and cx.get('active_model', False):
                 model_obj = self.env[cx.get('active_model')]
                 rec_id = model_obj.browse(cx.get('active_id'))
+                rec_id.cause=self.message
                 return rec_id.sudo().action_refuse()

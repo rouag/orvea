@@ -11,3 +11,4 @@ from . import wizard
 from . import hr_increase
 from . import hr_difference
 from . import hr_difference2
+from . import parser

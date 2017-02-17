@@ -25,15 +25,24 @@
 			<field name="arch" type="xml">
 				<form string="القرارات">
 					<sheet>
-						<group col="4">
+						<group>
 							<field name="name" />
 							<field name="date" />
-							<field name="employee_id" />
 							<field name="decision_type_id" />
-							<field name="num_speech" attrs="{'invisible':[('decision_type_id', '!=',%(data_decision_type38)d)],
-							'required':[('decision_type_id', '=',%(data_decision_type38)d)]}"/>
-							<field name="date_speech" attrs="{'invisible':[('decision_type_id', '!=',%(data_decision_type38)d)],
-							'required':[('decision_type_id', '=',%(data_decision_type38)d)]}"/>
+							<field name="employee_id"
+								attrs="{
+							'invisible':[('decision_type_id', 'in',[%(data_decision_promotion_member)d])],
+							'required':[('decision_type_id', 'not in',[%(data_decision_promotion_member)d])]}" />
+							<field name="employee_ids" domain="[('is_member','=', True)]" wdiget="many2many_tags"
+								attrs="{ 
+							'invisible':[('decision_type_id', 'not in',[%(data_decision_promotion_member)d])],
+							'required':[('decision_type_id', 'in',[%(data_decision_promotion_member)d])]}" />
+							<field name="num_speech"
+								attrs="{'invisible':[('decision_type_id', 'not in',[%(data_decision_type38)d,%(data_decision_promotion_member)d])],
+							'required':[('decision_type_id', 'in',[%(data_decision_type38)d,%(data_decision_promotion_member)d])]}" />
+							<field name="date_speech"
+								attrs="{'invisible':[('decision_type_id', 'not in',[%(data_decision_type38)d,%(data_decision_promotion_member)d])],
+							'required':[('decision_type_id', 'in',[%(data_decision_type38)d,%(data_decision_promotion_member)d])]}" />
 						</group>
 						<field name="text" />
 					</sheet>
@@ -119,3 +128,4 @@
 
 	</data>
 </openerp>
+
