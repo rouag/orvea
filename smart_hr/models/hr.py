@@ -114,8 +114,8 @@ class HrEmployee(models.Model):
     insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين', readonly='1',compute='_compute_insurance_type')
     holiday_count = fields.Integer(string=u'عدد الاجازات', compute='_compute_holidays_count')
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
+    training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'سجل التدريبات')
 
-    
     @api.one
     @api.depends('job_id')
     def _compute_insurance_type(self):
