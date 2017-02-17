@@ -134,6 +134,8 @@ class hrDifference(models.Model):
             line_ids += self.get_difference_transfert()
             # فروقات التعين
             line_ids += self.get_difference_decision_appoint()
+            # فروقات التكليف
+            line_ids += self.get_difference_assign()
             self.line_ids = line_ids
 
     @api.one
@@ -194,7 +196,7 @@ class hrDifference(models.Model):
                         'type': 'transfert'}
                 line_ids.append(vals)
 #                 # 4- نسبة الراتب
-#                 amount = ((100 - hr_setting.salary_proportion) * transfert.employee_id.wage) / 100
+#                 amount = (((100 - hr_setting.salary_proportion) * transfert.employee_id.wage) / 100) * -1
 #                 vals = {'difference_id': self.id,
 #                         'name': u'نسبة الراتب',
 #                         'employee_id': transfert.employee_id.id,
@@ -213,10 +215,8 @@ class hrDifference(models.Model):
                                                                             ('state_appoint', '=', 'active'),
                                                                             ], order="date_direct_action desc")
         for last_decision_appoint_id in last_decision_appoint_ids:
-            print 'last_decision_appoint_id', last_decision_appoint_id
             for allowance in last_decision_appoint_id.type_appointment.hr_allowance_appoint_id:
                 amount = allowance.salary_number
-                print allowance
                 vals = {'difference_id': self.id,
                         'name': allowance.hr_allowance_type_id.name,
                         'employee_id': last_decision_appoint_id.employee_id.id,
@@ -225,6 +225,97 @@ class hrDifference(models.Model):
                         'amount': amount,
                         'type': 'appoint'}
                 line_ids.append(vals)
+        return line_ids
+
+    @api.multi
+    def get_difference_assign(self):
+        self.ensure_one()
+        line_ids = []
+        assign_ids = self.env['hr.employee.commissioning'].search([('date_to', '>=', self.date_from),
+                                                                   ('date_to', '<=', self.date_to),
+                                                                   ('state', '=', 'done')])
+        for assign_id in assign_ids:
+            # get تفاصيل سلم الرواتب
+            grid_id = self.env['salary.grid.detail'].search([('grid_id.enabled', '=', True),
+                                                             ('type_id', '=', assign_id.employee_id.job_id.type_id.id),
+                                                             ('degree_id', '=', assign_id.employee_id.degree_id.id),
+                                                             ('grade_id', '=', assign_id.employee_id.job_id.grade_id.id)
+                                                             ])
+            if grid_id:
+                # تفاصيل سلم الرواتب
+                allowance_ids = grid_id.allowance_ids
+                reward_ids = grid_id.reward_ids
+                indemnity_ids = grid_id.indemnity_ids
+                print 'indemnity_ids', indemnity_ids
+                # راتب
+                if assign_id.give_salary:
+                    amount = assign_id.employee_id.wage
+                    if amount:
+                            vals = {'difference_id': self.id,
+                                    'name': 'راتب',
+                                    'employee_id': assign_id.employee_id.id,
+                                    'number_of_days': 0,
+                                    'number_of_hours': 0.0,
+                                    'amount': amount * -1,
+                                    'type': 'commissioning'}
+                            line_ids.append(vals)
+                # بدل النقل
+                if assign_id.give_allowance_transport:
+                    allowance_transport_id = self.env.ref('smart_hr.hr_allowance_type_01')
+                    if allowance_transport_id:
+                        amount = 0.0
+                        for allow in allowance_ids:
+                            if allow.allowance_id == allowance_transport_id:
+                                amount = allow.get_value(assign_id.employee_id.id)
+                                break
+                        if amount:
+                            vals = {'difference_id': self.id,
+                                    'name': allowance_transport_id.name,
+                                    'employee_id': assign_id.employee_id.id,
+                                    'number_of_days': 0,
+                                    'number_of_hours': 0.0,
+                                    'amount': amount * -1,
+                                    'type': 'commissioning'}
+                            line_ids.append(vals)
+                # بدلات، مكافأة أو تعويضات
+                if assign_id.give_allow:
+                    # بدلات
+                    for allow in allowance_ids:
+                        amount = allow.get_value(assign_id.employee_id.id)
+                        if amount:
+                            vals = {'difference_id': self.id,
+                                    'name': allow.allowance_id.name,
+                                    'employee_id': assign_id.employee_id.id,
+                                    'number_of_days': 0,
+                                    'number_of_hours': 0.0,
+                                    'amount': amount * -1,
+                                    'type': 'commissioning'}
+                            line_ids.append(vals)
+                    # مكافأة
+                    for reward in reward_ids:
+                        amount = reward.get_value(assign_id.employee_id.id)
+                        if amount:
+                            vals = {'difference_id': self.id,
+                                    'name': reward.reward_id.name,
+                                    'employee_id': assign_id.employee_id.id,
+                                    'number_of_days': 0,
+                                    'number_of_hours': 0.0,
+                                    'amount': amount * -1,
+                                    'type': 'commissioning'}
+                            line_ids.append(vals)
+                    # تعويضات
+                    for indemnity in indemnity_ids:
+                        amount = indemnity.get_value(assign_id.employee_id.id)
+                        print "تعويضات"
+                        if amount:
+                            vals = {'difference_id': self.id,
+                                    'name': indemnity.indemnity_id.name,
+                                    'employee_id': assign_id.employee_id.id,
+                                    'number_of_days': 0,
+                                    'number_of_hours': 0.0,
+                                    'amount': amount * -1,
+                                    'type': 'commissioning'}
+                            line_ids.append(vals)
         return line_ids
 
 
