@@ -28,9 +28,9 @@ class hrScholarShipRepaortParse(report_sxw.rml_parse):
 
 
 class ReporthrScholarShipRepaort(osv.AbstractModel):
-    _name = 'report.smart_hr.report_hr_scholarship_extension_report'
+    _name = 'report.smart_hr.hr_scholarship_extension_report'
     _inherit = 'report.abstract_report'
-    _template = 'smart_hr.hr_scholarship_report'
+    _template = 'smart_hr.hr_scholarship_extension_report'
     _wrapped_report_class = hrScholarShipRepaortParse
 
 
@@ -55,7 +55,8 @@ class hrScholarShipDecisionnRepaortParse(report_sxw.rml_parse):
 
 
 class ReporthrScholarShipDecisionRepaortParse(osv.AbstractModel):
-    _name = 'report.smart_hr.hr_scholarship_decision_report'
+    _name = 'report.smart_hr.report_hr_scholarship_decision'
     _inherit = 'report.abstract_report'
     _template = 'smart_hr.report_hr_scholarship_decision'
-    _wrapped_report_class = hrScholarShipDecisionnRepaortParse   
+    _wrapped_report_class = hrScholarShipDecisionnRepaortParse
+    
