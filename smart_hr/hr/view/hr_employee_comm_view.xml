@@ -141,7 +141,7 @@
 		</record>
 
 		<menuitem action="action_hr_comm_type" id="hr_menu_comm_type"
-			parent="hr_root_organisation_configuration" name="أنواع التكليف"
+			parent="hr_root_organisation_configuration" name="أنواع التكليف" groups="smart_hr.group_configuration"
 			sequence="10" />
 	</data>
 </openerp>
