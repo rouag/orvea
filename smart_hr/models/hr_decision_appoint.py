@@ -421,20 +421,20 @@ class HrDecisionAppoint(models.Model):
         
         type=''
         if self.type_appointment.id == self.env.ref('smart_hr.data_hr_new_agent_public').id:
-            type = '17'
+            type = 'تعيين موظف جديد'
             
         elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_agent_public').id:
-            type = '59'
+            type = 'تعيين موظف رسمي'
         elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_agent_utilisateur').id:
-            type = '84'
+            type = 'تعيين الموظفين المستخدمين'
         elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_salaire_article').id:
-            type = '85'
+            type = 'تعيين عمال بند الأجور'
         elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_contrat').id:
-            type = '86'
+            type = 'تعيين بعقد'
         elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_public_nosoudi').id:
-            type = '87'
+            type = 'تعيين غير سعودي على مرتبة رسمية'
         elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_public_retraite').id:
-            type = '88'
+            type = 'تعيين المحالين على التقاعد'
         if type:
             self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date_hiring, type)
         self.state = 'done'

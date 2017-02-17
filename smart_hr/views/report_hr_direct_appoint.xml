@@ -40,7 +40,8 @@
 								<p style="font-size:22px;">
 									لمباشرة مهامه
 									بتاريخ
-									<span t-field="o.date" />
+										 <span t-esc="get_hijri_date(o.date, '-')" />
+									
 								</p>
 								<br></br>
 								<br></br>

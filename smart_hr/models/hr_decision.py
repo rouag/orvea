@@ -3,6 +3,8 @@
 
 from openerp import models, fields, api, _
 from datetime import date, datetime, timedelta
+from umalqurra.hijri_date import HijriDate
+
 
 
 class HrDecision(models.Model):
@@ -25,6 +27,17 @@ class HrDecision(models.Model):
     @api.onchange('date_speech')
     def onchange_date_speech(self):
         self.onchange_decision_type_id()
+
+#     def _get_hijri_date(self, date, separator):
+#         '''
+#         convert georging date to hijri date
+#         :return hijri date as a string value
+#         '''
+#         if date:
+#             date = fields.Date.from_string(date)
+#             hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
+#             return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+#         return None
 
     @api.onchange('decision_type_id')
     def onchange_decision_type_id(self):

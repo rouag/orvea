@@ -48,8 +48,8 @@
 					<sheet>
 						<group>
 							<group>
-								<field name="order_date" />
-								<field name="airline" />
+								<field name="order_date" 	attrs="{'invisible':[('state', 'not in', [ 'draft','audit','done','finish'])],'readonly':[('state', 'in', ['audit','done','finish'])]}" />
+								<field name="airline" attrs="{'invisible':[('state', 'not in', [ 'draft','audit','done','finish'])],'readonly':[('state', 'in', ['audit','done','finish'])]}"/>
 							</group>
 							<group>
 							</group>
@@ -57,7 +57,7 @@
 
 						<group>
 							<group string="بيانات الموظف">
-								<field name="employee_id" />
+								<field name="employee_id" attrs="{'invisible':[('state', 'not in', [ 'draft','audit','done','finish'])],'readonly':[('state', 'in', ['audit','done','finish'])]}"/>
 								<field name="number" />
 								<field name="department_id" />
 								<field name="job_id" />
