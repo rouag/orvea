@@ -69,10 +69,10 @@
 			<field name="download_filename">${o.name}_نموذج تحويل مستوصف.pdf</field>
 		</record>
 
-		<record id="report_hr_overtime_report" model="ir.actions.report.xml">
-			<field name="paperformat_id" ref="report.paperformat_euro" />
-			<field name="download_filename">${o.name}_قرار خارج دوام.pdf</field>
-		</record>
+<!-- 		<record id="report_hr_overtime_report" model="ir.actions.report.xml"> -->
+<!-- 			<field name="paperformat_id" ref="report.paperformat_euro" /> -->
+<!-- 			<field name="download_filename">${o.name}_قرار خارج دوام.pdf</field> -->
+<!-- 		</record> -->
 
 
 

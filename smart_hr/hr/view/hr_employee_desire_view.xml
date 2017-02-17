@@ -37,7 +37,7 @@
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 
-		<menuitem action="action_hr_employee_desire" id="hr_menu_employee_desire"
+		<menuitem action="action_hr_employee_desire" id="hr_menu_employee_desire" groups="smart_hr.group_configuration"
 			parent="hr_root_organisation_configuration" name="رغبات النقل"
 			sequence="2" />
 

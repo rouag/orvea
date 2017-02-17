@@ -24,6 +24,17 @@
 							groups="smart_hr.group_hr_personnel_officer_jobs"
 							attrs="{'invisible':['|', ('state', '!=', 'pm'), ('new_job_id', '=', False)]}"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_tobe_cancelled_confirm" string="إلغاء"
+							type="object"
+							attrs="{'invisible':['|','|', ('state', '!=', 'done'), ('is_current_user', '=', False), ('tobe_cancelled', '=', True)]}"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_cancelled" string="إعتماد الالغاء"
+							type="object" groups="smart_hr.group_hr_authority_board"
+							attrs="{'invisible':['|', ('state', '!=', 'done'), ('tobe_cancelled', '=', False)]}"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
 						<button name="action_notif" string="تنبيه صاحب الطلب" type="object"
 							groups="smart_hr.group_hr_personnel_officer_jobs"
 							attrs="{'invisible':['|','|', ('state', '!=', 'pm'), ('is_ended', '=', False), ('ready_tobe_done', '=', True)]}"
@@ -32,24 +43,34 @@
 						<button name="%(hr_employee_transfert_report)d" string="طباعة القرار"
 							type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
 
-						<field name="state" widget="statusbar" statusbar_visible="new,waiting,pm,done,refused" />
+						<field name="state" widget="statusbar"
+							statusbar_visible="new,waiting,pm,done,refused,cancelled" />
 					</header>
 					<sheet>
 						<field name="is_ended" invisible="1" />
 						<field name="same_group" invisible="1" />
 						<field name="ready_tobe_done" invisible="1" />
+						<field name="tobe_cancelled" invisible="1" />
+						<field name="is_current_user" invisible="1" />
 						<group>
 							<field name="create_date" />
 						</group>
 						<group>
 							<group>
 								<field name="employee_id" />
+								<field name="transfert_nature" />
 								<field name="transfert_type" />
+								<field name="special_conditions"
+									attrs="{'invisible':[('transfert_type', '!=', 'member')]}" />
 								<field name="governmental_entity"
-									attrs="{'invisible':[('transfert_type', '=', 'internal_transfert')]}"
+									attrs="{'invisible':[('transfert_nature', '=', 'internal_transfert')]}"
 									options='{"no_open": True, "no_create": True}' />
 								<field name="transfert_periode_id" options='{"no_open": True, "no_create": True}' />
-								<field name="justification_text" />
+								<field name="justification_text"
+									attrs="{'invisible':[('special_conditions', '=', True)],'required':[('special_conditions', '=', False)]}" />
+								<field name="special_justification_text"
+									attrs="{'invisible':[('special_conditions', '=', False)],'required':[('special_conditions', '=', True)]}" />
+
 								<field name="note"
 									attrs="{'invisible':[('state', 'in', ['waiting','new'])],'readonly':[('state', 'in', ['done', 'refused'])]}" />
 								<field name="refusing_date" attrs="{'invisible':[('state', '!=', 'refused')]}" />
@@ -129,6 +150,7 @@
 				<tree string=" طلب نقل موظف">
 					<field name="create_date" />
 					<field name="employee_id" />
+					<field name="transfert_nature" />
 					<field name="transfert_type" />
 					<field name="state" />
 				</tree>
@@ -193,7 +215,7 @@
 		</record>
 
 		<menuitem action="action_hr_employee_transfert_periode" id="hr_menu_employee_transfert_periode"
-			parent="hr_root_organisation_configuration" name="فترات النقل"
+			parent="hr_root_organisation_configuration" name="فترات النقل" groups="smart_hr.group_configuration"
 			sequence="17" />
 
 		<!-- ترتيب طلبات النقل -->
@@ -227,6 +249,8 @@
 								<field name="job_id" readonly="1" />
 								<field name="occupied_date" readonly="1" />
 								<field name="transfert_create_date" readonly="1" />
+								<field name="recruiter_date" />
+								<field name="age" />
 								<field name="last_evaluation_result" readonly="1" />
 								<field name="new_job_id" options='{"no_open": True, "no_create": True}' />
 								<field name="is_conflected" invisible="1" />

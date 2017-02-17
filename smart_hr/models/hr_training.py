@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 import math
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT
 from openerp.exceptions import ValidationError
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 HOURS_PER_DAY = 7
 
@@ -28,17 +29,20 @@ class HrTraining(models.Model):
     number_of_days = fields.Float(string=' المدة', required=1, states={'new': [('readonly', 0)]})
     experience = fields.Selection([('experience_directe', 'الخبرات‬  المباشرة'),
                               ('experience_in_directe', 'الخبرات الغير المباشرة'),
-                              ],  string=' نوع الخبرة المكتسبة',)
+                              ],  string=' نوع الخبرة المكتسبة',required=1,states={'new': [('readonly', 0)]})
     department = fields.Char(string=' الجهة', required=1, states={'new': [('readonly', 0)]})
-    place = fields.Char(string=' المكان', required=1, states={'new': [('readonly', 0)]})
+    place = fields.Many2one('res.city', string=u'المدينة ',required=1, states={'new': [('readonly', 0)]})
     number_place = fields.Integer(string='عدد المقاعد', required=1, states={'new': [('readonly', 0)]})
     number_participant = fields.Integer(string=' عدد المشتركين', store=True, readonly=True, compute='_compute_info')
-    line_ids = fields.One2many('hr.candidates', 'training_id', string='المترشحين', required=1, states={'new': [('readonly', 0)]})
+    line_ids = fields.One2many('hr.candidates', 'training_id', string='المترشحين', readonly=1, states={'new': [('readonly', 0)]})
+    
     state = fields.Selection([('new', 'جديد'),
                               ('candidat', 'الترشح'),
                               ('review', 'المراجعة'),
-                              ('confirm', 'إعتمدت'),
-                              ('done', 'تمت')], readonly=1, string='الحالة', default='new')
+                              ('done', 'اعتمدت'),
+                              ('refused', 'رفض'),
+                              ('cancel', 'ملغاة'),
+                              ], readonly=1, string='الحالة', default='new')
     job_trainings = fields.One2many('hr.job.training', 'type', string='job trainings')
 
     @api.onchange('date_from')
@@ -56,12 +60,22 @@ class HrTraining(models.Model):
             self.number_of_days = self._get_number_of_days(date_from, date_to)
         else:
             self.number_of_days = 0
-
+            
+            
+    @api.one
+    @api.constrains('date_from')
+    def check_order_chek_date(self):
+        if self.date_from < datetime.today().strftime('%Y-%m-%d'):
+            raise ValidationError(u" تاريخ التدريب يجب أن يكون أكبر من تاريخ إليوم")
+            
+    
     @api.onchange('date_to')
     def _onchange_date_to(self):
         """ Update the number_of_days. """
         date_from = self.date_from
         date_to = self.date_to
+        if date_to<date_from:
+            raise ValidationError(u'تاريخ بداية الدورة يجب ان يكون أصغر من تاريخ انتهاء الدورة')
 
         # Compute and update the number of days
         if (date_to and date_from) and (date_from <= date_to):
@@ -82,16 +96,52 @@ class HrTraining(models.Model):
 
     @api.one
     def action_review(self):
+        for line in self.line_ids:
+            line.state='waiting'
         self.state = 'review'
 
-    @api.one
-    def action_confirm(self):
-        self.state = 'confirm'
 
     @api.one
     def action_done(self):
+        list_done=[]
+        for line in self.line_ids:
+            if line.state!='cancel':
+                line.state='done'
+                type = "لقد تتمت الموافقة على طلب ترشحكم للدورة تدريبية رقم :"+" " + self.name.encode('utf-8')
+                self.env['base.notification'].create({'title': u' إشعار بتدريب',
+                                              'message': type,
+                                              'user_id': line.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'notif': True,
+                                              'res_id': self.id,
+                                              'res_action': 'smart_hr.action_hr_training',})
+                list_done.append(line.id)
+                self.env['hr.employee.history'].sudo().add_action_line( line.employee_id, self.number, self.date , type)
+               
+            if line.state=='cancel':
+                self.env['base.notification'].create({'title': u' إشعار بالرفض',
+                                              'message': u' لقد تمت رفض الترشح للدورة التدريبية ',
+                                              'user_id': line.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'notif': True,
+                                              'res_id': self.id,
+                                              'res_action': 'smart_hr.action_hr_training',})
+                line.training_id=False
+                
+                
+      
+        
         self.state = 'done'
-
+        
+    @api.one
+    def action_refused(self):
+        self.state = 'refused'
+    @api.one
+    def action_cancel(self):
+        self.state = 'cancel'
+        
+   
+        
 class HrTrainingType(models.Model):
     _name = 'hr.training.type'
     _description = u'أنواع التدريب'
@@ -102,6 +152,9 @@ class HrCandidates(models.Model):
     _name = 'hr.candidates'
     _description = u'المترشحين'
     _rec_name = 'employee_id'
+    _sql_constraints = [
+        ('name_uniq', 'unique(employee_id, training_id)', 'هذا الموظف موجود بالدورة التدريبية!'),
+        ]
 
     employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1)
     number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' الرقم الوظيفي')
@@ -116,17 +169,12 @@ class HrCandidates(models.Model):
                              ('cancel', 'رفض'),
                              ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
     number_of_days = fields.Float(string=' المدة',related='training_id.number_of_days' )
-    place = fields.Char(string=' المكان',related='training_id.place' )
+    place = fields.Many2one(string=' المكان',related='training_id.place' )
     experience = fields.Selection([('experience_directe', 'الخبرات‬  المباشرة'),
                               ('experience_in_directe', 'الخبرات الغير المباشرة'),
                               ],  string=' نوع الخبرة المكتسبة',)
-
-    @api.onchange('employee_id')
-    def _onchange_employee_id(self):
-        if self.employee_id:
-            self.number = self.employee_id.number
-            self.job_id = self.employee_id.job_id.id
-            self.department_id = self.employee_id.department_id.id
+    cause = fields.Text(string = u'سبب الرفض')
+   
 
     @api.onchange('training_id')
     def _onchange_training_id(self):
@@ -135,6 +183,14 @@ class HrCandidates(models.Model):
             self.date_to = self.training_id.date_to
             self.department = self.training_id.department
             self.experience=self.training_id.experience
+            
+    @api.onchange('employee_id')
+    def _onchange_employee_id(self):
+       
+        if self.employee_id:
+            self.number = self.employee_id.number
+            self.job_id = self.employee_id.job_id.id
+            self.department_id = self.employee_id.department_id.id
 
     @api.one
     def action_waiting(self):
@@ -150,9 +206,28 @@ class HrCandidates(models.Model):
 
     @api.one
     def action_refuse(self):
-        self.state = 'new'
+        self.state = 'cancel'
+    
+    
 
-
+    @api.one
+    @api.constrains('date_from', 'date_to')
+    def check_dates(self):
+        for candidate in self:
+            try:
+                train_obj = self.env['hr.training']
+                effective_date_from = (datetime.strptime(candidate.date_from, DEFAULT_SERVER_DATE_FORMAT)).strftime(DEFAULT_SERVER_DATE_FORMAT)
+                effective_date_to = (datetime.strptime(candidate.date_to, DEFAULT_SERVER_DATE_FORMAT)).strftime(DEFAULT_SERVER_DATE_FORMAT)
+                for rec in train_obj.search([]):
+                    if rec.date_from <= effective_date_from <= rec.date_to or \
+                            rec.date_from <= effective_date_to <= rec.date_to or \
+                            effective_date_from <= rec.date_from <= effective_date_to or \
+                            effective_date_from <= rec.date_to <= effective_date_to:
+                        for line in rec.line_ids:
+                            if line.employee_id.id == candidate.employee_id.id and rec.id != self.training_id.id and line.state!='cancel':
+                                raise ValidationError(u"هناك تداخل فى التواريخ مع قرار سابق فى التدريب")
+            except:
+                print 
 # TODO: all conditions not work
 #     @api.constrains('date_from', 'date_to')
 #     def check_dates(self):

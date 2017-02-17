@@ -20,8 +20,7 @@ class hrHolidaysDecision(models.Model):
                              ('cancel', 'رفض')
                              ], string='الحالة', readonly=1, default='new')
 
-    holidays = fields.Many2many('hr.holidays', string=u'الإجازات',required=1,
-                               )
+    holidays = fields.Many2many('hr.holidays', string=u'الإجازات',required=1)
     name = fields.Char(string='رقم الخطاب', required=1)
     order_date = fields.Date(string='تاريخ الخطاب', required=1) 
     file_decision = fields.Binary(string='الخطاب')

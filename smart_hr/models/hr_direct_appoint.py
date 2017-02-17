@@ -27,7 +27,7 @@ class hrDirectAppoint(models.Model):
     basic_salary = fields.Float(string='الراتب الأساسي',store=True, readonly=1)   
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة',store=True, readonly=1)
     date_direct_action = fields.Date(string='تاريخ المباشرة المنصوص في التعين ') 
-    type_appointment = fields.Char(string=u'نوع التعيين' )
+    type_appointment = fields.Many2one('hr.type.appoint',string=u'نوع التعيين' )
     decision_appoint_ids = fields.One2many('hr.decision.appoint', 'employee_id', string=u'تعيينات الموظف')
     
     date = fields.Date(string=u'تاريخ المباشرة الفعلي', default=fields.Datetime.now())

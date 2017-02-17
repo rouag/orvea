@@ -17,7 +17,7 @@
 						<group>
 							<group>
 								<field name="type_id" />
-								<field name="grade_id" domain="[('type_id','=',type_id)]" />
+								<field name="grade_id"  />
 								<field name="degree_id" domain="[('grade_id','=',grade_id)]" />
 							</group>
 							<group>
@@ -137,7 +137,7 @@
 						<field name="grid_ids" string=" سلّم الرواتب">
 							<tree>
 								<field name="type_id" />
-								<field name="grade_id" domain="[('type_id','=',type_id)]" />
+								<field name="grade_id"/>
 								<field name="degree_id" domain="[('grade_id','=',grade_id)]" />
 								<field name="basic_salary" />
 								<field name="insurance_type" />
@@ -227,7 +227,6 @@
 							<group>
 								<field name="name" />
 								<field name="code" />
-								<field name="type_id" />
 								<field name="years_job" />
 							</group>
 
@@ -244,7 +243,6 @@
 				<tree string="المراتب">
 					<field name="name" />
 					<field name="code" />
-					<field name="type_id" />
 				</tree>
 			</field>
 		</record>

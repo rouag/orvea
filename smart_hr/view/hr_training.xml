@@ -34,7 +34,7 @@
 					<field name="place" />
 					<field name="number_place" />
 					<field name="number_participant" />
-						<field name="state" />
+					<field name="state" />
 				</tree>
 			</field>
 		</record>
@@ -45,39 +45,59 @@
 			<field name="arch" type="xml">
 				<form string="الدورات التدربية">
 					<header>
-						<button name="action_candidat" string="فتح الترشحات" type="object"
-							states="new" />
-						<button name="action_review" string="إنهاء الترشحات" type="object"
-							states="candidat" />
-						<button name="action_confirm" string="إعتماد" type="object"
-							states="review" />
-						<button name="action_done" string="تمت" type="object"
-							states="confirm" />
 						<field name="state" widget="statusbar"
-							statusbar_visible="new,candidat,review,confirm,done" />
+							statusbar_visible="new,candidat,review,done,refused,cancel" />
+						<button name="action_candidat" string="فتح الترشحات" type="object"
+							states="new" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_review" string="إنهاء الترشحات" type="object"
+							states="candidat" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_done" string="إعتماد" type="object"
+							states="review" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_refused" string="رفض" type="object" attrs="{'invisible': ['|','|','|',('state', '=', 'done'),('state', '=', 'refused'),('state', '=', 'cancel')]}"
+							
+
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_cancel" string="إلغاء" type="object"
+							states="review" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
 					</header>
 					<sheet>
-						<group >
-							<group >
-								<field name="name" />
-s								<field name="date_from" class="oe_inline" />
-								<field name="date_to" class="oe_inline" />
-								<field name="number_of_days" class="oe_inline" />
-										يوم
-								<field name="place" />
+						<group>
+							<group>
+								<field name="name" attrs="{'readonly' :[('state','!=','new')]}" />
+								<field name="date_from" class="oe_inline"
+									attrs="{'readonly':[('state', 'in', ['candidat','review','done','refused','cancel'])]}" />
+								<field name="date_to" class="oe_inline"
+									attrs="{'readonly' :[('state','!=','new')]}" />
+								<field name="number_of_days" class="oe_inline"
+									attrs="{'readonly' :[('state','!=','new')]}" />
+								يوم
+								<field name="place" attrs="{'readonly' :[('state','!=','new')]}" />
 							</group>
 
 							<group>
-								<field name="number" />
-								<field name="date" />
-								<field name="department" />
-								<field name="number_place" />
-								<field name="number_participant" />
-								<field name="experience" />
+								<field name="number" attrs="{'readonly' :[('state','!=','new')]}" />
+								<field name="date" attrs="{'readonly' :[('state','!=','new')]}" />
+								<field name="department" attrs="{'readonly' :[('state','!=','new')]}" />
+								<field name="number_place" attrs="{'readonly' :[('state','!=','new')]}" />
+								<field name="number_participant" attrs="{'readonly' :[('state','!=','new')]}" />
+								<field name="experience" attrs="{'readonly' :[('state','!=','new')]}" />
 							</group>
 						</group>
-						<group string="المترشحين" >
-							<field name="line_ids" string="المترشحين" nolabel="1" >
+						<group string="المترشحين" attrs="{'invisible': [('state', '=', 'new')]}">
+							<field name="line_ids" string="المترشحين" nolabel="1" attrs="{'readonly' :[('state','!=','candidat')]}">
+								<tree string="بيانات الموظف">
+									<field name="employee_id" />
+									<field name="number" />
+									<field name="job_id" />
+									<field name="department_id" />
+									<field name="state" />
+									<button name="%(action_hr_refuse_training_wizard)d"
+										string="رفض" type="action" class="oe_highlight btn" attrs="{'readonly' :[('state','!=','waiting')]}"
+										/>
+								</tree>
 							</field>
 						</group>
 					</sheet>
@@ -91,8 +111,54 @@ s								<field name="date_from" class="oe_inline" />
 			<field name="view_mode">tree,form</field>
 		</record>
 		<menuitem id="hr_training_menu_2" name="الدورات التدربية"
-			sequence="5" parent="hr_root_training" action="action_hr_training"
-		 />
+			sequence="5" parent="hr_root_training" action="action_hr_training" />
+		<!-- الترشيحات -->
+
+		<record model="ir.ui.view" id="hr_candidates_tree">
+			<field name="name">hr.candidates.tree</field>
+			<field name="model">hr.candidates</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="الترشيحات">
+					<field name="employee_id" />
+					<field name="number" />
+					<field name="job_id" />
+					<field name="department_id" />
+				</tree>
+			</field>
+		</record>
+
+
+		<record model="ir.ui.view" id="hr_candidates_form">
+			<field name="name">hr.candidates.form</field>
+			<field name="model">hr.candidates</field>
+			<field name="priority" eval="15" />
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="الترشيحات">
+
+					<sheet>
+
+						<group string="بيانات الموظف" attrs="{'readonly' :[('state','!=','new')]}">
+							
+							<field name="employee_id" options='{"no_open": True, "no_create": True}' />
+							<field name="number" readonly="1"
+								options='{"no_open": True, "no_create": True}' />
+							<field name="job_id" readonly="1"
+								options='{"no_open": True, "no_create": True}' />
+							<field name="department_id" readonly="1"
+								options='{"no_open": True, "no_create": True}' />
+								<field name="state" invisible="1"
+								 />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+
+
+
 
 		<!-- الترشيحات -->
 
@@ -111,56 +177,12 @@ s								<field name="date_from" class="oe_inline" />
 					<field name="date_to" />
 					<field name="department" />
 					<field name="state" />
+					<field name="cause" />
 				</tree>
 			</field>
 		</record>
-		
-		
-		<record model="ir.ui.view" id="hr_candidates_form">
-			<field name="name">hr.candidates.form</field>
-			<field name="model">hr.candidates</field>
-			<field name="type">form</field>
-			<field name="arch" type="xml">
-				<form string="الترشيحات">
-					<header>
-						<button name="action_waiting" string=" ارسال طلب" type="object" states="new" />
-						<button name="action_refuse" string="رفض" type="object" states="waiting" />
-						<button name="action_done" string="إعتماد" type="object" states="waiting" />
-						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
-					</header>
-					<sheet>
-
-						<group string="بيانات الموظف">
-							<field name="employee_id" />
-							<field name="number" />
-							<field name="job_id" />
-							<field name="department_id" />
-						</group>
-						<group string="الدورات التدربية">
-							<field name="training_id" />
-							<field name="date_from" />
-							<field name="date_to" />
-							<field name="department" />
-						</group>
-					</sheet>
-				</form>
-			</field>
-		</record>
-
-		<record model="ir.actions.act_window" id="action_hr_candidates_candidat">
-			<field name="name">الترشيحات</field>
-			<field name="res_model">hr.candidates</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
-		</record>
-		<menuitem id="hr_training_candidat_menu_2" name="الترشيحات" 
-			sequence="15" parent="hr_root_training" action="action_hr_candidates_candidat" />
 
 
-
-<!-- الترشيحات -->
-
-		
 		<record model="ir.ui.view" id="hr_my_condidature_form">
 			<field name="name">hr.candidates.form</field>
 			<field name="model">hr.candidates</field>
@@ -168,24 +190,27 @@ s								<field name="date_from" class="oe_inline" />
 			<field name="arch" type="xml">
 				<form string="الترشيحات">
 					<header>
-						<button name="action_waiting" string=" ارسال طلب" type="object" states="new" />
-						<button name="action_refuse" string="رفض" type="object" states="waiting" />
-						<button name="action_done" string="إعتماد" type="object" states="waiting" />
+						<button name="action_waiting" string=" ارسال " type="object"
+							states="new" />
 						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
 					</header>
 					<sheet>
 
-						<group string="بيانات الموظف">
-							<field name="employee_id" readonly="1" />
-							<field name="number" />
-							<field name="job_id" />
-							<field name="department_id" />
+						<group string="بيانات الموظف" attrs="{'readonly' :[('state','!=','new')]}">
+							<field name="employee_id" readonly="1"
+								options='{"no_open": True, "no_create": True}' />
+							<field name="number" readonly="1" />
+							<field name="job_id" readonly="1"
+								options='{"no_open": True, "no_create": True}' />
+							<field name="department_id" readonly="1"
+								options='{"no_open": True, "no_create": True}' />
 						</group>
-						<group string="الدورات التدربية">
-							<field name="training_id" domain="[('state','=','candidat')]" />
-							<field name="date_from" />
-							<field name="date_to" />
-							<field name="department" />
+						<group string="الدورات التدربية" attrs="{'readonly' :[('state','!=','new')]}">
+							<field name="training_id" domain="[('state','=','candidat')]"
+								options='{"no_open": True, "no_create": True}' attrs="{'readonly' :[('state','!=','new')]}" />
+							<field name="date_from" readonly="1" />
+							<field name="date_to" readonly="1" />
+							<field name="department" readonly="1" />
 						</group>
 					</sheet>
 				</form>
@@ -199,8 +224,8 @@ s								<field name="date_from" class="oe_inline" />
 			<field name="view_mode">tree,form</field>
 			<field name="domain">[('employee_id.user_id', '=', uid)]</field>
 		</record>
-		
-		
+
+
 		<record model="ir.actions.act_window.view" id="action_hr_my_candidates_form_view">
 			<field name="sequence" eval="2" />
 			<field name="view_mode">form</field>
@@ -214,7 +239,7 @@ s								<field name="date_from" class="oe_inline" />
 			<field name="view_id" ref="hr_candidates_tree" />
 			<field name="act_window_id" ref="action_hr_my_candidates" />
 		</record>
-		<menuitem id="hr_training_my_candidate_" name="الترشح للدورات التدريبية" 
+		<menuitem id="hr_training_my_candidate_" name="الترشح للدورات التدريبية"
 			sequence="16" parent="hr_root_training" action="action_hr_my_candidates" />
 
 

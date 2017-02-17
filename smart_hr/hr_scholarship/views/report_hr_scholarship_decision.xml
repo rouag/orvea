@@ -63,11 +63,11 @@
 								(<span t-field="o.order_number" />)
 
 								وتاريخ
-								<span t-field="o.order_date" />
+									<span t-esc="get_hijri_date(o.order_date, '-')" />
 
 
 								المتضمن أن المذكور باشر العمل يوم
-								<span t-field="o.date" />
+									<span t-esc="get_hijri_date(o.date, '-')" />
 							</p>
 							<p style="font-size:12px;">
 

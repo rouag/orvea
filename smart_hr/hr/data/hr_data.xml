@@ -6,25 +6,29 @@
 		<record id="data_hr_setting" model="hr.setting">
 			<field name="name">إعدادات عامة</field>
 		</record>
-		
+
 		<!-- hr setting -->
 		<record id="data_hr_transfert_sorting" model="hr.transfert.sorting">
 			<field name="name">‫ترتيب طلبات النقل مع الوظائف المناسبة</field>
 		</record>
 		<!-- نوع التكليف -->
 		<record id="data_hr_commissioning_type_01" model="hr.employee.commissioning.type">
-		<field name="name">تكليف موظف بالقيام بأعمال وظيفية داخل الهيئة</field>
+			<field name="name">تكليف موظف بالقيام بأعمال وظيفية داخل الهيئة
+			</field>
 		</record>
 		<record id="data_hr_commissioning_type_02" model="hr.employee.commissioning.type">
-		<field name="name">تكليف موظف بالقيام بأعمال وظيفية في جهة أخرى</field>
+			<field name="name">تكليف موظف بالقيام بأعمال وظيفية في جهة أخرى
+			</field>
 		</record>
 		<record id="data_hr_commissioning_type_03" model="hr.employee.commissioning.type">
-		<field name="name">تكليف على مسمى وظيفة أخرى شاغرة</field>
+			<field name="name">تكليف على مسمى وظيفة أخرى شاغرة</field>
 		</record>
 		<record id="data_hr_commissioning_type_04" model="hr.employee.commissioning.type">
-		<field name="name">قبول موظفين مكلفين من خارج الهيئة</field>
+			<field name="name">قبول موظفين مكلفين من خارج الهيئة</field>
 		</record>
-		
+		<record id="data_hr_authority_board_setting" model="hr.authority.board.setting">
+			<field name="name">إعدادات مجلس الهيئة</field>
+		</record>
 
 	</data>
 </openerp>
