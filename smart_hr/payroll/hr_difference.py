@@ -63,6 +63,8 @@ class hrDifference(models.Model):
             line_ids += self.get_difference_scholarship()
             # فروقات الإعارة
             line_ids += self.get_difference_lend()
+            # فروقات الإجازة
+            line_ids += self.get_difference_holidays()
             self.line_ids = line_ids
 
     @api.one
@@ -314,6 +316,56 @@ class hrDifference(models.Model):
                     line_ids.append(vals)
         return line_ids
 
+    @api.multi
+    def get_difference_holidays(self):
+        self.ensure_one()
+        line_ids = []
+        holidays_ids = self.env['hr.holidays'].search([('date_to', '>=', self.date_from),
+                                                       ('date_to', '<=', self.date_to),
+                                                       ('state', '=', 'done')
+                                                       ])
+        print '-------holidays_ids-------', holidays_ids
+        for holiday_id in holidays_ids:
+            # token days in current month
+            holiday_date_from = fields.Date.from_string(holiday_id.date_from)
+            date_from = fields.Date.from_string(self.date_from)
+            holiday_date_to = fields.Date.from_string(holiday_id.date_to)
+            date_to = fields.Date.from_string(self.date_to)
+            days = (holiday_date_from - date_from).days
+            today = fields.Date.from_string(fields.Date.today())
+            months_from_holiday_start = relativedelta.relativedelta(today, holiday_date_from).months
+            print 'holiday', holiday_date_from, holiday_date_to
+            print 'in month', date_from, date_to
+            print 'months_from_holiday_start', months_from_holiday_start
+            # days in current month
+            if days < 0 and holiday_date_to <= date_to:
+                duration_in_month = (holiday_date_to - date_from).days
+            if days < 0 and holiday_date_to > date_to:
+                duration_in_month = (date_to - date_from).days
+            if days >= 0 and holiday_date_to <= date_to:
+                duration_in_month = (holiday_date_to - holiday_date_from).days
+            if days >= 0 and holiday_date_to > date_to:
+                duration_in_month = (date_to - holiday_date_from).days
+            print 'token days in month', duration_in_month
+            grid_id = holiday_id.employee_id.salary_grid_id
+            holiday_status_id = holiday_id.holiday_status_id
+            print grid_id
+            if grid_id and holiday_status_id.salary_spending:
+                for rec in holiday_status_id.percentages:
+                    print months_from_holiday_start >= rec.month_from, months_from_holiday_start <= rec.month_to
+                    if months_from_holiday_start >= rec.month_from and months_from_holiday_start <= rec.month_to:
+                        amount = (((duration_in_month * (grid_id.basic_salary / 22)) * (100 - rec.salary_proportion))) / 100
+                        print 'amount', amount
+                        vals = {'difference_id': self.id,
+                                'name': holiday_id.holiday_status_id.name,
+                                'employee_id': holiday_id.employee_id.id,
+                                'number_of_days': 0,
+                                'number_of_hours': duration_in_month,
+                                'amount': (amount) * -1,
+                                'type': 'holiday'}
+                        line_ids.append(vals)
+        return line_ids
+
 
 class hrDifferenceLine(models.Model):
     _name = 'hr.difference.line'
@@ -335,6 +387,7 @@ class hrDifferenceLine(models.Model):
                              ('scholarship', 'ابتعاث'),
                              ('appoint', 'تعيين'),
                              ('lend', 'إعارة'),
+                             ('holiday', 'إجازة'),
                              ('commissioning', 'تكليف'),
                              ('deputation', 'إنتداب'),
                              ('overtime', 'خارج الدوام'),
