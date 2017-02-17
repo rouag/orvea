@@ -17,5 +17,5 @@ class HrEmployee(models.Model):
                 return salary_grids[0]
         return False
 
-    degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
+    degree_id = fields.Many2one('salary.grid.degree', string='الدرجة')
     salary_grid_id = fields.Many2one('salary.grid.detail', string='سلم الرواتب', compute='_get_salary_grid_id')
