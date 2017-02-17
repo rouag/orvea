@@ -28,9 +28,9 @@ class HolidaysDecisionReportParse(report_sxw.rml_parse):
 
 
 class ReportHolidaysDecision(osv.AbstractModel):
-    _name = 'report.smart_hr.report_hr_holidays_decision'
+    _name = 'report.smart_hr.hr_holidays_decision_report'
     _inherit = 'report.abstract_report'
-    _template = 'smart_hr.report_hr_holidays_decision'
+    _template = 'smart_hr.hr_holidays_decision_report'
     _wrapped_report_class = HolidaysDecisionReportParse
 
 

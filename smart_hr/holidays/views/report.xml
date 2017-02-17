@@ -20,7 +20,7 @@
 			<field name="download_filename">${o.name}_قرار إجازة.pdf</field>
 		</record>
 
-		<report id="report_hr_holidays_decision" model="hr.holidays.decision"
+		<report id="hr_holidays_decision_report" model="hr.holidays.decision"
 			name="smart_hr.report_hr_holidays_decision" report_type="qweb-pdf"
 			string="طباعة قرار مباشرة" file="smart_hr.report_hr_holidays_decision" />
 			
