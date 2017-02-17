@@ -1321,9 +1321,11 @@ class HrHolidaysStatusSalaryPercentage(models.Model):
     _description = u'نسب الراتب المحتسبة'
 
     sequence = fields.Integer(string=u'الأولوية')
-    periode = fields.Integer(string=u'عدد الأشهر')
+    month_from = fields.Integer(string=u'عدد الأشهر (من)')
+    month_to = fields.Integer(string=u'عدد الأشهر (إلى)')
     salary_proportion = fields.Float(string=u'نسبة الراتب (%)', default=100) 
     holiday_status = fields.Many2one('hr.holidays.status', string='holiday status')
+
 
 class EntitlementConfig(models.Model):
     _name = 'hr.holidays.entitlement.config'

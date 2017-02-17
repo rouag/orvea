@@ -41,6 +41,8 @@ class HrEmployee(models.Model):
             self.sanction_ids = rec.sanction_ids     
             
     number = fields.Char(string=u'الرقم الوظيفي', required=1)
+    gender = fields.Selection([('male', 'Male'), ('female', 'Female'),], string=u'الجنس')
+    marital =  fields.Selection([('single', 'Single'), ('married', 'Married'), ('widower', 'Widower'), ('divorced', 'Divorced'), ('mariie', 'محصن'), ('not_mariee', 'غير محصن')], string=u'الجنس')
     identification_date = fields.Date(string=u'تاريخ إصدار بطاقة الهوية ')
     identification_place = fields.Many2one('res.city', string=u'مكان إصدار بطاقة الهوية')
     father_name = fields.Char(string=u'إسم الأب', required=1)
@@ -65,6 +67,7 @@ class HrEmployee(models.Model):
     religion_state = fields.Many2one('religion.religion',string=u'الديانة', required=1)
     emp_state = fields.Selection([('working', u'على رأس العمل'),
                                   ('suspended', u'مكفوف اليد'),
+                                   ('outside', u'مكلف خارجي'),
                                   ('terminated', u'مطوي قيده'),
                                   ], string=u'الحالة', default='working', advanced_search=True)
     decision_appoint_ids = fields.One2many('hr.decision.appoint', 'employee_id', string=u'تعيينات الموظف')
@@ -114,8 +117,10 @@ class HrEmployee(models.Model):
     insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين', readonly='1',compute='_compute_insurance_type')
     holiday_count = fields.Integer(string=u'عدد الاجازات', compute='_compute_holidays_count')
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
+    royal_decree_number = fields.Char(string=u'رقم الأمر الملكي')
+    royal_decree_date = fields.Date(string=u'تاريخ الأمر الملكي ')
     training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'سجل التدريبات')
-
+    
     @api.one
     @api.depends('job_id')
     def _compute_insurance_type(self):

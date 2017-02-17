@@ -190,7 +190,7 @@
 									<group string="بيانات شخصية">
 										<group>
 											<field name="country_id" options='{"no_open": True, "no_create": True}'
-												attrs="{'required': 1}" />
+												attrs="{'required': 1}"  domain="[('code_nat','!=',False)]"/>
 											<field name="identification_id" attrs="{'required': 1}" />
 											<field name="identification_date" />
 											<field name="identification_place" />
@@ -260,6 +260,8 @@
 											<field name="parent_id" string="المدير المباشر" />
 											<field name="service_duration" attrs="{'readonly': 1}" />
 											<field name="promotion_duration" attrs="{'readonly': 1}" />
+											<field name="royal_decree_number" />
+											<field name="royal_decree_date" />
 											<field name="external_decision" />
 											<field name="is_member" />
 										</group>

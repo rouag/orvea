@@ -31,7 +31,7 @@
                             <br/>
                             <p>و إشارة إلى خطاب <span t-field="o.letter_sender"/> رقم <span t-esc="o.get_hindi_nums(o.letter_no)"/> و تاريخ <span t-esc="o.get_ummqura(o.letter_date)"/> المتضمن إطلاق سراح الموظف / <span t-field="o.employee_id.name"/> بتاريخ <span t-esc="o.get_ummqura(o.release_date)"/> حيث <span t-esc="o.release_reason"/>.</p>
                             <div class="text-center"><strong>يقرر ما يلي.</strong></div>
-                            <p>1) إنهاء كف يد الموظف / <span t-field="o.employee_id.name"/> وظيفته / <span t-field="o.employee_id.job_id.name"/> مرتبته <span t-esc="o.get_hindi_nums(o.employee_id.job_id.level)"/> رقمها / <span t-esc="o.get_hindi_nums(o.employee_id.job_id.level_no)"/> و تمكينه من مباشرة عمله اعتبارن من <span t-esc="o.get_ummqura(o.release_date)"/></p>
+                            <p>1) إنهاء كف يد الموظف / <span t-field="o.employee_id.name"/> وظيفته / <span t-field="o.employee_id.job_id.name"/> مرتبته <span t-esc="o.employee_id.grade_id.name"/> رقمها / <span t-esc="o.get_hindi_nums(o.employee_id.job_id.number)"/> و تمكينه من مباشرة عمله اعتبارن من <span t-esc="o.get_ummqura(o.release_date)"/></p>
                             <p>2) يصرف له النصف الباقي من رواتبه السابقة التى حسمت عليه أثناء كف يده اعتبارا من <span t-esc="o.get_ummqura(o.suspension_id.suspension_date)"/></p>
                             <p>3) يباغ هذا القرار لمن يلزم لإنقاذه.</p>
                             <br/>
