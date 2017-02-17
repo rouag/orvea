@@ -140,7 +140,7 @@ class HrEmployeeTransfert(models.Model):
                         if days < hr_config.needed_days:
                             raise ValidationError(u"لا يمكن تقديم طلب إلى بعد " + str(hr_config.needed_days) + u" يوماً.")
             # ‫التجربة‬ ‫سنة‬ ‫إستلكمال‬
-            recruitement_decision = self.employee_id.decision_appoint_ids.search([('is_started', '=', True), ('state_appoint', '=', 'active')], limit=1)
+            recruitement_decision = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id), ('is_started', '=', True), ('state_appoint', '=', 'active')], limit=1)
             if recruitement_decision and recruitement_decision.depend_on_test_periode:
                 testing_date_to = recruitement_decision.testing_date_to
                 if testing_date_to:
