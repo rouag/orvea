@@ -116,7 +116,11 @@
 			<field name="code">TR01</field>
 			<field name="show_in_apoint">False</field>
 			</record>
-			
+
+		<record id="data_allowance_appoint" model="hr.allowance.appoint">
+			<field name="hr_allowance_type_id" ref="smart_hr.hr_allowance_type_06" />
+		</record>
+				
 		<record id="data_hr_promotion_member" model="hr.type.appoint">
 			<field name="name">تعيين عضو  بالترقية</field>
 			<field name="audit" eval="True" />
@@ -128,9 +132,7 @@
 		</record>
 		
 		
-		<record id="data_allowance_appoint" model="hr.allowance.appoint">
-			<field name="hr_allowance_type_id" ref="smart_hr.hr_allowance_type_06" />
-		</record>
+	
 
 	</data>
 </openerp>

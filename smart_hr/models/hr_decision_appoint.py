@@ -404,7 +404,7 @@ class HrDecisionAppoint(models.Model):
         self.ensure_one()
         self.employee_id.write({'employee_state': 'employee','job_id': self.job_id.id,
                                 'department_id': self.department_id.id, 'degree_id': self.degree_id.id,
-                                 'wage': self.basic_salary, 'grade_id':self.grade_id.id})
+                                  'grade_id':self.grade_id.id})
         if self.date_medical_examination:
             self.employee_id.write({'medical_exam': self.date_medical_examination})
         self.job_id.write({'state': 'occupied', 'employee': self.employee_id.id, 'occupied_date': fields.Datetime.now()})

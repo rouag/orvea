@@ -34,12 +34,23 @@
 										</group>
 										<group>
 											<group string="بدل النقل">
+												<field name="allowance_transport_id" />
+												<field name="internal_transport_type" />
 												<field name="internal_transport_amount" />
+												<field name="external_transport_type" />
 												<field name="external_transport_amount" />
 											</group>
 											<group string="بدل الإنتداب">
+												<field name="allowance_deputation_id" />
+												<field name="internal_deputation_type" />
 												<field name="internal_deputation_amount" />
-												<div>إضافة فئات الدول</div>
+												<field name="external_deputation_type" />
+												<field name="category_ids" >
+													<tree editable="buttom">
+														<field name="category_id" />
+														<field name="amount" />
+													</tree>
+												</field>
 											</group>
 										</group>
 									</form>

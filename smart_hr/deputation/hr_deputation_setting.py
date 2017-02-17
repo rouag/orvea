@@ -14,7 +14,6 @@ class HrDeputationSetting(models.Model):
     deputation_distance = fields.Float(string=u'المسافة المحدد للإنتداب', default=75)
     annual_balance = fields.Integer(string='الرصيد السنوي')
     period_decision = fields.Integer(string=' مدة الإنتداب التي تستوجب قرار من الوزير المختص')
-   
     line_ids = fields.One2many('hr.deputation.allowance', 'deputation_setting_id', string=u'تفاصيل البدلات')
 
     @api.multi
@@ -41,5 +40,18 @@ class HrDeputationAllowance(models.Model):
     external_transport_amount = fields.Float(string='بدل نقل خارجي')
     internal_deputation_amount = fields.Float(string='بدل إنتداب داخلي')
     grade_ids = fields.Many2many('salary.grid.grade', 'deputation_allowance_grade_rel', 'deputation_allowance_id', 'grade_id', string=u'المراتب')
+    category_ids = fields.One2many('hr.deputation.allowance.line', 'deputation_allowance_id', string=u'بدل إنتداب خارجي')
+    allowance_transport_id = fields.Many2one('hr.allowance.type', string='البدل')
+    allowance_deputation_id = fields.Many2one('hr.allowance.type', string='البدل')
+    internal_transport_type = fields.Selection([('daily', u'يومي'), ('monthly', u'شهري')], string=u'داخلي : يومي/شهري', default='monthly')
+    external_transport_type = fields.Selection([('daily', u'يومي'), ('monthly', u'شهري')], string=u'خارجي : يومي/شهري', default='monthly')
+    internal_deputation_type = fields.Selection([('daily', u'يومي'), ('monthly', u'شهري')], string=u'داخلي : يومي/شهري', default='monthly')
+    external_deputation_type = fields.Selection([('daily', u'يومي'), ('monthly', u'شهري')], string=u'خارجي : يومي/شهري', default='monthly')
 
 
+class HrDeputationAllowanceLine(models.Model):
+    _name = 'hr.deputation.allowance.line'
+
+    deputation_allowance_id = fields.Many2one('hr.deputation.allowance', string='Allowance', ondelete='cascade')
+    amount = fields.Float(string='المبلغ')
+    category_id = fields.Many2one('hr.deputation.category', string='الفئة')
