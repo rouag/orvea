@@ -404,7 +404,7 @@ class HrDecisionAppoint(models.Model):
         self.ensure_one()
         self.employee_id.write({'employee_state': 'employee','job_id': self.job_id.id,
                                 'department_id': self.department_id.id, 'degree_id': self.degree_id.id,
-                                 'wage': self.basic_salary, 'grade_id':self.grade_id.id})
+                                  'grade_id':self.grade_id.id})
         if self.date_medical_examination:
             self.employee_id.write({'medical_exam': self.date_medical_examination})
         self.job_id.write({'state': 'occupied', 'employee': self.employee_id.id, 'occupied_date': fields.Datetime.now()})
@@ -421,20 +421,20 @@ class HrDecisionAppoint(models.Model):
         
         type=''
         if self.type_appointment.id == self.env.ref('smart_hr.data_hr_new_agent_public').id:
-            type = '17'
+            type = 'تعيين موظف جديد'
             
         elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_agent_public').id:
-            type = '59'
+            type = 'تعيين موظف رسمي'
         elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_agent_utilisateur').id:
-            type = '84'
+            type = 'تعيين الموظفين المستخدمين'
         elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_salaire_article').id:
-            type = '85'
+            type = 'تعيين عمال بند الأجور'
         elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_contrat').id:
-            type = '86'
+            type = 'تعيين بعقد'
         elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_public_nosoudi').id:
-            type = '87'
+            type = 'تعيين غير سعودي على مرتبة رسمية'
         elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_public_retraite').id:
-            type = '88'
+            type = 'تعيين المحالين على التقاعد'
         if type:
             self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date_hiring, type)
         self.state = 'done'

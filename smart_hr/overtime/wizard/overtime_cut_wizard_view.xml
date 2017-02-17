@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+
+		<!-- Refuse Wizard -->
+		<record id="view_form_overtime_cut_wizard" model="ir.ui.view">
+			<field name="name">hr.cut.wizard.form</field>
+			<field name="model">hr.cut.wizard</field>
+			<field name="arch" type="xml">
+				<form string="سبب القطع">
+					<separator string="سبب القطع" />
+					<field name="message" required="1" />
+					<footer>
+						<button name="button_cut" string="حفظ" type="object"
+							icon="fa-floppy-o" class="oe_inline oe_stat_button" />
+						أو
+						<button string="إلغاء" class="oe_link" special="cancel" />
+					</footer>
+				</form>
+			</field>
+		</record>
+		<record id="action_overtime_cut_wizard" model="ir.actions.act_window">
+			<field name="name">سبب القطع</field>
+			<field name="res_model">hr.cut.wizard</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="view_form_overtime_cut_wizard" />
+			<field name="target">new</field>
+		</record>
+
+	</data>
+</openerp>

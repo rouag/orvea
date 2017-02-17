@@ -78,11 +78,11 @@
 
 		<report id="hr_decision_report" model="hr.decision"
 			name="smart_hr.report_hr_decision" report_type="qweb-pdf" string="طباعة"
-			file="smart_hr.report_hr_decision" />
+			file="smart_hr.report_hr_decision"    />
 
 		<report id="hr_direct_appoint_report" model="hr.direct.appoint"
 			name="smart_hr.report_hr_direct_appoint" report_type="qweb-pdf"
-			string="قرار مباشرة التعين" file="smart_hr.report_hr_direct_appoint" />
+			string="قرار مباشرة التعين" file="smart_hr.report_hr_direct_appoint"   />
 
 
 		<report id="report_hr_employee_functionnal_card_report" model="hr.employee.functionnal.card"

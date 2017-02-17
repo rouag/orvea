@@ -6,7 +6,6 @@ from dateutil import relativedelta
 import time as time_date
 from datetime import datetime
 from openerp.addons.smart_base.util.time_util import days_between
-from docutils.nodes import line
 
 MONTHS = [('01', 'محرّم'),
           ('02', 'صفر'),
@@ -48,88 +47,12 @@ class hrDifference(models.Model):
             self.name = u'فروقات شهر %s' % self.month
             line_ids = []
             # TODO: must update date_from and date_to
-            # obj
-            overtime_line_obj = self.env['hr.overtime.ligne']
-            deputation_obj = self.env['hr.deputation']
             # delete current line
             self.line_ids.unlink()
-
-            # 1- overtime
-            overtime_setting = self.env['hr.overtime.setting'].search([], limit=1)
-            # over time start in this month end finish in this month or after
-            overtime_lines1 = overtime_line_obj.search([('date_from', '>=', self.date_from),
-                                                       ('date_from', '<=', self.date_to),
-                                                       ('overtime_id.state', '=', 'finish')])
-            # over time start in last month end finish in this month  or after
-            overtime_lines2 = overtime_line_obj.search([('date_from', '<', self.date_from),
-                                                        ('date_to', '>=', self.date_from),
-                                                       ('overtime_id.state', '=', 'finish')])
-            overtime_lines = list(set(overtime_lines1 + overtime_lines2))
-            print '-----overtime_lines-----------', overtime_lines
-            # TODO: dont compute not work days
-            for overtime in overtime_lines:
-                date_from = overtime.date_from
-                date_to = overtime.date_to
-                if overtime.date_from < self.date_from:
-                    date_from = self.date_from
-                if overtime.date_to > self.date_to:
-                    date_to = self.date_to
-                print '----date_from, date_to-------', date_from, date_to
-                number_of_days = days_between(date_from, date_to)
-                number_of_hours = 0.0
-                if overtime.date_from >= self.date_from and overtime.date_to <= self.date_to:
-                    number_of_hours = overtime.heure_number
-                # TODO: how compute amount for friday_saturday,holidays,normal_days
-                employee = overtime.employee_id
-                overtime_val = {'difference_id': self.id,
-                                'name': overtime_setting.allowance_overtime_id.name,
-                                'employee_id': employee.id,
-                                'number_of_days': number_of_days,
-                                'number_of_hours': number_of_hours,
-                                'amount': 0.0,
-                                'type': 'overtime'}
-                line_ids.append(overtime_val)
-                # add allowance transport
-                if number_of_days:
-                    # TODO:  compute amount النقل الأساسي ?
-                    allowance_transport_val = {'difference_id': self.id,
-                                               'name': overtime_setting.allowance_transport_id.name,
-                                               'employee_id': employee.id,
-                                               'number_of_days': number_of_days,
-                                               'number_of_hours': 0.0,
-                                               'amount': 0.0,
-                                               'type': 'overtime'}
-                    line_ids.append(allowance_transport_val)
-
-            # 2- deputation
-            # deputation start in this month end finish in this month or after
-            deputations1 = deputation_obj.search([('date_from', '>=', self.date_from),
-                                                  ('date_from', '<=', self.date_to),
-                                                  ('state', '=', 'finish')])
-            # deputation start in last month end finish in this month  or after
-            deputations2 = deputation_obj.search([('date_from', '<', self.date_from),
-                                                  ('date_to', '>=', self.date_from),
-                                                  ('state', '=', 'finish')])
-            deputations = list(set(deputations1 + deputations2))
-            for deputation in deputations:
-                date_from = deputation.date_from
-                date_to = deputation.date_to
-                if deputation.date_from < self.date_from:
-                    date_from = self.date_from
-                if deputation.date_to > self.date_to:
-                    date_to = self.date_to
-                number_of_days = days_between(date_from, date_to)
-                # TODO: how compute amount
-                employee = deputation.employee_id
-                deputation_val = {'difference_id': self.id,
-                                  'name': u'بدل إنتداب',
-                                  'employee_id': employee.id,
-                                  'number_of_days': number_of_days,
-                                  'number_of_hours': 0.0,
-                                  'amount': 0.0,
-                                  'type': 'deputation'}
-                line_ids.append(deputation_val)
-
+            # فروقات خارج الدوام
+            line_ids += self.get_difference_overtime()
+            # فروقات الأنتداب
+            line_ids += self.get_difference_deputation()
             # فروقات النقل
             line_ids += self.get_difference_transfert()
             # فروقات التعين
@@ -138,6 +61,8 @@ class hrDifference(models.Model):
             line_ids += self.get_difference_assign()
             # فروقات الإبتعاث
             line_ids += self.get_difference_scholarship()
+            # فروقات الإعارة
+            line_ids += self.get_difference_lend()
             self.line_ids = line_ids
 
     @api.one
@@ -162,51 +87,53 @@ class hrDifference(models.Model):
                                                                       ('create_date', '<=', self.date_to),
                                                                       ('state', '=', 'done')])
             for transfert in transfert_ids:
-                # 1- بدل طبيعة العمل
-                amount = (hr_setting.allowance_proportion * transfert.employee_id.wage)
-                if amount > 0:
-                    amount = amount / 100
-                vals = {'difference_id': self.id,
-                        'name': hr_setting.allowance_job_nature.name,
-                        'employee_id': transfert.employee_id.id,
-                        'number_of_days': 0,
-                        'number_of_hours': 0.0,
-                        'amount': amount,
-                        'type': 'transfert'}
-                line_ids.append(vals)
-
-                # 2- بدل إنتداب
-                amount = (hr_setting.deputation_days * (transfert.employee_id.wage / 22))
-                if amount > 0:
-                    amount = amount / 100
-                vals = {'difference_id': self.id,
-                        'name': hr_setting.allowance_deputation.name,
-                        'employee_id': transfert.employee_id.id,
-                        'number_of_days': hr_setting.deputation_days,
-                        'number_of_hours': 0.0,
-                        'amount': amount,
-                        'type': 'transfert'}
-                line_ids.append(vals)
-                # 3- بدل ترحيل
-                amount = (hr_setting.deportation_amount)
-                vals = {'difference_id': self.id,
-                        'name': hr_setting.allowance_deportation.name,
-                        'employee_id': transfert.employee_id.id,
-                        'number_of_days': 0,
-                        'number_of_hours': 0.0,
-                        'amount': amount,
-                        'type': 'transfert'}
-                line_ids.append(vals)
-#                 # 4- نسبة الراتب
-#                 amount = (((100 - hr_setting.salary_proportion) * transfert.employee_id.wage) / 100) * -1
-#                 vals = {'difference_id': self.id,
-#                         'name': u'نسبة الراتب',
-#                         'employee_id': transfert.employee_id.id,
-#                         'number_of_days': 0,
-#                         'number_of_hours': 0.0,
-#                         'amount': amount,
-#                         'type': 'transfert'}
-                line_ids.append(vals)
+                # get تفاصيل سلم الرواتب
+                grid_id = transfert.employee_id.salary_grid_id
+                if grid_id:
+                    # 1- بدل طبيعة العمل
+                    amount = (hr_setting.allowance_proportion * grid_id.basic_salary)
+                    if amount > 0:
+                        amount = amount / 100
+                    vals = {'difference_id': self.id,
+                            'name': hr_setting.allowance_job_nature.name,
+                            'employee_id': transfert.employee_id.id,
+                            'number_of_days': 0,
+                            'number_of_hours': 0.0,
+                            'amount': amount,
+                            'type': 'transfert'}
+                    line_ids.append(vals)
+                    # 2- بدل إنتداب
+                    amount = (hr_setting.deputation_days * (grid_id.basic_salary / 22))
+                    if amount > 0:
+                        amount = amount / 100
+                    vals = {'difference_id': self.id,
+                            'name': hr_setting.allowance_deputation.name,
+                            'employee_id': transfert.employee_id.id,
+                            'number_of_days': hr_setting.deputation_days,
+                            'number_of_hours': 0.0,
+                            'amount': amount,
+                            'type': 'transfert'}
+                    line_ids.append(vals)
+                    # 3- بدل ترحيل
+                    amount = (hr_setting.deportation_amount)
+                    vals = {'difference_id': self.id,
+                            'name': hr_setting.allowance_deportation.name,
+                            'employee_id': transfert.employee_id.id,
+                            'number_of_days': 0,
+                            'number_of_hours': 0.0,
+                            'amount': amount,
+                            'type': 'transfert'}
+                    line_ids.append(vals)
+    #                 # 4- نسبة الراتب
+    #                 amount = (((100 - hr_setting.salary_proportion) * grid_id.basic_salary) / 100) * -1
+    #                 vals = {'difference_id': self.id,
+    #                         'name': u'نسبة الراتب',
+    #                         'employee_id': transfert.employee_id.id,
+    #                         'number_of_days': 0,
+    #                         'number_of_hours': 0.0,
+    #                         'amount': amount,
+    #                         'type': 'transfert'}
+                    line_ids.append(vals)
         return line_ids
 
     @api.multi
@@ -238,11 +165,7 @@ class hrDifference(models.Model):
                                                                    ('state', '=', 'done')])
         for assign_id in assign_ids:
             # get تفاصيل سلم الرواتب
-            grid_id = self.env['salary.grid.detail'].search([('grid_id.enabled', '=', True),
-                                                             ('type_id', '=', assign_id.employee_id.job_id.type_id.id),
-                                                             ('degree_id', '=', assign_id.employee_id.degree_id.id),
-                                                             ('grade_id', '=', assign_id.employee_id.job_id.grade_id.id)
-                                                             ])
+            grid_id = assign_id.employee_id.salary_grid_id
             if grid_id:
                 # تفاصيل سلم الرواتب
                 allowance_ids = grid_id.allowance_ids
@@ -251,7 +174,7 @@ class hrDifference(models.Model):
                 print 'indemnity_ids', indemnity_ids
                 # راتب
                 if assign_id.give_salary:
-                    amount = assign_id.employee_id.wage
+                    amount = grid_id.basic_salary
                     if amount:
                             vals = {'difference_id': self.id,
                                     'name': 'راتب',
@@ -308,7 +231,6 @@ class hrDifference(models.Model):
                     # تعويضات
                     for indemnity in indemnity_ids:
                         amount = indemnity.get_value(assign_id.employee_id.id)
-                        print "تعويضات"
                         if amount:
                             vals = {'difference_id': self.id,
                                     'name': indemnity.indemnity_id.name,
@@ -332,11 +254,7 @@ class hrDifference(models.Model):
             # ابتعاث داخلي
             if scholarship_id.scholarship_type == self.env.ref('smart_hr.data_hr_shcolaship_internal'):
                 # get تفاصيل سلم الرواتب
-                grid_id = self.env['salary.grid.detail'].search([('grid_id.enabled', '=', True),
-                                                                 ('type_id', '=', scholarship_id.employee_id.job_id.type_id.id),
-                                                                 ('degree_id', '=', scholarship_id.employee_id.degree_id.id),
-                                                                 ('grade_id', '=', scholarship_id.employee_id.job_id.grade_id.id)
-                                                                 ])
+                grid_id = scholarship_id.employee_id.salary_grid_id
                 if grid_id:
                     # تفاصيل سلم الرواتب
                     allowance_ids = grid_id.allowance_ids
@@ -355,19 +273,44 @@ class hrDifference(models.Model):
                                     'number_of_days': 0,
                                     'number_of_hours': 0.0,
                                     'amount': amount * -1,
-                                    'type': 'commissioning'}
+                                    'type': 'scholarship'}
                             line_ids.append(vals)
             # ابتعاث خارجي
             if scholarship_id.scholarship_type == self.env.ref('smart_hr.data_hr_shcolaship_external') and scholarship_id.duration > 365:
-                amount = scholarship_id.employee_id.wage
+                grid_id = scholarship_id.employee_id.salary_grid_id
+                if grid_id:
+                    amount = grid_id.basic_salary
+                    if amount > 0:
+                        vals = {'difference_id': self.id,
+                                'name': 'راتب',
+                                'employee_id': scholarship_id.employee_id.id,
+                                'number_of_days': 0,
+                                'number_of_hours': 0.0,
+                                'amount': (amount / 2) * -1,
+                                'type': 'scholarship'}
+                        line_ids.append(vals)
+        return line_ids
+
+    @api.multi
+    def get_difference_lend(self):
+        self.ensure_one()
+        line_ids = []
+        lend_ids = self.env['hr.employee.lend'].search([('date_to', '>=', self.date_from),
+                                                        ('date_to', '<=', self.date_to),
+                                                        ('state', '=', 'done')
+                                                        ])
+        for lend_id in lend_ids:
+            grid_id = lend_id.employee_id.salary_grid_id
+            if grid_id:
+                amount = grid_id.basic_salary
                 if amount > 0:
                     vals = {'difference_id': self.id,
                             'name': 'راتب',
-                            'employee_id': scholarship_id.employee_id.id,
+                            'employee_id': lend_id.employee_id.id,
                             'number_of_days': 0,
                             'number_of_hours': 0.0,
-                            'amount': (amount / 2) * -1,
-                            'type': 'appoint'}
+                            'amount': (amount) * -1,
+                            'type': 'lend'}
                     line_ids.append(vals)
         return line_ids
 

@@ -87,7 +87,7 @@
 												تاريخ الميلاد
 											</td>
 											<td>
-												<span t-field="o.birthday" />
+													<span t-esc="get_hijri_date(o.birthday, '-')" />
 											</td>
 										</tr>
 										<tr>
@@ -101,7 +101,7 @@
 												تاريخ إصدار جواز السفر
 											</td>
 											<td>
-												<span t-field="o.passport_date" />
+												<span t-esc="get_hijri_date(o.passport_date, '-')" />
 											</td>
 										</tr>
 										<tr>
@@ -124,13 +124,13 @@
 												تاريخ بداية الخدمة
 											</td>
 											<td>
-												<span t-field="o.begin_work_date" />
+												<span t-esc="get_hijri_date(o.begin_work_date, '-')" />
 											</td>
 											<td>
 												تاريخ الالتحاق بالهيئة
 											</td>
 											<td>
-												<span t-field="o.join_date" />
+											<span t-esc="get_hijri_date(o.join_date, '-')" />
 											</td>
 										</tr>
 										<tr>
@@ -212,13 +212,13 @@
 									</td>
 
 									<td>
-										<span t-esc="line.date" />
+											<span t-esc="get_hijri_date(line.date, '-')" />
 									</td>
 									<td>
 										<span t-esc="line.num_decision" />
 									</td>
 									<td>
-										<span t-esc="line.date_decision" />
+											<span t-esc="get_hijri_date(line.date_decision, '-')" />
 									</td>
 								</tr>
 							</table>
@@ -250,10 +250,11 @@
 										<span t-esc="line.training_id" />
 									</td>
 									<td>
-										<span t-esc="line.date_from" />
+										<span t-esc="get_hijri_date(line.date_from, '-')" />
 									</td>
 									<td>
 										<span t-esc="line.number_of_days" />
+										
 									</td>
 									<td>
 										<span t-esc="line.place" />

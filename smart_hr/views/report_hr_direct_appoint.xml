@@ -42,7 +42,7 @@
 									<p style="font-size:22px;">
 										لمباشرة مهامه
 										بتاريخ
-										<span t-field="o.date" />
+											 <span t-esc="get_hijri_date(o.date, '-')" />
 									</p>
 									<br></br>
 									<br></br>
@@ -78,6 +78,51 @@
 									رقم الهوية الوطنية:
 									<span t-field="o.employee_id.identification_id" />
 								</p>
+ 
+								<p></p>
+								<br></br>
+								<p></p>
+								<p style="font-size:22px;" align="center">
+									السلام عليكم ورحمة الله
+									وبركاته و بعد ،
+								</p>
+								<br></br>
+								<br></br>
+								<p style="font-size:22px;">
+
+									يرجي التكرم بالإذن للسيد:
+									<span t-field="o.employee_id.name" />
+								</p>
+								<p style="font-size:22px;">
+									الذى يشغل بوظيفة
+									<span t-field="o.job_id.name" />
+									رقمها:
+									<span t-esc="o.job_id.number" />
+								</p>
+								<p style="font-size:22px;">
+									لمباشرة مهامه
+									بتاريخ
+										 <span t-esc="get_hijri_date(o.date, '-')" />
+									
+								</p>
+								<br></br>
+								<br></br>
+								<p style="font-size:22px;">
+
+									و لكم جزيل الشكر،،
+								</p>
+								<p></p>
+								<p></p>
+								<br></br>
+								<br></br>
+								<br></br>
+								<p style="font-size:22px;" align="center">
+									و تفضلوا بقبول فائق التقدير و
+									الاحترام
+								</p>
+								<br></br>
+								<br></br>
+ 
 								<p style="font-size:22px;" align="left">
 									المهنة/(موظف حكومي)
 								</p>
@@ -113,7 +158,7 @@
 									<p style="font-size:22px;">
 										لمباشرة مهامه
 										بتاريخ
-										<span t-field="o.date" />
+									 <span t-esc="get_hijri_date(o.date, '-')" />
 									</p>
 									<br></br>
 									<br></br>

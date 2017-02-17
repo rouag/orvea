@@ -290,25 +290,7 @@
 									</group>
 									<group name="active_group" invisible="1" />
 								</page>
-
-								<page string="البدلات">
-									<field name="allowance_ids">
-										<tree editable="buttom">
-											<field name="allowance_id" />
-											<field name="amount" />
-										</tree>
-									</field>
-								</page>
-								<!-- TODO: dont delete it used by borni in payroll we can discuss 
-									about it after -->
-								<page string="بيانات الراتب ">
-									<group>
-										<field name="payroll_structure_id" />
-										<field name="wage" />
-										<field name="degree_id" />
-									</group>
-								</page>
-
+ 
 								<page string="أرصدة الاجازات والترقيات">
 									<separator string="أرصدة الاجازات" />
 									<field name="holidays_balance"
