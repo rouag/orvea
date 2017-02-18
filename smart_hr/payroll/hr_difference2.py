@@ -100,7 +100,7 @@ class hrDifference(models.Model):
             number_of_days = days_between(date_from, date_to)
             #
             employee = deputation.employee_id
-            grade = employee.job_id.grade_id
+            grade = employee.grade_id
             # get a correct line
             deputation_allowance_lines = deputation_allowance_obj.search([('grade_ids', 'in', [grade.id])])
             if deputation_allowance_lines:
