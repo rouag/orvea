@@ -10,8 +10,8 @@
 			<field name="arch" type="xml">
 
 				<field name="employee_id" position="replace">
-					<field name="employee_id" />
-					<field name="country_id" />
+					<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+					<field name="country_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 					<field name="identification_id" />
 					<field name="identification_date" />
 					<field name="identification_place" />

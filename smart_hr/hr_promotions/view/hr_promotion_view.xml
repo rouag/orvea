@@ -14,7 +14,7 @@
 						<button name="button_promotion_type" string="إرسال" type="object"
 							states="promotion_type" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 							groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion,smart_hr.group_promotion_checker" />
-						/>
+					
 						<button name="button_confirmed" string="إرسال" type="object"
 							states="draft" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 							groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion,smart_hr.group_promotion_checker" />

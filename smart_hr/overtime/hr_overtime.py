@@ -275,7 +275,7 @@ class HrOvertimeLigne(models.Model):
                     self.date_from <= rec.date_to <= self.date_to:
                 raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الإعارة")
         for rec in termination_obj.search(search_domain):
-            if rec.date <= self.date_from :
+            if rec.date >= self.date_from :
                 raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في طى القيد")
 
 

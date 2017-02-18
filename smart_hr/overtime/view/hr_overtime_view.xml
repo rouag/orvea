@@ -100,7 +100,7 @@
 									<group>
 										<field name="line_ids" nolabel="1">
 											<tree>
-												<field name="employee_id" />
+												<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 												<field name="type" />
 												<field name="date_from" />
 												<field name="date_to" />
