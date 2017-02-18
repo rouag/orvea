@@ -90,13 +90,11 @@
 			<field name="inherit_id" ref="hr.view_employee_tree" />
 			<field name="arch" type="xml">
 				<xpath expr="/tree" position='replace'>
-					<tree string="طلبات بيانات موظف">
 						<field name="name" position="after">
-							<field name="display_name" />
+						<field name="display_name" string="الموظف" />
+						<field name="number" string="الرقم الوظيفي" />
+					
 						</field>
-						<field name="number" />
-						<field name="employee_state" />
-					</tree>
 				</xpath>
 			</field>
 		</record>
