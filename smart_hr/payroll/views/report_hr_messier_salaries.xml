@@ -76,12 +76,28 @@
 										</tr>
 										<tr>
 											<th></th>
-											<th colspan="2"></th>
-											<th></th>
-											<th></th>
-											<th></th>
-											<th></th>
-											<th></th>
+											<th>
+												<span t-field="o.employee_id.identification_id" />
+											</th>
+											<th>
+												<span t-field="o.employee_id" />
+											</th>
+											<th>
+												<span t-field="o.employee_id.job_id" />
+											</th>
+											<th>
+												<span t-field="o.employee_id.number" />
+											</th>
+											<th>
+												<span t-field="o.employee_id.job_id" />
+											</th>
+											<th>
+												<span t-field="o.employee_id.number" />
+											</th>
+											<th>
+												<span t-field="o.employee_id.degree_id" />
+											</th>
+											
 											<th class="text-center">مسمى البدل </th>
 											<th class="text-center">المبلغ</th>
 											<th class="text-center"> نوع الحسم</th>
@@ -89,10 +105,10 @@
 											<th></th>
 											<th></th>
 										</tr>
-									
-										
-										
-											<tr>
+
+
+
+										<tr>
 											<th></th>
 											<th></th>
 											<th></th>
@@ -127,7 +143,7 @@
 										</tr>
 										<tr>
 											<th colspan="3"></th>
-											<th colspan="2" class="text-left" >المرتب الحالي</th>
+											<th colspan="2" class="text-left">المرتب الحالي</th>
 											<th colspan="2" class="text-left">الاجمالي</th>
 											<th></th>
 											<th class="text-left">الاجمالي
@@ -164,7 +180,7 @@
 											<th></th>
 										</tr>
 										<tr>
-											<th colspan="7" class="text-right" >مجموع رواتب الفرع</th>
+											<th colspan="7" class="text-right">مجموع رواتب الفرع</th>
 											<th colspan="2"></th>
 											<th colspan="2"></th>
 											<th></th>
