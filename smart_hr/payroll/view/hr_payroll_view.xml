@@ -3,7 +3,6 @@
 	<data>
 
 
-
 		<!-- إعداد مسيّر إفرادي -->
 
 		<record id="view_hr_payslip_tree_inherit" model="ir.ui.view">
@@ -45,17 +44,11 @@
 							<field name="state" widget="statusbar" statusbar_visible="draft,verify,done" />
 						</header>
 						<sheet>
-							<div class="oe_button_box" name="button_box">
-								<button name="%(hr_payroll.act_payslip_lines)d" class="oe_stat_button"
-									icon="fa-money" type="action">
-									<field name="payslip_count" widget="statinfo" string="تفاصيل الراتب" />
-								</button>
-							</div>
 							<group col="4">
 								<field name="month" />
 								<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-								<label for="date_from" string="الفترة" />
-								<div>
+								<label for="date_from" string="الفترة" invisible="1"/>
+								<div invisible="1">
 									<field name="date_from" class="oe_inline" />
 									-
 									<field name="date_to" class="oe_inline" />
@@ -67,7 +60,29 @@
 								<field name="contract_id" invisible="1" />
 							</group>
 							<notebook>
-								<page string="أيام العمل">
+								<page string="تفاصيل الراتب">
+									<field name="line_ids" colspan="4" nolabel="1" readonly='1'>
+										<tree string="تفاصيل الراتب" editable="bottom"
+											decoration-info="amount == 0">
+											<field name="name" string="المسمى" />
+											<field name="code" invisible="1" />
+											<field name="category" />
+											<field name="sequence" invisible="1" />
+											<field name="amount" />
+										</tree>
+										<form string="تفاصيل الراتب">
+											<group col="4">
+												<field name="name" string="المسمى" />
+												<field name="code" invisible="1" />
+												<field name="category" readonly='0' />
+												<field name="sequence" invisible="1" />
+												<field name="amount" />
+											</group>
+										</form>
+									</field>
+								</page>
+								
+								<page string="أيام العمل" invisible="1">
 									<separator string="أيام العمل" />
 									<field name="worked_days_line_ids" readonly='1'>
 										<tree string="أيام العمل" editable="bottom">
@@ -96,6 +111,7 @@
 											<field name="code" />
 											<field name="number_of_days" />
 											<field name="number_of_hours" />
+											<field name="type" />
 										</tree>
 										<form string="الإجازات والحسميات">
 											<group col="4">
@@ -103,31 +119,12 @@
 												<field name="code" />
 												<field name="number_of_days" />
 												<field name="number_of_hours" />
+												<field name="type" />
 											</group>
 										</form>
 									</field>
 								</page>
-								<page string="تفاصيل الراتب">
-									<field name="line_ids" colspan="4" nolabel="1" readonly='1'>
-										<tree string="تفاصيل الراتب" editable="bottom"
-											decoration-info="amount == 0">
-											<field name="name" string="المسمى" />
-											<field name="code" invisible="1" />
-											<field name="category" />
-											<field name="sequence" invisible="1" />
-											<field name="amount" />
-										</tree>
-										<form string="تفاصيل الراتب">
-											<group col="4">
-												<field name="name" string="المسمى" />
-												<field name="code" invisible="1" />
-												<field name="category" readonly='0' />
-												<field name="sequence" invisible="1" />
-												<field name="amount" />
-											</group>
-										</form>
-									</field>
-								</page>
+								
 								<page string="تفاصيل حسب فئات قواعد الراتب"  invisible="1">
 									<field name="details_by_salary_rule_category" context="{'group_by':'category_id'}"
 										domain="[('appears_on_payslip', '=', True)]">
@@ -232,8 +229,8 @@
 						 <group>
 						  	<group>
 								<field name="month" />
-								<label for="date_start" string="الفترة" />
-								<div>
+								<label for="date_start" string="الفترة"  invisible="1"/>
+								<div invisible="1">
 									<field name="date_start" class="oe_inline" />
 									-
 									<field name="date_end" class="oe_inline" />
@@ -243,15 +240,20 @@
 								 <field name="name"  string="المسمى" />
 							</group>
 						</group>
-						<separator string="الموظفين" />
-						<field name="employee_ids"/>
-						<field name="slip_ids" invisible='1'>
-							<tree create='0' edit='0'>
-								<field name="number" string="التسلسل" />
-								<field name="employee_id" />
-								<field name="state" />
-							</tree>
-						</field>
+						<notebook>
+							<page  string="الموظفين" >
+								<field name="employee_ids"/>
+							</page>
+							<page  string="المسيّرات الإفرادية">
+								<field name="slip_ids" readonly='1'>
+									<tree create='0' edit='0'>
+										<field name="number" string="التسلسل" />
+										<field name="employee_id" />
+										<field name="state" />
+									</tree>
+								</field>
+							</page>
+						</notebook>
 					</sheet>
 					<div class="oe_chatter">
 						<field name="message_follower_ids" widget="mail_followers"

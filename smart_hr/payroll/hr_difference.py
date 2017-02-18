@@ -61,6 +61,8 @@ class hrDifference(models.Model):
             line_ids += self.get_difference_holidays()
             # فروقات كف اليد
             line_ids += self.get_difference_suspension()
+            # فروقات طى القيد
+            line_ids += self.get_difference_termination()
             self.line_ids = line_ids
 
     @api.one
@@ -396,6 +398,62 @@ class hrDifference(models.Model):
                     line_ids.append(vals)
         return line_ids
 
+    @api.multi
+    def get_difference_termination(self):
+        self.ensure_one()
+        line_ids = []
+        termination_ids = self.env['hr.termination'].search([('date', '>=', self.date_from),
+                                                             ('date', '<=', self.date_to),
+                                                             ('state', '=', 'done')
+                                                             ])
+        print '-----termination_ids------', termination_ids
+        for termination in termination_ids:
+            grid_id = termination.employee_id.salary_grid_id
+            # سعودي
+            if not termination.termination_type_id.nationality:
+                if grid_id:
+                    # 1) عدد الرواتب المستحق
+                    if termination.termination_type_id.nb_salaire > 0:
+                        amount = (grid_id.basic_salary) * (termination.termination_type_id.nb_salaire - 1)
+                        vals = {'difference_id': self.id,
+                                'name': termination.termination_type_id.name + " " + u'(عدد الرواتب)',
+                                'employee_id': termination.employee_id.id,
+                                'number_of_days': (termination.termination_type_id.nb_salaire - 1) * 22,
+                                'number_of_hours': 0.0,
+                                'amount': (amount),
+                                'type': 'termination'}
+                        line_ids.append(vals)
+            sum_days = 0
+            for rec in termination.employee_id.holidays_balance:
+                sum_days += rec.holidays_available_stock
+            print '-----sum_days holidays-----', sum_days
+            # 2) الإجازة
+            if not termination.termination_type_id.all_holidays and sum_days >= termination.termination_type_id.max_days:
+                if grid_id:
+                    amount = (grid_id.basic_salary / 22) * (termination.termination_type_id.max_days)
+                    print '---grid_id.basic_salary-----', grid_id.basic_salary
+                    vals = {'difference_id': self.id,
+                            'name': 'رصيد إجازة (طي القيد)',
+                            'employee_id': termination.employee_id.id,
+                            'number_of_days': termination.termination_type_id.max_days,
+                            'number_of_hours': 0.0,
+                            'amount': (amount),
+                            'type': 'termination'}
+                    line_ids.append(vals)
+            if termination.termination_type_id.all_holidays and sum_days > 0:
+                if grid_id:
+                    amount = (grid_id.basic_salary / 22) * (sum_days)
+                    print '---grid_id.basic_salary-----', grid_id.basic_salary
+                    vals = {'difference_id': self.id,
+                            'name': 'رصيد إجازة (طي القيد)',
+                            'employee_id': termination.employee_id.id,
+                            'number_of_days': sum_days,
+                            'number_of_hours': 0.0,
+                            'amount': (amount),
+                            'type': 'termination'}
+                    line_ids.append(vals)
+        return line_ids
+
 
 class hrDifferenceLine(models.Model):
     _name = 'hr.difference.line'
@@ -417,10 +475,11 @@ class hrDifferenceLine(models.Model):
                              ('scholarship', 'ابتعاث'),
                              ('appoint', 'تعيين'),
                              ('lend', 'إعارة'),
+                             ('termination', 'طى القيد'),
                              ('holiday', 'إجازة'),
                              ('commissioning', 'تكليف'),
                              ('deputation', 'إنتداب'),
                              ('overtime', 'خارج الدوام'),
-                             ('suspension', 'خارج الدوام'),
+                             ('suspension', 'كف اليد'),
                              ('transfert', 'نقل'),
                              ('training', 'تدريب')], string='النوع', readonly=1)
