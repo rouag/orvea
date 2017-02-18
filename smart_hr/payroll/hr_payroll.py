@@ -10,6 +10,7 @@ from umalqurra.hijri_date import HijriDate
 from umalqurra.hijri import Umalqurra
 from tempfile import TemporaryFile
 import base64
+from openerp.exceptions import UserError
 
 
 class HrPayslipRun(models.Model):
@@ -93,24 +94,43 @@ class HrPayslipRun(models.Model):
         month = str(int(current_date.month)).zfill(2)
         day = str(int(current_date.day)).zfill(2)
         SendDate = year + month + day
-        ValueDate = SendDate  # TODO:
+        ValueDate = SendDate  # TODO: the ValueDate
         TotalAmount = str(self.amount_total).replace('.', '').replace(',', '').zfill(15)
         Totalemployees = str(len(self.slip_ids)).zfill(8)
-        AccountNumber = ''.zfill(13)   # TODO: Account number
+        AccountNumber = str(self.env.user.company_id.vat or '').zfill(13)
         Fileparameter = '1'
         Filesequence = '01'
         Filler = ''.rjust(65, ' ')
         file_dec = ''
-        file_dec += '%s%s%s%s%s%s%s%s%s%s%s' % (HeaderKey, CalendarType, SendDate, ValueDate, TotalAmount, Totalemployees, AccountNumber, Fileparameter, Filesequence, Filler, '\n')
+        file_dec += u'%s%s%s%s%s%s%s%s%s%s\n' % (HeaderKey, CalendarType, SendDate, ValueDate, TotalAmount, Totalemployees, AccountNumber, Fileparameter, Filesequence, Filler)
         for playslip in self.slip_ids:
+            employee = playslip.employee_id
             # add line for each playslip
-            continue
+            EmployeeNumber = employee.number.ljust(12, ' ')
+            # search account bank for this employee
+            banks = self.env['res.partner.bank'].search([('employee_id', '=', employee.id), ('is_deposit', '=', True)])
+            if not banks:
+                raise UserError(u"يجب إنشاء حساب بنكي للإيداع  للموظف  %s " % employee.name)
+            employee_bank = banks[0]
+            EmployeeBankID = employee_bank.bank_id.bic.ljust(4, ' ')
+            EmployeeAccountNumber = employee_bank.acc_number.ljust(24, ' ')
+            EmployeeName = '*****'.ljust(50, ' ')
+            EmployeeAmount = str(playslip.salary_net).replace('.', '').replace(',', '').zfill(15)
+            CivilianID = employee.identification_id.zfill(15)
+            EmployeeIDType = '0'
+            ProcessFlag = ' '
+            BlockAmount = ' '
+            KawadarFlag = ' '
+            Filler = ''.rjust(11, ' ')
+            file_dec += u'%s%s%s%s%s%s%s%s%s%s%s\n' % (EmployeeNumber, EmployeeBankID, EmployeeAccountNumber, EmployeeName, EmployeeAmount, CivilianID, EmployeeIDType, ProcessFlag, BlockAmount, KawadarFlag, Filler)
         # remove the \n
         file_dec = file_dec[0:len(file_dec) - 1]
-        fp.write(str(file_dec))
+        print '------file_dec---\n',file_dec 
+        fp.write(file_dec.encode('utf-8'))
         fp.seek(0)
         bank_file_name = u'مسير جماعي  شهر %s.%s' % (self.month, 'txt')
-        self.write({'bank_file': base64.encodestring(fp.read()), 'file_name': bank_file_name})
+        self.bank_file = base64.encodestring(fp.read())
+        self.bank_file_name = bank_file_name
         fp.close()
         return True
 

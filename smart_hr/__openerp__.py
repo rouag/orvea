@@ -160,7 +160,7 @@
         'payroll/view/hr_difference.xml',
         'view/hr.xml',  # TODO: ??
         'payroll/views/report_hr_deduction.xml',
-        'payroll/views/report_hr_messier_salaries.xml',
+        'payroll/views/report_payslip.xml',
         'payroll/views/report.xml',
 
         # الحضور والإنصراف

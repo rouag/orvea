@@ -93,6 +93,7 @@
 						<field name="name" position="after">
 						<field name="display_name" string="الموظف" />
 						<field name="number" string="الرقم الوظيفي" />
+						<field name="salary_grid_id" invisible="1" />
 					
 						</field>
 				</xpath>
@@ -122,7 +123,6 @@
 								attrs="{'invisible': [('employee_state', '!=', 'employee')]}" />
 						</header>
 						<sheet>
-
 							<div class="oe_button_box" name="button_box" position="inside">
 								<button name="%(smart_hr.action_hr_loan)d" class="oe_stat_button"
 									context="{'search_default_employee_id': id}" icon="fa-money"
