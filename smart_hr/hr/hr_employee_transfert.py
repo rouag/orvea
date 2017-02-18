@@ -32,7 +32,7 @@ class HrEmployeeTransfert(models.Model):
     ready_tobe_done = fields.Boolean(default=False)
     decision_number = fields.Char(string=u"رقم القرار")
     decision_date = fields.Date(string=u'تاريخ القرار')
-    decision_file = fields.Binary(string=u'نسخة القرار')
+    decision_file = fields.Binary(string=u'نسخة القرار', attachment=True)
     degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة')
     date_direct_action = fields.Date(string=u'تاريخ مباشرة العمل')
     governmental_entity = fields.Many2one('res.partner', string=u'الجهة الحكومية', domain=[('company_type', '=', 'governmental_entity')])
@@ -41,7 +41,7 @@ class HrEmployeeTransfert(models.Model):
     # ‫المدنتية ‫الخدمة‬ ‫موافلقة‬
     speech_number = fields.Char(string=u'رقم الخطاب')
     speech_date = fields.Date(string=u'تاريخ الخطاب')
-    speech_file = fields.Binary(string=u'نسخة الخطاب')
+    speech_file = fields.Binary(string=u'نسخة الخطاب', attachment=True)
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', u'صاحب الصلاحية'),
                               ('pm', u'شؤون الموظفين'),

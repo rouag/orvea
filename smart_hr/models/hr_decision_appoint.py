@@ -82,22 +82,22 @@ class HrDecisionAppoint(models.Model):
     
    
     # attachments files
-    order_picture = fields.Binary(string='صورة الخطاب', required=1) 
+    order_picture = fields.Binary(string='صورة الخطاب', required=1, attachment=True) 
     order_picture_name = fields.Char(string='صورة الخطاب') 
-    medical_examination_file = fields.Binary(string='وثيقة الفحص الطبي') 
+    medical_examination_file = fields.Binary(string='وثيقة الفحص الطبي', attachment=True) 
     date_medical_examination = fields.Date(string='تاريخ الفحص الطبي') 
     medical_examination_name = fields.Char(string='وثيقة الفحص الطبي') 
-    order_enquiry_file = fields.Binary(string='طلب الاستسفار')
-    file_salar_recent = fields.Binary(string='تعهد من الموظف')
+    order_enquiry_file = fields.Binary(string='طلب الاستسفار', attachment=True)
+    file_salar_recent = fields.Binary(string='تعهد من الموظف', attachment=True)
     file_engagement = fields.Many2many('ir.attachment', string='إرفاق مزيد من الوثائق')
     # file_engagement = fields.Binary(string = 'تعهد من المترشح')
     number_appoint = fields.Char(string='رقم قرار التعين ')
     date_appoint = fields.Date(string='تاريخ قرار  التعين')
-    file_appoint = fields.Binary(string='صورة قرار التعين')
+    file_appoint = fields.Binary(string='صورة قرار التعين', attachment=True)
     
     number_direct_appoint = fields.Char(string='رقم قرار المباشرة ')
     date_direct_appoint = fields.Date(string='تاريخ قرار المباشرة')
-    file_direct_appoint = fields.Binary(string='صورة قرار المباشرة')
+    file_direct_appoint = fields.Binary(string='صورة قرار المباشرة', attachment=True)
     file_direct_appoint_name  = fields.Char(string='صورة قرار المباشرة') 
     
     order_enquiry_file_name = fields.Char(string=' طلب الاستسفار') 

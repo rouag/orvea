@@ -26,7 +26,7 @@ class hr_suspension(models.Model):
     letter_number = fields.Integer(string=u'رقم الخطاب', advanced_search=True)
     letter_date = fields.Date(string=u'تاريخ الخطاب')
     suspension_date = fields.Date(string=u'تاريخ الإيقاف')
-    suspension_attachment = fields.Binary(string=u'الصورة الضوئية للقرار')
+    suspension_attachment = fields.Binary(string=u'الصورة الضوئية للقرار', attachment=True)
     suspension_end_id = fields.Many2one('hr.suspension.end', string=u'قرار إنهاء كف اليد')
     state = fields.Selection([
         ('draft', u'طلب'),

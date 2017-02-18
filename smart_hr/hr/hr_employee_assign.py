@@ -38,7 +38,7 @@ class HrEmployeeCommissioning(models.Model):
     city = fields.Many2one('res.city', string=u'مقر التكليف', required=1)
     decision_number = fields.Char(string=u"رقم القرار", required=1, readonly=1, states={'new': [('readonly', 0)]})
     decision_date = fields.Date(string=u'تاريخ القرار', required=1, readonly=1, states={'new': [('readonly', 0)]})
-    decision_file = fields.Binary(string=u'نسخة القرار', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    decision_file = fields.Binary(string=u'نسخة القرار', required=1, readonly=1, states={'new': [('readonly', 0)]}, attachment=True)
     give_allowance_transport = fields.Boolean(string=u'بدل النقل', default=False)
     give_allow = fields.Boolean(string=u'بدلات، مكافأة أو تعويضات', default=False)
     give_salary = fields.Boolean(string=u'راتب', default=False)

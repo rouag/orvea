@@ -55,7 +55,8 @@ class HrSetting(models.Model):
 class HrAuthorityBoardSetting(models.Model):
     _name = 'hr.authority.board.setting'
     _description = u'‫إعدادات مجلس الهيئة‬‬'
-
+    
+    name = fields.Char(string='إعداد مجلس الهيئة‬‬')
     users_number = fields.Integer(string=u'عدد اعضاء الهيئة')
     job_required_ids = fields.Many2many('hr.job', string='وظائف اعضاء مجلس الهيئة')
 
