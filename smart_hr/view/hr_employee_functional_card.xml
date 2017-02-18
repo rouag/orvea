@@ -34,7 +34,7 @@
 						</group>
 						<group>
 							<group>
-								<field name="employee_id" required="1"
+								<field name="employee_id" required="1" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 									attrs="{'readonly':[('state','!=', 'draft')]}" />
 							</group>
 							<group attrs="{'invisible':[('state','=', 'draft')]}">

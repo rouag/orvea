@@ -41,9 +41,9 @@
 						<group>
 							<group>
 								<field name="employee_id" readonly="1" required="1"
-									options="{'no_create': True}" />
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="holiday_status_id" required="1"
-									options="{'no_create': True}" />
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="duration" required="1" />
 							</group>
 							<group>

@@ -16,9 +16,9 @@
 					<sheet>
 						<group>
 							<group>
-								<field name="type_id" />
-								<field name="grade_id"  />
-								<field name="degree_id" domain="[('grade_id','=',grade_id)]" />
+								<field name="type_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"  />
+								<field name="grade_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="degree_id" domain="[('grade_id','=',grade_id)]"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 							</group>
 							<group>
 								<field name="basic_salary" />
@@ -32,12 +32,12 @@
 							<page string="البدلات">
 								<field name="allowance_ids" nolabel="1">
 									<tree>
-										<field name="allowance_id" />
+										<field name="allowance_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 									</tree>
 									<form string="البدلات">
 										<group>
 											<group>
-												<field name="allowance_id" />
+												<field name="allowance_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 											</group>
 											<group>
 												<field name="compute_method" />
@@ -46,7 +46,7 @@
 												<field name="min_amount" />
 												<field name="line_ids"  attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
 													<tree editable="buttom"  >
-														<field name="city_id" />
+														<field name="city_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 														<field name="percentage" />
 													</tree>
 												</field>
@@ -59,12 +59,12 @@
 							<page string="المكافآت‬">
 								<field name="reward_ids" nolabel="1">
 									<tree>
-										<field name="reward_id" />
+										<field name="reward_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 									</tree>
 									<form string="المكافآت‬">
 										<group>
 											<group>
-												<field name="reward_id" />
+												<field name="reward_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 											</group>
 											<group>
 												<field name="compute_method" />
@@ -86,12 +86,12 @@
 							<page string="التعويضات">
 								<field name="indemnity_ids" nolabel="1">
 									<tree editable="bottom">
-										<field name="indemnity_id" />
+										<field name="indemnity_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 									</tree>
 									<form string="التعويضات">
 										<group>
 											<group>
-												<field name="indemnity_id" />
+												<field name="indemnity_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 											</group>
 											<group>
 												<field name="compute_method" />
@@ -100,7 +100,7 @@
 												<field name="min_amount" />
 												<field name="line_ids"  attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
 													<tree editable="buttom"  >
-														<field name="city_id" />
+														<field name="city_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 														<field name="percentage" />
 													</tree>
 												</field>
@@ -136,9 +136,9 @@
 						</group>
 						<field name="grid_ids" string=" سلّم الرواتب">
 							<tree>
-								<field name="type_id" />
-								<field name="grade_id"/>
-								<field name="degree_id" domain="[('grade_id','=',grade_id)]" />
+								<field name="type_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="grade_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="degree_id" domain="[('grade_id','=',grade_id)]"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="basic_salary" />
 								<field name="insurance_type" />
 								<field name="insurance" />
@@ -270,7 +270,7 @@
 								<field name="sequence" widget="handle" />
 								<field name="name" />
 								<field name="code" />
-								<field name="grade_id" />
+								<field name="grade_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"  />
 							</group>
 						</group>
 					</sheet>
@@ -285,7 +285,7 @@
 				<tree string="الدرجات">
 					<field name="name" />
 					<field name="code" />
-					<field name="grade_id" />
+					<field name="grade_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 				</tree>
 			</field>
 		</record>

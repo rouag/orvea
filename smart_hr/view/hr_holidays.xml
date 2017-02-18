@@ -125,7 +125,7 @@
 						</group>
 						<group>
 							<group>
-								<field name="employee_id" required="1" readonly='1' />
+								<field name="employee_id" required="1" readonly='1'  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 							</group>
 							<group>
 								<field name="holiday_status_id" options="{'no_create_edit': True}"

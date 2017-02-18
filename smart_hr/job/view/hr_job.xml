@@ -161,7 +161,7 @@
 						</group>
 						<group col="2">
 							<group>
-								<field name="employee_id" />
+								<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 								<field name="name" />
 								<field name="members_job" />
 								<field name="speech_number"
@@ -180,11 +180,11 @@
 						</group>
 						<group col="6">
 							<field name="general_id" domain="[('group_type', '=', 'general')]"
-								required="1" attrs="{'readonly':[('state', '!=', 'new')]}" />
-							<field name="specific_id" required="1"
+								required="1" attrs="{'readonly':[('state', '!=', 'new')]}"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+							<field name="specific_id" required="1"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 								domain="[('parent_id', '=', general_id),('group_type', '=', 'spicific')]"
 								attrs="{'readonly':[('state', '!=', 'new')]}" />
-							<field name="serie_id" required="1"
+							<field name="serie_id" required="1"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 								domain="[('parent_id', '=',specific_id), ('group_type', '=', 'serie')]"
 								attrs="{'readonly':[('state', '!=', 'new')]}" />
 						</group>
@@ -197,10 +197,10 @@
 									string="المسمى الوظيفي"/>
 								<field name="job_number" />
 								<field name="number" readonly="1" />
-								<field name="type_id" />
-								<field name="department_id" />
-								<field name="grade_id" options='{"no_open": True, "no_create": True}' />
-								<field name="activity_type" options='{"no_open": True, "no_create": True}' />
+								<field name="type_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+								<field name="department_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="grade_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="activity_type"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 							</tree>
 						</field>
 					</sheet>
@@ -292,9 +292,9 @@
 						<group col="2">
 							<group>
 
-								<field name="employee_id" />
+								<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 								<field name="fiscal_year" />
-								<field name="source_location" />
+								<field name="source_location"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 								<field name="out_speech_number"
 									attrs="{'invisible':[('state', 'not in', ['communication','external','hrm2','done'])],'required':[('state','=','communication')], 'readonly':[('state', 'in', ['external','hrm2','done'])]}" />
 								<field name="out_speech_date"
@@ -324,14 +324,14 @@
 
 						</group>
 						<group col="6">
-							<field name="general_id" domain="[('group_type', '=', 'general')]"
-								required="1" attrs="{'readonly':[('state', '!=', 'new')]}" />
+							<field name="general_id" domain="[('group_type', '=', 'general')]" 
+								required="1" attrs="{'readonly':[('state', '!=', 'new')]}"   options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 							<field name="specific_id" required="1"
 								domain="[('parent_id', '=', general_id),('group_type', '=', 'spicific')]"
-								attrs="{'readonly':[('state', '!=', 'new')]}" />
+								attrs="{'readonly':[('state', '!=', 'new')]}"   options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 							<field name="serie_id" required="1"
 								domain="[('parent_id', '=',specific_id), ('group_type', '=', 'serie')]"
-								attrs="{'readonly':[('state', '!=', 'new')]}" />
+								attrs="{'readonly':[('state', '!=', 'new')]}"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 						</group>
 
 						<field name="line_ids" string=" الوظائف"
@@ -340,8 +340,8 @@
 								<field name="name" options='{"no_open": True, "no_create": True}' />
 								<field name="number" readonly="1" />
 								<field name="job_name_code" string="الرمز" />
-								<field name="type_id" />
-								<field name="department_id" />
+								<field name="type_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+								<field name="department_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 								<field name="grade_id" options='{"no_open": True, "no_create": True}' />
 								<field name="job_number" />
 
@@ -423,7 +423,7 @@
 						</group>
 						<group col="2">
 							<group>
-								<field name="employee_id" />
+								<field name="employee_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 								<field name="speech_number"
 									attrs="{'invisible':[('state', 'not in', ['hrm1','communication_external','hrm2','done'])],'required':[('state','=','hrm1')], 'readonly':[('state', '!=', 'hrm1')]}" />
 								<field name="speech_date"
@@ -465,12 +465,12 @@
 						<field name="line_ids" string="إلغاء وظائف"
 							attrs="{'readonly':[('state', '!=', 'new')]}">
 							<tree editable="bottom">
-								<field name="job_id" domain="[('state','=','unoccupied')]" />
+								<field name="job_id" domain="[('state','=','unoccupied')]"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 								<field name="job_number" />
 								<field name="job_name_code" string="الرمز" />
 								<field name="type_id" readonly="1" />
-								<field name="department_id" />
-								<field name="grade_id" />
+								<field name="department_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+								<field name="grade_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 							</tree>
 						</field>
 					</sheet>
@@ -549,7 +549,7 @@
 						</group>
 						<group col="2">
 							<group>
-								<field name="employee_id" />
+								<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="out_speech_number"
 									attrs="{'invisible':[('state', 'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" />
 								<field name="out_speech_date"
@@ -572,7 +572,7 @@
 						<field name="job_update_ids" string=" تحوير‬  وظائف"
 							attrs="{'readonly':[('state', '!=', 'new')]}">
 							<tree editable="bottom">
-								<field name="job_id" />
+								<field name="job_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="job_number" />
 								<field name="department_id" />
 								<field name="grade_id" />
@@ -662,7 +662,7 @@
 						</group>
 						<group col="2">
 							<group>
-								<field name="employee_id" />
+								<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 
 								<field name="out_speech_number"
 									attrs="{'invisible':[('state', 'not in', ['budget', 'communication_external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['communication_external', 'hrm2', 'done'])],'required':[('state','=','budget')]}" />
@@ -686,7 +686,7 @@
 						<field name="job_movement_ids" string="نقل وظائف"
 							context="{'job_movement_ids': job_movement_ids}" attrs="{'readonly':[('state', '!=', 'new')]}">
 							<tree editable="bottom">
-								<field name="job_id" domain="[('state','=','unoccupied') ]" />
+								<field name="job_id" domain="[('state','=','unoccupied') ]" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="job_number" />
 								<field name="job_name_code" />
 								<field name="type_id" />
@@ -771,7 +771,7 @@
 						</group>
 						<group col="2">
 							<group>
-								<field name="employee_id" />
+								<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="move_date" />
 								<field name="fiscal_year" />
 								<!-- <field name="out_speech_number" attrs="{'invisible':[('state', 
@@ -800,7 +800,7 @@
 						<field name="job_movement_ids" context="{'operation':'scale_up'}"
 							attrs="{'readonly':[('state', '!=', 'new')]}" string=" الوظائف">
 							<tree editable="bottom">
-								<field name="job_id" />
+								<field name="job_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="job_number" />
 								<field name="job_name_code" />
 								<field name="type_id" />
@@ -900,7 +900,7 @@
 						</group>
 						<group col="2">
 							<group>
-								<field name="employee_id" />
+								<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="move_date" />
 								<field name="fiscal_year" />
 								<!-- <field name="out_speech_number" attrs="{'invisible':[('state', 
@@ -928,7 +928,7 @@
 						<field name="job_movement_ids" context="{'operation':'scale_down'}"
 							attrs="{'readonly':[('state', '!=', 'new')]}" string=" الوظائف">
 							<tree editable="bottom">
-								<field name="job_id" />
+								<field name="job_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="job_number" />
 								<field name="job_name_code" />
 								<field name="type_id" />
@@ -1017,7 +1017,7 @@
 						</group>
 						<group col="2">
 							<group>
-								<field name="employee_id" />
+								<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="speech_number"
 									attrs="{'readonly':[('state', '!=', 'new')],'required':[('state','=','new')]}" />
 								<field name="speech_date"
@@ -1038,7 +1038,7 @@
 						<field name="job_cancel_ids" string="إلغاء وظائف"
 							attrs="{'readonly':[('state', '!=', 'new')]}">
 							<tree editable="bottom">
-								<field name="job_id" domain="[('state','=','unoccupied')]" />
+								<field name="job_id" domain="[('state','=','unoccupied')]"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="type_id" />
 								<field name="department_id" />
 								<field name="grade_id" />

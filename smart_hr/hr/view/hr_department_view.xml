@@ -47,15 +47,15 @@
 								<group>
 									<field name="name" />
 									<field name="code" />
-									<field name="dep_type" options="{'no_create': True}" />
-									<field name="manager_id" options="{'no_create': True}" />
+									<field name="dep_type" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+									<field name="manager_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								</group>
 								<group>
-									<field name="parent_id" options="{'no_create': True}" />
-									<field name="company_id" options="{'no_create': True}"
+									<field name="parent_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+									<field name="company_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 										groups="base.group_multi_company" />
-									<field name="dep_Side" options="{'no_create': True}" />
-									<field name="dep_city" options="{'no_create': True}" />
+									<field name="dep_Side" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									<field name="dep_city" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								</group>
 
 							</group>
@@ -93,17 +93,17 @@
 							<group>
 								<li>
 									المسؤول:
-									<field name="manager_id" />
+									<field name="manager_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 
 								</li>
 								<li>
 									المدينة:
-									<field name="dep_city" />
+									<field name="dep_city" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 
 								</li>
 								<li>
 									الجهة:
-									<field name="dep_Side" />
+									<field name="dep_Side" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 
 								</li>
 
