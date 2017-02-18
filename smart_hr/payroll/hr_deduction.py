@@ -103,6 +103,7 @@ class hrDeductionLine(models.Model):
     deduction_type_id = fields.Many2one('hr.deduction.type', string='نوع الحسم', required=1)
     amount = fields.Char(string='عدد أيام الحسم', required=1)
     month = fields.Selection(MONTHS, related='deduction_id.month', store=True, readonly=True, string='الشهر')
+    hr_sanction_ligne_id = fields.Many2one('hr.sanction.ligne', string='العقوبة')
     # do the store=True
     deduction_state = fields.Selection(related='deduction_id.state', store=True, string='الحالة')
     state = fields.Selection([('waiting', 'في إنتظار الحسم'),
@@ -128,7 +129,7 @@ class hrDeductionType(models.Model):
 
     name = fields.Char(string=' الوصف', required=1)
     code = fields.Char(string='الرمز', required=1)
-    type = fields.Selection([('retard_leave', 'تأخير وخروج'), ('absence', 'غياب')], string='النوع', required=1)
+    type = fields.Selection([('retard_leave', 'تأخير وخروج'), ('absence', 'غياب'), ('sanction', 'عقوبة')], string='النوع', required=1)
 
     @api.multi
     def name_get(self):

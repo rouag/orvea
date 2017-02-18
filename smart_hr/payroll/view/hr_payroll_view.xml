@@ -15,8 +15,10 @@
                     <field name="number" string="التسلسل"/>
                     <field name="employee_id"/>
                     <field name="name" string="المسمى"/>
-                    <field name="date_from"/>
-                    <field name="date_to"/>
+                    <field name="month"/>
+                    <field name="date_from" invisible='1'/>
+                    <field name="date_to"  invisible='1'/>
+                    <field name="salary_net"/>
                     <field name="state"/>
                     <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
                     <field name="payslip_run_id" invisible="1"/>
@@ -204,9 +206,11 @@
 			<field name="arch" type="xml">
 				<tree string="مسيّر جماعي">
 					<field name="name" string="المسمى"/>
-					<field name="date_start" />
-					<field name="date_end" />
+					<field name="date_start" invisible='1' />
+					<field name="date_end"  invisible='1' />
 					<field name="create_date" string="تاريخ الإنشاء" />
+					<field name="month"/>
+					<field name="amount_total"/>
 					<field name="state" />
 				</tree>
 			</field>
@@ -229,12 +233,16 @@
 						 <group>
 						  	<group>
 								<field name="month" />
+								<field name="bank_file" readonly="1" filename="bank_file_name"
+									attrs="{'invisible':[('state','!=','done')]}" />
+								<field name="bank_file_name" invisible="1"  />
 								<label for="date_start" string="الفترة"  invisible="1"/>
 								<div invisible="1">
 									<field name="date_start" class="oe_inline" />
 									-
 									<field name="date_end" class="oe_inline" />
 								</div>
+								
 							</group>
 							<group>
 								 <field name="name"  string="المسمى" />
