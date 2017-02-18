@@ -76,7 +76,7 @@ class HrPayslipDifferenceHistory(models.Model):
     _description = 'الفروقات المتخلدة'
 
     payslip_id = fields.Many2one('hr.payslip', 'Pay Slip', required=1, ondelete='cascade', select=1)
-    employee_id = fields.Many2one(string=u'الموظف')
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف')
     month = fields.Integer(string=u'الشهر')
     amount = fields.Float(string=u'المبلغ المتخلد')
 

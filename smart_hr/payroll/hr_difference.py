@@ -63,6 +63,8 @@ class hrDifference(models.Model):
             line_ids += self.get_difference_suspension()
             # فروقات طى القيد
             line_ids += self.get_difference_termination()
+            # فرق الحسميات أكثر من ثلث الراتب
+            line_ids += self.get_difference_one_third_salary()
             self.line_ids = line_ids
 
     @api.one
@@ -316,7 +318,6 @@ class hrDifference(models.Model):
                 allowance_ids = grid_id.allowance_ids
                 reward_ids = grid_id.reward_ids
                 indemnity_ids = grid_id.indemnity_ids
-                print 'indemnity_ids', indemnity_ids
                 # راتب
                 if assign_id.give_salary:
                     amount = grid_id.basic_salary
@@ -551,7 +552,6 @@ class hrDifference(models.Model):
                                                              ('date', '<=', self.date_to),
                                                              ('state', '=', 'done')
                                                              ])
-        print '-----termination_ids------', termination_ids
         for termination in termination_ids:
             grid_id = termination.employee_id.salary_grid_id
             # سعودي
@@ -571,12 +571,10 @@ class hrDifference(models.Model):
             sum_days = 0
             for rec in termination.employee_id.holidays_balance:
                 sum_days += rec.holidays_available_stock
-            print '-----sum_days holidays-----', sum_days
             # 2) الإجازة
             if not termination.termination_type_id.all_holidays and sum_days >= termination.termination_type_id.max_days:
                 if grid_id:
                     amount = (grid_id.basic_salary / 22) * (termination.termination_type_id.max_days)
-                    print '---grid_id.basic_salary-----', grid_id.basic_salary
                     vals = {'difference_id': self.id,
                             'name': 'رصيد إجازة (طي القيد)',
                             'employee_id': termination.employee_id.id,
@@ -588,7 +586,6 @@ class hrDifference(models.Model):
             if termination.termination_type_id.all_holidays and sum_days > 0:
                 if grid_id:
                     amount = (grid_id.basic_salary / 22) * (sum_days)
-                    print '---grid_id.basic_salary-----', grid_id.basic_salary
                     vals = {'difference_id': self.id,
                             'name': 'رصيد إجازة (طي القيد)',
                             'employee_id': termination.employee_id.id,
@@ -597,6 +594,28 @@ class hrDifference(models.Model):
                             'amount': (amount),
                             'type': 'termination'}
                     line_ids.append(vals)
+        return line_ids
+
+    @api.multi
+    def get_difference_one_third_salary(self):
+        self.ensure_one()
+        line_ids = []
+        print fields.Date.from_string(self.date_from).month
+        difference_history_ids = self.env['hr.payslip.difference.history'].search([('month', '=', fields.Date.from_string(self.date_from).month)])
+        print '------difference_history_ids-----', difference_history_ids
+        for difference_history in difference_history_ids:
+            
+            print difference_history.employee_id
+            grid_id = difference_history.employee_id.salary_grid_id
+            if grid_id:
+                vals = {'difference_id': self.id,
+                        'name': 'فرق الحسميات أكثر من ثلث الراتب',
+                        'employee_id': difference_history.employee_id.id,
+                        'number_of_days': 0.0,
+                        'number_of_hours': 0.0,
+                        'amount': (difference_history.amount),
+                        'type': 'one_third_salary'}
+                line_ids.append(vals)
         return line_ids
 
 
@@ -627,4 +646,5 @@ class hrDifferenceLine(models.Model):
                              ('overtime', 'خارج الدوام'),
                              ('suspension', 'كف اليد'),
                              ('transfert', 'نقل'),
+                             ('one_third_salary', 'ثلث راتب'),
                              ('training', 'تدريب')], string='النوع', readonly=1)
