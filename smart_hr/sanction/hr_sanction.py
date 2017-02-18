@@ -15,7 +15,7 @@ class hrSanction(models.Model):
     name = fields.Char(string='رقم القرار', required=1, readonly=1, states={'draft': [('readonly', 0)]})
     order_date = fields.Date(string='تاريخ العقوبة', default=fields.Datetime.now(), readonly=1)
     sanction_text = fields.Text(string=u'محتوى العقوبة', readonly=1, states={'draft': [('readonly', 0)]})
-    order_picture = fields.Binary(string='صورة القرار', required=1, readonly=1, states={'draft': [('readonly', 0)]}, attachment=True)
+    order_pictur = fields.Binary(string='صورة القرار', required=1, readonly=1, states={'draft': [('readonly', 0)]}, attachment=True)
     order_picture_name = fields.Char(string='صورة القرار', readonly=1, states={'draft': [('readonly', 0)]})
     type_sanction = fields.Many2one('hr.type.sanction', string=u' نوع العقوبة ', required=1, readonly=1, states={'draft': [('readonly', 0)]})
     date_sanction_start = fields.Date(string='تاريخ بدأ العقوبة', readonly=1, states={'draft': [('readonly', 0)]})
