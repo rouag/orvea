@@ -241,6 +241,7 @@ class HrPayslip(models.Model):
         :param employee_id:
         :param month:
         '''
+        print '-----month-----', month
         deduction_ids = self.env['hr.deduction.line'].search([('state', '=', 'waiting'),
                                                               ('employee_id', '=', employee_id),
                                                               ('month', '=', month)])
@@ -397,6 +398,7 @@ class HrPayslip(models.Model):
             retard_leave_days = 0
             absence_days = 0
             holiday_days = 0
+            sanction_days = 0
 
             for line in payslip.days_off_line_ids:
                 if line.type == 'retard_leave':
@@ -405,6 +407,8 @@ class HrPayslip(models.Model):
                     absence_days += line.number_of_days
                 elif line.type == 'holiday':
                     holiday_days += line.number_of_days
+                elif line.type == 'sanction':
+                    sanction_days += line.number_of_days
 
             # get number of days by month
             worked_days_line_ids, leaves = self.get_worked_day_lines_without_contract(employee.id, employee.calendar_id, payslip.date_from, payslip.date_to, False)
@@ -438,6 +442,22 @@ class HrPayslip(models.Model):
                                     }
                 lines.append(retard_leave_val)
                 deduction_total += deduction_absence
+                sequence += 1
+            # عقوبة
+            print '-----------sanction_days--------', sanction_days
+            if sanction_days:
+                deduction_sanction = (basic_salary + allowance_total) / days_by_month * sanction_days
+                sanction_val = {'name': u'عقوبة',
+                                'slip_id': payslip.id,
+                                'employee_id': employee.id,
+                                'rate': sanction_days,
+                                'amount': deduction_sanction,
+                                'category': 'deduction',
+                                'type': 'sanction',
+                                'sequence': sequence
+                                }
+                lines.append(sanction_val)
+                deduction_total += deduction_sanction
                 sequence += 1
             # 5- القروض
             loans = loan_obj.get_loan_employee_month(payslip.month, employee.id)
@@ -558,6 +578,7 @@ class HrPayslipLine(models.Model):
                              ('retirement', 'التقاعد'),
                              ('insurance', 'التأمين'),
                              ('salary_net', 'صافي الراتب'),
+                             ('sanction', 'عقوبة')
                              ], string='النوع', select=1, readonly=1)
 
 
@@ -570,7 +591,7 @@ class HrPayslipDaysOff(models.Model):
     code = fields.Char('الرمز', required=0)
     number_of_days = fields.Float('عدد الأيام')
     number_of_hours = fields.Float('عدد الساعات')
-    type = fields.Selection([('retard_leave', 'تأخير وخروج'), ('absence', 'غياب'), ('holiday', 'إجازة')], string='النوع', required=1)
+    type = fields.Selection([('retard_leave', 'تأخير وخروج'), ('absence', 'غياب'), ('holiday', 'إجازة'), ('sanction', 'عقوبة')], string='النوع', required=1)
 
 
 class HrSalaryRule(models.Model):
