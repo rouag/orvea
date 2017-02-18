@@ -133,7 +133,7 @@
 							<group>
 								<field name="name" />
 								<field name="order_date" />
-								<field name="order_pictur" filename="order_picture_name" />
+								<field name="order_picture" filename="order_picture_name" />
 							</group>
 							<group>
 								<field name="type_sanction"  widget="selection" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
