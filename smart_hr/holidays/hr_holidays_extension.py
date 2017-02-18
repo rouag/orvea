@@ -32,7 +32,7 @@ class HrHolidaysExtension(models.Model):
     open_period = fields.Many2one('hr.holidays.periode', string=u'periode')
     num_decision = fields.Char(string=u'رقم القرار')
     date_decision = fields.Date(string=u'تاريخ القرار')
-    decision_file = fields.Binary(string=u'القرار')
+    decision_file = fields.Binary(string=u'القرار', attachment=True)
     decision_file_name = fields.Char(string=u'file name')
     
     
@@ -117,7 +117,7 @@ class HrHolidaysExtension(models.Model):
                                                   'notif': True,
                                                   'res_id': self.id,
                                                   'res_action':' smart_hr.action_hr_holidays_extension_form',
-})
+                                                  })
                 
             extension.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"'")
 

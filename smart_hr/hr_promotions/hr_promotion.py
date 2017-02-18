@@ -19,13 +19,13 @@ class hr_promotion(models.Model):
     date_reponse_employee = fields.Date(string=u'تاريخ الأقصى لموافقة الموظف ',)
     speech_number = fields.Char(string=u'رقم الخطاب')
     speech_date = fields.Date(string=u'تاريخ الخطاب')
-    speech_file = fields.Binary(string=u'نسخة الخطاب')
+    speech_file = fields.Binary(string=u'نسخة الخطاب', attachment=True)
     data_name_speech = fields.Char(string='الملف')
 
     decision_number = fields.Char(string=u'رقم قرار الترقية')
     message=fields.Char(string=u'سبب الرفض')
     dicision_date = fields.Date(string=u'تاريخ القرار')
-    dicision_file = fields.Binary(string=u'نسخة القرار')
+    dicision_file = fields.Binary(string=u'نسخة القرار', attachment=True)
     data_name_decision = fields.Char(string='الملف')
 
     employee_promotion_line_ids = fields.One2many('hr.promotion.employee', 'promotion_id', string=' قائمة الموظفين',)

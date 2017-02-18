@@ -25,11 +25,11 @@ class HrOvertime(models.Model):
     line_ids = fields.One2many('hr.overtime.ligne', 'overtime_id', string=u'خارج دوام',readonly=1, states={'draft': [('readonly', 0)]})
     decision_number = fields.Char(string='رقم القرار')
     decision_date = fields.Date(string='تاريخ القرار', default=fields.Datetime.now(), readonly=1)
-    file_decision = fields.Binary(string='صورة القرار')
+    file_decision = fields.Binary(string='صورة القرار', attachment=True)
     file_decision_name = fields.Char(string='صورة القرار')
     lettre_number = fields.Char(string='رقم خطاب التغطية')
     lettre_date = fields.Date(string='تاريخ خطاب التغطية', default=fields.Datetime.now(), readonly=1)
-    file_lettre = fields.Binary(string='نسخة خطاب التغطية')
+    file_lettre = fields.Binary(string='نسخة خطاب التغطية', attachment=True)
     file_lettre_name = fields.Char(string='نسخة خطاب التغطية')
     state = fields.Selection([
                               ('draft', u'طلب'),

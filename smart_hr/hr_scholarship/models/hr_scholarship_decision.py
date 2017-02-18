@@ -22,7 +22,7 @@ class HrScholarshipDecision(models.Model):
     scholarship_ids = fields.Many2many('hr.scholarship', string=u'الابتعاث', required=True)
     order_number = fields.Char(string=u'رقم الخطاب', required=1)
     order_date = fields.Date(string=u'تاريخ الخطاب', required=1) 
-    file_decision = fields.Binary(string=u'الخطاب', required=1)
+    file_decision = fields.Binary(string=u'الخطاب', required=1, attachment=True)
     file_decision_name = fields.Char(string=u'اسم الخطاب')
     order_source = fields.Char(string=u'مصدر الخطاب' , required=1)
     note = fields.Text(string='ملاحظات')

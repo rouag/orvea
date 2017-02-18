@@ -69,6 +69,8 @@ class hrDeduction(models.Model):
                     val_absence = val.copy()
                     val_absence.update({'amount': summary.days_absence, 'deduction_type_id': absence_type.id})
                     line_ids.append(val_absence)
+            # العقوبات
+            line_ids += self.deduction_sanctions()
             self.line_ids = line_ids
 
     @api.one
@@ -89,6 +91,30 @@ class hrDeduction(models.Model):
         self.state = 'cancel'
         for line in self.line_ids:
             line.state = 'cancel'
+
+    @api.multi
+    def deduction_sanctions(self):
+        line_ids = []
+        sanction_line_ids = self.env['hr.sanction.ligne'].search([('sanction_id.date_sanction_start', '>=', self.date_from),
+                                                                  ('sanction_id.date_sanction_start', '<=', self.date_to),
+                                                                  ('sanction_id.type_sanction.deduction', '=', True),
+                                                                  ('sanction_id.state', '=', 'done')
+                                                                  ])
+        deduction_type_obj = self.env['hr.deduction.type']
+        sanction_deduction_type = deduction_type_obj.search([('type', '=', 'sanction')], limit=1)
+        if sanction_deduction_type:
+            for line in sanction_line_ids:
+                vals = {'deduction_id': self.id,
+                        'employee_id': line.employee_id.id,
+                        'department_id': line.employee_id.department_id and line.employee_id.department_id.id or False,
+                        'job_id': line.employee_id.job_id and line.employee_id.job_id.id or False,
+                        'number': line.employee_id.number,
+                        'amount': line.days_number,
+                        'deduction_type_id': sanction_deduction_type.id,
+                        'state': 'waiting'
+                        }
+                line_ids.append(vals)
+        return line_ids
 
 
 class hrDeductionLine(models.Model):

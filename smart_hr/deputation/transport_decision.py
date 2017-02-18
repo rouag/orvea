@@ -23,7 +23,7 @@ class HrTransportDecision(models.Model):
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', store=True, readonly=1)
     note = fields.Text(string=u'الملاحظات', readonly=1, states={'draft': [('readonly', 0)]})
     date_decision = fields.Date(string='تاريخ قرار ')
-    file_decision = fields.Binary(string='صورة قرار ')
+    file_decision = fields.Binary(string='صورة قرار ', attachment=True)
     airline = fields.Char(string='الخطوط الجوية أو مكتب السفريات')
     state = fields.Selection([
                               ('draft', u'طلب'),

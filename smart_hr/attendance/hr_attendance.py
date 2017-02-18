@@ -85,7 +85,7 @@ class HrAttendanceImport(models.Model):
 
     name = fields.Char(string='المسمى', readonly=1, states={'new': [('readonly', 0)]})
     description = fields.Text(string=' ملاحظات ', readonly=1, states={'new': [('readonly', 0)]})
-    data = fields.Binary(string='الملف', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    data = fields.Binary(string='الملف', required=1, readonly=1, states={'new': [('readonly', 0)]}, attachment=True)
     data_name = fields.Char(string='الملف')
     create_uid = fields.Many2one('res.users', 'المستخدم', readonly=1)
     create_date = fields.Datetime(string='التاريخ', readonly=1, states={'new': [('readonly', 0)]})
