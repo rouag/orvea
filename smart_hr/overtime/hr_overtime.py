@@ -20,9 +20,6 @@ class HrOvertime(models.Model):
     _description = u'إجراء خارج دوام'
 
     order_date = fields.Date(string='تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
-    file_order = fields.Binary(string='صورة الطلب')
-    
-   
     amount = fields.Float(string='المبلغ')
     note = fields.Text(string=u'الملاحظات', readonly=1, states={'draft': [('readonly', 0)]})
     line_ids = fields.One2many('hr.overtime.ligne', 'overtime_id', string=u'خارج دوام',readonly=1, states={'draft': [('readonly', 0)]})

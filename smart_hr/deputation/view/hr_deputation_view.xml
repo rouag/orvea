@@ -174,16 +174,7 @@
 										<field name="file_lettre" filename="file_lettre_name"
 											attrs="{'invisible':[('state', 'not in', [ 'humain','finish'])],'required':[ ('state','=','humain')],'readonly':[('state', 'in', ['finish'])]}" />
 
-										<!-- <field name="lettre_number" attrs="{'invisible':['|',('secret_report', 
-											'=', True),('state', 'not in', [ 'humain','finish'])],'required':[('secret_report', 
-											'=', True),('state','=','humain')],'readonly':[('state', 'in', ['finish'])]}" 
-											groups="smart_hr.group_exelence_employee"/> <field name="lettre_date" attrs="{'invisible':['|',('secret_report', 
-											'=', True),('state', 'not in', ['humain','finish'])],'required':[('secret_report', 
-											'=', True),('state','=','humain')],'readonly':[('state', 'in', ['finish'])]}" 
-											groups="smart_hr.group_exelence_employee"/> <field name="file_lettre" filename="file_lettre_name" 
-											attrs="{'invisible':['|',('secret_report', '=', True),('state', 'not in', 
-											[ 'humain','finish'])],'required':[('secret_report', '=', True),('state','=','humain')],'readonly':[('state', 
-											'in', ['finish'])]}" groups="smart_hr.group_exelence_employee"/> -->
+							
 
 										<field name="file_decision_name" invisible="1" />
 										<field name="ministre_report" invisible="1" />
