@@ -8,6 +8,8 @@ from datetime import timedelta
 from openerp.addons.smart_base.util.umalqurra import *
 from umalqurra.hijri_date import HijriDate
 from umalqurra.hijri import Umalqurra
+from tempfile import TemporaryFile
+import base64
 
 
 class HrPayslipRun(models.Model):
@@ -18,8 +20,8 @@ class HrPayslipRun(models.Model):
     def get_default_month(self):
         return get_current_month_hijri(HijriDate)
 
-    month = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=get_default_month)
-    employee_ids = fields.Many2many('hr.employee', string='الموظفين')
+    month = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'draft': [('readonly', 0)]}, default=get_default_month)
+    employee_ids = fields.Many2many('hr.employee', string='الموظفين', readonly=1, states={'draft': [('readonly', 0)]})
     state = fields.Selection([('draft', 'مسودة'),
                               ('verify', 'في إنتظار الإعتماد'),
                               ('done', 'تم'),
@@ -30,6 +32,8 @@ class HrPayslipRun(models.Model):
     @api.onchange('month')
     def onchange_month(self):
         if self.month:
+            self.date_start = get_hijri_month_start(HijriDate, Umalqurra, self.month)
+            self.date_end = get_hijri_month_end(HijriDate, Umalqurra, self.month)
             self.name = u'مسير جماعي  شهر %s' % self.month
 
     @api.one
@@ -37,37 +41,33 @@ class HrPayslipRun(models.Model):
         self.state = 'verify'
         for slip in self.slip_ids:
             if slip.state == 'draft':
-                slip.state = 'verify'
+                slip.action_verify()
 
     @api.one
     def action_done(self):
         self.state = 'done'
         for slip in self.slip_ids:
-            slip.state = 'done'
+            slip.action_done()
 
     @api.one
     def action_cancel(self):
         self.state = 'cancel'
         for slip in self.slip_ids:
-            slip.state = 'cancel'
+            slip.action_cancel()
 
     @api.multi
     def compute_sheet(self):
-        print '----new compute_sheet ---------'
         payslip_obj = self.env['hr.payslip']
         for employee in self.employee_ids:
-            # get value onchange_employee
-            payslip_val = {
-                         'employee_id': employee.id,
-                         'month': self.month,
-                        'name': _('راتب موظف %s لشهر %s') % (employee.name, self.month),
-                        'payslip_run_id': self.id,
-                        'input_line_ids': False,  # [(0, 0, x) for x in slip_data['value'].get('input_line_ids', False)],
-                        'worked_days_line_ids':False,  # ,[(0, 0, x) for x in slip_data['value'].get('worked_days_line_ids', False)],
-                        'date_from': self.date_start,
-                        'date_to': self.date_end,
-                         }
+            payslip_val = {'employee_id': employee.id,
+                           'month': self.month,
+                           'name': _('راتب موظف %s لشهر %s') % (employee.name, self.month),
+                           'payslip_run_id': self.id,
+                           'date_from': self.date_start,
+                           'date_to': self.date_end
+                           }
             payslip = payslip_obj.create(payslip_val)
+            payslip.onchange_employee()
             payslip.compute_sheet()
 
 
@@ -80,7 +80,7 @@ class HrPayslip(models.Model):
 
     # TODO: generate التسلسل
 
-    month = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=get_default_month)
+    month = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'draft': [('readonly', 0)]}, default=get_default_month)
     days_off_line_ids = fields.One2many('hr.payslip.days_off', 'payslip_id', 'الإجازات والغيابات', readonly=True, states={'draft': [('readonly', False)]})
     state = fields.Selection([('draft', 'مسودة'),
                               ('verify', 'في إنتظار الإعتماد'),
@@ -90,6 +90,7 @@ class HrPayslip(models.Model):
 
     @api.one
     def action_verify(self):
+        self.number = self.env['ir.sequence'].get('seq.hr.payslip')
         self.state = 'verify'
 
     @api.one
@@ -107,11 +108,8 @@ class HrPayslip(models.Model):
         if (not self.employee_id) or (not self.date_from) or (not self.date_to):
             return
         employee_id = self.employee_id
-        date_from = self.date_from
-        date_to = self.date_to
-        # get name fo month
-        # ttyme = datetime.fromtimestamp(time.mktime(time.strptime(date_from, "%Y-%m-%d")))
-        # tools.ustr(ttyme.strftime('%B-%Y')
+        self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.month)
+        self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.month)
         self.name = _('راتب موظف %s لشهر %s') % (employee_id.name, self.month)
         self.company_id = employee_id.company_id
         # computation of أيام العمل

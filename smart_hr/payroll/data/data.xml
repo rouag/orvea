@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data noupdate="0">
+	
+		<record id="seq_hr_payslip" model="ir.sequence">
+			<field name="name">seq.hr.payslip</field>
+			<field name="code">seq.hr.payslip</field>
+			<field name="prefix"></field>
+			<field name="padding">4</field>
+		</record>	
+	
 		<!-- البدلات -->
 
 		<record id="hr_allowance_type_01" model="hr.allowance.type">
@@ -149,7 +157,7 @@
 			<field name="code">NET</field>
 		</record>
 
-		<!-- قواعد إحتساب الرواتب -->
+		<!-- قواعد إحتساب الرواتب 
 
 		<record id="hr_rule_basic" model="hr.salary.rule">
 			<field name="name">الراتب الأساسي</field>
@@ -245,9 +253,9 @@
 			<field name="amount_python_compute">result = categories.BASIC + categories.ALW +
 				categories.REW + categories.INDE + categories.DED + categories.INS
 			</field>
-		</record>
+		</record> -->
 
-		<!-- هياكل الرواتب -->
+		<!-- هياكل الرواتب 
 
 		<record id="structure_base_hr" model="hr.payroll.structure">
 			<field name="code">BASE-HR</field>
@@ -256,7 +264,7 @@
 				eval="[(6, 0, [ref('hr_rule_basic'), ref('hr_rule_allowance_transport'),ref('hr_rule_allowance_house'),ref('hr_rule_reward'),ref('hr_rule_indemnity'),ref('hr_rule_total'),ref('hr_rule_deduction'),ref('hr_rule_insurance'),ref('hr_rule_net')])]"
 				name="rule_ids" />
 			<field name="company_id" ref="base.main_company" />
-		</record>
+		</record> -->
 
 		<!-- أنواع الحسميات -->
 
