@@ -5,26 +5,20 @@ from openerp import models, fields, api, tools, _
 import openerp.addons.decimal_precision as dp
 from datetime import datetime
 from datetime import timedelta
-
-MONTHS = [('01', 'محرّم'),
-          ('02', 'صفر'),
-          ('03', 'ربيع الأول'),
-          ('04', 'ربيع الثاني'),
-          ('05', 'جمادي الأولى'),
-          ('06', 'جمادي الآخرة'),
-          ('07', 'رجب'),
-          ('08', 'شعبان'),
-          ('09', 'رمضان'),
-          ('10', 'شوال'),
-          ('11', 'ذو القعدة'),
-          ('12', 'ذو الحجة')]
+from openerp.addons.smart_base.util.umalqurra import *
+from umalqurra.hijri_date import HijriDate
+from umalqurra.hijri import Umalqurra
 
 
 class HrPayslipRun(models.Model):
     _name = 'hr.payslip.run'
     _inherit = ['hr.payslip.run', 'mail.thread']
 
-    month = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'draft': [('readonly', 0)]})
+    @api.multi
+    def get_default_month(self):
+        return get_current_month_hijri(HijriDate)
+
+    month = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=get_default_month)
     employee_ids = fields.Many2many('hr.employee', string='الموظفين')
     state = fields.Selection([('draft', 'مسودة'),
                               ('verify', 'في إنتظار الإعتماد'),
@@ -80,9 +74,13 @@ class HrPayslipRun(models.Model):
 class HrPayslip(models.Model):
     _inherit = 'hr.payslip'
 
+    @api.multi
+    def get_default_month(self):
+        return get_current_month_hijri(HijriDate)
+
     # TODO: generate التسلسل
 
-    month = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'draft': [('readonly', 0)]})
+    month = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=get_default_month)
     days_off_line_ids = fields.One2many('hr.payslip.days_off', 'payslip_id', 'الإجازات والغيابات', readonly=True, states={'draft': [('readonly', False)]})
     state = fields.Selection([('draft', 'مسودة'),
                               ('verify', 'في إنتظار الإعتماد'),

@@ -5,6 +5,7 @@
     'version': '9.0.1.0',
     'author': 'SMART-ETEK',
     'summary': 'HR',
+    'external_dependencies': {'python': ['umalqurra']},
     'description':
         """
         """,

@@ -21,5 +21,6 @@
         'views/assets.xml',
              ],
     'qweb': ['static/src/xml/*.xml'],
+    'external_dependencies': {'python': ['umalqurra']},
     'auto_install': False,
 }

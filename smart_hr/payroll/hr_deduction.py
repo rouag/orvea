@@ -5,19 +5,9 @@ from openerp.exceptions import ValidationError
 from dateutil import relativedelta
 import time as time_date
 from datetime import datetime
-
-MONTHS = [('01', 'محرّم'),
-          ('02', 'صفر'),
-          ('03', 'ربيع الأول'),
-          ('04', 'ربيع الثاني'),
-          ('05', 'جمادي الأولى'),
-          ('06', 'جمادي الآخرة'),
-          ('07', 'رجب'),
-          ('08', 'شعبان'),
-          ('09', 'رمضان'),
-          ('10', 'شوال'),
-          ('11', 'ذو القعدة'),
-          ('12', 'ذو الحجة')]
+from openerp.addons.smart_base.util.umalqurra import *
+from umalqurra.hijri_date import HijriDate
+from umalqurra.hijri import Umalqurra
 
 
 class hrDeduction(models.Model):
@@ -26,9 +16,13 @@ class hrDeduction(models.Model):
     _order = 'id desc'
     _description = u'الحسميات'
 
+    @api.multi
+    def get_default_month(self):
+        return get_current_month_hijri(HijriDate)
+
     name = fields.Char(string=' المسمى', required=1, readonly=1, states={'new': [('readonly', 0)]})
     # TODO: get default MONTH
-    month = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    month = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=get_default_month)
     date = fields.Date(string='تاريخ الإنشاء', required=1, default=fields.Datetime.now(), readonly=1, states={'new': [('readonly', 0)]})
     date_from = fields.Date('تاريخ من', default=lambda *a: time_date.strftime('%Y-%m-01'),
                             readonly=1, states={'new': [('readonly', 0)]})
@@ -46,6 +40,8 @@ class hrDeduction(models.Model):
     @api.onchange('month')
     def onchange_month(self):
         if self.month:
+            self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.month)
+            self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.month)
             self.name = u'حسميات شهر %s' % self.month
             line_ids = []
             # delete current line
