@@ -77,13 +77,15 @@
 									attrs="{'invisible':[('state', 'not in', [ 'humain','done','finish'])],'required':[('state','=','humain')],'readonly':[('state', 'in', ['done','finish'])]}" />
 								<field name="decision_date"
 									attrs="{'invisible':[('state', 'not in', [ 'humain','done','finish'])],'required':[('state','=','humain')],'readonly':[('state', 'in', ['done','finish'])]}" />
-								<field name="file_decision" filename="file_decision_name"
+								
+								<field name="file_decision" filename="file_decision_name"  
 									attrs="{'invisible':[('state', 'not in', [ 'humain','done','finish'])],'required':[('state','=','humain')],'readonly':[('state', 'in', ['done','finish'])]}" />
 
 								<field name="lettre_number"
 									attrs="{'invisible':[('state', 'not in', [ 'humain','done','finish'])],'required':[('state','=','humain')],'readonly':[('state', 'in', ['done','finish'])]}" />
 								<field name="lettre_date"
 									attrs="{'invisible':[('state', 'not in', [ 'humain','done','finish'])],'required':[('state','=','humain')],'readonly':[('state', 'in', ['done','finish'])]}" />
+								
 								<field name="file_lettre" filename="file_lettre_name"
 									attrs="{'invisible':[('state', 'not in', ['humain','done','finish'])],'required':[('state','=','humain')],'readonly':[('state', 'in', ['done','finish'])]}" />
 

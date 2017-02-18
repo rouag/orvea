@@ -91,7 +91,10 @@
 			<field name="arch" type="xml">
 				<xpath expr="/tree" position='replace'>
 					<tree string="طلبات بيانات موظف">
-						<field name="name" />
+						<field name="name" position="after">
+							<field name="display_name" />
+						</field>
+						<field name="number" />
 						<field name="employee_state" />
 					</tree>
 				</xpath>
@@ -398,8 +401,8 @@
 			<field name="inherit_id" ref="hr.view_employee_form" />
 			<field name="arch" type="xml">
 				<xpath expr="//div[@name='button_box']" position="inside">
-					<button name="%(hr_appraisal.open_view_hr_appraisal_tree2)d" class="oe_inline oe_stat_button"
-						icon="fa-sitemap" type="action">
+					<button name="%(hr_appraisal.open_view_hr_appraisal_tree2)d"
+						class="oe_inline oe_stat_button" icon="fa-sitemap" type="action">
 						<field name="appraisal_count" widget="statinfo" />
 					</button>
 				</xpath>
