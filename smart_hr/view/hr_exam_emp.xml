@@ -69,7 +69,7 @@
 					<sheet>
 						<group col="6">
 							<field name="employee"
-								domain="['|',('state','=','employee'),('state','=','done'), ('job_id','!=',False)]" />
+								domain="['|',('state','=','employee'),('state','=','done'), ('job_id','!=',False)]"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 							<field name="hospital" domain="[('company_type','=','hospital')]" />
 							<field name="exam_date" />
 

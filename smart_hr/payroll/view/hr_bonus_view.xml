@@ -42,7 +42,7 @@
 								<field name="name" />
 								<field name="date" />
 								<field name="type" />
-								<field name="allowance_id"
+								<field name="allowance_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 									attrs="{'invisible':[('type','!=','allowance')], 'required': [('type','=','allowance')]}" />
 								<field name="reward_id"
 									attrs="{'invisible':[('type','!=','reward')], 'required': [('type','=','reward')]}" />

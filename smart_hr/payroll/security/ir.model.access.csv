@@ -46,3 +46,4 @@ access_hr_difference_all,name_hr_difference_all,model_hr_difference,,1,0,0,0
 access_hr_difference_manager,name_hr_difference_manager,model_hr_difference,group_difference_management,1,1,1,0
 access_hr_difference_line_all,name_hr_difference_line_all,model_hr_difference_line,,1,0,0,0
 access_hr_difference_line_manager,name_hr_difference_line_manager,model_hr_difference_line,group_difference_management,1,1,1,0
+access_hr_payslip_difference_history, name_hr_payslip_difference_history,model_hr_payslip_difference_history,,1,1,1,1

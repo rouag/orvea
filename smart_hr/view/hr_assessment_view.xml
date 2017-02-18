@@ -54,10 +54,10 @@
 							<h1>
 								<field name="name" readonly="1" />
 							</h1>
-							<label for="employee_id" class="oe_edit_only" />
+							<label for="employee_id" class="oe_edit_only"  />
 							<h1>
 								<field name="employee_id" required="1"
-									attrs="{'readonly':[('state','!=','draft')]}" />
+									attrs="{'readonly':[('state','!=','draft')]}" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 							</h1>
 						</div>
 						<group>
@@ -258,7 +258,7 @@
 							<label for="employee_id" class="oe_edit_only" />
 							<h1>
 								<field name="employee_id" required="1"
-									attrs="{'readonly':[('state','!=','draft')]}" />
+									attrs="{'readonly':[('state','!=','draft')]}" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 							</h1>
 						</div>
 						<group>
@@ -385,10 +385,10 @@
 							<h1>
 								<field name="name" readonly="1" />
 							</h1>
-							<label for="employee_id" class="oe_edit_only" />
+							<label for="employee_id" class="oe_edit_only"  />
 							<h1>
 								<field name="employee_id" required="1"
-									attrs="{'readonly':[('state','!=','draft')]}" />
+									attrs="{'readonly':[('state','!=','draft')]}" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 							</h1>
 						</div>
 						<group>
@@ -635,7 +635,7 @@
 							<label for="employee_id" class="oe_edit_only" />
 							<h1>
 								<field name="employee_id" required="1"
-									attrs="{'readonly':[('state','!=','draft')]}" />
+									attrs="{'readonly':[('state','!=','draft')]}" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 							</h1>
 						</div>
 						<group>
@@ -938,10 +938,10 @@
 							<h1>
 								<field name="name" readonly="1" />
 							</h1>
-							<label for="employee_id" class="oe_edit_only" />
+							<label for="employee_id" class="oe_edit_only"  />
 							<h1>
 								<field name="employee_id" required="1"
-									attrs="{'readonly':[('state','!=','draft')]}" />
+									attrs="{'readonly':[('state','!=','draft')]}"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 							</h1>
 						</div>
 						<group>

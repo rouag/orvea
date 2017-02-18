@@ -29,9 +29,9 @@
 						</group>
 						<group>
 							<group string="بيانات الموظف">
-								<field name="employee_id" attrs="{'readonly':[('state','!=','new')]}"/>
+								<field name="employee_id" attrs="{'readonly':[('state','!=','new')]}" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 								<field name="number" />
-								<field name="job_id" />
+								<field name="job_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="department_id" />
 
 							</group>

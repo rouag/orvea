@@ -28,7 +28,7 @@
 						</h1>
 						<group>
 							<field name="date" readonly="1" />
-							<field name="employee_id" required="1" />
+							<field name="employee_id" required="1" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 						</group>
 						<group>
 							<group string="معلومات الموظف">

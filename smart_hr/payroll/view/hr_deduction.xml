@@ -64,11 +64,11 @@
 								<group>
 									<field name="line_ids" nolabel="1">
 										<tree editable="bottom">
-											<field name="employee_id" />
+											<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 											<field name="number" invisible="1" />
 											<field name="job_id" invisible="1" />
 											<field name="department_id" invisible="1" />
-											<field name="deduction_type_id" />
+											<field name="deduction_type_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 											<field name="amount" />
 											<field name="deduction_state" invisible="1" />
 											<field name="state" />

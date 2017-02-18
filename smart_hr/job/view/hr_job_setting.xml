@@ -220,7 +220,7 @@
 							</tree>
 							<form>
 								<group col='2'>
-									<field name="traninig_id" />
+									<field name="traninig_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 									<field name="type" />
 								</group>
 							</form>

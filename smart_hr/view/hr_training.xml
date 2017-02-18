@@ -89,10 +89,10 @@
 						<group string="المترشحين" attrs="{'invisible': [('state', '=', 'new')]}">
 							<field name="line_ids" string="المترشحين" nolabel="1" attrs="{'readonly' :[('state','!=','candidat')]}">
 								<tree string="بيانات الموظف">
-									<field name="employee_id" />
+									<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 									<field name="number" />
-									<field name="job_id" />
-									<field name="department_id" />
+									<field name="job_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+									<field name="department_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 									<field name="state" />
 									<button name="%(action_hr_refuse_training_wizard)d"
 										string="رفض" type="action" class="oe_highlight btn" attrs="{'readonly' :[('state','!=','waiting')]}"
