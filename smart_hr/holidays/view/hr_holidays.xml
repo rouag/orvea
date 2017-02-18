@@ -389,8 +389,8 @@
 
 							<field name="percentages">
 								<tree editable="bottom" string="نسب الراتب المحتسبة">
-									<field name="sequence" required="1" />
-									<field name="periode" required="1" />
+									<field name="month_from" required="1" />
+									<field name="month_to" required="1" />
 									<field name="salary_proportion" required="1" />
 
 								</tree>

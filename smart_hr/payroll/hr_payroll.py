@@ -24,12 +24,19 @@ class HrPayslipRun(models.Model):
     _name = 'hr.payslip.run'
     _inherit = ['hr.payslip.run', 'mail.thread']
 
+    month = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'draft': [('readonly', 0)]})
+    employee_ids = fields.Many2many('hr.employee', string='الموظفين')
     state = fields.Selection([('draft', 'مسودة'),
                               ('verify', 'في إنتظار الإعتماد'),
                               ('done', 'تم'),
                               ('cancel', 'ملغى'),
                               ('close', 'مغلق'),
                               ], 'الحالة', select=1, readonly=1, copy=False)
+
+    @api.onchange('month')
+    def onchange_month(self):
+        if self.month:
+            self.name = u'مسير جماعي  شهر %s' % self.month
 
     @api.one
     def action_verify(self):
@@ -49,6 +56,25 @@ class HrPayslipRun(models.Model):
         self.state = 'cancel'
         for slip in self.slip_ids:
             slip.state = 'cancel'
+
+    @api.multi
+    def compute_sheet(self):
+        print '----new compute_sheet ---------'
+        payslip_obj = self.env['hr.payslip']
+        for employee in self.employee_ids:
+            # get value onchange_employee
+            payslip_val = {
+                         'employee_id': employee.id,
+                         'month': self.month,
+                        'name': _('راتب موظف %s لشهر %s') % (employee.name, self.month),
+                        'payslip_run_id': self.id,
+                        'input_line_ids': False,  # [(0, 0, x) for x in slip_data['value'].get('input_line_ids', False)],
+                        'worked_days_line_ids':False,  # ,[(0, 0, x) for x in slip_data['value'].get('worked_days_line_ids', False)],
+                        'date_from': self.date_start,
+                        'date_to': self.date_end,
+                         }
+            payslip = payslip_obj.create(payslip_val)
+            payslip.compute_sheet()
 
 
 class HrPayslip(models.Model):
@@ -88,7 +114,7 @@ class HrPayslip(models.Model):
         # get name fo month
         # ttyme = datetime.fromtimestamp(time.mktime(time.strptime(date_from, "%Y-%m-%d")))
         # tools.ustr(ttyme.strftime('%B-%Y')
-        self.name = _('راتب الموظف %s للفترة : %s - %s') % (employee_id.name, date_from, date_to)
+        self.name = _('راتب موظف %s لشهر %s') % (employee_id.name, self.month)
         self.company_id = employee_id.company_id
         # computation of أيام العمل
         worked_days_line_ids, leaves = self.get_worked_day_lines_without_contract(self.employee_id.id, self.employee_id.calendar_id, self.date_from, self.date_to)
@@ -197,6 +223,7 @@ class HrPayslip(models.Model):
         salary_grid_obj = self.env['salary.grid.detail']
         bonus_line_obj = self.env['hr.bonus.line']
         loan_obj = self.env['hr.loan']
+        difference_line_obj = self.env['hr.difference.line']
         for payslip in self:
             # delete old line
             payslip.line_ids.unlink()
@@ -216,6 +243,7 @@ class HrPayslip(models.Model):
             sequence = 1
             allowance_total = 0.0
             deduction_total = 0.0
+            difference_total = 0.0
             # 1- الراتب الأساسي
             basic_salary_val = {'name': u'الراتب الأساسي',
                                 'slip_id': payslip.id,
@@ -292,6 +320,21 @@ class HrPayslip(models.Model):
                              }
                 lines.append(bonus_val)
                 allowance_total += bonus_amount
+                sequence += 1
+            # 4 - الفروقات
+            difference_lines = difference_line_obj.search([('employee_id', '=', employee.id), ('difference_id.state', '=', 'done'), ('month', '<=', payslip.month)])
+            for difference in difference_lines:
+                difference_val = {'name': difference.name,
+                                  'slip_id': payslip.id,
+                                  'employee_id': employee.id,
+                                  'rate': 0.0,
+                                  'amount': difference.amount,
+                                  'category': 'difference',
+                                  'type': 'difference',
+                                  'sequence': sequence
+                                  }
+                lines.append(difference_val)
+                difference_total += difference.amount
                 sequence += 1
             # 4- الحسميات
             deduction_retard_leave = 0.0
@@ -384,7 +427,7 @@ class HrPayslip(models.Model):
             deduction_total += insurance_amount
             sequence += 1
             # 0- صافي الراتب
-            salary_net = basic_salary + allowance_total - deduction_total
+            salary_net = basic_salary + allowance_total + difference_total - deduction_total
             salary_net_val = {'name': u'صافي الراتب',
                               'slip_id': payslip.id,
                               'employee_id': employee.id,
@@ -418,6 +461,7 @@ class HrPayslipLine(models.Model):
     # added
     category = fields.Selection([('basic_salary', 'الراتب الأساسي'),
                                  ('allowance', 'البدلات'),
+                                 ('difference', 'فروقات'),
                                  ('deduction', 'الحسميات'),
                                  ('retirement', 'التقاعد'),
                                  ('insurance', 'التأمين'),
@@ -428,6 +472,7 @@ class HrPayslipLine(models.Model):
                              ('allowance', 'البدلات'),
                              ('reward', u'المكافآت‬'),
                              ('indemnity', 'التعويضات'),
+                             ('difference', 'فروقات'),
                              ('retard_leave', 'تأخير وخروج'),
                              ('absence', 'غياب'),
                              ('holiday', 'إجازة'),

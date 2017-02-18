@@ -158,16 +158,20 @@ class HrJobCreate(models.Model):
         self.ensure_one()
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_autority_owner')):
             self.state = 'waiting'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_budg__minis')):
+            self.state = 'budget_external'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm'
         else:
             raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
-
+            
     @api.multi
     def action_hrm(self):
         self.ensure_one()
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
             self.state = 'hrm'
         else:
-            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
+            self.action_done()
         # Add to log
         self.message_post(u"تمت الموافقة من قبل الجهة الخارجية (وزارة المالية)")
 
@@ -176,8 +180,10 @@ class HrJobCreate(models.Model):
         self.ensure_one()
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_budg__minis')):
             self.state = 'budget_external'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm'
         else:
-            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
+            self.action_done()
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
@@ -335,6 +341,12 @@ class HrJobStripFrom(models.Model):
         self.ensure_one()
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_autority_owner')):
             self.state = 'waiting'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm1'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_comm_orig_employer')):
+            self.state = 'communication'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_budg')):
+            self.state = 'external'
         else:
             raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
 
@@ -343,8 +355,12 @@ class HrJobStripFrom(models.Model):
         self.ensure_one()
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
             self.state = 'hrm1'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_comm_orig_employer')):
+            self.state = 'communication'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_budg')):
+            self.state = 'external'
         else:
-            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
+            self.action_done()
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت المصادقة من قبل '" + unicode(user.name) + u"'")
 
@@ -369,8 +385,10 @@ class HrJobStripFrom(models.Model):
         self.ensure_one()
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_comm_orig_employer')):
             self.state = 'communication'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_budg')):
+            self.state = 'external'
         else:
-            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
+            self.action_done()
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"' (إدارة الميزانية)")
@@ -381,7 +399,7 @@ class HrJobStripFrom(models.Model):
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_budg')):
             self.state = 'external'
         else:
-            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
+            self.action_done()
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"' (إدارة الإتصالات)")
@@ -516,16 +534,25 @@ class HrJobStripTo(models.Model):
         self.ensure_one()
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_autority_owner')):
             self.state = 'waiting'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm1'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_budg__comm')):
+            self.state = 'communication_external'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm2'
         else:
             raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
-
     @api.multi
     def action_hrm1(self):
         self.ensure_one()
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
             self.state = 'hrm1'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_budg__comm')):
+            self.state = 'communication_external'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm2'
         else:
-            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
+            self.action_done()
 
     @api.multi
     def action_hrm2(self):
@@ -534,8 +561,12 @@ class HrJobStripTo(models.Model):
             self.state = 'hrm2'
             # Add to log
             self.message_post(u"تمت الموافقة من قبل الجهة الخارجية (وزارة المالية)")
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_budg__comm')):
+            self.state = 'communication_external'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm2'
         else:
-            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
+            self.action_done()
 
     @api.multi
     def action_budget(self):
@@ -550,8 +581,10 @@ class HrJobStripTo(models.Model):
         self.ensure_one()
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_budg__comm')):
             self.state = 'communication_external'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm2'
         else:
-            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
+            self.action_done()
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"' (إدارة الميزانية)")
@@ -738,6 +771,14 @@ class HrJobMoveDeparrtment(models.Model):
         self.ensure_one()
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_autority_owner')):
             self.state = 'waiting'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm1'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_budg_dep')):
+            self.state = 'budget'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_budg__comm')):
+            self.state = 'communication_external'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm2'
         else:
             raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
 
@@ -746,8 +787,14 @@ class HrJobMoveDeparrtment(models.Model):
         self.ensure_one()
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
             self.state = 'hrm1'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_budg_dep')):
+            self.state = 'budget'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_budg__comm')):
+            self.state = 'communication_external'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm2'
         else:
-            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
+            self.action_done()
 
     @api.multi
     def action_budget(self):
@@ -755,16 +802,21 @@ class HrJobMoveDeparrtment(models.Model):
         self.action_job_reserve()
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_budg_dep')):
             self.state = 'budget'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_budg__comm')):
+            self.state = 'communication_external'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm2'
         else:
-            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
-
+            self.action_done()
     @api.multi
     def action_communication(self):
         self.ensure_one()
         if self.check_workflow_state(self.env.ref('smart_hr.work_budget_civil_service')):
             self.state = 'communication_external'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm2'
         else:
-            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
+            self.action_done()
 
     @api.multi
     def action_external(self):
@@ -928,16 +980,29 @@ class HrJobMoveGrade(models.Model):
         self.ensure_one()
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_autority_owner')):
             self.state = 'waiting'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm1'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_budg__minis')):
+            self.state = 'budget_external'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_budg__comm')):
+            self.state = 'communication_external'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm2'
         else:
             raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
-
     @api.multi
     def action_hrm1(self):
         self.ensure_one()
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
             self.state = 'hrm1'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_budg__minis')):
+            self.state = 'budget_external'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_budg__comm')):
+            self.state = 'communication_external'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm2'
         else:
-            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
+            self.action_done()
 
     @api.multi
     def action_budget(self):
@@ -945,8 +1010,12 @@ class HrJobMoveGrade(models.Model):
         self.action_job_reserve()
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_budg__minis')):
             self.state = 'budget_external'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_budg__comm')):
+            self.state = 'communication_external'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm2'
         else:
-            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
+            self.action_done()
 
     @api.multi
     def action_hrm2(self):
@@ -954,7 +1023,7 @@ class HrJobMoveGrade(models.Model):
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
             self.state = 'hrm2'
         else:
-            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
+            self.action_done()
 
     @api.multi
     def action_done(self):
@@ -1141,19 +1210,27 @@ class HrJobMoveUpdate(models.Model):
 
     @api.multi
     def action_waiting(self):
-        self.ensure_one()
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_autority_owner')):
             self.state = 'waiting'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm1'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_budg__minis')):
+            self.state = 'budget_external'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm2'
         else:
             raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
-
     @api.multi
     def action_hrm1(self):
         self.ensure_one()
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
             self.state = 'hrm1'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_budg__minis')):
+            self.state = 'budget_external'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm2'
         else:
-            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
+            self.action_done()
 
     @api.multi
     def action_budget(self):
@@ -1161,8 +1238,10 @@ class HrJobMoveUpdate(models.Model):
         self.action_job_reserve()
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_budg_dep_minis')):
             self.state = 'budget_external'
+        elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
+            self.state = 'hrm2'
         else:
-            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
+            self.action_done()
 
     @api.multi
     def action_hrm2(self):
@@ -1170,7 +1249,7 @@ class HrJobMoveUpdate(models.Model):
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
             self.state = 'hrm2'
         else:
-            raise ValidationError(u"الرجاء التحقق من إعدادات المخطط الإنسيابي.")
+            self.action_done()
 
     @api.multi
     def action_refuse(self):

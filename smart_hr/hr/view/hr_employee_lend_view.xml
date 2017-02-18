@@ -39,6 +39,7 @@
 								<field name="decision_number" />
 								<field name="decision_date" />
 								<field name="decision_file" />
+								<field name="decision_file_name" invisible="1"/>
 							</group>
 						</group>
 					</sheet>
