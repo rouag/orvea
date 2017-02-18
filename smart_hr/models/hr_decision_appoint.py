@@ -409,6 +409,10 @@ class HrDecisionAppoint(models.Model):
             self.employee_id.write({'medical_exam': self.date_medical_examination})
         self.job_id.write({'state': 'occupied', 'employee': self.employee_id.id, 'occupied_date': fields.Datetime.now()})
         self.state = 'done'
+        # set salary grid for the employee
+        salary_grid_id = self.env['salary.grid.detail'].search([('type_id', '=', self.type_id.id), ('grade_id', '=', self.grade_id.id), ('degree_id', '=', self.degree_id.id)], limit=1)
+        if salary_grid_id:
+            self.employee_id.write({'salary_grid_id': salary_grid_id.id})
         # close last active appoint for the employee
         last_appoint = self.employee_id.decision_appoint_ids.search([('state_appoint', '=', 'active'), ('is_started', '=', True)], limit=1)
         if last_appoint:
