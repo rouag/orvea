@@ -31,7 +31,7 @@
 		                    require('web.core').csrf_token = token;
 		                    require('qweb').default_dict.csrf_token = token;
 		                });
-		                odoo.db_info = <t t-raw="db_info"/>;
+		           <!--     odoo.db_info = <t t-raw="db_info"/>; -->
 		            </script>
 <!-- 		            <t t-call-assets="web.assets_backend"/> -->
 		

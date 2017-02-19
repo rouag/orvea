@@ -13,6 +13,7 @@ from openerp.addons.smart_base.util.time_util import time_float_convert
 from openerp.addons.smart_base.util.time_util import float_time_convert_str
 from openerp.addons.smart_base.util.umalqurra import *
 from dateutil import relativedelta
+from umalqurra.hijri import Umalqurra
 
 FORMAT_TIME = '%H:%M:%S'
 
@@ -81,11 +82,13 @@ class HrPlanPresence(models.Model):
 
 class HrAttendanceImport(models.Model):
     _name = 'hr.attendance.import'
+    _description = u'ملف الحضور والإنصراف'
+    _order = 'id desc'
     _inherit = ['mail.thread']
 
     name = fields.Char(string='المسمى', readonly=1, states={'new': [('readonly', 0)]})
     description = fields.Text(string=' ملاحظات ', readonly=1, states={'new': [('readonly', 0)]})
-    data = fields.Binary(string='الملف', required=1, readonly=1, states={'new': [('readonly', 0)]}, attachment=True)
+    data = fields.Binary(string='الملف', required=1, readonly=1, states={'new': [('readonly', 0)]})
     data_name = fields.Char(string='الملف')
     create_uid = fields.Many2one('res.users', 'المستخدم', readonly=1)
     create_date = fields.Datetime(string='التاريخ', readonly=1, states={'new': [('readonly', 0)]})
@@ -102,19 +105,19 @@ class HrAttendanceImport(models.Model):
         month = date_str[1]
         day = date_str[2]
         um = HijriDate(int(year), int(month), int(day), gr=True)
-        if um.day_name_en == 'Monday':
+        if um.day_name_en in ('Monday', 'lundi'):
             day_number = 0
-        elif um.day_name_en == 'Tuesday':
+        elif um.day_name_en in ('Tuesday', 'mardi'):
             day_number = 1
-        elif um.day_name_en == 'mercredi':  # Wednesday
+        elif um.day_name_en in ('Wednesday', 'mercredi'):
             day_number = 2
-        elif um.day_name_en == 'jeudi':  # Thursday
+        elif um.day_name_en in ('Thursday', 'jeudi'):
             day_number = 3
-        elif um.day_name_en == 'Friday':
+        elif um.day_name_en in ('Friday', 'vendredi'):
             day_number = 4
-        elif um.day_name_en == 'Saturday':
+        elif um.day_name_en in ('Saturday', 'samedi'):
             day_number = 5
-        elif um.day_name_en == 'Sunday':
+        elif um.day_name_en in ('Sunday', 'dimanche'):
             day_number = 6
         return str(day_number)
 
@@ -122,8 +125,12 @@ class HrAttendanceImport(models.Model):
         '''
         Get time from , time to , late , leave from resource calendar for a day given in args
         '''
+        # TODO: if days not in resource.calendar.attendance for example vendredi and samedi it show error
+        # must do this case
         calendar_attendance_obj = self.env['resource.calendar.attendance']
         calendar_attendance = calendar_attendance_obj.search([('calendar_id', '=', calendar_id), ('dayofweek', '=', day)])
+        if not calendar_attendance:
+            raise ValidationError(u"لا يمكن تحميل يوم الجمعة والسبت")
         calendar_attendance = calendar_attendance[0]
         calendar_hour_from = calendar_attendance.hour_from
         calendar_hour_to = calendar_attendance.hour_to
@@ -477,7 +484,8 @@ class HrAttendanceImport(models.Model):
         all_attendances = attendance_obj.search([('name', '>=', str(date_start)), ('name', '<=', str(date_stop))])
         latest_time = datetime.strptime(all_attendances[0].name, '%Y-%m-%d %H:%M:%S').time()
         # check for each employee
-        for employee in employee_obj.search([]):  # TODO: must add it [('employee_state', '=', 'employee')]
+        employees = employee_obj.search([('employee_state', '=', 'employee')])
+        for employee in employees:
             if not employee.calendar_id:
                 raise ValidationError(u"يجب تحديد الورديّات للموظف %s " % employee.name)
 
@@ -507,6 +515,7 @@ class HrAttendanceImport(models.Model):
             raise ValidationError(u"الحضور و الإنصراف يجب أن يكون ليوم واحد")
         fileobj.seek(0)
         for row in reader:
+            print '----row------', row
             employee = self.env['hr.employee'].search([('number', '=', str(row['empid'].strip(" ")))])
             if employee:
                 if str(row['TrnType']) == '1':
@@ -609,7 +618,8 @@ class HrAttendanceCheck(models.Model):
         date_start = datetime.strptime(date + ' 00:00:00', '%Y-%m-%d %H:%M:%S')
         date_stop = datetime.strptime(date + ' 23:59:59', '%Y-%m-%d %H:%M:%S')
         # check for each employee
-        for employee in employee_obj.search([]):  # TODO: must add it [('employee_state', '=', 'employee')]
+        employees = employee_obj.search([('employee_state', '=', 'employee')])
+        for employee in employees:
             val = {'employee_id': employee.id,
                    'number': employee.number,
                    'department_id': employee.job_id.department_id.id,
@@ -689,32 +699,34 @@ class HrMonthlySummary(models.Model):
     _inherit = ['mail.thread']
     _description = u'الخلاصة الشهرية للغيابات والتأخير'
     _order = 'id desc'
-    # TODO: get default MONTH
-    # TODO: get date start , date end for this month
 
-    name = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    @api.multi
+    def get_default_month(self):
+        return get_current_month_hijri(HijriDate)
+
+    name = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=get_default_month)
     date = fields.Date(string='التاريخ', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=fields.Datetime.now())
-    date_from = fields.Date('تاريخ من', default=lambda *a: time_date.strftime('%Y-%m-01'),
-                            readonly=1, states={'new': [('readonly', 0)]})
-    date_to = fields.Date('إلى', default=lambda *a: str(datetime.now() + relativedelta.relativedelta(months=+1, day=1, days=-1))[:10],
-                          readonly=1, states={'new': [('readonly', 0)]})
+    date_from = fields.Date('تاريخ من', readonly=1, states={'new': [('readonly', 0)]})
+    date_to = fields.Date('إلى', readonly=1, states={'new': [('readonly', 0)]})
     description = fields.Text(string=' ملاحظات ')
     state = fields.Selection([('new', 'مسودة'),
                               ('waiting', 'في إنتظار الإعتماد'),
                               ('cancel', 'مرفوض'),
                               ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
-    line_ids = fields.One2many('hr.monthly.summary.line', 'monthly_summary_id', string='التفاصيل')
+    line_ids = fields.One2many('hr.monthly.summary.line', 'monthly_summary_id', string='التفاصيل', readonly=1, states={'new': [('readonly', 0)]})
 
     @api.onchange('name')
     def onchange_month(self):
         if self.name:
+            self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.name)
+            self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.name)
             line_ids = []
             # delete current line
             self.line_ids.unlink()
             # get all line
             attendance_summary_obj = self.env['hr.attendance.summary']
             all_attendances = attendance_summary_obj.search([('date', '>=', self.date_from), ('date', '<=', self.date_to)])
-            print '-----all_attendances-----',all_attendances
+            print '-----all_attendances-----', all_attendances
             monthly_summary = {}
             for attendance in all_attendances:
                 if attendance.retard or attendance.leave or attendance.absence:
@@ -742,7 +754,7 @@ class HrMonthlySummary(models.Model):
                 delay_hours = retard + leave
                 delay_request = 0.0
                 # check طلبات تحويل ساعات التأخير
-                request_transfers = request_transfer_obj.search([('employee_id', '=', employee.id), ('date', '>=', self.date_from), ('date', '<=', self.date_to)])
+                request_transfers = request_transfer_obj.search([('state', '=', 'done'), ('employee_id', '=', employee.id), ('date', '>=', self.date_from), ('date', '<=', self.date_to)])
                 for request in request_transfers:
                     delay_request += request.number_request
                 # check رصيد الشهر السابق

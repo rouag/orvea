@@ -103,8 +103,8 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 
-		<menuitem id="hr_increase_menu" name="العلاوة" sequence="10"
-			groups="smart_hr.group_increase_employee,smart_hr.group_hrm" parent="hr_root_organisation_action"
+		<menuitem id="hr_increase_menu" name="العلاوة" sequence="105"
+			groups="smart_hr.group_increase_employee,smart_hr.group_hrm" parent="hr_root_workflows"
 			action="action_hr_increase" />
 
 

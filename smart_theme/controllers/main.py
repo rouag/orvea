@@ -10,11 +10,29 @@ from openerp.addons.web.controllers.main import Home
 import werkzeug.utils
 import json
 
+
+
 #----------------------------------------------------------
 # OpenERP Web web Controllers
 #----------------------------------------------------------
 class Home(Home):
- 
+
+    @http.route('/', type='http', auth="public", website=True)
+    def index(self, **kw):
+        request.uid = request.session.uid
+        
+        user = request.registry.get('res.users').browse(request.cr, request.uid,request.uid)
+        
+        #hr_root
+        menu_xml_id = request.env.ref('smart_hr.hr_root')
+        return request.render('web.login',
+                               qcontext={'db_info': json.dumps(openerp.addons.web.controllers.main.db_info()),
+                                         'user': user,
+                                         'hr_root': menu_xml_id.id
+                                         }
+                               
+                               )
+        
     # ideally, this route should be `auth="user"` but that don't work in non-monodb mode.
     @http.route('/web', type='http', auth="none")
     def web_client(self, s_action=None, **kw):

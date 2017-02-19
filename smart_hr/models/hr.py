@@ -131,10 +131,10 @@ class HrEmployee(models.Model):
             if salary_grids:
                 self.insurance_type =  salary_grids[0].insurance_type
 
-    @api.constrains('recruiter_date', 'begin_work_date')
-    def recruiter_date_begin_work_date(self):
-        if self.recruiter_date < self.begin_work_date:
-            raise ValidationError(u"تاريخ بداية العمل الحكومي يجب ان يكون اصغر من تاريخ التعيين بالجهة ")
+#     @api.constrains('recruiter_date', 'begin_work_date')
+#     def recruiter_date_begin_work_date(self):
+#         if self.recruiter_date < self.begin_work_date:
+#             raise ValidationError(u"تاريخ بداية العمل الحكومي يجب ان يكون اصغر من تاريخ التعيين بالجهة ")
 
     @api.one
     @api.depends('name', 'father_middle_name', 'father_name', 'family_name')
@@ -207,13 +207,13 @@ class HrEmployee(models.Model):
 
 
 
-    @api.one
-    @api.constrains('number', 'identification_id')
-    def _check_constraints(self):
-        if len(self.identification_id) != 10:
-                    raise Warning(_('الرجاء التثبت من رقم الهوية.'))
-        if len(self.search([('number', '=', self.number)])) > 1:
-                    raise Warning(_('يوجد موظف لديه نفس الرقم التوظيفي.'))
+#     @api.one
+#     @api.constrains('number', 'identification_id')
+#     def _check_constraints(self):
+#         if len(self.identification_id) != 10:
+#                     raise Warning(_('الرجاء التثبت من رقم الهوية.'))
+#         if len(self.search([('number', '=', self.number)])) > 1:
+#                     raise Warning(_('يوجد موظف لديه نفس الرقم التوظيفي.'))
 
     @api.one
     def action_send(self):

@@ -133,7 +133,9 @@
         'view/hr_employee_functional_card.xml',
         'view/res_users.xml',
         'view/employee_situation_order.xml',
-          # sanction
+        'view/hr_improve_situation_view.xml',
+
+        # sanction
         'sanction/security/ir.model.access.csv',
         'sanction/security/sanction_security.xml',
         'sanction/wizard/wizard_sanction_action.xml',

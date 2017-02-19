@@ -8,7 +8,7 @@
 Theme For odoo
 """,
     'author': "Borni",
-    'depends': ['web'
+    'depends': ['web','website'
     ],
     'data': [
         'data/data.xml', 

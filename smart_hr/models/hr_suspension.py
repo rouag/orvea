@@ -13,7 +13,7 @@ class hr_suspension(models.Model):
     _inherit = ['mail.thread', 'ir.needaction_mixin']
     _description = 'Suspension Decision'
 
-    name = fields.Char(string=u'رقم القرار', advanced_search=True)
+    name = fields.Char(string=u' رقم إجراء كف اليد', advanced_search=True)
     date = fields.Date(string=u'التاريخ', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', advanced_search=True)
     employee_state = fields.Selection([('new', u'جديد'),
@@ -27,6 +27,7 @@ class hr_suspension(models.Model):
     letter_date = fields.Date(string=u'تاريخ الخطاب')
     suspension_date = fields.Date(string=u'تاريخ الإيقاف')
     suspension_attachment = fields.Binary(string=u'الصورة الضوئية للقرار', attachment=True)
+    raison = fields.Text(string=u'سبب كف اليد', advanced_search=True)
     suspension_end_id = fields.Many2one('hr.suspension.end', string=u'قرار إنهاء كف اليد')
     state = fields.Selection([
         ('draft', u'طلب'),
@@ -63,11 +64,11 @@ class hr_suspension(models.Model):
                 raise ValidationError(u'لا يمكن حذف قرار كف اليد فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(hr_suspension, self).unlink()
 
-    @api.constrains('employee_id')
-    def check_employee_id(self):
-        for rec in self:
-            if rec.employee_id.emp_state != 'working':
-                raise ValidationError(u"هذا الموظف ليس على رأس العمل حتى يكف يده")
+#     @api.constrains('employee_id')
+#     def check_employee_id(self):
+#         for rec in self:
+#             if rec.employee_id.emp_state != 'working':
+#                 raise ValidationError(u"هذا الموظف ليس على رأس العمل حتى يكف يده")
 
     @api.one
     def button_hrm(self):

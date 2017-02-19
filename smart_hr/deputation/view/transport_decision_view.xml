@@ -81,8 +81,8 @@
 		</record>
 		
 		 		
-		<menuitem id="hr_transport_decision_menu" name="أوامر الإركاب" sequence="20"
-			parent="menu_hr_deputation_root" action="action_hr_transport_decision" />
+		<menuitem id="hr_transport_decision_menu" name="أوامر الإركاب" sequence="40"
+			parent="hr_root_workflows" action="action_hr_transport_decision" />
 
 	</data>
 </openerp>

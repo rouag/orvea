@@ -224,7 +224,7 @@
 			<field name="act_window_id" ref="action_hr_promotions" />
 		</record>
 		<menuitem id="menu_hr_promotions" action="action_hr_promotions"
-			parent="hr_root_organisation_action" name="محاضر الترقية" sequence="14"
+			parent="hr_root_workflows" name="محاضر الترقية" sequence="25"
 			groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion,smart_hr.group_promotion_checker" />
 		<!-- <menuitem id="menu_hr_promotion" parent="hr_root_promotion" name="قرارات 
 			الترقيات" sequence="1"/> -->
@@ -268,8 +268,8 @@
 		</record>
 
 		<menuitem id="menu_hr_promotions_type" action="action_promotion_type"
-			parent="hr_root_organisation_configuration" name="أنواع الترقية"
-			sequence="5"
+			parent="hr_root_workflows_setting" name="أنواع الترقية"
+			sequence="10"
 			groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion" />
 
 
@@ -278,7 +278,7 @@
 			<field name="model">hr.promotion.employee.job</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
-				<tree string="ترشيحاتي فالترقية" create="0" delete='0'
+				<tree string="الترشيحات للترقية" create="0" delete='0'
 					duplicate='0'>
 
 					<field name="employee_id" readonly="1" />
@@ -322,7 +322,7 @@
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" states="employee_confirmed" />
 						<field name="state" widget="statusbar" statusbar_visible="employee_confirmed,done,refuse" />
 					</header>
-					<sheet string="ترشيحاتي فالترقية">
+					<sheet string="الترشيحات للترقية">
 						<group string="الوظيفة التي تم ترشيحك عليها">
 							<field name="new_job_id" readonly="1" />
 							<field name="new_number_job" readonly="1" />
@@ -336,7 +336,7 @@
 		</record>
 
 		<record model="ir.actions.act_window" id="action_hr_promotion_employee_affected">
-			<field name="name">ترشيحاتي فالترقية</field>
+			<field name="name">الترشيحات للترقية</field>
 			<field name="res_model">hr.promotion.employee.job</field>
 			<field name="view_type">form</field>
 			<field name="domain">[('employee_id.user_id', '=', uid),('state', '=',
@@ -347,8 +347,8 @@
 
 
 		<menuitem id="menu_my_promotion_affecteds" action="action_hr_promotion_employee_affected"
-			parent="hr_root_organisation_action" name="ترشيحاتي فالترقية"
-			sequence="15" />
+			parent="hr_root_workflows" name="الترشيحات للترقية"
+			sequence="30" />
 
 
 

@@ -15,8 +15,9 @@ class hr_termination(models.Model):
     _inherit = ['ir.needaction_mixin']
     _description = 'Termination'
 
-    name = fields.Char(string=u'رقم القرار', required=1)
+    name = fields.Char(string=u'مسمى طي القيد', required=1)
     date = fields.Date(string=u'تاريخ', default=fields.Datetime.now())
+    date_termination = fields.Date(string=u'تاريخ طي القيد  ', default=fields.Datetime.now())
     termination_date = fields.Date(string=u'تاريخ الإعتماد')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف',  required=1)
     employee_state = fields.Selection([('new', u'جديد'),
@@ -32,13 +33,13 @@ class hr_termination(models.Model):
     age = fields.Integer(string=u'السن', related='employee_id.age')
     country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
     # Termination Info
-    termination_type_id = fields.Many2one('hr.termination.type', string=u'نوع الطي', required=1)
+    termination_type_id = fields.Many2one('hr.termination.type', string=u'نوع الطي', )
     nb_salaire = fields.Float(related='termination_type_id.nb_salaire', store=True, readonly=True, string=u'عدد الرواتب المستحق')
     all_holidays = fields.Boolean(related='termination_type_id.all_holidays', store=True, readonly=True,string=u'كل الإجازة')
     max_days = fields.Float(related='termination_type_id.max_days', store=True, readonly=True, string=u'الحد الاقصى لأيام الإجازة')
     
     reason = fields.Char(string=u'السبب')
-    letter_source = fields.Char(string=u'جهة الخطاب', required=1)
+    letter_source = fields.Char(string=u'جهة الخطاب', )
     letter_no = fields.Char(string=u'رقم الخطاب',  required=1)
     letter_date = fields.Date(string=u'تاريخ الخطاب')
     file_attachment = fields.Binary(string=u'مرفق الصورة الضوئية', attachment=True)
@@ -68,27 +69,27 @@ class hr_termination(models.Model):
                 raise ValidationError(u'لا يمكن حذف طي القيد فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(hr_termination, self).unlink()
 
-    @api.constrains('employee_id')
-    def check_employee_id(self):
-        for ter in self:
-            if self.search_count([('employee_id', '=', ter.employee_id.id), ('state', '=', 'done')]):
-                raise ValidationError(u"هذا الموظف تم أعتماد طي قيد لديه من قبل")
+#     @api.constrains('employee_id')
+#     def check_employee_id(self):
+#         for ter in self:
+#             if self.search_count([('employee_id', '=', ter.employee_id.id), ('state', '=', 'done')]):
+#                 raise ValidationError(u"هذا الموظف تم أعتماد طي قيد لديه من قبل")
 
-    @api.multi
-    def check_constraintes(self):
-        if self.termination_type_id.years>0:
-            if self.employee_id.age < self.termination_type_id.years:
-                raise ValidationError(u" السن الادنى  هو %s سنة"%self.termination_type_id.years)
-
-        if self.termination_type_id.evaluation_condition:
-            years_progress = self.termination_type_id.years_progress
-            for year in range(1,years_progress):
-                employee_evaluation_id = self.env['hr.employee.evaluation.level'].search([('employee_id', '=', self.employee_id.id),('year', '=',date.today().year-year)], limit=1)
-                if employee_evaluation_id:
-                    if employee_evaluation_id.degree_id.id not in self.termination_type_id.evaluation_required.ids:
-                        raise ValidationError(u"الرجاء مراجعة تقييم وظيفي خاص لنوع طي القيد")
-                else:
-                    raise ValidationError(u"لا يوجد تقييم وظيفي خاص بالموظف ل%sسنة"%years_progress)
+#     @api.multi
+#     def check_constraintes(self):
+#         if self.termination_type_id.years>0:
+#             if self.employee_id.age < self.termination_type_id.years:
+#                 raise ValidationError(u" السن الادنى  هو %s سنة"%self.termination_type_id.years)
+# 
+#         if self.termination_type_id.evaluation_condition:
+#             years_progress = self.termination_type_id.years_progress
+#             for year in range(1,years_progress):
+#                 employee_evaluation_id = self.env['hr.employee.evaluation.level'].search([('employee_id', '=', self.employee_id.id),('year', '=',date.today().year-year)], limit=1)
+#                 if employee_evaluation_id:
+#                     if employee_evaluation_id.degree_id.id not in self.termination_type_id.evaluation_required.ids:
+#                         raise ValidationError(u"الرجاء مراجعة تقييم وظيفي خاص لنوع طي القيد")
+#                 else:
+#                     raise ValidationError(u"لا يوجد تقييم وظيفي خاص بالموظف ل%sسنة"%years_progress)
 
 
     @api.multi

@@ -32,9 +32,9 @@
 					<sheet>
 						<group col="4">
 							<field name="name" />
-							<field name="date_from" invisible="0" />
-								<field name="date" />
-							<field name="date_to"  invisible="0"  />
+							<field name="date"  />
+							<field name="date_from" invisible="1" />
+							<field name="date_to"  invisible="1"  />
 						</group>
 						
 						<field name="line_ids" >

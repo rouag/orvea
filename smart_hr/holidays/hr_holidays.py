@@ -63,6 +63,7 @@ class HrHolidays(models.Model):
         ('confirm', 'To Approve'),
         ('refuse', 'Refused'),
         ('validate1', 'Second Approval'),
+        ('unkhown', 'غير معروف'),
         ('validate', 'Approved')], string=u'حالة', default='draft', advanced_search=True)
 
     is_current_user = fields.Boolean(string='Is Current User', compute='_is_current_user')
@@ -130,75 +131,75 @@ class HrHolidays(models.Model):
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
 
-    @api.multi
-    @api.depends("holiday_status_id", "entitlement_type")
-    def _compute_current_holiday_stock(self):
-        current_stock = 0
-        if self.holiday_status_id and self.entitlement_type and self.holiday_status_id.id != self.env.ref('smart_hr.data_hr_holiday_compensation').id:
-            stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.holiday_status_id.id),
-                                                               ('entitlement_id.entitlment_category.id', '=', self.entitlement_type.id)])
-            entitlement_line = self.env['hr.holidays.status.entitlement'].search([('leave_type', '=', self.holiday_status_id.id),
-                                                               ('entitlment_category.id', '=', self.entitlement_type.id)])
-            if stock_line:
-                current_stock = stock_line.holidays_available_stock
-            elif entitlement_line and entitlement_line.periode:
-                current_stock = entitlement_line.holiday_stock_default
-            elif entitlement_line and not entitlement_line.periode:
-                if entitlement_line.holiday_stock_default > 0:
-                    current_stock = entitlement_line.holiday_stock_default
-                else:
-                    current_stock = str("لا تحتاج رصيد")
-            if current_stock == 0:
-                if entitlement_line and not entitlement_line.periode and entitlement_line.holiday_stock_default == 0:
-                    current_stock = str("لا تحتاج رصيد")
-
-        elif not self.entitlement_type and self.holiday_status_id.id != self.env.ref('smart_hr.data_hr_holiday_compensation').id:
-            not_all_entitlement_line = self.env['hr.holidays.status.entitlement'].search_count([('leave_type', '=', self.holiday_status_id.id),
-                ('entitlment_category.id', '!=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)
-                ])
-            if not_all_entitlement_line == 0:
-                entitlement_line = self.env['hr.holidays.status.entitlement'].search([('leave_type', '=', self.holiday_status_id.id),
-                                                               ('entitlment_category.id', '=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)])
-                if entitlement_line and entitlement_line.periode == 100:
-                    stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
-                                                               ('holiday_status_id', '=', self.holiday_status_id.id),('entitlement_id.entitlment_category.id', '=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)
-                                                                ])
-                    if stock_line:
-                        current_stock = stock_line.holidays_available_stock
-                    else:
-                        if entitlement_line.holiday_stock_default==0:
-                            current_stock = str("لا تحتاج رصيد")
-                        else:
-                            current_stock = entitlement_line.holiday_stock_default
-                if current_stock == 0:
-                    if entitlement_line and not entitlement_line.periode and entitlement_line.holiday_stock_default == 0:
-                        current_stock = str("لا تحتاج رصيد")
-        if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_compensation').id:
-            current_stock = self.employee_id.compensation_stock
-        self.current_holiday_stock = current_stock
-
-
-    @api.one
-    @api.depends('date_from')
-    def _compute_is_started(self):
-        if self.date_from <= datetime.today().strftime('%Y-%m-%d'):
-            self.is_started = True
-
-
-
-    @api.onchange('holiday_status_id')
-    def onchange_holiday_status_id(self):
-        res = {}
-        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_illness'):
-            res['domain'] = {'entitlement_type': [('code', '=', 'illness')]}
-        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_death'):
-            res['domain'] = {'entitlement_type': [('code', '=', 'death')]}
-        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional'):
-            res['domain'] = {'entitlement_type': [('code', '=', 'accompaniment_exceptional')]}
-        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_sport'):
-            res['domain'] = {'entitlement_type': [('code', '=', 'sport')]}
-        self.entitlement_type = False
-        return res
+#     @api.multi
+#     @api.depends("holiday_status_id", "entitlement_type")
+#     def _compute_current_holiday_stock(self):
+#         current_stock = 0
+#         if self.holiday_status_id and self.entitlement_type and self.holiday_status_id.id != self.env.ref('smart_hr.data_hr_holiday_compensation').id:
+#             stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.holiday_status_id.id),
+#                                                                ('entitlement_id.entitlment_category.id', '=', self.entitlement_type.id)])
+#             entitlement_line = self.env['hr.holidays.status.entitlement'].search([('leave_type', '=', self.holiday_status_id.id),
+#                                                                ('entitlment_category.id', '=', self.entitlement_type.id)])
+#             if stock_line:
+#                 current_stock = stock_line.holidays_available_stock
+#             elif entitlement_line and entitlement_line.periode:
+#                 current_stock = entitlement_line.holiday_stock_default
+#             elif entitlement_line and not entitlement_line.periode:
+#                 if entitlement_line.holiday_stock_default > 0:
+#                     current_stock = entitlement_line.holiday_stock_default
+#                 else:
+#                     current_stock = str("لا تحتاج رصيد")
+#             if current_stock == 0:
+#                 if entitlement_line and not entitlement_line.periode and entitlement_line.holiday_stock_default == 0:
+#                     current_stock = str("لا تحتاج رصيد")
+# 
+#         elif not self.entitlement_type and self.holiday_status_id.id != self.env.ref('smart_hr.data_hr_holiday_compensation').id:
+#             not_all_entitlement_line = self.env['hr.holidays.status.entitlement'].search_count([('leave_type', '=', self.holiday_status_id.id),
+#                 ('entitlment_category.id', '!=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)
+#                 ])
+#             if not_all_entitlement_line == 0:
+#                 entitlement_line = self.env['hr.holidays.status.entitlement'].search([('leave_type', '=', self.holiday_status_id.id),
+#                                                                ('entitlment_category.id', '=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)])
+#                 if entitlement_line and entitlement_line.periode == 100:
+#                     stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
+#                                                                ('holiday_status_id', '=', self.holiday_status_id.id),('entitlement_id.entitlment_category.id', '=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)
+#                                                                 ])
+#                     if stock_line:
+#                         current_stock = stock_line.holidays_available_stock
+#                     else:
+#                         if entitlement_line.holiday_stock_default==0:
+#                             current_stock = str("لا تحتاج رصيد")
+#                         else:
+#                             current_stock = entitlement_line.holiday_stock_default
+#                 if current_stock == 0:
+#                     if entitlement_line and not entitlement_line.periode and entitlement_line.holiday_stock_default == 0:
+#                         current_stock = str("لا تحتاج رصيد")
+#         if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_compensation').id:
+#             current_stock = self.employee_id.compensation_stock
+#         self.current_holiday_stock = current_stock
+# 
+# 
+#     @api.one
+#     @api.depends('date_from')
+#     def _compute_is_started(self):
+#         if self.date_from <= datetime.today().strftime('%Y-%m-%d'):
+#             self.is_started = True
+# 
+# 
+# 
+#     @api.onchange('holiday_status_id')
+#     def onchange_holiday_status_id(self):
+#         res = {}
+#         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_illness'):
+#             res['domain'] = {'entitlement_type': [('code', '=', 'illness')]}
+#         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_death'):
+#             res['domain'] = {'entitlement_type': [('code', '=', 'death')]}
+#         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional'):
+#             res['domain'] = {'entitlement_type': [('code', '=', 'accompaniment_exceptional')]}
+#         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_sport'):
+#             res['domain'] = {'entitlement_type': [('code', '=', 'sport')]}
+#         self.entitlement_type = False
+#         return res
 
     @api.multi
     def _init_balance(self, employee_id):

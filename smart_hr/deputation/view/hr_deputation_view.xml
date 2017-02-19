@@ -198,8 +198,8 @@
 		</record>
 
 
-		<menuitem id="hr_deputation_menu" name="الإنتدابات" sequence="5"
-			parent="menu_hr_deputation_root" action="action_hr_deputation" />
+		<menuitem id="hr_deputation_menu" name="الإنتدابات" sequence="35"
+			parent="hr_root_workflows" action="action_hr_deputation" />
 
 		<!-- فئات الدول -->
 		<record id="view_form_hr_deputation_category" model="ir.ui.view">

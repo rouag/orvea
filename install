@@ -1,7 +1,8 @@
 update manuelle des fichiers 
 
-/enterprise/web/static/src/js/views/list_view.js
-L 1419
+
+file /enterprise/web/static/src/js/views/list_view.js L 1419
+
                 // group_label is html-clean (through format or explicit
                 // escaping if format failed), can inject straight into HTML
                 $group_column.html(_.str.sprintf(_t("%d - %s"),
@@ -12,7 +13,30 @@ L 1419
                 } else {
                     $group_column.prepend('<span class="fa">');
                 }
+                
 -------------------------------------------------------------------------------------------
+
+file /odoo/addons/hr_payroll/hr_payroll.py  L 963,964
 1) comment this abose code in hr_payslip module to run smart_hr module.
 if not values['contract_id']:
-	raise UserError(_('You must set a contract to create a payslip line.'))                
+	raise UserError(_('You must set a contract to create a payslip line.'))
+
+----------redirect to home page-------
+
+file enterprise/web/static/src/js/menu.js  L15
+'click .o_menu_toggle': function (ev) {
+              ev.preventDefault();
+              // this.trigger_up((this.appswitcher_displayed)? 'hide_app_switcher' : 'hide_app_switcher');
+             window.location.href = "/home";
+            
+        },
+--------experation date-------
+file /enterprise/web/static/src/js/app_switcher.js L 41
+comment this line : self.enterprise_expiration_check();
+
+
+--------fix login page------------
+
+menu settings --> technical --> views
+désactiver la view : 	Website Login Layout
+                

@@ -28,7 +28,6 @@ class HrSetting(models.Model):
     # والتكليف‬‬
     assign_duration = fields.Integer(string=u'مدة التكليف‬‬ (باليوم)', default=365)
     # الرواتب
-    salary_proportion = fields.Float(string=u'نسبة الراتب (%)', default=100)
     allowance_job_nature = fields.Many2one('hr.allowance.type', string=u'بدل طبيعة العمل')
     allowance_proportion = fields.Float(string=u'نسبة البدل (%)', default=15)
     allowance_deputation = fields.Many2one('hr.allowance.type', string=u'بدل إنتداب')

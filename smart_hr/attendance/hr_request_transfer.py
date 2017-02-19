@@ -2,6 +2,9 @@
 
 from openerp import models, fields, api, _
 from openerp.exceptions import ValidationError
+from openerp.addons.smart_base.util.umalqurra import *
+from umalqurra.hijri_date import HijriDate
+from umalqurra.hijri import Umalqurra
 
 
 class HrRequestTransfer(models.Model):
@@ -22,8 +25,8 @@ class HrRequestTransfer(models.Model):
                               ('waiting', 'في إنتظار الإعتماد'),
                               ('cancel', 'مرفوض'),
                               ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
-    date = fields.Date(string='تاريخ الطلب', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=fields.Datetime.now())
-    number_request = fields.Float(string='عدد الساعات المراد تحويلها', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    date = fields.Date(string='تاريخ الطلب', required=1, readonly=1, default=fields.Datetime.now())
+    number_request = fields.Integer(string='عدد الساعات المراد تحويلها', required=1, readonly=1, states={'new': [('readonly', 0)]})
     balance = fields.Float(string='الرصيد الحالي', readonly=1)
 
     @api.onchange('employee_id')
@@ -33,8 +36,29 @@ class HrRequestTransfer(models.Model):
             self.department_id = self.employee_id.job_id.department_id
             self.job_id = self.employee_id.job_id
             self.grade_id = self.employee_id.job_id.grade_id
-            # TODO: compute balance
-            self.balance = 2.0
+            # get all hours for this month
+            current_month = get_current_month_hijri(HijriDate)
+            date_from = get_hijri_month_start(HijriDate, Umalqurra, current_month)
+            attendance_summary_obj = self.env['hr.attendance.summary']
+            all_attendances = attendance_summary_obj.search([('employee_id', '=', self.employee_id.id), ('date', '>=', date_from), ('date', '<=', self.date)])
+            balance = 0.0
+            for attendance in all_attendances:
+                if attendance.retard:
+                    balance += attendance.retard
+                if attendance.leave:
+                    balance += attendance.leave
+            # check رصيد الشهر السابق
+            monthly_summary_line_obj = self.env['hr.monthly.summary.line']
+            summary_lines = monthly_summary_line_obj.search([('employee_id', '=', self.employee_id.id)])
+            if summary_lines:
+                balance += summary_lines[0].balance_forward_retard
+                balance += summary_lines[0].balance_forward_absence
+            # check  طلبات تحويل ساعات التأخير for this month
+            if self.id:
+                request_transfers = self.search([('id', '!=', self.id), ('state', '=', 'done'), ('employee_id', '=', self.employee_id.id), ('date', '>=', date_from), ('date', '<=', self.date)])
+                for request in request_transfers:
+                    balance -= request.number_request
+            self.balance = balance
 
     @api.onchange('number_request', 'type')
     def onchange_number_request(self):

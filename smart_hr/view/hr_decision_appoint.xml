@@ -1,54 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
-		<record model="ir.ui.view" id="hr_notices_settings_tree">
-			<field name="name">hr.notices.settings.tree</field>
-			<field name="model">hr.notices.settings</field>
-			<field name="type">tree</field>
-			<field name="arch" type="xml">
-				<tree string="اشعارات التعين">
-					<field name="name" />
-					<field name="description" />
-					<field name="group_notice" />
-					<field name="tye_notice_mail" />
-					<field name="tye_notice_sms" />
-					<field name="tye_notice_event" />
-				</tree>
-			</field>
-		</record>
-		<record model="ir.ui.view" id="hr_notices_settings_form">
-			<field name="name">hr.notices.settings.form</field>
-			<field name="model">hr.notices.settings</field>
-			<field name="type">form</field>
-			<field name="arch" type="xml">
-				<form string="اشعارات التعين">
-					<sheet>
-						<group>
-							<group>
-								<field name="name" />
-								<field name="description" />
-								<field name="group_notice" />
-							</group>
-							<group>
-								<field name="tye_notice_mail" />
-								<field name="tye_notice_sms" />
-								<field name="tye_notice_event" />
-							</group>
-						</group>
-					</sheet>
-				</form>
-			</field>
-		</record>
-		<record model="ir.actions.act_window" id="action_hr_notices_settings">
-			<field name="name"> اشعارات التعين</field>
-			<field name="res_model">hr.notices.settings</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
-		</record>
-		<menuitem id="hr_notices_settings_menu" name=" إعدادات الاشعارات"
-			sequence="30" parent="hr_root_organisation_configuration" />
-		<menuitem id="hr_notices_settings_menu_sou" name=" اشعارات التعين"
-			sequence="5" parent="hr_notices_settings_menu" action="action_hr_notices_settings" />
+			
 		<record model="ir.ui.view" id="hr_type_appoint_tree">
 			<field name="name">hr.type.appoint.tree</field>
 			<field name="model">hr.type.appoint</field>
@@ -103,7 +56,7 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 		<menuitem id="hr_type_appoint_menu_sou" name=" أنواع التعين"
-			sequence="25" parent="hr_root_organisation_configuration" action="action_hr_type_appoint" />
+			sequence="5" parent="hr_root_workflows_setting" action="action_hr_type_appoint" />
 		<!-- التعيين -->
 		<record model="ir.ui.view" id="hr_decision_appoint_tree">
 			<field name="name">hr.decision.appoint.tree</field>
@@ -370,6 +323,6 @@
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 		<menuitem id="hr_decision_appoint_menu" name="التعيين"
-			sequence="10" parent="hr_root_organisation_action" action="action_hr_decision_appoint" />
+			sequence="5" parent="hr_root_workflows" action="action_hr_decision_appoint" />
 	</data>
 </openerp>
