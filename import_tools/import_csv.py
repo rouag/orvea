@@ -16,6 +16,8 @@ from openerp import tools,netsvc
 from tempfile import TemporaryFile
 import csv
 from openerp.tools.translate import _
+import timeit
+from datetime import datetime
 
 
 class import_csv(osv.osv):
@@ -46,10 +48,7 @@ class import_csv(osv.osv):
    
    
     def import_file(self, cr, uid, ids, context=None):
-        
-      
-        
-         
+          
         if context is None:
             context = {}
         this = self.browse(cr, uid, ids[0])   
@@ -58,27 +57,68 @@ class import_csv(osv.osv):
         fileobj = TemporaryFile('w+')
         sourceEncoding = 'windows-1252'
         targetEncoding = "utf-8"   
-         
+        
         fileobj.write((base64.decodestring(this.data)))   
         fileobj.seek(0)                                    
         reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
-        terminated_type = self.pool.get('hr.termination.type')
+        city = self.pool.get('res.city')
+                
         move_id=''
         all_move_ids=[]
-        for row  in reader :  
-            terminated_type_val={
-                                'name':str(row['name']),
-                                'code':str(row['code']),
-                                }
-            
-            terminated_type.create(cr, uid, terminated_type_val,context=context)
-              
-           
+        employee = self.pool.get('hr.employee')
+        for row  in reader : 
+            if str(row['ISSUE_PLACE_NO']):
+                    city_ids=city.search(cr, uid, [('code', '=',row['ISSUE_PLACE_NO'])])
+                    if city_ids:
+                        city_name=city.browse(cr, uid, city_ids[0]).name
+            employee_ids= employee.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
+            print 'employee_ids',str(row['EMP_NO'])
+            if employee_ids:
+                emplyee_obj=employee.browse(cr, uid, employee_ids[0]) 
+                emplyee_obj.write( {'passport_id': str(row['DOC_NO']),'passport_date':str(row['ISSUE_DATE']),'passport_place':city_name,'passport_end_date':str(row['EXPIRY_DATE'])}, )
         
-    
+        
             
         
         return True
+                 
+    def import_passport(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+        
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        city = self.pool.get('res.city')
+                
+        move_id=''
+        all_move_ids=[]
+        employee = self.pool.get('hr.employee')
+        for row  in reader : 
+            if str(row['ISSUE_PLACE_NO']):
+                    city_ids=city.search(cr, uid, [('code', '=',row['ISSUE_PLACE_NO'])])
+                    if city_ids:
+                        city_name=city.browse(cr, uid, city_ids[0]).name
+            employee_ids= employee.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
+            print 'employee_ids',str(row['EMP_NO'])
+            if employee_ids:
+                emplyee_obj=employee.browse(cr, uid, employee_ids[0]) 
+                emplyee_obj.write( {'passport_id': str(row['DOC_NO']),'passport_date':str(row['ISSUE_DATE']),'passport_place':city_name,'passport_end_date':str(row['EXPIRY_DATE'])}, )
+        
+        
+            
+        
+        return True
+
+                
+        
+        
     
     def import_contry(self, cr, uid, ids, context=None):
         if context is None:
@@ -345,7 +385,9 @@ class import_csv(osv.osv):
         return True
     
     
-    def import_employee(self, cr, uid, ids, context=None):
+    def import_import_employee(self, cr, uid, ids, context=None):
+           
+        start = timeit.default_timer()
         if context is None:
             context = {}
         this = self.browse(cr, uid, ids[0])   
@@ -373,6 +415,8 @@ class import_csv(osv.osv):
         grade_id=False
         diplome_id=False
         city_id=False
+        religion_id=False
+        salary_grid_level_id=False
         id_recuiter = self.pool.get('recruiter.recruiter').search(cr, uid, [('name', '=','حكومي')])[0]
         country_id=False
         city_side = self.pool.get('city.side')
@@ -380,8 +424,9 @@ class import_csv(osv.osv):
         job_education_level= self.pool.get('hr.employee.job.education.level')
         move_id=''
         all_move_ids=[]
+        city_name=False
         for row  in reader : 
-            if row['EMP_NO']: 
+            if row['EMP_NO'] and not ( employee.search(cr, uid, [('number', '=',row['EMP_NO'])])): 
                 if str(row['SEX_NO'])=='1':
                     sexe='male'
                 else:
@@ -407,7 +452,9 @@ class import_csv(osv.osv):
                     if city_ids:
                         city_name=city.browse(cr, uid, city_ids[0]).name
                 if str(row['RELIGION_NO']):
-                    religion_id=religion.search(cr, uid, [('code', '=',row['RELIGION_NO'])])[0]
+                    religion_ids=religion.search(cr, uid, [('code', '=',row['RELIGION_NO'])])
+                    if religion_ids:
+                        religion_id=religion_ids[0]
                 if str(row['NATIONALITY_NO']):
                     if str(row['NATIONALITY_NO'])=='0001':
                         country_id=country.search(cr, uid, [('code', '=','SA')])[0]
@@ -431,9 +478,9 @@ class import_csv(osv.osv):
                     
                 
                 if str(row['CLASS_NO']):
-                    print 'CLASS_NO',row['CLASS_NO']
-                    salary_grid_level_id = salary_grid_level.search(cr, uid, [('code', '=',row['CLASS_NO'])])[0]
-                    print 'salary_grid_level_id',salary_grid_level_id
+                    salary_grid_level_ids = salary_grid_level.search(cr, uid, [('code', '=',row['CLASS_NO'])])
+                    if salary_grid_level_ids:
+                        salary_grid_level_id=salary_grid_level_ids[0]
                     
                 if str(row['GRADE_NO']):
                     grade_ids = grade.search(cr, uid, [('code', '=',row['GRADE_NO'])])
@@ -455,9 +502,9 @@ class import_csv(osv.osv):
                         region_id =region[0]
                         
                 if str(row['GOSI_CAT']):
-                    print str(row['GOSI_CAT'])
+                   
                     insurance_obj = insurance.search(cr, uid, [('code', '=',str(row['GOSI_CAT']))])
-                    print 'insurance',insurance_obj
+                   
                     if insurance_obj:
                         insurance_id =insurance_obj[0]
                 type_id=False     
@@ -479,24 +526,23 @@ class import_csv(osv.osv):
                     
                 
                     
-                print row['HIRE_DATE']
-                print row['GOV_HIRE_DATE']
+               
                 rcuter_date =   row['HIRE_DATE']
                 begin_work_date =  row['GOV_HIRE_DATE']
                     
                 
                
-                if len( employee.search(cr, uid, [('number', '=',row['EMP_NO'])]))==0:
-                    employee_val={
-                            'name':(row['FIRST_NAME_AR']).decode('utf-8').strip(),
-                            'father_name':(row['MIDDLE_NAME1_AR']).decode('utf-8').strip(),
-                            'grandfather_name':(row['MIDDLE_NAME2_AR']).decode('utf-8').strip(),
-                            'family_name':(row['LAST_NAME_AR']).decode('utf-8').strip(),
+                
+                employee_val={
+                            'name':(row['FIRST_NAME_AR']).decode('utf-8').strip()if (row['FIRST_NAME_AR']).decode('utf-8').strip()!='NULL' else 'لا إسم' ,
+                            'father_name':(row['MIDDLE_NAME1_AR']).decode('utf-8').strip() if (row['MIDDLE_NAME1_AR']).decode('utf-8').strip()!='NULL' else 'لا إسم',
+                            'grandfather_name':(row['MIDDLE_NAME2_AR']).decode('utf-8').strip() if (row['MIDDLE_NAME2_AR']).decode('utf-8').strip()!='NULL' else 'لا إسم',
+                            'family_name':(row['LAST_NAME_AR']).decode('utf-8').strip()if (row['LAST_NAME_AR']).decode('utf-8').strip()!='NULL' else 'لا إسم',
                             'number':(row['EMP_NO']).decode('utf-8').strip(),
                             'mobile_phone':(row['MobileNo']).decode('utf-8').strip(),
                              'work_email':(row['Email']).decode('utf-8').strip(),
                              'gender':sexe,
-                              'birthday':((row['DOB'])),
+                              'birthday':((row['DOB']))if  row['DOB'] != 'NULL' else  datetime.now(),
                              'place_of_birth':city_name,
                              'religion_state':religion_id,
                              'country_id':country_id,
@@ -506,31 +552,38 @@ class import_csv(osv.osv):
                              'emp_state':state_employee,
                              'degree_id':salary_grid_level_id,
                              'grade_id':grade_id,
-                             'recruiter_date':rcuter_date,
-                              'begin_work_date': begin_work_date,
+                             'recruiter_date':row['HIRE_DATE']if  row['HIRE_DATE'] != 'NULL' else datetime.now(),
+                              'begin_work_date':  row['GOV_HIRE_DATE'] if  row['GOV_HIRE_DATE'] != 'NULL' else datetime.now(),
                              'is_member':is_member,
                              'employee_state':'employee',
                              'recruiter':id_recuiter,
                              'royal_decree_number':(row['ROYAL_DECREE_NO']).decode('utf-8').strip(),
-                             'royal_decree_date':(row['ROYAL_DECREE_DATE']).decode('utf-8').strip(),
+                             'royal_decree_date':(row['ROYAL_DECREE_DATE']).decode('utf-8').strip()if  row['ROYAL_DECREE_DATE'] != 'NULL' else  datetime.now(),
                              'department_id':departement_id,
-                             'dep_side':region_id,
+                             'dep_Side':region_id,
                              'insurance_type':insurance_id,
                              'type_id':type_id,
                              
                             }
-                    print employee
-                    print employee_val
-                    id_emp=employee.create(cr, uid, employee_val,context=context)
-                    print id_emp
+                try:
+                        id_emp=employee.create(cr, uid, employee_val,context=context)
+                except:
+                        print 'error'
+                   
          
                 
             
             
          
-        
+        stop = timeit.default_timer()
+        print 'time for import employee', stop - start
         return True
-    
+            
+            
+         
+        stop = timeit.default_timer()
+        print 'time for import employee', stop - start
+        return True
     def import_passport(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
@@ -856,6 +909,114 @@ class import_csv(osv.osv):
                                 }
             
             terminated_type.create(cr, uid, terminated_type_val,context=context)
+            
+    def import_dudpension(self, cr, uid, ids, context=None):
+        
+      
+        
+         
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+         
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        employee_obj = self.pool.get('hr.employee')
+        terminated_obj = self.pool.get('hr.suspension')
+        terminated_closed_obj = self.pool.get('hr.suspension.end')
+        move_id=''
+        all_move_ids=[]
+        for row  in reader :  
+            employee=employee_obj.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
+            terminated_val={
+                                'date':row['DECISION_DATE'] if  row['DECISION_DATE'] != 'NULL' else  False,
+                                'employee_id':employee[0] if employee else False,
+                                'suspension_date':row['START_DATE'] if  row['START_DATE'] != 'NULL' else  False,
+                                'letter_number':row['DECISION_NO'] if  row['DECISION_NO'] != 'NULL' else  False,
+                                'letter_date':row['DECISION_DATE'] if  row['DECISION_DATE'] != 'NULL' else  False,
+                                'raison':str(row['REASON_AR']),
+                                'state':'done',
+                                }
+            
+            id_terminated=terminated_obj.create(cr, uid, terminated_val,context=context)
+            if str(row['IS_CLOSED'])=="1":
+                terminated_closed_val={
+                                'date':row['CLS_DECISION_DATE'] if  row['CLS_DECISION_DATE'] != 'NULL' else  False,
+                                'employee_id':employee[0] if employee else False,
+                                'suspension_id':id_terminated,
+                                'letter_no':row['CLS_DECISION_NO'],
+                                'letter_date':row['CLS_DECISION_DATE'] if  row['CLS_DECISION_DATE'] != 'NULL' else  False,
+                                'release_date':row['END_DATE'] if  row['END_DATE'] != 'NULL' else  False,
+                                'condemned':True if str(row['IS_PENALIZED']) else False,
+                                'state':'done',
+                                }
+                terminated_closed_obj.create(cr, uid, terminated_closed_val,context=context)
+                
+                
+                
+              
+           
+        
+    
+            
+        
+        return True
+    
+    def import_terminated(self, cr, uid, ids, context=None):
+             
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+          
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        employee_obj = self.pool.get('hr.employee')
+        terminated_obj = self.pool.get('hr.termination')
+        terminated_obj_type = self.pool.get('hr.termination.type')
+        move_id=''
+        all_move_ids=[]
+        employee_name=False
+        for row  in reader :
+           
+            employee=employee_obj.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
+            if not employee:
+                print 'not' ,str(row['EMP_NO'])
+            if employee:
+                employee_name=employee_obj.browse(cr, uid, employee[0]).name
+                terminated_type =terminated_obj_type.search(cr, uid, [('code', '=',str(row['TERMINATION_CODE']))])
+                if terminated_type:
+                    terminated_val={
+                                'name':'طي القيد الموظف :' + employee_name ,
+                                'date':row['DECISION_DATE'] if  row['DECISION_DATE'] != 'NULL' else  False,
+                                'employee_id':employee[0] if employee else False,
+                                'date_termination':row['TERMINATION_DATE'] if  row['TERMINATION_DATE'] != 'NULL' else  False,
+                                'letter_no':row['DECISION_NO'] if  row['DECISION_NO'] != 'NULL' else  '111',
+                                'letter_date':row['DECISION_DATE'] if  row['DECISION_DATE'] != 'NULL' else  False,
+                                'state':'done' if str(row['IS_TERMINATED']) == '1' else False ,
+                                'termination_type_id':terminated_type[0] if terminated_type else False
+                }
+                     
+                    terminated_obj.create(cr, uid, terminated_val,context=context)
+                   
+               
+                
+           
+                
+            
+        return True
+
             
 import_csv()
 
