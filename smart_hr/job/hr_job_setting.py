@@ -47,7 +47,7 @@ class HrGrouupGeneral(models.Model):
     ], string=u' ‫نوعية‬ الخبرة‬ ‫', )
 
     _sql_constraints = [
-        ('name_uniq', 'unique(name)', 'لايمكن اظافة مجموعتين بنفس الإسم'),
+        ('name_uniq', 'unique(numero,group_type)', 'لايمكن اظافة مجموعتين بنفس الإسم'),
     ]
 
 
