@@ -42,6 +42,7 @@
 								<field name="termination_type_id" widget="selection"
 
 									required="1" attrs="{'readonly':[('state','!=','draft')]}" />
+								<field name="date_termination" />
 								<field name="nb_salaire" />
 								<field name="all_holidays" />
 								<field name="max_days" />
