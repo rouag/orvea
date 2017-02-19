@@ -24,10 +24,8 @@ class hrDeduction(models.Model):
     # TODO: get default MONTH
     month = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=get_default_month)
     date = fields.Date(string='تاريخ الإنشاء', required=1, default=fields.Datetime.now(), readonly=1, states={'new': [('readonly', 0)]})
-    date_from = fields.Date('تاريخ من', default=lambda *a: time_date.strftime('%Y-%m-01'),
-                            readonly=1, states={'new': [('readonly', 0)]})
-    date_to = fields.Date('إلى', default=lambda *a: str(datetime.now() + relativedelta.relativedelta(months=+1, day=1, days=-1))[:10],
-                          readonly=1, states={'new': [('readonly', 0)]})
+    date_from = fields.Date('تاريخ من', readonly=1, states={'new': [('readonly', 0)]})
+    date_to = fields.Date('إلى', readonly=1, states={'new': [('readonly', 0)]})
     number_decision = fields.Char(string='رقم القرار', required=1, readonly=1, states={'new': [('readonly', 0)]})
     date_decision = fields.Date(string=' تاريخ القرار', required=1, readonly=1, states={'new': [('readonly', 0)]})
     state = fields.Selection([('new', 'طلب'),
@@ -49,12 +47,12 @@ class hrDeduction(models.Model):
             # get حسميات  from الخلاصة الشهرية للغيابات والتأخير
             monthly_summary_obj = self.env['hr.monthly.summary.line']
             deduction_type_obj = self.env['hr.deduction.type']
-            monthly_summarys = monthly_summary_obj.search([('monthly_summary_id.name', '=', self.month),
-                                                           ('monthly_summary_id.state', '=', 'done'),
-                                                           ('days_retard', '!=', 0.0), ('days_absence', '!=', 0.0)])
+            domain = [('monthly_summary_id.name', '=', self.month), ('monthly_summary_id.state', '=', 'done')]
+            monthly_summarys_retard = monthly_summary_obj.search(domain + [('days_retard', '!=', 0.0)])
+            monthly_summarys_absence = monthly_summary_obj.search(domain + [('days_absence', '!=', 0.0)])
             retard_leave_type = deduction_type_obj.search([('type', '=', 'retard_leave')])[0]
             absence_type = deduction_type_obj.search([('type', '=', 'absence')])[0]
-            for summary in monthly_summarys:
+            for summary in monthly_summarys_retard + monthly_summarys_absence:
                 employee = summary.employee_id
                 val = {'deduction_id': self.id,
                        'employee_id': employee.id,
@@ -65,7 +63,7 @@ class hrDeduction(models.Model):
                 if summary.days_retard:
                     val.update({'amount': summary.days_retard, 'deduction_type_id': retard_leave_type.id})
                     line_ids.append(val)
-                if summary.days_absence:
+                elif summary.days_absence:
                     val_absence = val.copy()
                     val_absence.update({'amount': summary.days_absence, 'deduction_type_id': absence_type.id})
                     line_ids.append(val_absence)
@@ -144,7 +142,7 @@ class hrDeductionHistory(models.Model):
     deduction_id = fields.Many2one('hr.deduction', string=' الحسميات', ondelete='cascade')
     employee_id = fields.Many2one('hr.employee', string=' الموظف', required=1)
     action = fields.Char(string='الإجراء')
-    reason = fields.Char(string='السبب', required=1,)
+    reason = fields.Char(string='السبب')
     number_decision = fields.Char(string='رقم القرار')
     date_decision = fields.Date(string='تاريخ القرار')
 
