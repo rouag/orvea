@@ -36,12 +36,9 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-
-		<menuitem id="hr_contract_item_menu" name="إعدادات مواد العقد "
-			sequence="42" parent="hr_root_organisation_configuration" />
-
+ 
 		<menuitem id="hr_contract_item_menu_sou" name=" مواد العقد"
-			sequence="25" parent="hr_contract_item_menu" action="action_hr_contract_item" />
+			sequence="21" parent="hr_root_employee_configuration" action="action_hr_contract_item" />
 	
 	<record model="ir.ui.view" id="hr_contract_payement_tree">
 			<field name="name">hr.contract.payement.tree</field>
@@ -81,7 +78,7 @@
 		
 
 		<menuitem id="hr_contract_payement_menu_sou" name=" الدفع المجدول"
-			sequence="26" parent="hr_root_organisation_configuration" action="action_hr_contract_payement" />
+			sequence="22" parent="hr_root_employee_configuration" action="action_hr_contract_payement" />
 	
 	
 	</data>

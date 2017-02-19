@@ -598,15 +598,3 @@ class HrAllowanceAppoint(models.Model):
     hr_allowance_type_id = fields.Many2one('hr.allowance.type', string=u'بدل التعيين')
     salary_number = fields.Float(string=u'عدد الرواتب')
     appoint_type_id = fields.Many2one('hr.type.appoint')
-
-class HrNoticesSettings(models.Model):
-    _name = 'hr.notices.settings'
-    _description = u'اشعارات التعين'
-
-    name = fields.Char(string='المسمى ', required=1)
-    description = fields.Char(string='المحتوى')
-    group_notice = fields.Many2many('res.groups', string='إلى')
-    tye_notice_mail = fields.Boolean(string='إشعار عن طريق  بريد إلكتروني ')
-    tye_notice_sms = fields.Boolean(string='إشعار عن طريق   إرسال رسالة قصيرة ')
-    tye_notice_event = fields.Boolean(string=' عن طريق الإشعار ')
-    tyooe_notice = fields.Char(string='طريقة الإشعار')

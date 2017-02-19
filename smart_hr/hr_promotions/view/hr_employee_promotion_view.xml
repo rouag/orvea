@@ -78,9 +78,9 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 		<menuitem id="menu_promotion_demande" action="action_promotion_demande"
-			parent="hr_root_organisation_action" name="طلبات الترقية" sequence="12" groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion"/>
+			parent="hr_root_workflows" name="طلبات الترقية" sequence="15" groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion"/>
 		<menuitem id="menu_my_promotion_demande" action="action_employee_promotion_demande"
-			parent="hr_root_organisation_action" name="طلباتي للترقية" sequence="13" />
+			parent="hr_root_workflows" name="طلباتي للترقية" sequence="20" />
 
 	</data>
 </openerp>

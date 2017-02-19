@@ -167,8 +167,8 @@
 		</record>
 
 
-		<menuitem id="hr_scholarship" name="الابتعاث" parent="menu_hr_scholarship"
-			sequence="5" action="action_hr_scholarship" />
+		<menuitem id="hr_scholarship" name="الابتعاث" parent="hr_root_workflows"
+			sequence="67" action="action_hr_scholarship" />
 
 		<record id="hr_scholarship_type_form" model="ir.ui.view">
 			<field name="name">hr.scholarship.type.form</field>
@@ -208,13 +208,8 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 
-
-		<!-- config menu -->
-		<menuitem id="hr_scholarship_configuration" name="الاعدادات"
-			parent="menu_hr_scholarship" sequence="100" />
-
 		<menuitem id="hr_scholarship_type" name="انواع الابتعاث"
-			parent="hr_scholarship_configuration" sequence="5"
+			parent="hr_root_workflows_setting" sequence="20"
 			action="action_hr_scholarship_type" />
 	</data>
 </openerp>

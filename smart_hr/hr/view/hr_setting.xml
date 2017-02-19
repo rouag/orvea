@@ -53,8 +53,8 @@
 		</record>
 
 		<menuitem name="النقل، الإعارة والتكليف" id="hr_setting_menu"
-			groups="smart_hr.group_configuration" parent="hr_root_organisation_configuration"
-			sequence="1" action="ir_actions_button_hr_setting" />
+			groups="smart_hr.group_configuration" parent="hr_root_workflows_setting"
+			sequence="5" action="ir_actions_button_hr_setting" />
 
 
 
@@ -106,7 +106,7 @@
 		</record>
 
 		<menuitem name="مجلس الهيئة" id="hr_setting_authority_board_menu"
-			parent="hr_root_organisation_configuration" sequence="10"
+			parent="hr_root_workflows_setting" sequence="100"
 			action="ir_actions_button_hr_authority_board_setting" />
 	</data>
 </openerp>

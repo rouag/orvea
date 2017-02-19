@@ -143,8 +143,8 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-		<menuitem id="hr_overtime_menu" name="خارج دوام" sequence="5"
-			parent="menu_hr_overtime_root" action="action_hr_overtime" />
+		<menuitem id="hr_overtime_menu" name="خارج دوام" sequence="60" 
+			parent="hr_root_workflows" action="action_hr_overtime" />
 
 	</data>
 </openerp>

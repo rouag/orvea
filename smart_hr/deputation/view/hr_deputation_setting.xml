@@ -2,9 +2,6 @@
 <openerp>
 	<data>
 
-		<menuitem name="الإعدادات" id="hr_deputation_setting" parent="menu_hr_deputation_root"
-			sequence="100" />
-
 		<!-- إعدادات الانتدابات -->
 		<record id="view_hr_deputation_setting" model="ir.ui.view">
 			<field name="name">hr.deputation.setting.form</field>
@@ -74,7 +71,7 @@
 		</record>
 
 		<menuitem name="إعدادات الانتداب" id="hr_deputation_setting_menu"
-			parent="hr_deputation_setting" sequence="5"
+			parent="hr_root_workflows_setting" sequence="15"
 			action="ir_actions_button_hr_deputation_setting" />
 	</data>
 </openerp>

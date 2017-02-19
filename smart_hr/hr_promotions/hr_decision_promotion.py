@@ -77,17 +77,5 @@ class HrTypeAppoint(models.Model):
     direct_manager = fields.Boolean(string=u'  موافقة مدير مباشر ', default=True)
     recrutment_decider = fields.Boolean(string=u' موافقة رئيس الهيئة  ', default=True)
     can_be_cancelled = fields.Boolean(string=u'يمكن الغاؤها', default=True)
-    
-class HrNoticesSettings(models.Model):
-    _name = 'hr.notices.settings'  
-    _description = u'اشعارات الترقية'
-    
-    
-    name = fields.Char(string='المسمى ', required=1)
-    description = fields.Char(string='المحتوى') 
-    group_notice = fields.Many2many('res.groups', string='إلى') 
-    tye_notice_mail = fields.Boolean(string='إشعار عن طريق  بريد إلكتروني ')
-    tye_notice_sms = fields.Boolean(string='إشعار عن طريق   إرسال رسالة قصيرة ')
-    tye_notice_event = fields.Boolean(string=' عن طريق الإشعار ')
-    tyooe_notice = fields.Char(string='طريقة الإشعار')
+
     

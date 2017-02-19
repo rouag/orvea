@@ -168,7 +168,7 @@
 		</record>
 
 		<menuitem action="action_hr_employee_transfert" id="hr_menu_employee_transfert"
-			parent="hr_root_employees" name="طلبات النقل" sequence="15" />
+			parent="hr_root_workflows" name="طلبات النقل" sequence="80" />
 
 		<!-- فترات النقل -->
 		<record id="view_hr_employee_transfert_periode_form" model="ir.ui.view">
@@ -217,8 +217,8 @@
 		</record>
 
 		<menuitem action="action_hr_employee_transfert_periode" id="hr_menu_employee_transfert_periode"
-			parent="hr_root_organisation_configuration" name="فترات النقل" groups="smart_hr.group_configuration"
-			sequence="17" />
+			parent="hr_root_workflows_setting" name="فترات النقل" groups="smart_hr.group_configuration"
+			sequence="5" />
 
 		<!-- ترتيب طلبات النقل -->
 
@@ -285,7 +285,7 @@
 		</record>
 
 		<menuitem name="ترتيب طلبات النقل" id="hr_transfert_sorting_menu"
-			parent="hr_root_employees" sequence="16"
+			parent="hr_root_workflows" sequence="85"
 			action="action_hr_employee_transfert_sorting" />
 
 	</data>

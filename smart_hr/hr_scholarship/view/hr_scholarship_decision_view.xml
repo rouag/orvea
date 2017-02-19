@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
-		<!-- قرار مباشرة -->
+		<!-- قرار مباشرة الإبتعاث -->
 		<record id="hr_scholarship_decision_form" model="ir.ui.view">
 			<field name="name">hr.scholarship.decision.form</field>
 			<field name="model">hr.scholarship.decision</field>
 			<field name="arch" type="xml">
-				<form string="قرار مباشرة">
+				<form string="قرار مباشرة الإبتعاث">
 					<header>
 						<button name="action_hrm" string=" ارسال طلب" type="object"
 							states="new" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
@@ -50,7 +50,7 @@
 			<field name="name">hr.scholarship.decision.tree</field>
 			<field name="model">hr.scholarship.decision</field>
 			<field name="arch" type="xml">
-				<tree string="قرار مباشرة">
+				<tree string="قرار مباشرة الإبتعاث">
 					<field name="employee_id" />
 					<field name="number" />
 					<field name="job_id" />
@@ -61,14 +61,14 @@
 		</record>
 
 		<record model="ir.actions.act_window" id="action_hr_scholarship_decision">
-			<field name="name">قرار مباشرة‬‬</field>
+			<field name="name">قرار مباشرة الإبتعاث‬‬</field>
 			<field name="res_model">hr.scholarship.decision</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
 
-		<menuitem id="menu_hr_scholarship_decision" parent="menu_hr_scholarship"
-			name="قرار مباشرة" sequence="20" action="action_hr_scholarship_decision"
+		<menuitem id="menu_hr_scholarship_decision" parent="hr_root_workflows"
+			name="قرار مباشرة الإبتعاث" sequence="68" action="action_hr_scholarship_decision"
 			groups="smart_hr.group_employee_request,smart_hr.group_personnel_hr_scholarship" />
 
 

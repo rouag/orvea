@@ -102,8 +102,8 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-		<menuitem id="menu_hr_termination" sequence="25"
-			action="action_hr_termination" parent="hr_root_organisation_action"
+		<menuitem id="menu_hr_termination" sequence="125"
+			action="action_hr_termination" parent="hr_root_workflows"
 			name=" طى القيد" />
 
 		<!-- Termination Type -->
@@ -163,8 +163,8 @@
 				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
 			</field>
 		</record>
-		<menuitem id="menu_hr_termination_type" sequence="5"
-			action="action_hr_termination_type" parent="hr_root_organisation_configuration"
+		<menuitem id="menu_hr_termination_type" sequence="100"
+			action="action_hr_termination_type" parent="hr_root_workflows_setting"
 			groups="smart_hr.group_hrm" name="أنواع طى القيد" />
 
 	</data>

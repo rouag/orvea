@@ -137,8 +137,8 @@
 			</field>
 		</record>
 
-		<menuitem id="menu_hr_employee_functionnal_card" action="action_hr_employee_functionnal_card"
-			sequence="10" parent="smart_hr.hr_root_functionnal_card_management" groups="smart_hr.group_employee_request,smart_hr.group_hrm"/>
+		<menuitem id="menu_hr_employee_functionnal_card" action="action_hr_employee_functionnal_card" string="بطاقة وظيفية"
+			sequence="100" parent="hr_root_employees" groups="smart_hr.group_employee_request,smart_hr.group_hrm"/>
 	</data>
 </openerp>
 			

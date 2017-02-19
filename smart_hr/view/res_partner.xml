@@ -19,9 +19,10 @@
 			</field>
 		</record>
 
-
-		<menuitem id="bank_accounts" name="إدارة البنوك" sequence="1"
-			parent="hr_other_services" />
+		
+		<menuitem id="bank_accounts" sequence="35" name="إعدادات البنوك" parent="smart_hr.hr_root_configuration" />
+		
+			
 		<menuitem id="banks_management" name=" البنوك" sequence="1"
 			parent="bank_accounts" action="base.action_res_bank_form" />
 		<menuitem id="banks_accounts_management" name=" الحسابات البنكِيّة"

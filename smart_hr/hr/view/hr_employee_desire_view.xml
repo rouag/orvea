@@ -38,8 +38,8 @@
 		</record>
 
 		<menuitem action="action_hr_employee_desire" id="hr_menu_employee_desire" groups="smart_hr.group_configuration"
-			parent="hr_root_organisation_configuration" name="رغبات النقل"
-			sequence="2" />
+			parent="hr_root_workflows_setting" name="رغبات النقل"
+			sequence="10" />
 
 
 	</data>
