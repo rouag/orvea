@@ -65,6 +65,7 @@ class HrEmployeeTransfert(models.Model):
     for_members = fields.Boolean(string=u'للاعضاء')
     tobe_cancelled = fields.Boolean(string=u'سيلغى', default=False)
     is_current_user = fields.Boolean(string='Is Current User', compute='_is_current_user')
+    salary_proportion = fields.Float(string=u'نسبة الراتب التي توفرها الجهة (%)', default=100)
 
     @api.multi
     @api.depends('employee_id')
@@ -266,6 +267,9 @@ class HrEmployeeTransfert(models.Model):
                     'order_picture': rec.speech_file
                 }
             recruiter_id = self.env['hr.decision.appoint'].create(vals)
+            recruiter_id._onchange_employee_id()
+            recruiter_id._onchange_job_id()
+            recruiter_id._onchange_degree_id()
             recruiter_id.action_done()
             rec.state = 'done'
             # create history_line

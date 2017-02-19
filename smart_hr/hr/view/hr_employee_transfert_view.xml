@@ -65,6 +65,7 @@
 								<field name="governmental_entity"
 									attrs="{'invisible':[('transfert_nature', '=', 'internal_transfert')]}"
 									options='{"no_open": True, "no_create": True}' />
+								<field name="salary_proportion" attrs="{'invisible':[('ready_tobe_done', '=', False)]}" />
 								<field name="transfert_periode_id" options='{"no_open": True, "no_create": True}' />
 								<field name="justification_text"
 									attrs="{'invisible':[('special_conditions', '=', True)],'required':[('special_conditions', '=', False)]}" />
@@ -117,6 +118,7 @@
 											readonly="1" />
 										<field name="new_specific_id" />
 										<field name="new_type_id" />
+										
 									</group>
 									<group>
 										<field name="date_direct_action"

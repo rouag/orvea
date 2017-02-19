@@ -15,7 +15,6 @@
 								<field name="desire_number" />
 								<field name="needed_days" />
 								<field name="years_last_transfert" />
-								<field name="salary_proportion" />
 								<field name="allowance_job_nature" options='{"no_open": True, "no_create": True}' />
 								<field name="allowance_proportion" />
 								<field name="allowance_deputation" options='{"no_open": True, "no_create": True}' />
