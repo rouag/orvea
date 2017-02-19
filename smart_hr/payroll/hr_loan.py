@@ -6,20 +6,7 @@ from dateutil.relativedelta import relativedelta
 from umalqurra.hijri_date import HijriDate
 from openerp.exceptions import UserError
 from datetime import datetime
-
-MONTHS = [('01', 'محرّم'),
-          ('02', 'صفر'),
-          ('03', 'ربيع الأول'),
-          ('04', 'ربيع الثاني'),
-          ('05', 'جمادي الأولى'),
-          ('06', 'جمادي الآخرة'),
-          ('07', 'رجب'),
-          ('08', 'شعبان'),
-          ('09', 'رمضان'),
-          ('10', 'شوال'),
-          ('11', 'ذو القعدة'),
-          ('12', 'ذو الحجة')]
-
+from openerp.addons.smart_base.util.umalqurra import *
 
 class hrLoan(models.Model):
     _name = 'hr.loan'

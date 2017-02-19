@@ -11,22 +11,10 @@ from umalqurra.hijri_date import HijriDate
 from openerp.addons.smart_base.util.time_util import float_time_convert
 from openerp.addons.smart_base.util.time_util import time_float_convert
 from openerp.addons.smart_base.util.time_util import float_time_convert_str
-
+from openerp.addons.smart_base.util.umalqurra import *
 from dateutil import relativedelta
 
 FORMAT_TIME = '%H:%M:%S'
-MONTHS = [('01', 'محرّم'),
-          ('02', 'صفر'),
-          ('03', 'ربيع الأول'),
-          ('04', 'ربيع الثاني'),
-          ('05', 'جمادي الأولى'),
-          ('06', 'جمادي الآخرة'),
-          ('07', 'رجب'),
-          ('08', 'شعبان'),
-          ('09', 'رمضان'),
-          ('10', 'شوال'),
-          ('11', 'ذو القعدة'),
-          ('12', 'ذو الحجة')]
 
 
 class ResourceCalendar(models.Model):
@@ -97,7 +85,7 @@ class HrAttendanceImport(models.Model):
 
     name = fields.Char(string='المسمى', readonly=1, states={'new': [('readonly', 0)]})
     description = fields.Text(string=' ملاحظات ', readonly=1, states={'new': [('readonly', 0)]})
-    data = fields.Binary(string='الملف', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    data = fields.Binary(string='الملف', required=1, readonly=1, states={'new': [('readonly', 0)]}, attachment=True)
     data_name = fields.Char(string='الملف')
     create_uid = fields.Many2one('res.users', 'المستخدم', readonly=1)
     create_date = fields.Datetime(string='التاريخ', readonly=1, states={'new': [('readonly', 0)]})

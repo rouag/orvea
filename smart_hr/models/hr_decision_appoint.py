@@ -82,22 +82,22 @@ class HrDecisionAppoint(models.Model):
     
    
     # attachments files
-    order_picture = fields.Binary(string='صورة الخطاب', required=1) 
+    order_picture = fields.Binary(string='صورة الخطاب', required=1, attachment=True) 
     order_picture_name = fields.Char(string='صورة الخطاب') 
-    medical_examination_file = fields.Binary(string='وثيقة الفحص الطبي') 
+    medical_examination_file = fields.Binary(string='وثيقة الفحص الطبي', attachment=True) 
     date_medical_examination = fields.Date(string='تاريخ الفحص الطبي') 
     medical_examination_name = fields.Char(string='وثيقة الفحص الطبي') 
-    order_enquiry_file = fields.Binary(string='طلب الاستسفار')
-    file_salar_recent = fields.Binary(string='تعهد من الموظف')
+    order_enquiry_file = fields.Binary(string='طلب الاستسفار', attachment=True)
+    file_salar_recent = fields.Binary(string='تعهد من الموظف', attachment=True)
     file_engagement = fields.Many2many('ir.attachment', string='إرفاق مزيد من الوثائق')
     # file_engagement = fields.Binary(string = 'تعهد من المترشح')
     number_appoint = fields.Char(string='رقم قرار التعين ')
     date_appoint = fields.Date(string='تاريخ قرار  التعين')
-    file_appoint = fields.Binary(string='صورة قرار التعين')
+    file_appoint = fields.Binary(string='صورة قرار التعين', attachment=True)
     
     number_direct_appoint = fields.Char(string='رقم قرار المباشرة ')
     date_direct_appoint = fields.Date(string='تاريخ قرار المباشرة')
-    file_direct_appoint = fields.Binary(string='صورة قرار المباشرة')
+    file_direct_appoint = fields.Binary(string='صورة قرار المباشرة', attachment=True)
     file_direct_appoint_name  = fields.Char(string='صورة قرار المباشرة') 
     
     order_enquiry_file_name = fields.Char(string=' طلب الاستسفار') 
@@ -409,6 +409,10 @@ class HrDecisionAppoint(models.Model):
             self.employee_id.write({'medical_exam': self.date_medical_examination})
         self.job_id.write({'state': 'occupied', 'employee': self.employee_id.id, 'occupied_date': fields.Datetime.now()})
         self.state = 'done'
+        # set salary grid for the employee
+        salary_grid_id = self.env['salary.grid.detail'].search([('type_id', '=', self.type_id.id), ('grade_id', '=', self.grade_id.id), ('degree_id', '=', self.degree_id.id)], limit=1)
+        if salary_grid_id:
+            self.employee_id.write({'salary_grid_id': salary_grid_id.id})
         # close last active appoint for the employee
         last_appoint = self.employee_id.decision_appoint_ids.search([('state_appoint', '=', 'active'), ('is_started', '=', True)], limit=1)
         if last_appoint:

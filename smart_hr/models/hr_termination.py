@@ -41,7 +41,7 @@ class hr_termination(models.Model):
     letter_source = fields.Char(string=u'جهة الخطاب', required=1)
     letter_no = fields.Char(string=u'رقم الخطاب',  required=1)
     letter_date = fields.Date(string=u'تاريخ الخطاب')
-    file_attachment = fields.Binary(string=u'مرفق الصورة الضوئية')
+    file_attachment = fields.Binary(string=u'مرفق الصورة الضوئية', attachment=True)
     file_attachment_name = fields.Char(string=u'مرفق الصورة الضوئية')
     state = fields.Selection([
         ('draft', u'طلب'),

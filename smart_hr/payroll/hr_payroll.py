@@ -5,25 +5,32 @@ from openerp import models, fields, api, tools, _
 import openerp.addons.decimal_precision as dp
 from datetime import datetime
 from datetime import timedelta
-
-MONTHS = [('01', 'محرّم'),
-          ('02', 'صفر'),
-          ('03', 'ربيع الأول'),
-          ('04', 'ربيع الثاني'),
-          ('05', 'جمادي الأولى'),
-          ('06', 'جمادي الآخرة'),
-          ('07', 'رجب'),
-          ('08', 'شعبان'),
-          ('09', 'رمضان'),
-          ('10', 'شوال'),
-          ('11', 'ذو القعدة'),
-          ('12', 'ذو الحجة')]
+from openerp.addons.smart_base.util.umalqurra import *
+from umalqurra.hijri_date import HijriDate
+from umalqurra.hijri import Umalqurra
+from tempfile import TemporaryFile
+import base64
+from openerp.exceptions import UserError
 
 
 class HrPayslipRun(models.Model):
     _name = 'hr.payslip.run'
     _inherit = ['hr.payslip.run', 'mail.thread']
 
+    @api.multi
+    def get_default_month(self):
+        return get_current_month_hijri(HijriDate)
+
+    @api.one
+    @api.depends('slip_ids.salary_net')
+    def _amount_all(self):
+        amount_total = 0.0
+        for line in self.slip_ids:
+            amount_total += line.salary_net
+        self.amount_total = amount_total
+
+    month = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'draft': [('readonly', 0)]}, default=get_default_month)
+    employee_ids = fields.Many2many('hr.employee', string='الموظفين', readonly=1, states={'draft': [('readonly', 0)]})
     state = fields.Selection([('draft', 'مسودة'),
                               ('verify', 'في إنتظار الإعتماد'),
                               ('done', 'تم'),
@@ -31,33 +38,124 @@ class HrPayslipRun(models.Model):
                               ('close', 'مغلق'),
                               ], 'الحالة', select=1, readonly=1, copy=False)
 
+    amount_total = fields.Float(string='الإجمالي', store=True, readonly=True, compute='_amount_all')
+    bank_file = fields.Binary(string='الملف البنكي', attachment=True)
+    bank_file_name = fields.Char(string='مسمى الملف البنكي')
+
+    @api.onchange('month')
+    def onchange_month(self):
+        if self.month:
+            self.date_start = get_hijri_month_start(HijriDate, Umalqurra, self.month)
+            self.date_end = get_hijri_month_end(HijriDate, Umalqurra, self.month)
+            self.name = u'مسير جماعي  شهر %s' % self.month
+
     @api.one
     def action_verify(self):
         self.state = 'verify'
         for slip in self.slip_ids:
             if slip.state == 'draft':
-                slip.state = 'verify'
+                slip.action_verify()
 
     @api.one
     def action_done(self):
         self.state = 'done'
         for slip in self.slip_ids:
-            slip.state = 'done'
+            slip.action_done()
+        self.generate_file()
 
     @api.one
     def action_cancel(self):
         self.state = 'cancel'
         for slip in self.slip_ids:
-            slip.state = 'cancel'
+            slip.action_cancel()
+
+    @api.multi
+    def compute_sheet(self):
+        payslip_obj = self.env['hr.payslip']
+        for employee in self.employee_ids:
+            payslip_val = {'employee_id': employee.id,
+                           'month': self.month,
+                           'name': _('راتب موظف %s لشهر %s') % (employee.name, self.month),
+                           'payslip_run_id': self.id,
+                           'date_from': self.date_start,
+                           'date_to': self.date_end
+                           }
+            payslip = payslip_obj.create(payslip_val)
+            payslip.onchange_employee()
+            payslip.compute_sheet()
+
+    @api.multi
+    def generate_file(self):
+        fp = TemporaryFile()
+        HeaderKey = '000000000000'
+        CalendarType = 'H'
+        current_date = HijriDate.today()
+        year = str(int(current_date.year)).zfill(4)
+        month = str(int(current_date.month)).zfill(2)
+        day = str(int(current_date.day)).zfill(2)
+        SendDate = year + month + day
+        ValueDate = SendDate  # TODO: the ValueDate
+        TotalAmount = str(self.amount_total).replace('.', '').replace(',', '').zfill(15)
+        Totalemployees = str(len(self.slip_ids)).zfill(8)
+        AccountNumber = str(self.env.user.company_id.vat or '').zfill(13)
+        Fileparameter = '1'
+        Filesequence = '01'
+        Filler = ''.rjust(65, ' ')
+        file_dec = ''
+        file_dec += u'%s%s%s%s%s%s%s%s%s%s\n' % (HeaderKey, CalendarType, SendDate, ValueDate, TotalAmount, Totalemployees, AccountNumber, Fileparameter, Filesequence, Filler)
+        for playslip in self.slip_ids:
+            employee = playslip.employee_id
+            # add line for each playslip
+            EmployeeNumber = employee.number.ljust(12, ' ')
+            # search account bank for this employee
+            banks = self.env['res.partner.bank'].search([('employee_id', '=', employee.id), ('is_deposit', '=', True)])
+            if not banks:
+                raise UserError(u"يجب إنشاء حساب بنكي للإيداع  للموظف  %s " % employee.name)
+            employee_bank = banks[0]
+            EmployeeBankID = employee_bank.bank_id.bic.ljust(4, ' ')
+            EmployeeAccountNumber = employee_bank.acc_number.ljust(24, ' ')
+            EmployeeName = '*****'.ljust(50, ' ')
+            EmployeeAmount = str(playslip.salary_net).replace('.', '').replace(',', '').zfill(15)
+            CivilianID = employee.identification_id.zfill(15)
+            EmployeeIDType = '0'
+            ProcessFlag = ' '
+            BlockAmount = ' '
+            KawadarFlag = ' '
+            Filler = ''.rjust(11, ' ')
+            file_dec += u'%s%s%s%s%s%s%s%s%s%s%s\n' % (EmployeeNumber, EmployeeBankID, EmployeeAccountNumber, EmployeeName, EmployeeAmount, CivilianID, EmployeeIDType, ProcessFlag, BlockAmount, KawadarFlag, Filler)
+        # remove the \n
+        file_dec = file_dec[0:len(file_dec) - 1]
+        print '------file_dec---\n',file_dec 
+        fp.write(file_dec.encode('utf-8'))
+        fp.seek(0)
+        bank_file_name = u'مسير جماعي  شهر %s.%s' % (self.month, 'txt')
+        self.bank_file = base64.encodestring(fp.read())
+        self.bank_file_name = bank_file_name
+        fp.close()
+        return True
+
+
+class HrPayslipDifferenceHistory(models.Model):
+    _name = 'hr.payslip.difference.history'
+    _description = 'الفروقات المتخلدة'
+
+    payslip_id = fields.Many2one('hr.payslip', 'Pay Slip', required=1, ondelete='cascade', select=1)
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف')
+    month = fields.Integer(string=u'الشهر')
+    amount = fields.Float(string=u'المبلغ المتخلد')
 
 
 class HrPayslip(models.Model):
     _inherit = 'hr.payslip'
 
-    # TODO: generate التسلسل
+    @api.multi
+    def get_default_month(self):
+        return get_current_month_hijri(HijriDate)
 
-    month = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'draft': [('readonly', 0)]})
+    month = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'draft': [('readonly', 0)]}, default=get_default_month)
     days_off_line_ids = fields.One2many('hr.payslip.days_off', 'payslip_id', 'الإجازات والغيابات', readonly=True, states={'draft': [('readonly', False)]})
+    salary_net = fields.Float(string='صافي الراتب')
+    difference_history_ids = fields.One2many('hr.payslip.difference.history', 'payslip_id', 'الفروقات المتخلدة')
     state = fields.Selection([('draft', 'مسودة'),
                               ('verify', 'في إنتظار الإعتماد'),
                               ('done', 'تم'),
@@ -66,6 +164,7 @@ class HrPayslip(models.Model):
 
     @api.one
     def action_verify(self):
+        self.number = self.env['ir.sequence'].get('seq.hr.payslip')
         self.state = 'verify'
 
     @api.one
@@ -83,12 +182,9 @@ class HrPayslip(models.Model):
         if (not self.employee_id) or (not self.date_from) or (not self.date_to):
             return
         employee_id = self.employee_id
-        date_from = self.date_from
-        date_to = self.date_to
-        # get name fo month
-        # ttyme = datetime.fromtimestamp(time.mktime(time.strptime(date_from, "%Y-%m-%d")))
-        # tools.ustr(ttyme.strftime('%B-%Y')
-        self.name = _('راتب الموظف %s للفترة : %s - %s') % (employee_id.name, date_from, date_to)
+        self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.month)
+        self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.month)
+        self.name = _('راتب موظف %s لشهر %s') % (employee_id.name, self.month)
         self.company_id = employee_id.company_id
         # computation of أيام العمل
         worked_days_line_ids, leaves = self.get_worked_day_lines_without_contract(self.employee_id.id, self.employee_id.calendar_id, self.date_from, self.date_to)
@@ -165,6 +261,7 @@ class HrPayslip(models.Model):
         :param employee_id:
         :param month:
         '''
+        print '-----month-----', month
         deduction_ids = self.env['hr.deduction.line'].search([('state', '=', 'waiting'),
                                                               ('employee_id', '=', employee_id),
                                                               ('month', '=', month)])
@@ -197,25 +294,29 @@ class HrPayslip(models.Model):
         salary_grid_obj = self.env['salary.grid.detail']
         bonus_line_obj = self.env['hr.bonus.line']
         loan_obj = self.env['hr.loan']
+        difference_line_obj = self.env['hr.difference.line']
         for payslip in self:
             # delete old line
             payslip.line_ids.unlink()
+            # delete old difference_history
+            payslip.difference_history_ids.unlink()
             # generate  lines
             employee = payslip.employee_id
             ttype = employee.job_id.type_id
             grade = employee.job_id.grade_id
             degree = employee.degree_id
             # search the correct salary_grid for this employee
-            salary_grids = salary_grid_obj.search([('type_id', '=', ttype.id), ('grade_id', '=', grade.id), ('degree_id', '=', degree.id)])
+            salary_grids = employee.salary_grid_id
             if not salary_grids:
                 return
-            salary_grid = salary_grids[0]
+            salary_grid = employee.salary_grid_id
             basic_salary = salary_grid.basic_salary
             # compute
             lines = []
             sequence = 1
             allowance_total = 0.0
             deduction_total = 0.0
+            difference_total = 0.0
             # 1- الراتب الأساسي
             basic_salary_val = {'name': u'الراتب الأساسي',
                                 'slip_id': payslip.id,
@@ -280,6 +381,8 @@ class HrPayslip(models.Model):
                     bonus_type = 'reward'
                 if bonus.indemnity_id:
                     bonus_type = 'indemnity'
+                if bonus.increase_id:
+                    bonus_type = 'increase'
                 bonus_amount = bonus.get_value(employee.id)
                 bonus_val = {'name': bonus.name,
                              'slip_id': payslip.id,
@@ -293,6 +396,21 @@ class HrPayslip(models.Model):
                 lines.append(bonus_val)
                 allowance_total += bonus_amount
                 sequence += 1
+            # 4 - الفروقات
+            difference_lines = difference_line_obj.search([('employee_id', '=', employee.id), ('difference_id.state', '=', 'done'), ('month', '<=', payslip.month)])
+            for difference in difference_lines:
+                difference_val = {'name': difference.name,
+                                  'slip_id': payslip.id,
+                                  'employee_id': employee.id,
+                                  'rate': 0.0,
+                                  'amount': difference.amount,
+                                  'category': 'difference',
+                                  'type': 'difference',
+                                  'sequence': sequence
+                                  }
+                lines.append(difference_val)
+                difference_total += difference.amount
+                sequence += 1
             # 4- الحسميات
             deduction_retard_leave = 0.0
             deduction_absence = 0.0
@@ -300,6 +418,7 @@ class HrPayslip(models.Model):
             retard_leave_days = 0
             absence_days = 0
             holiday_days = 0
+            sanction_days = 0
 
             for line in payslip.days_off_line_ids:
                 if line.type == 'retard_leave':
@@ -308,6 +427,8 @@ class HrPayslip(models.Model):
                     absence_days += line.number_of_days
                 elif line.type == 'holiday':
                     holiday_days += line.number_of_days
+                elif line.type == 'sanction':
+                    sanction_days += line.number_of_days
 
             # get number of days by month
             worked_days_line_ids, leaves = self.get_worked_day_lines_without_contract(employee.id, employee.calendar_id, payslip.date_from, payslip.date_to, False)
@@ -342,6 +463,22 @@ class HrPayslip(models.Model):
                 lines.append(retard_leave_val)
                 deduction_total += deduction_absence
                 sequence += 1
+            # عقوبة
+            print '-----------sanction_days--------', sanction_days
+            if sanction_days:
+                deduction_sanction = (basic_salary + allowance_total) / days_by_month * sanction_days
+                sanction_val = {'name': u'عقوبة',
+                                'slip_id': payslip.id,
+                                'employee_id': employee.id,
+                                'rate': sanction_days,
+                                'amount': deduction_sanction,
+                                'category': 'deduction',
+                                'type': 'sanction',
+                                'sequence': sequence
+                                }
+                lines.append(sanction_val)
+                deduction_total += deduction_sanction
+                sequence += 1
             # 5- القروض
             loans = loan_obj.get_loan_employee_month(payslip.month, employee.id)
             for loan in loans:
@@ -357,6 +494,29 @@ class HrPayslip(models.Model):
                 lines.append(loan_val)
                 deduction_total += loan['amount']
                 sequence += 1
+            # check if deduction_total is > than 1/3 of basic salary
+            if deduction_total > salary_grid.basic_salary / 3:
+                vals = {'name': 'فرق الحسميات أكثر من ثلث الراتب',
+                        'slip_id': payslip.id,
+                        'employee_id': employee.id,
+                        'rate': 0.0,
+                        'amount': deduction_total - salary_grid.basic_salary / 3,
+                        'category': 'deduction',
+                        'type': 'difference',
+                        'sequence': sequence
+                        }
+                lines.append(vals)
+                deduction_total -= salary_grid.basic_salary / 3
+                sequence += 1
+                # save the rest for the next month
+                month = fields.Date.from_string(self.date_from).month + 1
+                if month > 12:
+                    month = 1
+                self.env['hr.payslip.difference.history'].create({'payslip_id': self.id,
+                                                                  'amount': deduction_total - salary_grid.basic_salary / 3,
+                                                                  'employee_id': employee.id,
+                                                                  'month': month,
+                                                                  })
             # 6- التقاعد‬
             retirement_amount = (basic_salary + allowance_total - deduction_total) * salary_grid.retirement / 100.0
             retirement_val = {'name': 'التقاعد',
@@ -384,7 +544,7 @@ class HrPayslip(models.Model):
             deduction_total += insurance_amount
             sequence += 1
             # 0- صافي الراتب
-            salary_net = basic_salary + allowance_total - deduction_total
+            salary_net = basic_salary + allowance_total + difference_total - deduction_total
             salary_net_val = {'name': u'صافي الراتب',
                               'slip_id': payslip.id,
                               'employee_id': employee.id,
@@ -418,6 +578,7 @@ class HrPayslipLine(models.Model):
     # added
     category = fields.Selection([('basic_salary', 'الراتب الأساسي'),
                                  ('allowance', 'البدلات'),
+                                 ('difference', 'فروقات'),
                                  ('deduction', 'الحسميات'),
                                  ('retirement', 'التقاعد'),
                                  ('insurance', 'التأمين'),
@@ -428,6 +589,8 @@ class HrPayslipLine(models.Model):
                              ('allowance', 'البدلات'),
                              ('reward', u'المكافآت‬'),
                              ('indemnity', 'التعويضات'),
+                             ('increase', 'العلاوات'),
+                             ('difference', 'فروقات'),
                              ('retard_leave', 'تأخير وخروج'),
                              ('absence', 'غياب'),
                              ('holiday', 'إجازة'),
@@ -435,6 +598,7 @@ class HrPayslipLine(models.Model):
                              ('retirement', 'التقاعد'),
                              ('insurance', 'التأمين'),
                              ('salary_net', 'صافي الراتب'),
+                             ('sanction', 'عقوبة')
                              ], string='النوع', select=1, readonly=1)
 
 
@@ -447,7 +611,7 @@ class HrPayslipDaysOff(models.Model):
     code = fields.Char('الرمز', required=0)
     number_of_days = fields.Float('عدد الأيام')
     number_of_hours = fields.Float('عدد الساعات')
-    type = fields.Selection([('retard_leave', 'تأخير وخروج'), ('absence', 'غياب'), ('holiday', 'إجازة')], string='النوع', required=1)
+    type = fields.Selection([('retard_leave', 'تأخير وخروج'), ('absence', 'غياب'), ('holiday', 'إجازة'), ('sanction', 'عقوبة')], string='النوع', required=1)
 
 
 class HrSalaryRule(models.Model):

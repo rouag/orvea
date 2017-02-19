@@ -8,7 +8,8 @@ from openerp.exceptions import except_orm, Warning, RedirectWarning
 class HierarchyLevel(models.Model):
     _name = 'hierarchy.level'
     _description = u'مستوى العمق في ‫الهيكل‬'
-    
+    _rec_name = 'department_type'
+
     department_type = fields.Many2one('hr.department.type', string=u'الإدارة نوع', required=True)
     level = fields.Integer(string=u'العمق', required=True)
 

@@ -12,4 +12,7 @@ L 1419
                 } else {
                     $group_column.prepend('<span class="fa">');
                 }
-                
+-------------------------------------------------------------------------------------------
+1) comment this abose code in hr_payslip module to run smart_hr module.
+if not values['contract_id']:
+	raise UserError(_('You must set a contract to create a payslip line.'))                

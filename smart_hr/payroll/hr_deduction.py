@@ -5,19 +5,9 @@ from openerp.exceptions import ValidationError
 from dateutil import relativedelta
 import time as time_date
 from datetime import datetime
-
-MONTHS = [('01', 'محرّم'),
-          ('02', 'صفر'),
-          ('03', 'ربيع الأول'),
-          ('04', 'ربيع الثاني'),
-          ('05', 'جمادي الأولى'),
-          ('06', 'جمادي الآخرة'),
-          ('07', 'رجب'),
-          ('08', 'شعبان'),
-          ('09', 'رمضان'),
-          ('10', 'شوال'),
-          ('11', 'ذو القعدة'),
-          ('12', 'ذو الحجة')]
+from openerp.addons.smart_base.util.umalqurra import *
+from umalqurra.hijri_date import HijriDate
+from umalqurra.hijri import Umalqurra
 
 
 class hrDeduction(models.Model):
@@ -26,9 +16,13 @@ class hrDeduction(models.Model):
     _order = 'id desc'
     _description = u'الحسميات'
 
+    @api.multi
+    def get_default_month(self):
+        return get_current_month_hijri(HijriDate)
+
     name = fields.Char(string=' المسمى', required=1, readonly=1, states={'new': [('readonly', 0)]})
     # TODO: get default MONTH
-    month = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    month = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=get_default_month)
     date = fields.Date(string='تاريخ الإنشاء', required=1, default=fields.Datetime.now(), readonly=1, states={'new': [('readonly', 0)]})
     date_from = fields.Date('تاريخ من', default=lambda *a: time_date.strftime('%Y-%m-01'),
                             readonly=1, states={'new': [('readonly', 0)]})
@@ -46,6 +40,8 @@ class hrDeduction(models.Model):
     @api.onchange('month')
     def onchange_month(self):
         if self.month:
+            self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.month)
+            self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.month)
             self.name = u'حسميات شهر %s' % self.month
             line_ids = []
             # delete current line
@@ -73,6 +69,8 @@ class hrDeduction(models.Model):
                     val_absence = val.copy()
                     val_absence.update({'amount': summary.days_absence, 'deduction_type_id': absence_type.id})
                     line_ids.append(val_absence)
+            # العقوبات
+            line_ids += self.deduction_sanctions()
             self.line_ids = line_ids
 
     @api.one
@@ -94,6 +92,30 @@ class hrDeduction(models.Model):
         for line in self.line_ids:
             line.state = 'cancel'
 
+    @api.multi
+    def deduction_sanctions(self):
+        line_ids = []
+        sanction_line_ids = self.env['hr.sanction.ligne'].search([('sanction_id.date_sanction_start', '>=', self.date_from),
+                                                                  ('sanction_id.date_sanction_start', '<=', self.date_to),
+                                                                  ('sanction_id.type_sanction.deduction', '=', True),
+                                                                  ('sanction_id.state', '=', 'done')
+                                                                  ])
+        deduction_type_obj = self.env['hr.deduction.type']
+        sanction_deduction_type = deduction_type_obj.search([('type', '=', 'sanction')], limit=1)
+        if sanction_deduction_type:
+            for line in sanction_line_ids:
+                vals = {'deduction_id': self.id,
+                        'employee_id': line.employee_id.id,
+                        'department_id': line.employee_id.department_id and line.employee_id.department_id.id or False,
+                        'job_id': line.employee_id.job_id and line.employee_id.job_id.id or False,
+                        'number': line.employee_id.number,
+                        'amount': line.days_number,
+                        'deduction_type_id': sanction_deduction_type.id,
+                        'state': 'waiting'
+                        }
+                line_ids.append(vals)
+        return line_ids
+
 
 class hrDeductionLine(models.Model):
     _name = 'hr.deduction.line'
@@ -107,6 +129,7 @@ class hrDeductionLine(models.Model):
     deduction_type_id = fields.Many2one('hr.deduction.type', string='نوع الحسم', required=1)
     amount = fields.Char(string='عدد أيام الحسم', required=1)
     month = fields.Selection(MONTHS, related='deduction_id.month', store=True, readonly=True, string='الشهر')
+    hr_sanction_ligne_id = fields.Many2one('hr.sanction.ligne', string='العقوبة')
     # do the store=True
     deduction_state = fields.Selection(related='deduction_id.state', store=True, string='الحالة')
     state = fields.Selection([('waiting', 'في إنتظار الحسم'),
@@ -132,7 +155,7 @@ class hrDeductionType(models.Model):
 
     name = fields.Char(string=' الوصف', required=1)
     code = fields.Char(string='الرمز', required=1)
-    type = fields.Selection([('retard_leave', 'تأخير وخروج'), ('absence', 'غياب')], string='النوع', required=1)
+    type = fields.Selection([('retard_leave', 'تأخير وخروج'), ('absence', 'غياب'), ('sanction', 'عقوبة')], string='النوع', required=1)
 
     @api.multi
     def name_get(self):

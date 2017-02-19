@@ -90,10 +90,11 @@
 			<field name="inherit_id" ref="hr.view_employee_tree" />
 			<field name="arch" type="xml">
 				<xpath expr="/tree" position='replace'>
-					<tree string="طلبات بيانات موظف">
-						<field name="name" />
-						<field name="employee_state" />
-					</tree>
+						<field name="name" position="after">
+						<field name="display_name" string="الموظف" />
+						<field name="number" string="الرقم الوظيفي" />
+					
+						</field>
 				</xpath>
 			</field>
 		</record>
@@ -121,7 +122,7 @@
 								attrs="{'invisible': [('employee_state', '!=', 'employee')]}" />
 						</header>
 						<sheet>
-
+						<field name="salary_grid_id" invisible="1" />
 							<div class="oe_button_box" name="button_box" position="inside">
 								<button name="%(smart_hr.action_hr_loan)d" class="oe_stat_button"
 									context="{'search_default_employee_id': id}" icon="fa-money"
@@ -400,8 +401,8 @@
 			<field name="inherit_id" ref="hr.view_employee_form" />
 			<field name="arch" type="xml">
 				<xpath expr="//div[@name='button_box']" position="inside">
-					<button name="%(hr_appraisal.open_view_hr_appraisal_tree2)d" class="oe_inline oe_stat_button"
-						icon="fa-sitemap" type="action">
+					<button name="%(hr_appraisal.open_view_hr_appraisal_tree2)d"
+						class="oe_inline oe_stat_button" icon="fa-sitemap" type="action">
 						<field name="appraisal_count" widget="statinfo" />
 					</button>
 				</xpath>

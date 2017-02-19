@@ -18,8 +18,8 @@
 						<group>
 							<group>
 								<field name="name" />
-								<field name="employee_id" />
-								<field name="type_procedure" />
+								<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+								<field name="type_procedure"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 
 							</group>
 							<group>

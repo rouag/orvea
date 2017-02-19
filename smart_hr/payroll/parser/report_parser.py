@@ -10,7 +10,7 @@ from umalqurra.hijri_date import HijriDate
 class MessierSalaires(report_sxw.rml_parse):
 
     def __init__(self, cr, uid, name, context):
-        super(EmployeeTransfert, self).__init__(cr, uid, name, context=context)
+        super(MessierSalaires, self).__init__(cr, uid, name, context=context)
         self.localcontext.update({
             'get_hijri_date': self._get_hijri_date,
            

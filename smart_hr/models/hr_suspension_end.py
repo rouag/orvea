@@ -29,6 +29,7 @@ class hr_suspension_end(models.Model):
         ('refuse', u'رفض'),
     ], string=u'الحالة', default='draft', advanced_search=True)
     condemned = fields.Boolean(string=u'‫صدر‬ في حقه‬ عقوبة‬', default=False)
+    sentence = fields.Integer(string=u'مدة العقوبة (بالأيام)')
 
     @api.model
     def create(self, vals):

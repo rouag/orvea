@@ -26,23 +26,28 @@
 				<form string="القرارات">
 					<sheet>
 						<group>
-							<field name="name" />
-							<field name="date" />
-							<field name="decision_type_id" />
-							<field name="employee_id"
-								attrs="{
+							<group>
+								<field name="name" />
+								<field name="date" />
+							</group>
+							<group>
+								<field name="decision_type_id" />
+								<field name="employee_id"
+									attrs="{
 							'invisible':[('decision_type_id', 'in',[%(data_decision_promotion_member)d])],
 							'required':[('decision_type_id', 'not in',[%(data_decision_promotion_member)d])]}" />
-							<field name="employee_ids" domain="[('is_member','=', True)]" wdiget="many2many_tags"
-								attrs="{ 
+								<field name="employee_ids" domain="[('is_member','=', True)]"
+									wdiget="many2many_tags"
+									attrs="{ 
 							'invisible':[('decision_type_id', 'not in',[%(data_decision_promotion_member)d])],
 							'required':[('decision_type_id', 'in',[%(data_decision_promotion_member)d])]}" />
-							<field name="num_speech"
-								attrs="{'invisible':[('decision_type_id', 'not in',[%(data_decision_type38)d,%(data_decision_promotion_member)d])],
+								<field name="num_speech"
+									attrs="{'invisible':[('decision_type_id', 'not in',[%(data_decision_type38)d,%(data_decision_promotion_member)d])],
 							'required':[('decision_type_id', 'in',[%(data_decision_type38)d,%(data_decision_promotion_member)d])]}" />
-							<field name="date_speech"
-								attrs="{'invisible':[('decision_type_id', 'not in',[%(data_decision_type38)d,%(data_decision_promotion_member)d])],
+								<field name="date_speech"
+									attrs="{'invisible':[('decision_type_id', 'not in',[%(data_decision_type38)d,%(data_decision_promotion_member)d])],
 							'required':[('decision_type_id', 'in',[%(data_decision_type38)d,%(data_decision_promotion_member)d])]}" />
+							</group>
 						</group>
 						<field name="text" />
 					</sheet>

@@ -30,15 +30,11 @@ class HrDeputation(models.Model):
         if self._context.get('params', False):
             active_id =  self._context.get('params', False).get('id', False)
             deputation_obj = self.env['hr.deputation'].search([('id', '=', int(active_id))], limit=1)
-            print deputation_obj
         res = super(HrDeputation, self).fields_view_get(view_id=view_id, view_type=view_type,  toolbar=toolbar, submenu=submenu)
-        print res['arch']
         if view_type == 'form' and deputation_obj:
             arch = etree.XML(res['arch'])
             is_exelence = user.has_group('smart_hr.group_exelence_employee')
             secret_report = deputation_obj.secret_report
-            print '----secret_report-----', secret_report
-            print '----is_exelence-----', is_exelence
             if secret_report:
                 if is_exelence is False:
                     for node in arch.xpath("//field[@name='lettre_number']"):
@@ -50,10 +46,9 @@ class HrDeputation(models.Model):
                     for node in arch.xpath("//field[@name='file_lettre']"):
                         node.set('invisible', '1')
                         setup_modifiers(node, res['fields']['file_lettre'])
-                
             # Get current user group
             res['arch'] = etree.tostring(arch, encoding="utf-8")
-        print res['arch']
+     
         return res
 
     order_date = fields.Date(string='تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
@@ -79,20 +74,20 @@ class HrDeputation(models.Model):
     ministre_report = fields.Boolean(string='  قرار من الوزير المختص',default=False)
     decision_number = fields.Char(string='رقم القرارمن الوزير المختص')
     decision_date = fields.Date(string='تاريخ القرارمن الوزير المختص ', default=fields.Datetime.now(), readonly=1)
-    file_order = fields.Binary(string=' صورة القرار من الوزير المختص  ')
+    file_order = fields.Binary(string=' صورة القرار من الوزير المختص  ' , attachment=True)
     file_order_name = fields.Char(string=' صورة القرار من الوزير المختص  ')
-    file_decision = fields.Binary(string='نسخة من الحالة الميزانية')
+    file_decision = fields.Binary(string='نسخة من الحالة الميزانية', attachment=True)
     file_decision_name = fields.Char(string='نسخة من الحالة الميزانية')
     calcul_wekeend = fields.Boolean(string='  احتساب عطلة نهاية الاسبوع',default=False)
 
     lettre_number = fields.Char(string='رقم خطاب التغطية')
     lettre_date = fields.Date(string='تاريخ خطاب التغطية', default=fields.Datetime.now(), readonly=1)
-    file_lettre = fields.Binary(string='نسخة خطاب التغطية')
+    file_lettre = fields.Binary(string='نسخة خطاب التغطية', attachment=True)
     file_lettre_name = fields.Char(string='نسخة خطاب التغطية')
     
     report_number = fields.Char(string='عنوان التقرير')
     report_date = fields.Date(string='تاريخ التقرير', default=fields.Datetime.now(), readonly=1)
-    file_report = fields.Binary(string='صورة التقرير')
+    file_report = fields.Binary(string='صورة التقرير', attachment=True)
     file_report_name = fields.Char(string='صورة التقرير')
    
     amount = fields.Float(string='المبلغ')

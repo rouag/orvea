@@ -53,9 +53,9 @@
 			<field name="name">إعدادات عامة</field>
 		</record>
 
-		<menuitem name="النقل، الإعارة والتكليف" id="hr_setting_menu" groups="smart_hr.group_configuration"
-			parent="hr_root_organisation_configuration" sequence="1"
-			action="ir_actions_button_hr_setting" />
+		<menuitem name="النقل، الإعارة والتكليف" id="hr_setting_menu"
+			groups="smart_hr.group_configuration" parent="hr_root_organisation_configuration"
+			sequence="1" action="ir_actions_button_hr_setting" />
 
 
 
@@ -69,21 +69,26 @@
 					<sheet>
 						<group>
 							<group>
+								<field name="name" />
 								<field name="users_number" />
-								<field name="job_required_ids">
-									<tree>
-										<field name="name" />
-										<field name="name_number" />
-										<field name="department_id" />
-										<field name="grade_id" />
-										<field name="type_id"></field>
-									</tree>
-								</field>
 							</group>
-							<group>
-							</group>
-
 						</group>
+						<group string="وظائف اعضاء مجلس الهيئة">
+							<group>
+							<field name="job_required_ids"  nolabel="1" readonly="1">
+									<tree editable="bottom">
+									<field name="name" />
+									<field name="name_number" />
+									<field name="department_id"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									<field name="grade_id"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									<field name="type_id"></field>
+								</tree>
+							</field>
+						</group>
+						</group>
+
 					</sheet>
 				</form>
 			</field>

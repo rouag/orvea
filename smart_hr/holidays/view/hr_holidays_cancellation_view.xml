@@ -32,8 +32,8 @@
 					<sheet>
 						<group>
 							<field name="name" />
-							<field name="employee_id" />
-							<field name="holidays" />
+							<field name="employee_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+							<field name="holidays" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 						</group>
 						<group col="8">
 							<field name="note" />
@@ -124,7 +124,7 @@
 						</h1>
 						<group>
 							<field name="date" readonly="1" />
-							<field name="employee_id" />
+							<field name="employee_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 							<field name="holidays" widget="many2many"
 								domain="[('state', '=', 'done'), ('employee_id', '=', employee_id)]" />
 						</group>
@@ -217,7 +217,7 @@
 						</h1>
 						<group>
 							<field name="date" readonly="1" />
-							<field name="employee_id" />
+							<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 							<field name="holidays" widget="many2many"
 								domain="[('state', '=', 'done'), ('employee_id', '=', employee_id)]" />
 						</group>

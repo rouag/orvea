@@ -2,60 +2,7 @@
 <openerp>
 	<data>
 
-
-
-
-
-		<!-- هياكل الرواتب -->
-
-		<record model="ir.actions.act_window" id="action_hr_payroll_structure">
-			<field name="name">هياكل الرواتب</field>
-			<field name="res_model">hr.payroll.structure</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
-			<field name="context">{'readonly_by_pass': True}</field>
-		</record>
-
-		<menuitem id="hr_payroll_structure_menu" name="هياكل الرواتب"
-			sequence="5" groups="group_payroll_setting" parent="hr_payroll_setting"
-			action="action_hr_payroll_structure" />
-
-		<!-- التسلسل الهرمي للراتب -->
-
-		<menuitem id="hr_payroll_structure_tree_menu" name="التسلسل الهرمي للرواتب"
-			sequence="10" groups="group_payroll_setting" parent="hr_payroll_setting"
-			action="hr_payroll.action_view_hr_payroll_structure_tree" />
-
-		<!-- فئات قواعد الرواتب -->
-
-		<record model="ir.actions.act_window" id="action_hr_salary_rule_category">
-			<field name="name">فئات قواعد الرواتب</field>
-			<field name="res_model">hr.salary.rule.category</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
-			<field name="context">{'readonly_by_pass': True}</field>
-		</record>
-
-		<menuitem id="hr_salary_rule_category_menu" name="فئات قواعد الرواتب"
-			sequence="15" groups="group_payroll_setting" parent="hr_payroll_setting"
-			action="action_hr_salary_rule_category" />
-
-		<!-- قواعد إحتساب الرواتب -->
-
-		<record model="ir.actions.act_window" id="action_hr_salary_rule">
-			<field name="name">قواعد إحتساب الرواتب</field>
-			<field name="res_model">hr.salary.rule</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
-			<field name="context">{'readonly_by_pass': True}</field>
-		</record>
-
-		<menuitem id="hr_salary_rule_menu" name="قواعد إحتساب الرواتب"
-			sequence="20" groups="group_payroll_setting" parent="hr_payroll_setting"
-			action="action_hr_salary_rule" />
-
 		<!-- أنواع البدلات -->
-
 
 		<record model="ir.ui.view" id="hr_allowance_type_tree">
 			<field name="name">h_increase.tree</field>
