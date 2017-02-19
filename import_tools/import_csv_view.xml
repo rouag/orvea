@@ -14,10 +14,34 @@
 			<field name="arch" type="xml">
 				<form string="Importer Fichier " version="7.0">
 					<header>
-						<button name="import_file" string="Importer" type="object"
-							attrs="{'invisible': [('state', '=', 'done')]}" class="oe_highlight" />
-							<button name="import_bank" string="Importer" type="object"
-							 class="oe_highlight" />
+						<button name="import_contry" string="Country" type="object"  class="oe_highlight" />
+						<button name="import_region" string="Region" type="object"  class="oe_highlight" />
+						<button name="import_city" string="City" type="object"  class="oe_highlight" />
+					
+						<button name="import_degree" string="Degree" type="object"  class="oe_highlight" />
+						<button name="import_diplome" string="Diplome" type="object"  class="oe_highlight" />
+						<button name="import_grade" string="Grade" type="object"  class="oe_highlight" />
+						<button name="import_type" string="Type" type="object"  class="oe_highlight" />
+						
+						<button name="import_import_employee" string="Employees" type="object"  class="oe_highlight" />
+						<button name="import_education_level" string="Education level" type="object"  class="oe_highlight" />
+						<button name="import_passport" string="Passport" type="object"  class="oe_highlight" />
+						<button name="import_directeur_direct_for_employee" string="Employee Manager" type="object"  class="oe_highlight" />
+						<button name="import_bank" string="Bank" type="object"  class="oe_highlight" />
+						
+						<button name="import_groups_general" string="General Groups" type="object"  class="oe_highlight" />
+						<button name="import_group_specifique" string="Specific Groups" type="object"  class="oe_highlight" />
+						<button name="import_goupe_serie" string="Series" type="object"  class="oe_highlight" />
+						
+						
+						
+						<button name="import_name_job" string="Jobs Name" type="object"  class="oe_highlight" />
+						<button name="compte_bank" string="Bank Accounts" type="object"  class="oe_highlight" />
+						<button name="import_type_termination" string="Termination Types" type="object"  class="oe_highlight" />
+						<button name="import_dudpension" string="Suspension" type="object"  class="oe_highlight" />
+						
+						<button name="import_terminated" string="Termination" type="object"  class="oe_highlight" />
+								
 							
 						<field name="state" widget="statusbar" statusbar_visible="draft,failure,done" />
 					</header>

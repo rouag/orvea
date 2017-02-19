@@ -160,7 +160,6 @@
         'payroll/view/hr_loan_view.xml',
         'payroll/view/hr_increase_view.xml',
         'payroll/view/hr_difference.xml',
-        'view/hr.xml',  # TODO: ??
         'payroll/views/report_hr_deduction.xml',
         'payroll/views/report_payslip.xml',
         'payroll/views/report.xml',
@@ -209,6 +208,7 @@
         'holidays/views/hr_holidays_report.xml',
         'holidays/views/report_hr_holidays_decision.xml',
 
+        'view/hr.xml',
         # التقييم والإختبار
         'hr_appraisal/view/hr_appraisal_menu.xml',
         'hr_appraisal/view/hr_appraisal_view.xml',

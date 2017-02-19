@@ -281,7 +281,7 @@
 									</group>
 								</page>
 								<page string="بيانات البنك">
-									<group>
+								 
 										<group string="بيانات البنك">
 											<field name="address_home_id" invisible="1" />
 											<field name="bank_account_id" invisible="1" />
@@ -297,7 +297,7 @@
 												</tree>
 											</field>
 										</group>
-									</group>
+									 
 									<group name="active_group" invisible="1" />
 								</page>
 

@@ -39,4 +39,8 @@ comment this line : self.enterprise_expiration_check();
 
 menu settings --> technical --> views
 désactiver la view : 	Website Login Layout
+
+----------rename button upload file to تحميل ملف----------
+file /enterprise/web/static/src/xml/base.xm Line 952
+
                 
