@@ -16,6 +16,9 @@
 					<header>
 						<button name="import_file" string="Importer" type="object"
 							attrs="{'invisible': [('state', '=', 'done')]}" class="oe_highlight" />
+							<button name="import_bank" string="Importer" type="object"
+							 class="oe_highlight" />
+							
 						<field name="state" widget="statusbar" statusbar_visible="draft,failure,done" />
 					</header>
 					<sheet>
