@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-	<data noupdate="1">
+	<data noupdate="0">
 
 		<!--الاصناف -->
 	
 		
 		<record id="data_salary_grid_type" model="salary.grid.type">
 			<field name="name"> الموظفين الرسميين</field>
-			<field name="code">1
+			<field name="code">001
 			</field>
 			<field name="far_age">60</field>
 		</record>
@@ -19,13 +19,26 @@
 		</record>
 		<record id="data_salary_grid_type3" model="salary.grid.type">
 			<field name="name"> الموظفين المستخدمين</field>
-			<field name="code">3</field>
+			<field name="code">002</field>
 			<field name="far_age">60</field>
 
 		</record>
 		<record id="data_salary_grid_type4" model="salary.grid.type">
 			<field name="name">عمال بند الأجور</field>
-			<field name="code">4
+			<field name="code">003
+			</field>
+			<field name="far_age">60</field>
+		</record>
+		<record id="data_salary_grid_type7" model="salary.grid.type">
+			<field name="name">أعضاء الهيئة</field>
+			<field name="code">004
+			</field>
+			<field name="far_age">60</field>
+		</record>
+		
+		<record id="data_salary_grid_type8" model="salary.grid.type">
+			<field name="name">المكلفين من خارج الهيئة</field>
+			<field name="code">005
 			</field>
 			<field name="far_age">60</field>
 		</record>

@@ -25,7 +25,7 @@
 					<header>
 						<button name="import_attendance" string="تحديث" type="object" states="new"
 						  class="oe_highlight" />
-						 <button name="close_day" string="أخر تحديث" type="object" states="done"
+						 <button name="close_day" string="إغلاق اليوم" type="object" states="done"
 						  class="oe_highlight" />
 						<field name="state" widget="statusbar" statusbar_visible="new,done" />
 					</header>
