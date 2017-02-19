@@ -1,7 +1,8 @@
 update manuelle des fichiers 
 
-/enterprise/web/static/src/js/views/list_view.js
-L 1419
+
+file /enterprise/web/static/src/js/views/list_view.js L 1419
+
                 // group_label is html-clean (through format or explicit
                 // escaping if format failed), can inject straight into HTML
                 $group_column.html(_.str.sprintf(_t("%d - %s"),
@@ -33,4 +34,9 @@ file enterprise/web/static/src/js/menu.js  L15
 file /enterprise/web/static/src/js/app_switcher.js L 41
 comment this line : self.enterprise_expiration_check();
 
+
+--------fix login page------------
+
+menu settings --> technical --> views
+désactiver la view : 	Website Login Layout
                 
