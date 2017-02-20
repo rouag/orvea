@@ -34,9 +34,10 @@ class HrHolidays(models.Model):
     @api.multi
     def _set_external_autoritie(self):
         self.ensure_one()
-        search_external_authoritie = self.env["external.authorities"].search([('holiday_status', '=', self.holiday_status_id.id)])
-        if search_external_authoritie:
-            self.external_authoritie = search_external_authoritie[0]
+        for holiday in self:
+            search_external_authoritie = self.env["external.authorities"].search([('holiday_status', '=', holiday.holiday_status_id.id)])
+            if search_external_authoritie:
+                holiday.external_authoritie = search_external_authoritie[0]
 
     name = fields.Char(string=u'رقم القرار', advanced_search=True)
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now())
@@ -134,49 +135,50 @@ class HrHolidays(models.Model):
     @api.multi
     @api.depends("holiday_status_id", "entitlement_type")
     def _compute_current_holiday_stock(self):
-        current_stock = 0
-        if self.holiday_status_id and self.entitlement_type and self.holiday_status_id.id != self.env.ref('smart_hr.data_hr_holiday_compensation').id:
-            stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),('holiday_status_id', '=', self.holiday_status_id.id),
-                                                               ('entitlement_id.entitlment_category.id', '=', self.entitlement_type.id)])
-            entitlement_line = self.env['hr.holidays.status.entitlement'].search([('leave_type', '=', self.holiday_status_id.id),
-                                                               ('entitlment_category.id', '=', self.entitlement_type.id)])
-            if stock_line:
-                current_stock = stock_line.holidays_available_stock
-            elif entitlement_line and entitlement_line.periode:
-                current_stock = entitlement_line.holiday_stock_default
-            elif entitlement_line and not entitlement_line.periode:
-                if entitlement_line.holiday_stock_default > 0:
+        for holiday in self:
+            current_stock = 0
+            if holiday.holiday_status_id and holiday.entitlement_type and holiday.holiday_status_id.id != holiday.env.ref('smart_hr.data_hr_holiday_compensation').id:
+                stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', holiday.employee_id.id),('holiday_status_id', '=', holiday.holiday_status_id.id),
+                                                               ('entitlement_id.entitlment_category.id', '=', holiday.entitlement_type.id)])
+                entitlement_line = self.env['hr.holidays.status.entitlement'].search([('leave_type', '=', holiday.holiday_status_id.id),
+                                                               ('entitlment_category.id', '=', holiday.entitlement_type.id)])
+                if stock_line:
+                    current_stock = stock_line.holidays_available_stock
+                elif entitlement_line and entitlement_line.periode:
                     current_stock = entitlement_line.holiday_stock_default
-                else:
-                    current_stock = str("لا تحتاج رصيد")
-            if current_stock == 0:
-                if entitlement_line and not entitlement_line.periode and entitlement_line.holiday_stock_default == 0:
-                    current_stock = str("لا تحتاج رصيد")
-
-        elif not self.entitlement_type and self.holiday_status_id.id != self.env.ref('smart_hr.data_hr_holiday_compensation').id:
-            not_all_entitlement_line = self.env['hr.holidays.status.entitlement'].search_count([('leave_type', '=', self.holiday_status_id.id),
-                ('entitlment_category.id', '!=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)
-                ])
-            if not_all_entitlement_line == 0:
-                entitlement_line = self.env['hr.holidays.status.entitlement'].search([('leave_type', '=', self.holiday_status_id.id),
-                                                               ('entitlment_category.id', '=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)])
-                if entitlement_line and entitlement_line.periode == 100:
-                    stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
-                                                               ('holiday_status_id', '=', self.holiday_status_id.id),('entitlement_id.entitlment_category.id', '=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)
-                                                                ])
-                    if stock_line:
-                        current_stock = stock_line.holidays_available_stock
+                elif entitlement_line and not entitlement_line.periode:
+                    if entitlement_line.holiday_stock_default > 0:
+                        current_stock = entitlement_line.holiday_stock_default
                     else:
-                        if entitlement_line.holiday_stock_default==0:
-                            current_stock = str("لا تحتاج رصيد")
-                        else:
-                            current_stock = entitlement_line.holiday_stock_default
+                        current_stock = str("لا تحتاج رصيد")
                 if current_stock == 0:
                     if entitlement_line and not entitlement_line.periode and entitlement_line.holiday_stock_default == 0:
                         current_stock = str("لا تحتاج رصيد")
-        if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_compensation').id:
-            current_stock = self.employee_id.compensation_stock
-        self.current_holiday_stock = current_stock
+
+            elif not holiday.entitlement_type and holiday.holiday_status_id.id != self.env.ref('smart_hr.data_hr_holiday_compensation').id:
+                not_all_entitlement_line = self.env['hr.holidays.status.entitlement'].search_count([('leave_type', '=', holiday.holiday_status_id.id),
+                                                                                                    ('entitlment_category.id', '!=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)
+                                                                                                    ])
+                if not_all_entitlement_line == 0:
+                    entitlement_line = self.env['hr.holidays.status.entitlement'].search([('leave_type', '=', holiday.holiday_status_id.id),
+                                                               ('entitlment_category.id', '=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)])
+                    if entitlement_line and entitlement_line.periode == 100:
+                        stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', holiday.employee_id.id),
+                                                               ('holiday_status_id', '=', holiday.holiday_status_id.id),('entitlement_id.entitlment_category.id', '=', holiday.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)
+                                                                ])
+                        if stock_line:
+                            current_stock = stock_line.holidays_available_stock
+                        else:
+                            if entitlement_line.holiday_stock_default==0:
+                                current_stock = str("لا تحتاج رصيد")
+                            else:
+                                current_stock = entitlement_line.holiday_stock_default
+                        if current_stock == 0:
+                            if entitlement_line and not entitlement_line.periode and entitlement_line.holiday_stock_default == 0:
+                                current_stock = str("لا تحتاج رصيد")
+            if holiday.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_compensation').id:
+                current_stock = holiday.employee_id.compensation_stock
+            holiday.current_holiday_stock = current_stock
 
 
     @api.one
