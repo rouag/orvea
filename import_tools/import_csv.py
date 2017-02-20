@@ -73,13 +73,17 @@ class import_csv(osv.osv):
                     if city_ids:
                         city_name=city.browse(cr, uid, city_ids[0]).name
             employee_ids= employee.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
-            print 'employee_ids',str(row['EMP_NO'])
             if employee_ids:
                 emplyee_obj=employee.browse(cr, uid, employee_ids[0]) 
-                emplyee_obj.write( {'passport_id': str(row['DOC_NO']),'passport_date':str(row['ISSUE_DATE']),'passport_place':city_name,'passport_end_date':str(row['EXPIRY_DATE'])}, )
+                passport_end_date  = row['EXPIRY_DATE']
+                passport_date  = row['ISSUE_DATE']
+                if passport_end_date == 'NULL':
+                    passport_end_date = False
+                if passport_date == 'NULL':
+                    passport_date = False                    
+                emplyee_obj.write( {'passport_id': str(row['DOC_NO']),'passport_date':passport_date,'passport_place':city_name,
+                                    'passport_end_date':passport_end_date}, )
         
-        
-            
         
         return True
 
