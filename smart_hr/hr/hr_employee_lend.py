@@ -11,8 +11,14 @@ class HrEmployeeLend(models.Model):
     _description = u'طلب إعارة موظف'
     _rec_name = 'employee_id'
 
+    @api.multi
+    def get_basic_salary(self):
+        for rec in self:
+            if rec.basic_salary:
+                return rec.basic_salary
+
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
-    employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1, readonly=1, states={'new': [('readonly', 0)]})
     insurance_entity = fields.Many2one('res.partner', string=u'الجهة المعار إليها', domain=[('insurance', '=', True)], required=1, readonly=1, states={'new': [('readonly', 0)]})
     decision_number = fields.Char(string=u"رقم القرار", required=1, readonly=1, states={'new': [('readonly', 0)]})
     decision_date = fields.Date(string=u'تاريخ القرار', required=1, readonly=1, states={'new': [('readonly', 0)]})
@@ -25,6 +31,11 @@ class HrEmployeeLend(models.Model):
                               ('sectioned', u'مقطوعة')
                               ], readonly=1, default='new', string=u'الحالة')
     decision_file_name = fields.Char()
+    allowance_ids = fields.One2many('allowance.lend.amount', 'lend_id', string=u'البدلات التي تتحملها الجهة', readonly=1, states={'new': [('readonly', 0)]})
+    salary_proportion = fields.Float(string=u'نسبة الراتب التي تتحملها الجهة', default=100.0, readonly=1, states={'new': [('readonly', 0)]})
+    basic_salary = fields.Float(related='employee_id.salary_grid_id.basic_salary', string=u'الراتب الأساسي', readonly=1)
+    lend_salary = fields.Float(related='employee_id.salary_grid_id.basic_salary', string=u'الراتب في الإعارة', default=get_basic_salary, readonly=1, states={'new': [('readonly', 0)]})
+    pay_retirement = fields.Boolean(string=u'يدفع له نسبة التقاعد')
 
     @api.multi
     @api.depends('date_from', 'duration')
@@ -100,6 +111,15 @@ class HrEmployeeLend(models.Model):
     def action_sectioned(self):
         self.ensure_one()
         self.state = 'sectioned'
+
+
+class AllowanceLendAmount(models.Model):
+    _name = 'allowance.lend.amount'
+    _description = u'مبالغ البدلات في الإعارة'
+
+    lend_id = fields.Many2one('hr.employee.lend')
+    allowance_id = fields.Many2one('hr.allowance.type', string=u'البدل')
+    amount = fields.Float(string=u'المبلغ')
 
 
 class HrEmployeeLendExtend(models.TransientModel):

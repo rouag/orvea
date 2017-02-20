@@ -450,23 +450,60 @@ class hrDifference(models.Model):
     def get_difference_lend(self):
         self.ensure_one()
         line_ids = []
-        lend_ids = self.env['hr.employee.lend'].search([('date_to', '>=', self.date_from),
-                                                        ('date_to', '<=', self.date_to),
-                                                        ('state', '=', 'done')
+        lend_ids = self.env['hr.employee.lend'].search([('state', '=', 'done')
                                                         ])
         for lend_id in lend_ids:
+            # overlaped days in current month
+            lend_date_from = fields.Date.from_string(lend_id.date_from)
+            date_from = fields.Date.from_string(self.date_from)
+            lend_date_to = fields.Date.from_string(lend_id.date_to)
+            date_to = fields.Date.from_string(self.date_to)
+            duration_in_month = 0
+            if date_from >= lend_date_from and lend_date_to >= date_to:
+                duration_in_month = (date_from - date_to).days
+            if lend_date_from >= date_from and lend_date_to <= date_to:
+                duration_in_month = (lend_date_to - lend_date_from).days
+            if lend_date_from >= date_from and lend_date_to >= date_to:
+                duration_in_month = (date_to - lend_date_from).days
             grid_id = lend_id.employee_id.salary_grid_id
-            if grid_id:
-                amount = grid_id.basic_salary
-                if amount > 0:
+            if grid_id and duration_in_month > 0:
+                # 1) نسبة الراتب
+                amount = ((duration_in_month * (grid_id.basic_salary / 22) * lend_id.salary_proportion) / 100.0) * -1
+                if amount < 0:
                     vals = {'difference_id': self.id,
-                            'name': 'راتب',
+                            'name': 'نسبة الراتب',
                             'employee_id': lend_id.employee_id.id,
-                            'number_of_days': 0,
+                            'number_of_days': duration_in_month,
                             'number_of_hours': 0.0,
-                            'amount': (amount) * -1,
+                            'amount': amount,
                             'type': 'lend'}
                     line_ids.append(vals)
+                # 2) البدلات في الإعارة
+                alowances_in_grade_id = [rec.allowance_id for rec in grid_id.allowance_ids]
+                for allowance in lend_id.allowance_ids:
+                    if allowance not in alowances_in_grade_id:
+                        vals = {'difference_id': self.id,
+                                'name': allowance.allowance_id.name,
+                                'employee_id': lend_id.employee_id.id,
+                                'number_of_days': duration_in_month,
+                                'number_of_hours': 0.0,
+                                'amount': allowance.amount,
+                                'type': 'lend'}
+                        line_ids.append(vals)
+                # 3) حصة الحكومة من التقاعد
+                if lend_id.pay_retirement:
+                    hr_setting = self.env['hr.setting'].search([], limit=1)
+                    if hr_setting:
+                        amount = (grid_id.basic_salary * hr_setting.retirement_proportion) / 100.0
+                        if amount > 0:
+                            vals = {'difference_id': self.id,
+                                    'name': 'حصة الحكومة من التقاعد',
+                                    'employee_id': lend_id.employee_id.id,
+                                    'number_of_days': duration_in_month,
+                                    'number_of_hours': 0.0,
+                                    'amount': amount,
+                                    'type': 'lend'}
+                            line_ids.append(vals)
         return line_ids
 
     @api.multi

@@ -32,6 +32,7 @@
 							</group>
 							<group string="إعدادات التكليف‬‬">
 								<field name="assign_duration" />
+								<field name="retirement_proportion" />
 							</group>
 
 
