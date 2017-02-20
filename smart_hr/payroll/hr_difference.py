@@ -100,7 +100,6 @@ class hrDifference(models.Model):
                                                     ('date_to', '>=', self.date_from),
                                                    ('overtime_id.state', '=', 'finish')])
         overtime_lines = list(set(overtime_lines1 + overtime_lines2))
-        print '-'
         # TODO: dont compute not work days
         for overtime in overtime_lines:
             employee = overtime.employee_id
@@ -405,45 +404,38 @@ class hrDifference(models.Model):
                                                              ('state', '=', 'done')
                                                              ])
         for scholarship_id in scholarship_ids:
-            # ابتعاث داخلي
-            if scholarship_id.scholarship_type == self.env.ref('smart_hr.data_hr_shcolaship_internal'):
-                # get تفاصيل سلم الرواتب
-                grid_id = scholarship_id.employee_id.salary_grid_id
-                if grid_id:
-                    # تفاصيل سلم الرواتب
-                    allowance_ids = grid_id.allowance_ids
-                    # بدل النقل
-                    allowance_transport_id = self.env.ref('smart_hr.hr_allowance_type_01')
-                    if allowance_transport_id:
+            grid_id = scholarship_id.employee_id.salary_grid_id
+            if grid_id:
+                # 1) البدلات المستثناة
+                alowances_in_grade_id = [rec.allowance_id for rec in grid_id.allowance_ids]
+                for allowance in scholarship_id.hr_allowance_type_id:
+                    # check if the allowance in employe's salary_grade_id
+                    if allowance in alowances_in_grade_id:
                         amount = 0.0
-                        for allow in allowance_ids:
-                            if allow.allowance_id == allowance_transport_id:
+                        for allow in grid_id.allowance_ids:
+                            if allow.allowance_id == allowance:
                                 amount = allow.get_value(scholarship_id.employee_id.id)
                                 break
-                        if amount:
+                        if amount > 0:
                             vals = {'difference_id': self.id,
-                                    'name': allowance_transport_id.name,
+                                    'name': allowance.name,
                                     'employee_id': scholarship_id.employee_id.id,
                                     'number_of_days': 0.0,
                                     'number_of_hours': 0.0,
-                                    'amount': amount,
+                                    'amount': amount * -1,
                                     'type': 'scholarship'}
                             line_ids.append(vals)
-            # ابتعاث خارجي
-            if scholarship_id.scholarship_type == self.env.ref('smart_hr.data_hr_shcolaship_external') and scholarship_id.duration > 365:
-                grid_id = scholarship_id.employee_id.salary_grid_id
-                if grid_id:
-                    amount = scholarship_id.scholarship_type.salary_percent * grid_id.basic_salary / 100.0
-                    amount = grid_id.basic_salary
-                    if amount > 0:
-                        vals = {'difference_id': self.id,
-                                'name': 'راتب',
-                                'employee_id': scholarship_id.employee_id.id,
-                                'number_of_days': 0,
-                                'number_of_hours': 0.0,
-                                'amount': amount,
-                                'type': 'scholarship'}
-                        line_ids.append(vals)
+                # 2) نسبة الراتب
+                amount = grid_id.basic_salary - ((grid_id.basic_salary * scholarship_id.salary_percent) / 100.0)
+                if amount > 0:
+                    vals = {'difference_id': self.id,
+                            'name': allowance.name,
+                            'employee_id': scholarship_id.employee_id.id,
+                            'number_of_days': 0.0,
+                            'number_of_hours': 0.0,
+                            'amount': amount * -1,
+                            'type': 'scholarship'}
+                    line_ids.append(vals)
         return line_ids
 
     @api.multi
