@@ -53,7 +53,7 @@ class hrIncrease(models.Model):
     def action_hrm(self):
         employee_deprivated_ids = self.employee_deprivated_ids.ids
         employee_beneficiaries_ids = []
-        for employee in self.env['hr.employee'].search([('id', 'not in', employee_deprivated_ids), ('type_id.name', '!=', 'التعاقد')]):
+        for employee in self.env['hr.employee'].search([('id', 'not in', employee_deprivated_ids), ('type_id.name', '!=', self.env.ref('smart_hr.data_salary_grid_type6').id)]):
             employee_beneficiaries = self.env['hr.employee.increase.percent'].create({'employee_id': employee.id,'increase_percent': 0, 'increase_id': self.id})
 
         self.state = 'hrm'

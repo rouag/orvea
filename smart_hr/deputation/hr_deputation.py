@@ -120,7 +120,7 @@ class HrDeputation(models.Model):
                               ], string=u'حالة', default='draft', advanced_search=True)
     task_name = fields.Char(string=u' المهمة', required=1)
     duration = fields.Integer(string=u'المدة', compute='_compute_duration',readonly=1)
-    
+
     member_deputation = fields.Selection([
         ('member', u'انتداب عضو'),
         ('notmember', u'انتداب غيرعضو')
@@ -274,7 +274,7 @@ class HrDeputation(models.Model):
             date_from = fields.Date.from_string(self.date_from)
             date_to = fields.Date.from_string(self.date_to)
             self.duration = (date_to - date_from).days + 1
-            
+
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
         if self.employee_id :
