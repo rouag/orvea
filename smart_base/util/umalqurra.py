@@ -33,6 +33,7 @@ def get_current_month_hijri(HijriDate):
     um = HijriDate.today()
     return str(int(um.month)).zfill(2)
 
+
 def get_hijri_month_start(HijriDate, Umalqurra, month):
     if month:
         um = HijriDate.today()
@@ -40,6 +41,7 @@ def get_hijri_month_start(HijriDate, Umalqurra, month):
         umalqurra = Umalqurra()
         start_date = umalqurra.hijri_to_gregorian(um.year, um.month, um.day)
         return date(int(start_date[0]), int(start_date[1]), int(start_date[2]))
+
 
 def get_hijri_month_end(HijriDate, Umalqurra, month):
     if month:

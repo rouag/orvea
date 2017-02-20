@@ -63,7 +63,12 @@
 			<field name="domain_force">[('state', '=', 'done')]</field>
 						<field name="perm_write" eval="False" />
 		</record>
-
+		<record id="employee_hr_employee_transfert_s" model="ir.rule">
+			<field name="name">طلب نقل موظف</field>
+			<field name="model_id" ref="model_hr_employee_transfert" />
+			<field name="domain_force">[('employee_id.user_id','=',user.id)]</field>
+			<field name="groups" eval="[(4,ref('smart_hr.group_employee'))]" />
+		</record>
 		
 	</data>
 </openerp>

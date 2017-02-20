@@ -9,7 +9,7 @@
 			<field name="arch" type="xml">
 				<form string="الابتعاث">
 					<header>
-						<field name="is_started" invisible="1"/>
+						<field name="is_started" invisible="1" />
 						<field name="state" widget="statusbar"
 							statusbar_visible="draft,psm,done,finished,cutoff,cancel" />
 						<button name="action_psm" string="إرسال طلب" type="object"
@@ -39,8 +39,7 @@
 
 						<button name="action_cutoff" string=" قطع الابتعاث" type="object"
 							states="done" icon="fa-check" class="oe_inline oe_stat_button"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
-							 />
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_cancel" string=" الغاءالابتعاث" type="object"
 							states="done" icon="fa-check" class="oe_inline oe_stat_button"
@@ -59,9 +58,11 @@
 						<group>
 							<group>
 								<field name="date" />
-								<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" readonly="True"
-									/>
-								<field name="scholarship_type" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+								<field name="employee_id"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+									readonly="True" />
+								<field name="scholarship_type"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 									attrs="{'readonly':[('is_extension','=',True)]}" />
 							</group>
 							<group />
@@ -71,16 +72,23 @@
 							<field name="date_to" />
 							<field name="duration" />
 						</group>
+						<group>
+							<field name="salary_percent" />
+							<field name="hr_allowance_type_id" widget="many2many_tags"/>
+						</group>
 
 						<notebook>
 							<page string="بيانات الدبلوم">
 								<group>
 									<group>
-										<field name="diplom_type" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+										<field name="diplom_type"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 											attrs="{'readonly':[('is_extension','=',True)]}" />
-										<field name="diplom_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+										<field name="diplom_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 											attrs="{'readonly':[('is_extension','=',True)]}" />
-										<field name="Faculty_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+										<field name="Faculty_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 											attrs="{'readonly':[('is_extension','=',True)]}" />
 									</group>
 									<group></group>
@@ -125,6 +133,10 @@
 						<group>
 							<field name="note" />
 						</group>
+						<button style="padding-right:10px," name="%(report_hr_scholarship_extension)d"
+							string="طباعة قرار التمديد"
+							attrs="{'invisible':['|',('is_extension','=',False),('state','not in',['done','finished'])]}"
+							type="action" icon="fa-print" class="oe_inline oe_stat_button" />
 
 					</sheet>
 				</form>
@@ -135,14 +147,15 @@
 		<record model="ir.ui.view" id="hr_scholarship_form_inherited">
 			<field name="model">hr.scholarship</field>
 			<field name="inherit_id" ref="smart_hr.hr_scholarship_form" />
-			<field name="groups_id" eval="[(6, 0, [ref('smart_hr.group_scholarship_manager')]),(6, 0, [ref('smart_hr.group_personnel_hr_scholarship')])]" />
+			<field name="groups_id"
+				eval="[(6, 0, [ref('smart_hr.group_scholarship_manager')]),(6, 0, [ref('smart_hr.group_personnel_hr_scholarship')])]" />
 			<field name="arch" type="xml">
 				<field name="employee_id" position="attributes">
 					<attribute name="readonly">False</attribute>
 				</field>
 			</field>
 		</record>
-		
+
 		<record id="hr_scholarship_tree" model="ir.ui.view">
 			<field name="name">hr.scholarship.tree</field>
 			<field name="model">hr.scholarship</field>
@@ -179,10 +192,8 @@
 						<group>
 							<field name="name" />
 							<field name="code" />
-							<field name="salary_percent" />
 							<field name="pension_percent" />
 							<field name="traveling_family_ticket" />
-							<field name="hr_allowance_type_id" />
 							<field name="note" />
 						</group>
 					</sheet>
@@ -208,7 +219,7 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 
-		<menuitem id="hr_scholarship_type" name="انواع الابتعاث"
+		<menuitem id="hr_scholarship_type" name="انواع الابتعاث" groups="smart_hr.group_scholarship_manager,smart_hr.group_personnel_hr_scholarship"
 			parent="hr_root_workflows_setting" sequence="20"
 			action="action_hr_scholarship_type" />
 	</data>

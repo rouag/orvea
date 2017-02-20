@@ -31,12 +31,14 @@ class HrHolidays(models.Model):
                 return False
         return True
 
-#     @api.multi
-#     def _set_external_autoritie(self):
-#         self.ensure_one()
-#         search_external_authoritie = self.env["external.authorities"].search([('holiday_status', '=', self.holiday_status_id.id)])
-#         if search_external_authoritie:
-#             self.external_authoritie = search_external_authoritie[0]
+
+    @api.multi
+    def _set_external_autoritie(self):
+        self.ensure_one()
+        for holiday in self:
+            search_external_authoritie = self.env["external.authorities"].search([('holiday_status', '=', holiday.holiday_status_id.id)])
+            if search_external_authoritie:
+                holiday.external_authoritie = search_external_authoritie[0]
 
     name = fields.Char(string=u'رقم القرار', advanced_search=True)
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now())
@@ -96,7 +98,7 @@ class HrHolidays(models.Model):
     childbirth_date = fields.Date(string=u'تاريخ ولادة الطفل')
     birth_certificate = fields.Binary(string=u'شهادة الميلاد', attachment=True)
     extension_period = fields.Integer(string=u'مدة التمديد', default=0)
-    external_authoritie = fields.Many2one('external.authorities', string=u'الجهة الخارجية',)
+    external_authoritie = fields.Many2one('external.authorities', string=u'الجهة الخارجية', compute="_set_external_autoritie")
     entitlement_type = fields.Many2one('hr.holidays.entitlement.config', string=u'خاصيّة الإجازة')
     death_person = fields.Char(string=u'المتوفي')
     medical_certification = fields.Binary(string=u'الشهادة الطبية', attachment=True)
@@ -130,7 +132,7 @@ class HrHolidays(models.Model):
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
-
+    @api.multi
     @api.depends("holiday_status_id", "entitlement_type")
     def _compute_current_holiday_stock(self):
         for holiday in self:

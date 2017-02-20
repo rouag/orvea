@@ -34,6 +34,7 @@ class HrSetting(models.Model):
     deputation_days = fields.Integer(string=u'عدد الايام', default=3)
     allowance_deportation = fields.Many2one('hr.allowance.type', string=u'بدل ترحيل')
     deportation_amount = fields.Float(string=u'المبلغ', default=0.0)
+    retirement_proportion = fields.Float(string=u'حصة الحكومة من التقاعد (%)', default=9)
 
     @api.multi
     def button_setting(self):

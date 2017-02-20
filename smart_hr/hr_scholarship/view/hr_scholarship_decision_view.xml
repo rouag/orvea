@@ -12,19 +12,24 @@
 							states="new" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 							groups="smart_hr.group_employee_request,smart_hr.group_personnel_hr_scholarship" />
 						<button name="action_done" string="إعتماد" type="object"
-							states="hrm" groups="smart_hr.group_personnel_hr_scholarship" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							states="hrm" groups="smart_hr.group_personnel_hr_scholarship"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_refuse" string="رفض" type="object"
-							states="hrm" groups="smart_hr.group_personnel_hr_scholarship" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							states="hrm" groups="smart_hr.group_personnel_hr_scholarship"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<field name="state" widget="statusbar" statusbar_visible="new,hrm,done,cancel" />
 					</header>
 					<sheet>
 						<group>
 							<group string="بيانات الابتعاث">
-								<field name="employee_id" attrs="{'readonly':[('state','!=','new')]}"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+								<field name="employee_id" attrs="{'readonly':[('state','!=','new')]}"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="number" />
-								<field name="job_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
-								<field name="department_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+								<field name="job_id"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="department_id"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="date" attrs="{'readonly':[('state','!=','new')]}" />
 								<field name="scholarship_ids" attrs="{'readonly':[('state','!=','new')]}"
 									domain="[('employee_id', '=', employee_id),('state', 'in', ['finished', 'cutoff'])]" />
@@ -38,8 +43,9 @@
 								<field name="file_decision_name" invisible="1" />
 							</group>
 						</group>
+					
 						<group>
-						<field name="note"/>
+							<field name="note" />
 						</group>
 					</sheet>
 				</form>

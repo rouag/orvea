@@ -32,14 +32,26 @@
 						</group>
 						<group>
 							<group>
-								<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+								<field name="employee_id"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="insurance_entity" options='{"no_open": True, "no_create": True}' />
+								<field name="allowance_ids">
+									<tree editable="bottom">
+										<field name="allowance_id" options='{"no_open": True, "no_create": True}' />
+										<field name="amount" />
+									</tree>
+								</field>
+								<field name="basic_salary" />
+								<field name="lend_salary" />
+								<field name="salary_proportion" />
+								<field name="pay_retirement" />
+							
 							</group>
 							<group>
 								<field name="decision_number" />
 								<field name="decision_date" />
 								<field name="decision_file" />
-								<field name="decision_file_name" invisible="1"/>
+								<field name="decision_file_name" invisible="1" />
 							</group>
 						</group>
 					</sheet>
@@ -68,7 +80,7 @@
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 
-		<menuitem action="action_hr_employee_lend" id="hr_menu_employee_lend"
+		<menuitem action="action_hr_employee_lend" id="hr_menu_employee_lend" groups="smart_hr.group_hr_personnel_officer_lends"
 			parent="hr_root_workflows" name="طلبات الإعارة" sequence="90" />
 
 		<!-- تمديد إعارة -->
