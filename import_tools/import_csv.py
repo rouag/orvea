@@ -47,7 +47,69 @@ class import_csv(osv.osv):
         }
    
    
- 
+    def import_file(self, cr, uid, ids, context=None):
+          
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+         
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        employee_obj = self.pool.get('hr.employee')
+        holiday_obj = self.pool.get('hr.holidays')
+        status_normal=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_normal')[1]
+        status_normal=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_normal')[1]
+        exceptional=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_exceptional')[1]
+        compiling=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_compelling')[1]
+        move_id=''
+        all_move_ids=[]
+        i=0
+        
+        for row  in reader :
+            if   str(row['STATUS_ID']) == '2':
+                state='done'
+            elif  str(row['STATUS_ID']) == '8':
+                 state='unkhown'
+            elif  str(row['STATUS_ID']) == '4':
+                 state='audit'
+            else:
+                state='unkhown'
+            if  str(row['LEAVE_TYPE']) == '1':
+                type=status_normal
+            elif str(row['LEAVE_TYPE']) == '20':
+                type=compiling
+            else :
+                type=exceptional
+                
+            employee=employee_obj.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
+            print str(row['EMP_NO'])
+            if employee:
+                print 'employee', str(row['EMP_NO'])
+                print row['DAYS_USED']
+                duration = str(row['DAYS_USED']).replace('.00','')
+                print 'duration',duration
+                holiday_val={
+                                'name':row['REQUEST_NO'] if  row['REQUEST_NO'] != 'NULL' else  False,
+                                'employee_id':employee[0] if employee else False,
+                                'date_from':row['FROM_DATE']if  row['FROM_DATE'] != 'NULL' else  False,
+                                'date_to':row['TO_DATE']if  row['TO_DATE'] != 'NULL' else  False,
+                                'duration':int(duration),
+                                'date_decision':row['REFERENCE_DATE']  if  row['REFERENCE_DATE'] != 'NULL' else  False,
+                                'holiday_status_id':type,
+                                'state': state ,
+                                }
+                try:
+                    holiday_obj.create(cr, uid, holiday_val,context=context)
+                except:
+                    print row['REQUEST_NO']
+                
+        return True
                  
     def import_passport(self, cr, uid, ids, context=None):
         if context is None:
@@ -238,7 +300,7 @@ class import_csv(osv.osv):
         
         return True    
     
-    def import_degree(self, cr, uid, ids, context=None):
+    def import_salary_grid(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
         this = self.browse(cr, uid, ids[0])   
