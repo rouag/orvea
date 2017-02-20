@@ -579,7 +579,6 @@ class hrDifference(models.Model):
                             'type': 'suspension'}
                     line_ids.append(vals)
             if not suspension_end.condemned:
-                # TODO: appliquer le grille de salire
                 if suspension_end.suspension_id.suspension_date < self.date_from:
                     date_from = fields.Date.from_string(suspension_end.suspension_id.suspension_date)
                     date_to = fields.Date.from_string(self.date_from)
@@ -600,32 +599,32 @@ class hrDifference(models.Model):
                         for allowance in grid_id.allowance_ids:
                             amount = allowance.get_value(suspension_end.employee_id.id) / 22.0 * days
                             allowance_val = {'difference_id': self.id,
-                                            'name': 'فرق %s كف اليد'%allowance.allowance_id.name,
-                                            'employee_id': suspension_end.employee_id.id,
-                                            'number_of_days': days,
-                                            'number_of_hours': 0.0,
-                                            'amount': amount,
-                                            'type': 'suspension'}
+                                             'name': 'فرق %s كف اليد' % allowance.allowance_id.name,
+                                             'employee_id': suspension_end.employee_id.id,
+                                             'number_of_days': days,
+                                             'number_of_hours': 0.0,
+                                             'amount': amount,
+                                             'type': 'suspension'}
                             line_ids.append(allowance_val)
                         for reward in grid_id.reward_ids:
                             amount = reward.get_value(suspension_end.employee_id.id) / 22.0 * days
                             reward_val = {'difference_id': self.id,
-                                            'name': 'فرق %s كف اليد'%reward.reward_id.name,
-                                            'employee_id': suspension_end.employee_id.id,
-                                            'number_of_days': days,
-                                            'number_of_hours': 0.0,
-                                            'amount': amount,
-                                            'type': 'suspension'}
+                                          'name': 'فرق %s كف اليد' % reward.reward_id.name,
+                                          'employee_id': suspension_end.employee_id.id,
+                                          'number_of_days': days,
+                                          'number_of_hours': 0.0,
+                                          'amount': amount,
+                                          'type': 'suspension'}
                             line_ids.append(reward_val)
                         for indemnity in grid_id.indemnity_ids:
                             amount = indemnity.get_value(suspension_end.employee_id.id) / 22.0 * days
                             indemnity_val = {'difference_id': self.id,
-                                            'name': 'فرق %s كف اليد'%indemnity.indemnity_id.name,
-                                            'employee_id': suspension_end.employee_id.id,
-                                            'number_of_days': days,
-                                            'number_of_hours': 0.0,
-                                            'amount': amount,
-                                            'type': 'suspension'}
+                                             'name': 'فرق %s كف اليد'%indemnity.indemnity_id.name,
+                                             'employee_id': suspension_end.employee_id.id,
+                                             'number_of_days': days,
+                                             'number_of_hours': 0.0,
+                                             'amount': amount,
+                                             'type': 'suspension'}
                             line_ids.append(indemnity_val)
         return line_ids
 
@@ -640,8 +639,7 @@ class hrDifference(models.Model):
         for termination in termination_ids:
             grid_id = termination.employee_id.salary_grid_id
             # سعودي
-            if not termination.termination_type_id.nationality:
-            # TODO: use this test termination.employee_id.country_id and termination.employee_id.code_nat == 'SA'
+            if termination.employee_id.country_id and termination.employee_id.code_nat == 'SA':
                 if grid_id:
                     # 1) عدد الرواتب المستحق
                     if termination.termination_type_id.nb_salaire > 0:
