@@ -24,7 +24,7 @@
 			<field name="res_model">hr.refuse.tarining.wizard</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
-			<field name="view_id" ref="view_form_hr_refuse_wizard" />
+			<field name="view_id" ref="view_form_hr_refuse_training_wizard" />
 			<field name="target">new</field>
 		</record>
 

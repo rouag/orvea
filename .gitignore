@@ -35,3 +35,6 @@ todo
 #log
 *.log
 
+/smart_utils/
+/smart_utilities/
+/utils/

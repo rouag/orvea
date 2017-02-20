@@ -135,13 +135,17 @@ class import_csv(osv.osv):
                     if city_ids:
                         city_name=city.browse(cr, uid, city_ids[0]).name
             employee_ids= employee.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
-            print 'employee_ids',str(row['EMP_NO'])
             if employee_ids:
                 emplyee_obj=employee.browse(cr, uid, employee_ids[0]) 
-                emplyee_obj.write( {'passport_id': str(row['DOC_NO']),'passport_date':str(row['ISSUE_DATE']),'passport_place':city_name,'passport_end_date':str(row['EXPIRY_DATE'])}, )
+                passport_end_date  = row['EXPIRY_DATE']
+                passport_date  = row['ISSUE_DATE']
+                if passport_end_date == 'NULL':
+                    passport_end_date = False
+                if passport_date == 'NULL':
+                    passport_date = False                    
+                emplyee_obj.write( {'passport_id': str(row['DOC_NO']),'passport_date':passport_date,'passport_place':city_name,
+                                    'passport_end_date':passport_end_date}, )
         
-        
-            
         
         return True
 
@@ -201,9 +205,13 @@ class import_csv(osv.osv):
         all_move_ids=[]
         for row  in reader :  
             countryname = str(row['COUNTRY_NO'])
+           
+            
             if countryname=='0001':
                 countryname="SA"
-            country_id=country.search(cr, uid, [('code_nat', '=',countryname)])[0]
+            
+            country_id=country.search(cr, uid, [('code_nat', '=',countryname)])
+            print country_id
             city_line_val={
                             'name':row['name'],
                             'code':str(row['code']),
@@ -218,7 +226,7 @@ class import_csv(osv.osv):
         return True
 
 
-    def import_region(self, cr, uid, ids, context=None):
+    def import_city(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
         this = self.browse(cr, uid, ids[0])   
@@ -613,39 +621,42 @@ class import_csv(osv.osv):
         stop = timeit.default_timer()
         print 'time for import employee', stop - start
         return True
-    def import_passport(self, cr, uid, ids, context=None):
-        if context is None:
-            context = {}
-        this = self.browse(cr, uid, ids[0])   
-        quotechar='"'
-        delimiter=';'
-        fileobj = TemporaryFile('w+')
-        sourceEncoding = 'windows-1252'
-        targetEncoding = "utf-8"   
-        
-        fileobj.write((base64.decodestring(this.data)))   
-        fileobj.seek(0)                                    
-        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
-        city = self.pool.get('res.city')
-                
-        move_id=''
-        all_move_ids=[]
-        employee = self.pool.get('hr.employee')
-        for row  in reader : 
-            if str(row['ISSUE_PLACE_NO']):
-                    city_ids=city.search(cr, uid, [('code', '=',row['ISSUE_PLACE_NO'])])
-                    if city_ids:
-                        city_name=city.browse(cr, uid, city_ids[0]).name
-            employee_ids= employee.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
-            print 'employee_ids',str(row['EMP_NO'])
-            if employee_ids:
-                emplyee_obj=employee.browse(cr, uid, employee_ids[0]) 
-                emplyee_obj.write( {'passport_id': str(row['DOC_NO']),'passport_date':str(row['ISSUE_DATE']),'passport_place':city_name,'passport_end_date':str(row['EXPIRY_DATE'])}, )
-        
-        
-            
-        
-        return True
+    
+    #===========================================================================
+    # def import_passport(self, cr, uid, ids, context=None):
+    #     if context is None:
+    #         context = {}
+    #     this = self.browse(cr, uid, ids[0])   
+    #     quotechar='"'
+    #     delimiter=';'
+    #     fileobj = TemporaryFile('w+')
+    #     sourceEncoding = 'windows-1252'
+    #     targetEncoding = "utf-8"   
+    #     
+    #     fileobj.write((base64.decodestring(this.data)))   
+    #     fileobj.seek(0)                                    
+    #     reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+    #     city = self.pool.get('res.city')
+    #             
+    #     move_id=''
+    #     all_move_ids=[]
+    #     employee = self.pool.get('hr.employee')
+    #     for row  in reader : 
+    #         if str(row['ISSUE_PLACE_NO']):
+    #                 city_ids=city.search(cr, uid, [('code', '=',row['ISSUE_PLACE_NO'])])
+    #                 if city_ids:
+    #                     city_name=city.browse(cr, uid, city_ids[0]).name
+    #         employee_ids= employee.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
+    #         print 'employee_ids',str(row['EMP_NO'])
+    #         if employee_ids:
+    #             emplyee_obj=employee.browse(cr, uid, employee_ids[0]) 
+    #             emplyee_obj.write( {'passport_id': str(row['DOC_NO']),'passport_date':str(row['ISSUE_DATE']),'passport_place':city_name,'passport_end_date':str(row['EXPIRY_DATE'])}, )
+    #     
+    #     
+    #         
+    #     
+    #     return True
+    #===========================================================================
          
     def import_directeur_direct_for_employee(self, cr, uid, ids, context=None):
         if context is None:
