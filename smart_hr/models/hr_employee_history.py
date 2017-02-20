@@ -105,7 +105,7 @@ class HrEmployeeHistory(models.Model):
                              ], string=u'الاجرا ء')
     job_id = fields.Many2one('hr.job', string=u'المسمى الوظيفي')
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
-    number = fields.Char(string='الرقم الوظيفي')
+    number = fields.Char(string='رقم الوظيفية')
     department_id = fields.Many2one('hr.department', string='الفرع')
     dep_Side = fields.Char(string=u'الجهة', related='employee_id.user_id.company_id.name')
     type = fields.Char('الاجرا ء')

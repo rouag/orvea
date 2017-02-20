@@ -41,6 +41,11 @@
 						<button name="import_dudpension" string="Suspension" type="object"  class="oe_highlight" />
 						
 						<button name="import_terminated" string="Termination" type="object"  class="oe_highlight" />
+						<button name="import_holidays" string="Holiday" type="object"  class="oe_highlight" />
+						<button name="import_holidays" string="Holiday" type="object"  class="oe_highlight" />
+						<button name="import_holidays_extension" string="Holiday_extension" type="object"  class="oe_highlight" />
+						<button name="import_holiday_stock" string="Holiday_stock" type="object"  class="oe_highlight" />
+						<button name="emplyee_historique" string="Employee_historique" type="object"  class="oe_highlight" />
 								
 							
 						<field name="state" widget="statusbar" statusbar_visible="draft,failure,done" />

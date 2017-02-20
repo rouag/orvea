@@ -18,6 +18,9 @@ import csv
 from openerp.tools.translate import _
 import timeit
 from datetime import datetime
+from umalqurra.hijri_date import HijriDate
+from umalqurra.hijri import Umalqurra
+from datetime import date
 
 
 class import_csv(osv.osv):
@@ -47,8 +50,7 @@ class import_csv(osv.osv):
         }
    
    
-    def import_file(self, cr, uid, ids, context=None):
-          
+    def emplyee_historique(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
         this = self.browse(cr, uid, ids[0])   
@@ -57,57 +59,65 @@ class import_csv(osv.osv):
         fileobj = TemporaryFile('w+')
         sourceEncoding = 'windows-1252'
         targetEncoding = "utf-8"   
-         
         fileobj.write((base64.decodestring(this.data)))   
         fileobj.seek(0)                                    
         reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
-        employee_obj = self.pool.get('hr.employee')
-        holiday_obj = self.pool.get('hr.holidays')
-        status_normal=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_normal')[1]
-        status_normal=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_normal')[1]
-        exceptional=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_exceptional')[1]
-        compiling=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_compelling')[1]
         move_id=''
         all_move_ids=[]
-        i=0
-        
-        for row  in reader :
-            if   str(row['STATUS_ID']) == '2':
-                state='done'
-            elif  str(row['STATUS_ID']) == '8':
-                 state='unkhown'
-            elif  str(row['STATUS_ID']) == '4':
-                 state='audit'
-            else:
-                state='unkhown'
-            if  str(row['LEAVE_TYPE']) == '1':
-                type=status_normal
-            elif str(row['LEAVE_TYPE']) == '20':
-                type=compiling
-            else :
-                type=exceptional
-                
-            employee=employee_obj.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
-            print str(row['EMP_NO'])
-            if employee:
-                print 'employee', str(row['EMP_NO'])
-                print row['DAYS_USED']
-                duration = str(row['DAYS_USED']).replace('.00','')
-                print 'duration',duration
-                holiday_val={
-                                'name':row['REQUEST_NO'] if  row['REQUEST_NO'] != 'NULL' else  False,
-                                'employee_id':employee[0] if employee else False,
-                                'date_from':row['FROM_DATE']if  row['FROM_DATE'] != 'NULL' else  False,
-                                'date_to':row['TO_DATE']if  row['TO_DATE'] != 'NULL' else  False,
-                                'duration':int(duration),
-                                'date_decision':row['REFERENCE_DATE']  if  row['REFERENCE_DATE'] != 'NULL' else  False,
-                                'holiday_status_id':type,
-                                'state': state ,
-                                }
+        employee = self.pool.get('hr.employee')
+        history=self.pool.get('hr.employee.history')
+        grade = self.pool.get('salary.grid.grade')
+        departement = self.pool.get('hr.department')
+        departement_id = departement.search(cr, uid, [('code', '=','C001')])[0]
+        for row  in reader : 
+            um=False
+            employee_ids= employee.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
+            grade_id= grade.search(cr, uid, [('code', '=',str(row['rank_new']))])
+            fmt = '%d/%m/%Y'
+            date1=False
+            date2=False
+            umalqurra= Umalqurra()
+            if row['DECISION_DATE_HJ'] != 'NULL':
+                    try:
+                        dt = datetime.strptime(str(row['DECISION_DATE_HJ']), fmt)
+                        start_date = umalqurra.hijri_to_gregorian(dt.year,dt.month,dt.day)
+                        date1= date(int(start_date[0]), int(start_date[1]), int(start_date[2]))
+                    except:
+                        date1=False
+                        
+                   
+
+             
+            if row['FIELD_EFF_DATE_HJ']!='NULL':
                 try:
-                    holiday_obj.create(cr, uid, holiday_val,context=context)
+                    um_date=HijriDate()
+                    date_end = datetime.strptime(str(row['FIELD_EFF_DATE_HJ']), fmt)
+                    start_date2 = umalqurra.hijri_to_gregorian(date_end.year,date_end.month,date_end.day)
+                    date2= date(int(start_date2[0]), int(start_date2[1]), int(start_date2[2]))
                 except:
-                    print row['REQUEST_NO']
+                    date2=False
+                    
+          
+            if employee_ids:
+                emplyee_obj=employee.browse(cr, uid, employee_ids[0]) 
+                
+                
+                history_line_val={
+                            'employee_id':employee_ids[0],
+                            'type':str(row['ACT_DSCR']),
+                            'num_decision':str(row['ACT_DSCR']),
+                            'date_decision':date1,
+                            'grade_id':grade_id[0] if grade_id else False,
+                            'department_id':departement_id,
+                            'date':date2,
+                            }
+            
+            history.create(cr, uid, history_line_val,context=context)
+        
+        return True
+        
+
+                
                 
         return True
                  
@@ -178,12 +188,23 @@ class import_csv(osv.osv):
                 code = 'SA'
             if code ==0001:
                 code = 'SA'
-            country_line_val={
+                country_line_val={
+                            'code':'SA',
                             'name':row['name'],
                             'code_nat':code,
+                            'nation':row['NATION_DSCR_AR'],
                             }
             
-            country.create(cr, uid, country_line_val,context=context)
+                country.create(cr, uid, country_line_val,context=context)
+            else:
+                country_line_val={
+                            'name':row['name'],
+                            'code_nat':code,
+                            'nation':row['NATION_DSCR_AR'],
+                            }
+            
+                country.create(cr, uid, country_line_val,context=context)
+                
             
     def import_region(self, cr, uid, ids, context=None):
         if context is None:
@@ -1057,6 +1078,184 @@ class import_csv(osv.osv):
             
         return True
 
+    def import_holidays(self, cr, uid, ids, context=None):
+          
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+         
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        employee_obj = self.pool.get('hr.employee')
+        holiday_obj = self.pool.get('hr.holidays')
+        status_study=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_study')[1]
+        status_normal=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_normal')[1]
+        status_maladie=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_illness')[1]
+        exceptional=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_exceptional')[1]
+        compiling=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_compelling')[1]
+        move_id=''
+        all_move_ids=[]
+        i=0
+        
+        for row  in reader :
+            if   str(row['STATUS_ID']) == '2':
+                state='done'
+            elif  str(row['STATUS_ID']) == '8':
+                 state='unkhown'
+            elif  str(row['STATUS_ID']) == '4':
+                 state='refuse'
+            else:
+                state='unkhown'
+            if  str(row['LEAVE_TYPE']) == '1':
+                type=status_normal
+            elif str(row['LEAVE_TYPE']) == '20':
+                type=status_normal
+            elif str(row['LEAVE_TYPE']) == '23':
+                type=status_study
+            elif str(row['LEAVE_TYPE']) == '5':
+                type=compiling
+            else :
+                type=exceptional
+                
+            employee=employee_obj.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
+            print str(row['EMP_NO'])
+            if employee:
+                print 'employee', str(row['EMP_NO'])
+                print row['DAYS_USED']
+                duration = str(row['DAYS_USED']).replace('.00','')
+                print 'duration',duration
+                holiday_val={
+                                'name':row['REQUEST_NO'] if  row['REQUEST_NO'] != 'NULL' else  False,
+                                'employee_id':employee[0] if employee else False,
+                                'date_from':row['FROM_DATE']if  row['FROM_DATE'] != 'NULL' else  False,
+                                'date_to':row['TO_DATE']if  row['TO_DATE'] != 'NULL' else  False,
+                                'duration':int(duration),
+                                'date_decision':row['REFERENCE_DATE']  if  row['REFERENCE_DATE'] != 'NULL' else  False,
+                                'holiday_status_id':type,
+                                'state': state ,
+                                }
+                try:
+                    holiday_obj.create(cr, uid, holiday_val,context=context)
+                except:
+                    print row['REQUEST_NO']
+                
+        return True
+    
+    
+    def import_holidays_extension(self, cr, uid, ids, context=None):
+          
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+         
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        employee_obj = self.pool.get('hr.employee')
+        holiday_obj = self.pool.get('hr.holidays')
+        status_study=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_study')[1]
+        status_normal=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_normal')[1]
+        status_maladie=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_illness')[1]
+        exceptional=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_exceptional')[1]
+        compiling=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_compelling')[1]
+        move_id=''
+        all_move_ids=[]
+        i=0
+        
+        for row  in reader :
+            
+            if  str(row['LEAVE_TYPE']) == '1':
+                type=status_normal
+            elif str(row['LEAVE_TYPE']) == '20':
+                type=status_normal
+            elif str(row['LEAVE_TYPE']) == '23':
+                type=status_study
+            elif str(row['LEAVE_TYPE']) == '5':
+                type=compiling
+            else :
+                type=exceptional
+                
+           
+            holidays_parent=holiday_obj.search(cr, uid, [('name', '=',str(row['REQUEST_NO']))])
+            if  holidays_parent :
+              
+              
+                duration = str(row['DAYS_USED']).replace('.00','')
+                
+                holiday_val={
+                                'name':row['SEQ_NO'] if  row['SEQ_NO'] != 'NULL' else  False,
+                                'date_from':row['FROM_DATE']if  row['FROM_DATE'] != 'NULL' else  False,
+                                'date_to':row['TO_DATE']if  row['TO_DATE'] != 'NULL' else  False,
+                                'duration':int(duration),
+                                'date_decision':row['REFERENCE_DATE']  if  row['REFERENCE_DATE'] != 'NULL' else  False,
+                                'holiday_status_id':type,
+                                'state': 'done' ,
+                                'parent_id':holidays_parent[0],
+                                'num_outspeech':row['REFERENCE_ID'],
+                                'is_extension':True,
+                                }
+                try:
+                    holiday_obj.create(cr, uid, holiday_val,context=context)
+                except:
+                    print row['REQUEST_NO']
+                
+        return True
+    
+    def import_holiday_stock(self, cr, uid, ids, context=None):
+          
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+         
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        employee_obj = self.pool.get('hr.employee')
+        entitlement=self.pool.get('hr.holidays.status.entitlement')
+        holiday_stock_obj = self.pool.get('hr.employee.holidays.stock')
+        holiday_stock_type_obj= self.pool.get('hr.holidays.entitlement.config')
+        status_normal=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_normal')[1]
+        type=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_entitlement_all')[1]
+        move_id=''
+        all_move_ids=[]
+        entitlement_val={
+                                'entitlment_category':type,
+                                }
+        id_entitlment=  entitlement.create(cr, uid, entitlement_val,context=context)
+        
+        for row  in reader :
+            employee_ids= employee_obj.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
+            if  employee_ids :
+                holiday_stock_val={
+                                'employee_id':employee_ids[0],
+                                'holiday_status_id':status_normal,
+                                'holidays_available_stock':float(str(row['BALANCE'])),
+                                'entitlement_id':id_entitlment,
+                                }
+                
+                holiday_stock_obj.create(cr, uid, holiday_stock_val,context=context)
+            else:
+                print 'employee non importer',str(row['EMP_NO'])
+                
+                
+        return True
+                 
             
 import_csv()
 
