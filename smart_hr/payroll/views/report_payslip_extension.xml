@@ -45,7 +45,13 @@
 							<br></br>
 							<br></br>
 							<div class="col-xs-12 text-center">
-
+							
+							<t t-foreach="get_all_types()" t-as="type" >
+							  <div>
+								  <strong>
+								  	<span t-field="type.name" />
+								  </strong>
+							  </div>
 								<table class="table  table-bordered">
 									<thead>
 										<tr>
@@ -59,12 +65,11 @@
 											<td colspan="2" class="text-center">إجمالي البدلات</td>
 											<td colspan="2" class="text-center">إجمالي الحسميات </td>
 											<td class="text-center"> الصافي</td>
-											<td class="text-center">توقيع المستلم</td>
 										</tr>
 									</thead>
 									<tbody>
 										<t t-set="i" t-value="0" />
-										<t t-foreach="o.slip_ids" t-as="line">
+										<t t-foreach="get_all_employees(type.id,o.slip_ids)" t-as="line">
 											<tr>
 												<td>
 													<span t-esc="i+1" />
@@ -97,13 +102,16 @@
 												
 													<span t-esc="get_salary_net(line.line_ids)" />
 												</td>
-												<td></td>
 
 											</tr>
+											
+											
 											<t t-set="i" t-value="i+1" />
 										</t>
 									</tbody>
 								</table>
+								
+								</t>
 							</div>
 
 							<div class="col-xs-4 text-center">
