@@ -52,6 +52,8 @@ class HrScholarship(models.Model):
     file_decision_name = fields.Char(string=u'اسم الخطاب')
     order_source = fields.Char(string=u'مصدر الخطاب')
     is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started', default=False)
+    salary_percent = fields.Float(string=u'نسبة الراتب(%)')
+    hr_allowance_type_id = fields.Many2many('hr.allowance.type', string='البدلات المستثنات')
 
     @api.one
     @api.depends('extension_scholarship_ids')
@@ -242,8 +244,6 @@ class HrScholarshipType(models.Model):
     name = fields.Char(string=' المسمى')
     code = fields.Char(string=' الرمز')
     pension_percent = fields.Float(string=u'نسبة راتب التقاعد(%)')
-    salary_percent = fields.Float(string=u'نسبة الراتب(%)')
-    hr_allowance_type_id = fields.Many2many('hr.allowance.type', string='البدلات المستثنات')
     traveling_family_ticket = fields.Boolean(string=u'تذكرة سفر عائليّة', default=False)
     note = fields.Text(string='ملاحظات')
 
