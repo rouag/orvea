@@ -504,6 +504,17 @@ class hrDifference(models.Model):
                                     'amount': amount,
                                     'type': 'lend'}
                             line_ids.append(vals)
+                # 4) فرق الراتب
+                amount = ((lend_id.lend_salary - lend_id.basic_salary) / 22) * duration_in_month
+                if amount > 0:
+                    vals = {'difference_id': self.id,
+                            'name': 'فرق الراتب',
+                            'employee_id': lend_id.employee_id.id,
+                            'number_of_days': duration_in_month,
+                            'number_of_hours': 0.0,
+                            'amount': amount,
+                            'type': 'lend'}
+                    line_ids.append(vals)
         return line_ids
 
     @api.multi

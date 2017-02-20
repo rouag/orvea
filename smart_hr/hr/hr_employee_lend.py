@@ -35,7 +35,7 @@ class HrEmployeeLend(models.Model):
     salary_proportion = fields.Float(string=u'نسبة الراتب التي تتحملها الجهة', default=100.0, readonly=1, states={'new': [('readonly', 0)]})
     basic_salary = fields.Float(related='employee_id.salary_grid_id.basic_salary', string=u'الراتب الأساسي', readonly=1)
     lend_salary = fields.Float(related='employee_id.salary_grid_id.basic_salary', string=u'الراتب في الإعارة', default=get_basic_salary, readonly=1, states={'new': [('readonly', 0)]})
-    pay_retirement = fields.Boolean(string=u'يدفع له نسبة التقاعد')
+    pay_retirement = fields.Boolean(string=u'يدفع له نسبة التقاعد', readonly=1, states={'new': [('readonly', 0)]})
 
     @api.multi
     @api.depends('date_from', 'duration')
