@@ -556,7 +556,7 @@ class HrPayslip(models.Model):
                               'sequence': sequence,
                               }
             lines.append(salary_net_val)
-            # print '---------------', lines
+            payslip.salary_net = salary_net
             payslip.line_ids = lines
 
 
