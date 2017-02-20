@@ -8,14 +8,12 @@
 			<field name="name">ابتعاث داخلي</field>
 			<field name="code">1</field>
 			<field name="pension_percent" eval="100" />
-			<field name="salary_percent" eval="100" />
 		</record>
 
 		<record id="data_hr_shcolaship_external" model="hr.scholarship.type">
 			<field name="name">ابتعاث خارجي</field>
 			<field name="code">2</field>
 			<field name="pension_percent" eval="100" />
-			<field name="salary_percent" eval="50" />
 			<field name="traveling_family_ticket" eval="True" />
 		</record>
 	</data>

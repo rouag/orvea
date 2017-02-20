@@ -34,7 +34,6 @@ class HrHolidays(models.Model):
 
     @api.multi
     def _set_external_autoritie(self):
-        self.ensure_one()
         for holiday in self:
             search_external_authoritie = self.env["external.authorities"].search([('holiday_status', '=', holiday.holiday_status_id.id)])
             if search_external_authoritie:
@@ -132,7 +131,7 @@ class HrHolidays(models.Model):
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
-    @api.multi
+    @api.one
     @api.depends("holiday_status_id", "entitlement_type")
     def _compute_current_holiday_stock(self):
         for holiday in self:
@@ -156,10 +155,14 @@ class HrHolidays(models.Model):
                         current_stock = str("لا تحتاج رصيد")
 
             elif not holiday.entitlement_type and holiday.holiday_status_id.id != self.env.ref('smart_hr.data_hr_holiday_compensation').id:
+                stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', holiday.employee_id.id),('holiday_status_id', '=', holiday.holiday_status_id.id),
+                                                               ])
                 not_all_entitlement_line = self.env['hr.holidays.status.entitlement'].search_count([('leave_type', '=', holiday.holiday_status_id.id),
                                                                                                     ('entitlment_category.id', '!=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)
-                                                                                                    ])
-                if not_all_entitlement_line == 0:
+                                                                                                   ])
+                if stock_line:
+                    current_stock = stock_line.holidays_available_stock
+                elif not_all_entitlement_line == 0:
                     entitlement_line = self.env['hr.holidays.status.entitlement'].search([('leave_type', '=', holiday.holiday_status_id.id),
                                                                ('entitlment_category.id', '=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)])
                     if entitlement_line and entitlement_line.periode == 100:

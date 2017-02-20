@@ -101,7 +101,7 @@ class HrEmployee(models.Model):
     passport_date = fields.Date(string=u'تاريخ إصدار جواز السفر ')
     passport_place = fields.Char(string=u'مكان إصدار جواز السفر')
     passport_end_date = fields.Date(string=u'تاريخ انتهاء جواز السفر ')
-    display_name = fields.Char(compute='_compute_display_name', string='display Name', select=True)
+    display_name = fields.Char(compute='_compute_display_name', string=u'الاسم', select=True)
     sanction_ids = fields.One2many('hr.sanction.ligne', 'employee_id', string=u'العقوبات' )
     sanction_count = fields.Integer(string=u'عدد  العقوبات',)
     bank_account_ids = fields.One2many('res.partner.bank', 'employee_id', string=u'الحسابات البنكِيّة')
