@@ -639,7 +639,7 @@ class hrDifference(models.Model):
         for termination in termination_ids:
             grid_id = termination.employee_id.salary_grid_id
             # سعودي
-            if termination.employee_id.country_id and termination.employee_id.code_nat == 'SA':
+            if termination.employee_id.country_id and termination.employee_id.country_id.code_nat == 'SA':
                 if grid_id:
                     # 1) عدد الرواتب المستحق
                     if termination.termination_type_id.nb_salaire > 0:
