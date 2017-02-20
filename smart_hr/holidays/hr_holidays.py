@@ -31,6 +31,7 @@ class HrHolidays(models.Model):
                 return False
         return True
 
+
     @api.multi
     def _set_external_autoritie(self):
         for holiday in self:
@@ -130,7 +131,6 @@ class HrHolidays(models.Model):
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
-
     @api.multi
     @api.depends("holiday_status_id", "entitlement_type")
     def _compute_current_holiday_stock(self):
