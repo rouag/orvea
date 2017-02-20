@@ -219,7 +219,7 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 
-		<menuitem id="hr_scholarship_type" name="انواع الابتعاث"
+		<menuitem id="hr_scholarship_type" name="انواع الابتعاث" groups="smart_hr.group_scholarship_manager,smart_hr.group_personnel_hr_scholarship"
 			parent="hr_root_workflows_setting" sequence="20"
 			action="action_hr_scholarship_type" />
 	</data>

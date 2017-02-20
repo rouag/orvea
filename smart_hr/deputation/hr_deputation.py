@@ -259,7 +259,7 @@ class HrDeputation(models.Model):
     def action_humain(self):
         for deputation in self:
             type = ' إنتداب'
-            self.env['hr.employee.history'].sudo().add_action_line(line.employee_id, deputation.decision_number,  deputation.date_from, type)
+            self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, deputation.decision_number,  deputation.date_from, type)
             deputation.state = 'finish'
             
     @api.multi
