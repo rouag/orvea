@@ -34,7 +34,6 @@ class HrHolidays(models.Model):
 
     @api.multi
     def _set_external_autoritie(self):
-        self.ensure_one()
         for holiday in self:
             search_external_authoritie = self.env["external.authorities"].search([('holiday_status', '=', holiday.holiday_status_id.id)])
             if search_external_authoritie:
