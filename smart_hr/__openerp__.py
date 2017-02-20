@@ -16,6 +16,7 @@
         'security/hr_security.xml',
         'security/ir_rule.xml',
         'security/ir.model.access.csv',
+        'deputation/security/hr_security.xml',
         'payroll/security/payroll_security.xml',
         'payroll/security/ir.model.access.csv',
         'hr_scholarship/security/hr_security.xml',
@@ -220,7 +221,6 @@
         'hr_promotions/view/hr_employee_promotion_view.xml',
 
         # deputation
-        'deputation/security/hr_security.xml',
         'deputation/security/ir.model.access.csv',
         'deputation/data/data.xml',
         'deputation/view/hr_deputation_setting.xml',

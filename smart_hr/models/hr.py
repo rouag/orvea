@@ -101,7 +101,7 @@ class HrEmployee(models.Model):
     passport_date = fields.Date(string=u'تاريخ إصدار جواز السفر ')
     passport_place = fields.Char(string=u'مكان إصدار جواز السفر')
     passport_end_date = fields.Date(string=u'تاريخ انتهاء جواز السفر ')
-    display_name = fields.Char(compute='_compute_display_name', string='display Name', select=True)
+    display_name = fields.Char(compute='_compute_display_name', string=u'الاسم', select=True)
     sanction_ids = fields.One2many('hr.sanction.ligne', 'employee_id', string=u'العقوبات' )
     sanction_count = fields.Integer(string=u'عدد  العقوبات',)
     bank_account_ids = fields.One2many('res.partner.bank', 'employee_id', string=u'الحسابات البنكِيّة')
@@ -148,13 +148,6 @@ class HrEmployee(models.Model):
         if self.family_name:
             display_name += ' ' + self.family_name
         self.display_name = display_name
-
-    @api.multi
-    def name_get(self):
-        res = []
-        for emp in self:
-            res.append((emp.id, "%s %s %s %s" % (emp.name or '', emp.father_middle_name or '', emp.father_name or '', emp.family_name or '')))
-        return res
 
     @api.multi
     @api.depends('promotions_history.balance')

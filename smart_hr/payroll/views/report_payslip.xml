@@ -52,7 +52,8 @@
 									t-esc="get_hijri_date(context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d 
 							%H:%M'), '-')" />
 								<br></br>
-								<strong>رقم الصفحة :</strong>1
+								<strong>رقم الصفحة :</strong>
+								1
 								<br></br>
 
 								<br></br>
@@ -71,9 +72,9 @@
 
 							<br></br>
 							<br></br>
-							<div class="col-xs-12 text-center">
+							<div class="col-xs-12">
 
-								<table class="table  table-bordered">
+								<table>
 									<thead>
 										<tr>
 											<td class="text-center">م</td>
@@ -84,9 +85,7 @@
 											<td class="text-center">الدرجة </td>
 											<td class="text-center"> الراتب الاساسي</td>
 											<td colspan="2" class="text-center">إجمالي البدلات</td>
-											<td colspan="2" class="text-center">إجمالي الحسميات </td>
-											<td class="text-center"> الصافي</td>
-											<td class="text-center">توقيع المستلم</td>
+											<td colspan="4" class="text-center">إجمالي الحسميات </td>
 										</tr>
 									</thead>
 									<tbody>
@@ -112,12 +111,8 @@
 											</td>
 											<td class="text-center">مسمى البدل </td>
 											<td class="text-center">المبلغ</td>
-											<td class="text-center"> نوع الحسم</td>
-											<td class="text-center">المبلغ</td>
-											<td>
-												<span t-esc="get_salary_net(o.line_ids)" />
-											</td>
-											<td></td>
+											<td class="text-center" colspan="2"> نوع الحسم</td>
+											<td class="text-center" colspan="2">المبلغ</td>
 										</tr>
 
 										<tr>

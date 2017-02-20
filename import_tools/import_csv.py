@@ -321,7 +321,7 @@ class import_csv(osv.osv):
         
         return True    
     
-    def import_salary_grid(self, cr, uid, ids, context=None):
+    def import_degree(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
         this = self.browse(cr, uid, ids[0])   

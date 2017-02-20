@@ -49,11 +49,13 @@
 						<group>
 							<group>
 								<field name="name" invisible="1" />
-								<field name="date" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-								<field name="number_decision" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-								<field name="date_decision" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-								<field name="increase_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
-								<field name="reasons" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+								<field name="date" attrs="{'readonly': [('state', '!=', 'draft')]}" />
+								<field name="number_decision" attrs="{'readonly': [('state', '!=', 'draft')]}" />
+								<field name="date_decision" attrs="{'readonly': [('state', '!=', 'draft')]}" />
+								<field name="increase_id"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+									attrs="{'readonly': [('state', '!=', 'draft')]}" />
+								<field name="reasons" attrs="{'readonly': [('state', '!=', 'draft')]}" />
 							</group>
 							<group />
 						</group>
@@ -61,11 +63,12 @@
 						<notebook>
 							<page string="الموظفين المستثنين من العلاوة">
 								<field name="employee_deprivated_ids" nolabel="1"
-									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" domain="[('type_id','!=',%(data_salary_grid_type6)d)]"
-									attrs="{'readonly':[('state','not in',['draft','pim'])]}">
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+									domain="[('type_id','!=',%(data_salary_grid_type6)d)]" attrs="{'readonly':[('state','not in',['draft','pim'])]}">
 									<tree>
-										<field name="display_name" string="الاسم"/>
-										<field name="department_id" />
+										<field name="display_name" string="الاسم" />
+										<field name="number" string="الرقم الوظيفي" />
+										<field name="employee_state" string="الحالة" />
 									</tree>
 								</field>
 							</page>
@@ -127,7 +130,8 @@
 			<field name="arch" type="xml">
 				<form>
 					<group>
-						<field name="employee_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+						<field name="employee_id"
+							options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 						<field name="increase_percent" />
 					</group>
 				</form>

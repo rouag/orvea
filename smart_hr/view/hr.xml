@@ -89,12 +89,12 @@
 			<field name="type">tree</field>
 			<field name="inherit_id" ref="hr.view_employee_tree" />
 			<field name="arch" type="xml">
-				<xpath expr="/tree" position='replace'>
-						<field name="name" position="after">
-						<field name="display_name" string="الموظف" />
-						<field name="number" string="الرقم الوظيفي" />
-					
-						</field>
+				<xpath expr="//tree" position='replace'>
+				<tree>
+					<field name="display_name" string="الموظف" />
+					<field name="number" string="الرقم الوظيفي" />
+					<field name="employee_state" string="الحالة"/>
+				</tree>
 				</xpath>
 			</field>
 		</record>
@@ -122,7 +122,7 @@
 								attrs="{'invisible': [('employee_state', '!=', 'employee')]}" />
 						</header>
 						<sheet>
-						<field name="salary_grid_id" invisible="1" />
+							<field name="salary_grid_id" invisible="1" />
 							<div class="oe_button_box" name="button_box" position="inside">
 								<button name="%(smart_hr.action_hr_loan)d" class="oe_stat_button"
 									context="{'search_default_employee_id': id}" icon="fa-money"
@@ -190,8 +190,9 @@
 								<page name="public" string="بيانات شخصية">
 									<group string="بيانات شخصية">
 										<group>
-											<field name="country_id" options='{"no_open": True, "no_create": True}'  widget="selection" 
-												attrs="{'required': 1}"  domain="[('code_nat','!=',False)]" context="{'compute_name': '_get_natinality'}"/>
+											<field name="country_id" options='{"no_open": True, "no_create": True}'
+												widget="selection" attrs="{'required': 1}" domain="[('code_nat','!=',False)]"
+												context="{'compute_name': '_get_natinality'}" />
 											<field name="identification_id" attrs="{'required': 1}" />
 											<field name="identification_date" />
 											<field name="identification_place" />
@@ -281,23 +282,23 @@
 									</group>
 								</page>
 								<page string="بيانات البنك">
-								 
-										<group string="بيانات البنك">
-											<field name="address_home_id" invisible="1" />
-											<field name="bank_account_id" invisible="1" />
-											<field name="bank_account_ids" options="{'no_create': True}"
-												nolabel="1">
-												<tree create="false" delete="false">
-													<field name="acc_number" />
-													<field name="bank_name" string="البنك" />
-													<field name="currency_id" />
-													<field name="account_opening_date" />
-													<field name="is_deposit" />
 
-												</tree>
-											</field>
-										</group>
-									 
+									<group string="بيانات البنك">
+										<field name="address_home_id" invisible="1" />
+										<field name="bank_account_id" invisible="1" />
+										<field name="bank_account_ids" options="{'no_create': True}"
+											nolabel="1">
+											<tree create="false" delete="false">
+												<field name="acc_number" />
+												<field name="bank_name" string="البنك" />
+												<field name="currency_id" />
+												<field name="account_opening_date" />
+												<field name="is_deposit" />
+
+											</tree>
+										</field>
+									</group>
+
 									<group name="active_group" invisible="1" />
 								</page>
 

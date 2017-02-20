@@ -260,6 +260,5 @@ class HrScholarshipType(models.Model):
     def check_pension_percent(self):
         if self.pension_percent < 0 or self.pension_percent > 100:
             raise ValidationError(u"نسبة راتب التقاعد خاطئة ")
-        if self.salary_percent < 0 or self.salary_percent > 100:
-            raise ValidationError(u"نسبة الراتب خاطئة ")
+       
 
