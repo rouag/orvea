@@ -291,7 +291,11 @@ class HrPayslip(models.Model):
     @api.multi
     def compute_sheet(self):
         print '----new compute_sheet ---------'
-        salary_grid_obj = self.env['salary.grid.detail']
+        # check weither the employee is terminated
+        if self.employee_id.emp_state == 'terminated':
+            termination_id = self.env['hr.termination'].search([('employee_id', '=', self.employee_id.id), ('state', '=', 'done')], order='date_termination desc', limit=1)
+            if fields.Date.from_string(termination_id.date_termination) < fields.Date.from_string(self.date_from) or fields.Date.from_string(termination_id.date_termination) > fields.Date.from_string(self.date_to):
+                raise UserError(u"لقد تم طي قيد %s " % self.employee_id.name)
         bonus_line_obj = self.env['hr.bonus.line']
         loan_obj = self.env['hr.loan']
         difference_line_obj = self.env['hr.difference.line']
@@ -302,9 +306,6 @@ class HrPayslip(models.Model):
             payslip.difference_history_ids.unlink()
             # generate  lines
             employee = payslip.employee_id
-            ttype = employee.job_id.type_id
-            grade = employee.job_id.grade_id
-            degree = employee.degree_id
             # search the correct salary_grid for this employee
             salary_grids = employee.salary_grid_id
             if not salary_grids:
