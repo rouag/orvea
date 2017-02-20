@@ -5,47 +5,36 @@
 			<t t-call="report.html_container">
 				<t t-foreach="docs" t-as="o">
 					<t t-call="smart_base.landscape_layout">
-					
-							<!--  <div class="header">
-									<div class="col-xs-4">
-										<h3>
-											<strong>
-												المملكة العربية السعودية
-											</strong>
-										</h3>
-										<h2>
-											<strong>
-												هيئة التحقيق و الإدعاء العام
-											</strong>
-										</h2>
-									</div>
-							
-								<div class="col-xs-6 text-center">
-									<img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo"
-										width="100%" style="max-height:85px !important;" />
-								</div>
-								<div class="col-xs-2">
-									<span
-										t-esc="get_hijri_date(context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M'), '-')" />
-								</div>
-							</div>-->
-			
+
+						<!-- <div class="header"> <div class="col-xs-4"> <h3> <strong> المملكة 
+							العربية السعودية </strong> </h3> <h2> <strong> هيئة التحقيق و الإدعاء العام 
+							</strong> </h2> </div> <div class="col-xs-6 text-center"> <img t-if="company.logo" 
+							t-att-src="'data:image/png;base64,%s' % company.logo" width="100%" style="max-height:85px 
+							!important;" /> </div> <div class="col-xs-2"> <span t-esc="get_hijri_date(context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d 
+							%H:%M'), '-')" /> </div> </div> -->
+
 						<div class="page">
 
 							<t t-set="allowance_ids" t-value="get_allowances(o.line_ids)" />
+							<t t-set="deduction_ids" t-value="get_deductions(o.line_ids)" />
 							<div class="col-xs-6 right">
 								<br></br>
 								<strong>الجهة :</strong>
+								<span t-field="o.employee_id.dep_Side" />
 								<br></br>
 								<strong>المنطقة :</strong>
+								<span t-field="o.employee_id.dep_city" />
 								<br></br>
 								<strong>الفرع :</strong>
+								<span t-field="o.employee_id.department_id" />
 								<br></br>
 								<strong>نوع الموظف
 									:
 								</strong>
+								<span t-field="o.employee_id.employee_state" />
 								<br></br>
 								<strong>المرتبة :</strong>
+								<span t-field="o.employee_id.grade_id" />
 								<br></br>
 
 								<br></br>
@@ -59,10 +48,23 @@
 								<strong>تاريخ الطباعة
 									:
 								</strong>
+								<span
+									t-esc="get_hijri_date(context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d 
+							%H:%M'), '-')" />
 								<br></br>
-								<strong>رقم الصفحة :</strong>
+								<strong>رقم الصفحة :</strong>1
 								<br></br>
 
+								<br></br>
+								<br></br>
+							</div>
+							<div class="col-xs-12 text-center">
+								<br></br>
+								<strong>مسير الرواتب
+
+									:
+								</strong>
+								<span t-field="o.month" />
 								<br></br>
 								<br></br>
 							</div>
@@ -82,14 +84,14 @@
 											<td class="text-center">الدرجة </td>
 											<td class="text-center"> الراتب الاساسي</td>
 											<td colspan="2" class="text-center">إجمالي البدلات</td>
-											<td colspan="2" class="text-center">إجمالي الخصومات </td>
+											<td colspan="2" class="text-center">إجمالي الحسميات </td>
 											<td class="text-center"> الصافي</td>
 											<td class="text-center">توقيع المستلم</td>
 										</tr>
 									</thead>
 									<tbody>
 										<tr>
-											<td></td>
+											<td>1</td>
 											<td>
 												<span t-field="o.employee_id.number" />
 											</td>
@@ -113,46 +115,63 @@
 											<td class="text-center"> نوع الحسم</td>
 											<td class="text-center">المبلغ</td>
 											<td>
-												<span t-field="o.salary_net" />
+												<span t-esc="get_salary_net(o.line_ids)" />
 											</td>
 											<td></td>
 										</tr>
 
 										<tr>
 											<td colspan="7"></td>
-											<td >
-											
-											
+											<td colspan="2">
+												<t t-foreach="allowance_ids" t-as="line">
+													<p style="font-size:22px;" >
+														<div class="col-xs-7" align="right">
+															<span t-field="line.name" />
+														</div>
+														<div class="col-xs-5"  align="left">
+															<span t-field="line.amount" />
+														</div>
+														<br></br>
+													</p>
+													<br></br>
+												</t>
 											</td>
-											<td foreach="allowance_ids" as="allowance">
-											<t t-esc="allowance.name" />
-											<br></br>
+
+
+
+											<td colspan="2">
+												<t t-foreach="deduction_ids" t-as="ded">
+													<p style="font-size:22px;">
+														<div class="col-xs-7 " align="right">
+															<span t-field="ded.name" />
+														</div>
+														<div class="col-xs-5 " align="left">
+															<span t-field="ded.amount" />
+														</div>
+														<br></br>
+													</p>
+													<br></br>
+												</t>
 											</td>
-											<td></td>
-											<td></td>
-											<td colspan="2"></td>
-										</tr>
-										<tr>
-											<td colspan="7"></td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td></td>
-											<td colspan="2"></td>
+											<td colspan="2">	</td>
 										</tr>
 
+
 										<tr>
-											<td colspan="6" class="text-right"> المجموع</td>
-											<td></td>
+											<td colspan="7" class="text-right"> المجموع</td>
+											<td colspan="2" class="text-right">
+												<span t-esc="get_sum_alowances(o.line_ids)" />
+											</td>
+											<td colspan="2" class="text-right">
+												<span t-esc="get_sum_deductions(o.line_ids)" />
+											</td>
 											<td colspan="2"></td>
-											<td colspan="2"></td>
-											<td colspan="2"></td>
-										
+
 										</tr>
 									</tbody>
 								</table>
 							</div>
-							
+
 							<div class="col-xs-4 text-center">
 								<br></br>
 								<strong>الموظف المختص</strong>

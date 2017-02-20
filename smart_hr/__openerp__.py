@@ -25,7 +25,7 @@
         'hr_menu.xml',
         'data/sequences.xml',
         'data/configurations.xml',
-            'holidays/data/hr_holidays_data.xml',
+        'holidays/data/hr_holidays_data.xml',
         'data/schedulers.xml',
         'data/res_city_data.xml',
         'data/hr_termination_data.xml',
@@ -162,6 +162,7 @@
         'payroll/view/hr_difference.xml',
         'payroll/views/report_hr_deduction.xml',
         'payroll/views/report_payslip.xml',
+        'payroll/views/report_payslip_extension.xml',
         'payroll/views/report.xml',
 
         # الحضور والإنصراف
