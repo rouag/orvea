@@ -32,7 +32,7 @@
 			
 						<div class="page">
 
-							
+							<t t-set="allowance_ids" t-value="get_allowances(o.line_ids)" />
 							<div class="col-xs-6 right">
 								<br></br>
 								<strong>الجهة :</strong>
@@ -124,7 +124,10 @@
 											
 											
 											</td>
-											<td></td>
+											<td foreach="allowance_ids" as="allowance">
+											<t t-esc="allowance.name" />
+											<br></br>
+											</td>
 											<td></td>
 											<td></td>
 											<td colspan="2"></td>
