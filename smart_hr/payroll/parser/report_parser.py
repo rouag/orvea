@@ -157,11 +157,12 @@ class ReportPayslipExtension(report_sxw.rml_parse):
     def _get_total_salary_net(self, type_id,slip_ids):
         total = 0
         for line in slip_ids :
-            sum = 0
-            for rec in line.line_ids:
-                if rec.category == 'salary_net':
-                    sum += rec.amount
-            total = total + sum
+            if line.employee_id.type_id.id == type_id:
+                sum = 0
+                for rec in line.line_ids:
+                    if rec.category == 'salary_net':
+                        sum += rec.amount
+                total = total + sum
         return total
     def _get_hijri_date(self, date, separator):
         '''
