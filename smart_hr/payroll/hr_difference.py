@@ -452,11 +452,11 @@ class hrDifference(models.Model):
             date_to = fields.Date.from_string(self.date_to)
             duration_in_month = 0
             if date_from >= lend_date_from and lend_date_to >= date_to:
-                duration_in_month = (date_from - date_to).days
+                duration_in_month = self.env['hr.smart.utils'].compute_duration(date_from, date_to)
             if lend_date_from >= date_from and lend_date_to <= date_to:
-                duration_in_month = (lend_date_to - lend_date_from).days
+                duration_in_month = self.env['hr.smart.utils'].compute_duration(lend_date_to, lend_date_from)
             if lend_date_from >= date_from and lend_date_to >= date_to:
-                duration_in_month = (date_to - lend_date_from).days
+                duration_in_month = self.env['hr.smart.utils'].compute_duration(date_to, lend_date_from)
             grid_id = lend_id.employee_id.salary_grid_id
             if grid_id and duration_in_month > 0:
                 # 1) نسبة الراتب
@@ -523,18 +523,18 @@ class hrDifference(models.Model):
             date_from = fields.Date.from_string(self.date_from)
             holiday_date_to = fields.Date.from_string(holiday_id.date_to)
             date_to = fields.Date.from_string(self.date_to)
-            days = (holiday_date_from - date_from).days
+            days = self.env['hr.smart.utils'].compute_duration(holiday_date_from, date_from)
             today = fields.Date.from_string(fields.Date.today())
             months_from_holiday_start = relativedelta.relativedelta(today, holiday_date_from).months
             # days in current month
             if days < 0 and holiday_date_to <= date_to:
-                duration_in_month = (holiday_date_to - date_from).days
+                duration_in_month = self.env['hr.smart.utils'].compute_duration(holiday_date_to, date_from)
             if days < 0 and holiday_date_to > date_to:
-                duration_in_month = (date_to - date_from).days
+                duration_in_month = self.env['hr.smart.utils'].compute_duration(date_to, date_from)
             if days >= 0 and holiday_date_to <= date_to:
-                duration_in_month = (holiday_date_to - holiday_date_from).days
+                duration_in_month = self.env['hr.smart.utils'].compute_duration(holiday_date_to, holiday_date_from)
             if days >= 0 and holiday_date_to > date_to:
-                duration_in_month = (date_to - holiday_date_from).days
+                duration_in_month = self.env['hr.smart.utils'].compute_duration(date_to, holiday_date_from)
             grid_id = holiday_id.employee_id.salary_grid_id
             holiday_status_id = holiday_id.holiday_status_id
             if grid_id and holiday_status_id.salary_spending:
@@ -566,7 +566,7 @@ class hrDifference(models.Model):
                 if suspension_end.suspension_id.suspension_date > self.date_from:
                     date_from = fields.Date.from_string(suspension_end.suspension_id.suspension_date)
                 date_to = fields.Date.from_string(suspension_end.release_date)
-                days = (date_to - date_from).days
+                days = self.env['hr.smart.utils'].compute_duration(date_to, date_from)
                 grid_id = suspension_end.employee_id.salary_grid_id
                 if grid_id:
                     amount = (grid_id.basic_salary / 22) * days
@@ -582,7 +582,7 @@ class hrDifference(models.Model):
                 if suspension_end.suspension_id.suspension_date < self.date_from:
                     date_from = fields.Date.from_string(suspension_end.suspension_id.suspension_date)
                     date_to = fields.Date.from_string(self.date_from)
-                    days = (date_to - date_from).days - 1
+                    days = self.env['hr.smart.utils'].compute_duration(date_to, date_from) - 1
                     grid_id = suspension_end.employee_id.salary_grid_id
                     if grid_id:
                         # الراتب الأساسي
