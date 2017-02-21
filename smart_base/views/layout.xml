@@ -75,6 +75,16 @@
 				<div class="row">
 					<img t-if="company.report_footer" t-att-src="'data:image/png;base64,%s' % company.report_footer"
 						width="100%" />
+					<ul class="list-inline text-center">
+						<li>الصفحة:</li>
+						<li>
+							<span class="page" />
+						</li>
+						<li>/</li>
+						<li>
+							<span class="topage" />
+						</li>
+					</ul>
 				</div>
 			</div>
 		</template>
