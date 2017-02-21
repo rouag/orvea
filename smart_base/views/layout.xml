@@ -52,6 +52,8 @@
 			<t t-call="smart_base.landscape_layout_header" />
 			<t t-raw="0" />
 			<t t-call="smart_base.landscape_layout_footer" />
+			
+			
 		</template>
 
 		<template id="landscape_layout_header">
@@ -75,9 +77,22 @@
 				<div class="row">
 					<img t-if="company.report_footer" t-att-src="'data:image/png;base64,%s' % company.report_footer"
 						width="100%" />
+						
+						<ul class="list-inline">
+						<li>Page:</li>
+						<li>
+							<span class="page" />
+						</li>
+						<li>/</li>
+						<li>
+							<span class="topage" />
+						</li>
+					</ul>
 				</div>
 			</div>
 		</template>
+		
+			
 
 		<!-- layout Speech -->
 
@@ -94,6 +109,7 @@
 			<t t-call="smart_base.layout_header_speech" />
 			<t t-raw="0" />
 			<t t-call="smart_base.layout_footer_speech" />
+			
 		</template>
 
 		<template id="layout_header_speech">

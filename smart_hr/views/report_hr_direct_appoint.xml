@@ -72,6 +72,7 @@
 						</t>
 						<t
 							t-if="o.type_appointment == docs.env.ref('smart_hr.data_hr_promotion_member')">
+							
 							<div class="page">
 								<div class="oe_structure" />
 								<p style="font-size:22px;" align="left">
