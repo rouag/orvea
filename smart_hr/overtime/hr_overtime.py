@@ -260,13 +260,13 @@ class HrOvertimeLigne(models.Model):
                     self.date_from <= rec.date_from <= self.date_to or \
                     self.date_from <= rec.date_to <= self.date_to:
                 raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الإعارة")
-        
-#         for rec in over_obj.search(search_domain):
-#              if rec.date_from <= self.date_from <= rec.date_to or \
-#                     rec.date_from <= self.date_to <= rec.date_to or \
-#                     self.date_from <= rec.date_from <= self.date_to or \
-#                     self.date_from <= rec.date_to <= self.date_to:
-#                  raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في خارج دوام")
+
+        for rec in over_obj.search([('employee_id','=', self.employee_id.id), ('id', '!=', self.id)]):
+             if rec.date_from <= self.date_from <= rec.date_to or \
+                    rec.date_from <= self.date_to <= rec.date_to or \
+                    self.date_from <= rec.date_from <= self.date_to or \
+                    self.date_from <= rec.date_to <= self.date_to:
+                 raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في خارج دوام")
 
         for rec in schol_obj.search(search_domain):
             if rec.date_from <= self.date_from <= rec.date_to or \

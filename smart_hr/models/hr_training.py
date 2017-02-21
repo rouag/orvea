@@ -44,6 +44,7 @@ class HrTraining(models.Model):
                               ('cancel', 'ملغاة'),
                               ], readonly=1, string='الحالة', default='new')
     job_trainings = fields.One2many('hr.job.training', 'type', string='job trainings')
+    compute_weekends = fields.Boolean(string=u'احتساب عطلة نهاية الاسبوع')
 
     @api.onchange('date_from')
     def _onchange_date_from(self):

@@ -17,9 +17,13 @@ class SmartUtils(models.Model):
             return duration
 
     def compute_days_minus_weekends(self, date_from, date_to):
-            daygenerator = (date_from + timedelta(x + 1) for x in xrange((date_to - date_from).days))
-            sum_minus_weekends = sum(1 for day in daygenerator if day.weekday() not in [4, 5])
-            return sum_minus_weekends
+        dayDelta = timedelta(days=1)
+        diff = 0
+        while date_from <= date_to:
+            if date_from.weekday() not in [4,5]:
+                diff += 1
+            date_from += dayDelta
+        return diff
 
     def compute_holidays_days(self, date_from, date_to):
         hr_public_holiday_obj = self.env['hr.public.holiday']
@@ -29,12 +33,12 @@ class SmartUtils(models.Model):
                                                                 , '&', ('state', '=', 'done'), '&', ('date_to', '>=', date_from), ('date_to', '<=', date_to)]):
             public_holiday_date_from = fields.Date.from_string(public_holiday.date_from)
             public_holiday_date_to = fields.Date.from_string(public_holiday.date_to)
-            if date_from >= public_holiday_date_from and public_holiday_date_to >= date_to:
-                duration = self.compute_days_minus_weekends(date_from, date_to)
+            if date_from >= public_holiday_date_from and public_holiday_date_to >= date_from:
+                duration += self.compute_days_minus_weekends(date_from, public_holiday_date_to)
             if public_holiday_date_from >= date_from and public_holiday_date_to <= date_to:
-                duration = self.compute_days_minus_weekends(public_holiday_date_from, public_holiday_date_to)
+                duration += self.compute_days_minus_weekends(public_holiday_date_from, public_holiday_date_to)
             if public_holiday_date_from >= date_from and public_holiday_date_to >= date_to:
-                duration = self.compute_days_minus_weekends(public_holiday_date_from, date_to)
+                duration += self.compute_days_minus_weekends(public_holiday_date_from, date_to)
         return duration
 
     def check_holiday_day(self, date):
@@ -50,7 +54,12 @@ class SmartUtils(models.Model):
             date_from = fields.Date.from_string(date_from)
             new_date_to = date_from
             while duration > 0:
-                if new_date_to.weekday() not in [4, 5] and self.check_holiday_day(new_date_to) is False:
-                    duration -= 1
+                is_holiday= self.check_holiday_day(new_date_to)
+                weekday =  new_date_to.weekday()
+                new_date_to += timedelta(days=1)
+                if weekday  in [4, 5] or is_holiday is True:
+                    continue
+                duration -= 1
+            while new_date_to.weekday() in [4, 5] or self.check_holiday_day(new_date_to) is True:
                 new_date_to += timedelta(days=1)
             return new_date_to
