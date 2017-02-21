@@ -100,17 +100,14 @@ class ReportPayslipExtension(report_sxw.rml_parse):
 
     def _get_all_types(self):
         type_pbj = self.pool.get('salary.grid.type')
-        search_ids = type_pbj.search(self.cr, self.uid,[])
-        return type_pbj.browse(self.cr, self.uid,search_ids)
+        search_ids = type_pbj.search(self.cr, self.uid, [])
+        return type_pbj.browse(self.cr, self.uid, search_ids)
 
     def _get_all_employees(self, type_id, slip_ids):
         payslip = []
         for rec in slip_ids:
-            print"111111",rec
-            print"00001",rec.employee_id.type_id 
             if rec.employee_id.type_id.id == type_id:
                 payslip.append(rec)
-                print"payslip",payslip
         return payslip
 
 
@@ -135,32 +132,34 @@ class ReportPayslipExtension(report_sxw.rml_parse):
                 sum += line.amount
         return sum
 
-    def _get_total_allowances(self, slip_ids):
+    def _get_total_allowances(self, type_id , slip_ids):
         total = 0
         for line in slip_ids :
-            sum = 0
-            for rec in line.line_ids:
-                if rec.category == 'allowance':
-                    sum += rec.amount
-            total = total + sum
-        return total
- 
-    def _get_total_deductions(self, slip_ids):
-        total = 0
-        for line in slip_ids :
-            sum = 0
-            for rec in line.line_ids:
-                if rec.category == 'deduction':
-                    sum += rec.amount
-            total = total + sum
+            if line.employee_id.type_id.id == type_id:
+                sum = 0
+                for rec in line.line_ids:
+                    if rec.category == 'allowance':
+                        sum += rec.amount
+                total = total + sum
         return total
 
-    def _get_total_salary_net(self, slip_ids):
+    def _get_total_deductions(self,type_id, slip_ids):
+        total = 0
+        for line in slip_ids :
+            if line.employee_id.type_id.id == type_id:
+                sum = 0
+                for rec in line.line_ids:
+                    if rec.category == 'deduction':
+                        sum += rec.amount
+                total = total + sum
+        return total
+
+    def _get_total_salary_net(self, type_id,slip_ids):
         total = 0
         for line in slip_ids :
             sum = 0
             for rec in line.line_ids:
-                if line.category == 'salary_net':
+                if rec.category == 'salary_net':
                     sum += rec.amount
             total = total + sum
         return total

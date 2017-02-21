@@ -99,19 +99,23 @@
 													<span t-esc="get_sum_allowances(line.line_ids)" />
 												</td>
 												<td>
-												
 													<span t-esc="get_salary_net(line.line_ids)" />
 												</td>
-
 											</tr>
-											
-											
 											<t t-set="i" t-value="i+1" />
 										</t>
 									</tbody>
+									<tr>
+											<td colspan="7"  class="text-center"> المجموع</td>
+											<td colspan="2" class="text-center"><span t-esc="get_total_allowances(type.id,o.slip_ids)" /></td>
+											<td colspan="2" class="text-center"><span t-esc="get_total_deductions(type.id,o.slip_ids)" /></td>
+												<td colspan="1" class="text-center"><span t-esc="get_total_salary_net(type.id,o.slip_ids)" /></td>
+										</tr>
 								</table>
 								
+								
 								</t>
+								
 							</div>
 
 							<div class="col-xs-4 text-center">
