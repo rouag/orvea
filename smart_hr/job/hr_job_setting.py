@@ -21,7 +21,6 @@ class HrGrouupGeneral(models.Model):
 
     name = fields.Char(string=u'المسمى', required=1)
     parent_id = fields.Many2one('hr.groupe.job', ' المجموعة الأب', ondelete='cascade')
-    general_id = fields.Many2one('hr.groupe.job', ' المجموعة الأب', ondelete='cascade')
     child_ids = fields.One2many('hr.groupe.job', 'parent_id', 'المجموعات الفرعية')
     all_child_ids = fields.Many2many(compute='_get_all_child_ids', type='many2many', relation='hr.groupe.job'),
     numero = fields.Char(string=u'الرمز',)

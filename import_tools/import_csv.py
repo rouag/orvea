@@ -7,6 +7,7 @@
 #----------------------------------------------------------------------------
 # encoding=utf8  
 import sys  
+from Tkconstants import BROWSE
 
 reload(sys)  
 sys.setdefaultencoding('utf8')
@@ -50,6 +51,111 @@ class import_csv(osv.osv):
         }
    
    
+   
+   
+   
+   
+      
+    def import_job(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        move_id=''
+        all_move_ids=[]
+        departement = self.pool.get('hr.department')
+        hr_job=self.pool.get('hr.job')
+        type = self.pool.get('salary.grid.type')
+        grade = self.pool.get('salary.grid.grade')
+        job_name = self.pool.get('hr.job.name')
+        job_group=self.pool.get('hr.groupe.job')
+        serie_id=False
+        job_name_id=False
+        genral_id=False
+        for row  in reader : 
+            type_id=type.search(cr, uid,  [('code', '=',str(row['BAND_NO']))])
+            grade_id =grade.search(cr, uid,  [('code', '=',str(row['GRADE_NO']))])
+            departement_id = departement.search(cr, uid, [('code', '=',str(row['BRANCH_NO']))])
+            job_name_id = job_name.search(cr, uid, [('number', '=',str(row['POSITION_CODE']))])
+            if job_name_id:
+                serie_id= job_group.search(cr, uid, [('job_name_ids', 'in',job_name_id[0])])
+            if serie_id:
+                specifique_id=job_group.search(cr, uid, [('parent_id', 'in',serie_id)])
+            genral_id=False
+            if general_id:
+                genral_id=job_group.search(cr, uid, [('parent_id', 'in',specifique_id)])
+            job_val = {
+                       'number': str(row['POSITION_NO']),
+                       'type_id': type_id[0] if type_id else False ,
+                       'grade_id': grade_id[0]if grade_id else False ,
+                       'department_id': departement_id[0]if departement_id else False ,
+                       'general_id': genral_id[0] if genral_id else False,
+                       'specific_id': specifique_id[0]if specifique_id else False,
+                       'serie_id': serie_id[0]if serie_id else False,
+                       'state':'unoccupied',
+                       }
+            hr_job.create(cr, uid, job_val,context=context)
+        
+        return True  
+    
+    def import_job_employee(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        move_id=''
+        all_move_ids=[]
+        job = self.pool.get('hr.job')
+        employee = self.pool.get('hr.employee')
+        for row  in reader : 
+            job_id=job.search(cr, uid,  [('name', '=',str(row['POSITION_NO']))])
+            employee_id= employee.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
+            if job_id and employee_id :
+                jobs=job.browse(cr, uid, job_id[0]) 
+                jobs.write({'employee':employee_id[0], 'state':'occupied',})
+        
+        return True  
+      
+    def import_branche(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        move_id=''
+        all_move_ids=[]
+        departement = self.pool.get('hr.department')
+        departement_id = departement.search(cr, uid, [('code', '=','C001')])[0]
+        for row  in reader : 
+            daprtment_val={
+                            'name':str(row['BRANCH_NAME_AR']),
+                            'code':str(row['BRANCH_NO']),
+                            'parent_id':departement_id,
+                            }
+            
+            departement.create(cr, uid, daprtment_val,context=context)
+        
+        return True
     def emplyee_historique(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
@@ -119,7 +225,7 @@ class import_csv(osv.osv):
 
                 
                 
-        return True
+
                  
     def import_passport(self, cr, uid, ids, context=None):
         if context is None:
@@ -192,7 +298,7 @@ class import_csv(osv.osv):
                             'code':'SA',
                             'name':row['name'],
                             'code_nat':code,
-                            'nation':row['NATION_DSCR_AR'],
+                            'national':row['NATION_DSCR_AR'],
                             }
             
                 country.create(cr, uid, country_line_val,context=context)
@@ -637,11 +743,202 @@ class import_csv(osv.osv):
         print 'time for import employee', stop - start
         return True
             
+    
+    def import_education_level_employee(self, cr, uid, ids, context=None):
+           
+        start = timeit.default_timer()
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+        
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))         
+        employee = self.pool.get('hr.employee')
+        city=self.pool.get('res.city')
+        city_side=self.pool.get('res.city')
+        country = self.pool.get('res.country')
+        religion=self.pool.get('religion.religion')
+        education_level = self.pool.get('hr.employee.education.level')
+        salary_grid_level = self.pool.get('salary.grid.degree')
+        grade = self.pool.get('salary.grid.grade')
+        diplome = self.pool.get('hr.employee.diploma')
+        departement = self.pool.get('hr.department')
+        type = self.pool.get('salary.grid.type')
+        education_level_id=False
+        grade_id=False
+        diplome_id=False
+        city_id=False
+        religion_id=False
+        salary_grid_level_id=False
+        id_recuiter = self.pool.get('recruiter.recruiter').search(cr, uid, [('name', '=','حكومي')])[0]
+        country_id=False
+        city_side = self.pool.get('city.side')
+        insurance= self.pool.get('hr.insurance.type')  
+        job_education_level= self.pool.get('hr.employee.job.education.level')
+        move_id=''
+        all_move_ids=[]
+        city_name=False
+        for row  in reader : 
+            if row['EMP_NO'] and not ( employee.search(cr, uid, [('number', '=',row['EMP_NO'])])): 
+                if str(row['SEX_NO'])=='1':
+                    sexe='male'
+                else:
+                    sexe='female'
+                
+                if str(row['MARITAL_STATUS'])=='00':
+                    marital='other'
+                if str(row['MARITAL_STATUS'])=='01':
+                    marital='married'
+                if str(row['MARITAL_STATUS'])=='02':
+                    marital='single'
+                if str(row['MARITAL_STATUS'])=='03':
+                    marital='divorced'
+                if str(row['MARITAL_STATUS'])=='4':
+                    marital='mariie'
+                if str(row['MARITAL_STATUS'])=='05':
+                    marital='not_mariee'
+                
+                    
+                    
+                if str(row['BIRTH_PLACE']):
+                    city_ids=city.search(cr, uid, [('code', '=',row['BIRTH_PLACE'])])
+                    if city_ids:
+                        city_name=city.browse(cr, uid, city_ids[0]).name
+                if str(row['RELIGION_NO']):
+                    religion_ids=religion.search(cr, uid, [('code', '=',row['RELIGION_NO'])])
+                    if religion_ids:
+                        religion_id=religion_ids[0]
+                if str(row['NATIONALITY_NO']):
+                    if str(row['NATIONALITY_NO'])=='0001':
+                        country_id=country.search(cr, uid, [('code', '=','SA')])[0]
+                    else:
+                        country_ids=country.search(cr, uid, [('code', '=',row['NATIONALITY_NO'])])
+                        if country_ids:
+                            country_id=country_ids[0]
+                    
+                if str(row['DEGREE_NO']):
+                    education_level_ids=education_level.search(cr, uid, [('code', '=',row['DEGREE_NO'])])
+                    if education_level_ids:
+                        education_level_id=education_level_ids[0]
+                    
+                    
+                if str(row['EMP_STATUS_NO'])=='A' or  str(row['EMP_STATUS_NO'])=='AU':
+                    state_employee='working'
+                elif  str(row['EMP_STATUS_NO'])=='N' or  str(row['EMP_STATUS_NO'])=='OH':
+                    state_employee='suspended'
+                elif  str(row['EMP_STATUS_NO'])=='r' or  str(row['EMP_STATUS_NO'])=='T':
+                    state_employee='terminated'
+                    
+                
+                if str(row['CLASS_NO']):
+                    salary_grid_level_ids = salary_grid_level.search(cr, uid, [('code', '=',row['CLASS_NO'])])
+                    if salary_grid_level_ids:
+                        salary_grid_level_id=salary_grid_level_ids[0]
+                    
+                if str(row['GRADE_NO']):
+                    grade_ids = grade.search(cr, uid, [('code', '=',row['GRADE_NO'])])
+                    if grade_ids:
+                        grade_id=grade_ids[0]
+               
+                if str(row['MAJOR_NO']):
+                    diplome_ids = diplome.search(cr, uid, [('code', '=',row['GRADE_NO'])])
+                    if diplome_ids:
+                        diplome_id =diplome_ids[0]
+                if str(row['PAGER_NO'])==  'عضوهيئة تحقيق':
+                    is_member=True
+                else:
+                    is_member=False
+                region_id=False
+                if str(row['REGION_NO']):
+                    region = city_side.search(cr, uid, [('code', '=',row['REGION_NO'])])
+                    if region:
+                        region_id =region[0]
+                        
+                if str(row['GOSI_CAT']):
+                   
+                    insurance_obj = insurance.search(cr, uid, [('code', '=',str(row['GOSI_CAT']))])
+                   
+                    if insurance_obj:
+                        insurance_id =insurance_obj[0]
+                type_id=False     
+                if str(row['TYPE_NO']):
+                    type_obj = type.search(cr, uid, [('code', '=',row['TYPE_NO'])])
+                    if type_obj:
+                        type_id =type_obj[0]
+                departement_id = departement.search(cr, uid, [('code', '=','C001')])[0]
+                vals_education={'name':'01',
+                                'level_education_id':education_level_id,
+                                'diploma_id':diplome_id
+                                
+                                }
+                
+                    
+                id_eductaion_level=job_education_level.create(cr, uid, vals_education,context=context)
+                    
+                    
+                    
+                
+                    
+               
+                rcuter_date =   row['HIRE_DATE']
+                begin_work_date =  row['GOV_HIRE_DATE']
+                    
+                
+               
+                
+                employee_val={
+                            'name':(row['FIRST_NAME_AR']).decode('utf-8').strip()if (row['FIRST_NAME_AR']).decode('utf-8').strip()!='NULL' else 'لا إسم' ,
+                            'father_name':(row['MIDDLE_NAME1_AR']).decode('utf-8').strip() if (row['MIDDLE_NAME1_AR']).decode('utf-8').strip()!='NULL' else 'لا إسم',
+                            'grandfather_name':(row['MIDDLE_NAME2_AR']).decode('utf-8').strip() if (row['MIDDLE_NAME2_AR']).decode('utf-8').strip()!='NULL' else 'لا إسم',
+                            'family_name':(row['LAST_NAME_AR']).decode('utf-8').strip()if (row['LAST_NAME_AR']).decode('utf-8').strip()!='NULL' else 'لا إسم',
+                            'number':(row['EMP_NO']).decode('utf-8').strip(),
+                            'mobile_phone':(row['MobileNo']).decode('utf-8').strip(),
+                             'work_email':(row['Email']).decode('utf-8').strip(),
+                             'gender':sexe,
+                              'birthday':((row['DOB']))if  row['DOB'] != 'NULL' else  datetime.now(),
+                             'place_of_birth':city_name,
+                             'religion_state':religion_id,
+                             'country_id':country_id,
+                             'identification_id':(row['COMPUTER_NO']).decode('utf-8').strip(),
+                             'marital':marital,
+                             'education_level_ids':[(6,0,[id_eductaion_level])],
+                             'emp_state':state_employee,
+                             'degree_id':salary_grid_level_id,
+                             'grade_id':grade_id,
+                             'recruiter_date':row['HIRE_DATE']if  row['HIRE_DATE'] != 'NULL' else datetime.now(),
+                              'begin_work_date':  row['GOV_HIRE_DATE'] if  row['GOV_HIRE_DATE'] != 'NULL' else datetime.now(),
+                             'is_member':is_member,
+                             'employee_state':'employee',
+                             'recruiter':id_recuiter,
+                             'royal_decree_number':(row['ROYAL_DECREE_NO']).decode('utf-8').strip(),
+                             'royal_decree_date':(row['ROYAL_DECREE_DATE']).decode('utf-8').strip()if  row['ROYAL_DECREE_DATE'] != 'NULL' else  datetime.now(),
+                             'department_id':departement_id,
+                             'dep_Side':region_id,
+                             'insurance_type':insurance_id,
+                             'type_id':type_id,
+                             
+                            }
+                try:
+                        id_emp=employee.create(cr, uid, employee_val,context=context)
+                except:
+                        print 'error'
+                   
+         
+                
+            
             
          
         stop = timeit.default_timer()
         print 'time for import employee', stop - start
         return True
+            
+    
     
     #===========================================================================
     # def import_passport(self, cr, uid, ids, context=None):
@@ -1104,46 +1401,47 @@ class import_csv(osv.osv):
         i=0
         
         for row  in reader :
-            if   str(row['STATUS_ID']) == '2':
-                state='done'
-            elif  str(row['STATUS_ID']) == '8':
-                 state='unkhown'
-            elif  str(row['STATUS_ID']) == '4':
-                 state='refuse'
-            else:
-                state='unkhown'
-            if  str(row['LEAVE_TYPE']) == '1':
-                type=status_normal
-            elif str(row['LEAVE_TYPE']) == '20':
-                type=status_normal
-            elif str(row['LEAVE_TYPE']) == '23':
-                type=status_study
-            elif str(row['LEAVE_TYPE']) == '5':
-                type=compiling
-            else :
-                type=exceptional
-                
             employee=employee_obj.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
-            print str(row['EMP_NO'])
             if employee:
-                print 'employee', str(row['EMP_NO'])
-                print row['DAYS_USED']
-                duration = str(row['DAYS_USED']).replace('.00','')
-                print 'duration',duration
-                holiday_val={
-                                'name':row['REQUEST_NO'] if  row['REQUEST_NO'] != 'NULL' else  False,
-                                'employee_id':employee[0] if employee else False,
-                                'date_from':row['FROM_DATE']if  row['FROM_DATE'] != 'NULL' else  False,
-                                'date_to':row['TO_DATE']if  row['TO_DATE'] != 'NULL' else  False,
-                                'duration':int(duration),
-                                'date_decision':row['REFERENCE_DATE']  if  row['REFERENCE_DATE'] != 'NULL' else  False,
-                                'holiday_status_id':type,
-                                'state': state ,
-                                }
-                try:
-                    holiday_obj.create(cr, uid, holiday_val,context=context)
-                except:
-                    print row['REQUEST_NO']
+                if   str(row['STATUS_ID']) == '2':
+                    state='done'
+                elif  str(row['STATUS_ID']) == '8':
+                     state='unkhown'
+                elif  str(row['STATUS_ID']) == '4':
+                     state='refuse'
+                else:
+                    state='unkhown'
+                if  str(row['LEAVE_TYPE']) == '1':
+                    type=status_normal
+                elif str(row['LEAVE_TYPE']) == '20':
+                    type=status_normal
+                elif str(row['LEAVE_TYPE']) == '23':
+                    type=status_study
+                elif str(row['LEAVE_TYPE']) == '5':
+                    type=compiling
+                else :
+                    type=exceptional
+                    
+              
+               
+                if employee and str(row['DAYS_USED'])!='NULL':
+                  
+                    duration = str(row['DAYS_USED']).replace('.00','')
+                   
+                    holiday_val={
+                                    'name':row['REQUEST_NO'] if  row['REQUEST_NO'] != 'NULL' else  False,
+                                    'employee_id':employee[0] if employee else False,
+                                    'date_from':row['FROM_DATE']if  row['FROM_DATE'] != 'NULL' else  False,
+                                    'date_to':row['TO_DATE']if  row['TO_DATE'] != 'NULL' else  False,
+                                    'duration':int(duration),
+                                    'date_decision':row['REFERENCE_DATE']  if  row['REFERENCE_DATE'] != 'NULL' else  False,
+                                    'holiday_status_id':type,
+                                    'state': state ,
+                                    }
+                    try:
+                        holiday_obj.create(cr, uid, holiday_val,context=context)
+                    except:
+                       False
                 
         return True
     
