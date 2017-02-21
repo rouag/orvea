@@ -218,7 +218,7 @@
 
 		<menuitem action="action_hr_employee_transfert_periode" id="hr_menu_employee_transfert_periode"
 			parent="hr_root_workflows_setting" name="فترات النقل" groups="smart_hr.group_configuration"
-			sequence="5" />
+			sequence="30" />
 
 		<!-- ترتيب طلبات النقل -->
 
