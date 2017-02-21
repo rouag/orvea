@@ -27,6 +27,7 @@
 					<field name="name" />
 					<field name="number" />
 					<field name="date" />
+					<field name="compute_weekends" />
 					<field name="date_from" />
 					<field name="date_to" />
 					<field name="number_of_days" />

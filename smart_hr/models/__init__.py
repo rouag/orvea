@@ -38,3 +38,4 @@ from . import hr_employee_functional_card
 from . import hr_employee_create_users
 from . import employee_situation_order
 from . import modification
+from . import smart_utils

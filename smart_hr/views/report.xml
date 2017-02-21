@@ -81,7 +81,7 @@
 			file="smart_hr.report_hr_decision"    />
 
 		<report id="hr_direct_appoint_report" model="hr.direct.appoint"
-			name="smart_hr.report_hr_direct_appoint" report_type="qweb-pdf"
+			name="smart_hr.report_hr_direct_appoint" report_type="qweb-pdf"  
 			string="قرار مباشرة التعين" file="smart_hr.report_hr_direct_appoint"   />
 
 

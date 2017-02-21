@@ -70,9 +70,7 @@ class HrScholarship(models.Model):
     @api.depends('date_from', 'date_to')
     def _compute_duration(self):
         if self.date_from and self.date_to:
-            date_from = fields.Date.from_string(self.date_from)
-            date_to = fields.Date.from_string(self.date_to)
-            self.duration = (date_to - date_from).days
+            self.duration = self.env['hr.smart.utils'].compute_duration(self.date_from, self.date_to)
 
     @api.model
     def create(self, vals):

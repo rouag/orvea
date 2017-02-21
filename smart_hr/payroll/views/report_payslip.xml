@@ -5,20 +5,18 @@
 			<t t-call="report.html_container">
 				<t t-foreach="docs" t-as="o">
 					<t t-call="smart_base.landscape_layout">
-
-						<!-- <div class="header"> <div class="col-xs-4"> <h3> <strong> المملكة 
-							العربية السعودية </strong> </h3> <h2> <strong> هيئة التحقيق و الإدعاء العام 
-							</strong> </h2> </div> <div class="col-xs-6 text-center"> <img t-if="company.logo" 
-							t-att-src="'data:image/png;base64,%s' % company.logo" width="100%" style="max-height:85px 
-							!important;" /> </div> <div class="col-xs-2"> <span t-esc="get_hijri_date(context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d 
-							%H:%M'), '-')" /> </div> </div> -->
-
 						<div class="page">
-
+							<t t-set="max_length" t-value="0" />
 							<t t-set="allowance_ids" t-value="get_allowances(o.line_ids)" />
 							<t t-set="deduction_ids" t-value="get_deductions(o.line_ids)" />
+							<t t-if="len(allowance_ids) >= len(deduction_ids)">
+								<t t-set="max_length" t-value="len(allowance_ids)" />
+							</t>
+							<t t-if="len(deduction_ids) > len(allowance_ids)">
+								<t t-set="max_length" t-value="len(allowance_ids)" />
+							</t>
+
 							<div class="col-xs-6 right">
-								<br></br>
 								<strong>الجهة :</strong>
 								<span t-field="o.employee_id.dep_Side" />
 								<br></br>
@@ -52,28 +50,24 @@
 									t-esc="get_hijri_date(context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d 
 							%H:%M'), '-')" />
 								<br></br>
-								<strong>رقم الصفحة :</strong>1
-								<br></br>
+								<strong>رقم الصفحة :</strong>
+								1
 
-								<br></br>
-								<br></br>
 							</div>
 							<div class="col-xs-12 text-center">
-								<br></br>
 								<strong>مسير الرواتب
 
 									:
 								</strong>
 								<span t-field="o.month" />
-								<br></br>
-								<br></br>
 							</div>
 
 							<br></br>
 							<br></br>
-							<div class="col-xs-12 text-center">
+							<t t-esc="max_length" />
+							<div class="col-xs-12">
 
-								<table class="table  table-bordered">
+								<table>
 									<thead>
 										<tr>
 											<td class="text-center">م</td>
@@ -84,88 +78,82 @@
 											<td class="text-center">الدرجة </td>
 											<td class="text-center"> الراتب الاساسي</td>
 											<td colspan="2" class="text-center">إجمالي البدلات</td>
-											<td colspan="2" class="text-center">إجمالي الحسميات </td>
-											<td class="text-center"> الصافي</td>
-											<td class="text-center">توقيع المستلم</td>
+											<td colspan="4" class="text-center">إجمالي الحسميات </td>
 										</tr>
 									</thead>
 									<tbody>
 										<tr>
-											<td>1</td>
-											<td>
+											<td rowspan="2">1</td>
+											<td rowspan="2">
 												<span t-field="o.employee_id.number" />
 											</td>
-											<td>
+											<td rowspan="2">
 												<span t-field="o.employee_id.name" />
 											</td>
-											<td>
+											<td rowspan="2">
 												<span t-field="o.employee_id.job_id" />
 											</td>
-											<td>
+											<td rowspan="2">
 												<span t-field="o.employee_id.job_id.number" />
 											</td>
-											<td>
+											<td rowspan="2">
 												<span t-field="o.employee_id.degree_id" />
 											</td>
-											<td>
+											<td rowspan="2">
 												<span t-field="o.employee_id.salary_grid_id.basic_salary" />
 											</td>
 											<td class="text-center">مسمى البدل </td>
 											<td class="text-center">المبلغ</td>
-											<td class="text-center"> نوع الحسم</td>
-											<td class="text-center">المبلغ</td>
-											<td>
-												<span t-esc="get_salary_net(o.line_ids)" />
-											</td>
-											<td></td>
+											<td class="text-center" colspan="2"> نوع الحسم</td>
+											<td class="text-center" colspan="2">المبلغ</td>
 										</tr>
 
 										<tr>
-											<td colspan="7"></td>
-											<td colspan="2">
+											<td valign="top">
 												<t t-foreach="allowance_ids" t-as="line">
-													<p style="font-size:22px;" >
-														<div class="col-xs-7" align="right">
-															<span t-field="line.name" />
-														</div>
-														<div class="col-xs-5"  align="right">
-															<span t-field="line.amount" />
-														</div>
-														<br></br>
-													</p>
+													<span t-field="line.name" />
+													<br></br>
+												</t>
+											</td>
+											<td valign="top">
+												<t t-foreach="allowance_ids" t-as="line">
+													<span t-field="line.amount" />
 													<br></br>
 												</t>
 											</td>
 
 
 
-											<td colspan="2">
+											<td colspan="2" valign="top">
 												<t t-foreach="deduction_ids" t-as="ded">
-													<p style="font-size:22px;">
-														<div class="col-xs-7" align="right">
-															<span t-field="ded.name" />
-														</div>
-														<div class="col-xs-5" align="right">
-															<span t-field="ded.amount" />
-														</div>
-														<br></br>
-													</p>
+													<span t-field="ded.name" />
 													<br></br>
 												</t>
 											</td>
-											<td colspan="2">	</td>
+											<td colspan="2" valign="top">
+												<t t-foreach="deduction_ids" t-as="ded">
+													<span t-field="ded.amount" />
+													<br></br>
+												</t>
+											</td>
 										</tr>
-
-
 										<tr>
 											<td colspan="7" class="text-right"> المجموع</td>
+											<td>
+												<t t-esc="o.employee_id.salary_grid_id.basic_salary" />
+											</td>
 											<td colspan="2" class="text-right">
 												<span t-esc="get_sum_alowances(o.line_ids)" />
 											</td>
-											<td colspan="2" class="text-right">
+											<td colspan="4" class="text-right">
 												<span t-esc="get_sum_deductions(o.line_ids)" />
 											</td>
-											<td colspan="2"></td>
+										</tr>
+										<tr>
+											<td colspan="7" class="text-right"> الصافي</td>
+											<td colspan="7" class="text-right">
+												<t t-esc="o.salary_net" />
+											</td>
 
 										</tr>
 									</tbody>

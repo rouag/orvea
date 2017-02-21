@@ -29,12 +29,12 @@ class HrEmployeeTask(models.Model):
     @api.multi
     @api.depends('date_from', 'duration')
     def _compute_date_to(self):
-        for rec in self:
-            if rec.date_from and rec.duration:
-                new_date_to = fields.Date.from_string(rec.date_from) + timedelta(days=rec.duration)
-                rec.date_to = new_date_to
-            elif rec.date_from:
-                    rec.date_to = rec.date_from
+        self.ensure_one()
+        if self.date_from and self.duration:
+            new_date_to = self.env['hr.smart.utils'].compute_date_to(self.date_from, self.duration)
+            self.date_to = new_date_to
+        elif self.date_from:
+                self.date_to = self.date_from
 
     @api.multi
     def action_done(self):

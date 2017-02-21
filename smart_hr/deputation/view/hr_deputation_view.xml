@@ -84,7 +84,7 @@
 									attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
 								<field name="duration"
 									attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
-								<field name="calcul_wekeend"
+								<field name="calcul_wekeend" invisible="1"
 									attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
 							</group>
 						</group>
@@ -146,18 +146,18 @@
 								<page name="public" string="المرفقات">
 									<br></br>
 									<group>
-									<field name="file_decision" filename="file_decision_name"
+										<field name="file_decision" filename="file_decision_name"
 											attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'required':[('state','=','draft')],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
 
 										<field name="decision_number"
 											attrs="{'invisible':['|',('state', 'not in', [ 'done','order','humain','finish']), ('ministre_report', '=', False)],'required':[('ministre_report', '=', True),('state','=','done')],'readonly':[('state', 'in', ['order','humain','finish'])]}" />
 										<field name="decision_date"
 											attrs="{'invisible':['|',('state', 'not in', [ 'done','order','humain','finish']), ('ministre_report', '=', False)],'required':[('ministre_report', '=', True),('state','=','done')],'readonly':[('state', 'in', ['order','humain','finish'])]}" />
-									
+
 										<field name="file_order" filename="file_order_name"
 											attrs="{'invisible':['|',('state', 'not in', [ 'done','order','humain','finish']), ('ministre_report', '=', False)],'required':[('ministre_report', '=', True),('state','=','done')],'readonly':[('state', 'in', ['order','humain','finish'])]}" />
 
-										
+
 										<field name="report_number"
 											attrs="{'invisible':[('state', 'not in', [ 'order','humain','finish'])],'required':[('state','=','order')],'readonly':[('state', 'in', ['humain','finish'])]}" />
 										<field name="report_date"
@@ -168,13 +168,14 @@
 										<field name="secret_report"
 											attrs="{'invisible':[('state', 'not in', [ 'order','humain','finish'])],'required':[('state','=','humain')],'readonly':[('state', 'in', ['finish'])]}" />
 
-										<field name="lettre_number" 	attrs="{'invisible':[('state', 'not in', ['humain','finish'])],'required':[('state','=','humain')],'readonly':[('state', 'in', ['finish'])]}" /> 
+										<field name="lettre_number"
+											attrs="{'invisible':[('state', 'not in', ['humain','finish'])],'required':[('state','=','humain')],'readonly':[('state', 'in', ['finish'])]}" />
 										<field name="lettre_date"
 											attrs="{'invisible':[('state', 'not in', ['humain','finish'])],'required':[('state','=','humain')],'readonly':[('state', 'in', ['finish'])]}" />
 										<field name="file_lettre" filename="file_lettre_name"
 											attrs="{'invisible':[('state', 'not in', [ 'humain','finish'])],'required':[ ('state','=','humain')],'readonly':[('state', 'in', ['finish'])]}" />
 
-							
+
 
 										<field name="file_decision_name" invisible="1" />
 										<field name="ministre_report" invisible="1" />
@@ -190,6 +191,7 @@
 				</form>
 			</field>
 		</record>
+
 		<record model="ir.actions.act_window" id="action_hr_deputation">
 			<field name="name">الإنتدابات</field>
 			<field name="res_model">hr.deputation</field>

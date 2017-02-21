@@ -150,13 +150,6 @@ class HrEmployee(models.Model):
         self.display_name = display_name
 
     @api.multi
-    def name_get(self):
-        res = []
-        for emp in self:
-            res.append((emp.id, "%s %s %s %s" % (emp.name or '', emp.father_middle_name or '', emp.father_name or '', emp.family_name or '')))
-        return res
-
-    @api.multi
     @api.depends('promotions_history.balance')
     def _compute_promotion_days(self):
         for emp in self:

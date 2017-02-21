@@ -186,4 +186,5 @@ access_hr_employee_evaluation,hr_employee_evaluation,model_hr_appraisal,group_em
 access_hr_employee_point,hr_employee_point_evaluation,model_hr_evaluation_point,group_employee,1,1,1,1
 
 access_hr_deputation_employee, access_hr_deputation_employee,model_hr_deputation,,1,0,0,0
+access_hr_smart_utils, access_smart_utils,model_hr_smart_utils,,1,1,1,1
 

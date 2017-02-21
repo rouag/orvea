@@ -89,4 +89,13 @@ class HrPublicHoliday(models.Model):
     def button_refuse_hrm(self):
         self.ensure_one()
         self.state = 'draft'
-          
+        
+        
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'draft':
+                raise ValidationError(u'لا يمكن حذف عيد/عطلة فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrPublicHoliday, self).unlink()
+    
+              
