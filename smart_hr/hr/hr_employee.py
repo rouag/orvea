@@ -19,7 +19,6 @@ class HrEmployee(models.Model):
     def name_search(self, name='', args=None, operator='ilike', limit=100):
         args = args or []
         recs = self.browse()
-        print name
         if name:
             domain = [
                 '|',
