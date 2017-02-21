@@ -295,7 +295,7 @@
 		</record>
 
 		<menuitem id="hr_payslip_run_menu" name="إعداد مسيّر جماعي"
-			sequence="5" groups="group_payroll_management" parent="hr_payroll_root"
+			sequence="4" groups="group_payroll_management" parent="hr_payroll_root"
 			action="action_hr_payslip_run" />
 
 

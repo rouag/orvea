@@ -270,9 +270,7 @@ class HrDeputation(models.Model):
     @api.depends('date_from', 'date_to')
     def _compute_duration(self):
         if self.date_from and self.date_to:
-            date_from = fields.Date.from_string(self.date_from)
-            date_to = fields.Date.from_string(self.date_to)
-            self.duration = (date_to - date_from).days + 1
+            self.duration = self.env['hr.smart.utils'].compute_duration(self.date_from, self.date_to)
 
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
@@ -287,7 +285,7 @@ class HrDeputation(models.Model):
                 self.type_id = appoint_line.type_id.id
                 self.grade_id = appoint_line.grade_id.id
                 self.department_id = appoint_line.department_id.id
-             
+
     @api.one
     @api.constrains('date_from', 'date_to')
     def check_dates_periode(self):

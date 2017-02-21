@@ -42,7 +42,7 @@ class HrEmployeeLend(models.Model):
     def _compute_date_to(self):
         self.ensure_one()
         if self.date_from and self.duration:
-            new_date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration)
+            new_date_to = self.env['hr.smart.utils'].compute_date_to(self.date_from, self.duration)
             self.date_to = new_date_to
         elif self.date_from:
                 self.date_to = self.date_from

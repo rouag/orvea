@@ -77,9 +77,8 @@
 				<div class="row">
 					<img t-if="company.report_footer" t-att-src="'data:image/png;base64,%s' % company.report_footer"
 						width="100%" />
-						
-						<ul class="list-inline">
-						<li>Page:</li>
+					<ul class="list-inline text-center">
+						<li>الصفحة:</li>
 						<li>
 							<span class="page" />
 						</li>
@@ -109,7 +108,6 @@
 			<t t-call="smart_base.layout_header_speech" />
 			<t t-raw="0" />
 			<t t-call="smart_base.layout_footer_speech" />
-			
 		</template>
 
 		<template id="layout_header_speech">

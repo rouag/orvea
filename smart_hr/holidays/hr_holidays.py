@@ -1024,7 +1024,7 @@ class HrHolidays(models.Model):
         # Constraintes for employee's nationnality
         if self.holiday_status_id.for_saudi and not self.holiday_status_id.for_other:
             # check the nationnality of the employee if it is saudi
-            if self.employee_id.country_id != self.env.ref('base.sa'):
+            if self.employee_id.country_id and self.employee_id.country_id.code == 'SA':
                 raise ValidationError(u"هذا النوع من الإجازة ينطبق فقط على السعوديين.")
 
         # Constraintes for studyinglevel
