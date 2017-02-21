@@ -93,8 +93,7 @@ class HrOvertime(models.Model):
                         'duration' : rec.days_number,
                         #  'governmental_entity' : self.governmental_entity.id,
                         'type_procedure' :'overtime',
-             })
-            
+                        })
             overtime.state = 'audit'
 
     @api.multi
@@ -117,7 +116,7 @@ class HrOvertime(models.Model):
         for overtime in self:
             for line in overtime.line_ids :
                 for rec in line :
-                    date  = fields.Date.from_string(fields.Date.today())
+                    date = fields.Date.from_string(fields.Date.today())
                     if rec.date_to > str(date)  :
                         raise ValidationError(u"يوجد مهمة لم يصل تاريخ انتهائها بعد")
                     self.env['base.notification'].create({'title': u'إشعار بإنهاء  خارج الدوام',
@@ -133,7 +132,7 @@ class HrOvertime(models.Model):
             group_id = self.env.ref('smart_hr.group_overtime_department')
             self.send_overtime_department_group(group_id,title,msg)
             overtime.state = 'finish'
-    
+
     @api.multi
     def action_humain(self):
         for overtime in self:
@@ -155,7 +154,7 @@ class HrOvertime(models.Model):
                                               'notif': True,
                                               'res_id': line.id,
                                              'res_action': 'smart_hr.action_hr_overtime'})
-            
+
             overtime.state = 'refuse'
 
     def send_overtime_department_group(self, group_id, title, msg):

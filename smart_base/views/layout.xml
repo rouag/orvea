@@ -52,6 +52,8 @@
 			<t t-call="smart_base.landscape_layout_header" />
 			<t t-raw="0" />
 			<t t-call="smart_base.landscape_layout_footer" />
+			
+			
 		</template>
 
 		<template id="landscape_layout_header">
@@ -88,6 +90,8 @@
 				</div>
 			</div>
 		</template>
+		
+			
 
 		<!-- layout Speech -->
 

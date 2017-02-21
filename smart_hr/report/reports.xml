@@ -40,7 +40,7 @@
                 report_type="qweb-pdf"
                 name="smart_hr.hr_termination_report"
                 file="smart_hr.hr_termination_report"
-                attachment_use="True"
+                	attachment_use="False"
                 attachment="('Termination_'+(object.name).replace('/','')+'.pdf')"
                 menu="False"/>
     </data>

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data>
+
+
 		<template id="report_payslip_extension">
 			<t t-call="report.html_container">
 				<t t-foreach="docs" t-as="o">
+
 					<t t-call="smart_base.landscape_layout">
 
 						<!-- <div class="header"> <div class="col-xs-4"> <h3> <strong> المملكة 
@@ -14,7 +17,7 @@
 							%H:%M'), '-')" /> </div> </div> -->
 
 						<div class="page">
-							<t t-set="nbpage" t-value="0" />
+						
 
 							<div class="col-xs-12 left">
 
@@ -26,12 +29,13 @@
 									t-esc="get_hijri_date(context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d 
 							%H:%M'), '-')" />
 								<br></br>
-								<strong>رقم الصفحة :</strong>
-								<span t-esc="nbpage+1" />
-								<br></br>
-								<br></br>
-								<br></br>
+
+
 							</div>
+							<br></br>
+							<br></br>
+							<br></br>
+
 
 							<div class="col-xs-12 text-center">
 								<br></br>
@@ -45,77 +49,83 @@
 							<br></br>
 							<br></br>
 							<div class="col-xs-12 text-center">
-							
-							<t t-foreach="get_all_types()" t-as="type" >
-							  <div>
-								  <strong>
-								  	<span t-field="type.name" />
-								  </strong>
-							  </div>
-								<table class="table  table-bordered">
-									<thead>
-										<tr>
-											<td class="text-center">م</td>
-											<td class="text-center">رقم الموظف </td>
-											<td class="text-center">الإسم</td>
-											<td class="text-center">مسمى الوظيفة </td>
-											<td class="text-center">الرقم الوظيفي</td>
-											<td class="text-center">الدرجة </td>
-											<td class="text-center"> الراتب الاساسي</td>
-											<td colspan="2" class="text-center">إجمالي البدلات</td>
-											<td colspan="2" class="text-center">إجمالي الحسميات </td>
-											<td class="text-center"> الصافي</td>
-										</tr>
-									</thead>
-									<tbody>
-										<t t-set="i" t-value="0" />
-										<t t-foreach="get_all_employees(type.id,o.slip_ids)" t-as="line">
+
+								<t t-foreach="get_all_types()" t-as="type">
+									<div>
+										<strong>
+											<span t-field="type.name" />
+										</strong>
+									</div>
+									<table class="table  table-bordered">
+										<thead>
 											<tr>
-												<td>
-													<span t-esc="i+1" />
-												</td>
-												<td>
-													<span t-field="line.employee_id.number" />
-												</td>
-												<td>
-													<span t-field="line.employee_id.name" />
-												</td>
-												<td>
-													<span t-field="line.employee_id.job_id" />
-												</td>
-												<td>
-													<span t-field="line.employee_id.job_id.number" />
-												</td>
-												<td>
-													<span t-field="line.employee_id.degree_id" />
-												</td>
-												<td>
-													<span t-field="line.employee_id.salary_grid_id.basic_salary" />
-												</td>
-												<td colspan="2" class="text-center">
-													<span t-esc="get_sum_allowances(line.line_ids)" />
-												</td>
-												<td colspan="2" class="text-center">
-													<span t-esc="get_sum_allowances(line.line_ids)" />
-												</td>
-												<td>
-													<span t-esc="get_salary_net(line.line_ids)" />
-												</td>
+												<td class="text-center">م</td>
+												<td class="text-center">رقم الموظف </td>
+												<td class="text-center">الإسم</td>
+												<td class="text-center">مسمى الوظيفة </td>
+												<td class="text-center">الرقم الوظيفي</td>
+												<td class="text-center">الدرجة </td>
+												<td class="text-center"> الراتب الاساسي</td>
+												<td colspan="2" class="text-center">إجمالي البدلات</td>
+												<td colspan="2" class="text-center">إجمالي الحسميات </td>
+												<td class="text-center"> الصافي</td>
 											</tr>
-											<t t-set="i" t-value="i+1" />
-										</t>
-									</tbody>
-									<tr>
-											<td colspan="7"  class="text-center"> المجموع</td>
-											<td colspan="2" class="text-center"><span t-esc="get_total_allowances(type.id,o.slip_ids)" /></td>
-											<td colspan="2" class="text-center"><span t-esc="get_total_deductions(type.id,o.slip_ids)" /></td>
-												<td colspan="1" class="text-center"><span t-esc="get_total_salary_net(type.id,o.slip_ids)" /></td>
+										</thead>
+										<tbody>
+											<t t-set="i" t-value="0" />
+											<t t-foreach="get_all_employees(type.id,o.slip_ids)" t-as="line">
+												<tr>
+													<td>
+														<span t-esc="i+1" />
+													</td>
+													<td>
+														<span t-field="line.employee_id.number" />
+													</td>
+													<td>
+														<span t-field="line.employee_id.name" />
+													</td>
+													<td>
+														<span t-field="line.employee_id.job_id" />
+													</td>
+													<td>
+														<span t-field="line.employee_id.job_id.number" />
+													</td>
+													<td>
+														<span t-field="line.employee_id.degree_id" />
+													</td>
+													<td>
+														<span t-field="line.employee_id.salary_grid_id.basic_salary" />
+													</td>
+													<td colspan="2" class="text-center">
+														<span t-esc="get_sum_allowances(line.line_ids)" />
+													</td>
+													<td colspan="2" class="text-center">
+														<span t-esc="get_sum_allowances(line.line_ids)" />
+													</td>
+													<td>
+														<span t-esc="get_salary_net(line.line_ids)" />
+													</td>
+												</tr>
+												<t t-set="i" t-value="i+1" />
+											</t>
+										</tbody>
+										<tr>
+											<td colspan="7" class="text-center"> المجموع</td>
+											<td colspan="2" class="text-center">
+												<span t-esc="get_total_allowances(type.id,o.slip_ids)" />
+											</td>
+											<td colspan="2" class="text-center">
+												<span t-esc="get_total_deductions(type.id,o.slip_ids)" />
+											</td>
+											<td colspan="1" class="text-center">
+												<span t-esc="get_total_salary_net(type.id,o.slip_ids)" />
+											</td>
 										</tr>
-								</table>
-								
-								
+									</table>
+
+
 								</t>
-								
+
 							</div>
 
 							<div class="col-xs-4 text-center">
@@ -133,13 +143,16 @@
 								<strong>المدير</strong>
 								<br></br>
 							</div>
-							<t t-set="nbpage" t-value="nbpage+1" />
 							
 						</div>
+
+
 					</t>
+
 				</t>
 			</t>
 		</template>
+
 	</data>
 </openerp>
 							

@@ -2,7 +2,7 @@
 
 from openerp import models, fields, api, _
 from datetime import date, datetime, timedelta
-
+import datetime as dt
 
 class SmartUtils(models.Model):
 
@@ -10,8 +10,10 @@ class SmartUtils(models.Model):
 
     def compute_duration(self, date_from, date_to):
         if date_from and date_to:
-            date_from = fields.Date.from_string(date_from)
-            date_to = fields.Date.from_string(date_to)
+            if not isinstance(date_from, dt.date):
+                date_from = fields.Date.from_string(date_from)
+            if not isinstance(date_to, dt.date):
+                date_to = fields.Date.from_string(date_to)
             duration = self.compute_days_minus_weekends(date_from, date_to)
             duration -= self.compute_holidays_days(date_from, date_to)
             return duration

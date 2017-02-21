@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_hr_termination">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.external_layout_extend">
+						<div class="page">
+							<div class="oe_structure" />
+							<p></p>
+							
+						</div>
+					</t>
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>

@@ -16,8 +16,9 @@ class HrDeputation(models.Model):
     _order = 'id desc'
     _rec_name = 'order_date'
     _description = u'الانتدابات'
-
-
+    
+    
+ 
     @api.model
     def fields_view_get(self, view_id=None, view_type='form', context=None, toolbar=False, submenu=False):
         # Objects
@@ -258,12 +259,12 @@ class HrDeputation(models.Model):
             type = ' إنتداب'
             self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, deputation.decision_number,  deputation.date_from, type)
             deputation.state = 'finish'
-
+            
     @api.multi
     def action_refuse(self):
         for deputation in self:
             deputation.state = 'refuse'
-
+            
     @api.one
     @api.depends('date_from', 'date_to')
     def _compute_duration(self):

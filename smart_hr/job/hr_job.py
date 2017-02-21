@@ -25,6 +25,7 @@ class HrJob(models.Model):
     type_id = fields.Many2one('salary.grid.type', string='الصنف', required=1, states={'unoccupied': [('readonly', 0)]})
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1, states={'unoccupied': [('readonly', 0)]})
     state = fields.Selection([('unoccupied', u'شاغرة'), ('occupied', u'مشغولة'), ('cancel', u'ملغاة'), ('reserved', u'محجوزة')], string=u'الحالة', readonly=1, default='unoccupied')
+    state_job = fields.Selection([('unoccupied', u'شاغرة'), ('occupied', u'مشغولة'), ('cancel', u'ملغاة'), ('reserved', u'محجوزة'),('offer', u'إعلان'),('addjustment', u'تحوير'),('transfert', u'نقل'),('recrutment', u'تعيين'),('service_transfet', u'نقل خدمات'),('promotion', u'ترقية'),('mission', u'تكليف'),('increase', u'رفع'),('decrease', u'خفظ')], string=u'الحالة', readonly=1, default='unoccupied')
     employee = fields.Many2one('hr.employee', string=u'الموظف')
     occupied_date = fields.Date(string=u'تاريخ الشغول')
     creation_source = fields.Selection([('creation', u'إحداث'), ('striped_from', u'سلخ')], readonly=1, default='creation', string=u'المصدر')
