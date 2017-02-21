@@ -11,7 +11,6 @@ from umalqurra.hijri_date import HijriDate
 from lxml import etree
 from openerp.osv.orm import setup_modifiers
 
-
 class HrDeputation(models.Model):
     _name = 'hr.deputation'
     _order = 'id desc'
