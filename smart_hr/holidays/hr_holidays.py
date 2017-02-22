@@ -1318,7 +1318,7 @@ class HrHolidaysStatusEntitlement(models.Model):
         (10, u'عشرة سنوات'),
         (100, u'طوال مدة الخدمة الوظيفيّة'),
         ], string=u'مدّة الصّلاحِيّة', default=1)
-    leave_type = fields.Many2one('hr.holidays.status', string='leave type')
+    leave_type = fields.Many2one('hr.holidays.status', string=u'نوع الإجازة')
 #     holiday_stock_open = fields.Boolean(string=u'الرصيد مفتوح')
     extension_period = fields.Integer(string=u'مدة تمديد الرصيد(سنة)', default=0)
     

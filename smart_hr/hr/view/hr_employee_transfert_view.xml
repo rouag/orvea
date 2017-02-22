@@ -57,7 +57,8 @@
 						</group>
 						<group>
 							<group>
-								<field name="employee_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+								<field name="employee_id"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="transfert_nature" />
 								<field name="transfert_type" />
 								<field name="special_conditions"
@@ -65,7 +66,8 @@
 								<field name="governmental_entity"
 									attrs="{'invisible':[('transfert_nature', '=', 'internal_transfert')]}"
 									options='{"no_open": True, "no_create": True}' />
-								<field name="salary_proportion" attrs="{'invisible':[('ready_tobe_done', '=', False)]}" />
+								<field name="salary_proportion"
+									attrs="{'invisible':[('ready_tobe_done', '=', False)]}" />
 								<field name="transfert_periode_id" options='{"no_open": True, "no_create": True}' />
 								<field name="justification_text"
 									attrs="{'invisible':[('special_conditions', '=', True)],'required':[('special_conditions', '=', False)]}" />
@@ -100,9 +102,11 @@
 								<br></br>
 								<group>
 									<group>
-										<field name="job_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+										<field name="job_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 										<field name="specific_id" />
-										<field name="type_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+										<field name="type_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 									</group>
 									<group>
 									</group>
@@ -118,7 +122,7 @@
 											readonly="1" />
 										<field name="new_specific_id" />
 										<field name="new_type_id" />
-										
+
 									</group>
 									<group>
 										<field name="date_direct_action"
@@ -217,8 +221,8 @@
 		</record>
 
 		<menuitem action="action_hr_employee_transfert_periode" id="hr_menu_employee_transfert_periode"
-			parent="hr_root_workflows_setting" name="فترات النقل" groups="smart_hr.group_configuration"
-			sequence="30" />
+			parent="hr_root_workflows_setting" name="فترات النقل"
+			groups="smart_hr.group_configuration" sequence="30" />
 
 		<!-- ترتيب طلبات النقل -->
 
@@ -228,6 +232,9 @@
 			<field name="arch" type="xml">
 				<form string="ترتيب طلبات النقل" delete='0' duplicate='0'>
 					<header>
+						<button name="action_generate_lines" string="إدراج اللائحة "
+							type="object" groups="smart_hr.group_hr_personnel_officer_commissioning"
+							states="new"/>
 						<button name="action_commission_president" string="إرسال "
 							type="object" groups="smart_hr.group_hr_personnel_officer_commissioning"
 							states="new" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
@@ -247,6 +254,7 @@
 						</group>
 						<field name="line_ids" string=" طلبات النقل">
 							<tree editable="bottom" colors="red:is_conflected==True;">
+								<field name="sequence" />
 								<field name="hr_employee_transfert_id" options='{"no_open": True, "no_create": True}' />
 								<field name="job_id" readonly="1" />
 								<field name="transfert_create_date" readonly="1" />
@@ -284,9 +292,9 @@
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 
-		<menuitem name="ترتيب طلبات النقل" id="hr_transfert_sorting_menu" groups="smart_hr.group_hr_personnel_officer_commissioning"
-			parent="hr_root_workflows" sequence="85"
-			action="action_hr_employee_transfert_sorting" />
+		<menuitem name="ترتيب طلبات النقل" id="hr_transfert_sorting_menu"
+			groups="smart_hr.group_hr_personnel_officer_commissioning" parent="hr_root_workflows"
+			sequence="85" action="action_hr_employee_transfert_sorting" />
 
 	</data>
 </openerp>
