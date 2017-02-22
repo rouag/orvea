@@ -18,7 +18,7 @@
 							<group>
 								<field name="type_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"  />
 								<field name="grade_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-								<field name="degree_id" domain="[('grade_id','=',grade_id)]"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="degree_id"   options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 							</group>
 							<group>
 								<field name="basic_salary" />
