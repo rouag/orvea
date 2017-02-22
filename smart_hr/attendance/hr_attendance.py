@@ -516,7 +516,11 @@ class HrAttendanceImport(models.Model):
         fileobj.seek(0)
         for row in reader:
             print '----row------', row
-            employee = self.env['hr.employee'].search([('number', '=', str(row['empid'].strip(" ")))])
+            if len(str(row['empid'].strip(" ")))==4:
+                empid = str(0)+str(row['empid'].strip(" "))
+            else:
+                empid = str(row['empid'].strip(" "))
+            employee = self.env['hr.employee'].search([('number', '=', empid)])
             if employee:
                 if str(row['TrnType']) == '1':
                     action = 'sign_in'
