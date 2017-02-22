@@ -62,6 +62,8 @@ class hrDifference(models.Model):
             line_ids += self.get_difference_termination()
             # فرق الحسميات أكثر من ثلث الراتب
             line_ids += self.get_difference_one_third_salary()
+            # أوامر الإركاب
+            line_ids += self.get_difference_transport_decision()
             self.line_ids = line_ids
 
     @api.model
@@ -619,7 +621,7 @@ class hrDifference(models.Model):
                         for indemnity in grid_id.indemnity_ids:
                             amount = indemnity.get_value(suspension_end.employee_id.id) / 22.0 * days
                             indemnity_val = {'difference_id': self.id,
-                                             'name': 'فرق %s كف اليد'%indemnity.indemnity_id.name,
+                                             'name': 'فرق %s كف اليد' % indemnity.indemnity_id.name,
                                              'employee_id': suspension_end.employee_id.id,
                                              'number_of_days': days,
                                              'number_of_hours': 0.0,
@@ -700,6 +702,25 @@ class hrDifference(models.Model):
                 line_ids.append(vals)
         return line_ids
 
+    @api.multi
+    def get_difference_transport_decision(self):
+        self.ensure_one()
+        line_ids = []
+        transfert_decision_ids = self.env['hr.transport.decision'].search([('order_date', '>=', self.date_from),
+                                                                           ('order_date', '<=', self.date_to),
+                                                                           ('state', 'in', ['done', 'finish'])
+                                                                           ])
+        for transfert_decision in transfert_decision_ids:
+            vals = {'difference_id': self.id,
+                    'name': 'فرق أمر اركاب',
+                    'employee_id': transfert_decision.employee_id.id,
+                    'number_of_days': 0.0,
+                    'number_of_hours': 0.0,
+                    'amount': (transfert_decision.amount),
+                    'type': 'transfert_decision'}
+            line_ids.append(vals)
+        return line_ids
+
 
 class hrDifferenceLine(models.Model):
     _name = 'hr.difference.line'
@@ -728,5 +749,6 @@ class hrDifferenceLine(models.Model):
                              ('overtime', 'خارج الدوام'),
                              ('suspension', 'كف اليد'),
                              ('transfert', 'نقل'),
+                             ('transfert_decision', 'اركاب'),
                              ('one_third_salary', 'ثلث راتب'),
                              ('training', 'تدريب')], string='النوع', readonly=1)
