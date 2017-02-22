@@ -50,6 +50,9 @@
 							<group>
 								<field name="order_date" 	attrs="{'invisible':[('state', 'not in', [ 'draft','audit','done','finish'])],'readonly':[('state', 'in', ['audit','done','finish'])]}" />
 								<field name="airline" attrs="{'invisible':[('state', 'not in', [ 'draft','audit','done','finish'])],'readonly':[('state', 'in', ['audit','done','finish'])]}"/>
+							<field name="amount" attrs="{'invisible':[('state', 'not in', [ 'draft','audit','done','finish'])],'readonly':[('state', 'in', ['audit','done','finish'])]}"/>
+						
+							
 							</group>
 							<group>
 							</group>
