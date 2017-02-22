@@ -50,11 +50,11 @@ class hr_termination(models.Model):
         ('done', u'اعتمدت'),
         ('refuse', u'رفض'),
     ], string=u'الحالة', default='draft', advanced_search=True)
-  
-   
+
+
     @api.onchange('termination_type_id')
     def _onchange_termination_type_id(self):
-        
+
         if self.employee_id.country_id != self.env.ref('base.sa'):
                 for rec in self.termination_type_id: 
                     rec.nb_salaire = 0 
