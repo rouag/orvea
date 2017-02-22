@@ -15,10 +15,10 @@ class HrDecisionAppoint(models.Model):
     _order = 'id desc'
     _inherit = ['mail.thread']
     _description = u'قرار تعيين'
-    
+
     name = fields.Char(string='رقم الخطاب', required=1 , states={'draft': [('readonly', 0)]})
     order_date = fields.Date(string='تاريخ الخطاب', required=1) 
-    date_hiring = fields.Date(string='تاريخ التعيين', default=fields.Datetime.now(),)
+    date_hiring = fields.Date(string='تاريخ التعيين', default=fields.Datetime.now())
     date_hiring_end = fields.Date(string=u'تاريخ إنتهاء التعيين')  
     date_direct_action = fields.Date(string='تاريخ مباشرة العمل', required=1) 
     instead_exchange = fields.Boolean(string='صرف بدل تعيين')
@@ -68,15 +68,14 @@ class HrDecisionAppoint(models.Model):
                               ('draft', u'طلب'),
                               ('audit', u'تدقيق'),
                               ('waiting', u'مقابلة شخصية'),
-                            ('manager', u'صاحب صلاحية التعين'),
-                           
-                             ('budget', u'رئيس الهيئة'),
+                              ('manager', u'صاحب صلاحية التعين'),
+                              ('budget', u'رئيس الهيئة'),
                               ('hrm', u'شؤون الموظفين'),
-                                ('civil', u'وزارة الخدمة المدنية'),
-                                ('direct', u'إدارة الموظف'),
+                              ('civil', u'وزارة الخدمة المدنية'),
+                              ('direct', u'إدارة الموظف'),
                               ('done', u'اعتمدت'),
-                               ('refuse', u'رفض'),
-                               ('cancel', u'ملغاة'),
+                              ('refuse', u'رفض'),
+                              ('cancel', u'ملغاة'),
                               ], string=u'حالة', default='draft', advanced_search=True)
     
     
