@@ -21,15 +21,14 @@ class HrEmployee(models.Model):
     def _compute_holidays_count(self):
         for rec in self:
             rec.holiday_count = self.env['hr.holidays'].search_count([('employee_id', '=', rec.id)])
-    
+
     
     @api.multi
     def _compute_sanction_count(self):
         for rec in self:
             rec.sanction_count = self.env['hr.sanction'].search_count([('line_ids.employee_id', '=', rec.id)])
-       
-       
-       
+
+
     @api.multi
     def _sanction_line(self):
         sanction_obj = self.env['hr.sanction.ligne']
@@ -38,8 +37,8 @@ class HrEmployee(models.Model):
                 ('state', '=', 'done'),
             ]
         for rec in sanction_obj.search(search_domain): 
-            self.sanction_ids = rec.sanction_ids     
-            
+            self.sanction_ids = rec.sanction_ids
+
     number = fields.Char(string=u'الرقم الوظيفي', required=1)
     gender = fields.Selection([('male', 'Male'), ('female', 'Female'),], string=u'الجنس')
     marital =  fields.Selection([('single', 'Single'), ('married', 'Married'), ('widower', 'Widower'), ('divorced', 'Divorced'), ('mariie', 'محصن'), ('not_mariee', 'غير محصن'),('other', 'غير ذلك')], string=u'الجنس')
@@ -109,9 +108,9 @@ class HrEmployee(models.Model):
     education_level_id = fields.Many2one('hr.employee.education.level', string=u'المستوى التعليمي ')
     evaluation_level_ids = fields.One2many('hr.employee.evaluation.level','employee_id', u'التقييم الوظيفي')
     loan_count = fields.Integer(string=u'عدد القروض', compute='_compute_loans_count')
-    point_seniority=fields.Integer(string=u'نقاط الأقدمية',)
-    point_education=fields.Integer(string=u'نقاط التعليم',)
-    point_training=fields.Integer(string=u'نقاط التدريب',)
+    point_seniority=fields.Integer(string=u'نقاط الأقدمية')
+    point_education=fields.Integer(string=u'نقاط التعليم')
+    point_training=fields.Integer(string=u'نقاط التدريب')
     point_functionality=fields.Integer(string=u'نقاط  الإداء الوظيفي',)
     is_member = fields.Boolean(string=u'عضو في الهيئة', default=False, required=1)
     insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين', readonly='1',compute='_compute_insurance_type')

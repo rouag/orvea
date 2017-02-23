@@ -16,950 +16,950 @@
 		</record>
 
 		<!-- المسميات الوظيفية -->
-		<record id="hr_job_name_0000001" model="hr.job.name">
-			<field name="name">عامل فئة (أ)</field>
-			<field name="number">0000001</field>
-		</record>
-		<record id="hr_job_name_0000002" model="hr.job.name">
-			<field name="name">عامل فئة (ب)</field>
-			<field name="number">0000002</field>
-		</record>
-		<record id="hr_job_name_0000003" model="hr.job.name">
-			<field name="name">عامل فئة (ج)</field>
-			<field name="number">0000003</field>
-		</record>
-		<record id="hr_job_name_0000003" model="hr.job.name">
-			<field name="name">عامل فئة (د)</field>
-			<field name="number">0000003</field>
-		</record>
-		<record id="hr_job_name_000005" model="hr.job.name">
-			<field name="name">رئيس دوائر تحقيق وادعاء</field>
-			<field name="number">000005</field>
-		</record>
-		<record id="hr_job_name_0000106" model="hr.job.name">
-			<field name="name">مهندس معماري مساعد</field>
-			<field name="number">0000106</field>
-		</record>
-		<record id="hr_job_name_000013" model="hr.job.name">
-			<field name="name">محقق نظامي مساعد</field>
-			<field name="number">000013</field>
-		</record>
-		<record id="hr_job_name_0000308" model="hr.job.name">
-			<field name="name">باحث قانوني</field>
-			<field name="number">0000308</field>
-		</record>
-		<record id="hr_job_name_0000310" model="hr.job.name">
-			<field name="name">مستشار قانوني</field>
-			<field name="number">0000310</field>
-		</record>
-		<record id="hr_job_name_0000704" model="hr.job.name">
-			<field name="name">اخصائي اقتصادي</field>
-			<field name="number">0000704</field>
-		</record>
-		<record id="hr_job_name_0000720" model="hr.job.name">
-			<field name="name">مستشار اداري</field>
-			<field name="number">0000720</field>
-		</record>
-		<record id="hr_job_name_000106" model="hr.job.name">
-			<field name="name">مهندس معماري</field>
-			<field name="number">000106</field>
-		</record>
-		<record id="hr_job_name_0001330" model="hr.job.name">
-			<field name="name">ملازم تحقيق</field>
-			<field name="number">0001330</field>
-		</record>
-		<record id="hr_job_name_0001331" model="hr.job.name">
-			<field name="name">مساعد محقق</field>
-			<field name="number">0001331</field>
-		</record>
-		<record id="hr_job_name_0001332" model="hr.job.name">
-			<field name="name">محقق ثان</field>
-			<field name="number">0001332</field>
-		</record>
-		<record id="hr_job_name_0001333" model="hr.job.name">
-			<field name="name">محقق اول</field>
-			<field name="number">0001333</field>
-		</record>
-		<record id="hr_job_name_0001334" model="hr.job.name">
-			<field name="name">وكيل رئيس دائرة تحقيق وادعاء / ب</field>
-			<field name="number">0001334</field>
-		</record>
-		<record id="hr_job_name_0001335" model="hr.job.name">
-			<field name="name">وكيل رئيس دائرة تحقيق وادعاء / أ</field>
-			<field name="number">0001335</field>
-		</record>
-		<record id="hr_job_name_0001336" model="hr.job.name">
-			<field name="name">رئيس دائرة تحقيق وادعاء / ب</field>
-			<field name="number">0001336</field>
-		</record>
-		<record id="hr_job_name_0001337" model="hr.job.name">
-			<field name="name">رئيس دائرة تحقيق وادعاء / أ</field>
-			<field name="number">0001337</field>
-		</record>
-		<record id="hr_job_name_0001338" model="hr.job.name">
-			<field name="name">نائب رئيس</field>
-			<field name="number">0001338</field>
-		</record>
-		<record id="hr_job_name_0001339" model="hr.job.name">
-			<field name="name">محقق ج</field>
-			<field name="number">0001339</field>
-		</record>
-		<record id="hr_job_name_0001410" model="hr.job.name">
-			<field name="name">خادم</field>
-			<field name="number">0001410</field>
-		</record>
-		<record id="hr_job_name_0010707" model="hr.job.name">
-			<field name="name">مهندس مدني مساعد</field>
-			<field name="number">0010707</field>
-		</record>
-		<record id="hr_job_name_0010709" model="hr.job.name">
-			<field name="name">مهندس مدني</field>
-			<field name="number">0010709</field>
-		</record>
-		<record id="hr_job_name_0010710" model="hr.job.name">
-			<field name="name">مهندس مدني مشرف</field>
-			<field name="number">0010710</field>
-		</record>
-		<record id="hr_job_name_0011010" model="hr.job.name">
-			<field name="name">عامل</field>
-			<field name="number">0011010</field>
-		</record>
-		<record id="hr_job_name_0011111" model="hr.job.name">
-			<field name="name">مراسل</field>
-			<field name="number">0011111</field>
-		</record>
-		<record id="hr_job_name_0011210" model="hr.job.name">
-			<field name="name">موزع داخلي</field>
-			<field name="number">0011210</field>
-		</record>
-		<record id="hr_job_name_0011310" model="hr.job.name">
-			<field name="name">معقب</field>
-			<field name="number">0011310</field>
-		</record>
-		<record id="hr_job_name_0011410" model="hr.job.name">
-			<field name="name">مراسل مكتبي</field>
-			<field name="number">0011410</field>
-		</record>
-		<record id="hr_job_name_0021010" model="hr.job.name">
-			<field name="name">عامل فني</field>
-			<field name="number">0021010</field>
-		</record>
-		<record id="hr_job_name_0021110" model="hr.job.name">
-			<field name="name">سائق</field>
-			<field name="number">0021110</field>
-		</record>
-		<record id="hr_job_name_0030005" model="hr.job.name">
-			<field name="name">مدير عام الشئون الإدارية والمالية</field>
-			<field name="number">0030005</field>
-		</record>
-		<record id="hr_job_name_0030006" model="hr.job.name">
-			<field name="name">مدير شعبة الاتصالات الاداريه</field>
-			<field name="number">0030006</field>
-		</record>
-		<record id="hr_job_name_0030007" model="hr.job.name">
-			<field name="name">رئيس قسم الارشيف</field>
-			<field name="number">0030007</field>
-		</record>
-		<record id="hr_job_name_0030009" model="hr.job.name">
-			<field name="name">مدير عام إدارة الخدمات العامه</field>
-			<field name="number">0030009</field>
-		</record>
-		<record id="hr_job_name_0030013" model="hr.job.name">
-			<field name="name">مدير مركزالاتصالات الاداريه</field>
-			<field name="number">0030013</field>
-		</record>
-		<record id="hr_job_name_0030016" model="hr.job.name">
-			<field name="name">الممتازة</field>
-			<field name="number">0030016</field>
-		</record>
-		<record id="hr_job_name_0030200" model="hr.job.name">
-			<field name="name">مدير ادارة التطوير الاداري</field>
-			<field name="number">0030200</field>
-		</record>
-		<record id="hr_job_name_0030201" model="hr.job.name">
-			<field name="name">اخصائي تطوير إداري</field>
-			<field name="number">0030201</field>
-		</record>
-		<record id="hr_job_name_0030203" model="hr.job.name">
-			<field name="name">باحث تنظيم</field>
-			<field name="number">0030203</field>
-		</record>
-		<record id="hr_job_name_0030208" model="hr.job.name">
-			<field name="name">اخصائي ميزانيه</field>
-			<field name="number">0030208</field>
-		</record>
-		<record id="hr_job_name_0030210" model="hr.job.name">
-			<field name="name">باحث احصاء</field>
-			<field name="number">0030210</field>
-		</record>
-		<record id="hr_job_name_0030213" model="hr.job.name">
-			<field name="name">مفتش اداري</field>
-			<field name="number">0030213</field>
-		</record>
-		<record id="hr_job_name_0030214" model="hr.job.name">
-			<field name="name">مراقب اداري</field>
-			<field name="number">0030214</field>
-		</record>
-		<record id="hr_job_name_0030216" model="hr.job.name">
-			<field name="name">باحث قضايا</field>
-			<field name="number">0030216</field>
-		</record>
-		<record id="hr_job_name_0030300" model="hr.job.name">
-			<field name="name">مدير عام إدارة شؤون الموظفين</field>
-			<field name="number">0030300</field>
-		</record>
-		<record id="hr_job_name_0030301" model="hr.job.name">
-			<field name="name">مراقب شئون الموظفين</field>
-			<field name="number">0030301</field>
-		</record>
-		<record id="hr_job_name_0030302" model="hr.job.name">
-			<field name="name">مدقق شئون الموظفين</field>
-			<field name="number">0030302</field>
-		</record>
-		<record id="hr_job_name_0030303" model="hr.job.name">
-			<field name="name">مدقق رواتب</field>
-			<field name="number">0030303</field>
-		</record>
-		<record id="hr_job_name_0030304" model="hr.job.name">
-			<field name="name">اخصائي شئون موظفين</field>
-			<field name="number">0030304</field>
-		</record>
-		<record id="hr_job_name_0030307" model="hr.job.name">
-			<field name="name">باحث توظيف</field>
-			<field name="number">0030307</field>
-		</record>
-		<record id="hr_job_name_0030316" model="hr.job.name">
-			<field name="name">باحث قوى عاملة</field>
-			<field name="number">0030316</field>
-		</record>
-		<record id="hr_job_name_0030400" model="hr.job.name">
-			<field name="name">مدير ادارة الشئون الماليه</field>
-			<field name="number">0030400</field>
-		</record>
-		<record id="hr_job_name_0030403" model="hr.job.name">
-			<field name="name">محاسب</field>
-			<field name="number">0030403</field>
-		</record>
-		<record id="hr_job_name_0030404" model="hr.job.name">
-			<field name="name">مدقق حسابات</field>
-			<field name="number">0030404</field>
-		</record>
-		<record id="hr_job_name_0030415" model="hr.job.name">
-			<field name="name">امين صندوق</field>
-			<field name="number">0030415</field>
-		</record>
-		<record id="hr_job_name_0030417" model="hr.job.name">
-			<field name="name">مأمور صرف</field>
-			<field name="number">0030417</field>
-		</record>
-		<record id="hr_job_name_0030500" model="hr.job.name">
-			<field name="name">مدير شعبة المستودعات</field>
-			<field name="number">0030500</field>
-		</record>
-		<record id="hr_job_name_0030501" model="hr.job.name">
-			<field name="name">مأمور عهدة</field>
-			<field name="number">0030501</field>
-		</record>
-		<record id="hr_job_name_0030505" model="hr.job.name">
-			<field name="name">امين مستودع</field>
-			<field name="number">0030505</field>
-		</record>
-		<record id="hr_job_name_0030511" model="hr.job.name">
-			<field name="name">مدير شعبة المشتريات والمناقصات</field>
-			<field name="number">0030511</field>
-		</record>
-		<record id="hr_job_name_0030513" model="hr.job.name">
-			<field name="name">مدقق مشتريات</field>
-			<field name="number">0030513</field>
-		</record>
-		<record id="hr_job_name_0030514" model="hr.job.name">
-			<field name="name">اخصائي مشتريات</field>
-			<field name="number">0030514</field>
-		</record>
-		<record id="hr_job_name_0040000" model="hr.job.name">
-			<field name="name">مدير مكتب رئيس الفرع</field>
-			<field name="number">0040000</field>
-		</record>
-		<record id="hr_job_name_0040001" model="hr.job.name">
-			<field name="name">سكرتير</field>
-			<field name="number">0040001</field>
-		</record>
-		<record id="hr_job_name_0040002" model="hr.job.name">
-			<field name="name">سكرتير عام</field>
-			<field name="number">0040002</field>
-		</record>
-		<record id="hr_job_name_0040006" model="hr.job.name">
-			<field name="name">مدير اعمال اللجنه</field>
-			<field name="number">0040006</field>
-		</record>
-		<record id="hr_job_name_0040008" model="hr.job.name">
-			<field name="name">مساعد اداري</field>
-			<field name="number">0040008</field>
-		</record>
-		<record id="hr_job_name_0040010" model="hr.job.name">
-			<field name="name">مترجم</field>
-			<field name="number">0040010</field>
-		</record>
-		<record id="hr_job_name_0040011" model="hr.job.name">
-			<field name="name">كاتب</field>
-			<field name="number">0040011</field>
-		</record>
-		<record id="hr_job_name_0040012" model="hr.job.name">
-			<field name="name">كاتب شفره</field>
-			<field name="number">0040012</field>
-		</record>
-		<record id="hr_job_name_0040100" model="hr.job.name">
-			<field name="name">ناسخ اله</field>
-			<field name="number">0040100</field>
-		</record>
-		<record id="hr_job_name_0040101" model="hr.job.name">
-			<field name="name">ناسخ اله بلغتين</field>
-			<field name="number">0040101</field>
-		</record>
-		<record id="hr_job_name_0050103" model="hr.job.name">
-			<field name="name">فني اتصالات</field>
-			<field name="number">0050103</field>
-		</record>
-		<record id="hr_job_name_0050104" model="hr.job.name">
-			<field name="name">مأمور اتصالات</field>
-			<field name="number">0050104</field>
-		</record>
-		<record id="hr_job_name_0050602" model="hr.job.name">
-			<field name="name">مساعد مأمور ميناء</field>
-			<field name="number">0050602</field>
-		</record>
-		<record id="hr_job_name_0050904" model="hr.job.name">
-			<field name="name">مراقب آمن وسلامة</field>
-			<field name="number">0050904</field>
-		</record>
-		<record id="hr_job_name_0051002" model="hr.job.name">
-			<field name="name">مبرمج حاسب الي</field>
-			<field name="number">0051002</field>
-		</record>
-		<record id="hr_job_name_0051005" model="hr.job.name">
-			<field name="name">مشغل اجهزة حاسب الى</field>
-			<field name="number">0051005</field>
-		</record>
-		<record id="hr_job_name_0051006" model="hr.job.name">
-			<field name="name">مسجل معلومات</field>
-			<field name="number">0051006</field>
-		</record>
-		<record id="hr_job_name_0051009" model="hr.job.name">
-			<field name="name">مطور برامج اول</field>
-			<field name="number">0051009</field>
-		</record>
-		<record id="hr_job_name_0060026" model="hr.job.name">
-			<field name="name">مراقب مطبوعات</field>
-			<field name="number">0060026</field>
-		</record>
-		<record id="hr_job_name_0060030" model="hr.job.name">
-			<field name="name">مدير ادارة العلاقات العامة</field>
-			<field name="number">0060030</field>
-		</record>
-		<record id="hr_job_name_0060031" model="hr.job.name">
-			<field name="name">اخصائي علاقات عامه</field>
-			<field name="number">0060031</field>
-		</record>
-		<record id="hr_job_name_0060402" model="hr.job.name">
-			<field name="name">امين مكتبه</field>
-			<field name="number">0060402</field>
-		</record>
-		<record id="hr_job_name_0060405" model="hr.job.name">
-			<field name="name">باحث وثائق مساعد</field>
-			<field name="number">0060405</field>
-		</record>
-		<record id="hr_job_name_0070109" model="hr.job.name">
-			<field name="name">مدير شعبة الصيانة</field>
-			<field name="number">0070109</field>
-		</record>
-		<record id="hr_job_name_0070300" model="hr.job.name">
-			<field name="name">كاتب ضبط</field>
-			<field name="number">0070300</field>
-		</record>
-		<record id="hr_job_name_0080000" model="hr.job.name">
-			<field name="name">رئيس قسم الصيانة</field>
-			<field name="number">0080000</field>
-		</record>
-		<record id="hr_job_name_0080107" model="hr.job.name">
-			<field name="name">مراقب انشاءات</field>
-			<field name="number">0080107</field>
-		</record>
-		<record id="hr_job_name_0080406" model="hr.job.name">
-			<field name="name">فني تبريد وتكييف</field>
-			<field name="number">0080406</field>
-		</record>
-		<record id="hr_job_name_0080600" model="hr.job.name">
-			<field name="name">مساعد فني تشغيل آلات</field>
-			<field name="number">0080600</field>
-		</record>
-		<record id="hr_job_name_0080601" model="hr.job.name">
-			<field name="name">مساعد فني صيانة الات مكتبية</field>
-			<field name="number">0080601</field>
-		</record>
-		<record id="hr_job_name_0090100" model="hr.job.name">
-			<field name="name">نجار</field>
-			<field name="number">0090100</field>
-		</record>
-		<record id="hr_job_name_0090101" model="hr.job.name">
-			<field name="name">سباك</field>
-			<field name="number">0090101</field>
-		</record>
-		<record id="hr_job_name_0090114" model="hr.job.name">
-			<field name="name">لحام</field>
-			<field name="number">0090114</field>
-		</record>
-		<record id="hr_job_name_0090200" model="hr.job.name">
-			<field name="name">ميكانيكي</field>
-			<field name="number">0090200</field>
-		</record>
-		<record id="hr_job_name_0090201" model="hr.job.name">
-			<field name="name">كهربائي</field>
-			<field name="number">0090201</field>
-		</record>
-		<record id="hr_job_name_0100013" model="hr.job.name">
-			<field name="name">محقق نظامي</field>
-			<field name="number">0100013</field>
-		</record>
-		<record id="hr_job_name_0111033" model="hr.job.name">
-			<field name="name">مراسلة مكتبية</field>
-			<field name="number">0111033</field>
-		</record>
-		<record id="hr_job_name_0130005" model="hr.job.name">
-			<field name="name">مدير إدارة الشئون الإدارية والمالية</field>
-			<field name="number">0130005</field>
-		</record>
-		<record id="hr_job_name_0130006" model="hr.job.name">
-			<field name="name">مدير شعبة الحركه </field>
-			<field name="number">0130006</field>
-		</record>
-		<record id="hr_job_name_0130007" model="hr.job.name">
-			<field name="name">رئيس قسم الحركه </field>
-			<field name="number">0130007</field>
-		</record>
-		<record id="hr_job_name_0130009" model="hr.job.name">
-			<field name="name">مدير شعبة الخدمات العامه </field>
-			<field name="number">0130009</field>
-		</record>
-		<record id="hr_job_name_0130013" model="hr.job.name">
-			<field name="name">رئيس شعبة الاتصالات الاداريه </field>
-			<field name="number">0130013</field>
-		</record>
-		<record id="hr_job_name_0130200" model="hr.job.name">
-			<field name="name">مدير عام التطوير الاداري</field>
-			<field name="number">0130200</field>
-		</record>
-		<record id="hr_job_name_0130201" model="hr.job.name">
-			<field name="name">باحث تطوير اداري </field>
-			<field name="number">0130201</field>
-		</record>
-		<record id="hr_job_name_0130203" model="hr.job.name">
-			<field name="name">باحث تنظيم مساعد</field>
-			<field name="number">0130203</field>
-		</record>
-		<record id="hr_job_name_0130208" model="hr.job.name">
-			<field name="name">باحث ميزانيه</field>
-			<field name="number">0130208</field>
-		</record>
-		<record id="hr_job_name_0130216" model="hr.job.name">
-			<field name="name">باحث قضايا مساعد</field>
-			<field name="number">0130216</field>
-		</record>
-		<record id="hr_job_name_0130217" model="hr.job.name">
-			<field name="name">محقق اداري</field>
-			<field name="number">0130217</field>
-		</record>
-		<record id="hr_job_name_0130300" model="hr.job.name">
-			<field name="name">مدير ادارة شئون الموظفين</field>
-			<field name="number">0130300</field>
-		</record>
-		<record id="hr_job_name_0130304" model="hr.job.name">
-			<field name="name">باحث شئون موظفين</field>
-			<field name="number">0130304</field>
-		</record>
-		<record id="hr_job_name_0130305" model="hr.job.name">
-			<field name="name">مدير ادارة</field>
-			<field name="number">0130305</field>
-		</record>
-		<record id="hr_job_name_0130307" model="hr.job.name">
-			<field name="name">باحث توظيف مساعد</field>
-			<field name="number">0130307</field>
-		</record>
-		<record id="hr_job_name_0130400" model="hr.job.name">
-			<field name="name">مدير شعبة الشئون الماليه</field>
-			<field name="number">0130400</field>
-		</record>
-		<record id="hr_job_name_0130403" model="hr.job.name">
-			<field name="name">محاسب مساعد</field>
-			<field name="number">0130403</field>
-		</record>
-		<record id="hr_job_name_0130404" model="hr.job.name">
-			<field name="name">مدقق حسابات مساعد</field>
-			<field name="number">0130404</field>
-		</record>
-		<record id="hr_job_name_0130415" model="hr.job.name">
-			<field name="name">رئيس امانة صندوق</field>
-			<field name="number">0130415</field>
-		</record>
-		<record id="hr_job_name_0130511" model="hr.job.name">
-			<field name="name">مدير ادارة المشتريات والمناقصات</field>
-			<field name="number">0130511</field>
-		</record>
-		<record id="hr_job_name_0140000" model="hr.job.name">
-			<field name="name">مدير مكتب رئيس الهيئة</field>
-			<field name="number">0140000</field>
-		</record>
-		<record id="hr_job_name_0140001" model="hr.job.name">
-			<field name="name">سكرتير سرى</field>
-			<field name="number">0140001</field>
-		</record>
-		<record id="hr_job_name_0140010" model="hr.job.name">
-			<field name="name">كبير مترجمين</field>
-			<field name="number">0140010</field>
-		</record>
-		<record id="hr_job_name_0150103" model="hr.job.name">
-			<field name="name">مساعد فني اتصالات</field>
-			<field name="number">0150103</field>
-		</record>
-		<record id="hr_job_name_0151002" model="hr.job.name">
-			<field name="name">مساعد مبرمج</field>
-			<field name="number">0151002</field>
-		</record>
-		<record id="hr_job_name_0151005" model="hr.job.name">
-			<field name="name">مشغل اجهزة حاسب الي مشرف</field>
-			<field name="number">0151005</field>
-		</record>
-		<record id="hr_job_name_0151009" model="hr.job.name">
-			<field name="name">مصمم برامج</field>
-			<field name="number">0151009</field>
-		</record>
-		<record id="hr_job_name_0170300" model="hr.job.name">
-			<field name="name">كاتب سجل</field>
-			<field name="number">0170300</field>
-		</record>
-		<record id="hr_job_name_0180000" model="hr.job.name">
-			<field name="name">مشرف صيانة</field>
-			<field name="number">0180000</field>
-		</record>
-		<record id="hr_job_name_0190200" model="hr.job.name">
-			<field name="name">ميكانيكي سيارات</field>
-			<field name="number">0190200</field>
-		</record>
-		<record id="hr_job_name_0190201" model="hr.job.name">
-			<field name="name">كهربائي سيارات</field>
-			<field name="number">0190201</field>
-		</record>
-		<record id="hr_job_name_0230005" model="hr.job.name">
-			<field name="name">مدير الشئون الإدارية والمالية</field>
-			<field name="number">0230005</field>
-		</record>
-		<record id="hr_job_name_0230006" model="hr.job.name">
-			<field name="name">مدير شعبة الشؤون الادارية والمالية</field>
-			<field name="number">0230006</field>
-		</record>
-		<record id="hr_job_name_0230007" model="hr.job.name">
-			<field name="name">رئيس قسم الشئون الادارية والمالية</field>
-			<field name="number">0230007</field>
-		</record>
-		<record id="hr_job_name_0230009" model="hr.job.name">
-			<field name="name">رئيس قسم الخدمات العامه </field>
-			<field name="number">0230009</field>
-		</record>
-		<record id="hr_job_name_0230013" model="hr.job.name">
-			<field name="name">رئيس قسم الاتصالات الاداريه </field>
-			<field name="number">0230013</field>
-		</record>
-		<record id="hr_job_name_0230201" model="hr.job.name">
-			<field name="name">باحث تطوير اداري مساعد </field>
-			<field name="number">0230201</field>
-		</record>
-		<record id="hr_job_name_0230300" model="hr.job.name">
-			<field name="name">مدير شعبة شئون الموظفين</field>
-			<field name="number">0230300</field>
-		</record>
-		<record id="hr_job_name_0230304" model="hr.job.name">
-			<field name="name">باحث شئون موظفين مساعد</field>
-			<field name="number">0230304</field>
-		</record>
-		<record id="hr_job_name_0230400" model="hr.job.name">
-			<field name="name">مدير ادارة المحاسبة</field>
-			<field name="number">0230400</field>
-		</record>
-		<record id="hr_job_name_0230511" model="hr.job.name">
-			<field name="name">مدير ادارة مراقبة المخزون</field>
-			<field name="number">0230511</field>
-		</record>
-		<record id="hr_job_name_0240000" model="hr.job.name">
-			<field name="name">مدير مكتب النائب للتحقيق </field>
-			<field name="number">0240000</field>
-		</record>
-		<record id="hr_job_name_0240001" model="hr.job.name">
-			<field name="name">سكرتير خاص</field>
-			<field name="number">0240001</field>
-		</record>
-		<record id="hr_job_name_0251002" model="hr.job.name">
-			<field name="name">كبير مبرمجين</field>
-			<field name="number">0251002</field>
-		</record>
-		<record id="hr_job_name_0251009" model="hr.job.name">
-			<field name="name">مطور برامج مساعد</field>
-			<field name="number">0251009</field>
-		</record>
-		<record id="hr_job_name_0270300" model="hr.job.name">
-			<field name="name">رئيس كتاب ضبط</field>
-			<field name="number">0270300</field>
-		</record>
-		<record id="hr_job_name_0290201" model="hr.job.name">
-			<field name="name">كهربائي تمديدات</field>
-			<field name="number">0290201</field>
-		</record>
-		<record id="hr_job_name_0300120" model="hr.job.name">
-			<field name="name">مدير شعبة الاستعلامات</field>
-			<field name="number">0300120</field>
-		</record>
-		<record id="hr_job_name_0300130" model="hr.job.name">
-			<field name="name">رئيس قسم الصادر والوارد</field>
-			<field name="number">0300130</field>
-		</record>
-		<record id="hr_job_name_030203" model="hr.job.name">
-			<field name="name">اخصائي تنظيم</field>
-			<field name="number">030203</field>
-		</record>
-		<record id="hr_job_name_030208" model="hr.job.name">
-			<field name="name">باحث ميزانية </field>
-			<field name="number">030208</field>
-		</record>
-		<record id="hr_job_name_0302080" model="hr.job.name">
-			<field name="name">باحث ميزانية مساعد</field>
-			<field name="number">0302080</field>
-		</record>
-		<record id="hr_job_name_030217" model="hr.job.name">
-			<field name="name">محقق اداري مساعد</field>
-			<field name="number">030217</field>
-		</record>
-		<record id="hr_job_name_030300" model="hr.job.name">
-			<field name="name">مدير إدارة الرواتب</field>
-			<field name="number">030300</field>
-		</record>
-		<record id="hr_job_name_030503" model="hr.job.name">
-			<field name="name">مراقب مخزون</field>
-			<field name="number">030503</field>
-		</record>
-		<record id="hr_job_name_0305150" model="hr.job.name">
-			<field name="name">مدقق مناقصات</field>
-			<field name="number">0305150</field>
-		</record>
-		<record id="hr_job_name_0330009" model="hr.job.name">
-			<field name="name">مدير ادارة الخدمات العامة</field>
-			<field name="number">0330009</field>
-		</record>
-		<record id="hr_job_name_0330013" model="hr.job.name">
-			<field name="name">مدير شعبة الصادر</field>
-			<field name="number">0330013</field>
-		</record>
-		<record id="hr_job_name_0330400" model="hr.job.name">
-			<field name="name">مدير شعبة المحاسبة</field>
-			<field name="number">0330400</field>
-		</record>
-		<record id="hr_job_name_0340000" model="hr.job.name">
-			<field name="name">مدير مكتب النائب للرقابة</field>
-			<field name="number">0340000</field>
-		</record>
-		<record id="hr_job_name_0351009" model="hr.job.name">
-			<field name="name">مطور برامج</field>
-			<field name="number">0351009</field>
-		</record>
-		<record id="hr_job_name_040007" model="hr.job.name">
-			<field name="name">منسق اعمال لجان</field>
-			<field name="number">040007</field>
-		</record>
-		<record id="hr_job_name_0400080" model="hr.job.name">
-			<field name="name">مساعد اداري</field>
-			<field name="number">0400080</field>
-		</record>
-		<record id="hr_job_name_0430006" model="hr.job.name">
-			<field name="name">مدير شعبة الشؤون الإدارية</field>
-			<field name="number">0430006</field>
-		</record>
-		<record id="hr_job_name_0430009" model="hr.job.name">
-			<field name="name">مدير الخدمات العامة</field>
-			<field name="number">0430009</field>
-		</record>
-		<record id="hr_job_name_0430013" model="hr.job.name">
-			<field name="name">مدير شعبة الوارد</field>
-			<field name="number">0430013</field>
-		</record>
-		<record id="hr_job_name_0430400" model="hr.job.name">
-			<field name="name">مدير عام الشئون المالية</field>
-			<field name="number">0430400</field>
-		</record>
-		<record id="hr_job_name_0440000" model="hr.job.name">
-			<field name="name">مدير مكتب</field>
-			<field name="number">0440000</field>
-		</record>
-		<record id="hr_job_name_0510040" model="hr.job.name">
-			<field name="name">اخصائي قواعد بيانات</field>
-			<field name="number">0510040</field>
-		</record>
-		<record id="hr_job_name_051009" model="hr.job.name">
-			<field name="name">مصمم برامج أول</field>
-			<field name="number">051009</field>
-		</record>
-		<record id="hr_job_name_051011" model="hr.job.name">
-			<field name="name">فني دعم مساعد</field>
-			<field name="number">051011</field>
-		</record>
-		<record id="hr_job_name_0530013" model="hr.job.name">
-			<field name="name">مدير شعبة الصادر والوارد</field>
-			<field name="number">0530013</field>
-		</record>
-		<record id="hr_job_name_0530400" model="hr.job.name">
-			<field name="name">مدير الشئون الماليه</field>
-			<field name="number">0530400</field>
-		</record>
-		<record id="hr_job_name_0600310" model="hr.job.name">
-			<field name="name">مأمور علاقات عامة</field>
-			<field name="number">0600310</field>
-		</record>
-		<record id="hr_job_name_0604020" model="hr.job.name">
-			<field name="name">مساعد امين مكتبة </field>
-			<field name="number">0604020</field>
-		</record>
-		<record id="hr_job_name_0604075" model="hr.job.name">
-			<field name="name">مأمور وثائق ومحفوظات</field>
-			<field name="number">0604075</field>
-		</record>
-		<record id="hr_job_name_0630400" model="hr.job.name">
-			<field name="name">مدير شعبة الحسابات</field>
-			<field name="number">0630400</field>
-		</record>
-		<record id="hr_job_name_0806000" model="hr.job.name">
-			<field name="name">فني تشغيل آلات</field>
-			<field name="number">0806000</field>
-		</record>
-		<record id="hr_job_name_090112" model="hr.job.name">
-			<field name="name">مجلد</field>
-			<field name="number">090112</field>
-		</record>
-		<record id="hr_job_name_1030009" model="hr.job.name">
-			<field name="name">رئيس قسم الخدمات</field>
-			<field name="number">1030009</field>
-		</record>
-		<record id="hr_job_name_1130300" model="hr.job.name">
-			<field name="name">رئيس قسم شئون موظفين</field>
-			<field name="number">1130300</field>
-		</record>
-		<record id="hr_job_name_1130400" model="hr.job.name">
-			<field name="name">رئيس قسم الشئون الماليه</field>
-			<field name="number">1130400</field>
-		</record>
-		<record id="hr_job_name_3000130" model="hr.job.name">
-			<field name="name">رئيس قسم الشؤون الادارية</field>
-			<field name="number">3000130</field>
-		</record>
-		<record id="hr_job_name_3000510" model="hr.job.name">
-			<field name="name">مدير شعبة التوظيف</field>
-			<field name="number">3000510</field>
-		</record>
-		<record id="hr_job_name_3000511" model="hr.job.name">
-			<field name="name">مدير ادارة المراجعة</field>
-			<field name="number">3000511</field>
-		</record>
-		<record id="hr_job_name_3000610" model="hr.job.name">
-			<field name="name">مدير شعبة</field>
-			<field name="number">3000610</field>
-		</record>
-		<record id="hr_job_name_3001308" model="hr.job.name">
-			<field name="name">رئيس مركز الاتصالات الادارية</field>
-			<field name="number">3001308</field>
-		</record>
-		<record id="hr_job_name_3001309" model="hr.job.name">
-			<field name="name">مدير شعبة الاتصالات الادارية</field>
-			<field name="number">3001309</field>
-		</record>
-		<record id="hr_job_name_3001313" model="hr.job.name">
-			<field name="name">مدير عام مركز الاتصالات الادارية</field>
-			<field name="number">3001313</field>
-		</record>
-		<record id="hr_job_name_3001689" model="hr.job.name">
-			<field name="name">وزير</field>
-			<field name="number">3001689</field>
-		</record>
-		<record id="hr_job_name_3021005" model="hr.job.name">
-			<field name="name">باحث احصاء مساعد</field>
-			<field name="number">3021005</field>
-		</record>
-		<record id="hr_job_name_3021009" model="hr.job.name">
-			<field name="name">اخصائي احصاء</field>
-			<field name="number">3021009</field>
-		</record>
-		<record id="hr_job_name_3021312" model="hr.job.name">
-			<field name="name">كبير مفتشين اداريين</field>
-			<field name="number">3021312</field>
-		</record>
-		<record id="hr_job_name_30219" model="hr.job.name">
-			<field name="name">مدير عام إدارة المراجعة الداخلية</field>
-			<field name="number">30219</field>
-		</record>
-		<record id="hr_job_name_3021312" model="hr.job.name">
-			<field name="name">مساعد مراجع</field>
-			<field name="number">3021312</field>
-		</record>
-		<record id="hr_job_name_3022008" model="hr.job.name">
-			<field name="name">مراجع</field>
-			<field name="number">3022008</field>
-		</record>
-		<record id="hr_job_name_3030012" model="hr.job.name">
-			<field name="name">مدير ادارة التوظيف</field>
-			<field name="number">3030012</field>
-		</record>
-		<record id="hr_job_name_3030710" model="hr.job.name">
-			<field name="name">اخصائي توظيف</field>
-			<field name="number">3030710</field>
-		</record>
-		<record id="hr_job_name_3031609" model="hr.job.name">
-			<field name="name">اخصائي قوى عامله</field>
-			<field name="number">3031609</field>
-		</record>
-		<record id="hr_job_name_3041511" model="hr.job.name">
-			<field name="name">رئيس امانه الصندوق</field>
-			<field name="number">3041511</field>
-		</record>
-		<record id="hr_job_name_3050304" model="hr.job.name">
-			<field name="name">مراقب مخزون</field>
-			<field name="number">3050304</field>
-		</record>
-		<record id="hr_job_name_3050406" model="hr.job.name">
-			<field name="name">باحث مخزون مساعد</field>
-			<field name="number">3050406</field>
-		</record>
-		<record id="hr_job_name_3051207" model="hr.job.name">
-			<field name="name">مأمور مشتريات</field>
-			<field name="number">3051207</field>
-		</record>
-		<record id="hr_job_name_3051610" model="hr.job.name">
-			<field name="name">اخصائي مناقصات</field>
-			<field name="number">3051610</field>
-		</record>
-		<record id="hr_job_name_4000806" model="hr.job.name">
-			<field name="name">مساعدة إدارية</field>
-			<field name="number">4000806</field>
-		</record>
-		<record id="hr_job_name_4000810" model="hr.job.name">
-			<field name="name">مساعد اداري مشرف</field>
-			<field name="number">4000810</field>
-		</record>
-		<record id="hr_job_name_4001106" model="hr.job.name">
-			<field name="name">كاتبه</field>
-			<field name="number">4001106</field>
-		</record>
-		<record id="hr_job_name_4001107" model="hr.job.name">
-			<field name="name">كاتب</field>
-			<field name="number">4001107</field>
-		</record>
-		<record id="hr_job_name_4001414" model="hr.job.name">
-			<field name="name">أمين سر دائرة</field>
-			<field name="number">4001414</field>
-		</record>
-		<record id="hr_job_name_4010009" model="hr.job.name">
-			<field name="name">ناسخ آله مشرف</field>
-			<field name="number">4010009</field>
-		</record>
-		<record id="hr_job_name_4010204" model="hr.job.name">
-			<field name="name">مشغل اجهزة مكتبية</field>
-			<field name="number">4010204</field>
-		</record>
-		<record id="hr_job_name_40105" model="hr.job.name">
-			<field name="name">مسجلة معلومات</field>
-			<field name="number">40105</field>
-		</record>
-		<record id="hr_job_name_5090406" model="hr.job.name">
-			<field name="name">مراقب أمن وسلامة</field>
-			<field name="number">5090406</field>
-		</record>
-		<record id="hr_job_name_5100013" model="hr.job.name">
-			<field name="name">مدير عام تقنية المعلومات</field>
-			<field name="number">5100013</field>
-		</record>
-		<record id="hr_job_name_5100107" model="hr.job.name">
-			<field name="name">محلل نظم</field>
-			<field name="number">5100107</field>
-		</record>
-		<record id="hr_job_name_5100108" model="hr.job.name">
-			<field name="name">محلل نظم اول</field>
-			<field name="number">5100108</field>
-		</record>
-		<record id="hr_job_name_5100109" model="hr.job.name">
-			<field name="name">مصمم نظم</field>
-			<field name="number">5100109</field>
-		</record>
-		<record id="hr_job_name_5100111" model="hr.job.name">
-			<field name="name">مصمم نظم اول</field>
-			<field name="number">5100111</field>
-		</record>
-		<record id="hr_job_name_5100112" model="hr.job.name">
-			<field name="name">كبير مصممي نظم</field>
-			<field name="number">5100112</field>
-		</record>
-		<record id="hr_job_name_5100210" model="hr.job.name">
-			<field name="name">مبرمج حاسب الي</field>
-			<field name="number">5100210</field>
-		</record>
-		<record id="hr_job_name_5101108" model="hr.job.name">
-			<field name="name">فني دعم</field>
-			<field name="number">5101108</field>
-		</record>
-		<record id="hr_job_name_5101109" model="hr.job.name">
-			<field name="name">فني دعم أول</field>
-			<field name="number">5101109</field>
-		</record>
-		<record id="hr_job_name_5101111" model="hr.job.name">
-			<field name="name">كبير فنيي دعم</field>
-			<field name="number">5101111</field>
-		</record>
-		<record id="hr_job_name_6040409" model="hr.job.name">
-			<field name="name">مدير شعبة الوثائق والمحفوظات</field>
-			<field name="number">6040409</field>
-		</record>
-		<record id="hr_job_name_6040413" model="hr.job.name">
-			<field name="name">مدير عام مركز الوثائق والمحفوظات</field>
-			<field name="number">6040413</field>
-		</record>
-		<record id="hr_job_name_6040511" model="hr.job.name">
-			<field name="name">اخصائي وثائق ومحفوظات</field>
-			<field name="number">6040511</field>
-		</record>
-		<record id="hr_job_name_8030005" model="hr.job.name">
-			<field name="name">مصور فوتوغرافي</field>
-			<field name="number">8030005</field>
-		</record>
-		<record id="hr_job_name_8040806" model="hr.job.name">
-			<field name="name">فني صيانة شبكات حاسب</field>
-			<field name="number">8040806</field>
-		</record>
-		<record id="hr_job_name_8060106" model="hr.job.name">
-			<field name="name">فني صيانة شبكات حاسب</field>
-			<field name="number">8060106</field>
-		</record>
-		<record id="hr_job_name_8060107" model="hr.job.name">
-			<field name="name">فني صيانة الات</field>
-			<field name="number">8060107</field>
-		</record>
-		<record id="hr_job_name_9011205" model="hr.job.name">
-			<field name="name">مجلد</field>
-			<field name="number">9011205</field>
-		</record>
-		<record id="hr_job_name_9020002" model="hr.job.name">
-			<field name="name">مساعد ميكانيكي</field>
-			<field name="number">9020002</field>
-		</record>
-		<record id="hr_job_name_9900000" model="hr.job.name">
-			<field name="name">مكلف من خارج الهيئة</field>
-			<field name="number">9900000</field>
-		</record>
-		<record id="hr_job_name_" model="hr.job.name">
-			<field name="name">(معتبرة)</field>
-			<field name="number">9999999</field>
-		</record>
+<!-- 		<record id="hr_job_name_0000001" model="hr.job.name"> -->
+<!-- 			<field name="name">عامل فئة (أ)</field> -->
+<!-- 			<field name="number">0000001</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0000002" model="hr.job.name"> -->
+<!-- 			<field name="name">عامل فئة (ب)</field> -->
+<!-- 			<field name="number">0000002</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0000003" model="hr.job.name"> -->
+<!-- 			<field name="name">عامل فئة (ج)</field> -->
+<!-- 			<field name="number">0000003</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0000003" model="hr.job.name"> -->
+<!-- 			<field name="name">عامل فئة (د)</field> -->
+<!-- 			<field name="number">0000003</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_000005" model="hr.job.name"> -->
+<!-- 			<field name="name">رئيس دوائر تحقيق وادعاء</field> -->
+<!-- 			<field name="number">000005</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0000106" model="hr.job.name"> -->
+<!-- 			<field name="name">مهندس معماري مساعد</field> -->
+<!-- 			<field name="number">0000106</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_000013" model="hr.job.name"> -->
+<!-- 			<field name="name">محقق نظامي مساعد</field> -->
+<!-- 			<field name="number">000013</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0000308" model="hr.job.name"> -->
+<!-- 			<field name="name">باحث قانوني</field> -->
+<!-- 			<field name="number">0000308</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0000310" model="hr.job.name"> -->
+<!-- 			<field name="name">مستشار قانوني</field> -->
+<!-- 			<field name="number">0000310</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0000704" model="hr.job.name"> -->
+<!-- 			<field name="name">اخصائي اقتصادي</field> -->
+<!-- 			<field name="number">0000704</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0000720" model="hr.job.name"> -->
+<!-- 			<field name="name">مستشار اداري</field> -->
+<!-- 			<field name="number">0000720</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_000106" model="hr.job.name"> -->
+<!-- 			<field name="name">مهندس معماري</field> -->
+<!-- 			<field name="number">000106</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0001330" model="hr.job.name"> -->
+<!-- 			<field name="name">ملازم تحقيق</field> -->
+<!-- 			<field name="number">0001330</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0001331" model="hr.job.name"> -->
+<!-- 			<field name="name">مساعد محقق</field> -->
+<!-- 			<field name="number">0001331</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0001332" model="hr.job.name"> -->
+<!-- 			<field name="name">محقق ثان</field> -->
+<!-- 			<field name="number">0001332</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0001333" model="hr.job.name"> -->
+<!-- 			<field name="name">محقق اول</field> -->
+<!-- 			<field name="number">0001333</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0001334" model="hr.job.name"> -->
+<!-- 			<field name="name">وكيل رئيس دائرة تحقيق وادعاء / ب</field> -->
+<!-- 			<field name="number">0001334</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0001335" model="hr.job.name"> -->
+<!-- 			<field name="name">وكيل رئيس دائرة تحقيق وادعاء / أ</field> -->
+<!-- 			<field name="number">0001335</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0001336" model="hr.job.name"> -->
+<!-- 			<field name="name">رئيس دائرة تحقيق وادعاء / ب</field> -->
+<!-- 			<field name="number">0001336</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0001337" model="hr.job.name"> -->
+<!-- 			<field name="name">رئيس دائرة تحقيق وادعاء / أ</field> -->
+<!-- 			<field name="number">0001337</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0001338" model="hr.job.name"> -->
+<!-- 			<field name="name">نائب رئيس</field> -->
+<!-- 			<field name="number">0001338</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0001339" model="hr.job.name"> -->
+<!-- 			<field name="name">محقق ج</field> -->
+<!-- 			<field name="number">0001339</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0001410" model="hr.job.name"> -->
+<!-- 			<field name="name">خادم</field> -->
+<!-- 			<field name="number">0001410</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0010707" model="hr.job.name"> -->
+<!-- 			<field name="name">مهندس مدني مساعد</field> -->
+<!-- 			<field name="number">0010707</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0010709" model="hr.job.name"> -->
+<!-- 			<field name="name">مهندس مدني</field> -->
+<!-- 			<field name="number">0010709</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0010710" model="hr.job.name"> -->
+<!-- 			<field name="name">مهندس مدني مشرف</field> -->
+<!-- 			<field name="number">0010710</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0011010" model="hr.job.name"> -->
+<!-- 			<field name="name">عامل</field> -->
+<!-- 			<field name="number">0011010</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0011111" model="hr.job.name"> -->
+<!-- 			<field name="name">مراسل</field> -->
+<!-- 			<field name="number">0011111</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0011210" model="hr.job.name"> -->
+<!-- 			<field name="name">موزع داخلي</field> -->
+<!-- 			<field name="number">0011210</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0011310" model="hr.job.name"> -->
+<!-- 			<field name="name">معقب</field> -->
+<!-- 			<field name="number">0011310</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0011410" model="hr.job.name"> -->
+<!-- 			<field name="name">مراسل مكتبي</field> -->
+<!-- 			<field name="number">0011410</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0021010" model="hr.job.name"> -->
+<!-- 			<field name="name">عامل فني</field> -->
+<!-- 			<field name="number">0021010</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0021110" model="hr.job.name"> -->
+<!-- 			<field name="name">سائق</field> -->
+<!-- 			<field name="number">0021110</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030005" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير عام الشئون الإدارية والمالية</field> -->
+<!-- 			<field name="number">0030005</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030006" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير شعبة الاتصالات الاداريه</field> -->
+<!-- 			<field name="number">0030006</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030007" model="hr.job.name"> -->
+<!-- 			<field name="name">رئيس قسم الارشيف</field> -->
+<!-- 			<field name="number">0030007</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030009" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير عام إدارة الخدمات العامه</field> -->
+<!-- 			<field name="number">0030009</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030013" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير مركزالاتصالات الاداريه</field> -->
+<!-- 			<field name="number">0030013</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030016" model="hr.job.name"> -->
+<!-- 			<field name="name">الممتازة</field> -->
+<!-- 			<field name="number">0030016</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030200" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير ادارة التطوير الاداري</field> -->
+<!-- 			<field name="number">0030200</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030201" model="hr.job.name"> -->
+<!-- 			<field name="name">اخصائي تطوير إداري</field> -->
+<!-- 			<field name="number">0030201</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030203" model="hr.job.name"> -->
+<!-- 			<field name="name">باحث تنظيم</field> -->
+<!-- 			<field name="number">0030203</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030208" model="hr.job.name"> -->
+<!-- 			<field name="name">اخصائي ميزانيه</field> -->
+<!-- 			<field name="number">0030208</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030210" model="hr.job.name"> -->
+<!-- 			<field name="name">باحث احصاء</field> -->
+<!-- 			<field name="number">0030210</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030213" model="hr.job.name"> -->
+<!-- 			<field name="name">مفتش اداري</field> -->
+<!-- 			<field name="number">0030213</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030214" model="hr.job.name"> -->
+<!-- 			<field name="name">مراقب اداري</field> -->
+<!-- 			<field name="number">0030214</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030216" model="hr.job.name"> -->
+<!-- 			<field name="name">باحث قضايا</field> -->
+<!-- 			<field name="number">0030216</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030300" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير عام إدارة شؤون الموظفين</field> -->
+<!-- 			<field name="number">0030300</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030301" model="hr.job.name"> -->
+<!-- 			<field name="name">مراقب شئون الموظفين</field> -->
+<!-- 			<field name="number">0030301</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030302" model="hr.job.name"> -->
+<!-- 			<field name="name">مدقق شئون الموظفين</field> -->
+<!-- 			<field name="number">0030302</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030303" model="hr.job.name"> -->
+<!-- 			<field name="name">مدقق رواتب</field> -->
+<!-- 			<field name="number">0030303</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030304" model="hr.job.name"> -->
+<!-- 			<field name="name">اخصائي شئون موظفين</field> -->
+<!-- 			<field name="number">0030304</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030307" model="hr.job.name"> -->
+<!-- 			<field name="name">باحث توظيف</field> -->
+<!-- 			<field name="number">0030307</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030316" model="hr.job.name"> -->
+<!-- 			<field name="name">باحث قوى عاملة</field> -->
+<!-- 			<field name="number">0030316</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030400" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير ادارة الشئون الماليه</field> -->
+<!-- 			<field name="number">0030400</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030403" model="hr.job.name"> -->
+<!-- 			<field name="name">محاسب</field> -->
+<!-- 			<field name="number">0030403</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030404" model="hr.job.name"> -->
+<!-- 			<field name="name">مدقق حسابات</field> -->
+<!-- 			<field name="number">0030404</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030415" model="hr.job.name"> -->
+<!-- 			<field name="name">امين صندوق</field> -->
+<!-- 			<field name="number">0030415</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030417" model="hr.job.name"> -->
+<!-- 			<field name="name">مأمور صرف</field> -->
+<!-- 			<field name="number">0030417</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030500" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير شعبة المستودعات</field> -->
+<!-- 			<field name="number">0030500</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030501" model="hr.job.name"> -->
+<!-- 			<field name="name">مأمور عهدة</field> -->
+<!-- 			<field name="number">0030501</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030505" model="hr.job.name"> -->
+<!-- 			<field name="name">امين مستودع</field> -->
+<!-- 			<field name="number">0030505</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030511" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير شعبة المشتريات والمناقصات</field> -->
+<!-- 			<field name="number">0030511</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030513" model="hr.job.name"> -->
+<!-- 			<field name="name">مدقق مشتريات</field> -->
+<!-- 			<field name="number">0030513</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0030514" model="hr.job.name"> -->
+<!-- 			<field name="name">اخصائي مشتريات</field> -->
+<!-- 			<field name="number">0030514</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0040000" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير مكتب رئيس الفرع</field> -->
+<!-- 			<field name="number">0040000</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0040001" model="hr.job.name"> -->
+<!-- 			<field name="name">سكرتير</field> -->
+<!-- 			<field name="number">0040001</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0040002" model="hr.job.name"> -->
+<!-- 			<field name="name">سكرتير عام</field> -->
+<!-- 			<field name="number">0040002</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0040006" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير اعمال اللجنه</field> -->
+<!-- 			<field name="number">0040006</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0040008" model="hr.job.name"> -->
+<!-- 			<field name="name">مساعد اداري</field> -->
+<!-- 			<field name="number">0040008</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0040010" model="hr.job.name"> -->
+<!-- 			<field name="name">مترجم</field> -->
+<!-- 			<field name="number">0040010</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0040011" model="hr.job.name"> -->
+<!-- 			<field name="name">كاتب</field> -->
+<!-- 			<field name="number">0040011</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0040012" model="hr.job.name"> -->
+<!-- 			<field name="name">كاتب شفره</field> -->
+<!-- 			<field name="number">0040012</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0040100" model="hr.job.name"> -->
+<!-- 			<field name="name">ناسخ اله</field> -->
+<!-- 			<field name="number">0040100</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0040101" model="hr.job.name"> -->
+<!-- 			<field name="name">ناسخ اله بلغتين</field> -->
+<!-- 			<field name="number">0040101</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0050103" model="hr.job.name"> -->
+<!-- 			<field name="name">فني اتصالات</field> -->
+<!-- 			<field name="number">0050103</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0050104" model="hr.job.name"> -->
+<!-- 			<field name="name">مأمور اتصالات</field> -->
+<!-- 			<field name="number">0050104</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0050602" model="hr.job.name"> -->
+<!-- 			<field name="name">مساعد مأمور ميناء</field> -->
+<!-- 			<field name="number">0050602</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0050904" model="hr.job.name"> -->
+<!-- 			<field name="name">مراقب آمن وسلامة</field> -->
+<!-- 			<field name="number">0050904</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0051002" model="hr.job.name"> -->
+<!-- 			<field name="name">مبرمج حاسب الي</field> -->
+<!-- 			<field name="number">0051002</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0051005" model="hr.job.name"> -->
+<!-- 			<field name="name">مشغل اجهزة حاسب الى</field> -->
+<!-- 			<field name="number">0051005</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0051006" model="hr.job.name"> -->
+<!-- 			<field name="name">مسجل معلومات</field> -->
+<!-- 			<field name="number">0051006</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0051009" model="hr.job.name"> -->
+<!-- 			<field name="name">مطور برامج اول</field> -->
+<!-- 			<field name="number">0051009</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0060026" model="hr.job.name"> -->
+<!-- 			<field name="name">مراقب مطبوعات</field> -->
+<!-- 			<field name="number">0060026</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0060030" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير ادارة العلاقات العامة</field> -->
+<!-- 			<field name="number">0060030</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0060031" model="hr.job.name"> -->
+<!-- 			<field name="name">اخصائي علاقات عامه</field> -->
+<!-- 			<field name="number">0060031</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0060402" model="hr.job.name"> -->
+<!-- 			<field name="name">امين مكتبه</field> -->
+<!-- 			<field name="number">0060402</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0060405" model="hr.job.name"> -->
+<!-- 			<field name="name">باحث وثائق مساعد</field> -->
+<!-- 			<field name="number">0060405</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0070109" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير شعبة الصيانة</field> -->
+<!-- 			<field name="number">0070109</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0070300" model="hr.job.name"> -->
+<!-- 			<field name="name">كاتب ضبط</field> -->
+<!-- 			<field name="number">0070300</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0080000" model="hr.job.name"> -->
+<!-- 			<field name="name">رئيس قسم الصيانة</field> -->
+<!-- 			<field name="number">0080000</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0080107" model="hr.job.name"> -->
+<!-- 			<field name="name">مراقب انشاءات</field> -->
+<!-- 			<field name="number">0080107</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0080406" model="hr.job.name"> -->
+<!-- 			<field name="name">فني تبريد وتكييف</field> -->
+<!-- 			<field name="number">0080406</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0080600" model="hr.job.name"> -->
+<!-- 			<field name="name">مساعد فني تشغيل آلات</field> -->
+<!-- 			<field name="number">0080600</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0080601" model="hr.job.name"> -->
+<!-- 			<field name="name">مساعد فني صيانة الات مكتبية</field> -->
+<!-- 			<field name="number">0080601</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0090100" model="hr.job.name"> -->
+<!-- 			<field name="name">نجار</field> -->
+<!-- 			<field name="number">0090100</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0090101" model="hr.job.name"> -->
+<!-- 			<field name="name">سباك</field> -->
+<!-- 			<field name="number">0090101</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0090114" model="hr.job.name"> -->
+<!-- 			<field name="name">لحام</field> -->
+<!-- 			<field name="number">0090114</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0090200" model="hr.job.name"> -->
+<!-- 			<field name="name">ميكانيكي</field> -->
+<!-- 			<field name="number">0090200</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0090201" model="hr.job.name"> -->
+<!-- 			<field name="name">كهربائي</field> -->
+<!-- 			<field name="number">0090201</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0100013" model="hr.job.name"> -->
+<!-- 			<field name="name">محقق نظامي</field> -->
+<!-- 			<field name="number">0100013</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0111033" model="hr.job.name"> -->
+<!-- 			<field name="name">مراسلة مكتبية</field> -->
+<!-- 			<field name="number">0111033</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0130005" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير إدارة الشئون الإدارية والمالية</field> -->
+<!-- 			<field name="number">0130005</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0130006" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير شعبة الحركه </field> -->
+<!-- 			<field name="number">0130006</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0130007" model="hr.job.name"> -->
+<!-- 			<field name="name">رئيس قسم الحركه </field> -->
+<!-- 			<field name="number">0130007</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0130009" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير شعبة الخدمات العامه </field> -->
+<!-- 			<field name="number">0130009</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0130013" model="hr.job.name"> -->
+<!-- 			<field name="name">رئيس شعبة الاتصالات الاداريه </field> -->
+<!-- 			<field name="number">0130013</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0130200" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير عام التطوير الاداري</field> -->
+<!-- 			<field name="number">0130200</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0130201" model="hr.job.name"> -->
+<!-- 			<field name="name">باحث تطوير اداري </field> -->
+<!-- 			<field name="number">0130201</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0130203" model="hr.job.name"> -->
+<!-- 			<field name="name">باحث تنظيم مساعد</field> -->
+<!-- 			<field name="number">0130203</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0130208" model="hr.job.name"> -->
+<!-- 			<field name="name">باحث ميزانيه</field> -->
+<!-- 			<field name="number">0130208</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0130216" model="hr.job.name"> -->
+<!-- 			<field name="name">باحث قضايا مساعد</field> -->
+<!-- 			<field name="number">0130216</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0130217" model="hr.job.name"> -->
+<!-- 			<field name="name">محقق اداري</field> -->
+<!-- 			<field name="number">0130217</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0130300" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير ادارة شئون الموظفين</field> -->
+<!-- 			<field name="number">0130300</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0130304" model="hr.job.name"> -->
+<!-- 			<field name="name">باحث شئون موظفين</field> -->
+<!-- 			<field name="number">0130304</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0130305" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير ادارة</field> -->
+<!-- 			<field name="number">0130305</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0130307" model="hr.job.name"> -->
+<!-- 			<field name="name">باحث توظيف مساعد</field> -->
+<!-- 			<field name="number">0130307</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0130400" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير شعبة الشئون الماليه</field> -->
+<!-- 			<field name="number">0130400</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0130403" model="hr.job.name"> -->
+<!-- 			<field name="name">محاسب مساعد</field> -->
+<!-- 			<field name="number">0130403</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0130404" model="hr.job.name"> -->
+<!-- 			<field name="name">مدقق حسابات مساعد</field> -->
+<!-- 			<field name="number">0130404</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0130415" model="hr.job.name"> -->
+<!-- 			<field name="name">رئيس امانة صندوق</field> -->
+<!-- 			<field name="number">0130415</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0130511" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير ادارة المشتريات والمناقصات</field> -->
+<!-- 			<field name="number">0130511</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0140000" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير مكتب رئيس الهيئة</field> -->
+<!-- 			<field name="number">0140000</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0140001" model="hr.job.name"> -->
+<!-- 			<field name="name">سكرتير سرى</field> -->
+<!-- 			<field name="number">0140001</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0140010" model="hr.job.name"> -->
+<!-- 			<field name="name">كبير مترجمين</field> -->
+<!-- 			<field name="number">0140010</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0150103" model="hr.job.name"> -->
+<!-- 			<field name="name">مساعد فني اتصالات</field> -->
+<!-- 			<field name="number">0150103</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0151002" model="hr.job.name"> -->
+<!-- 			<field name="name">مساعد مبرمج</field> -->
+<!-- 			<field name="number">0151002</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0151005" model="hr.job.name"> -->
+<!-- 			<field name="name">مشغل اجهزة حاسب الي مشرف</field> -->
+<!-- 			<field name="number">0151005</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0151009" model="hr.job.name"> -->
+<!-- 			<field name="name">مصمم برامج</field> -->
+<!-- 			<field name="number">0151009</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0170300" model="hr.job.name"> -->
+<!-- 			<field name="name">كاتب سجل</field> -->
+<!-- 			<field name="number">0170300</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0180000" model="hr.job.name"> -->
+<!-- 			<field name="name">مشرف صيانة</field> -->
+<!-- 			<field name="number">0180000</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0190200" model="hr.job.name"> -->
+<!-- 			<field name="name">ميكانيكي سيارات</field> -->
+<!-- 			<field name="number">0190200</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0190201" model="hr.job.name"> -->
+<!-- 			<field name="name">كهربائي سيارات</field> -->
+<!-- 			<field name="number">0190201</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0230005" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير الشئون الإدارية والمالية</field> -->
+<!-- 			<field name="number">0230005</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0230006" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير شعبة الشؤون الادارية والمالية</field> -->
+<!-- 			<field name="number">0230006</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0230007" model="hr.job.name"> -->
+<!-- 			<field name="name">رئيس قسم الشئون الادارية والمالية</field> -->
+<!-- 			<field name="number">0230007</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0230009" model="hr.job.name"> -->
+<!-- 			<field name="name">رئيس قسم الخدمات العامه </field> -->
+<!-- 			<field name="number">0230009</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0230013" model="hr.job.name"> -->
+<!-- 			<field name="name">رئيس قسم الاتصالات الاداريه </field> -->
+<!-- 			<field name="number">0230013</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0230201" model="hr.job.name"> -->
+<!-- 			<field name="name">باحث تطوير اداري مساعد </field> -->
+<!-- 			<field name="number">0230201</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0230300" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير شعبة شئون الموظفين</field> -->
+<!-- 			<field name="number">0230300</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0230304" model="hr.job.name"> -->
+<!-- 			<field name="name">باحث شئون موظفين مساعد</field> -->
+<!-- 			<field name="number">0230304</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0230400" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير ادارة المحاسبة</field> -->
+<!-- 			<field name="number">0230400</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0230511" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير ادارة مراقبة المخزون</field> -->
+<!-- 			<field name="number">0230511</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0240000" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير مكتب النائب للتحقيق </field> -->
+<!-- 			<field name="number">0240000</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0240001" model="hr.job.name"> -->
+<!-- 			<field name="name">سكرتير خاص</field> -->
+<!-- 			<field name="number">0240001</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0251002" model="hr.job.name"> -->
+<!-- 			<field name="name">كبير مبرمجين</field> -->
+<!-- 			<field name="number">0251002</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0251009" model="hr.job.name"> -->
+<!-- 			<field name="name">مطور برامج مساعد</field> -->
+<!-- 			<field name="number">0251009</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0270300" model="hr.job.name"> -->
+<!-- 			<field name="name">رئيس كتاب ضبط</field> -->
+<!-- 			<field name="number">0270300</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0290201" model="hr.job.name"> -->
+<!-- 			<field name="name">كهربائي تمديدات</field> -->
+<!-- 			<field name="number">0290201</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0300120" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير شعبة الاستعلامات</field> -->
+<!-- 			<field name="number">0300120</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0300130" model="hr.job.name"> -->
+<!-- 			<field name="name">رئيس قسم الصادر والوارد</field> -->
+<!-- 			<field name="number">0300130</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_030203" model="hr.job.name"> -->
+<!-- 			<field name="name">اخصائي تنظيم</field> -->
+<!-- 			<field name="number">030203</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_030208" model="hr.job.name"> -->
+<!-- 			<field name="name">باحث ميزانية </field> -->
+<!-- 			<field name="number">030208</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0302080" model="hr.job.name"> -->
+<!-- 			<field name="name">باحث ميزانية مساعد</field> -->
+<!-- 			<field name="number">0302080</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_030217" model="hr.job.name"> -->
+<!-- 			<field name="name">محقق اداري مساعد</field> -->
+<!-- 			<field name="number">030217</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_030300" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير إدارة الرواتب</field> -->
+<!-- 			<field name="number">030300</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_030503" model="hr.job.name"> -->
+<!-- 			<field name="name">مراقب مخزون</field> -->
+<!-- 			<field name="number">030503</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0305150" model="hr.job.name"> -->
+<!-- 			<field name="name">مدقق مناقصات</field> -->
+<!-- 			<field name="number">0305150</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0330009" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير ادارة الخدمات العامة</field> -->
+<!-- 			<field name="number">0330009</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0330013" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير شعبة الصادر</field> -->
+<!-- 			<field name="number">0330013</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0330400" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير شعبة المحاسبة</field> -->
+<!-- 			<field name="number">0330400</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0340000" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير مكتب النائب للرقابة</field> -->
+<!-- 			<field name="number">0340000</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0351009" model="hr.job.name"> -->
+<!-- 			<field name="name">مطور برامج</field> -->
+<!-- 			<field name="number">0351009</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_040007" model="hr.job.name"> -->
+<!-- 			<field name="name">منسق اعمال لجان</field> -->
+<!-- 			<field name="number">040007</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0400080" model="hr.job.name"> -->
+<!-- 			<field name="name">مساعد اداري</field> -->
+<!-- 			<field name="number">0400080</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0430006" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير شعبة الشؤون الإدارية</field> -->
+<!-- 			<field name="number">0430006</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0430009" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير الخدمات العامة</field> -->
+<!-- 			<field name="number">0430009</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0430013" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير شعبة الوارد</field> -->
+<!-- 			<field name="number">0430013</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0430400" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير عام الشئون المالية</field> -->
+<!-- 			<field name="number">0430400</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0440000" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير مكتب</field> -->
+<!-- 			<field name="number">0440000</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0510040" model="hr.job.name"> -->
+<!-- 			<field name="name">اخصائي قواعد بيانات</field> -->
+<!-- 			<field name="number">0510040</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_051009" model="hr.job.name"> -->
+<!-- 			<field name="name">مصمم برامج أول</field> -->
+<!-- 			<field name="number">051009</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_051011" model="hr.job.name"> -->
+<!-- 			<field name="name">فني دعم مساعد</field> -->
+<!-- 			<field name="number">051011</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0530013" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير شعبة الصادر والوارد</field> -->
+<!-- 			<field name="number">0530013</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0530400" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير الشئون الماليه</field> -->
+<!-- 			<field name="number">0530400</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0600310" model="hr.job.name"> -->
+<!-- 			<field name="name">مأمور علاقات عامة</field> -->
+<!-- 			<field name="number">0600310</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0604020" model="hr.job.name"> -->
+<!-- 			<field name="name">مساعد امين مكتبة </field> -->
+<!-- 			<field name="number">0604020</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0604075" model="hr.job.name"> -->
+<!-- 			<field name="name">مأمور وثائق ومحفوظات</field> -->
+<!-- 			<field name="number">0604075</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0630400" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير شعبة الحسابات</field> -->
+<!-- 			<field name="number">0630400</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_0806000" model="hr.job.name"> -->
+<!-- 			<field name="name">فني تشغيل آلات</field> -->
+<!-- 			<field name="number">0806000</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_090112" model="hr.job.name"> -->
+<!-- 			<field name="name">مجلد</field> -->
+<!-- 			<field name="number">090112</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_1030009" model="hr.job.name"> -->
+<!-- 			<field name="name">رئيس قسم الخدمات</field> -->
+<!-- 			<field name="number">1030009</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_1130300" model="hr.job.name"> -->
+<!-- 			<field name="name">رئيس قسم شئون موظفين</field> -->
+<!-- 			<field name="number">1130300</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_1130400" model="hr.job.name"> -->
+<!-- 			<field name="name">رئيس قسم الشئون الماليه</field> -->
+<!-- 			<field name="number">1130400</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_3000130" model="hr.job.name"> -->
+<!-- 			<field name="name">رئيس قسم الشؤون الادارية</field> -->
+<!-- 			<field name="number">3000130</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_3000510" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير شعبة التوظيف</field> -->
+<!-- 			<field name="number">3000510</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_3000511" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير ادارة المراجعة</field> -->
+<!-- 			<field name="number">3000511</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_3000610" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير شعبة</field> -->
+<!-- 			<field name="number">3000610</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_3001308" model="hr.job.name"> -->
+<!-- 			<field name="name">رئيس مركز الاتصالات الادارية</field> -->
+<!-- 			<field name="number">3001308</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_3001309" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير شعبة الاتصالات الادارية</field> -->
+<!-- 			<field name="number">3001309</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_3001313" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير عام مركز الاتصالات الادارية</field> -->
+<!-- 			<field name="number">3001313</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_3001689" model="hr.job.name"> -->
+<!-- 			<field name="name">وزير</field> -->
+<!-- 			<field name="number">3001689</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_3021005" model="hr.job.name"> -->
+<!-- 			<field name="name">باحث احصاء مساعد</field> -->
+<!-- 			<field name="number">3021005</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_3021009" model="hr.job.name"> -->
+<!-- 			<field name="name">اخصائي احصاء</field> -->
+<!-- 			<field name="number">3021009</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_3021312" model="hr.job.name"> -->
+<!-- 			<field name="name">كبير مفتشين اداريين</field> -->
+<!-- 			<field name="number">3021312</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_30219" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير عام إدارة المراجعة الداخلية</field> -->
+<!-- 			<field name="number">30219</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_3021312" model="hr.job.name"> -->
+<!-- 			<field name="name">مساعد مراجع</field> -->
+<!-- 			<field name="number">3021312</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_3022008" model="hr.job.name"> -->
+<!-- 			<field name="name">مراجع</field> -->
+<!-- 			<field name="number">3022008</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_3030012" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير ادارة التوظيف</field> -->
+<!-- 			<field name="number">3030012</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_3030710" model="hr.job.name"> -->
+<!-- 			<field name="name">اخصائي توظيف</field> -->
+<!-- 			<field name="number">3030710</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_3031609" model="hr.job.name"> -->
+<!-- 			<field name="name">اخصائي قوى عامله</field> -->
+<!-- 			<field name="number">3031609</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_3041511" model="hr.job.name"> -->
+<!-- 			<field name="name">رئيس امانه الصندوق</field> -->
+<!-- 			<field name="number">3041511</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_3050304" model="hr.job.name"> -->
+<!-- 			<field name="name">مراقب مخزون</field> -->
+<!-- 			<field name="number">3050304</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_3050406" model="hr.job.name"> -->
+<!-- 			<field name="name">باحث مخزون مساعد</field> -->
+<!-- 			<field name="number">3050406</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_3051207" model="hr.job.name"> -->
+<!-- 			<field name="name">مأمور مشتريات</field> -->
+<!-- 			<field name="number">3051207</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_3051610" model="hr.job.name"> -->
+<!-- 			<field name="name">اخصائي مناقصات</field> -->
+<!-- 			<field name="number">3051610</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_4000806" model="hr.job.name"> -->
+<!-- 			<field name="name">مساعدة إدارية</field> -->
+<!-- 			<field name="number">4000806</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_4000810" model="hr.job.name"> -->
+<!-- 			<field name="name">مساعد اداري مشرف</field> -->
+<!-- 			<field name="number">4000810</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_4001106" model="hr.job.name"> -->
+<!-- 			<field name="name">كاتبه</field> -->
+<!-- 			<field name="number">4001106</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_4001107" model="hr.job.name"> -->
+<!-- 			<field name="name">كاتب</field> -->
+<!-- 			<field name="number">4001107</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_4001414" model="hr.job.name"> -->
+<!-- 			<field name="name">أمين سر دائرة</field> -->
+<!-- 			<field name="number">4001414</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_4010009" model="hr.job.name"> -->
+<!-- 			<field name="name">ناسخ آله مشرف</field> -->
+<!-- 			<field name="number">4010009</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_4010204" model="hr.job.name"> -->
+<!-- 			<field name="name">مشغل اجهزة مكتبية</field> -->
+<!-- 			<field name="number">4010204</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_40105" model="hr.job.name"> -->
+<!-- 			<field name="name">مسجلة معلومات</field> -->
+<!-- 			<field name="number">40105</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_5090406" model="hr.job.name"> -->
+<!-- 			<field name="name">مراقب أمن وسلامة</field> -->
+<!-- 			<field name="number">5090406</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_5100013" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير عام تقنية المعلومات</field> -->
+<!-- 			<field name="number">5100013</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_5100107" model="hr.job.name"> -->
+<!-- 			<field name="name">محلل نظم</field> -->
+<!-- 			<field name="number">5100107</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_5100108" model="hr.job.name"> -->
+<!-- 			<field name="name">محلل نظم اول</field> -->
+<!-- 			<field name="number">5100108</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_5100109" model="hr.job.name"> -->
+<!-- 			<field name="name">مصمم نظم</field> -->
+<!-- 			<field name="number">5100109</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_5100111" model="hr.job.name"> -->
+<!-- 			<field name="name">مصمم نظم اول</field> -->
+<!-- 			<field name="number">5100111</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_5100112" model="hr.job.name"> -->
+<!-- 			<field name="name">كبير مصممي نظم</field> -->
+<!-- 			<field name="number">5100112</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_5100210" model="hr.job.name"> -->
+<!-- 			<field name="name">مبرمج حاسب الي</field> -->
+<!-- 			<field name="number">5100210</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_5101108" model="hr.job.name"> -->
+<!-- 			<field name="name">فني دعم</field> -->
+<!-- 			<field name="number">5101108</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_5101109" model="hr.job.name"> -->
+<!-- 			<field name="name">فني دعم أول</field> -->
+<!-- 			<field name="number">5101109</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_5101111" model="hr.job.name"> -->
+<!-- 			<field name="name">كبير فنيي دعم</field> -->
+<!-- 			<field name="number">5101111</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_6040409" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير شعبة الوثائق والمحفوظات</field> -->
+<!-- 			<field name="number">6040409</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_6040413" model="hr.job.name"> -->
+<!-- 			<field name="name">مدير عام مركز الوثائق والمحفوظات</field> -->
+<!-- 			<field name="number">6040413</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_6040511" model="hr.job.name"> -->
+<!-- 			<field name="name">اخصائي وثائق ومحفوظات</field> -->
+<!-- 			<field name="number">6040511</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_8030005" model="hr.job.name"> -->
+<!-- 			<field name="name">مصور فوتوغرافي</field> -->
+<!-- 			<field name="number">8030005</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_8040806" model="hr.job.name"> -->
+<!-- 			<field name="name">فني صيانة شبكات حاسب</field> -->
+<!-- 			<field name="number">8040806</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_8060106" model="hr.job.name"> -->
+<!-- 			<field name="name">فني صيانة شبكات حاسب</field> -->
+<!-- 			<field name="number">8060106</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_8060107" model="hr.job.name"> -->
+<!-- 			<field name="name">فني صيانة الات</field> -->
+<!-- 			<field name="number">8060107</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_9011205" model="hr.job.name"> -->
+<!-- 			<field name="name">مجلد</field> -->
+<!-- 			<field name="number">9011205</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_9020002" model="hr.job.name"> -->
+<!-- 			<field name="name">مساعد ميكانيكي</field> -->
+<!-- 			<field name="number">9020002</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_9900000" model="hr.job.name"> -->
+<!-- 			<field name="name">مكلف من خارج الهيئة</field> -->
+<!-- 			<field name="number">9900000</field> -->
+<!-- 		</record> -->
+<!-- 		<record id="hr_job_name_" model="hr.job.name"> -->
+<!-- 			<field name="name">(معتبرة)</field> -->
+<!-- 			<field name="number">9999999</field> -->
+<!-- 		</record> -->
 		
 		<!-- المخطط الإنسيابي الوظائف hr.job.workflow.state-->
 		<record id="work_job_autority_owner" model="hr.job.workflow.state">

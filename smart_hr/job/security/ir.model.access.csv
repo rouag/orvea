@@ -35,3 +35,4 @@ access_hr_job_workflow,access_hr_job_workflow,model_hr_job_workflow,,1,1,0,0
 access_hr_job_workflow_state,access_hr_job_workflow_state,model_hr_job_workflow_state,,1,1,0,0
 
 access_courses_followup,access_courses_followup,model_courses_followup,,1,1,1,1
+access_hr_job_type_activity,hr_job_type_activity,model_hr_job_type_activity,,1,1,1,1

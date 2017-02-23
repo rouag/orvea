@@ -18,7 +18,7 @@
 
 							<table class="table table-bordered">
 								<tr style=" background-color:#9CB071; height:10%;">
-									<td colspan="2">
+									<td colspan="2"  class="text-center">
 										<b> معلومات الموظف
 										</b>
 									</td>
@@ -68,8 +68,8 @@
 								</tr>
 							</table>
 							<table class="table table-bordered">
-								<tr>
-									<td colspan="2">
+									<tr style=" background-color:#9CB071; height:10%;">
+										<td colspan="2"  class="text-center">
 										<strong> معلومات طي القيد
 										</strong>
 									</td>

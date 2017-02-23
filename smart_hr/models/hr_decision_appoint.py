@@ -343,7 +343,19 @@ class HrDecisionAppoint(models.Model):
             group_id = self.env.ref('smart_hr.group_department_employee')
             self.send_test_periode_group(group_id,title,msg)
 
-
+    @api.model
+    def control_test_years_employee(self):
+        today_date = fields.Date.from_string(fields.Date.today())
+        print"today_date",type(today_date)
+        appoints= self.env['hr.decision.appoint'].search([('state','=','done'),('is_started','=',True),('employee_id.age','=',self.env.ref('smart_hr.data_hr_ending_service_type_normal').years),
+                                                            ('type_appointment.id', '=', self.env.ref('smart_hr.data_hr_recrute_agent_utilisateur').id)])
+        
+        group_id = self.env.ref('smart_hr.group_department_employee')
+        print"appoints",appoints
+        for line in appoints :
+            title= u"' إشعار بلوغ سن " + str(self.env.ref('smart_hr.data_hr_ending_service_type_normal').years) + u"'"
+            msg= u"' إشعار ببلوغ الموظف   '"  + unicode(line.employee_id.name) + u"'"+u"عمر" + str(self.env.ref('smart_hr.data_hr_ending_service_type_normal').years) +u"'"
+            self.send_test_periode_group(group_id,title,msg)
 
     def send_test_periode_group(self, group_id, title, msg):
         '''
