@@ -46,7 +46,10 @@
 						<button name="import_holiday_stock" string="Holiday_stock" type="object"  class="oe_highlight" />
 						<button name="emplyee_historique" string="Employee_historique" type="object"  class="oe_highlight" />
 						<button name="import_job" string="jobs" type="object"  class="oe_highlight" />
-						<button name="import_job_employee" string="jobs_employee" type="object"  class="oe_highlight" />
+						<button name="import_update_education_level_employee" string="jobs_employee" type="object"  class="oe_highlight" />
+						<button name="import_bonus" string="import_bonus" type="object"  class="oe_highlight" />
+						<button name="import_bonus_employee" string="import_bonus_employee" type="object"  class="oe_highlight" />
+						
 								
 							
 						<field name="state" widget="statusbar" statusbar_visible="draft,failure,done" />

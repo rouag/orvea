@@ -48,10 +48,17 @@
 			<field name="name">بدل‬ ضرر‬</field>
 			<field name="code">09</field>
 		</record>
-		‫
 		<record id="hr_allowance_type_10" model="hr.allowance.type">
 			<field name="name">علاوة دورية‬</field>
 			<field name="code">10</field>
+		</record>
+		<record id="hr_allowance_type_11" model="hr.allowance.type">
+			<field name="name">ببدل ترحيل‬</field>
+			<field name="code">11</field>
+		</record>
+		<record id="hr_allowance_type_12" model="hr.allowance.type">
+			<field name="name">بدل تجهيز</field>
+			<field name="code">12</field>
 		</record>
 
 		<!-- المكافآت‬ -->
@@ -111,6 +118,11 @@
 			<field name="name">مكافأة‬ المتعاونين المستثمرين‬</field>
 			<field name="code">14</field>
 		</record>
+		<record id="hr_reward_type_15" model="hr.reward.type">
+			<field name="name">مكافأة العاملين على الالات الاحصائية الالكترونية‬</field>
+			<field name="code">15</field>
+		</record>
+		
 
 		<!-- التعويضات -->
 		<record id="hr_indemnity_type_01" model="hr.indemnity.type">
@@ -120,6 +132,11 @@
 		<record id="hr_indemnity_type_02" model="hr.indemnity.type">
 			<field name="name">تعويض‬ ‫إصابة‬</field>
 			<field name="code">02</field>
+		</record>
+		<record id="hr_indemnity_type_03" model="hr.indemnity.type">
+			<field name="name">تعويض السفر المتكرر‬</field>
+			<field name="code">03</field>
+			
 		</record>
 
 		<!-- فئات قواعد الرواتب -->
