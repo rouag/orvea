@@ -149,27 +149,27 @@
 					<sheet>
 						<group>
 							<field name="date_hiring" readonly="1"
-								attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'done'])]}" />
+								attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','civil','direct', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'done'])]}" />
 						</group>
 						<group>
 							<group>
 								<field name="type_appointment"
 									options="{'no_open': True,'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 									domain="[('show_in_apoint', '=', True)]"
-									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'done','refuse'])]}" />
+									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','civil','direct', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'done','refuse'])]}" />
 								<field name="transport_alocation"
-									attrs="{'invisible':['|',('transport_car','!=',False),('state', 'not in', ['draft','audit','waiting','hrm','manager','direct','budget', 'done']) ],'readonly':[('state', 'in', [ 'audit','waiting',  'budget','hrm','direct', 'done','refuse'])]}" />
+									attrs="{'invisible':['|',('transport_car','!=',False),('state', 'not in', ['draft','audit','waiting','hrm','manager','direct','civil','budget', 'done']) ],'readonly':[('state', 'in', [ 'audit','waiting',  'budget','hrm','direct', 'done','refuse'])]}" />
 								<field name="transport_car"
-									attrs="{'invisible':[ '|',('transport_alocation','!=',False),('state', 'not in', ['draft','waiting', 'hrm','manager','direct', 'budget', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting',  'budget','hrm','direct', 'done','refuse'])]}" />
+									attrs="{'invisible':[ '|',('transport_alocation','!=',False),('state', 'not in', ['draft','waiting', 'hrm','manager','civil','direct', 'budget', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting',  'budget','hrm','direct', 'done','refuse'])]}" />
 								<field name="depend_on_test_periode" />
 							</group>
 							<group>
 								<field name="state_appoint"
 									attrs="{'invisible':[('state', 'not in', [ 'done','refuse'])],'readonly':[('state', 'in', [ 'done','refuse'])]}" />
 								<field name="date_direct_action"
-									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done','refuse'])],'readonly':[('state', 'in', [ 'waiting', 'done','refuse'])]}" />
+									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct','civil', 'done','refuse'])],'readonly':[('state', 'in', [ 'waiting', 'done','refuse'])]}" />
 								<field name="date_hiring_end"
-									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done','refuse'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done','refuse'])]}" />
+									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct','civil', 'done','refuse'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done','refuse'])]}" />
 								<field name="testing_date_from"
 									attrs="{'invisible':[('depend_on_test_periode', '=', False)],'readonly':[('state', '!=', 'draft')]}" />
 								<field name="testing_date_to"
@@ -182,7 +182,7 @@
 								<group>
 									<group>
 										<field name="employee_id"
-											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+											options="{'no_open': True,'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 											attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done','refuse'])],'readonly':['|',('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'done','refuse']), ('type_appointment','=',False)]}" />
 										<field name="number" />
 										<field name="country_id" />

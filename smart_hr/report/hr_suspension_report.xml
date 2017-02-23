@@ -4,19 +4,122 @@
 
 		<template id="hr_suspension_report">
 			<t t-call="report.html_container">
-					<t t-foreach="docs" t-as="susp">
+					<t t-foreach="docs" t-as="o">
 						<t t-call="smart_hr.external_layout_hr">
 							<div class="page"
 								style="font-size:16px; font-family:'Times New Roman' !important;">
 								
 								<div class="col-xs-12 text-center">
-									<h1 align="center">
-										<strong>
-											Test
+								<br></br>
+								<strong>كف اليد
+								</strong>
+								<br></br>
+								<br></br>
+								<br></br>
+							</div>
+
+							<table class="table table-bordered">
+								<tr style=" background-color:#9CB071; height:10%;">
+									<td colspan="2"  class="text-center">
+										<b> معلومات الموظف
+										</b>
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<b>اسم الموظف:</b>
+									</td>
+									<td>
+										<span t-field="o.employee_id" />
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<b>رقم الموظف:</b>
+									</td>
+									<td>
+										<span t-field="o.employee_id.employee_no" />
+
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<b>الوظيفة:</b>
+									</td>
+									<td>
+										<span t-field="o.employee_id.job_id" />
+
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<b>تاريخ بداية العمل الحكومي</b>
+									</td>
+									<td>
+										<span t-field="o.employee_id.begin_work_date" />
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<b>تاريخ الالتحاق بالجهة:</b>
+									</td>
+									<td>
+										<span t-field="o.employee_id.join_date" />
+									</td>
+								</tr>
+							</table>
+							<table class="table table-bordered">
+									<tr style=" background-color:#9CB071; height:10%;">
+									<td colspan="2"  class="text-center">
+										<strong> معلومات كف اليد
 										</strong>
-									</h1>
-								</div>
-								</div>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<strong> جهة الخطاب
+										</strong>
+									</td>
+									<td>
+										<span t-field="o.letter_sender" />
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<strong> رقم الخطاب
+										</strong>
+									</td>
+									<td>
+										<span t-field="o.letter_number" />
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<strong> تاريخ الخطاب
+										</strong>
+									</td>
+									<td>
+										<span t-field="o.letter_date" />
+									</td>
+								</tr>
+								
+								<tr>
+									<td>
+										<b> سبب كف اليد
+										</b>
+									</td>
+									<td>
+										<span t-field="o.raison" />
+									</td>
+								</tr>
+
+
+
+
+							</table>
+						</div>
+						
 						</t>
 					</t>
 				</t>
