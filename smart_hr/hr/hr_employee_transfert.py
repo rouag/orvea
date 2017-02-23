@@ -66,6 +66,10 @@ class HrEmployeeTransfert(models.Model):
     tobe_cancelled = fields.Boolean(string=u'سيلغى', default=False)
     is_current_user = fields.Boolean(string='Is Current User', compute='_is_current_user')
     salary_proportion = fields.Float(string=u'نسبة الراتب التي توفرها الجهة (%)', default=100)
+    # fields for ordering
+    begin_work_date = fields.Date(string=u'تاريخ بداية العمل الحكومي', readonly=1)
+    recruiter_date = fields.Date(string=u'تاريخ التعين بالجهة', readonly=1)
+    age = fields.Integer(string=u'السن', readonly=1)
 
     @api.multi
     @api.depends('employee_id')
@@ -114,6 +118,9 @@ class HrEmployeeTransfert(models.Model):
             last_evaluation_result = self.employee_id.evaluation_level_ids.search([('year', '=', int(previews_year))])
             if last_evaluation_result:
                 self.last_evaluation_result = last_evaluation_result
+            self.begin_work_date = self.employee_id.begin_work_date
+            self.recruiter_date = self.employee_id.recruiter_date
+            self.age = self.employee_id.age
 
     @api.onchange('desire_ids')
     def _onchange_desire_ids(self):
@@ -344,7 +351,9 @@ class HrTransfertSorting(models.Model):
         self.line_ids.unlink()
         line_ids = []
         # TODO: , order=("create_date , employee_id.begin_work_date , employee_id.recruiter_date , employee_id.age desc ")
-        transfert_ids = self.env['hr.employee.transfert'].search([('state', '=', 'pm'), ('ready_tobe_done', '=', False)])
+        transfert_ids = self.env['hr.employee.transfert'].search([('state', '=', 'pm'), ('ready_tobe_done', '=', False)], order=("begin_work_date, create_date, recruiter_date, age desc"))
+        if not transfert_ids:
+            raise ValidationError(u"لايوجد طلبات حالياً.")
         sequence = 1
         for transfert_id in transfert_ids:
             transfert_id.sequence = sequence
@@ -384,7 +393,7 @@ class HrTransfertSortingLine(models.Model):
     begin_work_date = fields.Date(related='hr_employee_transfert_id.employee_id.begin_work_date', string=u'تاريخ بداية العمل الحكومي', readonly=1)
     transfert_create_date = fields.Datetime(string=u'تاريخ الطلب', related="hr_employee_transfert_id.create_date", readonly=1)
     last_evaluation_result = fields.Many2one('hr.employee.evaluation.level', related="hr_employee_transfert_id.last_evaluation_result", string=u'أخر تقييم إداء')
-    new_job_id = fields.Many2one('hr.job', domain=[('state', '=', 'unoccupied')], string=u'الوظيفة المنقول إليها')
+    new_job_id = fields.Many2one('hr.job', domain=[('state', '=', 'unoccupied')], string=u'الوظيفة المنقول إليها', required=1)
     is_conflected = fields.Boolean(compute='_compute_is_conflected')
 
     @api.multi
