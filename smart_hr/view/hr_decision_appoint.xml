@@ -154,7 +154,7 @@
 						<group>
 							<group>
 								<field name="type_appointment"
-									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+									options="{'no_open': True,'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 									domain="[('show_in_apoint', '=', True)]"
 									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'done','refuse'])]}" />
 								<field name="transport_alocation"
@@ -240,7 +240,7 @@
 									</group>
 									<group>
 										<field name="grade_id" />
-										<field name="degree_id" domain="[('grade_id','=',grade_id)]" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+										<field name="degree_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 									
 											attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'manager', 'budget', 'done','refuse'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'manager', 'budget', 'done','refuse'])]}" />
 										<field name="far_age" />

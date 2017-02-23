@@ -26,7 +26,7 @@ class HrTraining(models.Model):
     date = fields.Date(string=' تاريخ القرار', required=1, states={'new': [('readonly', 0)]})
     date_from = fields.Date(string='تاريخ من', required=1, states={'new': [('readonly', 0)]})
     date_to = fields.Date(string=' إلى', required=1, states={'new': [('readonly', 0)]})
-    number_of_days = fields.Float(string=' المدة', required=1, states={'new': [('readonly', 0)]})
+    number_of_days = fields.Float(string=' المدة', readonly=1,compute='_compute_duration')
     experience = fields.Selection([('experience_directe', 'الخبرات‬  المباشرة'),
                               ('experience_in_directe', 'الخبرات الغير المباشرة'),
                               ],  string=' نوع الخبرة المكتسبة',required=1,states={'new': [('readonly', 0)]})
@@ -46,50 +46,30 @@ class HrTraining(models.Model):
     job_trainings = fields.One2many('hr.job.training', 'type', string='job trainings')
     compute_weekends = fields.Boolean(string=u'احتساب عطلة نهاية الاسبوع')
 
-    @api.onchange('date_from')
-    def _onchange_date_from(self):
-        date_from = self.date_from
-        date_to = self.date_to
+    @api.one
+    @api.depends('date_from', 'date_to','compute_weekends')
+    def _compute_duration(self):
+        if self.date_from and self.date_to:
+            if self.compute_weekends:
+                date_from = fields.Date.from_string(self.date_from)
+                self.number_of_days = self.env['hr.smart.utils'].compute_duration(self.date_from, self.date_to)
+            else:
+                date_from = fields.Date.from_string(self.date_from)
+                date_to = fields.Date.from_string(self.date_to)
+                self.number_of_days = (date_to - date_from).days + 1
 
-        # No date_to set so far: automatically compute one 8 hours later
-        if date_from and not date_to:
-            date_to_with_delta = fields.Datetime.from_string(date_from) + timedelta(hours=HOURS_PER_DAY)
-            self.date_to = str(date_to_with_delta)
-
-        # Compute and update the number of days
-        if (date_to and date_from) and (date_from <= date_to):
-            self.number_of_days = self._get_number_of_days(date_from, date_to)
-        else:
-            self.number_of_days = 0
-            
-            
     @api.one
     @api.constrains('date_from')
     def check_order_chek_date(self):
         if self.date_from < datetime.today().strftime('%Y-%m-%d'):
             raise ValidationError(u" تاريخ التدريب يجب أن يكون أكبر من تاريخ إليوم")
-            
-    
+
     @api.onchange('date_to')
     def _onchange_date_to(self):
-        """ Update the number_of_days. """
         date_from = self.date_from
         date_to = self.date_to
-        if date_to<date_from:
+        if date_to < date_from:
             raise ValidationError(u'تاريخ بداية الدورة يجب ان يكون أصغر من تاريخ انتهاء الدورة')
-
-        # Compute and update the number of days
-        if (date_to and date_from) and (date_from <= date_to):
-            self.number_of_days = self._get_number_of_days(date_from, date_to)
-        else:
-            self.number_of_days = 0
-
-    def _get_number_of_days(self, date_from, date_to):
-        """ Returns a float equals to the timedelta between two dates given as string."""
-        from_dt = fields.Datetime.from_string(date_from)
-        to_dt = fields.Datetime.from_string(date_to)
-        time_delta = to_dt - from_dt
-        return math.ceil(time_delta.days + float(time_delta.seconds) / 86400) + 1
 
     @api.one
     def action_candidat(self):
@@ -100,7 +80,6 @@ class HrTraining(models.Model):
         for line in self.line_ids:
             line.state='waiting'
         self.state = 'review'
-
 
     @api.one
     def action_done(self):

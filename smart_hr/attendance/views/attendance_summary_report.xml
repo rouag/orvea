@@ -19,9 +19,9 @@
 							</div>
 							<div class="col-xs-12 text-center">
 								<strong>التاريخ :</strong>
-								<span t-esc="data['form']['date_from']" />
+								<span t-esc="get_hijri_date(data['form']['date_from'], '-')" />
 								-
-								<span t-esc="data['form']['date_to']" />
+								<span t-esc="get_hijri_date(data['form']['date_to'], '-')" />
 								<br />
 								<br />
 							</div>

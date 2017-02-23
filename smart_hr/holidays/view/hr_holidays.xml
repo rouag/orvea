@@ -125,7 +125,7 @@
 								<field name="employee_id" required="1" readonly='1' />
 							</group>
 							<group>
-								<field name="holiday_status_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+								<field name="holiday_status_id" options='{"no_open": True, "no_create": True}'
 									required="1" />
 								<field name="entitlement_type" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 									attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)],

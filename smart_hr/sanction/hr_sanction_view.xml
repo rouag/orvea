@@ -136,7 +136,7 @@
 								<field name="order_picture" filename="order_picture_name" />
 							</group>
 							<group>
-								<field name="type_sanction"  widget="selection" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+								<field name="type_sanction"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 								<field name="date_sanction_start" />
 								<field name="date_sanction_end"
 									attrs="{'invisible':[('state', 'not in', ['cancel'])] ,'readonly':[('state', 'in', ['cancel'])]}" />
@@ -160,7 +160,7 @@
 									<group>
 										<field name="line_ids" nolabel="1">
 											<tree editable="bottom">
-												<field name="employee_id"   widget="selection" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+												<field name="employee_id"   options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 												<field name="type_sanction" invisible="1" />
 												<field name="state_sanction" invisible="1" />
 												<field name="days_number" />

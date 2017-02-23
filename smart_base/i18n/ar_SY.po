@@ -1085,3 +1085,10 @@ msgstr "لقد تم تعديل الخط، وسيتم تجاهل التغييرا
 #: model:ir.ui.view,arch_db:base.view_res_bank_tree
 msgid "Banks"
 msgstr "البنوك"
+
+
+#. module: base
+#: sql_constraint:res.users:0
+msgid "You can not have two users with the same login !"
+msgstr "لا يمكن انشاء اثنين من المستخدمين  بنفس البريد الإلكتروني"
+
