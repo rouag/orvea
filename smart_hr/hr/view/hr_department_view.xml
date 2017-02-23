@@ -122,7 +122,7 @@
 			<field name="name">الإدارات</field>
 			<field name="res_model">hr.department</field>
 			<field name="view_type">form</field>
-			<field name="view_mode">kanban,form</field>
+			<field name="view_mode">kanban,form,tree</field>
 		</record>
 
 		<menuitem id="hr_department_kanban_menu" name="الإدارات"

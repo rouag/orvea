@@ -245,6 +245,7 @@ class import_csv(osv.osv):
         all_move_ids=[]
         departement = self.pool.get('hr.department')
         employee = self.pool.get('hr.employee')
+            
         for row  in reader :
             emp_id = employee.search(cr, uid, [('number', '=',str(row['MGR_NO']))])
             daprtment_val={
