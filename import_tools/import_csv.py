@@ -52,7 +52,106 @@ class import_csv(osv.osv):
    
    
    
-   
+    def import_bonus(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        move_id=''
+        all_move_ids=[]
+        type = fields.Selection([('allowance', 'بدل'), ('reward', 'مكافأة'), ('indemnity', 'تعويض'), ('increase', 'علاوة')], string='النوع', required=1, readonly=1, states={'new': [('readonly', 0)]})
+        departement = self.pool.get('hr.department')
+        hr_job=self.pool.get('hr.bonus')
+        hr_job_allowance=self.pool.get('hr.allowance.type')
+        hr_indemnity_type=self.pool.get('hr.indemnity.type')
+        for row  in reader : 
+            type=(row['AWARD_TYPE_ID'])
+            if type =="1":
+                type_bonus='reward'
+                type_1_id=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_reward_type_03')[1]
+            elif type=="2":
+                type_bonus='reward'
+                type_1_id=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_reward_type_05')[1]
+            elif type=="3":
+                type_bonus='reward'
+                type_1_id=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_reward_type_06')[1]
+            elif type=="4":
+                type_bonus='reward'
+                type_1_id=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_reward_type_07')[1]
+            elif type=="5":
+                type_bonus='reward'
+                type_1_id=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_reward_type_08')[1]
+            elif type=="6":
+                type_bonus='reward'
+                type_1_id=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_reward_type_02')[1]
+            elif type=="7":
+                type_bonus='reward'
+                type_1_id=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_reward_type_09')[1]
+            elif type=="8":
+                type_bonus='reward'
+                type_1_id=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_reward_type_01')[1]
+            elif type=="9":
+                type_bonus='reward'
+                type_1_id=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_reward_type_10')[1]
+            elif type=="10":
+                type_bonus='reward'
+                type_1_id=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_reward_type_11')[1]
+            elif type=="11":
+                type_bonus='reward'
+                type_1_id=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_reward_type_12')[1]
+            elif type=="12":
+                type_bonus='reward'
+                type_1_id=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_reward_type_13')[1]
+            elif type=="13":
+                type_bonus='reward'
+                type_1_id=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_reward_type_15')[1]
+            elif type=="14":
+                type_bonus='indemnity'
+                type_2_id=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_indemnity_type_01')[1]
+            elif type=="15":
+                type_bonus='indemnity'
+                type_2_id=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_indemnity_type_02')[1]
+            elif type=="16":
+                type_bonus='indemnity'
+                type_2_id=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_indemnity_type_03')[1]
+            elif type=="17":
+                type_bonus='allowance'
+                type_3_id=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_allowance_type_03')[1]
+            elif type=="18":
+                type_bonus='allowance'
+                type_3_id=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_allowance_type_06')[1]
+            elif type=="19":
+                type_bonus='allowance'
+                type_3_id=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_allowance_type_11')[1]
+            elif type=="20":
+                type_bonus='allowance'
+                type_3_id=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_allowance_type_12')[1]
+            elif type=="21":
+                type_bonus='allowance'
+                type_3_id=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_allowance_type_03')[1]
+                
+            fmt = '%d/%m/%Y'
+            dt = datetime.strptime(str(row['DOC_DATE']), fmt)            
+            job_val = {
+                       'name': str(row['PAY_SEQNO']),
+                       'number_decision':  str(row['DOC_NO']),
+                       'date_decision':  str(row['DOC_DATE']),
+                       'date': str(row['AWARD_DATE']),
+                       'month_from':dt.month,
+                       'month_to':dt.month,
+                       'compute_method':'amount',
+            
+                       }
+            hr_job.create(cr, uid, job_val,context=context)
+        
+        return True  
    
    
       
@@ -78,7 +177,7 @@ class import_csv(osv.osv):
         job_group=self.pool.get('hr.groupe.job')
         serie_id=False
         job_name_id=False
-        genral_id=False
+        general_id=False
         for row  in reader : 
             type_id=type.search(cr, uid,  [('code', '=',str(row['BAND_NO']))])
             grade_id =grade.search(cr, uid,  [('code', '=',str(row['GRADE_NO']))])
@@ -145,17 +244,42 @@ class import_csv(osv.osv):
         move_id=''
         all_move_ids=[]
         departement = self.pool.get('hr.department')
-        departement_id = departement.search(cr, uid, [('code', '=','C001')])[0]
-        for row  in reader : 
+        employee = self.pool.get('hr.employee')
+        for row  in reader :
+            emp_id = employee.search(cr, uid, [('number', '=',str(row['MGR_NO']))])
             daprtment_val={
-                            'name':str(row['BRANCH_NAME_AR']),
-                            'code':str(row['BRANCH_NO']),
-                            'parent_id':departement_id,
+                            'name':str(row['SHORT_NAME']),
+                            'code':str(row['LOC_ID']),
+                            'manager_id':emp_id[0] if emp_id else False,
                             }
             
             departement.create(cr, uid, daprtment_val,context=context)
-        
         return True
+    
+    def import_branche_parent(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        move_id=''
+        all_move_ids=[]
+        departement = self.pool.get('hr.department')
+        employee = self.pool.get('hr.employee')
+        for row in reader:
+            exist_dep = departement.search(cr, uid, [('code','=',str(row['LOC_ID']))],context=context)
+            if exist_dep:
+                parent = departement.search(cr, uid, [('code','=',str(row['LOC_Parent_ID']))],context=context)
+                departement.browse(cr, uid, exist_dep[0], context=context).write({'parent_id':parent[0] if parent else False})
+        return True
+    
+    
     def emplyee_historique(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
@@ -1385,7 +1509,6 @@ class import_csv(osv.osv):
         fileobj = TemporaryFile('w+')
         sourceEncoding = 'windows-1252'
         targetEncoding = "utf-8"   
-         
         fileobj.write((base64.decodestring(this.data)))   
         fileobj.seek(0)                                    
         reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
@@ -1534,6 +1657,9 @@ class import_csv(osv.osv):
         all_move_ids=[]
         entitlement_val={
                                 'entitlment_category':type,
+                                'leave_type':status_normal,
+                                'holiday_stock_default':36,
+                                'periode':1,
                                 }
         id_entitlment=  entitlement.create(cr, uid, entitlement_val,context=context)
         
@@ -1553,7 +1679,31 @@ class import_csv(osv.osv):
                 
                 
         return True
-                 
-            
+
+
+
+    def update_groups_general(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"
+        fileobj.write((base64.decodestring(this.data)))
+        fileobj.seek(0)
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
+        groups = self.pool.get('hr.groupe.job')
+        salary_grid_grade = self.pool.get('salary.grid.grade')
+        for row in reader:
+            pos_grp_no = str(row['POS_GRP_NO'])
+            exist_groups = groups.search(cr, uid, [('numero','=',str(row['POS_GRP_NO']))],context=context)
+            if exist_groups:
+                min_grade_no = salary_grid_grade.search(cr, uid, [('code','=', str(row['MIN_GRADE_NO']))], context=context)
+                max_grade_no = salary_grid_grade.search(cr, uid, [('code','=', str(row['MAX_GRADE_NO']))], context=context)
+                min_max_vals = {'rank_from': min_grade_no[0] if min_grade_no else False, 'rank_to': max_grade_no[0] if max_grade_no else False}
+                groups.browse(cr, uid, exist_groups[0], context=context).write(min_max_vals)
+
 import_csv()
 
