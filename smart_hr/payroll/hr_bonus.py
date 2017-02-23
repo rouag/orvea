@@ -25,6 +25,7 @@ class hrBonus(models.Model):
     reward_id = fields.Many2one('hr.reward.type', string='المكافأة', readonly=1, states={'new': [('readonly', 0)]})
     indemnity_id = fields.Many2one('hr.indemnity.type', string='التعويض', readonly=1, states={'new': [('readonly', 0)]})
     increase_id = fields.Many2one('hr.increase.type', string='العلاوة', readonly=1, states={'new': [('readonly', 0)]})
+    
     compute_method = fields.Selection([('amount', 'مبلغ'),
                                        ('percentage', 'نسبة من الراتب الأساسي'),
                                        ('formula_1', 'نسبة‬ البدل‬ * راتب‬  الدرجة‬ الاولى‬  من‬ المرتبة‬  التي‬ يشغلها‬ الموظف‬'),
@@ -40,6 +41,7 @@ class hrBonus(models.Model):
                               ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
     line_ids = fields.One2many('hr.bonus.line', 'bonus_id', string='التفاصيل', readonly=1, states={'new': [('readonly', 0)]})
     history_ids = fields.One2many('hr.bonus.history', 'bonus_id', string='سجل التغييرات', readonly=1)
+    deccription = fields.Char(string='ملاحظات', )
 
     @api.onchange('month_from', 'month_to')
     def onchange_date(self):
