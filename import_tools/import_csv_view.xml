@@ -21,6 +21,11 @@
 							class="oe_highlight" />
 						<button name="import_branche" string="branche" type="object"
 							class="oe_highlight" />
+							
+						<button name="fix_employee_department" string="Link Employee Department " type="object"
+							class="oe_highlight" />	
+							
+							
 						<button name="import_branche_parent" string="branche parent"
 							type="object" class="oe_highlight" />
 						<button name="import_degree" string="Degree" type="object"
@@ -83,8 +88,7 @@
 						<button name="import_contry" string="Country" type="object"  class="oe_highlight" />
 						<button name="import_region" string="Region" type="object"  class="oe_highlight" />
 						<button name="import_city" string="City" type="object"  class="oe_highlight" />
-						<button name="import_branche" string="branche" type="object"  class="oe_highlight" />
-					
+					 
 						<button name="import_degree" string="Degree" type="object"  class="oe_highlight" />
 						<button name="import_diplome" string="Diplome" type="object"  class="oe_highlight" />
 						<button name="import_grade" string="Grade" type="object"  class="oe_highlight" />

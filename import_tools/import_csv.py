@@ -480,7 +480,32 @@ class import_csv(osv.osv):
                 jobs.write({'employee':employee_id[0], 'state':'occupied',})
         
         return True  
-      
+
+    def fix_employee_department(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        move_id=''
+        all_move_ids=[]
+        departement = self.pool.get('hr.department')
+        employee = self.pool.get('hr.employee')
+        for row  in reader :
+            if row['EMP_NO'] != 'NULL'  and row['LOC_ID'] != 'NULL' :
+                employee_id = employee.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
+                department_id = departement.search(cr, uid, [('code', '=',str(row['LOC_ID']))])
+                val={'department_id':department_id[0] if department_id else False}
+                employee.write(cr, uid,employee_id, val,context=context)
+        return True
+    
+          
     def import_branche(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
