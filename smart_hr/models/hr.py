@@ -258,9 +258,6 @@ class HrEmployee(models.Model):
                    for seniority in regle_point.seniority_ids:
                        if years_supp < seniority.year_to and years_supp > seniority.year_from:
                            self.point_seniority=years_supp*seniority.point
-                           
-               
-            
 
 
 class HrEmployeeHolidaysStock(models.Model):

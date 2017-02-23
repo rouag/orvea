@@ -1298,7 +1298,8 @@ class HrHolidaysStatus(models.Model):
     def check_pension_percent(self):
         if self.pension_percent < 0 or self.pension_percent > 100:
             raise ValidationError(u"نسبة راتب التقاعد خاطئة ")
-                
+
+
 class HrHolidaysStatusEntitlement(models.Model):
     _name = 'hr.holidays.status.entitlement'
     _description = u'أنواع الاستحقاقات'
@@ -1321,7 +1322,8 @@ class HrHolidaysStatusEntitlement(models.Model):
     leave_type = fields.Many2one('hr.holidays.status', string=u'نوع الإجازة')
 #     holiday_stock_open = fields.Boolean(string=u'الرصيد مفتوح')
     extension_period = fields.Integer(string=u'مدة تمديد الرصيد(سنة)', default=0)
-    
+
+
 class HrHolidaysStatusSalaryPercentage(models.Model):
     _name = 'hr.holidays.status.salary.percentage'
     _description = u'نسب الراتب المحتسبة'
