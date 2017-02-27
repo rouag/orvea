@@ -279,7 +279,7 @@
 									<group>
 										<group string="بيانات العمل">
 											<field name="department_id" on_change="onchange_department_id(department_id)" />
-											<field name="dep_Side" options="{'no_create': True}" />
+											<field name="dep_side" options="{'no_create': True}" />
 											<field name="dep_city" options="{'no_create': True}" />
 											<field name="job_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
@@ -372,7 +372,7 @@
 											<field name="job_id" />
 											<field name="grade_id" />
 											<field name="number" />
-											<field name="dep_Side" />
+											<field name="dep_side" />
 											<field name="department_id" />
 											<field name="type" />
 											<field name="date" />

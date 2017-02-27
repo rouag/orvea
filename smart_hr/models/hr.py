@@ -76,7 +76,7 @@ class HrEmployee(models.Model):
     begin_work_date = fields.Date(string=u' تاريخ بداية العمل الحكومي', required=1)
     promotion_duration = fields.Integer(string=u'مدة الترقية(يوم)', compute='_compute_promotion_days', store=True)
     dep_city = fields.Many2one('res.city', strin=u'المدينة', related="department_id.dep_city", readonly=True)
-    dep_Side = fields.Many2one('city.side', string=u'الجهة', related="department_id.dep_Side", readonly=True)
+    dep_side = fields.Many2one('city.side', string=u'الجهة', related="department_id.dep_side", readonly=True)
     history_ids = fields.One2many('hr.employee.history', 'employee_id', string=u'سجل الاجراءات')
     diploma_id = fields.Many2one('hr.employee.diploma', string=u'الشهادة')
     specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص')

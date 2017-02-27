@@ -201,7 +201,7 @@
 										<span t-esc="line.number" />
 									</td>
 									<td>
-										<span t-esc="line.dep_Side" />
+										<span t-esc="line.dep_side" />
 
 									</td>
 									<td>

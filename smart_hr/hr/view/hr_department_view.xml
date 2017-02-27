@@ -54,7 +54,7 @@
 									<field name="parent_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 									<field name="company_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 										groups="base.group_multi_company" />
-									<field name="dep_Side" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									<field name="dep_side" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 									<field name="dep_city" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								</group>
 
@@ -103,7 +103,7 @@
 								</li>
 								<li>
 									الجهة:
-									<field name="dep_Side" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									<field name="dep_side" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 
 								</li>
 

@@ -405,60 +405,49 @@ class import_csv(osv.osv):
         employee = self.pool.get('hr.employee')
         history = self.pool.get('hr.employee.history')
         grade = self.pool.get('salary.grid.grade')
-        departement = self.pool.get('hr.department')
-        company_id = self.pool.get('res.company')._company_default_get(cr,uid,'smart_hr')
-        company_name = self.pool.get('res.company').browse(cr,uid,company_id).name
         for row in reader:
-            um=False
-            employee_ids= employee.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
-            grade_id= grade.search(cr, uid, [('code', '=',str(row['rank_new']))])
+            empid = str(row['EMP_NO'].strip(" "))
+            employee_ids = employee.search(cr, uid, [('number', '=', empid)])
             fmt = '%d/%m/%Y'
-            date1=False
-            date2=False
-            umalqurra= Umalqurra()
+            date1 = False
+            date2 = False
+            umalqurra = Umalqurra()
             if row['DECISION_DATE_HJ'] != 'NULL':
                     try:
                         dt = datetime.strptime(str(row['DECISION_DATE_HJ']), fmt)
-                        start_date = umalqurra.hijri_to_gregorian(dt.year,dt.month,dt.day)
-                        date1= date(int(start_date[0]), int(start_date[1]), int(start_date[2]))
+                        start_date = umalqurra.hijri_to_gregorian(dt.year, dt.month, dt.day)
+                        date1 = date(int(start_date[0]), int(start_date[1]), int(start_date[2]))
                     except:
-                        date1=False
-                        
-                   
-
-             
-            if row['FIELD_EFF_DATE_HJ']!='NULL':
+                        date1 = False
+            if row['FIELD_EFF_DATE_HJ'] != 'NULL':
                 try:
-                    um_date=HijriDate()
+                    um_date = HijriDate()
                     date_end = datetime.strptime(str(row['FIELD_EFF_DATE_HJ']), fmt)
-                    start_date2 = umalqurra.hijri_to_gregorian(date_end.year,date_end.month,date_end.day)
-                    date2= date(int(start_date2[0]), int(start_date2[1]), int(start_date2[2]))
+                    start_date2 = umalqurra.hijri_to_gregorian(date_end.year, date_end.month, date_end.day)
+                    date2 = date(int(start_date2[0]), int(start_date2[1]), int(start_date2[2]))
                 except:
-                    date2=False
-                    
-          
+                    date2 = False
             if employee_ids:
-                emplyee_obj=employee.browse(cr, uid, employee_ids[0]) 
-                
-                
+                employee_id = employee.browse(cr, uid, employee_ids[0])
+                dep_side = employee_id.user_id.company_id.name
+                grade_id = False
+                grade_ids = grade.search(cr, uid, [('code', '=',row['rank_new'])])
+                if grade_ids:
+                    grade_id=grade_ids[0]
                 history_line_val={
                             'employee_id':employee_ids[0],
                             'type':str(row['ACT_DSCR']),
                             'num_decision':str(row['ACT_DSCR']),
                             'date_decision':date1,
-                            'grade_id':grade_id[0] if grade_id else False,
                             'date':date2,
+                            'job_id': str(row['position']),
+                            'dep_side': str(row['side']),
+                            'grade_id':grade_id,
                             }
-            
-            history.create(cr, uid, history_line_val,context=context)
-        
+                history.create(cr, uid, history_line_val,context=context)
+
         return True
-        
 
-                
-                
-
-                 
     def import_passport(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
@@ -956,7 +945,7 @@ class import_csv(osv.osv):
                              'royal_decree_number':(row['ROYAL_DECREE_NO']).decode('utf-8').strip(),
                              'royal_decree_date':(row['ROYAL_DECREE_DATE']).decode('utf-8').strip()if  row['ROYAL_DECREE_DATE'] != 'NULL' else  datetime.now(),
                              'department_id':departement_id,
-                             'dep_Side':region_id,
+                             'dep_side':region_id,
                              'insurance_type':insurance_id,
                              'type_id':type_id,
                              
@@ -1151,7 +1140,7 @@ class import_csv(osv.osv):
                              'royal_decree_number':(row['ROYAL_DECREE_NO']).decode('utf-8').strip(),
                              'royal_decree_date':(row['ROYAL_DECREE_DATE']).decode('utf-8').strip()if  row['ROYAL_DECREE_DATE'] != 'NULL' else  datetime.now(),
                              'department_id':departement_id,
-                             'dep_Side':region_id,
+                             'dep_side':region_id,
                              'insurance_type':insurance_id,
                              'type_id':type_id,
                              
