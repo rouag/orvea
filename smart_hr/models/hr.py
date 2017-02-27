@@ -134,7 +134,7 @@ class HrEmployee(models.Model):
     def _compute_is_saudian(self):
         for rec in self:
             if rec.country_id:
-                rec.is_saudian = (rec.country_id.code_nat == 'SA')
+                rec.is_saudian = (rec.country_id.code_nat != 'SA')
 
     @api.constrains('recruiter_date', 'begin_work_date')
     def recruiter_date_begin_work_date(self):
