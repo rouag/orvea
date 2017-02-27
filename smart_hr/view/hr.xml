@@ -1,7 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
+		<!-- Employee Search -->
+		<record id="view_search_hr_employee_inherit" model="ir.ui.view">
+			<field name="name">hr.employee.search.inherit</field>
+			<field name="model">hr.employee</field>
+			<field name="inherit_id" ref="hr.view_employee_filter" />
+			<field name="arch" type="xml">
+				<!-- Add some fields -->
+				<xpath expr="//field[@name='name']" position="replace">
+					<field name="name" string="Employees"
+						filter_domain="['|','|','|','|',('work_email','ilike',self),('name','ilike',self),('father_name','ilike',self),('grandfather_name','ilike',self),('family_name','ilike',self)]" />
+					<filter string="الموظفين العاملين" name="available_employees"
+						domain="[('emp_state','=','working'), ('employee_state','!=', 'non_active'), ('employee_state','!=', 'oh'), ('employee_state','!=', 'retired')]" />
+				</xpath>
+				<xpath expr="//field[@name='name']" position="after">
+					<field name="number" />
+					<field name="identification_id" />
+				</xpath>
 
+				<!-- Remove Filters -->
+				<xpath expr="//field[@name='category_ids']" position="replace">
+
+				</xpath>
+				<xpath expr="//filter[@name='message_needaction']" position="replace">
+				</xpath>
+				<xpath expr="//filter[@name='inactive']" position="replace">
+				</xpath>
+			</field>
+		</record>
 
 		<!-- الموظفون -->
 
@@ -24,6 +51,11 @@
 			<field name="res_model">hr.employee</field>
 			<field name="view_mode">kanban,tree,form</field>
 			<field name="domain">[('employee_state','=','employee')]</field>
+			<field name="search_view_id" ref="view_search_hr_employee_inherit" />
+			<field name="context">{
+				'search_default_available_employees': 1
+				}
+			</field>
 		</record>
 
 		<record id="hr_kanban_view_employees_inherit" model="ir.ui.view">
