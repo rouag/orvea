@@ -522,21 +522,25 @@ class import_csv(osv.osv):
         all_move_ids=[]
         departement = self.pool.get('hr.department')
         employee = self.pool.get('hr.employee')
-            
         for row  in reader :
-            emp_id = employee.search(cr, uid, [('number', '=',str(row['MGR_NO']))])
+            if len(str(row['MGR_NO'].strip(" ")))==4:
+                empid = str(0)+str(row['MGR_NO'].strip(" "))
+            elif len(str(row['MGR_NO'].strip(" ")))==3:
+                empid = str(0)+str(0)+str(row['MGR_NO'].strip(" "))
+            elif len(str(row['MGR_NO'].strip(" ")))==2:
+                empid = str(0)+str(0)+str(0)+str(row['MGR_NO'].strip(" "))
+            elif len(str(row['MGR_NO'].strip(" ")))==1:
+                empid = str(0)+str(0)+str(0)+str(0)+str(row['MGR_NO'].strip(" "))
+            else:
+                empid = str(row['MGR_NO'].strip(" "))
+            emp_id = employee.search(cr, uid, [('number', '=',empid)])
             daprtment_val={
                             'name':str(row['SHORT_NAME']),
                             'code':str(row['LOC_ID']),
                             'manager_id':emp_id[0] if emp_id else False,
                             }
-            
+
             departement.create(cr, uid, daprtment_val,context=context)
-        return True
-    
-    def import_branche_parent(self, cr, uid, ids, context=None):
-        if context is None:
-            context = {}
         this = self.browse(cr, uid, ids[0])   
         quotechar='"'
         delimiter=';'
@@ -545,7 +549,7 @@ class import_csv(osv.osv):
         targetEncoding = "utf-8"   
         fileobj.write((base64.decodestring(this.data)))   
         fileobj.seek(0)                                    
-        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
         move_id=''
         all_move_ids=[]
         departement = self.pool.get('hr.department')
@@ -555,9 +559,8 @@ class import_csv(osv.osv):
             if exist_dep:
                 parent = departement.search(cr, uid, [('code','=',str(row['LOC_Parent_ID']))],context=context)
                 departement.browse(cr, uid, exist_dep[0], context=context).write({'parent_id':parent[0] if parent else False})
-        return True
-    
-    
+
+
     def emplyee_historique(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
