@@ -9,7 +9,7 @@
 			<field name="arch" type="xml">
 				<!-- Add some fields -->
 				<xpath expr="//field[@name='name']" position="replace">
-					<field name="name" string="Employees"
+					<field name="name" string="الإسم"
 						filter_domain="['|','|','|','|',('work_email','ilike',self),('name','ilike',self),('father_name','ilike',self),('grandfather_name','ilike',self),('family_name','ilike',self)]" />
 					<filter string="الموظفين العاملين" name="available_employees"
 						domain="[('emp_state','=','working'), ('employee_state','!=', 'non_active'), ('employee_state','!=', 'oh'), ('employee_state','!=', 'retired')]" />
