@@ -395,23 +395,20 @@ class import_csv(osv.osv):
     def emplyee_historique(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
-        this = self.browse(cr, uid, ids[0])   
-        quotechar='"'
-        delimiter=';'
+        this = self.browse(cr, uid, ids[0])
+        quotechar = '"'
+        delimiter = ';'
         fileobj = TemporaryFile('w+')
-        sourceEncoding = 'windows-1252'
-        targetEncoding = "utf-8"   
-        fileobj.write((base64.decodestring(this.data)))   
-        fileobj.seek(0)                                    
-        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
-        move_id=''
-        all_move_ids=[]
+        fileobj.write((base64.decodestring(this.data)))
+        fileobj.seek(0)
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
         employee = self.pool.get('hr.employee')
-        history=self.pool.get('hr.employee.history')
+        history = self.pool.get('hr.employee.history')
         grade = self.pool.get('salary.grid.grade')
         departement = self.pool.get('hr.department')
-        departement_id = departement.search(cr, uid, [('code', '=','C001')])[0]
-        for row  in reader : 
+        company_id = self.pool.get('res.company')._company_default_get(cr,uid,'smart_hr')
+        company_name = self.pool.get('res.company').browse(cr,uid,company_id).name
+        for row in reader:
             um=False
             employee_ids= employee.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
             grade_id= grade.search(cr, uid, [('code', '=',str(row['rank_new']))])
@@ -450,7 +447,7 @@ class import_csv(osv.osv):
                             'num_decision':str(row['ACT_DSCR']),
                             'date_decision':date1,
                             'grade_id':grade_id[0] if grade_id else False,
-                            'department_id':departement_id,
+                            'department_id':company_name,
                             'date':date2,
                             }
             
@@ -1285,9 +1282,9 @@ class import_csv(osv.osv):
         sourceEncoding = 'windows-1252'
         targetEncoding = "utf-8"   
         
-        fileobj.write((base64.decodestring(this.data)))   
-        fileobj.seek(0)                                    
-        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        fileobj.write((base64.decodestring(this.data)))
+        fileobj.seek(0)
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
         groups = self.pool.get('hr.groupe.job')
                 
         move_id=''
@@ -1321,7 +1318,7 @@ class import_csv(osv.osv):
         
         fileobj.write((base64.decodestring(this.data)))   
         fileobj.seek(0)                                    
-        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
         groups = self.pool.get('hr.groupe.job')
         move_id=''
         all_move_ids=[]
@@ -1330,6 +1327,8 @@ class import_csv(osv.osv):
             groups_ids=groups.search(cr, uid, [('numero', '=',str(row['PAR_GRP_NO']))])
             if groups_ids:
                 parent_id=groups_ids[0]
+                if parent_id == 6:
+                    print str(row['CHI_GRP_NO'])
             print 'name' ,str(row['DSCR_AR'])
             print 'code' ,str(row['CHI_GRP_NO'])
             groups_speacilaite_val={
@@ -1902,6 +1901,19 @@ class import_csv(osv.osv):
                 max_grade_no = salary_grid_grade.search(cr, uid, [('code','=', str(row['MAX_GRADE_NO']))], context=context)
                 min_max_vals = {'rank_from': min_grade_no[0] if min_grade_no else False, 'rank_to': max_grade_no[0] if max_grade_no else False}
                 groups.browse(cr, uid, exist_groups[0], context=context).write(min_max_vals)
+                
+                
+    def update_groups_general_code(self, cr, uid, ids, context=None):
+   
+        groups = self.pool.get('hr.groupe.job')
+        for group_id  in groups.search(cr, uid, []) :
+            group_browse = groups.browse(cr, uid, group_id)
+            new_num = group_browse.numero.strip(" ")
+            group_browse.write({'numero':new_num})
+
+        return True
+
+
 
 import_csv()
 
