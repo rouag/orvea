@@ -83,7 +83,7 @@ class HrEmployee(models.Model):
     passport_date = fields.Date(string=u'تاريخ إصدار جواز السفر ')
     passport_place = fields.Char(string=u'مكان إصدار جواز السفر')
     passport_end_date = fields.Date(string=u'تاريخ انتهاء جواز السفر ')
-    display_name = fields.Char(compute='_compute_display_name', string=u'الاسم', select=True)
+    display_name = fields.Char(compute='_compute_display_name', string=u'الاسم')
     sanction_ids = fields.One2many('hr.sanction.ligne', 'employee_id', string=u'العقوبات' )
     sanction_count = fields.Integer(string=u'عدد  العقوبات',)
     bank_account_ids = fields.One2many('res.partner.bank', 'employee_id', string=u'الحسابات البنكِيّة')
@@ -134,7 +134,7 @@ class HrEmployee(models.Model):
     def _compute_is_saudian(self):
         for rec in self:
             if rec.country_id:
-                rec.is_saudian = (rec.country_id.code_nat != 'SA')
+                rec.is_saudian = (rec.country_id.code_nat == 'SA')
 
     @api.constrains('recruiter_date', 'begin_work_date')
     def recruiter_date_begin_work_date(self):
