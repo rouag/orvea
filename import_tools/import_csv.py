@@ -447,7 +447,6 @@ class import_csv(osv.osv):
                             'num_decision':str(row['ACT_DSCR']),
                             'date_decision':date1,
                             'grade_id':grade_id[0] if grade_id else False,
-                            'department_id':company_name,
                             'date':date2,
                             }
             
@@ -1883,11 +1882,9 @@ class import_csv(osv.osv):
         if context is None:
             context = {}
         this = self.browse(cr, uid, ids[0])   
-        quotechar='"'
-        delimiter=';'
+        quotechar = '"'
+        delimiter = ';'
         fileobj = TemporaryFile('w+')
-        sourceEncoding = 'windows-1252'
-        targetEncoding = "utf-8"
         fileobj.write((base64.decodestring(this.data)))
         fileobj.seek(0)
         reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
@@ -1901,16 +1898,28 @@ class import_csv(osv.osv):
                 max_grade_no = salary_grid_grade.search(cr, uid, [('code','=', str(row['MAX_GRADE_NO']))], context=context)
                 min_max_vals = {'rank_from': min_grade_no[0] if min_grade_no else False, 'rank_to': max_grade_no[0] if max_grade_no else False}
                 groups.browse(cr, uid, exist_groups[0], context=context).write(min_max_vals)
-                
-                
+
     def update_groups_general_code(self, cr, uid, ids, context=None):
-   
         groups = self.pool.get('hr.groupe.job')
-        for group_id  in groups.search(cr, uid, []) :
+        for group_id in groups.search(cr, uid, []):
             group_browse = groups.browse(cr, uid, group_id)
             new_num = group_browse.numero.strip(" ")
-            group_browse.write({'numero':new_num})
-
+            group_browse.write({'numero': new_num})
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])
+        quotechar = '"'
+        delimiter = ';'
+        fileobj = TemporaryFile('w+')
+        fileobj.write((base64.decodestring(this.data)))
+        fileobj.seek(0)
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
+        groups = self.pool.get('hr.groupe.job')
+        for row in reader:
+            parent_group = groups.search(cr, uid, [('numero', '=', str(row['PAR_GRP_NO']))], context=context)
+            current_group = groups.search(cr, uid, [('numero', '=', str(row['CHI_GRP_NO']))], context=context)
+            if parent_group and current_group:
+                groups.browse(cr, uid, current_group[0], context=context).write({'parent_id': parent_group[0]})
         return True
 
 
