@@ -83,16 +83,22 @@ class hrDirectAppoint(models.Model):
     def button_direct_appoint(self):
         self.ensure_one()
         #TODO   
+
         appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('state','=','done'),('is_started','=',False),('state_appoint','=','active')], limit=1)
-        print"direct",appoint_line
+        print"appoint_line",appoint_line
         for line in  appoint_line :
-            line.write({'is_started': True ,'state_appoint' : 'active'})
+            if line.first_appoint == True :
+                line.employee_id.write({'begin_work_date': line.date_direct_action, 'recruiter_date': line.date_direct_action})
+                line.write({'is_started': True ,'state_appoint' : 'active'})
+            else :
+                line.write({'is_started': True ,'state_appoint' : 'active'})
+
             title= u"' إشعار بمباشرة التعين'"
-            msg= u"' إشعار بمباشرة التعين'"  + unicode(line.employee_id.name) + u"'"
+            msg= u"' إشعار بمباشرة التعين'"  + unicode(line.employee_id.display_name) + u"'"
             group_id = self.env.ref('smart_hr.group_department_employee')
             self.send_appoint_group(group_id,title,msg)
-        self.state = 'done'  
-        self.state_direct = 'done'         
+        self.state = 'done'
+        self.state_direct = 'done'
    
     @api.onchange('employee_id')
     def _onchange_employee_id(self):

@@ -14,6 +14,8 @@
 					<field name="display_name" />
 					<field name="number" />
 					<field name="is_member" />
+					<field name="state" string="الحضور والإنصراف" />
+						<field name="last_sign" string=" تاريخ أخر حضور و إنصراف  " />
 					<field name="employee_state" />
 				</tree>
 			</field>
@@ -93,6 +95,8 @@
 				<tree>
 					<field name="display_name" string="الموظف" />
 					<field name="number" string="الرقم الوظيفي" />
+					
+					
 					<field name="employee_state" string="الحالة"/>
 				</tree>
 				</xpath>
@@ -241,6 +245,14 @@
 								</page>
 								<page string="مستويات التعليم">
 									<field name="education_level_ids">
+									<tree>
+									<field name="name" />
+									<field name="diploma_id" />
+									<field name="specialization_ids" widget="many2many_tags" />
+									<field name="diploma_date" />
+									<field name="job_specialite" />
+									
+									</tree>
 									</field>
 								</page>
 								<page string="بيانات العمل">

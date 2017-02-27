@@ -119,7 +119,8 @@ class HrEmployee(models.Model):
     royal_decree_number = fields.Char(string=u'رقم الأمر الملكي')
     royal_decree_date = fields.Date(string=u'تاريخ الأمر الملكي ')
     training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'سجل التدريبات')
-    
+    state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
+  
     @api.one
     @api.depends('job_id')
     def _compute_insurance_type(self):
@@ -358,10 +359,11 @@ class HrEmployeeEducationLevel(models.Model):
     leave_type = fields.Many2one('hr.holidays.status', string='leave type')
     code = fields.Char(string=u'الرمز')
     nomber_year_education = fields.Integer(string=u'عدد سنوات الدراسة', )
-    diploma_id = fields.Many2one('hr.employee.diploma', string=u'الشهادة')
-    specialization_ids = fields.Many2many('hr.employee.specialization', string=u'الاختصاص')
+    diploma_id = fields.Many2one('hr.employee.diploma', string=u'المؤهل')
+    specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص')
     secondary = fields.Boolean(string=u'بعد‬ الثانوية', required=1)
     not_secondary = fields.Boolean(string=u'قبل الثانوية', required=1)
+  
 
     @api.onchange('secondary')
     def onchange_secondry(self):
@@ -381,10 +383,18 @@ class HrEmployeeEducationLevelEmployee(models.Model):
     name = fields.Char(string='المستوى')
     employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف')
     level_education_id = fields.Many2one('hr.employee.education.level', string=u' مستوى التعليم')
-    diploma_id = fields.Many2one('hr.employee.diploma', related='level_education_id.diploma_id', string=u'الشهادة')
+    diploma_id = fields.Many2one('hr.employee.diploma', related='level_education_id.diploma_id', string=u'المؤهل')
+    specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص')
     job_specialite = fields.Boolean(string=u'في طبيعة العمل', required=1)
     diploma_date = fields.Date(string=u'تاريخ الحصول على الشهادة')
 
+
+class HrQualificationEstimate(models.Model):
+    _name = 'hr.qualification.estimate'
+    _description = u'تقدير المؤهل العلمي'
+
+    name = fields.Char(string='المسمّى')
+    code = fields.Char(string=u'الرمز')
 
 class HrEmployeeEvaluation(models.Model):
     _name = 'hr.employee.evaluation.level'
@@ -399,10 +409,12 @@ class HrEmployeeDiploma(models.Model):
     _name = 'hr.employee.diploma'
     _description = u'الشهادة العلمية'
     _sql_constraints = [('number_uniq', 'unique(code)', 'رمز هذا المسمى موجود.')]
-    
+
     name = fields.Char(string=u'المسمّى')
     specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص')
     code = fields.Char(string=u'الرمز')
+    qualification_id = fields.Many2one('hr.qualification.estimate', string=u' تقدير المؤهل العلمي')
+    governmental_entity = fields.Many2one('res.partner', string=u'المؤسسة العلمية ', domain=['|',('company_type', '=', 'governmental_entity'),('company_type', '=', 'faculty')])
 
 
 class HrEmployeeSpecialization(models.Model):

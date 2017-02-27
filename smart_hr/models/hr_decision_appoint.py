@@ -20,7 +20,7 @@ class HrDecisionAppoint(models.Model):
     order_date = fields.Date(string='تاريخ الخطاب', required=1) 
     date_hiring = fields.Date(string='تاريخ التعيين', default=fields.Datetime.now())
     date_hiring_end = fields.Date(string=u'تاريخ إنتهاء التعيين')  
-    date_direct_action = fields.Date(string='تاريخ مباشرة العمل', required=1) 
+    date_direct_action = fields.Date(string='تاريخ مباشرة العمل') 
     instead_exchange = fields.Boolean(string='صرف بدل تعيين')
     is_started = fields.Boolean(string=u'مباشر', default=False)
     # info about employee
@@ -53,6 +53,7 @@ class HrDecisionAppoint(models.Model):
     salary_recent = fields.Float(string=' أخر راتب شهري ')
     transport_alocation = fields.Boolean(string='بدل نقل')
     transport_car = fields.Boolean(string='سيارة')
+    first_appoint = fields.Boolean(string='أول تعين بالهيئة')
     option_contract = fields.Boolean(string='قرار التعاقد')
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
     # other info
@@ -378,7 +379,9 @@ class HrDecisionAppoint(models.Model):
         appoints= self.env['hr.decision.appoint'].search([('state_appoint','=','active'),('state','=','done'),('is_started','=',False)])
         for appoint in appoints :
             direct_appoint_period = appoint.type_appointment.direct_appoint_period
+            print"direct_appoint_period",direct_appoint_period
             prev_days_end = fields.Date.from_string(appoint.date_direct_action) + relativedelta(days=direct_appoint_period)
+            print"prev_days_end",prev_days_end
             sign_days = self.env['hr.attendance'].search_count([('employee_id', '=', appoint.employee_id.id), ('name','<=',str(prev_days_end))])
             today_date = str(today_date) 
             prev_days_end = str(prev_days_end)
