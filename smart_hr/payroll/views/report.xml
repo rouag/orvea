@@ -15,6 +15,11 @@
 				<report id="payslip_extension_report" model="hr.payslip.run"
 			report_type="qweb-pdf" string="ملحق الرواتب" name="smart_hr.report_payslip_extension" attachment_use="False" 
 			file="smart_hr.report_payslip_extension" 	paperformat="smart_base.paperformat_landscape" /> 
+			
+			
+			<report id="report_payslip_extension_total_report" model="hr.payslip.run"
+			report_type="qweb-pdf" string="ملحق الرواتب" name="smart_hr.report_payslip_extension_total" attachment_use="False" 
+			file="smart_hr.report_payslip_extension_total" 	paperformat="smart_base.paperformat_landscape" /> 
 	</data>
 </openerp>
 		

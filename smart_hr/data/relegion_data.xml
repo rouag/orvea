@@ -37,7 +37,6 @@
 			<field name="name">عمل و عمال</field>
 			<field name="code">L</field>
 		</record>
-		hr.insurance.type
 	</data>
 </openerp>
 		
