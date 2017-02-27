@@ -113,6 +113,7 @@ class HrEmployee(models.Model):
     point_training=fields.Integer(string=u'نقاط التدريب')
     point_functionality=fields.Integer(string=u'نقاط  الإداء الوظيفي',)
     is_member = fields.Boolean(string=u'عضو في الهيئة', default=False, required=1)
+    is_saudian = fields.Boolean(string='is saudian', compute='_compute_is_saudian')
     insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين', readonly='1',compute='_compute_insurance_type')
     holiday_count = fields.Integer(string=u'عدد الاجازات', compute='_compute_holidays_count')
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
@@ -129,6 +130,15 @@ class HrEmployee(models.Model):
                                                                    ('degree_id', '=', self.degree_id.id)])
             if salary_grids:
                 self.insurance_type =  salary_grids[0].insurance_type
+
+    @api.multi
+    @api.depends('country_id')
+    def _compute_is_saudian(self):
+        for rec in self:
+            if rec.country_id:
+                print rec.is_saudian
+                rec.is_saudian = (rec.country_id.code_nat == 'SA')
+                print rec.is_saudian
 
     @api.constrains('recruiter_date', 'begin_work_date')
     def recruiter_date_begin_work_date(self):
