@@ -437,7 +437,7 @@ class import_csv(osv.osv):
                 history_line_val={
                             'employee_id':employee_ids[0],
                             'type':str(row['ACT_DSCR']),
-                            'num_decision':str(row['ACT_DSCR']),
+                            'num_decision':str(row['DECISION_NO']),
                             'date_decision':date1,
                             'date':date2,
                             'job_id': str(row['position']),
