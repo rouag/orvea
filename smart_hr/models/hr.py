@@ -13,23 +13,6 @@ class HrEmployee(models.Model):
     _inherit = 'hr.employee'
 
     @api.multi
-    def _compute_loans_count(self):
-        for rec in self:
-            rec.loan_count = self.env['hr.loan'].search_count([('employee_id', '=', rec.id)])
-
-    @api.multi
-    def _compute_holidays_count(self):
-        for rec in self:
-            rec.holiday_count = self.env['hr.holidays'].search_count([('employee_id', '=', rec.id)])
-
-    
-    @api.multi
-    def _compute_sanction_count(self):
-        for rec in self:
-            rec.sanction_count = self.env['hr.sanction'].search_count([('line_ids.employee_id', '=', rec.id)])
-
-
-    @api.multi
     def _sanction_line(self):
         sanction_obj = self.env['hr.sanction.ligne']
         search_domain = [
@@ -120,7 +103,22 @@ class HrEmployee(models.Model):
     royal_decree_number = fields.Char(string=u'رقم الأمر الملكي')
     royal_decree_date = fields.Date(string=u'تاريخ الأمر الملكي ')
     training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'سجل التدريبات')
-    
+
+    @api.multi
+    def _compute_loans_count(self):
+        for rec in self:
+            rec.loan_count = self.env['hr.loan'].search_count([('employee_id', '=', rec.id)])
+
+    @api.multi
+    def _compute_holidays_count(self):
+        for rec in self:
+            rec.holiday_count = self.env['hr.holidays'].search_count([('employee_id', '=', rec.id)])
+
+    @api.multi
+    def _compute_sanction_count(self):
+        for rec in self:
+            rec.sanction_count = self.env['hr.sanction'].search_count([('line_ids.employee_id', '=', rec.id)])
+
     @api.one
     @api.depends('job_id')
     def _compute_insurance_type(self):
@@ -136,9 +134,7 @@ class HrEmployee(models.Model):
     def _compute_is_saudian(self):
         for rec in self:
             if rec.country_id:
-                print rec.is_saudian
                 rec.is_saudian = (rec.country_id.code_nat == 'SA')
-                print rec.is_saudian
 
     @api.constrains('recruiter_date', 'begin_work_date')
     def recruiter_date_begin_work_date(self):
