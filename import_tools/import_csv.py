@@ -50,7 +50,8 @@ class import_csv(osv.osv):
         'state' : 'draft'
         }
    
-   
+
+  
     def import_bonus(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
@@ -74,6 +75,9 @@ class import_csv(osv.osv):
         type_3_id=False
         
         for row  in reader : 
+            type_1_id=False
+            type_2_id=False
+            type_3_id=False
             type=(row['AWARD_TYPE_ID'])
             if type =="1":
                 type_bonus='reward'
