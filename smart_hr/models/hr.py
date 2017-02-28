@@ -368,8 +368,8 @@ class HrEmployeeEducationLevel(models.Model):
     nomber_year_education = fields.Integer(string=u'عدد سنوات الدراسة', )
     diploma_id = fields.Many2one('hr.employee.diploma', string=u'المؤهل')
     specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص')
-    governmental_entity = fields.Many2one('res.partner', string=u'المؤسسة العلمية ', domain=['|',('company_type', '=', 'governmental_entity'),('company_type', '=', 'faculty')])
-    university_entity = fields.Many2one('res.partner', string=u'الكلية ', domain=['|',('company_type', '=', 'governmental_entity'),('company_type', '=', 'faculty')])
+    governmental_entity = fields.Many2one('res.partner', string=u'المؤسسة العلمية ', domain=[('company_type', '=', 'school')])
+    university_entity = fields.Many2one('res.partner', string=u'الكلية ', domain=[('company_type', '=', 'faculty')])
     secondary = fields.Boolean(string=u'بعد‬ الثانوية', required=1)
     not_secondary = fields.Boolean(string=u'قبل الثانوية', required=1)
   
@@ -395,8 +395,14 @@ class HrEmployeeEducationLevelEmployee(models.Model):
     diploma_id = fields.Many2one('hr.employee.diploma', related='level_education_id.diploma_id', string=u'المؤهل')
     specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص')
     qualification_id = fields.Many2one('hr.qualification.estimate', string=u' تقدير المؤهل العلمي')
+<<<<<<< HEAD
+    governmental_entity = fields.Many2one('res.partner', string=u'المؤسسة العلمية ', domain=[('company_type', '=', 'school')])
+    university_entity = fields.Many2one('res.partner', string=u'الكلية', domain=[('company_type', '=', 'faculty')])
+
+=======
     governmental_entity = fields.Many2one('res.partner', string=u'المؤسسة العلمية ', domain=['|',('company_type', '=', 'governmental_entity'),('company_type', '=', 'faculty')])
     university_entity = fields.Many2one('res.partner', string=u'الكلية', domain=['|',('company_type', '=', 'governmental_entity'),('company_type', '=', 'faculty')])
+>>>>>>> branch '9.0' of https://gitlab.com/smartek/addons_smart.git
     job_specialite = fields.Boolean(string=u'في طبيعة العمل', required=1)
     diploma_date = fields.Date(string=u'تاريخ الحصول على المؤهل')
 
@@ -426,8 +432,8 @@ class HrEmployeeDiploma(models.Model):
     specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص')
     code = fields.Char(string=u'الرمز')
     qualification_id = fields.Many2one('hr.qualification.estimate', string=u' تقدير المؤهل العلمي')
-    governmental_entity = fields.Many2one('res.partner', string=u'المؤسسة العلمية ', domain=['|',('company_type', '=', 'governmental_entity'),('company_type', '=', 'faculty')])
-    university_entity = fields.Many2one('res.partner', string=u'الكلية', domain=['|',('company_type', '=', 'governmental_entity'),('company_type', '=', 'faculty')])
+    governmental_entity = fields.Many2one('res.partner', string=u'المؤسسة العلمية ', domain=[('company_type', '=', 'school')])
+    university_entity = fields.Many2one('res.partner', string=u'الكلية', domain=[('company_type', '=', 'faculty')])
 
 class HrEmployeeSpecialization(models.Model):
     _name = 'hr.employee.specialization'
