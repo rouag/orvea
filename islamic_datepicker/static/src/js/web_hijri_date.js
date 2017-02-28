@@ -20,7 +20,6 @@ odoo.define('islamic_datepicker.form_widgets', function (require) {
         , }
         , start: function () {
             this.$input = this.$('input.o_datepicker_input');
-
             this.$input_hijri = this.$el.find('input.oe_hijri');
             this.set_readonly(false);
             $('.removePicker').click(function () {

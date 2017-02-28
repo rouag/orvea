@@ -695,3 +695,11 @@ msgid ""
 msgstr ""
 "<span class=\"o_unfollow\">الغاء المتابعة</span>\n"
 "                                    <span class=\"o_following\">متابعة</span>"
+
+
+#. module: web_kanban
+#. openerp-web
+#: code:addons/web_kanban/static/src/js/kanban_view.js:29
+#, python-format
+msgid "Kanban"
+msgstr "البطاقات"
