@@ -11,6 +11,8 @@
 					<sheet>
 						<group>
 							<field name="author_id" />
+							<field name="record_name" />
+							<field name="body" />
 							<field name="ip_address" />
 							<field name="mac_address" />
 						</group>
@@ -24,6 +26,8 @@
 			<field name="arch" type="xml">
 				<tree string="مدن" class="oe_tree_view">
 					<field name="author_id" />
+					<field name="record_name" />
+					<field name="body" />
 					<field name="ip_address" />
 					<field name="mac_address" />
 
