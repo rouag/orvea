@@ -22,7 +22,7 @@ class HrEmployee(models.Model):
         for rec in sanction_obj.search(search_domain): 
             self.sanction_ids = rec.sanction_ids
 
-    number = fields.Char(string=u'الرقم الوظيفي', required=1)
+    number = fields.Char(string=u'الرقم الوظيفي', index=True, copy=False)
     gender = fields.Selection([('male', 'Male'), ('female', 'Female'),], string=u'الجنس')
     marital = fields.Selection([('single', 'Single'), ('married', 'Married'), ('widower', 'Widower'), ('divorced', 'Divorced')], string=u'الجنس')
     identification_date = fields.Date(string=u'تاريخ إصدار بطاقة الهوية ')
@@ -107,6 +107,11 @@ class HrEmployee(models.Model):
     state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
   
 
+
+    @api.model
+    def create(self, vals):
+        vals['number'] = self.env['ir.sequence'].next_by_code('hr.employee') 
+        return super(HrEmployee, self).create(vals)
 
     @api.multi
     def _compute_loans_count(self):
