@@ -341,7 +341,7 @@
 											<field name="recruiter" widget="selection" />
 											<field name="recruiter_date" />
 											<field name="begin_work_date" />
-											<field name="calendar_id" />
+											<!-- <field name="calendar_id" /> -->
 											<field name="insurance_type" />
 											<field name="medic_exam" string="تاريخ الفحص الطبي" />
 											<field name="vehicle" />
