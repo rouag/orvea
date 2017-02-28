@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+
+	<data noupdate="1">
+	
+		<record id="seq_hr_employee" model="ir.sequence">
+			<field name="name">hr employee</field>
+			<field name="code">hr.employee</field>
+			<field name="prefix">0000</field>
+			<field name="padding">4</field>
+		</record>
+		
+	
+	</data>
+</openerp>
+    

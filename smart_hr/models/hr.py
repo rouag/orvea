@@ -22,7 +22,7 @@ class HrEmployee(models.Model):
         for rec in sanction_obj.search(search_domain): 
             self.sanction_ids = rec.sanction_ids
 
-    number = fields.Char(string=u'الرقم الوظيفي', required=1)
+    number = fields.Char(string=u'الرقم الوظيفي', index=True, copy=False)
     gender = fields.Selection([('male', 'Male'), ('female', 'Female'),], string=u'الجنس')
     marital =  fields.Selection([('single', 'Single'), ('married', 'Married'), ('widower', 'Widower'), ('divorced', 'Divorced'), ('mariie', 'محصن'), ('not_mariee', 'غير محصن'),('other', 'غير ذلك')], string=u'الجنس')
     identification_date = fields.Date(string=u'تاريخ إصدار بطاقة الهوية ')
@@ -105,8 +105,12 @@ class HrEmployee(models.Model):
     training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'سجل التدريبات')
 
     state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
-  
 
+
+    @api.model
+    def create(self, vals):
+        vals['number'] = self.env['ir.sequence'].next_by_code('hr.employee') 
+        return super(HrEmployee, self).create(vals)
 
     @api.multi
     def _compute_loans_count(self):
@@ -389,20 +393,15 @@ class HrEmployeeEducationLevelEmployee(models.Model):
     _name = 'hr.employee.job.education.level'
     _description = u'مستويات التعليم'
 
-    name = fields.Char(string=u'المستوى')
+    name = fields.Char(string='المستوى')
     employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف')
     level_education_id = fields.Many2one('hr.employee.education.level', string=u' مستوى التعليم')
     diploma_id = fields.Many2one('hr.employee.diploma', related='level_education_id.diploma_id', string=u'المؤهل')
     specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص')
     qualification_id = fields.Many2one('hr.qualification.estimate', string=u' تقدير المؤهل العلمي')
-<<<<<<< HEAD
     governmental_entity = fields.Many2one('res.partner', string=u'المؤسسة العلمية ', domain=[('company_type', '=', 'school')])
     university_entity = fields.Many2one('res.partner', string=u'الكلية', domain=[('company_type', '=', 'faculty')])
 
-=======
-    governmental_entity = fields.Many2one('res.partner', string=u'المؤسسة العلمية ', domain=['|',('company_type', '=', 'governmental_entity'),('company_type', '=', 'faculty')])
-    university_entity = fields.Many2one('res.partner', string=u'الكلية', domain=['|',('company_type', '=', 'governmental_entity'),('company_type', '=', 'faculty')])
->>>>>>> branch '9.0' of https://gitlab.com/smartek/addons_smart.git
     job_specialite = fields.Boolean(string=u'في طبيعة العمل', required=1)
     diploma_date = fields.Date(string=u'تاريخ الحصول على المؤهل')
 

@@ -231,8 +231,8 @@
 
 							<label for="number" class="oe_edit_only" />
 							<h1>
-								<field name="number" placeholder="الرقم الوظيفي" attrs="{'required': 1}"
-									class="oe_smart_inline" />
+								<field name="number" placeholder="الرقم الوظيفي"
+									class="oe_smart_inline"  readonly="1"/>
 
 							</h1>
 							<notebook>
