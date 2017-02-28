@@ -2,7 +2,10 @@
 
 
 from openerp import models, fields, api, _
-
+from dateutil.relativedelta import relativedelta
+from openerp.exceptions import ValidationError
+from datetime import date, datetime, timedelta
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class HrEmployeeFunctionnalCard(models.Model):
@@ -30,7 +33,8 @@ class HrEmployeeFunctionnalCard(models.Model):
     passport_date = fields.Date(string=u'تاريخ إصدار جواز السفر ', related='employee_id.passport_date', readonly=1)
     passport_place = fields.Char(string=u'مكان إصدار جواز السفر', related='employee_id.passport_place', readonly=1)
     date = fields.Date(string=u'التاريخ ', default=fields.Datetime.now(), readonly=1)
-    expiration_date = fields.Date(string=u'تاريخ إنتهاء الصلاحية  ')
+    expiration_date = fields.Date(string=u'تاريخ إنتهاء الصلاحية ')
+    first_date = fields.Date(string=u'تاريخ بدأ البطاقة  ')
     state = fields.Selection([('draft', u'طلب'),
                               ('hrm', u'مدير شؤون الموظفين'),
                               ('done', u'اعتمدت'),
@@ -52,7 +56,6 @@ class HrEmployeeFunctionnalCard(models.Model):
                     
             
 
-
     @api.one
     @api.depends('employee_id')
     def _compute_last_degree_salary(self):
@@ -60,7 +63,20 @@ class HrEmployeeFunctionnalCard(models.Model):
         if last_decision_appoint:
             self.last_salary = last_decision_appoint.basic_salary
             self.degree_id = last_decision_appoint.degree_id.id
-
+            
+#     @api.one
+#     @api.depends('first_date')
+#     def _compute_card_validity(self):
+#         card_validity = self.env['hr.employee.card.validity'].search([], limit=1)
+#         if card_validity:
+#             date_validity = card_validity.name
+#             print"direct_appoint_period",date_validity
+#            # prev_days_end = fields.Date.from_string(self.first_date) + relativedelta(years=date_validity)
+#            # print"prev_days_end",prev_days_end
+#             
+#               
+#             
+#  
     @api.model
     def create(self, vals):
         res = super(HrEmployeeFunctionnalCard, self).create(vals)
@@ -71,6 +87,7 @@ class HrEmployeeFunctionnalCard(models.Model):
     @api.multi
     def button_accept_hrm(self):
         self.ensure_one()
+        self.first_date = fields.Datetime.now()
         self.state = 'done'
 
     @api.multi

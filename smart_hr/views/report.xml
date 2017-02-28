@@ -90,7 +90,7 @@
 			name="smart_hr.hr_employee_functionnal_card_report" file="smart_hr.hr_employee_functionnal_card_report"
 			menu="False" />
 		<record id="report_hr_employee_functionnal_card_report" model="ir.actions.report.xml">
-			<field name="paperformat_id" ref="smart_base.paperformat_landscape" />
+			<field name="paperformat_id" ref="smart_base.paperformat_landscape_card" />
 			<field name="download_filename">${o.employee_id.name}_بطاقة وظيفية.pdf</field>
 		</record>
 

@@ -14,5 +14,5 @@ class MailMessage(models.Model):
     def create(self, vals):
         new_id = super(MailMessage, self).create(vals)
         print "mail message-----", new_id
-        print os.environ["REMOTE_ADDR"]
+        #print os.environ["REMOTE_ADDR"]
         return new_id

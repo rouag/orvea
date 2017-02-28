@@ -22,7 +22,7 @@ class HrEmployee(models.Model):
         for rec in sanction_obj.search(search_domain): 
             self.sanction_ids = rec.sanction_ids
 
-    number = fields.Char(string=u'الرقم الوظيفي', index=True, copy=False)
+    number = fields.Char(string=u'الرقم الوظيفي')
     gender = fields.Selection([('male', 'Male'), ('female', 'Female'),], string=u'الجنس')
     marital = fields.Selection([('single', 'Single'), ('married', 'Married'), ('widower', 'Widower'), ('divorced', 'Divorced')], string=u'الجنس')
     identification_date = fields.Date(string=u'تاريخ إصدار بطاقة الهوية ')
@@ -107,11 +107,15 @@ class HrEmployee(models.Model):
     state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
   
 
-
     @api.model
     def create(self, vals):
-        vals['number'] = self.env['ir.sequence'].next_by_code('hr.employee') 
-        return super(HrEmployee, self).create(vals)
+        res = super(HrEmployee, self).create(vals)
+        number_id = self.env['hr.employee.number'].search([])
+        if number_id:
+            res.number= int(number_id[0].name) + 1
+            number_id.write({'name':res.number})
+        return res
+
 
     @api.multi
     def _compute_loans_count(self):
@@ -216,12 +220,11 @@ class HrEmployee(models.Model):
 
 
     @api.one
-    @api.constrains('number', 'identification_id')
+    @api.constrains('identification_id')
     def _check_constraints(self):
         if len(self.identification_id) != 10:
                     raise Warning(_('الرجاء التثبت من رقم الهوية.'))
-        if len(self.search([('number', '=', self.number)])) > 1:
-                    raise Warning(_('يوجد موظف لديه نفس الرقم التوظيفي.'))
+    
 
     @api.one
     def action_send(self):
@@ -412,6 +415,19 @@ class HrQualificationEstimate(models.Model):
 
     name = fields.Char(string='المسمّى')
     code = fields.Char(string=u'الرمز')
+    
+class HrEmployeeNumber(models.Model):
+    _name = 'hr.employee.number'
+    _description = u'الرقم الوظيفي'
+
+    name = fields.Char(string='الرقم الوظيفي')
+    
+class HrEmployeeCardValidity(models.Model):
+    _name = 'hr.employee.card.validity'
+    _description = u'مدة صلاحية بطاقة الموظف'
+
+    name = fields.Integer(string='مدة صلاحية بطاقة الموظف')
+
 
 class HrEmployeeEvaluation(models.Model):
     _name = 'hr.employee.evaluation.level'

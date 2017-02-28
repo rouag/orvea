@@ -24,7 +24,6 @@
         'data/relegion_data.xml',
 
         'hr_menu.xml',
-        'view/sequence_view.xml',
         'data/sequences.xml',
         'data/configurations.xml',
         'holidays/data/hr_holidays_data.xml',
