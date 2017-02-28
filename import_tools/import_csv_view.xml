@@ -125,6 +125,11 @@
 							type="object" class="oe_highlight" />
 						<button name="update_groups_general_code" string="update_specific_groups_code"
 							type="object" class="oe_highlight" />
+							
+							<button name="import_loan" string="import loan"
+							type="object" class="oe_highlight" />
+							
+							
 						
 						
 						

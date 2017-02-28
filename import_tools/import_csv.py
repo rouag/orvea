@@ -69,51 +69,80 @@ class import_csv(osv.osv):
         reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
         move_id=''
         all_move_ids=[]
-       
-        hr_job=self.pool.get('hr.job')
-        type = self.pool.get('salary.grid.type')
-        salary_grid_degree = self.pool.get('salary.grid.degree')
-        grade = self.pool.get('salary.grid.grade')
-        job_group=self.pool.get('hr.groupe.job')
-        slary_grid=self.pool.get('salary.grid')
-        slary_grid_detail=self.pool.get('salary.grid.detail')
-        hr_allowance_type=self.pool.get('hr.allowance.type')
-        hr_allowance__detaile=self.pool.get('salary.grid.detail.allowance')
-        serie_id=False
-        job_name_id=False
-        general_id=False
-        salary_grid_degree_id=False
-        i=0
-        hr_allowance_type_id=hr_allowance_type.search(cr, uid, [('code', '=','01')])
-        i=1
-        for row  in reader : 
-            if str(row['CLASS_NO']):
-                    salary_grid_degree_ids = salary_grid_degree.search(cr, uid, [('code', '=',row['CLASS_NO'])])
-                    if salary_grid_degree_ids:
-                        salary_grid_degree_id=salary_grid_degree_ids[0]
-            type_id=type.search(cr, uid,  [('code', '=',str(row['BAND_NO']))])
-            grade_id =grade.search(cr, uid,  [('code', '=',str(row['GRADE_NO']))])
-            i=i+1
-            echelle_val = {
-                        'name':str(i),
-                       'code':str(i),
-                       'enabled':True ,
-                       
-                       }
-            slary_grid_id=slary_grid.create(cr, uid, echelle_val,context=context)
-            if  grade_id and salary_grid_degree_id and type_id :
-
-                    echelle_val_detail = {
-                                   
-                       'grid_id': slary_grid_id,
-                       'type_id': type_id[0] if type_id else False ,
-                       'grade_id': grade_id[0]if grade_id else False ,
-                       'degree_id':salary_grid_degree_id,
-                       'basic_salary':row['BASIC_SAL'],
-                       'net_salary':row['BASIC_SAL'],
-                       }
+        umalqurra = Umalqurra()
+        employee_obj = self.pool.get('hr.employee')
+        bank_obj = self.pool.get('res.bank')
+        loan_obj = self.pool.get('hr.loan')
+        currency_obj = self.pool.get('res.currency')
+        bank_compte = self.pool.get('res.partner.bank')
+        type=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_loan_type_01')[1]
+         
+        move_id=''
+        all_move_ids=[]
+        for row  in reader :  
+            employee=employee_obj.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
+            bank=bank_obj.search(cr, uid, [('bic', '=',str(row['BANK_NO']))])
+            fmt = '%d/%m/%Y'
+            if row['LOAN_START_DATE_HJ'] != 'NULL':
+                try:
+                        dt = datetime.strptime(str(row['LOAN_START_DATE_HJ']), fmt)
+                        start_date = umalqurra.hijri_to_gregorian(dt.year, dt.month, dt.day)
+                        date_first_tranche = date(int(start_date[0]), int(start_date[1]), int(start_date[2]))
+                except:
+                    
+                        date_first_tranche=row['LOAN_START_DATE']
                    
-                    slary_grid_detail.create(cr, uid, echelle_val_detail,context=context)
+                    
+            if row['END_DEDUCTED_DATE_HJ'] != 'NULL':
+                try:
+                        dtf = datetime.strptime(str(row['END_DEDUCTED_DATE_HJ']), fmt)
+                        end_date = umalqurra.hijri_to_gregorian(dtf.year, dtf.month, dtf.day)
+                        date_last_tranche = date(int(end_date[0]), int(end_date[1]), int(end_date[2]))
+                except:
+                    
+                        date_last_tranche=row['END_DEDUCTED_DATE']
+                   
+            if row['DOC_DATE_HJ'] != 'NULL':
+                try:
+                    
+                        dtd = datetime.strptime(str(row['DOC_DATE_HJ']), fmt)
+                        doc_date = umalqurra.hijri_to_gregorian(dtd.year, dtd.month, dtd.day)
+                        date_doc = date(int(doc_date[0]), int(doc_date[1]), int(doc_date[2]))
+                except:
+                    
+                        date_last_tranche=row['END_DEDUCTED_DATE']
+                   
+                   
+                
+            number = float(row['LOAN_AMT']) / (float(row['INSTALLMENT_AMT']) or 1.0)
+            
+            if str(row['LOAN_STATUS'])=='C' or str(row['LOAN_STATUS'])=='1' :
+                state='done'
+            else:
+                state='progress'
+                
+                
+            print date_doc,date_last_tranche,date_first_tranche
+            if bank:
+           
+                    loan_val={
+                                'name':str(row['LOAN_VOUCHER_NO']),
+                                'employee_id':employee[0] if employee else False,
+                                'bank_id':bank[0] if bank else False,
+                                'loan_type_id':type,
+                                'date_from':date_first_tranche,
+                                'date_to':date_last_tranche,
+                                'amount':float(row['LOAN_AMT']),
+                                'monthly_amount':float(row['INSTALLMENT_AMT']),
+                                'date_decision':date_doc,
+                                'number_decision':row['DOC_NO'],
+                                'date': row['TIME_STAMP'],
+                                'installment_number':number,
+                                'state':state,
+                                 
+                                }
+          
+                    loan_obj.create(cr, uid, loan_val,context=context)
                     
                     
                  
@@ -123,8 +152,7 @@ class import_csv(osv.osv):
         
         
         
-        return True   
-  
+        return True 
   
     def import_echelle_salaire(self, cr, uid, ids, context=None):
         if context is None:

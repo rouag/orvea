@@ -313,6 +313,11 @@
 			<field name="name">‫‫علاوة سنويّة‬‬</field>
 			<field name="code">01</field>
 		</record>
+		<!-- أنواع القروض -->
+		<record id="hr_loan_type_01" model="hr.loan.type">
+			<field name="name">شخصي‬</field>
+			<field name="code">1</field>
+		</record>
 		‫
 	</data>
 </openerp>
