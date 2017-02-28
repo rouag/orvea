@@ -54,7 +54,76 @@ class import_csv(osv.osv):
   
   
   
-  
+ 
+    def import_loan(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        move_id=''
+        all_move_ids=[]
+       
+        hr_job=self.pool.get('hr.job')
+        type = self.pool.get('salary.grid.type')
+        salary_grid_degree = self.pool.get('salary.grid.degree')
+        grade = self.pool.get('salary.grid.grade')
+        job_group=self.pool.get('hr.groupe.job')
+        slary_grid=self.pool.get('salary.grid')
+        slary_grid_detail=self.pool.get('salary.grid.detail')
+        hr_allowance_type=self.pool.get('hr.allowance.type')
+        hr_allowance__detaile=self.pool.get('salary.grid.detail.allowance')
+        serie_id=False
+        job_name_id=False
+        general_id=False
+        salary_grid_degree_id=False
+        i=0
+        hr_allowance_type_id=hr_allowance_type.search(cr, uid, [('code', '=','01')])
+        i=1
+        for row  in reader : 
+            if str(row['CLASS_NO']):
+                    salary_grid_degree_ids = salary_grid_degree.search(cr, uid, [('code', '=',row['CLASS_NO'])])
+                    if salary_grid_degree_ids:
+                        salary_grid_degree_id=salary_grid_degree_ids[0]
+            type_id=type.search(cr, uid,  [('code', '=',str(row['BAND_NO']))])
+            grade_id =grade.search(cr, uid,  [('code', '=',str(row['GRADE_NO']))])
+            i=i+1
+            echelle_val = {
+                        'name':str(i),
+                       'code':str(i),
+                       'enabled':True ,
+                       
+                       }
+            slary_grid_id=slary_grid.create(cr, uid, echelle_val,context=context)
+            if  grade_id and salary_grid_degree_id and type_id :
+
+                    echelle_val_detail = {
+                                   
+                       'grid_id': slary_grid_id,
+                       'type_id': type_id[0] if type_id else False ,
+                       'grade_id': grade_id[0]if grade_id else False ,
+                       'degree_id':salary_grid_degree_id,
+                       'basic_salary':row['BASIC_SAL'],
+                       'net_salary':row['BASIC_SAL'],
+                       }
+                   
+                    slary_grid_detail.create(cr, uid, echelle_val_detail,context=context)
+                    
+                    
+                 
+               
+                
+        
+        
+        
+        
+        return True   
   
   
     def import_echelle_salaire(self, cr, uid, ids, context=None):
@@ -605,8 +674,11 @@ class import_csv(osv.osv):
                 empid = str(row['MGR_NO'].strip(" "))
             emp_id = employee.search(cr, uid, [('number', '=',empid)])
             exist_dep = departement.search(cr, uid, [('code','=',str(row['LOC_ID']))],context=context)
+            print exist_dep
+            print 'emp_id',emp_id
             if exist_dep:
                 parent = departement.search(cr, uid, [('code','=',str(row['LOC_Parent_ID']))],context=context)
+                print parent
                 departement.browse(cr, uid, exist_dep[0], context=context).write({'parent_id':parent[0] if parent else False,
                                                                                   'manager_id':emp_id[0] if emp_id else False})
 
