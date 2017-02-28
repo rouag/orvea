@@ -116,9 +116,14 @@
 						<button name="import_holiday_stock" string="Holiday_stock" type="object"  class="oe_highlight" />
 						<button name="emplyee_historique" string="Employee_historique" type="object"  class="oe_highlight" />
 						<button name="import_job" string="jobs" type="object"  class="oe_highlight" />
-						<button name="import_update_education_level_employee" string="jobs_employee" type="object"  class="oe_highlight" />
+						<button name="import_update_education_level" string="education level" type="object"  class="oe_highlight" />
 						<button name="import_bonus" string="import_bonus" type="object"  class="oe_highlight" />
 						<button name="import_bonus_employee" string="import_bonus_employee" type="object"  class="oe_highlight" />
+						<button name="import_echelle_salaire" string="echelle salaire" type="object"  class="oe_highlight" />
+						<button name="import_echelle_salaire_bonus" string="echelle salaire bonus" type="object"  class="oe_highlight" />
+						<button name="import_employee_echelle" string="insurance employee" type="object"  class="oe_highlight" />
+						
+						
 						
 								
 							
