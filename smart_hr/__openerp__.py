@@ -137,6 +137,7 @@
         'view/res_users.xml',
         'view/employee_situation_order.xml',
         'view/hr_improve_situation_view.xml',
+        'view/mail_message_view.xml',
 
         # sanction
         'sanction/security/ir.model.access.csv',
