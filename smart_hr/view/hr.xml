@@ -13,6 +13,12 @@
 						filter_domain="['|','|','|','|',('work_email','ilike',self),('name','ilike',self),('father_name','ilike',self),('grandfather_name','ilike',self),('family_name','ilike',self)]" />
 					<filter string="الموظفين العاملين" name="available_employees"
 						domain="[('emp_state','=','working'), ('employee_state','!=', 'non_active'), ('employee_state','!=', 'oh'), ('employee_state','!=', 'retired')]" />
+					<filter string="مكلف خارجي" name="assigned_employees"
+						domain="['|', ('emp_state','=','outside'),('employee_state','=','outside_assignment')]" />
+					<filter string="مكفوف اليد" name="suspended_employees"
+						domain="['|', ('employee_state','=','oh'),('emp_state','=','suspended')]" />
+					<filter string="مطوي قيده" name="suspended_employees"
+						domain="['|', ('employee_state','=','retired'),('emp_state','=','terminated')]" />
 				</xpath>
 				<xpath expr="//field[@name='name']" position="after">
 					<field name="number" />
@@ -21,11 +27,12 @@
 
 				<!-- Remove Filters -->
 				<xpath expr="//field[@name='category_ids']" position="replace">
-
 				</xpath>
 				<xpath expr="//filter[@name='message_needaction']" position="replace">
 				</xpath>
 				<xpath expr="//filter[@name='inactive']" position="replace">
+				</xpath>
+				<xpath expr="//group[@expand='0']//filter[2]" position="replace">
 				</xpath>
 			</field>
 		</record>
@@ -231,8 +238,8 @@
 
 							<label for="number" class="oe_edit_only" />
 							<h1>
-								<field name="number" placeholder="الرقم الوظيفي"
-									class="oe_smart_inline"  readonly="1"/>
+								<field name="number" placeholder="الرقم الوظيفي" class="oe_smart_inline"
+									readonly="1" />
 
 							</h1>
 							<notebook>
@@ -242,14 +249,14 @@
 											<field name="country_id" options='{"no_open": True, "no_create": True}'
 												widget="selection" attrs="{'required': 1}" domain="[('code_nat','!=',False)]"
 												context="{'compute_name': '_get_natinality'}" />
-											
+
 											<field name="identification_id"
 												attrs="{'required': [('is_saudian','=', True)],'invisible': [('is_saudian','=', False)]}" />
 											<field name="identification_date"
 												attrs="{'invisible': [('is_saudian','=', False)]}" />
 											<field name="identification_place"
 												attrs="{'invisible': [('is_saudian','=', False)]}" />
-											
+
 											<field name="identification_id" string="رقم الإقامة"
 												attrs="{'required': [('is_saudian','=', False)],'invisible': [('is_saudian','=', True)]}" />
 											<field name="identification_date" string="تاريخ إصدار بطاقة الإقامة"
@@ -341,7 +348,7 @@
 											<field name="recruiter" widget="selection" />
 											<field name="recruiter_date" />
 											<field name="begin_work_date" />
-											<field name="calendar_id" />
+											<!-- <field name="calendar_id" /> -->
 											<field name="insurance_type" />
 											<field name="medic_exam" string="تاريخ الفحص الطبي" />
 											<field name="vehicle" />
@@ -478,9 +485,10 @@
 			</field>
 		</record>
 	</data>
-	
+
 	<data noupdate="1">
 		<!-- Remove odoo buttons -->
-		<delete id="hr.hr_employee_action_subordinate_hierachy_mutli" model="ir.values" />
+		<delete id="hr.hr_employee_action_subordinate_hierachy_mutli"
+			model="ir.values" />
 	</data>
 </openerp>

@@ -54,8 +54,105 @@ class import_csv(osv.osv):
   
   
   
-  
-  
+ 
+    def import_loan(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        move_id=''
+        all_move_ids=[]
+        umalqurra = Umalqurra()
+        employee_obj = self.pool.get('hr.employee')
+        bank_obj = self.pool.get('res.bank')
+        loan_obj = self.pool.get('hr.loan')
+        currency_obj = self.pool.get('res.currency')
+        bank_compte = self.pool.get('res.partner.bank')
+        type=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_loan_type_01')[1]
+         
+        move_id=''
+        all_move_ids=[]
+        for row  in reader :  
+            employee=employee_obj.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
+            bank=bank_obj.search(cr, uid, [('bic', '=',str(row['BANK_NO']))])
+            fmt = '%d/%m/%Y'
+            if row['LOAN_START_DATE_HJ'] != 'NULL':
+                try:
+                        dt = datetime.strptime(str(row['LOAN_START_DATE_HJ']), fmt)
+                        start_date = umalqurra.hijri_to_gregorian(dt.year, dt.month, dt.day)
+                        date_first_tranche = date(int(start_date[0]), int(start_date[1]), int(start_date[2]))
+                except:
+                    
+                        date_first_tranche=row['LOAN_START_DATE']
+                   
+                    
+            if row['END_DEDUCTED_DATE_HJ'] != 'NULL':
+                try:
+                        dtf = datetime.strptime(str(row['END_DEDUCTED_DATE_HJ']), fmt)
+                        end_date = umalqurra.hijri_to_gregorian(dtf.year, dtf.month, dtf.day)
+                        date_last_tranche = date(int(end_date[0]), int(end_date[1]), int(end_date[2]))
+                except:
+                    
+                        date_last_tranche=row['END_DEDUCTED_DATE']
+                   
+            if row['DOC_DATE_HJ'] != 'NULL':
+                try:
+                    
+                        dtd = datetime.strptime(str(row['DOC_DATE_HJ']), fmt)
+                        doc_date = umalqurra.hijri_to_gregorian(dtd.year, dtd.month, dtd.day)
+                        date_doc = date(int(doc_date[0]), int(doc_date[1]), int(doc_date[2]))
+                except:
+                    
+                        date_last_tranche=row['END_DEDUCTED_DATE']
+                   
+                   
+                
+            number = float(row['LOAN_AMT']) / (float(row['INSTALLMENT_AMT']) or 1.0)
+            
+            if str(row['LOAN_STATUS'])=='C' or str(row['LOAN_STATUS'])=='1' :
+                state='done'
+            else:
+                state='progress'
+                
+                
+            print date_doc,date_last_tranche,date_first_tranche
+            if bank:
+           
+                    loan_val={
+                                'name':str(row['LOAN_VOUCHER_NO']),
+                                'employee_id':employee[0] if employee else False,
+                                'bank_id':bank[0] if bank else False,
+                                'loan_type_id':type,
+                                'date_from':date_first_tranche,
+                                'date_to':date_last_tranche,
+                                'amount':float(row['LOAN_AMT']),
+                                'monthly_amount':float(row['INSTALLMENT_AMT']),
+                                'date_decision':date_doc,
+                                'number_decision':row['DOC_NO'],
+                                'date': row['TIME_STAMP'],
+                                'installment_number':number,
+                                'state':state,
+                                 
+                                }
+          
+                    loan_obj.create(cr, uid, loan_val,context=context)
+                    
+                    
+                 
+               
+                
+        
+        
+        
+        
+        return True 
   
     def import_echelle_salaire(self, cr, uid, ids, context=None):
         if context is None:
@@ -605,8 +702,11 @@ class import_csv(osv.osv):
                 empid = str(row['MGR_NO'].strip(" "))
             emp_id = employee.search(cr, uid, [('number', '=',empid)])
             exist_dep = departement.search(cr, uid, [('code','=',str(row['LOC_ID']))],context=context)
+            print exist_dep
+            print 'emp_id',emp_id
             if exist_dep:
                 parent = departement.search(cr, uid, [('code','=',str(row['LOC_Parent_ID']))],context=context)
+                print parent
                 departement.browse(cr, uid, exist_dep[0], context=context).write({'parent_id':parent[0] if parent else False,
                                                                                   'manager_id':emp_id[0] if emp_id else False})
 

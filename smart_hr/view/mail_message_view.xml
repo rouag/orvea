@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+
+		<record id="view_form_mail_message" model="ir.ui.view">
+			<field name="name">mail.message.form</field>
+			<field name="model">mail.message</field>
+			<field name="arch" type="xml">
+				<form string="مدينة" create="false" edit="false" delete="false">
+					<sheet>
+						<group>
+							<field name="author_id" />
+							<field name="record_name" />
+							<field name="body" />
+							<field name="ip_address" />
+							<field name="mac_address" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="view_tree_mail_message" model="ir.ui.view">
+			<field name="name">mail.message.tree</field>
+			<field name="model">mail.message</field>
+			<field name="arch" type="xml">
+				<tree string="مدن" class="oe_tree_view">
+					<field name="author_id" />
+					<field name="record_name" />
+					<field name="body" />
+					<field name="ip_address" />
+					<field name="mac_address" />
+
+				</tree>
+			</field>
+		</record>
+		<record id="view_search_mail_message" model="ir.ui.view">
+			<field name="name">mail.message.search</field>
+			<field name="model">mail.message</field>
+			<field name="arch" type="xml">
+				<search string="الرسالة">
+					<field name="author_id" />
+					<field name="ip_address" />
+					<field name="mac_address" />
+				</search>
+			</field>
+		</record>
+		<record id="action_mail_message" model="ir.actions.act_window">
+			<field name="name">الرسالة</field>
+			<field name="res_model">mail.message</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<menuitem id="menu_mail_message" action="action_mail_message"
+			parent="hr_configuration_general_root" name="الرسائل" />
+
+	</data>
+</openerp>
