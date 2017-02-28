@@ -567,18 +567,15 @@ class import_csv(osv.osv):
         all_move_ids=[]
         departement = self.pool.get('hr.department')
         employee = self.pool.get('hr.employee')
-            
         for row  in reader :
-            emp_id = employee.search(cr, uid, [('number', '=',str(row['MGR_NO']))])
+
             daprtment_val={
                             'name':str(row['SHORT_NAME']),
                             'code':str(row['LOC_ID']),
-                            'manager_id':emp_id[0] if emp_id else False,
                             }
-            
+
             departement.create(cr, uid, daprtment_val,context=context)
-        return True
-    
+
     def import_branche_parent(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
@@ -590,90 +587,85 @@ class import_csv(osv.osv):
         targetEncoding = "utf-8"   
         fileobj.write((base64.decodestring(this.data)))   
         fileobj.seek(0)                                    
-        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
         move_id=''
         all_move_ids=[]
         departement = self.pool.get('hr.department')
         employee = self.pool.get('hr.employee')
         for row in reader:
+            if len(str(row['MGR_NO'].strip(" ")))==4:
+                empid = str(0)+str(row['MGR_NO'].strip(" "))
+            elif len(str(row['MGR_NO'].strip(" ")))==3:
+                empid = str(0)+str(0)+str(row['MGR_NO'].strip(" "))
+            elif len(str(row['MGR_NO'].strip(" ")))==2:
+                empid = str(0)+str(0)+str(0)+str(row['MGR_NO'].strip(" "))
+            elif len(str(row['MGR_NO'].strip(" ")))==1:
+                empid = str(0)+str(0)+str(0)+str(0)+str(row['MGR_NO'].strip(" "))
+            else:
+                empid = str(row['MGR_NO'].strip(" "))
+            emp_id = employee.search(cr, uid, [('number', '=',empid)])
             exist_dep = departement.search(cr, uid, [('code','=',str(row['LOC_ID']))],context=context)
             if exist_dep:
                 parent = departement.search(cr, uid, [('code','=',str(row['LOC_Parent_ID']))],context=context)
-                departement.browse(cr, uid, exist_dep[0], context=context).write({'parent_id':parent[0] if parent else False})
-        return True
-    
-    
+                departement.browse(cr, uid, exist_dep[0], context=context).write({'parent_id':parent[0] if parent else False,
+                                                                                  'manager_id':emp_id[0] if emp_id else False})
+
     def emplyee_historique(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
-        this = self.browse(cr, uid, ids[0])   
-        quotechar='"'
-        delimiter=';'
+        this = self.browse(cr, uid, ids[0])
+        quotechar = '"'
+        delimiter = ';'
         fileobj = TemporaryFile('w+')
-        sourceEncoding = 'windows-1252'
-        targetEncoding = "utf-8"   
-        fileobj.write((base64.decodestring(this.data)))   
-        fileobj.seek(0)                                    
-        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
-        move_id=''
-        all_move_ids=[]
+        fileobj.write((base64.decodestring(this.data)))
+        fileobj.seek(0)
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
         employee = self.pool.get('hr.employee')
-        history=self.pool.get('hr.employee.history')
+        history = self.pool.get('hr.employee.history')
         grade = self.pool.get('salary.grid.grade')
-        departement = self.pool.get('hr.department')
-        departement_id = departement.search(cr, uid, [('code', '=','C001')])[0]
-        for row  in reader : 
-            um=False
-            employee_ids= employee.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
-            grade_id= grade.search(cr, uid, [('code', '=',str(row['rank_new']))])
+        for row in reader:
+            empid = str(row['EMP_NO'].strip(" "))
+            employee_ids = employee.search(cr, uid, [('number', '=', empid)])
             fmt = '%d/%m/%Y'
-            date1=False
-            date2=False
-            umalqurra= Umalqurra()
+            date1 = False
+            date2 = False
+            umalqurra = Umalqurra()
             if row['DECISION_DATE_HJ'] != 'NULL':
                     try:
                         dt = datetime.strptime(str(row['DECISION_DATE_HJ']), fmt)
-                        start_date = umalqurra.hijri_to_gregorian(dt.year,dt.month,dt.day)
-                        date1= date(int(start_date[0]), int(start_date[1]), int(start_date[2]))
+                        start_date = umalqurra.hijri_to_gregorian(dt.year, dt.month, dt.day)
+                        date1 = date(int(start_date[0]), int(start_date[1]), int(start_date[2]))
                     except:
-                        date1=False
-                        
-                   
-
-             
-            if row['FIELD_EFF_DATE_HJ']!='NULL':
+                        date1 = False
+            if row['FIELD_EFF_DATE_HJ'] != 'NULL':
                 try:
-                    um_date=HijriDate()
+                    um_date = HijriDate()
                     date_end = datetime.strptime(str(row['FIELD_EFF_DATE_HJ']), fmt)
-                    start_date2 = umalqurra.hijri_to_gregorian(date_end.year,date_end.month,date_end.day)
-                    date2= date(int(start_date2[0]), int(start_date2[1]), int(start_date2[2]))
+                    start_date2 = umalqurra.hijri_to_gregorian(date_end.year, date_end.month, date_end.day)
+                    date2 = date(int(start_date2[0]), int(start_date2[1]), int(start_date2[2]))
                 except:
-                    date2=False
-                    
-          
+                    date2 = False
             if employee_ids:
-                emplyee_obj=employee.browse(cr, uid, employee_ids[0]) 
-                
-                
+                employee_id = employee.browse(cr, uid, employee_ids[0])
+                dep_side = employee_id.user_id.company_id.name
+                grade_id = False
+                grade_ids = grade.search(cr, uid, [('code', '=',row['rank_new'])])
+                if grade_ids:
+                    grade_id=grade_ids[0]
                 history_line_val={
                             'employee_id':employee_ids[0],
                             'type':str(row['ACT_DSCR']),
-                            'num_decision':str(row['ACT_DSCR']),
+                            'num_decision':str(row['DECISION_NO']),
                             'date_decision':date1,
-                            'grade_id':grade_id[0] if grade_id else False,
-                            'department_id':departement_id,
                             'date':date2,
+                            'job_id': str(row['position']),
+                            'dep_side': str(row['side']),
+                            'grade_id':grade_id,
                             }
-            
-            history.create(cr, uid, history_line_val,context=context)
-        
+                history.create(cr, uid, history_line_val,context=context)
+
         return True
-        
 
-                
-                
-
-                 
     def import_passport(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
@@ -1171,7 +1163,7 @@ class import_csv(osv.osv):
                              'royal_decree_number':(row['ROYAL_DECREE_NO']).decode('utf-8').strip(),
                              'royal_decree_date':(row['ROYAL_DECREE_DATE']).decode('utf-8').strip()if  row['ROYAL_DECREE_DATE'] != 'NULL' else  datetime.now(),
                              'department_id':departement_id,
-                             'dep_Side':region_id,
+                             'dep_side':region_id,
                              'insurance_type':insurance_id,
                              'type_id':type_id,
                              
@@ -1366,7 +1358,7 @@ class import_csv(osv.osv):
                              'royal_decree_number':(row['ROYAL_DECREE_NO']).decode('utf-8').strip(),
                              'royal_decree_date':(row['ROYAL_DECREE_DATE']).decode('utf-8').strip()if  row['ROYAL_DECREE_DATE'] != 'NULL' else  datetime.now(),
                              'department_id':departement_id,
-                             'dep_Side':region_id,
+                             'dep_side':region_id,
                              'insurance_type':insurance_id,
                              'type_id':type_id,
                              
@@ -1496,9 +1488,9 @@ class import_csv(osv.osv):
         sourceEncoding = 'windows-1252'
         targetEncoding = "utf-8"   
         
-        fileobj.write((base64.decodestring(this.data)))   
-        fileobj.seek(0)                                    
-        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        fileobj.write((base64.decodestring(this.data)))
+        fileobj.seek(0)
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
         groups = self.pool.get('hr.groupe.job')
                 
         move_id=''
@@ -1532,7 +1524,7 @@ class import_csv(osv.osv):
         
         fileobj.write((base64.decodestring(this.data)))   
         fileobj.seek(0)                                    
-        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
         groups = self.pool.get('hr.groupe.job')
         move_id=''
         all_move_ids=[]
@@ -1541,6 +1533,8 @@ class import_csv(osv.osv):
             groups_ids=groups.search(cr, uid, [('numero', '=',str(row['PAR_GRP_NO']))])
             if groups_ids:
                 parent_id=groups_ids[0]
+                if parent_id == 6:
+                    print str(row['CHI_GRP_NO'])
             print 'name' ,str(row['DSCR_AR'])
             print 'code' ,str(row['CHI_GRP_NO'])
             groups_speacilaite_val={
@@ -2172,11 +2166,9 @@ class import_csv(osv.osv):
         if context is None:
             context = {}
         this = self.browse(cr, uid, ids[0])   
-        quotechar='"'
-        delimiter=';'
+        quotechar = '"'
+        delimiter = ';'
         fileobj = TemporaryFile('w+')
-        sourceEncoding = 'windows-1252'
-        targetEncoding = "utf-8"
         fileobj.write((base64.decodestring(this.data)))
         fileobj.seek(0)
         reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
@@ -2190,6 +2182,31 @@ class import_csv(osv.osv):
                 max_grade_no = salary_grid_grade.search(cr, uid, [('code','=', str(row['MAX_GRADE_NO']))], context=context)
                 min_max_vals = {'rank_from': min_grade_no[0] if min_grade_no else False, 'rank_to': max_grade_no[0] if max_grade_no else False}
                 groups.browse(cr, uid, exist_groups[0], context=context).write(min_max_vals)
+
+    def update_groups_general_code(self, cr, uid, ids, context=None):
+        groups = self.pool.get('hr.groupe.job')
+        for group_id in groups.search(cr, uid, []):
+            group_browse = groups.browse(cr, uid, group_id)
+            new_num = group_browse.numero.strip(" ")
+            group_browse.write({'numero': new_num})
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])
+        quotechar = '"'
+        delimiter = ';'
+        fileobj = TemporaryFile('w+')
+        fileobj.write((base64.decodestring(this.data)))
+        fileobj.seek(0)
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
+        groups = self.pool.get('hr.groupe.job')
+        for row in reader:
+            parent_group = groups.search(cr, uid, [('numero', '=', str(row['PAR_GRP_NO']))], context=context)
+            current_group = groups.search(cr, uid, [('numero', '=', str(row['CHI_GRP_NO']))], context=context)
+            if parent_group and current_group:
+                groups.browse(cr, uid, current_group[0], context=context).write({'parent_id': parent_group[0]})
+        return True
+
+
 
 import_csv()
 

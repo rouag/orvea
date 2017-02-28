@@ -11,7 +11,7 @@ class hr_department(models.Model):
     manager_id = fields.Many2one(advanced_search=True)
     parent_id = fields.Many2one(advanced_search=True, string=u'الادارة الرئيسي')
     dep_city = fields.Many2one('res.city', string=u'المدينة')
-    dep_Side = fields.Many2one('city.side', string=u'الجهة')
+    dep_side = fields.Many2one('city.side', string=u'الجهة')
     code = fields.Char(string=u'الرمز')
     dep_type = fields.Many2one('hr.department.type', string=u'نوع الإدارة')
 
@@ -35,7 +35,7 @@ class hr_department(models.Model):
     @api.onchange('dep_city')
     def _onchange_dep_city(self):
         if self.dep_city :
-            self.dep_Side = self.dep_city.city_side
+            self.dep_side = self.dep_city.city_side
 
 # compute level of department and his parent
     @api.onchange('parent_id')
@@ -49,7 +49,7 @@ class hr_department(models.Model):
                 return {'warning': warning}
             if self.dep_type.level > self.env.ref('smart_hr.data_hr_depatment_type_section').level:
                 self.dep_city = self.parent_id.dep_city
-                self.dep_Side = self.parent_id.dep_Side
+                self.dep_side = self.parent_id.dep_side
 
 
 class CitySide(models.Model):

@@ -1,7 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
+		<!-- Employee Search -->
+		<record id="view_search_hr_employee_inherit" model="ir.ui.view">
+			<field name="name">hr.employee.search.inherit</field>
+			<field name="model">hr.employee</field>
+			<field name="inherit_id" ref="hr.view_employee_filter" />
+			<field name="arch" type="xml">
+				<!-- Add some fields -->
+				<xpath expr="//field[@name='name']" position="replace">
+					<field name="name" string="الإسم"
+						filter_domain="['|','|','|','|',('work_email','ilike',self),('name','ilike',self),('father_name','ilike',self),('grandfather_name','ilike',self),('family_name','ilike',self)]" />
+					<filter string="الموظفين العاملين" name="available_employees"
+						domain="[('emp_state','=','working'), ('employee_state','!=', 'non_active'), ('employee_state','!=', 'oh'), ('employee_state','!=', 'retired')]" />
+				</xpath>
+				<xpath expr="//field[@name='name']" position="after">
+					<field name="number" />
+					<field name="identification_id" />
+				</xpath>
 
+				<!-- Remove Filters -->
+				<xpath expr="//field[@name='category_ids']" position="replace">
+
+				</xpath>
+				<xpath expr="//filter[@name='message_needaction']" position="replace">
+				</xpath>
+				<xpath expr="//filter[@name='inactive']" position="replace">
+				</xpath>
+			</field>
+		</record>
 
 		<!-- الموظفون -->
 
@@ -11,7 +38,7 @@
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
 				<tree string="بيانات موظف">
-					<field name="display_name" />
+					<field name="display_name" string="الاسم" />
 					<field name="number" />
 					<field name="is_member" />
 					<field name="employee_state" />
@@ -24,6 +51,11 @@
 			<field name="res_model">hr.employee</field>
 			<field name="view_mode">kanban,tree,form</field>
 			<field name="domain">[('employee_state','=','employee')]</field>
+			<field name="search_view_id" ref="view_search_hr_employee_inherit" />
+			<field name="context">{
+				'search_default_available_employees': 1
+				}
+			</field>
 		</record>
 
 		<record id="hr_kanban_view_employees_inherit" model="ir.ui.view">
@@ -39,6 +71,18 @@
 					<field name="name" position="after">
 						<field name="display_name" />
 					</field>
+					<xpath expr="//div[@class='o_employee_summary_icons']"
+						position="replace">
+
+					</xpath>
+					<xpath expr="//div[@class='o_kanban_button']" position="replace">
+						<div class="o_kanban_button">
+							<button name="action_unfollow" type="object"
+								class="o_follow_btn o_following btn btn-sm btn-default">
+								<span class="">طباعة</span>
+							</button>
+						</div>
+					</xpath>
 				</data>
 			</field>
 		</record>
@@ -90,11 +134,11 @@
 			<field name="inherit_id" ref="hr.view_employee_tree" />
 			<field name="arch" type="xml">
 				<xpath expr="//tree" position='replace'>
-				<tree>
-					<field name="display_name" string="الموظف" />
-					<field name="number" string="الرقم الوظيفي" />
-					<field name="employee_state" string="الحالة"/>
-				</tree>
+					<tree>
+						<field name="display_name" string="الموظف" />
+						<field name="number" string="الرقم الوظيفي" />
+						<field name="employee_state" string="الحالة" />
+					</tree>
 				</xpath>
 			</field>
 		</record>
@@ -122,6 +166,7 @@
 								attrs="{'invisible': [('employee_state', '!=', 'employee')]}" />
 						</header>
 						<sheet>
+							<field name="is_saudian" invisible="1" />
 							<field name="salary_grid_id" invisible="1" />
 							<div class="oe_button_box" name="button_box" position="inside">
 								<button name="%(smart_hr.action_hr_loan)d" class="oe_stat_button"
@@ -193,16 +238,24 @@
 											<field name="country_id" options='{"no_open": True, "no_create": True}'
 												widget="selection" attrs="{'required': 1}" domain="[('code_nat','!=',False)]"
 												context="{'compute_name': '_get_natinality'}" />
-											<field name="identification_id" attrs="{'required': 1}" />
-											<field name="identification_date" />
-											<field name="identification_place" />
-
+											<field name="identification_id"
+												attrs="{'required': 1,'invisible': [('is_saudian','=', False)]}" />
+											<field name="identification_date"
+												attrs="{'invisible': [('is_saudian','=', False)]}" />
+											<field name="identification_place"
+												attrs="{'invisible': [('is_saudian','=', False)]}" />
+											<field name="identification_id" string="رقم الإقامة"
+												attrs="{'required': 1,'invisible': [('is_saudian','=', True)]}" />
+											<field name="identification_date" string="تاريخ إصدار بطاقة الإقامة"
+												attrs="{'invisible': [('is_saudian','=', True)]}" />
+											<field name="identification_place" string="مكان إصدار بطاقة الإقامة"
+												attrs="{'invisible': [('is_saudian','=', True)]}" />
 										</group>
 										<group>
-											<field name="passport_id" attrs="{'required': 1}" />
-											<field name="passport_date" attrs="{'required': 1}" />
-											<field name="passport_end_date" attrs="{'required': 1}" />
-											<field name="passport_place" attrs="{'required': 1}" />
+											<field name="passport_id" attrs="{'required': [('is_saudian','=', False)]}" />
+											<field name="passport_date" attrs="{'required': [('is_saudian','=', False)]}" />
+											<field name="passport_end_date" attrs="{'required': [('is_saudian','=', False)]}" />
+											<field name="passport_place" attrs="{'required': [('is_saudian','=', False)]}" />
 											<field name="is_resident" attrs="{'required': 1}" />
 										</group>
 									</group>
@@ -231,9 +284,9 @@
 									<group>
 										<group string="بيانات التواصل">
 											<field name="mobile_phone" attrs="{'required': 1}" />
-											<field name="work_location" attrs="{'required': 1}" />
+											<field name="work_location" attrs="{'required': 0}" />
 											<field name="work_email" widget="email" attrs="{'required': 1}" />
-											<field name="work_phone" />
+											<field name="work_phone" string="تحويلة العمل" />
 											<field name="coach_id" invisible="1" />
 											<field name="manager" groups="base.group_no_one" />
 										</group>
@@ -247,7 +300,7 @@
 									<group>
 										<group string="بيانات العمل">
 											<field name="department_id" on_change="onchange_department_id(department_id)" />
-											<field name="dep_Side" options="{'no_create': True}" />
+											<field name="dep_side" options="{'no_create': True}" />
 											<field name="dep_city" options="{'no_create': True}" />
 											<field name="job_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
@@ -340,7 +393,7 @@
 											<field name="job_id" />
 											<field name="grade_id" />
 											<field name="number" />
-											<field name="dep_Side" />
+											<field name="dep_side" />
 											<field name="department_id" />
 											<field name="type" />
 											<field name="date" />
