@@ -350,7 +350,6 @@ class HrTransfertSorting(models.Model):
         self.ensure_one()
         self.line_ids.unlink()
         line_ids = []
-        # TODO: , order=("create_date , employee_id.begin_work_date , employee_id.recruiter_date , employee_id.age desc ")
         transfert_ids = self.env['hr.employee.transfert'].search([('state', '=', 'pm'), ('ready_tobe_done', '=', False)], order=("begin_work_date, create_date, recruiter_date, age desc"))
         if not transfert_ids:
             raise ValidationError(u"لايوجد طلبات حالياً.")
