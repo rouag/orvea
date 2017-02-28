@@ -54,7 +54,7 @@
 											<span t-esc="employee_id.department_id.name" />
 										</td>
 										<td>
-											<span t-esc="employee_id.dep_Side.name" />
+											<span t-esc="employee_id.dep_side.name" />
 										</td>
 										<td>
 											<span t-esc="employee_id.dep_city.name" />

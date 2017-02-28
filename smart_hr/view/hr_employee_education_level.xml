@@ -13,7 +13,11 @@
 							<field name="level_education_id" required="1" />
 							<field name="job_specialite" required="1" />
 							<field name="diploma_id" />
+								<field name="qualification_id" />
+								<field name="specialization_ids" widget="many2many_tags" />
 							<field name="diploma_date" />
+							<field name="governmental_entity" />
+							<field name="university_entity" />
 						</group>
 
 					</sheet>
@@ -28,8 +32,14 @@
 				<tree string="المستوى التعليمي" class="oe_tree_view">
 					<field name="level_education_id" />
 					<field name="diploma_id" />
+					<field name="qualification_id" />
+					
+						<field name="specialization_ids" />
 					<field name="diploma_date" />
 					<field name="job_specialite" />
+					
+					<field name="governmental_entity" />
+					<field name="university_entity" />
 
 				</tree>
 			</field>
@@ -56,6 +66,8 @@
 							<field name="nomber_year_education" />
 							<field name="secondary" />
 							<field name="not_secondary" />
+							<field name="governmental_entity" />
+							<field name="university_entity" />
 						</group>
 					</sheet>
 				</form>
@@ -71,6 +83,8 @@
 					<field name="diploma_id" />
 					<field name="specialization_ids" />
 					<field name="nomber_year_education" />
+					<field name="governmental_entity" />
+					<field name="university_entity" />
 				</tree>
 			</field>
 		</record>
@@ -99,7 +113,8 @@
 							</group>
 							<group>
 								<field name="specialization_ids" required="1" widget="many2many_tags" />
-								<field name="governmental_entity" />
+								
+								
 								
 							</group>
 						</group>

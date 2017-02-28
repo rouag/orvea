@@ -82,7 +82,7 @@
 											<field name="job_id" />
 											<field name="grade_id" />
 											<field name="number" />
-											<field name="dep_Side" />
+											<field name="dep_side" />
 											<field name="department_id" />
 											<field name="type" />
 											<field name="date" />
