@@ -10,6 +10,7 @@ from openerp.addons.smart_base.util.umalqurra import *
 
 class hrLoan(models.Model):
     _name = 'hr.loan'
+    _inherit = ['mail.thread']
     _description = u'القرض'
     _order = 'id desc'
 

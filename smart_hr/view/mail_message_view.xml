@@ -2,7 +2,6 @@
 <openerp>
 	<data>
 
-		<!-- Cities -->
 		<record id="view_form_mail_message" model="ir.ui.view">
 			<field name="name">mail.message.form</field>
 			<field name="model">mail.message</field>
