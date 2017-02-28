@@ -24,7 +24,7 @@ class HrEmployee(models.Model):
 
     number = fields.Char(string=u'الرقم الوظيفي', required=1)
     gender = fields.Selection([('male', 'Male'), ('female', 'Female'),], string=u'الجنس')
-    marital =  fields.Selection([('single', 'Single'), ('married', 'Married'), ('widower', 'Widower'), ('divorced', 'Divorced'), ('mariie', 'محصن'), ('not_mariee', 'غير محصن'),('other', 'غير ذلك')], string=u'الجنس')
+    marital = fields.Selection([('single', 'Single'), ('married', 'Married'), ('widower', 'Widower'), ('divorced', 'Divorced')], string=u'الجنس')
     identification_date = fields.Date(string=u'تاريخ إصدار بطاقة الهوية ')
     identification_place = fields.Many2one('res.city', string=u'مكان إصدار بطاقة الهوية')
     father_name = fields.Char(string=u'إسم الأب', required=1)
