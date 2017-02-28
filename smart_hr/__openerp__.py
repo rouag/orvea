@@ -24,6 +24,7 @@
         'data/relegion_data.xml',
 
         'hr_menu.xml',
+        'view/sequence_view.xml',
         'data/sequences.xml',
         'data/configurations.xml',
         'holidays/data/hr_holidays_data.xml',
@@ -85,7 +86,8 @@
         'hr/view/hr_setting.xml',
         'hr/view/hr_employee_lend_view.xml',
         'hr/view/hr_employee_comm_view.xml',
-        "hr_promotions/views/report_promotion.xml",
+       
+        'hr_promotions/views/report_promotion.xml',
         'hr/view/hr_employee_task_view.xml',
         
         
