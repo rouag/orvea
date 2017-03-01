@@ -103,7 +103,9 @@ class HrEmployee(models.Model):
     royal_decree_number = fields.Char(string=u'رقم الأمر الملكي')
     royal_decree_date = fields.Date(string=u'تاريخ الأمر الملكي ')
     training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'سجل التدريبات')
+    manager_id = fields.Many2one('hr.employee', string=u'المدير المباشر')
 
+    
     @api.multi
     def _compute_loans_count(self):
         for rec in self:

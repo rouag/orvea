@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <openerp>
-	<data noupdate="1">
+	<data>
 
 		<!-- Leave Types -->
 
@@ -8,6 +8,10 @@
 			<field name="name">إجازة عادية</field>
 			<field name="minimum" eval="5" />
 			<field name="postponement_period" eval="90" />
+			<field name="extension_number" eval="1" />
+			<field name="maximum_days_by_year" eval="120" />
+			<field name="direct_decision" eval="True" />
+			<field name="salary_spending" eval="True"/>
 		</record>
 
 		<record id="data_hr_holiday_status_exceptional" model="hr.holidays.status">
@@ -20,6 +24,7 @@
 			<field name="is_extensible" eval="True" />
 			<field name="external_decision" eval="True" />
 			<field name="direct_decision" eval="False" />
+			<field name="salary_spending" eval="False"/>
 		</record>
 
 		<record id="data_hr_holiday_status_illness" model="hr.holidays.status">
@@ -90,7 +95,6 @@
 
 		<record id="data_hr_holiday_dialysis" model="hr.holidays.status">
 			<field name="name">إجازة غسيل كلى</field>
-			<field name="need_decision" eval="True" />
 		</record>
 
 		<record id="data_hr_holiday_literaty" model="hr.holidays.status">
@@ -113,34 +117,7 @@
 		<record id="data_hr_holiday_compensation" model="hr.holidays.status">
 			<field name="name">اجازة التعويض</field>
 		</record>
-		<record id="data_hr_holidays_status_salary_percentage_normal_holiday1"
-			model="hr.holidays.status.salary.percentage">
-			<field name="sequence" eval="0" />
-			<field name="periode" eval="6" />
-			<field name="salary_proportion" eval="100" />
-			<field name="holiday_status_id" ref="data_hr_holiday_status_illness" />
-		</record>
-		<record id="data_hr_holidays_status_salary_percentage_normal_holiday2"
-			model="hr.holidays.status.salary.percentage">
-			<field name="sequence" eval="1" />
-			<field name="periode" eval="6" />
-			<field name="salary_proportion" eval="50" />
-			<field name="holiday_status_id" ref="data_hr_holiday_status_illness" />
-		</record>
-		<record id="data_hr_holidays_status_salary_percentage_normal_holiday3"
-			model="hr.holidays.status.salary.percentage">
-			<field name="sequence" eval="2" />
-			<field name="periode" eval="6" />
-			<field name="salary_proportion" eval="25" />
-			<field name="holiday_status_id" ref="data_hr_holiday_status_illness" />
-		</record>
-		<record id="data_hr_holidays_status_salary_percentage_normal_holiday3"
-			model="hr.holidays.status.salary.percentage">
-			<field name="sequence" eval="3" />
-			<field name="periode" eval="6" />
-			<field name="salary_proportion" eval="0" />
-			<field name="holiday_status_id" ref="data_hr_holiday_status_illness" />
-		</record>
+
 		<record id="data_hr_holiday_entitlement_all" model="hr.holidays.entitlement.config">
 			<field name="name"> الكل</field>
 			<field name="code">all</field>

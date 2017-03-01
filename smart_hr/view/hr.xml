@@ -312,7 +312,8 @@
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 
 
-											<field name="parent_id" string="المدير المباشر" />
+											<field name="parent_id" string="المدير " />
+											<field name="manager_id" string="المدير المباشر" />
 											<field name="service_duration" attrs="{'readonly': 1}" />
 											<field name="promotion_duration" attrs="{'readonly': 1}" />
 											<field name="royal_decree_number" />

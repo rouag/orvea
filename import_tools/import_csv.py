@@ -357,6 +357,7 @@ class import_csv(osv.osv):
                             }
 
             departement.create(cr, uid, daprtment_val,context=context)
+        return True
 
     def import_branche_parent(self, cr, uid, ids, context=None):
         if context is None:
@@ -389,62 +390,45 @@ class import_csv(osv.osv):
             exist_dep = departement.search(cr, uid, [('code','=',str(row['LOC_ID']))],context=context)
             if exist_dep:
                 parent = departement.search(cr, uid, [('code','=',str(row['LOC_Parent_ID']))],context=context)
-                departement.browse(cr, uid, exist_dep[0], context=context).write({'parent_id':parent[0] if parent else False,
-                                                                                  'manager_id':emp_id[0] if emp_id else False})
-
-    def emplyee_historique(self, cr, uid, ids, context=None):
+                departement.browse(cr, uid, exist_dep[0], context=context).write({'parent_id':parent[0] if parent else False})
+                print str(row['LOC_ID'])
+        return True
+    
+    
+    def import_branche_manager(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
-        this = self.browse(cr, uid, ids[0])
-        quotechar = '"'
-        delimiter = ';'
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
         fileobj = TemporaryFile('w+')
-        fileobj.write((base64.decodestring(this.data)))
-        fileobj.seek(0)
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
         reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
+        move_id=''
+        all_move_ids=[]
+        departement = self.pool.get('hr.department')
         employee = self.pool.get('hr.employee')
-        history = self.pool.get('hr.employee.history')
-        grade = self.pool.get('salary.grid.grade')
         for row in reader:
-            empid = str(row['EMP_NO'].strip(" "))
-            employee_ids = employee.search(cr, uid, [('number', '=', empid)])
-            fmt = '%d/%m/%Y'
-            date1 = False
-            date2 = False
-            umalqurra = Umalqurra()
-            if row['DECISION_DATE_HJ'] != 'NULL':
-                    try:
-                        dt = datetime.strptime(str(row['DECISION_DATE_HJ']), fmt)
-                        start_date = umalqurra.hijri_to_gregorian(dt.year, dt.month, dt.day)
-                        date1 = date(int(start_date[0]), int(start_date[1]), int(start_date[2]))
-                    except:
-                        date1 = False
-            if row['FIELD_EFF_DATE_HJ'] != 'NULL':
-                try:
-                    um_date = HijriDate()
-                    date_end = datetime.strptime(str(row['FIELD_EFF_DATE_HJ']), fmt)
-                    start_date2 = umalqurra.hijri_to_gregorian(date_end.year, date_end.month, date_end.day)
-                    date2 = date(int(start_date2[0]), int(start_date2[1]), int(start_date2[2]))
-                except:
-                    date2 = False
-            if employee_ids:
-                employee_id = employee.browse(cr, uid, employee_ids[0])
-                dep_side = employee_id.user_id.company_id.name
-                grade_id = False
-                grade_ids = grade.search(cr, uid, [('code', '=',row['rank_new'])])
-                if grade_ids:
-                    grade_id=grade_ids[0]
-                history_line_val={
-                            'employee_id':employee_ids[0],
-                            'type':str(row['ACT_DSCR']),
-                            'num_decision':str(row['DECISION_NO']),
-                            'date_decision':date1,
-                            'date':date2,
-                            'job_id': str(row['position']),
-                            'dep_side': str(row['side']),
-                            'grade_id':grade_id,
-                            }
-                history.create(cr, uid, history_line_val,context=context)
+            if len(str(row['MGR_NO'].strip(" ")))==4:
+                empid = str(0)+str(row['MGR_NO'].strip(" "))
+            elif len(str(row['MGR_NO'].strip(" ")))==3:
+                empid = str(0)+str(0)+str(row['MGR_NO'].strip(" "))
+            elif len(str(row['MGR_NO'].strip(" ")))==2:
+                empid = str(0)+str(0)+str(0)+str(row['MGR_NO'].strip(" "))
+            elif len(str(row['MGR_NO'].strip(" ")))==1:
+                empid = str(0)+str(0)+str(0)+str(0)+str(row['MGR_NO'].strip(" "))
+            else:
+                empid = str(row['MGR_NO'].strip(" "))
+            emp_id = employee.search(cr, uid, [('number', '=',empid)])
+            exist_dep = departement.search(cr, uid, [('code','=',str(row['LOC_ID']))],context=context)
+            if exist_dep and emp_id:
+                duplicated = employee.search(cr, uid, [('department_id','=',exist_dep[0]),('id','=',emp_id[0])],context=context)
+                if duplicated:
+                    dup_emp = employee.browse(cr, uid,duplicated[0]).number
+                    print dup_emp
 
         return True
 
@@ -1216,13 +1200,33 @@ class import_csv(osv.osv):
         all_move_ids=[]
         employee = self.pool.get('hr.employee')
         for row  in reader : 
-            employee_ids_parent= employee.search(cr, uid, [('number', '=',str(row['MGR_NO']))])
-            employee_ids_file= employee.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
+            if len(str(row['MGR_NO'].strip(" ")))==4:
+                employee_id_parent = str(0)+str(row['MGR_NO'].strip(" "))
+            elif len(str(row['MGR_NO'].strip(" ")))==3:
+                employee_id_parent = str(0)+str(0)+str(row['MGR_NO'].strip(" "))
+            elif len(str(row['MGR_NO'].strip(" ")))==2:
+                employee_id_parent = str(0)+str(0)+str(0)+str(row['MGR_NO'].strip(" "))
+            elif len(str(row['MGR_NO'].strip(" ")))==1:
+                employee_id_parent = str(0)+str(0)+str(0)+str(0)+str(row['MGR_NO'].strip(" "))
+            else:
+                employee_id_parent = str(row['MGR_NO'].strip(" "))
+            employee_ids_parent= employee.search(cr, uid, [('number', '=',employee_id_parent)])
+            if len(str(row['EMP_NO'].strip(" ")))==4:
+                employee_id = str(0)+str(row['EMP_NO'].strip(" "))
+            elif len(str(row['EMP_NO'].strip(" ")))==3:
+                employee_id = str(0)+str(0)+str(row['EMP_NO'].strip(" "))
+            elif len(str(row['EMP_NO'].strip(" ")))==2:
+                employee_id = str(0)+str(0)+str(0)+str(row['EMP_NO'].strip(" "))
+            elif len(str(row['EMP_NO'].strip(" ")))==1:
+                employee_id= str(0)+str(0)+str(0)+str(0)+str(row['EMP_NO'].strip(" "))
+            else:
+                employee_id = str(row['EMP_NO'].strip(" "))
+            employee_ids_file= employee.search(cr, uid, [('number', '=',employee_id)])
             if employee_ids_parent and employee_ids_file  :
                 if employee_ids_parent[0] != employee_ids_file[0]:
                     try:
                         emplyee_obj_file=employee.browse(cr, uid, employee_ids_file[0]) 
-                        emplyee_obj_file.write( {'parent_id': employee_ids_parent[0]}, ) 
+                        emplyee_obj_file.write( {'manager_id': employee_ids_parent[0]}, ) 
                     except:
                         False
         return True   

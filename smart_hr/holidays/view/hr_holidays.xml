@@ -389,14 +389,14 @@
 
 							<field name="percentages">
 								<tree editable="bottom" string="نسب الراتب المحتسبة">
+									<field name="entitlement_id" />
 									<field name="month_from" required="1" />
 									<field name="month_to" required="1" />
 									<field name="salary_proportion" required="1" />
-
 								</tree>
 							</field>
 
-							<group col="10">
+							<group col="3">
 								<group string="القرارات و الضوابط">
 									<field name="need_decision" />
 									<field name="direct_decision" />
@@ -419,17 +419,18 @@
 									<field name="minimum" />
 									<field name="maximum" />
 									<field name="postponement_period" />
-
 								</group>
 								<group string="الأثر المالي">
 									<field name="salary_spending" />
-
 									<field name="traveling_ticket" />
 									<field name="traveling_family_ticket" />
 									<field name="transport_allowance" />
 									<field name="min_amount" />
 									<field name="pension_percent" />
 								</group>
+							</group>
+							<group col="2">
+
 
 								<group string=" المخطط‬‫ الانسيابي‬ ">
 
@@ -507,11 +508,11 @@
 		</record>
 
 		<record id="view_tree_hr_holidays_status_entitlement" model="ir.ui.view">
-			<field name="name">hr.holidays.status.entitlement.tree</field>
+			<field name="name">salary_percentage.tree</field>
 			<field name="model">hr.holidays.status.entitlement</field>
 			<field name="arch" type="xml">
 				<tree string=" استحقاقات الاجازات">
-						<field name="leave_type" />
+					<field name="leave_type" />
 					<field name="entitlment_category" />
 					<field name="holiday_stock_default" />
 					<field name="periode" />
@@ -528,9 +529,41 @@
 				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
 			</field>
 		</record>
-		
+
 		<menuitem id="menu_hr_holidays_status_entitlement" action="action_hr_holidays_status_entitlement"
-			parent="menu_hr_holidays_status_root" name="استحقاقات الاجازات"  sequence="100"/>
+			parent="menu_hr_holidays_status_root" name="استحقاقات الاجازات"
+			sequence="100" groups="smart_hr.group_sys_manager" />
+
+		<record id="view_tree_hr_holidays_status_entitlement" model="ir.ui.view">
+			<field name="name">hr.holidays.status.salary.percentage.tree</field>
+			<field name="model">hr.holidays.status.salary.percentage</field>
+			<field name="arch" type="xml">
+				<tree string=" نسب الراتب المحتسبة في الاجازات">
+					<field name="month_from" />
+					<field name="month_to" />
+					<field name="salary_proportion" />
+					<field name="holiday_status" />
+					<field name="entitlement_id" />
+
+				</tree>
+			</field>
+		</record>
+
+		<record id="action_hr_holidays_status_salary_percentage" model="ir.actions.act_window">
+			<field name="name">نسب الراتب المحتسبة في الاجازات</field>
+			<field name="res_model">hr.holidays.status.salary.percentage</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+
+		<menuitem id="menu_hr_holidays_status_salary_percentage"
+			action="action_hr_holidays_status_salary_percentage" parent="menu_hr_holidays_status_root"
+			name="نسب الراتب المحتسبة في الاجازات" sequence="110"
+			groups="smart_hr.group_sys_manager" />
+
 
 	</data>
 	<data noupdate="1">
