@@ -102,6 +102,7 @@
         'views/report_point_decinne.xml',
         'views/report_hr_direct_appoint.xml',
         'views/hr_employee_functionnal_card_report.xml',
+        'views/hr_employee_card_report.xml',
         'report/reports.xml',
         'report/hr_suspension_end_report.xml',
         'report/hr_suspension_report.xml',
@@ -253,4 +254,5 @@
 
     ],
     'auto_install': False,
+    'sequence': 150,
 }

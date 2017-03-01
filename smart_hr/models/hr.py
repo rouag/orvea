@@ -103,6 +103,11 @@ class HrEmployee(models.Model):
     royal_decree_number = fields.Char(string=u'رقم الأمر الملكي')
     royal_decree_date = fields.Date(string=u'تاريخ الأمر الملكي ')
     training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'سجل التدريبات')
+    state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
+    employee_card_id = fields.Many2one('hr.employee.functionnal.card')
+    residance_id = fields.Char(string=u'رقم الإقامة ')
+    residance_date = fields.Date(string=u'تاريخ إصدار بطاقة الإقامة ')
+    residance_place = fields.Many2one('res.city', string=u'مكان إصدار بطاقة الإقامة')
 
     
     state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
@@ -111,10 +116,10 @@ class HrEmployee(models.Model):
     @api.model
     def create(self, vals):
         res = super(HrEmployee, self).create(vals)
-        number_id = self.env['hr.employee.number'].search([])
+        number_id = self.env['hr.employee.configuration'].search([])
         if number_id:
-            res.number= int(number_id[0].name) + 1
-            number_id.write({'name':res.number})
+            res.number= number_id[0].number + 1
+            number_id.write({'number':res.number})
         return res
 
 
@@ -216,16 +221,16 @@ class HrEmployee(models.Model):
                 if years > -1:
                     emp.age = years
 
-
-
-
-
-    @api.one
+    @api.multi
     @api.constrains('identification_id')
     def _check_constraints(self):
-        if len(self.identification_id) != 10:
-                    raise Warning(_('الرجاء التثبت من رقم الهوية.'))
-    
+        for rec in self:
+            if rec.is_saudian:
+                if len(rec.identification_id) != 10:
+                        raise Warning(_('الرجاء التثبت من رقم الهوية.'))
+            if not rec.is_saudian:
+                if len(rec.identification_id) != 10:
+                        raise Warning(_('الرجاء التثبت من رقم الإقامة.'))
 
     @api.one
     def action_send(self):
@@ -417,18 +422,24 @@ class HrQualificationEstimate(models.Model):
     name = fields.Char(string='المسمّى')
     code = fields.Char(string=u'الرمز')
     
-class HrEmployeeNumber(models.Model):
-    _name = 'hr.employee.number'
-    _description = u'الرقم الوظيفي'
+# class HrEmployeeNumber(models.Model):
+#     _name = 'hr.employee.number'
+#     _description = u'الرقم الوظيفي'
+# 
+#     name = fields.Integer(string='الرقم الوظيفي')
+#     
+# class HrEmployeeCardValidity(models.Model):
+#     _name = 'hr.employee.card.validity'
+#     
+#     _description = u'مدة صلاحية بطاقة الموظف'
+#     name = fields.Integer(string='مدة صلاحية بطاقة الموظف (بالسنة)')
 
-    name = fields.Char(string='الرقم الوظيفي')
-    
-class HrEmployeeCardValidity(models.Model):
-    _name = 'hr.employee.card.validity'
-    _description = u'مدة صلاحية بطاقة الموظف'
-
-    name = fields.Integer(string='مدة صلاحية بطاقة الموظف')
-
+class HrEmployeeConfiguration(models.Model):
+    _name = 'hr.employee.configuration'
+    _rec_name ='number'
+    _description = u'إعدادات الموظف'
+    number = fields.Integer(string='الرقم الوظيفي')
+    period = fields.Integer(string='مدة صلاحية بطاقة الموظف (بالسنة)')
 
 class HrEmployeeEvaluation(models.Model):
     _name = 'hr.employee.evaluation.level'
@@ -447,9 +458,6 @@ class HrEmployeeDiploma(models.Model):
     name = fields.Char(string=u'المسمّى')
     specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص')
     code = fields.Char(string=u'الرمز')
-    qualification_id = fields.Many2one('hr.qualification.estimate', string=u' تقدير المؤهل العلمي')
-    governmental_entity = fields.Many2one('res.partner', string=u'المؤسسة العلمية ', domain=[('company_type', '=', 'school')])
-    university_entity = fields.Many2one('res.partner', string=u'الكلية', domain=[('company_type', '=', 'faculty')])
 
 class HrEmployeeSpecialization(models.Model):
     _name = 'hr.employee.specialization'

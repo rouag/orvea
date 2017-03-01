@@ -72,11 +72,12 @@ class HrEmployeeFunctionnalCard(models.Model):
     @api.multi
     def button_accept_hrm(self):
         self.ensure_one()
-        card_validity = self.env['hr.employee.card.validity'].search([], limit=1)
+        card_validity = self.env['hr.employee.configuration'].search([], limit=1)
         if card_validity:
-            periode_validity = card_validity.name
+            periode_validity = card_validity.period
             self.start_date = fields.Datetime.now()
             self.end_date = (fields.Date.from_string(self.start_date) + relativedelta(years=+int(periode_validity)))
+            self.employee_id.write({'employee_card_id': self.id})
             self.state = 'done'
 
     @api.multi
@@ -88,3 +89,4 @@ class HrEmployeeFunctionnalCard(models.Model):
     def button_refuse_hrm(self):
         self.ensure_one()
         self.state = 'refuse'
+

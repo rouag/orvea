@@ -2,7 +2,7 @@
 <openerp>
 	<data>
 
-		<menuitem id="users_list" name="المستخدمون" sequence="1"
+		<menuitem id="users_list" name="إدارة النظام" sequence="1"
 			parent="hr_users_creation" action="base.action_res_users" />
 
 

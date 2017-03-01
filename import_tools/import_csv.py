@@ -22,7 +22,7 @@ from datetime import datetime
 from umalqurra.hijri_date import HijriDate
 from umalqurra.hijri import Umalqurra
 from datetime import date
-
+from dateutil.relativedelta import relativedelta
 
 class import_csv(osv.osv):
     
@@ -52,8 +52,7 @@ class import_csv(osv.osv):
    
 
   
-  
-  
+    
  
     def import_loan(self, cr, uid, ids, context=None):
         if context is None:
@@ -76,7 +75,6 @@ class import_csv(osv.osv):
         currency_obj = self.pool.get('res.currency')
         bank_compte = self.pool.get('res.partner.bank')
         type=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'hr_loan_type_01')[1]
-         
         move_id=''
         all_move_ids=[]
         for row  in reader :  
@@ -123,7 +121,7 @@ class import_csv(osv.osv):
                 
                 
             print date_doc,date_last_tranche,date_first_tranche
-            if bank:
+            if bank and not loan_obj.search(cr, uid, [('name', '=',str(row['LOAN_VOUCHER_NO']))]):
            
                     loan_val={
                                 'name':str(row['LOAN_VOUCHER_NO']),
@@ -146,6 +144,76 @@ class import_csv(osv.osv):
                     
                     
                  
+               
+                
+        
+        
+        
+        
+        return True 
+    
+    def import_loan_ligne(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        move_id=''
+        all_move_ids=[]
+        umalqurra = Umalqurra()
+        employee_obj = self.pool.get('hr.employee')
+        loan_line_obj = self.pool.get('hr.loan.line')
+        loan_obj = self.pool.get('hr.loan')
+       
+        fmt = '%d/%m/%Y'
+        move_id=''
+        all_move_ids=[]
+        loan_ids=loan_obj.search(cr, uid,  [('state', '=','progress')])
+        date_now= datetime.now()
+        print len(loan_ids)
+        i=0
+#         for lon_id  in loan_ids : 
+#             loan= loan_obj.browse(cr, uid, lon_id)
+#             if loan.state=="progress":
+#                 for line_number in range (loan.installment_number):
+#                     date1=datetime.strptime(loan.date_from,"%Y-%m-%d")
+#                    
+#                     line_month=date1+ relativedelta(date1.month+i)
+#                     line_months=line_month.strftime('%Y-%m-%d')
+#                     um = HijriDate()
+#                     dates = str(line_months).split('-')
+#                    
+#                     um.set_date_from_gr(int(dates[0]), int(dates[1]), int(dates[2]))
+#                     i=i+1
+#                     if line_month<datetime.now():
+#                         state='done'
+#                     else:
+#                          state='progress'
+#                         
+#                    
+#                     month_val = {   'loan_id': loan.id,
+#                                      'amount': loan.monthly_amount,
+#                                      'month': str(int(um.month)).zfill(2),
+#                                      'state':state,
+#                              }
+#                    
+#                     loan_line_obj.create(cr, uid, month_val,context=context)
+#                     
+#                     
+#                         
+#                     
+#                     
+#               
+#                    
+                   
+                
+          
                
                 
         
