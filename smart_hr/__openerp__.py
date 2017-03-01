@@ -254,4 +254,5 @@
 
     ],
     'auto_install': False,
+    'sequence': 150,
 }
