@@ -51,9 +51,15 @@ class ResourceCalendarAttendance(models.Model):
 class hr_attendance(models.Model):
     _inherit = 'hr.attendance'
     _order = 'name desc,id'
-
+ 
+   
+    
+    
+   
     id_emprinte = fields.Char(string=u'رقم ')
     mac_id = fields.Char(string=u'الآلة ')
+   
+
 
     def _altern_si_so(self, cr, uid, ids, context=None):
         """  Rewrite this function to remove this test :

@@ -85,7 +85,8 @@
         'hr/view/hr_setting.xml',
         'hr/view/hr_employee_lend_view.xml',
         'hr/view/hr_employee_comm_view.xml',
-        "hr_promotions/views/report_promotion.xml",
+       
+        'hr_promotions/views/report_promotion.xml',
         'hr/view/hr_employee_task_view.xml',
         
         
@@ -135,6 +136,7 @@
         'view/res_users.xml',
         'view/employee_situation_order.xml',
         'view/hr_improve_situation_view.xml',
+        'view/mail_message_view.xml',
 
         # sanction
         'sanction/security/ir.model.access.csv',

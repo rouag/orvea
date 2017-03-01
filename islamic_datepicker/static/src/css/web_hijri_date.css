@@ -1,35 +1,41 @@
+content th.oe_list_header_date
 
- content th.oe_list_header_date
-
-.openerp th.oe_list_header_datetime{
-    min-width: 128px ! important;
+.openerp th.oe_list_header_datetime {
+	min-width: 128px ! important;
 }
 
-.openerp .oe_simple_date{
-    min-height: 0px ! important;
+.openerp .oe_simple_date {
+	min-height: 0px ! important;
 }
 
 .calandar_hijri {
-    margin-bottom: 5px ! important;
+	margin-bottom: 5px ! important;
 }
+
 .oe_datepicker_islamic {
-    margin: 0 0 2px ! important;
+	margin: 0 0 2px ! important;
 }
 
 select.calendars-month-year {
-    width: 100px;
-    display: inline-block;
-    padding: inherit;
+	width: 100px;
+	display: inline-block;
+	padding: inherit;
 }
 
-.calandar_picker{
-min-width : 235px;
+.calandar_picker {
+	min-width: 235px;
 }
 
-.sl_timepicker{
-    width : 60% ;
+.sl_timepicker {
+	width: 60%;
 }
-.o_form_required_date{
-	    border: 1px solid rgba(179, 31, 31, 0.8) !important;
-	        border-radius: 5px !important;
+
+.o_form_required div input {
+	border: 1px solid rgba(179, 31, 31, 0.8) !important;
+	border-radius: 5px !important;
+}
+
+.o_form_required input {
+	border: 1px solid rgba(179, 31, 31, 0.8) !important;
+	border-radius: 5px !important;
 }

@@ -3,7 +3,17 @@
 	<data>
 
 
-
+		<!-- Department filter -->
+		<record id="view_department_filter_inherit" model="ir.ui.view">
+			<field name="name">Departments</field>
+			<field name="model">hr.department</field>
+			<field name="inherit_id" ref="hr.view_department_filter" />
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='name']" position="after">
+					<field name="dep_type" />
+				</xpath>
+			</field>
+		</record>
 		<!-- Department Hierarchy -->
 
 		<record id="hr_department_tree_view_level" model="ir.ui.view">
@@ -47,15 +57,21 @@
 								<group>
 									<field name="name" />
 									<field name="code" />
-									<field name="dep_type" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
-									<field name="manager_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									<field name="dep_type"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									<field name="manager_id"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								</group>
 								<group>
-									<field name="parent_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
-									<field name="company_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+									<field name="parent_id"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									<field name="company_id"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 										groups="base.group_multi_company" />
-									<field name="dep_side" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-									<field name="dep_city" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									<field name="dep_side"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									<field name="dep_city"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								</group>
 
 							</group>
@@ -93,17 +109,20 @@
 							<group>
 								<li>
 									المسؤول:
-									<field name="manager_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+									<field name="manager_id"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 
 								</li>
 								<li>
 									المدينة:
-									<field name="dep_city" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+									<field name="dep_city"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 
 								</li>
 								<li>
 									الجهة:
-									<field name="dep_side" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									<field name="dep_side"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 
 								</li>
 
@@ -145,18 +164,18 @@
 				</form>
 			</field>
 		</record>
-		
-				<record id="view_side_tree" model="ir.ui.view">
+
+		<record id="view_side_tree" model="ir.ui.view">
 			<field name="name">city.side.tree</field>
 			<field name="model">city.side</field>
 			<field name="arch" type="xml">
 				<tree string="الجهات الجغرافية">
-							<field name="name" />
-							<field name="code" />
+					<field name="name" />
+					<field name="code" />
 				</tree>
 			</field>
 		</record>
-		
+
 		<record model="ir.actions.act_window" id="action_side">
 			<field name="name">الجهات الجغرافية</field>
 			<field name="res_model">city.side</field>
@@ -164,7 +183,7 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 
-		<menuitem id="hr_configuration_side" name="الجهات الجغرافية" sequence="34"
-			parent="hr_configuration_general_root" action="action_side" />
+		<menuitem id="hr_configuration_side" name="الجهات الجغرافية"
+			sequence="34" parent="hr_configuration_general_root" action="action_side" />
 	</data>
 </openerp>
