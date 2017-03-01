@@ -11,7 +11,6 @@
 			<field name="extension_number" eval="1" />
 			<field name="maximum_days_by_year" eval="120" />
 			<field name="direct_decision" eval="True" />
-			<field name="salary_spending" eval="True"/>
 		</record>
 
 		<record id="data_hr_holiday_status_exceptional" model="hr.holidays.status">
@@ -24,16 +23,18 @@
 			<field name="is_extensible" eval="True" />
 			<field name="external_decision" eval="True" />
 			<field name="direct_decision" eval="False" />
-			<field name="salary_spending" eval="False"/>
+			<field name="salary_spending" eval="True"/>
 		</record>
 
 		<record id="data_hr_holiday_status_illness" model="hr.holidays.status">
 			<field name="name">إجازة مرضيّة</field>
+			<field name="salary_spending" eval="True"/>
 		</record>
 
 
 		<record id="data_hr_holiday_status_study" model="hr.holidays.status">
 			<field name="name">إجازة دراسية</field>
+			<field name="salary_spending" eval="True"/>
 		</record>
 
 
@@ -63,7 +64,7 @@
 			<field name="is_extensible" eval="True" />
 			<field name="direct_director_decision" eval="False" />
 			<field name="direct_decision" eval="False" />
-
+			<field name="salary_spending" eval="True"/>
 		</record>
 
 		<record id="data_hr_holiday_status_childbirth" model="hr.holidays.status">
@@ -73,11 +74,13 @@
 		<record id="data_hr_holiday_status_maternity" model="hr.holidays.status">
 			<field name="name">إجازة أُمومة</field>
 			<field name="postponement_period" eval="60" />
+			<field name="pension_percent" eval="100" />
 		</record>
 
 		<record id="data_hr_holiday_status_adoption" model="hr.holidays.status">
 			<field name="name"> إجازة حضانة</field>
 			<field name="postponement_period" eval="60" />
+			<field name="pension_percent" eval="100" />
 		</record>
 
 		<record id="data_hr_holiday_child_birth_dad" model="hr.holidays.status">

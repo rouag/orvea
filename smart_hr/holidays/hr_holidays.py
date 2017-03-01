@@ -1310,6 +1310,9 @@ class HrHolidaysStatus(models.Model):
 class HrHolidaysStatusEntitlement(models.Model):
     _name = 'hr.holidays.status.entitlement'
     _description = u'أنواع الاستحقاقات'
+    
+    
+    name = fields.Char(string=u'نوع الاستحقاق', advanced_search=True)
     entitlment_category = fields.Many2one('hr.holidays.entitlement.config', string=u'خاصيّة الإجازة')
     holiday_stock_default = fields.Integer(string=u'الرصيد (يوم)')
     conditionnal = fields.Boolean(string=u'مشروط')
@@ -1329,7 +1332,14 @@ class HrHolidaysStatusEntitlement(models.Model):
     leave_type = fields.Many2one('hr.holidays.status', string=u'نوع الإجازة')
 #     holiday_stock_open = fields.Boolean(string=u'الرصيد مفتوح')
     extension_period = fields.Integer(string=u'مدة تمديد الرصيد(سنة)', default=0)
-
+    
+    @api.multi
+    def name_get(self):
+        result = []
+        for record in self:
+            name = '[%s] %s' % (record.leave_type.name, record.entitlment_category.name)
+            result.append((record.id, name))
+        return result
 
 class HrHolidaysStatusSalaryPercentage(models.Model):
     _name = 'hr.holidays.status.salary.percentage'
@@ -1339,7 +1349,7 @@ class HrHolidaysStatusSalaryPercentage(models.Model):
     month_from = fields.Integer(string=u'عدد الأشهر (من)')
     month_to = fields.Integer(string=u'عدد الأشهر (إلى)')
     salary_proportion = fields.Float(string=u'نسبة الراتب (%)', default=100) 
-    holiday_status = fields.Many2one('hr.holidays.status', string='holiday status')
+    holiday_status = fields.Many2one('hr.holidays.status', string='نوع الإجازة')
     entitlement_id = fields.Many2one('hr.holidays.status.entitlement', string=u'نوع الاستحقاق')
 
 
@@ -1349,6 +1359,4 @@ class EntitlementConfig(models.Model):
 
     name = fields.Char(string=u'المسمّى')
     code = fields.Char(string='code')
-
-
 
