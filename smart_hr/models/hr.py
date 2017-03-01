@@ -113,10 +113,10 @@ class HrEmployee(models.Model):
     @api.model
     def create(self, vals):
         res = super(HrEmployee, self).create(vals)
-        number_id = self.env['hr.employee.number'].search([])
+        number_id = self.env['hr.employee.configuration'].search([])
         if number_id:
-            res.number= int(number_id[0].name) + 1
-            number_id.write({'name':res.number})
+            res.number= number_id[0].number + 1
+            number_id.write({'number':res.number})
         return res
 
 
@@ -423,18 +423,24 @@ class HrQualificationEstimate(models.Model):
     name = fields.Char(string='المسمّى')
     code = fields.Char(string=u'الرمز')
     
-class HrEmployeeNumber(models.Model):
-    _name = 'hr.employee.number'
-    _description = u'الرقم الوظيفي'
+# class HrEmployeeNumber(models.Model):
+#     _name = 'hr.employee.number'
+#     _description = u'الرقم الوظيفي'
+# 
+#     name = fields.Integer(string='الرقم الوظيفي')
+#     
+# class HrEmployeeCardValidity(models.Model):
+#     _name = 'hr.employee.card.validity'
+#     
+#     _description = u'مدة صلاحية بطاقة الموظف'
+#     name = fields.Integer(string='مدة صلاحية بطاقة الموظف (بالسنة)')
 
-    name = fields.Char(string='الرقم الوظيفي')
-    
-class HrEmployeeCardValidity(models.Model):
-    _name = 'hr.employee.card.validity'
-    _description = u'مدة صلاحية بطاقة الموظف'
-
-    name = fields.Integer(string='مدة صلاحية بطاقة الموظف (بالسنة)')
-
+class HrEmployeeConfiguration(models.Model):
+    _name = 'hr.employee.configuration'
+    _rec_name ='number'
+    _description = u'إعدادات الموظف'
+    number = fields.Integer(string='الرقم الوظيفي')
+    period = fields.Integer(string='مدة صلاحية بطاقة الموظف (بالسنة)')
 
 class HrEmployeeEvaluation(models.Model):
     _name = 'hr.employee.evaluation.level'
