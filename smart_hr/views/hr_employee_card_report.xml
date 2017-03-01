@@ -28,6 +28,9 @@
 									</strong>
 								</div>
 								<div class="col-xs-4">
+									<img class="emppic" height="150"
+										t-att-src="'data:image/png;base64,%s' % o.image"
+										width="100" />
 								</div>
 							</div>
 							<br></br>
