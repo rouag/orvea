@@ -160,6 +160,17 @@
 			<field name="name">خارج المملكة‬</field>
 			<field name="code">sport</field>
 		</record>
+		
+		
+			<!--بداية الرقم الوظيفي -->
+		<record id="data_hr_employee_number" model="hr.employee.number">
+			<field name="name">0000‬</field>
+		</record>
+		<!-- مدة صلاحية بطاقة الموظف -->
+		<record id="data_hr_employee_card_validity" model="hr.employee.card.validity">
+			<field name="name">2</field>
+		</record>
+		
 
 	</data>
 </openerp>

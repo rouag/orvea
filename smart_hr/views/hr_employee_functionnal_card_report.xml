@@ -192,7 +192,7 @@
 								</tr>
 								<tr t-foreach="o.history_ids" t-as="line">
 									<td>
-										<span t-esc="line.job_id.name.name" />
+										<span t-esc="line.job_id" />
 									</td>
 									<td>
 										<span t-esc="line.grade_id.name" />

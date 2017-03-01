@@ -63,7 +63,11 @@ class hr_suspension_end(models.Model):
             duration = (release_date-suspension_date).days
             self.env['hr.employee.promotion.history'].decrement_promotion_duration(self.employee_id,duration)
             self.employee_id.service_duration-= duration
-#         self.create_report_attachment()
+            holiday_balance = self.env['hr.employee.holidays.stock'].search ([('employee_id', '=', self.employee_id.id),
+                                                           ('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id),
+                                                                         ])
+            holidays_available_stock = holiday_balance.holidays_available_stock  - duration
+            holiday_balance.write({'holidays_available_stock':  holidays_available_stock})
         self.state = 'done'
         
         
