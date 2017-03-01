@@ -150,7 +150,10 @@ class HrEmployee(models.Model):
     def _compute_is_saudian(self):
         for rec in self:
             if rec.country_id:
+                print rec.is_saudian
                 rec.is_saudian = (rec.country_id.code_nat == 'SA')
+                print rec.is_saudian
+            print rec.is_saudian
 
     @api.constrains('recruiter_date', 'begin_work_date')
     def recruiter_date_begin_work_date(self):
@@ -428,7 +431,7 @@ class HrEmployeeCardValidity(models.Model):
     _name = 'hr.employee.card.validity'
     _description = u'مدة صلاحية بطاقة الموظف'
 
-    name = fields.Integer(string='مدة صلاحية بطاقة الموظف')
+    name = fields.Integer(string='مدة صلاحية بطاقة الموظف (بالسنة)')
 
 
 class HrEmployeeEvaluation(models.Model):
