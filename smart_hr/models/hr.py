@@ -105,7 +105,7 @@ class HrEmployee(models.Model):
     training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'سجل التدريبات')
     manager_id = fields.Many2one('hr.employee', string=u'المدير المباشر')
     state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
-
+    employee_card_id = fields.Many2one('hr.employee.functionnal.card')
 
     @api.model
     def create(self, vals):
