@@ -28,6 +28,7 @@
 		</record>
 		<record id="data_hr_authority_board_setting" model="hr.authority.board.setting">
 			<field name="name">إعدادات مجلس الهيئة</field>
+			<field name="users_number" eval="7" />
 		</record>
 
 	</data>
