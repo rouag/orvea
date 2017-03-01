@@ -86,7 +86,7 @@
 					</xpath>
 					<xpath expr="//div[@class='o_kanban_button']" position="replace">
 						<div class="o_kanban_button">
-							<button name="action_unfollow" type="object"
+							<button name="%(report_hr_employee_card)d" type="action"
 								class="o_follow_btn o_following btn btn-sm btn-default">
 								<span class="">طباعة</span>
 							</button>

@@ -8,18 +8,16 @@
 			<field name="model">hr.employee.functionnal.card</field>
 			<field name="arch" type="xml">
 				<form string=" بطاقة وظيفية">
-				<button accesskey="E" invisible="1"></button>
+					<button accesskey="E" invisible="1"></button>
 					<header>
 
 						<button name="%(report_hr_employee_functionnal_card_report)d"
 							string="طباعة بطاقة وظيفية" type="action" icon="fa-print"
 							class="oe_inline oe_stat_button" states="done" />
-							
-								<button name="%(report_hr_employee_card_report)d"
-							string="طباعة بطاقة موظف" type="action" icon="fa-print"
-							class="oe_inline oe_stat_button" states="done" />
+
 						<button name="button_send_request" string="إرسال طلب" type="object"
-							states="draft" icon="fa-paper-plane" class="oe_inline oe_stat_button" groups="smart_hr.group_employee_request,smart_hr.group_hrm"
+							states="draft" icon="fa-paper-plane" class="oe_inline oe_stat_button"
+							groups="smart_hr.group_employee_request,smart_hr.group_hrm"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="button_accept_hrm" string="موافق" type="object"
 							states="hrm" groups="smart_hr.group_hrm" icon="fa-check"
@@ -38,7 +36,8 @@
 						</group>
 						<group>
 							<group>
-								<field name="employee_id" required="1" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+								<field name="employee_id" required="1"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 									attrs="{'readonly':[('state','!=', 'draft')]}" />
 							</group>
 							<group attrs="{'invisible':[('state','=', 'draft')]}">
@@ -51,8 +50,7 @@
 						</group>
 						<notebook>
 
-							<page string="البيانات الشخصية"
-								attrs="{'invisible':[('state','=', 'draft')]}">
+							<page string="البيانات الشخصية" attrs="{'invisible':[('state','=', 'draft')]}">
 								<group>
 									<field name="birthday" />
 									<field name="emp_age" />
@@ -65,8 +63,7 @@
 									<field name="specialization_ids" widget="many2many_tags" />
 								</group>
 							</page>
-							<page
-								attrs="{'invisible':[('state','=', 'draft')]}">
+							<page attrs="{'invisible':[('state','=', 'draft')]}">
 								string="بيانات العمل">
 								<group>
 
@@ -96,16 +93,16 @@
 									</field>
 								</group>
 							</page>
-							<page string="التدريب" 	attrs="{'invisible':[('state','=', 'draft')]}">
+							<page string="التدريب" attrs="{'invisible':[('state','=', 'draft')]}">
 
 								<group>
 									<field name="training_ids">
-									<tree>
-											<field name="training_id" string="الدورة"/>
-											<field name="date_from" string="التاريخ"/>
+										<tree>
+											<field name="training_id" string="الدورة" />
+											<field name="date_from" string="التاريخ" />
 											<field name="number_of_days" />
 											<field name="place" />
-											</tree>
+										</tree>
 									</field>
 								</group>
 							</page>
@@ -141,8 +138,9 @@
 			</field>
 		</record>
 
-		<menuitem id="menu_hr_employee_functionnal_card" action="action_hr_employee_functionnal_card" string="بطاقة وظيفية"
-			sequence="100" parent="hr_root_employees" groups="smart_hr.group_employee_request,smart_hr.group_hrm"/>
+		<menuitem id="menu_hr_employee_functionnal_card" action="action_hr_employee_functionnal_card"
+			string="بطاقة وظيفية" sequence="100" parent="hr_root_employees"
+			groups="smart_hr.group_employee_request,smart_hr.group_hrm" />
 	</data>
 </openerp>
 			

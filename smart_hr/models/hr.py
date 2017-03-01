@@ -105,6 +105,7 @@ class HrEmployee(models.Model):
     training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'سجل التدريبات')
     manager_id = fields.Many2one('hr.employee', string=u'المدير المباشر')
     state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
+    employee_card_id = fields.Many2one('hr.employee.functionnal.card')
     residance_id = fields.Char(string=u'رقم الإقامة ')
     residance_date = fields.Date(string=u'تاريخ إصدار بطاقة الإقامة ')
     residance_place = fields.Many2one('res.city', string=u'مكان إصدار بطاقة الإقامة')
