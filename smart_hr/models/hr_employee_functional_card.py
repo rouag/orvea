@@ -10,8 +10,8 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FO
 
 class HrEmployeeFunctionnalCard(models.Model):
     _name = 'hr.employee.functionnal.card'
-    _description = u'بطاقة موظف' 
-
+    _description = u'بطاقة موظف'
+    
     name=fields.Char(string='رقم بطاقة')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1, readonly=1)
     number = fields.Char(string=u'الرقم الوظيفي', related="employee_id.number", readonly=1)
@@ -33,8 +33,8 @@ class HrEmployeeFunctionnalCard(models.Model):
     passport_date = fields.Date(string=u'تاريخ إصدار جواز السفر ', related='employee_id.passport_date', readonly=1)
     passport_place = fields.Char(string=u'مكان إصدار جواز السفر', related='employee_id.passport_place', readonly=1)
     date = fields.Date(string=u'التاريخ ', default=fields.Datetime.now(), readonly=1)
-    expiration_date = fields.Date(string=u'تاريخ إنتهاء الصلاحية ')
-    first_date = fields.Date(string=u'تاريخ بدأ البطاقة  ')
+    start_date = fields.Date(string=u'تاريخ بدأ الصلاحية  ', readonly=1)
+    end_date = fields.Date(string=u'تاريخ إنتهاء الصلاحية ', readonly=1)
     state = fields.Selection([('draft', u'طلب'),
                               ('hrm', u'مدير شؤون الموظفين'),
                               ('done', u'اعتمدت'),
@@ -53,8 +53,6 @@ class HrEmployeeFunctionnalCard(models.Model):
                 if level.job_specialite:
                     self.education_level = level.level_education_id.id
                     break
-                    
-            
 
     @api.one
     @api.depends('employee_id')
@@ -63,20 +61,7 @@ class HrEmployeeFunctionnalCard(models.Model):
         if last_decision_appoint:
             self.last_salary = last_decision_appoint.basic_salary
             self.degree_id = last_decision_appoint.degree_id.id
-            
-#     @api.one
-#     @api.depends('first_date')
-#     def _compute_card_validity(self):
-#         card_validity = self.env['hr.employee.card.validity'].search([], limit=1)
-#         if card_validity:
-#             date_validity = card_validity.name
-#             print"direct_appoint_period",date_validity
-#            # prev_days_end = fields.Date.from_string(self.first_date) + relativedelta(years=date_validity)
-#            # print"prev_days_end",prev_days_end
-#             
-#               
-#             
-#  
+
     @api.model
     def create(self, vals):
         res = super(HrEmployeeFunctionnalCard, self).create(vals)
@@ -87,8 +72,12 @@ class HrEmployeeFunctionnalCard(models.Model):
     @api.multi
     def button_accept_hrm(self):
         self.ensure_one()
-        self.first_date = fields.Datetime.now()
-        self.state = 'done'
+        card_validity = self.env['hr.employee.card.validity'].search([], limit=1)
+        if card_validity:
+            periode_validity = card_validity.name
+            self.start_date = fields.Datetime.now()
+            self.end_date = (fields.Date.from_string(self.start_date) + relativedelta(years=+int(periode_validity)))
+            self.state = 'done'
 
     @api.multi
     def button_send_request(self):
