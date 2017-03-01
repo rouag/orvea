@@ -14,6 +14,10 @@
 						<button name="%(report_hr_employee_functionnal_card_report)d"
 							string="طباعة بطاقة وظيفية" type="action" icon="fa-print"
 							class="oe_inline oe_stat_button" states="done" />
+							
+								<button name="%(report_hr_employee_card_report)d"
+							string="طباعة بطاقة موظف" type="action" icon="fa-print"
+							class="oe_inline oe_stat_button" states="done" />
 						<button name="button_send_request" string="إرسال طلب" type="object"
 							states="draft" icon="fa-paper-plane" class="oe_inline oe_stat_button" groups="smart_hr.group_employee_request,smart_hr.group_hrm"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />

@@ -107,7 +107,6 @@
 							<group>
 								<field name="name" required="1" />
 								<field name="code" required="1" />
-									<field name="qualification_id"  />
 								
 
 							</group>
