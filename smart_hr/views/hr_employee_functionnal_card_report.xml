@@ -30,7 +30,6 @@
 									</strong>
 								</p>
 								<br />
-								<br />
 								<p>
 									<b>الهوية الوطنية:</b>
 									<strong>
@@ -38,8 +37,6 @@
 									</strong>
 								</p>
 								<br />
-								<br />
-
 
 								<p>
 									<b>المسمى الوظيفي:</b>
@@ -47,7 +44,6 @@
 										<span t-field="o.employee_id.job_id" />
 									</strong>
 								</p>
-								<br />
 								<br />
 								<p>
 									<t t-if="o.employee_id.is_member == False">
@@ -57,7 +53,6 @@
 										</strong>
 
 										<br />
-										<br />
 									</t>
 								</p>
 								<p>
@@ -66,7 +61,6 @@
 										<span t-field="o.department_id" />
 									</strong>
 								</p>
-								<br />
 								<br />
 								<p>
 									<b>تاريخ الإنتهاء:</b>
@@ -78,9 +72,6 @@
 							
 			
 						
-						<br />
-						<br />
-						<br />
 
 
 					</t>
