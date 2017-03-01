@@ -104,10 +104,8 @@ class HrEmployee(models.Model):
     royal_decree_date = fields.Date(string=u'تاريخ الأمر الملكي ')
     training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'سجل التدريبات')
     manager_id = fields.Many2one('hr.employee', string=u'المدير المباشر')
-
-    
     state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
-  
+
 
     @api.model
     def create(self, vals):
@@ -224,7 +222,8 @@ class HrEmployee(models.Model):
     @api.one
     @api.constrains('identification_id')
     def _check_constraints(self):
-        if len(self.identification_id) != 10:
+        for rec in self :
+            if len(rec.identification_id) != 10:
                     raise Warning(_('الرجاء التثبت من رقم الهوية.'))
     
 
