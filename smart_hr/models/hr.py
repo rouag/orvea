@@ -218,10 +218,6 @@ class HrEmployee(models.Model):
                 if years > -1:
                     emp.age = years
 
-
-
-
-
     @api.multi
     @api.constrains('identification_id')
     def _check_constraints(self):
