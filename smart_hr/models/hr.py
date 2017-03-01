@@ -451,9 +451,6 @@ class HrEmployeeDiploma(models.Model):
     name = fields.Char(string=u'المسمّى')
     specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص')
     code = fields.Char(string=u'الرمز')
-    qualification_id = fields.Many2one('hr.qualification.estimate', string=u' تقدير المؤهل العلمي')
-    governmental_entity = fields.Many2one('res.partner', string=u'المؤسسة العلمية ', domain=[('company_type', '=', 'school')])
-    university_entity = fields.Many2one('res.partner', string=u'الكلية', domain=[('company_type', '=', 'faculty')])
 
 class HrEmployeeSpecialization(models.Model):
     _name = 'hr.employee.specialization'
