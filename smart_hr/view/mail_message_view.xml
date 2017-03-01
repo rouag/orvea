@@ -9,9 +9,10 @@
 				<form string="مدينة" create="false" edit="false" delete="false">
 					<sheet>
 						<group>
-							<field name="author_id" />
+							<field name="author_id" string="المستخدم" />
 							<field name="record_name" />
 							<field name="body" />
+							<field name="create_date" />
 							<field name="ip_address" />
 							<field name="mac_address" />
 						</group>
@@ -27,6 +28,7 @@
 					<field name="author_id" />
 					<field name="record_name" />
 					<field name="body" />
+					<field name="create_date" />
 					<field name="ip_address" />
 					<field name="mac_address" />
 
@@ -39,6 +41,7 @@
 			<field name="arch" type="xml">
 				<search string="الرسالة">
 					<field name="author_id" />
+					<field name="create_date" />
 					<field name="ip_address" />
 					<field name="mac_address" />
 				</search>
@@ -50,8 +53,8 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-		<menuitem id="menu_mail_message" action="action_mail_message"
-			parent="hr_configuration_general_root" name="الرسائل" />
+		<menuitem id="menu_mail_message" action="action_mail_message" sequence="30"
+			parent="hr_users_creation" name="متابعة النظام" />
 
 	</data>
 </openerp>

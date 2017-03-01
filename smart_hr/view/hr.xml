@@ -265,10 +265,10 @@
 												attrs="{'invisible': [('is_saudian','=', True)]}" />
 										</group>
 										<group>
-											<field name="passport_id" attrs="{'required': 1}" />
-											<field name="passport_date" attrs="{'required': 1}" />
-											<field name="passport_end_date" attrs="{'required': 1}" />
-											<field name="passport_place" attrs="{'required': 1}" />
+											<field name="passport_id" attrs="{'required': [('is_saudian','=', False)]}" />
+											<field name="passport_date" attrs="{'required': [('is_saudian','=', False)]}" />
+											<field name="passport_end_date" attrs="{'required': [('is_saudian','=', False)]}" />
+											<field name="passport_place" attrs="{'required': [('is_saudian','=', False)]}" />
 											<field name="is_resident" attrs="{'required': 1}" />
 										</group>
 									</group>
@@ -297,9 +297,9 @@
 									<group>
 										<group string="بيانات التواصل">
 											<field name="mobile_phone" attrs="{'required': 1}" />
-											<field name="work_location" attrs="{'required': 1}" />
+											<field name="work_location" attrs="{'required': 0}"  />
 											<field name="work_email" widget="email" attrs="{'required': 1}" />
-											<field name="work_phone" />
+											<field name="work_phone" string="تحويلة العمل"/>
 											<field name="coach_id" invisible="1" />
 											<field name="manager" groups="base.group_no_one" />
 										</group>
@@ -349,7 +349,7 @@
 											<field name="recruiter" widget="selection" />
 											<field name="recruiter_date" />
 											<field name="begin_work_date" />
-											<!-- <field name="calendar_id" /> -->
+											<field name="calendar_id" />
 											<field name="insurance_type" />
 											<field name="medic_exam" string="تاريخ الفحص الطبي" />
 											<field name="vehicle" />

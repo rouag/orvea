@@ -151,6 +151,10 @@ class hrLoanLine(models.Model):
     amount = fields.Float(string='قيمة القسط', required=1)
     date = fields.Date('تاريخ الحسم', required=False)
     month = fields.Selection(MONTHS, string='الشهر')
+    state = fields.Selection([
+                              ('progress', ' غير مسدد'),
+                              ('done', ' مسدد'),
+                              ], string='الحالة', readonly=1, default='progress')
 
 
 class hrLoanHistory(models.Model):
