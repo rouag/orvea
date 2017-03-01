@@ -105,6 +105,9 @@ class HrEmployee(models.Model):
     training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'سجل التدريبات')
     manager_id = fields.Many2one('hr.employee', string=u'المدير المباشر')
     state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
+    residance_id = fields.Char(string=u'رقم الإقامة ')
+    residance_date = fields.Date(string=u'تاريخ إصدار بطاقة الإقامة ')
+    residance_place = fields.Many2one('res.city', string=u'مكان إصدار بطاقة الإقامة')
 
 
     @api.model
@@ -148,10 +151,7 @@ class HrEmployee(models.Model):
     def _compute_is_saudian(self):
         for rec in self:
             if rec.country_id:
-                print rec.is_saudian
                 rec.is_saudian = (rec.country_id.code_nat == 'SA')
-                print rec.is_saudian
-            print rec.is_saudian
 
     @api.constrains('recruiter_date', 'begin_work_date')
     def recruiter_date_begin_work_date(self):
@@ -222,13 +222,16 @@ class HrEmployee(models.Model):
 
 
 
-    @api.one
+    @api.multi
     @api.constrains('identification_id')
     def _check_constraints(self):
-        for rec in self :
-            if len(rec.identification_id) != 10:
-                    raise Warning(_('الرجاء التثبت من رقم الهوية.'))
-    
+        for rec in self:
+            if rec.is_saudian:
+                if len(rec.identification_id) != 10:
+                        raise Warning(_('الرجاء التثبت من رقم الهوية.'))
+            if not rec.is_saudian:
+                if len(rec.identification_id) != 10:
+                        raise Warning(_('الرجاء التثبت من رقم الإقامة.'))
 
     @api.one
     def action_send(self):
