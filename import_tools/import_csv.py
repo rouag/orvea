@@ -1619,7 +1619,7 @@ class import_csv(osv.osv):
                 if employee_ids_parent[0] != employee_ids_file[0]:
                     try:
                         emplyee_obj_file=employee.browse(cr, uid, employee_ids_file[0]) 
-                        emplyee_obj_file.write( {'manager_id': employee_ids_parent[0]}, ) 
+                        emplyee_obj_file.write( {'parent_id': employee_ids_parent[0]}, ) 
                     except:
                         False
         return True   

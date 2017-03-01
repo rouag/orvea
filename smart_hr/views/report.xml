@@ -69,20 +69,20 @@
 			<field name="download_filename">${o.name}_نموذج تحويل مستوصف.pdf</field>
 		</record>
 
-<!-- 		<record id="report_hr_overtime_report" model="ir.actions.report.xml"> -->
-<!-- 			<field name="paperformat_id" ref="report.paperformat_euro" /> -->
-<!-- 			<field name="download_filename">${o.name}_قرار خارج دوام.pdf</field> -->
-<!-- 		</record> -->
+		<!-- <record id="report_hr_overtime_report" model="ir.actions.report.xml"> -->
+		<!-- <field name="paperformat_id" ref="report.paperformat_euro" /> -->
+		<!-- <field name="download_filename">${o.name}_قرار خارج دوام.pdf</field> -->
+		<!-- </record> -->
 
 
 
 		<report id="hr_decision_report" model="hr.decision"
 			name="smart_hr.report_hr_decision" report_type="qweb-pdf" string="طباعة"
-			file="smart_hr.report_hr_decision"    />
+			file="smart_hr.report_hr_decision" />
 
 		<report id="hr_direct_appoint_report" model="hr.direct.appoint"
-			name="smart_hr.report_hr_direct_appoint" report_type="qweb-pdf"  
-			string="قرار مباشرة التعين" file="smart_hr.report_hr_direct_appoint"   />
+			name="smart_hr.report_hr_direct_appoint" report_type="qweb-pdf"
+			string="قرار مباشرة التعين" file="smart_hr.report_hr_direct_appoint" />
 
 
 		<report id="report_hr_employee_functionnal_card_report" model="hr.employee.functionnal.card"
@@ -94,11 +94,18 @@
 			<field name="download_filename">${o.employee_id.name}_بطاقة وظيفية.pdf</field>
 		</record>
 
-<report id="report_hr_employee_card_report" model="hr.employee.functionnal.card"
-			string="بطاقة موظف" report_type="qweb-pdf"
-			name="smart_hr.hr_employee_card_report" file="smart_hr.hr_employee_card_report"
-			menu="False" />
+	<!-- 	<report id="report_hr_employee_card_report" model="hr.employee.functionnal.card"
+			string="بطاقة موظف" report_type="qweb-pdf" name="smart_hr.hr_employee_card_report"
+			file="smart_hr.hr_employee_card_report" menu="False" />
 		<record id="report_hr_employee_card_report" model="ir.actions.report.xml">
+			<field name="paperformat_id" ref="smart_base.paperformat_landscape_card" />
+			<field name="download_filename">${o.employee_id.name}_بطاقة موظف.pdf</field>
+		</record> -->
+
+		<report id="report_hr_employee_card" model="hr.employee"
+			string="بطاقة موظف" report_type="qweb-pdf" name="smart_hr.hr_employee_card_report"
+			file="smart_hr.hr_employee_card_report" menu="False" />
+		<record id="report_hr_employee_card" model="ir.actions.report.xml">
 			<field name="paperformat_id" ref="smart_base.paperformat_landscape_card" />
 			<field name="download_filename">${o.employee_id.name}_بطاقة موظف.pdf</field>
 		</record>

@@ -1092,3 +1092,23 @@ msgstr "البنوك"
 msgid "You can not have two users with the same login !"
 msgstr "لا يمكن انشاء اثنين من المستخدمين  بنفس البريد الإلكتروني"
 
+
+#. module: base
+#: code:addons/model.py:137
+#, python-format
+msgid ""
+"The operation cannot be completed, probably due to the following:\n"
+"- deletion: you may be trying to delete a record while other records still reference it\n"
+"- creation/update: a mandatory field is not correctly set"
+msgstr "لا يمكن أن تكتمل العملية، وربما يرجع ذلك إلى ما يلي:\n"
+"-  الحذف : قد يكون محاولة لحذف سجل أثناء سجلات أخرى لا يزال مرجع له\n"
+"- إنشاء / تحديث: لم يتم تعيين حقل إلزامي بشكل صحيح\n"
+
+#. module: base
+#: code:addons/model.py:152
+#, python-format
+msgid ""
+"\n"
+"\n"
+"[object with reference: %s - %s]"
+msgstr "\n\n[الكائن: %s - %s]"

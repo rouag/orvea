@@ -161,14 +161,11 @@
 			<field name="code">sport</field>
 		</record>
 		
-		
-			<!--بداية الرقم الوظيفي -->
-		<record id="data_hr_employee_number" model="hr.employee.number">
-			<field name="name">0000‬</field>
-		</record>
-		<!-- مدة صلاحية بطاقة الموظف -->
-		<record id="data_hr_employee_card_validity" model="hr.employee.card.validity">
-			<field name="name">2</field>
+	
+		<!-- إعدادات الموظف -->
+		<record id="data_hr_employee_configuration" model="hr.employee.configuration">
+			<field name="period">2</field>
+			<field name="number">000000</field>
 		</record>
 		
 

@@ -16,7 +16,7 @@
 							}
 						</style>
 						<div>
-							<div class="  text-center">
+							<div class="text-center">
 								<h4>
 									<span t-field="o.department_id" />
 								</h4>
@@ -24,12 +24,12 @@
 							<div class="col-xs-12">
 								<div class="col-xs-8 text-center">
 									<strong>
-										<span t-field="o.emp_name" />
+										<span t-field="o.display_name" />
 									</strong>
 								</div>
 								<div class="col-xs-4">
 									<img class="emppic" height="150"
-										t-att-src="'data:image/png;base64,%s' % o.employee_id.image"
+										t-att-src="'data:image/png;base64,%s' % o.image"
 										width="100" />
 								</div>
 							</div>
@@ -39,19 +39,24 @@
 								<span t-field="o.identification_id" />
 							</p>
 							<p>
+								<b>رقم البطاقة:</b>
+								<span t-field="o.number" />
+							</p>
+							
+							<p>
 								<b>المسمى الوظيفي:</b>
-								<span t-field="o.employee_id.job_id" />
+								<span t-field="o.job_id" />
 							</p>
 							<p>
-								<t t-if="o.employee_id.is_member == False">
+								<t t-if="o.is_member == False">
 									<b>المرتبة:</b>
-									<span t-field="o.employee_id.grade_id" />
+									<span t-field="o.grade_id" />
 								</t>
 							</p>
 
 							<p>
 								<b>تاريخ الإنتهاء:</b>
-								<span t-esc="get_hijri_date(o.expiration_date, '-')" />
+								<span t-esc="get_hijri_date(o.employee_card_id.end_date, '-')" />
 							</p>
 						</div>
 						<br></br>

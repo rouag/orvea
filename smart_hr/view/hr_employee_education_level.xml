@@ -13,8 +13,8 @@
 							<field name="level_education_id" required="1" />
 							<field name="job_specialite" required="1" />
 							<field name="diploma_id" />
-								<field name="qualification_id" />
-								<field name="specialization_ids" widget="many2many_tags" />
+							<field name="qualification_id" />
+							<field name="specialization_ids" widget="many2many_tags" />
 							<field name="diploma_date" />
 							<field name="governmental_entity" />
 							<field name="university_entity" />
@@ -33,11 +33,11 @@
 					<field name="level_education_id" />
 					<field name="diploma_id" />
 					<field name="qualification_id" />
-					
-						<field name="specialization_ids" />
+
+					<field name="specialization_ids" />
 					<field name="diploma_date" />
 					<field name="job_specialite" />
-					
+
 					<field name="governmental_entity" />
 					<field name="university_entity" />
 
@@ -107,14 +107,14 @@
 							<group>
 								<field name="name" required="1" />
 								<field name="code" required="1" />
-								
+
 
 							</group>
 							<group>
 								<field name="specialization_ids" required="1" widget="many2many_tags" />
-								
-								
-								
+
+
+
 							</group>
 						</group>
 					</sheet>
@@ -175,7 +175,7 @@
 				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
 			</field>
 		</record>
-		
+
 		<record id="view_form_hr_qualification_estimate" model="ir.ui.view">
 			<field name="name">hr.qualification.estimate.form</field>
 			<field name="model">hr.qualification.estimate</field>
@@ -210,79 +210,49 @@
 				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
 			</field>
 		</record>
-		
-		
-		
-		<record id="view_form_hr_employee_number" model="ir.ui.view">
-			<field name="name">hr.employee.number.form</field>
-			<field name="model">hr.employee.number</field>
+
+
+
+
+
+		<record id="view_form_hr_employee_configuration" model="ir.ui.view">
+			<field name="name">hr.employee.configuration.form</field>
+			<field name="model">hr.employee.configuration</field>
 			<field name="arch" type="xml">
-				<form string="الرقم الوظيفي" create='0' delete='0' duplicate='0'>
+				<form string="إعدادات الموظف" create='0' delete='0'
+					duplicate='0'>
 					<sheet>
 						<group>
-							<field name="name" required="1" />
-
+							<field name="number" required="1" />
+							<field name="period" required="1" />
 						</group>
 
 					</sheet>
 				</form>
 			</field>
 		</record>
-		<record id="view_tree_hr_employee_number" model="ir.ui.view">
-			<field name="name">hr.employee.number.tree</field>
-			<field name="model">hr.employee.number</field>
+		<record id="view_tree_hr_employee_configuration" model="ir.ui.view">
+			<field name="name">hr.employee.configuration.tree</field>
+			<field name="model">hr.employee.configuration</field>
 			<field name="arch" type="xml">
-				<tree string="الرقم الوظيفي" class="oe_tree_view"  create='0' delete='0' duplicate='0'>
-					<field name="name" />
+				<tree string="إعدادات الموظف" class="oe_tree_view"
+					create='0' delete='0' duplicate='0'>
+					<field name="number" required="1" />
+							<field name="period" required="1" />
 				</tree>
 			</field>
 		</record>
-		<record id="action_hr_employee_number" model="ir.actions.act_window">
-			<field name="name">بداية الرقم الوظيفي </field>
-			<field name="res_model">hr.employee.number</field>
+		<record id="action_hr_employee_configuration" model="ir.actions.act_window">
+			<field name="name">إعدادات الموظف </field>
+			<field name="res_model">hr.employee.configuration</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="help" type="html">
 				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
 			</field>
 		</record>
-		
-		
-		<record id="view_form_hr_employee_card_validity" model="ir.ui.view">
-			<field name="name">hr.employee.card.validity.form</field>
-			<field name="model">hr.employee.card.validity</field>
-			<field name="arch" type="xml">
-				<form string="مدة صلاحية بطاقة الموظف" create='0' delete='0' duplicate='0'>
-					<sheet>
-						<group>
-							<field name="name" required="1" />
 
-						</group>
 
-					</sheet>
-				</form>
-			</field>
-		</record>
-		<record id="view_tree_hr_employee_card_validity" model="ir.ui.view">
-			<field name="name">hr.employee.card.validity.tree</field>
-			<field name="model">hr.employee.card.validity</field>
-			<field name="arch" type="xml">
-				<tree string="مدة صلاحية بطاقة الموظف" class="oe_tree_view"  create='0' delete='0' duplicate='0'>
-					<field name="name" />
-				</tree>
-			</field>
-		</record>
-		<record id="action_hr_employee_card_validity" model="ir.actions.act_window">
-			<field name="name">مدة صلاحية بطاقة الموظف </field>
-			<field name="res_model">hr.employee.card.validity</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
-			<field name="help" type="html">
-				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
-			</field>
-		</record>
-		
-		
 		<menuitem id="menu_hr_employee_education_level" action="action_hr_employee_education_level"
 			sequence="5" parent="hr_root_employee_configuration" />
 
@@ -291,14 +261,13 @@
 
 		<menuitem id="menu_hr_employee_specialization" action="action_hr_employee_specialization"
 			sequence="6" parent="hr_root_employee_configuration" />
-			
-			<menuitem id="menu_hr_qualification_estimate" action="action_hr_qualification_estimate"
+
+		<menuitem id="menu_hr_qualification_estimate" action="action_hr_qualification_estimate"
 			sequence="8" parent="hr_root_employee_configuration" />
-			
-			<menuitem id="menu__hr_employee_number" action="action_hr_employee_number"
-			sequence="9" parent="hr_root_employee_configuration" />
-			
-			<menuitem id="menu_hr_employee_card_validity" action="action_hr_employee_card_validity"
-			sequence="10" parent="hr_root_employee_configuration" />
+
+		
+
+		<menuitem id="menu_hr_employee_configuration" action="action_hr_employee_configuration"
+			sequence="50" parent="hr_configuration_general_root" />
 	</data>
 </openerp>
