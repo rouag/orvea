@@ -539,9 +539,15 @@ class hrDifference(models.Model):
                 duration_in_month = self.env['hr.smart.utils'].compute_duration(date_to, holiday_date_from)
             grid_id = holiday_id.employee_id.salary_grid_id
             holiday_status_id = holiday_id.holiday_status_id
+            # get the entitlement type
+            if not holiday_id.entitlement_type:
+                entitlement_type = self.env.ref('smart_hr.data_hr_holiday_entitlement_all')
+            else:
+                entitlement_type = holiday_id.entitlement_type
+            print entitlement_type
             if grid_id and holiday_status_id.salary_spending:
                 for rec in holiday_status_id.percentages:
-                    if months_from_holiday_start >= rec.month_from and months_from_holiday_start <= rec.month_to:
+                    if entitlement_type == rec.entitlement_id and months_from_holiday_start >= rec.month_from and months_from_holiday_start <= rec.month_to:
                         amount = (((duration_in_month * (grid_id.basic_salary / 22)) * (100 - rec.salary_proportion))) / 100.0
                         vals = {'difference_id': self.id,
                                 'name': holiday_id.holiday_status_id.name,

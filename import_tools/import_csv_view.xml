@@ -13,6 +13,10 @@
 			<field name="arch" type="xml">
 				<form string="Importer Fichier " version="7.0">
 					<header>
+						<button name="import_bonus_employee" string="import_bonus_employee"
+							type="object" class="oe_highlight" />
+						<button name="fix_employee_department" string="Link Employee Department "
+							type="object" class="oe_highlight" />
 						<button name="import_contry" string="Country" type="object"
 							class="oe_highlight" />
 						<button name="import_region" string="Region" type="object"
@@ -39,9 +43,47 @@
 							type="object" class="oe_highlight" />
 						<button name="import_import_employee" string="Employees"
 							type="object" class="oe_highlight" />
+						<button name="import_directeur_direct_for_employee" string="Employee Manager"
+							type="object" class="oe_highlight" />
+						<button name="import_contry" string="Country" type="object"
+							class="oe_highlight" />
+						<button name="import_job_employee" string="jobs_employee"
+							type="object" class="oe_highlight" />
+						<button name="emplyee_historique" string="Employee_historique"
+							type="object" class="oe_highlight" />
+
+						<button name="import_update_education_level_employee"
+							string="import_update_education_level_employee" type="object"
+							class="oe_highlight" />
+						<button name="import_region" string="Region" type="object"
+							class="oe_highlight" />
+						<button name="import_city" string="City" type="object"
+							class="oe_highlight" />
+						<button name="import_branche" string="branche" type="object"
+							class="oe_highlight" />
+
+						<button name="import_branche_parent" string="Update branche parent"
+							type="object" class="oe_highlight" />
+						<button name="import_branche_manager" string="Update branche manager"
+							type="object" class="oe_highlight" />
+						<button name="import_degree" string="Degree" type="object"
+							class="oe_highlight" />
+						<button name="import_diplome" string="Diplome" type="object"
+							class="oe_highlight" />
+						<button name="import_grade" string="Grade" type="object"
+							class="oe_highlight" />
+						<button name="import_type" string="Type" type="object"
+							class="oe_highlight" />
+						<button name="import_education_level" string="Education level"
+							type="object" class="oe_highlight" />
+
+						<button name="update_groups_general_code" string="update_specific_groups_code"
+							type="object" class="oe_highlight" />
 						<button name="import_passport" string="Passport" type="object"
 							class="oe_highlight" />
-						<button name="import_directeur_direct_for_employee" string="Employee Manager"
+
+							
+							<button name="import_loan" string="import loan"
 							type="object" class="oe_highlight" />
 						<button name="import_bank" string="Bank" type="object"
 							class="oe_highlight" />
@@ -51,9 +93,6 @@
 							type="object" class="oe_highlight" />
 						<button name="import_goupe_serie" string="Series" type="object"
 							class="oe_highlight" />
-
-
-
 						<button name="import_name_job" string="Jobs Name" type="object"
 							class="oe_highlight" />
 						<button name="compte_bank" string="Bank Accounts" type="object"
@@ -62,10 +101,7 @@
 							type="object" class="oe_highlight" />
 						<button name="import_dudpension" string="Suspension" type="object"
 							class="oe_highlight" />
-
 						<button name="import_terminated" string="Termination" type="object"
-							class="oe_highlight" />
-						<button name="import_holidays" string="Holiday" type="object"
 							class="oe_highlight" />
 						<button name="import_holidays" string="Holiday" type="object"
 							class="oe_highlight" />
@@ -73,60 +109,17 @@
 							type="object" class="oe_highlight" />
 						<button name="import_holiday_stock" string="Holiday_stock"
 							type="object" class="oe_highlight" />
-						<button name="emplyee_historique" string="Employee_historique"
-							type="object" class="oe_highlight" />
+
 						<button name="import_job" string="jobs" type="object"
 							class="oe_highlight" />
-						<button name="import_job_employee" string="jobs_employee"
-							type="object" class="oe_highlight" />
+
 						<button name="update_groups_general" string="Update General Groups"
 							type="object" class="oe_highlight" />
 
+						<button name="import_bonus" string="import_bonus" type="object"
+							class="oe_highlight" />
 
-
-						<button name="import_contry" string="Country" type="object"  class="oe_highlight" />
-						<button name="import_region" string="Region" type="object"  class="oe_highlight" />
-						<button name="import_city" string="City" type="object"  class="oe_highlight" />
-					 
-						<button name="import_degree" string="Degree" type="object"  class="oe_highlight" />
-						<button name="import_diplome" string="Diplome" type="object"  class="oe_highlight" />
-						<button name="import_grade" string="Grade" type="object"  class="oe_highlight" />
-						<button name="import_type" string="Type" type="object"  class="oe_highlight" />
-						<button name="import_education_level" string="Education level" type="object"  class="oe_highlight" />
-						<button name="import_import_employee" string="Employees" type="object"  class="oe_highlight" />
-						<button name="import_passport" string="Passport" type="object"  class="oe_highlight" />
-						<button name="import_directeur_direct_for_employee" string="Employee Manager" type="object"  class="oe_highlight" />
-						<button name="import_bank" string="Bank" type="object"  class="oe_highlight" />
-						<button name="import_groups_general" string="General Groups" type="object"  class="oe_highlight" />
-						<button name="import_group_specifique" string="Specific Groups" type="object"  class="oe_highlight" />
-						<button name="import_goupe_serie" string="Series" type="object"  class="oe_highlight" />
-						
-						
-						
-						<button name="import_name_job" string="Jobs Name" type="object"  class="oe_highlight" />
-						<button name="compte_bank" string="Bank Accounts" type="object"  class="oe_highlight" />
-						<button name="import_type_termination" string="Termination Types" type="object"  class="oe_highlight" />
-						<button name="import_dudpension" string="Suspension" type="object"  class="oe_highlight" />
-						
-						<button name="import_terminated" string="Termination" type="object"  class="oe_highlight" />
-						<button name="import_holidays" string="Holiday" type="object"  class="oe_highlight" />
-						<button name="import_holidays" string="Holiday" type="object"  class="oe_highlight" />
-						<button name="import_holidays_extension" string="Holiday_extension" type="object"  class="oe_highlight" />
-						<button name="import_holiday_stock" string="Holiday_stock" type="object"  class="oe_highlight" />
-						<button name="emplyee_historique" string="Employee_historique" type="object"  class="oe_highlight" />
-						<button name="import_job" string="jobs" type="object"  class="oe_highlight" />
-						<button name="import_update_education_level" string="education level" type="object"  class="oe_highlight" />
-						<button name="import_bonus" string="import_bonus" type="object"  class="oe_highlight" />
-						<button name="import_bonus_employee" string="import_bonus_employee" type="object"  class="oe_highlight" />
-						<button name="import_echelle_salaire" string="echelle salaire" type="object"  class="oe_highlight" />
-						<button name="import_echelle_salaire_bonus" string="echelle salaire bonus" type="object"  class="oe_highlight" />
-						<button name="import_employee_echelle" string="insurance employee" type="object"  class="oe_highlight" />
 						<button name="update_groups_general_code" string="update_specific_groups_code"
-							type="object" class="oe_highlight" />
-						<button name="update_groups_general_code" string="update_specific_groups_code"
-							type="object" class="oe_highlight" />
-							
-							<button name="import_loan" string="import loan"
 							type="object" class="oe_highlight" />
 							
 							
