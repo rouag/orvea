@@ -257,11 +257,11 @@
 											<field name="identification_place"
 												attrs="{'invisible': [('is_saudian','=', False)]}" />
 
-											<field name="identification_id" string="رقم الإقامة"
+											<field name="residance_id" string="رقم الإقامة"
 												attrs="{'required': [('is_saudian','=', False)],'invisible': [('is_saudian','=', True)]}" />
-											<field name="identification_date" string="تاريخ إصدار بطاقة الإقامة"
+											<field name="residance_date" string="تاريخ إصدار بطاقة الإقامة"
 												attrs="{'invisible': [('is_saudian','=', True)]}" />
-											<field name="identification_place" string="مكان إصدار بطاقة الإقامة"
+											<field name="residance_place" string="مكان إصدار بطاقة الإقامة"
 												attrs="{'invisible': [('is_saudian','=', True)]}" />
 										</group>
 										<group>
