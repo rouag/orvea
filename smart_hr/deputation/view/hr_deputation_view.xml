@@ -242,7 +242,7 @@
 			</field>
 		</record>
 		<menuitem id="menu_hr_deputation_category" action="action_hr_deputation_category"
-			sequence="35" parent="hr_root_employee_configuration" name="فئات الدول" />
+			sequence="55" parent="hr_configuration_general_root" name="فئات الدول" />
 
 
 	</data>

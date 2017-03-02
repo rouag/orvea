@@ -39,7 +39,7 @@
 
 		<!-- config menu -->
 		<menuitem id="hr_configuration_religions" name="الديانات"
-			sequence="50" parent="hr_root_employee_configuration" action="action_religions" />
+			sequence="60" parent="hr_configuration_general_root" action="action_religions" />
 
 
 
