@@ -1289,11 +1289,12 @@ class HrHolidaysStatus(models.Model):
     demand_number_max = fields.Integer(string=u'عدد مرات الطلب', default='-1')
     traveling_ticket = fields.Boolean(string=u'تذكرة سفر', default=False)
     traveling_family_ticket = fields.Boolean(string=u'تذكرة سفر عائليّة', default=False)
-    
     transport_allowance = fields.Boolean(string=u'صرف بدل النقل', default=False)
     maximum_days_by_year = fields.Integer(string=u'الحد الأقصى لأيّامات الإجازات في السّنة')
     audit = fields.Boolean(string=u'تدقيق', default=False)
     service_years_required = fields.Integer(string=u'سنوات الخدمة المطلوبة', default=0)
+    spend_advanced_salary = fields.Boolean(string=u'يصرف له راتب مسبق')
+    advanced_salary_periode = fields.Integer(string=u'مدة صرف راتب مسبق (باليوم)', default=30)
 
     @api.onchange('deductible_duration_service')
     def onchange_deductible_duration_service(self):

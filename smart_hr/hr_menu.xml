@@ -35,7 +35,7 @@
 		
 		<menuitem id="hr_root_decision" parent="hr_root" name="القرارات"  sequence="40" groups="smart_hr.group_hrm"/>		
 		
-		<menuitem id="hr_users_creation" name="المستخدمون" sequence="90" parent="hr_root" groups="smart_hr.group_adm"/>
+		<menuitem id="hr_users_creation" name="إدارة النظام" sequence="90" parent="hr_root" groups="smart_hr.group_adm"/>
 	 
 	</data>
 </openerp>

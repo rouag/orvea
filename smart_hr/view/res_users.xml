@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
+	<menuitem id="menu_users_list" name="المستخدمون" sequence="20"
+			parent="hr_users_creation" />
 
-		<menuitem id="users_list" name="إدارة النظام" sequence="1"
-			parent="hr_users_creation" action="base.action_res_users" />
+		<menuitem id="users_list" name="قائمة المستخدمون" sequence="30"
+			parent="menu_users_list" action="base.action_res_users" />
 
 
 		<record id="view_form_hr_create_user"
@@ -51,7 +53,7 @@
 			</field>
 </record>
 
-		<menuitem id="create_users" name="انشاء مستخدم" sequence="2"
+		<menuitem id="create_users" name="انشاء مستخدم" sequence="40"
 			parent="hr_users_creation" action="action_hr_employee_hr_create_user" />
 
 	</data>
