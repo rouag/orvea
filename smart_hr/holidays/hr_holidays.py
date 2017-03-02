@@ -50,6 +50,9 @@ class HrHolidays(models.Model):
     date_to = fields.Date(string=u'التاريخ الى' , compute='_compute_date_to', store=True)
     duration = fields.Integer(string=u'الأيام' , required=1)
     holiday_status_id = fields.Many2one('hr.holidays.status', string=u'نوع الأجازة', default=lambda self: self.env.ref('smart_hr.data_hr_holiday_status_normal'), advanced_search=True)
+    spend_advanced_salary = fields.Boolean(string=u'يصرف له راتب مسبق', related='holiday_status_id.spend_advanced_salary')
+    advanced_salary_periode = fields.Integer(string=u'مدة صرف راتب مسبق (باليوم)', related='holiday_status_id.advanced_salary_periode')
+    with_advanced_salary = fields.Boolean(string=u'مع صرف راتب مسبقاً', readonly=1, states={'draft': [('readonly', 0)]})
     state = fields.Selection([
         ('draft', u'طلب'),
         ('dm', u'مدير المباشر'),
