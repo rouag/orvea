@@ -57,7 +57,7 @@ class HrEmployeeFunctionnalCard(models.Model):
     @api.one
     @api.depends('employee_id')
     def _compute_last_degree_salary(self):
-        last_decision_appoint = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id), ('state_appoint','=', 'active')], limit=1)
+        last_decision_appoint = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('state_appoint','=', 'active')], limit=1)
         if last_decision_appoint:
             self.last_salary = last_decision_appoint.basic_salary
             self.degree_id = last_decision_appoint.degree_id.id
@@ -72,13 +72,23 @@ class HrEmployeeFunctionnalCard(models.Model):
     @api.multi
     def button_accept_hrm(self):
         self.ensure_one()
-        card_validity = self.env['hr.employee.configuration'].search([], limit=1)
-        if card_validity:
-            periode_validity = card_validity.period
-            self.start_date = fields.Datetime.now()
-            self.end_date = (fields.Date.from_string(self.start_date) + relativedelta(years=+int(periode_validity)))
+        self.start_date = fields.Datetime.now()
+        employee_card = self.env['hr.employee.functionnal.card'].search([('employee_id', '=', self.employee_id.id),('end_date','>=',self.start_date)], limit=1)
+        print"employee_card",employee_card
+        if employee_card :
+            self.start_date = self.start_date
+            self.end_date = employee_card.end_date
+            print"end_date",self.end_date
             self.employee_id.write({'employee_card_id': self.id})
-            self.state = 'done'
+
+        else :
+            card_validity = self.env['hr.employee.configuration'].search([], limit=1)
+            if card_validity:
+                periode_validity = card_validity.period
+                self.start_date = fields.Datetime.now()
+                self.end_date = (fields.Date.from_string(self.start_date) + relativedelta(years=+int(periode_validity)))
+                self.employee_id.write({'employee_card_id': self.id})
+        self.state = 'done'
 
     @api.multi
     def button_send_request(self):

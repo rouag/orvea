@@ -88,8 +88,7 @@
        
         'hr_promotions/views/report_promotion.xml',
         'hr/view/hr_employee_task_view.xml',
-        
-        
+
         'views/report_salary_grid.xml',
         'views/report_medical_examination.xml',
         'views/report_order_enquiry.xml',
@@ -103,6 +102,7 @@
         'views/report_hr_direct_appoint.xml',
         'views/hr_employee_functionnal_card_report.xml',
         'views/hr_employee_card_report.xml',
+        'views/hr_emp_card_report.xml',
         'report/reports.xml',
         'report/hr_suspension_end_report.xml',
         'report/hr_suspension_report.xml',
