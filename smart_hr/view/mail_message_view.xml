@@ -53,7 +53,7 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-		<menuitem id="menu_mail_message" action="action_mail_message" sequence="30"
+		<menuitem id="menu_mail_message" action="action_mail_message" sequence="10"
 			parent="hr_users_creation" name="متابعة النظام" />
 
 	</data>

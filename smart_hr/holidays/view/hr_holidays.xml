@@ -427,6 +427,8 @@
 									<field name="transport_allowance" />
 									<field name="min_amount" />
 									<field name="pension_percent" />
+									<field name="spend_advanced_salary" />
+									<field name="advanced_salary_periode" attrs="{'invisible':[('spend_advanced_salary', '=', False)]}"/>
 								</group>
 							</group>
 							<group col="2">
