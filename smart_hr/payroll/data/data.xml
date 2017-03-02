@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-	<data noupdate="0">
-	
+	<data noupdate="1">
+
 		<record id="seq_hr_payslip" model="ir.sequence">
 			<field name="name">seq.hr.payslip</field>
 			<field name="code">seq.hr.payslip</field>
 			<field name="prefix"></field>
 			<field name="padding">4</field>
-		</record>	
-	
+		</record>
+
 		<!-- البدلات -->
 
 		<record id="hr_allowance_type_01" model="hr.allowance.type">
@@ -31,6 +31,10 @@
 		<record id="hr_allowance_type_05" model="hr.allowance.type">
 			<field name="name">‫‫‫‫بدل‬ مكافأة‬ سائق‬ معالي‬ الرئيس‬</field>
 			<field name="code">05</field>
+		</record>
+		<record id="hr_allowance_type_06" model="hr.allowance.type">
+			<field name="name">‫‫بدل‬ تعيين‬</field>
+			<field name="code">06</field>
 		</record>
 		‫
 
@@ -119,10 +123,11 @@
 			<field name="code">14</field>
 		</record>
 		<record id="hr_reward_type_15" model="hr.reward.type">
-			<field name="name">مكافأة العاملين على الالات الاحصائية الالكترونية‬</field>
+			<field name="name">مكافأة العاملين على الالات الاحصائية الالكترونية‬
+			</field>
 			<field name="code">15</field>
 		</record>
-		
+
 
 		<!-- التعويضات -->
 		<record id="hr_indemnity_type_01" model="hr.indemnity.type">
@@ -136,7 +141,7 @@
 		<record id="hr_indemnity_type_03" model="hr.indemnity.type">
 			<field name="name">تعويض السفر المتكرر‬</field>
 			<field name="code">03</field>
-			
+
 		</record>
 
 		<!-- فئات قواعد الرواتب -->
@@ -174,114 +179,55 @@
 			<field name="code">NET</field>
 		</record>
 
-		<!-- قواعد إحتساب الرواتب 
+		<!-- قواعد إحتساب الرواتب <record id="hr_rule_basic" model="hr.salary.rule"> 
+			<field name="name">الراتب الأساسي</field> <field name="sequence" eval="1" 
+			/> <field name="code">BASIC</field> <field name="category_id" ref="smart_hr.BASIC" 
+			/> <field name="condition_select">none</field> <field name="amount_select">code</field> 
+			<field name="amount_python_compute">result = employee.wage</field> </record> 
+			<record id="hr_rule_allowance_transport" model="hr.salary.rule"> <field name="name">بدل 
+			النقل</field> <field name="sequence" eval="2" /> <field name="code">ALW-TRANS</field> 
+			<field name="category_id" ref="smart_hr.ALW" /> <field name="condition_select">none</field> 
+			<field name="amount_select">code</field> <field name="amount_python_compute">result 
+			= employee.allowance_transport</field> </record> <record id="hr_rule_allowance_house" 
+			model="hr.salary.rule"> <field name="name">بدل سكن</field> <field name="sequence" 
+			eval="3" /> <field name="code">ALW-HOS</field> <field name="category_id" 
+			ref="smart_hr.ALW" /> <field name="condition_select">none</field> <field 
+			name="amount_select">code</field> <field name="amount_python_compute">result 
+			= employee.allowance_house</field> </record> <record id="hr_rule_reward" 
+			model="hr.salary.rule"> <field name="name">المكافآت‬</field> <field name="sequence" 
+			eval="4" /> <field name="code">REW</field> <field name="category_id" ref="smart_hr.REW" 
+			/> <field name="condition_select">none</field> <field name="amount_select">code</field> 
+			<field name="amount_python_compute">result = employee.get_reward_amount()</field> 
+			</record> <record id="hr_rule_indemnity" model="hr.salary.rule"> <field name="name">التعويضات</field> 
+			<field name="sequence" eval="5" /> <field name="code">INDE</field> <field 
+			name="category_id" ref="smart_hr.INDE" /> <field name="condition_select">none</field> 
+			<field name="amount_select">code</field> <field name="amount_python_compute">result 
+			= employee.get_indemnity_amount()</field> </record> <record id="hr_rule_total" 
+			model="hr.salary.rule"> <field name="name">الإجمالي</field> <field name="sequence" 
+			eval="6" /> <field name="code">TOT</field> <field name="category_id" ref="smart_hr.TOT" 
+			/> <field name="condition_select">none</field> <field name="amount_select">code</field> 
+			<field name="amount_python_compute">result = categories.BASIC + categories.ALW 
+			+ categories.REW + categories.INDE </field> </record> <record id="hr_rule_deduction" 
+			model="hr.salary.rule"> <field name="name">الحسميات</field> <field name="sequence" 
+			eval="7" /> <field name="code">DED</field> <field name="category_id" ref="smart_hr.DED" 
+			/> <field name="condition_select">none</field> <field name="amount_select">code</field> 
+			<field name="amount_python_compute">result = employee.get_deduction_amount()</field> 
+			</record> <record id="hr_rule_insurance" model="hr.salary.rule"> <field name="name">التأمين</field> 
+			<field name="sequence" eval="8" /> <field name="code">INS</field> <field 
+			name="category_id" ref="smart_hr.INS" /> <field name="condition_select">none</field> 
+			<field name="amount_select">percentage</field> <field name="amount_percentage_base">employee.wage</field> 
+			<field name="quantity">1</field> <field name="amount_percentage">-10.0</field> 
+			</record> <record id="hr_rule_net" model="hr.salary.rule"> <field name="name">الصافي 
+			المستحق</field> <field name="sequence" eval="9" /> <field name="code">NET</field> 
+			<field name="category_id" ref="smart_hr.NET" /> <field name="condition_select">none</field> 
+			<field name="amount_select">code</field> <field name="amount_python_compute">result 
+			= categories.BASIC + categories.ALW + categories.REW + categories.INDE + 
+			categories.DED + categories.INS </field> </record> -->
 
-		<record id="hr_rule_basic" model="hr.salary.rule">
-			<field name="name">الراتب الأساسي</field>
-			<field name="sequence" eval="1" />
-			<field name="code">BASIC</field>
-			<field name="category_id" ref="smart_hr.BASIC" />
-			<field name="condition_select">none</field>
-			<field name="amount_select">code</field>
-			<field name="amount_python_compute">result = employee.wage</field>
-		</record>
-
-		<record id="hr_rule_allowance_transport" model="hr.salary.rule">
-			<field name="name">بدل النقل</field>
-			<field name="sequence" eval="2" />
-			<field name="code">ALW-TRANS</field>
-			<field name="category_id" ref="smart_hr.ALW" />
-			<field name="condition_select">none</field>
-			<field name="amount_select">code</field>
-			<field name="amount_python_compute">result = employee.allowance_transport</field>
-		</record>
-
-		<record id="hr_rule_allowance_house" model="hr.salary.rule">
-			<field name="name">بدل سكن</field>
-			<field name="sequence" eval="3" />
-			<field name="code">ALW-HOS</field>
-			<field name="category_id" ref="smart_hr.ALW" />
-			<field name="condition_select">none</field>
-			<field name="amount_select">code</field>
-			<field name="amount_python_compute">result = employee.allowance_house</field>
-		</record>
-
-		<record id="hr_rule_reward" model="hr.salary.rule">
-			<field name="name">المكافآت‬</field>
-			<field name="sequence" eval="4" />
-			<field name="code">REW</field>
-			<field name="category_id" ref="smart_hr.REW" />
-			<field name="condition_select">none</field>
-			<field name="amount_select">code</field>
-			<field name="amount_python_compute">result = employee.get_reward_amount()</field>
-		</record>
-
-		<record id="hr_rule_indemnity" model="hr.salary.rule">
-			<field name="name">التعويضات</field>
-			<field name="sequence" eval="5" />
-			<field name="code">INDE</field>
-			<field name="category_id" ref="smart_hr.INDE" />
-			<field name="condition_select">none</field>
-			<field name="amount_select">code</field>
-			<field name="amount_python_compute">result = employee.get_indemnity_amount()</field>
-		</record>
-
-		<record id="hr_rule_total" model="hr.salary.rule">
-			<field name="name">الإجمالي</field>
-			<field name="sequence" eval="6" />
-			<field name="code">TOT</field>
-			<field name="category_id" ref="smart_hr.TOT" />
-			<field name="condition_select">none</field>
-			<field name="amount_select">code</field>
-			<field name="amount_python_compute">result = categories.BASIC + categories.ALW +
-				categories.REW + categories.INDE
-			</field>
-		</record>
-
-		<record id="hr_rule_deduction" model="hr.salary.rule">
-			<field name="name">الحسميات</field>
-			<field name="sequence" eval="7" />
-			<field name="code">DED</field>
-			<field name="category_id" ref="smart_hr.DED" />
-			<field name="condition_select">none</field>
-			<field name="amount_select">code</field>
-			<field name="amount_python_compute">result = employee.get_deduction_amount()</field>
-		</record>
-
-		<record id="hr_rule_insurance" model="hr.salary.rule">
-			<field name="name">التأمين</field>
-			<field name="sequence" eval="8" />
-			<field name="code">INS</field>
-			<field name="category_id" ref="smart_hr.INS" />
-			<field name="condition_select">none</field>
-			<field name="amount_select">percentage</field>
-			<field name="amount_percentage_base">employee.wage</field>
-			<field name="quantity">1</field>
-			<field name="amount_percentage">-10.0</field>
-		</record>
-
-		<record id="hr_rule_net" model="hr.salary.rule">
-			<field name="name">الصافي المستحق</field>
-			<field name="sequence" eval="9" />
-			<field name="code">NET</field>
-			<field name="category_id" ref="smart_hr.NET" />
-			<field name="condition_select">none</field>
-			<field name="amount_select">code</field>
-			<field name="amount_python_compute">result = categories.BASIC + categories.ALW +
-				categories.REW + categories.INDE + categories.DED + categories.INS
-			</field>
-		</record> -->
-
-		<!-- هياكل الرواتب 
-
-		<record id="structure_base_hr" model="hr.payroll.structure">
-			<field name="code">BASE-HR</field>
-			<field name="name">الهيكل الأساسي</field>
-			<field
-				eval="[(6, 0, [ref('hr_rule_basic'), ref('hr_rule_allowance_transport'),ref('hr_rule_allowance_house'),ref('hr_rule_reward'),ref('hr_rule_indemnity'),ref('hr_rule_total'),ref('hr_rule_deduction'),ref('hr_rule_insurance'),ref('hr_rule_net')])]"
-				name="rule_ids" />
-			<field name="company_id" ref="base.main_company" />
-		</record> -->
+		<!-- هياكل الرواتب <record id="structure_base_hr" model="hr.payroll.structure"> 
+			<field name="code">BASE-HR</field> <field name="name">الهيكل الأساسي</field> 
+			<field eval="[(6, 0, [ref('hr_rule_basic'), ref('hr_rule_allowance_transport'),ref('hr_rule_allowance_house'),ref('hr_rule_reward'),ref('hr_rule_indemnity'),ref('hr_rule_total'),ref('hr_rule_deduction'),ref('hr_rule_insurance'),ref('hr_rule_net')])]" 
+			name="rule_ids" /> <field name="company_id" ref="base.main_company" /> </record> -->
 
 		<!-- أنواع الحسميات -->
 

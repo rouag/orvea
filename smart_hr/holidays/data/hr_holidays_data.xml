@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <openerp>
-	<data>
+	<data noupdate="1">
 
 		<!-- Leave Types -->
 
@@ -11,6 +11,7 @@
 			<field name="extension_number" eval="1" />
 			<field name="maximum_days_by_year" eval="120" />
 			<field name="direct_decision" eval="True" />
+			<field name="salary_spending" eval="True"/>
 		</record>
 
 		<record id="data_hr_holiday_status_exceptional" model="hr.holidays.status">
@@ -23,18 +24,15 @@
 			<field name="is_extensible" eval="True" />
 			<field name="external_decision" eval="True" />
 			<field name="direct_decision" eval="False" />
-			<field name="salary_spending" eval="True"/>
 		</record>
 
 		<record id="data_hr_holiday_status_illness" model="hr.holidays.status">
 			<field name="name">إجازة مرضيّة</field>
-			<field name="salary_spending" eval="True"/>
 		</record>
 
 
 		<record id="data_hr_holiday_status_study" model="hr.holidays.status">
 			<field name="name">إجازة دراسية</field>
-			<field name="salary_spending" eval="True"/>
 		</record>
 
 
@@ -44,6 +42,7 @@
 
 		<record id="data_hr_holiday_status_sport" model="hr.holidays.status">
 			<field name="name">إجازة رياضية</field>
+			<field name="salary_spending" eval="True"/>
 		</record>
 
 		<record id="data_hr_holiday_status_compelling" model="hr.holidays.status">
@@ -52,6 +51,7 @@
 			<field name="for_saudi" eval="True" />
 			<field name="for_other" eval="True" />
 			<field name="need_decision" eval="True" />
+			<field name="salary_spending" eval="True"/>
 		</record>
 
 		<record id="data_hr_holiday_status_exceptional_accompaniment"
@@ -64,48 +64,56 @@
 			<field name="is_extensible" eval="True" />
 			<field name="direct_director_decision" eval="False" />
 			<field name="direct_decision" eval="False" />
-			<field name="salary_spending" eval="True"/>
-		</record>
+	</record>
 
 		<record id="data_hr_holiday_status_childbirth" model="hr.holidays.status">
 			<field name="name">إجازة وضع</field>
+			<field name="salary_spending" eval="True"/>
 
 		</record>
 		<record id="data_hr_holiday_status_maternity" model="hr.holidays.status">
 			<field name="name">إجازة أُمومة</field>
 			<field name="postponement_period" eval="60" />
 			<field name="pension_percent" eval="100" />
+			<field name="salary_spending" eval="True"/>
 		</record>
 
 		<record id="data_hr_holiday_status_adoption" model="hr.holidays.status">
 			<field name="name"> إجازة حضانة</field>
 			<field name="postponement_period" eval="60" />
 			<field name="pension_percent" eval="100" />
+			<field name="salary_spending" eval="True"/>
 		</record>
 
 		<record id="data_hr_holiday_child_birth_dad" model="hr.holidays.status">
 			<field name="name"> إجازة المولود</field>
+			<field name="salary_spending" eval="True"/>
 		</record>
 
 		<record id="data_hr_holiday_status_rescue" model="hr.holidays.status">
 			<field name="name">إجازة اغاثة</field>
+			<field name="salary_spending" eval="True"/>
 		</record>
 
 		<record id="data_hr_holiday_death" model="hr.holidays.status">
 			<field name="name">إجازة وفاة</field>
 			<field name="limit" eval="True" />
+			<field name="salary_spending" eval="True"/>
 		</record>
 
 		<record id="data_hr_holiday_dialysis" model="hr.holidays.status">
 			<field name="name">إجازة غسيل كلى</field>
+			<field name="salary_spending" eval="True"/>
 		</record>
 
 		<record id="data_hr_holiday_literaty" model="hr.holidays.status">
 			<field name="name">إجازة أدبيّة</field>
+			<field name="salary_spending" eval="True"/>
 		</record>
 
 		<record id="data_hr_holiday_exam" model="hr.holidays.status">
 			<field name="name">‫إجازة إمتحان‬</field>
+			<field name="salary_spending" eval="True"/>
 		</record>
 
 
@@ -115,10 +123,12 @@
 			<field name="limit" eval="True" />
 			<field name="demand_number_max" eval="2" />
 			<field name="traveling_ticket" eval="True" />
+			<field name="salary_spending" eval="True"/>
 		</record>
 
 		<record id="data_hr_holiday_compensation" model="hr.holidays.status">
 			<field name="name">اجازة التعويض</field>
+			<field name="salary_spending" eval="True"/>
 		</record>
 
 		<record id="data_hr_holiday_entitlement_all" model="hr.holidays.entitlement.config">

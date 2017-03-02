@@ -11,9 +11,9 @@ class HrOvertimeSetting(models.Model):
     _description = u'‫إعدادات خارج الدوام'
 
     name = fields.Char(string='name', default=u'إعدادات  خارج الدوام')
-    normal_days = fields.Float(string='معدل ساعة التكليف خلال الأيام العادية لا يزيد في اليوم الواحد  عن نسبة من الراتب اليومي')
-    friday_saturday = fields.Float(string='معدل ساعة التكليف خلال أيام  الجمعة والسبت  يحتسب بحد أعلى قدره  نسبة من الراتب الأساسي')
-    holidays = fields.Float(string='معدل ساعة التكليف خلال أيام الأعياد يحتسب بحد أعلى قدره')
+    normal_days = fields.Float(string='معدل ساعات التكليف خلال الأيام العادية لا يزيد في اليوم الواحد  عن نسبة من الراتب اليومي')
+    friday_saturday = fields.Float(string='معدل ساعات التكليف خلال أيام  الجمعة والسبت  يحتسب بحد أعلى قدره  نسبة من الراتب الأساسي')
+    holidays = fields.Float(string='معدل ساعات التكليف خلال أيام الأعياد يحتسب بحد أعلى قدره')
     grade_ids = fields.Many2many('salary.grid.grade', 'overtime_grade_rel', 'overtime_id', 'grade_id', string=u'المراتب التي لا تستحق بدل نقل')
     allowance_transport_id = fields.Many2one('hr.allowance.type', string='بدل النقل')
     allowance_overtime_id = fields.Many2one('hr.allowance.type', string='بدل خارج الدوام')

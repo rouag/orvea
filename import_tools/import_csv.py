@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 #----------------------------------------------------------------------------
 #
-#    Copyright (C) 2014  .
-#    Coded by: Borni DHIFI  (dhifi.borni@gmail.com)
+#    
+#    
 #
 #----------------------------------------------------------------------------
 # encoding=utf8  
@@ -174,43 +174,50 @@ class import_csv(osv.osv):
         fmt = '%d/%m/%Y'
         move_id=''
         all_move_ids=[]
-        loan_ids=loan_obj.search(cr, uid,  [('state', '=','progress')])
+        loan_ids=loan_obj.search(cr, uid,  [('state', '=','progress'),('id', '<',32200)])
         date_now= datetime.now()
         print len(loan_ids)
         i=0
-#         for lon_id  in loan_ids : 
-#             loan= loan_obj.browse(cr, uid, lon_id)
-#             if loan.state=="progress":
-#                 for line_number in range (loan.installment_number):
-#                     date1=datetime.strptime(loan.date_from,"%Y-%m-%d")
-#                    
-#                     line_month=date1+ relativedelta(date1.month+i)
-#                     line_months=line_month.strftime('%Y-%m-%d')
-#                     um = HijriDate()
-#                     dates = str(line_months).split('-')
-#                    
-#                     um.set_date_from_gr(int(dates[0]), int(dates[1]), int(dates[2]))
-#                     i=i+1
-#                     if line_month<datetime.now():
-#                         state='done'
-#                     else:
-#                          state='progress'
-#                         
-#                    
-#                     month_val = {   'loan_id': loan.id,
-#                                      'amount': loan.monthly_amount,
-#                                      'month': str(int(um.month)).zfill(2),
-#                                      'state':state,
-#                              }
-#                    
-#                     loan_line_obj.create(cr, uid, month_val,context=context)
-#                     
-#                     
-#                         
-#                     
-#                     
-#               
-#                    
+        l=0
+       
+        for lon_id  in loan_ids : 
+                loan= loan_obj.browse(cr, uid, lon_id)
+                if loan.state=="progress":
+                    i=0
+                    for line_number in range (loan.installment_number):
+                        
+                        date1=datetime.strptime(loan.date_from,"%Y-%m-%d")
+                      
+                        line_month=date1+ relativedelta(months=date1.month+i)
+                       
+                        line_months=line_month.strftime('%Y-%m-%d')
+                        um = HijriDate()
+                        dates = str(line_months).split('-')
+                        
+                        um.set_date_from_gr(int(dates[0]), int(dates[1]), int(dates[2]))
+                        i=i+1
+                        if line_month<datetime.now()   :
+                            state='done'
+                        else:
+                             state='progress'
+                             
+                       
+                        print i
+                        month_val = {   'loan_id': loan.id,
+                                         'amount': loan.monthly_amount,
+                                         'month': str(int(um.month)).zfill(2),
+                                         'state':state,
+                                         'date':line_month,
+                                 }
+                        
+                        loan_line_obj.create(cr, uid, month_val,context=context)
+                         
+                     
+                         
+                     
+                     
+               
+                    
                    
                 
           
@@ -1612,7 +1619,7 @@ class import_csv(osv.osv):
                 if employee_ids_parent[0] != employee_ids_file[0]:
                     try:
                         emplyee_obj_file=employee.browse(cr, uid, employee_ids_file[0]) 
-                        emplyee_obj_file.write( {'manager_id': employee_ids_parent[0]}, ) 
+                        emplyee_obj_file.write( {'parent_id': employee_ids_parent[0]}, ) 
                     except:
                         False
         return True   
@@ -2298,6 +2305,70 @@ class import_csv(osv.osv):
             current_group = groups.search(cr, uid, [('numero', '=', str(row['CHI_GRP_NO']))], context=context)
             if parent_group and current_group:
                 groups.browse(cr, uid, current_group[0], context=context).write({'parent_id': parent_group[0]})
+        return True
+    
+    
+    def emplyee_historique(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])
+        quotechar = '"'
+        delimiter = ';'
+        fileobj = TemporaryFile('w+')
+        fileobj.write((base64.decodestring(this.data)))
+        fileobj.seek(0)
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
+        employee = self.pool.get('hr.employee')
+        history = self.pool.get('hr.employee.history')
+        grade = self.pool.get('salary.grid.grade')
+        for row in reader:
+            empid = str(row['EMP_NO'].strip(" "))
+            employee_ids = employee.search(cr, uid, [('number', '=', empid)])
+            fmt = '%d/%m/%Y'
+            date1 = False
+            date2 = False
+            umalqurra = Umalqurra()
+            if row['DECISION_DATE_HJ'] != 'NULL':
+                    try:
+                        dt = datetime.strptime(str(row['DECISION_DATE_HJ']), fmt)
+                        start_date = umalqurra.hijri_to_gregorian(dt.year, dt.month, dt.day)
+                        date1 = date(int(start_date[0]), int(start_date[1]), int(start_date[2]))
+                    except:
+                        date1 = False
+            if row['FIELD_EFF_DATE_HJ'] != 'NULL':
+                try:
+                    um_date = HijriDate()
+                    date_end = datetime.strptime(str(row['FIELD_EFF_DATE_HJ']), fmt)
+                    start_date2 = umalqurra.hijri_to_gregorian(date_end.year, date_end.month, date_end.day)
+                    date2 = date(int(start_date2[0]), int(start_date2[1]), int(start_date2[2]))
+                except:
+                    date2 = False
+            if employee_ids:
+                employee_id = employee.browse(cr, uid, employee_ids[0])
+                dep_side = employee_id.user_id.company_id.name
+                grade_id = False
+                grade_ids = grade.search(cr, uid, [('code', '=',row['rank_new'])])
+                if grade_ids:
+                    grade_id=grade_ids[0]
+                try:
+                    history_line_val={
+                            'employee_id':employee_ids[0],
+                            'type':str(row['ACT_DSCR']),
+                            'num_decision':str(row['DECISION_NO']),
+                            'date_decision':date1,
+                            'date':date2,
+                            'job_id': str(row['position']),
+                            'dep_side': str(row['side']),
+                            'grade_id':grade_id,
+                            'number':employee_id.job_id.name,
+                            'department_id':employee_id.department_id.id,
+                            }
+                    history.create(cr, uid, history_line_val,context=context)
+                    
+                except :
+                        print "I/O error({0}): {1}"
+                    
+
         return True
 
 
