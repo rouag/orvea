@@ -586,7 +586,7 @@ class HrPayslip(models.Model):
             deduction_total += insurance_amount
             sequence += 1
             # 0- صافي الراتب
-            salary_net = basic_salary + allowance_total + difference_total - deduction_total
+            salary_net = basic_salary * amount_multiplcation + allowance_total + difference_total - deduction_total
             salary_net_val = {'name': u'صافي الراتب',
                               'slip_id': payslip.id,
                               'employee_id': employee.id,
