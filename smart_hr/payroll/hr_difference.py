@@ -571,20 +571,19 @@ class hrDifference(models.Model):
                                     'amount': (amount) * -1,
                                     'type': 'holiday'}
                             line_ids.append(vals)
-            # case of يصرف له الراتب
-            if grid_id and holiday_status_id.salary_spending:
-                for rec in holiday_status_id.percentages:
-                    if entitlement_type == rec.entitlement_id and months_from_holiday_start >= rec.month_from and months_from_holiday_start <= rec.month_to:
-                        amount = (((duration_in_month * (grid_id.basic_salary / 22)) * (100 - rec.salary_proportion))) / 100.0
-                        if amount != 0:
-                            vals = {'difference_id': self.id,
-                                    'name': holiday_id.holiday_status_id.name,
-                                    'employee_id': holiday_id.employee_id.id,
-                                    'number_of_days': duration_in_month,
-                                    'number_of_hours': 0.0,
-                                    'amount': (amount) * -1,
-                                    'type': 'holiday'}
-                            line_ids.append(vals)
+            # case of  نوع التعويض    مقابل ‫مادي‬ ‬   اجازة التعويض
+            if grid_id:
+                if holiday_id.compensation_type and holiday_id.compensation_type == 'money':
+                    amount = (holiday_id.current_holiday_stock * (grid_id.basic_salary / 22))
+                    if amount != 0:
+                        vals = {'difference_id': self.id,
+                                'name': holiday_id.holiday_status_id.name + "(تعويض مالي)",
+                                'employee_id': holiday_id.employee_id.id,
+                                'number_of_days': int(holiday_id.current_holiday_stock),
+                                'number_of_hours': 0.0,
+                                'amount': (amount),
+                                'type': 'holiday'}
+                        line_ids.append(vals)
         return line_ids
 
     @api.multi
