@@ -54,8 +54,24 @@ class hrSanction(models.Model):
 
     @api.multi
     def action_draft(self):
-        for sanction in self:
-            sanction.state = 'waiting'
+        for rec in self:
+            previous_code = str(int(rec.type_sanction.code) - 1)
+            current_code = rec.type_sanction.code
+            employee_ids = []
+            if int(current_code) >= 1:
+                sanction_ligne_ids = rec.env['hr.sanction.ligne'].search(['&', ('state', '=', 'done'),
+                                                                          '|', ('type_sanction.code', '=', previous_code),
+                                                                          ('type_sanction.code', '=', current_code),
+                                                                          ])
+                employee_ids = [line.employee_id for line in sanction_ligne_ids]
+            # add employee tht dosent have any sanction yet
+            if int(current_code) == 1:
+                employee_ids += rec.env['hr.employee'].search([('sanction_ids', '=', False)])
+            # add employee tht dosent have any sanction yet
+            for line in rec.line_ids:
+                if line.employee_id not in employee_ids:
+                    raise ValidationError(u"لا يمكن تنفيذ هذه العقوبة للموظف  : "+ unicode(line.employee_id.display_name) +u" \n"+ u"-لخلل في تسلسل العقوبات.")
+                rec.state = 'waiting'
 
     @api.multi
     def action_refuse(self):
@@ -77,10 +93,10 @@ class hrSanction(models.Model):
         self.ensure_one()
         for rec in self.line_ids:
             type = ''
-            if self.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_grade').id:
-                type = '91'
-            elif self.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_separation').id:
-                type = '92'
+            if rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_grade').id:
+                type = 'حرمان من علاوة'
+            elif rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_separation').id:
+                type = 'الفصل'
             if type:
                 self.env['hr.employee.history'].sudo().add_action_line(rec.employee_id, self.type_sanction.id, self.date_sanction_start, type)
             rec.state = 'done'
@@ -119,6 +135,19 @@ class HrSanctionLigne(models.Model):
                               ('done', 'تم العقوبة'),
                               ('cancel', 'ملغى')], string='الحالة', readonly=1, default='waiting')
 
+    @api.onchange('employee_id')
+    def onchange_employee_id(self):
+        if not self.employee_id:
+            res = {}
+            grade_min = int(self.sanction_id.type_sanction.min_grade_id.code)
+            grade_max = int(self.sanction_id.type_sanction.max_grade_id.code)
+            employee_ids = []
+            for rec in self.env['hr.employee'].search([]):
+                if int(rec.grade_id.code) >= grade_min and int(rec.grade_id.code) <= grade_max:
+                    employee_ids.append(rec.id)
+            res['domain'] = {'employee_id': [('id', 'in', employee_ids)]}
+            return res
+          
 
 class HrTypeSanction(models.Model):
     _name = 'hr.type.sanction'
