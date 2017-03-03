@@ -136,7 +136,7 @@ class HrHolidays(models.Model):
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
 
-    @api.one
+    @api.multi
     @api.depends("holiday_status_id", "entitlement_type")
     def _compute_current_holiday_stock(self):
         for holiday in self:

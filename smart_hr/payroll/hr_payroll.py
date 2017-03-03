@@ -293,7 +293,7 @@ class HrPayslip(models.Model):
     def compute_sheet(self):
         # amount_multiplcation is 1 normale payslip generation
         # amount_multiplcation will be 2 if self.with_advanced_salary is true;
-        # amount_multiplcation will be 0 if current payslip's salary grid is allready generated for the last month's payslip ;
+        # amount_multiplcation will be 0 if current payslip's salary grid is allready generated for the previous month's payslip ;
         amount_multiplcation = 1
         # check weither the employee is terminated
         if self.employee_id.emp_state == 'terminated':
