@@ -67,9 +67,9 @@
 									attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
 								<field name="retirement_proportion"
 									attrs="{'invisible':['|', ('pay_retirement', '=', False), ('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
-								<field name="give_allowance_transport" attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')}" />
-								<field name="give_allow" attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')}" />
-								<field name="give_salary" attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')}" />
+								<field name="give_allowance_transport" attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
+								<field name="give_allow" attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
+								<field name="give_salary" attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
 							</group>
 							<field name="note" />
 						</group>
