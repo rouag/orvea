@@ -31,7 +31,7 @@ class HrEmployeeCommissioning(models.Model):
                               ('done', u'اعتمدت'),
                               ('refused', u'رفض'),
                               ], readonly=1, default='new', string=u'الحالة')
-    governmental_entity = fields.Many2one('res.partner', string=u'الجهة الحكومية', domain=[('company_type', '=', 'governmental_entity')], default=_get_default_company)
+    governmental_entity = fields.Many2one('res.partner', string=u'الجهة الحكومية', domain=[('company_type', '=', 'governmental_entity')], default=_get_default_company, readonly=1, states={'new': [('readonly', 0)]})
     task_ids = fields.One2many('hr.employee.task', 'comm_id', string=u'المهام')
     note = fields.Text(string=u'ملاحظات')
     current_city = fields.Many2one('res.city', string=u'مقر الموظف', related='employee_id.dep_city', required=1)
