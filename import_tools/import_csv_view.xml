@@ -30,7 +30,6 @@
 							class="oe_highlight" />	
 							
 							
-						<button name="import_branche_parent" string="Update branche parent and manager"  type="object" class="oe_highlight" />
 						<button name="import_degree" string="Degree" type="object"
 							class="oe_highlight" />
 						<button name="import_diplome" string="Diplome" type="object"
@@ -124,7 +123,8 @@
 							
 							<button name="import_loan_ligne" string="import loan line"
 							type="object" class="oe_highlight" />
-							
+								<button name="update_employee_manager" string="update_employee_manager"
+							type="object" class="oe_highlight" />
 							
 						
 						

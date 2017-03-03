@@ -8,6 +8,7 @@
 # encoding=utf8  
 import sys  
 from Tkconstants import BROWSE
+from stdnum.exceptions import ValidationError
 
 reload(sys)  
 sys.setdefaultencoding('utf8')
@@ -799,25 +800,24 @@ class import_csv(osv.osv):
         employee = self.pool.get('hr.employee')
         for row in reader:
             if len(str(row['MGR_NO'].strip(" ")))==4:
-                empid = str(0)+str(row['MGR_NO'].strip(" "))
+                manager = str(0)+str(row['MGR_NO'].strip(" "))
             elif len(str(row['MGR_NO'].strip(" ")))==3:
-                empid = str(0)+str(0)+str(row['MGR_NO'].strip(" "))
+                manager = str(0)+str(0)+str(row['MGR_NO'].strip(" "))
             elif len(str(row['MGR_NO'].strip(" ")))==2:
-                empid = str(0)+str(0)+str(0)+str(row['MGR_NO'].strip(" "))
+                manager = str(0)+str(0)+str(0)+str(row['MGR_NO'].strip(" "))
             elif len(str(row['MGR_NO'].strip(" ")))==1:
-                empid = str(0)+str(0)+str(0)+str(0)+str(row['MGR_NO'].strip(" "))
+                manager = str(0)+str(0)+str(0)+str(0)+str(row['MGR_NO'].strip(" "))
             else:
-                empid = str(row['MGR_NO'].strip(" "))
-            emp_id = employee.search(cr, uid, [('number', '=',empid)])
+                manager = str(row['MGR_NO'].strip(" "))
+            manager_id = employee.search(cr, uid, [('number', '=',manager)])
             exist_dep = departement.search(cr, uid, [('code','=',str(row['LOC_ID']))],context=context)
-            if exist_dep and emp_id:
-                duplicated = employee.search(cr, uid, [('department_id','=',exist_dep[0]),('id','=',emp_id[0])],context=context)
-                if duplicated:
-                    dup_emp = employee.browse(cr, uid,duplicated[0]).number
-                    print dup_emp
-
+            if exist_dep and manager_id:
+                departement.browse(cr, uid, exist_dep[0], context=context).write({'manager_id': manager_id[0] if manager_id else False})
+                print row['LOC_ID']
         return True
+    
 
+    
     def import_passport(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
@@ -2300,7 +2300,28 @@ class import_csv(osv.osv):
                 groups.browse(cr, uid, current_group[0], context=context).write({'parent_id': parent_group[0]})
         return True
 
+    def update_employee_manager(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
 
+        departement = self.pool.get('hr.department')
+        employee = self.pool.get('hr.employee')
+        i=0
+        for emp in employee.search(cr, uid, [('parent_id', '=', False)]):
+            emp_browse = employee.browse(cr, uid, emp, context=context)
+            if emp_browse.department_id:
+                if emp_browse.department_id.manager_id.id==emp:
+                    if emp_browse.department_id.parent_id.manager_id.id!=emp:
+                        emp_browse.write({'parent_id':emp_browse.department_id.parent_id.manager_id.id})
+                    else:
+                        i+=1
+
+                else:
+                    emp_browse.write({'parent_id': emp_browse.department_id.manager_id.id})
+            else:
+                i+=1
+        print i
+        return True
 
 import_csv()
 

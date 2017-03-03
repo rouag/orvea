@@ -15,11 +15,11 @@ class hr_department(models.Model):
     code = fields.Char(string=u'الرمز')
     dep_type = fields.Many2one('hr.department.type', string=u'نوع الإدارة')
 
-    
-    @api.multi
-    def write(self, vals):
 
-        return super(hr_department, self).write(vals)
+    @api.multi
+    def write(self,vals):
+            return super(models.Model, self).write(vals)
+
 
     @api.onchange('dep_city')
     def _onchange_dep_city(self):
