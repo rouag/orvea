@@ -396,7 +396,7 @@ class hrDifference(models.Model):
                                     'type': 'commissioning'}
                             line_ids.append(vals)
                 # 3) حصة الحكومة من التقاعد
-                if assign_id.pay_retirement:
+                if assign_id.comm_type.pay_retirement:
                     amount = (grid_id.basic_salary * assign_id.retirement_proportion) / 100.0
                     if amount > 0:
                         vals = {'difference_id': self.id,
