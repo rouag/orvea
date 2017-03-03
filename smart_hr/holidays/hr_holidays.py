@@ -50,6 +50,9 @@ class HrHolidays(models.Model):
     date_to = fields.Date(string=u'التاريخ الى' , compute='_compute_date_to', store=True)
     duration = fields.Integer(string=u'الأيام' , required=1)
     holiday_status_id = fields.Many2one('hr.holidays.status', string=u'نوع الأجازة', default=lambda self: self.env.ref('smart_hr.data_hr_holiday_status_normal'), advanced_search=True)
+    spend_advanced_salary = fields.Boolean(string=u'يصرف له راتب مسبق', related='holiday_status_id.spend_advanced_salary')
+    advanced_salary_periode = fields.Integer(string=u'مدة صرف راتب مسبق (باليوم)', related='holiday_status_id.advanced_salary_periode')
+    with_advanced_salary = fields.Boolean(string=u'مع صرف راتب مسبقاً', readonly=1, states={'draft': [('readonly', 0)]})
     state = fields.Selection([
         ('draft', u'طلب'),
         ('dm', u'مدير المباشر'),
@@ -128,10 +131,11 @@ class HrHolidays(models.Model):
     birth_certificate_child_birth_dad = fields.Binary(string=u'شهادة الميلاد', attachment=True)
     birth_certificate_file_name_file_name= fields.Char(string=u'شهادة الميلاد')
     speech_source = fields.Char(string=u'مصدر الخطابات')
-    
+    hide_with_advanced_salary = fields.Boolean('hide_with_advanced_salary', default=True)
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
+
     @api.one
     @api.depends("holiday_status_id", "entitlement_type")
     def _compute_current_holiday_stock(self):
@@ -191,7 +195,15 @@ class HrHolidays(models.Model):
         if self.date_from <= datetime.today().strftime('%Y-%m-%d'):
             self.is_started = True
 
-
+    @api.multi
+    @api.onchange('holiday_status_id', 'duration')
+    def onchange_hide_with_advanced_salary(self):
+        self.ensure_one()
+        if self.holiday_status_id and self.duration:
+            if self.holiday_status_id.spend_advanced_salary and self.duration >= self.holiday_status_id.advanced_salary_periode:
+                self.hide_with_advanced_salary = False
+            else:
+                self.hide_with_advanced_salary = True
 
     @api.onchange('holiday_status_id')
     def onchange_holiday_status_id(self):
@@ -1289,11 +1301,12 @@ class HrHolidaysStatus(models.Model):
     demand_number_max = fields.Integer(string=u'عدد مرات الطلب', default='-1')
     traveling_ticket = fields.Boolean(string=u'تذكرة سفر', default=False)
     traveling_family_ticket = fields.Boolean(string=u'تذكرة سفر عائليّة', default=False)
-    
     transport_allowance = fields.Boolean(string=u'صرف بدل النقل', default=False)
     maximum_days_by_year = fields.Integer(string=u'الحد الأقصى لأيّامات الإجازات في السّنة')
     audit = fields.Boolean(string=u'تدقيق', default=False)
     service_years_required = fields.Integer(string=u'سنوات الخدمة المطلوبة', default=0)
+    spend_advanced_salary = fields.Boolean(string=u'يصرف له راتب مسبق')
+    advanced_salary_periode = fields.Integer(string=u'مدة صرف راتب مسبق (باليوم)', default=30)
 
     @api.onchange('deductible_duration_service')
     def onchange_deductible_duration_service(self):

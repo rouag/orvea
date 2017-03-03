@@ -161,6 +161,7 @@ class HrPayslip(models.Model):
                               ('done', 'تم'),
                               ('cancel', 'ملغى'),
                               ], 'الحالة', select=1, readonly=1, copy=False)
+    with_advanced_salary = fields.Boolean(string=u"مع صرف راتب مسبق", default=False, readonly=1)
 
     @api.one
     def action_verify(self):
@@ -290,12 +291,52 @@ class HrPayslip(models.Model):
 
     @api.multi
     def compute_sheet(self):
-        print '----new compute_sheet ---------'
+        # amount_multiplcation is 1 normale payslip generation
+        # amount_multiplcation will be 2 if self.with_advanced_salary is true;
+        # amount_multiplcation will be 0 if current payslip's salary grid is allready generated for the last month's payslip ;
+        amount_multiplcation = 1
         # check weither the employee is terminated
         if self.employee_id.emp_state == 'terminated':
             termination_id = self.env['hr.termination'].search([('employee_id', '=', self.employee_id.id), ('state', '=', 'done')], order='date_termination desc', limit=1)
             if fields.Date.from_string(termination_id.date_termination) < fields.Date.from_string(self.date_from) or fields.Date.from_string(termination_id.date_termination) > fields.Date.from_string(self.date_to):
                 raise UserError(u"لقد تم طي قيد %s " % self.employee_id.name)
+        # check if the salary is allready given in the last payslip for the previous month
+        previous_month_payslip = False
+        if self.month != '01':
+            # previous month in current year
+            previous_month = '0' + str((int(self.month) - 1))
+            current_year_date = str(fields.Date.from_string(self.date_from).year) + '-01-01'
+            current_year_date = fields.Date.from_string(current_year_date)
+            previous_month_payslip = self.env['hr.payslip'].search([('date_from', '>=', current_year_date),
+                                                                    ('employee_id', '=', self.employee_id.id),
+                                                                    ('month', '=', previous_month),
+                                                                    ('with_advanced_salary', '=', True),
+                                                                    ('state', '=', 'done')
+                                                                    ])
+        else:
+            # previous month in previous year
+            previous_month = '0' + str((int(self.month) - 1))
+            previous_year_date = str(fields.Date.from_string(self.date_from).year - 1) + '-12-31'
+            previous_year_date = fields.Date.from_string(current_year_date)
+            previous_month_payslip = self.env['hr.payslip'].search([('date_to', '<=', previous_year_date),
+                                                                    ('employee_id', '=', self.employee_id.id),
+                                                                    ('month', '=', previous_month),
+                                                                    ('with_advanced_salary', '=', True),
+                                                                    ('state', '=', 'done')
+                                                                    ])
+        if previous_month_payslip:
+            # the employee is allready have the salary_grid of the current month
+            amount_multiplcation = 0
+        # check if the employee need an advanced salary from the holidays
+        holidays_ids = self.env['hr.holidays'].search([('date_to', '>=', self.date_from),
+                                                       ('date_to', '<=', self.date_to),
+                                                       ('state', '=', 'done')
+                                                       ])
+        for holiday_id in holidays_ids:
+            if holiday_id.with_advanced_salary:
+                self.with_advanced_salary = True
+                amount_multiplcation = 2
+                break
         bonus_line_obj = self.env['hr.bonus.line']
         loan_obj = self.env['hr.loan']
         difference_line_obj = self.env['hr.difference.line']
@@ -323,7 +364,7 @@ class HrPayslip(models.Model):
                                 'slip_id': payslip.id,
                                 'employee_id': employee.id,
                                 'rate': 0.0,
-                                'amount': basic_salary,
+                                'amount': basic_salary * amount_multiplcation,
                                 'category': 'basic_salary',
                                 'type': 'basic_salary',
                                 'sequence': sequence,
@@ -332,7 +373,7 @@ class HrPayslip(models.Model):
             # 2- البدلات القارة
             for allowance in salary_grid.allowance_ids:
                 sequence += 1
-                amount = allowance.get_value(employee.id)
+                amount = allowance.get_value(employee.id) * amount_multiplcation
                 allowance_val = {'name': allowance.allowance_id.name,
                                  'slip_id': payslip.id,
                                  'employee_id': employee.id,
@@ -346,7 +387,7 @@ class HrPayslip(models.Model):
                 allowance_total += amount
             for reward in salary_grid.reward_ids:
                 sequence += 1
-                amount = reward.get_value(employee.id)
+                amount = reward.get_value(employee.id) * amount_multiplcation
                 reward_val = {'name': reward.reward_id.name,
                               'slip_id': payslip.id,
                               'employee_id': employee.id,
@@ -360,7 +401,7 @@ class HrPayslip(models.Model):
                 allowance_total += amount
             sequence += 1
             for indemnity in salary_grid.indemnity_ids:
-                amount = indemnity.get_value(employee.id)
+                amount = indemnity.get_value(employee.id) * amount_multiplcation
                 indemnity_val = {'name': indemnity.indemnity_id.name,
                                  'slip_id': payslip.id,
                                  'employee_id': employee.id,

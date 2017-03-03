@@ -6,7 +6,6 @@
 			<t t-call="report.html_container">
 				<t t-foreach="docs" t-as="o">
 					<t t-call="smart_base.landscape_layout">
-
 						<div class="page">
 							<br />
 							<br />
