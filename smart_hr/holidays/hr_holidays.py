@@ -200,7 +200,7 @@ class HrHolidays(models.Model):
     def onchange_hide_with_advanced_salary(self):
         self.ensure_one()
         if self.holiday_status_id and self.duration:
-            if self.holiday_status_id.spend_advanced_salary and self.duration > self.holiday_status_id.advanced_salary_periode:
+            if self.holiday_status_id.spend_advanced_salary and self.duration >= self.holiday_status_id.advanced_salary_periode:
                 self.hide_with_advanced_salary = False
             else:
                 self.hide_with_advanced_salary = True

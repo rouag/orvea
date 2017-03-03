@@ -333,9 +333,10 @@ class HrPayslip(models.Model):
                                                        ('state', '=', 'done')
                                                        ])
         for holiday_id in holidays_ids:
-            if holiday_id.holiday_status_id.spend_advanced_salary and holiday_id.duration >= holiday_id.holiday_status_id.advanced_salary_periode:
+            if holiday_id.with_advanced_salary:
                 self.with_advanced_salary = True
                 amount_multiplcation = 2
+                break
         bonus_line_obj = self.env['hr.bonus.line']
         loan_obj = self.env['hr.loan']
         difference_line_obj = self.env['hr.difference.line']
