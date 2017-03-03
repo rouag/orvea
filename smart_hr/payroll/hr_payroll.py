@@ -560,7 +560,7 @@ class HrPayslip(models.Model):
                                                                   'month': month,
                                                                   })
             # 6- التقاعد‬
-            retirement_amount = (basic_salary + allowance_total - deduction_total) * salary_grid.retirement / 100.0
+            retirement_amount = (basic_salary * amount_multiplcation + allowance_total - deduction_total) * salary_grid.retirement / 100.0
             retirement_val = {'name': 'التقاعد',
                               'slip_id': payslip.id,
                               'employee_id': employee.id,
@@ -573,7 +573,7 @@ class HrPayslip(models.Model):
             deduction_total += retirement_amount
             sequence += 1
             # 7- التأمينات‬
-            insurance_amount = (basic_salary + allowance_total) * salary_grid.insurance / 100.0
+            insurance_amount = (basic_salary * amount_multiplcation + allowance_total) * salary_grid.insurance / 100.0
             insurance_val = {'name': 'التأمين',
                              'slip_id': payslip.id,
                              'employee_id': employee.id,
