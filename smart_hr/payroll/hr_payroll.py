@@ -293,7 +293,7 @@ class HrPayslip(models.Model):
     def compute_sheet(self):
         # amount_multiplcation is 1 normale payslip generation
         # amount_multiplcation will be 2 if self.with_advanced_salary is true;
-        # amount_multiplcation will be 0 if current payslip's salary grid is allready generated for the last month's payslip ;
+        # amount_multiplcation will be 0 if current payslip's salary grid is allready generated for the previous month's payslip ;
         amount_multiplcation = 1
         # check weither the employee is terminated
         if self.employee_id.emp_state == 'terminated':
@@ -560,7 +560,7 @@ class HrPayslip(models.Model):
                                                                   'month': month,
                                                                   })
             # 6- التقاعد‬
-            retirement_amount = (basic_salary + allowance_total - deduction_total) * salary_grid.retirement / 100.0
+            retirement_amount = (basic_salary * amount_multiplcation + allowance_total - deduction_total) * salary_grid.retirement / 100.0
             retirement_val = {'name': 'التقاعد',
                               'slip_id': payslip.id,
                               'employee_id': employee.id,
@@ -573,7 +573,7 @@ class HrPayslip(models.Model):
             deduction_total += retirement_amount
             sequence += 1
             # 7- التأمينات‬
-            insurance_amount = (basic_salary + allowance_total) * salary_grid.insurance / 100.0
+            insurance_amount = (basic_salary * amount_multiplcation + allowance_total) * salary_grid.insurance / 100.0
             insurance_val = {'name': 'التأمين',
                              'slip_id': payslip.id,
                              'employee_id': employee.id,
@@ -586,7 +586,7 @@ class HrPayslip(models.Model):
             deduction_total += insurance_amount
             sequence += 1
             # 0- صافي الراتب
-            salary_net = basic_salary + allowance_total + difference_total - deduction_total
+            salary_net = basic_salary * amount_multiplcation + allowance_total + difference_total - deduction_total
             salary_net_val = {'name': u'صافي الراتب',
                               'slip_id': payslip.id,
                               'employee_id': employee.id,
