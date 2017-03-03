@@ -2322,7 +2322,17 @@ class import_csv(osv.osv):
         history = self.pool.get('hr.employee.history')
         grade = self.pool.get('salary.grid.grade')
         for row in reader:
-            empid = str(row['EMP_NO'].strip(" "))
+            if len(str(row['EMP_NO'].strip(" ")))==4:
+                empid = str(0)+str(row['EMP_NO'].strip(" "))
+            elif len(str(row['EMP_NO'].strip(" ")))==3:
+                empid = str(0)+str(0)+str(row['EMP_NO'].strip(" "))
+            elif len(str(row['EMP_NO'].strip(" ")))==2:
+                empid = str(0)+str(0)+str(0)+str(row['EMP_NO'].strip(" "))
+            elif len(str(row['EMP_NO'].strip(" ")))==1:
+                empid = str(0)+str(0)+str(0)+str(0)+str(row['MGR_NO'].strip(" "))
+            else:
+                empid = str(row['EMP_NO'].strip(" "))
+                            
             employee_ids = employee.search(cr, uid, [('number', '=', empid)])
             fmt = '%d/%m/%Y'
             date1 = False
@@ -2360,7 +2370,7 @@ class import_csv(osv.osv):
                             'job_id': str(row['position']),
                             'dep_side': str(row['side']),
                             'grade_id':grade_id,
-                            'number':employee_id.job_id.name,
+                            'number':employee_id.job_id.name.name,
                             'department_id':employee_id.department_id.id,
                             }
                     history.create(cr, uid, history_line_val,context=context)

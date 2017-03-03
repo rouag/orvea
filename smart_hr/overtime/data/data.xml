@@ -7,6 +7,7 @@
 			<field name="name">إعدادات عامة</field>
 			<field name="normal_days" eval="25" />
 			<field name="normal_days" eval="50" />
+			<field name="holidays" eval="100" />
 		</record>
 
 	</data>

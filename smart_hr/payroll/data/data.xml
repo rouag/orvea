@@ -64,6 +64,15 @@
 			<field name="name">بدل تجهيز</field>
 			<field name="code">12</field>
 		</record>
+		<record id="hr_allowance_type_13" model="hr.allowance.type">
+			<field name="name">بدل انتداب</field>
+			<field name="code">13</field>
+		</record>
+		<record id="hr_allowance_type_14" model="hr.allowance.type">
+			<field name="name">بدل خارج الدوام</field>
+			<field name="code">14</field>
+		</record>
+
 
 		<!-- المكافآت‬ -->
 		<record id="hr_reward_type_01" model="hr.reward.type">

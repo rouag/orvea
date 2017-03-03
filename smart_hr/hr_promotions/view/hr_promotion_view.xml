@@ -267,11 +267,6 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 
-		<menuitem id="menu_hr_promotions_type" action="action_promotion_type"
-			parent="hr_root_workflows_setting" name="أنواع الترقية"
-			sequence="10"
-			groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion" />
-
 
 		<record model="ir.ui.view" id="hr_promotion_employee_affected_tree_view">
 			<field name="name">hr.promotion.employee.job.tree</field>

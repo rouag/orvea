@@ -355,10 +355,6 @@
 				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
 			</field>
 		</record>
-
-		<menuitem id="menu_hr__hr_allowance_appoint"
-			action="action_view_tree_hr_allowance_appoint" parent="hr_root_workflows_setting"
-			name="بدل التعين" sequence="6"
-			groups="smart_hr.group_sys_manager" />			
+		
 	</data>
 </openerp>

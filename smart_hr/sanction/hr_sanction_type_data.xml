@@ -36,14 +36,12 @@
 			<field name="deduction" eval="True" />
 		</record>
 		
-		<record id="data_hr_sanction_type_separation" model="hr.type.sanction">
+		<record id="data_hr_sanction_type_separation2" model="hr.type.sanction">
 			<field name="name"> فصل(من المرتبة الحادية عشرالى المرتبة الخامسة
 				عشر))
 			</field>
 			<field name="code" eval="6" />
 			<field name="sanction_decider" eval="True" />
-			<field name="min_grade_id" eval="True" />
-			<field name="max_grade_id" eval="True" />
 			<field name="deduction" eval="True" />
 		</record>
 

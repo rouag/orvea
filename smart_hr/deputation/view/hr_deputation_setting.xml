@@ -7,7 +7,7 @@
 			<field name="name">hr.deputation.setting.form</field>
 			<field name="model">hr.deputation.setting</field>
 			<field name="arch" type="xml">
-				<form string="إعدادات الانتداب" create='0' delete='0' duplicate='0'>
+				<form string="إعدادات الانتداب" create='0'  duplicate='0'>
 
 					<sheet>
 						<group>
