@@ -7,27 +7,44 @@
 			<field name="name"> إنذار
 			</field>
 			<field name="code" eval="1" />
-
 		</record>
+		
 		<record id="data_hr_sanction_type_blame" model="hr.type.sanction">
 			<field name="name"> لوم
 			</field>
 			<field name="code" eval="2" />
 		</record>
+		
 		<record id="data_hr_sanction_type_displine" model="hr.type.sanction">
 			<field name="name"> حسم تأديبي
 			</field>
 			<field name="code" eval="3" />
+			<field name="deduction" eval="True" />
 		</record>
+		
 		<record id="data_hr_sanction_type_grade" model="hr.type.sanction">
 			<field name="name"> حرمان من علاوة
 			</field>
 			<field name="code" eval="4" />
+			<field name="deduction" eval="True" />
 		</record>
+		
 		<record id="data_hr_sanction_type_separation" model="hr.type.sanction">
-			<field name="name"> الفصل
+			<field name="name"> فصل(من المرتبة الاولى الى المرتبة العاشرة)
 			</field>
 			<field name="code" eval="5" />
+			<field name="deduction" eval="True" />
+		</record>
+		
+		<record id="data_hr_sanction_type_separation" model="hr.type.sanction">
+			<field name="name"> فصل(من المرتبة الحادية عشرالى المرتبة الخامسة
+				عشر))
+			</field>
+			<field name="code" eval="6" />
+			<field name="sanction_decider" eval="True" />
+			<field name="min_grade_id" eval="True" />
+			<field name="max_grade_id" eval="True" />
+			<field name="deduction" eval="True" />
 		</record>
 
 	</data>

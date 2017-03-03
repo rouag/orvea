@@ -395,6 +395,18 @@ class hrDifference(models.Model):
                                     'amount': amount * -1,
                                     'type': 'commissioning'}
                             line_ids.append(vals)
+                # 3) حصة الحكومة من التقاعد
+                if assign_id.pay_retirement:
+                    amount = (grid_id.basic_salary * assign_id.retirement_proportion) / 100.0
+                    if amount > 0:
+                        vals = {'difference_id': self.id,
+                                'name': 'حصة الحكومة من التقاعد',
+                                'employee_id': assign_id.employee_id.id,
+                                'number_of_days': 0,
+                                'number_of_hours': 0.0,
+                                'amount': amount,
+                                'type': 'commissioning'}
+                        line_ids.append(vals)
         return line_ids
 
     @api.multi
@@ -571,6 +583,19 @@ class hrDifference(models.Model):
                                     'amount': (amount) * -1,
                                     'type': 'holiday'}
                             line_ids.append(vals)
+            # case of  نوع التعويض    مقابل ‫مادي‬ ‬   اجازة التعويض
+            if grid_id:
+                if holiday_id.compensation_type and holiday_id.compensation_type == 'money':
+                    amount = (holiday_id.current_holiday_stock * (grid_id.basic_salary / 22))
+                    if amount != 0:
+                        vals = {'difference_id': self.id,
+                                'name': holiday_id.holiday_status_id.name + "(تعويض مالي)",
+                                'employee_id': holiday_id.employee_id.id,
+                                'number_of_days': int(holiday_id.current_holiday_stock),
+                                'number_of_hours': 0.0,
+                                'amount': (amount),
+                                'type': 'holiday'}
+                        line_ids.append(vals)
         return line_ids
 
     @api.multi
