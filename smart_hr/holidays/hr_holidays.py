@@ -198,12 +198,12 @@ class HrHolidays(models.Model):
     @api.multi
     @api.onchange('holiday_status_id', 'duration')
     def onchange_hide_with_advanced_salary(self):
-        self.ensure_one()
-        if self.holiday_status_id and self.duration:
-            if self.holiday_status_id.spend_advanced_salary and self.duration >= self.holiday_status_id.advanced_salary_periode:
-                self.hide_with_advanced_salary = False
-            else:
-                self.hide_with_advanced_salary = True
+        for rec in self:
+            if rec.holiday_status_id and rec.duration:
+                if rec.holiday_status_id.spend_advanced_salary and rec.duration >= rec.holiday_status_id.advanced_salary_periode:
+                    rec.hide_with_advanced_salary = False
+                else:
+                    rec.hide_with_advanced_salary = True
 
     @api.onchange('holiday_status_id')
     def onchange_holiday_status_id(self):
