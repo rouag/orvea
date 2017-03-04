@@ -143,27 +143,28 @@ class HrScholarship(models.Model):
         self.ensure_one()
 #         constraint service_duration and education level
         date_from = fields.Date.from_string(self.date_from)
-        if self.diplom_type == 'hight':
-            if self.employee_id.service_duration < 2 * 365:
-                raise ValidationError(u"ليس لديك سنتين في الخدمة")
-            education_level_ids = self.env['hr.employee.job.education.level'].search([('employee_id', '=', self.employee_id.id),
-                                                                                      ('level_education_id', 'in', [self.env.ref('smart_hr.certificate_baccalaureate').id,
-                                                                                                                     self.env.ref('smart_hr.certificate_licence').id])])
-            for level in education_level_ids:
-                if (date_from - fields.Date.from_string(level.diploma_date)).days < 2 * 365:
-                    raise ValidationError(u"لم تمضي سنتين   في الخدمة بعد الحصول على درجة الباكالوريوس او الليسانس")
+        needed_service_duration = self.env['hr.scholarship.service.duration'].search([('scholarship_type','=', self.scholarship_type),('diplom_type','=', self.diplom_type)], limit=1)
+        if needed_service_duration:
+            if self.employee_id.service_duration < needed_service_duration.service_duration:
+                raise ValidationError(u"ليس لديك السنوات المطلوبة في الخدمة")
+            education_level_ids = []
+            if self.diplom_type == 'hight':
+                education_level_ids = self.env['hr.employee.job.education.level'].search([('employee_id', '=', self.employee_id.id), 
+                                                                                          ('level_education_id', 'in', [self.env.ref('smart_hr.certificate_baccalaureate').id,
+                                                                                          self.env.ref('smart_hr.certificate_licence').id])])
+            if self.diplom_type == 'middle':
+                education_level_ids = self.env['hr.employee.job.education.level'].search([('employee_id', '=', self.employee_id.id),
+                                                                                      ('level_education_id', '=', self.env.ref('smart_hr.certificate_after_secondary_education').id)])
             if not education_level_ids:
                 raise ValidationError(u"الرجاء مراجعة المؤهلات العلمية للموظف")
-        if self.diplom_type == 'middle':
-            if self.employee_id.service_duration < 3 * 365:
-                raise ValidationError(u"ليس لديك ثلاث سنوات في الخدمة")
+            for level in education_level_ids:
+                if (date_from - fields.Date.from_string(level.diploma_date)).days < needed_service_duration.service_duration:
+                    raise ValidationError(u"لم تمضي السنوات المطلوبة في الخدمة بعد الحصول على آخر دپلوم")
+
             education_level_ids = self.env['hr.employee.job.education.level'].search([('employee_id', '=', self.employee_id.id),
                                                                                       ('level_education_id', '=', self.env.ref('smart_hr.certificate_after_secondary_education').id)])
-            for level in education_level_ids:
-                if (date_from - fields.Date.from_string(level.diploma_date)).days < 3 * 365:
-                    raise ValidationError(u"لم تمضي ثلاث سنوات في الخدمة  بعد الحصول على دبلوم الثانوية")
-            if not education_level_ids:
-                raise ValidationError(u"الرجاء مراجعة المؤهلات العلمية للموظف")
+        else:
+            raise ValidationError(u" الرجاء مراجعة إعداد مدة الخدمة اللازمة قبل الابتعاث")
 
 #         constraint evaluation
         employee_evaluation_id1 = self.env['hr.employee.evaluation.level'].search([('employee_id', '=', self.employee_id.id), ('year', '=', date_from.year - 1)], limit=1)
@@ -230,6 +231,8 @@ class HrScholarship(models.Model):
             if rec.state != 'draft':
                 raise ValidationError(u'لا يمكن حذف ابتعاث فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(HrScholarship, self).unlink()
+    
+
 
 
 class HrScholarshipType(models.Model):
@@ -244,6 +247,7 @@ class HrScholarshipType(models.Model):
     pension_percent = fields.Float(string=u'نسبة راتب التقاعد(%)')
     traveling_family_ticket = fields.Boolean(string=u'تذكرة سفر عائليّة', default=False)
     note = fields.Text(string='ملاحظات')
+    service_duration_needed = fields.One2many('hr.scholarship.service.duration','scholarship_type', string=u'مدة الخدمة اللازمة قبل الابتعاث')
 
     @api.multi
     def name_get(self):
@@ -258,5 +262,19 @@ class HrScholarshipType(models.Model):
     def check_pension_percent(self):
         if self.pension_percent < 0 or self.pension_percent > 100:
             raise ValidationError(u"نسبة راتب التقاعد خاطئة ")
-       
+
+ 
+    
+class HrScholarshipServiceDuration(models.Model):
+
+    _name = 'hr.scholarship.service.duration'
+    _inherit = ['mail.thread']
+    _order = 'id desc'
+    _description = u'مدة الخدمة اللازمة قبل الابتعاث'
+
+    name = fields.Char(string=' المسمى')
+    service_duration = fields.Integer( string=u'(المدة(يوم')
+    diplom_type = fields.Selection([('hight', u'دبلوم من الدراسات العليا'), ('middle', u'الليسانس او الباكالوريوس او دبلوم متوسط')], string='نوع الدبلوم',)
+    scholarship_type = fields.Many2one('hr.scholarship.type')
+    
 

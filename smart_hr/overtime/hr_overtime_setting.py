@@ -16,7 +16,7 @@ class HrOvertimeSetting(models.Model):
     holidays = fields.Float(string='معدل ساعات التكليف خلال أيام الأعياد يحتسب بحد أعلى قدره')
     grade_ids = fields.Many2many('salary.grid.grade', 'overtime_grade_rel', 'overtime_id', 'grade_id', string=u'المراتب التي لا تستحق بدل نقل')
     allowance_transport_id = fields.Many2one('hr.allowance.type', string='بدل النقل')
-    allowance_overtime_id = fields.Many2one('hr.allowance.type', string='بدل خارج الدوام')
+    allowance_overtime_id = fields.Many2one('hr.allowance.type', string='بدل خارج الدوام',default=lambda self: self.env.ref('smart_hr.hr_allowance_type_01'))
 
     @api.multi
     def button_setting(self):

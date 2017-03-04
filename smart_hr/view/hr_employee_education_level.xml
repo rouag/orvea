@@ -150,9 +150,7 @@
 						<group>
 							<field name="name" required="1" />
 							<field name="code" required="1" />
-
 						</group>
-
 					</sheet>
 				</form>
 			</field>
@@ -268,6 +266,6 @@
 		
 
 		<menuitem id="menu_hr_employee_configuration" action="action_hr_employee_configuration"
-			sequence="50" parent="hr_configuration_general_root" />
+			sequence="36" parent="hr_root_employee_configuration" />
 	</data>
 </openerp>

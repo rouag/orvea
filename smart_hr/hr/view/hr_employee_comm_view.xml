@@ -54,20 +54,22 @@
 						<group>
 							<group>
 								<field name="employee_id" options='{"no_open": True, "no_create": True}' />
-								<field name="governmental_entity" options='{"no_open": True, "no_create": True}'
-									attrs="{'invisible':[('comm_type', '!=', %(data_hr_commissioning_type_02)d)], 'required':[('comm_type', '=', %(data_hr_commissioning_type_02)d)]}" />
 								<field name="decision_number" />
 								<field name="decision_date" />
 								<field name="decision_file" />
 							</group>
 							<group>
 								<field name="comm_type" options='{"no_open": True, "no_create": True}' />
+								<field name="governmental_entity" options='{"no_open": True, "no_create": True}'
+									attrs="{'invisible':[('comm_type', '!=', %(data_hr_commissioning_type_02)d)], 'required':[('comm_type', '=', %(data_hr_commissioning_type_02)d)]}" />
 								<field name="city" options='{"no_open": True, "no_create": True}' />
-								<group col="6">
-									<field name="give_allowance_transport" attrs="{'invisible':[('state', '=', 'new')]}" />
-									<field name="give_allow" attrs="{'invisible':[('state', '=', 'new')]}" />
-									<field name="give_salary" attrs="{'invisible':[('state', '=', 'new')]}" />
-								</group>
+								<field name="pay_retirement"
+									attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
+								<field name="retirement_proportion"
+									attrs="{'invisible':['|', ('pay_retirement', '=', False), ('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
+								<field name="give_allowance_transport" attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
+								<field name="give_allow" attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
+								<field name="give_salary" attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
 							</group>
 							<field name="note" />
 						</group>
@@ -109,7 +111,8 @@
 		</record>
 
 		<menuitem action="action_hr_employee_commissioning" id="hr_menu_employee_commissioning"
-			groups="smart_hr.group_hr_commissioning_requests" parent="hr_root_workflows" name="طلبات التكليف" sequence="95" />
+			groups="smart_hr.group_hr_commissioning_requests" parent="hr_root_workflows"
+			name="طلبات التكليف" sequence="95" />
 
 		<!-- أنواع التكليف -->
 		<record id="view_hr_comm_type_form" model="ir.ui.view">
@@ -120,6 +123,7 @@
 					<sheet>
 						<group>
 							<field name="name" />
+							<field name="pay_retirement" />
 						</group>
 					</sheet>
 				</form>
@@ -133,6 +137,7 @@
 			<field name="arch" type="xml">
 				<tree string="أنواع التكليف">
 					<field name="name" />
+					<field name="pay_retirement" />
 				</tree>
 			</field>
 		</record>

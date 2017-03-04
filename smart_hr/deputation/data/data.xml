@@ -8,6 +8,30 @@
 			<field name="period_decision" eval="30"/>
 		</record>
 
+
+
+	<record id="data_hr_transport_setting" model="hr.transport.decision.type">
+			<field name="name">ابتعاثه</field>
+			<field name="code" eval="1"/>
+		</record>
+			<record id="data_hr_transport_setting2" model="hr.transport.decision.type">
+			<field name="name">إنتدابه</field>
+			<field name="code" eval="2"/>
+		</record>
+		<record id="data_hr_transport_setting3" model="hr.transport.decision.type">
+			<field name="name">نقله</field>
+			<field name="code" eval="3"/>
+		</record>
+		<record id="data_hr_transport_setting4" model="hr.transport.decision.type">
+			<field name="name">علاجه</field>
+			<field name="code" eval="4"/>
+		</record>
+		
+			<record id="data_hr_transport_setting5" model="hr.transport.decision.type">
+			<field name="name">أخرى</field>
+			<field name="code" eval="5"/>
+		</record>
+
 	</data>
 </openerp>
 		

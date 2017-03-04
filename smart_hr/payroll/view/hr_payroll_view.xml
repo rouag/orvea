@@ -56,6 +56,7 @@
 									<field name="date_to" class="oe_inline" />
 								</div>
 								<field name="name"  string="المسمى"/>
+								<field name="with_advanced_salary" />
 								<field name="number" string="التسلسل" readonly="1"/>
 								<field name="credit_note" invisible="1" />
 								<field name="struct_id" invisible="1" />

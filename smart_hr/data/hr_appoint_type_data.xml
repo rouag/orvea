@@ -24,7 +24,6 @@
 			<field name="personnel_hr" eval="True" />
 			<field name="direct_manager" eval="True" />
 			<field name="recrutment_decider" eval="False" />
-			<field name="show_in_apoint" eval="False" />
 			<field name="direct_appoint_period" eval="15" />
 		</record>
 
@@ -36,6 +35,7 @@
 			<field name="personnel_hr" eval="True" />
 			<field name="direct_manager" eval="True" />
 			<field name="recrutment_decider" eval="False" />
+			<field name="show_in_apoint" eval="False" />
 		</record>
 
 		<record id="data_hr_recrute_agent_utilisateur" model="hr.type.appoint">
@@ -112,7 +112,7 @@
 		<record id="data_hr_recrute_from_transfert" model="hr.type.appoint">
 			<field name="name">تعين النقل</field>
 			<field name="code">TR01</field>
-			<field name="show_in_apoint">False</field>
+			<field name="show_in_apoint" eval="False" />
 		</record>
 
 		<record id="data_hr_promotion_member" model="hr.type.appoint">
@@ -124,6 +124,7 @@
 			<field name="direct_manager" eval="True" />
 			<field name="recrutment_decider" eval="False" />
 			<field name="for_members" eval="True" />
+			<field name="show_in_apoint" eval="False" />
 		</record>
 		
 		

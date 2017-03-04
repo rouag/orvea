@@ -1112,3 +1112,24 @@ msgid ""
 "\n"
 "[object with reference: %s - %s]"
 msgstr "\n\n[الكائن: %s - %s]"
+
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/xml/thread.xml:48
+#, python-format
+msgid "Note by"
+msgstr "تعديل من قبل"
+
+#. module: base
+#: code:addons/base/ir/ir_fields.py:144
+#, python-format
+msgid "true"
+msgstr "صحيح"
+
+
+#. module: base
+#: code:addons/base/ir/ir_fields.py:144
+#, python-format
+msgid "false"
+msgstr "خطأ"

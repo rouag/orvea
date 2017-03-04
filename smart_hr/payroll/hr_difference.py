@@ -395,6 +395,18 @@ class hrDifference(models.Model):
                                     'amount': amount * -1,
                                     'type': 'commissioning'}
                             line_ids.append(vals)
+                # 3) حصة الحكومة من التقاعد
+                if assign_id.comm_type.pay_retirement:
+                    amount = (grid_id.basic_salary * assign_id.retirement_proportion) / 100.0
+                    if amount > 0:
+                        vals = {'difference_id': self.id,
+                                'name': 'حصة الحكومة من التقاعد',
+                                'employee_id': assign_id.employee_id.id,
+                                'number_of_days': 0,
+                                'number_of_hours': 0.0,
+                                'amount': amount,
+                                'type': 'commissioning'}
+                        line_ids.append(vals)
         return line_ids
 
     @api.multi
@@ -544,28 +556,44 @@ class hrDifference(models.Model):
                 entitlement_type = self.env.ref('smart_hr.data_hr_holiday_entitlement_all')
             else:
                 entitlement_type = holiday_id.entitlement_type
+            print duration_in_month
             # case of لا يصرف له الراتب
             if grid_id and not holiday_status_id.salary_spending:
                 amount = (duration_in_month * (grid_id.basic_salary / 22)) / 100.0
-                vals = {'difference_id': self.id,
-                        'name': holiday_id.holiday_status_id.name,
-                        'employee_id': holiday_id.employee_id.id,
-                        'number_of_days': duration_in_month,
-                        'number_of_hours': 0.0,
-                        'amount': (amount) * -1,
-                        'type': 'holiday'}
-                line_ids.append(vals)
+                if amount != 0:
+                    vals = {'difference_id': self.id,
+                            'name': holiday_id.holiday_status_id.name,
+                            'employee_id': holiday_id.employee_id.id,
+                            'number_of_days': duration_in_month,
+                            'number_of_hours': 0.0,
+                            'amount': (amount) * -1,
+                            'type': 'holiday'}
+                    line_ids.append(vals)
             # case of يصرف له الراتب
             if grid_id and holiday_status_id.salary_spending:
                 for rec in holiday_status_id.percentages:
                     if entitlement_type == rec.entitlement_id and months_from_holiday_start >= rec.month_from and months_from_holiday_start <= rec.month_to:
                         amount = (((duration_in_month * (grid_id.basic_salary / 22)) * (100 - rec.salary_proportion))) / 100.0
+                        if amount != 0:
+                            vals = {'difference_id': self.id,
+                                    'name': holiday_id.holiday_status_id.name,
+                                    'employee_id': holiday_id.employee_id.id,
+                                    'number_of_days': duration_in_month,
+                                    'number_of_hours': 0.0,
+                                    'amount': (amount) * -1,
+                                    'type': 'holiday'}
+                            line_ids.append(vals)
+            # case of  نوع التعويض    مقابل ‫مادي‬ ‬   اجازة التعويض
+            if grid_id:
+                if holiday_id.compensation_type and holiday_id.compensation_type == 'money':
+                    amount = (holiday_id.current_holiday_stock * (grid_id.basic_salary / 22))
+                    if amount != 0:
                         vals = {'difference_id': self.id,
-                                'name': holiday_id.holiday_status_id.name,
+                                'name': holiday_id.holiday_status_id.name + "(تعويض مالي)",
                                 'employee_id': holiday_id.employee_id.id,
-                                'number_of_days': duration_in_month,
+                                'number_of_days': int(holiday_id.current_holiday_stock),
                                 'number_of_hours': 0.0,
-                                'amount': (amount) * -1,
+                                'amount': (amount),
                                 'type': 'holiday'}
                         line_ids.append(vals)
         return line_ids
