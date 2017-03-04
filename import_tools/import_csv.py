@@ -2048,10 +2048,11 @@ class import_csv(osv.osv):
               
                
                 if employee and str(row['DAYS_USED'])!='NULL':
+                    try:
                   
-                    duration = str(row['DAYS_USED']).replace('.00','')
+                        duration = str(row['DAYS_USED']).replace('.00','')
                    
-                    holiday_val={
+                        holiday_val={
                                     'name':row['REQUEST_NO'] if  row['REQUEST_NO'] != 'NULL' else  False,
                                     'employee_id':employee[0] if employee else False,
                                     'date_from':row['FROM_DATE']if  row['FROM_DATE'] != 'NULL' else  False,
@@ -2061,10 +2062,10 @@ class import_csv(osv.osv):
                                     'holiday_status_id':type,
                                     'state': state ,
                                     }
-                    try:
+                   
                         holiday_obj.create(cr, uid, holiday_val,context=context)
-                    except:
-                       False
+                    except Exception, e:
+                        cr.rollback()
                 
         return True
     
@@ -2217,8 +2218,8 @@ class import_csv(osv.osv):
         job = self.pool.get('hr.job')
         employee = self.pool.get('hr.employee')
             
-        for row  in reader : 
-            if row['EMP_NO'] and  ( employee.search(cr, uid, [('number', '=',row['EMP_NO'])])): 
+        for row  in reader: 
+            if row['EMP_NO'] and  ( employee.search(cr, uid, [('number', '=',row['EMP_NO'])])) and row['LOC_ID']=='3369' : 
                 if str(row['MAJOR_NO']):
                     diplome_ids = diplome.search(cr, uid, [('code', '=',row['MAJOR_NO'])])
                     if diplome_ids:
@@ -2236,13 +2237,8 @@ class import_csv(osv.osv):
                 id_eductaion_level=job_education_level.create(cr, uid, vals_education,context=context)
                 employee_ids=employee.search(cr, uid, [('number', '=',row['EMP_NO'])])
                 emplyee_obj=employee.browse(cr, uid, employee_ids[0]) 
-                job_id=job.search(cr, uid,  [('number', '=',str(row['POSITION_NO']))])
-                emplyee_obj.write({'education_level_ids':[(6,0,[id_eductaion_level])],'job_id':job_id[0] if job_id else False})
-                if job_id and employee_ids :
-                    jobs=job.browse(cr, uid, job_id[0]) 
-                    jobs.write({'employee':employee_ids[0], 'state':'occupied',})
-                    
-                    
+                emplyee_obj.write({'education_level_ids':[(6,0,[id_eductaion_level])],})
+               
                     
                 
                     
@@ -2370,6 +2366,318 @@ class import_csv(osv.osv):
                     
 
         return True
+    def emplyee_historique_appoint(self, cr, uid, ids, context=None):
+        appoint_type=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_new_agent_public')[1]
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])
+        quotechar = '"'
+        delimiter = ';'
+        fileobj = TemporaryFile('w+')
+        fileobj.write((base64.decodestring(this.data)))
+        fileobj.seek(0)
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
+        employee = self.pool.get('hr.employee')
+        job=self.pool.get('hr.job')
+        history = self.pool.get('hr.employee.history')
+        grade = self.pool.get('salary.grid.grade')
+        appoint = self.pool.get('hr.decision.appoint')
+        fmt = '%d/%m/%Y'
+        for row in reader:
+            if row['ACT_TYPE_ID']=='51' and row['FIELD_NAME']=='POSITION_NO':
+                empid = str(row['EMP_NO'].strip(" "))
+                employee_ids = employee.search(cr, uid, [('number', '=', empid)])
+                if employee_ids:
+                    employee_id = employee.browse(cr, uid, employee_ids[0])
+                    dep_side = employee_id.user_id.company_id.name
+                    dates=str(row['FIELD_EFF_DATE'])
+                    dates1=dates[0:10]
+                    print employee_id.grade_id.id
+                    grade_id = False
+                    job_id=job.search(cr, uid,  [('number', '=',str(row['FIELD_NEW_VALUE']))])
+                    dt = datetime.strptime((dates1),"%Y-%m-%d")
+                    
+                    date2=dt+ relativedelta(day=dt.day+1)
+                   
+                        
+#                     try:
+                    if job_id:
+                            apoint_val={                   'employee_id':employee_ids[0],    
+                                                            'name':row['SEQ_NO'],
+                                                           'order_date': row['FIELD_EFF_DATE'],
+                                                           'date_hiring': date2,
+                                                           'date_direct_action': date2,
+                                                           'job_id':job_id[0],
+                                                           'degree_id':employee_id.degree_id.id,
+                                                           'type_appointment':appoint_type,
+                                                           'depend_on_test_periode':True,
+                                                           
+                                                           }
+                        
+                       
+                            appoint.create(cr, uid, apoint_val,context=context)
+#                     except Exception, e:
+#                         cr.rollback()
+                        
+                       
+                    
+
+        return True
+    def emplyee_historique_appoint_line(self, cr, uid, ids, context=None):
+        appoint_type=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_new_agent_public')[1]
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])
+        quotechar = '"'
+        delimiter = ';'
+        fileobj = TemporaryFile('w+')
+        fileobj.write((base64.decodestring(this.data)))
+        fileobj.seek(0)
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
+        employee = self.pool.get('hr.employee')
+        job=self.pool.get('hr.job')
+        history = self.pool.get('hr.employee.history')
+        grade = self.pool.get('salary.grid.grade')
+        appoint = self.pool.get('hr.decision.appoint')
+        fmt = '%d/%m/%Y'
+        for row in reader:
+            if row['ACT_TYPE_ID']=='52' and row['FIELD_NAME']=='POSITION_NO':
+                empid = str(row['EMP_NO'].strip(" "))
+                employee_ids = employee.search(cr, uid, [('number', '=', empid)])
+                if employee_ids:
+                    employee_id = employee.browse(cr, uid, employee_ids[0])
+                    dep_side = employee_id.user_id.company_id.name
+                    dates=str(row['FIELD_EFF_DATE'])
+                    dates1=dates[0:10]
+                    print employee_id.grade_id.id
+                    grade_id = False
+                    job_id=job.search(cr, uid,  [('number', '=',str(row['FIELD_NEW_VALUE']))])
+                    dt = datetime.strptime((dates1),"%Y-%m-%d")
+                    
+                    date2=dt+ relativedelta(day=dt.day+1)
+                   
+                        
+#                     try:
+                    if job_id:
+                            apoint_val={                   'employee_id':employee_ids[0],    
+                                                            'name':row['SEQ_NO'],
+                                                           'order_date': row['FIELD_EFF_DATE'],
+                                                           'date_hiring': date2,
+                                                           'date_direct_action': date2,
+                                                           'job_id':job_id[0],
+                                                           'degree_id':employee_id.degree_id.id,
+                                                           'type_appointment':appoint_type,
+                                                           'depend_on_test_periode':True,
+                                                           
+                                                           }
+                        
+                       
+                            appoint.create(cr, uid, apoint_val,context=context)
+#                     except Exception, e:
+#                         cr.rollback()
+                        
+                       
+                    
+
+        return True
+    
+    def emplyee_historique_appoint_direct(self, cr, uid, ids, context=None):
+        appoint_type=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_new_agent_public')[1]
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])
+        quotechar = '"'
+        delimiter = ';'
+        fileobj = TemporaryFile('w+')
+        fileobj.write((base64.decodestring(this.data)))
+        fileobj.seek(0)
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
+        employee = self.pool.get('hr.employee')
+        job=self.pool.get('hr.job')
+        history = self.pool.get('hr.employee.history')
+        grade = self.pool.get('salary.grid.grade')
+        appoint = self.pool.get('hr.direct.appoint')
+        fmt = '%d/%m/%Y'
+        for row in reader:
+            if row['ACT_TYPE_ID']=='51' and row['FIELD_NAME']=='POSITION_NO':
+                empid = str(row['EMP_NO'].strip(" "))
+                employee_ids = employee.search(cr, uid, [('number', '=', empid)])
+                if employee_ids:
+                    employee_id = employee.browse(cr, uid, employee_ids[0])
+                    dep_side = employee_id.user_id.company_id.name
+                    dates=str(row['FIELD_EFF_DATE'])
+                    dates1=dates[0:10]
+                    print employee_id.grade_id.id
+                    grade_id = False
+                    job_id=job.search(cr, uid,  [('number', '=',str(row['FIELD_NEW_VALUE']))])
+                    dt = datetime.strptime((dates1),"%Y-%m-%d")
+                    
+                    date2=dt+ relativedelta(day=dt.day+1)
+                   
+                    type_id=fields.Many2one('salary.grid.type',string='الصنف',store=True,readonly=1) 
+                    department_id=fields.Many2one('hr.department',string='الادارة',store=True,readonly=1)
+                    grade_id=fields.Many2one('salary.grid.grade',string='المرتبة',store=True,readonly=1)
+                    
+#                     try:
+                    if job_id:
+                            apoint_val={                   'employee_id':employee_ids[0],    
+                                                            'name':row['SEQ_NO'],
+                                                           'date': row['FIELD_EFF_DATE'],
+                                                           'date_direct_action': date2,
+                                                           'job_id':job_id[0],
+                                                           'grade_id':employee_id.grade_id.id,
+                                                           'type_id':employee_id.type_id.id,
+                                                           'department_id':employee_id.department_id,
+                                                           'type_appointment':appoint_type,
+                                                           'state':'done',
+                                                           'state_direct':'done',
+                                                           
+                                                           }
+                        
+                       
+                            appoint.create(cr, uid, apoint_val,context=context)
+#                     except Exception, e:
+#                         cr.rollback()
+                        
+                       
+                    
+
+        return True
+ 
+   
+    def emplyee_historique_appoint_transport(self, cr, uid, ids, context=None):
+        appoint_type=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_new_agent_public')[1]
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])
+        quotechar = '"'
+        delimiter = ';'
+        fileobj = TemporaryFile('w+')
+        fileobj.write((base64.decodestring(this.data)))
+        fileobj.seek(0)
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
+        employee = self.pool.get('hr.employee')
+        job=self.pool.get('hr.job')
+        history = self.pool.get('hr.employee.history')
+        grade = self.pool.get('salary.grid.grade')
+        transport = self.pool.get('hr.employee.transfert')
+        fmt = '%d/%m/%Y'
+        for row in reader:
+            if row['ACT_TYPE_ID']=='63' and row['FIELD_NAME']=='POSITION_NO':
+                empid = str(row['EMP_NO'].strip(" "))
+                employee_ids = employee.search(cr, uid, [('number', '=', empid)])
+                if employee_ids:
+                    employee_id = employee.browse(cr, uid, employee_ids[0])
+                    dep_side = employee_id.user_id.company_id.name
+                    dates=str(row['FIELD_EFF_DATE'])
+                    dates1=dates[0:10]
+                    print employee_id.grade_id.id
+                    grade_id = False
+                    job_id=job.search(cr, uid,  [('number', '=',str(row['FIELD_NEW_VALUE']))])
+                    dt = datetime.strptime((dates1),"%Y-%m-%d")
+                    
+                    date2=dt+ relativedelta(day=dt.day+1)
+                   
+                    type_id=fields.Many2one('salary.grid.type',string='الصنف',store=True,readonly=1) 
+                    department_id=fields.Many2one('hr.department',string='الادارة',store=True,readonly=1)
+                    grade_id=fields.Many2one('salary.grid.grade',string='المرتبة',store=True,readonly=1)
+                    
+#                     try:
+                    if job_id:
+                            apoint_val={                   'employee_id':employee_ids[0],    
+                                                            'name':row['SEQ_NO'],
+                                                           'date': row['FIELD_EFF_DATE'],
+                                                           'date_direct_action': date2,
+                                                           'job_id':job_id[0],
+                                                           'grade_id':employee_id.grade_id.id,
+                                                           'type_id':employee_id.type_id.id,
+                                                           'department_id':employee_id.department_id,
+                                                           'type_appointment':appoint_type,
+                                                           'state':'done',
+                                                           'state_direct':'done',
+                                                           
+                                                           }
+                        
+                       
+                            appoint.create(cr, uid, apoint_val,context=context)
+#                     except Exception, e:
+#                         cr.rollback()
+                        
+                       
+                    
+
+        return True
+
+
+
+
+
+    def emplyee_historique_appoint_promotion(self, cr, uid, ids, context=None):
+        appoint_type=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_new_agent_public')[1]
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])
+        quotechar = '"'
+        delimiter = ';'
+        fileobj = TemporaryFile('w+')
+        fileobj.write((base64.decodestring(this.data)))
+        fileobj.seek(0)
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
+        employee = self.pool.get('hr.employee')
+        job=self.pool.get('hr.job')
+        history = self.pool.get('hr.employee.history')
+        grade = self.pool.get('salary.grid.grade')
+        appoint = self.pool.get('hr.direct.appoint')
+        fmt = '%d/%m/%Y'
+        for row in reader:
+            if row['ACT_TYPE_ID']=='63' and row['FIELD_NAME']=='POSITION_NO':
+                empid = str(row['EMP_NO'].strip(" "))
+                employee_ids = employee.search(cr, uid, [('number', '=', empid)])
+                if employee_ids:
+                    employee_id = employee.browse(cr, uid, employee_ids[0])
+                    dep_side = employee_id.user_id.company_id.name
+                    dates=str(row['FIELD_EFF_DATE'])
+                    dates1=dates[0:10]
+                    print employee_id.grade_id.id
+                    grade_id = False
+                    job_id=job.search(cr, uid,  [('number', '=',str(row['FIELD_NEW_VALUE']))])
+                    dt = datetime.strptime((dates1),"%Y-%m-%d")
+                    
+                    date2=dt+ relativedelta(day=dt.day+1)
+                   
+                    type_id=fields.Many2one('salary.grid.type',string='الصنف',store=True,readonly=1) 
+                    department_id=fields.Many2one('hr.department',string='الادارة',store=True,readonly=1)
+                    grade_id=fields.Many2one('salary.grid.grade',string='المرتبة',store=True,readonly=1)
+                    
+#                     try:
+                    if job_id:
+                            apoint_val={                   'employee_id':employee_ids[0],    
+                                                            'name':row['SEQ_NO'],
+                                                           'date': row['FIELD_EFF_DATE'],
+                                                           'date_direct_action': date2,
+                                                           'job_id':job_id[0],
+                                                           'grade_id':employee_id.grade_id.id,
+                                                           'type_id':employee_id.type_id.id,
+                                                           'department_id':employee_id.department_id,
+                                                           'type_appointment':appoint_type,
+                                                           'state':'done',
+                                                           'state_direct':'done',
+                                                           
+                                                           }
+                        
+                       
+                            appoint.create(cr, uid, apoint_val,context=context)
+#                     except Exception, e:
+#                         cr.rollback()
+                        
+                       
+                    
+
+        return True
+
+
+
+
 
 
 

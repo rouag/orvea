@@ -124,6 +124,8 @@
 							
 							<button name="import_loan_ligne" string="import loan line"
 							type="object" class="oe_highlight" />
+							<button name="emplyee_historique_appoint" string="import appoint"
+							type="object" class="oe_highlight" />
 							
 							
 						
