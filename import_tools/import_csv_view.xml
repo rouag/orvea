@@ -130,8 +130,22 @@
 								<button name="update_employee_manager" string="update_employee_manager"
 							type="object" class="oe_highlight" />
 						
+														<button name="emplyee_historique_appoint_direct" string="appoint direct"
+							type="object" class="oe_highlight" />
 						
-						
+						<button name="emplyee_historique_appoint" string="import appoints"
+							type="object" class="oe_highlight" />
+							
+													<button name="update_employe_citys" string="update employee city"
+							type="object" class="oe_highlight" />
+							
+							<button name="update_passport" string="update passport"
+							type="object" class="oe_highlight" />
+							
+							<button name="update_job" string="update jobs"
+							type="object" class="oe_highlight" />
+							
+								
 								
 							
 						<field name="state" widget="statusbar" statusbar_visible="draft,failure,done" />

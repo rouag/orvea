@@ -2356,6 +2356,7 @@ class import_csv(osv.osv):
                 grade_ids = grade.search(cr, uid, [('code', '=',row['rank_new'])])
                 if grade_ids:
                     grade_id=grade_ids[0]
+                
                 try:
                     history_line_val={
                             'employee_id':employee_ids[0],
@@ -2376,6 +2377,7 @@ class import_csv(osv.osv):
                     
 
         return True
+   
     def emplyee_historique_appoint(self, cr, uid, ids, context=None):
         appoint_type=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_new_agent_public')[1]
         if context is None:
@@ -2402,17 +2404,16 @@ class import_csv(osv.osv):
                     dep_side = employee_id.user_id.company_id.name
                     dates=str(row['FIELD_EFF_DATE'])
                     dates1=dates[0:10]
-                    print employee_id.grade_id.id
                     grade_id = False
                     job_id=job.search(cr, uid,  [('number', '=',str(row['FIELD_NEW_VALUE']))])
                     dt = datetime.strptime((dates1),"%Y-%m-%d")
-                    
+                     
                     date2=dt+ relativedelta(day=dt.day+1)
-                   
-                        
+                    
+                         
 #                     try:
                     if job_id:
-                            apoint_val={                   'employee_id':employee_ids[0],    
+                            apoint_val={                    'employee_id':employee_ids[0],    
                                                             'name':row['SEQ_NO'],
                                                            'order_date': row['FIELD_EFF_DATE'],
                                                            'date_hiring': date2,
@@ -2421,19 +2422,20 @@ class import_csv(osv.osv):
                                                            'degree_id':employee_id.degree_id.id,
                                                            'type_appointment':appoint_type,
                                                            'depend_on_test_periode':True,
-                                                           
+                                                           'state':'done',
+                                                            
                                                            }
+                         
                         
-                       
                             appoint.create(cr, uid, apoint_val,context=context)
 #                     except Exception, e:
 #                         cr.rollback()
+                         
                         
-                       
-                    
-
+                     
+ 
         return True
-    def emplyee_historique_appoint_line(self, cr, uid, ids, context=None):
+    def emplyee_historique_appoint_lines(self, cr, uid, ids, context=None):
         appoint_type=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_new_agent_public')[1]
         if context is None:
             context = {}
@@ -2478,6 +2480,7 @@ class import_csv(osv.osv):
                                                            'degree_id':employee_id.degree_id.id,
                                                            'type_appointment':appoint_type,
                                                            'depend_on_test_periode':True,
+                                                           'state':'done',
                                                            
                                                            }
                         
@@ -2517,35 +2520,34 @@ class import_csv(osv.osv):
                     dep_side = employee_id.user_id.company_id.name
                     dates=str(row['FIELD_EFF_DATE'])
                     dates1=dates[0:10]
-                    print employee_id.grade_id.id
                     grade_id = False
                     job_id=job.search(cr, uid,  [('number', '=',str(row['FIELD_NEW_VALUE']))])
                     dt = datetime.strptime((dates1),"%Y-%m-%d")
                     
                     date2=dt+ relativedelta(day=dt.day+1)
+                    
                    
-                    type_id=fields.Many2one('salary.grid.type',string='الصنف',store=True,readonly=1) 
-                    department_id=fields.Many2one('hr.department',string='الادارة',store=True,readonly=1)
-                    grade_id=fields.Many2one('salary.grid.grade',string='المرتبة',store=True,readonly=1)
                     
 #                     try:
                     if job_id:
-                            apoint_val={                   'employee_id':employee_ids[0],    
-                                                            'name':row['SEQ_NO'],
+                        jobs=job.browse(cr, uid,job_id[0] )
+                        print job_id[0]
+                        apoint_val={                   'employee_id':employee_ids[0],    
                                                            'date': row['FIELD_EFF_DATE'],
                                                            'date_direct_action': date2,
-                                                           'job_id':job_id[0],
+                                                            'job_id':job_id[0],
                                                            'grade_id':employee_id.grade_id.id,
                                                            'type_id':employee_id.type_id.id,
-                                                           'department_id':employee_id.department_id,
+                                                           'department_id':employee_id.department_id.id,
                                                            'type_appointment':appoint_type,
                                                            'state':'done',
                                                            'state_direct':'done',
+                                                           'number_job':jobs.number,
                                                            
                                                            }
                         
                        
-                            appoint.create(cr, uid, apoint_val,context=context)
+                        appoint.create(cr, uid, apoint_val,context=context)
 #                     except Exception, e:
 #                         cr.rollback()
                         
@@ -2711,6 +2713,159 @@ class import_csv(osv.osv):
                 i+=1
         print i
         return True
+    
+    def update_employe_citys(self, cr, uid, ids, context=None):
+         
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+        
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))         
+        employee = self.pool.get('hr.employee')
+        city = self.pool.get('res.city')
+        for row  in reader: 
+            if row['EMP_NO'] and row['BIRTH_PLACE']  : 
+                employee_id=employee.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
+                city_id=city.search(cr, uid, [('code', '=',str(row['BIRTH_PLACE']))])
+                if employee_id and city_id:
+                    val={'place_of_birth':city_id[0]}
+                    employee.write(cr, uid,employee_id, val,context=context)
+                    
+        return True
+    
+    
+    
+    def update_passport(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+        
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        city = self.pool.get('res.city')
+                
+        move_id=''
+        all_move_ids=[]
+        employee = self.pool.get('hr.employee')
+        for row  in reader : 
+            if str(row['ISSUE_PLACE_NO']):
+                    city_ids=city.search(cr, uid, [('code', '=',row['ISSUE_PLACE_NO'])])
+                    
+                    
+            employee_ids= employee.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
+            if employee_ids:
+                emplyee_obj=employee.browse(cr, uid, employee_ids[0]) 
+                passport_end_date  = row['EXPIRY_DATE']
+                passport_date  = row['ISSUE_DATE']
+                if passport_end_date == 'NULL':
+                    passport_end_date = False
+                if passport_date == 'NULL':
+                    passport_date = False                    
+                emplyee_obj.write( {'passport_id': str(row['DOC_NO']),'passport_date':passport_date,'passport_place':city_ids[0] if city_ids else False ,
+                                    'passport_end_date':passport_end_date}, )
+        
+        
+        return True
+
+    
+    def update_name_job(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+        
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        city = self.pool.get('res.city')
+                
+        move_id=''
+        all_move_ids=[]
+        employee = self.pool.get('hr.employee')
+        for row  in reader : 
+            if str(row['ISSUE_PLACE_NO']):
+                    city_ids=city.search(cr, uid, [('code', '=',row['ISSUE_PLACE_NO'])])
+                    
+                    
+            employee_ids= employee.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
+            if employee_ids:
+                emplyee_obj=employee.browse(cr, uid, employee_ids[0]) 
+                passport_end_date  = row['EXPIRY_DATE']
+                passport_date  = row['ISSUE_DATE']
+                if passport_end_date == 'NULL':
+                    passport_end_date = False
+                if passport_date == 'NULL':
+                    passport_date = False                    
+                emplyee_obj.write( {'passport_id': str(row['DOC_NO']),'passport_date':passport_date,'passport_place':city_ids[0] if city_ids else False ,
+                                    'passport_end_date':passport_end_date}, )
+        
+        
+        return True
+    
+    
+    def update_job(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        move_id=''
+        all_move_ids=[]
+        departement = self.pool.get('hr.department')
+        hr_job=self.pool.get('hr.job')
+        type = self.pool.get('salary.grid.type')
+        grade = self.pool.get('salary.grid.grade')
+        job_name = self.pool.get('hr.job.name')
+        job_group=self.pool.get('hr.groupe.job')
+        serie_id=False
+        job_name_id=False
+        general_id=False
+        i=0
+        
+        for row  in reader : 
+           
+                hr_job_id=hr_job.search(cr, uid, [('number', '=',str(row['POSITION_NO']))])
+                job_name_id = job_name.search(cr, uid, [('number', '=',str(row['POSITION_CODE']))])
+                if hr_job_id and job_name_id:
+                    print job_name_id[0]
+                    val={'name':job_name_id[0]}
+                    hr_job.write(cr, uid,hr_job_id[0], val,context=context)
+                    
+                 
+               
+                
+        
+        
+        
+        
+        return True 
+        
+        
+
+        
 
 import_csv()
 
