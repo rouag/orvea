@@ -4,9 +4,9 @@
 
 		<!-- hr.overtime.setting -->
 		<record id="data_hr_overtime_setting" model="hr.overtime.setting">
-			<field name="name">إعدادات عامة</field>
+			<field name="name">إعدادات خارج الدوام</field>
 			<field name="normal_days" eval="25" />
-			<field name="normal_days" eval="50" />
+			<field name="friday_saturday" eval="50" />
 			<field name="holidays" eval="100" />
 		</record>
 

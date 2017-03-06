@@ -21,7 +21,7 @@ class HrDeputationSetting(models.Model):
         deputation_setting = self.env['hr.deputation.setting'].search([], limit=1)
         if deputation_setting:
             value = {
-                'name': u'إعدادات عامة',
+                'name': u'إعدادات الانتداب',
                 'view_type': 'form',
                 'view_mode': 'form',
                 'res_model': 'hr.deputation.setting',
