@@ -330,6 +330,7 @@ class HrPayslip(models.Model):
         # check if the employee need an advanced salary from the holidays
         holidays_ids = self.env['hr.holidays'].search([('date_to', '>=', self.date_from),
                                                        ('date_to', '<=', self.date_to),
+                                                       ('employee_id', '=', self.employee_id.id),
                                                        ('state', '=', 'done')
                                                        ])
         for holiday_id in holidays_ids:
