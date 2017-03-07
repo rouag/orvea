@@ -436,12 +436,15 @@ class HrDecisionAppoint(models.Model):
                                 'job_id': self.job_id.id,
                                 'department_id': self.department_id.id,
                                 'degree_id': self.degree_id.id,
-                                'grade_id': self.grade_id.id,
-                                'basic_salary': self.basic_salary
+                                'grade_id': self.grade_id.id
                                 })
         if self.date_medical_examination:
             self.employee_id.write({'medical_exam': self.date_medical_examination})
         self.job_id.write({'state': 'occupied', 'employee': self.employee_id.id, 'occupied_date': fields.Datetime.now()})
+        if self.max_pension:
+            self.employee_id.write({'basic_salary': self.basic_salary})
+        else:
+            self.employee_id.write({'basic_salary': -1})
         self.state = 'done'
         # set salary grid for the employee
         salary_grid_id = self.env['salary.grid.detail'].search([('type_id', '=', self.type_id.id), ('grade_id', '=', self.grade_id.id), ('degree_id', '=', self.degree_id.id)], limit=1)

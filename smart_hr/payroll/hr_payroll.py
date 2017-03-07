@@ -353,7 +353,10 @@ class HrPayslip(models.Model):
             if not salary_grids:
                 return
             salary_grid = employee.salary_grid_id
-            basic_salary = employee.basic_salary
+            if employee.basic_salary < 0:
+                basic_salary = salary_grid.basic_salary
+            else:
+                basic_salary = employee.basic_salary
             # compute
             lines = []
             sequence = 1
@@ -538,25 +541,25 @@ class HrPayslip(models.Model):
                 deduction_total += loan['amount']
                 sequence += 1
             # check if deduction_total is > than 1/3 of basic salary
-            if deduction_total > employee.basic_salary / 3:
+            if deduction_total > basic_salary / 3:
                 vals = {'name': 'فرق الحسميات أكثر من ثلث الراتب',
                         'slip_id': payslip.id,
                         'employee_id': employee.id,
                         'rate': 0.0,
-                        'amount': deduction_total - employee.basic_salary / 3,
+                        'amount': deduction_total - basic_salary / 3,
                         'category': 'deduction',
                         'type': 'difference',
                         'sequence': sequence
                         }
                 lines.append(vals)
-                deduction_total -= employee.basic_salary / 3
+                deduction_total -= basic_salary / 3
                 sequence += 1
                 # save the rest for the next month
                 month = fields.Date.from_string(self.date_from).month + 1
                 if month > 12:
                     month = 1
                 self.env['hr.payslip.difference.history'].create({'payslip_id': self.id,
-                                                                  'amount': deduction_total - employee.basic_salary / 3,
+                                                                  'amount': deduction_total - basic_salary / 3,
                                                                   'employee_id': employee.id,
                                                                   'month': month,
                                                                   })
