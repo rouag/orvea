@@ -33,8 +33,12 @@
         'data/hr_termination_data.xml',
         'data/decisions_type_data.xml',
         'data/hr_appoint_type_data.xml',
+        'payroll/data/data.xml',
+        
         #'data/scholarship_data.xml',
         'hr_appraisal/data/hr_appraisal_data.xml',
+        
+        
         'wizards/view/hr_refuse_training_wizard_view.xml',
 
         # الوظائف

@@ -2851,21 +2851,158 @@ class import_csv(osv.osv):
                 job_name_id = job_name.search(cr, uid, [('number', '=',str(row['POSITION_CODE']))])
                 if hr_job_id and job_name_id:
                     print job_name_id[0]
-                    val={'name':job_name_id[0]}
                     hr_job.write(cr, uid,hr_job_id[0], val,context=context)
-                    
-                 
-               
-                
-        
-        
-        
-        
+ 
         return True 
         
         
-
+    def update_saudi_citys_coutry(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        city = self.pool.get('res.city')
+        country = self.pool.get('res.country')
+        sa_country_id = country.search(cr, uid, [('code_nat', '=','SA')])
+        city_ids = city.search(cr, uid, [])
+        for city_id in city_ids:
+            city.write(cr, uid,city_id, {'country_id':sa_country_id[0]},context=context)
+        return True
+    
+    def import_contry_category(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
         
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
 
+        country_obj = self.pool.get('res.country')
+        city_obj = self.pool.get('res.city')
+        categ_obj = self.pool.get('hr.deputation.category')
+        country_city_obj = self.pool.get('hr.country.city')
+        
+        move_id=''
+        all_move_ids=[]
+        for row  in reader :  
+            #create move line
+            code = str(row['code'].strip(" "))
+            if code =='0001':
+                code = 'SA'
+            if code ==0001:
+                code = 'SA'
+            category = row['category']
+            city = row['city']
+            if category:
+                category_id = categ_obj.search(cr, uid, [('category', '=',category)])
+                if not category_id:
+                    category_val = categ_obj.create(cr, uid, {'category':category})
+                else:
+                    category_val = category_id[0]
+                country = country_obj.search(cr, uid, [('code_nat', '=',code)])
+                if country:
+                    if city:
+                        city_id = city_obj.create(cr, uid, {'name': city, 'country_id': country[0]}, context=context)
+                        country_city_vals = {
+                            'country_id': country[0],
+                            'city_id': city_id,
+                            'duputation_category_id': category_val,
+                            }
+                    else:
+                        country_city_vals={
+                            'country_id':country[0],
+                            'duputation_category_id': category_val,
+                            }
+                    country_city_obj.create(cr, uid, country_city_vals)
+
+
+    def import_deputation_settings(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+        fileobj.write((base64.decodestring(this.data)))
+        fileobj.seek(0)
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
+        categ_obj = self.pool.get('hr.deputation.category')
+        grade_obj = self.pool.get('salary.grid.grade')
+        dep_allowance_obj = self.pool.get('hr.deputation.allowance')
+        dep_allowance_line = self.pool.get('hr.deputation.allowance.line')
+        dep_setting_obj = self.pool.get('hr.deputation.setting')
+        dep_setting_search = dep_setting_obj.search(cr, uid, [])[0]
+        
+        for row in reader:
+            #create move line
+            grade_group = str(row['grade_group'].strip(" "))
+            grade_id = str(row['grade_id'].strip(" "))
+            int_trans_type = str(row['int_trans_type'].strip(" "))
+            int_dep_type = str(row['int_dep_type'].strip(" "))
+            int_transt_amount = row['int_transt_amount']
+            int_dep_amount = row['int_dep_amount']
+            ext_trans_type = str(row['ext_trans_type'].strip(" "))
+            ext_trans_amount = row['ext_trans_amount']
+            ext_dep_hight = row['ext_dep_hight']
+            ext_dep_a = row['ext_dep_a']
+            ext_dep_b = row['ext_dep_b']
+            ext_dep_c = row['ext_dep_c']
+
+            grade = grade_obj.search(cr, uid, [('code', '=',grade_id)])
+            dep_allowance = dep_allowance_obj.search(cr, uid, [('name', '=',grade_group)])
+            if dep_allowance:
+                dep_allowance_id = dep_allowance[0]
+                dep_allowance_obj.write(cr, uid,dep_allowance_id, {'grade_ids': [(4, grade[0])]})
+            else:
+                dep_setting_vals={
+                    'name':grade_group,
+                    'grade_ids': [(6, 0, [grade[0]])],
+                    'internal_transport_type': int_trans_type,
+                    'internal_transport_amount': int_transt_amount,
+                    'internal_deputation_type': int_dep_type,
+                    'internal_deputation_amount': int_dep_amount,
+                    'external_transport_type': ext_trans_type,
+                    'external_transport_amount': ext_trans_amount,
+                    'deputation_setting_id' : dep_setting_search,
+                    'external_deputation_type': 'daily',
+
+                    }
+                dep_allowance_id = dep_allowance_obj.create(cr, uid, dep_setting_vals)
+                high_categ_id = categ_obj.search(cr, uid, [('category', '=','high')])[0]
+                a_categ_id = categ_obj.search(cr, uid, [('category', '=','a')])[0]
+                b_categ_id = categ_obj.search(cr, uid, [('category', '=','b')])[0]
+                c_categ_id = categ_obj.search(cr, uid, [('category', '=','c')])[0]
+                dep_allowance_line_vals_high = {
+                    'deputation_allowance_id': dep_allowance_id,
+                    'category_id':high_categ_id,
+                    'amount':ext_dep_hight
+                }
+                dep_allowance_line_vals_a = {
+                    'deputation_allowance_id': dep_allowance_id,
+                    'category_id':a_categ_id,
+                    'amount':ext_dep_a
+                }
+                dep_allowance_line_vals_b = {
+                    'deputation_allowance_id': dep_allowance_id,
+                    'category_id':b_categ_id,
+                    'amount':ext_dep_b
+                }
+                dep_allowance_line_vals_c = {
+                    'deputation_allowance_id': dep_allowance_id,
+                    'category_id':c_categ_id,
+                    'amount':ext_dep_c
+                }
+                dep_allowance_line_high = dep_allowance_line.create(cr, uid, dep_allowance_line_vals_high)
+                dep_allowance_line_a = dep_allowance_line.create(cr, uid, dep_allowance_line_vals_a)
+                dep_allowance_line_b = dep_allowance_line.create(cr, uid, dep_allowance_line_vals_b)
+                dep_allowance_line_c = dep_allowance_line.create(cr, uid, dep_allowance_line_vals_c)
+                
+                
 import_csv()
 

@@ -13,6 +13,8 @@
 							<field name="name" required="1" />
 							<field name="city_side" required="1" />
 							<field name="code" invisible="1" />
+							<field name="country_id" domain="[('code_nat','!=',False)]"/>
+
 						</group>
 					</sheet>
 				</form>
@@ -25,6 +27,7 @@
 				<tree string="مدن" class="oe_tree_view">
 					<field name="name" />
 					<field name="city_side" />
+					<field name="country_id" />
 
 				</tree>
 			</field>
@@ -36,6 +39,8 @@
 				<search string="مدن">
 					<field name="name" />
 					<field name="city_side" />
+					<field name="country_id" />
+
 				</search>
 			</field>
 		</record>

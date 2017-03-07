@@ -387,7 +387,7 @@ class HrEmployeeEducationLevel(models.Model):
     university_entity = fields.Many2one('res.partner', string=u'الكلية ', domain=[('company_type', '=', 'faculty')])
     secondary = fields.Boolean(string=u'بعد‬ الثانوية', required=1)
     not_secondary = fields.Boolean(string=u'قبل الثانوية', required=1)
-  
+
 
     @api.onchange('secondary')
     def onchange_secondry(self):

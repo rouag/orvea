@@ -21,7 +21,7 @@ class HrDeputationSetting(models.Model):
         deputation_setting = self.env['hr.deputation.setting'].search([], limit=1)
         if deputation_setting:
             value = {
-                'name': u'إعدادات عامة',
+                'name': u'إعدادات الانتداب',
                 'view_type': 'form',
                 'view_mode': 'form',
                 'res_model': 'hr.deputation.setting',
@@ -34,7 +34,9 @@ class HrDeputationSetting(models.Model):
 
 class HrDeputationAllowance(models.Model):
     _name = 'hr.deputation.allowance'
-
+    
+    
+    name = fields.Char(string='name')
     deputation_setting_id = fields.Many2one('hr.deputation.setting', string='Setting', ondelete='cascade')
     internal_transport_amount = fields.Float(string='بدل نقل داخلي')
     external_transport_amount = fields.Float(string='بدل نقل خارجي')

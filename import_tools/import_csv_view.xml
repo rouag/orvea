@@ -25,12 +25,12 @@
 							class="oe_highlight" />
 						<button name="import_branche" string="branche" type="object"
 							class="oe_highlight" />
-							
-						<button name="fix_employee_department" string="Link Employee Department " type="object"
-							class="oe_highlight" />	
-							
-							
-						
+
+						<button name="fix_employee_department" string="Link Employee Department "
+							type="object" class="oe_highlight" />
+
+
+
 						<button name="import_degree" string="Degree" type="object"
 							class="oe_highlight" />
 						<button name="import_diplome" string="Diplome" type="object"
@@ -82,9 +82,9 @@
 						<button name="import_passport" string="Passport" type="object"
 							class="oe_highlight" />
 
-							
-							<button name="import_loan" string="import loan"
-							type="object" class="oe_highlight" />
+
+						<button name="import_loan" string="import loan" type="object"
+							class="oe_highlight" />
 						<button name="import_bank" string="Bank" type="object"
 							class="oe_highlight" />
 						<button name="import_groups_general" string="General Groups"
@@ -121,33 +121,36 @@
 
 						<button name="update_groups_general_code" string="update_specific_groups_code"
 							type="object" class="oe_highlight" />
-							
-							<button name="import_loan_ligne" string="import loan line"
+
+						<button name="import_loan_ligne" string="import loan line"
 							type="object" class="oe_highlight" />
-							<button name="emplyee_historique_appoint" string="import appoint"
+						<button name="emplyee_historique_appoint" string="import appoint"
 							type="object" class="oe_highlight" />
-							
-								<button name="update_employee_manager" string="update_employee_manager"
+
+						<button name="update_employee_manager" string="update_employee_manager"
 							type="object" class="oe_highlight" />
-						
-														<button name="emplyee_historique_appoint_direct" string="appoint direct"
+
+						<button name="emplyee_historique_appoint_direct" string="appoint direct"
 							type="object" class="oe_highlight" />
-						
+
 						<button name="emplyee_historique_appoint" string="import appoints"
 							type="object" class="oe_highlight" />
-							
-													<button name="update_employe_citys" string="update employee city"
+
+						<button name="update_employe_citys" string="update employee city"
 							type="object" class="oe_highlight" />
-							
-							<button name="update_passport" string="update passport"
+
+						<button name="update_passport" string="update passport"
 							type="object" class="oe_highlight" />
-							
-							<button name="update_job" string="update jobs"
+
+						<button name="update_job" string="update jobs" type="object"
+							class="oe_highlight" />
+						<button name="update_saudi_citys_coutry" string="update saudi  citys coutry"
 							type="object" class="oe_highlight" />
-							
-								
-								
-							
+						<button name="import_contry_category" string="import country category"
+							type="object" class="oe_highlight" />
+						<button name="import_deputation_settings" string="import deputation settings"
+							type="object" class="oe_highlight" />
+
 						<field name="state" widget="statusbar" statusbar_visible="draft,failure,done" />
 					</header>
 					<sheet>
