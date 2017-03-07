@@ -600,7 +600,7 @@ class HrTypeAppoint(models.Model):
     ministry_civil = fields.Boolean(string=u' موافقة وزارة الخدمة المدنية')
     can_be_cancelled = fields.Boolean(string=u'يمكن الغاؤها')
     for_members = fields.Boolean(string=u'للاعضاء')
-    hr_allowance_appoint_id = fields.One2many('hr.allowance.appoint','appoint_type_id', string='البدلات', default=lambda self: self.env.ref('smart_hr.data_allowance_appoint'))
+    hr_allowance_appoint_id = fields.One2many('hr.allowance.appoint','appoint_type_id', string='البدلات')
     direct_appoint_period = fields.Float(string=u'فترة مهلة المباشرة')
 
 
