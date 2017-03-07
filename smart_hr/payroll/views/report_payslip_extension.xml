@@ -94,7 +94,7 @@
 														<span t-field="line.employee_id.degree_id" />
 													</td>
 													<td>
-														<span t-field="line.employee_id.salary_grid_id.basic_salary" />
+														<span t-field="line.employee_id.basic_salary" />
 													</td>
 													<td colspan="2" class="text-center">
 														<span t-esc="get_sum_allowances(line.line_ids)" />
