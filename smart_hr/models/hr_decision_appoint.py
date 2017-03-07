@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 from openerp.exceptions import UserError
 from openerp import models, fields, api, _
 from openerp.exceptions import Warning
@@ -98,7 +96,7 @@ class HrDecisionAppoint(models.Model):
     number_direct_appoint = fields.Char(string='رقم قرار المباشرة ')
     date_direct_appoint = fields.Date(string='تاريخ قرار المباشرة')
     file_direct_appoint = fields.Binary(string='صورة قرار المباشرة', attachment=True)
-    file_direct_appoint_name  = fields.Char(string='صورة قرار المباشرة') 
+    file_direct_appoint_name = fields.Char(string='صورة قرار المباشرة') 
 
     order_enquiry_file_name = fields.Char(string=' طلب الاستسفار') 
     file_salar_recent_name = fields.Char(string=' تعهد من الموظف') 
@@ -107,6 +105,9 @@ class HrDecisionAppoint(models.Model):
     depend_on_test_periode = fields.Boolean(string=u'مدة التجربة', required=1, readonly=1, states={'draft': [('readonly', 0)]}, default=False)
     testing_date_from = fields.Date(string=u'مدة التجربة (من)')
     testing_date_to = fields.Date(string=u'مدة التجربة (إلى)')
+    max_pension = fields.Boolean(string=u'الحد الأقصى لراتب نسبة التقاعد', related="type_appointment.max_pension", readonly=1)
+    max_pension_ratio = fields.Float(string=u'نسبة الحد الأقصى (%)', related="type_appointment.max_pension_ratio", readonly=1)
+    pension_ratio = fields.Float(string=u'نسبة التقاعد (%)')
 
     @api.multi
     @api.onchange('type_appointment')
@@ -116,16 +117,32 @@ class HrDecisionAppoint(models.Model):
         if self.type_appointment and self.type_appointment.for_members is True:
             employee_ids = self.env['hr.employee'].search([('is_member', '=', True), ('employee_state', 'in', ['done', 'employee'])])
             job_ids = self.env['hr.job'].search([('name.members_job', '=', True)])
-            res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)],'job_id': [('id', 'in', job_ids.ids)]}
+            res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
             return res
         if self.type_appointment and self.type_appointment.for_members is False:
             employee_ids = self.env['hr.employee'].search([('is_member', '=', False), ('employee_state', 'in', ['done', 'employee'])])
             job_ids = self.env['hr.job'].search([('name.members_job', '=', False)])
-            res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)],'job_id': [('id', 'in', job_ids.ids)]}
+            res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
             return res
 
+    @api.multi
+    @api.onchange('type_appointment', 'employee_id')
+    def _onchange_type_appointment_employee_id(self):
+        if self.type_appointment and self.employee_id and self.type_appointment.max_pension:
+            # get current basic salary of the employee (the employee have an old ta3yin)
+            self.pension_ratio = self.max_pension_ratio
+            self.basic_salary = self.employee_id.salary_grid_id.basic_salary * self.pension_ratio / 100.0
+
+    @api.onchange('pension_ratio')
+    def _onchange_pension_ratio(self):
+        print self.pension_ratio
+        if self.pension_ratio:
+            if self.pension_ratio > self.max_pension_ratio:
+                raise ValidationError(u"لا يمكنك تجاوز الحد الأقصى.")
+            self.basic_salary = self.employee_id.salary_grid_id.basic_salary * self.pension_ratio / 100.0
+
     @api.one
-    @api.constrains('score','passing_score')
+    @api.constrains('score', 'passing_score')
     def check_score(self):
         self.ensure_one()
         if self.score < self.passing_score:
@@ -172,7 +189,7 @@ class HrDecisionAppoint(models.Model):
     def button_accept_civil(self):
         self.ensure_one()
         if self.type_appointment.ministry_civil and self.type_appointment.personnel_hr:
-            self.option_contract= True
+            self.option_contract = True
             self.state = 'hrm'
 
     @api.multi
@@ -236,7 +253,7 @@ class HrDecisionAppoint(models.Model):
             self.state = 'hrm'
         if self.type_appointment.recrutment_decider :
             self.action_done()
-            self.state_appoint ='active'
+            self.state_appoint = 'active'
             direct_appoint_obj = self.env['hr.direct.appoint']
             self.env['hr.direct.appoint'].create({'employee_id': self.employee_id.id,
                                                    'number' : self.number,
@@ -282,7 +299,7 @@ class HrDecisionAppoint(models.Model):
             self.state = 'direct'   
         elif self.type_appointment.personnel_hr :
             self.action_done()
-            self.state_appoint ='active'
+            self.state_appoint = 'active'
             direct_appoint_obj = self.env['hr.direct.appoint']
             self.env['hr.direct.appoint'].create({'employee_id': self.employee_id.id,
                                                    'number' : self.number,
@@ -315,7 +332,7 @@ class HrDecisionAppoint(models.Model):
         self.ensure_one()
         if self.type_appointment.direct_manager:
             self.action_done()
-            self.state_appoint ='active'
+            self.state_appoint = 'active'
             direct_appoint_obj = self.env['hr.direct.appoint']
             self.env['hr.direct.appoint'].create({'employee_id': self.employee_id.id,
                                                   'number' : self.number,
@@ -336,27 +353,27 @@ class HrDecisionAppoint(models.Model):
     @api.model
     def control_test_periode_employee(self):
         today_date = fields.Date.from_string(fields.Date.today())
-        print"today_date",type(today_date)
-        appoints= self.env['hr.decision.appoint'].search([('state','=','done'),('is_started','=',True),('testing_date_to','=', today_date)])
+        print"today_date", type(today_date)
+        appoints = self.env['hr.decision.appoint'].search([('state', '=', 'done'), ('is_started', '=', True), ('testing_date_to', '=', today_date)])
         for line in appoints :
-            title= u"' إشعار نهاية مدة التجربة'"
-            msg= u"' إشعار نهاية مدة التجربة'"  + unicode(line.employee_id.name) + u"'"
+            title = u"' إشعار نهاية مدة التجربة'"
+            msg = u"' إشعار نهاية مدة التجربة'" + unicode(line.employee_id.name) + u"'"
             group_id = self.env.ref('smart_hr.group_department_employee')
-            self.send_test_periode_group(group_id,title,msg)
+            self.send_test_periode_group(group_id, title, msg)
 
     @api.model
     def control_test_years_employee(self):
         today_date = fields.Date.from_string(fields.Date.today())
-        print"today_date",type(today_date)
-        appoints= self.env['hr.decision.appoint'].search([('state','=','done'),('is_started','=',True),('employee_id.age','=',self.env.ref('smart_hr.data_hr_ending_service_type_normal').years),
+        print"today_date", type(today_date)
+        appoints = self.env['hr.decision.appoint'].search([('state', '=', 'done'), ('is_started', '=', True), ('employee_id.age', '=', self.env.ref('smart_hr.data_hr_ending_service_type_normal').years),
                                                             ('type_appointment.id', '=', self.env.ref('smart_hr.data_hr_recrute_agent_utilisateur').id)])
         
         group_id = self.env.ref('smart_hr.group_department_employee')
-        print"appoints",appoints
+        print"appoints", appoints
         for line in appoints :
-            title= u"' إشعار بلوغ سن " + str(self.env.ref('smart_hr.data_hr_ending_service_type_normal').years) + u"'"
-            msg= u"' إشعار ببلوغ الموظف   '"  + unicode(line.employee_id.name) + u"'"+u"عمر" + str(self.env.ref('smart_hr.data_hr_ending_service_type_normal').years) +u"'"
-            self.send_test_periode_group(group_id,title,msg)
+            title = u"' إشعار بلوغ سن " + str(self.env.ref('smart_hr.data_hr_ending_service_type_normal').years) + u"'"
+            msg = u"' إشعار ببلوغ الموظف   '" + unicode(line.employee_id.name) + u"'" + u"عمر" + str(self.env.ref('smart_hr.data_hr_ending_service_type_normal').years) + u"'"
+            self.send_test_periode_group(group_id, title, msg)
 
     def send_test_periode_group(self, group_id, title, msg):
         '''
@@ -376,18 +393,18 @@ class HrDecisionAppoint(models.Model):
     @api.model
     def control_prensence_employee(self):
         today_date = fields.Date.from_string(fields.Date.today())
-        appoints= self.env['hr.decision.appoint'].search([('state_appoint','=','active'),('state','=','done'),('is_started','=',False)])
+        appoints = self.env['hr.decision.appoint'].search([('state_appoint', '=', 'active'), ('state', '=', 'done'), ('is_started', '=', False)])
         for appoint in appoints :
             direct_appoint_period = appoint.type_appointment.direct_appoint_period
-            print"direct_appoint_period",direct_appoint_period
+            print"direct_appoint_period", direct_appoint_period
             prev_days_end = fields.Date.from_string(appoint.date_direct_action) + relativedelta(days=direct_appoint_period)
-            print"prev_days_end",prev_days_end
-            sign_days = self.env['hr.attendance'].search_count([('employee_id', '=', appoint.employee_id.id), ('name','<=',str(prev_days_end))])
+            print"prev_days_end", prev_days_end
+            sign_days = self.env['hr.attendance'].search_count([('employee_id', '=', appoint.employee_id.id), ('name', '<=', str(prev_days_end))])
             today_date = str(today_date) 
             prev_days_end = str(prev_days_end)
             if sign_days != 0 or (today_date < prev_days_end) :
-                directs= self.env['hr.direct.appoint'].search([('employee_id','=',appoint.employee_id.id),('state','=','waiting')],limit=1)
-                print"directs",directs
+                directs = self.env['hr.direct.appoint'].search([('employee_id', '=', appoint.employee_id.id), ('state', '=', 'waiting')], limit=1)
+                print"directs", directs
                 if directs:
                     for rec in  directs:
                         rec.write({'state_direct':'confirm' })
@@ -395,7 +412,7 @@ class HrDecisionAppoint(models.Model):
                         self.send_notification_to_group(group_id)
 
             if sign_days == 0 or (today_date > prev_days_end) :
-                directs= self.env['hr.direct.appoint'].search([('employee_id','=',appoint.employee_id.id),('state','=','waiting')],limit=1)
+                directs = self.env['hr.direct.appoint'].search([('employee_id', '=', appoint.employee_id.id), ('state', '=', 'waiting')], limit=1)
                 if directs :
                     for rec in  directs:
                         rec.write({'state_direct':'cancel' })
@@ -415,9 +432,13 @@ class HrDecisionAppoint(models.Model):
     @api.multi
     def action_done(self):
         self.ensure_one()
-        self.employee_id.write({'employee_state': 'employee','job_id': self.job_id.id,
-                                'department_id': self.department_id.id, 'degree_id': self.degree_id.id,
-                                  'grade_id':self.grade_id.id})
+        self.employee_id.write({'employee_state': 'employee',
+                                'job_id': self.job_id.id,
+                                'department_id': self.department_id.id,
+                                'degree_id': self.degree_id.id,
+                                'grade_id': self.grade_id.id,
+                                'basic_salary': self.basic_salary
+                                })
         if self.date_medical_examination:
             self.employee_id.write({'medical_exam': self.date_medical_examination})
         self.job_id.write({'state': 'occupied', 'employee': self.employee_id.id, 'occupied_date': fields.Datetime.now()})
@@ -430,13 +451,13 @@ class HrDecisionAppoint(models.Model):
         last_appoint = self.employee_id.decision_appoint_ids.search([('state_appoint', '=', 'active'), ('is_started', '=', True)], limit=1)
         if last_appoint:
             last_appoint.write({'state_appoint': 'close', 'date_hiring_end': fields.Datetime.now()})
-         #send notification to hr personnel
-        self.state_appoint ='active'
+         # send notification to hr personnel
+        self.state_appoint = 'active'
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت إحداث تعين جديد '" + unicode(user.name) + u"'")
         # update holidays balance for the employee
 
-        type=''
+        type = ''
         if self.type_appointment.id == self.env.ref('smart_hr.data_hr_new_agent_public').id:
             type = 'تعيين موظف جديد'
 
@@ -458,7 +479,7 @@ class HrDecisionAppoint(models.Model):
         self.env['hr.holidays']._init_balance(self.employee_id)
     # close last active promotion line for the employee
         promotion_obj = self.env['hr.employee.promotion.history']
-        previous_promotion = self.env['hr.employee.promotion.history'].search([('employee_id', '=', self.employee_id.id),('active_duration', '=',True)],limit=1)
+        previous_promotion = self.env['hr.employee.promotion.history'].search([('employee_id', '=', self.employee_id.id), ('active_duration', '=', True)], limit=1)
         if previous_promotion:
             previous_promotion.close_promotion_line()
 # create promotion history line
@@ -537,13 +558,11 @@ class HrDecisionAppoint(models.Model):
                                                 ('grade_id', '=', self.grade_id.id),
                                                   ('degree_id', '=', self.degree_id.id)
                                                 ])
-                if salary_grid_line:
-                    self.basic_salary = salary_grid_line.basic_salary  
+                if salary_grid_line and not self.type_appointment.max_pension:
+                    self.basic_salary = salary_grid_line.basic_salary
                  #   self.transport_allow = salary_grid_line.transport_allow
                     self.retirement = salary_grid_line.retirement
                     self.net_salary = salary_grid_line.net_salary
-
-
 
     @api.onchange('date_direct_action')
     def _onchange_date_direct_action(self):
@@ -600,8 +619,10 @@ class HrTypeAppoint(models.Model):
     ministry_civil = fields.Boolean(string=u' موافقة وزارة الخدمة المدنية')
     can_be_cancelled = fields.Boolean(string=u'يمكن الغاؤها')
     for_members = fields.Boolean(string=u'للاعضاء')
-    hr_allowance_appoint_id = fields.One2many('hr.allowance.appoint','appoint_type_id', string='البدلات', default=lambda self: self.env.ref('smart_hr.data_allowance_appoint'))
+    hr_allowance_appoint_id = fields.One2many('hr.allowance.appoint', 'appoint_type_id', string='البدلات', default=lambda self: self.env.ref('smart_hr.data_allowance_appoint'))
     direct_appoint_period = fields.Float(string=u'فترة مهلة المباشرة')
+    max_pension = fields.Boolean(string=u'الحد الأقصى لراتب نسبة التقاعد', default=False)
+    max_pension_ratio = fields.Float(string=u'نسبة الحد (%)', default=40)
 
 
 

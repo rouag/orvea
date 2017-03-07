@@ -119,7 +119,7 @@ class hrDifference(models.Model):
                 number_of_hours = overtime.heure_number
             # get number of hours
             total_hours = number_of_days * 7 + number_of_hours
-            amount_hour = salary_grid.basic_salary / 22.0 / 7.0  # TODO: 22.0 and 7.0 : get it from worker days
+            amount_hour = employee.basic_salary / 22.0 / 7.0  # TODO: 22.0 and 7.0 : get it from worker days
             rate_hour = overtime_setting.normal_days
             if overtime.type == 'friday_saturday':
                 rate_hour = overtime_setting.friday_saturday
@@ -244,7 +244,7 @@ class hrDifference(models.Model):
                 grid_id = transfert.employee_id.salary_grid_id
                 if grid_id:
                     # 1- بدل طبيعة العمل
-                    amount = (hr_setting.allowance_proportion * grid_id.basic_salary)
+                    amount = (hr_setting.allowance_proportion * transfert.employee_id.basic_salary)
                     if amount > 0:
                         amount = amount / 100
                     vals = {'difference_id': self.id,
@@ -256,7 +256,7 @@ class hrDifference(models.Model):
                             'type': 'transfert'}
                     line_ids.append(vals)
                     # 2- بدل إنتداب
-                    amount = (hr_setting.deputation_days * (grid_id.basic_salary / 22))
+                    amount = (hr_setting.deputation_days * (transfert.employee_id.basic_salary / 22))
                     vals = {'difference_id': self.id,
                             'name': hr_setting.allowance_deputation.name,
                             'employee_id': transfert.employee_id.id,
@@ -277,7 +277,7 @@ class hrDifference(models.Model):
                     line_ids.append(vals)
                     # 4- نسبة الراتب
                     if transfert.salary_proportion > 0:
-                        amount = (((100 - transfert.salary_proportion) * grid_id.basic_salary) / 100) * -1
+                        amount = (((100 - transfert.salary_proportion) * transfert.employee_id.basic_salary) / 100) * -1
                         if amount < 0:
                             vals = {'difference_id': self.id,
                                     'name': u'فرق الراتب التي توفرها الجهة',
@@ -300,7 +300,7 @@ class hrDifference(models.Model):
                                                                             ], order="date_direct_action desc")
         for last_decision_appoint_id in last_decision_appoint_ids:
             for allowance in last_decision_appoint_id.type_appointment.hr_allowance_appoint_id:
-                amount = allowance.salary_number * last_decision_appoint_id.employee_id.salary_grid_id.basic_salary
+                amount = allowance.salary_number * last_decision_appoint_id.employee_id.basic_salary
                 vals = {'difference_id': self.id,
                         'name': allowance.hr_allowance_type_id.name,
                         'employee_id': last_decision_appoint_id.employee_id.id,
@@ -328,7 +328,7 @@ class hrDifference(models.Model):
                 indemnity_ids = grid_id.indemnity_ids
                 # راتب
                 if assign_id.give_salary:
-                    amount = grid_id.basic_salary
+                    amount = assign_id.employee_id.basic_salary
                     if amount:
                             vals = {'difference_id': self.id,
                                     'name': 'فرق الراتب التي توفرها الجهة',
@@ -397,7 +397,7 @@ class hrDifference(models.Model):
                             line_ids.append(vals)
                 # 3) حصة الحكومة من التقاعد
                 if assign_id.comm_type.pay_retirement:
-                    amount = (grid_id.basic_salary * assign_id.retirement_proportion) / 100.0
+                    amount = (assign_id.employee_id.basic_salary * assign_id.retirement_proportion) / 100.0
                     if amount > 0:
                         vals = {'difference_id': self.id,
                                 'name': 'حصة الحكومة من التقاعد',
@@ -440,7 +440,7 @@ class hrDifference(models.Model):
                                     'type': 'scholarship'}
                             line_ids.append(vals)
                 # 2) نسبة الراتب
-                amount = grid_id.basic_salary - ((grid_id.basic_salary * scholarship_id.salary_percent) / 100.0)
+                amount = scholarship_id.employee_id.basic_salary - ((scholarship_id.employee_id.basic_salary * scholarship_id.salary_percent) / 100.0)
                 if amount > 0:
                     vals = {'difference_id': self.id,
                             'name': allowance.name,
@@ -474,7 +474,7 @@ class hrDifference(models.Model):
             grid_id = lend_id.employee_id.salary_grid_id
             if grid_id and duration_in_month > 0:
                 # 1) نسبة الراتب
-                amount = ((duration_in_month * (grid_id.basic_salary / 22) * lend_id.salary_proportion) / 100.0) * -1
+                amount = ((duration_in_month * (lend_id.employee_id.basic_salary / 22) * lend_id.salary_proportion) / 100.0) * -1
                 if amount < 0:
                     vals = {'difference_id': self.id,
                             'name': 'نسبة الراتب',
@@ -500,7 +500,7 @@ class hrDifference(models.Model):
                 if lend_id.pay_retirement:
                     hr_setting = self.env['hr.setting'].search([], limit=1)
                     if hr_setting:
-                        amount = (grid_id.basic_salary * hr_setting.retirement_proportion) / 100.0
+                        amount = (lend_id.employee_id.basic_salary * hr_setting.retirement_proportion) / 100.0
                         if amount > 0:
                             vals = {'difference_id': self.id,
                                     'name': 'حصة الحكومة من التقاعد',
@@ -559,7 +559,7 @@ class hrDifference(models.Model):
             print duration_in_month
             # case of لا يصرف له الراتب
             if grid_id and not holiday_status_id.salary_spending:
-                amount = (duration_in_month * (grid_id.basic_salary / 22)) / 100.0
+                amount = (duration_in_month * (holiday_id.employee_id.basic_salary / 22)) / 100.0
                 if amount != 0:
                     vals = {'difference_id': self.id,
                             'name': holiday_id.holiday_status_id.name,
@@ -573,7 +573,7 @@ class hrDifference(models.Model):
             if grid_id and holiday_status_id.salary_spending:
                 for rec in holiday_status_id.percentages:
                     if entitlement_type == rec.entitlement_id and months_from_holiday_start >= rec.month_from and months_from_holiday_start <= rec.month_to:
-                        amount = (((duration_in_month * (grid_id.basic_salary / 22)) * (100 - rec.salary_proportion))) / 100.0
+                        amount = (((duration_in_month * (holiday_id.employee_id.basic_salary / 22)) * (100 - rec.salary_proportion))) / 100.0
                         if amount != 0:
                             vals = {'difference_id': self.id,
                                     'name': holiday_id.holiday_status_id.name,
@@ -586,7 +586,7 @@ class hrDifference(models.Model):
             # case of  نوع التعويض    مقابل ‫مادي‬ ‬   اجازة التعويض
             if grid_id:
                 if holiday_id.compensation_type and holiday_id.compensation_type == 'money':
-                    amount = (holiday_id.current_holiday_stock * (grid_id.basic_salary / 22))
+                    amount = (holiday_id.current_holiday_stock * (holiday_id.employee_id.basic_salary / 22))
                     if amount != 0:
                         vals = {'difference_id': self.id,
                                 'name': holiday_id.holiday_status_id.name + "(تعويض مالي)",
@@ -616,7 +616,7 @@ class hrDifference(models.Model):
                 days = self.env['hr.smart.utils'].compute_duration(date_to, date_from)
                 grid_id = suspension_end.employee_id.salary_grid_id
                 if grid_id:
-                    amount = (grid_id.basic_salary / 22) * days
+                    amount = (suspension_end.employee_id.basic_salary / 22) * days
                     vals = {'difference_id': self.id,
                             'name': 'فرق كف اليد',
                             'employee_id': suspension_end.employee_id.id,
@@ -633,7 +633,7 @@ class hrDifference(models.Model):
                     grid_id = suspension_end.employee_id.salary_grid_id
                     if grid_id:
                         # الراتب الأساسي
-                        amount = (grid_id.basic_salary / 22) * days
+                        amount = (suspension_end.employee_id.basic_salary / 22) * days
                         vals = {'difference_id': self.id,
                                 'name': 'فرق الراتب الأساسي كف اليد',
                                 'employee_id': suspension_end.employee_id.id,
@@ -690,7 +690,7 @@ class hrDifference(models.Model):
                 if grid_id:
                     # 1) عدد الرواتب المستحق
                     if termination.termination_type_id.nb_salaire > 0:
-                        amount = (grid_id.basic_salary) * (termination.termination_type_id.nb_salaire - 1)
+                        amount = (termination.employee_id.basic_salary) * (termination.termination_type_id.nb_salaire - 1)
                         vals = {'difference_id': self.id,
                                 'name': termination.termination_type_id.name + " " + u'(عدد الرواتب)',
                                 'employee_id': termination.employee_id.id,
@@ -705,7 +705,7 @@ class hrDifference(models.Model):
             # 2) الإجازة
             if not termination.termination_type_id.all_holidays and sum_days >= termination.termination_type_id.max_days:
                 if grid_id:
-                    amount = (grid_id.basic_salary / 22) * (termination.termination_type_id.max_days)
+                    amount = (termination.employee_id.basic_salary / 22) * (termination.termination_type_id.max_days)
                     if amount != 0.0: 
                         vals = {'difference_id': self.id,
                                 'name': 'رصيد إجازة (طي القيد)',
@@ -717,7 +717,7 @@ class hrDifference(models.Model):
                         line_ids.append(vals)
             if termination.termination_type_id.all_holidays and sum_days > 0:
                 if grid_id:
-                    amount = (grid_id.basic_salary / 22) * (sum_days)
+                    amount = (termination.employee_id.basic_salary / 22) * (sum_days)
                     if amount != 0.0:
                         vals = {'difference_id': self.id,
                                 'name': 'رصيد إجازة (طي القيد)',

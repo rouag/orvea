@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
-			
+
 		<record model="ir.ui.view" id="hr_type_appoint_tree">
 			<field name="name">hr.type.appoint.tree</field>
 			<field name="model">hr.type.appoint</field>
@@ -26,14 +26,16 @@
 							<field name="date_test" string="فترة التجربة بالشهر" />
 							<field name="code" />
 							<field name="show_in_apoint" />
-							<field name="direct_appoint_period"/>
+							<field name="direct_appoint_period" />
+							<field name="max_pension" />
+							<field name="max_pension_ratio" attrs="{'invisible':[('max_pension','=',False)]}" />
 							<field name="for_members" />
 							<field name="hr_allowance_appoint_id">
-							<tree editable="botttom">
-							<field name="hr_allowance_type_id"/>
-							<field name="salary_number"/>
-							</tree>
-						</field>
+								<tree editable="botttom">
+									<field name="hr_allowance_type_id" />
+									<field name="salary_number" />
+								</tree>
+							</field>
 						</group>
 						<group string="المخطط‬‫ الانسيابي‬">
 							<field name="audit" />
@@ -148,6 +150,7 @@
 					</header>
 					<sheet>
 						<group>
+							<field name="max_pension" invisible="1" />
 							<field name="date_hiring" readonly="1"
 								attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','civil','direct', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'done'])]}" />
 						</group>
@@ -174,14 +177,14 @@
 									attrs="{'invisible':[('depend_on_test_periode', '=', False)],'readonly':[('state', '!=', 'draft')]}" />
 								<field name="testing_date_to"
 									attrs="{'invisible':[('depend_on_test_periode', '=', False)],'readonly':[('state', '!=', 'draft')]}" />
-									
-									
-									<field name="first_appoint"
-									
+
+
+								<field name="first_appoint"
+
 									attrs="{'invisible':['|',('state', 'not in', ['draft','waiting', 'manager','hrm', 'budget','civil', 'done']),('type_appointment', '!=', %(data_hr_new_agent_public)d)],'readonly':[('state', 'in', [ 'waiting', 'manager', 'hrm', 'budget', 'civil','done'])]}" />
-							
-							
-							
+
+
+
 							</group>
 						</group>
 						<notebook>
@@ -248,10 +251,13 @@
 									</group>
 									<group>
 										<field name="grade_id" />
-										<field name="degree_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
-									
+										<field name="degree_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+
 											attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'manager', 'budget', 'done','refuse'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'manager', 'budget','civil', 'done','refuse'])]}" />
 										<field name="far_age" />
+										<field name="max_pension_ratio" attrs="{'invisible':[('max_pension', '=', False)]}"/>
+										<field name="pension_ratio" attrs="{'invisible':[('max_pension', '=', False)]}"/>
 										<field name="basic_salary" />
 										<field name="retirement" />
 										<field name="transport_allow"
@@ -330,10 +336,11 @@
 			</field>
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
-		<menuitem id="hr_decision_appoint_menu" name="التعيين" groups="smart_hr.group_manager_appointment"
-			sequence="5" parent="hr_root_workflows" action="action_hr_decision_appoint" />
-			
-			
+		<menuitem id="hr_decision_appoint_menu" name="التعيين"
+			groups="smart_hr.group_manager_appointment" sequence="5"
+			parent="hr_root_workflows" action="action_hr_decision_appoint" />
+
+
 		<record id="view_tree_hr_allowance_appoint" model="ir.ui.view">
 			<field name="name">hr.allowance.appoint.tree</field>
 			<field name="model">hr.allowance.appoint</field>
@@ -355,6 +362,6 @@
 				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
 			</field>
 		</record>
-		
+
 	</data>
 </openerp>
