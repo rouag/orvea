@@ -71,6 +71,7 @@ class SalaryGridDetail(models.Model):
     _description = u'تفاصيل سلم الرواتب'
 
     grid_id = fields.Many2one('salary.grid', string='سلّم الرواتب', required=1, ondelete='cascade')
+    date = fields.Date(related="grid_id.date")
     type_id = fields.Many2one('salary.grid.type', string='الصنف', required=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1)
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)

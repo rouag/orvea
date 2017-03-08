@@ -227,18 +227,6 @@
 			</field>
 		</record>
 		
-			<record id="action_hr_employee_configuration" model="ir.actions.server">
-			<field name="sequence" eval="9" />
-			<field name="type">ir.actions.server</field>
-			<field name="model_id" ref="model_hr_employee_configuration" />
-			
-			<field name="condition">True</field>
-				<field name="name">إعدادات الموظف </field>
-		</record>
-		
-		
-		
-	
 
 
 		<record id="action_hr_employee_configuration" model="ir.actions.server">
