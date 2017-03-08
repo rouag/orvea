@@ -444,15 +444,10 @@ class HrEmployeeConfiguration(models.Model):
     
     _name = 'hr.employee.configuration'
     _description = u'إعدادات الموظف'
-<<<<<<< HEAD
     number = fields.Integer(string='بداية تسلسل الرقم الوظيفي')
-=======
 
     name = fields.Char(string='name')
-    number = fields.Integer(string='الرقم الوظيفي')
->>>>>>> branch '9.0' of https://gitlab.com/smartek/addons_smart.git
     period = fields.Integer(string='مدة صلاحية بطاقة الموظف (بالسنة)')
-<<<<<<< HEAD
     age_member = fields.Integer(string='سن تقاعد  الطبيعي   الاعظاء')
     age_nomember = fields.Integer(string='سن تقاعد  الطبيعي لغير الاعظاء)')
 
@@ -511,7 +506,6 @@ class HrEmployeeConfiguration(models.Model):
                                                   })
 
 
-=======
     recruitment_legal_age = fields.Integer(string='السن القانوني للتعيين')
     
     
@@ -530,7 +524,6 @@ class HrEmployeeConfiguration(models.Model):
             }
             return value
         
->>>>>>> branch '9.0' of https://gitlab.com/smartek/addons_smart.git
 class HrEmployeeEvaluation(models.Model):
     _name = 'hr.employee.evaluation.level'
     _rec_name = 'degree_id'
