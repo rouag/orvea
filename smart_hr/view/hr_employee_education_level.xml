@@ -226,6 +226,8 @@
 				</form>
 			</field>
 		</record>
+		
+
 
 		<record id="action_hr_employee_configuration" model="ir.actions.server">
 			<field name="sequence" eval="5" />

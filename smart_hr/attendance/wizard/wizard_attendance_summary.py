@@ -2,7 +2,14 @@
 
 import time
 from openerp import api, fields, models, _
-
+from datetime import datetime, timedelta, time
+from openerp.exceptions import ValidationError
+from umalqurra.hijri_date import HijriDate
+from openerp.addons.smart_base.util.time_util import float_time_convert
+from openerp.addons.smart_base.util.time_util import time_float_convert
+from openerp.addons.smart_base.util.time_util import float_time_convert_str
+from openerp.addons.smart_base.util.umalqurra import *
+from umalqurra.hijri import Umalqurra
 
 class WizardAttendanceSummary(models.TransientModel):
     _name = 'wizard.attendance.summary'
@@ -25,4 +32,5 @@ class WizardAttendanceSummary(models.TransientModel):
         data = {'ids': [],'form': self.read([])[0]}
         report_action['data'] = data
         return report_action
+
 

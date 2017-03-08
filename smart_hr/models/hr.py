@@ -440,15 +440,16 @@ class HrQualificationEstimate(models.Model):
 
 
 class HrEmployeeConfiguration(models.Model):
-    
     _name = 'hr.employee.configuration'
     _description = u'إعدادات الموظف'
-    number = fields.Integer(string='بداية تسلسل الرقم الوظيفي')
+    
 
     name = fields.Char(string='name')
+    number = fields.Integer(string='بداية تسلسل الرقم الوظيفي')
     period = fields.Integer(string='مدة صلاحية بطاقة الموظف (بالسنة)')
     age_member = fields.Integer(string='سن تقاعد  الطبيعي   الاعظاء')
     age_nomember = fields.Integer(string='سن تقاعد  الطبيعي لغير الاعظاء)')
+    recruitment_legal_age = fields.Integer(string='السن القانوني للتعيين')
 
     @api.model
     def control_test_retraite_employee(self):
@@ -456,7 +457,6 @@ class HrEmployeeConfiguration(models.Model):
         print"today_date", type(today_date)
         age_member =  self.env.ref('smart_hr.data_hr_employee_configuration').age_member
         age_nomember =  self.env.ref('smart_hr.data_hr_employee_configuration').age_nomember
-        
         print"age_member",age_member
         hr_member = self.env['hr.employee'].search([('employee_state', '=', 'employee') ])
         for line in hr_member:
@@ -465,31 +465,25 @@ class HrEmployeeConfiguration(models.Model):
             print"birthday",birthday
             years = (today_date - birthday).days / 365
             print"years",years
-            if years == age_member:
+            if years == age_member and line.is_member == True:
                 self.env['hr.termination'].create({ 
-                                                'name':'تقاعد طبيعي ',
+                                               'name':'تقاعد طبيعي ',
                                                 'date': today_date,
-                                                'termination_type_id':self.env.ref('smart_hr.data_hr_ending_service_type_normal'),
+                                               'termination_type_id':self.env.ref('smart_hr.data_hr_ending_service_type_normal').id,
                                                 'employee_id': line.id,
                                                 'employee_no' : line.number,
                                                 'job_id' : line.job_id.id,
                                                     })
-            if years == age_nomember:
+            if years == age_nomember and line.is_member ==False:
                 self.env['hr.termination'].create({
-
                                                 'name':'تقاعد طبيعي ',
                                                 'date': today_date,
-                                                'termination_type_id':self.env.ref('smart_hr.data_hr_ending_service_type_normal'),
+                                                'termination_type_id':self.env.ref('smart_hr.data_hr_ending_service_type_normal').id,
                                                 'employee_id': line.id,
                                                 'employee_no' : line.number,
                                                 'job_id' : line.job_id.id,
-                                                    })
+                                                })
 
-            group_id = self.env.ref('smart_hr.group_department_employee')
-            title = u"' إشعار بلوغ سن " + str(age_member) + u"'"
-            msg = u"' إشعار ببلوغ الموظف   '" + unicode(line.id.name) + u"'" + u"عمر" + str(age_member) + u"'"
-            self.send_test_member_group(group_id, title, msg)
-    
     def send_test_member_group(self, group_id, title, msg):
         '''
         @param group_id: res.groups
@@ -505,9 +499,7 @@ class HrEmployeeConfiguration(models.Model):
                                                   })
 
 
-    recruitment_legal_age = fields.Integer(string='السن القانوني للتعيين')
-    
-    
+   
     @api.multi
     def button_setting(self):
         hr_employee_configuration_id = self.env['hr.employee.configuration'].search([], limit=1)

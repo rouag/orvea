@@ -338,8 +338,8 @@
 											<field name="parent_id" string="المدير المباشر " />
 											<field name="service_duration" attrs="{'readonly': 1}" />
 											<field name="promotion_duration" attrs="{'readonly': 1}" />
-											<field name="royal_decree_number" />
-											<field name="royal_decree_date" />
+											<field name="royal_decree_number" 	attrs="{'invisible': [('is_member','=', False)]}" />
+											<field name="royal_decree_date" attrs="{'invisible': [('is_member','=', False)]}" />
 											<field name="external_decision" />
 											<field name="is_member" />
 										</group>
