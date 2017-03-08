@@ -218,18 +218,14 @@
 						<group>
 							<field name="number" required="1" />
 							<field name="period" required="1" />
-<<<<<<< HEAD
 							<field name="age_member" required="1" />
 							<field name="age_nomember" required="1" />
-=======
 							<field name="recruitment_legal_age" required="1" />
->>>>>>> branch '9.0' of https://gitlab.com/smartek/addons_smart.git
 						</group>
 					</sheet>
 				</form>
 			</field>
 		</record>
-<<<<<<< HEAD
 		
 			<record id="action_hr_employee_configuration" model="ir.actions.server">
 			<field name="sequence" eval="9" />
@@ -243,7 +239,6 @@
 		
 		
 	
-=======
 
 
 		<record id="action_hr_employee_configuration" model="ir.actions.server">
@@ -256,7 +251,6 @@
 			<field name="condition">True</field>
 			<field name="name">‫إعدادات الموظف‬‬</field>
 		</record>
->>>>>>> branch '9.0' of https://gitlab.com/smartek/addons_smart.git
 
 		<menuitem id="menu_hr_employee_education_level" action="action_hr_employee_education_level"
 			sequence="5" parent="hr_root_employee_configuration" />
@@ -270,11 +264,6 @@
 		<menuitem id="menu_hr_qualification_estimate" action="action_hr_qualification_estimate"
 			sequence="8" parent="hr_root_employee_configuration" />
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> branch '9.0' of https://gitlab.com/smartek/addons_smart.git
 		<menuitem id="menu_hr_employee_configuration" action="action_hr_employee_configuration"
 			sequence="37" parent="hr_root_employee_configuration" name="إعدادات الموظف " />
 	</data>
