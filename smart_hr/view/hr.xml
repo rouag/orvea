@@ -180,7 +180,6 @@
 						</header>
 						<sheet>
 							<field name="is_saudian" invisible="1" />
-							<field name="salary_grid_id" invisible="1" />
 							<div class="oe_button_box" name="button_box" position="inside">
 								<button name="%(smart_hr.action_hr_loan)d" class="oe_stat_button"
 									context="{'search_default_employee_id': id}" icon="fa-money"
@@ -398,7 +397,6 @@
 									<field name="promotions_history" readonly="1">
 										<tree string="سِجل التعيينات">
 											<field name="appoint_type" />
-											<field name="salary_grid_id" />
 											<field name="date_from" />
 											<field name="date_to" />
 											<field name="balance" />
