@@ -40,6 +40,8 @@
         
         
         'wizards/view/hr_refuse_training_wizard_view.xml',
+        'wizards/view/hr_refuse_employee_wizard_view.xml',
+        
 
         # الوظائف
         'job/menu.xml',
