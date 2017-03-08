@@ -16,7 +16,6 @@
 					<sheet>
 							<group>
 								<field name="name"  />
-								
 							</group>
 
 					</sheet>
@@ -32,7 +31,6 @@
 				</tree>
 			</field>
 		</record>
-
 
 		<record model="ir.actions.act_window" id="action_hr_training_type">
 			<field name="name">أنواع التدريب</field>
