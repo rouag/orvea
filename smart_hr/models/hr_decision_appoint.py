@@ -460,7 +460,7 @@ class HrDecisionAppoint(models.Model):
         last_appoint = self.employee_id.decision_appoint_ids.search([('state_appoint', '=', 'active'), ('is_started', '=', True)], limit=1)
         if last_appoint:
             last_appoint.write({'state_appoint': 'close', 'date_hiring_end': fields.Datetime.now()})
-         # send notification to hr personnel
+        # send notification to hr personnel
         self.state_appoint = 'active'
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت إحداث تعين جديد '" + unicode(user.name) + u"'")
