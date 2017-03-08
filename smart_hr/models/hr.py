@@ -38,7 +38,6 @@ class HrEmployee(models.Model):
                                        ('waiting', u'في إنتظار الموافقة'),
                                        ('update', u'إستكمال البيانات'),
                                        ('done', u'اعتمدت'),
-                                       ('refused', u'رفض'),
                                       ( 'outside_assignment',u'مكلف خارجي'),
                                       ('non_active',u'مفصول'),
                                       ('oh',u'كف اليد'),
@@ -111,6 +110,7 @@ class HrEmployee(models.Model):
     residance_place = fields.Many2one('res.city', string=u'مكان إصدار بطاقة الإقامة')
     place_of_birth = fields.Many2one('res.city', string=u'مكان الميلاد')
     state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
+    country_id = fields.Many2one(default=lambda self: self.env['res.country'].search([('code_nat', '=', 'SA')], limit=1))
 
     @api.onchange('gender')
     def _onchange_gender(self):
@@ -170,6 +170,12 @@ class HrEmployee(models.Model):
     def recruiter_date_begin_work_date(self):
         if self.recruiter_date < self.begin_work_date:
             raise ValidationError(u"تاريخ بداية العمل الحكومي يجب ان يكون اصغر من تاريخ التعيين بالجهة ")
+
+    @api.constrains('birthday')
+    def recruitement_legal_age(self):
+        recruitement_legal_age = self.env['hr.employee.configuration'].search([], limit=1).recruitment_legal_age
+        if self.age < recruitement_legal_age:
+            raise ValidationError(u"لا يمكن أن يكون تعيين الموظف قبل بلوغه "+str(recruitement_legal_age)+u"سنة")
 
     @api.one
     @api.depends('name', 'father_middle_name', 'father_name', 'family_name')
@@ -256,7 +262,7 @@ class HrEmployee(models.Model):
 
     @api.one
     def action_refuse(self):
-        self.employee_state = 'refused'
+        self.employee_state = 'new'
 
     @api.multi
     def button_my_info(self):
@@ -396,7 +402,7 @@ class HrEmployeeEducationLevel(models.Model):
     university_entity = fields.Many2one('res.partner', string=u'الكلية ', domain=[('company_type', '=', 'faculty')])
     secondary = fields.Boolean(string=u'بعد‬ الثانوية', required=1)
     not_secondary = fields.Boolean(string=u'قبل الثانوية', required=1)
-  
+
 
     @api.onchange('secondary')
     def onchange_secondry(self):
@@ -435,11 +441,18 @@ class HrQualificationEstimate(models.Model):
 
 
 class HrEmployeeConfiguration(models.Model):
+    
     _name = 'hr.employee.configuration'
-    _rec_name ='number'
     _description = u'إعدادات الموظف'
+<<<<<<< HEAD
     number = fields.Integer(string='بداية تسلسل الرقم الوظيفي')
+=======
+
+    name = fields.Char(string='name')
+    number = fields.Integer(string='الرقم الوظيفي')
+>>>>>>> branch '9.0' of https://gitlab.com/smartek/addons_smart.git
     period = fields.Integer(string='مدة صلاحية بطاقة الموظف (بالسنة)')
+<<<<<<< HEAD
     age_member = fields.Integer(string='سن تقاعد  الطبيعي   الاعظاء')
     age_nomember = fields.Integer(string='سن تقاعد  الطبيعي لغير الاعظاء)')
 
@@ -498,6 +511,26 @@ class HrEmployeeConfiguration(models.Model):
                                                   })
 
 
+=======
+    recruitment_legal_age = fields.Integer(string='السن القانوني للتعيين')
+    
+    
+    @api.multi
+    def button_setting(self):
+        hr_employee_configuration_id = self.env['hr.employee.configuration'].search([], limit=1)
+        if hr_employee_configuration_id:
+            value = {
+                'name': u'‫إعدادات الموظف‬‬',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': 'hr.employee.configuration',
+                'view_id': False,
+                'type': 'ir.actions.act_window',
+                'res_id': hr_employee_configuration_id.id,
+            }
+            return value
+        
+>>>>>>> branch '9.0' of https://gitlab.com/smartek/addons_smart.git
 class HrEmployeeEvaluation(models.Model):
     _name = 'hr.employee.evaluation.level'
     _rec_name = 'degree_id'

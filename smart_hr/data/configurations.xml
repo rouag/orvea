@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-	<data noupdate="0">
+	<data noupdate="1">
 
 		<!--أنواع جهات التوظيف -->
 		<record id="governmental" model="recruiter.recruiter">
@@ -95,12 +95,12 @@
 			<field name="sequence" eval="130" />
 			<field name="name">دبلوم بعد الجامعية</field>
 		</record>
-		
+
 		<record id="certificate_licence" model="hr.employee.education.level">
 			<field name="sequence" eval="132" />
 			<field name="name">ليسانس</field>
 		</record>
-		
+
 		<record id="ma_education" model="hr.employee.education.level">
 			<field name="sequence" eval="140" />
 			<field name="name">ماجستير</field>
@@ -160,14 +160,15 @@
 			<field name="name">خارج المملكة‬</field>
 			<field name="code">sport</field>
 		</record>
-		
-	
+
 		<!-- إعدادات الموظف -->
-		<record id="data_hr_employee_configuration" model="hr.employee.configuration">
-			<field name="period">2</field>
-			<field name="number">000000</field>
-				<field name="age_member">63</field>
-			<field name="age_nomember">65</field>
+		<record id="data_stadard_employee_configuration" model="hr.employee.configuration">
+			<field name="name">إعدادات الموظف</field>
+			<field name="period" eval="2"/>
+			<field name="number" eval="000000"/>
+			<field name="recruitment_legal_age" eval="18"/>
+				<field name="age_member" eval="63"/>
+			<field name="age_nomember" eval="65"/>
 		</record>
 		
 
