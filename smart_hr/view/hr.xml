@@ -170,7 +170,7 @@
 								groups="smart_hr.group_employee_registration" attrs="{'invisible': [('employee_state', '!=', 'waiting')]}" />
 							<button name="action_cancel" string="إلغاء" type="object"
 								groups="smart_hr.group_employee_request" attrs="{'invisible': [('employee_state', '!=', 'waiting')]}" />
-							<button name="action_refuse" string="رفض" type="object"
+							<button name="%(action_hr_employee_refuse_wizard)d" string="رفض"  type="action"
 								groups="smart_hr.group_employee_registration" attrs="{'invisible': [('employee_state', '!=', 'waiting')]}" />
 							<field name="employee_state" widget="statusbar"
 								attrs="{'invisible': [('employee_state', '=', 'employee')]}"
@@ -323,7 +323,7 @@
 								<page string="بيانات العمل">
 									<group>
 										<group string="بيانات العمل">
-											<field name="department_id" on_change="onchange_department_id(department_id)" />
+											<field name="department_id" context="{'list_type':'employee_form'}" on_change="onchange_department_id(department_id)" />
 											<field name="dep_side" options="{'no_create': True}" />
 											<field name="dep_city" options="{'no_create': True}" />
 											<field name="job_id"
