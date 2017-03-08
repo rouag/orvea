@@ -249,7 +249,7 @@
 									<group string="بيانات شخصية">
 										<group>
 											<field name="country_id" options='{"no_open": True, "no_create": True}'
-												widget="selection" attrs="{'required': 1}" domain="[('code_nat','!=',False)]"
+												attrs="{'required': 1}" domain="[('code_nat','!=',False)]"
 												context="{'compute_name': '_get_natinality'}" />
 
 											<field name="identification_id"
