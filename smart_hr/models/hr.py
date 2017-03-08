@@ -37,7 +37,6 @@ class HrEmployee(models.Model):
                                        ('waiting', u'في إنتظار الموافقة'),
                                        ('update', u'إستكمال البيانات'),
                                        ('done', u'اعتمدت'),
-                                       ('refused', u'رفض'),
                                       ( 'outside_assignment',u'مكلف خارجي'),
                                       ('non_active',u'مفصول'),
                                       ('oh',u'كف اليد'),
@@ -109,12 +108,18 @@ class HrEmployee(models.Model):
     residance_date = fields.Date(string=u'تاريخ إصدار بطاقة الإقامة ')
     residance_place = fields.Many2one('res.city', string=u'مكان إصدار بطاقة الإقامة')
     place_of_birth = fields.Many2one('res.city', string=u'مكان الميلاد')
+
+    
     state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
 
 
     @api.model
     def create(self, vals):
         res = super(HrEmployee, self).create(vals)
+        number_id = self.env['hr.employee.configuration'].search([])
+        if number_id:
+            res.number= number_id[0].number + 1
+            number_id.write({'number':res.number})
         return res
 
 
@@ -241,7 +246,7 @@ class HrEmployee(models.Model):
 
     @api.one
     def action_refuse(self):
-        self.employee_state = 'refused'
+        self.employee_state = 'new'
 
     @api.multi
     def button_my_info(self):
@@ -381,7 +386,7 @@ class HrEmployeeEducationLevel(models.Model):
     university_entity = fields.Many2one('res.partner', string=u'الكلية ', domain=[('company_type', '=', 'faculty')])
     secondary = fields.Boolean(string=u'بعد‬ الثانوية', required=1)
     not_secondary = fields.Boolean(string=u'قبل الثانوية', required=1)
-  
+
 
     @api.onchange('secondary')
     def onchange_secondry(self):
