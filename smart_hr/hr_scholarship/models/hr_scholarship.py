@@ -273,7 +273,7 @@ class HrScholarshipServiceDuration(models.Model):
     _description = u'مدة الخدمة اللازمة قبل الابتعاث'
 
     name = fields.Char(string=' المسمى')
-    service_duration = fields.Integer( string=u'(المدة(يوم')
+    service_duration = fields.Integer( string=u'(المدة (يوم')
     diplom_type = fields.Selection([('hight', u'دبلوم من الدراسات العليا'), ('middle', u'الليسانس او الباكالوريوس او دبلوم متوسط')], string='نوع الدبلوم',)
     scholarship_type = fields.Many2one('hr.scholarship.type')
     

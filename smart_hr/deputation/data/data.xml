@@ -4,7 +4,7 @@
 
 		<!-- hr.deputation.setting -->
 		<record id="data_hr_deputation_setting" model="hr.deputation.setting">
-			<field name="name">إعدادات الانتدابات</field>
+			<field name="name">إعدادات الانتداب</field>
 			<field name="period_decision" eval="30"/>
 		</record>
 
