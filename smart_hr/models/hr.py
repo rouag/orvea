@@ -108,8 +108,6 @@ class HrEmployee(models.Model):
     residance_id = fields.Char(string=u'رقم الإقامة ')
     residance_date = fields.Date(string=u'تاريخ إصدار بطاقة الإقامة ')
     residance_place = fields.Many2one('res.city', string=u'مكان إصدار بطاقة الإقامة')
-
-    
     state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
 
 
@@ -270,8 +268,8 @@ class HrEmployee(models.Model):
             specialization_ids = self.diploma_id.specialization_ids.ids
             res['domain'] = {'specialization_ids': [('id', 'in', specialization_ids)]}
         return res
-    
-    
+
+
     @api.multi
     def _compute_point(self):
        if self.job_id:

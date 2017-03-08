@@ -16,3 +16,4 @@ from . import deputation
 from . import overtime
 from . import hr_scholarship
 from . import parser
+from . import mysql

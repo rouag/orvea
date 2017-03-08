@@ -18,7 +18,7 @@ class HrDecisionAppoint(models.Model):
 
     name = fields.Char(string='رقم الخطاب', required=1 , states={'draft': [('readonly', 0)]})
     order_date = fields.Date(string='تاريخ الخطاب', required=1) 
-    date_hiring = fields.Date(string='تاريخ التعيين', default=fields.Datetime.now())
+    date_hiring = fields.Date(string='تاريخ الطلب', default=fields.Datetime.now())
     date_hiring_end = fields.Date(string=u'تاريخ إنتهاء التعيين')  
     date_direct_action = fields.Date(string='تاريخ مباشرة العمل') 
     instead_exchange = fields.Boolean(string='صرف بدل تعيين')
@@ -28,7 +28,6 @@ class HrDecisionAppoint(models.Model):
     number = fields.Char(related='employee_id.number', store=True, readonly=True, string=u'الرقم الوظيفي') 
     emp_code = fields.Char(string=u'رمز الوظيفة ', readonly=1) 
     country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
-   
     emp_job_id = fields.Many2one('hr.job', string='الوظيفة', store=True, readonly=1) 
     emp_number_job = fields.Char(string='رقم الوظيفة', store=True, readonly=1) 
     emp_type_id = fields.Many2one('salary.grid.type', string='الصنف', store=True, readonly=1)
