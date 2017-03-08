@@ -420,6 +420,7 @@
 									<field name="deductible_normal_leave" />
 									<field name="deductible_duration_service" />
 									<field name="minimum" />
+									<field name="maximum_minimum" />
 									<field name="maximum" />
 									<field name="postponement_period" />
 								</group>

@@ -268,7 +268,6 @@ class HrHolidays(models.Model):
                 break
 
         open_period = False
-        init_stock_line = False
 
         if right_entitlement.periode and right_entitlement.periode != 100 and self.holiday_status_id.id != self.env.ref('smart_hr.data_hr_holiday_compensation').id:
             periodes = self.env['hr.holidays.periode'].search([('employee_id', '=', self.employee_id.id),
@@ -292,25 +291,27 @@ class HrHolidays(models.Model):
             if not open_period:
                 open_period = self.create_holiday_periode(self.employee_id, self.holiday_status_id, right_entitlement)
                 open_period.active = True
-                init_stock_line = True
-
-            if not stock_line:
-                stock_line = self.env['hr.employee.holidays.stock'].create({'holidays_available_stock': open_period.holiday_stock,
+                if stock_line:
+                    
+                    open_period.holiday_stock = stock_line.holidays_available_stock
+                    stock_line.period_id = open_period.id
+                else:
+                    stock_line = self.env['hr.employee.holidays.stock'].create({'holidays_available_stock': open_period.holiday_stock,
                                                                                     'employee_id': self.employee_id.id,
                                                                                     'holiday_status_id': self.holiday_status_id.id,
                                                                                     'token_holidays_sum': 0,
                                                                                     'periode': right_entitlement.periode,
                                                                                     'entitlement_id':en.id,
-                                                                                    })            
+                                                                                    })
+                    open_period.active = True
+                    stock_line.period_id = open_period.id
+                    stock_line.holidays_available_stock = open_period.holiday_stock
+                    stock_line.token_holidays_sum = 0
+            
             open_period.holiday_stock -= self.duration
+            stock_line.holidays_available_stock -= self.duration
+            stock_line.token_holidays_sum += self.duration
             self.open_period = open_period.id
-            if init_stock_line:
-                stock_line.holidays_available_stock = open_period.holiday_stock
-                stock_line.token_holidays_sum = self.duration
-            else:
-                stock_line.holidays_available_stock -= self.duration
-                stock_line.token_holidays_sum += self.duration
-
         elif self.holiday_status_id.id != self.env.ref('smart_hr.data_hr_holiday_compensation').id:
 
             stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
@@ -929,10 +930,26 @@ class HrHolidays(models.Model):
         if self.date_from > self.date_to:
             raise ValidationError(u"تاريخ من يجب ان يكون أصغر من تاريخ الى")
             # check minimum request validation
-        if self.holiday_status_id.minimum != 0 and self.duration < self.holiday_status_id.minimum:
-            raise ValidationError(u"أقل فترة يمكن طلبها من نوع إجازة " + self.holiday_status_id.name + u" " + str(self.holiday_status_id.minimum) + u" أيام")
              
             # check maximum request validation
+        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_normal'):
+            if self.duration < self.holiday_status_id.minimum:
+                if self.holiday_status_id.maximum_minimum==0:
+                    raise ValidationError(u"أقل فترة يمكن طلبها من نوع إجازة " + self.holiday_status_id.name + u" " + str(self.holiday_status_id.maximum) + u" أيام")
+                elif self.duration > self.holiday_status_id.maximum_minimum:
+                    raise ValidationError(u"ا كثر فترة يمكن طلبها من نوع إجازة  عادية اقل من " +str(self.holiday_status_id.minimum) + u" ايام هي" + str(self.holiday_status_id.maximum_minimum) + u" أيام")
+                else:
+                    date_from = fields.Date.from_string(self.date_from)
+                    prev_min_holidays = self.env['hr.holidays'].search([('state', '=', 'done'), ('employee_id', '=', self.employee_id.id),
+                                                                   ('holiday_status_id', '=', self.holiday_status_id.id), ('date_from', '>=', date(date_from.year, 1, 1))])
+                    prev_min_holidays_duration = 0
+                    for holid in prev_min_holidays:
+                        prev_min_holidays_duration += holid.duration
+                        if prev_min_holidays_duration + self.duration >  self.holiday_status_id.maximum_minimum:
+                            raise ValidationError(u"ليس لديك الرصيد الكافي للتمتع ب‬اجازة مدتها اقل من‬ "+str(self.holiday_status_id.maximum_minimum)+ u" أيام")
+        elif self.duration < self.holiday_status_id.minimum:
+            raise ValidationError(u"أقل فترة يمكن طلبها من نوع إجازة " + self.holiday_status_id.name + u" " + str(self.holiday_status_id.minimum) + u" أيام")
+
         if self.holiday_status_id.maximum != 0 and self.duration > self.holiday_status_id.maximum:
             raise ValidationError(u"أكثر فترة يمكن طلبها من نوع إجازة " + self.holiday_status_id.name + u" " + str(self.holiday_status_id.maximum) + u" أيام")
     
@@ -1307,6 +1324,7 @@ class HrHolidaysStatus(models.Model):
     service_years_required = fields.Integer(string=u'سنوات الخدمة المطلوبة', default=0)
     spend_advanced_salary = fields.Boolean(string=u'يصرف له راتب مسبق')
     advanced_salary_periode = fields.Integer(string=u'مدة صرف راتب مسبق (باليوم)', default=30)
+    maximum_minimum = fields.Integer(string=u'الحد الاقصى للايام الممكنة اقل من الحد الأدنى')
 
     @api.onchange('deductible_duration_service')
     def onchange_deductible_duration_service(self):
