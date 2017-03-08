@@ -167,7 +167,10 @@
 			<field name="period" eval="2"/>
 			<field name="number" eval="000000"/>
 			<field name="recruitment_legal_age" eval="18"/>
+				<field name="age_member" eval="63"/>
+			<field name="age_nomember" eval="65"/>
 		</record>
+		
 
 	</data>
 </openerp>

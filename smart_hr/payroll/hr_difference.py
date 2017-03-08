@@ -11,7 +11,7 @@ from umalqurra.hijri_date import HijriDate
 from umalqurra.hijri import Umalqurra
 
 
-class hrDifference(models.Model):
+class HrDifference(models.Model):
     _name = 'hr.difference'
     _inherit = ['mail.thread']
     _order = 'id desc'
@@ -22,7 +22,6 @@ class hrDifference(models.Model):
         return get_current_month_hijri(HijriDate)
 
     name = fields.Char(string=' المسمى', required=1, readonly=1, states={'new': [('readonly', 0)]})
-    # TODO: get default MONTH
     month = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=get_default_month)
     date = fields.Date(string='تاريخ الإنشاء', required=1, default=fields.Datetime.now(), readonly=1, states={'new': [('readonly', 0)]})
     date_from = fields.Date('تاريخ من', readonly=1, states={'new': [('readonly', 0)]})
@@ -70,7 +69,6 @@ class hrDifference(models.Model):
 
     @api.model
     def create(self, vals):
-        print '----vals-----', vals
         if 'product_id' in vals:
             vals['product_id'] = vals['product_id'][0]
         res = super(hrDifference, self).create(vals)
@@ -256,7 +254,7 @@ class hrDifference(models.Model):
                     # 1- بدل طبيعة العمل
                     amount = (hr_setting.allowance_proportion * basic_salary)
                     if amount > 0:
-                        amount = amount / 100
+                        amount /= 100
                     vals = {'difference_id': self.id,
                             'name': hr_setting.allowance_job_nature.name,
                             'employee_id': transfert.employee_id.id,
@@ -276,7 +274,7 @@ class hrDifference(models.Model):
                             'type': 'transfert'}
                     line_ids.append(vals)
                     # 3- بدل ترحيل
-                    amount = (hr_setting.deportation_amount)
+                    amount = hr_setting.deportation_amount
                     vals = {'difference_id': self.id,
                             'name': hr_setting.allowance_deportation.name,
                             'employee_id': transfert.employee_id.id,
@@ -465,7 +463,7 @@ class hrDifference(models.Model):
                 amount = basic_salary - ((basic_salary * scholarship_id.salary_percent) / 100.0)
                 if amount > 0:
                     vals = {'difference_id': self.id,
-                            'name': allowance.name,
+                            'name': u'نسبة الراتب',
                             'employee_id': scholarship_id.employee_id.id,
                             'number_of_days': 0.0,
                             'number_of_hours': 0.0,
@@ -595,7 +593,7 @@ class hrDifference(models.Model):
                             'employee_id': holiday_id.employee_id.id,
                             'number_of_days': duration_in_month,
                             'number_of_hours': 0.0,
-                            'amount': (amount) * -1,
+                            'amount': amount * -1,
                             'type': 'holiday'}
                     line_ids.append(vals)
             # case of يصرف له الراتب
@@ -605,15 +603,15 @@ class hrDifference(models.Model):
                 else:
                     basic_salary = holiday_id.employee_id.basic_salary
                 for rec in holiday_status_id.percentages:
-                    if entitlement_type == rec.entitlement_id and months_from_holiday_start >= rec.month_from and months_from_holiday_start <= rec.month_to:
-                        amount = (((duration_in_month * (basic_salary / 22)) * (100 - rec.salary_proportion))) / 100.0
+                    if entitlement_type == rec.entitlement_id and rec.month_from <= months_from_holiday_start <= rec.month_to:
+                        amount = (duration_in_month * (basic_salary / 22) * 100 - rec.salary_proportion) / 100.0
                         if amount != 0:
                             vals = {'difference_id': self.id,
                                     'name': holiday_id.holiday_status_id.name,
                                     'employee_id': holiday_id.employee_id.id,
                                     'number_of_days': duration_in_month,
                                     'number_of_hours': 0.0,
-                                    'amount': (amount) * -1,
+                                    'amount': amount * -1,
                                     'type': 'holiday'}
                             line_ids.append(vals)
             # case of  نوع التعويض    مقابل ‫مادي‬ ‬   اجازة التعويض
@@ -630,7 +628,7 @@ class hrDifference(models.Model):
                                 'employee_id': holiday_id.employee_id.id,
                                 'number_of_days': int(holiday_id.current_holiday_stock),
                                 'number_of_hours': 0.0,
-                                'amount': (amount),
+                                'amount': amount,
                                 'type': 'holiday'}
                         line_ids.append(vals)
         return line_ids
@@ -771,13 +769,13 @@ class hrDifference(models.Model):
                         basic_salary = termination.employee_id.basic_salary
                     # 1) عدد الرواتب المستحق
                     if termination.termination_type_id.nb_salaire > 0:
-                        amount = (basic_salary) * (termination.termination_type_id.nb_salaire - 1)
+                        amount = basic_salary * (termination.termination_type_id.nb_salaire - 1)
                         vals = {'difference_id': self.id,
                                 'name': termination.termination_type_id.name + " " + u'(عدد الرواتب)',
                                 'employee_id': termination.employee_id.id,
                                 'number_of_days': (termination.termination_type_id.nb_salaire - 1) * 22,
                                 'number_of_hours': 0.0,
-                                'amount': (amount),
+                                'amount': amount,
                                 'type': 'termination'}
                         line_ids.append(vals)
             sum_days = 0
@@ -790,14 +788,14 @@ class hrDifference(models.Model):
                         basic_salary = grid_id.basic_salary
                     else:
                         basic_salary = termination.employee_id.basic_salary
-                    amount = (basic_salary / 22) * (termination.termination_type_id.max_days)
+                    amount = (basic_salary / 22) * termination.termination_type_id.max_days
                     if amount != 0.0: 
                         vals = {'difference_id': self.id,
                                 'name': 'رصيد إجازة (طي القيد)',
                                 'employee_id': termination.employee_id.id,
                                 'number_of_days': termination.termination_type_id.max_days,
                                 'number_of_hours': 0.0,
-                                'amount': (amount),
+                                'amount': amount,
                                 'type': 'termination'}
                         line_ids.append(vals)
             if termination.termination_type_id.all_holidays and sum_days > 0:
@@ -806,14 +804,14 @@ class hrDifference(models.Model):
                         basic_salary = grid_id.basic_salary
                     else:
                         basic_salary = termination.employee_id.basic_salary
-                    amount = (basic_salary / 22) * (sum_days)
+                    amount = (basic_salary / 22) * sum_days
                     if amount != 0.0:
                         vals = {'difference_id': self.id,
                                 'name': 'رصيد إجازة (طي القيد)',
                                 'employee_id': termination.employee_id.id,
                                 'number_of_days': sum_days,
                                 'number_of_hours': 0.0,
-                                'amount': (amount),
+                                'amount': amount,
                                 'type': 'termination'}
                         line_ids.append(vals)
         return line_ids
@@ -831,7 +829,7 @@ class hrDifference(models.Model):
                         'employee_id': difference_history.employee_id.id,
                         'number_of_days': 0.0,
                         'number_of_hours': 0.0,
-                        'amount': (difference_history.amount),
+                        'amount': difference_history.amount,
                         'type': 'one_third_salary'}
                 line_ids.append(vals)
         return line_ids
@@ -850,13 +848,13 @@ class hrDifference(models.Model):
                     'employee_id': transfert_decision.employee_id.id,
                     'number_of_days': 0.0,
                     'number_of_hours': 0.0,
-                    'amount': (transfert_decision.amount),
+                    'amount': transfert_decision.amount,
                     'type': 'transfert_decision'}
             line_ids.append(vals)
         return line_ids
 
 
-class hrDifferenceLine(models.Model):
+class HrDifferenceLine(models.Model):
     _name = 'hr.difference.line'
 
     difference_id = fields.Many2one('hr.difference', string=' الفروقات', ondelete='cascade')
