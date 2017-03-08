@@ -330,7 +330,6 @@ class HrEmployeePromotionHistory(models.Model):
     _name = 'hr.employee.promotion.history'
 
     employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف')
-    salary_grid_id = fields.Many2one('salary.grid.grade', string=u'الرتبة')
     date_from = fields.Date(string=u'التاريخ من', default=fields.Datetime.now(), related='decision_appoint_id.date_direct_action')
     date_to = fields.Date(string=u'التاريخ الى', related='decision_appoint_id.date_hiring_end')
     balance = fields.Integer(string=u'رصيد الترقية (يوم)', store=True)

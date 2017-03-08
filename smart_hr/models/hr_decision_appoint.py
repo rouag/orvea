@@ -133,7 +133,9 @@ class HrDecisionAppoint(models.Model):
         if self.type_appointment and self.employee_id and self.type_appointment.max_pension:
             # get current basic salary of the employee (the employee have an old ta3yin)
             self.pension_ratio = self.max_pension_ratio
-            self.basic_salary = self.employee_id.salary_grid_id.basic_salary * self.pension_ratio / 100.0
+            salary_grid_id = self.employee_id.get_salary_grid_id(False)
+            if salary_grid_id:
+                self.basic_salary = salary_grid_id.basic_salary * self.pension_ratio / 100.0
 
     @api.onchange('pension_ratio')
     def _onchange_pension_ratio(self):
@@ -141,7 +143,9 @@ class HrDecisionAppoint(models.Model):
         if self.pension_ratio:
             if self.pension_ratio > self.max_pension_ratio:
                 raise ValidationError(u"لا يمكنك تجاوز الحد الأقصى.")
-            self.basic_salary = self.employee_id.salary_grid_id.basic_salary * self.pension_ratio / 100.0
+            salary_grid_id = self.employee_id.get_salary_grid_id(False)
+            if salary_grid_id:
+                self.basic_salary = salary_grid_id.basic_salary * self.pension_ratio / 100.0
 
     @api.one
     @api.constrains('score', 'passing_score')
@@ -459,12 +463,6 @@ class HrDecisionAppoint(models.Model):
         else:
             self.employee_id.write({'basic_salary': -1})
         self.state = 'done'
-        # set salary grid for the employee
-        salary_grid_id = self.env['salary.grid.detail'].search(
-            [('type_id', '=', self.type_id.id), ('grade_id', '=', self.grade_id.id),
-             ('degree_id', '=', self.degree_id.id)], limit=1)
-        if salary_grid_id:
-            self.employee_id.write({'salary_grid_id': salary_grid_id.id})
         # close last active appoint for the employee
         last_appoint = self.employee_id.decision_appoint_ids.search(
             [('state_appoint', '=', 'active'), ('is_started', '=', True)], limit=1)
@@ -504,7 +502,6 @@ class HrDecisionAppoint(models.Model):
             previous_promotion.close_promotion_line()
         # create promotion history line
         self.env['hr.employee.promotion.history'].create({'employee_id': self.employee_id.id,
-                                                          'salary_grid_id': self.employee_id.job_id.grade_id.id,
                                                           'date_from': self.date_direct_action,
                                                           'active_duration': True,
                                                           'decision_appoint_id': self.id,
