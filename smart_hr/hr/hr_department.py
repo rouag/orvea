@@ -3,6 +3,7 @@
 from openerp import fields, models, api, _
 from openerp.exceptions import except_orm, Warning, RedirectWarning, ValidationError
 
+
 class hr_department(models.Model):
     _inherit = 'hr.department'
 

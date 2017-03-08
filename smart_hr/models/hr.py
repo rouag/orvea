@@ -7,6 +7,7 @@ from dateutil.relativedelta import relativedelta
 from openerp.exceptions import ValidationError
 from datetime import date
 from datetime import date, datetime, timedelta
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class HrEmployee(models.Model):
@@ -111,6 +112,16 @@ class HrEmployee(models.Model):
     state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
     country_id = fields.Many2one(default=lambda self: self.env['res.country'].search([('code_nat', '=', 'SA')], limit=1))
 
+    @api.onchange('gender')
+    def _onchange_gender(self):
+        if self.gender =='female':
+            self.father_middle_name = u'بنت'
+            self.grandfather_middle_name = u'بنت'
+            self.grandfather2_middle_name = u'بنت'
+        else :
+            self.father_middle_name = u'بن'
+            self.grandfather_middle_name = u'بن'
+            self.grandfather2_middle_name = u'بن'
 
     @api.model
     def create(self, vals):
@@ -427,29 +438,69 @@ class HrQualificationEstimate(models.Model):
     name = fields.Char(string='المسمّى')
     code = fields.Char(string=u'الرمز')
     
-# class HrEmployeeNumber(models.Model):
-#     _name = 'hr.employee.number'
-#     _description = u'الرقم الوظيفي'
-# 
-#     name = fields.Integer(string='الرقم الوظيفي')
-#     
-# class HrEmployeeCardValidity(models.Model):
-#     _name = 'hr.employee.card.validity'
-#     
-#     _description = u'مدة صلاحية بطاقة الموظف'
-#     name = fields.Integer(string='مدة صلاحية بطاقة الموظف (بالسنة)')
+
 
 class HrEmployeeConfiguration(models.Model):
-    
     _name = 'hr.employee.configuration'
     _description = u'إعدادات الموظف'
+    
 
     name = fields.Char(string='name')
-    number = fields.Integer(string='الرقم الوظيفي')
+    number = fields.Integer(string='بداية تسلسل الرقم الوظيفي')
     period = fields.Integer(string='مدة صلاحية بطاقة الموظف (بالسنة)')
+    age_member = fields.Integer(string='سن تقاعد  الطبيعي   الاعظاء')
+    age_nomember = fields.Integer(string='سن تقاعد  الطبيعي لغير الاعظاء)')
     recruitment_legal_age = fields.Integer(string='السن القانوني للتعيين')
-    
-    
+
+    @api.model
+    def control_test_retraite_employee(self):
+        today_date = fields.Date.from_string(fields.Date.today())
+        print"today_date", type(today_date)
+        age_member =  self.env.ref('smart_hr.data_hr_employee_configuration').age_member
+        age_nomember =  self.env.ref('smart_hr.data_hr_employee_configuration').age_nomember
+        print"age_member",age_member
+        hr_member = self.env['hr.employee'].search([('employee_state', '=', 'employee') ])
+        for line in hr_member:
+            today_date = fields.Date.from_string(fields.Date.today())
+            birthday = fields.Date.from_string(line.birthday)
+            print"birthday",birthday
+            years = (today_date - birthday).days / 365
+            print"years",years
+            if years == age_member and line.is_member == True:
+                self.env['hr.termination'].create({ 
+                                               'name':'تقاعد طبيعي ',
+                                                'date': today_date,
+                                               'termination_type_id':self.env.ref('smart_hr.data_hr_ending_service_type_normal').id,
+                                                'employee_id': line.id,
+                                                'employee_no' : line.number,
+                                                'job_id' : line.job_id.id,
+                                                    })
+            if years == age_nomember and line.is_member ==False:
+                self.env['hr.termination'].create({
+                                                'name':'تقاعد طبيعي ',
+                                                'date': today_date,
+                                                'termination_type_id':self.env.ref('smart_hr.data_hr_ending_service_type_normal').id,
+                                                'employee_id': line.id,
+                                                'employee_no' : line.number,
+                                                'job_id' : line.job_id.id,
+                                                })
+
+    def send_test_member_group(self, group_id, title, msg):
+        '''
+        @param group_id: res.groups
+        '''
+        for recipient in group_id.users:
+            self.env['base.notification'].create({'title': title,
+                                                  'message': msg,
+                                                  'user_id': recipient.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': self.id,
+                                                  'res_action': 'smart_hr.action_hr_decision_appoint',
+                                                  'notif': True
+                                                  })
+
+
+   
     @api.multi
     def button_setting(self):
         hr_employee_configuration_id = self.env['hr.employee.configuration'].search([], limit=1)

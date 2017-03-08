@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_hr_error_employee">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					
+			</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+							

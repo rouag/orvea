@@ -37,10 +37,10 @@ class hr_termination(models.Model):
     nb_salaire = fields.Float(related='termination_type_id.nb_salaire', store=True, readonly=True, string=u'عدد الرواتب المستحق')
     all_holidays = fields.Boolean(related='termination_type_id.all_holidays', store=True, readonly=True,string=u'كل الإجازة')
     max_days = fields.Float(related='termination_type_id.max_days', store=True, readonly=True, string=u'الحد الاقصى لأيام الإجازة')
-    
+
     reason = fields.Char(string=u'السبب')
     letter_source = fields.Char(string=u'جهة الخطاب', )
-    letter_no = fields.Char(string=u'رقم الخطاب',  required=1)
+    letter_no = fields.Char(string=u'رقم الخطاب')
     letter_date = fields.Date(string=u'تاريخ الخطاب')
     file_attachment = fields.Binary(string=u'مرفق الصورة الضوئية', attachment=True)
     file_attachment_name = fields.Char(string=u'مرفق الصورة الضوئية')

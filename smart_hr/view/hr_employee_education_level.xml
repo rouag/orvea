@@ -209,10 +209,6 @@
 			</field>
 		</record>
 
-
-
-
-
 		<record id="view_form_hr_employee_configuration" model="ir.ui.view">
 			<field name="name">hr.employee.configuration.form</field>
 			<field name="model">hr.employee.configuration</field>
@@ -222,13 +218,15 @@
 						<group>
 							<field name="number" required="1" />
 							<field name="period" required="1" />
+							<field name="age_member" required="1" />
+							<field name="age_nomember" required="1" />
 							<field name="recruitment_legal_age" required="1" />
 						</group>
-
 					</sheet>
 				</form>
 			</field>
 		</record>
+		
 
 
 		<record id="action_hr_employee_configuration" model="ir.actions.server">
@@ -254,9 +252,7 @@
 		<menuitem id="menu_hr_qualification_estimate" action="action_hr_qualification_estimate"
 			sequence="8" parent="hr_root_employee_configuration" />
 
-
-
 		<menuitem id="menu_hr_employee_configuration" action="action_hr_employee_configuration"
-			sequence="36" parent="hr_root_employee_configuration" />
+			sequence="37" parent="hr_root_employee_configuration" name="إعدادات الموظف " />
 	</data>
 </openerp>
