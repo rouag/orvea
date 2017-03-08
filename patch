@@ -1,0 +1,6 @@
+------08-03-2017-----------------------
+must install module web_m2x_options
+Add these parameters go to Configuration -> Technical -> Parameters -> System Parameters and add new parameters like:
+- web_m2x_options.create: False
+- web_m2x_options.create_edit: False
+
