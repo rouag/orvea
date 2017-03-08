@@ -73,8 +73,7 @@ class HrPublicHoliday(models.Model):
         to_dt = fields.Datetime.from_string(date_to)
         time_delta = to_dt - from_dt
         return math.ceil(time_delta.days + float(time_delta.seconds) / 86400) + 1
-    
-    
+
     @api.multi
     def button_send_request(self):
         self.ensure_one()
@@ -89,13 +88,10 @@ class HrPublicHoliday(models.Model):
     def button_refuse_hrm(self):
         self.ensure_one()
         self.state = 'draft'
-        
-        
+
     @api.multi
     def unlink(self):
         for rec in self:
             if rec.state != 'draft':
                 raise ValidationError(u'لا يمكن حذف عيد/عطلة فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(HrPublicHoliday, self).unlink()
-    
-              

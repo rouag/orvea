@@ -31,7 +31,7 @@ class HrEmployeeCommissioning(models.Model):
                               ('done', u'اعتمدت'),
                               ('refused', u'رفض'),
                               ], readonly=1, default='new', string=u'الحالة')
-    governmental_entity = fields.Many2one('res.partner', string=u'الجهة الحكومية', domain=[('company_type', '=', 'governmental_entity')], default=_get_default_company)
+    governmental_entity = fields.Many2one('res.partner', string=u'الجهة الحكومية', domain=[('company_type', '=', 'governmental_entity')], default=_get_default_company, readonly=1, states={'new': [('readonly', 0)]})
     task_ids = fields.One2many('hr.employee.task', 'comm_id', string=u'المهام')
     note = fields.Text(string=u'ملاحظات')
     current_city = fields.Many2one('res.city', string=u'مقر الموظف', related='employee_id.dep_city', required=1)
@@ -42,7 +42,7 @@ class HrEmployeeCommissioning(models.Model):
     give_allowance_transport = fields.Boolean(string=u'بدل النقل', default=False)
     give_allow = fields.Boolean(string=u'بدلات، مكافأة أو تعويضات', default=False)
     give_salary = fields.Boolean(string=u'راتب', default=False)
-    pay_retirement = fields.Boolean(string=u'يدفع له نسبة التقاعد', readonly=1, states={'new': [('readonly', 0)]})
+    pay_retirement = fields.Boolean(string=u'يدفع له نسبة التقاعد', related="comm_type.pay_retirement", readonly=1)
     retirement_proportion = fields.Float(string=u'حصة الحكومة من التقاعد (%)', default=9)
 
     @api.multi
@@ -127,3 +127,4 @@ class HrEmployeeCommissioningType(models.Model):
     _description = u'نوع التكليف'
 
     name = fields.Char(string=u'نوع التكليف')
+    pay_retirement = fields.Boolean(string=u'يدفع له نسبة التقاعد')

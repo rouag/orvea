@@ -983,10 +983,10 @@ class HrHolidays(models.Model):
  
             """
         hr_public_holiday_obj = self.env['hr.public.holiday']
-        if fields.Date.from_string(self.date_from).weekday() in [4, 5] and not self.is_extension:
-            raise ValidationError(u"هناك تداخل في تاريخ البدء مع عطلة نهاية الاسبوع  ")
-        if fields.Date.from_string(self.date_to).weekday() in [4, 5]:
-            raise ValidationError(u"هناك تداخل في تاريخ الإنتهاء مع عطلة نهاية الاسبوع")
+#         if fields.Date.from_string(self.date_from).weekday() in [4, 5] and not self.is_extension:
+#             raise ValidationError(u"هناك تداخل في تاريخ البدء مع عطلة نهاية الاسبوع  ")
+#         if fields.Date.from_string(self.date_to).weekday() in [4, 5]:
+#             raise ValidationError(u"هناك تداخل في تاريخ الإنتهاء مع عطلة نهاية الاسبوع")
         for public_holiday in hr_public_holiday_obj.search([('state', '=', 'done')]):
             if not self.is_extension:
                 if public_holiday.date_from <= self.date_from <= public_holiday.date_to or \

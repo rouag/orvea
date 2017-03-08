@@ -34,7 +34,7 @@ class HrContract(models.Model):
     date_endd = fields.Date(string=u'إلى', )
     date_contract_to = fields.Date(string=u'من', )
     date_contract_end = fields.Date(string=u'إلى', )
-    basic_salary = fields.Float(string='الراتب الأساسي',store=True,  readonly=True )
+    basic_salary = fields.Float(string='الراتب الأساسي', store=True,  readonly=True )
     transport_allow = fields.Float(string='بدل النقل',store=True,  readonly=True ) 
     retirement = fields.Float(string='المحسوم للتقاعد', store=True, readonly=True ) 
     net_salary = fields.Float(string='صافي الراتب',store=True,  readonly=True )
@@ -60,9 +60,7 @@ class HrContract(models.Model):
             
     @api.onchange('employee_id')
     def _onchange_employe(self):
-       
             if self.employee_id:
-                
                 employee_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('is_started', '=', True)])
                 print"employee_line" ,employee_line   
                 if employee_line:
@@ -70,11 +68,14 @@ class HrContract(models.Model):
                     self.type_job_id = employee_line.type_id.id
                     self.grade_id = employee_line.grade_id.id
                     self.degree_id = employee_line.degree_id.id
-                    self.basic_salary = employee_line.basic_salary  
                     self.transport_allow = employee_line.transport_allow
                     self.retirement = employee_line.retirement
                     self.net_salary = employee_line.net_salary
-                    
+                    if self.employee_id.basic_salary < 0:
+                        self.basic_salary = employee_line.basic_salary
+                if self.employee_id.basic_salary > 0:
+                        self.basic_salary = self.employee_id.basic_salary
+
     @api.model
     def control_contract_employee(self):
         today_date = fields.Date.from_string(fields.Date.today())

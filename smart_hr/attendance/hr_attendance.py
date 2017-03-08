@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from openerp import fields, models, api, _
+from openerp import fields, models, api
 import base64
 from tempfile import TemporaryFile
 import csv
-import time as time_date
 from datetime import datetime, timedelta, time
 from openerp.exceptions import ValidationError
 from umalqurra.hijri_date import HijriDate
@@ -12,7 +11,6 @@ from openerp.addons.smart_base.util.time_util import float_time_convert
 from openerp.addons.smart_base.util.time_util import time_float_convert
 from openerp.addons.smart_base.util.time_util import float_time_convert_str
 from openerp.addons.smart_base.util.umalqurra import *
-from dateutil import relativedelta
 from umalqurra.hijri import Umalqurra
 
 FORMAT_TIME = '%H:%M:%S'
@@ -31,6 +29,7 @@ class ResourceCalendarAttendance(models.Model):
 
     @api.onchange('dayofweek')
     def onchange_dayofweek(self):
+        day = ''
         if self.dayofweek == '0':
             day = u'الأثنين'
         if self.dayofweek == '1':
@@ -48,19 +47,13 @@ class ResourceCalendarAttendance(models.Model):
         self.name = u'وردية يوم %s ' % day
 
 
-class hr_attendance(models.Model):
+class HrAttendance(models.Model):
     _inherit = 'hr.attendance'
     _order = 'name desc,id'
- 
-   
-    
-    
-   
+
     id_emprinte = fields.Char(string=u'رقم ')
     mac_id = fields.Char(string=u'الآلة ')
    
-
-
     def _altern_si_so(self, cr, uid, ids, context=None):
         """  Rewrite this function to remove this test :
              Alternance sign_in/sign_out check.
@@ -102,15 +95,16 @@ class HrAttendanceImport(models.Model):
     state = fields.Selection([('new', 'جديد'), ('done', 'تم التحميل')], string='الحالة', readonly=1, default='new')
 
     def get_day_number(self, date):
-        '''
+        """
         Return a day number from args date : this number must same in field selection used in model resource.calendar.attendance
         [('0','Monday'),('1','Tuesday'),('2','Wednesday'),('3','Thursday'),('4','Friday'),('5','Saturday'),('6','Sunday')]
-        '''
+        """
         date_str = str(date).split('-')
         year = date_str[0]
         month = date_str[1]
         day = date_str[2]
         um = HijriDate(int(year), int(month), int(day), gr=True)
+        day_number = 0
         if um.day_name_en in ('Monday', 'lundi'):
             day_number = 0
         elif um.day_name_en in ('Tuesday', 'mardi'):
@@ -128,9 +122,9 @@ class HrAttendanceImport(models.Model):
         return str(day_number)
 
     def get_time_from_to_calendar(self, calendar_id, day):
-        '''
+        """
         Get time from , time to , late , leave from resource calendar for a day given in args
-        '''
+        """
         # TODO: if days not in resource.calendar.attendance for example vendredi and samedi it show error
         # must do this case
         calendar_attendance_obj = self.env['resource.calendar.attendance']
@@ -156,11 +150,11 @@ class HrAttendanceImport(models.Model):
 
     @api.multi
     def close_day(self,date):
-        u'''
-        غلق اليوم يتم هنا تجميع التأخيرات والغيابات الغير مبرره والخروج المبكر والساعات الإضافية ليوم معين
-         ثم يتم إنشاء نماذج لكل عنصر منها وتبقى في إنتظار الإعتماد  .لا  يحتسب تأخير أو خروج مبكر أو غياب
-        أو ساعة إضافية إلا بعد الإعتماد من صاحب الصلاحية
-        '''
+        u"""
+            غلق اليوم يتم هنا تجميع التأخيرات والغيابات الغير مبرره والخروج المبكر والساعات الإضافية ليوم معين
+          ثم يتم إنشاء نماذج لكل عنصر منها وتبقى في إنتظار الإعتماد  .لا  يحتسب تأخير أو خروج مبكر أو غياب
+                أو ساعة إضافية إلا بعد الإعتماد من صاحب الصلاحية
+        """
         # date = current date
         # date = datetime.now().date()
         # date = self.date
@@ -228,12 +222,13 @@ class HrAttendanceImport(models.Model):
         return True
 
     def chek_sign_in(self, date, employee_id, latest_time, latest_datetime_import):
-        '''
+        """
         التحقق من بصمة أو بصمات الدخول لكل موظف أثناء كل عملية تحديث لسجل الحضور و الإنصراف
         :param date:
         :param employee_id:
         :param latest_time: the latest hours for attendance  imported from file
-        '''
+        :param latest_datetime_import :
+        """
         report_day_obj = self.env['hr.attendance.report_day']
         employee_obj = self.env['hr.employee']
         attendance_obj = self.env['hr.attendance']
@@ -347,13 +342,14 @@ class HrAttendanceImport(models.Model):
         return True
 
     def chek_sign_out(self, date, employee_id, latest_time, latest_date_import):
-        '''
+        """
         التحقق من بصمة أو بصمات الخروج لكل موظف أثناء كل عملية تحديث لسجل الحضور و الإنصراف
         :param date:
         :param employee_id:
-        :param first_time: the latest hours for attendance (from from attendance.schedule)  ex 14:30
-        :param latest_time: the latest hours for attendance  imported from file
-        '''
+        :param latest_time: the latest hours for attendance (from from attendance.schedule)  ex 14:30
+        :param latest_date_import: the latest hours for attendance  imported from file
+        """
+        # TODO: why latest_time ? not used remove it
         report_day_obj = self.env['hr.attendance.report_day']
         employee_obj = self.env['hr.employee']
         attendance_obj = self.env['hr.attendance']
@@ -425,13 +421,12 @@ class HrAttendanceImport(models.Model):
                                                         ('name', '<=', str(date_stop)),
                                                         ('id', '>', sign_out.id)])
             if not attendances_sign_in:
-                # nothing todo
+                # nothing
                 continue
             else:
                 sign_in = attendances_sign_in[-1]
                 sign_in_time = datetime.strptime(sign_in.name, '%Y-%m-%d %H:%M:%S').time()
                 # إذا كان لديه إستئذان يجب إنشاء غياب مبرر واحتساب أخر وقت  دخوله بعد الإستئذان
-                sign_in_time_after_authorization = sign_in_time
                 authorization_ids = employee.get_authorization_by_date(date, time_float_convert(sign_out_time), time_float_convert(sign_in_time))
                 if authorization_ids:
                     authorization = authorization_ids[0]
@@ -486,7 +481,7 @@ class HrAttendanceImport(models.Model):
         # first delete all actions for this day
         report_day_ids = report_day_obj.search([])
         report_day_ids.unlink()
-        # get latest time for attendence
+        # get latest time for attendance
         all_attendances = attendance_obj.search([('name', '>=', str(date_start)), ('name', '<=', str(date_stop))])
         latest_time = datetime.strptime(all_attendances[0].name, '%Y-%m-%d %H:%M:%S').time()
         # check for each employee
@@ -502,9 +497,9 @@ class HrAttendanceImport(models.Model):
 
     @api.multi
     def import_attendance(self):
-        '''
-          تحديث سجل الحضور و الإنصراف
-        '''
+        """
+                  تحديث سجل الحضور و الإنصراف
+        """
         quotechar = '"'
         delimiter = ','
         fileobj = TemporaryFile('w+')
@@ -521,8 +516,7 @@ class HrAttendanceImport(models.Model):
             raise ValidationError(u"الحضور و الإنصراف يجب أن يكون ليوم واحد")
         fileobj.seek(0)
         for row in reader:
-            print '----row------', row
-            if len(str(row['empid'].strip(" ")))==4:
+            if len(str(row['empid'].strip(" "))) == 4:
                 empid = str(0)+str(row['empid'].strip(" "))
             else:
                 empid = str(row['empid'].strip(" "))
@@ -576,9 +570,10 @@ class HrAttendanceReportDay(models.Model):
 
 
 class HrAttendanceCheck(models.Model):
-    u'''
+    u"""
      يتم هنا تجميع التأخيرات والغيابات الغير مبرره والخروج المبكر والساعات الإضافية ليوم معين وتبقى في إنتظار الإعتماد
-    لا  يحتسب تأخير أو خروج مبكر أو غياب أو ساعة إضافية إلا بعد الإعتماد من صاحب الصلاحية    '''
+    لا  يحتسب تأخير أو خروج مبكر أو غياب أو ساعة إضافية إلا بعد الإعتماد من صاحب الصلاحية
+    """
     _name = 'hr.attendance.check'
     _inherit = ['mail.thread']
     _order = 'id desc'
@@ -757,8 +752,6 @@ class HrMonthlySummary(models.Model):
                 absence = monthly_summary[employee]['absence']
                 balance_previous_retard = 0.0
                 balance_previous_absence = 0.0
-                balance_forward_retard = 0.0
-                balance_forward_absence = 0.0
                 days_retard = 0.0
                 days_absence = 0.0
                 delay_hours = retard + leave
@@ -779,10 +772,10 @@ class HrMonthlySummary(models.Model):
                     balance_forward_absence = absence + balance_previous_absence
                     if balance_forward_retard >= 7:
                         days_retard += int(balance_forward_retard / 7)
-                        balance_forward_retard = balance_forward_retard % 7
+                        balance_forward_retard %= 7
                     if balance_forward_absence >= 7:
                         days_absence += int(balance_forward_absence / 7)
-                        balance_forward_absence = balance_forward_absence % 7
+                        balance_forward_absence %= 7
                     line = {'monthly_summary_id': self.id,
                             'employee_id': employee.id,
                             'department_id': employee.job_id.department_id,

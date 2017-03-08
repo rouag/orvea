@@ -2,13 +2,12 @@
 <openerp>
 	<data>
  
-		<!-- إعدادات الانتدابات -->
 		
 		<record id="view_hr_overtime_setting" model="ir.ui.view">
 			<field name="name">hr.overtime.setting.form</field>
 			<field name="model">hr.overtime.setting</field>
 			<field name="arch" type="xml">
-				<form string="إعدادات عامة" create='0' delete='0' duplicate='0'>
+				<form string="إعدادات خارج الدوام" create='0' delete='0' duplicate='0'>
 
 					<sheet>
 						<group>
@@ -35,7 +34,7 @@
 			<field name="code">action=pool.get('hr.overtime.setting').button_setting(cr,uid,None,)
 			</field>
 			<field name="condition">True</field>
-			<field name="name">إعدادات عامة</field>
+			<field name="name">إعدادات خارج الدوام</field>
 		</record>
 
 		<menuitem name="إعدادات خارج الدوام" id="hr_overtime_setting_menu"

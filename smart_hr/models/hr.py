@@ -81,7 +81,7 @@ class HrEmployee(models.Model):
     diploma_id = fields.Many2one('hr.employee.diploma', string=u'الشهادة')
     specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص')
     passport_date = fields.Date(string=u'تاريخ إصدار جواز السفر ')
-    passport_place = fields.Char(string=u'مكان إصدار جواز السفر')
+    passport_place = fields.Many2one('res.city', string=u'مكان إصدار جواز السفر') 
     passport_end_date = fields.Date(string=u'تاريخ انتهاء جواز السفر ')
     display_name = fields.Char(compute='_compute_display_name', string=u'الاسم')
     sanction_ids = fields.One2many('hr.sanction.ligne', 'employee_id', string=u'العقوبات' )
@@ -108,6 +108,7 @@ class HrEmployee(models.Model):
     residance_id = fields.Char(string=u'رقم الإقامة ')
     residance_date = fields.Date(string=u'تاريخ إصدار بطاقة الإقامة ')
     residance_place = fields.Many2one('res.city', string=u'مكان إصدار بطاقة الإقامة')
+    place_of_birth = fields.Many2one('res.city', string=u'مكان الميلاد')
     state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
 
 
@@ -268,8 +269,8 @@ class HrEmployee(models.Model):
             specialization_ids = self.diploma_id.specialization_ids.ids
             res['domain'] = {'specialization_ids': [('id', 'in', specialization_ids)]}
         return res
-
-
+    
+    
     @api.multi
     def _compute_point(self):
        if self.job_id:

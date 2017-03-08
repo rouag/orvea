@@ -31,7 +31,7 @@ class HrEmployeeFunctionnalCard(models.Model):
     emp_age = fields.Integer(string=u'السن', related="employee_id.age", readonly=1)
     department_id = fields.Many2one('hr.department', string=u'مكان العمل', related="employee_id.department_id", readonly=1)
     passport_date = fields.Date(string=u'تاريخ إصدار جواز السفر ', related='employee_id.passport_date', readonly=1)
-    passport_place = fields.Char(string=u'مكان إصدار جواز السفر', related='employee_id.passport_place', readonly=1)
+    passport_place = fields.Many2one('res.city',string=u'مكان إصدار جواز السفر', related='employee_id.passport_place', readonly=1)
     date = fields.Date(string=u'التاريخ ', default=fields.Datetime.now(), readonly=1)
     start_date = fields.Date(string=u'تاريخ بدأ الصلاحية  ', readonly=1)
     end_date = fields.Date(string=u'تاريخ إنتهاء الصلاحية ', readonly=1)

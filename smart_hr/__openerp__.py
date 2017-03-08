@@ -22,6 +22,7 @@
         'hr_scholarship/security/hr_security.xml',
         'hr_scholarship/security/ir.model.access.csv',
         'data/relegion_data.xml',
+        'payroll/data/data.xml',
 
         'hr_menu.xml',
         'data/sequences.xml',
@@ -32,8 +33,12 @@
         'data/hr_termination_data.xml',
         'data/decisions_type_data.xml',
         'data/hr_appoint_type_data.xml',
+        'payroll/data/data.xml',
+        
         #'data/scholarship_data.xml',
         'hr_appraisal/data/hr_appraisal_data.xml',
+        
+        
         'wizards/view/hr_refuse_training_wizard_view.xml',
 
         # الوظائف
@@ -149,7 +154,6 @@
         'view/hr_decision.xml',
         # الرواتب
         'payroll/menu.xml',
-        'payroll/data/data.xml',
         'payroll/data/salary_grid_type_data.xml',
         'payroll/wizard/wizard_bonus_employee.xml',
         'payroll/wizard/wizard_bonus_action.xml',

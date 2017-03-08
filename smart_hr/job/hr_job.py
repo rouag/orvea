@@ -77,6 +77,8 @@ class HrJob(models.Model):
 class HrJobName(models.Model):
     _name = 'hr.job.name'
     _description = u'المسميات الوظيفية '
+    _rec_name = 'name'
+
     name = fields.Char(string=u'المسمى', required=1)
     number = fields.Char(string=u'الرمز', required=1)
     job_nature = fields.Selection([('supervisory', u'اشرافية'), ('not_supervisory', u'غير اشرافية')], string=u'طبيعة الوظيفة', default='not_supervisory')

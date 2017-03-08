@@ -21,19 +21,19 @@ class HrSetting(models.Model):
     # الإعارة
     lend_duration = fields.Integer(string=u'مدة الإعارة (باليوم)', default=365)
     one_max_lend_duration = fields.Integer(string=u'الحد الأقصى للتمديد في المرة (بالأيام)', default=365)
-    max_lend_duration_sum = fields.Integer(string=u'الحد الأقصى لمجموع الاعارات (بالسنة)', default=365)
+    max_lend_duration_sum = fields.Integer(string=u'الحد الأقصى لمجموع الاعارات (باليوم)', default=365)
     lend_number = fields.Integer(string=u'عدد مرات التمديد', default=3)
     periode_between_lend = fields.Integer(string=u'المدة بين إعارتين (بالسنة)', default=3)
     extend_lend_duration = fields.Integer(string=u'مدة تمديد الإعارة (باليوم)', default=365)
     # والتكليف‬‬
     assign_duration = fields.Integer(string=u'مدة التكليف‬‬ (باليوم)', default=365)
     # الرواتب
-    allowance_job_nature = fields.Many2one('hr.allowance.type', string=u'بدل طبيعة العمل')
-    allowance_proportion = fields.Float(string=u'نسبة البدل (%)', default=15)
-    allowance_deputation = fields.Many2one('hr.allowance.type', string=u'بدل إنتداب')
-    deputation_days = fields.Integer(string=u'عدد الايام', default=3)
-    allowance_deportation = fields.Many2one('hr.allowance.type', string=u'بدل ترحيل')
-    deportation_amount = fields.Float(string=u'المبلغ', default=0.0)
+    allowance_job_nature = fields.Many2one('hr.allowance.type', string=u'بدل طبيعة العمل', default=lambda self: self.env.ref('smart_hr.hr_allowance_type_07'))
+    allowance_proportion = fields.Float(string=u'نسبة بدل طبيعة العمل (%)', default=15)
+    allowance_deputation = fields.Many2one('hr.allowance.type', string=u'بدل إنتداب',  default=lambda self: self.env.ref('smart_hr.hr_allowance_type_15'))
+    deputation_days = fields.Integer(string=u'عدد ايام بدل الانتباب', default=3)
+    allowance_deportation = fields.Many2one('hr.allowance.type', string=u'بدل ترحيل',  default=lambda self: self.env.ref('smart_hr.hr_allowance_type_11'))
+    deportation_amount = fields.Float(string=u'مبلغ بدل الترحيل', default=0.0)
     retirement_proportion = fields.Float(string=u'حصة الحكومة من التقاعد (%)', default=9)
 
     @api.multi
@@ -41,7 +41,7 @@ class HrSetting(models.Model):
         hr_setting = self.env['hr.setting'].search([], limit=1)
         if hr_setting:
             value = {
-                'name': u'إعدادات عامة',
+                'name': u'‫إعدادات النقل، الإعارة والتكليف‬‬',
                 'view_type': 'form',
                 'view_mode': 'form',
                 'res_model': 'hr.setting',
