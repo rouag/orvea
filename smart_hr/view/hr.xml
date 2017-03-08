@@ -323,7 +323,7 @@
 								<page string="بيانات العمل">
 									<group>
 										<group string="بيانات العمل">
-											<field name="department_id" on_change="onchange_department_id(department_id)" />
+											<field name="department_id" context="{'list_type':'employee_form'}" on_change="onchange_department_id(department_id)" />
 											<field name="dep_side" options="{'no_create': True}" />
 											<field name="dep_city" options="{'no_create': True}" />
 											<field name="job_id"
