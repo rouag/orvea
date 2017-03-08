@@ -181,3 +181,57 @@ class PayslipExtensionReport(osv.AbstractModel):
     _inherit = 'report.abstract_report'
     _template = 'smart_hr.report_payslip_extension'
     _wrapped_report_class = ReportPayslipExtension
+    
+    
+    
+    
+    
+    
+    
+    
+class ReportHrErrorEmployee(report_sxw.rml_parse):
+
+    def __init__(self, cr, uid, name, context):
+        super(ReportHrErrorEmployee, self).__init__(cr, uid, name, context=context)
+        self.localcontext.update({
+            'get_hijri_date': self._get_hijri_date,
+            'get_all_employees': self._get_all_employees,
+
+        })
+
+    def _get_all_employees(self,month):
+
+        payslip_pbj = self.pool.get('hr.payslip')
+        search_ids = payslip_pbj.search(self.cr, self.uid, [('month','=',month),('salary_net','=',0.0)])
+        print"search_ids",search_ids
+        return payslip_pbj.browse(self.cr, self.uid, search_ids)
+#         employee_ids = []
+#         for rec in employee_ids:
+#           #  if rec.month == month and rec.salary_net == 0.0:
+#             employee_ids.append(rec)
+#             print"employee_ids",employee_ids
+#         print"employee_ids",employee_ids
+#         return employee_ids
+
+
+
+    def _get_hijri_date(self, date, separator):
+        '''
+        convert georging date to hijri date
+        :return hijri date as a string value
+        '''
+        if date:
+            date = fields.Date.from_string(date)
+            hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
+            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+        return None
+
+
+class HrErrorEmployeeReport(osv.AbstractModel):
+    _name = 'report.smart_hr.report_hr_error_employee'
+    _inherit = 'report.abstract_report'
+    _template = 'smart_hr.report_hr_error_employee'
+    _wrapped_report_class = ReportHrErrorEmployee
+    
+    
+    
