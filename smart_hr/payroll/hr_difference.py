@@ -58,6 +58,8 @@ class hrDifference(models.Model):
             line_ids += self.get_difference_holidays()
             # فروقات كف اليد
             line_ids += self.get_difference_suspension()
+            # فروقات إنهاء كف يد
+            line_ids += self.get_difference_suspension_end()
             # فروقات طى القيد
             line_ids += self.get_difference_termination()
             # فرق الحسميات أكثر من ثلث الراتب
@@ -637,85 +639,117 @@ class hrDifference(models.Model):
     def get_difference_suspension(self):
         self.ensure_one()
         line_ids = []
-        suspension_end_ids = self.env['hr.suspension.end'].search([('date', '>=', self.date_from),
-                                                                   ('date', '<=', self.date_to),
+        suspension_ids = self.env['hr.suspension'].search([('suspension_date', '>=', self.date_from),
+                                                           ('suspension_date', '<=', self.date_to),
+                                                           ('state', '=', 'done')
+                                                           ])
+        for suspension in suspension_ids:
+            grid_id = suspension.employee_id.salary_grid_id
+            if grid_id:
+                if suspension.employee_id.basic_salary < 0:
+                    basic_salary = grid_id.basic_salary
+                else:
+                    basic_salary = suspension.employee_id.basic_salary
+                # الراتب الأساسي
+                amount = (basic_salary / 2.0)
+                vals = {'difference_id': self.id,
+                        'name': 'فرق الراتب الأساسي كف اليد',
+                        'employee_id': suspension.employee_id.id,
+                        'number_of_days': 0,
+                        'number_of_hours': 0.0,
+                        'amount': amount * -1,
+                        'type': 'suspension'}
+                line_ids.append(vals)
+                # 2- البدلات القارة
+                for allowance in grid_id.allowance_ids:
+                    amount = allowance.get_value(suspension.employee_id.id) / 2.0
+                    allowance_val = {'difference_id': self.id,
+                                     'name': "فرق %s كف اليد" % allowance.allowance_id.name.encode('utf-8'),
+                                     'employee_id': suspension.employee_id.id,
+                                     'number_of_days': 0,
+                                     'number_of_hours': 0.0,
+                                     'amount': amount * -1,
+                                     'type': 'suspension'}
+                    line_ids.append(allowance_val)
+                for reward in grid_id.reward_ids:
+                    amount = reward.get_value(suspension.employee_id.id) / 2.0
+                    reward_val = {'difference_id': self.id,
+                                  'name': 'فرق %s كف اليد' % reward.reward_id.name.encode('utf-8'),
+                                  'employee_id': suspension.employee_id.id,
+                                  'number_of_days': 0,
+                                  'number_of_hours': 0.0,
+                                  'amount': amount * -1,
+                                  'type': 'suspension'}
+                    line_ids.append(reward_val)
+                for indemnity in grid_id.indemnity_ids:
+                    amount = indemnity.get_value(suspension.employee_id.id) / 2.0
+                    indemnity_val = {'difference_id': self.id,
+                                     'name': 'فرق %s كف اليد' % indemnity.indemnity_id.name.encode('utf-8'),
+                                     'employee_id': suspension.employee_id.id,
+                                     'number_of_days': 0,
+                                     'number_of_hours': 0.0,
+                                     'amount': amount * -1,
+                                     'type': 'suspension'}
+                    line_ids.append(indemnity_val)
+        return line_ids
+
+    @api.multi
+    def get_difference_suspension_end(self):
+        self.ensure_one()
+        line_ids = []
+        suspension_end_ids = self.env['hr.suspension.end'].search([('release_date', '>=', self.date_from),
+                                                                   ('release_date', '<=', self.date_to),
                                                                    ('state', '=', 'done')
                                                                    ])
         for suspension_end in suspension_end_ids:
-            # case there is condemned for the employee
-            if suspension_end.condemned:
-                date_from = fields.Date.from_string(self.date_from)
-                if suspension_end.suspension_id.suspension_date > self.date_from:
-                    date_from = fields.Date.from_string(suspension_end.suspension_id.suspension_date)
-                date_to = fields.Date.from_string(suspension_end.release_date)
-                days = self.env['hr.smart.utils'].compute_duration(date_to, date_from)
+            if not suspension_end.condemned:
                 grid_id = suspension_end.employee_id.salary_grid_id
                 if grid_id:
                     if suspension_end.employee_id.basic_salary < 0:
                         basic_salary = grid_id.basic_salary
                     else:
                         basic_salary = suspension_end.employee_id.basic_salary
-                    amount = (basic_salary / 22) * days
+                    # الراتب الأساسي
+                    amount = (basic_salary / 2.0)
                     vals = {'difference_id': self.id,
-                            'name': 'فرق كف اليد',
+                            'name': 'فرق الراتب الأساسي كف اليد',
                             'employee_id': suspension_end.employee_id.id,
-                            'number_of_days': days,
+                            'number_of_days': 0,
                             'number_of_hours': 0.0,
-                            'amount': amount * -1,
+                            'amount': amount,
                             'type': 'suspension'}
                     line_ids.append(vals)
-            if not suspension_end.condemned:
-                if suspension_end.suspension_id.suspension_date < self.date_from:
-                    date_from = fields.Date.from_string(suspension_end.suspension_id.suspension_date)
-                    date_to = fields.Date.from_string(self.date_from)
-                    days = self.env['hr.smart.utils'].compute_duration(date_to, date_from) - 1
-                    grid_id = suspension_end.employee_id.salary_grid_id
-                    if grid_id:
-                        if suspension_end.employee_id.basic_salary < 0:
-                            basic_salary = grid_id.basic_salary
-                        else:
-                            basic_salary = suspension_end.employee_id.basic_salary
-                        # الراتب الأساسي
-                        amount = (basic_salary / 22) * days
-                        vals = {'difference_id': self.id,
-                                'name': 'فرق الراتب الأساسي كف اليد',
-                                'employee_id': suspension_end.employee_id.id,
-                                'number_of_days': days,
-                                'number_of_hours': 0.0,
-                                'amount': amount,
-                                'type': 'suspension'}
-                        line_ids.append(vals)
-                        # 2- البدلات القارة
-                        for allowance in grid_id.allowance_ids:
-                            amount = allowance.get_value(suspension_end.employee_id.id) / 22.0 * days
-                            allowance_val = {'difference_id': self.id,
-                                             'name': 'فرق %s كف اليد' % allowance.allowance_id.name,
-                                             'employee_id': suspension_end.employee_id.id,
-                                             'number_of_days': days,
-                                             'number_of_hours': 0.0,
-                                             'amount': amount,
-                                             'type': 'suspension'}
-                            line_ids.append(allowance_val)
-                        for reward in grid_id.reward_ids:
-                            amount = reward.get_value(suspension_end.employee_id.id) / 22.0 * days
-                            reward_val = {'difference_id': self.id,
-                                          'name': 'فرق %s كف اليد' % reward.reward_id.name,
-                                          'employee_id': suspension_end.employee_id.id,
-                                          'number_of_days': days,
-                                          'number_of_hours': 0.0,
-                                          'amount': amount,
-                                          'type': 'suspension'}
-                            line_ids.append(reward_val)
-                        for indemnity in grid_id.indemnity_ids:
-                            amount = indemnity.get_value(suspension_end.employee_id.id) / 22.0 * days
-                            indemnity_val = {'difference_id': self.id,
-                                             'name': 'فرق %s كف اليد' % indemnity.indemnity_id.name,
-                                             'employee_id': suspension_end.employee_id.id,
-                                             'number_of_days': days,
-                                             'number_of_hours': 0.0,
-                                             'amount': amount,
-                                             'type': 'suspension'}
-                            line_ids.append(indemnity_val)
+                    # 2- البدلات القارة
+                    for allowance in grid_id.allowance_ids:
+                        amount = allowance.get_value(suspension_end.employee_id.id) / 2.0
+                        allowance_val = {'difference_id': self.id,
+                                         'name': 'فرق %s كف اليد' % allowance.allowance_id.name.encode('utf-8'),
+                                         'employee_id': suspension_end.employee_id.id,
+                                         'number_of_days': 0,
+                                         'number_of_hours': 0.0,
+                                         'amount': amount,
+                                         'type': 'suspension'}
+                        line_ids.append(allowance_val)
+                    for reward in grid_id.reward_ids:
+                        amount = reward.get_value(suspension_end.employee_id.id) / 2.0
+                        reward_val = {'difference_id': self.id,
+                                      'name': 'فرق %s كف اليد' % reward.reward_id.name.encode('utf-8'),
+                                      'employee_id': suspension_end.employee_id.id,
+                                      'number_of_days': 0,
+                                      'number_of_hours': 0.0,
+                                      'amount': amount,
+                                      'type': 'suspension'}
+                        line_ids.append(reward_val)
+                    for indemnity in grid_id.indemnity_ids:
+                        amount = indemnity.get_value(suspension_end.employee_id.id) / 2.0
+                        indemnity_val = {'difference_id': self.id,
+                                         'name': 'فرق %s كف اليد' % indemnity.indemnity_id.name.encode('utf-8'),
+                                         'employee_id': suspension_end.employee_id.id,
+                                         'number_of_days': 0,
+                                         'number_of_hours': 0.0,
+                                         'amount': amount,
+                                         'type': 'suspension'}
+                        line_ids.append(indemnity_val)
         return line_ids
 
     @api.multi
