@@ -115,10 +115,6 @@ class HrEmployee(models.Model):
     @api.model
     def create(self, vals):
         res = super(HrEmployee, self).create(vals)
-        number_id = self.env['hr.employee.configuration'].search([])
-        if number_id:
-            res.number= number_id[0].number + 1
-            number_id.write({'number':res.number})
         return res
 
 

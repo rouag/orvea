@@ -437,6 +437,13 @@ class HrDecisionAppoint(models.Model):
                                 'degree_id': self.degree_id.id,
                                 'grade_id': self.grade_id.id
                                 })
+        # check if the employee have allready a number 
+        if not self.employee_id.number:
+            number_id = self.env['hr.employee.configuration'].search([], limit=1)
+            if number_id:
+                number = number_id.number + 1
+                self.employee_id.write({'number': number})
+                number_id.write({'number': number})
         if self.date_medical_examination:
             self.employee_id.write({'medical_exam': self.date_medical_examination})
         self.job_id.write({'state': 'occupied', 'employee': self.employee_id.id, 'occupied_date': fields.Datetime.now()})
@@ -528,8 +535,8 @@ class HrDecisionAppoint(models.Model):
 
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
-
-        self.number = self.employee_id.number
+        if self.employee_id.number:
+            self.number = self.employee_id.number
         self.country_id = self.employee_id.country_id
         appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id), ('state', '=', 'done')], limit=1)
         if appoint_line :
