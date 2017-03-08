@@ -443,17 +443,10 @@ class HrQualificationEstimate(models.Model):
 class HrEmployeeConfiguration(models.Model):
     _name = 'hr.employee.configuration'
     _description = u'إعدادات الموظف'
-<<<<<<< HEAD
     
-=======
-    number = fields.Integer(string='بداية تسلسل الرقم الوظيفي')
 
->>>>>>> branch '9.0' of https://gitlab.com/smartek/addons_smart.git
     name = fields.Char(string='name')
-<<<<<<< HEAD
     number = fields.Integer(string='بداية تسلسل الرقم الوظيفي')
-=======
->>>>>>> branch '9.0' of https://gitlab.com/smartek/addons_smart.git
     period = fields.Integer(string='مدة صلاحية بطاقة الموظف (بالسنة)')
     age_member = fields.Integer(string='سن تقاعد  الطبيعي   الاعظاء')
     age_nomember = fields.Integer(string='سن تقاعد  الطبيعي لغير الاعظاء)')
@@ -507,13 +500,7 @@ class HrEmployeeConfiguration(models.Model):
                                                   })
 
 
-<<<<<<< HEAD
    
-=======
-    recruitment_legal_age = fields.Integer(string='السن القانوني للتعيين')
-    
-    
->>>>>>> branch '9.0' of https://gitlab.com/smartek/addons_smart.git
     @api.multi
     def button_setting(self):
         hr_employee_configuration_id = self.env['hr.employee.configuration'].search([], limit=1)
