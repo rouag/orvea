@@ -255,6 +255,7 @@
         'hr_scholarship/views/hr_scholarship_extension_report.xml',
 
         # 'hr_survey/views/website_templates.xml',
+        'mysql/mysql_confg_view.xml',
 
     ],
     'auto_install': False,

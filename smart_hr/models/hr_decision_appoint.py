@@ -16,7 +16,7 @@ class HrDecisionAppoint(models.Model):
 
     name = fields.Char(string='رقم الخطاب', required=1 , states={'draft': [('readonly', 0)]})
     order_date = fields.Date(string='تاريخ الخطاب', required=1) 
-    date_hiring = fields.Date(string='تاريخ التعيين', default=fields.Datetime.now())
+    date_hiring = fields.Date(string='تاريخ الطلب', default=fields.Datetime.now())
     date_hiring_end = fields.Date(string=u'تاريخ إنتهاء التعيين')  
     date_direct_action = fields.Date(string='تاريخ مباشرة العمل') 
     instead_exchange = fields.Boolean(string='صرف بدل تعيين')
@@ -26,7 +26,6 @@ class HrDecisionAppoint(models.Model):
     number = fields.Char(related='employee_id.number', store=True, readonly=True, string=u'الرقم الوظيفي') 
     emp_code = fields.Char(string=u'رمز الوظيفة ', readonly=1) 
     country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
-   
     emp_job_id = fields.Many2one('hr.job', string='الوظيفة', store=True, readonly=1) 
     emp_number_job = fields.Char(string='رقم الوظيفة', store=True, readonly=1) 
     emp_type_id = fields.Many2one('salary.grid.type', string='الصنف', store=True, readonly=1)
@@ -436,12 +435,22 @@ class HrDecisionAppoint(models.Model):
                                 'job_id': self.job_id.id,
                                 'department_id': self.department_id.id,
                                 'degree_id': self.degree_id.id,
-                                'grade_id': self.grade_id.id,
-                                'basic_salary': self.basic_salary
+                                'grade_id': self.grade_id.id
                                 })
+        # check if the employee have allready a number 
+        if not self.employee_id.number:
+            number_id = self.env['hr.employee.configuration'].search([], limit=1)
+            if number_id:
+                number = number_id.number + 1
+                self.employee_id.write({'number': number})
+                number_id.write({'number': number})
         if self.date_medical_examination:
             self.employee_id.write({'medical_exam': self.date_medical_examination})
         self.job_id.write({'state': 'occupied', 'employee': self.employee_id.id, 'occupied_date': fields.Datetime.now()})
+        if self.max_pension:
+            self.employee_id.write({'basic_salary': self.basic_salary})
+        else:
+            self.employee_id.write({'basic_salary': -1})
         self.state = 'done'
         # set salary grid for the employee
         salary_grid_id = self.env['salary.grid.detail'].search([('type_id', '=', self.type_id.id), ('grade_id', '=', self.grade_id.id), ('degree_id', '=', self.degree_id.id)], limit=1)
@@ -526,8 +535,8 @@ class HrDecisionAppoint(models.Model):
 
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
-
-        self.number = self.employee_id.number
+        if self.employee_id.number:
+            self.number = self.employee_id.number
         self.country_id = self.employee_id.country_id
         appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id), ('state', '=', 'done')], limit=1)
         if appoint_line :

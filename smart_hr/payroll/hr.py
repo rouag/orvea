@@ -11,4 +11,4 @@ class HrEmployee(models.Model):
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة')
     salary_grid_id = fields.Many2one('salary.grid.detail', string='سلم الرواتب')
     # basic salary for retired employee
-    basic_salary = fields.Float(string='الراتب الأساسي', default=0) 
+    basic_salary = fields.Float(string='الراتب الأساسي', default=-1) 

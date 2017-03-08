@@ -100,7 +100,7 @@
 												<span t-field="o.employee_id.degree_id" />
 											</td>
 											<td rowspan="2">
-												<span t-field="o.employee_id.salary_grid_id.basic_salary" />
+												<span t-field="o.employee_id.basic_salary" />
 											</td>
 											<td class="text-center">مسمى البدل </td>
 											<td class="text-center">المبلغ</td>
@@ -140,7 +140,7 @@
 										<tr>
 											<td colspan="7" class="text-right"> المجموع</td>
 											<td>
-												<t t-esc="o.employee_id.salary_grid_id.basic_salary" />
+												<t t-esc="o.employee_id.basic_salary" />
 											</td>
 											<td colspan="2" class="text-right">
 												<span t-esc="get_sum_alowances(o.line_ids)" />
