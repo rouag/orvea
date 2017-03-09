@@ -224,6 +224,7 @@
 
         'view/hr.xml',
         # التقييم والإختبار
+        'hr_appraisal/security/ir.model.access.csv',
         'hr_appraisal/view/hr_appraisal_menu.xml',
         'hr_appraisal/view/hr_appraisal_view.xml',
         'hr_appraisal/view/hr_evaluation_point_view.xml',
@@ -260,6 +261,7 @@
         'hr_scholarship/views/hr_scholarship_extension_report.xml',
 
         # 'hr_survey/views/website_templates.xml',
+        'mysql/security/ir.model.access.csv',
         'mysql/mysql_confg_view.xml',
 
     ],

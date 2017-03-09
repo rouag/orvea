@@ -60,7 +60,7 @@ class HrRequestTransfer(models.Model):
                     balance -= request.number_request
             self.balance = balance
 
-    @api.onchange('number_request', 'type')
+    @api.onchange('number_request')
     def onchange_number_request(self):
         if self.number_request > self.balance:
             self.number_request = 0.0

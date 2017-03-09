@@ -8,7 +8,7 @@
 		
 		<menuitem id="hr_root_workflows" name="اجراءت الموظفين" sequence="10" parent="hr_root" />
 		
-		<menuitem id="hr_root_workflows_setting" name="الإعدادات" sequence="200" parent="hr_root_workflows" />
+		<menuitem id="hr_root_workflows_setting" name="الإعدادات" sequence="200" parent="hr_root_workflows" groups="smart_hr.group_configuration"/>
 		
 		<menuitem id="hr_root_organisation_configuration" name="الإعدادات" sequence="500" parent="hr_root_employees" />
 		

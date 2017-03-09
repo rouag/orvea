@@ -22,7 +22,6 @@
 			<field name="name">hr.deputation.form</field>
 			<field name="model">hr.deputation</field>
 			<field name="type">form</field>
-			<field name="context">{'readonly_by_pass': True}</field>
 			<field name="arch" type="xml">
 				<form string="الإنتدابات">
 					<header>

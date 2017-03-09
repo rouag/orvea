@@ -572,7 +572,7 @@ class HrDecisionAppoint(models.Model):
                                                                       ('degree_id', '=', self.degree_id.id)
                                                                       ])
             if not salary_grid_line:
-                raise ValidationError(u"يجب تحديد سلم رواتب لهذا الموظف")
+                raise ValidationError(u"يجب تحديد سلم الرواتب المناسب للضنف و المرتبة و الدرجة")
             salary_grid_line = salary_grid_line[0]
             if salary_grid_line and not self.type_appointment.max_pension:
                 self.basic_salary = salary_grid_line.basic_salary
@@ -601,8 +601,9 @@ class HrDecisionAppoint(models.Model):
     @api.one
     @api.constrains('date_direct_action', 'date_hiring')
     def check_dates_periode(self):
-        if self.date_hiring > self.date_direct_action:
-            raise ValidationError(u"تاريخ مباشرة العمل يجب ان يكون أكبر من تاريخ التعيين")
+        if self.date_direct_action:
+            if self.date_hiring > self.date_direct_action:
+                raise ValidationError(u"تاريخ مباشرة العمل يجب ان يكون أكبر من تاريخ التعيين")
 
     @api.one
     @api.constrains('date_hiring', 'date_hiring_end')

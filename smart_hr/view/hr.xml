@@ -487,7 +487,24 @@
 			</field>
 		</record>
 	</data>
-
+<record id="hr_payroll.payroll_hr_employee_view_form" model="ir.ui.view">
+            <field name="name">payroll.hr.employee.view.form</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <data>
+                    <div name="button_box" position="inside">
+                        <button name="%(hr_payroll.act_hr_employee_payslip_list)d"
+                            class="oe_stat_button"
+                            icon="fa-money"
+                            type="action"
+                            groups="base.group_hrm">
+                            <field name="payslip_count" widget="statinfo" string="Payslips" groups="base.group_hrm"/>
+                        </button>
+                    </div>
+                </data>
+            </field>
+        </record>
 	<data noupdate="1">
 		<!-- Remove odoo buttons -->
 		<delete id="hr.hr_employee_action_subordinate_hierachy_mutli"

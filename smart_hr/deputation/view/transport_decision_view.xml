@@ -5,7 +5,6 @@
 			<field name="name">hr.transport.decision.tree</field>
 			<field name="model">hr.transport.decision</field>
 			<field name="type">tree</field>
-				<field name="context">{'readonly_by_pass': True}</field>
 			<field name="arch" type="xml">
 				<tree string="أوامر الإركاب">
 					<field name="order_date" />

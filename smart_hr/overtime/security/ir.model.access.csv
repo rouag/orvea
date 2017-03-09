@@ -8,5 +8,5 @@ access_hr_overtime_ligne1,hr_overtime_ligne,model_hr_overtime_ligne,group_overti
 access_hr_overtime_ligne2,hr_overtime_ligne,model_hr_overtime_ligne,group_overtime_department,1,1,1,1
 access_hr_overtime_ligne3,hr_overtime_ligne,model_hr_overtime_ligne,group_overtime_hr,1,1,1,1
 access_hr_overtime_ligne4,hr_overtime_ligne,model_hr_overtime_ligne,group_employee,0,0,0,0
-
-
+access_hr_overtime_setting,access_hr_overtime_setting,model_hr_overtime_setting,,1,0,0,0
+access_hr_overtime_setting_hrm,access_hr_overtime_setting_hrm,model_hr_overtime_setting,smart_hr.group_hrm,1,1,1,1

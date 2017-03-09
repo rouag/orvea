@@ -9,7 +9,6 @@
 		<record id="hr_holidays_extension_employee_form" model="ir.ui.view">
 			<field name="name">hr.holidays.extension.form</field>
 			<field name="model">hr.holidays.extension</field>
-			<field name="sequence" eval="10" />
 			<field name="arch" type="xml">
 				<form string="تمديد  رصيد الاجازات">
 					<field name="is_the_creator" invisible="1" />

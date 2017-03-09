@@ -1,1 +1,2 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_sanction_history,access_hr_sanction_history,model_hr_sanction_history,,1,0,0,0
