@@ -363,7 +363,7 @@ class HrDeputationCategory(models.Model):
         ('b', u'ب'),
         ('c', u'ج'),
     ], string=u'الفئات', default='c')
-    country_ids = fields.Many2many('res.country', 'category_deputation_country_rel', 'country_id', 'category_id', string=u'البلاد')
+    country_city_ids = fields.One2many('hr.country.city', 'duputation_category_id',  string=u'البلاد')
     
     _sql_constraints = [
         ('unique_category', 'UNIQUE(category)', u"لا يمكن تكرار الفئات  "),
@@ -376,3 +376,10 @@ class HrDeputationCategory(models.Model):
             name = dict(self.env['hr.deputation.category'].fields_get(allfields=['category'])['category']['selection'])[str(rec.category)]
             res.append((rec.id, name))
         return res
+    
+class HrCountryCity(models.Model):
+    _name = 'hr.country.city'
+    
+    country_id = fields.Many2one('res.country', string=u'البلاد', domain="[('code_nat','!=',False)]")
+    city_id = fields.Many2one('res.city', string=u'المدينة', domain="[('country_id','=',country_id)]")
+    duputation_category_id = fields.Many2one('hr.deputation.category', string=u'الفئة')

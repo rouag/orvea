@@ -132,7 +132,10 @@ class hrBonusLine(models.Model):
         salary_grids = salary_grid_obj.search([('type_id', '=', ttype.id), ('grade_id', '=', grade.id), ('degree_id', '=', degree.id)])
         if not salary_grids:
             return
-        basic_salary = salary_grids[0].basic_salary
+        if employee.basic_salary < 0:
+            basic_salary = employee.get_salary_grid_id(False).basic_salary
+        else:
+            basic_salary = employee.basic_salary
         # compute
         if self.compute_method == 'amount':
             amount = self.amount
@@ -149,7 +152,7 @@ class hrBonusLine(models.Model):
             if degrees:
                 salary_grids = salary_grid_obj.search([('type_id', '=', ttype.id), ('grade_id', '=', grade.id), ('degree_id', '=', degrees[0].id)])
                 if salary_grids:
-                    amount = salary_grids[0].basic_salary * self.percentage / 100.0
+                    amount = basic_salary * self.percentage / 100.0
         if self.compute_method == 'formula_2':
             amount = self.percentage * basic_salary / 100.0
         if self.min_amount and amount < self.min_amount:

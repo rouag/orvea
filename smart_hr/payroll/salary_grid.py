@@ -70,7 +70,12 @@ class SalaryGridDetail(models.Model):
     _name = 'salary.grid.detail'
     _description = u'تفاصيل سلم الرواتب'
 
+    @api.multi
+    def get_default_date(self):
+        return self.grid_id.date
+
     grid_id = fields.Many2one('salary.grid', string='سلّم الرواتب', required=1, ondelete='cascade')
+    date = fields.Date(default=get_default_date)
     type_id = fields.Many2one('salary.grid.type', string='الصنف', required=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1)
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
@@ -111,8 +116,7 @@ class SalaryGridDetailAllowance(models.Model):
         degree = employee.degree_id
         amount = 0.0
         # search the correct salary_grid for this employee
-        salary_grids = employee.salary_grid_id
-        
+        salary_grids = employee.get_salary_grid_id(False)
         if not salary_grids:
             raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
         basic_salary = salary_grids.basic_salary
@@ -175,7 +179,7 @@ class SalaryGridDetailReward(models.Model):
         degree = employee.degree_id
         amount = 0.0
         # search the correct salary_grid for this employee
-        salary_grids = employee.salary_grid_id
+        salary_grids = employee.get_salary_grid_id(False)
         if not salary_grids:
             raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
         basic_salary = salary_grids.basic_salary
@@ -238,7 +242,7 @@ class SalaryGridDetailIndemnity(models.Model):
         degree = employee.degree_id
         amount = 0.0
         # search the correct salary_grid for this employee
-        salary_grids = employee.salary_grid_id
+        salary_grids = employee.get_salary_grid_id(False)
         if not salary_grids:
             raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
         basic_salary = salary_grids.basic_salary

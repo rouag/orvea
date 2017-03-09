@@ -22,6 +22,7 @@
         'hr_scholarship/security/hr_security.xml',
         'hr_scholarship/security/ir.model.access.csv',
         'data/relegion_data.xml',
+        'payroll/data/data.xml',
 
         'hr_menu.xml',
         'data/sequences.xml',
@@ -32,9 +33,15 @@
         'data/hr_termination_data.xml',
         'data/decisions_type_data.xml',
         'data/hr_appoint_type_data.xml',
+        'payroll/data/data.xml',
+        
         #'data/scholarship_data.xml',
         'hr_appraisal/data/hr_appraisal_data.xml',
+        
+        
         'wizards/view/hr_refuse_training_wizard_view.xml',
+        'wizards/view/hr_refuse_employee_wizard_view.xml',
+        
 
         # الوظائف
         'job/menu.xml',
@@ -149,12 +156,12 @@
         'view/hr_decision.xml',
         # الرواتب
         'payroll/menu.xml',
-        'payroll/data/data.xml',
         'payroll/data/salary_grid_type_data.xml',
         'payroll/wizard/wizard_bonus_employee.xml',
         'payroll/wizard/wizard_bonus_action.xml',
         'payroll/wizard/wizard_deducation_action.xml',
         'payroll/wizard/wizard_loan_action.xml',
+        'payroll/wizard/wizard_error_employee_view.xml',
         'payroll/view/salary_grid.xml',
         'payroll/view/hr_payroll_view.xml',
         'payroll/view/setting_view.xml',
@@ -167,6 +174,8 @@
         'payroll/views/report_hr_deduction.xml',
         'payroll/views/report_payslip.xml',
         'payroll/views/report_payslip_extension.xml',
+        'payroll/views/report_hr_error_employee.xml',
+        
         'payroll/views/report.xml',
 
         # الحضور والإنصراف
@@ -188,6 +197,8 @@
         'attendance/view/hr_attendance_report_view.xml',
         'attendance/view/hr_monthly_summary_view.xml',
         'attendance/wizard/wizard_attendance_summary_view.xml',
+  
+        
         'attendance/views/attendance_summary_report.xml',
         'attendance/views/monthly_summary_report.xml',
         'attendance/views/monthly_summary_report_all.xml',
@@ -251,6 +262,7 @@
         'hr_scholarship/views/hr_scholarship_extension_report.xml',
 
         # 'hr_survey/views/website_templates.xml',
+        'mysql/mysql_confg_view.xml',
 
     ],
     'auto_install': False,

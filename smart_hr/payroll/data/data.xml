@@ -72,7 +72,10 @@
 			<field name="name">بدل خارج الدوام</field>
 			<field name="code">14</field>
 		</record>
-
+		<record id="hr_allowance_type_15" model="hr.allowance.type">
+			<field name="name">بدل إنتداب</field>
+			<field name="code">15</field>
+		</record>
 
 		<!-- المكافآت‬ -->
 		<record id="hr_reward_type_01" model="hr.reward.type">

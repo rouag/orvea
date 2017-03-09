@@ -39,8 +39,7 @@ class HrAuthorization(models.Model):
 
         if self.hour_from > self.hour_to:
             raise ValidationError(u"الساعة من يجب ان تكون أصغر من الساعة الى")
-        
-        
+
     @api.onchange('employee_id')
     def onchange_employee_id(self):
         if self.employee_id:
@@ -48,7 +47,6 @@ class HrAuthorization(models.Model):
             self.department_id = self.employee_id.job_id.department_id
             self.job_id = self.employee_id.job_id
             self.grade_id = self.employee_id.job_id.grade_id
-
 
     @api.onchange('hour_from', 'hour_to')
     def onchange_hour(self):
@@ -89,6 +87,7 @@ class HrAuthorization(models.Model):
                                               'notif': True,
                                               'res_id': self.id,
                                              'res_action': 'smart_hr.action_hr_authorization_form'})
+
     @api.multi
     @api.depends('employee_id')
     def _compute_current_autorization_stock(self):
@@ -97,8 +96,8 @@ class HrAuthorization(models.Model):
         max_stock = authorization_stock_setting_obj.search([], limit=1).hours_stock
         authorization_history_obj = self.env['hr.employee.authorization.history']
         taken_auth_current_month = authorization_history_obj.search([('employee_id', '=', self.employee_id.id),
-                                                                       ('date', '<=', datetime.now()), ('date', '>=', datetime.now().replace(day=1)),
-                                                                     ])
+                                                                     ('date', '<=', datetime.now()),
+                                                                     ('date', '>=', datetime.now().replace(day=1))])
         if taken_auth_current_month:
             current_stock = 0
             for auth in taken_auth_current_month:
@@ -136,11 +135,9 @@ class HrAuthorizationStockSetting(models.Model):
     _name = 'hr.authorization.stock.setting'
     _description = u'اعداد رصيد الاستئذان‬ات'
     
-    
     name = fields.Char(string='name', default=u'اعداد رصيد الاستئذان‬ات')
     hours_stock = fields.Float(string='عدد‬ ساعات‬ الاستئذان‬ المسموح‬ بها‬ شهريا')
-    
-    
+
     @api.multi
     def button_setting(self):
         auth_stock_setting = self.env['hr.authorization.stock.setting'].search([], limit=1)
@@ -155,6 +152,7 @@ class HrAuthorizationStockSetting(models.Model):
                 'res_id': auth_stock_setting.id,
             }
             return value
+
 
 class HrEmployeeAuthorizationHistory(models.Model):
     _name = 'hr.employee.authorization.history'

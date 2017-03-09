@@ -7,21 +7,21 @@
 		<record id="data_hr_holiday_status_normal" model="hr.holidays.status">
 			<field name="name">إجازة عادية</field>
 			<field name="minimum" eval="5" />
+			<field name="maximum_minimum" eval="5" />
 			<field name="postponement_period" eval="90" />
 			<field name="extension_number" eval="1" />
 			<field name="maximum_days_by_year" eval="120" />
 			<field name="direct_decision" eval="True" />
-			<field name="salary_spending" eval="True"/>
+			<field name="salary_spending" eval="True" />
+
 		</record>
 
 		<record id="data_hr_holiday_status_exceptional" model="hr.holidays.status">
 			<field name="name">إجازة استثنائية</field>
 			<field name="limit" eval="True" />
-			<field name="extension_period" eval="1" />
 			<field name="need_decision" eval="True" />
 			<field name="deductible_normal_leave" eval="True" />
 			<field name="deductible_duration_service" eval="True" />
-			<field name="is_extensible" eval="True" />
 			<field name="external_decision" eval="True" />
 			<field name="direct_decision" eval="False" />
 		</record>
@@ -42,7 +42,7 @@
 
 		<record id="data_hr_holiday_status_sport" model="hr.holidays.status">
 			<field name="name">إجازة رياضية</field>
-			<field name="salary_spending" eval="True"/>
+			<field name="salary_spending" eval="True" />
 		</record>
 
 		<record id="data_hr_holiday_status_compelling" model="hr.holidays.status">
@@ -51,69 +51,67 @@
 			<field name="for_saudi" eval="True" />
 			<field name="for_other" eval="True" />
 			<field name="need_decision" eval="True" />
-			<field name="salary_spending" eval="True"/>
+			<field name="salary_spending" eval="True" />
 		</record>
 
 		<record id="data_hr_holiday_status_exceptional_accompaniment"
 			model="hr.holidays.status">
 			<field name="name">إجازة استثنائية للمرافقة</field>
-			<field name="extension_period" eval="1" />
 			<field name="need_decision" eval="True" />
 			<field name="deductible_normal_leave" eval="True" />
 			<field name="deductible_duration_service" eval="True" />
-			<field name="is_extensible" eval="True" />
 			<field name="direct_director_decision" eval="False" />
 			<field name="direct_decision" eval="False" />
-	</record>
+		</record>
 
 		<record id="data_hr_holiday_status_childbirth" model="hr.holidays.status">
 			<field name="name">إجازة وضع</field>
-			<field name="salary_spending" eval="True"/>
+			<field name="salary_spending" eval="True" />
 
 		</record>
 		<record id="data_hr_holiday_status_maternity" model="hr.holidays.status">
 			<field name="name">إجازة أُمومة</field>
 			<field name="postponement_period" eval="60" />
 			<field name="pension_percent" eval="100" />
-			<field name="salary_spending" eval="True"/>
+			<field name="salary_spending" eval="True" />
 		</record>
 
 		<record id="data_hr_holiday_status_adoption" model="hr.holidays.status">
 			<field name="name"> إجازة حضانة</field>
 			<field name="postponement_period" eval="60" />
 			<field name="pension_percent" eval="100" />
-			<field name="salary_spending" eval="True"/>
+			<field name="salary_spending" eval="True" />
 		</record>
 
 		<record id="data_hr_holiday_child_birth_dad" model="hr.holidays.status">
 			<field name="name"> إجازة المولود</field>
-			<field name="salary_spending" eval="True"/>
+			<field name="salary_spending" eval="True" />
 		</record>
 
 		<record id="data_hr_holiday_status_rescue" model="hr.holidays.status">
 			<field name="name">إجازة اغاثة</field>
-			<field name="salary_spending" eval="True"/>
+			<field name="salary_spending" eval="True" />
 		</record>
 
 		<record id="data_hr_holiday_death" model="hr.holidays.status">
 			<field name="name">إجازة وفاة</field>
 			<field name="limit" eval="True" />
-			<field name="salary_spending" eval="True"/>
+			<field name="salary_spending" eval="True" />
 		</record>
 
 		<record id="data_hr_holiday_dialysis" model="hr.holidays.status">
 			<field name="name">إجازة غسيل كلى</field>
-			<field name="salary_spending" eval="True"/>
+			<field name="salary_spending" eval="True" />
 		</record>
 
 		<record id="data_hr_holiday_literaty" model="hr.holidays.status">
 			<field name="name">إجازة أدبيّة</field>
-			<field name="salary_spending" eval="True"/>
+			<field name="salary_spending" eval="True" />
 		</record>
 
 		<record id="data_hr_holiday_exam" model="hr.holidays.status">
 			<field name="name">‫إجازة إمتحان‬</field>
-			<field name="salary_spending" eval="True"/>
+			<field name="salary_spending" eval="True" />
 		</record>
 
 
@@ -123,12 +121,12 @@
 			<field name="limit" eval="True" />
 			<field name="demand_number_max" eval="2" />
 			<field name="traveling_ticket" eval="True" />
-			<field name="salary_spending" eval="True"/>
+			<field name="salary_spending" eval="True" />
 		</record>
 
 		<record id="data_hr_holiday_compensation" model="hr.holidays.status">
 			<field name="name">اجازة التعويض</field>
-			<field name="salary_spending" eval="True"/>
+			<field name="salary_spending" eval="True" />
 		</record>
 
 		<record id="data_hr_holiday_entitlement_all" model="hr.holidays.entitlement.config">

@@ -47,11 +47,11 @@
 								<field name="all_holidays" />
 								<field name="max_days" />
 								<field name="reason" required="1"
-									attrs="{'readonly':[('state','!=','draft')]}" />
+									attrs="{'readonly':[('state','!=','draft')],'required':[('state', 'in', ['draft'])]}" />
 							</group>
 							<group string="معلومات الخطاب">
 								<field name="letter_source" attrs="{'readonly':[('state','!=','draft')]}" />
-								<field name="letter_no" attrs="{'readonly':[('state','!=','draft')]}" />
+								<field name="letter_no" attrs="{'readonly':[('state','!=','draft')],'required':[('state', 'in', ['draft'])]}" />
 								<field name="letter_date" attrs="{'readonly':[('state','!=','draft')]}" />
 							</group>
 							<group>

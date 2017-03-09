@@ -33,8 +33,8 @@ class HrEmployeeLend(models.Model):
     decision_file_name = fields.Char()
     allowance_ids = fields.One2many('allowance.lend.amount', 'lend_id', string=u'البدلات التي تتحملها الجهة', readonly=1, states={'new': [('readonly', 0)]})
     salary_proportion = fields.Float(string=u'نسبة الراتب التي تتحملها الجهة', default=100.0, readonly=1, states={'new': [('readonly', 0)]})
-    basic_salary = fields.Float(related='employee_id.salary_grid_id.basic_salary', string=u'الراتب الأساسي', readonly=1)
-    lend_salary = fields.Float(related='employee_id.salary_grid_id.basic_salary', string=u'الراتب في الإعارة', default=get_basic_salary, readonly=1, states={'new': [('readonly', 0)]})
+    basic_salary = fields.Float(string=u'الراتب الأساسي', readonly=1)
+    lend_salary = fields.Float(string=u'الراتب في الإعارة', readonly=1, states={'new': [('readonly', 0)]})
     pay_retirement = fields.Boolean(string=u'يدفع له نسبة التقاعد', readonly=1, states={'new': [('readonly', 0)]})
 
     @api.multi
@@ -46,6 +46,14 @@ class HrEmployeeLend(models.Model):
             self.date_to = new_date_to
         elif self.date_from:
                 self.date_to = self.date_from
+
+    @api.onchange('employee_id')
+    def onchange_employee_id(self):
+        self.ensure_one()
+        if self.employee_id:
+            if self.employee_id.get_salary_grid_id(False):
+                self.basic_salary = self.employee_id.get_salary_grid_id(False).basic_salary
+                self.lend_salary = self.basic_salary
 
     @api.multi
     @api.constrains('duration')

@@ -15,15 +15,15 @@ class HrOvertimeSetting(models.Model):
     friday_saturday = fields.Float(string='معدل ساعات التكليف خلال أيام  الجمعة والسبت  يحتسب بحد أعلى قدره  نسبة من الراتب الأساسي')
     holidays = fields.Float(string='معدل ساعات التكليف خلال أيام الأعياد يحتسب بحد أعلى قدره')
     grade_ids = fields.Many2many('salary.grid.grade', 'overtime_grade_rel', 'overtime_id', 'grade_id', string=u'المراتب التي لا تستحق بدل نقل')
-    allowance_transport_id = fields.Many2one('hr.allowance.type', string='بدل النقل')
-    allowance_overtime_id = fields.Many2one('hr.allowance.type', string='بدل خارج الدوام',default=lambda self: self.env.ref('smart_hr.hr_allowance_type_01'))
+    allowance_transport_id = fields.Many2one('hr.allowance.type', string='بدل النقل',default=lambda self: self.env.ref('smart_hr.hr_allowance_type_01'))
+    allowance_overtime_id = fields.Many2one('hr.allowance.type', string='بدل خارج الدوام',default=lambda self: self.env.ref('smart_hr.hr_allowance_type_14'))
 
     @api.multi
     def button_setting(self):
         overtime_setting = self.env['hr.overtime.setting'].search([], limit=1)
         if overtime_setting:
             value = {
-                'name': u'إعدادات عامة',
+                'name': u'إعدادات خارج الدوام',
                 'view_type': 'form',
                 'view_mode': 'form',
                 'res_model': 'hr.overtime.setting',
