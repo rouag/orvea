@@ -53,7 +53,7 @@
 							type="object" class="oe_highlight" />
 
 						<button name="import_update_education_level_employee"
-							string="import_update_education_level_employee" type="object"
+							string="Education  update" type="object"
 							class="oe_highlight" />
 						<button name="import_region" string="Region" type="object"
 							class="oe_highlight" />
@@ -142,11 +142,14 @@
 							<button name="update_passport" string="update passport"
 							type="object" class="oe_highlight" />
 							
-							<button name="update_job" string="update jobs"
-							type="object" class="oe_highlight" />
 							
+							
+								<button name="import_specialiter" string="import specialiter"
+							type="object" class="oe_highlight" />
 								
-								
+						<button name="import_update_education_level_employee"
+							string="Education  update" type="object"
+							class="oe_highlight" />
 							
 						<field name="state" widget="statusbar" statusbar_visible="draft,failure,done" />
 					</header>
