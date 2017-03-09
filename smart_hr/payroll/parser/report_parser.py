@@ -227,21 +227,16 @@ class ReportHrErrorEmployee(report_sxw.rml_parse):
 
     def _get_termination_employees(self, month):
         date_from = get_hijri_month_start(HijriDate, Umalqurra,month)
-        print"date_from",date_from
         date_to = get_hijri_month_end(HijriDate, Umalqurra,month)
-        print"date_to",date_to
         domain = []
         termination_pbj = self.pool.get('hr.termination')
         payslip_pbj = self.pool.get('hr.payslip')
         search_empl_ids = termination_pbj.search(self.cr, self.uid, [('date_termination', '>', date_from),('date_termination', '<', date_to)])
-        print"search_empl_ids",search_empl_ids
         search_ids = []
         for rec in  search_empl_ids:
-            temp = payslip_pbj.search(self.cr, self.uid, [('month','=',month),('salary_net','=',False),('employee_id','=',rec.employee_id.id)])
-            print"search_ids",temp
+            temp = payslip_pbj.search(self.cr, self.uid, [('month','=',month),('employee_id','=',rec.employee_id)])
             search_ids += temp
         domain.append(search_ids)
-        print"domain",domain
         return payslip_pbj.browse(self.cr, self.uid, domain[0])
 
     def _get_hijri_date(self, date, separator):
