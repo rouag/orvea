@@ -174,6 +174,8 @@
         'payroll/views/report_hr_deduction.xml',
         'payroll/views/report_payslip.xml',
         'payroll/views/report_payslip_extension.xml',
+        'payroll/views/report_hr_error_employee.xml',
+        
         'payroll/views/report.xml',
 
         # الحضور والإنصراف

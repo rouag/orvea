@@ -71,10 +71,10 @@ class HrDecision(models.Model):
                 type_job_id = employee_line.type_id.name or ""
                 grade_id = employee_line.grade_id.name or ""
                 degree_id = employee_line.degree_id.name or ""
-                salary = employee_line.salary_grid_id.net_salary  or ""
+                salary = employee_line.get_salary_grid_id(False).net_salary  or ""
                 print"salary",salary
                 rel_text = decision_type_line.text
-     #           transport_allow = employee_line.salary_grid_id.transport_allow or ""
+     #           transport_allow = employee_line.get_salary_grid_id(False).transport_allow or ""
     #             retirement = employee_line.retirement or ""
                # net_salary = employee_line.net_salary or ""
                 if decision_type_line.text:
@@ -108,7 +108,7 @@ class HrDecision(models.Model):
             numero = self.name or ""
             num_speech = self.num_speech or ""
             date_speech = self.date_speech or ""
-            salary = self.employee_id.salary_grid_id.net_salary  or ""
+            salary = self.employee_id.get_salary_grid_id(False).net_salary  or ""
             decision_type_line = self.env['hr.decision.type'].search([('id', '=', self.decision_type_id.id)])
             current_year = datetime.now().year
             employee_ids_len = len(self.employee_ids.ids)

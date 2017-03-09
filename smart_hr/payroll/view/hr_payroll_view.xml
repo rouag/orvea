@@ -251,6 +251,12 @@
 						</group>
 						<notebook>
 							<page  string="الموظفين" >
+								<group col="4" string="فلترة">
+									<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]"/>
+									<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]"/>
+									<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]"/>
+									<field name="salary_grid_type_id"/>
+								</group>
 								<field name="employee_ids"/>
 							</page>
 							<page  string="المسيّرات الإفرادية">

@@ -41,6 +41,10 @@ class HrPayslipRun(models.Model):
     amount_total = fields.Float(string='الإجمالي', store=True, readonly=True, compute='_amount_all')
     bank_file = fields.Binary(string='الملف البنكي', attachment=True)
     bank_file_name = fields.Char(string='مسمى الملف البنكي')
+    department_level1_id = fields.Many2one('hr.department', string='الفرع', readonly=1, states={'draft': [('readonly', 0)]})
+    department_level2_id = fields.Many2one('hr.department', string='القسم', readonly=1, states={'draft': [('readonly', 0)]})
+    department_level3_id = fields.Many2one('hr.department', string='الشعبة', readonly=1, states={'draft': [('readonly', 0)]})
+    salary_grid_type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1, states={'draft': [('readonly', 0)]},)
 
     @api.onchange('month')
     def onchange_month(self):
@@ -48,6 +52,36 @@ class HrPayslipRun(models.Model):
             self.date_start = get_hijri_month_start(HijriDate, Umalqurra, self.month)
             self.date_end = get_hijri_month_end(HijriDate, Umalqurra, self.month)
             self.name = u'مسير جماعي  شهر %s' % self.month
+
+    @api.onchange('department_level1_id', 'department_level2_id', 'department_level3_id', 'salary_grid_type_id')
+    def onchange_department_level(self):
+        dapartment_obj = self.env['hr.department']
+        employee_obj = self.env['hr.employee']
+        department_level1_id = self.department_level1_id and self.department_level1_id.id or False
+        department_level2_id = self.department_level2_id and self.department_level2_id.id or False
+        department_level3_id = self.department_level3_id and self.department_level3_id.id or False
+        employee_ids = []
+        dapartment_id = False
+        if department_level3_id:
+            dapartment_id = department_level3_id
+        elif department_level2_id:
+            dapartment_id = department_level2_id
+        elif department_level1_id:
+            dapartment_id = department_level1_id
+        if dapartment_id:
+            dapartment = dapartment_obj.browse(dapartment_id)
+            employee_ids += [x.id for x in dapartment.member_ids]
+            for child in dapartment.all_child_ids:
+                employee_ids += [x.id for x in child.member_ids]
+        result = {}
+        if not employee_ids:
+            # get all employee
+            employee_ids = employee_obj.search([('employee_state', '=', 'employee')]).ids
+        # filter by type
+        if self.salary_grid_type_id:
+            employee_ids = employee_obj.search([('id', 'in', employee_ids), ('type_id', '=', self.salary_grid_type_id.id)]).ids
+        result.update({'domain': {'employee_ids': [('id', 'in', list(set(employee_ids)))]}})
+        return result
 
     @api.one
     def action_verify(self):
@@ -86,43 +120,44 @@ class HrPayslipRun(models.Model):
 
     @api.multi
     def generate_file(self):
+        # TODO: must check all fields
         fp = TemporaryFile()
-        HeaderKey = '000000000000'
-        CalendarType = 'H'
+        header_key = '000000000000'
+        calendar_type = 'H'
         current_date = HijriDate.today()
         year = str(int(current_date.year)).zfill(4)
         month = str(int(current_date.month)).zfill(2)
         day = str(int(current_date.day)).zfill(2)
-        SendDate = year + month + day
-        ValueDate = SendDate  # TODO: the ValueDate
-        TotalAmount = str(self.amount_total).replace('.', '').replace(',', '').zfill(15)
-        Totalemployees = str(len(self.slip_ids)).zfill(8)
-        AccountNumber = str(self.env.user.company_id.vat or '').zfill(13)
-        Fileparameter = '1'
-        Filesequence = '01'
-        Filler = ''.rjust(65, ' ')
+        send_date = year + month + day
+        value_date = send_date  # TODO: the ValueDate
+        total_amount = str(self.amount_total).replace('.', '').replace(',', '').zfill(15)
+        total_employees = str(len(self.slip_ids)).zfill(8)
+        account_number = str(self.env.user.company_id.vat or '').zfill(13)
+        file_parameter = '1'
+        file_sequence = '01'
+        filler = ''.rjust(65, ' ')
         file_dec = ''
-        file_dec += u'%s%s%s%s%s%s%s%s%s%s\n' % (HeaderKey, CalendarType, SendDate, ValueDate, TotalAmount, Totalemployees, AccountNumber, Fileparameter, Filesequence, Filler)
+        file_dec += u'%s%s%s%s%s%s%s%s%s%s\n' % (header_key, calendar_type, send_date, value_date, total_amount, total_employees, account_number, file_parameter, file_sequence, filler)
         for playslip in self.slip_ids:
             employee = playslip.employee_id
             # add line for each playslip
-            EmployeeNumber = employee.number.ljust(12, ' ')
+            employee_number = employee.number.ljust(12, ' ')
             # search account bank for this employee
             banks = self.env['res.partner.bank'].search([('employee_id', '=', employee.id), ('is_deposit', '=', True)])
             if not banks:
                 raise UserError(u"يجب إنشاء حساب بنكي للإيداع  للموظف  %s " % employee.name)
             employee_bank = banks[0]
-            EmployeeBankID = employee_bank.bank_id.bic.ljust(4, ' ')
-            EmployeeAccountNumber = employee_bank.acc_number.ljust(24, ' ')
-            EmployeeName = '*****'.ljust(50, ' ')
-            EmployeeAmount = str(playslip.salary_net).replace('.', '').replace(',', '').zfill(15)
-            CivilianID = employee.identification_id.zfill(15)
-            EmployeeIDType = '0'
-            ProcessFlag = ' '
-            BlockAmount = ' '
-            KawadarFlag = ' '
-            Filler = ''.rjust(11, ' ')
-            file_dec += u'%s%s%s%s%s%s%s%s%s%s%s\n' % (EmployeeNumber, EmployeeBankID, EmployeeAccountNumber, EmployeeName, EmployeeAmount, CivilianID, EmployeeIDType, ProcessFlag, BlockAmount, KawadarFlag, Filler)
+            employee_bank_id = employee_bank.bank_id.bic.ljust(4, ' ')
+            employee_account_number = employee_bank.acc_number.ljust(24, ' ')
+            employee_name = '*****'.ljust(50, ' ')
+            employee_amount = str(playslip.salary_net).replace('.', '').replace(',', '').zfill(15)
+            civilian_id = employee.identification_id.zfill(15)
+            employee_id_type = '0'
+            process_flag = ' '
+            block_amount = ' '
+            kawadar_flag = ' '
+            filler = ''.rjust(11, ' ')
+            file_dec += u'%s%s%s%s%s%s%s%s%s%s%s\n' % (employee_number, employee_bank_id, employee_account_number, employee_name, employee_amount, civilian_id, employee_id_type, process_flag, block_amount, kawadar_flag, filler)
         # remove the \n
         file_dec = file_dec[0:len(file_dec) - 1]
         fp.write(file_dec.encode('utf-8'))
@@ -303,24 +338,24 @@ class HrPayslip(models.Model):
             previous_month = '0' + str((int(self.month) - 1))
             current_year_date = str(fields.Date.from_string(self.date_from).year) + '-01-01'
             current_year_date = fields.Date.from_string(current_year_date)
-            previous_month_payslip = self.env['hr.payslip'].search([('date_from', '>=', current_year_date),
-                                                                    ('employee_id', '=', self.employee_id.id),
-                                                                    ('month', '=', previous_month),
-                                                                    ('with_advanced_salary', '=', True),
-                                                                    ('state', '=', 'done')
-                                                                    ])
+            previous_month_payslip = self.env['hr.payslip'].search_count([('date_from', '>=', current_year_date),
+                                                                          ('employee_id', '=', self.employee_id.id),
+                                                                          ('month', '=', previous_month),
+                                                                          ('with_advanced_salary', '=', True),
+                                                                          ('state', '=', 'done')
+                                                                          ])
         else:
             # previous month in previous year
             previous_month = '0' + str((int(self.month) - 1))
             previous_year_date = str(fields.Date.from_string(self.date_from).year - 1) + '-12-31'
-            previous_year_date = fields.Date.from_string(current_year_date)
-            previous_month_payslip = self.env['hr.payslip'].search([('date_to', '<=', previous_year_date),
-                                                                    ('employee_id', '=', self.employee_id.id),
-                                                                    ('month', '=', previous_month),
-                                                                    ('with_advanced_salary', '=', True),
-                                                                    ('state', '=', 'done')
-                                                                    ])
-        if previous_month_payslip:
+            previous_year_date = fields.Date.from_string(previous_year_date)
+            previous_month_payslip = self.env['hr.payslip'].search_count([('date_to', '<=', previous_year_date),
+                                                                          ('employee_id', '=', self.employee_id.id),
+                                                                          ('month', '=', previous_month),
+                                                                          ('with_advanced_salary', '=', True),
+                                                                          ('state', '=', 'done')
+                                                                          ])
+        if previous_month_payslip > 0:
             # the employee is allready have the salary_grid of the current month
             amount_multiplication = 0
         # check if the employee need an advanced salary from the holidays
@@ -344,12 +379,11 @@ class HrPayslip(models.Model):
             payslip.difference_history_ids.unlink()
             # generate  lines
             employee = payslip.employee_id
-            # search the correct salary_grid for this employee
-            salary_grids = employee.salary_grid_id
-            if not salary_grids:
+            # search the newest salary_grid for this employee
+            salary_grid = employee.get_salary_grid_id(False)
+            if not salary_grid:
                 return
-            salary_grid = employee.salary_grid_id
-            if employee.basic_salary < 0:
+            if employee.basic_salary == 0:
                 basic_salary = salary_grid.basic_salary
             else:
                 basic_salary = employee.basic_salary

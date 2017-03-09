@@ -132,8 +132,8 @@ class hrBonusLine(models.Model):
         salary_grids = salary_grid_obj.search([('type_id', '=', ttype.id), ('grade_id', '=', grade.id), ('degree_id', '=', degree.id)])
         if not salary_grids:
             return
-        if employee.basic_salary < 0:
-            basic_salary = employee.salary_grid_id.basic_salary
+        if employee.basic_salary == 0:
+            basic_salary = employee.get_salary_grid_id(False).basic_salary
         else:
             basic_salary = employee.basic_salary
         # compute

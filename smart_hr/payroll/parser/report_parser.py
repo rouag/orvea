@@ -1,10 +1,17 @@
 # -*- coding: utf-8 -*-
-import datetime
 from openerp.osv import osv
 from openerp.report import report_sxw
 from openerp import fields
 from dateutil.relativedelta import relativedelta
 from umalqurra.hijri_date import HijriDate
+from xmllib import _S
+from openerp import models, api, fields, _
+from openerp.exceptions import ValidationError
+import time as time_date
+from datetime import datetime
+from openerp.addons.smart_base.util.time_util import days_between
+from openerp.addons.smart_base.util.umalqurra import *
+from umalqurra.hijri import Umalqurra
 
 
 class MessierSalaires(report_sxw.rml_parse):
@@ -181,3 +188,80 @@ class PayslipExtensionReport(osv.AbstractModel):
     _inherit = 'report.abstract_report'
     _template = 'smart_hr.report_payslip_extension'
     _wrapped_report_class = ReportPayslipExtension
+
+class ReportHrErrorEmployee(report_sxw.rml_parse):
+
+    def __init__(self, cr, uid, name, context):
+        super(ReportHrErrorEmployee, self).__init__(cr, uid, name, context=context)
+        self.localcontext.update({
+            'get_hijri_date': self._get_hijri_date,
+            'get_all_employees': self._get_all_employees,
+            'get_error_employees':self._get_error_employees,
+            'get_termination_employees':self._get_termination_employees,
+
+        })
+
+    def _get_all_employees(self, month):
+
+        payslip_pbj = self.pool.get('hr.payslip')
+        search_ids = payslip_pbj.search(self.cr, self.uid, [('month','=',month),('salary_net','=',0.0)])
+        print"search_ids",search_ids
+        return payslip_pbj.browse(self.cr, self.uid, search_ids)
+
+    def _get_error_employees(self, month):
+        domain = []
+        employe_pbj = self.pool.get('hr.employee')
+        payslip_pbj = self.pool.get('hr.payslip')
+        search_empl_ids = employe_pbj.search(self.cr, self.uid, [('employee_state', '=', 'employee')])
+        search_ids = []
+        for rec in search_empl_ids:
+            temp = payslip_pbj.search(self.cr, self.uid, [('month','=',month),('employee_id','=',rec)])
+            search_ids += temp
+        domain.append(search_ids)
+        payslip_pbj=payslip_pbj.browse(self.cr, self.uid, search_ids)
+        emp_ids = [rec.employee_id.id for rec in payslip_pbj]
+        emp_ids =set(emp_ids)
+        result=[]
+        result =set(search_empl_ids) - emp_ids
+        return employe_pbj.browse(self.cr, self.uid, list(result))
+
+
+    def _get_termination_employees(self, month):
+        date_from = get_hijri_month_start(HijriDate, Umalqurra,month)
+        print"date_from",date_from
+        date_to = get_hijri_month_end(HijriDate, Umalqurra,month)
+        print"date_to",date_to
+        domain = []
+        termination_pbj = self.pool.get('hr.termination')
+        payslip_pbj = self.pool.get('hr.payslip')
+        search_empl_ids = termination_pbj.search(self.cr, self.uid, [('date_termination', '>', date_from),('date_termination', '<', date_to)])
+        print"search_empl_ids",search_empl_ids
+        search_ids = []
+        for rec in  search_empl_ids:
+            temp = payslip_pbj.search(self.cr, self.uid, [('month','=',month),('salary_net','=',False),('employee_id','=',rec.employee_id.id)])
+            print"search_ids",temp
+            search_ids += temp
+        domain.append(search_ids)
+        print"domain",domain
+        return payslip_pbj.browse(self.cr, self.uid, domain[0])
+
+    def _get_hijri_date(self, date, separator):
+        '''
+        convert georging date to hijri date
+        :return hijri date as a string value
+        '''
+        if date:
+            date = fields.Date.from_string(date)
+            hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
+            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+        return None
+
+
+class HrErrorEmployeeReport(osv.AbstractModel):
+    _name = 'report.smart_hr.report_hr_error_employee'
+    _inherit = 'report.abstract_report'
+    _template = 'smart_hr.report_hr_error_employee'
+    _wrapped_report_class = ReportHrErrorEmployee
+    
+    
+    

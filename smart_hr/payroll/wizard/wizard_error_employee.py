@@ -20,14 +20,14 @@ class WizardErrorEmployee(models.TransientModel):
     def get_default_month(self):
         return get_current_month_hijri(HijriDate)
 
-    name = fields.Selection(MONTHS, string='الشهر', required=1,  default=get_default_month)
+    month = fields.Selection(MONTHS, string='الشهر', required=1,  default=get_default_month)
     employee_id = fields.Many2one('hr.employee', string='موظف')
     department_id = fields.Many2one('hr.department', string='قسم')
 
 
     @api.multi
     def print_report(self):
-        report_action = self.env['report'].get_action(self, 'smart_hr.report_error_employee')
+        report_action = self.env['report'].get_action(self, 'smart_hr.report_hr_error_employee')
         data = {'ids': [],'form': self.read([])[0]}
         report_action['data'] = data
         return report_action

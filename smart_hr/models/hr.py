@@ -330,7 +330,6 @@ class HrEmployeePromotionHistory(models.Model):
     _name = 'hr.employee.promotion.history'
 
     employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف')
-    salary_grid_id = fields.Many2one('salary.grid.grade', string=u'الرتبة')
     date_from = fields.Date(string=u'التاريخ من', default=fields.Datetime.now(), related='decision_appoint_id.date_direct_action')
     date_to = fields.Date(string=u'التاريخ الى', related='decision_appoint_id.date_hiring_end')
     balance = fields.Integer(string=u'رصيد الترقية (يوم)', store=True)
@@ -429,6 +428,14 @@ class HrEmployeeEducationLevelEmployee(models.Model):
     university_entity = fields.Many2one('res.partner', string=u'الكلية', domain=[('company_type', '=', 'faculty')])
     job_specialite = fields.Boolean(string=u'في طبيعة العمل', required=1)
     diploma_date = fields.Date(string=u'تاريخ الحصول على المؤهل')
+    while_serving = fields.Boolean(string=u'اثناء الخدمة', readonly=1, compute='_compute_while_serving')
+
+    @api.multi
+    @api.depends('employee_id')
+    def _compute_while_serving(self):
+        for rec in self:
+            if rec.diploma_date >= rec.employee_id.recruiter_date:
+                rec.while_serving = True
 
 
 class HrQualificationEstimate(models.Model):

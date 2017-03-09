@@ -660,7 +660,6 @@ class import_csv(osv.osv):
                        'state':'unoccupied',
                        }
                    
-                    hr_job.create(cr, uid, job_val,context=context)
                     
                  
                
@@ -1051,7 +1050,7 @@ class import_csv(osv.osv):
             
             salary_grid_level.create(cr, uid, salary_grid_levele_val,context=context)
     
-    def import_diplome(self, cr, uid, ids, context=None):
+    def import_specialiter(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
         this = self.browse(cr, uid, ids[0])   
@@ -1064,7 +1063,7 @@ class import_csv(osv.osv):
         fileobj.write((base64.decodestring(this.data)))   
         fileobj.seek(0)                                    
         reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))         
-        diplome = self.pool.get('hr.employee.diploma')
+        diplome = self.pool.get('hr.employee.specialization')
         move_id=''
         all_move_ids=[]
         for row  in reader : 
@@ -1170,7 +1169,7 @@ class import_csv(osv.osv):
         education_level = self.pool.get('hr.employee.education.level')
         salary_grid_level = self.pool.get('salary.grid.degree')
         grade = self.pool.get('salary.grid.grade')
-        diplome = self.pool.get('hr.employee.diploma')
+        diplome = self.pool.get('')
         departement = self.pool.get('hr.department')
         type = self.pool.get('salary.grid.type')
         education_level_id=False
@@ -2019,6 +2018,10 @@ class import_csv(osv.osv):
         status_maladie=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_illness')[1]
         exceptional=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_exceptional')[1]
         compiling=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_compelling')[1]
+        sport=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_sport')[1]
+        accompaniment=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_exceptional_accompaniment')[1]
+        absent=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_legal_absent')[1]
+        
         move_id=''
         all_move_ids=[]
         i=0
@@ -2041,9 +2044,16 @@ class import_csv(osv.osv):
                 elif str(row['LEAVE_TYPE']) == '23':
                     type=status_study
                 elif str(row['LEAVE_TYPE']) == '5':
-                    type=compiling
+                    type=status_maladie
+                elif str(row['LEAVE_TYPE']) == '12':
+                    type=sport
+                elif str(row['LEAVE_TYPE']) == '13':
+                    type=accompaniment
+                elif str(row['LEAVE_TYPE']) == '333':
+                    type=absent
                 else :
                     type=exceptional
+                    
                     
               
                
@@ -2065,7 +2075,7 @@ class import_csv(osv.osv):
                    
                         holiday_obj.create(cr, uid, holiday_val,context=context)
                     except Exception, e:
-                        cr.rollback()
+                        False
                 
         return True
     
@@ -2200,7 +2210,7 @@ class import_csv(osv.osv):
        
         education_level = self.pool.get('hr.employee.education.level')
      
-        diplome = self.pool.get('hr.employee.diploma')
+        specialiter = self.pool.get('hr.employee.specialization')
         education_level_id=False
         grade_id=False
         diplome_id=False
@@ -2221,16 +2231,16 @@ class import_csv(osv.osv):
         for row  in reader: 
             if row['EMP_NO'] and  ( employee.search(cr, uid, [('number', '=',row['EMP_NO'])])) and row['LOC_ID']=='3369' : 
                 if str(row['MAJOR_NO']):
-                    diplome_ids = diplome.search(cr, uid, [('code', '=',row['MAJOR_NO'])])
-                    if diplome_ids:
-                        diplome_id =diplome_ids[0]
+                    specialiter_ids = specialiter.search(cr, uid, [('code', '=',row['MAJOR_NO'])])
+                    if specialiter_ids:
+                        specialiter_id =specialiter_ids[0]
                 if str(row['DEGREE_NO']):
                     education_level_ids=education_level.search(cr, uid, [('code', '=',row['DEGREE_NO'])])
                     if education_level_ids:
                         education_level_id=education_level_ids[0]
                 vals_education={'name':'01',
                                 'level_education_id':education_level_id,
-                                'diploma_id':diplome_id
+                                'specialization_ids':[specialiter_id]
                                 
                                 }
                 
@@ -2739,8 +2749,8 @@ class import_csv(osv.osv):
                     employee.write(cr, uid,employee_id, val,context=context)
                     
         return True
-    
-    
+
+
     
     def update_passport(self, cr, uid, ids, context=None):
         if context is None:
@@ -2756,54 +2766,25 @@ class import_csv(osv.osv):
         fileobj.seek(0)                                    
         reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
         city = self.pool.get('res.city')
-                
+        umalqurra = Umalqurra() 
         move_id=''
         all_move_ids=[]
         employee = self.pool.get('hr.employee')
+        fmt = '%d/%m/%Y'
+        
         for row  in reader : 
-            if str(row['ISSUE_PLACE_NO']):
-                    city_ids=city.search(cr, uid, [('code', '=',row['ISSUE_PLACE_NO'])])
-                    
-                    
-            employee_ids= employee.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
-            if employee_ids:
-                emplyee_obj=employee.browse(cr, uid, employee_ids[0]) 
-                passport_end_date  = row['EXPIRY_DATE']
-                passport_date  = row['ISSUE_DATE']
-                if passport_end_date == 'NULL':
-                    passport_end_date = False
-                if passport_date == 'NULL':
-                    passport_date = False                    
-                emplyee_obj.write( {'passport_id': str(row['DOC_NO']),'passport_date':passport_date,'passport_place':city_ids[0] if city_ids else False ,
-                                    'passport_end_date':passport_end_date}, )
-        
-        
-        return True
+            if row['ISSUE_DATE_HJ'] != 'NULL':
+                    try:
+                        row['ISSUE_DATE_HJ'].replace("29/2", "28/2")
+                        print row['ISSUE_DATE_HJ']
+                        dt = datetime.strptime(str(row['ISSUE_DATE_HJ']), fmt)
+                        start_date = umalqurra.hijri_to_gregorian(dt.year, dt.month, dt.day)
+                        date_first_tranche = date(int(start_date[0]), int(start_date[1]), int(start_date[2]))
+                    except:
+                        print row['ISSUE_DATE_HJ']
 
-    
-    def update_name_job(self, cr, uid, ids, context=None):
-        if context is None:
-            context = {}
-        this = self.browse(cr, uid, ids[0])   
-        quotechar='"'
-        delimiter=';'
-        fileobj = TemporaryFile('w+')
-        sourceEncoding = 'windows-1252'
-        targetEncoding = "utf-8"   
-        
-        fileobj.write((base64.decodestring(this.data)))   
-        fileobj.seek(0)                                    
-        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
-        city = self.pool.get('res.city')
-                
-        move_id=''
-        all_move_ids=[]
-        employee = self.pool.get('hr.employee')
-        for row  in reader : 
             if str(row['ISSUE_PLACE_NO']):
                     city_ids=city.search(cr, uid, [('code', '=',row['ISSUE_PLACE_NO'])])
-                    
-                    
             employee_ids= employee.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
             if employee_ids:
                 emplyee_obj=employee.browse(cr, uid, employee_ids[0]) 
@@ -2812,8 +2793,9 @@ class import_csv(osv.osv):
                 if passport_end_date == 'NULL':
                     passport_end_date = False
                 if passport_date == 'NULL':
-                    passport_date = False                    
-                emplyee_obj.write( {'passport_id': str(row['DOC_NO']),'passport_date':passport_date,'passport_place':city_ids[0] if city_ids else False ,
+                    passport_date = False    
+                print  date_first_tranche               
+                emplyee_obj.write( {'passport_id': str(row['DOC_NO']),'passport_date':date_first_tranche,'passport_place':city_ids[0] if city_ids else False ,
                                     'passport_end_date':passport_end_date}, )
         
         
@@ -2851,9 +2833,44 @@ class import_csv(osv.osv):
                 job_name_id = job_name.search(cr, uid, [('number', '=',str(row['POSITION_CODE']))])
                 if hr_job_id and job_name_id:
                     print job_name_id[0]
+                    val={'name':job_name_id[0]}
                     hr_job.write(cr, uid,hr_job_id[0], val,context=context)
- 
+
         return True 
+    
+    def import_training_course(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        move_id=''
+        all_move_ids=[]
+        training_id = self.pool.get('hr.training')
+        for row  in reader : 
+           
+                hr_job_id=hr_job.search(cr, uid, [('number', '=',str(row['POSITION_NO']))])
+                job_name_id = job_name.search(cr, uid, [('number', '=',str(row['POSITION_CODE']))])
+                if hr_job_id and job_name_id:
+                    print job_name_id[0]
+                    val={'name':job_name_id[0]}
+                    hr_job.write(cr, uid,hr_job_id[0], val,context=context)
+                    
+                 
+               
+                
+        
+        
+        
+        
+        return True 
+        
         
         
     def update_saudi_citys_coutry(self, cr, uid, ids, context=None):
@@ -3004,5 +3021,10 @@ class import_csv(osv.osv):
                 dep_allowance_line_c = dep_allowance_line.create(cr, uid, dep_allowance_line_vals_c)
                 
                 
+import_csv()
+
+
+        
+
 import_csv()
 
