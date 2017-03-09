@@ -10,9 +10,9 @@ class HrImproveSituatim(models.Model):
     _inherit = ['mail.thread'] 
     _description=u'تحسين وضع' 
     _rec_name = 'employee_id'
-    
+
     employee_id=fields.Many2one('hr.employee',string=' إسم الموظف',required=1,)
-    number=fields.Char(string='الرقم الموظف',readonly=1) 
+    number=fields.Char(string='الرقم الموظف',readonly=1)
     state= fields.Selection([('new','طلب'),('waiting','في إنتظار الإعتماد'),('done','اعتمدت')], readonly=1, default='new')
     order_picture=fields.Binary(string='صورة القرار',required=1, attachment=True) 
     order_date=fields.Date(string='تاريخ القرار',required=1) 
@@ -46,14 +46,13 @@ class HrImproveSituatim(models.Model):
     @api.one
     def action_waiting(self):
         self.state = 'waiting' 
-    
-    
+
     @api.multi
     def action_done(self):
         self.ensure_one()
         for line in self:
             improve_val = {
-                   
+
                     'degree_id': line.degree_id1.id,
                     'job_id': line.job_id1.id,
                     'number_job': line.number_job1,
@@ -74,16 +73,15 @@ class HrImproveSituatim(models.Model):
         self.state = 'done'
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت إحداث تحسين الوضع جديد '" + unicode(user.name) + u"'")
-        
+
     @api.one
     def action_refuse(self):
         self.state = 'new'   
-        
-        
+
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
             if self.employee_id:
-           
+
                 employee_id_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id)
                                                 ])
                 print"employee_id_line",employee_id_line
@@ -97,7 +95,7 @@ class HrImproveSituatim(models.Model):
                     self.degree_id = employee_id_line.degree_id
                     self.department_id = employee_id_line.department_id
                     self.basic_salary = employee_id_line.basic_salary
-                    
+
     @api.onchange('job_id1')
     def _onchange_job_id1(self):
         if self.job_id1 :
@@ -105,13 +103,11 @@ class HrImproveSituatim(models.Model):
             self.type_id1 = self.job_id1.type_id.id
             self.grade_id1 = self.job_id1.grade_id.id
             self.department_id1 = self.job_id1.department_id.id
-            
+
 class HrTypeImproveSituation(models.Model):
-    _name = 'hr.type.improve.situation'  
+    _name = 'hr.type.improve.situation'
     _description=u'أنواع تحسين الوضع'
-    
-    
+
     name=fields.Char(string='النوع',required=1 )
     code=fields.Char(string='الرمز')
-    
 
