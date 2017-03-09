@@ -17,7 +17,7 @@
 										<span t-field="o.month" />
 									</h3>
 								</div>
-									<br></br> <strong>الموظفين الذين لم يدخلوا الاعداد</strong>
+									
 								
 								<div class="col-xs-12 text-center">
 									<table class="table table-condensed">
@@ -52,6 +52,7 @@
 									</table>
 								</div>
 								<div class="col-xs-12 text-center">
+								<br></br> <strong>الموظفين الذين لم يدخلوا الاعداد</strong>
 									<table class="table table-condensed">
 										<thead>
 											<tr>
