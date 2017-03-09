@@ -383,7 +383,7 @@ class HrPayslip(models.Model):
             salary_grid = employee.get_salary_grid_id(False)
             if not salary_grid:
                 return
-            if employee.basic_salary < 0:
+            if employee.basic_salary == 0:
                 basic_salary = salary_grid.basic_salary
             else:
                 basic_salary = employee.basic_salary

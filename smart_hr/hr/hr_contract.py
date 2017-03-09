@@ -71,7 +71,7 @@ class HrContract(models.Model):
                     self.transport_allow = employee_line.transport_allow
                     self.retirement = employee_line.retirement
                     self.net_salary = employee_line.net_salary
-                    if self.employee_id.basic_salary < 0:
+                    if self.employee_id.basic_salary == 0:
                         self.basic_salary = employee_line.basic_salary
                 if self.employee_id.basic_salary > 0:
                         self.basic_salary = self.employee_id.basic_salary
