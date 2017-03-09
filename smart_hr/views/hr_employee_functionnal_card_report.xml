@@ -91,13 +91,13 @@
 										</tr>
 										<tr>
 											<td>
-												رقم جواز السفر
+												رقم الحفيظة
 											</td>
 											<td>
 												<span t-field="o.passport_id" />
 											</td>
 											<td>
-												تاريخ إصدار جواز السفر
+												تاريخ إصدار الحفيظة
 											</td>
 											<td>
 												<span t-esc="get_hijri_date(o.passport_date, '-')" />
@@ -105,7 +105,7 @@
 										</tr>
 										<tr>
 											<td>
-												مكان إصدار جواز السفر
+												مكان إصدار الحفيظة
 											</td>
 											<td>
 												<span t-field="o.passport_place" />
