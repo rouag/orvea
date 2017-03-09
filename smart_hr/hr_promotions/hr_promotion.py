@@ -47,7 +47,7 @@ class HrPromotion(models.Model):
 
     @api.model
     def create(self, vals):
-        ret = super(hr_promotion, self).create(vals)
+        ret = super(HrPromotion, self).create(vals)
         # Sequence
         vals = {}
         vals['name'] = self.env['ir.sequence'].get('hr.employee.promotion.seq')
@@ -354,7 +354,7 @@ class HrPromotion(models.Model):
         for rec in self:
             if rec.state not in ['draft', 'promotion_type'] and self._uid != SUPERUSER_ID:
                 raise ValidationError(u'لا يمكن حذف قرار الترقية في هذه المرحلة يرجى مراجعة مدير النظام')
-        return super(hr_promotion, self).unlink()
+        return super(HrPromotion, self).unlink()
 
 
 class hrPromotionLigneEmployee(models.Model):

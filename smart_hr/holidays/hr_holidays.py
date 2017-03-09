@@ -141,11 +141,21 @@ class HrHolidays(models.Model):
     def _compute_current_holiday_stock(self):
         for holiday in self:
             current_stock = 0
-            if holiday.holiday_status_id and holiday.entitlement_type and holiday.holiday_status_id.id != holiday.env.ref('smart_hr.data_hr_holiday_compensation').id:
-                stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', holiday.employee_id.id),('holiday_status_id', '=', holiday.holiday_status_id.id),
+            if holiday.holiday_status_id  and holiday.holiday_status_id.id != holiday.env.ref('smart_hr.data_hr_holiday_compensation').id:
+                if holiday.entitlement_type:
+                    stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', holiday.employee_id.id),('holiday_status_id', '=', holiday.holiday_status_id.id),
                                                                ('entitlement_id.entitlment_category.id', '=', holiday.entitlement_type.id)])
-                entitlement_line = self.env['hr.holidays.status.entitlement'].search([('leave_type', '=', holiday.holiday_status_id.id),
+                    entitlement_line = self.env['hr.holidays.status.entitlement'].search([('leave_type', '=', holiday.holiday_status_id.id),
                                                                ('entitlment_category.id', '=', holiday.entitlement_type.id)])
+                else:
+                    stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', holiday.employee_id.id),('holiday_status_id', '=', holiday.holiday_status_id.id),
+                                                               ])
+                    not_all_entitlement_line = self.env['hr.holidays.status.entitlement'].search_count([('leave_type', '=', holiday.holiday_status_id.id),
+                                                                                                    ('entitlment_category.id', '!=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)
+                                                                                                   ])
+                    if not_all_entitlement_line == 0:
+                        entitlement_line = self.env['hr.holidays.status.entitlement'].search([('leave_type', '=', holiday.holiday_status_id.id),
+                                                               ('entitlment_category.id', '=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)])
                 if stock_line:
                     current_stock = stock_line.holidays_available_stock
                 elif entitlement_line and entitlement_line.periode:
@@ -159,31 +169,7 @@ class HrHolidays(models.Model):
                     if entitlement_line and not entitlement_line.periode and entitlement_line.holiday_stock_default == 0:
                         current_stock = str("لا تحتاج رصيد")
 
-            elif not holiday.entitlement_type and holiday.holiday_status_id.id != self.env.ref('smart_hr.data_hr_holiday_compensation').id:
-                stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', holiday.employee_id.id),('holiday_status_id', '=', holiday.holiday_status_id.id),
-                                                               ])
-                not_all_entitlement_line = self.env['hr.holidays.status.entitlement'].search_count([('leave_type', '=', holiday.holiday_status_id.id),
-                                                                                                    ('entitlment_category.id', '!=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)
-                                                                                                   ])
-                if stock_line:
-                    current_stock = stock_line.holidays_available_stock
-                elif not_all_entitlement_line == 0:
-                    entitlement_line = self.env['hr.holidays.status.entitlement'].search([('leave_type', '=', holiday.holiday_status_id.id),
-                                                               ('entitlment_category.id', '=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)])
-                    if entitlement_line and entitlement_line.periode == 100:
-                        stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', holiday.employee_id.id),
-                                                               ('holiday_status_id', '=', holiday.holiday_status_id.id),('entitlement_id.entitlment_category.id', '=', holiday.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)
-                                                                ])
-                        if stock_line:
-                            current_stock = stock_line.holidays_available_stock
-                        else:
-                            if entitlement_line.holiday_stock_default==0:
-                                current_stock = str("لا تحتاج رصيد")
-                            else:
-                                current_stock = entitlement_line.holiday_stock_default
-                        if current_stock == 0:
-                            if entitlement_line and not entitlement_line.periode and entitlement_line.holiday_stock_default == 0:
-                                current_stock = str("لا تحتاج رصيد")
+  
             if holiday.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_compensation').id:
                 current_stock = holiday.employee_id.compensation_stock
             holiday.current_holiday_stock = current_stock
@@ -1054,7 +1040,7 @@ class HrHolidays(models.Model):
                     new_date_to = date_to + timedelta(days=1)
                     to_change_vals['date_to']= new_date_to
                     to_change_vals['duration']= new_duration
-        return to_change_vals
+            return to_change_vals
                     
     @api.multi
     def check_constraintes(self):
@@ -1248,10 +1234,11 @@ class HrHolidays(models.Model):
     def write(self, vals):
         for rec in self:
             to_change_vals =rec.check_dates_periode_normal_holiday()
-            if 'duration' in to_change_vals:
-                vals['duration']=to_change_vals['duration']
-            if 'date_to' in to_change_vals:
-                vals['date_to']=to_change_vals['date_to']
+            if to_change_vals:
+                if 'duration' in to_change_vals:
+                    vals['duration']=to_change_vals['duration']
+                if 'date_to' in to_change_vals:
+                    vals['date_to']=to_change_vals['date_to']
         return super(HrHolidays, self).write(vals)
 
     @api.model
@@ -1260,10 +1247,11 @@ class HrHolidays(models.Model):
         res.check_constraintes()
         vals = {}
         to_change_vals =res.check_dates_periode_normal_holiday()
-        if 'duration' in to_change_vals:
-            vals['duration']=to_change_vals['duration']
-        if 'date_to' in to_change_vals:
-            vals['date_to']=to_change_vals['date_to']
+        if to_change_vals:
+            if 'duration' in to_change_vals:
+                vals['duration']=to_change_vals['duration']
+            if 'date_to' in to_change_vals:
+                vals['date_to']=to_change_vals['date_to']
        # Sequence
         
         vals['state'] = 'draft'
