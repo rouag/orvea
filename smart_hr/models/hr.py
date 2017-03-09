@@ -17,15 +17,17 @@ class HrEmployee(models.Model):
     def _sanction_line(self):
         sanction_obj = self.env['hr.sanction.ligne']
         search_domain = [
-                ('employee_id', '=', self.employee_id.id),
-                ('state', '=', 'done'),
-            ]
-        for rec in sanction_obj.search(search_domain): 
+            ('employee_id', '=', self.employee_id.id),
+            ('state', '=', 'done'),
+        ]
+        for rec in sanction_obj.search(search_domain):
             self.sanction_ids = rec.sanction_ids
 
     number = fields.Char(string=u'الرقم الوظيفي')
-    gender = fields.Selection([('male', 'Male'), ('female', 'Female'),], string=u'الجنس')
-    marital = fields.Selection([('single', 'Single'), ('married', 'Married'), ('widower', 'Widower'), ('divorced', 'Divorced')], string=u'الجنس')
+    gender = fields.Selection([('male', 'Male'), ('female', 'Female'), ], string=u'الجنس')
+    marital = fields.Selection(
+        [('single', 'Single'), ('married', 'Married'), ('widower', 'Widower'), ('divorced', 'Divorced')],
+        string=u'الجنس')
     identification_date = fields.Date(string=u'تاريخ إصدار بطاقة الهوية ')
     identification_place = fields.Many2one('res.city', string=u'مكان إصدار بطاقة الهوية')
     father_name = fields.Char(string=u'إسم الأب', required=1)
@@ -38,18 +40,18 @@ class HrEmployee(models.Model):
                                        ('waiting', u'في إنتظار الموافقة'),
                                        ('update', u'إستكمال البيانات'),
                                        ('done', u'اعتمدت'),
-                                      ( 'outside_assignment',u'مكلف خارجي'),
-                                      ('non_active',u'مفصول'),
-                                      ('oh',u'كف اليد'),
-                                      ('retired',u'متقاعد'),
-                                      ('employee', u'موظف')], string=u'الحالة', default='new')
+                                       ('outside_assignment', u'مكلف خارجي'),
+                                       ('non_active', u'مفصول'),
+                                       ('oh', u'كف اليد'),
+                                       ('retired', u'متقاعد'),
+                                       ('employee', u'موظف')], string=u'الحالة', default='new')
     # Deputation Stock
     deputation_stock = fields.Integer(string=u'الأنتدابات', default=60)
     service_duration = fields.Integer(string=u'مدة الخدمة(يوم)', readonly=True, size=4)
-    religion_state = fields.Many2one('religion.religion',string=u'الديانة', required=1)
+    religion_state = fields.Many2one('religion.religion', string=u'الديانة', required=1)
     emp_state = fields.Selection([('working', u'على رأس العمل'),
                                   ('suspended', u'مكفوف اليد'),
-                                   ('outside', u'مكلف خارجي'),
+                                  ('outside', u'مكلف خارجي'),
                                   ('terminated', u'مطوي قيده'),
                                   ], string=u'الحالة', default='working', advanced_search=True)
     decision_appoint_ids = fields.One2many('hr.decision.appoint', 'employee_id', string=u'تعيينات الموظف')
@@ -81,29 +83,31 @@ class HrEmployee(models.Model):
     diploma_id = fields.Many2one('hr.employee.diploma', string=u'الشهادة')
     specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص')
     passport_date = fields.Date(string=u'تاريخ إصدار الحفيظة ')
-    passport_place = fields.Many2one('res.city', string=u'مكان إصدار الحفيظة') 
+    passport_place = fields.Many2one('res.city', string=u'مكان إصدار الحفيظة')
     passport_end_date = fields.Date(string=u'تاريخ انتهاء الحفيظة ')
     display_name = fields.Char(compute='_compute_display_name', string=u'الاسم')
-    sanction_ids = fields.One2many('hr.sanction.ligne', 'employee_id', string=u'العقوبات' )
-    sanction_count = fields.Integer(string=u'عدد  العقوبات',)
+    sanction_ids = fields.One2many('hr.sanction.ligne', 'employee_id', string=u'العقوبات')
+    sanction_count = fields.Integer(string=u'عدد  العقوبات', )
     bank_account_ids = fields.One2many('res.partner.bank', 'employee_id', string=u'الحسابات البنكِيّة')
     education_level_ids = fields.One2many('hr.employee.job.education.level', 'employee_id', string=u'المستوى التعليمي')
     education_level_id = fields.Many2one('hr.employee.education.level', string=u'المستوى التعليمي ')
-    evaluation_level_ids = fields.One2many('hr.employee.evaluation.level','employee_id', u'التقييم الوظيفي')
+    evaluation_level_ids = fields.One2many('hr.employee.evaluation.level', 'employee_id', u'التقييم الوظيفي')
     loan_count = fields.Integer(string=u'عدد القروض', compute='_compute_loans_count')
-    point_seniority=fields.Integer(string=u'نقاط الأقدمية')
-    point_education=fields.Integer(string=u'نقاط التعليم')
-    point_training=fields.Integer(string=u'نقاط التدريب')
-    point_functionality=fields.Integer(string=u'نقاط  الإداء الوظيفي',)
+    point_seniority = fields.Integer(string=u'نقاط الأقدمية')
+    point_education = fields.Integer(string=u'نقاط التعليم')
+    point_training = fields.Integer(string=u'نقاط التدريب')
+    point_functionality = fields.Integer(string=u'نقاط  الإداء الوظيفي', )
     is_member = fields.Boolean(string=u'عضو في الهيئة', default=False, required=1)
     is_saudian = fields.Boolean(string='is saudian', compute='_compute_is_saudian')
-    insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين', readonly='1',compute='_compute_insurance_type')
+    insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين', readonly='1',
+                                     compute='_compute_insurance_type')
     holiday_count = fields.Integer(string=u'عدد الاجازات', compute='_compute_holidays_count')
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
     royal_decree_number = fields.Char(string=u'رقم الأمر الملكي'  ,readonly=True)
     royal_decree_date = fields.Date(string=u'تاريخ الأمر الملكي ', readonly=True)
     training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'سجل التدريبات')
-    state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
+    state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')],
+                             string='Attendance')
     employee_card_id = fields.Many2one('hr.employee.functionnal.card')
     residance_id = fields.Char(string=u'رقم الإقامة ')
     residance_date = fields.Date(string=u'تاريخ إصدار بطاقة الإقامة ')
@@ -112,19 +116,17 @@ class HrEmployee(models.Model):
     state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
     country_id = fields.Many2one(default=lambda self: self.env['res.country'].search([('code_nat', '=', 'SA')], limit=1))
     passport_id = fields.Char(string=u'رقم الحفيظة')
-    
+
     @api.onchange('gender')
     def _onchange_gender(self):
-        if self.gender =='female':
+        if self.gender == 'female':
             self.father_middle_name = u'بنت'
             self.grandfather_middle_name = u'بنت'
             self.grandfather2_middle_name = u'بنت'
-        else :
+        else:
             self.father_middle_name = u'بن'
             self.grandfather_middle_name = u'بن'
             self.grandfather2_middle_name = u'بن'
-
-   
 
 
     @api.multi
@@ -142,16 +144,15 @@ class HrEmployee(models.Model):
         for rec in self:
             rec.sanction_count = self.env['hr.sanction'].search_count([('line_ids.employee_id', '=', rec.id)])
 
-
     @api.one
     @api.depends('job_id')
     def _compute_insurance_type(self):
         if self.job_id:
             salary_grids = self.env['salary.grid.detail'].search([('type_id', '=', self.job_id.type_id.id),
                                                                   ('grade_id', '=', self.job_id.grade_id.id),
-                                                                   ('degree_id', '=', self.degree_id.id)])
+                                                                  ('degree_id', '=', self.degree_id.id)])
             if salary_grids:
-                self.insurance_type =  salary_grids[0].insurance_type
+                self.insurance_type = salary_grids[0].insurance_type
 
     @api.multi
     @api.depends('country_id')
@@ -169,7 +170,7 @@ class HrEmployee(models.Model):
     def recruitement_legal_age(self):
         recruitement_legal_age = self.env['hr.employee.configuration'].search([], limit=1).recruitment_legal_age
         if self.age < recruitement_legal_age:
-            raise ValidationError(u"لا يمكن أن يكون تعيين الموظف قبل بلوغه "+str(recruitement_legal_age)+u"سنة")
+            raise ValidationError(u"لا يمكن أن يكون تعيين الموظف قبل بلوغه " + str(recruitement_legal_age) + u"سنة")
 
     @api.one
     @api.depends('name', 'father_middle_name', 'father_name', 'family_name')
@@ -188,7 +189,8 @@ class HrEmployee(models.Model):
     @api.depends('promotions_history.balance')
     def _compute_promotion_days(self):
         for emp in self:
-            active_promotion = self.env['hr.employee.promotion.history'].search([('active_duration', '=', 'True'), ('employee_id', '=', emp.id)], limit=1)
+            active_promotion = self.env['hr.employee.promotion.history'].search(
+                [('active_duration', '=', 'True'), ('employee_id', '=', emp.id)], limit=1)
             if active_promotion:
                 emp.promotion_duration = active_promotion.balance
 
@@ -198,7 +200,8 @@ class HrEmployee(models.Model):
         if decision_appoint_ids:
             direct_action_date = decision_appoint_ids[0].date_direct_action
             for decision_appoint in decision_appoint_ids:
-                if fields.Date.from_string(decision_appoint.date_direct_action) < fields.Date.from_string(direct_action_date):
+                if fields.Date.from_string(decision_appoint.date_direct_action) < fields.Date.from_string(
+                        direct_action_date):
                     direct_action_date = decision_appoint.date_direct_action
                 return direct_action_date
 
@@ -217,8 +220,9 @@ class HrEmployee(models.Model):
                 else:
                     emp.service_duration += (prev_month_end - prev_month_first).days
                 # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
-                uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', emp.id), ('action', '=', 'absence'),
-                                                                                            ('date', '>=', prev_month_first), ('date', '<=', prev_month_end)])
+                uncounted_absence_days = self.env['hr.attendance.report_day'].search_count(
+                    [('employee_id', '=', emp.id), ('action', '=', 'absence'),
+                     ('date', '>=', prev_month_first), ('date', '<=', prev_month_end)])
                 emp.service_duration -= uncounted_absence_days
 
     @api.depends('birthday')
@@ -237,10 +241,10 @@ class HrEmployee(models.Model):
         for rec in self:
             if rec.is_saudian:
                 if len(rec.identification_id) != 10:
-                        raise Warning(_('الرجاء التثبت من رقم الهوية.'))
+                    raise Warning(_('الرجاء التثبت من رقم الهوية.'))
             if not rec.is_saudian:
                 if len(rec.identification_id) != 10:
-                        raise Warning(_('الرجاء التثبت من رقم الإقامة.'))
+                    raise Warning(_('الرجاء التثبت من رقم الإقامة.'))
 
     @api.one
     def action_send(self):
@@ -280,22 +284,20 @@ class HrEmployee(models.Model):
             specialization_ids = self.diploma_id.specialization_ids.ids
             res['domain'] = {'specialization_ids': [('id', 'in', specialization_ids)]}
         return res
-    
-    
+
     @api.multi
     def _compute_point(self):
-       if self.job_id:
-           if self.job_id.grade_id.years_job:
-               years_supp=(self.service_duration/365)-self.job_id.grade_id.years_job
-               if years_supp > 0 :
-                   regle_point=self.env['hr.evaluation.point'].search([('grade_id','=',self.job_id.grade_id)])
-                   for seniority in regle_point.seniority_ids:
-                       if years_supp < seniority.year_to and years_supp > seniority.year_from:
-                           self.point_seniority=years_supp*seniority.point
+        if self.job_id:
+            if self.job_id.grade_id.years_job:
+                years_supp = (self.service_duration / 365) - self.job_id.grade_id.years_job
+                if years_supp > 0:
+                    regle_point = self.env['hr.evaluation.point'].search([('grade_id', '=', self.job_id.grade_id)])
+                    for seniority in regle_point.seniority_ids:
+                        if years_supp < seniority.year_to and years_supp > seniority.year_from:
+                            self.point_seniority = years_supp * seniority.point
 
 
 class HrEmployeeHolidaysStock(models.Model):
-
     _name = 'hr.employee.holidays.stock'
 
     employee_id = fields.Many2one('hr.employee', string=u'الموظف')
@@ -314,7 +316,7 @@ class HrEmployeeHolidaysStock(models.Model):
         (9, u'تسعة سنوات'),
         (10, u'عشرة سنوات'),
         (100, u'طوال مدة الخدمة الوظيفيّة'),
-        ], string=u'مدة صلاحيات الإجازة', default=1)
+    ], string=u'مدة صلاحيات الإجازة', default=1)
     entitlement_id = fields.Many2one('hr.holidays.status.entitlement', string=u'نوع الاستحقاق')
     entitlement_name = fields.Char(string=u'نوع الاستحقاق', related='entitlement_id.entitlment_category.name')
     period_id = fields.Many2one('hr.holidays.periode', string=u'periode')
@@ -324,7 +326,8 @@ class HrEmployeePromotionHistory(models.Model):
     _name = 'hr.employee.promotion.history'
 
     employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف')
-    date_from = fields.Date(string=u'التاريخ من', default=fields.Datetime.now(), related='decision_appoint_id.date_direct_action')
+    date_from = fields.Date(string=u'التاريخ من', default=fields.Datetime.now(),
+                            related='decision_appoint_id.date_direct_action')
     date_to = fields.Date(string=u'التاريخ الى', related='decision_appoint_id.date_hiring_end')
     balance = fields.Integer(string=u'رصيد الترقية (يوم)', store=True)
     active_duration = fields.Boolean(string=u'نشط')
@@ -346,13 +349,15 @@ class HrEmployeePromotionHistory(models.Model):
                 else:
                     promotion.balance += (prev_month_end - prev_month_first).days
                 # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
-                uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', promotion.employee_id.id), ('action', '=', 'absence'),
-                                                                                            ('date', '>=', prev_month_first), ('date', '<=', prev_month_end)])
+                uncounted_absence_days = self.env['hr.attendance.report_day'].search_count(
+                    [('employee_id', '=', promotion.employee_id.id), ('action', '=', 'absence'),
+                     ('date', '>=', prev_month_first), ('date', '<=', prev_month_end)])
                 promotion.balance -= uncounted_absence_days
 
     @api.multi
     def decrement_promotion_duration(self, employee_id, duration_days):
-        active_promotions = self.env['hr.employee.promotion.history'].search([('active_duration', '=', 'True'), ('employee_id', '=', employee_id.id)])
+        active_promotions = self.env['hr.employee.promotion.history'].search(
+            [('active_duration', '=', 'True'), ('employee_id', '=', employee_id.id)])
         active_prom = False
         if active_promotions:
             for promotion in active_promotions:
@@ -375,8 +380,9 @@ class HrEmployeePromotionHistory(models.Model):
             else:
                 self.balance += (promotion_date_to - prom_month_first).days
             self.active_duration = False
-            uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', self.employee_id.id), ('action','=', 'absence'),
-                                                                                    ('date', '>=', prom_month_first), ('date', '<=', promotion_date_to)])
+            uncounted_absence_days = self.env['hr.attendance.report_day'].search_count(
+                [('employee_id', '=', self.employee_id.id), ('action', '=', 'absence'),
+                 ('date', '>=', prom_month_first), ('date', '<=', promotion_date_to)])
             self.balance -= uncounted_absence_days
 
 
@@ -391,11 +397,11 @@ class HrEmployeeEducationLevel(models.Model):
     nomber_year_education = fields.Integer(string=u'عدد سنوات الدراسة', )
     diploma_id = fields.Many2one('hr.employee.diploma', string=u'المؤهل')
     specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص')
-    governmental_entity = fields.Many2one('res.partner', string=u'المؤسسة العلمية ', domain=[('company_type', '=', 'school')])
+    governmental_entity = fields.Many2one('res.partner', string=u'المؤسسة العلمية ',
+                                          domain=[('company_type', '=', 'school')])
     university_entity = fields.Many2one('res.partner', string=u'الكلية ', domain=[('company_type', '=', 'faculty')])
     secondary = fields.Boolean(string=u'بعد‬ الثانوية', required=1)
     not_secondary = fields.Boolean(string=u'قبل الثانوية', required=1)
-
 
     @api.onchange('secondary')
     def onchange_secondry(self):
@@ -418,18 +424,17 @@ class HrEmployeeEducationLevelEmployee(models.Model):
     diploma_id = fields.Many2one('hr.employee.diploma', related='level_education_id.diploma_id', string=u'المؤهل')
     specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص')
     qualification_id = fields.Many2one('hr.qualification.estimate', string=u' تقدير المؤهل العلمي')
-    governmental_entity = fields.Many2one('res.partner', string=u'المؤسسة العلمية ', domain=[('company_type', '=', 'school')])
+    governmental_entity = fields.Many2one('res.partner', string=u'المؤسسة العلمية ',
+                                          domain=[('company_type', '=', 'school')])
     university_entity = fields.Many2one('res.partner', string=u'الكلية', domain=[('company_type', '=', 'faculty')])
     job_specialite = fields.Boolean(string=u'في طبيعة العمل', required=1)
     diploma_date = fields.Date(string=u'تاريخ الحصول على المؤهل')
-    while_serving = fields.Boolean(string=u'اثناء الخدمة', readonly=1, compute='_compute_while_serving')
+    while_serving = fields.Boolean(string=u'اثناء الخدمة', readonly=1)
 
-    @api.multi
-    @api.depends('employee_id')
-    def _compute_while_serving(self):
-        for rec in self:
-            if rec.diploma_date >= rec.employee_id.recruiter_date:
-                rec.while_serving = True
+    @api.onchange('diploma_date')
+    def onchange_secondry(self):
+        if self.diploma_date >= self.employee_id.recruiter_date:
+            self.while_serving = True
 
 
 class HrQualificationEstimate(models.Model):
@@ -438,13 +443,11 @@ class HrQualificationEstimate(models.Model):
 
     name = fields.Char(string='المسمّى')
     code = fields.Char(string=u'الرمز')
-    
 
 
 class HrEmployeeConfiguration(models.Model):
     _name = 'hr.employee.configuration'
     _description = u'إعدادات الموظف'
-    
 
     name = fields.Char(string='name')
     number = fields.Integer(string='بداية تسلسل الرقم الوظيفي')
@@ -457,34 +460,34 @@ class HrEmployeeConfiguration(models.Model):
     def control_test_retraite_employee(self):
         today_date = fields.Date.from_string(fields.Date.today())
         print"today_date", type(today_date)
-        age_member =  self.env.ref('smart_hr.data_hr_employee_configuration').age_member
-        age_nomember =  self.env.ref('smart_hr.data_hr_employee_configuration').age_nomember
-        print"age_member",age_member
-        hr_member = self.env['hr.employee'].search([('employee_state', '=', 'employee') ])
+        age_member = self.env.ref('smart_hr.data_hr_employee_configuration').age_member
+        age_nomember = self.env.ref('smart_hr.data_hr_employee_configuration').age_nomember
+        print"age_member", age_member
+        hr_member = self.env['hr.employee'].search([('employee_state', '=', 'employee')])
         for line in hr_member:
             today_date = fields.Date.from_string(fields.Date.today())
             birthday = fields.Date.from_string(line.birthday)
-            print"birthday",birthday
+            print"birthday", birthday
             years = (today_date - birthday).days / 365
-            print"years",years
-            if years == age_member and line.is_member == True:
-                self.env['hr.termination'].create({ 
-                                               'name':'تقاعد طبيعي ',
-                                                'date': today_date,
-                                               'termination_type_id':self.env.ref('smart_hr.data_hr_ending_service_type_normal').id,
-                                                'employee_id': line.id,
-                                                'employee_no' : line.number,
-                                                'job_id' : line.job_id.id,
-                                                    })
-            if years == age_nomember and line.is_member ==False:
+            print"years", years
+            if years == age_member and line.is_member:
                 self.env['hr.termination'].create({
-                                                'name':'تقاعد طبيعي ',
-                                                'date': today_date,
-                                                'termination_type_id':self.env.ref('smart_hr.data_hr_ending_service_type_normal').id,
-                                                'employee_id': line.id,
-                                                'employee_no' : line.number,
-                                                'job_id' : line.job_id.id,
-                                                })
+                    'name': 'تقاعد طبيعي ',
+                    'date': today_date,
+                    'termination_type_id': self.env.ref('smart_hr.data_hr_ending_service_type_normal').id,
+                    'employee_id': line.id,
+                    'employee_no': line.number,
+                    'job_id': line.job_id.id,
+                })
+            if years == age_nomember and not line.is_member:
+                self.env['hr.termination'].create({
+                    'name': 'تقاعد طبيعي ',
+                    'date': today_date,
+                    'termination_type_id': self.env.ref('smart_hr.data_hr_ending_service_type_normal').id,
+                    'employee_id': line.id,
+                    'employee_no': line.number,
+                    'job_id': line.job_id.id,
+                })
 
     def send_test_member_group(self, group_id, title, msg):
         '''
@@ -500,8 +503,6 @@ class HrEmployeeConfiguration(models.Model):
                                                   'notif': True
                                                   })
 
-
-   
     @api.multi
     def button_setting(self):
         hr_employee_configuration_id = self.env['hr.employee.configuration'].search([], limit=1)
@@ -516,7 +517,8 @@ class HrEmployeeConfiguration(models.Model):
                 'res_id': hr_employee_configuration_id.id,
             }
             return value
-        
+
+
 class HrEmployeeEvaluation(models.Model):
     _name = 'hr.employee.evaluation.level'
     _rec_name = 'degree_id'
@@ -535,6 +537,7 @@ class HrEmployeeDiploma(models.Model):
     specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص')
     code = fields.Char(string=u'الرمز')
 
+
 class HrEmployeeSpecialization(models.Model):
     _name = 'hr.employee.specialization'
     _description = u'التخصص'
@@ -550,4 +553,4 @@ class HrEmployeeSanction(models.Model):
     employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', )
     type_sanction = fields.Many2one('hr.type.sanction', string='العقوبة')
     date_sanction_start = fields.Date(string='تاريخ بدأ العقوبة')
-    date_sanction_end = fields.Date(string='تاريخ الإلغاء') 
+    date_sanction_end = fields.Date(string='تاريخ الإلغاء')

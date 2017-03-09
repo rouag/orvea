@@ -64,7 +64,6 @@
 
 							<br></br>
 							<br></br>
-							<t t-esc="max_length" />
 							<div class="col-xs-12">
 
 								<table width="100%">
@@ -100,7 +99,7 @@
 												<span t-field="o.employee_id.degree_id" />
 											</td>
 											<td rowspan="2">
-												<span t-field="o.employee_id.basic_salary" />
+												<span t-esc="get_basic_salary(o.employee_id)" />
 											</td>
 											<td class="text-center">مسمى البدل </td>
 											<td class="text-center">المبلغ</td>
@@ -140,7 +139,7 @@
 										<tr>
 											<td colspan="7" class="text-right"> المجموع</td>
 											<td>
-												<t t-esc="o.employee_id.basic_salary" />
+												<span t-esc="get_basic_salary(o.employee_id)" />
 											</td>
 											<td colspan="2" class="text-right">
 												<span t-esc="get_sum_alowances(o.line_ids)" />

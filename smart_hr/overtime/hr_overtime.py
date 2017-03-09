@@ -136,10 +136,6 @@ class HrOvertime(models.Model):
     @api.multi
     def action_humain(self):
         for overtime in self:
-            for line in  overtime.line_ids :
-                for rec in line :
-                    type = ' خارج الدوام'
-                    self.env['hr.employee.history'].sudo().add_action_line(line.employee_id, overtime.decision_number,  line.date_from, type)
             overtime.state = 'done'
 
 
