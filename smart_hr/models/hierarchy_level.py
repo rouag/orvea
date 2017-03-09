@@ -28,3 +28,4 @@ class HierarchyLevel(models.Model):
         res = super(HierarchyLevel, self).create(vals)
         res.department_type.level = res.level
         return res
+ 

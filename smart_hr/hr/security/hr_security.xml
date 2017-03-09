@@ -37,7 +37,11 @@
 		</record>
 		
 
-
+<record id="group_hr_personnel_mobile_numbers" model="res.groups">
+			<field name="category_id" ref="base.module_category_human_resources" />
+				<field name="name">صاحب صلاحية - أرقام الجوال</field>
+			
+		</record>
 
 	</data>
 

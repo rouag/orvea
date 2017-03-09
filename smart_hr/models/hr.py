@@ -100,8 +100,8 @@ class HrEmployee(models.Model):
     insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين', readonly='1',compute='_compute_insurance_type')
     holiday_count = fields.Integer(string=u'عدد الاجازات', compute='_compute_holidays_count')
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
-    royal_decree_number = fields.Char(string=u'رقم الأمر الملكي')
-    royal_decree_date = fields.Date(string=u'تاريخ الأمر الملكي ')
+    royal_decree_number = fields.Char(string=u'رقم الأمر الملكي'  ,readonly=True)
+    royal_decree_date = fields.Date(string=u'تاريخ الأمر الملكي ', readonly=True)
     training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'سجل التدريبات')
     state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
     employee_card_id = fields.Many2one('hr.employee.functionnal.card')
@@ -124,14 +124,7 @@ class HrEmployee(models.Model):
             self.grandfather_middle_name = u'بن'
             self.grandfather2_middle_name = u'بن'
 
-    @api.model
-    def create(self, vals):
-        res = super(HrEmployee, self).create(vals)
-        number_id = self.env['hr.employee.configuration'].search([])
-        if number_id:
-            res.number= number_id[0].number + 1
-            number_id.write({'number':res.number})
-        return res
+   
 
 
     @api.multi

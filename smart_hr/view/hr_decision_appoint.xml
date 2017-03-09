@@ -275,15 +275,20 @@
 											attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])]}" />
 										<field name="order_picture" filename="order_picture_name"
 											attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct','civil', 'done','refuse'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])]}" />
-
 										<field name="order_picture_name" invisible="1" />
+										
+										
+											<field name="royal_decree_number"
+											attrs="{'invisible':['|',('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse']),('type_appointment', '!=', %(data_hr_recrute_Members)d)],'required':[('type_appointment', '=', %(data_hr_recrute_Members)d)],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])]}" />
+										<field name="royal_decree_date" 
+											attrs="{'invisible':['|',('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct','civil', 'done','refuse']),('type_appointment', '!=', %(data_hr_recrute_Members)d)],'required':[('type_appointment', '=', %(data_hr_recrute_Members)d)],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])]}" />
 									</group>
 									<group>
 
 										<field name="number_appoint"
 											attrs="{'invisible':[('state', 'not in', ['hrm','direct',  'budget', 'civil','done','refuse'])],'required':[('state','=','hrm')],'readonly':[('state', 'in', [ 'direct', 'civil','done', 'budget','refuse'])]}" />
 										<field name="date_appoint"
-											attrs="{'invisible':[('state', 'not in', ['hrm','direct',  'budget','civil', 'done','refuse'])],'required':[('state','=','hrm')],'readonly':[('state', 'in', [ 'direct',  'civil', 'budget','done','refuse'])]}" />
+											attrs="{'invisible':[('state', 'not in', ['hrm','direct',  'budget','civil', 'done','refuse'])],'required':[('state','=','hrm'),],'readonly':[('state', 'in', [ 'direct',  'civil', 'budget','done','refuse'])]}" />
 										<field name="file_appoint" filename="file_appoint_name"
 											attrs="{'invisible':[('state', 'not in', ['hrm','direct',  'budget', 'civil','done','refuse'])],'required':[('state','=','hrm')],'readonly':[('state', 'in', [ 'direct',  'civil', 'budget','done','refuse'])]}" />
 

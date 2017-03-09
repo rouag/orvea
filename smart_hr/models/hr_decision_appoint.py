@@ -53,6 +53,10 @@ class HrDecisionAppoint(models.Model):
     first_appoint = fields.Boolean(string='أول تعين بالهيئة')
     option_contract = fields.Boolean(string='قرار التعاقد')
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
+    royal_decree_number = fields.Char(string=u'رقم الأمر الملكي')
+    royal_decree_date = fields.Date(string=u'تاريخ الأمر الملكي ')
+    
+    
     # other info
     type_appointment = fields.Many2one('hr.type.appoint', string=u'نوع التعيين', required=1, advanced_search=True)
     description = fields.Text(string=' ملاحظات ')
@@ -445,7 +449,9 @@ class HrDecisionAppoint(models.Model):
                                 'job_id': self.job_id.id,
                                 'department_id': self.department_id.id,
                                 'degree_id': self.degree_id.id,
-                                'grade_id': self.grade_id.id
+                                'grade_id': self.grade_id.id,
+                                'royal_decree_number':self.royal_decree_number,
+                                'royal_decree_date':self.royal_decree_date
                                 })
         # check if the employee have allready a number 
         if not self.employee_id.number:
