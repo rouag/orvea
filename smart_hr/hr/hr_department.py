@@ -34,27 +34,6 @@ class HrDepartment(models.Model):
     all_child_ids = fields.Many2many('hr.department', compute=_get_child_ids, string="Child Departments")
 
     @api.multi
-    def name_get(self):
-        res = []
-        for dep in self:
-            list_type = dep._context.get('list_type', False)
-            if list_type and list_type == 'employee_form':
-                # get the FAR3 of current department
-                branche_dep_id = dep
-                while branche_dep_id.parent_id and branche_dep_id.dep_type.level != 1:
-                    branche_dep_id = dep.parent_id
-                res.append((dep.id, "%s / %s" % (branche_dep_id.name or '', dep.name)))
-            else:
-                reads = self.read(['name', 'parent_id'])
-                res = []
-                for record in reads:
-                    name = record['name']
-                    if record['parent_id']:
-                        name = record['parent_id'][1] + ' / ' + name
-                    res.append((record['id'], name))
-        return res
-
-    @api.multi
     def write(self, vals):
         return super(models.Model, self).write(vals)
 
