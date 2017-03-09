@@ -170,8 +170,9 @@
 								groups="smart_hr.group_employee_registration" attrs="{'invisible': [('employee_state', '!=', 'waiting')]}" />
 							<button name="action_cancel" string="إلغاء" type="object"
 								groups="smart_hr.group_employee_request" attrs="{'invisible': [('employee_state', '!=', 'waiting')]}" />
-							<button name="%(action_hr_employee_refuse_wizard)d" string="رفض"  type="action"
-								groups="smart_hr.group_employee_registration" attrs="{'invisible': [('employee_state', '!=', 'waiting')]}" />
+							<button name="%(action_hr_employee_refuse_wizard)d"
+								string="رفض" type="action" groups="smart_hr.group_employee_registration"
+								attrs="{'invisible': [('employee_state', '!=', 'waiting')]}" />
 							<field name="employee_state" widget="statusbar"
 								attrs="{'invisible': [('employee_state', '=', 'employee')]}"
 								statusbar_visible="new,waiting,done,refused" />
@@ -180,7 +181,6 @@
 						</header>
 						<sheet>
 							<field name="is_saudian" invisible="1" />
-							<field name="salary_grid_id" invisible="1" />
 							<div class="oe_button_box" name="button_box" position="inside">
 								<button name="%(smart_hr.action_hr_loan)d" class="oe_stat_button"
 									context="{'search_default_employee_id': id}" icon="fa-money"
@@ -316,14 +316,15 @@
 											<field name="specialization_ids" widget="many2many_tags" />
 											<field name="diploma_date" />
 											<field name="job_specialite" />
-
+											<field name="while_serving" />
 										</tree>
 									</field>
 								</page>
 								<page string="بيانات العمل">
 									<group>
 										<group string="بيانات العمل">
-											<field name="department_id" context="{'list_type':'employee_form'}" on_change="onchange_department_id(department_id)" />
+											<field name="department_id" context="{'list_type':'employee_form'}"
+												on_change="onchange_department_id(department_id)" />
 											<field name="dep_side" options="{'no_create': True}" />
 											<field name="dep_city" options="{'no_create': True}" />
 											<field name="job_id"
@@ -339,8 +340,8 @@
 											<field name="parent_id" string="المدير المباشر " />
 											<field name="service_duration" attrs="{'readonly': 1}" />
 											<field name="promotion_duration" attrs="{'readonly': 1}" />
-											<field name="royal_decree_number" />
-											<field name="royal_decree_date" />
+											<field name="royal_decree_number" attrs="{'invisible': [('is_member','=', False)]}" />
+											<field name="royal_decree_date" attrs="{'invisible': [('is_member','=', False)]}" />
 											<field name="external_decision" />
 											<field name="is_member" />
 										</group>
@@ -398,7 +399,6 @@
 									<field name="promotions_history" readonly="1">
 										<tree string="سِجل التعيينات">
 											<field name="appoint_type" />
-											<field name="salary_grid_id" />
 											<field name="date_from" />
 											<field name="date_to" />
 											<field name="balance" />

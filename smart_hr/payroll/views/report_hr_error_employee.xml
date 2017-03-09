@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_hr_error_employee">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.landscape_layout">
+						<div class="page">
+							<div class="col-xs-12">
+								<br></br>
+								<br></br>
+								<br></br>
+								<br></br>
+								<table>
+									<thead>
+										<tr>
+											<td class="text-center">رقم الموظف </td>
+											<td class="text-center">الإسم</td>
+											<td class="text-center">مسمى الوظيفة </td>
+											<td class="text-center">الرقم الوظيفي</td>
+
+											<td class="text-center">الشهر</td>
+											<td class="text-center">التسلسل</td>
+											<td class="text-center">صافي الراتب </td>
+											<td class="text-center">السبب</td>
+										</tr>
+									</thead>
+									<t t-set="employee_ids" t-value="get_all_employees(o.month)" />
+									<t t-foreach="employee_ids" t-as="line">
+										<tbody>
+											<tr>
+												<td>
+													<span t-field="line.employee_id.number" />
+												</td>
+												<td>
+													<span t-field="line.employee_id.name" />
+												</td>
+												<td>
+													<span t-field="line.employee_id.job_id" />
+												</td>
+												<td>
+													<span t-field="line.employee_id.job_id.number" />
+												</td>
+												<td>
+													<span t-field="line.month" />
+												</td>
+												<td>
+													<span t-field="line.number" />
+												</td>
+												<td>
+													<span t-et-field="line.salary_net" />
+												</td>
+												<td>
+												</td>
+											</tr>
+										</tbody>
+									</t>
+								</table>
+							</div>
+							</div>
+					</t>
+
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+							

@@ -8,7 +8,6 @@
 			<field name="arch" type="xml">
 				<form string="المستوى التعليمي">
 					<sheet>
-
 						<group col="4">
 							<field name="level_education_id" required="1" />
 							<field name="job_specialite" required="1" />
@@ -18,6 +17,7 @@
 							<field name="diploma_date" />
 							<field name="governmental_entity" />
 							<field name="university_entity" />
+							<field name="while_serving" />
 						</group>
 
 					</sheet>
@@ -40,6 +40,7 @@
 
 					<field name="governmental_entity" />
 					<field name="university_entity" />
+					<field name="while_serving" />
 
 				</tree>
 			</field>
@@ -226,6 +227,8 @@
 				</form>
 			</field>
 		</record>
+		
+
 
 		<record id="action_hr_employee_configuration" model="ir.actions.server">
 			<field name="sequence" eval="5" />

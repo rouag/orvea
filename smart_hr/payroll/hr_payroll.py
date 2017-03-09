@@ -379,11 +379,10 @@ class HrPayslip(models.Model):
             payslip.difference_history_ids.unlink()
             # generate  lines
             employee = payslip.employee_id
-            # search the correct salary_grid for this employee
-            salary_grids = employee.salary_grid_id
-            if not salary_grids:
+            # search the newest salary_grid for this employee
+            salary_grid = employee.get_salary_grid_id(False)
+            if not salary_grid:
                 return
-            salary_grid = employee.salary_grid_id
             if employee.basic_salary < 0:
                 basic_salary = salary_grid.basic_salary
             else:

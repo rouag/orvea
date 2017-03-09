@@ -161,6 +161,7 @@
         'payroll/wizard/wizard_bonus_action.xml',
         'payroll/wizard/wizard_deducation_action.xml',
         'payroll/wizard/wizard_loan_action.xml',
+        'payroll/wizard/wizard_error_employee_view.xml',
         'payroll/view/salary_grid.xml',
         'payroll/view/hr_payroll_view.xml',
         'payroll/view/setting_view.xml',
@@ -173,6 +174,8 @@
         'payroll/views/report_hr_deduction.xml',
         'payroll/views/report_payslip.xml',
         'payroll/views/report_payslip_extension.xml',
+        'payroll/views/report_hr_error_employee.xml',
+        
         'payroll/views/report.xml',
 
         # الحضور والإنصراف
@@ -194,6 +197,8 @@
         'attendance/view/hr_attendance_report_view.xml',
         'attendance/view/hr_monthly_summary_view.xml',
         'attendance/wizard/wizard_attendance_summary_view.xml',
+  
+        
         'attendance/views/attendance_summary_report.xml',
         'attendance/views/monthly_summary_report.xml',
         'attendance/views/monthly_summary_report_all.xml',
