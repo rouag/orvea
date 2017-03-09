@@ -47,6 +47,21 @@
 			</field>
 		</record>
 
+		<!-- view search -->
+
+		<record model="ir.ui.view" id="view_hr_attendance_filter">
+			<field name="name">hr.attendance.filter.inherit</field>
+			<field name="model">hr.attendance</field>
+			<field name="type">search</field>
+			<field name="inherit_id" ref="hr_attendance.view_hr_attendance_filter" />
+			<field name="arch" type="xml">
+				 <field name="employee_id" position="replace">
+					 	<field name="employee_id" string="الموظف"
+							   filter_domain="['|','|','|','|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.name','ilike',self),('employee_id.father_name','ilike',self),('employee_id.grandfather_name','ilike',self),('employee_id.family_name','ilike',self)]"/>
+				 </field>
+			</field>
+		</record>
+
 		<record id="open_view_attendance_inherite" model="ir.actions.act_window">
 			<field name="name">سجل الحظور والإنصراف</field>
 			<field name="res_model">hr.attendance</field>
