@@ -313,7 +313,7 @@ class HrPayslip(models.Model):
             # previous month in previous year
             previous_month = '0' + str((int(self.month) - 1))
             previous_year_date = str(fields.Date.from_string(self.date_from).year - 1) + '-12-31'
-            previous_year_date = fields.Date.from_string(current_year_date)
+            previous_year_date = fields.Date.from_string(previous_year_date)
             previous_month_payslip = self.env['hr.payslip'].search([('date_to', '<=', previous_year_date),
                                                                     ('employee_id', '=', self.employee_id.id),
                                                                     ('month', '=', previous_month),
