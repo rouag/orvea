@@ -7,7 +7,7 @@
 		<field name="arch" type="xml">
 			<form>
 				<group col="4" string="الفترة">
-					<field name="name" />
+					<field name="month" />
 				</group>
 				<group col="4" string="خيارات أخرى">
 					<field name="employee_id" />
@@ -24,7 +24,7 @@
 	</record>
 
 	<record id="wizard_error_employee_action" model="ir.actions.act_window">
-		<field name="name">طباعة  تقرير الاخطاء بالموظف</field>
+		<field name="name">  تقرير الاخطاء بالموظف</field>
 		<field name="res_model">wizard.error.employee</field>
 		<field name="type">ir.actions.act_window</field>
 		<field name="view_type">form</field>
@@ -33,7 +33,7 @@
 		<field name="target">new</field>
 	</record>
 
-	<menuitem id="wizard_error_employee_menu" name="طباعة  تقرير الاخطاء بالموظف"
+	<menuitem id="wizard_error_employee_menu" name="  تقرير الاخطاء بالموظف"
 		groups="smart_hr.group_dm,smart_hr.group_hrm" sequence="22"
 		action="wizard_error_employee_action" parent="hr_payroll_reporting" />
 
