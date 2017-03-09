@@ -338,24 +338,24 @@ class HrPayslip(models.Model):
             previous_month = '0' + str((int(self.month) - 1))
             current_year_date = str(fields.Date.from_string(self.date_from).year) + '-01-01'
             current_year_date = fields.Date.from_string(current_year_date)
-            previous_month_payslip = self.env['hr.payslip'].search([('date_from', '>=', current_year_date),
-                                                                    ('employee_id', '=', self.employee_id.id),
-                                                                    ('month', '=', previous_month),
-                                                                    ('with_advanced_salary', '=', True),
-                                                                    ('state', '=', 'done')
-                                                                    ])
+            previous_month_payslip = self.env['hr.payslip'].search_count([('date_from', '>=', current_year_date),
+                                                                          ('employee_id', '=', self.employee_id.id),
+                                                                          ('month', '=', previous_month),
+                                                                          ('with_advanced_salary', '=', True),
+                                                                          ('state', '=', 'done')
+                                                                          ])
         else:
             # previous month in previous year
             previous_month = '0' + str((int(self.month) - 1))
             previous_year_date = str(fields.Date.from_string(self.date_from).year - 1) + '-12-31'
             previous_year_date = fields.Date.from_string(previous_year_date)
-            previous_month_payslip = self.env['hr.payslip'].search([('date_to', '<=', previous_year_date),
-                                                                    ('employee_id', '=', self.employee_id.id),
-                                                                    ('month', '=', previous_month),
-                                                                    ('with_advanced_salary', '=', True),
-                                                                    ('state', '=', 'done')
-                                                                    ])
-        if previous_month_payslip:
+            previous_month_payslip = self.env['hr.payslip'].search_count([('date_to', '<=', previous_year_date),
+                                                                          ('employee_id', '=', self.employee_id.id),
+                                                                          ('month', '=', previous_month),
+                                                                          ('with_advanced_salary', '=', True),
+                                                                          ('state', '=', 'done')
+                                                                          ])
+        if previous_month_payslip > 0:
             # the employee is allready have the salary_grid of the current month
             amount_multiplication = 0
         # check if the employee need an advanced salary from the holidays
@@ -383,7 +383,7 @@ class HrPayslip(models.Model):
             salary_grid = employee.get_salary_grid_id(False)
             if not salary_grid:
                 return
-            if employee.basic_salary < 0:
+            if employee.basic_salary == 0:
                 basic_salary = salary_grid.basic_salary
             else:
                 basic_salary = employee.basic_salary

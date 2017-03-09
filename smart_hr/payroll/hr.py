@@ -8,7 +8,7 @@ class HrEmployee(models.Model):
 
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة')
     # basic salary for retired employee
-    basic_salary = fields.Float(string='الراتب الأساسي', default=-1)
+    basic_salary = fields.Float(string='الراتب الأساسي', default=0)
 
     @api.model
     def get_salary_grid_id(self, operation_date):
