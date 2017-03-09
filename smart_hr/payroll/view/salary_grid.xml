@@ -159,15 +159,15 @@
 
 						<group>
 							<group>
-								<field name="name" />
-								<field name="numero_order" />
+								<field name="name"  	attrs="{'readonly':[('state', 'not in', [ 'draft'])]}" />
+								<field name="numero_order" attrs="{'readonly':[('state', 'not in', [ 'draft'])]}" />
 							</group>
 							<group>
-								<field name="enabled" />
-								<field name="date" />
+								<field name="enabled" attrs="{'readonly':[('state', 'not in', [ 'draft'])]}" />
+								<field name="date" attrs="{'readonly':[('state', 'not in', [ 'draft'])]}" />
 							</group>
 						</group>
-						<field name="grid_ids" string=" سلّم الرواتب">
+						<field name="grid_ids" string=" سلّم الرواتب"  attrs="{'readonly':[('state', 'not in', [ 'draft'])]}" >
 							<tree>
 								<field name="type_id"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
