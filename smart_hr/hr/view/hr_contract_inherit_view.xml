@@ -15,7 +15,7 @@
 					<field name="identification_id" />
 					<field name="identification_date" />
 					<field name="identification_place" />
-					<field name="passport_id" />
+					<field name="passport_id" string="رقم الحفيظة" />
 				</field>
 				<div class="oe_title"  position="replace">
 				<group>

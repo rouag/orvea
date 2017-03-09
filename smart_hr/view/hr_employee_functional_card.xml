@@ -60,7 +60,7 @@
 									<field name="emp_age" />
 									<field name="birthday_location" />
 									<field name="identification_id" />
-									<field name="passport_id" />
+									<field name="passport_id" string="رقم الحفيظة" />
 									<field name="passport_place" />
 									<field name="passport_date" />
 									<field name="education_level" />

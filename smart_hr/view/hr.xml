@@ -61,9 +61,7 @@
 			<field name="view_mode">kanban,tree,form</field>
 			<field name="domain">[('employee_state','=','employee')]</field>
 			<field name="search_view_id" ref="view_search_hr_employee_inherit" />
-			<field name="context">{
-				'search_default_available_employees': 1
-				}
+			<field name="context">{'search_default_available_employees': 1,'readonly_by_pass': True}
 			</field>
 		</record>
 
@@ -267,7 +265,7 @@
 												attrs="{'invisible': [('is_saudian','=', True)]}" />
 										</group>
 										<group>
-											<field name="passport_id" attrs="{'required': [('is_saudian','=', False)]}" />
+											<field name="passport_id" string="رقم الحفيظة" attrs="{'required': [('is_saudian','=', False)]}" />
 											<field name="passport_date" attrs="{'required': [('is_saudian','=', False)]}" />
 											<field name="passport_end_date" attrs="{'required': [('is_saudian','=', False)]}" />
 											<field name="passport_place" attrs="{'required': [('is_saudian','=', False)]}" />
@@ -446,6 +444,7 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="domain">[('employee_state','!=','employee')]</field>
+			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 		<record id="action_employee_request_tree" model="ir.actions.act_window.view">
 			<field name="view_mode">tree</field>
