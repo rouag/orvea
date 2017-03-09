@@ -24,10 +24,23 @@ class MessierSalaires(report_sxw.rml_parse):
             'get_deductions': self._get_deductions,
             'get_sum_alowances': self._get_sum_allowances,
             'get_sum_deductions': self._get_sum_deductions,
+            'get_basic_salary': self._get_basic_salary,
             'get_salary_net': self._get_salary_net,
 
 
         })
+
+    def _get_basic_salary(self, employee_id):
+        print employee_id
+        basic_salary = 0
+        if employee_id.basic_salary > 0:
+            basic_salary = employee_id.basic_salary
+        else:
+            salary_grid_id = employee_id.get_salary_grid_id(False)
+            if salary_grid_id:
+                basic_salary = salary_grid_id.basic_salary
+        print basic_salary
+        return basic_salary
 
     def _get_allowances(self, line_ids):
         allowance_ids = []
@@ -230,14 +243,9 @@ class ReportHrErrorEmployee(report_sxw.rml_parse):
         date_to = get_hijri_month_end(HijriDate, Umalqurra,month)
         domain = []
         termination_pbj = self.pool.get('hr.termination')
-        payslip_pbj = self.pool.get('hr.payslip')
         search_empl_ids = termination_pbj.search(self.cr, self.uid, [('date_termination', '>', date_from),('date_termination', '<', date_to)])
-        search_ids = []
-        for rec in  search_empl_ids:
-            temp = payslip_pbj.search(self.cr, self.uid, [('month','=',month),('employee_id','=',rec.employee_id)])
-            search_ids += temp
-        domain.append(search_ids)
-        return payslip_pbj.browse(self.cr, self.uid, domain[0])
+        return termination_pbj.browse(self.cr, self.uid, search_empl_ids)
+       
 
     def _get_hijri_date(self, date, separator):
         '''

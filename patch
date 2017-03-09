@@ -1,3 +1,6 @@
+------09-03-2017-----------------------
+set basic_salary in hr_employee to 0 for employees
+update hr_employee set basic_salary=0;
 ------08-03-2017-----------------------
 must install module web_m2x_options
 Add these parameters go to Configuration -> Technical -> Parameters -> System Parameters and add new parameters like:

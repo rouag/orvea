@@ -75,7 +75,7 @@ class SalaryGridDetail(models.Model):
         return self.grid_id.date
 
     grid_id = fields.Many2one('salary.grid', string='سلّم الرواتب', required=1, ondelete='cascade')
-    date = fields.Date(default=get_default_date)
+    date = fields.Date()
     type_id = fields.Many2one('salary.grid.type', string='الصنف', required=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1)
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
@@ -87,6 +87,12 @@ class SalaryGridDetail(models.Model):
     reward_ids = fields.One2many('salary.grid.detail.reward', 'grid_detail_id', string='المكافآت‬')
     indemnity_ids = fields.One2many('salary.grid.detail.indemnity', 'grid_detail_id', string='التعويضات')
     insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين')
+
+    @api.model
+    def create(self, vals):
+        res = super(SalaryGridDetail, self).create(vals)
+        res.write({'date': res.grid_id.date})
+        return res
 
 
 class SalaryGridDetailAllowance(models.Model):

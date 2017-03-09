@@ -14,17 +14,17 @@ class HrEmployee(models.Model):
     def get_salary_grid_id(self, operation_date):
         if not operation_date:
             # return the newest salary grid detail
-            return self.env['salary.grid.detail'].search([('grid_id.enabled', '=', True),
-                                                          ('type_id', '=', self.type_id.id),
-                                                          ('grade_id', '=', self.grade_id.id),
-                                                          ('degree_id', '=', self.degree_id.id)
-                                                          ], order='date desc', limit=1)
+            salary_grid_id = self.env['salary.grid.detail'].search([('grid_id.enabled', '=', True),
+                                                                    ('type_id', '=', self.type_id.id),
+                                                                    ('grade_id', '=', self.grade_id.id),
+                                                                    ('degree_id', '=', self.degree_id.id)
+                                                                    ], order='date desc', limit=1)
         if operation_date:
-            # return the tight salary grid detail for given operation_date
-            print operation_date
-            return self.env['salary.grid.detail'].search([('grid_id.enabled', '=', True),
-                                                          ('type_id', '=', self.type_id.id),
-                                                          ('grade_id', '=', self.grade_id.id),
-                                                          ('degree_id', '=', self.degree_id.id),
-                                                          ('date', '<=', operation_date)
-                                                          ], order='date desc', limit=1)
+            # return the right salary grid detail for the given operation_date
+            salary_grid_id = self.env['salary.grid.detail'].search([('grid_id.enabled', '=', True),
+                                                                    ('type_id', '=', self.type_id.id),
+                                                                    ('grade_id', '=', self.grade_id.id),
+                                                                    ('degree_id', '=', self.degree_id.id),
+                                                                    ('date', '<=', operation_date)
+                                                                    ], order='date desc', limit=1)
+        return salary_grid_id
