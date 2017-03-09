@@ -8,7 +8,8 @@ from openerp.exceptions import UserError
 from datetime import datetime
 from openerp.addons.smart_base.util.umalqurra import *
 
-class hrLoan(models.Model):
+
+class HrLoan(models.Model):
     _name = 'hr.loan'
     _inherit = ['mail.thread']
     _description = u'القرض'
@@ -141,7 +142,7 @@ class hrLoan(models.Model):
                 loan.state = 'done'
 
 
-class hrLoanLine(models.Model):
+class HrLoanLine(models.Model):
     _name = 'hr.loan.line'
 
     loan_id = fields.Many2one('hr.loan', string='القرض', ondelete='cascade')
@@ -157,7 +158,7 @@ class hrLoanLine(models.Model):
                               ], string='الحالة', readonly=1, default='progress')
 
 
-class hrLoanHistory(models.Model):
+class HrLoanHistory(models.Model):
     _name = 'hr.loan.history'
 
     loan_id = fields.Many2one('hr.loan', string='القرض', ondelete='cascade')
@@ -168,7 +169,7 @@ class hrLoanHistory(models.Model):
     date_decision = fields.Date(string='تاريخ القرار')
 
 
-class hrLoanType(models.Model):
+class HrLoanType(models.Model):
     _name = 'hr.loan.type'
     _description = u'نوع القرض'
 

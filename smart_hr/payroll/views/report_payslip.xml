@@ -67,7 +67,7 @@
 							<t t-esc="max_length" />
 							<div class="col-xs-12">
 
-								<table>
+								<table width="100%">
 									<thead>
 										<tr>
 											<td class="text-center">م</td>
