@@ -207,9 +207,9 @@
 											'required':[('type_appointment', '=', %(data_hr_new_agent_public)d)],'readonly':[('state', 'in', [ 'waiting','manager',  'hrm', 'budget','direct','civil', 'done'])]}" />
 
 										<field name="order_enquiry_file" filename="order_enquiry_file_name"
-											attrs="{'invisible':['|',('state', 'not in', ['draft','waiting', 'manager','hrm', 'budget', 'civil','done']),('type_appointment', '!=', %(data_hr_new_agent_public)d)],'required':[('type_appointment', '=', %(data_hr_new_agent_public)d)],'readonly':[('state', 'in', [ 'waiting','manager',  'hrm', 'budget', 'civil','done'])]}" />
+											attrs="{'invisible':['|',('state', 'not in', ['draft','waiting', 'manager','hrm', 'budget', 'civil','done']),('type_appointment', '!=', %(data_hr_new_agent_public)d)],'readonly':[('state', 'in', [ 'waiting','manager',  'hrm', 'budget', 'civil','done'])]}" />
 										<field name="file_salar_recent" filename="file_salar_recent_name"
-											attrs="{'invisible':['|',('state', 'not in', ['draft','waiting','manager', 'hrm', 'budget','civil', 'done']),('type_appointment', '!=', %(data_hr_new_agent_public)d)],'required':[('type_appointment', '=', %(data_hr_new_agent_public)d)],'readonly':[('state', 'in', [ 'waiting','manager',  'hrm', 'budget', 'civil','done'])]}" />
+											attrs="{'invisible':['|',('state', 'not in', ['draft','waiting','manager', 'hrm', 'budget','civil', 'done']),('type_appointment', '!=', %(data_hr_new_agent_public)d)],'readonly':[('state', 'in', [ 'waiting','manager',  'hrm', 'budget', 'civil','done'])]}" />
 										<field name="file_engagement" widget="many2many_binary"
 											filename="file_engagement_name"
 											attrs="{'invisible':['|',('state', 'not in', ['draft','waiting', 'manager','hrm', 'budget','civil', 'done']),('type_appointment', '!=', %(data_hr_new_agent_public)d)],'readonly':[('state', 'in', [ 'waiting', 'manager', 'hrm', 'budget', 'civil','done'])]}" />
