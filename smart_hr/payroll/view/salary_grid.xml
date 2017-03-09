@@ -16,9 +16,12 @@
 					<sheet>
 						<group>
 							<group>
-								<field name="type_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"  />
-								<field name="grade_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-								<field name="degree_id"   options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="type_id"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="grade_id"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="degree_id"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 							</group>
 							<group>
 								<field name="basic_salary" />
@@ -32,25 +35,31 @@
 							<page string="البدلات">
 								<field name="allowance_ids" nolabel="1">
 									<tree>
-										<field name="allowance_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+										<field name="allowance_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 									</tree>
 									<form string="البدلات">
 										<group>
 											<group>
-												<field name="allowance_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+												<field name="allowance_id"
+													options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 											</group>
 											<group>
 												<field name="compute_method" />
-												<field name="amount" attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}"/>
-												<field name="percentage" attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}"/> 
+												<field name="amount"
+													attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}" />
+												<field name="percentage"
+													attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}" />
 												<field name="min_amount" />
-												<field name="line_ids"  attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
-													<tree editable="buttom"  >
-														<field name="city_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+												<field name="line_ids"
+													attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+													<tree editable="buttom">
+														<field name="city_id"
+															options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 														<field name="percentage" />
 													</tree>
 												</field>
-												
+
 											</group>
 										</group>
 									</form>
@@ -59,58 +68,69 @@
 							<page string="المكافآت‬">
 								<field name="reward_ids" nolabel="1">
 									<tree>
-										<field name="reward_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+										<field name="reward_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 									</tree>
 									<form string="المكافآت‬">
 										<group>
 											<group>
-												<field name="reward_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+												<field name="reward_id"
+													options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 											</group>
 											<group>
 												<field name="compute_method" />
-												<field name="amount" attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}"/>
-												<field name="percentage" attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}"/> 
+												<field name="amount"
+													attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}" />
+												<field name="percentage"
+													attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}" />
 												<field name="min_amount" />
-												<field name="line_ids"  attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
-													<tree editable="buttom"  >
+												<field name="line_ids"
+													attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+													<tree editable="buttom">
 														<field name="city_id" />
 														<field name="percentage" />
 													</tree>
 												</field>
-												
+
 											</group>
-									</group>
-								</form>									
+										</group>
+									</form>
 								</field>
-							</page>	
+							</page>
 							<page string="التعويضات">
 								<field name="indemnity_ids" nolabel="1">
 									<tree editable="bottom">
-										<field name="indemnity_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+										<field name="indemnity_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 									</tree>
 									<form string="التعويضات">
 										<group>
 											<group>
-												<field name="indemnity_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+												<field name="indemnity_id"
+													options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 											</group>
 											<group>
 												<field name="compute_method" />
-												<field name="amount" attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}"/>
-												<field name="percentage" attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}"/> 
+												<field name="amount"
+													attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}" />
+												<field name="percentage"
+													attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}" />
 												<field name="min_amount" />
-												<field name="line_ids"  attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
-													<tree editable="buttom"  >
-														<field name="city_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+												<field name="line_ids"
+													attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+													<tree editable="buttom">
+														<field name="city_id"
+															options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 														<field name="percentage" />
 													</tree>
 												</field>
-												
+
 											</group>
-									</group>
-								</form>										
+										</group>
+									</form>
 								</field>
-								
-							</page>														
+
+							</page>
 						</notebook>
 					</sheet>
 				</form>
@@ -118,12 +138,25 @@
 		</record>
 
 
-		<record id="salary_grid_form" model="ir.ui.view">
-			<field name="name">salary.grid.form</field>
+		<record id="salary_grid_form_view" model="ir.ui.view">
+			<field name="name">salary.grid.form.view</field>
 			<field name="model">salary.grid</field>
+			<field name="type">form</field>
 			<field name="arch" type="xml">
+			
 				<form string="سلّم الرواتب">
+					<header>
+
+						<button name="action_verify" string="إرسال للإعتماد" type="object"
+							states="draft" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_done" string="إعتماد" type="object"
+							states="verify" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_refuse" string="رفض" type="object"
+							states="verify" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<field name="state" widget="statusbar" statusbar_visible="draft,verify,done,refused" />
+					</header>
 					<sheet>
+
 						<group>
 							<group>
 								<field name="name" />
@@ -136,15 +169,18 @@
 						</group>
 						<field name="grid_ids" string=" سلّم الرواتب">
 							<tree>
-								<field name="type_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-								<field name="grade_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-								<field name="degree_id"   options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="type_id"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="grade_id"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="degree_id"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="basic_salary" />
 								<field name="insurance_type" />
 								<field name="insurance" />
 								<field name="retirement" />
 								<field name="net_salary" />
-								<field name="date" invisible="1"/>
+								<field name="date" invisible="1" />
 							</tree>
 						</field>
 					</sheet>
@@ -161,6 +197,7 @@
 					<field name="numero_order" />
 					<field name="date" />
 					<field name="enabled" />
+					<field name="state" />
 				</tree>
 			</field>
 		</record>
@@ -271,7 +308,8 @@
 								<field name="sequence" widget="handle" />
 								<field name="name" />
 								<field name="code" />
-								<field name="grade_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"  />
+								<field name="grade_id"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 							</group>
 						</group>
 					</sheet>
@@ -286,7 +324,8 @@
 				<tree string="الدرجات">
 					<field name="name" />
 					<field name="code" />
-					<field name="grade_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+					<field name="grade_id"
+						options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 				</tree>
 			</field>
 		</record>

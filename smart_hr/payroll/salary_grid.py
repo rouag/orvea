@@ -16,6 +16,23 @@ class SalaryGrid(models.Model):
     date = fields.Date(string='التاريخ')
     enabled = fields.Boolean(string='مفعل')
     grid_ids = fields.One2many('salary.grid.detail', 'grid_id')
+    state = fields.Selection([('draft', 'مسودة'),
+                              ('verify', 'في إنتظار الإعتماد'),
+                              ('done', 'اعتمدت'),
+                              ('refused', 'مرفوضة'),
+                              ], 'الحالة', readonly=1)
+
+    @api.one
+    def action_verify(self):
+        self.state = 'verify'
+
+    @api.one
+    def action_done(self):
+        self.state = 'done'
+
+    @api.one
+    def action_refuse(self):
+        self.state = 'refused'
 
 
 class SalaryGridType(models.Model):
