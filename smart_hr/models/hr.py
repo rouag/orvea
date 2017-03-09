@@ -428,6 +428,14 @@ class HrEmployeeEducationLevelEmployee(models.Model):
     university_entity = fields.Many2one('res.partner', string=u'الكلية', domain=[('company_type', '=', 'faculty')])
     job_specialite = fields.Boolean(string=u'في طبيعة العمل', required=1)
     diploma_date = fields.Date(string=u'تاريخ الحصول على المؤهل')
+    while_serving = fields.Boolean(string=u'اثناء الخدمة', readonly=1, compute='_compute_while_serving')
+
+    @api.multi
+    @api.depends('employee_id')
+    def _compute_while_serving(self):
+        for rec in self:
+            if rec.diploma_date >= rec.employee_id.recruiter_date:
+                rec.while_serving = True
 
 
 class HrQualificationEstimate(models.Model):

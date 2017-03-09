@@ -21,6 +21,7 @@ class HrEmployee(models.Model):
                                                           ], order='date desc', limit=1)
         if operation_date:
             # return the tight salary grid detail for given operation_date
+            print operation_date
             return self.env['salary.grid.detail'].search([('grid_id.enabled', '=', True),
                                                           ('type_id', '=', self.type_id.id),
                                                           ('grade_id', '=', self.grade_id.id),
