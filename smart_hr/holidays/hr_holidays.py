@@ -341,8 +341,8 @@ class HrHolidays(models.Model):
 
 
 #             create history_line
-        type = " منح"+" " +self.holiday_status_id.name.encode('utf-8')
-        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
+#         type = " منح"+" " +self.holiday_status_id.name.encode('utf-8')
+#         self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
 
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_study'):
             self.env['courses.followup'].create({'employee_id':self.employee_id.id, 'state':'progress',

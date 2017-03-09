@@ -474,24 +474,9 @@ class HrDecisionAppoint(models.Model):
         self.message_post(u"تمت إحداث تعين جديد '" + unicode(user.name) + u"'")
         # update holidays balance for the employee
 
-        type = ''
-        if self.type_appointment.id == self.env.ref('smart_hr.data_hr_new_agent_public').id:
-            type = 'تعيين موظف جديد'
-
-        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_agent_public').id:
-            type = 'تعيين موظف رسمي'
-        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_agent_utilisateur').id:
-            type = 'تعيين الموظفين المستخدمين'
-        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_salaire_article').id:
-            type = 'تعيين عمال بند الأجور'
-        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_contrat').id:
-            type = 'تعيين بعقد'
-        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_public_nosoudi').id:
-            type = 'تعيين غير سعودي على مرتبة رسمية'
-        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_public_retraite').id:
-            type = 'تعيين المحالين على التقاعد'
+  
         if type:
-            self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date_hiring, type)
+            self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date_hiring, "تعيين")
         self.state = 'done'
         self.env['hr.holidays']._init_balance(self.employee_id)
         # close last active promotion line for the employee

@@ -379,7 +379,7 @@
 									<group name="active_group" invisible="1" />
 								</page>
 
-								<page string="أرصدة الاجازات والترقيات">
+								<page string="أرصدة الاجازات والترقيات" invisible="1">
 									<separator string="أرصدة الاجازات" />
 									<field name="holidays_balance"
 										domain="[('period_id.date_to','&lt;=',context_today())]">
@@ -414,7 +414,7 @@
 									<field name='history_ids' readonly="1">
 										<tree string="سجل الاجراءات">
 											<field name="job_id" />
-											<field name="grade_id" />
+											<field name="grade_id_number" />
 											<field name="number" />
 											<field name="dep_side" />
 											<field name="department_id" />

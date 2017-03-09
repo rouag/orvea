@@ -303,10 +303,8 @@ class HrPromotion(models.Model):
                     emp.date_direct_action = employee_hilday.date_to
                 if self.members_promotion is True:
                     appoint_type = self.env.ref('smart_hr.data_hr_promotion_member').id
-                    type = "ترقية عضو" + " " + self.name.encode('utf-8')
                 else:
                     appoint_type = self.env.ref('smart_hr.data_hr_promotion_agent').id
-                    type = "ترقية " + " " + self.name.encode('utf-8')
                 apoint = self.env["hr.decision.appoint"].create({'name': self.speech_number,
                                                                  'order_date': self.speech_date,
                                                                  'date_direct_action': emp.date_direct_action,
@@ -320,8 +318,7 @@ class HrPromotion(models.Model):
                                                                  })
                 apoint.action_done()
                 #             create history_line
-                self.env['hr.employee.history'].sudo().add_action_line(emp.employee_id, self.decision_number, self.date,
-                                                                       type)
+                self.env['hr.employee.history'].sudo().add_action_line(emp.employee_id, self.decision_number, self.date,"ترقية")
                 self.env['base.notification'].create({'title': u'إشعار بالترقية',
                                                       'message': u'لقد تم ترقيتكم على وظيفة جديدة',
                                                       'user_id': emp.employee_id.user_id.id,
