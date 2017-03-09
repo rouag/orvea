@@ -643,6 +643,7 @@ class HrDifference(models.Model):
                                                            ('suspension_date', '<=', self.date_to),
                                                            ('state', '=', 'done')
                                                            ])
+        print 'suspension_ids', suspension_ids
         for suspension in suspension_ids:
             grid_id = suspension.employee_id.get_salary_grid_id(suspension.suspension_date)
             print 'grid_id', grid_id
