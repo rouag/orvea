@@ -19,7 +19,7 @@ class HrAppraisal(models.Model):
     note_final = fields.Integer(string="نتيجة التقييم", compute='_compute_completed_survey')
     confirmed = fields.Integer(string="نتيجة التقييم", compute='_compute_completed_survey')
     adopted=fields.Boolean(string='إعتماد')
-    mail_template_id = fields.Many2one('mail.template', string="Email Template for Appraisal", default=lambda self: self.env.ref('smart_hr.send_appraisal_template'))
+    mail_template_id = fields.Many2one('mail.template', string="Email Template for Appraisal", default=lambda self: self.env.ref('smart_hr.send_appraisal_templates'))
     
     @api.multi
     def _compute_note_final(self):

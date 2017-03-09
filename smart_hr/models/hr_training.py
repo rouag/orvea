@@ -96,7 +96,6 @@ class HrTraining(models.Model):
                                               'res_id': self.id,
                                               'res_action': 'smart_hr.action_hr_training',})
                 list_done.append(line.id)
-                self.env['hr.employee.history'].sudo().add_action_line( line.employee_id, self.number, self.date , type)
                
             if line.state=='cancel':
                 self.env['base.notification'].create({'title': u' إشعار بالرفض',

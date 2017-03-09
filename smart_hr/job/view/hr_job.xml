@@ -85,6 +85,12 @@
 						domain="[('state','=','unoccupied')]" />
 					<filter string="الوظائف المشغولة" name="occupied_jobs"
 						domain="[('state','=','occupied')]" />
+							<filter string="الوظائف الملغاة" name="cancel"
+						domain="[('state','=','cancel')]" />
+							<filter string="الوظائف المحجوزة" name="reserved"
+						domain="[('state','=','reserved')]" />
+						
+						
 					<group expand="0" string="تجميع حسب...">
 						<filter name="department_id" string="الادارة" domain="[]"
 							context="{'group_by':'department_id'}" />

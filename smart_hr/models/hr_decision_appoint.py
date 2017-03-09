@@ -53,6 +53,10 @@ class HrDecisionAppoint(models.Model):
     first_appoint = fields.Boolean(string='أول تعين بالهيئة')
     option_contract = fields.Boolean(string='قرار التعاقد')
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
+    royal_decree_number = fields.Char(string=u'رقم الأمر الملكي')
+    royal_decree_date = fields.Date(string=u'تاريخ الأمر الملكي ')
+    
+    
     # other info
     type_appointment = fields.Many2one('hr.type.appoint', string=u'نوع التعيين', required=1, advanced_search=True)
     description = fields.Text(string=' ملاحظات ')
@@ -445,7 +449,9 @@ class HrDecisionAppoint(models.Model):
                                 'job_id': self.job_id.id,
                                 'department_id': self.department_id.id,
                                 'degree_id': self.degree_id.id,
-                                'grade_id': self.grade_id.id
+                                'grade_id': self.grade_id.id,
+                                'royal_decree_number':self.royal_decree_number,
+                                'royal_decree_date':self.royal_decree_date
                                 })
         # check if the employee have allready a number 
         if not self.employee_id.number:
@@ -474,24 +480,9 @@ class HrDecisionAppoint(models.Model):
         self.message_post(u"تمت إحداث تعين جديد '" + unicode(user.name) + u"'")
         # update holidays balance for the employee
 
-        type = ''
-        if self.type_appointment.id == self.env.ref('smart_hr.data_hr_new_agent_public').id:
-            type = 'تعيين موظف جديد'
-
-        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_agent_public').id:
-            type = 'تعيين موظف رسمي'
-        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_agent_utilisateur').id:
-            type = 'تعيين الموظفين المستخدمين'
-        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_salaire_article').id:
-            type = 'تعيين عمال بند الأجور'
-        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_contrat').id:
-            type = 'تعيين بعقد'
-        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_public_nosoudi').id:
-            type = 'تعيين غير سعودي على مرتبة رسمية'
-        elif self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_public_retraite').id:
-            type = 'تعيين المحالين على التقاعد'
+  
         if type:
-            self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date_hiring, type)
+            self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date_hiring, "تعيين")
         self.state = 'done'
         self.env['hr.holidays']._init_balance(self.employee_id)
         # close last active promotion line for the employee

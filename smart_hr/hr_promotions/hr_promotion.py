@@ -47,7 +47,7 @@ class HrPromotion(models.Model):
 
     @api.model
     def create(self, vals):
-        ret = super(hr_promotion, self).create(vals)
+        ret = super(HrPromotion, self).create(vals)
         # Sequence
         vals = {}
         vals['name'] = self.env['ir.sequence'].get('hr.employee.promotion.seq')
@@ -303,10 +303,8 @@ class HrPromotion(models.Model):
                     emp.date_direct_action = employee_hilday.date_to
                 if self.members_promotion is True:
                     appoint_type = self.env.ref('smart_hr.data_hr_promotion_member').id
-                    type = "ترقية عضو" + " " + self.name.encode('utf-8')
                 else:
                     appoint_type = self.env.ref('smart_hr.data_hr_promotion_agent').id
-                    type = "ترقية " + " " + self.name.encode('utf-8')
                 apoint = self.env["hr.decision.appoint"].create({'name': self.speech_number,
                                                                  'order_date': self.speech_date,
                                                                  'date_direct_action': emp.date_direct_action,
@@ -320,8 +318,7 @@ class HrPromotion(models.Model):
                                                                  })
                 apoint.action_done()
                 #             create history_line
-                self.env['hr.employee.history'].sudo().add_action_line(emp.employee_id, self.decision_number, self.date,
-                                                                       type)
+                self.env['hr.employee.history'].sudo().add_action_line(emp.employee_id, self.decision_number, self.date,"ترقية")
                 self.env['base.notification'].create({'title': u'إشعار بالترقية',
                                                       'message': u'لقد تم ترقيتكم على وظيفة جديدة',
                                                       'user_id': emp.employee_id.user_id.id,
@@ -354,7 +351,7 @@ class HrPromotion(models.Model):
         for rec in self:
             if rec.state not in ['draft', 'promotion_type'] and self._uid != SUPERUSER_ID:
                 raise ValidationError(u'لا يمكن حذف قرار الترقية في هذه المرحلة يرجى مراجعة مدير النظام')
-        return super(hr_promotion, self).unlink()
+        return super(HrPromotion, self).unlink()
 
 
 class hrPromotionLigneEmployee(models.Model):

@@ -36,11 +36,49 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 
-		<menuitem id="menu_hierarchy_level"
-			parent="menu_department_configuration" name="مستوى العمق في ‫الهيكل‬" groups="smart_hr.group_hrm"
-			sequence="10" action="action_hierarchy_level" />
+		<menuitem id="menu_hierarchy_level" parent="menu_department_configuration"
+			name="مستوى العمق في ‫الهيكل‬" groups="smart_hr.group_hrm" sequence="10"
+			action="action_hierarchy_level" />
 
 
+		<record id="hr_department_type_form" model="ir.ui.view">
+			<field name="name">hr.department.type.form</field>
+			<field name="model">hr.department.type</field>
+			<field name="arch" type="xml">
+				<form string=" نوع الإدارة‬">
+					<sheet>
+						<group>
+							<field name="name" />
+							<field name="level" />
+							<field name="code" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="hr_department_type_tree" model="ir.ui.view">
+			<field name="name">hr.department.type.tree</field>
+			<field name="model">hr.department.type</field>
+			<field name="arch" type="xml">
+				<tree string=" نوع الإدارة">
+					<field name="name" />
+					<field name="level" />
+					<field name="code" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_department_type">
+			<field name="name">إعداد نوع الإدارة</field>
+			<field name="res_model">hr.department.type</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="menu_hr_department_type" parent="menu_department_configuration"
+			name="إعداد نوع الإدارة‬" groups="smart_hr.group_hrm" sequence="8"
+			action="action_hr_department_type" />
 
 
 	</data>

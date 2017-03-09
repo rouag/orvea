@@ -119,7 +119,7 @@ class HrEmployeeCommissioning(models.Model):
         self.ensure_one()
         self.state = 'done'
         # create history_line
-        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, False, False, self._description)
+        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, False, False, "تكليف")
 
 
 class HrEmployeeCommissioningType(models.Model):

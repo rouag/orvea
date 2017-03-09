@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
-
+# -*- coding: utf-8 -*-
+from openerp.exceptions import UserError
 from openerp import models, fields, api, _
-from openerp.exceptions import except_orm, Warning, RedirectWarning
+from openerp.exceptions import Warning
+from dateutil.relativedelta import relativedelta
 from openerp.exceptions import ValidationError
+from datetime import date, datetime, timedelta
 
 
 class SalaryGrid(models.Model):
@@ -16,6 +19,23 @@ class SalaryGrid(models.Model):
     date = fields.Date(string='التاريخ')
     enabled = fields.Boolean(string='مفعل')
     grid_ids = fields.One2many('salary.grid.detail', 'grid_id')
+    state = fields.Selection([('draft', 'مسودة'),
+                              ('verify', 'في إنتظار الإعتماد'),
+                              ('done', 'اعتمدت'),
+                              ('refused', 'مرفوضة'),
+                              ], 'الحالة', default='draft')
+
+    @api.multi
+    def action_verify(self):
+        self.state = 'verify'
+
+    @api.multi
+    def action_done(self):
+        self.state = 'done'
+
+    @api.multi
+    def action_refuse(self):
+        self.state = 'refused'
 
 
 class SalaryGridType(models.Model):

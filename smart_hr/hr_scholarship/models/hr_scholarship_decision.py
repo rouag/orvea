@@ -37,9 +37,6 @@ class HrScholarshipDecision(models.Model):
 
     @api.one
     def action_done(self):
-        for scholarship in self.scholarship_ids:
-            type = " مباشرة بعد"+" " +scholarship.scholarship_type.name.encode('utf-8')
-            self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
         self.state = 'done'
 
     @api.one
