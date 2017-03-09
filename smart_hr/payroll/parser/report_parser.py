@@ -205,7 +205,6 @@ class ReportHrErrorEmployee(report_sxw.rml_parse):
 
         payslip_pbj = self.pool.get('hr.payslip')
         search_ids = payslip_pbj.search(self.cr, self.uid, [('month','=',month),('salary_net','=',0.0)])
-        print"search_ids",search_ids
         return payslip_pbj.browse(self.cr, self.uid, search_ids)
 
     def _get_error_employees(self, month):
@@ -218,32 +217,22 @@ class ReportHrErrorEmployee(report_sxw.rml_parse):
             temp = payslip_pbj.search(self.cr, self.uid, [('month','=',month),('employee_id','=',rec)])
             search_ids += temp
         domain.append(search_ids)
-        payslip_pbj=payslip_pbj.browse(self.cr, self.uid, search_ids)
+        payslip_pbj= payslip_pbj.browse(self.cr, self.uid, search_ids)
         emp_ids = [rec.employee_id.id for rec in payslip_pbj]
-        emp_ids =set(emp_ids)
+        emp_ids = set(emp_ids)
         result=[]
-        result =set(search_empl_ids) - emp_ids
+        result = set(search_empl_ids) - emp_ids
         return employe_pbj.browse(self.cr, self.uid, list(result))
 
 
     def _get_termination_employees(self, month):
         date_from = get_hijri_month_start(HijriDate, Umalqurra,month)
-        print"date_from",date_from
         date_to = get_hijri_month_end(HijriDate, Umalqurra,month)
-        print"date_to",date_to
         domain = []
         termination_pbj = self.pool.get('hr.termination')
-        payslip_pbj = self.pool.get('hr.payslip')
         search_empl_ids = termination_pbj.search(self.cr, self.uid, [('date_termination', '>', date_from),('date_termination', '<', date_to)])
-        print"search_empl_ids",search_empl_ids
-        search_ids = []
-        for rec in  search_empl_ids:
-            temp = payslip_pbj.search(self.cr, self.uid, [('month','=',month),('salary_net','=',False),('employee_id','=',rec.employee_id.id)])
-            print"search_ids",temp
-            search_ids += temp
-        domain.append(search_ids)
-        print"domain",domain
-        return payslip_pbj.browse(self.cr, self.uid, domain[0])
+        return termination_pbj.browse(self.cr, self.uid, search_empl_ids)
+       
 
     def _get_hijri_date(self, date, separator):
         '''

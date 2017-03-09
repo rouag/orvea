@@ -80,9 +80,9 @@ class HrEmployee(models.Model):
     history_ids = fields.One2many('hr.employee.history', 'employee_id', string=u'سجل الاجراءات')
     diploma_id = fields.Many2one('hr.employee.diploma', string=u'الشهادة')
     specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص')
-    passport_date = fields.Date(string=u'تاريخ إصدار جواز السفر ')
-    passport_place = fields.Many2one('res.city', string=u'مكان إصدار جواز السفر') 
-    passport_end_date = fields.Date(string=u'تاريخ انتهاء جواز السفر ')
+    passport_date = fields.Date(string=u'تاريخ إصدار الحفيظة ')
+    passport_place = fields.Many2one('res.city', string=u'مكان إصدار الحفيظة') 
+    passport_end_date = fields.Date(string=u'تاريخ انتهاء الحفيظة ')
     display_name = fields.Char(compute='_compute_display_name', string=u'الاسم')
     sanction_ids = fields.One2many('hr.sanction.ligne', 'employee_id', string=u'العقوبات' )
     sanction_count = fields.Integer(string=u'عدد  العقوبات',)
@@ -111,7 +111,8 @@ class HrEmployee(models.Model):
     place_of_birth = fields.Many2one('res.city', string=u'مكان الميلاد')
     state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
     country_id = fields.Many2one(default=lambda self: self.env['res.country'].search([('code_nat', '=', 'SA')], limit=1))
-
+    passport_id = fields.Char(string=u'رقم الحفيظة')
+    
     @api.onchange('gender')
     def _onchange_gender(self):
         if self.gender =='female':

@@ -18,7 +18,7 @@ class HrContract(models.Model):
     identification_date=fields.Date(related='employee_id.identification_date', store=True, readonly=True,string=u'تاريخ إصدار بطاقة الهوية')
     identification_place = fields.Many2one(related='employee_id.identification_place', store=True, readonly=True,string=u'مكان إصدار بطاقة الهوية')
     calendar_id=fields.Many2one(related='employee_id.calendar_id', store=True, readonly=True,string=u'وردية العمل')
-    passport_id=fields.Char(related='employee_id.passport_id', store=True, readonly=True,string=u'رقم جواز السفر')
+    passport_id=fields.Char(related='employee_id.passport_id', store=True, readonly=True,string=u'رقم الحفيظة')
     department_id=fields.Many2one(related='employee_id.department_id', store=True, readonly=True,string='الادارة',)
     job_id = fields.Many2one('hr.job',string='المسمى الوظيفي',store=True, readonly=1) 
    
