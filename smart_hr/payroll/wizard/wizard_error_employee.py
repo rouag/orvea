@@ -22,7 +22,10 @@ class WizardErrorEmployee(models.TransientModel):
 
     month = fields.Selection(MONTHS, string='الشهر', required=1,  default=get_default_month)
     employee_id = fields.Many2one('hr.employee', string='موظف')
-    department_id = fields.Many2one('hr.department', string='قسم')
+    department_level1_id = fields.Many2one('hr.department', string='الفرع')
+    department_level2_id = fields.Many2one('hr.department', string='القسم')
+    department_level3_id = fields.Many2one('hr.department', string='الشعبة')
+    salary_grid_type_id = fields.Many2one('salary.grid.type', string='الصنف')
 
 
     @api.multi
