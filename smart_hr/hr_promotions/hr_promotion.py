@@ -138,7 +138,6 @@ class HrPromotion(models.Model):
                             employee_promotion.append(emp)
 
         for emp_promotion in employee_promotion:
-            print emp_promotion
             regle_point = self.env['hr.evaluation.point'].search([('grade_id', '=', emp_promotion.job_id.grade_id.id)])
             demande_promotion_id = self.env['hr.promotion.employee.demande'].search(
                 [('employee_id', '=', emp_promotion.id)])
@@ -148,7 +147,6 @@ class HrPromotion(models.Model):
             point_functionality = 0
             years_supp = (emp_promotion.service_duration / 365) - emp_promotion.job_id.grade_id.years_job
             if years_supp > 0:
-                print '11111'
                 for year in xrange(1, years_supp):
                     for seniority in regle_point.seniority_ids:
                         if (year >= seniority.year_from) and (year <= seniority.year_to):
@@ -262,7 +260,6 @@ class HrPromotion(models.Model):
             raise ValidationError(u"لم يقع أي إختيار وظيفة جديدة للموظف")
         if self.employee_job_promotion_line_ids:
             for promotion in self.employee_job_promotion_line_ids:
-                print 'state'
                 promotion.state = "employee_confirmed"
 
     @api.one
@@ -477,10 +474,6 @@ class hr_promotion_ligne_employee_job(models.Model):
     @api.onchange('employee_id')
     def change_employee_id(self):
         if self.employee_id:
-            print int(self.emp_grade_id_old.code) + 1
-            jobs = self.env['hr.job'].search([])
-            for job in jobs:
-                print '565555665565', job.grade_id.code
             job_ids = self.env['hr.job'].search([('grade_id.code', '=', int(self.emp_grade_id_old.code) + 1)]).ids
             return job_ids
 

@@ -103,8 +103,8 @@ class HrEmployee(models.Model):
     holiday_count = fields.Integer(string=u'عدد الاجازات', compute='_compute_holidays_count')
     contracts_count = fields.Integer(string=u'عدد العقود', compute='_compute_contracts_count')
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
-    royal_decree_number = fields.Char(string=u'رقم الأمر الملكي'  ,readonly=True)
-    royal_decree_date = fields.Date(string=u'تاريخ الأمر الملكي ', readonly=True)
+    royal_decree_number = fields.Char(string=u'رقم الأمر الملكي', readonly=1)
+    royal_decree_date = fields.Date(string=u'تاريخ الأمر الملكي ', readonly=1)
     training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'سجل التدريبات')
     state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')],
                              string='Attendance')
@@ -114,7 +114,7 @@ class HrEmployee(models.Model):
     residance_place = fields.Many2one('res.city', string=u'مكان إصدار بطاقة الإقامة')
     place_of_birth = fields.Many2one('res.city', string=u'مكان الميلاد')
     state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
-    country_id = fields.Many2one(default=lambda self: self.env['res.country'].search([('code_nat', '=', 'SA')], limit=1))
+    country_id = fields.Many2one(default=lambda self: self.env['res.country'].search([('code_nat', '=', 'SA')], limit=1),context="{'compute_name': '_get_natinality'}")
     passport_id = fields.Char(string=u'رقم الحفيظة')
     mobile_phone = fields.Char(string=u'الجوال')
     is_contract = fields.Boolean(string=u'متعاقد' , compute='_compute_is_contract')
@@ -146,7 +146,6 @@ class HrEmployee(models.Model):
         else:
             self.father_middle_name = u'بن'
             self.grandfather_middle_name = u'بن'
-
 
     @api.multi
     def _compute_loans_count(self):
@@ -194,7 +193,7 @@ class HrEmployee(models.Model):
     def recruitement_legal_age(self):
         recruitement_legal_age = self.env['hr.employee.configuration'].search([], limit=1).recruitment_legal_age
         if self.age < recruitement_legal_age:
-            raise ValidationError(u"لا يمكن أن يكون تعيين الموظف قبل بلوغه " + str(recruitement_legal_age) + u"سنة")
+            raise ValidationError(u"لا يمكن انشاء سجل موظف قبل سن " + str(recruitement_legal_age))
 
     @api.one
     @api.depends('name', 'father_middle_name', 'father_name', 'family_name')
@@ -298,6 +297,7 @@ class HrEmployee(models.Model):
                 'view_id': False,
                 'type': 'ir.actions.act_window',
                 'res_id': employee.id,
+                'context':"{'readonly_by_pass': True,'list_type':'_get_dep_name_employee_form','compute_name': '_get_natinality'}"
             }
             return value
 
@@ -317,7 +317,7 @@ class HrEmployee(models.Model):
                 if years_supp > 0:
                     regle_point = self.env['hr.evaluation.point'].search([('grade_id', '=', self.job_id.grade_id)])
                     for seniority in regle_point.seniority_ids:
-                        if years_supp < seniority.year_to and years_supp > seniority.year_from:
+                        if seniority.year_to > years_supp > seniority.year_from:
                             self.point_seniority = years_supp * seniority.point
 
 
@@ -483,18 +483,14 @@ class HrEmployeeConfiguration(models.Model):
     @api.model
     def control_test_retraite_employee(self):
         today_date = fields.Date.from_string(fields.Date.today())
-        print"today_date", type(today_date)
         age_member = self.env.ref('smart_hr.data_hr_employee_configuration').age_member
         age_nomember = self.env.ref('smart_hr.data_hr_employee_configuration').age_nomember
-        print"age_member", age_member
-        hr_member = self.env['hr.employee'].search([('employee_state', '=', 'employee')])
+        hr_member = self.env['hr.employee'].search([('emp_state', '!=', 'terminated'), ('employee_state', '=', 'employee')])
         for line in hr_member:
             today_date = fields.Date.from_string(fields.Date.today())
             birthday = fields.Date.from_string(line.birthday)
-            print"birthday", birthday
             years = (today_date - birthday).days / 365
-            print"years", years
-            if years == age_member and line.is_member:
+            if years >= age_member and line.is_member:
                 self.env['hr.termination'].create({
                     'name': 'تقاعد طبيعي ',
                     'date': today_date,
@@ -503,7 +499,7 @@ class HrEmployeeConfiguration(models.Model):
                     'employee_no': line.number,
                     'job_id': line.job_id.id,
                 })
-            if years == age_nomember and not line.is_member:
+            if years >= age_nomember and not line.is_member:
                 self.env['hr.termination'].create({
                     'name': 'تقاعد طبيعي ',
                     'date': today_date,
@@ -514,9 +510,11 @@ class HrEmployeeConfiguration(models.Model):
                 })
 
     def send_test_member_group(self, group_id, title, msg):
-        '''
-        @param group_id: res.groups
-        '''
+        """
+        :param msg:
+        :param title:
+        :param group_id:
+        """
         for recipient in group_id.users:
             self.env['base.notification'].create({'title': title,
                                                   'message': msg,

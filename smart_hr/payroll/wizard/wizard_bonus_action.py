@@ -15,7 +15,6 @@ class WizardBonusAction(models.TransientModel):
         bonus_line_id = self._context.get('active_id', False)
         action = self._context.get('action', False)
         # TODO: l action est tpujours stop why ?
-        print '--action-------', action
         if bonus_line_id:
             bonus_line = self.env['hr.bonus.line'].browse(bonus_line_id)
             val = {

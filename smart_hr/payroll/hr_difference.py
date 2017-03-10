@@ -306,18 +306,18 @@ class HrDifference(models.Model):
                                                                             ('date_direct_action', '>=', self.date_from),
                                                                             ('date_direct_action', '<=', self.date_to),
                                                                             ], order="date_direct_action desc")
-        for last_decision_appoint_id in last_decision_appoint_ids:
-            grid_id = last_decision_appoint_id.employee_id.get_salary_grid_id(last_decision_appoint_id.date_direct_action)
+        for decision_appoint in last_decision_appoint_ids:
+            grid_id = decision_appoint.employee_id.get_salary_grid_id(decision_appoint.date_direct_action)
             if grid_id:
-                if last_decision_appoint_id.employee_id.basic_salary == 0:
+                if decision_appoint.employee_id.basic_salary == 0:
                     basic_salary = grid_id.basic_salary
                 else:
-                    basic_salary = last_decision_appoint_id.employee_id.basic_salary
-                for allowance in last_decision_appoint_id.type_appointment.hr_allowance_appoint_id:
+                    basic_salary = decision_appoint.employee_id.basic_salary
+                for allowance in decision_appoint.type_appointment.hr_allowance_appoint_id:
                     amount = allowance.salary_number * basic_salary
                     vals = {'difference_id': self.id,
-                            'name': allowance.hr_allowance_type_id.name,
-                            'employee_id': last_decision_appoint_id.employee_id.id,
+                            'name': ' فروقات '+decision_appoint.type_appointment.name + ' : ' + allowance.hr_allowance_type_id.name,
+                            'employee_id': decision_appoint.employee_id.id,
                             'number_of_days': 0,
                             'number_of_hours': 0.0,
                             'amount': amount,
@@ -643,10 +643,8 @@ class HrDifference(models.Model):
                                                            ('suspension_date', '<=', self.date_to),
                                                            ('state', '=', 'done')
                                                            ])
-        print 'suspension_ids', suspension_ids
         for suspension in suspension_ids:
             grid_id = suspension.employee_id.get_salary_grid_id(suspension.suspension_date)
-            print 'grid_id', grid_id
             if grid_id:
                 if suspension.employee_id.basic_salary == 0:
                     basic_salary = grid_id.basic_salary

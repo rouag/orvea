@@ -1133,7 +1133,6 @@ class HrHolidays(models.Model):
             date_birth = fields.Date.from_string(self.childbirth_date)
             if (date_from - date_birth).days > 14:
                 raise ValidationError(u" لا يمكن لتاريخ بداية إجازة الوضع ان يتجاوز تاريخ الوضع بأسبوعين")
-            print 'الوضع'
 
                         # Constraintes for maternity الامومة
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_maternity'):

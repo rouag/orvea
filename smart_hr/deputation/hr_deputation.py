@@ -234,8 +234,6 @@ class HrDeputation(models.Model):
             # check duration
             if self.duration > dep_setting.period_decision:
                 self.ministre_report = True
-                print"hhhhhhh",self.ministre_report
-              
         self.state = 'order'
             
     @api.multi
@@ -256,8 +254,8 @@ class HrDeputation(models.Model):
     @api.multi
     def action_humain(self):
         for deputation in self:
-            type = ' إنتداب'
-            self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, deputation.decision_number,  deputation.date_from, type)
+#             type = ' إنتداب'
+#             self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, deputation.decision_number,  deputation.date_from, type)
             deputation.state = 'finish'
             
     @api.multi

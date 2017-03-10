@@ -7,7 +7,6 @@ from dateutil.relativedelta import relativedelta
 from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
-from passlib.tests.utils import limit
 
 
 class HrContract(models.Model):
@@ -76,14 +75,11 @@ class HrContract(models.Model):
     @api.model
     def control_contract_employee(self):
         today_date = fields.Date.from_string(fields.Date.today())
-        print"today_date",type(today_date)
         contracts= self.env['hr.contract'].search([('date_contract_end','=', today_date)])
-        print"contracts",contracts
         for contrat in contracts :
             appoints= self.env['hr.decision.appoint'].search([('employee_id', '=', contrat.employee_id.id),('state','=','done'),('is_started','=',True)],limit=1)
             if appoints :
                 title= u"' إشعار نهاية العقد'"
-                print"title",title
                 msg= u"' إشعار نهاية العقد'"  + unicode(contrat.employee_id.name) + u"'"
                 group_id = self.env.ref('smart_hr.group_department_employee')
                 self.send_end_contract_group(group_id,title,msg)

@@ -9,9 +9,9 @@ class HrEmployeeHistory(models.Model):
     _description = u'سجل الاجراءات'
 
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1)
-    date = fields.Date(string=u'التاريخ')
+    date = fields.Date(string=u'تاريخه')
     num_decision = fields.Char(string=u'رقم القرار')
-    date_decision = fields.Date(string=u'تاريخ القرار')
+    date_decision = fields.Date(string=u'تاريخه')
     operation_type = fields.Selection([('01', u'منح إجازة عادية'),
                              ('02', u'منح إجازة استثنائية بدون راتب'),
                              ('03', u'عودة بعد لإجازة'),
