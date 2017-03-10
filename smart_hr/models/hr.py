@@ -114,9 +114,9 @@ class HrEmployee(models.Model):
     residance_place = fields.Many2one('res.city', string=u'مكان إصدار بطاقة الإقامة')
     place_of_birth = fields.Many2one('res.city', string=u'مكان الميلاد')
     state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
-    country_id = fields.Many2one(default=lambda self: self.env['res.country'].search([('code_nat', '=', 'SA')], limit=1))
+    country_id = fields.Many2one(default=lambda self: self.env['res.country'].search([('code_nat', '=', 'SA')], limit=1),context="{'compute_name': '_get_natinality'}")
     passport_id = fields.Char(string=u'رقم الحفيظة')
-
+    
     @api.onchange('gender')
     def _onchange_gender(self):
         if self.gender == 'female':
@@ -170,7 +170,7 @@ class HrEmployee(models.Model):
     def recruitement_legal_age(self):
         recruitement_legal_age = self.env['hr.employee.configuration'].search([], limit=1).recruitment_legal_age
         if self.age < recruitement_legal_age:
-            raise ValidationError(u"لا يمكن أن يكون تعيين الموظف قبل بلوغه " + str(recruitement_legal_age) + u"سنة")
+            raise ValidationError(u"لا يمكن انشاء سجل موظف قبل سن " + str(recruitement_legal_age))
 
     @api.one
     @api.depends('name', 'father_middle_name', 'father_name', 'family_name')
@@ -274,6 +274,7 @@ class HrEmployee(models.Model):
                 'view_id': False,
                 'type': 'ir.actions.act_window',
                 'res_id': employee.id,
+                'context':"{'readonly_by_pass': True,'list_type':'_get_dep_name_employee_form','compute_name': '_get_natinality'}"
             }
             return value
 
