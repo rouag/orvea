@@ -327,11 +327,11 @@ class HrPayslip(models.Model):
         # amount_multiplication will be 0 if current payslip's salary grid is allready generated for the previous month's payslip ;
         amount_multiplication = 1
         # check weither the employee is terminated
-        if self.employee_id.emp_state == 'terminated':
-            termination_id = self.env['hr.termination'].search([('employee_id', '=', self.employee_id.id), ('state', '=', 'done')], order='date_termination desc', limit=1)
-            if fields.Date.from_string(termination_id.date_termination) < fields.Date.from_string(self.date_from) or fields.Date.from_string(termination_id.date_termination) > fields.Date.from_string(self.date_to):
-                # TODO: must remove this message raise !
-                raise UserError(u"لقد تم طي قيد %s " % self.employee_id.name)
+        # TODO: must remove this message raise !
+        # if self.employee_id.emp_state == 'terminated':
+        # termination_id = self.env['hr.termination'].search([('employee_id', '=', self.employee_id.id), ('state', '=', 'done')], order='date_termination desc', limit=1)
+        # if fields.Date.from_string(termination_id.date_termination) < fields.Date.from_string(self.date_from) or fields.Date.from_string(termination_id.date_termination) > fields.Date.from_string(self.date_to):
+        # raise UserError(u"لقد تم طي قيد %s " % self.employee_id.name)
         # check if the salary is allready given in the last payslip for the previous month
         previous_month_payslip = False
         if self.month != '01':
