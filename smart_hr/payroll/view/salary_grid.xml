@@ -143,7 +143,6 @@
 			<field name="model">salary.grid</field>
 			<field name="type">form</field>
 			<field name="arch" type="xml">
-			
 				<form string="سلّم الرواتب">
 					<header>
 

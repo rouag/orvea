@@ -27,6 +27,7 @@ class hr_suspension(models.Model):
     letter_date = fields.Date(string=u'تاريخ الخطاب')
     suspension_date = fields.Date(string=u'تاريخ الإيقاف')
     suspension_attachment = fields.Binary(string=u'الصورة الضوئية للقرار', attachment=True)
+    
     raison = fields.Text(string=u'سبب كف اليد', advanced_search=True)
     suspension_end_id = fields.Many2one('hr.suspension.end', string=u'قرار إنهاء كف اليد')
     state = fields.Selection([
@@ -34,7 +35,7 @@ class hr_suspension(models.Model):
         ('hrm', u'مدير شؤون الموظفين'),
         ('done', u'اعتمدت'),
         ('refuse', u'رفض'),
-    ], string=u'الحالة', default='draft', advanced_search=True)
+    ], string=u'الحالة', default='draft')
     
     def num2hindi(self,string_number):
         if string_number:

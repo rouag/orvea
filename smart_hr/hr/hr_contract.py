@@ -11,45 +11,44 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FO
 
 class HrContract(models.Model):
     _inherit = 'hr.contract'
-    
-    employee_id=fields.Many2one('hr.employee',string='      الموظف ',required=1)
+
+    employee_id=fields.Many2one('hr.employee', string=' الموظف ', required=1)
     country_id=fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
-    identification_id = fields.Char(related='employee_id.identification_id', store=True, readonly=True,string=u'          رقم الهوية')
-    identification_date=fields.Date(related='employee_id.identification_date', store=True, readonly=True,string=u'تاريخ إصدار بطاقة الهوية')
-    identification_place = fields.Many2one(related='employee_id.identification_place', store=True, readonly=True,string=u'مكان إصدار بطاقة الهوية')
-    calendar_id=fields.Many2one(related='employee_id.calendar_id', store=True, readonly=True,string=u'وردية العمل')
-    passport_id=fields.Char(related='employee_id.passport_id', store=True, readonly=True,string=u'رقم الحفيظة')
-    department_id=fields.Many2one(related='employee_id.department_id', store=True, readonly=True,string='الادارة',)
+    identification_id = fields.Char(related='employee_id.identification_id', store=True, readonly=True, string=u'رقم الهوية')
+    identification_date=fields.Date(related='employee_id.identification_date', store=True, readonly=True, string=u'تاريخ إصدار بطاقة الهوية')
+    identification_place = fields.Many2one(related='employee_id.identification_place', store=True, readonly=True, string=u'مكان إصدار بطاقة الهوية')
+    calendar_id=fields.Many2one(related='employee_id.calendar_id', store=True, readonly=True, string=u'وردية العمل')
+    passport_id=fields.Char(related='employee_id.passport_id', store=True, readonly=True, string=u'رقم الحفيظة')
+    department_id=fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string='الادارة',)
     job_id = fields.Many2one('hr.job',string='المسمى الوظيفي',store=True, readonly=1) 
-   
-    assurance=fields.Char(string='التامين') 
-    type_job_id=fields.Many2one('salary.grid.type',string='الصنف',store=True,  readonly=1) 
+
+    assurance = fields.Char(string= 'التامين')
+    type_job_id = fields.Many2one('salary.grid.type', string='الصنف', store=True, readonly=1)
     #type_id=fields.Many2one('salary.grid.type',string='الصنف',store=True,  readonly=1) 
-    grade_id=fields.Many2one('salary.grid.grade',string='المرتبة', store=True, readonly=1)
-    struct_id= fields.Many2one('hr.payroll.structure', 'Salary Structure',required=False)
+    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', store=True, readonly=1)
+    struct_id = fields.Many2one('hr.payroll.structure', 'Salary Structure', required=False)
     #struct_id= fields.Char(string="struct",required=0,),
-    degree_id = fields.Many2one('salary.grid.degree', string='الدرجة',store=True,  readonly=True )
-    payement_emploi = fields.Many2one('hr.contract.payement',string=' الدفع المجدول')
+    degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', store=True, readonly=True )
+    payement_emploi = fields.Many2one('hr.contract.payement', string='الدفع المجدول')
     date_to = fields.Date(string=u' من', )
     date_endd = fields.Date(string=u'إلى', )
     date_contract_to = fields.Date(string=u'من', )
     date_contract_end = fields.Date(string=u'إلى', )
-    basic_salary = fields.Float(string='الراتب الأساسي', store=True,  readonly=True )
-    transport_allow = fields.Float(string='بدل النقل',store=True,  readonly=True ) 
-    retirement = fields.Float(string='المحسوم للتقاعد', store=True, readonly=True ) 
-    net_salary = fields.Float(string='صافي الراتب',store=True,  readonly=True )
-    contract_item_ids = fields.Many2many('hr.contract.item',  string=u'بند العقد')
-    
-   
-    employee_id1=fields.Many2one('hr.employee',string='المسؤول على العقد',required=1,)
-    job_id1=fields.Many2one(related='employee_id1.job_id', store=True, readonly=True,)
-    employee_id2=fields.Many2one('hr.employee',string='مراجع البيانات',required=1,)
-    job_id2=fields.Many2one(related='employee_id2.job_id', store=True, readonly=True,)
-    department_id1=fields.Many2one(related='employee_id1.department_id', store=True, readonly=True,string='الادارة',)
-    department_id2=fields.Many2one(related='employee_id2.department_id', store=True, readonly=True,string='الادارة',)
-    renewable=fields.Boolean(string='قابل للتجديد')
-    ticket_travel=fields.Boolean(string='تذاكر السفر')
-    ticket_famely=fields.Boolean(string='تذكرة سفر عائلية')
+    basic_salary = fields.Float(string='الراتب الأساسي', store=True,  readonly =True )
+    transport_allow = fields.Float(string='بدل النقل', store=True,  readonly =True )
+    retirement = fields.Float(string='المحسوم للتقاعد', store=True, readonly =True ) 
+    net_salary = fields.Float(string='صافي الراتب',store=True, readonly =True )
+    contract_item_ids = fields.Many2many('hr.contract.item', string=u'بند العقد')
+
+    employee_id1 = fields.Many2one('hr.employee', string='المسؤول على العقد', required=1 )
+    job_id1 = fields.Many2one(related='employee_id1.job_id', store=True, readonly=True)
+    employee_id2 = fields.Many2one('hr.employee', string='مراجع البيانات', required=1 )
+    job_id2 = fields.Many2one(related='employee_id2.job_id', store=True, readonly=True,)
+    department_id1 = fields.Many2one(related='employee_id1.department_id', store=True, readonly=True, string='الادارة' )
+    department_id2 = fields.Many2one(related='employee_id2.department_id', store=True, readonly=True, string='الادارة' )
+    renewable = fields.Boolean(string='قابل للتجديد')
+    ticket_travel = fields.Boolean(string='تذاكر السفر')
+    ticket_famely = fields.Boolean(string='تذكرة سفر عائلية')
     
     @api.onchange('state')
     def _onchange_state(self):
@@ -59,7 +58,7 @@ class HrContract(models.Model):
     @api.onchange('employee_id')
     def _onchange_employe(self):
             if self.employee_id:
-                employee_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('is_started', '=', True)])
+                employee_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('is_started', '=', True)],limit =1)
                 if employee_line:
                     self.job_id = employee_line.job_id.id
                     self.type_job_id = employee_line.type_id.id
@@ -84,9 +83,7 @@ class HrContract(models.Model):
                 msg= u"' إشعار نهاية العقد'"  + unicode(contrat.employee_id.name) + u"'"
                 group_id = self.env.ref('smart_hr.group_department_employee')
                 self.send_end_contract_group(group_id,title,msg)
-            
 
-            
     def send_end_contract_group(self, group_id, title, msg):
         '''
         @param group_id: res.groups
@@ -101,20 +98,16 @@ class HrContract(models.Model):
                                                   'notif': True
                                                   })
 
-             
-                     
+
 class hrContractPayement(models.Model):
     _name = 'hr.contract.payement'
 
     name = fields.Char(advanced_search=True,string=u'المسمّى')
     periode = fields.Char(string=u'المدة')
-    
 
-    
-    
 class hrContractItem(models.Model):
     _name = 'hr.contract.item'
-    
+
     name = fields.Char(string=u'مسمى المادة',required=1)
     code = fields.Char(string=u'رقم المادة',required=1)
     text = fields.Html(string=u' محتوى المادة',required=1)

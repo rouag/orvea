@@ -73,7 +73,6 @@ class HrEmployee(models.Model):
     family_name = fields.Char(string=u'الاسم العائلي')
     father_middle_name = fields.Char(string=u'middle_name', default=u"بن")
     grandfather_middle_name = fields.Char(string=u'middle_name2', default=u"بن")
-    grandfather2_middle_name = fields.Char(string=u'  middle_name3', default=u"بن")
     space = fields.Char(string=' ', default=" ", readonly=True)
     begin_work_date = fields.Date(string=u' تاريخ بداية العمل الحكومي')
     promotion_duration = fields.Integer(string=u'مدة الترقية(يوم)', compute='_compute_promotion_days', store=True)
@@ -102,10 +101,13 @@ class HrEmployee(models.Model):
     insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين', readonly='1',
                                      compute='_compute_insurance_type')
     holiday_count = fields.Integer(string=u'عدد الاجازات', compute='_compute_holidays_count')
+    contracts_count = fields.Integer(string=u'عدد العقود', compute='_compute_contracts_count')
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
     royal_decree_number = fields.Char(string=u'رقم الأمر الملكي', readonly=1)
     royal_decree_date = fields.Date(string=u'تاريخ الأمر الملكي ', readonly=1)
     training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'سجل التدريبات')
+    state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')],
+                             string='Attendance')
     employee_card_id = fields.Many2one('hr.employee.functionnal.card')
     residance_id = fields.Char(string=u'رقم الإقامة ')
     residance_date = fields.Date(string=u'تاريخ إصدار بطاقة الإقامة ')
@@ -114,17 +116,36 @@ class HrEmployee(models.Model):
     state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
     country_id = fields.Many2one(default=lambda self: self.env['res.country'].search([('code_nat', '=', 'SA')], limit=1),context="{'compute_name': '_get_natinality'}")
     passport_id = fields.Char(string=u'رقم الحفيظة')
-    
+    mobile_phone = fields.Char(string=u'الجوال')
+    is_contract = fields.Boolean(string=u'متعاقد' , compute='_compute_is_contract')
+    is_current_user = fields.Boolean(string='Is Current User', compute='_is_current_user')
+
+    @api.multi
+    def _is_current_user(self):
+        for emp in self:
+            user = self.env['res.users'].browse(self.env.uid)
+            if user.has_group('smart_hr.group_hr_personnel_mobile_numbers'):
+                emp.is_current_user = True
+            if emp.user_id.id == emp._uid :
+                emp.is_current_user = True
+
+
+
+    @api.multi
+    @api.depends('contracts_count')
+    def _compute_is_contract(self):
+        for rec in self:
+            if rec.contracts_count > 0:
+                rec.is_contract = True
+
     @api.onchange('gender')
     def _onchange_gender(self):
         if self.gender == 'female':
             self.father_middle_name = u'بنت'
             self.grandfather_middle_name = u'بنت'
-            self.grandfather2_middle_name = u'بنت'
         else:
             self.father_middle_name = u'بن'
             self.grandfather_middle_name = u'بن'
-            self.grandfather2_middle_name = u'بن'
 
     @api.multi
     def _compute_loans_count(self):
@@ -135,6 +156,11 @@ class HrEmployee(models.Model):
     def _compute_holidays_count(self):
         for rec in self:
             rec.holiday_count = self.env['hr.holidays'].search_count([('employee_id', '=', rec.id)])
+
+    @api.multi
+    def _compute_contracts_count(self):
+        for rec in self:
+            rec.contracts_count = self.env['hr.contract'].search_count([('employee_id', '=', rec.id)])
 
     @api.multi
     def _compute_sanction_count(self):
@@ -451,7 +477,7 @@ class HrEmployeeConfiguration(models.Model):
     number = fields.Integer(string='بداية تسلسل الرقم الوظيفي')
     period = fields.Integer(string='مدة صلاحية بطاقة الموظف (بالسنة)')
     age_member = fields.Integer(string='سن تقاعد  الطبيعي   الاعظاء')
-    age_nomember = fields.Integer(string='سن تقاعد  الطبيعي لغير الاعظاء)')
+    age_nomember = fields.Integer(string='سن تقاعد  الطبيعي لغير الاعظاء')
     recruitment_legal_age = fields.Integer(string='السن القانوني للتعيين')
 
     @api.model
