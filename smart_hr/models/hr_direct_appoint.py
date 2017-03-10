@@ -29,13 +29,13 @@ class hrDirectAppoint(models.Model):
     date_direct_action = fields.Date(string='تاريخ المباشرة المنصوص في التعين ') 
     type_appointment = fields.Many2one('hr.type.appoint',string=u'نوع التعيين' )
     decision_appoint_ids = fields.One2many('hr.decision.appoint', 'employee_id', string=u'تعيينات الموظف')
-    
+
     date = fields.Date(string=u'تاريخ المباشرة الفعلي', default=fields.Datetime.now())
     state = fields.Selection([('new', '  طلب'),
                              ('waiting', u'في إنتظار المباشرة'),
                              ('done',u'مباشرة'),
                               ('cancel', u'ملغاة')], string='الحالة', readonly=1, default='waiting')
-    
+
     state_direct = fields.Selection([
                              ('waiting', u'في إنتظار المباشرة'),
                              ('confirm',u'لتأكيد المباشرة '),
@@ -45,7 +45,7 @@ class hrDirectAppoint(models.Model):
 
     @api.multi
     def action_waiting(self):
-      
+
         self.state = 'waiting'
 
     @api.one

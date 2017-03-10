@@ -16,12 +16,6 @@
 			report_type="qweb-pdf" string="ملحق الرواتب" name="smart_hr.report_payslip_extension" attachment_use="False" 
 			file="smart_hr.report_payslip_extension" 	paperformat="smart_base.paperformat_landscape" /> 
 			
-			
-			<report id="report_payslip_extension_total_report" model="hr.payslip.run"
-			report_type="qweb-pdf" string="ملحق الرواتب" name="smart_hr.report_payslip_extension_total" attachment_use="False" 
-			file="smart_hr.report_payslip_extension_total" 	paperformat="smart_base.paperformat_landscape" /> 
-			
-			
 				<report id="report_hr_error_employee_report" model="hr.payslip"   menu="False" 
 			report_type="qweb-pdf" string="تقرير الاخطاء بالموظف" name="smart_hr.report_hr_error_employee" attachment_use="False" 
 			file="smart_hr.report_hr_error_employee" 	paperformat="smart_base.paperformat_landscape" /> 

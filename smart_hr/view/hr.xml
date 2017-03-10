@@ -61,7 +61,8 @@
 			<field name="view_mode">kanban,tree,form</field>
 			<field name="domain">[('employee_state','=','employee')]</field>
 			<field name="search_view_id" ref="view_search_hr_employee_inherit" />
-			<field name="context">{'search_default_available_employees': 1,'readonly_by_pass': True}
+			<field name="context">{'search_default_available_employees':
+				1,'readonly_by_pass': True}
 			</field>
 		</record>
 
@@ -78,11 +79,18 @@
 					<field name="name" position="after">
 						<field name="display_name" />
 						<field name="employee_card_id" invisible="1" />
+
 					</field>
 					<xpath expr="//div[@class='o_employee_summary_icons']"
 						position="replace">
-
 					</xpath>
+					<field name="mobile_phone" position="replace">
+						<field name="mobile_phone"
+							attrs="{'required': 1 ,'invisible': [('is_current_user','=', False)]}" />
+								<field name="is_current_user" invisible="1" />
+					</field>
+
+
 					<xpath expr="//div[@class='o_kanban_button']" position="replace">
 						<div class="o_kanban_button">
 
@@ -92,6 +100,7 @@
 							</button>
 						</div>
 					</xpath>
+
 				</data>
 			</field>
 		</record>
@@ -198,7 +207,8 @@
 								</button>
 
 								<button name="%(hr_contract.act_hr_employee_2_hr_contract)d"
-									class="oe_stat_button" icon="fa-book" type="action">
+									class="oe_stat_button" icon="fa-book" type="action"
+									attrs="{'invisible':[('is_contract','=', False)]}">
 									<field name="contracts_count" widget="statinfo" string="العقود" />
 								</button>
 
@@ -230,7 +240,6 @@
 								<field name="father_name" nolabel="1" colspan="2" />
 								<field name="grandfather_middle_name" nolabel="1" />
 								<field name="grandfather_name" nolabel="1" colspan="2" />
-								<field name="grandfather2_middle_name" nolabel="1" />
 								<field name="grandfather2_name" nolabel="1" colspan="2" />
 								<field name="family_name" nolabel="1" colspan="2" />
 							</group>
@@ -264,7 +273,8 @@
 												attrs="{'invisible': [('is_saudian','=', True)]}" />
 										</group>
 										<group>
-											<field name="passport_id" string="رقم الحفيظة" attrs="{'required': [('is_saudian','=', False)]}" />
+											<field name="passport_id" string="رقم الحفيظة"
+												attrs="{'required': [('is_saudian','=', False)]}" />
 											<field name="passport_date" attrs="{'required': [('is_saudian','=', False)]}" />
 											<field name="passport_end_date" attrs="{'required': [('is_saudian','=', False)]}" />
 											<field name="passport_place" attrs="{'required': [('is_saudian','=', False)]}" />
@@ -295,12 +305,15 @@
 								<page string="بيانات التواصل">
 									<group>
 										<group string="بيانات التواصل">
-											<field name="mobile_phone" attrs="{'required': 1}" />
+											<field name="mobile_phone"
+												attrs="{'required': 1 ,'invisible': [('is_current_user','=', False)]}" />
 											<field name="work_location" attrs="{'required': 0}" />
 											<field name="work_email" widget="email" attrs="{'required': 1}" />
 											<field name="work_phone" string="تحويلة العمل" />
 											<field name="coach_id" invisible="1" />
 											<field name="manager" groups="base.group_no_one" />
+											<field name="is_contract" invisible="1" />
+											<field name="is_current_user" invisible="1" />
 										</group>
 									</group>
 								</page>
@@ -494,15 +507,15 @@
 				<div name="button_box" position="inside">
 					<button name="%(hr_payroll.act_hr_employee_payslip_list)d"
 						class="oe_stat_button" icon="fa-money" type="action">
-						<field name="payslip_count" widget="statinfo" string="الرواتب"  />
+						<field name="payslip_count" widget="statinfo" string="الرواتب" />
 					</button>
 				</div>
 			</data>
 		</field>
-		</record>
-		<data noupdate="1">
-			<!-- Remove odoo buttons -->
-			<delete id="hr.hr_employee_action_subordinate_hierachy_mutli"
-				model="ir.values" />
-		</data>
+	</record>
+	<data noupdate="1">
+		<!-- Remove odoo buttons -->
+		<delete id="hr.hr_employee_action_subordinate_hierachy_mutli"
+			model="ir.values" />
+	</data>
 </openerp>
