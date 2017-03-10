@@ -235,7 +235,7 @@
 								<field name="family_name" nolabel="1" colspan="2" />
 							</group>
 
-							<label for="number" class="oe_edit_only" />
+							<label for="number" class="oe_edit_only"  attrs="{'invisible': [('number', '=', False)]}" />
 							<h1>
 								<field name="number" placeholder="الرقم الوظيفي" class="oe_smart_inline"
 									readonly="1" />
