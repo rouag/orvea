@@ -97,7 +97,7 @@ class HrScholarship(models.Model):
         #             create history_line
         self.ensure_one()
         type = self.scholarship_type.name.encode('utf-8')
-        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.num_speech, self.date_speech, "ابتعاث")
+#         self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.num_speech, self.date_speech, "ابتعاث")
         self.state = 'done'
 
     @api.multi

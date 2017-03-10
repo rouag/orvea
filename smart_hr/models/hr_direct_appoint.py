@@ -97,6 +97,8 @@ class hrDirectAppoint(models.Model):
             msg= u"' إشعار بمباشرة التعين'"  + unicode(line.employee_id.display_name) + u"'"
             group_id = self.env.ref('smart_hr.group_department_employee')
             self.send_appoint_group(group_id,title,msg)
+            self.env['hr.employee.history'].sudo().add_action_line(line.employee_id,"", self.date, "مباشرة")
+
         self.state = 'done'
         self.state_direct = 'done'
    

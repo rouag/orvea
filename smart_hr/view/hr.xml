@@ -61,7 +61,7 @@
 			<field name="view_mode">kanban,tree,form</field>
 			<field name="domain">[('employee_state','=','employee')]</field>
 			<field name="search_view_id" ref="view_search_hr_employee_inherit" />
-			<field name="context">{'search_default_available_employees': 1,'readonly_by_pass': True}
+			<field name="context">{'search_default_available_employees': 1,'readonly_by_pass': True,'list_type':'_get_dep_name_employee_form'}
 			</field>
 		</record>
 
@@ -320,7 +320,7 @@
 								<page string="بيانات العمل">
 									<group>
 										<group string="بيانات العمل">
-											<field name="department_id" context="{'list_type':'employee_form'}"
+											<field name="department_id" context="{'list_type':'_get_dep_name_employee_form'}"
 												on_change="onchange_department_id(department_id)" />
 											<field name="dep_side" options="{'no_create': True}" />
 											<field name="dep_city" options="{'no_create': True}" />
@@ -443,7 +443,7 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="domain">[('employee_state','!=','employee')]</field>
-			<field name="context">{'readonly_by_pass': True}</field>
+			<field name="context">{'readonly_by_pass': True,'list_type':'_get_dep_name_employee_form'}</field>
 		</record>
 		<record id="action_employee_request_tree" model="ir.actions.act_window.view">
 			<field name="view_mode">tree</field>

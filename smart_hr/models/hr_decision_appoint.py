@@ -481,8 +481,7 @@ class HrDecisionAppoint(models.Model):
         # update holidays balance for the employee
 
   
-        if type:
-            self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date_hiring, "تعيين")
+        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date_hiring, "تعيين")
         self.state = 'done'
         self.env['hr.holidays']._init_balance(self.employee_id)
         # close last active promotion line for the employee
