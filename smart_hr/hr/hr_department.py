@@ -45,9 +45,9 @@ class HrDepartment(models.Model):
         for dep in self:
                 # get the FAR3 of current department
             branche_dep_id = dep
-            while branche_dep_id.parent_id and branche_dep_id.dep_type.level and branche_dep_id.dep_type.level!= 1:
+            while branche_dep_id.parent_id and branche_dep_id.dep_type.level and branche_dep_id.dep_type.level != 1:
                 branche_dep_id = branche_dep_id.parent_id
-            if branche_dep_id.id!=dep.id:
+            if branche_dep_id.id != dep.id:
                 res.append((dep.id, "%s / %s" % (branche_dep_id.name or '', dep.name)))
             else:
                 res.append((dep.id, "%s / %s" % (dep.parent_id.name or '', dep.name)))
@@ -97,7 +97,7 @@ class HrDepartmentType(models.Model):
     _name = 'hr.department.type'
     _description = u'أنواع الإدارات'
     
-    name = fields.Char(advanced_search=True, string=u'المسمّى')
+    name = fields.Char(advanced_search=True, string=u'المسمّى', required=1)
     level = fields.Integer(string=u'العمق')
     code = fields.Char(string='الرمز')
     

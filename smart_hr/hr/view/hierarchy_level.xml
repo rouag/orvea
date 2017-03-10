@@ -49,7 +49,6 @@
 					<sheet>
 						<group>
 							<field name="name" />
-							<field name="level" />
 							<field name="code" />
 						</group>
 					</sheet>
@@ -63,7 +62,6 @@
 			<field name="arch" type="xml">
 				<tree string="أنواع الإدارات">
 					<field name="name" />
-					<field name="level" />
 					<field name="code" />
 				</tree>
 			</field>
