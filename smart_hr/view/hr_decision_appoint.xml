@@ -279,9 +279,9 @@
 										
 										
 											<field name="royal_decree_number"
-											attrs="{'invisible':['|',('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse']),('type_appointment', '!=', %(data_hr_recrute_Members)d)],'required':[('type_appointment', '=', %(data_hr_recrute_Members)d)],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])]}" />
+											attrs="{'invisible':['|',('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse']),('type_appointment', '!=', %(data_hr_recrute_Members)d)],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])]}" />
 										<field name="royal_decree_date" 
-											attrs="{'invisible':['|',('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct','civil', 'done','refuse']),('type_appointment', '!=', %(data_hr_recrute_Members)d)],'required':[('type_appointment', '=', %(data_hr_recrute_Members)d)],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])]}" />
+											attrs="{'invisible':['|',('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct','civil', 'done','refuse']),('type_appointment', '!=', %(data_hr_recrute_Members)d)],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])]}" />
 									</group>
 									<group>
 
