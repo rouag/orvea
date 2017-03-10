@@ -13,7 +13,6 @@
 					<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]" />
 					<field name="salary_grid_type_id" />
 				</group>
-
 				<footer>
 					<button name="print_report" string="طباعة التقرير" type="object"
 						default_focus="1" class="oe_highlight" />
@@ -25,7 +24,7 @@
 	</record>
 
 	<record id="wizard_error_employee_action" model="ir.actions.act_window">
-		<field name="name"> تقرير الاخطاء بالموظف</field>
+		<field name="name"> الموظفين المسثنين من المسير الجماعي</field>
 		<field name="res_model">wizard.error.employee</field>
 		<field name="type">ir.actions.act_window</field>
 		<field name="view_type">form</field>
