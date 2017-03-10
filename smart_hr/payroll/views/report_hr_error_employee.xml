@@ -30,14 +30,14 @@
 												<th class="text-center">السبب</th>
 											</tr>
 										</thead>
-										<t t-set="employee_ids" t-value="get_all_employees(o.month)" />
+										<t t-set="employee_ids" t-value="get_all_employees(o.month,o.department_level1_id,o.department_level2_id,o.department_level3_id,o.salary_grid_type_id)" />
 										<t t-foreach="employee_ids" t-as="line">
 											<tr>
 												<td>
 													<span t-field="line.employee_id.number" />
 												</td>
 												<td>
-													<span t-field="line.employee_id.name" />
+													<span t-field="line.employee_id.display_name" />
 												</td>
 												<td>
 													<span t-field="line.employee_id.job_id" />
@@ -63,14 +63,14 @@
 												<th class="text-center">السبب</th>
 											</tr>
 										</thead>
-										<t t-set="employee_ids" t-value="get_error_employees(o.month)" />
+										<t t-set="employee_ids" t-value="get_error_employees(o.month,o.department_level1_id,o.department_level2_id,o.department_level3_id,o.salary_grid_type_id)"  />
 										<t t-foreach="employee_ids" t-as="line">
 											<tr>
 												<td>
 													<span t-field="line.number" />
 												</td>
 												<td>
-													<span t-field="line.name" />
+													<span t-field="line.display_name" />
 												</td>
 												<td>
 													<span t-field="line.job_id" />
@@ -96,20 +96,20 @@
 												<th class="text-center">السبب</th>
 											</tr>
 										</thead>
-										<t t-set="employee_ids" t-value="get_termination_employees(o.month)" />
+										<t t-set="employee_ids" t-value="get_termination_employees(o.month,o.department_level1_id,o.department_level2_id,o.department_level3_id,o.salary_grid_type_id)" />
 										<t t-foreach="employee_ids" t-as="line">
 											<tr>
 												<td>
-													<span t-field="line.employee_id.number" />
+													<span t-field="line.number" />
 												</td>
 												<td>
-													<span t-field="line.employee_id.name" />
+													<span t-field="line.display_name" />
 												</td>
 												<td>
-													<span t-field="line.employee_id.job_id" />
+													<span t-field="line.job_id" />
 												</td>
 												<td>
-													<span t-field="line.employee_id.job_id.number" />
+													<span t-field="line.job_id.number" />
 												</td>
 												<td>
 												</td>
