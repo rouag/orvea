@@ -34,7 +34,7 @@
 		<field name="target">new</field>
 	</record>
 
-	<menuitem id="wizard_error_employee_menu" name="  تقرير الاخطاء بالموظف"
+	<menuitem id="wizard_error_employee_menu" name=" االموظفين المسثنين من المسير الجماعي"
 		groups="smart_hr.group_dm,smart_hr.group_hrm" sequence="22"
 		action="wizard_error_employee_action" parent="hr_payroll_reporting" />
 
