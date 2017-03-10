@@ -32,7 +32,7 @@ class HrDepartment(models.Model):
     dep_type = fields.Many2one('hr.department.type', string=u'نوع الإدارة')
     child_parent_ids = fields.One2many('hr.department', 'parent_id', 'Children')
     all_child_ids = fields.Many2many('hr.department', compute=_get_child_ids, string="Child Departments")
-    
+
     @api.multi
     def name_get(self):
         if u'list_type' in self._context:
@@ -52,7 +52,7 @@ class HrDepartment(models.Model):
             else:
                 res.append((dep.id, "%s / %s" % (dep.parent_id.name or '', dep.name)))
         return res
-    
+
     @api.multi
     def write(self, vals):
         return super(models.Model, self).write(vals)
