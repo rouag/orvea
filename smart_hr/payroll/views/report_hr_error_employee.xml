@@ -12,7 +12,7 @@
 								<br></br>
 								<div class="col-xs-12 text-center">
 									<h3>
-										<strong>تقرير الاخطاء للموظفين بالشهر :</strong>
+										<strong>تقرير الموظفين المسثنين من المسير الجماعي :</strong>
 
 										<span t-field="o.month" />
 									</h3>
