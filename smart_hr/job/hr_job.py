@@ -1100,7 +1100,6 @@ class HrJobMoveGrade(models.Model):
         else:
             action_name = 'smart_hr.action_hr_job_scal_down_grade'
         for recipient in group_id.users:
-            print recipient
             self.env['base.notification'].create({'title': u'إشعار برفض طلب',
                                                   'message': u'لقد تم إشعار رفض طلب رفع أو خفض وظائف',
                                                   'user_id': recipient.id,
@@ -1375,7 +1374,6 @@ class HrJobMoveUpdateLine(models.Model):
             self.old_type_id = self.job_id.type_id.id
             domain['new_name'] = [('id', '!=', self.job_id.name.id)]
             domain['new_type_id'] = [('id', '!=', self.job_id.type_id.id)]
-            print domain
             res['domain'] = domain
             return res
 

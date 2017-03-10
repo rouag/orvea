@@ -731,7 +731,6 @@ class HrMonthlySummary(models.Model):
             # get all line
             attendance_summary_obj = self.env['hr.attendance.summary']
             all_attendances = attendance_summary_obj.search([('date', '>=', self.date_from), ('date', '<=', self.date_to)])
-            print '-----all_attendances-----', all_attendances
             monthly_summary = {}
             for attendance in all_attendances:
                 if attendance.retard or attendance.leave or attendance.absence:

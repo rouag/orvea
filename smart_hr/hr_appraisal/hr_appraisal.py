@@ -24,12 +24,8 @@ class HrAppraisal(models.Model):
     @api.multi
     def _compute_note_final(self):
         completed_survey = self.env['survey.user_input'].read_group([('appraisal_id', 'in', self.ids), ('state', '=', 'done')], ['appraisal_id'], ['appraisal_id'])
-        print 222222,completed_survey
         for appraisal in self:
             appraisal.note_final = completed_survey.quizz_score
-            
-
-
 
     @api.onchange('employee_id')
     def onchange_employee_ids(self):

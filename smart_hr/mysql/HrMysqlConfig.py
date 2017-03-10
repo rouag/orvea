@@ -32,27 +32,20 @@ class HrMysqlConfig(models.Model):
         conn = pymysql.connect(host=self.host, port=3306, user=self.user, passwd=self.passwd, db=self.db)
         cur = conn.cursor()
         cur.execute("SELECT  * FROM hr_attendance WHERE trndatetime2 > %s", self.latest_date_import)
-        print(cur.description)
-        print()
         all_dates = set()
         for row in cur:
             date = row[2].split(' ')[0]
-            print"datee",date
             all_dates.add(date)
-            print"alll",all_dates
             i = 0
             for date in all_dates:
             #for row in cur:
                 date_pointage = row[2].split(' ')[0]
-                print"date_pointage",date_pointage
                 if date_pointage == date:
                     if len(str(row[3]))==4:
                         empid = str(row[3])
-                        print"empid",empid
                     else:
                         empid = str(row[3])
                     employee = self.env['hr.employee'].search([('number', '=', empid)])
-                    print"employee",employee
                     if employee:
                         if str(row[6]) == '1':
                             action = 'sign_in'
@@ -65,13 +58,11 @@ class HrMysqlConfig(models.Model):
                         hr_attendance = self.env['hr.attendance'].create(hr_attendance_val)
                         self.latest_date_import = row[2]
                 i += 1
-                print"iiiiiii",i
             self.env['hr.attendance.import'].chek_import_attendance(date)
             # close
             if len(all_dates) > 1 and  i != len(all_dates):
                 self.env['hr.attendance.import'].close_day(date)
 
-        print"latest_date_import", self.latest_date_import
         cur.close()
         conn.close()
 

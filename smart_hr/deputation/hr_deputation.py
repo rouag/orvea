@@ -234,8 +234,6 @@ class HrDeputation(models.Model):
             # check duration
             if self.duration > dep_setting.period_decision:
                 self.ministre_report = True
-                print"hhhhhhh",self.ministre_report
-              
         self.state = 'order'
             
     @api.multi

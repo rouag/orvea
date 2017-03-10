@@ -55,14 +55,11 @@ class HrContract(models.Model):
     def _onchange_state(self):
         if self.state == 'open':
             self.date_contract_to = fields.Datetime.now()
-   
-   
-            
+
     @api.onchange('employee_id')
     def _onchange_employe(self):
             if self.employee_id:
                 employee_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('is_started', '=', True)])
-                print"employee_line" ,employee_line   
                 if employee_line:
                     self.job_id = employee_line.job_id.id
                     self.type_job_id = employee_line.type_id.id
@@ -79,14 +76,11 @@ class HrContract(models.Model):
     @api.model
     def control_contract_employee(self):
         today_date = fields.Date.from_string(fields.Date.today())
-        print"today_date",type(today_date)
         contracts= self.env['hr.contract'].search([('date_contract_end','=', today_date)])
-        print"contracts",contracts
         for contrat in contracts :
             appoints= self.env['hr.decision.appoint'].search([('employee_id', '=', contrat.employee_id.id),('state','=','done'),('is_started','=',True)],limit=1)
             if appoints :
                 title= u"' إشعار نهاية العقد'"
-                print"title",title
                 msg= u"' إشعار نهاية العقد'"  + unicode(contrat.employee_id.name) + u"'"
                 group_id = self.env.ref('smart_hr.group_department_employee')
                 self.send_end_contract_group(group_id,title,msg)

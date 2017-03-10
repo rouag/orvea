@@ -456,17 +456,13 @@ class HrEmployeeConfiguration(models.Model):
     @api.model
     def control_test_retraite_employee(self):
         today_date = fields.Date.from_string(fields.Date.today())
-        print"today_date", type(today_date)
         age_member = self.env.ref('smart_hr.data_hr_employee_configuration').age_member
         age_nomember = self.env.ref('smart_hr.data_hr_employee_configuration').age_nomember
-        print"age_member", age_member
         hr_member = self.env['hr.employee'].search([('emp_state', '!=', 'terminated'), ('employee_state', '=', 'employee')])
         for line in hr_member:
             today_date = fields.Date.from_string(fields.Date.today())
             birthday = fields.Date.from_string(line.birthday)
-            print"birthday", birthday
             years = (today_date - birthday).days / 365
-            print"years", years
             if years >= age_member and line.is_member:
                 self.env['hr.termination'].create({
                     'name': 'تقاعد طبيعي ',

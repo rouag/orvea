@@ -31,7 +31,6 @@ class MessierSalaires(report_sxw.rml_parse):
         })
 
     def _get_basic_salary(self, employee_id):
-        print employee_id
         basic_salary = 0
         if employee_id.basic_salary > 0:
             basic_salary = employee_id.basic_salary
@@ -39,7 +38,6 @@ class MessierSalaires(report_sxw.rml_parse):
             salary_grid_id = employee_id.get_salary_grid_id(False)
             if salary_grid_id:
                 basic_salary = salary_grid_id.basic_salary
-        print basic_salary
         return basic_salary
 
     def _get_allowances(self, line_ids):
@@ -54,7 +52,6 @@ class MessierSalaires(report_sxw.rml_parse):
         for line in line_ids:
             if line.category == 'deduction':
                 deduction_ids.append(line)
-        print deduction_ids
         return deduction_ids
 
     def _get_sum_allowances(self, line_ids):

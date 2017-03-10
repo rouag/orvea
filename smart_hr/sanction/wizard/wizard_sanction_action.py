@@ -18,7 +18,6 @@ class WizardSanctionAction(models.TransientModel):
         active_model = self._context.get('active_model', False)
         active_id = self._context.get('active_id', False)
         action = self._context.get('action', False)
-        print '---------',active_model,active_id,action
         if active_model == 'hr.sanction.ligne' and active_id:
             sanction_line = self.env['hr.sanction.ligne'].browse(active_id)
             description = ''
