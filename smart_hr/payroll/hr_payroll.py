@@ -11,6 +11,7 @@ from umalqurra.hijri import Umalqurra
 from tempfile import TemporaryFile
 import base64
 from openerp.exceptions import UserError
+from openerp.exceptions import ValidationError
 
 
 class HrPayslipRun(models.Model):
@@ -633,7 +634,15 @@ class HrPayslip(models.Model):
             lines.append(salary_net_val)
             payslip.salary_net = salary_net
             payslip.line_ids = lines
-
+    
+    
+    @api.one
+    @api.constrains('employee_id','month')
+    def _check_payroll(self):
+        for rec in self:
+            payroll_count = rec.search_count([('employee_id', '=', rec.employee_id.id),('month', '=', rec.month)])
+            if payroll_count >1:
+                raise ValidationError(u"لا يمكن إنشاء مسيرين لنفس الموظف في نفس الشهر")
 
 class HrPayslipWorkedDays(models.Model):
     _inherit = 'hr.payslip.worked_days'
