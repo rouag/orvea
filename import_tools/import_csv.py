@@ -1999,7 +1999,7 @@ class import_csv(osv.osv):
         return True
 
     def import_holidays(self, cr, uid, ids, context=None):
-          
+        start = timeit.default_timer()
         if context is None:
             context = {}
         this = self.browse(cr, uid, ids[0])   
@@ -2027,37 +2027,40 @@ class import_csv(osv.osv):
         i=0
         
         for row  in reader :
+            
             employee=employee_obj.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
-            if employee:
-                if   str(row['STATUS_ID']) == '2':
-                    state='done'
-                elif  str(row['STATUS_ID']) == '8':
-                     state='unkhown'
-                elif  str(row['STATUS_ID']) == '4':
-                     state='refuse'
-                else:
-                    state='unkhown'
-                if  str(row['LEAVE_TYPE']) == '1':
-                    type=status_normal
-                elif str(row['LEAVE_TYPE']) == '20':
-                    type=status_normal
-                elif str(row['LEAVE_TYPE']) == '23':
-                    type=status_study
-                elif str(row['LEAVE_TYPE']) == '5':
-                    type=status_maladie
-                elif str(row['LEAVE_TYPE']) == '12':
-                    type=sport
-                elif str(row['LEAVE_TYPE']) == '13':
-                    type=accompaniment
-                elif str(row['LEAVE_TYPE']) == '333':
-                    type=absent
-                else :
-                    type=exceptional
-                    
-                    
-              
+            holidays=holiday_obj.search(cr, uid, [('name', '=',str(row['REQUEST_NO']))])
+            if not  holidays and employee and str(row['DAYS_USED'])!='NULL':
+                if employee:
+                    if   str(row['STATUS_ID']) == '2':
+                        state='done'
+                    elif  str(row['STATUS_ID']) == '8':
+                         state='unkhown'
+                    elif  str(row['STATUS_ID']) == '4':
+                         state='refuse'
+                    else:
+                        state='unkhown'
+                    if  str(row['LEAVE_TYPE']) == '1':
+                        type=status_normal
+                    elif str(row['LEAVE_TYPE']) == '20':
+                        type=status_normal
+                    elif str(row['LEAVE_TYPE']) == '23':
+                        type=status_study
+                    elif str(row['LEAVE_TYPE']) == '5':
+                        type=status_maladie
+                    elif str(row['LEAVE_TYPE']) == '12':
+                        type=sport
+                    elif str(row['LEAVE_TYPE']) == '13':
+                        type=accompaniment
+                    elif str(row['LEAVE_TYPE']) == '333':
+                        type=absent
+                    else :
+                        type=exceptional
+                        
+                        
+                  
                
-                if employee and str(row['DAYS_USED'])!='NULL':
+             
                     try:
                   
                         duration = str(row['DAYS_USED']).replace('.00','')
@@ -2076,7 +2079,8 @@ class import_csv(osv.osv):
                         holiday_obj.create(cr, uid, holiday_val,context=context)
                     except Exception, e:
                         False
-                
+        stop = timeit.default_timer()
+        print 'time for import employee', stop - start       
         return True
     
     
@@ -2208,7 +2212,7 @@ class import_csv(osv.osv):
         reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))         
         employee = self.pool.get('hr.employee')
        
-        education_level = self.pool.get('hr.employee.education.level')
+        diploma = self.pool.get('hr.employee.diploma')
      
         specialiter = self.pool.get('hr.employee.specialization')
         education_level_id=False
@@ -2217,16 +2221,13 @@ class import_csv(osv.osv):
         city_id=False
         religion_id=False
         salary_grid_level_id=False
-        id_recuiter = self.pool.get('recruiter.recruiter').search(cr, uid, [('name', '=','حكومي')])[0]
-        country_id=False
-        city_side = self.pool.get('city.side')
-        insurance= self.pool.get('hr.insurance.type')  
-        job_education_level= self.pool.get('hr.employee.job.education.level')
+        
         move_id=''
         all_move_ids=[]
         city_name=False
         job = self.pool.get('hr.job')
         employee = self.pool.get('hr.employee')
+        job_education_level= self.pool.get('hr.employee.job.education.level')
             
         for row  in reader: 
             if row['EMP_NO'] and  ( employee.search(cr, uid, [('number', '=',row['EMP_NO'])])) and row['LOC_ID']=='3369' : 
@@ -2235,11 +2236,11 @@ class import_csv(osv.osv):
                     if specialiter_ids:
                         specialiter_id =specialiter_ids[0]
                 if str(row['DEGREE_NO']):
-                    education_level_ids=education_level.search(cr, uid, [('code', '=',row['DEGREE_NO'])])
-                    if education_level_ids:
-                        education_level_id=education_level_ids[0]
+                    diplome_ids=diploma.search(cr, uid, [('code', '=',row['DEGREE_NO'])])
+                    if diplome_ids:
+                        diplome_id=diplome_ids[0]
                 vals_education={'name':'01',
-                                'level_education_id':education_level_id,
+                                'diploma_id':diplome_id,
                                 'specialization_ids':[specialiter_id]
                                 
                                 }
@@ -2871,6 +2872,34 @@ class import_csv(osv.osv):
         
         return True 
         
+    def import_diplome(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+        
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))         
+        diplome = self.pool.get('hr.employee.diploma')
+        move_id=''
+        all_move_ids=[]
+        print 11111
+        for row  in reader : 
+            if row['name']: 
+                diplome.search(cr, uid, [('code', '=',row['code'])])
+                if len(diplome.search(cr, uid, [('code', '=',row['code'])]))==0:
+                    diplome_val={
+                            'name':(row['name']).decode('utf-8').strip(),
+                            'code':(row['code']).decode('utf-8').strip(),
+                            }
+          
+                    diplome.create(cr, uid, diplome_val,context=context)
+         
         
         
     def update_saudi_citys_coutry(self, cr, uid, ids, context=None):
@@ -3024,7 +3053,5 @@ class import_csv(osv.osv):
 import_csv()
 
 
-        
 
-import_csv()
 

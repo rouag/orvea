@@ -98,7 +98,7 @@
 					</xpath>
 					<field name="mobile_phone" position="replace">
 						<field name="mobile_phone"
-							attrs="{'required': 1 ,'invisible': [('is_current_user','=', False)]}" />
+							 />
 								<field name="is_current_user" invisible="1" />
 					</field>
 
