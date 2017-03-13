@@ -26,6 +26,8 @@
 							<field name="date_test" string="فترة التجربة بالشهر" />
 							<field name="code" />
 							<field name="show_in_apoint" />
+							<field name="is_contract" />
+
 							<field name="direct_appoint_period" />
 							<field name="max_pension" />
 							<field name="max_pension_ratio" attrs="{'invisible':[('max_pension','=',False)]}" />
@@ -195,6 +197,13 @@
 										<field name="employee_id"
 											options="{'no_open': True,'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 											attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])],'readonly':['|',('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse']), ('type_appointment','=',False)]}" />
+										
+										
+											<field name="contract_id"  	domain="[('employee_id', '=', employee_id)]"
+												attrs="{'invisible':[('is_contract', '=', False)],'readonly':['|',('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse']), ('type_appointment','=',False)]}" />
+											
+											
+											
 										<field name="number" />
 										<field name="country_id" />
 										<field name="emp_job_id" />
@@ -215,6 +224,7 @@
 											attrs="{'invisible':['|',('state', 'not in', ['draft','waiting', 'manager','hrm', 'budget','civil', 'done']),('type_appointment', '!=', %(data_hr_new_agent_public)d)],'readonly':[('state', 'in', [ 'waiting', 'manager', 'hrm', 'budget', 'civil','done'])]}" />
 
 										<field name="file_salar_recent_name" invisible="1" />
+											<field name="is_contract" invisible="1" />
 										<field name="order_enquiry_file_name" invisible="1" />
 										<field name="medical_examination_name" invisible="1" />
 
@@ -336,9 +346,6 @@
 			<field name="res_model">hr.decision.appoint</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
-			<field name="domain">['|',('is_started' ,'=',True),('is_started'
-				,'=',False)]
-			</field>
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 		<menuitem id="hr_decision_appoint_menu" name="التعيين"

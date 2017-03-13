@@ -349,7 +349,7 @@
 											<field name="dep_city" options="{'no_create': True}" />
 											<field name="job_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
-											<field name="type_id"
+											<field name="type_id" attrs="{'required': 1}" 
 												 />
 											<field name="grade_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
