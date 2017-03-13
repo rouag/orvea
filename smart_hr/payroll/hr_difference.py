@@ -639,8 +639,6 @@ class HrDifference(models.Model):
     def get_difference_suspension(self):
         self.ensure_one()
         line_ids = []
-<<<<<<< HEAD
-       
 #         suspension_end_ids = self.env['hr.suspension.end'].search([('release_date', '>=', self.date_from),
 #                                                                    ('release_date', '<=', self.date_to),
 #                                                                    ('state', '=', 'done')
@@ -657,12 +655,6 @@ class HrDifference(models.Model):
                                                                  ])
         suspension_ids = ended_suspension_ids + unended_suspension_ids
         print suspension_ids
-=======
-        suspension_ids = self.env['hr.suspension'].search([('suspension_date', '>=', self.date_from),
-                                                           ('suspension_date', '<=', self.date_to),
-                                                           ('state', '=', 'done')
-                                                           ])
->>>>>>> branch '9.0' of https://gitlab.com/smartek/addons_smart.git
         for suspension in suspension_ids:
             grid_id = suspension.employee_id.get_salary_grid_id(suspension.suspension_date)
             if grid_id:
