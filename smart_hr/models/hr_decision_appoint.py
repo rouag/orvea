@@ -6,6 +6,7 @@ from dateutil.relativedelta import relativedelta
 from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
+from gdata.contentforshopping.data import Domain
 
 
 class HrDecisionAppoint(models.Model):
@@ -35,7 +36,7 @@ class HrDecisionAppoint(models.Model):
     emp_basic_salary = fields.Float(string='الراتب الأساسي', store=True, readonly=1)
     emp_degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', store=True, readonly=1)
     # info about job
-    job_id = fields.Many2one('hr.job', string='الوظيفة', required=1)
+    job_id = fields.Many2one('hr.job', string='الوظيفة', required=1,Domain=[('state','=','unoccupied')])
     passing_score = fields.Float(string=u'الدرجة المطلوبه')
     number_job = fields.Char(string='رقم الوظيفة', readonly=1)
     code = fields.Char(string=u'رمز الوظيفة ', readonly=1)
@@ -119,13 +120,14 @@ class HrDecisionAppoint(models.Model):
         if self.type_appointment and self.type_appointment.for_members is True:
             employee_ids = self.env['hr.employee'].search(
                 [('is_member', '=', True), ('employee_state', 'in', ['done', 'employee'])])
-            job_ids = self.env['hr.job'].search([('name.members_job', '=', True)])
+            job_ids = self.env['hr.job'].search([('name.members_job', '=', True),('state','=', 'unoccupied'),('type_id.is_member','=',True)])
+            print"job_ids",job_ids
             res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
             return res
         if self.type_appointment and self.type_appointment.for_members is False:
             employee_ids = self.env['hr.employee'].search(
                 [('is_member', '=', False), ('employee_state', 'in', ['done', 'employee'])])
-            job_ids = self.env['hr.job'].search([('name.members_job', '=', False)])
+            job_ids = self.env['hr.job'].search([('name.members_job', '=', False),('state','=', 'unoccupied')])
             res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
             return res
 

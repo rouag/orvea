@@ -143,7 +143,7 @@ class hr_termination_type(models.Model):
     nationality = fields.Boolean(string=u'غير سعودي')
     contract = fields.Boolean(string=u'متعاقد')
     evaluation_condition = fields.Boolean(string=u'يطبق شرط تقييم الأداء')
-    years_progress = fields.Integer(string=u'عدد سنوات التقيم')
+    years_progress = fields.Integer(string=u'عدد سنوات التقييم')
     evaluation_required = fields.Many2many('hr.evaluation.result.foctionality', string=u'التقييمات المطلوبة')
     include_members = fields.Boolean(string=u'تشمل اعضاء الهيئة')
     years = fields.Integer(string=u'السن')
