@@ -103,11 +103,29 @@ class SalaryGridDetail(models.Model):
     basic_salary = fields.Float(string='الراتب الأساسي', required=1)
     retirement = fields.Float(string='نسبة المحسوم للتقاعد')
     insurance = fields.Float(string='نسبة  التأمين')
-    net_salary = fields.Float(string='صافي الراتب', required=1)
+    net_salary = fields.Float(string='صافي الراتب', readonly=1, compute='_compute_net_salary')
     allowance_ids = fields.One2many('salary.grid.detail.allowance', 'grid_detail_id', string='البدلات')
     reward_ids = fields.One2many('salary.grid.detail.reward', 'grid_detail_id', string='المكافآت‬')
     indemnity_ids = fields.One2many('salary.grid.detail.indemnity', 'grid_detail_id', string='التعويضات')
     insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين')
+
+    @api.multi
+    @api.depends('allowance_ids', 'reward_ids', 'indemnity_ids', 'basic_salary', 'retirement', 'insurance', 'retirement')
+    def _compute_net_salary(self):
+        for rec in self:
+            net_salary = rec.basic_salary
+            for allowance in rec.allowance_ids:
+                net_salary += allowance.get_value(False)
+            for reward in rec.reward_ids:
+                net_salary += reward.get_value(False)
+            for indemnity in rec.indemnity_ids:
+                net_salary += indemnity.get_value(False)
+            # deductions
+            retirement = rec.basic_salary * rec.retirement / 100.0
+            insurance = rec.basic_salary * rec.insurance / 100.0
+            net_salary -= retirement
+            net_salary -= insurance
+            rec.net_salary = net_salary
 
     @api.model
     def create(self, vals):
@@ -143,20 +161,22 @@ class SalaryGridDetailAllowance(models.Model):
         degree = employee.degree_id
         amount = 0.0
         # search the correct salary_grid for this employee
-        salary_grids = employee.get_salary_grid_id(False)
-        if not salary_grids:
-            raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
+        if employee_id:
+            salary_grids = employee.get_salary_grid_id(False)
+            if not salary_grids:
+                raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
+        else:
+            salary_grids = self.grid_detail_id
         basic_salary = salary_grids.basic_salary
         # compute
         if self.compute_method == 'amount':
             amount = self.amount
         if self.compute_method == 'percentage':
             amount = self.percentage * basic_salary / 100.0
-        if self.compute_method == 'job_location':
-            if employee.dep_city:
-                citys = allowance_city_obj.search([('allowance_id', '=', self.id), ('city_id', '=', employee.dep_city.id)])
-                if citys:
-                    amount = citys[0].percentage * basic_salary / 100.0
+        if self.compute_method == 'job_location' and employee and employee.dep_city:
+            citys = allowance_city_obj.search([('allowance_id', '=', self.id), ('city_id', '=', employee.dep_city.id)])
+            if citys:
+                amount = citys[0].percentage * basic_salary / 100.0
         if self.compute_method == 'formula_1':
             # get first degree for the grade
             degrees = degree_obj.search([('grade_id', '=', grade.id)])
@@ -206,20 +226,22 @@ class SalaryGridDetailReward(models.Model):
         degree = employee.degree_id
         amount = 0.0
         # search the correct salary_grid for this employee
-        salary_grids = employee.get_salary_grid_id(False)
-        if not salary_grids:
-            raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
+        if employee_id:
+            salary_grids = employee.get_salary_grid_id(False)
+            if not salary_grids:
+                raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
+        else:
+            salary_grids = self.grid_detail_id
         basic_salary = salary_grids.basic_salary
         # compute
         if self.compute_method == 'amount':
             amount = self.amount
         if self.compute_method == 'percentage':
             amount = self.percentage * basic_salary / 100.0
-        if self.compute_method == 'job_location':
-            if employee.dep_city:
-                citys = allowance_city_obj.search([('allowance_id', '=', self.id), ('city_id', '=', employee.dep_city.id)])
-                if citys:
-                    amount = citys[0].percentage * basic_salary / 100.0
+        if self.compute_method == 'job_location' and employee and employee.dep_city:
+            citys = allowance_city_obj.search([('allowance_id', '=', self.id), ('city_id', '=', employee.dep_city.id)])
+            if citys:
+                amount = citys[0].percentage * basic_salary / 100.0
         if self.compute_method == 'formula_1':
             # get first degree for the grade
             degrees = degree_obj.search([('grade_id', '=', grade.id)])
@@ -269,20 +291,22 @@ class SalaryGridDetailIndemnity(models.Model):
         degree = employee.degree_id
         amount = 0.0
         # search the correct salary_grid for this employee
-        salary_grids = employee.get_salary_grid_id(False)
-        if not salary_grids:
-            raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
+        if employee_id:
+            salary_grids = employee.get_salary_grid_id(False)
+            if not salary_grids:
+                raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
+        else:
+            salary_grids = self.grid_detail_id
         basic_salary = salary_grids.basic_salary
         # compute
         if self.compute_method == 'amount':
             amount = self.amount
         if self.compute_method == 'percentage':
             amount = self.percentage * basic_salary / 100.0
-        if self.compute_method == 'job_location':
-            if employee.dep_city:
-                citys = allowance_city_obj.search([('allowance_id', '=', self.id), ('city_id', '=', employee.dep_city.id)])
-                if citys:
-                    amount = citys[0].percentage * basic_salary / 100.0
+        if self.compute_method == 'job_location' and employee and employee.dep_city:
+            citys = allowance_city_obj.search([('allowance_id', '=', self.id), ('city_id', '=', employee.dep_city.id)])
+            if citys:
+                amount = citys[0].percentage * basic_salary / 100.0
         if self.compute_method == 'formula_1':
             # get first degree for the grade
             degrees = degree_obj.search([('grade_id', '=', grade.id)])

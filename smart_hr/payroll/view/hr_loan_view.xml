@@ -94,6 +94,7 @@
 										<field name="amount" />
 										<field name="month" />
 										<field name="date" />
+										<field name="state" />
 									</tree>
 								</field>
 							</page>
