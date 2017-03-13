@@ -13,7 +13,8 @@ class HrEmployee(models.Model):
     @api.model
     def get_salary_grid_id(self, operation_date):
         # search for  the newest salary grid detail
-        domain1 = [('grid_id.enabled', '=', True),
+        domain1 = [('grid_id.state', '=', 'done'),
+                   ('grid_id.enabled', '=', True),
                    ('type_id', '=', self.type_id.id),
                    ('grade_id', '=', self.grade_id.id),
                    ('degree_id', '=', self.degree_id.id)
