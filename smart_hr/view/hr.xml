@@ -352,7 +352,7 @@
 											<field name="job_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="type_id"
-												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+												 />
 											<field name="grade_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="degree_id"
@@ -365,7 +365,7 @@
 											<field name="royal_decree_number" attrs="{'invisible': [('is_member','=', False)]}" />
 											<field name="royal_decree_date" attrs="{'invisible': [('is_member','=', False)]}" />
 											<field name="external_decision" />
-											<field name="is_member" />
+											<field name="is_member"  	 invisible="1" />
 										</group>
 										<group string="خصائص أخرى">
 											<field name="user_id"

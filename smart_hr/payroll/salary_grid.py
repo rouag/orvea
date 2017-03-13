@@ -44,6 +44,7 @@ class SalaryGridType(models.Model):
 
     name = fields.Char(string='الصنف', required=1)
     code = fields.Integer(string='الرمز')
+    is_member = fields.Boolean(string='صنف أعضاء')
     grid_id = fields.Many2one('salary.grid', string='سلّم الرواتب')
     basic_salary = fields.Float(string='الراتب الأساسي')
     allowance_ids = fields.Many2many('hr.allowance.type', string=u'البدلات')
