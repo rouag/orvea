@@ -266,7 +266,7 @@ class HrEmployee(models.Model):
                 if len(rec.identification_id) != 10:
                     raise Warning(_('الرجاء التثبت من رقم الهوية.'))
             if not rec.is_saudian:
-                if len(rec.identification_id) != 10:
+                if len(rec.residance_id) != 10:
                     raise Warning(_('الرجاء التثبت من رقم الإقامة.'))
 
     @api.one
