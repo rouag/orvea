@@ -106,30 +106,27 @@ class HrEmployee(models.Model):
     royal_decree_number = fields.Char(string=u'رقم الأمر الملكي', readonly=1)
     royal_decree_date = fields.Date(string=u'تاريخ الأمر الملكي ', readonly=1)
     training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'سجل التدريبات')
-    state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')],
-                             string='Attendance')
+    state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')],string='Attendance')
     employee_card_id = fields.Many2one('hr.employee.functionnal.card')
     residance_id = fields.Char(string=u'رقم الإقامة ')
     residance_date = fields.Date(string=u'تاريخ إصدار بطاقة الإقامة ')
     residance_place = fields.Many2one('res.city', string=u'مكان إصدار بطاقة الإقامة')
     place_of_birth = fields.Many2one('res.city', string=u'مكان الميلاد')
-    state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
-    country_id = fields.Many2one(default=lambda self: self.env['res.country'].search([('code_nat', '=', 'SA')], limit=1),context="{'compute_name': '_get_natinality'}")
+    country_id = fields.Many2one(
+        default=lambda self: self.env['res.country'].search([('code_nat', '=', 'SA')], limit=1),
+        context="{'compute_name': '_get_natinality'}")
     passport_id = fields.Char(string=u'رقم الحفيظة')
     mobile_phone = fields.Char(string=u'الجوال')
-    is_contract = fields.Boolean(string=u'متعاقد' , compute='_compute_is_contract')
-    is_current_user = fields.Boolean(string='Is Current User', compute='_is_current_user' , default=True)
+    is_contract = fields.Boolean(string=u'متعاقد', compute='_compute_is_contract')
+    show_mobile = fields.Boolean(string='Show Mobile', compute='_show_mobile', default=True)
 
     @api.multi
-    def _is_current_user(self):
-        for emp in self:
-            user = self.env['res.users'].browse(self.env.uid)
-            if user.has_group('smart_hr.group_hr_personnel_mobile_numbers'):
-                emp.is_current_user = True
-            if emp.user_id.id == emp._uid :
-                emp.is_current_user = True
-
-
+    def _show_mobile(self):
+        for employee in self:
+            if self.env.user.has_group('smart_hr.group_hr_personnel_mobile_numbers'):
+                employee.show_mobile = True
+            if employee.user_id.id == employee._uid:
+                employee.show_mobile = True
 
     @api.multi
     @api.depends('contracts_count')
@@ -262,11 +259,11 @@ class HrEmployee(models.Model):
     @api.constrains('identification_id')
     def _check_constraints(self):
         for rec in self:
-            if rec.is_saudian:
+            if rec.is_saudian and rec.identification_id:
                 if len(rec.identification_id) != 10:
                     raise Warning(_('الرجاء التثبت من رقم الهوية.'))
-            if not rec.is_saudian:
-                if len(rec.identification_id) != 10:
+            if not rec.is_saudian and rec.residance_id:
+                if len(rec.residance_id) != 10:
                     raise Warning(_('الرجاء التثبت من رقم الإقامة.'))
 
     @api.one
@@ -297,7 +294,7 @@ class HrEmployee(models.Model):
                 'view_id': False,
                 'type': 'ir.actions.act_window',
                 'res_id': employee.id,
-                'context':"{'readonly_by_pass': True,'list_type':'_get_dep_name_employee_form','compute_name': '_get_natinality'}"
+                'context': "{'readonly_by_pass': True,'list_type':'_get_dep_name_employee_form','compute_name': '_get_natinality'}"
             }
             return value
 
@@ -482,10 +479,10 @@ class HrEmployeeConfiguration(models.Model):
 
     @api.model
     def control_test_retraite_employee(self):
-        today_date = fields.Date.from_string(fields.Date.today())
         age_member = self.env.ref('smart_hr.data_hr_employee_configuration').age_member
         age_nomember = self.env.ref('smart_hr.data_hr_employee_configuration').age_nomember
-        hr_member = self.env['hr.employee'].search([('emp_state', '!=', 'terminated'), ('employee_state', '=', 'employee')])
+        hr_member = self.env['hr.employee'].search(
+            [('emp_state', '!=', 'terminated'), ('employee_state', '=', 'employee')])
         for line in hr_member:
             today_date = fields.Date.from_string(fields.Date.today())
             birthday = fields.Date.from_string(line.birthday)
