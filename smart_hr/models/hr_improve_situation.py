@@ -84,7 +84,6 @@ class HrImproveSituatim(models.Model):
 
                 employee_id_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id)
                                                 ])
-                print"employee_id_line",employee_id_line
                 if employee_id_line:
                     self.number = employee_id_line.number
                     self.number_job = employee_id_line.number_job

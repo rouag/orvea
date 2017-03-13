@@ -30,7 +30,6 @@ class OrderEnquiryReportParser(report_sxw.rml_parse):
         return None
 
     def _get_employee_jurdicial_precedents(self, employee):
-        print employee
         jurdicial_precedents_ids = self.pool.get('employee.judicial.precedent.order').search(self.cr, self.uid, [('employee', '=', employee.id)], limit=1)
         if jurdicial_precedents_ids:
             jurdicial_precedents_obj = self.pool.get('employee.judicial.precedent.order').browse(self.cr, self.uid, jurdicial_precedents_ids)

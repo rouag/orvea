@@ -4,7 +4,7 @@ from dateutil.relativedelta import relativedelta
 from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
-from mmap import mmap,ACCESS_READ
+from mmap import mmap, ACCESS_READ
 from xlrd import open_workbook
 import os
 
@@ -119,7 +119,7 @@ class HrEmployeeCommissioning(models.Model):
         self.ensure_one()
         self.state = 'done'
         # create history_line
-        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, False, False, "تكليف")
+#         self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, False, False, "تكليف")
 
 
 class HrEmployeeCommissioningType(models.Model):

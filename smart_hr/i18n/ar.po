@@ -705,6 +705,18 @@ msgstr ""
 msgid "Kanban"
 msgstr "البطاقات"
 
+#. module: base
+#: code:addons/models.py:1281
+#, python-format
+msgid "Error while validating constraint"
+msgstr "خطأ أثناء التحقق من صحة البيانات"
+
+#. module: base
+#: selection:ir.mail_server,smtp_encryption:0
+msgid "None"
+msgstr "لا شيء"
+
+
 
 
 #. module: web

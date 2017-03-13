@@ -18,7 +18,6 @@ class WizardJobScaleDownModel(models.TransientModel):
             if move_ids:
                 for rec in move_ids:
                     job_ids += [line.job_id.id for line in rec.job_movement_ids]
-                print job_ids
                 res['domain'] = {'job_id': [('id', 'in', job_ids)]}
                 return res
             # return empty job list

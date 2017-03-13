@@ -7,7 +7,6 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FO
 
 
 class ResGroups(models.Model):
-
     _inherit = "res.groups"
 
     @api.multi
@@ -24,20 +23,19 @@ class ResGroups(models.Model):
                         if emp.job_id.id not in job_required_ids.ids:
                             raise ValidationError(u"الرجاء مراجعة اعدادات وظائف اعضاء مجلس الهيئة")
                 users_number = self.env['hr.authority.board.setting'].search([], limit=1).users_number
-                if len(self.users.ids)  > users_number:
-                    raise ValidationError(u"عدد اعضاء مجلس الهيئة لا يمكن ان يكون ا كثر من %s"%users_number)
+                if len(self.users.ids) > users_number:
+                    raise ValidationError(u"عدد اعضاء مجلس الهيئة لا يمكن ان يكون ا كثر من %s" % users_number)
         return res
 
 
 class ResUsers(models.Model):
-
     _inherit = "res.users"
 
     @api.multi
     def write(self, vals):
         res = super(ResUsers, self).write(vals)
         group_id = self.env.ref('smart_hr.group_hr_authority_board')
-        valsgroup_id = 'in_group_'+ str(group_id.id)
+        valsgroup_id = 'in_group_' + str(group_id.id)
         if valsgroup_id in vals:
             if vals[valsgroup_id] is True:
                 job_required_ids = self.env['hr.authority.board.setting'].search([], limit=1).job_required_ids
@@ -46,5 +44,5 @@ class ResUsers(models.Model):
                         raise ValidationError(u"الرجاء مراجعة اعدادات وظائف اعضاء مجلس الهيئة")
                 users_number = self.env['hr.authority.board.setting'].search([], limit=1).users_number
                 if len(group_id.users.ids) > users_number:
-                    raise ValidationError(u"عدد اعضاء مجلس الهيئة لا يمكن ان يكون ا كثر من %s"%users_number)
+                    raise ValidationError(u"عدد اعضاء مجلس الهيئة لا يمكن ان يكون ا كثر من %s" % users_number)
         return res

@@ -55,8 +55,6 @@ class HrDecisionAppoint(models.Model):
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
     royal_decree_number = fields.Char(string=u'رقم الأمر الملكي')
     royal_decree_date = fields.Date(string=u'تاريخ الأمر الملكي ')
-    
-    
     # other info
     type_appointment = fields.Many2one('hr.type.appoint', string=u'نوع التعيين', required=1, advanced_search=True)
     description = fields.Text(string=' ملاحظات ')
@@ -143,7 +141,6 @@ class HrDecisionAppoint(models.Model):
 
     @api.onchange('pension_ratio')
     def _onchange_pension_ratio(self):
-        print self.pension_ratio
         if self.pension_ratio:
             if self.pension_ratio > self.max_pension_ratio:
                 raise ValidationError(u"لا يمكنك تجاوز الحد الأقصى.")
@@ -360,7 +357,6 @@ class HrDecisionAppoint(models.Model):
     @api.model
     def control_test_periode_employee(self):
         today_date = fields.Date.from_string(fields.Date.today())
-        print"today_date", type(today_date)
         appoints = self.env['hr.decision.appoint'].search(
             [('state', '=', 'done'), ('is_started', '=', True), ('testing_date_to', '=', today_date)])
         for line in appoints:
@@ -372,13 +368,11 @@ class HrDecisionAppoint(models.Model):
     @api.model
     def control_test_years_employee(self):
         today_date = fields.Date.from_string(fields.Date.today())
-        print"today_date", type(today_date)
         appoints = self.env['hr.decision.appoint'].search([('state', '=', 'done'), ('is_started', '=', True), ('employee_id.age', '=', self.env.ref('smart_hr.data_hr_ending_service_type_normal').years),
                                                            ('type_appointment.id', '=', self.env.ref(
                                                                'smart_hr.data_hr_recrute_agent_utilisateur').id)])
 
         group_id = self.env.ref('smart_hr.group_department_employee')
-        print"appoints", appoints
         for line in appoints:
             title = u"' إشعار بلوغ سن " + str(self.env.ref('smart_hr.data_hr_ending_service_type_normal').years) + u"'"
             msg = u"' إشعار ببلوغ الموظف   '" + unicode(line.employee_id.name) + u"'" + u"عمر" + str(
@@ -406,10 +400,8 @@ class HrDecisionAppoint(models.Model):
             [('state_appoint', '=', 'active'), ('state', '=', 'done'), ('is_started', '=', False)])
         for appoint in appoints:
             direct_appoint_period = appoint.type_appointment.direct_appoint_period
-            print"direct_appoint_period", direct_appoint_period
             prev_days_end = fields.Date.from_string(appoint.date_direct_action) + relativedelta(
                 days=direct_appoint_period)
-            print"prev_days_end", prev_days_end
             sign_days = self.env['hr.attendance'].search_count(
                 [('employee_id', '=', appoint.employee_id.id), ('name', '<=', str(prev_days_end))])
             today_date = str(today_date)
@@ -417,7 +409,6 @@ class HrDecisionAppoint(models.Model):
             if sign_days != 0 or (today_date < prev_days_end):
                 directs = self.env['hr.direct.appoint'].search(
                     [('employee_id', '=', appoint.employee_id.id), ('state', '=', 'waiting')], limit=1)
-                print"directs", directs
                 if directs:
                     for rec in directs:
                         rec.write({'state_direct': 'confirm'})
@@ -450,8 +441,8 @@ class HrDecisionAppoint(models.Model):
                                 'department_id': self.department_id.id,
                                 'degree_id': self.degree_id.id,
                                 'grade_id': self.grade_id.id,
-                                'royal_decree_number':self.royal_decree_number,
-                                'royal_decree_date':self.royal_decree_date
+                                'royal_decree_number': self.royal_decree_number,
+                                'royal_decree_date': self.royal_decree_date
                                 })
         # check if the employee have allready a number 
         if not self.employee_id.number:
@@ -467,7 +458,7 @@ class HrDecisionAppoint(models.Model):
         if self.max_pension:
             self.employee_id.write({'basic_salary': self.basic_salary})
         else:
-            self.employee_id.write({'basic_salary': -1})
+            self.employee_id.write({'basic_salary': 0.0})
         self.state = 'done'
         # close last active appoint for the employee
         last_appoint = self.employee_id.decision_appoint_ids.search(
@@ -479,10 +470,7 @@ class HrDecisionAppoint(models.Model):
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت إحداث تعين جديد '" + unicode(user.name) + u"'")
         # update holidays balance for the employee
-
-  
-        if type:
-            self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date_hiring, "تعيين")
+        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date_hiring, "تعيين")
         self.state = 'done'
         self.env['hr.holidays']._init_balance(self.employee_id)
         # close last active promotion line for the employee
@@ -560,7 +548,7 @@ class HrDecisionAppoint(models.Model):
                                                                       ('degree_id', '=', self.degree_id.id)
                                                                       ])
             if not salary_grid_line:
-                raise ValidationError(u"يجب تحديد سلم الرواتب المناسب للضنف و المرتبة و الدرجة")
+                raise ValidationError(u"يجب تحديد سلم الرواتب المناسب لصنف و المرتبة و الدرجة")
             salary_grid_line = salary_grid_line[0]
             if salary_grid_line and not self.type_appointment.max_pension:
                 self.basic_salary = salary_grid_line.basic_salary

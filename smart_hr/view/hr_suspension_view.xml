@@ -27,9 +27,9 @@
                         </group>
                         <group>
                             <group string="معلومات كف اليد">
-                                <field name="employee_id" required="1" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+                                <field name="employee_id" required="1" attrs="{'readonly':[('state','in',['hrm','done','refuse'])]}"/>
                                 <field name="suspension_date" required="1" attrs="{'readonly':[('state','!=','draft')]}"/>
-                                <field name="raison" />
+                                <field name="raison" attrs="{'readonly':[('state','in',['hrm','done','refuse'])]}"/>
                             </group>
                             <group string="معلومات الخطاب">
                                 <field name="letter_sender" required="1" attrs="{'readonly':[('state','!=','draft')]}"/>

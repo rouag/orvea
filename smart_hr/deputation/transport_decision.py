@@ -6,6 +6,7 @@ from openerp.exceptions import ValidationError
 from openerp.exceptions import UserError
 from datetime import date, datetime, timedelta
 
+
 class HrTransportDecision(models.Model):
     _name = 'hr.transport.decision'
     _order = 'id desc'
@@ -29,13 +30,13 @@ class HrTransportDecision(models.Model):
     file_decision = fields.Binary(string='صورة قرار ', attachment=True)
     airline = fields.Char(string='الخطوط الجوية أو مكتب السفريات')
     state = fields.Selection([
-                              ('draft', u'طلب'),
-                              ('audit', u'دراسة طلب'),
-                              ('done', u'اعتمدت'),
-                              ('refuse', u'مرفوض'),
-                              ('finish', u'منتهية'),
-                              ('cancel', u'ملغى')
-                              ], string=u'حالة', default='draft', advanced_search=True)
+        ('draft', u'طلب'),
+        ('audit', u'دراسة طلب'),
+        ('done', u'اعتمدت'),
+        ('refuse', u'مرفوض'),
+        ('finish', u'منتهية'),
+        ('cancel', u'ملغى')
+    ], string=u'حالة', default='draft', advanced_search=True)
 
     @api.multi
     def action_audit(self):
@@ -66,7 +67,8 @@ class HrTransportDecision(models.Model):
     def _onchange_employee_id(self):
         if self.employee_id:
             self.number = self.employee_id.number
-            appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id), ('state', '=', 'done')], limit=1)
+            appoint_line = self.env['hr.decision.appoint'].search(
+                [('employee_id', '=', self.employee_id.id), ('state', '=', 'done')], limit=1)
             if appoint_line:
                 self.job_id = appoint_line.job_id.id
                 self.code = appoint_line.job_id.name.number
@@ -74,10 +76,11 @@ class HrTransportDecision(models.Model):
                 self.type_id = appoint_line.type_id.id
                 self.grade_id = appoint_line.grade_id.id
                 self.department_id = appoint_line.department_id.id
-                
+
+
 class HrTransportDecisionType(models.Model):
     _name = 'hr.transport.decision.type'
     _description = u'أنواع  الإركاب'
-    
-    name = fields.Char(string='المسمى',required=1)
-    code = fields.Char(string='الرمز',required=1)
+
+    name = fields.Char(string='المسمى', required=1)
+    code = fields.Char(string='الرمز', required=1)

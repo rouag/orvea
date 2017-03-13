@@ -17,7 +17,6 @@ class WizardJobCreateModel(models.TransientModel):
         if move_ids:
             for rec in move_ids:
                 line_ids += [line.id for line in rec.line_ids]
-            print line_ids
             res['domain'] = {'job_create_line_id': [('id', 'in', line_ids)]}
             return res
             # return empty job list

@@ -72,7 +72,6 @@ class HrDecision(models.Model):
                 grade_id = employee_line.grade_id.name or ""
                 degree_id = employee_line.degree_id.name or ""
                 salary = employee_line.get_salary_grid_id(False).net_salary  or ""
-                print"salary",salary
                 rel_text = decision_type_line.text
      #           transport_allow = employee_line.get_salary_grid_id(False).transport_allow or ""
     #             retirement = employee_line.retirement or ""

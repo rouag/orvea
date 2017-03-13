@@ -11,6 +11,7 @@ from umalqurra.hijri import Umalqurra
 from tempfile import TemporaryFile
 import base64
 from openerp.exceptions import UserError
+from openerp.exceptions import ValidationError
 
 
 class HrPayslipRun(models.Model):
@@ -109,7 +110,7 @@ class HrPayslipRun(models.Model):
         for employee in self.employee_ids:
             payslip_val = {'employee_id': employee.id,
                            'month': self.month,
-                           'name': _('راتب موظف %s لشهر %s') % (employee.name, self.month),
+                           'name': _('راتب موظف %s لشهر %s') % (employee.display_name, self.month),
                            'payslip_run_id': self.id,
                            'date_from': self.date_start,
                            'date_to': self.date_end
@@ -145,7 +146,7 @@ class HrPayslipRun(models.Model):
             # search account bank for this employee
             banks = self.env['res.partner.bank'].search([('employee_id', '=', employee.id), ('is_deposit', '=', True)])
             if not banks:
-                raise UserError(u"يجب إنشاء حساب بنكي للإيداع  للموظف  %s " % employee.name)
+                raise UserError(u"يجب إنشاء حساب بنكي للإيداع  للموظف  %s " % employee.display_name)
             employee_bank = banks[0]
             employee_bank_id = employee_bank.bank_id.bic.ljust(4, ' ')
             employee_account_number = employee_bank.acc_number.ljust(24, ' ')
@@ -326,11 +327,11 @@ class HrPayslip(models.Model):
         # amount_multiplication will be 0 if current payslip's salary grid is allready generated for the previous month's payslip ;
         amount_multiplication = 1
         # check weither the employee is terminated
-        if self.employee_id.emp_state == 'terminated':
-            termination_id = self.env['hr.termination'].search([('employee_id', '=', self.employee_id.id), ('state', '=', 'done')], order='date_termination desc', limit=1)
-            if fields.Date.from_string(termination_id.date_termination) < fields.Date.from_string(self.date_from) or fields.Date.from_string(termination_id.date_termination) > fields.Date.from_string(self.date_to):
-                # TODO: must remove this message raise !
-                raise UserError(u"لقد تم طي قيد %s " % self.employee_id.name)
+        # TODO: must remove this message raise !
+        # if self.employee_id.emp_state == 'terminated':
+        # termination_id = self.env['hr.termination'].search([('employee_id', '=', self.employee_id.id), ('state', '=', 'done')], order='date_termination desc', limit=1)
+        # if fields.Date.from_string(termination_id.date_termination) < fields.Date.from_string(self.date_from) or fields.Date.from_string(termination_id.date_termination) > fields.Date.from_string(self.date_to):
+        # raise UserError(u"لقد تم طي قيد %s " % self.employee_id.name)
         # check if the salary is allready given in the last payslip for the previous month
         previous_month_payslip = False
         if self.month != '01':
@@ -633,7 +634,15 @@ class HrPayslip(models.Model):
             lines.append(salary_net_val)
             payslip.salary_net = salary_net
             payslip.line_ids = lines
-
+    
+    
+    @api.one
+    @api.constrains('employee_id','month')
+    def _check_payroll(self):
+        for rec in self:
+            payroll_count = rec.search_count([('employee_id', '=', rec.employee_id.id),('month', '=', rec.month)])
+            if payroll_count >1:
+                raise ValidationError(u"لا يمكن إنشاء مسيرين لنفس الموظف في نفس الشهر")
 
 class HrPayslipWorkedDays(models.Model):
     _inherit = 'hr.payslip.worked_days'

@@ -3,6 +3,7 @@
 from openerp import models, api, fields, _
 from openerp.exceptions import ValidationError
 
+
 class hr_assessment_probation(models.Model):
     _name = 'hr.assessment.probation'
     _description = 'Job Assessment Through Probation Period'

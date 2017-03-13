@@ -428,7 +428,6 @@ class JobCreateModelReport(report_sxw.rml_parse):
     def _get_statstics_by_grade(self, grade_number):
         res = {'occupied': 0, 'unoccupied': 0, 'sum': 0, 'create_request': 0, 'modify_request': 0}
         if grade_number != 'ممتازة':
-            print grade_number
             occupied_job = self.pool.get('hr.job').search_count(self.cr, self.uid, [('state', '=', 'occupied'), ('grade_id.code', '=', grade_number)])
             unoccupied_job = self.pool.get('hr.job').search_count(self.cr, self.uid, [('state', '=', 'unoccupied'), ('grade_id.code', '=', grade_number)])
             create_request = self.pool.get('hr.job.create.line').search_count(self.cr, self.uid, [('job_create_id.state', '!=', 'done'), ('grade_id.code', '=', grade_number)])
@@ -519,7 +518,6 @@ class JobModifyingModelReport(report_sxw.rml_parse):
     def _get_statstics_by_grade(self, grade_number):
         res = {'occupied': 0, 'unoccupied': 0, 'sum': 0, 'create_request': 0, 'modify_request': 0}
         if grade_number != 'ممتازة':
-            print grade_number
             occupied_job = self.pool.get('hr.job').search_count(self.cr, self.uid, [('state', '=', 'occupied'), ('grade_id.code', '=', grade_number)])
             unoccupied_job = self.pool.get('hr.job').search_count(self.cr, self.uid, [('state', '=', 'unoccupied'), ('grade_id.code', '=', grade_number)])
             create_request = self.pool.get('hr.job.create.line').search_count(self.cr, self.uid, [('job_create_id.state', '!=', 'done'), ('grade_id.code', '=', grade_number)])

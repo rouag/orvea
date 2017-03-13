@@ -61,7 +61,21 @@
 			<field name="view_mode">kanban,tree,form</field>
 			<field name="domain">[('employee_state','=','employee')]</field>
 			<field name="search_view_id" ref="view_search_hr_employee_inherit" />
-			<field name="context">{'search_default_available_employees': 1,'readonly_by_pass': True}
+			<field name="context">{'search_default_available_employees':
+				1,'readonly_by_pass':
+				True,'list_type':'_get_dep_name_employee_form','compute_name':
+				'_get_natinality'}
+			</field>
+		</record>
+		
+
+		<record id="view_country_tree_nationality" model="ir.ui.view">
+			<field name="name">res.country.tree</field>
+			<field name="model">res.country</field>
+			<field name="arch" type="xml">
+				<tree string="Country">
+					<field name="national" />
+				</tree>
 			</field>
 		</record>
 
@@ -81,8 +95,14 @@
 					</field>
 					<xpath expr="//div[@class='o_employee_summary_icons']"
 						position="replace">
-
 					</xpath>
+					<field name="mobile_phone" position="replace">
+						<field name="mobile_phone"
+							attrs="{'required': 1 ,'invisible': [('is_current_user','=', False)]}" />
+								<field name="is_current_user" invisible="1" />
+					</field>
+
+
 					<xpath expr="//div[@class='o_kanban_button']" position="replace">
 						<div class="o_kanban_button">
 
@@ -198,7 +218,8 @@
 								</button>
 
 								<button name="%(hr_contract.act_hr_employee_2_hr_contract)d"
-									class="oe_stat_button" icon="fa-book" type="action">
+									class="oe_stat_button" icon="fa-book" type="action"
+									attrs="{'invisible':[('is_contract','=', False)]}">
 									<field name="contracts_count" widget="statinfo" string="العقود" />
 								</button>
 
@@ -207,35 +228,34 @@
 							<field name="image" widget="image" class="oe_avatar"
 								options="{&quot;preview_image&quot;:&quot;image_medium&quot;}" />
 							<div class="col-xs-12 div_paddig_right_null">
-								<div class="col-xs-3" style="text-align:right;width:23%;">
+								<div class="col-xs-3" style="text-align:right;width:25%;">
 									<label name="name" string="الاسم" />
 								</div>
-								<div class="col-xs-3 div_paddig_right_null" style="text-align:right;width:23.5%;">
+								<div class="col-xs-3 div_paddig_right_null" style="text-align:right;width:25%;">
 									<label name="father_name" string="إسم الأب" class="div_paddig_right_null" />
 								</div>
-								<div class="col-xs-3 div_paddig_right_null" style="text-align:right;width:23%;">
+								<div class="col-xs-3 div_paddig_right_null" style="text-align:right;width:17%;">
 									<label name="grandfather_name" string="اسم الجد" />
 								</div>
-								<div class="col-xs-2 div_paddig_right_null" style="text-align:right;width:15.5%;">
+								<div class="col-xs-2 div_paddig_right_null" style="text-align:right;width:16.5%;">
 									<label name="grandfather2_name" string="اسم الجد الثاني" />
 								</div>
-								<div class="col-xs-1 div_paddig_right_null" style="text-align:right;width:15%;">
+								<div class="col-xs-1 div_paddig_right_null" style="text-align:right;width:16.5%;">
 									<label name="family_name" string="الاسم العائلي" />
 								</div>
 
 							</div>
-							<group col="13">
+							<group col="12">
 								<field name="name" nolabel="1" colspan="2" />
 								<field name="father_middle_name" nolabel="1" />
 								<field name="father_name" nolabel="1" colspan="2" />
 								<field name="grandfather_middle_name" nolabel="1" />
 								<field name="grandfather_name" nolabel="1" colspan="2" />
-								<field name="grandfather2_middle_name" nolabel="1" />
 								<field name="grandfather2_name" nolabel="1" colspan="2" />
 								<field name="family_name" nolabel="1" colspan="2" />
 							</group>
 
-							<label for="number" class="oe_edit_only" />
+							<label for="number" class="oe_edit_only"  attrs="{'invisible': [('number', '=', False)]}" />
 							<h1>
 								<field name="number" placeholder="الرقم الوظيفي" class="oe_smart_inline"
 									readonly="1" />
@@ -247,7 +267,7 @@
 										<group>
 											<field name="country_id" options='{"no_open": True, "no_create": True}'
 												attrs="{'required': 1}" domain="[('code_nat','!=',False)]"
-												context="{'compute_name': '_get_natinality'}" />
+												context="{'compute_name': '_get_natinality','tree_view_ref': 'view_country_tree_nationality'}" />
 
 											<field name="identification_id"
 												attrs="{'required': [('is_saudian','=', True)],'invisible': [('is_saudian','=', False)]}" />
@@ -264,7 +284,8 @@
 												attrs="{'invisible': [('is_saudian','=', True)]}" />
 										</group>
 										<group>
-											<field name="passport_id" string="رقم الحفيظة" attrs="{'required': [('is_saudian','=', False)]}" />
+											<field name="passport_id" string="رقم الحفيظة"
+												attrs="{'required': [('is_saudian','=', False)]}" />
 											<field name="passport_date" attrs="{'required': [('is_saudian','=', False)]}" />
 											<field name="passport_end_date" attrs="{'required': [('is_saudian','=', False)]}" />
 											<field name="passport_place" attrs="{'required': [('is_saudian','=', False)]}" />
@@ -295,12 +316,15 @@
 								<page string="بيانات التواصل">
 									<group>
 										<group string="بيانات التواصل">
-											<field name="mobile_phone" attrs="{'required': 1}" />
+											<field name="mobile_phone"
+												 />
 											<field name="work_location" attrs="{'required': 0}" />
 											<field name="work_email" widget="email" attrs="{'required': 1}" />
 											<field name="work_phone" string="تحويلة العمل" />
 											<field name="coach_id" invisible="1" />
 											<field name="manager" groups="base.group_no_one" />
+											<field name="is_contract" invisible="1" />
+											<field name="is_current_user" invisible="1" />
 										</group>
 									</group>
 								</page>
@@ -320,7 +344,8 @@
 								<page string="بيانات العمل">
 									<group>
 										<group string="بيانات العمل">
-											<field name="department_id" context="{'list_type':'employee_form'}"
+											<field name="department_id"
+												context="{'list_type':'_get_dep_name_employee_form'}"
 												on_change="onchange_department_id(department_id)" />
 											<field name="dep_side" options="{'no_create': True}" />
 											<field name="dep_city" options="{'no_create': True}" />
@@ -409,7 +434,8 @@
 
 								<page string="سجل الاجراءات" readonly='True'>
 
-									<field name='history_ids' readonly="1">
+									<field name='history_ids' readonly="1"
+										context="{'list_type':'_get_dep_name_employee_form'}">
 										<tree string="سجل الاجراءات">
 											<field name="job_id" />
 											<field name="grade_id_number" />
@@ -436,14 +462,45 @@
 				</xpath>
 			</field>
 		</record>
-
+		<record id="view_employee_history_form" model="ir.ui.view">
+			<field name="name">hr.employee.history.form</field>
+			<field name="model">hr.employee.history</field>
+			<field name="arch" type="xml">
+				<form string="سجل اجراءات  موظف">
+					<group col="4">
+						<field name="employee_id" />
+						<field name="department_id" context="{'list_type':'_get_dep_name_employee_form'}" />
+						<field name="job_id" />
+						<field name="grade_id_number" />
+						<field name="number" />
+						<field name="dep_side" />
+						<field name="type" />
+						<field name="date" />
+						<field name="num_decision" />
+						<field name="date_decision" />
+					</group>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_employee_hsitory">
+			<field name="name">سجل اجراءات موظف</field>
+			<field name="res_model">hr.employee.history</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass':
+				True,'list_type':'_get_dep_name_employee_form'}
+			</field>
+		</record>
 		<record model="ir.actions.act_window" id="action_employee_request">
 			<field name="name">طلبات تسجيل موظف</field>
 			<field name="res_model">hr.employee</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="domain">[('employee_state','!=','employee')]</field>
-			<field name="context">{'readonly_by_pass': True}</field>
+			<field name="context">{'readonly_by_pass':
+				True,'list_type':'_get_dep_name_employee_form','compute_name':
+				'_get_natinality'}
+			</field>
 		</record>
 		<record id="action_employee_request_tree" model="ir.actions.act_window.view">
 			<field name="view_mode">tree</field>
@@ -494,15 +551,15 @@
 				<div name="button_box" position="inside">
 					<button name="%(hr_payroll.act_hr_employee_payslip_list)d"
 						class="oe_stat_button" icon="fa-money" type="action">
-						<field name="payslip_count" widget="statinfo" string="الرواتب"  />
+						<field name="payslip_count" widget="statinfo" string="الرواتب" />
 					</button>
 				</div>
 			</data>
 		</field>
-		</record>
-		<data noupdate="1">
-			<!-- Remove odoo buttons -->
-			<delete id="hr.hr_employee_action_subordinate_hierachy_mutli"
-				model="ir.values" />
-		</data>
+	</record>
+	<data noupdate="1">
+		<!-- Remove odoo buttons -->
+		<delete id="hr.hr_employee_action_subordinate_hierachy_mutli"
+			model="ir.values" />
+	</data>
 </openerp>

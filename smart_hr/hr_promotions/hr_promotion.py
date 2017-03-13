@@ -138,7 +138,6 @@ class HrPromotion(models.Model):
                             employee_promotion.append(emp)
 
         for emp_promotion in employee_promotion:
-            print emp_promotion
             regle_point = self.env['hr.evaluation.point'].search([('grade_id', '=', emp_promotion.job_id.grade_id.id)])
             demande_promotion_id = self.env['hr.promotion.employee.demande'].search(
                 [('employee_id', '=', emp_promotion.id)])
@@ -148,7 +147,6 @@ class HrPromotion(models.Model):
             point_functionality = 0
             years_supp = (emp_promotion.service_duration / 365) - emp_promotion.job_id.grade_id.years_job
             if years_supp > 0:
-                print '11111'
                 for year in xrange(1, years_supp):
                     for seniority in regle_point.seniority_ids:
                         if (year >= seniority.year_from) and (year <= seniority.year_to):
@@ -262,7 +260,6 @@ class HrPromotion(models.Model):
             raise ValidationError(u"لم يقع أي إختيار وظيفة جديدة للموظف")
         if self.employee_job_promotion_line_ids:
             for promotion in self.employee_job_promotion_line_ids:
-                print 'state'
                 promotion.state = "employee_confirmed"
 
     @api.one
@@ -318,7 +315,7 @@ class HrPromotion(models.Model):
                                                                  })
                 apoint.action_done()
                 #             create history_line
-                self.env['hr.employee.history'].sudo().add_action_line(emp.employee_id, self.decision_number, self.date,"ترقية")
+                self.env['hr.employee.history'].sudo().add_action_line(emp.employee_id, self.decision_number, self.date, "ترقية")
                 self.env['base.notification'].create({'title': u'إشعار بالترقية',
                                                       'message': u'لقد تم ترقيتكم على وظيفة جديدة',
                                                       'user_id': emp.employee_id.user_id.id,
@@ -354,7 +351,7 @@ class HrPromotion(models.Model):
         return super(HrPromotion, self).unlink()
 
 
-class hrPromotionLigneEmployee(models.Model):
+class HrPromotionLigneEmployee(models.Model):
     _name = 'hr.promotion.employee'
     _order = 'id desc'
     employee_id = fields.Many2one('hr.employee', string=u'الموظف')
@@ -392,7 +389,7 @@ class hrPromotionLigneEmployee(models.Model):
         self.emplyoee_state = True
 
 
-class hr_promotion_ligne_jobs(models.Model):
+class HrPromotionLigneJobs(models.Model):
     _name = 'hr.promotion.job'
     _order = 'id desc'
 
@@ -420,7 +417,7 @@ class hr_promotion_ligne_jobs(models.Model):
             self.job_state = False
 
 
-class hr_promotion_ligne_employee_job(models.Model):
+class HrPromotionLigneEmployeeJob(models.Model):
     _name = 'hr.promotion.employee.job'
     _order = 'id desc'
 
@@ -477,10 +474,6 @@ class hr_promotion_ligne_employee_job(models.Model):
     @api.onchange('employee_id')
     def change_employee_id(self):
         if self.employee_id:
-            print int(self.emp_grade_id_old.code) + 1
-            jobs = self.env['hr.job'].search([])
-            for job in jobs:
-                print '565555665565', job.grade_id.code
             job_ids = self.env['hr.job'].search([('grade_id.code', '=', int(self.emp_grade_id_old.code) + 1)]).ids
             return job_ids
 
@@ -509,7 +502,7 @@ class hr_promotion_ligne_employee_job(models.Model):
             self.new_number_job = self.new_job_id.number
 
 
-class hr_promotion_type(models.Model):
+class HrPromotionType(models.Model):
     _name = 'hr.promotion.type'
 
     name = fields.Char(string=u'نوع الترقية', advanced_search=True)
@@ -518,7 +511,7 @@ class hr_promotion_type(models.Model):
     percent_salaire = fields.Float(string=u' علاوة إضافية نسبة من الراتب  ', )
 
 
-class hr_promotion_demande(models.Model):
+class HrPromotionDemande(models.Model):
     _name = 'hr.promotion.employee.demande'
     _order = 'id desc'
 

@@ -56,6 +56,9 @@ class hrBonus(models.Model):
 
     @api.multi
     def action_done(self):
+        if self.type == 'increase':
+            for line in self.line_ids:
+                self.env['hr.employee.history'].sudo().add_action_line(line.employee_id, self.number_decision, self.date_decision, "علاوة")
         self.state = 'done'
 
     @api.one

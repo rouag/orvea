@@ -45,11 +45,10 @@
 			<field name="name">hr.department.type.form</field>
 			<field name="model">hr.department.type</field>
 			<field name="arch" type="xml">
-				<form string=" نوع الإدارة‬">
+				<form string=" أنواع الإدارات‬">
 					<sheet>
 						<group>
 							<field name="name" />
-							<field name="level" />
 							<field name="code" />
 						</group>
 					</sheet>
@@ -61,23 +60,22 @@
 			<field name="name">hr.department.type.tree</field>
 			<field name="model">hr.department.type</field>
 			<field name="arch" type="xml">
-				<tree string=" نوع الإدارة">
+				<tree string="أنواع الإدارات">
 					<field name="name" />
-					<field name="level" />
 					<field name="code" />
 				</tree>
 			</field>
 		</record>
 
 		<record model="ir.actions.act_window" id="action_hr_department_type">
-			<field name="name">إعداد نوع الإدارة</field>
+			<field name="name">أنواع الإدارات</field>
 			<field name="res_model">hr.department.type</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
 
 		<menuitem id="menu_hr_department_type" parent="menu_department_configuration"
-			name="إعداد نوع الإدارة‬" groups="smart_hr.group_hrm" sequence="8"
+			name="أنواع الإدارات‬" groups="smart_hr.group_hrm" sequence="8"
 			action="action_hr_department_type" />
 
 

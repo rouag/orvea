@@ -35,23 +35,22 @@ class HrDepartment(models.Model):
 
     @api.multi
     def name_get(self):
+        if u'list_type' in self._context:
+            return getattr(self, self._context[u'list_type'])()
+        else:
+            return super(HrDepartment, self).name_get()
+ 
+    def _get_dep_name_employee_form(self):
         res = []
         for dep in self:
-            list_type = dep._context.get('list_type', False)
-            if list_type and list_type == 'employee_form':
                 # get the FAR3 of current department
-                branche_dep_id = dep
-                while branche_dep_id.parent_id and branche_dep_id.dep_type.level != 1:
-                    branche_dep_id = dep.parent_id
+            branche_dep_id = dep
+            while branche_dep_id.parent_id and branche_dep_id.dep_type.level and branche_dep_id.dep_type.level != 1:
+                branche_dep_id = branche_dep_id.parent_id
+            if branche_dep_id.id != dep.id:
                 res.append((dep.id, "%s / %s" % (branche_dep_id.name or '', dep.name)))
             else:
-                reads = self.read(['name', 'parent_id'])
-                res = []
-                for record in reads:
-                    name = record['name']
-                    if record['parent_id']:
-                        name = record['parent_id'][1] + ' / ' + name
-                    res.append((record['id'], name))
+                res.append((dep.id, "%s / %s" % (dep.parent_id.name or '', dep.name)))
         return res
 
     @api.multi
@@ -98,7 +97,7 @@ class HrDepartmentType(models.Model):
     _name = 'hr.department.type'
     _description = u'أنواع الإدارات'
     
-    name = fields.Char(advanced_search=True, string=u'المسمّى')
+    name = fields.Char(advanced_search=True, string=u'المسمّى', required=1)
     level = fields.Integer(string=u'العمق')
     code = fields.Char(string='الرمز')
     

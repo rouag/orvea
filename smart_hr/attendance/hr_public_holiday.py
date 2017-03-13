@@ -5,7 +5,6 @@ from openerp import models, fields, api, _
 from datetime import timedelta
 import math
 from openerp.exceptions import ValidationError
-
 HOURS_PER_DAY = 7
 
 

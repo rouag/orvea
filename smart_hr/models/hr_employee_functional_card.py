@@ -74,11 +74,9 @@ class HrEmployeeFunctionnalCard(models.Model):
         self.ensure_one()
         self.start_date = fields.Datetime.now()
         employee_card = self.env['hr.employee.functionnal.card'].search([('employee_id', '=', self.employee_id.id),('end_date','>=',self.start_date)], limit=1)
-        print"employee_card",employee_card
         if employee_card :
             self.start_date = self.start_date
             self.end_date = employee_card.end_date
-            print"end_date",self.end_date
             self.employee_id.write({'employee_card_id': self.id})
 
         else :

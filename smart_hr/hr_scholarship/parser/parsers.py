@@ -8,7 +8,6 @@ from umalqurra.hijri_date import HijriDate
 
 
 class hrScholarShipRepaortParse(report_sxw.rml_parse):
-
     def __init__(self, cr, uid, name, context):
         super(hrScholarShipRepaortParse, self).__init__(cr, uid, name, context=context)
         self.localcontext.update({
@@ -23,7 +22,8 @@ class hrScholarShipRepaortParse(report_sxw.rml_parse):
         if date:
             date = fields.Date.from_string(date)
             hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
-            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(
+                int(hijri_date.day))
         return None
 
 
@@ -32,7 +32,3 @@ class ReporthrScholarShipRepaort(osv.AbstractModel):
     _inherit = 'report.abstract_report'
     _template = 'smart_hr.report_hr_scholarship_extension'
     _wrapped_report_class = hrScholarShipRepaortParse
-
-
-
-    
