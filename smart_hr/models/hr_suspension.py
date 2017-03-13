@@ -25,7 +25,7 @@ class hr_suspension(models.Model):
     letter_sender = fields.Char(string=u'جهة الخطاب', advanced_search=True)
     letter_number = fields.Integer(string=u'رقم الخطاب', advanced_search=True)
     letter_date = fields.Date(string=u'تاريخ الخطاب')
-    suspension_date = fields.Date(string=u'تاريخ الإيقاف')
+    suspension_date = fields.Date(string=u'تاريخ بدء الإيقاف')
     suspension_attachment = fields.Binary(string=u'الصورة الضوئية للقرار', attachment=True)
     
     raison = fields.Text(string=u'سبب كف اليد', advanced_search=True)

@@ -113,7 +113,7 @@ class HrPayslipRun(models.Model):
         for employee in self.employee_ids:
             payslip_val = {'employee_id': employee.id,
                            'month': self.month,
-                           'name': _('راتب موظف %s لشهر %s') % (employee.name, self.month),
+                           'name': _('راتب موظف %s لشهر %s') % (employee.display_name, self.month),
                            'payslip_run_id': self.id,
                            'date_from': self.date_start,
                            'date_to': self.date_end
@@ -149,7 +149,7 @@ class HrPayslipRun(models.Model):
             # search account bank for this employee
             banks = self.env['res.partner.bank'].search([('employee_id', '=', employee.id), ('is_deposit', '=', True)])
             if not banks:
-                raise UserError(u"يجب إنشاء حساب بنكي للإيداع  للموظف  %s " % employee.name)
+                raise UserError(u"يجب إنشاء حساب بنكي للإيداع  للموظف  %s " % employee.display_name)
             employee_bank = banks[0]
             employee_bank_id = employee_bank.bank_id.bic.ljust(4, ' ')
             employee_account_number = employee_bank.acc_number.ljust(24, ' ')

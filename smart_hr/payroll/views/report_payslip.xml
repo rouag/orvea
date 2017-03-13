@@ -87,7 +87,7 @@
 												<span t-field="o.employee_id.number" />
 											</td>
 											<td rowspan="2">
-												<span t-field="o.employee_id.name" />
+												<span t-field="o.employee_id.display_name" />
 											</td>
 											<td rowspan="2">
 												<span t-field="o.employee_id.job_id" />
@@ -137,7 +137,7 @@
 											</td>
 										</tr>
 										<tr>
-											<td colspan="7" class="text-right"> المجموع</td>
+											<td colspan="6" class="text-right"> المجموع</td>
 											<td>
 												<span t-esc="get_basic_salary(o.employee_id)" />
 											</td>

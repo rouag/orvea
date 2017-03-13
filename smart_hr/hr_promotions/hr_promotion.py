@@ -315,7 +315,7 @@ class HrPromotion(models.Model):
                                                                  })
                 apoint.action_done()
                 #             create history_line
-                self.env['hr.employee.history'].sudo().add_action_line(emp.employee_id, self.decision_number, self.date,"ترقية")
+                self.env['hr.employee.history'].sudo().add_action_line(emp.employee_id, self.decision_number, self.date, "ترقية")
                 self.env['base.notification'].create({'title': u'إشعار بالترقية',
                                                       'message': u'لقد تم ترقيتكم على وظيفة جديدة',
                                                       'user_id': emp.employee_id.user_id.id,
@@ -351,7 +351,7 @@ class HrPromotion(models.Model):
         return super(HrPromotion, self).unlink()
 
 
-class hrPromotionLigneEmployee(models.Model):
+class HrPromotionLigneEmployee(models.Model):
     _name = 'hr.promotion.employee'
     _order = 'id desc'
     employee_id = fields.Many2one('hr.employee', string=u'الموظف')
@@ -389,7 +389,7 @@ class hrPromotionLigneEmployee(models.Model):
         self.emplyoee_state = True
 
 
-class hr_promotion_ligne_jobs(models.Model):
+class HrPromotionLigneJobs(models.Model):
     _name = 'hr.promotion.job'
     _order = 'id desc'
 
@@ -417,7 +417,7 @@ class hr_promotion_ligne_jobs(models.Model):
             self.job_state = False
 
 
-class hr_promotion_ligne_employee_job(models.Model):
+class HrPromotionLigneEmployeeJob(models.Model):
     _name = 'hr.promotion.employee.job'
     _order = 'id desc'
 
@@ -502,7 +502,7 @@ class hr_promotion_ligne_employee_job(models.Model):
             self.new_number_job = self.new_job_id.number
 
 
-class hr_promotion_type(models.Model):
+class HrPromotionType(models.Model):
     _name = 'hr.promotion.type'
 
     name = fields.Char(string=u'نوع الترقية', advanced_search=True)
@@ -511,7 +511,7 @@ class hr_promotion_type(models.Model):
     percent_salaire = fields.Float(string=u' علاوة إضافية نسبة من الراتب  ', )
 
 
-class hr_promotion_demande(models.Model):
+class HrPromotionDemande(models.Model):
     _name = 'hr.promotion.employee.demande'
     _order = 'id desc'
 

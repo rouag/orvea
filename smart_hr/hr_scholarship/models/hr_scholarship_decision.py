@@ -7,7 +7,7 @@ from openerp.exceptions import ValidationError
 class HrScholarshipDecision(models.Model):
     _name = 'hr.scholarship.decision'
     _rec_name = 'employee_id'
-    
+
     name = fields.Char(string='المسمى')
     employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', required=1)
     number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' الرقم الوظيفي')
@@ -15,18 +15,18 @@ class HrScholarshipDecision(models.Model):
     department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string=' الادارة')
     date = fields.Date(string=u'تاريخ المباشرة', default=fields.Datetime.now(), required=1)
     state = fields.Selection([('new', ' ارسال طلب'),
-                             ('hrm', 'في إنتظار الإعتماد'),
-                             ('done', 'اعتمدت'),
-                             ('cancel', 'رفض'),], string='الحالة', readonly=1, default='new')
+                              ('hrm', 'في إنتظار الإعتماد'),
+                              ('done', 'اعتمدت'),
+                              ('cancel', 'رفض'), ], string='الحالة', readonly=1, default='new')
 
     scholarship_ids = fields.Many2many('hr.scholarship', string=u'الابتعاث', required=True)
     order_number = fields.Char(string=u'رقم الخطاب', required=1)
-    order_date = fields.Date(string=u'تاريخ الخطاب', required=1) 
+    order_date = fields.Date(string=u'تاريخ الخطاب', required=1)
     file_decision = fields.Binary(string=u'الخطاب', required=1, attachment=True)
     file_decision_name = fields.Char(string=u'اسم الخطاب')
-    order_source = fields.Char(string=u'مصدر الخطاب' , required=1)
+    order_source = fields.Char(string=u'مصدر الخطاب', required=1)
     note = fields.Text(string='ملاحظات')
-    
+
     @api.one
     def action_hrm(self):
         self.state = 'hrm'
@@ -42,7 +42,7 @@ class HrScholarshipDecision(models.Model):
     @api.one
     def action_refuse(self):
         self.state = 'new'
-        
+
     @api.model
     def create(self, vals):
         res = super(HrScholarshipDecision, self).create(vals)
@@ -51,7 +51,7 @@ class HrScholarshipDecision(models.Model):
         vals['name'] = self.env['ir.sequence'].get('hr.scholarship.deciision.seq')
         res.write(vals)
         return res
-    
+
     @api.multi
     def unlink(self):
         # Validation
