@@ -6,7 +6,7 @@
             <field name="name">auditlog.http.session.form</field>
             <field name="model">auditlog.http.session</field>
             <field name="arch" type="xml">
-                <form string="User session">
+                <form string="جلسات عمل المستخدم">
                     <sheet>
                         <group string="User session">
                             <field name="user_id"/>
@@ -25,7 +25,7 @@
             <field name="name">auditlog.http.session.tree</field>
             <field name="model">auditlog.http.session</field>
             <field name="arch" type="xml">
-                <tree string="User sessions">
+                <tree string="جلسات عمل المستخدم">
                     <field name="user_id"/>
                     <field name="create_date"/>
                     <field name="name"/>
@@ -37,7 +37,7 @@
             <field name="name">auditlog.http.session.search</field>
             <field name="model">auditlog.http.session</field>
             <field name="arch" type="xml">
-                <search string="User sessions">
+                <search string="جلسات عمل المستخدم">
                     <field name="user_id"/>
                     <field name="name"/>
                     <field name="create_date"/>
@@ -54,7 +54,7 @@
         </record>
 
         <record model="ir.actions.act_window" id="action_auditlog_http_session_tree">
-            <field name="name">User sessions</field>
+            <field name="name">جلسات عمل المستخدم</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">auditlog.http.session</field>
             <field name="view_type">form</field>
