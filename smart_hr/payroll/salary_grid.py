@@ -7,7 +7,6 @@ from openerp.exceptions import Warning
 from dateutil.relativedelta import relativedelta
 from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
-from openerp.api import depends
 
 
 class SalaryGrid(models.Model):
@@ -173,11 +172,10 @@ class SalaryGridDetailAllowance(models.Model):
             amount = self.amount
         if self.compute_method == 'percentage':
             amount = self.percentage * basic_salary / 100.0
-        if self.compute_method == 'job_location':
-            if employee and employee.dep_city:
-                citys = allowance_city_obj.search([('allowance_id', '=', self.id), ('city_id', '=', employee.dep_city.id)])
-                if citys:
-                    amount = citys[0].percentage * basic_salary / 100.0
+        if self.compute_method == 'job_location' and employee and employee.dep_city:
+            citys = allowance_city_obj.search([('allowance_id', '=', self.id), ('city_id', '=', employee.dep_city.id)])
+            if citys:
+                amount = citys[0].percentage * basic_salary / 100.0
         if self.compute_method == 'formula_1':
             # get first degree for the grade
             degrees = degree_obj.search([('grade_id', '=', grade.id)])
@@ -239,11 +237,10 @@ class SalaryGridDetailReward(models.Model):
             amount = self.amount
         if self.compute_method == 'percentage':
             amount = self.percentage * basic_salary / 100.0
-        if self.compute_method == 'job_location':
-            if employee and employee.dep_city:
-                citys = allowance_city_obj.search([('allowance_id', '=', self.id), ('city_id', '=', employee.dep_city.id)])
-                if citys:
-                    amount = citys[0].percentage * basic_salary / 100.0
+        if self.compute_method == 'job_location' and employee and employee.dep_city:
+            citys = allowance_city_obj.search([('allowance_id', '=', self.id), ('city_id', '=', employee.dep_city.id)])
+            if citys:
+                amount = citys[0].percentage * basic_salary / 100.0
         if self.compute_method == 'formula_1':
             # get first degree for the grade
             degrees = degree_obj.search([('grade_id', '=', grade.id)])
@@ -305,11 +302,10 @@ class SalaryGridDetailIndemnity(models.Model):
             amount = self.amount
         if self.compute_method == 'percentage':
             amount = self.percentage * basic_salary / 100.0
-        if self.compute_method == 'job_location':
-            if employee and employee.dep_city:
-                citys = allowance_city_obj.search([('allowance_id', '=', self.id), ('city_id', '=', employee.dep_city.id)])
-                if citys:
-                    amount = citys[0].percentage * basic_salary / 100.0
+        if self.compute_method == 'job_location' and employee and employee.dep_city:
+            citys = allowance_city_obj.search([('allowance_id', '=', self.id), ('city_id', '=', employee.dep_city.id)])
+            if citys:
+                amount = citys[0].percentage * basic_salary / 100.0
         if self.compute_method == 'formula_1':
             # get first degree for the grade
             degrees = degree_obj.search([('grade_id', '=', grade.id)])
