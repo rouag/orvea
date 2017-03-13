@@ -50,6 +50,9 @@ class HrPayslipRun(models.Model):
     @api.onchange('month')
     def onchange_month(self):
         if self.month:
+            um = HijriDate.today()
+            if int(um.month)<int(self.month):
+                raise UserError(u"لا يمكن انشاء مسير لشهر في المستقبل ")
             self.date_start = get_hijri_month_start(HijriDate, Umalqurra, self.month)
             self.date_end = get_hijri_month_end(HijriDate, Umalqurra, self.month)
             self.name = u'مسير جماعي  شهر %s' % self.month
@@ -644,6 +647,13 @@ class HrPayslip(models.Model):
             if payroll_count >1:
                 raise ValidationError(u"لا يمكن إنشاء مسيرين لنفس الموظف في نفس الشهر")
 
+    @api.onchange('month')
+    def onchange_month(self):
+        if self.month:
+            um = HijriDate.today()
+            if int(um.month)<int(self.month):
+                raise UserError(u"لا يمكن انشاء مسير لشهر في المستقبل ")
+            
 class HrPayslipWorkedDays(models.Model):
     _inherit = 'hr.payslip.worked_days'
 

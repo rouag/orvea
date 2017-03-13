@@ -68,8 +68,8 @@ class hr_suspension_end(models.Model):
                                                                          ])
             holidays_available_stock = holiday_balance.holidays_available_stock  - duration
             holiday_balance.write({'holidays_available_stock':  holidays_available_stock})
+        self.suspension_id.write({'suspension_end_id': self.id})
         self.state = 'done'
-        
         
     @api.one
     def button_refuse(self):
