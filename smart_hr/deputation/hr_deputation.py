@@ -118,14 +118,14 @@ class HrDeputation(models.Model):
         ('done', u'اعتمدت'),
         ('finish', u'منتهية'),
         ('refuse', u'مرفوضة')
-    ], string=u'حالة', default='draft', advanced_search=True)
+    ], string=u'حالة', default='draft', )
     task_name = fields.Char(string=u' المهمة', required=1)
     duration = fields.Integer(string=u'المدة', compute='_compute_duration', readonly=1)
 
     member_deputation = fields.Selection([
         ('member', u'انتداب عضو'),
         ('notmember', u'انتداب غيرعضو')
-    ], string=u'انتداب عضو', default='notmember', advanced_search=True, required=1)
+    ], string=u'انتداب عضو', default='notmember', required=1)
 
     @api.onchange('member_deputation')
     def onchange_member_deputation(self):

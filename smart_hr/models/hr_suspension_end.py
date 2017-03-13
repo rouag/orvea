@@ -13,11 +13,11 @@ class hr_suspension_end(models.Model):
     _inherit = ['ir.needaction_mixin']
     _description = 'Suspension Ending'
 
-    name = fields.Char(string=u'رقم  إجراء إنهاء كف اليد', advanced_search=True)
+    name = fields.Char(string=u'رقم  إجراء إنهاء كف اليد', )
     date = fields.Date(string=u'التاريخ', default=fields.Datetime.now())
-    employee_id = fields.Many2one('hr.employee', string=u'الموظف', advanced_search=True)
-    letter_sender = fields.Char(string=u'جهة الخطاب', advanced_search=True)
-    letter_no = fields.Char(string=u'رقم الخطاب', advanced_search=True)
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف', )
+    letter_sender = fields.Char(string=u'جهة الخطاب', )
+    letter_no = fields.Char(string=u'رقم الخطاب', )
     letter_date = fields.Date(string=u'تاريخ الخطاب', default=fields.Datetime.now())
     release_date = fields.Date(string=u'تاريخ إطلاق السراح', default=fields.Datetime.now())
     release_reason = fields.Text(string=u'سبب إطلاق السراح')
@@ -27,7 +27,7 @@ class hr_suspension_end(models.Model):
         ('hrm', u'مدير شؤون الموظفين'),
         ('done', u'اعتمدت'),
         ('refuse', u'رفض'),
-    ], string=u'الحالة', default='draft', advanced_search=True)
+    ], string=u'الحالة', default='draft', )
     condemned = fields.Boolean(string=u'‫صدر‬ في حقه‬ عقوبة‬', default=False)
     sentence = fields.Integer(string=u'مدة العقوبة (بالأيام)')
 

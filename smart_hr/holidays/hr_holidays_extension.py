@@ -15,9 +15,9 @@ class HrHolidaysExtension(models.Model):
     def _default_employee_id(self):
         return self.env['hr.employee'].search([('user_id','=',self.env.uid)]).id
     
-    name = fields.Char(string=u'رقم القرار', advanced_search=True)
+    name = fields.Char(string=u'رقم القرار', )
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now())
-    employee_id = fields.Many2one('hr.employee',  string=u'الموظف', domain=[('employee_state','=','employee')], advanced_search=True,default=_default_employee_id)
+    employee_id = fields.Many2one('hr.employee',  string=u'الموظف', domain=[('employee_state','=','employee')], default=_default_employee_id)
     is_the_creator = fields.Boolean(string='Is Current User', compute='_employee_is_the_creator')
     entitlement_id = fields.Many2one('hr.holidays.status.entitlement', string=u'نوع الاستحقاق')
     holiday_status_id = fields.Many2one('hr.holidays.status','نوع الاجازة', domain="[('entitlements.extension_period', '!=', '0')]")
@@ -26,7 +26,7 @@ class HrHolidaysExtension(models.Model):
         ('audit', u'مراجعة'),
         ('done', u'إعتمد'),
         ('refuse', u'رفض'),
-    ], string=u'حالة', default='draft', advanced_search=True)
+    ], string=u'حالة', default='draft', )
     note = fields.Text(string = u'الملاحظات')
     duration = fields.Integer(string=u'الأيام')
     open_period = fields.Many2one('hr.holidays.periode', string=u'periode')

@@ -14,7 +14,7 @@ class HrPromotion(models.Model):
     _inherit = ['mail.thread', 'ir.needaction_mixin']
     _description = 'Promotion Decision'
 
-    name = fields.Char(string=u'رقم محضر الترقيات', advanced_search=True)
+    name = fields.Char(string=u'رقم محضر الترقيات', )
     date = fields.Date(string=u'التاريخ ', default=fields.Datetime.now())
     date_reponse_employee = fields.Date(string=u'تاريخ الأقصى لموافقة الموظف ', )
     speech_number = fields.Char(string=u'رقم الخطاب')
@@ -42,7 +42,7 @@ class HrPromotion(models.Model):
                               ('hrm', u'شؤون الموظفين'),
                               ('done', u'اعتمدت'),
                               ('cancel', u'ملغاة'),
-                              ], string=u'حالة', default='promotion_type', advanced_search=True)
+                              ], string=u'حالة', default='promotion_type', )
     members_promotion = fields.Boolean(string=u'ترقية للاعضاء')
 
     @api.model
@@ -369,7 +369,7 @@ class HrPromotionLigneEmployee(models.Model):
     emplyoee_state = fields.Boolean(string='تأجيل', )
     state = fields.Selection([('draft', u'طلب'),
                               ('done', u'اعتمدت'),
-                              ], string=u'حالة', default='draft', advanced_search=True)
+                              ], string=u'حالة', default='draft', )
 
     identification_id = fields.Char(string=u'رقم الهوية', related="employee_id.identification_id", readonly=1)
     begin_work_date = fields.Date(related="employee_id.begin_work_date", readonly=1)
@@ -505,7 +505,7 @@ class HrPromotionLigneEmployeeJob(models.Model):
 class HrPromotionType(models.Model):
     _name = 'hr.promotion.type'
 
-    name = fields.Char(string=u'نوع الترقية', advanced_search=True)
+    name = fields.Char(string=u'نوع الترقية', )
     code = fields.Char(string=u'الرمز')
     hr_allowance_type_id = fields.Many2one('hr.allowance.type', string='أنواع البدلات', )
     percent_salaire = fields.Float(string=u' علاوة إضافية نسبة من الراتب  ', )
@@ -519,7 +519,7 @@ class HrPromotionDemande(models.Model):
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب',
                                   default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)],
                                                                                       limit=1), required=1, readonly=1)
-    name = fields.Char(string=u'رقم الطلب', advanced_search=True)
+    name = fields.Char(string=u'رقم الطلب', )
     description1 = fields.Text(string='رغبات الموظف', )
     description2 = fields.Text(string='رغبات الموظف', )
     description3 = fields.Text(string='رغبات الموظف', )

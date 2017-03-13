@@ -8,7 +8,7 @@ class hr_assessment_probation(models.Model):
     _name = 'hr.assessment.probation'
     _description = 'Job Assessment Through Probation Period'
 
-    name = fields.Char(string=u'رقم القرار', advanced_search=True)
+    name = fields.Char(string=u'رقم القرار', )
     date = fields.Date(string=u'التاريخ', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee', string=u'الموظف')
     state = fields.Selection([
@@ -141,7 +141,7 @@ class hr_assessment_users(models.Model):
     _name = 'hr.assessment.users'
     _description = 'Job Assessment for Users, Temporary Jobs and Employees on Wages'
 
-    name = fields.Char(string=u'رقم القرار', advanced_search=True)
+    name = fields.Char(string=u'رقم القرار', )
     date = fields.Date(string=u'التاريخ', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee', string=u'الموظف')
     state = fields.Selection([
@@ -215,7 +215,7 @@ class hr_assessment_specialized(models.Model):
     _name = 'hr.assessment.specialized'
     _description = 'Job Assessment for Specialized Jobs'
 
-    name = fields.Char(string=u'رقم القرار', advanced_search=True)
+    name = fields.Char(string=u'رقم القرار', )
     date = fields.Date(string=u'التاريخ', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee', string=u'الموظف')
     category_type = fields.Selection([
@@ -434,7 +434,7 @@ class hr_assessment_veterinary_medicine(models.Model):
     _name = 'hr.assessment.veterinary.medicine'
     _description = "Job Assessment for Veterinary Medicine Jobs"
 
-    name = fields.Char(string=u'رقم القرار', advanced_search=True)
+    name = fields.Char(string=u'رقم القرار', )
     date = fields.Date(string=u'التاريخ', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee', string=u'الموظف')
     form_type = fields.Selection([
@@ -666,7 +666,7 @@ class hr_assessment_executive(models.Model):
     _name = 'hr.assessment.executive'
     _description = 'Job Assessment for Executive Jobs'
 
-    name = fields.Char(string=u'رقم القرار', advanced_search=True)
+    name = fields.Char(string=u'رقم القرار', )
     date = fields.Date(string=u'التاريخ', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee', string=u'الموظف')
     form_type = fields.Selection([
@@ -875,7 +875,7 @@ class hr_assessment_executive_admin(models.Model):
     _name = 'hr.assessment.executive.admin'
     _description = 'Job Assessment for Executive Jobs for Administrators'
 
-    name = fields.Char(string=u'رقم القرار', advanced_search=True)
+    name = fields.Char(string=u'رقم القرار', )
     date = fields.Date(string=u'التاريخ', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee', string=u'الموظف')
     form_type = fields.Selection([

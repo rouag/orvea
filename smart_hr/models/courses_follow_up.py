@@ -21,7 +21,7 @@ class CoursesFollowUp(models.Model):
         ('cut', u'قطعت'),
     ], string=u'الحالة', default='progress', )
 
-    employee_id = fields.Many2one('hr.employee', string=u'الموظف', advanced_search=True, required=1, readonly=True)
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف',  required=1, readonly=True)
     holiday_id = fields.Many2one('hr.holidays', string=u'رقم الاجازة', readonly=True)
     date_from = fields.Date(string=u' تاريخ البدء  ', related='holiday_id.date_from')
     date_to = fields.Date(string=u' تاريخ الإنتهاء ', related='holiday_id.date_to')

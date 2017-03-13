@@ -13,22 +13,22 @@ class hr_suspension(models.Model):
     _inherit = ['mail.thread', 'ir.needaction_mixin']
     _description = 'Suspension Decision'
 
-    name = fields.Char(string=u' رقم إجراء كف اليد', advanced_search=True)
+    name = fields.Char(string=u' رقم إجراء كف اليد', )
     date = fields.Date(string=u'التاريخ', default=fields.Datetime.now())
-    employee_id = fields.Many2one('hr.employee', string=u'الموظف', advanced_search=True)
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف', )
     employee_state = fields.Selection([('new', u'جديد'),
                                        ('waiting', u'في إنتظار الموافقة'),
                                        ('update', u'إستكمال البيانات'),
                                        ('done', u'اعتمدت'),
                                        ('refused', u'رفض'),
                                        ('employee', u'موظف')], string=u'الحالة', related='employee_id.employee_state')
-    letter_sender = fields.Char(string=u'جهة الخطاب', advanced_search=True)
-    letter_number = fields.Integer(string=u'رقم الخطاب', advanced_search=True)
+    letter_sender = fields.Char(string=u'جهة الخطاب', )
+    letter_number = fields.Integer(string=u'رقم الخطاب', )
     letter_date = fields.Date(string=u'تاريخ الخطاب')
     suspension_date = fields.Date(string=u'تاريخ بدء الإيقاف')
     suspension_attachment = fields.Binary(string=u'الصورة الضوئية للقرار', attachment=True)
     
-    raison = fields.Text(string=u'سبب كف اليد', advanced_search=True)
+    raison = fields.Text(string=u'سبب كف اليد')
     suspension_end_id = fields.Many2one('hr.suspension.end', string=u'قرار إنهاء كف اليد')
     state = fields.Selection([
         ('draft', u'طلب'),

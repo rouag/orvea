@@ -53,12 +53,12 @@ class HrEmployee(models.Model):
                                   ('suspended', u'مكفوف اليد'),
                                   ('outside', u'مكلف خارجي'),
                                   ('terminated', u'مطوي قيده'),
-                                  ], string=u'الحالة', default='working', advanced_search=True)
+                                  ], string=u'الحالة', default='working', )
     decision_appoint_ids = fields.One2many('hr.decision.appoint', 'employee_id', string=u'تعيينات الموظف')
-    job_id = fields.Many2one('hr.job', advanced_search=True, string=u'الوظيفة')
+    job_id = fields.Many2one('hr.job', string=u'الوظيفة')
     type_id = fields.Many2one('salary.grid.type',   string=u'الصنف')
     age = fields.Integer(string=u'السن', compute='_compute_age')
-    employee_no = fields.Integer(string=u'رقم الموظف', advanced_search=True)
+    employee_no = fields.Integer(string=u'رقم الموظف', )
     join_date = fields.Date(string=u'تاريخ الالتحاق بالجهة')
     external_decision = fields.Boolean(string=u'موافقة خارجية', default=False)
     holidays = fields.One2many('hr.holidays', 'employee_id', string=u'الاجازات')

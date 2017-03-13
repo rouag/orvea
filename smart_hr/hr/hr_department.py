@@ -23,9 +23,9 @@ class HrDepartment(models.Model):
         self.all_child_ids = list(set(all_childs))
 
     # Inherited Fields
-    name = fields.Char(advanced_search=True, string=u'المسمّى')
-    manager_id = fields.Many2one(advanced_search=True)
-    parent_id = fields.Many2one(advanced_search=True, string=u'الادارة الرئيسي')
+    name = fields.Char(string=u'المسمّى')
+    manager_id = fields.Many2one(string=u'مدير الادارة')
+    parent_id = fields.Many2one(string=u'الادارة الرئيسي')
     dep_city = fields.Many2one('res.city', string=u'المدينة')
     dep_side = fields.Many2one('city.side', string=u'الجهة')
     code = fields.Char(string=u'الرمز')
@@ -81,7 +81,7 @@ class CitySide(models.Model):
     _name = 'city.side'
     _description = u'الجهة'
 
-    name = fields.Char(advanced_search=True, string=u'المسمّى')
+    name = fields.Char(string=u'المسمّى')
     code = fields.Char(string='الرمز')
 
     @api.multi
@@ -97,7 +97,7 @@ class HrDepartmentType(models.Model):
     _name = 'hr.department.type'
     _description = u'أنواع الإدارات'
 
-    name = fields.Char(advanced_search=True, string=u'المسمّى', required=1)
+    name = fields.Char(string=u'المسمّى', required=1)
     level = fields.Integer(string=u'العمق')
     code = fields.Char(string='الرمز')
 

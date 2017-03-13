@@ -18,7 +18,7 @@ class HrPublicHoliday(models.Model):
     state = fields.Selection([('draft', u'طلب'),
                               ('hrm', u'مدير شؤون الموظفين'),
                               ('done', u'اعتمدت'),
-                              ], string=u'الحالة', default='draft', advanced_search=True)
+                              ], string=u'الحالة', default='draft', )
 
     @api.one
     @api.constrains('date_from', 'date_to')

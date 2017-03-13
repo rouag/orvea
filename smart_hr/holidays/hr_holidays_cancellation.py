@@ -12,9 +12,9 @@ class hrHolidaysCancellation(models.Model):
     _inherit = ['mail.thread', 'ir.needaction_mixin']
     _order = 'id desc'
 
-    name = fields.Char(string=u'رقم القرار', advanced_search=True)
+    name = fields.Char(string=u'رقم القرار', )
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now())
-    employee_id = fields.Many2one('hr.employee',  string=u'الموظف', domain=[('employee_state','=','employee')], advanced_search=True, required=1)
+    employee_id = fields.Many2one('hr.employee',  string=u'الموظف', domain=[('employee_state','=','employee')],  required=1)
     is_the_creator = fields.Boolean(string='Is Current User', compute='_employee_is_the_creator')
     
     holidays = fields.One2many('hr.holidays', 'holiday_cancellation', string=u'الإجازات')
@@ -23,11 +23,11 @@ class hrHolidaysCancellation(models.Model):
         ('audit', u'مراجعة'),
         ('done', u'إعتمد'),
         ('refuse', u'رفض'),
-    ], string=u'حالة', default='draft', advanced_search=True)
+    ], string=u'حالة', default='draft', )
     type = fields.Selection([
         ('cut', u'قطع'),
         ('cancellation', u'إلغاء'),
-    ], string=u'نوع', default='cancellation', advanced_search=True)
+    ], string=u'نوع', default='cancellation', )
     note = fields.Text(string = u'الملاحظات', required = True)
     
     @api.depends('employee_id')

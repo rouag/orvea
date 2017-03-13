@@ -49,7 +49,7 @@ class hr_termination(models.Model):
         ('hrm', u'مدير شؤون الموظفين'),
         ('done', u'اعتمدت'),
         ('refuse', u'رفض'),
-    ], string=u'الحالة', default='draft', advanced_search=True)
+    ], string=u'الحالة', default='draft')
 
 
     @api.onchange('termination_type_id')

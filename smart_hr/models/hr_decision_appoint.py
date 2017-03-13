@@ -57,14 +57,14 @@ class HrDecisionAppoint(models.Model):
     royal_decree_number = fields.Char(string=u'رقم الأمر الملكي')
     royal_decree_date = fields.Date(string=u'تاريخ الأمر الملكي ')
     # other info
-    type_appointment = fields.Many2one('hr.type.appoint', string=u'نوع التعيين', required=1, advanced_search=True)
+    type_appointment = fields.Many2one('hr.type.appoint', string=u'نوع التعيين', required=1, )
     description = fields.Text(string=' ملاحظات ')
     state_appoint = fields.Selection([
         ('active', u'مفعل'),
         ('close', u'مغلق'),
         ('refuse', u'مرفوض'),
         ('new', u'في الاجراء'),
-    ], string=u' حالةالتعيين ', default='new', advanced_search=True)
+    ], string=u' حالةالتعيين ', default='new', )
     state = fields.Selection([
         ('draft', u'طلب'),
         ('audit', u'تدقيق'),
@@ -77,7 +77,7 @@ class HrDecisionAppoint(models.Model):
         ('done', u'اعتمدت'),
         ('refuse', u'رفض'),
         ('cancel', u'ملغاة'),
-    ], string=u'حالة', default='draft', advanced_search=True)
+    ], string=u'حالة', default='draft', )
 
     # attachments files
     order_picture = fields.Binary(string='صورة الخطاب', required=1, attachment=True)

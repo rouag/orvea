@@ -39,7 +39,7 @@ class HrEmployeeFunctionnalCard(models.Model):
                               ('hrm', u'مدير شؤون الموظفين'),
                               ('done', u'اعتمدت'),
                               ('refuse', u'رفض'),
-                              ], string=u'الحالة', default='draft', advanced_search=True)
+                              ], string=u'الحالة', default='draft', )
     training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'التدريب', readonly=1, related="employee_id.training_ids")
 
 

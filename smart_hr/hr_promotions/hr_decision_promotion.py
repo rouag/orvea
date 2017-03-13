@@ -42,7 +42,7 @@ class HrDecisionPromotion(models.Model):
     # other info
     type_appointment = fields.Many2one('hr.type.appoint', string=u'نوع الترقية ',
                                        default=lambda self: self.env.ref('smart_hr.data_hr_recrute_agent_public'),
-                                       advanced_search=True)
+                                       )
     description = fields.Text(string=' ملاحظات ')
 
     state = fields.Selection([
@@ -55,7 +55,7 @@ class HrDecisionPromotion(models.Model):
         ('done', u'اعتمدت'),
         ('refuse', u'رفض'),
         ('cancel', u'ملغاة'),
-    ], string=u'حالة', default='draft', advanced_search=True)
+    ], string=u'حالة', default='draft', )
 
 
 class HrDecisionPromotionLine(models.Model):
