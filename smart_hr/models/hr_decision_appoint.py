@@ -24,6 +24,7 @@ class HrDecisionAppoint(models.Model):
     is_started = fields.Boolean(string=u'مباشر', default=False)
     # info about employee
     employee_id = fields.Many2one('hr.employee', string='الموظف', required=1)
+    contract_id = fields.Many2one('hr.contract', string='العقد',  Domain=[('state','!=','close')])
     number = fields.Char(related='employee_id.number', store=True, readonly=True, string=u'الرقم الوظيفي')
     emp_code = fields.Char(string=u'رمز الوظيفة ', readonly=1)
     country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
@@ -110,6 +111,7 @@ class HrDecisionAppoint(models.Model):
                                  readonly=1)
     max_pension_ratio = fields.Float(string=u'نسبة الحد الأقصى (%)', related="type_appointment.max_pension_ratio",
                                      readonly=1)
+    is_contract = fields.Boolean(string=u'يتطلب إنشاء عقد', related="type_appointment.is_contract")
     pension_ratio = fields.Float(string=u'نسبة التقاعد (%)')
 
     @api.multi
@@ -531,6 +533,7 @@ class HrDecisionAppoint(models.Model):
             self.emp_degree_id = appoint_line.degree_id.id
             self.emp_department_id = appoint_line.department_id.id
             self.emp_date_direct_action = appoint_line.date_direct_action
+    
 
     @api.onchange('job_id')
     def _onchange_job_id(self):
@@ -607,6 +610,7 @@ class HrTypeAppoint(models.Model):
     code = fields.Char(string='الرمز')
     audit = fields.Boolean(string=u'تدقيق')
     show_in_apoint = fields.Boolean(string=u'إظهار في تعيين', default=True)
+    is_contract = fields.Boolean(string=u'يتطلب إنشاء عقد', default=False)
     recrutment_manager = fields.Boolean(string=u'موافقة صاحب صلاحية التعين ')
     enterview_manager = fields.Boolean(string=u'مقابلة شخصية')
     personnel_hr = fields.Boolean(string=u'شؤون الموظفين')
