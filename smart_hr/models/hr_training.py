@@ -139,7 +139,7 @@ class HrCandidates(models.Model):
     number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' الرقم الوظيفي')
     job_id = fields.Many2one(related='employee_id.job_id', store=True, readonly=True, string=' الوظيفة')
     department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string=' الادارة')
-    training_id = fields.Many2one('hr.training', string=' الدورة')
+    training_id = fields.Many2one('hr.training', string=' الدورة', required=True)
     date_from = fields.Date(related='training_id.date_from', store=True, readonly=True)
     date_to = fields.Date(related='training_id.date_to', store=True, readonly=True)
     department = fields.Char(related='training_id.department', store=True, readonly=True)

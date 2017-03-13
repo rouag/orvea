@@ -264,6 +264,7 @@
 									<tree create='0' edit='0'>
 										<field name="number" string="التسلسل" />
 										<field name="employee_id" />
+										<field name="salary_net"/>
 										<field name="state" />
 									</tree>
 								</field>

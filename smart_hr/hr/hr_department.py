@@ -80,10 +80,10 @@ class HrDepartment(models.Model):
 class CitySide(models.Model):
     _name = 'city.side'
     _description = u'الجهة'
-    
+
     name = fields.Char(advanced_search=True, string=u'المسمّى')
     code = fields.Char(string='الرمز')
-    
+
     @api.multi
     def name_get(self):
         result = []
@@ -96,11 +96,11 @@ class CitySide(models.Model):
 class HrDepartmentType(models.Model):
     _name = 'hr.department.type'
     _description = u'أنواع الإدارات'
-    
+
     name = fields.Char(advanced_search=True, string=u'المسمّى')
     level = fields.Integer(string=u'العمق')
     code = fields.Char(string='الرمز')
-    
+
     @api.multi
     def name_get(self):
         result = []

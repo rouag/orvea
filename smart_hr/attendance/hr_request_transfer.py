@@ -15,7 +15,8 @@ class HrRequestTransfer(models.Model):
 
     name = fields.Char(string='التسلسل', readonly=1)
     employee_id = fields.Many2one('hr.employee', string='الموظف', required=1, domain=[('employee_state', '=', 'employee')],
-                                  readonly=1, states={'new': [('readonly', 0)]})
+                                  readonly=1, states={'new': [('readonly', 0)]},
+                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1))
     number = fields.Char(string='الرقم الوظيفي', readonly=1)
     department_id = fields.Many2one('hr.department', string='الادارة', readonly=1)
     job_id = fields.Many2one('hr.job', string='الوظيفة', readonly=1)
@@ -70,6 +71,8 @@ class HrRequestTransfer(models.Model):
     @api.one
     def action_waiting(self):
         self.name = self.env['ir.sequence'].get('seq.hr.request.transfer')
+        if self.number_request == 0:
+            raise ValidationError(u"الرجاء مراجعة عدد الساعات المراد تحويلها")
         self.state = 'waiting'
 
     @api.multi
