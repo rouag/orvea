@@ -13,8 +13,8 @@ class ResPartner(models.Model):
          ('hospital', u'مستشفى'),
          ('governmental_entity', u'جهة حكومية'),
          ('company', u'شركة'),
-         ('faculty',u'جامعة'),
-         ('school',u'معهد'),
+         ('faculty', u'جامعة'),
+         ('school', u'معهد'),
          ])
     is_hospital = fields.Boolean(string='is hospital')
     inter_reg_org = fields.Boolean(string=u'منظمة دولية أو اقليمية', default=False)
@@ -38,6 +38,6 @@ class ResPartnerBank(models.Model):
     employee_id = fields.Many2one('hr.employee', string=u'الموظف')
     type_bank = fields.Selection(
         [
-         ('governmental_entity', u' حكومية'),
-         ('private',u'أهلي'),
-         ])
+            ('governmental_entity', u' حكومية'),
+            ('private', u'أهلي'),
+        ])
