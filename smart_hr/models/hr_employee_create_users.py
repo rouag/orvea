@@ -9,8 +9,8 @@ class HrEmployeeCreateUsers(models.Model):
     name = fields.Char(string=u'الرقم')
     employee_ids = fields.Many2many('hr.employee', string=u'الموظف', required=1)
     date = fields.Date(string=u'التاريخ ', default=fields.Datetime.now(), readonly=1)
-    state = fields.Selection([('draft', u''),
-                              ('done', u'')], default='draft', readonly=1)
+    state = fields.Selection([('draft', u'مسودة'),
+                              ('done', u'تم')], default='draft', readonly=1)
 
     @api.multi
     def button_done(self):
