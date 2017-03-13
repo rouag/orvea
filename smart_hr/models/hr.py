@@ -56,7 +56,7 @@ class HrEmployee(models.Model):
                                   ], string=u'الحالة', default='working', )
     decision_appoint_ids = fields.One2many('hr.decision.appoint', 'employee_id', string=u'تعيينات الموظف')
     job_id = fields.Many2one('hr.job', string=u'الوظيفة')
-    type_id = fields.Many2one('salary.grid.type',   string=u'الصنف')
+    type_id = fields.Many2one('salary.grid.type',   string=u'نوع الموظف')
     age = fields.Integer(string=u'السن', compute='_compute_age')
     employee_no = fields.Integer(string=u'رقم الموظف', )
     join_date = fields.Date(string=u'تاريخ الالتحاق بالجهة')
