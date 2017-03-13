@@ -97,9 +97,8 @@
 						position="replace">
 					</xpath>
 					<field name="mobile_phone" position="replace">
-						<field name="mobile_phone"
-							attrs="{'required': 1 ,'invisible': [('is_current_user','=', False)]}" />
-								<field name="is_current_user" invisible="1" />
+						<field name="mobile_phone" attrs="{'invisible': [('show_mobile','=', False)]}" />
+						<field name="show_mobile" invisible="1" />
 					</field>
 
 
@@ -316,15 +315,14 @@
 								<page string="بيانات التواصل">
 									<group>
 										<group string="بيانات التواصل">
-											<field name="mobile_phone"
-												 />
+											<field name="mobile_phone" attrs="{'invisible': [('show_mobile','=', False)]}" />
 											<field name="work_location" attrs="{'required': 0}" />
 											<field name="work_email" widget="email" attrs="{'required': 1}" />
 											<field name="work_phone" string="تحويلة العمل" />
 											<field name="coach_id" invisible="1" />
 											<field name="manager" groups="base.group_no_one" />
 											<field name="is_contract" invisible="1" />
-											<field name="is_current_user" invisible="1" />
+											<field name="show_mobile" invisible="1" />
 										</group>
 									</group>
 								</page>
