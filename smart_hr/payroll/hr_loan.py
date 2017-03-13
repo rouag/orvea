@@ -73,7 +73,8 @@ class HrLoan(models.Model):
                 um.set_date_from_gr(int(dates[0]), int(dates[1]), int(dates[2]))
                 month_val = {'loan_id': self.id,
                              'amount': self.monthly_amount,
-                             'month': str(int(um.month)).zfill(2)
+                             'month': str(int(um.month)).zfill(2),
+                             'state': 'progress'
                              }
                 months.append(month_val)
                 dt = fields.Date.from_string(str(dt)) + relativedelta(days=30)
@@ -83,14 +84,14 @@ class HrLoan(models.Model):
     def copy(self, default=None):
         default = dict(default or {})
         default.update(payment_full_amount=False)
-        return super(hrLoan, self).copy(default)
+        return super(HrLoan, self).copy(default)
 
     @api.multi
     def unlink(self):
         for loan in self:
             if loan.state != 'new':
                 raise UserError(_(u'لا يمكن حذف قرض  إلا في حالة طلب !'))
-        return super(hrLoan, self).unlink()
+        return super(HrLoan, self).unlink()
 
     @api.one
     def action_waiting(self):
@@ -132,11 +133,11 @@ class HrLoan(models.Model):
         for loan in loans:
             # إذا تم سداد كامل المبلغ يجب أن يتم تعديل التاريخ في كل الأشهر
             if loan.payment_full_amount:
-                loan.line_ids.write({'date': datetime.now().date()})
+                loan.line_ids.write({'date': datetime.now().date(), 'state': 'done'})
             # else just update date for current month
             else:
                 lines = loan.line_ids.search([('month', '=', month)])
-                lines.write({'date': datetime.now().date()})
+                lines.write({'date': datetime.now().date(), 'state': 'done'})
             # if residual_amount = 0 make this loan as done
             if loan.residual_amount == 0.0:
                 loan.state = 'done'
@@ -152,8 +153,7 @@ class HrLoanLine(models.Model):
     amount = fields.Float(string='قيمة القسط', required=1)
     date = fields.Date('تاريخ الحسم', required=False)
     month = fields.Selection(MONTHS, string='الشهر')
-    state = fields.Selection([
-                              ('progress', ' غير مسدد'),
+    state = fields.Selection([('progress', ' غير مسدد'),
                               ('done', ' مسدد'),
                               ], string='الحالة', readonly=1, default='progress')
 

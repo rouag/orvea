@@ -56,7 +56,7 @@ class HrEmployee(models.Model):
                                   ], string=u'الحالة', default='working', advanced_search=True)
     decision_appoint_ids = fields.One2many('hr.decision.appoint', 'employee_id', string=u'تعيينات الموظف')
     job_id = fields.Many2one('hr.job', advanced_search=True, string=u'الوظيفة')
-    type_id = fields.Many2one('salary.grid.type', related="job_id.type_id", advanced_search=True)
+    type_id = fields.Many2one('salary.grid.type',  required=1, string=u'الصنف')
     age = fields.Integer(string=u'السن', compute='_compute_age')
     employee_no = fields.Integer(string=u'رقم الموظف', advanced_search=True)
     join_date = fields.Date(string=u'تاريخ الالتحاق بالجهة')
@@ -96,11 +96,11 @@ class HrEmployee(models.Model):
     point_education = fields.Integer(string=u'نقاط التعليم')
     point_training = fields.Integer(string=u'نقاط التدريب')
     point_functionality = fields.Integer(string=u'نقاط  الإداء الوظيفي', )
-    is_member = fields.Boolean(string=u'عضو في الهيئة', default=False, required=1)
+    is_member = fields.Boolean(string=u'عضو في الهيئة', default=False, required=1, compute='_compute_type_id')
     is_saudian = fields.Boolean(string='is saudian', compute='_compute_is_saudian')
     insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين', readonly='1',
                                      compute='_compute_insurance_type')
-    holiday_count = fields.Integer(string=u'عدد الاجازات', compute='_compute_holidays_count')
+    holiday_count = fields.Float(string=u'رصيد الاجازة (يوم)', compute='_compute_holidays_count')
     contracts_count = fields.Integer(string=u'عدد العقود', compute='_compute_contracts_count')
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
     royal_decree_number = fields.Char(string=u'رقم الأمر الملكي', readonly=1)
@@ -135,6 +135,13 @@ class HrEmployee(models.Model):
             if rec.contracts_count > 0:
                 rec.is_contract = True
 
+    @api.multi
+    @api.depends('type_id')
+    def _compute_type_id(self):
+        for rec in self:
+            if rec.type_id.is_member == True:
+                rec.is_member = True
+
     @api.onchange('gender')
     def _onchange_gender(self):
         if self.gender == 'female':
@@ -149,10 +156,16 @@ class HrEmployee(models.Model):
         for rec in self:
             rec.loan_count = self.env['hr.loan'].search_count([('employee_id', '=', rec.id)])
 
+           
     @api.multi
     def _compute_holidays_count(self):
         for rec in self:
-            rec.holiday_count = self.env['hr.holidays'].search_count([('employee_id', '=', rec.id)])
+            stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', rec.id), ('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id),
+                                                               ],limit=1)
+            if stock_line:
+                rec.holiday_count = stock_line.holidays_available_stock 
+            else:
+                rec.holiday_count = 0
 
     @api.multi
     def _compute_contracts_count(self):

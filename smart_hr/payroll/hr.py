@@ -12,29 +12,19 @@ class HrEmployee(models.Model):
 
     @api.model
     def get_salary_grid_id(self, operation_date):
-        if not operation_date:
-            # doamin for  the newest salary grid detail
-            domain = [('grid_id.enabled', '=', True),
-                      ('type_id', '=', self.type_id.id),
-                      ('grade_id', '=', self.grade_id.id),
-                      ('degree_id', '=', self.degree_id.id)
-                      ]
-            salary_grid_id = self.env['salary.grid.detail'].search(domain, order='date desc', limit=1)
+        # search for  the newest salary grid detail
+        domain1 = [('grid_id.state', '=', 'done'),
+                   ('grid_id.enabled', '=', True),
+                   ('type_id', '=', self.type_id.id),
+                   ('grade_id', '=', self.grade_id.id),
+                   ('degree_id', '=', self.degree_id.id)
+                   ]
+        domain2 = domain1
         if operation_date:
-            # return the right salary grid detail for the given operation_date
-            domain = [('grid_id.enabled', '=', True),
-                      ('type_id', '=', self.type_id.id),
-                      ('grade_id', '=', self.grade_id.id),
-                      ('degree_id', '=', self.degree_id.id),
-                      ('date', '<=', operation_date)
-                      ]
-            salary_grid_id = self.env['salary.grid.detail'].search(domain, order='date desc', limit=1)
-            if not salary_grid_id:
-                # doamin for  the newest salary grid detail
-                domain = [('grid_id.enabled', '=', True),
-                          ('type_id', '=', self.type_id.id),
-                          ('grade_id', '=', self.grade_id.id),
-                          ('degree_id', '=', self.degree_id.id)
-                          ]
-                salary_grid_id = self.env['salary.grid.detail'].search(domain, order='date desc', limit=1)
+            # search the right salary grid detail for the given operation_date
+            domain1.append(('date', '<=', operation_date))
+        salary_grid_id = self.env['salary.grid.detail'].search(domain1, order='date desc', limit=1)
+        if not salary_grid_id:
+            # doamin for  the newest salary grid detail
+            salary_grid_id = self.env['salary.grid.detail'].search(domain2, order='date desc', limit=1)
         return salary_grid_id
