@@ -118,7 +118,7 @@ class HrEmployee(models.Model):
     passport_id = fields.Char(string=u'رقم الحفيظة')
     mobile_phone = fields.Char(string=u'الجوال')
     is_contract = fields.Boolean(string=u'متعاقد' , compute='_compute_is_contract')
-    is_current_user = fields.Boolean(string='Is Current User', compute='_is_current_user')
+    is_current_user = fields.Boolean(string='Is Current User', compute='_is_current_user' , default=True)
 
     @api.multi
     def _is_current_user(self):
@@ -142,7 +142,7 @@ class HrEmployee(models.Model):
     def _onchange_gender(self):
         if self.gender == 'female':
             self.father_middle_name = u'بنت'
-            self.grandfather_middle_name = u'بنت'
+            self.grandfather_middle_name = u'بن'
         else:
             self.father_middle_name = u'بن'
             self.grandfather_middle_name = u'بن'

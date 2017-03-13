@@ -100,12 +100,12 @@ msgstr "اسم العرض"
 #: view:auditlog.rule:auditlog.view_auditlog_rule_search
 #: selection:auditlog.rule,state:0
 msgid "Draft"
-msgstr ""
+msgstr "مسودة"
 
 #. module: auditlog
 #: selection:auditlog.log,log_type:0 selection:auditlog.rule,log_type:0
 msgid "Fast log"
-msgstr ""
+msgstr "سجل بسرعة"
 
 #. module: auditlog
 #: field:auditlog.log.line,field_id:0
@@ -116,12 +116,12 @@ msgstr ""
 #: view:auditlog.log:auditlog.view_auditlog_log_form
 #: field:auditlog.log,line_ids:0
 msgid "Fields updated"
-msgstr ""
+msgstr "حقل"
 
 #. module: auditlog
 #: selection:auditlog.log,log_type:0 selection:auditlog.rule,log_type:0
 msgid "Full log"
-msgstr ""
+msgstr "سجل كامل"
 
 #. module: auditlog
 #: help:auditlog.rule,log_type:0
@@ -141,14 +141,14 @@ msgstr ""
 #. module: auditlog
 #: view:auditlog.log:auditlog.view_auditlog_log_form
 msgid "HTTP Context"
-msgstr ""
+msgstr "السياق HTTP"
 
 #. module: auditlog
 #: view:auditlog.http.request:auditlog.view_auditlog_http_request_form
 #: view:auditlog.log:auditlog.view_auditlog_log_search
 #: field:auditlog.log,http_request_id:0
 msgid "HTTP Request"
-msgstr ""
+msgstr "طلب HTTP"
 
 #. module: auditlog
 #: view:auditlog.http.request:auditlog.view_auditlog_http_request_search
@@ -158,7 +158,7 @@ msgstr ""
 #: model:ir.actions.act_window,name:auditlog.action_auditlog_http_request_tree
 #: model:ir.ui.menu,name:auditlog.menu_action_auditlog_http_request_tree
 msgid "HTTP Requests"
-msgstr ""
+msgstr "طلبات HTTP"
 
 #. module: auditlog
 #: field:auditlog.autovacuum,id:0 field:auditlog.http.request,id:0
@@ -196,32 +196,32 @@ msgstr "آخر تحديث في"
 #: view:auditlog.log:auditlog.view_auditlog_log_form
 #: field:auditlog.log.line,log_id:0
 msgid "Log"
-msgstr ""
+msgstr "سجل"
 
 #. module: auditlog
 #: view:auditlog.log:auditlog.view_auditlog_log_form
 msgid "Log - Field updated"
-msgstr ""
+msgstr "سجل تحديث الحقل"
 
 #. module: auditlog
 #: field:auditlog.rule,log_create:0
 msgid "Log Creates"
-msgstr ""
+msgstr "إنشاء سجل"
 
 #. module: auditlog
 #: field:auditlog.rule,log_unlink:0
 msgid "Log Deletes"
-msgstr ""
+msgstr "حذف السجل"
 
 #. module: auditlog
 #: field:auditlog.rule,log_read:0
 msgid "Log Reads"
-msgstr ""
+msgstr "يقرأ السجل"
 
 #. module: auditlog
 #: field:auditlog.rule,log_write:0
 msgid "Log Writes"
-msgstr ""
+msgstr "يكتب السجل"
 
 #. module: auditlog
 #: view:auditlog.http.request:auditlog.view_auditlog_http_request_form
@@ -231,18 +231,18 @@ msgstr ""
 #: model:ir.actions.act_window,name:auditlog.action_auditlog_log_tree
 #: model:ir.ui.menu,name:auditlog.menu_audit_logs
 msgid "Logs"
-msgstr ""
+msgstr "السجلات"
 
 #. module: auditlog
 #: field:auditlog.log,method:0
 msgid "Method"
-msgstr ""
+msgstr "طريقة"
 
 #. module: auditlog
 #: view:auditlog.log:auditlog.view_auditlog_log_search
 #: field:auditlog.log,model_id:0 field:auditlog.rule,model_id:0
 msgid "Model"
-msgstr ""
+msgstr "نموذج"
 
 #. module: auditlog
 #: field:auditlog.http.request,display_name:0
@@ -253,50 +253,50 @@ msgstr "الاسم"
 #. module: auditlog
 #: field:auditlog.log.line,new_value:0
 msgid "New Value"
-msgstr ""
+msgstr "المحتوى الجديد "
 
 #. module: auditlog
 #: field:auditlog.log.line,new_value_text:0
 msgid "New value Text"
-msgstr ""
+msgstr "محتوى النص الجديد"
 
 #. module: auditlog
 #: field:auditlog.log.line,old_value:0
 msgid "Old Value"
-msgstr ""
+msgstr "المحتوى القديم "
 
 #. module: auditlog
 #: field:auditlog.log.line,old_value_text:0
 msgid "Old value Text"
-msgstr ""
+msgstr "محتوى النص القديم"
 
 #. module: auditlog
 #: view:auditlog.http.request:auditlog.view_auditlog_http_request_search
 #: field:auditlog.http.request,name:0
 msgid "Path"
-msgstr ""
+msgstr "مسار"
 
 #. module: auditlog
 #: view:auditlog.log:auditlog.view_auditlog_log_search
 #: field:auditlog.log,res_id:0
 msgid "Resource ID"
-msgstr ""
+msgstr "معرف المورد"
 
 #. module: auditlog
 #: field:auditlog.log,name:0
 msgid "Resource Name"
-msgstr ""
+msgstr "اسم المورد"
 
 #. module: auditlog
 #: view:auditlog.http.request:auditlog.view_auditlog_http_request_search
 #: field:auditlog.http.request,root_url:0
 msgid "Root URL"
-msgstr ""
+msgstr "URL الجذر"
 
 #. module: auditlog
 #: view:auditlog.rule:auditlog.view_auditlog_rule_form
 msgid "Rule"
-msgstr ""
+msgstr "قاعدة"
 
 #. module: auditlog
 #: view:auditlog.rule:auditlog.view_auditlog_rule_search
@@ -304,12 +304,12 @@ msgstr ""
 #: model:ir.actions.act_window,name:auditlog.action_auditlog_rule_tree
 #: model:ir.ui.menu,name:auditlog.menu_action_auditlog_rule_tree
 msgid "Rules"
-msgstr ""
+msgstr "قواعد"
 
 #. module: auditlog
 #: help:auditlog.rule,model_id:0
 msgid "Select model for which you want to generate log."
-msgstr ""
+msgstr "حدد النموذج الذي تريد إستخراج له سجل"
 
 #. module: auditlog
 #: help:auditlog.rule,log_create:0
@@ -343,34 +343,34 @@ msgstr ""
 #: field:auditlog.http.request,http_session_id:0
 #: field:auditlog.log,http_session_id:0
 msgid "Session"
-msgstr ""
+msgstr "جلسة"
 
 #. module: auditlog
 #: field:auditlog.http.session,name:0
 msgid "Session ID"
-msgstr ""
+msgstr "معرف جلسة"
 
 #. module: auditlog
 #: view:auditlog.rule:auditlog.view_auditlog_rule_search
 #: field:auditlog.rule,state:0
 msgid "State"
-msgstr ""
+msgstr "حالة"
 
 #. module: auditlog
 #: view:auditlog.rule:auditlog.view_auditlog_rule_form
 msgid "Subscribe"
-msgstr ""
+msgstr "الاشتراك"
 
 #. module: auditlog
 #: view:auditlog.rule:auditlog.view_auditlog_rule_search
 #: selection:auditlog.rule,state:0
 msgid "Subscribed"
-msgstr ""
+msgstr "المشترك"
 
 #. module: auditlog
 #: field:auditlog.log.line,field_name:0
 msgid "Technical name"
-msgstr ""
+msgstr "الاسم التقني"
 
 #. module: auditlog
 #: sql_constraint:auditlog.rule:0
@@ -387,7 +387,7 @@ msgstr "النوع"
 #. module: auditlog
 #: view:auditlog.rule:auditlog.view_auditlog_rule_form
 msgid "Unsubscribe"
-msgstr ""
+msgstr "إلغاء الاشتراك"
 
 #. module: auditlog
 #: view:auditlog.http.request:auditlog.view_auditlog_http_request_search
@@ -404,7 +404,7 @@ msgstr "المستخدم"
 #: view:auditlog.http.session:auditlog.view_auditlog_http_session_form
 #: view:auditlog.log:auditlog.view_auditlog_log_search
 msgid "User session"
-msgstr ""
+msgstr "جلسة عمل المستخدم"
 
 #. module: auditlog
 #: view:auditlog.http.session:auditlog.view_auditlog_http_session_search
@@ -412,7 +412,7 @@ msgstr ""
 #: model:ir.actions.act_window,name:auditlog.action_auditlog_http_session_tree
 #: model:ir.ui.menu,name:auditlog.menu_action_auditlog_http_session_tree
 msgid "User sessions"
-msgstr ""
+msgstr "جلسات عمل المستخدم"
 
 #. module: auditlog
 #: field:auditlog.rule,user_ids:0
@@ -422,13 +422,13 @@ msgstr "المستخدمون"
 #. module: auditlog
 #: view:auditlog.log:auditlog.view_auditlog_log_form
 msgid "Values"
-msgstr ""
+msgstr "القيم"
 
 #. module: auditlog
 #: code:addons/auditlog/models/rule.py:538
 #, python-format
 msgid "View logs"
-msgstr ""
+msgstr "عرض السجلات"
 
 #. module: auditlog
 #: help:auditlog.rule,user_ids:0

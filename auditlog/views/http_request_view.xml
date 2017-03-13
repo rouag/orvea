@@ -6,7 +6,7 @@
             <field name="name">auditlog.http.request.form</field>
             <field name="model">auditlog.http.request</field>
             <field name="arch" type="xml">
-                <form string="HTTP Request">
+                <form string="طلب HTTP">
                     <sheet>
                         <group string="HTTP Request">
                             <field name="root_url"/>
@@ -27,7 +27,7 @@
             <field name="name">auditlog.http.request.tree</field>
             <field name="model">auditlog.http.request</field>
             <field name="arch" type="xml">
-                <tree string="HTTP Requests">
+                <tree string="طلب HTTP">
                     <field name="name"/>
                     <field name="create_date"/>
                     <field name="http_session_id"/>
@@ -39,7 +39,7 @@
             <field name="name">auditlog.http.request.search</field>
             <field name="model">auditlog.http.request</field>
             <field name="arch" type="xml">
-                <search string="HTTP Requests">
+                <search string="طلب HTTP">
                     <field name="create_date"/>
                     <field name="root_url"/>
                     <field name="name"/>
@@ -67,7 +67,7 @@
         </record>
 
         <record model="ir.actions.act_window" id="action_auditlog_http_request_tree">
-            <field name="name">HTTP Requests</field>
+            <field name="name">طلب HTTP</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">auditlog.http.request</field>
             <field name="view_type">form</field>
