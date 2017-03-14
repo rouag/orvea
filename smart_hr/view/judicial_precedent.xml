@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
-
+		<record model="ir.ui.view" id="view_hr_judicial_precedents_filter">
+			<field name="name">employee.judicial.precedent.order.filter</field>
+			<field name="model">employee.judicial.precedent.order</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="السوابق العدلية ">
+					<field name="employee" string="الموظف"
+						filter_domain="['|','|',('employee.number','ilike',self),('employee.identification_id','ilike',self),('employee.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
 		<!--أنواع السوابق العدلية -->
 
 		<record id="judicial_precedents_form" model="ir.ui.view">
@@ -77,7 +87,8 @@
 				<form string="طلب إستسفار السوابق العدلية">
 					<sheet>
 						<group>
-							<field name="employee"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+							<field name="employee"
+								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 						</group>
 						<field name="judicial_precedents" string="السوابق العدلية" />
 					</sheet>

@@ -2,7 +2,17 @@
 <openerp>
 	<data>
 
-
+		<record model="ir.ui.view" id="view_hr_employee_medical_exam_appoint">
+			<field name="name">employee.medical.exam.search</field>
+			<field name="model">employee.medical.exam</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="الفحص الطبي">
+					<field name="employee" string="الموظف"
+						filter_domain="['|','|',('employee.number','ilike',self),('employee.identification_id','ilike',self),('employee.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
 		<!--أنواع الفحص الطبي -->
 
 		<record id="medical_category_form" model="ir.ui.view">

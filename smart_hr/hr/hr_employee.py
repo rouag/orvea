@@ -20,17 +20,8 @@ class HrEmployee(models.Model):
         args = args or []
         recs = self.browse()
         if name:
-            domain = [
-                '|',
-                '|',
-                '|',
-                '|',
-                ('number', operator, name),
-                ('name', operator, name),
-                ('father_middle_name', operator, name),
-                ('father_name', operator, name),
-                ('family_name', operator, name),
-            ]
+            domain = ['|','|',('number',operator,name),('identification_id',operator,name),('display_name',operator,name)]
+
             recs = self.search(domain + args, limit=limit)
         if not recs:
             recs = self.search([('name', operator, name)] + args, limit=limit)

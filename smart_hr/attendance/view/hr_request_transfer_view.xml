@@ -79,7 +79,8 @@
 			<field name="arch" type="xml">
 				<search string="طلبات تحويل ساعات التأخير">
 					<field name="name" />
-					<field name="employee_id" />
+					<field name="employee_id" string="الموظف"
+							   filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]"/>
 					<field name="date" />
 					<group expand="0" string="تجميع حسب...">
 						<filter name="employee_id" string="الموظف" context="{'group_by':'employee_id'}" />

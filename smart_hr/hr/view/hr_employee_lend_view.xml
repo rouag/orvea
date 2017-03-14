@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data>
+
+		<record model="ir.ui.view" id="view_hr_employee_lend_filter">
+			<field name="name">hr.employee.lend..search</field>
+			<field name="model">hr.employee.lend</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="طلب إعارة موظف">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
 		<!-- طلب إعارة موظف -->
 		<record id="view_hr_employee_lend_form" model="ir.ui.view">
 			<field name="name">hr.employee.lend.form</field>
@@ -45,7 +57,7 @@
 								<field name="lend_salary" />
 								<field name="salary_proportion" />
 								<field name="pay_retirement" />
-							
+
 							</group>
 							<group>
 								<field name="decision_number" />
@@ -80,8 +92,9 @@
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 
-		<menuitem action="action_hr_employee_lend" id="hr_menu_employee_lend" groups="smart_hr.group_hr_personnel_officer_lends"
-			parent="hr_root_workflows" name="طلبات الإعارة" sequence="90" />
+		<menuitem action="action_hr_employee_lend" id="hr_menu_employee_lend"
+			groups="smart_hr.group_hr_personnel_officer_lends" parent="hr_root_workflows"
+			name="طلبات الإعارة" sequence="90" />
 
 		<!-- تمديد إعارة -->
 		<record model="ir.ui.view" id="hr_employee_lend_extend_form">
