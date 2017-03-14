@@ -36,7 +36,6 @@ class HrTransportDecision(models.Model):
         ('refuse', u'مرفوض'),
         ('finish', u'منتهية'),
         ('cancel', u'ملغى')
-    ], string=u'الحالة', default='draft', advanced_search=True)
     ], string=u'حالة', default='draft', )
 
     @api.multi
