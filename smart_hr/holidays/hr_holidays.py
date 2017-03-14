@@ -62,12 +62,11 @@ class HrHolidays(models.Model):
         ('revision', u'مراجعة الخطاب'),
         ('revision_response', u'تسجيل رد الجهة'),
         ('done', u'اعتمدت'),
-        ('refuse', u'رفض'),
         ('cancel', u'ملغاة'),
         ('cutoff', u'مقطوعة'),
+        ('refuse', u'مرفوضة'),
         ('confirm', 'To Approve'),
         ('unkhown', 'غير معروف'),
-        ('refuse', 'Refused'),
         ('validate1', 'Second Approval'),
         ('validate', 'Approved')], string=u'حالة', default='draft',)
 
@@ -85,7 +84,7 @@ class HrHolidays(models.Model):
     inspeech_file_name = fields.Char(string=u'الخطاب الوارد name')
     # Cancellation
     is_cancelled = fields.Boolean(string=u'ملغاة', compute='_is_cancelled')
-    is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started')
+    is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started', store=True)
     holiday_cancellation = fields.Many2one('hr.holidays.cancellation')    
     # Extension
     is_extension = fields.Boolean(string=u'تمديد إجازة')
@@ -180,12 +179,11 @@ class HrHolidays(models.Model):
                 current_stock = stock['current_stock']
             self.current_holiday_stock = current_stock
 
-
-    @api.one
-    @api.depends('date_from')
+    @api.multi
     def _compute_is_started(self):
-        if self.date_from <= datetime.today().strftime('%Y-%m-%d'):
-            self.is_started = True
+        for rec in self:
+            if rec.date_from <= datetime.today().strftime('%Y-%m-%d'):
+                rec.is_started = True
 
     @api.multi
     @api.onchange('holiday_status_id', 'duration')
@@ -223,8 +221,8 @@ class HrHolidays(models.Model):
                 holiday_status_ids = [rec.id for rec in self.env['hr.holidays.status'].search([]) if rec.id not in [maternity_holiday_id, adoption_holiday_id, hildbirth_holiday_id]]
                 res['domain'] = {'holiday_status_id': [('id', 'in', holiday_status_ids)]}
             if gender == 'female':
-                child_birth_da_holiday_id = self.env.ref('smart_hr.data_hr_holiday_child_birth_dad').id
-                holiday_status_ids = [rec.id for rec in self.env['hr.holidays.status'].search([]) if rec.id not in [child_birth_da_holiday_id]]
+                child_birth_dad_holiday_id = self.env.ref('smart_hr.data_hr_holiday_child_birth_dad').id
+                holiday_status_ids = [rec.id for rec in self.env['hr.holidays.status'].search([]) if rec.id not in [child_birth_dad_holiday_id]]
                 res['domain'] = {'holiday_status_id': [('id', 'in', holiday_status_ids)]}
             return res
 
@@ -744,7 +742,7 @@ class HrHolidays(models.Model):
                                               'notif': True,
                                               'res_id': self.id,
                                              'res_action': 'smart_hr.action_hr_holidays_form'})
-        self.state = 'draft'
+        self.state = 'refuse'
         
     @api.multi
     def button_accept_audit(self):

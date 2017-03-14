@@ -15,6 +15,7 @@
 				</search>
 			</field>
 		</record>
+		
 		<!-- My Hollidays Cancellation -->
 		<record id="hr_holidays_cancellation_mine_form" model="ir.ui.view">
 			<field name="name">hr.holidays.cancellation.form</field>
@@ -139,7 +140,7 @@
 							<field name="employee_id"
 								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 							<field name="holidays" widget="many2many"
-								domain="[('state', '=', 'done'), ('employee_id', '=', employee_id)]" />
+								domain="[('state', '=', 'done'), ('employee_id', '=', employee_id),('is_started','=',False)]" />
 						</group>
 						<group col="8">
 							<field name="note" colspan="8" />
@@ -232,7 +233,7 @@
 							<field name="employee_id"
 								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 							<field name="holidays" widget="many2many"
-								domain="[('state', '=', 'done'), ('employee_id', '=', employee_id)]" />
+								domain="[('state', '=', 'done'), ('employee_id', '=', employee_id),('is_started','=',True)]" />
 						</group>
 						<group col="8">
 							<field name="note" colspan="8" />
