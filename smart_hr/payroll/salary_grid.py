@@ -90,13 +90,14 @@ class SalaryGridDegree(models.Model):
 class SalaryGridDetail(models.Model):
     _name = 'salary.grid.detail'
     _description = u'تفاصيل سلم الرواتب'
+    _rec_name = 'grid_id'
 
     @api.multi
     def get_default_date(self):
         return self.grid_id.date
 
     grid_id = fields.Many2one('salary.grid', string='سلّم الرواتب', required=1, ondelete='cascade')
-    date = fields.Date()
+    date = fields.Date(string='التاريخ')
     type_id = fields.Many2one('salary.grid.type', string='الصنف', required=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1)
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
