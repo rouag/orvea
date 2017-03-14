@@ -216,6 +216,39 @@ class HrPayslip(models.Model):
     def action_cancel(self):
         self.state = 'cancel'
 
+    @api.multi
+    @api.onchange('employee_id', 'month')
+    def _onchange_employee_id(self):
+        if not self.employee_id and self.month:
+            res = {}
+            self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.month)
+            self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.month)
+            employee_ids = self.env['hr.employee'].search([('employee_state', '=', 'employee')])
+            minus_employee_ids = []
+            for employee in employee_ids:
+                termination_id = self.env['hr.termination'].search([('employee_id', '=', employee.id), ('state', '=', 'done')], order='date_termination desc', limit=1)
+                if termination_id and fields.Date.from_string(termination_id.date_termination) < fields.Date.from_string(self.date_from):
+                    minus_employee_ids.append(employee)
+            employee_ids = employee_ids.ids
+            minus_employee_ids = [rec.id for rec in minus_employee_ids]
+            result_employee_ids = list((set(employee_ids) - set(minus_employee_ids)))
+            res['domain'] = {'employee_id': [('id', 'in', result_employee_ids)]}
+            return res
+#         res = {}
+#         if self.type_appointment and self.type_appointment.for_members is True:
+#             employee_ids = self.env['hr.employee'].search(
+#                 [('is_member', '=', True), ('employee_state', 'in', ['done', 'employee'])])
+#             job_ids = self.env['hr.job'].search([('name.members_job', '=', True),('state','=', 'unoccupied'),('type_id.is_member','=',True)])
+#             print"job_ids",job_ids
+#             res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
+#             return res
+#         if self.type_appointment and self.type_appointment.for_members is False:
+#             employee_ids = self.env['hr.employee'].search(
+#                 [('is_member', '=', False), ('employee_state', 'in', ['done', 'employee'])])
+#             job_ids = self.env['hr.job'].search([('name.members_job', '=', False),('state','=', 'unoccupied')])
+#             res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
+#             return res
+
     @api.onchange('employee_id', 'date_from', 'date_to', 'month')
     def onchange_employee(self):
         if (not self.employee_id) or (not self.date_from) or (not self.date_to):
