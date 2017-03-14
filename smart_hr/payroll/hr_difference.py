@@ -556,7 +556,6 @@ class HrDifference(models.Model):
                                                        ('state', '=', 'done')
                                                        ])
         for holiday_id in holidays_ids:
-            # token days in current month
             holiday_date_from = fields.Date.from_string(holiday_id.date_from)
             date_from = fields.Date.from_string(self.date_from)
             holiday_date_to = fields.Date.from_string(holiday_id.date_to)
