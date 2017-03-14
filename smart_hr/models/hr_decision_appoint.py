@@ -23,6 +23,7 @@ class HrDecisionAppoint(models.Model):
     is_started = fields.Boolean(string=u'مباشر', default=False)
     # info about employee
     employee_id = fields.Many2one('hr.employee', string='الموظف', required=1)
+    contract_id = fields.Many2one('hr.contract', string='العقد',  Domain=[('state','!=','close')])
     number = fields.Char(related='employee_id.number', store=True, readonly=True, string=u'الرقم الوظيفي')
     emp_code = fields.Char(string=u'رمز الوظيفة ', readonly=1)
     country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
@@ -35,7 +36,7 @@ class HrDecisionAppoint(models.Model):
     emp_basic_salary = fields.Float(string='الراتب الأساسي', store=True, readonly=1)
     emp_degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', store=True, readonly=1)
     # info about job
-    job_id = fields.Many2one('hr.job', string='الوظيفة', required=1)
+    job_id = fields.Many2one('hr.job', string='الوظيفة', required=1,Domain=[('state','=','unoccupied')])
     passing_score = fields.Float(string=u'الدرجة المطلوبه')
     number_job = fields.Char(string='رقم الوظيفة', readonly=1)
     code = fields.Char(string=u'رمز الوظيفة ', readonly=1)
@@ -56,14 +57,14 @@ class HrDecisionAppoint(models.Model):
     royal_decree_number = fields.Char(string=u'رقم الأمر الملكي')
     royal_decree_date = fields.Date(string=u'تاريخ الأمر الملكي ')
     # other info
-    type_appointment = fields.Many2one('hr.type.appoint', string=u'نوع التعيين', required=1, advanced_search=True)
+    type_appointment = fields.Many2one('hr.type.appoint', string=u'نوع التعيين', required=1, )
     description = fields.Text(string=' ملاحظات ')
     state_appoint = fields.Selection([
         ('active', u'مفعل'),
         ('close', u'مغلق'),
         ('refuse', u'مرفوض'),
         ('new', u'في الاجراء'),
-    ], string=u' حالةالتعيين ', default='new', advanced_search=True)
+    ], string=u' حالةالتعيين ', default='new', )
     state = fields.Selection([
         ('draft', u'طلب'),
         ('audit', u'تدقيق'),
@@ -76,7 +77,7 @@ class HrDecisionAppoint(models.Model):
         ('done', u'اعتمدت'),
         ('refuse', u'رفض'),
         ('cancel', u'ملغاة'),
-    ], string=u'حالة', default='draft', advanced_search=True)
+    ], string=u'حالة', default='draft', )
 
     # attachments files
     order_picture = fields.Binary(string='صورة الخطاب', required=1, attachment=True)
@@ -109,6 +110,7 @@ class HrDecisionAppoint(models.Model):
                                  readonly=1)
     max_pension_ratio = fields.Float(string=u'نسبة الحد الأقصى (%)', related="type_appointment.max_pension_ratio",
                                      readonly=1)
+    is_contract = fields.Boolean(string=u'يتطلب إنشاء عقد', related="type_appointment.is_contract")
     pension_ratio = fields.Float(string=u'نسبة التقاعد (%)')
 
     @api.multi
@@ -119,13 +121,14 @@ class HrDecisionAppoint(models.Model):
         if self.type_appointment and self.type_appointment.for_members is True:
             employee_ids = self.env['hr.employee'].search(
                 [('is_member', '=', True), ('employee_state', 'in', ['done', 'employee'])])
-            job_ids = self.env['hr.job'].search([('name.members_job', '=', True)])
+            job_ids = self.env['hr.job'].search([('name.members_job', '=', True),('state','=', 'unoccupied'),('type_id.is_member','=',True)])
+            print"job_ids",job_ids
             res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
             return res
         if self.type_appointment and self.type_appointment.for_members is False:
             employee_ids = self.env['hr.employee'].search(
                 [('is_member', '=', False), ('employee_state', 'in', ['done', 'employee'])])
-            job_ids = self.env['hr.job'].search([('name.members_job', '=', False)])
+            job_ids = self.env['hr.job'].search([('name.members_job', '=', False),('state','=', 'unoccupied')])
             res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
             return res
 
@@ -529,6 +532,7 @@ class HrDecisionAppoint(models.Model):
             self.emp_degree_id = appoint_line.degree_id.id
             self.emp_department_id = appoint_line.department_id.id
             self.emp_date_direct_action = appoint_line.date_direct_action
+    
 
     @api.onchange('job_id')
     def _onchange_job_id(self):
@@ -605,6 +609,7 @@ class HrTypeAppoint(models.Model):
     code = fields.Char(string='الرمز')
     audit = fields.Boolean(string=u'تدقيق')
     show_in_apoint = fields.Boolean(string=u'إظهار في تعيين', default=True)
+    is_contract = fields.Boolean(string=u'يتطلب إنشاء عقد', default=False)
     recrutment_manager = fields.Boolean(string=u'موافقة صاحب صلاحية التعين ')
     enterview_manager = fields.Boolean(string=u'مقابلة شخصية')
     personnel_hr = fields.Boolean(string=u'شؤون الموظفين')

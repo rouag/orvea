@@ -35,7 +35,7 @@ class HrEmployee(models.Model):
     birthday_location = fields.Char(string=u'مكان الميلاد')
     attachments = fields.Many2many('ir.attachment', 'res_id', string=u"المرفقات")
     recruiter = fields.Many2one('recruiter.recruiter', string=u'جهة التوظيف', required=1)
-    recruiter_date = fields.Date(string=u' تاريخ التعين بالجهة ', required=1)
+    recruiter_date = fields.Date(string=u' تاريخ التعين بالجهة ')
     employee_state = fields.Selection([('new', u'جديد'),
                                        ('waiting', u'في إنتظار الموافقة'),
                                        ('update', u'إستكمال البيانات'),
@@ -53,12 +53,12 @@ class HrEmployee(models.Model):
                                   ('suspended', u'مكفوف اليد'),
                                   ('outside', u'مكلف خارجي'),
                                   ('terminated', u'مطوي قيده'),
-                                  ], string=u'الحالة', default='working', advanced_search=True)
+                                  ], string=u'الحالة', default='working', )
     decision_appoint_ids = fields.One2many('hr.decision.appoint', 'employee_id', string=u'تعيينات الموظف')
-    job_id = fields.Many2one('hr.job', advanced_search=True, string=u'الوظيفة')
-    type_id = fields.Many2one('salary.grid.type', related="job_id.type_id", advanced_search=True)
+    job_id = fields.Many2one('hr.job', string=u'الوظيفة')
+    type_id = fields.Many2one('salary.grid.type',   string=u'نوع الموظف')
     age = fields.Integer(string=u'السن', compute='_compute_age')
-    employee_no = fields.Integer(string=u'رقم الموظف', advanced_search=True)
+    employee_no = fields.Integer(string=u'رقم الموظف', )
     join_date = fields.Date(string=u'تاريخ الالتحاق بالجهة')
     external_decision = fields.Boolean(string=u'موافقة خارجية', default=False)
     holidays = fields.One2many('hr.holidays', 'employee_id', string=u'الاجازات')
@@ -96,7 +96,7 @@ class HrEmployee(models.Model):
     point_education = fields.Integer(string=u'نقاط التعليم')
     point_training = fields.Integer(string=u'نقاط التدريب')
     point_functionality = fields.Integer(string=u'نقاط  الإداء الوظيفي', )
-    is_member = fields.Boolean(string=u'عضو في الهيئة', default=False, required=1)
+    is_member = fields.Boolean(string=u'عضو في الهيئة', default=False, required=1, compute='_compute_type_id')
     is_saudian = fields.Boolean(string='is saudian', compute='_compute_is_saudian')
     insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين', readonly='1',
                                      compute='_compute_insurance_type')
@@ -135,6 +135,13 @@ class HrEmployee(models.Model):
             if rec.contracts_count > 0:
                 rec.is_contract = True
 
+    @api.multi
+    @api.depends('type_id')
+    def _compute_type_id(self):
+        for rec in self:
+            if rec.type_id.is_member == True:
+                rec.is_member = True
+
     @api.onchange('gender')
     def _onchange_gender(self):
         if self.gender == 'female':
@@ -149,7 +156,7 @@ class HrEmployee(models.Model):
         for rec in self:
             rec.loan_count = self.env['hr.loan'].search_count([('employee_id', '=', rec.id)])
 
-           
+
     @api.multi
     def _compute_holidays_count(self):
         for rec in self:

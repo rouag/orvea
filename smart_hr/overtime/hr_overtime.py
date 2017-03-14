@@ -41,7 +41,7 @@ class HrOvertime(models.Model):
                                ('cut', u'مقطوعة'),
                               ('cancel', u'ملغى'),
                                ('refuse', u'مرفوضة')
-                              ], string=u'حالة', default='draft', advanced_search=True)
+                              ], string=u'حالة', default='draft', )
 
     @api.multi
     def button_cancel_overtime(self):

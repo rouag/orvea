@@ -108,7 +108,7 @@ class HrContract(models.Model):
 class HrContractPayement(models.Model):
     _name = 'hr.contract.payement'
 
-    name = fields.Char(advanced_search=True, string=u'المسمّى')
+    name = fields.Char(string=u'المسمّى')
     periode = fields.Char(string=u'المدة')
 
 

@@ -182,7 +182,7 @@
 			var valid = $.calendars.baseCalendar.prototype.isValid.apply(this, arguments);
 			if (valid) {
 				year = (year.year != null ? year.year : year);
-				valid = (year >= 1276 && year <= 1500);
+				valid = (year >= 1276 && year <= 1600);
 			}
 			return valid;
 		},
@@ -197,7 +197,7 @@
 			@throws Error if different calendars used or invalid date. */
 		_validate: function(year, month, day, error) {
 			var date = $.calendars.baseCalendar.prototype._validate.apply(this, arguments);
-			if (date.year < 1276 || date.year > 1500) {
+			if (date.year < 1276 || date.year > 1600) {
 				throw error.replace(/\{0\}/, this.local.name);
 			}
 			return date;

@@ -16,7 +16,7 @@ class hr_assessment_point_job(models.Model):
         ('administrative', u'تقييم الاداء الوظيفى للوظائف الادارية'),
         ('supervisor', u'تقييم الاداء الوظيفى للوظائف الاشرافية'),
         ('executive', u'تقييم الاداء الوظيفى للوظائف التنفيذية'),
-    ], string=u'نوع التقييم', advanced_search=True)
+    ], string=u'نوع التقييم', )
     eval_name = fields.Char(string=u'أسم')
     point_from = fields.Integer(string=u'نقاط من')
     point_to = fields.Integer(string=u'نقاط إلى')
@@ -61,6 +61,6 @@ class hrAssessmentResultConfig(models.Model):
     _name = 'hr.assessment.result.config'
     _description = u'إعدادات نتائج تقييم موظف'
    
-    name = fields.Char(string = u'النتيجة', advanced_search=True)
+    name = fields.Char(string = u'النتيجة', )
     
     leave_type = fields.Many2one('hr.holidays.status', string='leave type')

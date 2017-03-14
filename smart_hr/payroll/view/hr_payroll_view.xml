@@ -2,7 +2,6 @@
 <openerp>
 	<data>
 
-
 		<!-- إعداد مسيّر إفرادي -->
 
 		<record id="view_hr_payslip_tree_inherit" model="ir.ui.view">
@@ -11,13 +10,12 @@
 			<field name="inherit_id" ref="hr_payroll.view_hr_payslip_tree" />
 			<field name="arch" type="xml">
 				<xpath expr="/tree" position='replace'>
-				<tree decoration-info="state in ('confirm','hr_check','accont_check')" decoration-muted="state == 'cancel'">
+				<tree decoration-info="state == 'draft'" decoration-muted="state == 'cancel'">
                     <field name="number" string="التسلسل"/>
                     <field name="employee_id"/>
-                    <field name="name" string="المسمى"/>
                     <field name="month"/>
-                    <field name="date_from" invisible='1'/>
-                    <field name="date_to"  invisible='1'/>
+                    <field name="date_from"/>
+                    <field name="date_to" string="إلى"/>
                     <field name="salary_net"/>
                     <field name="state"/>
                     <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
@@ -26,6 +24,35 @@
 				</xpath>
 			</field>
 		</record>
+
+		<record id="view_hr_payslip_filter_inherit" model="ir.ui.view">
+			<field name="name">hr.payslip.select.inherit</field>
+			<field name="model">hr.payslip</field>
+			<field name="inherit_id" ref="hr_payroll.view_hr_payslip_filter" />
+			<field name="arch" type="xml">
+				<xpath expr="/search" position='replace'>
+					<search string="البحث">
+						<field name="name" string="تسلسل المسير" filter_domain="['|',('name','ilike',self),('number','ilike',self)]"/>
+						<field name="month"/>
+						<field name="date_from"/>
+						<filter string="مسودة" domain="[('state','=','draft')]"/>
+						<filter string="في إنتظار الإعتماد" domain="[('state','=','verify')]"/>
+						<filter string="تم" domain="[('state','=','done')]"/>
+						<field name="employee_id"/>
+						<group expand="0" string="تجميع حسب">
+							<filter string="الموظف" name="employee_id" context="{'group_by':'employee_id'}"/>
+							<filter string="الشهر" name="month" context="{'group_by':'month'}"/>
+							<filter string="المسير الجماعي" name="payslip_run_id" context="{'group_by':'payslip_run_id'}"/>
+							<filter string="التاريخ" name="date_from" context="{'group_by':'date_from'}"/>
+							<filter string="Companies" name="company_id" groups="base.group_multi_company" context="{'group_by':'company_id'}"/>
+							<filter string="الحالة" name="state" context="{'group_by':'state'}"/>
+						</group>
+					</search>
+				</xpath>
+			</field>
+		</record>
+
+
 
 		<record id="view_hr_payslip_form" model="ir.ui.view">
 			<field name="name">hr.payslip.form</field>
@@ -205,7 +232,7 @@
 			<field name="model">hr.payslip.run</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
-				<tree string="مسيّر جماعي">
+				<tree string="مسيّر جماعي"  decoration-info="state == 'draft'" decoration-muted="state == 'cancel'">
 					<field name="name" string="المسمى"/>
 					<field name="date_start" invisible='1' />
 					<field name="date_end"  invisible='1' />
@@ -216,6 +243,26 @@
 				</tree>
 			</field>
 		</record>
+
+        <record id="hr_payslip_run_filter" model="ir.ui.view">
+            <field name="name">hr.payslip.run.search</field>
+            <field name="model">hr.payslip.run</field>
+            <field name="arch" type="xml">
+                <search string="بحث">
+                    <field name="name"/>
+					<field name="month"/>
+                    <filter string="مسودة" domain="[('state','=','draft')]"/>
+					<filter string="في إنتظار الإعتماد" domain="[('state','=','verify')]"/>
+					<filter name="done_filter" string="تم" domain="[('state','=','done')]"/>
+					<group expand="0" string="تجميع حسب">
+						<filter string="الشهر" name="month" context="{'group_by':'month'}"/>
+						<filter string="التاريخ" name="date_start" context="{'group_by':'date_start'}"/>
+						<filter string="الحالة" name="state" context="{'group_by':'state'}"/>
+					</group>
+                </search>
+            </field>
+        </record>
+
 
 		<record model="ir.ui.view" id="hr_payslip_run_form">
 			<field name="name">hr.payslip.run.form</field>

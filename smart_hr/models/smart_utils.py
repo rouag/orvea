@@ -4,8 +4,8 @@ from openerp import models, fields, api, _
 from datetime import date, datetime, timedelta
 import datetime as dt
 
-class SmartUtils(models.Model):
 
+class SmartUtils(models.Model):
     _name = 'hr.smart.utils'
 
     def compute_duration(self, date_from, date_to):
@@ -22,7 +22,7 @@ class SmartUtils(models.Model):
         dayDelta = timedelta(days=1)
         diff = 0
         while date_from <= date_to:
-            if date_from.weekday() not in [4,5]:
+            if date_from.weekday() not in [4, 5]:
                 diff += 1
             date_from += dayDelta
         return diff
@@ -31,8 +31,9 @@ class SmartUtils(models.Model):
         hr_public_holiday_obj = self.env['hr.public.holiday']
         holidays_intersections_days = 0
         duration = 0
-        for public_holiday in hr_public_holiday_obj.search(['|', '&', ('state', '=', 'done'), '&', ('date_from', '<=', date_to), ('date_to', '>=', date_to)
-                                                                , '&', ('state', '=', 'done'), '&', ('date_to', '>=', date_from), ('date_to', '<=', date_to)]):
+        for public_holiday in hr_public_holiday_obj.search(
+                ['|', '&', ('state', '=', 'done'), '&', ('date_from', '<=', date_to), ('date_to', '>=', date_to)
+                    , '&', ('state', '=', 'done'), '&', ('date_to', '>=', date_from), ('date_to', '<=', date_to)]):
             public_holiday_date_from = fields.Date.from_string(public_holiday.date_from)
             public_holiday_date_to = fields.Date.from_string(public_holiday.date_to)
             if date_from >= public_holiday_date_from and public_holiday_date_to >= date_from:
@@ -45,7 +46,8 @@ class SmartUtils(models.Model):
 
     def check_holiday_day(self, date):
         hr_public_holiday_obj = self.env['hr.public.holiday']
-        holidays = hr_public_holiday_obj.search([('state', '=', 'done'), ('date_from', '<=', date), ('date_to', '>=', date)])
+        holidays = hr_public_holiday_obj.search(
+            [('state', '=', 'done'), ('date_from', '<=', date), ('date_to', '>=', date)])
         if holidays:
             return True
         else:
@@ -56,10 +58,10 @@ class SmartUtils(models.Model):
             date_from = fields.Date.from_string(date_from)
             new_date_to = date_from
             while duration > 0:
-                is_holiday= self.check_holiday_day(new_date_to)
-                weekday =  new_date_to.weekday()
+                is_holiday = self.check_holiday_day(new_date_to)
+                weekday = new_date_to.weekday()
                 new_date_to += timedelta(days=1)
-                if weekday  in [4, 5] or is_holiday is True:
+                if weekday in [4, 5] or is_holiday is True:
                     continue
                 duration -= 1
             while new_date_to.weekday() in [4, 5] or self.check_holiday_day(new_date_to) is True:

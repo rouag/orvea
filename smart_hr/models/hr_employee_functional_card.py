@@ -11,27 +11,34 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FO
 class HrEmployeeFunctionnalCard(models.Model):
     _name = 'hr.employee.functionnal.card'
     _description = u'بطاقة موظف'
-    
-    name=fields.Char(string='رقم بطاقة')
+
+    name = fields.Char(string='رقم بطاقة')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1, readonly=1)
     number = fields.Char(string=u'الرقم الوظيفي', related="employee_id.number", readonly=1)
     employee_state = fields.Selection(string=u'الحالة', related="employee_id.employee_state", readonly=1)
-    last_salary = fields.Float(string='  الراتب الأخير ', store=True,compute='_compute_last_degree_salary', readonly=1) 
+    last_salary = fields.Float(string='  الراتب الأخير ', store=True, compute='_compute_last_degree_salary', readonly=1)
     birthday_location = fields.Char(string=u'مكان الميلاد', related="employee_id.birthday_location", readonly=1)
-    birthday = fields.Date(string=u'تاريخ الميلاد',related="employee_id.birthday", readonly=1)
-    degree_id = fields.Many2one('salary.grid.degree', string='الدرجة',compute='_compute_last_degree_salary', readonly=1)
-    identification_id  =fields.Char(string=u'رقم الهوية',related="employee_id.identification_id", readonly=1)
-    passport_id = fields.Char(string=u'رقم الحفيظة',related="employee_id.passport_id", readonly=1)
+    birthday = fields.Date(string=u'تاريخ الميلاد', related="employee_id.birthday", readonly=1)
+    degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', compute='_compute_last_degree_salary',
+                                readonly=1)
+    identification_id = fields.Char(string=u'رقم الهوية', related="employee_id.identification_id", readonly=1)
+    passport_id = fields.Char(string=u'رقم الحفيظة', related="employee_id.passport_id", readonly=1)
     join_date = fields.Date(string=u'تاريخ الالتحاق بالجهة', related="employee_id.join_date", readonly=1)
-    begin_work_date = fields.Date(string=u' تاريخ بداية العمل الحكومي' , related="employee_id.begin_work_date", readonly=1)
-    specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص',related='education_level.specialization_ids', readonly=1)
-    education_level = fields.Many2one('hr.employee.education.level',compute='_compute_education_level', string=u'المستوى التعليمي', readonly=1)
-    history_ids = fields.One2many('hr.employee.history', 'employee_id', string=u'سجل الاجراءات', related="employee_id.history_ids", readonly=1)
+    begin_work_date = fields.Date(string=u' تاريخ بداية العمل الحكومي', related="employee_id.begin_work_date",
+                                  readonly=1)
+    specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص',
+                                          related='education_level.specialization_ids', readonly=1)
+    education_level = fields.Many2one('hr.employee.education.level', compute='_compute_education_level',
+                                      string=u'المستوى التعليمي', readonly=1)
+    history_ids = fields.One2many('hr.employee.history', 'employee_id', string=u'سجل الاجراءات',
+                                  related="employee_id.history_ids", readonly=1)
     emp_name = fields.Char(string=u'إسم الموظف', related="employee_id.display_name", readonly=1)
     emp_age = fields.Integer(string=u'السن', related="employee_id.age", readonly=1)
-    department_id = fields.Many2one('hr.department', string=u'مكان العمل', related="employee_id.department_id", readonly=1)
+    department_id = fields.Many2one('hr.department', string=u'مكان العمل', related="employee_id.department_id",
+                                    readonly=1)
     passport_date = fields.Date(string=u'تاريخ إصدار الحفيظة ', related='employee_id.passport_date', readonly=1)
-    passport_place = fields.Many2one('res.city',string=u'مكان إصدار الحفيظة', related='employee_id.passport_place', readonly=1)
+    passport_place = fields.Many2one('res.city', string=u'مكان إصدار الحفيظة', related='employee_id.passport_place',
+                                     readonly=1)
     date = fields.Date(string=u'التاريخ ', default=fields.Datetime.now(), readonly=1)
     start_date = fields.Date(string=u'تاريخ بدأ الصلاحية  ', readonly=1)
     end_date = fields.Date(string=u'تاريخ إنتهاء الصلاحية ', readonly=1)
@@ -39,9 +46,9 @@ class HrEmployeeFunctionnalCard(models.Model):
                               ('hrm', u'مدير شؤون الموظفين'),
                               ('done', u'اعتمدت'),
                               ('refuse', u'رفض'),
-                              ], string=u'الحالة', default='draft', advanced_search=True)
-    training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'التدريب', readonly=1, related="employee_id.training_ids")
-
+                              ], string=u'الحالة', default='draft', )
+    training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'التدريب', readonly=1,
+                                   related="employee_id.training_ids")
 
     @api.multi
     @api.depends('employee_id')
@@ -57,7 +64,8 @@ class HrEmployeeFunctionnalCard(models.Model):
     @api.one
     @api.depends('employee_id')
     def _compute_last_degree_salary(self):
-        last_decision_appoint = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),('state_appoint','=', 'active')], limit=1)
+        last_decision_appoint = self.env['hr.decision.appoint'].search(
+            [('employee_id', '=', self.employee_id.id), ('state_appoint', '=', 'active')], limit=1)
         if last_decision_appoint:
             self.last_salary = last_decision_appoint.basic_salary
             self.degree_id = last_decision_appoint.degree_id.id
@@ -73,13 +81,14 @@ class HrEmployeeFunctionnalCard(models.Model):
     def button_accept_hrm(self):
         self.ensure_one()
         self.start_date = fields.Datetime.now()
-        employee_card = self.env['hr.employee.functionnal.card'].search([('employee_id', '=', self.employee_id.id),('end_date','>=',self.start_date)], limit=1)
-        if employee_card :
+        employee_card = self.env['hr.employee.functionnal.card'].search(
+            [('employee_id', '=', self.employee_id.id), ('end_date', '>=', self.start_date)], limit=1)
+        if employee_card:
             self.start_date = self.start_date
             self.end_date = employee_card.end_date
             self.employee_id.write({'employee_card_id': self.id})
 
-        else :
+        else:
             card_validity = self.env['hr.employee.configuration'].search([], limit=1)
             if card_validity:
                 periode_validity = card_validity.period
@@ -97,4 +106,3 @@ class HrEmployeeFunctionnalCard(models.Model):
     def button_refuse_hrm(self):
         self.ensure_one()
         self.state = 'refuse'
-

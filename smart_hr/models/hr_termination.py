@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-####################################
-### This Module Created by smart-etech ###
-####################################
 
 from openerp import fields, models, api, _
 from openerp.exceptions import ValidationError
@@ -19,7 +16,7 @@ class hr_termination(models.Model):
     date = fields.Date(string=u'تاريخ', default=fields.Datetime.now())
     date_termination = fields.Date(string=u'تاريخ طي القيد  ', default=fields.Datetime.now())
     termination_date = fields.Date(string=u'تاريخ الإعتماد')
-    employee_id = fields.Many2one('hr.employee', string=u'الموظف',  required=1)
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1)
     employee_state = fields.Selection([('new', u'جديد'),
                                        ('waiting', u'في إنتظار الموافقة'),
                                        ('update', u'إستكمال البيانات'),
@@ -34,9 +31,12 @@ class hr_termination(models.Model):
     country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
     # Termination Info
     termination_type_id = fields.Many2one('hr.termination.type', string=u'نوع الطي', )
-    nb_salaire = fields.Float(related='termination_type_id.nb_salaire', store=True, readonly=True, string=u'عدد الرواتب المستحق')
-    all_holidays = fields.Boolean(related='termination_type_id.all_holidays', store=True, readonly=True,string=u'كل الإجازة')
-    max_days = fields.Float(related='termination_type_id.max_days', store=True, readonly=True, string=u'الحد الاقصى لأيام الإجازة')
+    nb_salaire = fields.Float(related='termination_type_id.nb_salaire', store=True, readonly=True,
+                              string=u'عدد الرواتب المستحق')
+    all_holidays = fields.Boolean(related='termination_type_id.all_holidays', store=True, readonly=True,
+                                  string=u'كل الإجازة')
+    max_days = fields.Float(related='termination_type_id.max_days', store=True, readonly=True,
+                            string=u'الحد الاقصى لأيام الإجازة')
 
     reason = fields.Char(string=u'السبب')
     letter_source = fields.Char(string=u'جهة الخطاب', )
@@ -49,18 +49,17 @@ class hr_termination(models.Model):
         ('hrm', u'مدير شؤون الموظفين'),
         ('done', u'اعتمدت'),
         ('refuse', u'رفض'),
-    ], string=u'الحالة', default='draft', advanced_search=True)
-
+    ], string=u'الحالة', default='draft')
 
     @api.onchange('termination_type_id')
     def _onchange_termination_type_id(self):
 
         if self.employee_id.country_id != self.env.ref('base.sa'):
-                for rec in self.termination_type_id: 
-                    rec.nb_salaire = 0 
-                    rec.all_holidays = 0
-                    rec.max_days = 0
-                    rec.nationality = True  
+            for rec in self.termination_type_id:
+                rec.nb_salaire = 0
+                rec.all_holidays = 0
+                rec.max_days = 0
+                rec.nationality = True
 
     @api.multi
     def unlink(self):
@@ -69,28 +68,28 @@ class hr_termination(models.Model):
                 raise ValidationError(u'لا يمكن حذف طي القيد فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(hr_termination, self).unlink()
 
-#     @api.constrains('employee_id')
-#     def check_employee_id(self):
-#         for ter in self:
-#             if self.search_count([('employee_id', '=', ter.employee_id.id), ('state', '=', 'done')]):
-#                 raise ValidationError(u"هذا الموظف تم أعتماد طي قيد لديه من قبل")
+    #     @api.constrains('employee_id')
+    #     def check_employee_id(self):
+    #         for ter in self:
+    #             if self.search_count([('employee_id', '=', ter.employee_id.id), ('state', '=', 'done')]):
+    #                 raise ValidationError(u"هذا الموظف تم أعتماد طي قيد لديه من قبل")
 
     @api.multi
     def check_constraintes(self):
-        if self.termination_type_id.years>0:
+        if self.termination_type_id.years > 0:
             if self.employee_id.age < self.termination_type_id.years:
-                raise ValidationError(u" السن الادنى  هو %s سنة"%self.termination_type_id.years)
- 
+                raise ValidationError(u" السن الادنى  هو %s سنة" % self.termination_type_id.years)
+
         if self.termination_type_id.evaluation_condition:
             years_progress = self.termination_type_id.years_progress
-            for year in range(1,years_progress):
-                employee_evaluation_id = self.env['hr.employee.evaluation.level'].search([('employee_id', '=', self.employee_id.id),('year', '=',date.today().year-year)], limit=1)
+            for year in range(1, years_progress):
+                employee_evaluation_id = self.env['hr.employee.evaluation.level'].search(
+                    [('employee_id', '=', self.employee_id.id), ('year', '=', date.today().year - year)], limit=1)
                 if employee_evaluation_id:
                     if employee_evaluation_id.degree_id.id not in self.termination_type_id.evaluation_required.ids:
                         raise ValidationError(u"الرجاء مراجعة تقييم وظيفي خاص لنوع طي القيد")
                 else:
-                    raise ValidationError(u"لا يوجد تقييم وظيفي خاص بالموظف ل%sسنة"%years_progress)
-
+                    raise ValidationError(u"لا يوجد تقييم وظيفي خاص بالموظف ل%sسنة" % years_progress)
 
     @api.multi
     def button_hrm(self):
@@ -126,6 +125,7 @@ class hr_termination(models.Model):
     """
     Report Methods
     """
+
     @api.multi
     def create_report_attachment(self):
         self.env['report'].get_pdf(self, 'smart_hr.hr_termination_report')
@@ -143,7 +143,7 @@ class hr_termination_type(models.Model):
     nationality = fields.Boolean(string=u'غير سعودي')
     contract = fields.Boolean(string=u'متعاقد')
     evaluation_condition = fields.Boolean(string=u'يطبق شرط تقييم الأداء')
-    years_progress = fields.Integer(string=u'عدد سنوات التقيم')
+    years_progress = fields.Integer(string=u'عدد سنوات التقييم')
     evaluation_required = fields.Many2many('hr.evaluation.result.foctionality', string=u'التقييمات المطلوبة')
     include_members = fields.Boolean(string=u'تشمل اعضاء الهيئة')
     years = fields.Integer(string=u'السن')

@@ -172,6 +172,7 @@ odoo.define('islamic_datepicker.form_widgets', function (require) {
             this.$('.oe_datepicker_master').calendarsPicker({
                 showAnim: 'slide'
                 , showSpeed: 300
+                ,yearRange: 'c-80:c+50'
                 , showOptions: {
                     direction: 'horizontal'
                 }

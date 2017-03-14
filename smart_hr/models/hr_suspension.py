@@ -1,34 +1,33 @@
 # -*- coding: utf-8 -*-
-####################################
-### This Module Created by smart-eteck ###
-####################################
+
 
 from openerp import fields, models, api, _
 from openerp.exceptions import ValidationError
 from openerp.tools import SUPERUSER_ID
 from umalqurra.hijri_date import HijriDate
 
+
 class hr_suspension(models.Model):
     _name = 'hr.suspension'
     _inherit = ['mail.thread', 'ir.needaction_mixin']
     _description = 'Suspension Decision'
 
-    name = fields.Char(string=u' رقم إجراء كف اليد', advanced_search=True)
+    name = fields.Char(string=u' رقم إجراء كف اليد', )
     date = fields.Date(string=u'التاريخ', default=fields.Datetime.now())
-    employee_id = fields.Many2one('hr.employee', string=u'الموظف', advanced_search=True)
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف', )
     employee_state = fields.Selection([('new', u'جديد'),
                                        ('waiting', u'في إنتظار الموافقة'),
                                        ('update', u'إستكمال البيانات'),
                                        ('done', u'اعتمدت'),
                                        ('refused', u'رفض'),
                                        ('employee', u'موظف')], string=u'الحالة', related='employee_id.employee_state')
-    letter_sender = fields.Char(string=u'جهة الخطاب', advanced_search=True)
-    letter_number = fields.Integer(string=u'رقم الخطاب', advanced_search=True)
+    letter_sender = fields.Char(string=u'جهة الخطاب', )
+    letter_number = fields.Integer(string=u'رقم الخطاب', )
     letter_date = fields.Date(string=u'تاريخ الخطاب')
     suspension_date = fields.Date(string=u'تاريخ بدء الإيقاف')
     suspension_attachment = fields.Binary(string=u'الصورة الضوئية للقرار', attachment=True)
-    
-    raison = fields.Text(string=u'سبب كف اليد', advanced_search=True)
+
+    raison = fields.Text(string=u'سبب كف اليد')
     suspension_end_id = fields.Many2one('hr.suspension.end', string=u'قرار إنهاء كف اليد')
     state = fields.Selection([
         ('draft', u'طلب'),
@@ -36,18 +35,19 @@ class hr_suspension(models.Model):
         ('done', u'اعتمدت'),
         ('refuse', u'رفض'),
     ], string=u'الحالة', default='draft')
-    
-    def num2hindi(self,string_number):
+
+    def num2hindi(self, string_number):
         if string_number:
-            hindi_numbers = {'0':'٠','1':'١','2':'٢','3':'٣','4':'٤','5':'٥','6':'٦','7':'٧','8':'٨','9':'٩','.':','}
+            hindi_numbers = {'0': '٠', '1': '١', '2': '٢', '3': '٣', '4': '٤', '5': '٥', '6': '٦', '7': '٧', '8': '٨',
+                             '9': '٩', '.': ','}
             if isinstance(string_number, unicode):
-                hindi_string = string_number.encode('utf-8','replace')
+                hindi_string = string_number.encode('utf-8', 'replace')
             else:
                 hindi_string = str(string_number)
             for number in hindi_numbers:
-                hindi_string = hindi_string.replace(str(number),hindi_numbers[number])
+                hindi_string = hindi_string.replace(str(number), hindi_numbers[number])
             return hindi_string
-    
+
     @api.model
     def create(self, vals):
         ret = super(hr_suspension, self).create(vals)
@@ -65,11 +65,11 @@ class hr_suspension(models.Model):
                 raise ValidationError(u'لا يمكن حذف قرار كف اليد فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(hr_suspension, self).unlink()
 
-#     @api.constrains('employee_id')
-#     def check_employee_id(self):
-#         for rec in self:
-#             if rec.employee_id.emp_state != 'working':
-#                 raise ValidationError(u"هذا الموظف ليس على رأس العمل حتى يكف يده")
+    #     @api.constrains('employee_id')
+    #     def check_employee_id(self):
+    #         for rec in self:
+    #             if rec.employee_id.emp_state != 'working':
+    #                 raise ValidationError(u"هذا الموظف ليس على رأس العمل حتى يكف يده")
 
     @api.one
     def button_hrm(self):
