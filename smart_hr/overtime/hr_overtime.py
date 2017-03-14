@@ -140,7 +140,7 @@ class HrOvertime(models.Model):
 
 
     @api.multi
-    def action_refuse(self):
+    def button_refuse(self):
         for overtime in self:
             for line in overtime.line_ids :
                 self.env['base.notification'].create({'title': u'إشعار إشعار برفض  خارج الدوام',

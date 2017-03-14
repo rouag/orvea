@@ -6,6 +6,7 @@ from openerp.exceptions import ValidationError
 
 class HrScholarshipDecision(models.Model):
     _name = 'hr.scholarship.decision'
+    _inherit = ['mail.thread']
     _rec_name = 'employee_id'
 
     name = fields.Char(string='المسمى')
@@ -32,7 +33,7 @@ class HrScholarshipDecision(models.Model):
         self.state = 'hrm'
 
     @api.one
-    def action_cancel(self):
+    def button_refuse(self):
         self.state = 'cancel'
 
     @api.one

@@ -14,7 +14,8 @@
 						<button name="action_done" string="إعتماد" type="object"
 							states="hrm" groups="smart_hr.group_personnel_hr_scholarship"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_refuse" string="رفض" type="object"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action"
 							states="hrm" groups="smart_hr.group_personnel_hr_scholarship"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
@@ -48,6 +49,10 @@
 							<field name="note" />
 						</group>
 					</sheet>
+					
+					<div>
+						<field name="message_ids" widget="mail_thread" readonly="1" />
+					</div>
 				</form>
 			</field>
 		</record>
