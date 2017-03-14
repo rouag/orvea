@@ -185,6 +185,7 @@ class HrPayslipDifferenceHistory(models.Model):
 
 class HrPayslip(models.Model):
     _inherit = 'hr.payslip'
+    _order = 'date_from desc,id desc'
 
     @api.multi
     def get_default_month(self):
@@ -545,7 +546,8 @@ class HrPayslip(models.Model):
             days_by_month = worked_days_line_ids and worked_days_line_ids[0].get('number_of_days', 22)
             # حسم‬  التأخير يكون‬ من‬  الراتب‬ الأساسي فقط
             if retard_leave_days:
-                deduction_retard_leave = basic_salary / days_by_month * retard_leave_days
+                # احتساب الحسم يقسم الراتب على 30
+                deduction_retard_leave = basic_salary / 30.0 * retard_leave_days
                 retard_leave_val = {'name': u'تأخير وخروج مبكر',
                                     'slip_id': payslip.id,
                                     'employee_id': employee.id,
@@ -560,7 +562,8 @@ class HrPayslip(models.Model):
                 sequence += 1
             #  حسم‬  الغياب‬ يكون‬ من‬  جميع البدلات . و  الراتب‬ الأساسي للموظفين‬ الرسميين‬ والمستخدمين
             if absence_days:
-                deduction_absence = (basic_salary + allowance_total) / days_by_month * absence_days
+                # احتساب الحسم يقسم الراتب على 30
+                deduction_absence = (basic_salary + allowance_total) / 30.0 * absence_days
                 retard_leave_val = {'name': u'غياب',
                                     'slip_id': payslip.id,
                                     'employee_id': employee.id,
@@ -575,7 +578,8 @@ class HrPayslip(models.Model):
                 sequence += 1
             # عقوبة
             if sanction_days:
-                deduction_sanction = (basic_salary + allowance_total) / days_by_month * sanction_days
+                # احتساب الحسم يقسم الراتب على 30
+                deduction_sanction = (basic_salary + allowance_total) / 30.0 * sanction_days
                 sanction_val = {'name': u'عقوبة',
                                 'slip_id': payslip.id,
                                 'employee_id': employee.id,

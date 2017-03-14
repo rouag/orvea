@@ -858,13 +858,9 @@ class HrHolidays(models.Model):
         """
         holidays_periode_obj = self.env['hr.holidays.periode']
         if holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id:
-            decision_appoint_ids = self.env['hr.decision.appoint'].sudo().search([('employee_id.id', '=', self.employee_id.id), ('state_appoint', '=', 'active')], limit=1)
-            if decision_appoint_ids:
-                direct_action_date = decision_appoint_ids[0].date_direct_action
-                for decision_appoint in decision_appoint_ids:
-                    if fields.Date.from_string(decision_appoint.date_direct_action) < fields.Date.from_string(direct_action_date):
-                        direct_action_date = decision_appoint.date_direct_action
-                date_direct_action = fields.Date.from_string(direct_action_date)
+            decision_appoint_id = self.env['hr.decision.appoint'].sudo().search([('employee_id.id', '=', self.employee_id.id), ('state_appoint', '=', 'active')], order='date_direct_action desc', limit=1)
+            if decision_appoint_id:
+                date_direct_action = fields.Date.from_string(decision_appoint_id.date_direct_action)
                 date_to = fields.Date.from_string(self.date_to)
                 diff = relativedelta(date_to, date_direct_action).years
                 years = (diff // entitlement.periode) * entitlement.periode
@@ -1113,7 +1109,6 @@ class HrHolidays(models.Model):
             
         # Constraintes for service years required
         if self.holiday_status_id.service_years_required * 364 > self.employee_id.service_duration:
-            # check education level
                 raise ValidationError(u" ليس لديك" + str(self.holiday_status_id.service_years_required) + u"سنوات خدمة  ")
             
          # Constraintes for evaluation_required

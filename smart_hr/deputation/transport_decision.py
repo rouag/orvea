@@ -9,6 +9,7 @@ from datetime import date, datetime, timedelta
 
 class HrTransportDecision(models.Model):
     _name = 'hr.transport.decision'
+    _inherit = ['mail.thread']
     _order = 'id desc'
     _rec_name = 'employee_id'
     _description = u'أوامر الإركاب'
@@ -49,7 +50,7 @@ class HrTransportDecision(models.Model):
             deputation.state = 'done'
 
     @api.multi
-    def action_refuse(self):
+    def button_refuse(self):
         for deputation in self:
             deputation.state = 'refuse'
 
