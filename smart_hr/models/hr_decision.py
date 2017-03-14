@@ -12,33 +12,25 @@ class HrDecision(models.Model):
     _inherit = ['mail.thread']
     _description = u'القرار'
 
+   
     name = fields.Char(string='قرار إداري رقم', required=1)
     decision_type_id = fields.Many2one('hr.decision.type', string='نوع القرار', required=1)
     date = fields.Date(string='بتاريخ', required=1)
     employee_id = fields.Many2one('hr.employee', string='الموظف')
     text = fields.Html(string='نص القرار')
-    num_speech = fields.Char(string='رقم الخطاب', required=1)
-    date_speech = fields.Date(string='تاريخ الخطاب', required=1)
+    num_speech = fields.Char(string='رقم الخطاب')
+    date_speech = fields.Date(string='تاريخ الخطاب' )
     employee_ids = fields.Many2many('hr.employee',string='الاعضاء المرقين')
-    
+     
     @api.onchange('num_speech', 'date_speech', 'name', 'date')
     def onchange_fileds(self):
         self.onchange_decision_type_id()
-
+ 
     @api.onchange('date_speech')
     def onchange_date_speech(self):
         self.onchange_decision_type_id()
 
-#     def _get_hijri_date(self, date, separator):
-#         '''
-#         convert georging date to hijri date
-#         :return hijri date as a string value
-#         '''
-#         if date:
-#             date = fields.Date.from_string(date)
-#             hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
-#             return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
-#         return None
+
 
     @api.onchange('decision_type_id')
     def onchange_decision_type_id(self):
@@ -154,7 +146,7 @@ class HrDecision(models.Model):
                             rep_text = rep_text.replace('CODE',unicode(code))
                             rep_text = rep_text.replace('DEGREE',unicode(degree_id))
                             rep_text = rep_text.replace('GRADE',unicode(grade_id))
-                            
+
                             rep_text = rep_text.replace('DEPARTEMENT',unicode(department_id))
                             rep_text = rep_text.replace('job',unicode(emp_job_id))
                             rep_text = rep_text.replace('code',unicode(emp_code))

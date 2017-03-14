@@ -14,6 +14,7 @@ from openerp.osv.orm import setup_modifiers
 
 class HrDeputation(models.Model):
     _name = 'hr.deputation'
+    _inherit = ['mail.thread']
     _order = 'id desc'
     _rec_name = 'order_date'
     _description = u'الانتدابات'
@@ -241,7 +242,7 @@ class HrDeputation(models.Model):
         self.state = 'order'
 
     @api.multi
-    def action_refuse_audit(self):
+    def button_refuse_audit(self):
         for deputation in self:
             title = u"' إشعار برفض  الإنتداب'"
             msg = u"' لقد تم إشعار  برفض  الإنتداب  '" + unicode(self.employee_id.name) + u"'"
@@ -260,6 +261,12 @@ class HrDeputation(models.Model):
             #             type = ' إنتداب'
             #             self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, deputation.decision_number,  deputation.date_from, type)
             deputation.state = 'finish'
+
+
+    @api.multi
+    def button_refuse(self):
+        for deputation in self:
+            deputation.state = 'refuse'
 
     @api.multi
     def action_refuse(self):

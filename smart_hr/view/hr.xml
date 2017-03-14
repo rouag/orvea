@@ -490,7 +490,7 @@
 			</field>
 		</record>
 		<record model="ir.actions.act_window" id="action_employee_request">
-			<field name="name">طلبات تسجيل موظف</field>
+			<field name="name">طلب توظيف</field>
 			<field name="res_model">hr.employee</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
@@ -511,7 +511,7 @@
 			<field name="act_window_id" ref="action_employee_request" />
 		</record>
 
-		<menuitem id="employee_request_menu" name="طلبات تسجيل موظف"
+		<menuitem id="employee_request_menu" name="طلب توظيف"
 			groups="smart_hr.group_employee_request" sequence="2" parent="hr_root_employees"
 			action="action_employee_request" />
 

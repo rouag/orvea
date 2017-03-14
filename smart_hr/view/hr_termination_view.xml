@@ -15,20 +15,22 @@
 						<button name="button_done" string="موافق" type="object"
 							states="hrm" groups="smart_hr.group_hrm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_refuse" string="رفض" type="object"
-							states="hrm" groups="smart_hr.group_hrm" icon="fa-times"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" states="hrm" groups="smart_hr.group_hrm" icon="fa-times"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<field name="state" widget="statusbar" statusbar_visible="draft,hrm,done" />
 					</header>
 					<sheet>
 						<label for="name" class="oe_edit_only" />
 						<h1>
-							<field name="name"  attrs="{'readonly':[('state','!=','draft')]}"/>
+							<field name="name" attrs="{'readonly':[('state','!=','draft')]}" />
 							<field name="employee_state" invisible="1" />
 						</h1>
 						<group>
 							<field name="date" readonly="1" />
-							<field name="employee_id"  attrs="{'readonly':[('state','!=','draft')]}" required="1" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+							<field name="employee_id" attrs="{'readonly':[('state','!=','draft')]}"
+								required="1"
+								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 						</group>
 						<group>
 							<group string="معلومات الموظف">
@@ -39,9 +41,10 @@
 								<field name="age" readonly="1" />
 							</group>
 							<group string="معلومات طي القيد">
-								<field name="termination_type_id"
-									required="1" attrs="{'readonly':[('state','!=','draft')]}" />
-								<field name="date_termination" attrs="{'readonly':[('state','not in',['draft','hrm' ])]}"/>
+								<field name="termination_type_id" required="1"
+									attrs="{'readonly':[('state','!=','draft')]}" />
+								<field name="date_termination"
+									attrs="{'readonly':[('state','not in',['draft','hrm' ])]}" />
 								<field name="nb_salaire" />
 								<field name="all_holidays" />
 								<field name="max_days" />
@@ -50,7 +53,8 @@
 							</group>
 							<group string="معلومات الخطاب">
 								<field name="letter_source" attrs="{'readonly':[('state','!=','draft')]}" />
-								<field name="letter_no" attrs="{'readonly':[('state','!=','draft')],'required':[('state', 'in', ['draft'])]}" />
+								<field name="letter_no"
+									attrs="{'readonly':[('state','!=','draft')],'required':[('state', 'in', ['draft'])]}" />
 								<field name="letter_date" attrs="{'readonly':[('state','!=','draft')]}" />
 							</group>
 							<group>
@@ -62,6 +66,10 @@
 						<button name="%(report_hr_termination_report)d" string="طباعة القرار"
 							type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
 					</sheet>
+					<div>
+						<field name="message_ids" widget="mail_thread" readonly="1" />
+					</div>
+
 				</form>
 			</field>
 		</record>
@@ -103,8 +111,7 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 		<menuitem id="menu_hr_termination" sequence="125"
-			action="action_hr_termination" parent="hr_root_workflows"
-			name=" طى القيد" />
+			action="action_hr_termination" parent="hr_root_workflows" name=" طى القيد" />
 
 		<!-- Termination Type -->
 		<record id="view_form_hr_termination_type" model="ir.ui.view">
@@ -140,17 +147,17 @@
 			<field name="model">hr.termination.type</field>
 			<field name="arch" type="xml">
 				<tree string="أنواع طى القيد" class="oe_tree_view">
-							<field name="name"/>
-							<field name="code" />
-							<field name="nb_salaire" />
-							<field name="years_progress" />
-							<field name="years" />
-							<field name="max_days" />
-							<field name="nationality" />
-							<field name="contract" />
-							<field name="all_holidays" />
-							<field name="evaluation_condition" />
-							<field name="include_members" />
+					<field name="name" />
+					<field name="code" />
+					<field name="nb_salaire" />
+					<field name="years_progress" />
+					<field name="years" />
+					<field name="max_days" />
+					<field name="nationality" />
+					<field name="contract" />
+					<field name="all_holidays" />
+					<field name="evaluation_condition" />
+					<field name="include_members" />
 				</tree>
 			</field>
 		</record>

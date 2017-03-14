@@ -12,7 +12,7 @@ from datetime import date, datetime, timedelta
 class hr_termination(models.Model):
     _name = 'hr.termination'
     _order = 'id desc'
-    _inherit = ['ir.needaction_mixin']
+    _inherit = ['ir.needaction_mixin','mail.thread']
     _description = 'Termination'
 
     name = fields.Char(string=u'مسمى طي القيد', required=1)
