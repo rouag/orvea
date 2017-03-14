@@ -228,7 +228,7 @@ class HrPayslip(models.Model):
             minus_employee_ids = []
             for employee in employee_ids:
                 termination_id = self.env['hr.termination'].search([('employee_id', '=', employee.id), ('state', '=', 'done')], order='date_termination desc', limit=1)
-                if termination_id and fields.Date.from_string(termination_id.date_termination) < fields.Date.from_string(self.date_from):
+                if termination_id and termination_id.date_termination and fields.Date.from_string(termination_id.date_termination) < fields.Date.from_string(self.date_from):
                     minus_employee_ids.append(employee)
             employee_ids = employee_ids.ids
             minus_employee_ids = [rec.id for rec in minus_employee_ids]
