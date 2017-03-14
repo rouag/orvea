@@ -3,7 +3,17 @@
 	<data>
 
 
-
+		<record model="ir.ui.view" id="view_hr_holidays_extension_filter_inherit">
+			<field name="name">hr.holidays.extension.inherit</field>
+			<field name="model">hr.holidays.extension</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="تمديد  رصيد الاجازات">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
 
 
 		<record id="hr_holidays_extension_employee_form" model="ir.ui.view">

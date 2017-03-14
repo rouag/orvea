@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data>
+
+		<record model="ir.ui.view" id="view_hr_employee_commissioning_filter_inherit">
+			<field name="name">hr.employee.commissioning.search</field>
+			<field name="model">hr.employee.commissioning</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="طلب تكليف موظف">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
 		<!-- طلب تكليف موظف -->
 		<record id="view_hr_employee_commissioning_form" model="ir.ui.view">
 			<field name="name">hr.employee.commissioning.form</field>
@@ -67,9 +79,12 @@
 									attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
 								<field name="retirement_proportion"
 									attrs="{'invisible':['|', ('pay_retirement', '=', False), ('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
-								<field name="give_allowance_transport" attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
-								<field name="give_allow" attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
-								<field name="give_salary" attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
+								<field name="give_allowance_transport"
+									attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
+								<field name="give_allow"
+									attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
+								<field name="give_salary"
+									attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
 							</group>
 							<field name="note" />
 						</group>

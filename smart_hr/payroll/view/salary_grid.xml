@@ -216,6 +216,65 @@
 		<menuitem id="salary_grid_menu" name="سلّم الرواتب" sequence="5"
 			parent="hr_configuration_salary_grid" action="action_salary_grid" />
 
+		<!-- تفاصيل سلالم الرواتب -->
+		<record id="salary_grid_detail_form" model="ir.ui.view">
+			<field name="name">salary.grid.detail.form</field>
+			<field name="model">salary.grid.detail</field>
+			<field name="arch" type="xml">
+				<form string="تفاصيل سلم الرواتب" create="0" edit="0" delete="0">
+					<sheet>
+						<group string="تفاصيل سلم الرواتب">
+							<group>
+								<field name="grid_id" />
+								<field name="type_id" />
+								<field name="grade_id" />
+							</group>
+							<group>
+								<field name="degree_id" />
+								<field name="basic_salary" />
+								<field name="net_salary" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="view_search_salary_grid_detail" model="ir.ui.view">
+			<field name="name">salary.grid.detail.search</field>
+			<field name="model">salary.grid.detail</field>
+			<field name="arch" type="xml">
+				<search string="تفاصيل سلالم الرواتب">
+					<field name="type_id" />
+					<field name="grade_id" />
+					<field name="degree_id" />
+				</search>
+			</field>
+		</record>
+		<record id="salary_grid_detail_tree" model="ir.ui.view">
+			<field name="name">salary.grid.detail.tree</field>
+			<field name="model">salary.grid.detail</field>
+			<field name="arch" type="xml">
+				<tree string="تفاصيل سلالم الرواتب">
+					<field name="grid_id" />
+					<field name="type_id" />
+					<field name="grade_id" />
+					<field name="degree_id" />
+					<field name="basic_salary" />
+					<field name="net_salary" />
+					<field name="date" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_salary_grid_detail">
+			<field name="name">تفاصيل سلالم الرواتب</field>
+			<field name="res_model">salary.grid.detail</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<menuitem id="salary_grid_detail_menu" name="تفاصيل سلالم الرواتب"
+			sequence="10" parent="hr_configuration_salary_grid" action="action_salary_grid_detail" />
+
 		<!-- الأصناف -->
 
 		<record id="salary_grid_type_form" model="ir.ui.view">
@@ -256,7 +315,7 @@
 			<field name="view_mode">tree,form</field>
 		</record>
 
-		<menuitem id="salary_grid_type_menu" name="الأصناف" sequence="10"
+		<menuitem id="salary_grid_type_menu" name="الأصناف" sequence="15"
 			parent="hr_configuration_salary_grid" action="action_salary_grid_type" />
 
 

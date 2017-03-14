@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
+
+		<record model="ir.ui.view" id="view_hr_transport_decision_filter">
+			<field name="name">hr.transport.decision.filter</field>
+			<field name="model">hr.transport.decision</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="أوامر الإركاب">
+					<field name="employee_id" string="الموظف"
+							   filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]"/>
+				</search>
+			</field>
+		</record>
+
 		<record model="ir.ui.view" id="hr_transport_decision_tree">
 			<field name="name">hr.transport.decision.tree</field>
 			<field name="model">hr.transport.decision</field>
@@ -20,7 +33,7 @@
 		<record model="ir.ui.view" id="hr_transport_decision_form">
 			<field name="name">hr.transport.decision.form</field>
 			<field name="model">hr.transport.decision</field>
-			
+
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="أوامر الإركاب">
@@ -52,7 +65,8 @@
 							<group>
 								<field name="order_date"
 									attrs="{'invisible':[('state', 'not in', [ 'draft','audit','done','finish','refuse','cancel'])],'readonly':[('state', 'in', ['done','finish','refuse','cancel'])]}" />
-								<field name="trasport_type" 	options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" 
+								<field name="trasport_type"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 									attrs="{'invisible':[('state', 'not in', [ 'draft','audit','done','finish','refuse','cancel'])],'readonly':[('state', 'in', ['done','finish','refuse','cancel'])]}" />
 
 
@@ -73,28 +87,20 @@
 								<field name="employee_id"
 									attrs="{'invisible':[('state', 'not in', [ 'draft','audit','done','finish','refuse','cancel'])],'readonly':[('state', 'in', ['audit','done','finish','refuse','cancel'])]}"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-								<field name="number"
-									  />
-								<field name="department_id" 
-									 />
-								<field name="job_id"
-									 />
-								<field name="number_job" 
-									 />
-								<field name="code"  
-									 />
-								<field name="type_id"  
-									 />
-								<field name="grade_id" 
-									 />
-								<field name="degree_id" 
-									 />
+								<field name="number" />
+								<field name="department_id" />
+								<field name="job_id" />
+								<field name="number_job" />
+								<field name="code" />
+								<field name="type_id" />
+								<field name="grade_id" />
+								<field name="degree_id" />
 							</group>
 
 						</group>
 						<group>
-							<field name="note"  attrs="{'invisible':[('state', 'not in', [ 'draft','audit','done','finish','refuse','cancel'])],'readonly':[('state', 'in', ['done','finish','refuse','cancel'])]}"
-									 />
+							<field name="note"
+								attrs="{'invisible':[('state', 'not in', [ 'draft','audit','done','finish','refuse','cancel'])],'readonly':[('state', 'in', ['done','finish','refuse','cancel'])]}" />
 						</group>
 
 
@@ -107,7 +113,7 @@
 			<field name="res_model">hr.transport.decision</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
-				<field name="context">{'readonly_by_pass': True}</field>
+			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 
 
