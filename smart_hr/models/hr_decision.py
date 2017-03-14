@@ -6,7 +6,6 @@ from datetime import date, datetime, timedelta
 from umalqurra.hijri_date import HijriDate
 
 
-
 class HrDecision(models.Model):
     _name = 'hr.decision'
     _inherit = ['mail.thread']
@@ -25,7 +24,7 @@ class HrDecision(models.Model):
     @api.onchange('num_speech', 'date_speech', 'name', 'date')
     def onchange_fileds(self):
         self.onchange_decision_type_id()
- 
+
     @api.onchange('date_speech')
     def onchange_date_speech(self):
         self.onchange_decision_type_id()

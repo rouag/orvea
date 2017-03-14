@@ -56,7 +56,7 @@ class HrEmployee(models.Model):
                                   ], string=u'الحالة', default='working', )
     decision_appoint_ids = fields.One2many('hr.decision.appoint', 'employee_id', string=u'تعيينات الموظف')
     job_id = fields.Many2one('hr.job', string=u'الوظيفة')
-    type_id = fields.Many2one('salary.grid.type',   string=u'الصنف')
+    type_id = fields.Many2one('salary.grid.type',   string=u'نوع الموظف')
     age = fields.Integer(string=u'السن', compute='_compute_age')
     employee_no = fields.Integer(string=u'رقم الموظف', )
     join_date = fields.Date(string=u'تاريخ الالتحاق بالجهة')
@@ -84,7 +84,7 @@ class HrEmployee(models.Model):
     passport_date = fields.Date(string=u'تاريخ إصدار الحفيظة ')
     passport_place = fields.Many2one('res.city', string=u'مكان إصدار الحفيظة')
     passport_end_date = fields.Date(string=u'تاريخ انتهاء الحفيظة ')
-    display_name = fields.Char(compute='_compute_display_name', string=u'الاسم')
+    display_name = fields.Char(compute='_compute_display_name', string=u'الاسم', store=True)
     sanction_ids = fields.One2many('hr.sanction.ligne', 'employee_id', string=u'العقوبات')
     sanction_count = fields.Integer(string=u'عدد  العقوبات', )
     bank_account_ids = fields.One2many('res.partner.bank', 'employee_id', string=u'الحسابات البنكِيّة')
@@ -205,6 +205,11 @@ class HrEmployee(models.Model):
         if self.age < recruitement_legal_age:
             raise ValidationError(u"لا يمكن انشاء سجل موظف قبل سن " + str(recruitement_legal_age))
 
+#     def _search_display_name(self, operator, value):
+#         for employee in self.search([]):
+#             if 
+#         return [('id', 'in', employees.ids)]
+        
     @api.one
     @api.depends('name', 'father_middle_name', 'father_name', 'family_name')
     def _compute_display_name(self):

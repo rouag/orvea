@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
+
+		<record model="ir.ui.view" id="view_hr_deputation_filter">
+			<field name="name">hr.deputation.filter</field>
+			<field name="model">hr.deputation</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="الانتدابات">
+
+					<field name="employee_id" string="الموظف"
+							   filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]"/>
+				</search>
+			</field>
+		</record>
+
 		<record model="ir.ui.view" id="hr_deputation_tree">
 			<field name="name">hr.deputation.tree</field>
 			<field name="model">hr.deputation</field>
@@ -17,6 +31,8 @@
 				</tree>
 			</field>
 		</record>
+
+
 
 		<record model="ir.ui.view" id="hr_deputation_form">
 			<field name="name">hr.deputation.form</field>
@@ -73,7 +89,8 @@
 									attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
 								<field name="member_deputation"
 									attrs="{'invisible':[('state', 'not in', [ 'draft'])]}" />
-								<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+								<field name="employee_id"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 									attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
 
 
@@ -205,8 +222,9 @@
 		</record>
 
 
-		<menuitem id="hr_deputation_menu" name="الإنتدابات" sequence="35" groups="smart_hr.group_deputation_department"
-			parent="hr_root_workflows" action="action_hr_deputation" />
+		<menuitem id="hr_deputation_menu" name="الإنتدابات" sequence="35"
+			groups="smart_hr.group_deputation_department" parent="hr_root_workflows"
+			action="action_hr_deputation" />
 
 		<!-- فئات الدول -->
 		<record id="view_form_hr_deputation_category" model="ir.ui.view">

@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
+		<record id="hr_appraisal_search_inherit" model="ir.ui.view">
+			<field name="name">hr.appraisal.search</field>
+			<field name="model">hr.appraisal</field>
+			<field name="inherit_id" ref="hr_appraisal.hr_appraisal_search" />
 
+			<field name="arch" type="xml">
+				<field name="employee_id" position="replace">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</field>
+			</field>
+		</record>
 		<!--التقييم -->
 
 		<record id="view_hr_appraisal_form_inherite" model="ir.ui.view">
@@ -178,7 +189,7 @@
 
 	</data>
 
-	
-        
+
+
 
 </openerp>

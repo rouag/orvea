@@ -2,7 +2,6 @@
 <openerp>
 	<data>
 
-
 		<!-- إعداد مسيّر إفرادي -->
 
 		<record id="view_hr_payslip_tree_inherit" model="ir.ui.view">
@@ -11,10 +10,9 @@
 			<field name="inherit_id" ref="hr_payroll.view_hr_payslip_tree" />
 			<field name="arch" type="xml">
 				<xpath expr="/tree" position='replace'>
-				<tree decoration-info="state in ('confirm','hr_check','accont_check')" decoration-muted="state == 'cancel'">
+				<tree decoration-info="state == 'draft'" decoration-muted="state == 'cancel'">
                     <field name="number" string="التسلسل"/>
                     <field name="employee_id"/>
-                    <field name="name" string="المسمى"/>
                     <field name="month"/>
                     <field name="date_from"/>
                     <field name="date_to" string="إلى"/>
@@ -234,7 +232,7 @@
 			<field name="model">hr.payslip.run</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
-				<tree string="مسيّر جماعي">
+				<tree string="مسيّر جماعي"  decoration-info="state == 'draft'" decoration-muted="state == 'cancel'">
 					<field name="name" string="المسمى"/>
 					<field name="date_start" invisible='1' />
 					<field name="date_end"  invisible='1' />

@@ -2,7 +2,17 @@
 <openerp>
 	<data>
 
-
+		<record model="ir.ui.view" id="view_hr_decision">
+			<field name="name">hr.decision</field>
+			<field name="model">hr.decision</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="التعين">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
 		<!-- القرارات -->
 
 		<record id="hr_decision_tree" model="ir.ui.view">

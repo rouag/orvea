@@ -93,7 +93,8 @@
 				<search string=" طى القيد">
 					<field name="name" />
 					<field name="date" />
-					<field name="employee_id" />
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
 					<field name="termination_type_id" />
 					<field name="state" />
 					<separator />

@@ -556,7 +556,6 @@ class HrDifference(models.Model):
                                                        ('state', '=', 'done')
                                                        ])
         for holiday_id in holidays_ids:
-            # token days in current month
             holiday_date_from = fields.Date.from_string(holiday_id.date_from)
             date_from = fields.Date.from_string(self.date_from)
             holiday_date_to = fields.Date.from_string(holiday_id.date_to)
@@ -795,6 +794,26 @@ class HrDifference(models.Model):
                                                              ])
         for termination in termination_ids:
             grid_id = termination.employee_id.get_salary_grid_id(termination.date)
+            if grid_id:
+                if termination.employee_id.basic_salary == 0:
+                    basic_salary = grid_id.basic_salary
+                else:
+                    basic_salary = termination.employee_id.basic_salary
+                # فرق الأيام المخصومة من الشهر
+                date_from = self.date_from
+                date_to = termination.date
+                worked_days = days_between(date_from, date_to) - 1
+                unworked_days = 22 - worked_days
+                if unworked_days > 0:
+                    amount = (basic_salary / 22.0) * unworked_days
+                    vals = {'difference_id': self.id,
+                            'name': termination.termination_type_id.name + " " + u'(فرق الأيام المخصومة من الشهر)',
+                            'employee_id': termination.employee_id.id,
+                            'number_of_days': unworked_days,
+                            'number_of_hours': 0.0,
+                            'amount': amount * -1,
+                            'type': 'termination'}
+                    line_ids.append(vals)
             # سعودي
             if termination.employee_id.country_id and termination.employee_id.country_id.code == 'SA':
                 if grid_id:
