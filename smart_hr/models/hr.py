@@ -56,7 +56,7 @@ class HrEmployee(models.Model):
                                   ], string=u'الحالة', default='working', )
     decision_appoint_ids = fields.One2many('hr.decision.appoint', 'employee_id', string=u'تعيينات الموظف')
     job_id = fields.Many2one('hr.job', string=u'الوظيفة')
-    type_id = fields.Many2one('salary.grid.type',   string=u'نوع الموظف')
+    type_id = fields.Many2one('salary.grid.type', string=u'نوع الموظف')
     age = fields.Integer(string=u'السن', compute='_compute_age')
     employee_no = fields.Integer(string=u'رقم الموظف', )
     join_date = fields.Date(string=u'تاريخ الالتحاق بالجهة')
@@ -103,7 +103,7 @@ class HrEmployee(models.Model):
     royal_decree_number = fields.Char(string=u'رقم الأمر الملكي', readonly=1)
     royal_decree_date = fields.Date(string=u'تاريخ الأمر الملكي ', readonly=1)
     training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'سجل التدريبات')
-    state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')],string='Attendance')
+    state = fields.Selection(selection=[('absent', 'غير مداوم بالمكتب'), ('present', 'مداوم بالمكتب')], string='Attendance')
     employee_card_id = fields.Many2one('hr.employee.functionnal.card')
     residance_id = fields.Char(string=u'رقم الإقامة ')
     residance_date = fields.Date(string=u'تاريخ إصدار بطاقة الإقامة ')
@@ -203,17 +203,29 @@ class HrEmployee(models.Model):
         if self.recruiter_date < self.begin_work_date:
             raise ValidationError(u"تاريخ بداية العمل الحكومي يجب ان يكون اصغر من تاريخ التعيين بالجهة ")
 
+    @api.onchange('birthday')
+    def onchange_birthday(self):
+        recruitement_legal_age = self.env['hr.employee.configuration'].search([], limit=1).recruitment_legal_age
+        if self.birthday:
+            if self.age < recruitement_legal_age:
+                raise ValidationError(u"لا يمكن انشاء سجل موظف قبل سن " + str(recruitement_legal_age))
+
     @api.constrains('birthday')
     def recruitement_legal_age(self):
         recruitement_legal_age = self.env['hr.employee.configuration'].search([], limit=1).recruitment_legal_age
         if self.age < recruitement_legal_age:
             raise ValidationError(u"لا يمكن انشاء سجل موظف قبل سن " + str(recruitement_legal_age))
 
-#     def _search_display_name(self, operator, value):
-#         for employee in self.search([]):
-#             if 
-#         return [('id', 'in', employees.ids)]
-        
+    @api.multi
+    @api.constrains('identification_id', 'residance_id')
+    def _check_constraints(self):
+        for rec in self:
+            if rec.is_saudian and rec.identification_id:
+                if len(rec.identification_id) != 10:
+                    raise Warning(_('الرجاء التثبت من رقم الهوية.'))
+            if not rec.is_saudian and rec.residance_id:
+                if len(rec.residance_id) != 10:
+                    raise Warning(_('الرجاء التثبت من رقم الإقامة.'))
     @api.one
     @api.depends('name', 'father_middle_name', 'father_name', 'family_name')
     def _compute_display_name(self):
@@ -277,16 +289,17 @@ class HrEmployee(models.Model):
                 if years > -1:
                     emp.age = years
 
-    @api.multi
-    @api.constrains('identification_id')
-    def _check_constraints(self):
-        for rec in self:
-            if rec.is_saudian and rec.identification_id:
-                if len(rec.identification_id) != 10:
-                    raise Warning(_('الرجاء التثبت من رقم الهوية.'))
-            if not rec.is_saudian and rec.residance_id:
-                if len(rec.residance_id) != 10:
-                    raise Warning(_('الرجاء التثبت من رقم الإقامة.'))
+    @api.onchange('identification_id')
+    def onchange_identification_id(self):
+        if self.is_saudian and self.identification_id:
+            if len(self.identification_id) != 10:
+                raise ValidationError(u"الرجاء التثبت من رقم الهوية.")
+
+    @api.onchange('residance_id')
+    def onchange_residance_id(self):
+        if not self.is_saudian and self.residance_id:
+            if len(self.residance_id) != 10:
+                raise ValidationError(u"الرجاء التثبت من رقم الإقامة.")
 
     @api.one
     def action_send(self):

@@ -37,6 +37,7 @@
 							<field name="num_decision" />
 							<field name="date_decision" />
 						<field name="state" />
+						<field name="is_started" invisible="1" />
 					</tree>
 				</xpath>
 			</field>
@@ -123,7 +124,7 @@
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<field name="state" widget="statusbar"
-							statusbar_visible="draft,dm,audit,hrm,external_audit,revision,revision_response,done,cancel,cutoff" />
+							statusbar_visible="draft,dm,audit,hrm,external_audit,revision,revision_response,done,cancel,cutoff,refuse" />
 					</header>
 					<sheet>
 						<field name="spend_advanced_salary" invisible="1" />
