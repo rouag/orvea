@@ -586,7 +586,7 @@ class HrDifference(models.Model):
                     basic_salary = grid_id.basic_salary
                 else:
                     basic_salary = holiday_id.employee_id.basic_salary
-                amount = (duration_in_month * (basic_salary / 22)) / 100.0
+                amount = (duration_in_month * (basic_salary / 22))
                 if amount != 0:
                     vals = {'difference_id': self.id,
                             'name': holiday_id.holiday_status_id.name,
