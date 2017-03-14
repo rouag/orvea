@@ -3,7 +3,7 @@
 {
     'name': 'Smart HR',
     'version': '9.0.1.0',
-    'author': 'SMART-ETEK',
+    'author': 'SMART-ETECH',
     'summary': 'HR',
     'external_dependencies': {'python': ['umalqurra']},
     'description':

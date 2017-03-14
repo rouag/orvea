@@ -566,13 +566,13 @@ class HrDifference(models.Model):
             months_from_holiday_start = relativedelta.relativedelta(today, holiday_date_from).months
             # days in current month
             if days < 0 and holiday_date_to <= date_to:
-                duration_in_month = self.env['hr.smart.utils'].compute_duration(holiday_date_to, date_from)
+                duration_in_month = self.env['hr.smart.utils'].compute_duration(date_from, holiday_date_to)
             if days < 0 and holiday_date_to > date_to:
-                duration_in_month = self.env['hr.smart.utils'].compute_duration(date_to, date_from)
+                duration_in_month = self.env['hr.smart.utils'].compute_duration(date_from, date_to)
             if days >= 0 and holiday_date_to <= date_to:
-                duration_in_month = self.env['hr.smart.utils'].compute_duration(holiday_date_to, holiday_date_from)
+                duration_in_month = self.env['hr.smart.utils'].compute_duration(holiday_date_from, holiday_date_to)
             if days >= 0 and holiday_date_to > date_to:
-                duration_in_month = self.env['hr.smart.utils'].compute_duration(date_to, holiday_date_from)
+                duration_in_month = self.env['hr.smart.utils'].compute_duration(holiday_date_from, date_to)
             grid_id = holiday_id.employee_id.get_salary_grid_id(False)
             holiday_status_id = holiday_id.holiday_status_id
             # get the entitlement type
@@ -582,6 +582,7 @@ class HrDifference(models.Model):
                 entitlement_type = holiday_id.entitlement_type
             # case of لا يصرف له الراتب
             if grid_id and not holiday_status_id.salary_spending:
+
                 if holiday_id.employee_id.basic_salary == 0:
                     basic_salary = grid_id.basic_salary
                 else:
