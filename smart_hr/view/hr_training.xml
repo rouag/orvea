@@ -167,7 +167,16 @@
 
 
 		<!-- الترشيحات -->
-
+		<record id="view_search_hr_candidates" model="ir.ui.view">
+			<field name="name">hr.candidates.search</field>
+			<field name="model">hr.candidates</field>
+			<field name="arch" type="xml">
+				<search string="الترشيحات">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
 		<record model="ir.ui.view" id="hr_candidates_tree">
 			<field name="name">hr.candidates.tree</field>
 			<field name="model">hr.candidates</field>

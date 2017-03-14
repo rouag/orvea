@@ -24,7 +24,7 @@ class HrEmployeeCreateUsers(models.Model):
                 emp.user_id = user
             else:
                 raise Warning(_('الرجاء تعبئة البريد الإلكتروني.'))
-            
+
     @api.model
     def create(self, vals):
         res = super(HrEmployeeCreateUsers, self).create(vals)

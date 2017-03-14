@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data>
+
+		<record model="ir.ui.view" id="view_hr_employee_transfert_filter">
+			<field name="name">hr.employee.transfert..search</field>
+			<field name="model">hr.employee.transfert</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="طلب نقل موظف">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
 		<!-- طلب نقل موظف -->
 		<record id="view_hr_employee_transfert_form" model="ir.ui.view">
 			<field name="name">hr.employee.transfert.form</field>
@@ -237,7 +249,7 @@
 					<header>
 						<button name="action_generate_lines" string="إدراج اللائحة "
 							type="object" groups="smart_hr.group_hr_personnel_officer_commissioning"
-							states="new"/>
+							states="new" />
 						<button name="action_commission_president" string="إرسال "
 							type="object" groups="smart_hr.group_hr_personnel_officer_commissioning"
 							states="new" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />

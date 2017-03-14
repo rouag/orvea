@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <openerp>
 	<data>
-
+		<record model="ir.ui.view" id="view_hr_employee_functionnal_card_filter">
+			<field name="name">hr.employee.functionnal.card.search</field>
+			<field name="model">hr.employee.functionnal.card</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="بطاقة وظيفي">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
 
 		<record id="view_form_hr_employee_functionnal_card" model="ir.ui.view">
 			<field name="name">hr.employee.functionnal.card.form</field>
@@ -15,10 +25,10 @@
 							string="طباعة بطاقة وظيفية" type="action" icon="fa-print"
 							class="oe_inline oe_stat_button" states="done" />
 
-								<button name="%(report_hr_emp_card_report)d"
-							string="طباعة بطاقة موظف" type="action" icon="fa-print"
-							class="oe_inline oe_stat_button" states="done" />
-							
+						<button name="%(report_hr_emp_card_report)d" string="طباعة بطاقة موظف"
+							type="action" icon="fa-print" class="oe_inline oe_stat_button"
+							states="done" />
+
 						<button name="button_send_request" string="إرسال طلب" type="object"
 							states="draft" icon="fa-paper-plane" class="oe_inline oe_stat_button"
 							groups="smart_hr.group_employee_request,smart_hr.group_hrm"

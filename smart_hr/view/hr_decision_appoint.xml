@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
-
+		<record model="ir.ui.view" id="view_hr_decision_appoint">
+			<field name="name">hr.decision.appoint</field>
+			<field name="model">hr.decision.appoint</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="التعين">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
 		<record model="ir.ui.view" id="hr_type_appoint_tree">
 			<field name="name">hr.type.appoint.tree</field>
 			<field name="model">hr.type.appoint</field>
@@ -256,8 +266,10 @@
 
 											attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'manager', 'budget', 'done','refuse'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'manager', 'budget','civil', 'done','refuse'])]}" />
 										<field name="far_age" />
-										<field name="max_pension_ratio" attrs="{'invisible':[('max_pension', '=', False)]}"/>
-										<field name="pension_ratio" attrs="{'invisible':[('max_pension', '=', False)]}"/>
+										<field name="max_pension_ratio"
+											attrs="{'invisible':[('max_pension', '=', False)]}" />
+										<field name="pension_ratio"
+											attrs="{'invisible':[('max_pension', '=', False)]}" />
 										<field name="basic_salary" />
 										<field name="retirement" />
 										<field name="transport_allow"
@@ -276,11 +288,11 @@
 										<field name="order_picture" filename="order_picture_name"
 											attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct','civil', 'done','refuse'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])]}" />
 										<field name="order_picture_name" invisible="1" />
-										
-										
-											<field name="royal_decree_number"
+
+
+										<field name="royal_decree_number"
 											attrs="{'invisible':['|',('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse']),('type_appointment', '!=', %(data_hr_recrute_Members)d)],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])]}" />
-										<field name="royal_decree_date" 
+										<field name="royal_decree_date"
 											attrs="{'invisible':['|',('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct','civil', 'done','refuse']),('type_appointment', '!=', %(data_hr_recrute_Members)d)],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])]}" />
 									</group>
 									<group>

@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
+
+		<record model="ir.ui.view" id="view_hr_holidays_decision_filter_inherit">
+			<field name="name">hr.holidays.decision.filter.inherit</field>
+			<field name="model">hr.holidays.decision</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="قرار مباشرة">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
 		<!-- قرار مباشرة -->
 		<record id="hr_holidays_decision_form" model="ir.ui.view">
 			<field name="name">hr.holidays.decision.form</field>
@@ -9,34 +21,39 @@
 				<form string="قرار مباشرة">
 					<header>
 						<button name="action_waiting" string=" ارسال طلب" type="object"
-							states="new" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"  groups="smart_hr.group_employee_request,smart_hr.group_hrm"/>
-							<button name="action_done" string="إعتماد" type="object"
-								states="waiting" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
-								groups="smart_hr.group_hrm" />
-							<button name="action_refuse" string="رفض" type="object"
-								states="waiting" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
-								groups="smart_hr.group_hrm" />
+							states="new" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							groups="smart_hr.group_employee_request,smart_hr.group_hrm" />
+						<button name="action_done" string="إعتماد" type="object"
+							states="waiting" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							groups="smart_hr.group_hrm" />
+						<button name="action_refuse" string="رفض" type="object"
+							states="waiting" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							groups="smart_hr.group_hrm" />
 
-							<field name="state" widget="statusbar" statusbar_visible="new,waiting,done,cancel" />
+						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done,cancel" />
 					</header>
 					<sheet>
 						<group>
-							<field name="name" attrs="{'readonly':[('state','!=','new')]}"/>
-							<field name="order_date" attrs="{'readonly':[('state','!=','new')]}"/>
-							<field name="file_decision" filename="file_decision_name" attrs="{'readonly':[('state','!=','new')]}"/>
-							<field name="file_decision_name" invisible="1" attrs="{'readonly':[('state','!=','new')]}"/>
+							<field name="name" attrs="{'readonly':[('state','!=','new')]}" />
+							<field name="order_date" attrs="{'readonly':[('state','!=','new')]}" />
+							<field name="file_decision" filename="file_decision_name"
+								attrs="{'readonly':[('state','!=','new')]}" />
+							<field name="file_decision_name" invisible="1"
+								attrs="{'readonly':[('state','!=','new')]}" />
 
 						</group>
 						<group>
 							<group string="بيانات الموظف">
-								<field name="employee_id" attrs="{'readonly':[('state','!=','new')]}" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+								<field name="employee_id" attrs="{'readonly':[('state','!=','new')]}"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="number" />
-								<field name="job_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="job_id"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="department_id" />
 
 							</group>
 							<group>
-								<field name="date" attrs="{'readonly':[('state','!=','new')]}"/>
+								<field name="date" attrs="{'readonly':[('state','!=','new')]}" />
 
 								<field name="holidays" attrs="{'readonly':[('state','!=','new')]}"
 									domain="[('employee_id', '=', employee_id),('state', '=', 'done'),('holiday_status_id.direct_decision', '=', True)]" />
@@ -72,7 +89,7 @@
 
 		<menuitem id="menu_hr_holidays_decision" parent="menu_hr_holiday_root"
 			name="قرار مباشرة" sequence="60" action="action_hr_holidays_decision"
-			 groups="smart_hr.group_employee_request,smart_hr.group_hrm"/>
+			groups="smart_hr.group_employee_request,smart_hr.group_hrm" />
 
 
 

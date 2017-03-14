@@ -3,6 +3,18 @@
 	<data>
 
 
+		<record model="ir.ui.view" id="view_hr_courses_followup_filter">
+			<field name="name">courses.followup.search</field>
+			<field name="model">courses.followup</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="الدورات الدراسيّة">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
+		
 		<record id="courses_followup_form" model="ir.ui.view">
 			<field name="name">courses.followup.form</field>
 			<field name="model">courses.followup</field>
@@ -74,8 +86,8 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-		
-		
+
+
 		<!-- config menu -->
 		<menuitem id="hr_configuration_courses_followup" name="الدورات الدراسيّة"
 			parent="menu_hr_holiday_root" sequence="54" action="action_courses_followup" />

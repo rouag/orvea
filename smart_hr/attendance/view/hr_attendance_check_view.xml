@@ -66,7 +66,8 @@
 			<field name="model">hr.attendance.check</field>
 			<field name="arch" type="xml">
 				<search>
-					<field name="employee_id" />
+					<field name="employee_id" string="الموظف"
+							   filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]"/>
 					<field name="date" />
 					<field name="type" />
 					<field name="department_id" />

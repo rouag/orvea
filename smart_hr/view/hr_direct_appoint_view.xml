@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
-
+		<record model="ir.ui.view" id="view_hr_direct_appoint">
+			<field name="name">hr.direct.appoint.search</field>
+			<field name="model">hr.direct.appoint</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="مباشرة التعين">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
 		<record model="ir.ui.view" id="hr_direct_appoint_tree">
 			<field name="name">hr.direct.appoint.tree</field>
 			<field name="model">hr.direct.appoint</field>

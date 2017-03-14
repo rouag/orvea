@@ -3,6 +3,17 @@
 	<data>
 
 
+		<record model="ir.ui.view" id="view_hr_scholarship_filter">
+			<field name="name">hr.scholarship.search</field>
+			<field name="model">hr.scholarship</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="الابتعاث">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
 		<record id="hr_scholarship_form" model="ir.ui.view">
 			<field name="name">hr.scholarship.form</field>
 			<field name="model">hr.scholarship</field>
