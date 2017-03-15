@@ -910,6 +910,13 @@ class HrDifference(models.Model):
             line_ids.append(vals)
         return line_ids
 
+    @api.multi
+    def unlink(self):
+        self.ensure_one()
+        if self.state != 'new':
+            raise ValidationError(u"لا يكن حذف الفروقات في حالتها الحالية ")
+        return super(HrDifference, self).unlink()
+
 
 class HrDifferenceLine(models.Model):
     _name = 'hr.difference.line'
