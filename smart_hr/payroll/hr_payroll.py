@@ -51,7 +51,7 @@ class HrPayslipRun(models.Model):
     def onchange_month(self):
         if self.month:
             um = HijriDate.today()
-            if int(um.month)<int(self.month):
+            if int(um.month) < int(self.month):
                 raise UserError(u"لا يمكن انشاء مسير لشهر في المستقبل ")
             self.date_start = get_hijri_month_start(HijriDate, Umalqurra, self.month)
             self.date_end = get_hijri_month_end(HijriDate, Umalqurra, self.month)
@@ -225,12 +225,12 @@ class HrPayslip(models.Model):
             self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.month)
             self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.month)
             employee_ids = self.env['hr.employee'].search([('employee_state', '=', 'employee')])
-            minus_employee_ids = []
-            for employee in employee_ids:
-                termination_id = self.env['hr.termination'].search([('employee_id', '=', employee.id), ('state', '=', 'done')], order='date_termination desc', limit=1)
-                if termination_id and termination_id.date_termination and fields.Date.from_string(termination_id.date_termination) < fields.Date.from_string(self.date_from):
-                    minus_employee_ids.append(employee)
             employee_ids = employee_ids.ids
+            termination_ids = self.env['hr.termination'].search([('state', '=', 'done')], order='date_termination desc', limit=1)
+            minus_employee_ids = []
+            for termination_id in termination_ids:
+                if termination_id.date_termination and fields.Date.from_string(termination_id.date_termination) < fields.Date.from_string(self.date_from):
+                    minus_employee_ids.append(termination_id.employee_id)
             minus_employee_ids = [rec.id for rec in minus_employee_ids]
             result_employee_ids = list((set(employee_ids) - set(minus_employee_ids)))
             res['domain'] = {'employee_id': [('id', 'in', result_employee_ids)]}
@@ -677,18 +677,18 @@ class HrPayslip(models.Model):
     
     
     @api.one
-    @api.constrains('employee_id','month')
+    @api.constrains('employee_id', 'month')
     def _check_payroll(self):
         for rec in self:
-            payroll_count = rec.search_count([('employee_id', '=', rec.employee_id.id),('month', '=', rec.month)])
-            if payroll_count >1:
+            payroll_count = rec.search_count([('employee_id', '=', rec.employee_id.id), ('month', '=', rec.month)])
+            if payroll_count > 1:
                 raise ValidationError(u"لا يمكن إنشاء مسيرين لنفس الموظف في نفس الشهر")
 
     @api.onchange('month')
     def onchange_month(self):
         if self.month:
             um = HijriDate.today()
-            if int(um.month)<int(self.month):
+            if int(um.month) < int(self.month):
                 raise UserError(u"لا يمكن انشاء مسير لشهر في المستقبل ")
             
 class HrPayslipWorkedDays(models.Model):
