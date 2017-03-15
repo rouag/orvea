@@ -7,7 +7,8 @@
 		<field name="arch" type="xml">
 			<form>
 				<group col="4" string="التحوير" attrs="{'invisible': [('report_type', '=', 'requested')]}" >
-					<field name="update_request_id" options='{"no_open": True, "no_create": True}' />
+					<field name="update_request_id" options='{"no_open": True, "no_create": True}' 
+					attrs="{'required': [('report_type', '=', 'accepted')]}"/>
 					<field name="decision_number" />
 					<field name="decision_date" />
 				</group>
