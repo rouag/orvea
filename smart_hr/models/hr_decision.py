@@ -62,7 +62,8 @@ class HrDecision(models.Model):
                 type_job_id = employee_line.type_id.name or ""
                 grade_id = employee_line.grade_id.name or ""
                 degree_id = employee_line.degree_id.name or ""
-                salary = employee_line.get_salary_grid_id(False)[0].net_salary  or ""
+                salary_grid_id, basic_salary = employee_line.get_salary_grid_id(False)
+                salary = salary_grid_id.net_salary  or ""
                 rel_text = decision_type_line.text
      #           transport_allow = employee_line.get_salary_grid_id(False)[0].transport_allow or ""
     #             retirement = employee_line.retirement or ""
@@ -98,7 +99,8 @@ class HrDecision(models.Model):
             numero = self.name or ""
             num_speech = self.num_speech or ""
             date_speech = self.date_speech or ""
-            salary = self.employee_id.get_salary_grid_id(False)[0].net_salary  or ""
+            salary_grid_id, basic_salary = self.employee_id.get_salary_grid_id(False)
+            salary = salary_grid_id.net_salary  or ""
             decision_type_line = self.env['hr.decision.type'].search([('id', '=', self.decision_type_id.id)])
             current_year = datetime.now().year
             employee_ids_len = len(self.employee_ids.ids)

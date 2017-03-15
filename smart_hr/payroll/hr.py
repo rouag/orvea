@@ -15,16 +15,15 @@ class HrEmployee(models.Model):
     @api.multi
     def _compute_net_salary(self):
         for rec in self:
-            salary_grid_id = rec.get_salary_grid_id(False)[0]
+            salary_grid_id, basic_salary = rec.get_salary_grid_id(False)
             if salary_grid_id:
                 rec.net_salary = salary_grid_id.net_salary
 
     @api.model
     def get_salary_grid_id(self, operation_date):
         '''
-        @return: array of two colum res[0]: salary grid detail, res[1]: basic salary
+        @return:  two values value1: salary grid detail, value2: basic salary
         '''
-        res = []
         # search for  the newest salary grid detail
         domain = [('grid_id.state', '=', 'done'),
                   ('grid_id.enabled', '=', True),
@@ -41,7 +40,6 @@ class HrEmployee(models.Model):
             if len(domain) == 6:
                 domain.pop(5)
             salary_grid_id = self.env['salary.grid.detail'].search(domain, order='date desc', limit=1)
-        res.append(salary_grid_id)
         # retreive old salary increases to add them with basic_salary
         domain = [('salary_grid_detail_id', '=', salary_grid_id.id)]
         if operation_date:
@@ -54,5 +52,4 @@ class HrEmployee(models.Model):
             basic_salary = salary_grid_id.basic_salary + sum_increases_amount
         else:
             basic_salary = self.basic_salary + sum_increases_amount
-        res.append(basic_salary)
-        return res
+        return salary_grid_id, basic_salary

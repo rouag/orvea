@@ -31,7 +31,7 @@ class MessierSalaires(report_sxw.rml_parse):
         })
 
     def _get_basic_salary(self, employee_id):
-        basic_salary = employee_id.get_salary_grid_id(False)[1]
+        salary_grid_id, basic_salary = employee_id.get_salary_grid_id(False)
         return basic_salary
 
     def _get_allowances(self, line_ids):
