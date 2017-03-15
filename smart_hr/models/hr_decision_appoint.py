@@ -481,7 +481,8 @@ class HrDecisionAppoint(models.Model):
         previous_promotion = self.env['hr.employee.promotion.history'].search(
             [('employee_id', '=', self.employee_id.id), ('active_duration', '=', True)], limit=1)
         if previous_promotion:
-            previous_promotion.close_promotion_line()
+            previous_promotion.active_duration = False
+            previous_promotion.date_to = fields.Date.from_string(fields.Date.today())
         # create promotion history line
         self.env['hr.employee.promotion.history'].create({'employee_id': self.employee_id.id,
                                                           'date_from': self.date_direct_action,

@@ -396,7 +396,7 @@ class HrHolidays(models.Model):
         if date_from2 >= date_from1 and date_to2 >= date_to1:
             duration += self.compute_days_minus_weekends(date_from2, date_to1)
         return duration
-            
+
     @api.model
     def update_normal_holidays_stock(self):
         right_entitlement = False
@@ -404,88 +404,64 @@ class HrHolidays(models.Model):
             if self.env.ref('smart_hr.data_hr_holiday_entitlement_all') == en.entitlment_category:
                 right_entitlement = en
                 break
-        for employee in self.env['hr.employee'].search([('employee_state', '=', 'employee')]):    
+        for employee in self.env['hr.employee'].search([('employee_state', '=', 'employee')]):
             todayDate = datetime.now()
-            first_day_date = todayDate.replace(day=1, month=1)      
+            first_day_date = todayDate.replace(day=1, month=1)
             open_periode = self.env['hr.holidays.periode'].search([('employee_id', '=', employee.id),
-                                                           ('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id),
-                                                           ('entitlement_id', '=', right_entitlement.id),
-                                                           ('active', '=', True),
-                                                            ('date_from', '=', first_day_date.strftime(DEFAULT_SERVER_DATE_FORMAT))])
-            holiday_balance = self.env['hr.employee.holidays.stock'].search ([('employee_id', '=', employee.id),
-                                                           ('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id),
-                                                                         ('entitlement_id.id', '=', right_entitlement.id),
-                                                                         ])
+                                                                   ('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id),
+                                                                   ('entitlement_id', '=', right_entitlement.id), ('active', '=', True),
+                                                                   ('date_from', '=', first_day_date.strftime(DEFAULT_SERVER_DATE_FORMAT))])
+            holiday_balance = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', employee.id),
+                                                                              ('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id),
+                                                                              ('entitlement_id.id', '=', right_entitlement.id),])
             uncounted_days = 0
             employee_solde = right_entitlement.holiday_stock_default
             periode = right_entitlement.periode
             current_normal_holiday_stock = holiday_balance.holidays_available_stock
             today = date.today()
-            d = today - relativedelta(months=1)
-            previous_month_first_day = date(d.year, d.month, 1)
-            previous_month_last_day = date(today.year, today.month, 1) - relativedelta(days=1)
+            d = today - relativedelta(days=1)
+            
 #                    مدّة الإجازة الاستثنائية و الدراسية 
 
             holiday_uncounted_days = 0
-            for holiday in self.search(['|', '&', ('state', '=', 'done'), '&', ('date_from', '<=', previous_month_last_day), ('date_to', '>=', previous_month_last_day)
-                                                                , '&', ('state', '=', 'done'), '&', ('date_to', '>=', previous_month_first_day), ('date_to', '<=', previous_month_last_day)]):
-                if holiday.employee_id.id == employee.id and  \
-                    holiday.holiday_status_id.id in [self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional').id,
+            holiday_uncounted_days = self.search_count([('state', '=', 'done'),('date_from', '<=',  d), ('date_to', '>=', d),('employee_id', '=', employee.id),
+                                        ('holiday_status_id.id', 'in', [self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional').id,
                                                        self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id,
-                                                       self.env.ref('smart_hr.data_hr_holiday_status_study').id]:
-                    holiday_uncounted_days += self.compute_intersection_duration(holiday.date_from, holiday.date_to, previous_month_last_day, previous_month_last_day)
+                                                       self.env.ref('smart_hr.data_hr_holiday_status_study').id])])
             uncounted_days += holiday_uncounted_days
 #                    مدّة كف اليد todo
 
 #                    مدّة الاعارة todo
             lend_obj = self.env['hr.employee.lend']
-            search_domain = ['|', '&', '&', ('employee_id', '=', employee.id), ('state', '=', 'done'), '&', ('date_from', '<=', previous_month_last_day), ('date_to', '>=', previous_month_last_day)
-                                                                , '&', ('state', '=', 'done'), '&', ('date_to', '>=', previous_month_first_day), ('date_to', '<=', previous_month_last_day)]
-            lend_uncounted_days = 0
-            for rec in lend_obj.search(search_domain):
-                lend_uncounted_days += self.compute_intersection_duration(rec.date_from, rec.date_to, previous_month_last_day, previous_month_last_day)
+            lend_uncounted_days = lend_obj.search_count([('employee_id', '=', employee.id), ('state', '=', 'done'), ('date_from', '<=', d), ('date_to', '>=', d)])
             uncounted_days += lend_uncounted_days
 
             # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
-            uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', employee.id), ('action', '=', 'absence'),
-                                                                            ('date', '>=', previous_month_first_day), ('date', '<=', previous_month_last_day)])
+            uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', employee.id), ('action', '=', 'absence'), ('date', '=', d)])
             uncounted_days += uncounted_absence_days
 
             # مدّةالتدريب
-            formation_uncounted_days = 0
             candidate_obj = self.env['hr.candidates']
-            for rec in candidate_obj.search(search_domain):
-                dateto = fields.Date.from_string(rec.date_to)
-                datefrom = fields.Date.from_string(rec.date_from)
-                res = relativedelta(dateto, datefrom)
-                months = (dateto.year - datefrom.year) * 12 + (dateto.month - datefrom.month)
-                if (months >= 1):
-                    formation_uncounted_days += self.compute_intersection_duration(rec.date_from, rec.date_to, previous_month_last_day, previous_month_last_day)
+            formation_uncounted_days = candidate_obj.search_count([('employee_id', '=', employee.id), ('state', '=', 'done'), ('date_from', '<=', d), ('date_to', '>=', d)])
             uncounted_days += formation_uncounted_days
+
             # الابتعاث
-            scholarship_uncounted_days = 0
             schol_obj = self.env['hr.scholarship']
-            for rec in schol_obj.search(search_domain):
-                if rec.date_from <= previous_month_first_day < previous_month_last_day or rec.date_from < previous_month_last_day < rec.date_to:
-                     scholarship_uncounted_days += self.compute_intersection_duration(rec.date_from, rec.date_to, previous_month_last_day, previous_month_last_day)
+            scholarship_uncounted_days = schol_obj.search_count([('employee_id', '=', employee.id), ('state', '=', 'done'), ('date_from', '<=', d), ('date_to', '>=', d)])
             uncounted_days += scholarship_uncounted_days
 
-            init_solde = (employee_solde / (periode * 12))
-            balance = init_solde - (uncounted_days / 30) * init_solde
+            init_solde = (employee_solde / (periode * 12))/30.0
+            balance = init_solde - (uncounted_days* init_solde)
 
             holiday_balance.write({'holidays_available_stock': current_normal_holiday_stock + balance})
             open_periode.write({'holiday_stock': current_normal_holiday_stock + balance})
-
 
     @api.multi
     def button_extend(self):
         # check if its possible to extend this holiday
         extensions_number = self.env['hr.holidays'].search_count([('extended_holiday_id', '=', self.id), ('extended_holiday_id', '!=', False), ('state', '=', 'done')])
-
-                
         if extensions_number >= self.holiday_status_id.extension_number and self.holiday_status_id.extension_number > 0:
             raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من%s " % str(self.holiday_status_id.extension_number))
-
         view_id = self.env.ref('smart_hr.hr_holidays_form').id
         context = self._context.copy()
         default_date_from = fields.Date.to_string(fields.Date.from_string(self.date_to) + timedelta(days=1))

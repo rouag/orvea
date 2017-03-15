@@ -12,7 +12,7 @@
 		<record id="ir_cron_hr_holidays_stock" model="ir.cron">
 			<field name="name">Holiday Stock Updater</field>
 			<field name="interval_number">1</field>
-			<field name="interval_type">months</field>
+			<field name="interval_type">days</field>
 			<field name="numbercall">-1</field>
 			<field name="doall">0</field>
 			<field name="model">hr.holidays</field>
@@ -43,7 +43,7 @@
 		<record id="ir_cron_hr_employee_promotion_duration" model="ir.cron">
 			<field name="name">employee promotion duration updater</field>
 			<field name="interval_number">1</field>
-			<field name="interval_type">months</field>
+			<field name="interval_type">days</field>
 			<field name="numbercall">-1</field>
 			<field name="doall">0</field>
 			<field name="model">hr.employee.promotion.history</field>
@@ -53,7 +53,7 @@
 		<record id="ir_cron_hr_service_duration" model="ir.cron">
 			<field name="name">employee service duration updater</field>
 			<field name="interval_number">1</field>
-			<field name="interval_type">months</field>
+			<field name="interval_type">days</field>
 			<field name="numbercall">-1</field>
 			<field name="doall">0</field>
 			<field name="model">hr.employee</field>
