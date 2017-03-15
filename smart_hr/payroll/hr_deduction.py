@@ -37,10 +37,10 @@ class hrDeduction(models.Model):
 
     @api.onchange('month')
     def onchange_month(self):
+        self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.month)
+        self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.month)
+        self.name = u'حسميات شهر %s' % self.month
         if self.month:
-            self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.month)
-            self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.month)
-            self.name = u'حسميات شهر %s' % self.month
             line_ids = []
             # delete current line
             self.line_ids.unlink()
