@@ -21,9 +21,9 @@ class HrEmployee(models.Model):
 
     @api.model
     def get_salary_grid_id(self, operation_date):
-        """
-        return: and array of two colum res[0]: salary grid detail, res[1]: basic salary
-        """
+        '''
+        @return: array of two colum res[0]: salary grid detail, res[1]: basic salary
+        '''
         res = []
         # search for  the newest salary grid detail
         domain = [('grid_id.state', '=', 'done'),
