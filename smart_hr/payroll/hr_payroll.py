@@ -220,10 +220,15 @@ class HrPayslip(models.Model):
     @api.multi
     @api.onchange('employee_id', 'month')
     def _onchange_employee_id(self):
+        # check the existance of difference and dedections for current month
+        self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.month)
+        self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.month)
+        if self.env['hr.difference'].search_count([('date_from', '=', self.date_from), ('date_to', '=', self.date_to), ('state', '=', 'done')]) == 0:
+            raise ValidationError(u"لا يمكن إنشاء مسير بدون إجراء الفروقات  لنفس الشهر")
+        if self.env['hr.deduction'].search_count([('date_from', '=', self.date_from), ('date_to', '=', self.date_to), ('state', '=', 'done')]) == 0:
+            raise ValidationError(u"لا يمكن إنشاء مسير بدون إجراء الحسميات  لنفس الشهر")
         if not self.employee_id and self.month:
             res = {}
-            self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.month)
-            self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.month)
             employee_ids = self.env['hr.employee'].search([('employee_state', '=', 'employee')])
             employee_ids = employee_ids.ids
             termination_ids = self.env['hr.termination'].search([('state', '=', 'done')], order='date_termination desc', limit=1)
