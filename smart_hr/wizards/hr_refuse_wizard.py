@@ -18,8 +18,8 @@ class hr_refuse_wizard(models.TransientModel):
                 model_obj = self.env[cx.get('active_model')]
                 rec_id = model_obj.browse(cx.get('active_id'))
                 rec_id.message_post(u'سبب الرفض: ' + unicode(wiz.message))
-                return rec_id.sudo().button_refuse()
-            
+                return rec_id.button_refuse()
+
 class hr_tarining_refuse_wizard(models.TransientModel):
     _name = "hr.refuse.tarining.wizard"
     _description = "Refuse Wizard"
@@ -37,7 +37,7 @@ class hr_tarining_refuse_wizard(models.TransientModel):
                 rec_id = model_obj.browse(cx.get('active_id'))
                 rec_id.cause=self.message
                 return rec_id.sudo().action_refuse()
-            
+
 class hr_create_employee_refuse_wizard(models.TransientModel):
     _name = "hr.employee.refuse.wizard"
     _description = "Refuse Wizard"

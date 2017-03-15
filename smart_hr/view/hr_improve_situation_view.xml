@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
-	<!-- أنواع تحسين الوضع -->
-	<record model="ir.ui.view" id="hr_type_improve_situation_tree">
+		<!-- أنواع تحسين الوضع -->
+		<record model="ir.ui.view" id="hr_type_improve_situation_tree">
 			<field name="name">hr.type.improve.situation.tree</field>
 			<field name="model">hr.type.improve.situation</field>
 			<field name="type">tree</field>
@@ -10,6 +10,8 @@
 				<tree string="أنواع تحسين الوضع">
 					<field name="name" />
 					<field name="code" />
+					<field name="is_same_type" />
+					<field name="type_appointment" />
 				</tree>
 			</field>
 		</record>
@@ -23,6 +25,8 @@
 						<group>
 							<field name="name" />
 							<field name="code" />
+							<field name="is_same_type" />
+							<field name="type_appointment" />
 						</group>
 					</sheet>
 				</form>
@@ -37,7 +41,7 @@
 
 		<menuitem id="hr_type_improve_situation_menu_sou" name=" أنواع تحسين الوضع"
 			sequence="60" parent="hr_root_workflows_setting" action="action_hr_type_improve_situation" />
-	
+
 
 		<!-- تحسين الوضع -->
 
@@ -85,19 +89,15 @@
 								<field name="net_salary" />
 							</group>
 							<group string="تحسين الوضع">
-							
-							    <field name="type_improve" />
-								<field name="job_id1" />
-								<field name="number_job1" />
-								<field name="type_id1" />
+								<field name="type_improve" />
+								<field name="type_id1" attrs="{'readonly':[('is_same_type','=',True)]}" />
 								<field name="department_id1" />
 								<field name="grade_id1" />
 								<field name="degree_id1" />
-								<field name="basic_salary1" />
-								
+								<field name="is_same_type" invisible="1" />
 							</group>
 						</group>
-						
+
 
 					</sheet>
 					<div class="oe_chatter">

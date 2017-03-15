@@ -235,7 +235,7 @@ class HrJobCreate(models.Model):
         self.message_post(u"تمت إحداث الوظائف من قبل '" + unicode(user.name) + u"'")
 
     @api.multi
-    def action_refuse(self):
+    def button_refuse(self):
         self.ensure_one()
         self.state = 'refused'
         # Add to log
@@ -458,7 +458,7 @@ class HrJobStripFrom(models.Model):
         self.message_post(u"تمت إحداث الوظائف من قبل '" + unicode(user.name) + u"'")
 
     @api.multi
-    def action_refuse(self):
+    def button_refuse(self):
         self.ensure_one()
         self.state = 'refused'
         # Add to log
@@ -639,7 +639,7 @@ class HrJobStripTo(models.Model):
         self.message_post(u"تمت إلغاء الوظائف من قبل '" + unicode(user.name) + u"'")
 
     @api.multi
-    def action_refuse(self):
+    def button_refuse(self):
         self.ensure_one()
         self.state = 'refused'
         # Add to log
@@ -734,7 +734,7 @@ class HrJobCancel(models.Model):
         self.message_post(u"تمت إلغاء الوظائف من قبل '" + unicode(user.name) + u"'")
 
     @api.multi
-    def action_refuse(self):
+    def button_refuse(self):
         self.ensure_one()
         self.state = 'refused'
         # send notification for the employee who is request cancelling job
@@ -882,7 +882,7 @@ class HrJobMoveDeparrtment(models.Model):
         self.message_post(u"تمت نقل الوظائف من قبل '" + unicode(user.name) + u"'")
 
     @api.multi
-    def action_refuse(self):
+    def button_refuse(self):
         self.ensure_one()
         self.state = 'refused'
         # Add to log
@@ -1084,14 +1084,13 @@ class HrJobMoveGrade(models.Model):
         self.message_post(u"تمت " + self.move_type + u" الوظائف من قبل '" + unicode(user.name) + u"'")
 
     @api.multi
-    def action_refuse(self):
+    def button_refuse(self):
         self.ensure_one()
-        self.state = 'refused'
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
 
-        if self._context['refused_from_state'] == 'waiting':
+        if self.state == 'waiting':
             # send notification to the employee
             if self.move_type == 'scale_up':
                 action_name = 'smart_hr.action_hr_job_scal_up_grade'
@@ -1105,7 +1104,7 @@ class HrJobMoveGrade(models.Model):
                                                   'res_action': action_name,
                                                   'notif': True
                                                   })
-        if self._context['refused_from_state'] == 'budget_external':
+        if self.state == 'budget_external':
             group_id = self.env.ref('smart_hr.group_hr_personnel_officer_jobs')
             self.send_notification_to_group(group_id)
             # send notification to the صاحب الطلب
@@ -1123,6 +1122,7 @@ class HrJobMoveGrade(models.Model):
                                                       'res_action': action_name,
                                                       'notif': True
                                                       })
+        self.state = 'refused'
 
     @api.multi
     def action_job_unreserve(self):
@@ -1305,13 +1305,13 @@ class HrJobMoveUpdate(models.Model):
             self.action_done()
 
     @api.multi
-    def action_refuse(self):
+    def button_refuse(self):
         self.ensure_one()
         self.state = 'refused'
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
-        if self._context['refused_from_state'] == 'waiting':
+        if self.state == 'waiting':
             # send notification to the employee
             self.env['base.notification'].create({'title': u'إشعار برفض طلب',
                                                   'message': u'لقد تم إشعار رفض طلب تحوير‬ وظائف',
@@ -1321,7 +1321,7 @@ class HrJobMoveUpdate(models.Model):
                                                   'res_action': 'smart_hr.action_hr_job_update',
                                                   'notif': True
                                                   })
-        if self._context['refused_from_state'] == 'budget_external':
+        if self.state == 'budget_external':
             group_id = self.env.ref('smart_hr.group_hr_personnel_officer_jobs')
             # send notification to group hrm
             self.send_notification_to_group(group_id)
@@ -1336,6 +1336,7 @@ class HrJobMoveUpdate(models.Model):
                                                       'res_action': 'smart_hr.action_hr_job_update',
                                                       'notif': True
                                                       })
+        self.state = 'refused'
 
     @api.multi
     def action_job_unreserve(self):

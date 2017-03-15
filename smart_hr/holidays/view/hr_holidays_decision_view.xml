@@ -26,7 +26,9 @@
 						<button name="action_done" string="إعتماد" type="object"
 							states="waiting" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 							groups="smart_hr.group_hrm" />
-						<button name="action_refuse" string="رفض" type="object"
+						
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action"
 							states="waiting" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 							groups="smart_hr.group_hrm" />
 
@@ -62,6 +64,9 @@
 							</group>
 						</group>
 					</sheet>
+					<div>
+						<field name="message_ids" widget="mail_thread" readonly="1" />
+					</div>
 				</form>
 			</field>
 		</record>

@@ -9,7 +9,6 @@ from dateutil.relativedelta import relativedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 from umalqurra.hijri_date import HijriDate
 from lxml import etree
-from openerp.osv.orm import setup_modifiers
 
 
 class HrDeputation(models.Model):
