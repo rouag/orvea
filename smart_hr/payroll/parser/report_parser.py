@@ -35,7 +35,7 @@ class MessierSalaires(report_sxw.rml_parse):
         if employee_id.basic_salary > 0:
             basic_salary = employee_id.basic_salary
         else:
-            salary_grid_id = employee_id.get_salary_grid_id(False)
+            salary_grid_id = employee_id.get_salary_grid_id(False)[0]
             if salary_grid_id:
                 basic_salary = salary_grid_id.basic_salary
         return basic_salary

@@ -103,7 +103,7 @@ class HrDifference(models.Model):
         # TODO: dont compute not work days
         for overtime in overtime_lines:
             employee = overtime.employee_id
-            salary_grid = employee.get_salary_grid_id(False)
+            salary_grid = employee.get_salary_grid_id(False)[0]
             if employee.basic_salary == 0:
                 basic_salary = salary_grid.basic_salary
             else:
@@ -243,7 +243,7 @@ class HrDifference(models.Model):
                                                                       ('state', '=', 'done')])
             for transfert in transfert_ids:
                 # get تفاصيل سلم الرواتب
-                grid_id = transfert.employee_id.get_salary_grid_id(transfert.create_date)
+                grid_id = transfert.employee_id.get_salary_grid_id(transfert.create_date)[0]
                 if grid_id:
                     if transfert.employee_id.basic_salary == 0:
                         basic_salary = grid_id.basic_salary
@@ -305,7 +305,7 @@ class HrDifference(models.Model):
                                                                             ('date_direct_action', '<=', self.date_to),
                                                                             ], order="date_direct_action desc")
         for decision_appoint in last_decision_appoint_ids:
-            grid_id = decision_appoint.employee_id.get_salary_grid_id(decision_appoint.date_direct_action)
+            grid_id = decision_appoint.employee_id.get_salary_grid_id(decision_appoint.date_direct_action)[0]
             if grid_id:
                 if decision_appoint.employee_id.basic_salary == 0:
                     basic_salary = grid_id.basic_salary
@@ -332,7 +332,7 @@ class HrDifference(models.Model):
                                                                    ('state', '=', 'done')])
         for assign_id in assign_ids:
             # get تفاصيل سلم الرواتب
-            grid_id = assign_id.employee_id.get_salary_grid_id(assign_id.date_to)
+            grid_id = assign_id.employee_id.get_salary_grid_id(assign_id.date_to)[0]
             if grid_id:
                 # تفاصيل سلم الرواتب
                 allowance_ids = grid_id.allowance_ids
@@ -434,7 +434,7 @@ class HrDifference(models.Model):
                                                              ('state', '=', 'done')
                                                              ])
         for scholarship_id in scholarship_ids:
-            grid_id = scholarship_id.employee_id.get_salary_grid_id(scholarship_id.date_to)
+            grid_id = scholarship_id.employee_id.get_salary_grid_id(scholarship_id.date_to)[0]
             if grid_id:
                 if scholarship_id.employee_id.basic_salary == 0:
                     basic_salary = grid_id.basic_salary
@@ -491,7 +491,7 @@ class HrDifference(models.Model):
                 duration_in_month = self.env['hr.smart.utils'].compute_duration(lend_date_to, lend_date_from)
             if lend_date_from >= date_from and lend_date_to >= date_to:
                 duration_in_month = self.env['hr.smart.utils'].compute_duration(date_to, lend_date_from)
-            grid_id = lend_id.employee_id.get_salary_grid_id(False)
+            grid_id = lend_id.employee_id.get_salary_grid_id(False)[0]
             if grid_id and duration_in_month > 0:
                 if lend_id.employee_id.basic_salary == 0:
                     basic_salary = grid_id.basic_salary
@@ -573,7 +573,7 @@ class HrDifference(models.Model):
             if days >= 0 and holiday_id.date_to > self.date_to:
                 duration_in_month = days_between(holiday_date_from, date_to)
             duration_in_month -= 1
-            grid_id = holiday_id.employee_id.get_salary_grid_id(False)
+            grid_id = holiday_id.employee_id.get_salary_grid_id(False)[0]
             holiday_status_id = holiday_id.holiday_status_id
             # get the entitlement type
             if not holiday_id.entitlement_type:
@@ -648,7 +648,7 @@ class HrDifference(models.Model):
                                                            ('suspension_end_id.state', '=', 'done'),
                                                            ])
         for suspension in suspension_ids:
-            grid_id = suspension.employee_id.get_salary_grid_id(suspension.suspension_date)
+            grid_id = suspension.employee_id.get_salary_grid_id(suspension.suspension_date)[0]
             print "grid_id", grid_id
             if grid_id:
                 if suspension.employee_id.basic_salary == 0:
@@ -687,7 +687,7 @@ class HrDifference(models.Model):
                                                             ('suspension_end_id.state', '=', 'done'),
                                                             ])
         for suspension in suspension_ids:
-            grid_id = suspension.employee_id.get_salary_grid_id(suspension.suspension_date)
+            grid_id = suspension.employee_id.get_salary_grid_id(suspension.suspension_date)[0]
             if grid_id:
                 if suspension.employee_id.basic_salary == 0:
                     basic_salary = grid_id.basic_salary
@@ -718,7 +718,7 @@ class HrDifference(models.Model):
                                                             ('suspension_end_id.state', '=', 'done'),
                                                             ])
         for suspension in suspension_ids:
-            grid_id = suspension.employee_id.get_salary_grid_id(suspension.suspension_date)
+            grid_id = suspension.employee_id.get_salary_grid_id(suspension.suspension_date)[0]
             if grid_id:
                 if suspension.employee_id.basic_salary == 0:
                     basic_salary = grid_id.basic_salary
@@ -746,7 +746,7 @@ class HrDifference(models.Model):
                                                            ('suspension_end_id.state', '=', 'done'),
                                                            ])
         for suspension in suspension_ids:
-            grid_id = suspension.employee_id.get_salary_grid_id(suspension.suspension_date)
+            grid_id = suspension.employee_id.get_salary_grid_id(suspension.suspension_date)[0]
             if grid_id:
                 if suspension.employee_id.basic_salary == 0:
                     basic_salary = grid_id.basic_salary
@@ -796,7 +796,7 @@ class HrDifference(models.Model):
                                                              ('state', '=', 'done')
                                                              ])
         for termination in termination_ids:
-            grid_id = termination.employee_id.get_salary_grid_id(termination.date)
+            grid_id = termination.employee_id.get_salary_grid_id(termination.date)[0]
             if grid_id:
                 if termination.employee_id.basic_salary == 0:
                     basic_salary = grid_id.basic_salary
@@ -879,7 +879,7 @@ class HrDifference(models.Model):
         line_ids = []
         difference_history_ids = self.env['hr.payslip.difference.history'].search([('month', '=', fields.Date.from_string(self.date_from).month)])
         for difference_history in difference_history_ids:
-            grid_id = difference_history.employee_id.get_salary_grid_id(False)
+            grid_id = difference_history.employee_id.get_salary_grid_id(False)[0]
             if grid_id:
                 vals = {'difference_id': self.id,
                         'name': 'فرق الحسميات أكثر من ثلث الراتب',
@@ -914,7 +914,7 @@ class HrDifference(models.Model):
     def unlink(self):
         self.ensure_one()
         if self.state != 'new':
-            raise ValidationError(u"لا يكن حذف الفروقات في حالتها الحالية ")
+            raise ValidationError(u"لا يمكن حذف الفروقات إلا في حالة مسودة أو ملغاه! ")
         return super(HrDifference, self).unlink()
 
 

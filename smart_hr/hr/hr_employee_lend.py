@@ -52,7 +52,7 @@ class HrEmployeeLend(models.Model):
         self.ensure_one()
         if self.employee_id:
             if self.employee_id.get_salary_grid_id(False):
-                self.basic_salary = self.employee_id.get_salary_grid_id(False).basic_salary
+                self.basic_salary = self.employee_id.get_salary_grid_id(False)[0].basic_salary
                 self.lend_salary = self.basic_salary
 
     @api.multi

@@ -138,7 +138,7 @@ class HrDecisionAppoint(models.Model):
         if self.type_appointment and self.employee_id and self.type_appointment.max_pension:
             # get current basic salary of the employee (the employee have an old ta3yin)
             self.pension_ratio = self.max_pension_ratio
-            salary_grid_id = self.employee_id.get_salary_grid_id(False)
+            salary_grid_id = self.employee_id.get_salary_grid_id(False)[0]
             if salary_grid_id:
                 self.basic_salary = salary_grid_id.basic_salary * self.pension_ratio / 100.0
 
@@ -147,7 +147,7 @@ class HrDecisionAppoint(models.Model):
         if self.pension_ratio:
             if self.pension_ratio > self.max_pension_ratio:
                 raise ValidationError(u"لا يمكنك تجاوز الحد الأقصى.")
-            salary_grid_id = self.employee_id.get_salary_grid_id(False)
+            salary_grid_id = self.employee_id.get_salary_grid_id(False)[0]
             if salary_grid_id:
                 self.basic_salary = salary_grid_id.basic_salary * self.pension_ratio / 100.0
 
