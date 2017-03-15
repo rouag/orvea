@@ -536,7 +536,7 @@ class HrPromotionDemande(models.Model):
 
     @api.model
     def create(self, vals):
-        ret = super(hr_promotion_demande, self).create(vals)
+        ret = super(HrPromotionDemande, self).create(vals)
         # Sequence
         vals = {}
         vals['name'] = self.env['ir.sequence'].get('hr.employee.demande.promotion.seq')
