@@ -312,11 +312,14 @@
 												attrs="{'invisible': [('is_saudian','=', True)]}" />
 										</group>
 										<group>
-											<field name="passport_id" string="رقم الحفيظة"
-												attrs="{'required': [('is_saudian','=', False)]}" />
-											<field name="passport_date" attrs="{'required': [('is_saudian','=', False)]}" />
-											<field name="passport_end_date" attrs="{'required': [('is_saudian','=', False)]}" />
-											<field name="passport_place" attrs="{'required': [('is_saudian','=', False)]}" />
+											<field name="passport_id" attrs="{'invisible': [('is_saudian','=', True)]}" />
+											<field name="hoveizeh_id" attrs="{'required': [('is_saudian','=', True)],'invisible': [('is_saudian','=', False)]}" />
+											<field name="passport_date" attrs="{'invisible': [('is_saudian','=', True)]}" />
+											<field name="hoveizeh_date" attrs="{'required': [('is_saudian','=', True)],'invisible': [('is_saudian','=', False)]}" />
+											<field name="passport_end_date" attrs="{'invisible': [('is_saudian','=', True)]}" />
+											<field name="hoveizeh_end_date" attrs="{'required': [('is_saudian','=', True)],'invisible': [('is_saudian','=', False)]}" />
+											<field name="passport_place" attrs="{'invisible': [('is_saudian','=', True)]}" />
+											<field name="hoveizeh_place" attrs="{'required': [('is_saudian','=', True)],'invisible': [('is_saudian','=', False)]}" />
 											<field name="is_resident" attrs="{'required': 1}" />
 										</group>
 									</group>
@@ -379,8 +382,7 @@
 											<field name="dep_city" options="{'no_create': True}" />
 											<field name="job_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
-											<field name="type_id" attrs="{'required': 1}" 
-												 />
+											<field name="type_id" attrs="{'required': 1}" />
 											<field name="grade_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="degree_id"
@@ -393,7 +395,7 @@
 											<field name="royal_decree_number" attrs="{'invisible': [('is_member','=', False)]}" />
 											<field name="royal_decree_date" attrs="{'invisible': [('is_member','=', False)]}" />
 											<field name="external_decision" />
-											<field name="is_member"  	 invisible="1" />
+											<field name="is_member" invisible="1" />
 										</group>
 										<group string="خصائص أخرى">
 											<field name="user_id"
