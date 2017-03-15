@@ -136,7 +136,7 @@ class hrBonusLine(models.Model):
         if not salary_grids:
             return
         if employee.basic_salary == 0:
-            basic_salary = employee.get_salary_grid_id(False).basic_salary
+            basic_salary = employee.get_salary_grid_id(False)[0].basic_salary
         else:
             basic_salary = employee.basic_salary
         # compute
