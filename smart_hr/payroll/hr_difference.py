@@ -604,8 +604,9 @@ class HrDifference(models.Model):
                 else:
                     basic_salary = holiday_id.employee_id.basic_salary
                 for rec in holiday_status_id.percentages:
-                    if entitlement_type == rec.entitlement_id and rec.month_from <= months_from_holiday_start <= rec.month_to:
+                    if entitlement_type == rec.entitlement_id.entitlment_category and rec.month_from <= months_from_holiday_start <= rec.month_to:
                         amount = (duration_in_month * (basic_salary / 22) * 100 - rec.salary_proportion) / 100.0
+                        print amount
                         if amount != 0:
                             vals = {'difference_id': self.id,
                                     'name': holiday_id.holiday_status_id.name,
