@@ -15,7 +15,7 @@ class HrHolidaysExtension(models.Model):
     def _default_employee_id(self):
         return self.env['hr.employee'].search([('user_id','=',self.env.uid)]).id
     
-    name = fields.Char(string=u'رقم القرار', )
+    name = fields.Char(string=u'المسمى')
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee',  string=u'الموظف', domain=[('employee_state','=','employee')], default=_default_employee_id)
     is_the_creator = fields.Boolean(string='Is Current User', compute='_employee_is_the_creator')
@@ -30,9 +30,9 @@ class HrHolidaysExtension(models.Model):
     note = fields.Text(string = u'الملاحظات')
     duration = fields.Integer(string=u'الأيام')
     open_period = fields.Many2one('hr.holidays.periode', string=u'periode')
-    num_decision = fields.Char(string=u'رقم القرار')
-    date_decision = fields.Date(string=u'تاريخ القرار')
-    decision_file = fields.Binary(string=u'القرار', attachment=True)
+    num_decision = fields.Char(string=u'رقم الخطاب', required=True)
+    date_decision = fields.Date(string=u'تاريخ الخطاب', required=True)
+    decision_file = fields.Binary(string=u'الخطاب', attachment=True, required=True)
     decision_file_name = fields.Char(string=u'file name')
     
     
