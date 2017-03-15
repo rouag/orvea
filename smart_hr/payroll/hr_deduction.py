@@ -118,7 +118,7 @@ class HrDeduction(models.Model):
     def unlink(self):
         self.ensure_one()
         if self.state != 'new':
-            raise ValidationError(u"لا يكن حذف الفروقات في حالتها الحالية ")
+            raise ValidationError(u"لا يكن حذف الحسميات في حالتها الحالية ")
         return super(HrDeduction, self).unlink()
 
 
