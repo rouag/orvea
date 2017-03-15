@@ -110,8 +110,7 @@
 			<field name="download_filename">${o.employee_id.name}_بطاقة موظف.pdf</field>
 		</record>
 
-
-
+	
 
 
 		<report id="hr_employee_situation_order" model="hr.employee.situation.order"

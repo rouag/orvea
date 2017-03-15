@@ -41,6 +41,7 @@
         
         'wizards/view/hr_refuse_training_wizard_view.xml',
         'wizards/view/hr_refuse_employee_wizard_view.xml',
+     
         
 
         # الوظائف
@@ -75,7 +76,9 @@
         # الإدارات
         'hr/security/hr_security.xml',
         'hr/security/ir.model.access.csv',
+        'hr/wizard/hr_termination_wizard_view.xml',
         'hr/menu.xml',
+        
         'hr/view/hierarchy_level.xml',
         'hr/view/hr_department_view.xml',
         'hr/view/hr_contract_inherit_view.xml',
@@ -83,6 +86,8 @@
         'hr/views/report_hr_contract.xml',
         'hr/views/report_hr_employee_lend.xml',
         'hr/views/report_hr_employee_transfert.xml',
+        'hr/views/report_hr_employee_assign.xml',
+        'hr/views/hr_termination_retraite_reportt.xml',
         'hr/views/report_hr_employee_assign.xml',
         'hr/views/report.xml',
         'hr/data/hr_department_type_data.xml',
@@ -109,6 +114,8 @@
         'views/report_hr_direct_appoint.xml',
         'views/hr_employee_functionnal_card_report.xml',
         'views/hr_employee_card_report.xml',
+        
+        
         'views/hr_emp_card_report.xml',
         'report/reports.xml',
         'report/hr_suspension_end_report.xml',
@@ -162,6 +169,7 @@
         'payroll/wizard/wizard_deducation_action.xml',
         'payroll/wizard/wizard_loan_action.xml',
         'payroll/wizard/wizard_error_employee_view.xml',
+       
         'payroll/view/salary_grid.xml',
         'payroll/view/hr_payroll_view.xml',
         'payroll/view/setting_view.xml',
@@ -175,7 +183,7 @@
         'payroll/views/report_payslip.xml',
         'payroll/views/report_payslip_extension.xml',
         'payroll/views/report_hr_error_employee.xml',
-        
+       
         'payroll/views/report.xml',
 
         # الحضور والإنصراف

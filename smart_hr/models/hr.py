@@ -96,7 +96,7 @@ class HrEmployee(models.Model):
     point_education = fields.Integer(string=u'نقاط التعليم')
     point_training = fields.Integer(string=u'نقاط التدريب')
     point_functionality = fields.Integer(string=u'نقاط  الإداء الوظيفي', )
-    is_member = fields.Boolean(string=u'عضو في الهيئة', default=False, required=1, compute='_compute_type_id')
+    is_member = fields.Boolean(string=u'عضو في الهيئة', default=False,store=True, required=1, compute='_compute_type_id')
     is_saudian = fields.Boolean(string='is saudian', compute='_compute_is_saudian')
     insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين', readonly='1',
                                      compute='_compute_insurance_type')
