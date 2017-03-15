@@ -42,4 +42,17 @@ class HrEmployee(models.Model):
                 domain.pop(5)
             salary_grid_id = self.env['salary.grid.detail'].search(domain, order='date desc', limit=1)
         res.append(salary_grid_id)
+        # retreive old salary increases to add them with basic_salary
+        domain = [('salary_grid_detail_id', '=', salary_grid_id.id)]
+        if operation_date:
+            domain.append(('date', '<=', operation_date))
+        salary_increase_ids = self.env['salary.increase'].search(domain)
+        sum_increases_amount = 0.0
+        for rec in salary_increase_ids:
+            sum_increases_amount += rec.amount
+        if self.basic_salary == 0:
+            basic_salary = salary_grid_id.basic_salary + sum_increases_amount
+        else:
+            basic_salary = self.basic_salary + sum_increases_amount
+        res.append(basic_salary)
         return res

@@ -51,9 +51,10 @@ class HrEmployeeLend(models.Model):
     def onchange_employee_id(self):
         self.ensure_one()
         if self.employee_id:
-            if self.employee_id.get_salary_grid_id(False):
-                self.basic_salary = self.employee_id.get_salary_grid_id(False)[0].basic_salary
-                self.lend_salary = self.basic_salary
+            res = self.employee_id.get_salary_grid_id(False)
+            if res:
+                self.basic_salary = res[1]
+                self.lend_salary = res[1]
 
     @api.multi
     @api.constrains('duration')

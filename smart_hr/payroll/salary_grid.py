@@ -335,8 +335,8 @@ class SalaryIncrease(models.Model):
     _name = 'salary.increase'
 
     name = fields.Char(string='المسمى')
-    date = fields.Date(string='التاريخ')
     amount = fields.Float(string='المبلغ', required=1)
     salary_grid_detail_id = fields.Many2one('salary.grid.detail', string='تفاصيل سلم الرواتب')
+    date = fields.Date(string='التاريخ')
     employee_id = fields.Many2one('hr.employee')
 

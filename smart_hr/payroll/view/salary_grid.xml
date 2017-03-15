@@ -391,5 +391,26 @@
 		<menuitem id="salary_grid_degree_menu" name="الدرجات"
 			sequence="14" parent="hr_configuration_salary_grid" action="action_salary_grid_degree" />
 
+		<!-- العلاوات -->
+		<record id="salary_increase_form" model="ir.ui.view">
+			<field name="name">salary.increase.form</field>
+			<field name="model">salary.increase</field>
+			<field name="arch" type="xml">
+				<form string="العلاوات">
+					<sheet>
+						<group string="العلاوات">
+							<group>
+								<field name="name" />
+								<field name="salary_grid_detail_id" />
+							</group>
+							<group>
+								<field name="date" />
+								<field name="amount" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
 	</data>
 </openerp>

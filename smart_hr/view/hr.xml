@@ -487,10 +487,10 @@
 								<page string="سجل العلاوات" readonly='True'>
 
 									<field name='salary_increase_ids'>
-										<tree string="سجل العلاوات" editable="bottom">
+										<tree string="سجل العلاوات">
 											<field name="name" />
-											<field name="date" />
 											<field name="salary_grid_detail_id" />
+											<field name="date" />
 											<field name="amount" />
 										</tree>
 									</field>
