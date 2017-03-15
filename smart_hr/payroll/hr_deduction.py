@@ -10,7 +10,7 @@ from umalqurra.hijri_date import HijriDate
 from umalqurra.hijri import Umalqurra
 
 
-class hrDeduction(models.Model):
+class HrDeduction(models.Model):
     _name = 'hr.deduction'
     _inherit = ['mail.thread']
     _order = 'id desc'
@@ -37,10 +37,10 @@ class hrDeduction(models.Model):
 
     @api.onchange('month')
     def onchange_month(self):
+        self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.month)
+        self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.month)
+        self.name = u'حسميات شهر %s' % self.month
         if self.month:
-            self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.month)
-            self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.month)
-            self.name = u'حسميات شهر %s' % self.month
             line_ids = []
             # delete current line
             self.line_ids.unlink()
@@ -114,8 +114,15 @@ class hrDeduction(models.Model):
                 line_ids.append(vals)
         return line_ids
 
+    @api.multi
+    def unlink(self):
+        self.ensure_one()
+        if self.state != 'new':
+            raise ValidationError(u"لا يمكن حذف الحسميات إلا في حالة مسودة أو ملغاه! ")
+        return super(HrDeduction, self).unlink()
 
-class hrDeductionLine(models.Model):
+
+class HrDeductionLine(models.Model):
     _name = 'hr.deduction.line'
 
     # TODO: get name
@@ -136,7 +143,7 @@ class hrDeductionLine(models.Model):
                               ('cancel', 'ملغى')], string='الحالة', readonly=1, default='waiting')
 
 
-class hrDeductionHistory(models.Model):
+class HrDeductionHistory(models.Model):
     _name = 'hr.deduction.history'
 
     deduction_id = fields.Many2one('hr.deduction', string=' الحسميات', ondelete='cascade')
@@ -147,7 +154,7 @@ class hrDeductionHistory(models.Model):
     date_decision = fields.Date(string='تاريخ القرار')
 
 
-class hrDeductionType(models.Model):
+class HrDeductionType(models.Model):
     _name = 'hr.deduction.type'
     _description = u'أنواع الحسميات'
 

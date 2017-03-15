@@ -1405,21 +1405,11 @@ class HrJobMoveUpdateLine(models.Model):
         if not self.job_id:
             res = {}
             # get jobs that are  updated or created from more than one year
-            all_job_ids = self.env['hr.job'].search([])
-            job_ids = []
-            for job in all_job_ids:
-                now_date = fields.Date.from_string(fields.Datetime.now())
-                if job.update_date:
-                    update_date = fields.Date.from_string(job.update_date)
-                    diff = relativedelta(now_date, update_date).years
-                    if diff >= 1:
-                        job_ids.append(job.id)
-                else:
-                    create_date = fields.Date.from_string(job.create_date)
-                    diff = relativedelta(now_date, create_date).years
-                    if diff >= 1:
-                        job_ids.append(job.id)
-            res['domain'] = {'job_id': [('id', 'in', job_ids)]}
+            today = date.today()
+            d = today - relativedelta(years=1)
+            dt = datetime.today() - relativedelta(years=1)
+            all_job_ids = self.env['hr.job'].search(['|', ('update_date', '>=', d), ('create_date', '>=', str(dt))])
+            res['domain'] = {'job_id': [('id', 'in', all_job_ids.ids)]}
             return res
         if self.job_id:
             domain = {}

@@ -3,7 +3,7 @@
 {
     'name': 'Smart HR',
     'version': '9.0.1.0',
-    'author': 'SMART-ETEK',
+    'author': 'SMART-ETECH',
     'summary': 'HR',
     'external_dependencies': {'python': ['umalqurra']},
     'description':
@@ -152,7 +152,7 @@
         'view/employee_situation_order.xml',
         'view/hr_improve_situation_view.xml',
         'view/mail_message_view.xml',
-
+        'view/res_country.xml',
         # sanction
         'sanction/security/ir.model.access.csv',
         'sanction/security/sanction_security.xml',

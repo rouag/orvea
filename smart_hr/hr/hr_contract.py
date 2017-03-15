@@ -63,6 +63,7 @@ class HrContract(models.Model):
         if self.employee_id:
             employee_line = self.env['hr.decision.appoint'].search(
                 [('employee_id', '=', self.employee_id.id), ('is_started', '=', True)], limit=1)
+            res = self.employee_id.get_salary_grid_id(False)
             if employee_line:
                 self.job_id = employee_line.job_id.id
                 self.type_job_id = employee_line.type_id.id
@@ -71,10 +72,8 @@ class HrContract(models.Model):
                 self.transport_allow = employee_line.transport_allow
                 self.retirement = employee_line.retirement
                 self.net_salary = employee_line.net_salary
-                if self.employee_id.basic_salary == 0:
-                    self.basic_salary = employee_line.basic_salary
-            if self.employee_id.basic_salary > 0:
-                self.basic_salary = self.employee_id.basic_salary
+            if res:
+                self.basic_salary = res[1]
 
     @api.model
     def control_contract_employee(self):
