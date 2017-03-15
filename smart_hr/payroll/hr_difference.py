@@ -556,22 +556,23 @@ class HrDifference(models.Model):
                                                        ('state', '=', 'done')
                                                        ])
         for holiday_id in holidays_ids:
-            holiday_date_from = fields.Date.from_string(holiday_id.date_from)
-            date_from = fields.Date.from_string(self.date_from)
-            holiday_date_to = fields.Date.from_string(holiday_id.date_to)
-            date_to = fields.Date.from_string(self.date_to)
-            days = self.env['hr.smart.utils'].compute_duration(holiday_date_from, date_from)
+            holiday_date_from = holiday_id.date_from
+            date_from = self.date_from
+            holiday_date_to = holiday_id.date_to
+            date_to = self.date_to
+            days = days_between(holiday_id.date_from, date_from)
             today = fields.Date.from_string(fields.Date.today())
-            months_from_holiday_start = relativedelta.relativedelta(today, holiday_date_from).months
+            months_from_holiday_start = relativedelta.relativedelta(today, fields.Date.from_string(holiday_id.date_from)).months
             # days in current month
-            if days < 0 and holiday_date_to <= date_to:
-                duration_in_month = self.env['hr.smart.utils'].compute_duration(date_from, holiday_date_to)
-            if days < 0 and holiday_date_to > date_to:
-                duration_in_month = self.env['hr.smart.utils'].compute_duration(date_from, date_to)
-            if days >= 0 and holiday_date_to <= date_to:
-                duration_in_month = self.env['hr.smart.utils'].compute_duration(holiday_date_from, holiday_date_to)
-            if days >= 0 and holiday_date_to > date_to:
-                duration_in_month = self.env['hr.smart.utils'].compute_duration(holiday_date_from, date_to)
+            if days < 0 and holiday_id.date_to <= self.date_to:
+                duration_in_month = days_between(date_from, holiday_date_to)
+            if days < 0 and holiday_id.date_to > self.date_to:
+                duration_in_month = days_between(date_from, date_to)
+            if days >= 0 and holiday_id.date_to <= self.date_to:
+                duration_in_month = days_between(holiday_date_from, holiday_date_to)
+            if days >= 0 and holiday_id.date_to > self.date_to:
+                duration_in_month = days_between(holiday_date_from, date_to)
+            duration_in_month -= 1
             grid_id = holiday_id.employee_id.get_salary_grid_id(False)
             holiday_status_id = holiday_id.holiday_status_id
             # get the entitlement type
@@ -587,7 +588,7 @@ class HrDifference(models.Model):
                 else:
                     basic_salary = holiday_id.employee_id.basic_salary
                 amount = (duration_in_month * (basic_salary / 22))
-                if amount != 0:
+                if duration_in_month > 0 and amount != 0:
                     vals = {'difference_id': self.id,
                             'name': holiday_id.holiday_status_id.name,
                             'employee_id': holiday_id.employee_id.id,
