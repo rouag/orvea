@@ -109,7 +109,7 @@ class SalaryGridDetail(models.Model):
     reward_ids = fields.One2many('salary.grid.detail.reward', 'grid_detail_id', string='المكافآت‬')
     indemnity_ids = fields.One2many('salary.grid.detail.indemnity', 'grid_detail_id', string='التعويضات')
     insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين')
-    reward = fields.Float(string='العلاوة')
+    increase = fields.Float(string='العلاوة')
 
     @api.multi
     @api.depends('allowance_ids', 'reward_ids', 'indemnity_ids', 'basic_salary', 'retirement', 'insurance', 'retirement')
@@ -164,7 +164,7 @@ class SalaryGridDetailAllowance(models.Model):
         amount = 0.0
         # search the correct salary_grid for this employee
         if employee_id:
-            salary_grids = employee.get_salary_grid_id(False)
+            salary_grids = employee.get_salary_grid_id(False)[0]
             if not salary_grids:
                 raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
         else:
@@ -229,7 +229,7 @@ class SalaryGridDetailReward(models.Model):
         amount = 0.0
         # search the correct salary_grid for this employee
         if employee_id:
-            salary_grids = employee.get_salary_grid_id(False)
+            salary_grids = employee.get_salary_grid_id(False)[0]
             if not salary_grids:
                 raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
         else:
@@ -294,7 +294,7 @@ class SalaryGridDetailIndemnity(models.Model):
         amount = 0.0
         # search the correct salary_grid for this employee
         if employee_id:
-            salary_grids = employee.get_salary_grid_id(False)
+            salary_grids = employee.get_salary_grid_id(False)[0]
             if not salary_grids:
                 raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
         else:
@@ -329,3 +329,14 @@ class SalaryGridDetailIndemnityCity(models.Model):
     indemnity_id = fields.Many2one('salary.grid.detail.indemnity', string='البدل', ondelete='cascade')
     city_id = fields.Many2one('res.city', string='المدينة', required=1)
     percentage = fields.Float(string='النسبة', required=1)
+
+
+class SalaryIncrease(models.Model):
+    _name = 'salary.increase'
+
+    name = fields.Char(string='المسمى')
+    amount = fields.Float(string='المبلغ', required=1)
+    salary_grid_detail_id = fields.Many2one('salary.grid.detail', string='تفاصيل سلم الرواتب')
+    date = fields.Date(string='التاريخ')
+    employee_id = fields.Many2one('hr.employee')
+

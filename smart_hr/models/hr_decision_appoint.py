@@ -138,18 +138,22 @@ class HrDecisionAppoint(models.Model):
         if self.type_appointment and self.employee_id and self.type_appointment.max_pension:
             # get current basic salary of the employee (the employee have an old ta3yin)
             self.pension_ratio = self.max_pension_ratio
-            salary_grid_id = self.employee_id.get_salary_grid_id(False)
+            res = self.employee_id.get_salary_grid_id(False)
+            salary_grid_id = res[0]
+            basic_salary = res[1]
             if salary_grid_id:
-                self.basic_salary = salary_grid_id.basic_salary * self.pension_ratio / 100.0
+                self.basic_salary = basic_salary * self.pension_ratio / 100.0
 
     @api.onchange('pension_ratio')
     def _onchange_pension_ratio(self):
         if self.pension_ratio:
             if self.pension_ratio > self.max_pension_ratio:
                 raise ValidationError(u"لا يمكنك تجاوز الحد الأقصى.")
-            salary_grid_id = self.employee_id.get_salary_grid_id(False)
+            res = self.employee_id.get_salary_grid_id(False)
+            salary_grid_id = res[0]
+            basic_salary = res[1]
             if salary_grid_id:
-                self.basic_salary = salary_grid_id.basic_salary * self.pension_ratio / 100.0
+                self.basic_salary = basic_salary * self.pension_ratio / 100.0
 
     @api.one
     @api.constrains('score', 'passing_score')
@@ -481,7 +485,8 @@ class HrDecisionAppoint(models.Model):
         previous_promotion = self.env['hr.employee.promotion.history'].search(
             [('employee_id', '=', self.employee_id.id), ('active_duration', '=', True)], limit=1)
         if previous_promotion:
-            previous_promotion.close_promotion_line()
+            previous_promotion.active_duration = False
+            previous_promotion.date_to = fields.Date.from_string(fields.Date.today())
         # create promotion history line
         self.env['hr.employee.promotion.history'].create({'employee_id': self.employee_id.id,
                                                           'date_from': self.date_direct_action,

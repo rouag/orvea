@@ -19,6 +19,8 @@
 				<report id="report_hr_error_employee_report" model="hr.payslip"   menu="False" 
 			report_type="qweb-pdf" string="تقرير الاخطاء بالموظف" name="smart_hr.report_hr_error_employee" attachment_use="False" 
 			file="smart_hr.report_hr_error_employee" 	paperformat="smart_base.paperformat_landscape" /> 
+			
+		
 	</data>
 </openerp>
 		

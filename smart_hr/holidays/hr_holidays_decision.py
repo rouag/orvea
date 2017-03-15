@@ -6,7 +6,9 @@ from openerp.exceptions import ValidationError
 
 class hrHolidaysDecision(models.Model):
     _name = 'hr.holidays.decision'
+    _inherit = ['mail.thread']
     _rec_name = 'employee_id'
+    
 
     employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', required=1)
     number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' الرقم الوظيفي')
@@ -40,5 +42,5 @@ class hrHolidaysDecision(models.Model):
         self.state = 'done'
 
     @api.one
-    def action_refuse(self):
+    def button_refuse(self):
         self.state = 'new'

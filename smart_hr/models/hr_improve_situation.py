@@ -15,7 +15,7 @@ class HrImproveSituatim(models.Model):
     number = fields.Char(string='الرقم الموظف', readonly=1)
     state = fields.Selection([('new', 'طلب'), ('waiting', 'في إنتظار الإعتماد'), ('done', 'اعتمدت')], readonly=1,
                              default='new')
-    order_picture = fields.Binary(string='صورة القرار', required=1, attachment=True)
+   # order_picture = fields.Binary(string='صورة القرار', attachment=True)
     order_date = fields.Date(string='تاريخ القرار', required=1)
     date_hiring = fields.Date(string='تاريخ التعيين', required=1)
     job_id = fields.Many2one('hr.job', string='الوظيفة', readonly=1)
@@ -31,7 +31,7 @@ class HrImproveSituatim(models.Model):
     net_salary = fields.Float(string='صافي الراتب', readonly=1)
     salary_recent = fields.Float(string=' أخر راتب شهري ', readonly=1)
     transport_alocation = fields.Boolean(string='بدل نقل', readonly=1)
-    type_improve = fields.Many2one('hr.type.improve.situation', string='نوع التتحسين', required=1,
+    type_improve = fields.Many2one('hr.type.improve.situation', string='نوع التحسين', required=1,
                                    states={'new': [('readonly', 0)]})
     order_picture1 = fields.Binary(string='صورة القرار', required=1, attachment=True)
     job_id1 = fields.Many2one('hr.job', string='الوظيفة')
@@ -44,6 +44,7 @@ class HrImproveSituatim(models.Model):
     degree_id1 = fields.Many2one('salary.grid.degree', string='الدرجة')
     basic_salary1 = fields.Float(string='الراتب الأساسي')
     net_salary1 = fields.Float(string='صافي الراتب')
+    is_same_type = fields.Boolean(string='نفس الصنف',related="type_improve.is_same_type")
 
     @api.one
     def action_waiting(self):
@@ -64,7 +65,7 @@ class HrImproveSituatim(models.Model):
                 'grade_id': line.grade_id1.id,
                 'department_id': line.department_id1.id,
             }
-            self.env['hr.decision.appoint'].search([('employee_id', '=', line.employee_id.id)], limit=1).write({
+            self.env['hr.decision.appoint'].search([('employee_id', '=', line.employee_id.id),('state_appoint','=','active'),()], limit=1).write({
                 'job_id': line.job_id1.id,
                 'degree_id': line.degree_id1.id,
                 'number_job': line.number_job1,
@@ -84,27 +85,31 @@ class HrImproveSituatim(models.Model):
     def _onchange_employee_id(self):
         if self.employee_id:
 
-            employee_id_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id)
+            employee_id_line = self.env['hr.employee'].search([('id', '=', self.employee_id.id)
                                                                        ])
             if employee_id_line:
                 self.number = employee_id_line.number
-                self.number_job = employee_id_line.number_job
+                self.number_job = employee_id_line.job_id.name.number
                 self.job_id = employee_id_line.job_id
-                self.order_picture = employee_id_line.order_picture
                 self.type_id = employee_id_line.type_id
                 self.grade_id = employee_id_line.grade_id
                 self.degree_id = employee_id_line.degree_id
                 self.department_id = employee_id_line.department_id
                 self.basic_salary = employee_id_line.basic_salary
 
-    @api.onchange('job_id1')
-    def _onchange_job_id1(self):
-        if self.job_id1:
-            self.number_job1 = self.job_id1.number
-            self.type_id1 = self.job_id1.type_id.id
-            self.grade_id1 = self.job_id1.grade_id.id
-            self.department_id1 = self.job_id1.department_id.id
+#     @api.onchange('job_id1')
+#     def _onchange_job_id1(self):
+#         if self.job_id1:
+#             self.number_job1 = self.job_id1.number
+#             self.type_id1 = self.job_id1.type_id.id
+#             self.grade_id1 = self.job_id1.grade_id.id
+#             self.department_id1 = self.job_id1.department_id.id
 
+    @api.onchange('type_improve')
+    def _onchange_type_improve(self):
+        for rec in self:
+            if rec.type_improve.is_same_type == True :
+                rec.type_id1 = rec.type_id 
 
 class HrTypeImproveSituation(models.Model):
     _name = 'hr.type.improve.situation'
@@ -112,3 +117,5 @@ class HrTypeImproveSituation(models.Model):
 
     name = fields.Char(string='النوع', required=1)
     code = fields.Char(string='الرمز')
+    is_same_type = fields.Boolean(string='نفس الصنف')
+    type_appointment = fields.Many2one('hr.type.appoint', string=u'نوع التعيين', required=1 )

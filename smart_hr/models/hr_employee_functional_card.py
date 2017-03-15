@@ -12,6 +12,13 @@ class HrEmployeeFunctionnalCard(models.Model):
     _name = 'hr.employee.functionnal.card'
     _description = u'بطاقة موظف'
 
+    @api.multi
+    @api.depends('department_id')
+    def _get_department_name_report(self):
+        for card in self:
+            department_name_report = card.department_id._get_dep_name_employee_form()[0]
+            card.department_name_report = department_name_report[1]
+
     name = fields.Char(string='رقم بطاقة')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1, readonly=1)
     number = fields.Char(string=u'الرقم الوظيفي', related="employee_id.number", readonly=1)
@@ -49,6 +56,7 @@ class HrEmployeeFunctionnalCard(models.Model):
                               ], string=u'الحالة', default='draft', )
     training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'التدريب', readonly=1,
                                    related="employee_id.training_ids")
+    department_name_report = fields.Char(compute=_get_department_name_report, store=True)
 
     @api.multi
     @api.depends('employee_id')

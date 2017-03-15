@@ -423,13 +423,11 @@ class HrPayslip(models.Model):
             # generate  lines
             employee = payslip.employee_id
             # search the newest salary_grid for this employee
-            salary_grid = employee.get_salary_grid_id(False)
+            res = employee.get_salary_grid_id(False)
+            salary_grid = res[0]
             if not salary_grid:
                 return
-            if employee.basic_salary == 0:
-                basic_salary = salary_grid.basic_salary
-            else:
-                basic_salary = employee.basic_salary
+            basic_salary = res[1]
             # compute
             lines = []
             sequence = 1

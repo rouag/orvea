@@ -20,6 +20,11 @@
 			name="smart_hr.report_hr_employee_assign" report_type="qweb-pdf"
 			string="طباعة القرار" attachment_use="False" menu="False"
 			file="smart_hr.report_hr_employee_assign" />
+			
+				
+			<report id="report_hr_termination_retraite_reportt" model="hr.employee"   menu="False" 
+			report_type="qweb-pdf" string="تقريرالمستحقين للتقاعد النظامي " name="smart_hr.hr_termination_retraite_reportt" attachment_use="False" 
+			file="smart_hr.hr_termination_retraite_reportt" 	paperformat="smart_base.paperformat_landscape" /> 
 
 	</data>
 </openerp>
