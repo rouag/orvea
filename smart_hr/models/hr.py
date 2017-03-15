@@ -240,10 +240,11 @@ class HrEmployee(models.Model):
         self.display_name = display_name
 
     def _compute_promotion_days(self):
-        active_promotion = self.env['hr.employee.promotion.history'].search(
-                [('active_duration', '=', 'True'), ('employee_id', '=', self.id)], limit=1)
-        if active_promotion:
-            self.promotion_duration = active_promotion.balance
+        for rec in self:
+            active_promotion = self.env['hr.employee.promotion.history'].search(
+                [('active_duration', '=', 'True'), ('employee_id', '=', rec.id)], limit=1)
+            if active_promotion:
+                rec.promotion_duration = active_promotion.balance
 
 
     @api.model
