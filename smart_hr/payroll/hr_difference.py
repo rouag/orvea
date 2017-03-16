@@ -585,10 +585,12 @@ class HrDifference(models.Model):
             # case of  نوع التعويض    مقابل ‫مادي‬ ‬   اجازة التعويض
             if grid_id:
                 if holiday_id.compensation_type and holiday_id.compensation_type == 'money':
-                    amount = (holiday_id.current_holiday_stock * (basic_salary / 22))
+                    print '------holiday_id.current_holiday_stock------', holiday_id.token_compensation_stock
+                    print '------basic_salary--------', basic_salary
+                    amount = (holiday_id.token_compensation_stock * (basic_salary / 22))
                     if amount != 0:
                         vals = {'difference_id': self.id,
-                                'name': holiday_id.holiday_status_id.name + "(تعويض مالي)",
+                                'name': holiday_id.holiday_status_id.name + u"(تعويض مالي)",
                                 'employee_id': holiday_id.employee_id.id,
                                 'number_of_days': int(holiday_id.current_holiday_stock),
                                 'number_of_hours': 0.0,
@@ -803,7 +805,7 @@ class HrDifference(models.Model):
             if not termination.termination_type_id.all_holidays and sum_days >= termination.termination_type_id.max_days:
                 if grid_id:
                     amount = (basic_salary / 22) * termination.termination_type_id.max_days
-                    if amount != 0.0: 
+                    if amount != 0.0:
                         vals = {'difference_id': self.id,
                                 'name': 'رصيد إجازة (طي القيد)',
                                 'employee_id': termination.employee_id.id,

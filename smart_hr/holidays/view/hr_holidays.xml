@@ -10,11 +10,11 @@
 			<field name="type">search</field>
 			<field name="inherit_id" ref="hr_holidays.view_hr_holidays_filter" />
 			<field name="arch" type="xml">
-				 <field name="name" position="replace"/>
-				 <field name="employee_id" position="replace">
-					 	<field name="employee_id" string="الموظف"
-							   filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]"/>
-				 </field>
+				<field name="name" position="replace" />
+				<field name="employee_id" position="replace">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</field>
 			</field>
 		</record>
 
@@ -34,8 +34,8 @@
 						<field name="duration" />
 						<field name="date_from" />
 						<field name="date_to" />
-							<field name="num_decision" />
-							<field name="date_decision" />
+						<field name="num_decision" />
+						<field name="date_decision" />
 						<field name="state" />
 						<field name="is_started" invisible="1" />
 					</tree>
@@ -157,10 +157,14 @@
 							 %(data_hr_holiday_status_sport)d ,%(data_hr_holiday_death)d ])],
 							 'invisible':[('holiday_status_id','not in', [%(data_hr_holiday_accompaniment_exceptional)d,%(data_hr_holiday_status_illness)d,
 							 %(data_hr_holiday_status_sport)d ,%(data_hr_holiday_death)d])] }" />
-								<field name="compensation_type" 
+								<field name="compensation_type"
 									attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)],
 								'required':[('holiday_status_id','=', %(data_hr_holiday_compensation)d)],
 								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_compensation)d)]
+								}" />
+								<field name="token_compensation_stock"
+									attrs="{'readonly':[('state','not in',['draft'])],
+								'invisible':[('compensation_type','!=', 'money')]
 								}" />
 								<field name="current_holiday_stock" />
 							</group>
