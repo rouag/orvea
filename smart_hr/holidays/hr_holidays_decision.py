@@ -28,6 +28,24 @@ class hrHolidaysDecision(models.Model):
     file_decision = fields.Binary(string='الخطاب', attachment=True)
     file_decision_name = fields.Char(string='اسم الخطاب')
 
+    @api.onchange('date')
+    @api.constrains('date')
+    def _onchange_date(self):
+        if self.date:
+            is_holiday = self.env['hr.smart.utils'].check_holiday_weekend_days(self.date, self.employee_id)
+            if is_holiday:
+                if is_holiday == "official holiday":
+                    raise ValidationError(u"هناك تداخل فى تاريخ المباشرة مع اعياد و عطل رسمية")
+                elif is_holiday == "weekend":
+                    raise ValidationError(u"هناك تداخل فى تاريخ المباشرة مع عطلة نهاية الاسبوع")
+                elif is_holiday == "holiday":
+                    raise ValidationError(u"هناك تداخل فى تاريخ المباشرة مع يوم إجازة")
+
+    @api.onchange('employee_id')
+    def onchange_employee_id(self):
+        if self.date and self.employee_id:
+            if self.env['hr.holidays'].search_count([('state', '=', 'done'), ('date_from', '<=', self.date), ('date_to', '>=', self.date), ('employee_id', '=', self.employee_id.id)]) != 0:
+                raise ValidationError(u"هناك تداخل فى تاريخ المباشرة مع يوم إجازة")
 
     @api.one
     def action_waiting(self):
