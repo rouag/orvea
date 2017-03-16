@@ -31,7 +31,7 @@
 								<field name="insurance_type" />
 								<field name="insurance" />
 								<field name="net_salary" />
-								<field name="transport_allowance_amout" />
+								<field name="transport_allowance_amout" invisible="1" />
 							</group>
 						</group>
 						<notebook>

@@ -103,40 +103,52 @@ class SalaryGridDetail(models.Model):
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
     basic_salary = fields.Float(string='الراتب الأساسي', required=1)
     retirement = fields.Float(string='نسبة المحسوم للتقاعد')
-    retirement_amount = fields.Float(string='المبلغ المحسوم للتقاعد', readonly=1)
+    retirement_amount = fields.Float(string='المبلغ المحسوم للتقاعد', readonly=1, compute='_compute_retirement_amount', store=True)
     insurance = fields.Float(string='نسبة  التأمين')
-    net_salary = fields.Float(string='صافي الراتب', readonly=1, compute='_compute_net_salary')
+    net_salary = fields.Float(string='صافي الراتب', readonly=1, compute='_compute_net_salary', store=True)
     allowance_ids = fields.One2many('salary.grid.detail.allowance', 'grid_detail_id', string='البدلات')
     reward_ids = fields.One2many('salary.grid.detail.reward', 'grid_detail_id', string='المكافآت‬')
     indemnity_ids = fields.One2many('salary.grid.detail.indemnity', 'grid_detail_id', string='التعويضات')
     insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين')
     increase = fields.Float(string='العلاوة')
-    transport_allowance_amout = fields.Float(string='مبلغ بدل النقل', readonly=1)
+    transport_allowance_amout = fields.Float(string='مبلغ بدل النقل', readonly=1, compute='_compute_transport_allowance_amout', store=True)
+
+    @api.multi
+    @api.depends('basic_salary', 'retirement')
+    def _compute_retirement_amount(self):
+        for rec in self:
+            retirement = rec.basic_salary * rec.retirement / 100.0
+            rec.retirement_amount = retirement
+
+    @api.multi
+    @api.depends('allowance_ids')
+    def _compute_transport_allowance_amout(self):
+        transport_allowance = self.env.ref('smart_hr.hr_allowance_type_01')
+        for rec in self:
+            transport_allowance_amout = 0.0
+            for allowance in rec.allowance_ids:
+                amount = allowance.get_value(False)
+                if transport_allowance == allowance.allowance_id:
+                    transport_allowance_amout = amount
+            rec.transport_allowance_amout = transport_allowance_amout
 
     @api.multi
     @api.depends('allowance_ids', 'reward_ids', 'indemnity_ids', 'basic_salary', 'retirement', 'insurance')
     def _compute_net_salary(self):
-        transport_allowwance = self.env.ref('smart_hr.hr_allowance_type_01')
         for rec in self:
             net_salary = rec.basic_salary
-            transport_allowance_amout = 0.0
             for allowance in rec.allowance_ids:
                 amount = allowance.get_value(False)
                 net_salary += amount
-                if transport_allowwance == allowance.allowance_id:
-                    transport_allowance_amout = amount
             for reward in rec.reward_ids:
                 net_salary += reward.get_value(False)
             for indemnity in rec.indemnity_ids:
                 net_salary += indemnity.get_value(False)
             # deductions
-            retirement = rec.basic_salary * rec.retirement / 100.0
-            rec.retirement_amount = retirement
             insurance = rec.basic_salary * rec.insurance / 100.0
-            net_salary -= retirement
+            net_salary -= rec.retirement_amount
             net_salary -= insurance
             rec.net_salary = net_salary
-            rec.transport_allowance_amout = transport_allowance_amout
 
     @api.model
     def create(self, vals):
