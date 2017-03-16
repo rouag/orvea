@@ -131,6 +131,8 @@ class HrHolidays(models.Model):
     birth_certificate_file_name_file_name = fields.Char(string=u'شهادة الميلاد')
     speech_source = fields.Char(string=u'مصدر الخطابات')
     hide_with_advanced_salary = fields.Boolean('hide_with_advanced_salary', default=True)
+    # token_compensation_stock will take the value of the compensation_stock for tracability
+    token_compensation_stock = fields.Integer(string=u'الرصيد المأخوذ', default=0)
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
@@ -177,7 +179,7 @@ class HrHolidays(models.Model):
                 current_stock = str("لا تحتاج رصيد")
             else:
                 current_stock = stock['current_stock']
-            self.current_holiday_stock = current_stock
+            holiday.current_holiday_stock = current_stock
 
     @api.multi
     def _compute_is_started(self):
@@ -352,6 +354,7 @@ class HrHolidays(models.Model):
             if self.compensation_type == 'holiday':
                 self.employee_id.compensation_stock -= self.duration
             if self.compensation_type == 'money':
+                self.token_compensation_stock = self.employee_id.compensation_stock
                 self.employee_id.compensation_stock = 0
 #                 مدة الترقية
         if self.holiday_status_id.promotion_deductible:
@@ -413,7 +416,7 @@ class HrHolidays(models.Model):
                                                                    ('date_from', '=', first_day_date.strftime(DEFAULT_SERVER_DATE_FORMAT))])
             holiday_balance = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', employee.id),
                                                                               ('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id),
-                                                                              ('entitlement_id.id', '=', right_entitlement.id),])
+                                                                              ('entitlement_id.id', '=', right_entitlement.id), ])
             uncounted_days = 0
             employee_solde = right_entitlement.holiday_stock_default
             periode = right_entitlement.periode
@@ -424,7 +427,7 @@ class HrHolidays(models.Model):
 #                    مدّة الإجازة الاستثنائية و الدراسية 
 
             holiday_uncounted_days = 0
-            holiday_uncounted_days = self.search_count([('state', '=', 'done'),('date_from', '<=',  d), ('date_to', '>=', d),('employee_id', '=', employee.id),
+            holiday_uncounted_days = self.search_count([('state', '=', 'done'), ('date_from', '<=', d), ('date_to', '>=', d), ('employee_id', '=', employee.id),
                                         ('holiday_status_id.id', 'in', [self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional').id,
                                                        self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id,
                                                        self.env.ref('smart_hr.data_hr_holiday_status_study').id])])
@@ -450,8 +453,8 @@ class HrHolidays(models.Model):
             scholarship_uncounted_days = schol_obj.search_count([('employee_id', '=', employee.id), ('state', '=', 'done'), ('date_from', '<=', d), ('date_to', '>=', d)])
             uncounted_days += scholarship_uncounted_days
 
-            init_solde = (employee_solde / (periode * 12))/30.0
-            balance = init_solde - (uncounted_days* init_solde)
+            init_solde = (employee_solde / (periode * 12)) / 30.0
+            balance = init_solde - (uncounted_days * init_solde)
 
             holiday_balance.write({'holidays_available_stock': current_normal_holiday_stock + balance})
             open_periode.write({'holiday_stock': current_normal_holiday_stock + balance})
