@@ -231,6 +231,7 @@
 						
 						</header>
 						<sheet>
+						<field name="employee_card_id" invisible="1" />
 							<field name="display_name" invisible="1" />
 							<field name="is_saudian" invisible="1" />
 							<div class="oe_button_box" name="button_box" position="inside">
