@@ -62,7 +62,7 @@ class hrBonus(models.Model):
         self.state = 'done'
 
     @api.one
-    def action_refuse(self):
+    def button_refuse(self):
         self.state = 'cancel'
 
     @api.multi
@@ -96,7 +96,7 @@ class hrBonusLine(models.Model):
     bonus_id = fields.Many2one('hr.bonus', string='المزايا المالية', ondelete='cascade')
     name = fields.Char(string='المسمى')
     employee_id = fields.Many2one('hr.employee', string='الموظف', required=1)
-    number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' الرقم الوظيفي')
+    number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' رقم الوظيفة')
     job_id = fields.Many2one(related='employee_id.job_id', store=True, readonly=True, string=' الوظيفة')
     department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string=' الادارة')
     type = fields.Selection(related='bonus_id.type', store=True, string='النوع')

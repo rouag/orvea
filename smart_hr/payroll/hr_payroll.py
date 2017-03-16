@@ -102,7 +102,7 @@ class HrPayslipRun(models.Model):
         self.generate_file()
 
     @api.one
-    def action_cancel(self):
+    def button_refuse(self):
         self.state = 'cancel'
         for slip in self.slip_ids:
             slip.action_cancel()
@@ -184,7 +184,8 @@ class HrPayslipDifferenceHistory(models.Model):
 
 
 class HrPayslip(models.Model):
-    _inherit = 'hr.payslip'
+    _name = 'hr.payslip'
+    _inherit = ['hr.payslip', 'mail.thread']
     _order = 'date_from desc,id desc'
 
     @api.multi
@@ -214,7 +215,7 @@ class HrPayslip(models.Model):
         self.env['hr.loan'].update_loan_date(self.month, self.employee_id.id)
 
     @api.one
-    def action_cancel(self):
+    def button_refuse(self):
         self.state = 'cancel'
 
     @api.multi

@@ -12,7 +12,7 @@
 				<tree string="الوظائف" create='0' edit='0' delete='0'
 					duplicate='0'>
 					<field name="name" string="المسمى الوظيفي" />
-					<field name="number" string="الرقم الوظيفي" />
+					<field name="number" string="رقم الوظيفة" />
 					<field name="job_name_code" string="الرمز" />
 					<field name="type_id" />
 					<field name="department_id" />

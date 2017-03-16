@@ -34,7 +34,7 @@ class SalaryGrid(models.Model):
         self.state = 'done'
 
     @api.multi
-    def action_refuse(self):
+    def button_refuse(self):
         self.state = 'refused'
 
 

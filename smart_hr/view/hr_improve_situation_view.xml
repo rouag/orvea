@@ -76,24 +76,30 @@
 					</header>
 					<sheet>
 						<group>
+							<group>
+								<field name="order_date" readonly="1" />
+
+								<field name="order_number"  attrs="{'readonly':[('state','in', ['waiting','done'])]}"  />
+							</group>
+						</group>
+
+						<group>
 							<group string="بيانات الموظف">
-								<field name="employee_id" />
-								<field name="number" />
+								<field name="employee_id"  attrs="{'readonly':[('state','in', ['waiting','done'])]}"  />
 								<field name="job_id" />
 								<field name="number_job" />
 								<field name="type_id" />
 								<field name="department_id" />
 								<field name="grade_id" />
 								<field name="degree_id" />
-								<field name="basic_salary" />
-								<field name="net_salary" />
 							</group>
 							<group string="تحسين الوضع">
-								<field name="type_improve" />
-								<field name="type_id1" attrs="{'readonly':[('is_same_type','=',True)]}" />
+								<field name="type_improve"  attrs="{'readonly':[('state','in', ['waiting','done'])]}"  />
+								<field name="type_id1" attrs="{'readonly':[('is_same_type','=',True) ,('state','in', ['waiting','done'])]}"  />
+								<field name="new_job_id" domain="[('state','=','unoccupied')]"  attrs="{'readonly':[('state','in', ['waiting','done'])]}"  />
 								<field name="department_id1" />
 								<field name="grade_id1" />
-								<field name="degree_id1" />
+								<field name="degree_id1" attrs="{'readonly':[('state','in', ['waiting','done'])]}"  />
 								<field name="is_same_type" invisible="1" />
 							</group>
 						</group>

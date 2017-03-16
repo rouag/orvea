@@ -10,6 +10,7 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FO
 
 class HrEmployeeFunctionnalCard(models.Model):
     _name = 'hr.employee.functionnal.card'
+    _inherit = ['mail.thread']
     _description = u'بطاقة موظف'
 
     @api.multi
@@ -21,7 +22,7 @@ class HrEmployeeFunctionnalCard(models.Model):
 
     name = fields.Char(string='رقم بطاقة')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1, readonly=1)
-    number = fields.Char(string=u'الرقم الوظيفي', related="employee_id.number", readonly=1)
+    number = fields.Char(string=u'رقم الوظيفة', related="employee_id.number", readonly=1)
     employee_state = fields.Selection(string=u'الحالة', related="employee_id.employee_state", readonly=1)
     last_salary = fields.Float(string='  الراتب الأخير ', store=True, compute='_compute_last_degree_salary', readonly=1)
     birthday_location = fields.Char(string=u'مكان الميلاد', related="employee_id.birthday_location", readonly=1)
@@ -111,6 +112,6 @@ class HrEmployeeFunctionnalCard(models.Model):
         self.state = 'hrm'
 
     @api.multi
-    def button_refuse_hrm(self):
+    def button_refuse(self):
         self.ensure_one()
         self.state = 'refuse'

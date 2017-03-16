@@ -11,7 +11,7 @@ class HrScholarshipDecision(models.Model):
 
     name = fields.Char(string='المسمى')
     employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', required=1)
-    number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' الرقم الوظيفي')
+    number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' رقم الوظيفة')
     job_id = fields.Many2one(related='employee_id.job_id', store=True, readonly=True, string=' الوظيفة')
     department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string=' الادارة')
     date = fields.Date(string=u'تاريخ المباشرة', default=fields.Datetime.now(), required=1)

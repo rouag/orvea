@@ -9,6 +9,7 @@ from datetime import date, datetime, timedelta
 
 class hrSanction(models.Model):
     _name = 'hr.sanction'
+    _inherit = ['mail.thread']
     _order = 'id desc'
     _description = u'إجراء العقوبات'
 
@@ -74,7 +75,7 @@ class hrSanction(models.Model):
                 rec.state = 'waiting'
 
     @api.multi
-    def action_refuse(self):
+    def button_refuse(self):
         for sanction in self:
             sanction.state = 'draft'
 

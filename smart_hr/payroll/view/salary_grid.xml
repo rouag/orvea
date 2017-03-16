@@ -151,7 +151,9 @@
 							states="draft" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_done" string="إعتماد" type="object"
 							states="verify" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_refuse" string="رفض" type="object"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action"
+						
 							states="verify" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<field name="state" widget="statusbar" statusbar_visible="draft,verify,done,refused" />
 					</header>

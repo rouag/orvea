@@ -23,7 +23,7 @@ class HrEmployee(models.Model):
         for rec in sanction_obj.search(search_domain):
             self.sanction_ids = rec.sanction_ids
 
-    number = fields.Char(string=u'الرقم الوظيفي')
+    number = fields.Char(string=u'رقم الوظيفة')
     gender = fields.Selection([('male', 'Male'), ('female', 'Female'), ], string=u'الجنس')
     marital = fields.Selection(
         [('single', 'Single'), ('married', 'Married'), ('widower', 'Widower'), ('divorced', 'Divorced')],
@@ -480,7 +480,7 @@ class HrEmployeeConfiguration(models.Model):
     _description = u'إعدادات الموظف'
 
     name = fields.Char(string='name')
-    number = fields.Integer(string='بداية تسلسل الرقم الوظيفي')
+    number = fields.Integer(string='بداية تسلسل رقم الوظيفة')
     period = fields.Integer(string='مدة صلاحية بطاقة الموظف (بالسنة)')
     age_member = fields.Integer(string='سن تقاعد  الطبيعي   الاعظاء')
     age_nomember = fields.Integer(string='سن تقاعد  الطبيعي لغير الاعظاء')

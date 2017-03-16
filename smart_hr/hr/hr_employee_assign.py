@@ -11,6 +11,7 @@ import os
 
 class HrEmployeeCommissioning(models.Model):
     _name = 'hr.employee.commissioning'
+    _inherit = ['mail.thread']
     _description = u'طلب تكليف موظف'
     _rec_name = 'employee_id'
 
@@ -110,7 +111,7 @@ class HrEmployeeCommissioning(models.Model):
         self.state = 'accept'
 
     @api.multi
-    def action_refused(self):
+    def button_refuse(self):
         self.ensure_one()
         self.state = 'pm'
 

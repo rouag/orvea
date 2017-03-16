@@ -14,7 +14,7 @@ class HrPromotion(models.Model):
     number = fields.Char(string='الرقم الموظف', readonly=1)
     # info about job
     job_id = fields.Many2one('hr.job', string=' المسمى الوظيفي ')
-    number_job = fields.Char(string='الرقم الوظيفي', readonly=1)
+    number_job = fields.Char(string='رقم الوظيفة', readonly=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
     department_id = fields.Many2one('hr.department', string='الادارة', readonly=1)
     job_day = fields.Char(string=' يوم')
