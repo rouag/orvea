@@ -615,7 +615,7 @@ class HrDifference(models.Model):
         line_ids = []
         all_suspensions = []
         # get  started and ended suspension in current month
-        suspension_ids = self.env['hr.suspension'].search([('suspension_date', '>=', self.date_from),('employee_id', '=', 3977),
+        suspension_ids = self.env['hr.suspension'].search([('suspension_date', '>=', self.date_from),
                                                            ('suspension_date', '<=', self.date_to),
                                                            ('state', '=', 'done'),
                                                            ('suspension_end_id.release_date', '>=', self.date_from),
@@ -636,12 +636,12 @@ class HrDifference(models.Model):
                                         'number_of_days': number_of_days, 'return': False})
 
         # get started suspension in this month and not ended in current month or dont have yet an end
-        suspension_ids = self.env['hr.suspension'].search([('suspension_date', '>=', self.date_from),('employee_id', '=', 3977),
+        suspension_ids = self.env['hr.suspension'].search([('suspension_date', '>=', self.date_from),
                                                            ('suspension_date', '<=', self.date_to),
                                                            ('state', '=', 'done'),
                                                            ('suspension_end_id', '=', False)
                                                            ])
-        suspension_ids += self.env['hr.suspension'].search([('suspension_date', '>=', self.date_from),('employee_id', '=', 3977),
+        suspension_ids += self.env['hr.suspension'].search([('suspension_date', '>=', self.date_from),
                                                             ('suspension_date', '<=', self.date_to),
                                                             ('state', '=', 'done'),
                                                             ('suspension_end_id.release_date', '>', self.date_to),
@@ -656,11 +656,11 @@ class HrDifference(models.Model):
                                         'date_from': date_from, 'date_to': date_to,
                                         'number_of_days': number_of_days, 'return': False})
         # get started suspension before this month and not yet ended
-        suspension_ids = self.env['hr.suspension'].search([('suspension_date', '<', self.date_from),('employee_id', '=', 3977),
+        suspension_ids = self.env['hr.suspension'].search([('suspension_date', '<', self.date_from),
                                                            ('state', '=', 'done'),
                                                            ('suspension_end_id', '=', False)
                                                            ])
-        suspension_ids += self.env['hr.suspension'].search([('suspension_date', '<', self.date_from),('employee_id', '=', 3977),
+        suspension_ids += self.env['hr.suspension'].search([('suspension_date', '<', self.date_from),
                                                             ('state', '=', 'done'),
                                                             ('suspension_end_id.release_date', '>', self.date_to),
                                                             ('suspension_end_id.state', '=', 'done'),
@@ -674,7 +674,7 @@ class HrDifference(models.Model):
                                         'date_from': date_from, 'date_to': date_to,
                                         'number_of_days': number_of_days, 'return': False})
         # get started suspension before this month and ended in current month
-        suspension_ids = self.env['hr.suspension'].search([('suspension_date', '<', self.date_from),('employee_id', '=', 3977),
+        suspension_ids = self.env['hr.suspension'].search([('suspension_date', '<', self.date_from),
                                                            ('state', '=', 'done'),
                                                            ('suspension_end_id.release_date', '>=', self.date_from),
                                                            ('suspension_end_id.release_date', '<=', self.date_to),
