@@ -26,7 +26,7 @@
 												<th class="text-center">رقم الموظف </th>
 												<th class="text-center">الإسم</th>
 												<th class="text-center">مسمى الوظيفة </th>
-												<th class="text-center">الرقم الوظيفي</th>
+												<th class="text-center">رقم الوظيفة</th>
 												<th class="text-center">السبب</th>
 											</tr>
 										</thead>
@@ -59,7 +59,7 @@
 												<th class="text-center">رقم الموظف </th>
 												<th class="text-center">الإسم</th>
 												<th class="text-center">مسمى الوظيفة </th>
-												<th class="text-center">الرقم الوظيفي</th>
+												<th class="text-center">رقم الوظيفة</th>
 												<th class="text-center">السبب</th>
 											</tr>
 										</thead>
@@ -92,7 +92,7 @@
 												<th class="text-center">رقم الموظف </th>
 												<th class="text-center">الإسم</th>
 												<th class="text-center">مسمى الوظيفة </th>
-												<th class="text-center">الرقم الوظيفي</th>
+												<th class="text-center">رقم الوظيفة</th>
 												<th class="text-center">السبب</th>
 											</tr>
 										</thead>

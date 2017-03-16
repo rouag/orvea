@@ -8,7 +8,7 @@ from umalqurra.hijri_date import HijriDate
 
 class hr_suspension_end(models.Model):
     _name = 'hr.suspension.end'
-    _inherit = ['ir.needaction_mixin']
+    _inherit = ['ir.needaction_mixin', 'mail.thread']
     _description = 'Suspension Ending'
 
     name = fields.Char(string=u'رقم  إجراء إنهاء كف اليد', )

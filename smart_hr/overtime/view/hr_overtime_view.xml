@@ -42,7 +42,8 @@
 						<button name="action_waiting" string="موافق" type="object"
 							states="waiting" icon="fa-check" class="oe_inline oe_stat_button"
 							groups="smart_hr.group_overtime_hr" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_refuse" string="رفض" type="object"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action"
 							states="waiting" icon="fa-times" class="oe_inline oe_stat_button"
 							groups="smart_hr.group_overtime_hr" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 

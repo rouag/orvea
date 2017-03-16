@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+
+		<!-- <record id="ir_cron_hr_employee_service_duration" model="ir.cron"> 
+			<field name="name">Service years Updater</field> <field name="interval_number">1</field> 
+			<field name="interval_type">days</field> <field name="numbercall">-1</field> 
+			<field name="doall">0</field> <field name="model">hr.employee</field> <field 
+			name="function">update_leave_stock</field> <field name="args">()</field> 
+			</record> -->
+
+		<record id="ir_cron_hr_holidays_stock" model="ir.cron">
+			<field name="name">Holiday Stock Updater</field>
+			<field name="interval_number">1</field>
+			<field name="interval_type">days</field>
+			<field name="numbercall">-1</field>
+			<field name="doall">0</field>
+			<field name="model">hr.holidays</field>
+			<field name="function">update_normal_holidays_stock</field>
+			<field name="args">()</field>
+		</record>
+
+		<!--  <record id="ir_cron_hr_deputation_stock" model="ir.cron">
+			<field name="name">Deputation Stock Updater</field>
+			<field name="interval_number">1</field>
+			<field name="interval_type">days</field>
+			<field name="numbercall">-1</field>
+			<field name="doall">0</field>
+			<field name="model">hr.deputation</field>
+			<field name="function">update_deputation_stock</field>
+			<field name="args">()</field>
+		</record>-->
+		<record id="ir_cron_hr_holidays_periodes" model="ir.cron">
+			<field name="name">Holiday periode Updater</field>
+			<field name="interval_number">1</field>
+			<field name="interval_type">weeks</field>
+			<field name="numbercall">-1</field>
+			<field name="doall">0</field>
+			<field name="model">hr.holidays.periode</field>
+			<field name="function">update_holidays_periodes</field>
+			<field name="args">()</field>
+		</record>
+		<record id="ir_cron_hr_employee_promotion_duration" model="ir.cron">
+			<field name="name">employee promotion duration updater</field>
+			<field name="interval_number">1</field>
+			<field name="interval_type">days</field>
+			<field name="numbercall">-1</field>
+			<field name="doall">0</field>
+			<field name="model">hr.employee.promotion.history</field>
+			<field name="function">update_promotion_duration</field>
+			<field name="args">()</field>
+		</record>
+		<record id="ir_cron_hr_service_duration" model="ir.cron">
+			<field name="name">employee service duration updater</field>
+			<field name="interval_number">1</field>
+			<field name="interval_type">days</field>
+			<field name="numbercall">-1</field>
+			<field name="doall">0</field>
+			<field name="model">hr.employee</field>
+			<field name="function">update_service_duration</field>
+			<field name="args">()</field>
+		</record>
+		<record id="ir_cron_hr_direct_appoint" model="ir.cron">
+			<field name="name">employee appoint</field>
+			<field name="interval_number">1</field>
+			<field name="interval_type">days</field>
+			<field name="numbercall">-1</field>
+			<field name="doall">0</field>
+			<field name="model">hr.decision.appoint</field>
+			<field name="function">control_prensence_employee</field>
+			<field name="args">()</field>
+		</record>
+		
+		<record id="ir_cron_control_test_periode_employee" model="ir.cron">
+			<field name="name">employee test periode exprience</field>
+			<field name="interval_number">1</field>
+			<field name="interval_type">days</field>
+			<field name="numbercall">-1</field>
+			<field name="doall">0</field>
+			<field name="model">hr.contract</field>
+			<field name="function">control_test_periode_employee</field>
+			<field name="args">()</field>
+		</record>
+		<record id="ir_cron_control_test_years_employee" model="ir.cron">
+			<field name="name">employee test years </field>
+			<field name="interval_number">1</field>
+			<field name="interval_type">days</field>
+			<field name="numbercall">-1</field>
+			<field name="doall">0</field>
+			<field name="model">hr.decision.appoint</field>
+			<field name="function">control_test_years_employee</field>
+			<field name="args">()</field>
+		</record>
+		
+			<record id="ir_cron_control_test_retraite_employee" model="ir.cron">
+			<field name="name">employee retraite years </field>
+			<field name="interval_number">1</field>
+			<field name="interval_type">days</field>
+			<field name="numbercall">-1</field>
+			<field name="doall">0</field>
+			<field name="model">hr.employee.configuration</field>
+			<field name="function">control_test_retraite_employee</field>
+			<field name="args">()</field>
+		</record>
+		
+		
+		
+	</data>
+</openerp>

@@ -81,7 +81,7 @@ class HrDifference(models.Model):
         self.state = 'done'
 
     @api.one
-    def action_refuse(self):
+    def button_refuse(self):
         self.state = 'cancel'
 
     @api.multi

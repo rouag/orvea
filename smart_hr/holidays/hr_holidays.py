@@ -415,8 +415,8 @@ class HrHolidays(models.Model):
                                                                    ('entitlement_id', '=', right_entitlement.id), ('active', '=', True),
                                                                    ('date_from', '=', first_day_date.strftime(DEFAULT_SERVER_DATE_FORMAT))])
             holiday_balance = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', employee.id),
-                                                                              ('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id),
-                                                                              ('entitlement_id.id', '=', right_entitlement.id), ])
+                                                                             ('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id),
+                                                                             ('entitlement_id.id', '=', right_entitlement.id), ])
             uncounted_days = 0
             employee_solde = right_entitlement.holiday_stock_default
             periode = right_entitlement.periode

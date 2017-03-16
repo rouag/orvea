@@ -68,7 +68,9 @@
 								states="draft" />
 							<button name="action_done" string="إعتماد" type="object"
 								states="verify" />
-							<button name="action_cancel" string="رفض" type="object"
+							
+							 <button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action"
 								states="verify" />
 							<field name="state" widget="statusbar" statusbar_visible="draft,verify,done" />
 						</header>
@@ -182,6 +184,9 @@
 								</page>
 							</notebook>
 						</sheet>
+						<div>
+						<field name="message_ids" widget="mail_thread" readonly="1" />
+					</div>
 					</form>
 				</xpath>
 			</field>
@@ -274,7 +279,9 @@
 						<button string="إحتسب" name="compute_sheet" type="object" states="draft" class="oe_highlight" />
 						<button name="action_verify" string="إرسال للإعتماد" type="object" states="draft" />
 						<button name="action_done" string="إعتماد" type="object" states="verify" />
-						<button name="action_cancel" string="رفض" type="object" states="verify" />
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action"
+						states="verify" />
 						<field name="state" widget="statusbar" statusbar_visible="draft,verify,done" />
 					</header>
 					<sheet>
@@ -318,10 +325,8 @@
 							</page>
 						</notebook>
 					</sheet>
-					<div class="oe_chatter">
-						<field name="message_follower_ids" widget="mail_followers"
-							groups="base.group_user" />
-						<field name="message_ids" widget="mail_thread" />
+					<div>
+						<field name="message_ids" widget="mail_thread" readonly="1" />
 					</div>
 				</form>
 			</field>

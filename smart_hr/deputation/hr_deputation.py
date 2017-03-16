@@ -52,7 +52,7 @@ class HrDeputation(models.Model):
     order_date = fields.Date(string='تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
     employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', domain=[('employee_state', '=', 'employee')],
                                   required=1)
-    number = fields.Char(string='الرقم الوظيفي', readonly=1)
+    number = fields.Char(string='رقم الوظيفة', readonly=1)
     code = fields.Char(string=u'رمز الوظيفة ', readonly=1)
     governmental_entity = fields.Many2one('res.partner', string=u'الجهة ',
                                           domain=['|', ('company_type', '=', 'governmental_entity'),

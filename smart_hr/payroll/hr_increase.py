@@ -42,9 +42,9 @@ class hrIncrease(models.Model):
         self.state = 'pim'
 
     @api.one
-    def action_refuse(self):
+    def button_refuse(self):
         self.state = 'draft'
-        
+
     @api.one
     def action_refuse_pim2(self):
         self.state = 'hrm'
