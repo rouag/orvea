@@ -164,7 +164,7 @@
 								}" />
 								<field name="token_compensation_stock"
 									attrs="{'readonly':[('state','not in',['draft'])],
-								'invisible':[('compensation_type','!=', 'money')]
+								'invisible':['|', ('compensation_type','!=', 'money'), ('state','!=', 'done')]
 								}" />
 								<field name="current_holiday_stock" />
 							</group>
