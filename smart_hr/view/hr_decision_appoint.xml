@@ -233,7 +233,7 @@
 										<field name="file_engagement" widget="many2many_binary"
 											filename="file_engagement_name"
 											attrs="{'invisible':['|',('state', 'not in', ['draft','waiting', 'manager','hrm', 'budget','civil', 'done']),('type_appointment', '!=', %(data_hr_new_agent_public)d)],'readonly':[('state', 'in', [ 'waiting', 'manager', 'hrm', 'budget', 'civil','done'])]}" />
-										
+
 										<field name="file_salar_recent_name" invisible="1" />
 										<field name="is_contract" invisible="1" />
 										<field name="order_enquiry_file_name" invisible="1" />
@@ -335,6 +335,70 @@
 											attrs="{'readonly':[('state', 'not in',['draft','audit'])],'required':[('state', 'in',['draft','audit'])]}" />
 									</group>
 								</group>
+							</page>
+							<page string="البدلات" readonly="1">
+								<field name="job_allowance_ids">
+									<tree>
+										<field name="allowance_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									</tree>
+									<form string="البدلات">
+										<group>
+											<group>
+												<field name="allowance_id"
+													options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+											</group>
+											<group>
+												<field name="compute_method" />
+												<field name="amount"
+													attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}" />
+												<field name="percentage"
+													attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}" />
+												<field name="min_amount" />
+												<field name="line_ids"
+													attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+													<tree editable="buttom">
+														<field name="city_id"
+															options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+														<field name="percentage" />
+													</tree>
+												</field>
+
+											</group>
+										</group>
+									</form>
+								</field>
+								<field name="decision_apoint_allowance_ids">
+									<tree>
+										<field name="allowance_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									</tree>
+									<form string="البدلات">
+										<group>
+											<group>
+												<field name="allowance_id"
+													options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+											</group>
+											<group>
+												<field name="compute_method" />
+												<field name="amount"
+													attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}" />
+												<field name="percentage"
+													attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}" />
+												<field name="min_amount" />
+												<field name="line_ids"
+													attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+													<tree editable="buttom">
+														<field name="city_id"
+															options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+														<field name="percentage" />
+													</tree>
+												</field>
+
+											</group>
+										</group>
+									</form>
+								</field>
 							</page>
 						</notebook>
 					</sheet>

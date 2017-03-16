@@ -54,7 +54,7 @@ class SalaryGridType(models.Model):
     retrait_monthly = fields.Integer(string='نسبة الحسم الشهري على التقاعد:')
     assurance_monthly = fields.Integer(string='نسبة التامين الشهري  من الراتب الاساسي:')
     salary_recent = fields.Float(string=' أخر راتب شهري')
-    passing_score = fields.Float(string=u'المجموع المطلوبة للتعين')
+    passing_score = fields.Float(string=u'المجموع المطلوبة لاتعين')
 
 
 class SalaryGridGrade(models.Model):
@@ -102,8 +102,8 @@ class SalaryGridDetail(models.Model):
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1)
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
     basic_salary = fields.Float(string='الراتب الأساسي', required=1)
-    retirement = fields.Float(string='نسبة المحسوم للتقاعد')
-    retirement_amount = fields.Float(string='المبلغ المحسوم للتقاعد', readonly=1, compute='_compute_retirement_amount', store=True)
+    retirement = fields.Float(string='نسبة المحسوم لاتقاعد')
+    retirement_amount = fields.Float(string='المبلغ المحسوم لاتقاعد', readonly=1, compute='_compute_retirement_amount', store=True)
     insurance = fields.Float(string='نسبة  التأمين')
     net_salary = fields.Float(string='صافي الراتب', readonly=1, compute='_compute_net_salary', store=True)
     allowance_ids = fields.One2many('salary.grid.detail.allowance', 'grid_detail_id', string='البدلات')
@@ -187,7 +187,7 @@ class SalaryGridDetailAllowance(models.Model):
         if employee_id:
             salary_grids, basic_salary = employee.get_salary_grid_id(False)
             if not salary_grids:
-                raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
+                raise ValidationError(_(u'لا يوجد سلم رواتب لأحد الموظفين. !'))
         else:
             salary_grids = self.grid_detail_id
             basic_salary = salary_grids.basic_salary
@@ -252,7 +252,7 @@ class SalaryGridDetailReward(models.Model):
         if employee_id:
             salary_grids, basic_salary = employee.get_salary_grid_id(False)
             if not salary_grids:
-                raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
+                raise ValidationError(_(u'لا يوجد سلم رواتب لأحد الموظفين. !'))
         else:
             salary_grids = self.grid_detail_id
             basic_salary = salary_grids.basic_salary
@@ -317,7 +317,7 @@ class SalaryGridDetailIndemnity(models.Model):
         if employee_id:
             salary_grids, basic_salary = employee.get_salary_grid_id(False)
             if not salary_grids:
-                raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
+                raise ValidationError(_(u'لا يوجد سلم رواتب لأحد الموظفين. !'))
         else:
             salary_grids = self.grid_detail_id
             basic_salary = salary_grids.basic_salary
@@ -361,7 +361,21 @@ class SalaryIncrease(models.Model):
     date = fields.Date(string='التاريخ')
     employee_id = fields.Many2one('hr.employee')
 
-    @api.model
-    def update_salary_increases(self):
-        employee_ids = self.env['hr.employee'].search([()])
-        
+#     @api.model
+#     def update_salary_increases(self):
+#         employee_ids = self.env['hr.employee'].search([('employee_state', '=', 'employee')])
+#         res = []
+#         for emp in employee_ids:
+#             salary_grid_line_id, basic_salary = emp.get_salary_grid_id(False)
+#             increase_amout = salary_grid_line_id.increase
+#             if increase_amout > 0:
+#                 employee_amount = {'employee_id': emp.id, 'amount': increase_amout}
+#                 res.append(employee_amount)
+#         for rec in res:
+#             employee_id = rec.get('employee_id')
+#             amount = rec.get('amount')
+#             self.env['salary.increase'].create({'name': u'علاوة سنوية',
+#                                                 'employee_id': employee_id,
+#                                                 'amount': amount,
+#                                                 'date':
+#                                                 })
