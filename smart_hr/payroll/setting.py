@@ -27,6 +27,7 @@ class HrAllowanceType(models.Model):
             raise ValidationError(u"لا يمكن حذف هذا النوع! ")
         return super(HrAllowanceType, self).unlink()
 
+
 class HrRewardType(models.Model):
     _name = 'hr.reward.type'
     _description = u'أنواع المكافآت‬'

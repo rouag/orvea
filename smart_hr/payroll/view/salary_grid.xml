@@ -31,6 +31,7 @@
 								<field name="insurance_type" />
 								<field name="insurance" />
 								<field name="net_salary" />
+								<field name="transport_allowance_amout" invisible="1" />
 							</group>
 						</group>
 						<notebook>
@@ -184,6 +185,7 @@
 								<field name="basic_salary" />
 								<field name="increase" />
 								<field name="retirement_amount" />
+								<field name="transport_allowance_amout" />
 								<field name="net_salary" />
 								<field name="date" invisible="1" />
 							</tree>

@@ -111,14 +111,20 @@ class SalaryGridDetail(models.Model):
     indemnity_ids = fields.One2many('salary.grid.detail.indemnity', 'grid_detail_id', string='التعويضات')
     insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين')
     increase = fields.Float(string='العلاوة')
+    transport_allowance_amout = fields.Float(string='مبلغ بدل النقل', readonly=1)
 
     @api.multi
     @api.depends('allowance_ids', 'reward_ids', 'indemnity_ids', 'basic_salary', 'retirement', 'insurance', 'retirement')
     def _compute_net_salary(self):
+        transport_allowwance = self.env.ref('smart_hr.hr_allowance_type_01')
         for rec in self:
             net_salary = rec.basic_salary
+            transport_allowance_amout = 0.0
             for allowance in rec.allowance_ids:
-                net_salary += allowance.get_value(False)
+                amount = allowance.get_value(False)
+                net_salary += amount
+                if transport_allowwance == allowance.allowance_id:
+                    transport_allowance_amout = amount
             for reward in rec.reward_ids:
                 net_salary += reward.get_value(False)
             for indemnity in rec.indemnity_ids:
@@ -130,6 +136,7 @@ class SalaryGridDetail(models.Model):
             net_salary -= retirement
             net_salary -= insurance
             rec.net_salary = net_salary
+            rec.transport_allowance_amout = transport_allowance_amout
 
     @api.model
     def create(self, vals):
