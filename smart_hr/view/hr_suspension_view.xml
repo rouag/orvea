@@ -60,10 +60,11 @@
 						</group>
 						<button name="%(report_hr_suspension_report)d" string="طباعة القرار"
 							type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
-						<div>
-							<field name="message_ids" widget="mail_thread" readonly="1" />
-						</div>
+
 					</sheet>
+					<div>
+						<field name="message_ids" widget="mail_thread" readonly="1" />
+					</div>
 				</form>
 			</field>
 		</record>

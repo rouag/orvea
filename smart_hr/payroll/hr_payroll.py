@@ -424,11 +424,9 @@ class HrPayslip(models.Model):
             # generate  lines
             employee = payslip.employee_id
             # search the newest salary_grid for this employee
-            res = employee.get_salary_grid_id(False)
-            salary_grid = res[0]
+            salary_grid, basic_salary = employee.get_salary_grid_id(False)
             if not salary_grid:
                 return
-            basic_salary = res[1]
             # compute
             lines = []
             sequence = 1
@@ -545,9 +543,6 @@ class HrPayslip(models.Model):
                 elif line.type == 'sanction':
                     sanction_days += line.number_of_days
 
-            # get number of days by month
-            worked_days_line_ids, leaves = self.get_worked_day_lines_without_contract(employee.id, employee.calendar_id, payslip.date_from, payslip.date_to, False)
-            days_by_month = worked_days_line_ids and worked_days_line_ids[0].get('number_of_days', 22)
             # حسم‬  التأخير يكون‬ من‬  الراتب‬ الأساسي فقط
             if retard_leave_days:
                 # احتساب الحسم يقسم الراتب على 30

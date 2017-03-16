@@ -219,13 +219,19 @@
 							<button name="%(action_hr_employee_refuse_wizard)d"
 								string="رفض" type="action" groups="smart_hr.group_employee_registration"
 								attrs="{'invisible': [('employee_state', '!=', 'waiting')]}" />
-							<field name="employee_state" widget="statusbar"
-								attrs="{'invisible': [('employee_state', '=', 'employee')]}"
-								statusbar_visible="new,waiting,done,refused" />
-							<field name="emp_state"
-								attrs="{'invisible': [('employee_state', '!=', 'employee')]}" />
+							<button name="%(report_hr_employee_card)d" type="action" string=" طباعة البطاقة الوظيفية "
+								attrs="{'invisible': [('employee_card_id', '=', False),('employee_state', '!=', 'employee')]}"/>
+								<field name="employee_state" widget="statusbar"
+									attrs="{'invisible': [('employee_state', '=', 'employee')]}"
+									statusbar_visible="new,waiting,done,refused" />
+								<field name="emp_state"
+									attrs="{'invisible': [('employee_state', '!=', 'employee')]}" />
+
+
+						
 						</header>
 						<sheet>
+						<field name="employee_card_id" invisible="1" />
 							<field name="display_name" invisible="1" />
 							<field name="is_saudian" invisible="1" />
 							<div class="oe_button_box" name="button_box" position="inside">

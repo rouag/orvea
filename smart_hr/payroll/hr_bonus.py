@@ -132,10 +132,10 @@ class hrBonusLine(models.Model):
         degree = employee.degree_id
         amount = 0.0
         # search the correct salary_grid for this employee
-        salary_grids = employee.get_salary_grid_id(False)[0]
+        salary_grids, basic_salary = employee.get_salary_grid_id(False)
         if not salary_grids:
             return
-        basic_salary = employee.get_salary_grid_id(False)[1]
+        basic_salary = basic_salary
         # compute
         if self.compute_method == 'amount':
             amount = self.amount
