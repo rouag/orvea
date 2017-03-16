@@ -84,7 +84,7 @@ class HrPublicHoliday(models.Model):
         self.state = 'done'
 
     @api.multi
-    def button_refuse_hrm(self):
+    def button_refuse(self):
         self.ensure_one()
         self.state = 'draft'
 

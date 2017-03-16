@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
-
-from openerp import models, fields, api, _
-from openerp.exceptions import except_orm, Warning, RedirectWarning
+from openerp import models, fields, api, _, SUPERUSER_ID
+from openerp.exceptions import Warning
+from dateutil.relativedelta import relativedelta
+from openerp.exceptions import ValidationError
+from datetime import date, datetime, timedelta
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class HrImproveSituatim(models.Model):
@@ -15,11 +18,10 @@ class HrImproveSituatim(models.Model):
     number = fields.Char(string='الرقم الموظف', readonly=1)
     state = fields.Selection([('new', 'طلب'), ('waiting', 'في إنتظار الإعتماد'), ('done', 'اعتمدت')], readonly=1,
                              default='new')
-   # order_picture = fields.Binary(string='صورة القرار', attachment=True)
-    order_date = fields.Date(string='تاريخ القرار', required=1)
-    date_hiring = fields.Date(string='تاريخ التعيين', required=1)
+    order_date = fields.Date(string='تاريخ الطلب', default=fields.Datetime.now())
+    order_number = fields.Char(string='رقم الخطاب', required=1)
     job_id = fields.Many2one('hr.job', string='الوظيفة', readonly=1)
-    number_job = fields.Char(string='الرقم الوظيفي', readonly=1)
+    number_job = fields.Char(string='الرمز الوظيفي', readonly=1)
     type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1)
     department_id = fields.Many2one('hr.department', string='الادارة', readonly=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
@@ -33,18 +35,37 @@ class HrImproveSituatim(models.Model):
     transport_alocation = fields.Boolean(string='بدل نقل', readonly=1)
     type_improve = fields.Many2one('hr.type.improve.situation', string='نوع التحسين', required=1,
                                    states={'new': [('readonly', 0)]})
-    order_picture1 = fields.Binary(string='صورة القرار', required=1, attachment=True)
-    job_id1 = fields.Many2one('hr.job', string='الوظيفة')
-    number_job1 = fields.Char(string='الرقم الوظيفي')
-    order_date1 = fields.Date(string='تاريخ القرار', required=1)
-    date_hiring1 = fields.Date(string='تاريخ التعيين', required=1)
+    order_picture1 = fields.Binary(string='صورة القرار')
+    new_job_id = fields.Many2one('hr.job', string='الوظيفة', required=1,Domain=[('state','=','unoccupied')])
+    number_job1 = fields.Char(string='رقم الوظيفة')
+    order_date1 = fields.Date(string='تاريخ القرار')
+    date_hiring1 = fields.Date(string='تاريخ التعيين')
     type_id1 = fields.Many2one('salary.grid.type', string='الصنف')
-    department_id1 = fields.Many2one('hr.department', string='الادارة')
-    grade_id1 = fields.Many2one('salary.grid.grade', string='المرتبة')
-    degree_id1 = fields.Many2one('salary.grid.degree', string='الدرجة')
+    department_id1 = fields.Many2one('hr.department', string='الادارة', readonly=1)
+    grade_id1 = fields.Many2one('salary.grid.grade', string='المرتبة' , readonly=1)
+    degree_id1 = fields.Many2one('salary.grid.degree', string='الدرجة' , required=1)
     basic_salary1 = fields.Float(string='الراتب الأساسي')
     net_salary1 = fields.Float(string='صافي الراتب')
     is_same_type = fields.Boolean(string='نفس الصنف',related="type_improve.is_same_type")
+
+
+    @api.onchange('type_id1')
+    def onchange_type_id1(self):
+        res = {}
+        print'type_id1',self.type_id1.id
+        if  self.type_id1:
+            job_search_ids = self.env['hr.job'].search([('type_id','=',self.type_id1.id)])
+            print"job_search_ids",job_search_ids
+            job_ids = [rec.id for rec in job_search_ids]
+            res['domain'] = {'new_job_id': [('id', 'in', job_ids)]}
+            return res
+
+    @api.onchange('new_job_id')
+    def _onchange_new_job_id(self):
+        for rec in self:
+            if rec.new_job_id :
+                rec.department_id1 = rec.new_job_id.department_id
+                rec.grade_id1 = rec.new_job_id.grade_id
 
     @api.one
     def action_waiting(self):
@@ -53,26 +74,20 @@ class HrImproveSituatim(models.Model):
     @api.multi
     def action_done(self):
         self.ensure_one()
-        for line in self:
-            improve_val = {
-
-                'degree_id': line.degree_id1.id,
-                'job_id': line.job_id1.id,
-                'number_job': line.number_job1,
-                'type_id': line.type_id1.id,
-                'basic_salary': line.basic_salary1,
-                'type_improve': line.type_improve.id,
-                'grade_id': line.grade_id1.id,
-                'department_id': line.department_id1.id,
-            }
-            self.env['hr.decision.appoint'].search([('employee_id', '=', line.employee_id.id),('state_appoint','=','active'),()], limit=1).write({
-                'job_id': line.job_id1.id,
-                'degree_id': line.degree_id1.id,
-                'number_job': line.number_job1,
-                'type_id': line.type_id1.id,
-                'basic_salary': line.basic_salary1,
-                'grade_id': line.grade_id1.id,
-                'department_id': line.department_id1.id, })
+        self.env['hr.decision.appoint'].create({'employee_id': self.employee_id.id,
+                                                'job_id': self.new_job_id.id,
+                                                'number_job': self.new_job_id.number,
+                                                'code': self.new_job_id.name.number,
+                                                'grade_id': self.new_job_id.grade_id.id,
+                                                'department_id': self.new_job_id.department_id.id,
+                                                'number_job': self.new_job_id,
+                                                'degree_id': self.degree_id1.id,
+                                                'date_hiring': self.order_date,
+                                                'order_date': fields.Datetime.now(),
+                                                'state': 'draft',
+                                                'type_appointment': self.type_improve.type_appointment.id,
+                                                'name': self.order_number,
+                                                  })
         self.state = 'done'
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت إحداث تحسين الوضع جديد '" + unicode(user.name) + u"'")
@@ -97,18 +112,11 @@ class HrImproveSituatim(models.Model):
                 self.department_id = employee_id_line.department_id
                 self.basic_salary = employee_id_line.basic_salary
 
-#     @api.onchange('job_id1')
-#     def _onchange_job_id1(self):
-#         if self.job_id1:
-#             self.number_job1 = self.job_id1.number
-#             self.type_id1 = self.job_id1.type_id.id
-#             self.grade_id1 = self.job_id1.grade_id.id
-#             self.department_id1 = self.job_id1.department_id.id
-
     @api.onchange('type_improve')
     def _onchange_type_improve(self):
         for rec in self:
             if rec.type_improve.is_same_type == True :
+                rec.new_job_id = rec.job_id
                 rec.type_id1 = rec.type_id 
 
 class HrTypeImproveSituation(models.Model):

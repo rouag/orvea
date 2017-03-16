@@ -186,19 +186,16 @@ class HrOvertimeLigne(models.Model):
                              ('holidays', 'أيام الأعياد'),
                              ('normal_days', 'الايام العادية')
                              ], string='نوع خارج الدوام', default='friday_saturday')
-    days_number = fields.Integer(string='عدد الايام ' ,compute='_compute_duration')
+    days_number = fields.Integer(string='عدد الايام ' )
     heure_number = fields.Integer(string='عدد الساعات')
     date_from = fields.Date(string=u'التاريخ من ')
     date_to = fields.Date(string=u'الى')
     mission = fields.Text(string='المهمة',required=1)
 
-    @api.one
-    @api.depends('date_from', 'date_to')
-    def _compute_duration(self):
-        if self.date_from and self.date_to:
-            date_from = fields.Date.from_string(self.date_from)
-            date_to = fields.Date.from_string(self.date_to)
-            self.days_number = (date_to - date_from).days + 1
+    @api.onchange('days_number')
+    def _onchange_days_number(self):
+        if self.days_number:
+            self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.days_number)
 
     @api.one
     @api.constrains('date_from', 'date_to')

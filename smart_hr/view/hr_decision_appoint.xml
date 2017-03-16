@@ -207,18 +207,19 @@
 										<field name="employee_id"
 											options="{'no_open': True,'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 											attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])],'readonly':['|',('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse']), ('type_appointment','=',False)]}" />
-										
-										
-											<field name="contract_id"  	domain="[('employee_id', '=', employee_id)]"
-												attrs="{'invisible':[('is_contract', '=', False)],'readonly':['|',('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse']), ('type_appointment','=',False)]}" />
-											
-											
-											
+
+
+										<field name="contract_id" domain="[('employee_id', '=', employee_id)]"
+											attrs="{'invisible':[('is_contract', '=', False)],'readonly':['|',('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse']), ('type_appointment','=',False)]}" />
+
+
+
 										<field name="number" />
 										<field name="country_id" />
 										<field name="emp_job_id" />
 										<field name="emp_number_job" />
 										<field name="emp_code" />
+										<field name="emp_department_id" />
 										<field name="date_medical_examination"
 											attrs="{'invisible':['|',('state', 'not in', ['draft','waiting', 'manager','hrm', 'budget', 'done'])],'required':[('type_appointment', '=', %(data_hr_new_agent_public)d)],'readonly':[('state', 'in', [ 'audit','waiting','manager', 'budget','hrm','direct','civil', 'done','refuse'])]}" />
 										<field name="medical_examination_file" filename="medical_examination_name"
@@ -232,20 +233,14 @@
 										<field name="file_engagement" widget="many2many_binary"
 											filename="file_engagement_name"
 											attrs="{'invisible':['|',('state', 'not in', ['draft','waiting', 'manager','hrm', 'budget','civil', 'done']),('type_appointment', '!=', %(data_hr_new_agent_public)d)],'readonly':[('state', 'in', [ 'waiting', 'manager', 'hrm', 'budget', 'civil','done'])]}" />
-
+										
 										<field name="file_salar_recent_name" invisible="1" />
-											<field name="is_contract" invisible="1" />
+										<field name="is_contract" invisible="1" />
 										<field name="order_enquiry_file_name" invisible="1" />
 										<field name="medical_examination_name" invisible="1" />
 
 									</group>
 									<group>
-										<field name="emp_type_id" />
-										<field name="emp_grade_id" />
-										<field name="emp_degree_id" />
-										<field name="emp_department_id" />
-										<field name="emp_far_age" />
-										<field name="emp_basic_salary" />
 										<field name="option_contract" invisible="1" />
 									</group>
 								</group>

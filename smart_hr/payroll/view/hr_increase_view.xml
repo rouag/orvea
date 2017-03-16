@@ -32,7 +32,8 @@
 							states="draft" groups="smart_hr.group_increase_employee" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_hrm" string="إعتماد" type="object"
 							states="pim" groups="smart_hr.group_increase_manager" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_refuse" string="رفض" type="object"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action"
 							states="pim" groups="smart_hr.group_increase_manager" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_pim2" string="إعتماد" type="object"
 							states="hrm" groups="smart_hr.group_hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
@@ -67,7 +68,7 @@
 									domain="[('type_id','!=',%(data_salary_grid_type6)d)]" attrs="{'readonly':[('state','not in',['draft','pim'])]}">
 									<tree>
 										<field name="display_name" string="الاسم" />
-										<field name="number" string="الرقم الوظيفي" />
+										<field name="number" string="رقم الوظيفة" />
 										<field name="employee_state" string="الحالة" />
 									</tree>
 								</field>

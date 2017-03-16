@@ -164,7 +164,7 @@
 				<xpath expr="//tree" position='replace'>
 					<tree>
 						<field name="display_name" string="الموظف" />
-						<field name="number" string="الرقم الوظيفي" />
+						<field name="number" string="رقم الوظيفة" />
 
 
 						<field name="employee_state" string="الحالة" />
@@ -291,7 +291,7 @@
 							<label for="number" class="oe_edit_only"
 								attrs="{'invisible': [('number', '=', False)]}" />
 							<h1>
-								<field name="number" placeholder="الرقم الوظيفي" class="oe_smart_inline"
+								<field name="number" placeholder="رقم الوظيفة" class="oe_smart_inline"
 									readonly="1" />
 
 							</h1>
@@ -422,26 +422,22 @@
 									</group>
 								</page>
 								<page string="بيانات البنك">
-
 									<group string="بيانات البنك">
 										<field name="address_home_id" invisible="1" />
 										<field name="bank_account_id" invisible="1" />
-										<field name="bank_account_ids" options="{'no_create': True}"
+										<field name="bank_account_ids" 
 											nolabel="1">
-											<tree create="false" delete="false">
+											<tree  delete="false">
 												<field name="acc_number" />
 												<field name="bank_name" string="البنك" />
 												<field name="currency_id" />
 												<field name="account_opening_date" />
 												<field name="is_deposit" />
-
 											</tree>
 										</field>
 									</group>
-
 									<group name="active_group" invisible="1" />
 								</page>
-
 								<page string="أرصدة الاجازات والترقيات" invisible="1">
 									<separator string="أرصدة الاجازات" />
 									<field name="holidays_balance"

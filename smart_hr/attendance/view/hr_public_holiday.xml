@@ -32,7 +32,8 @@
 						<button name="button_accept_hrm" string="موافق" type="object"
 							states="hrm" groups="smart_hr.group_hrm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_refuse_hrm" string="رفض" type="object"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action"
 							states="hrm" groups="smart_hr.group_hrm" icon="fa-times"
 							class="oe_inline oe_stat_button" />
 						<field name="state" widget="statusbar" statusbar_visible="draft,hrm,done" />

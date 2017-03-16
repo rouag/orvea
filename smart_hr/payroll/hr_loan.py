@@ -29,7 +29,7 @@ class HrLoan(models.Model):
 
     name = fields.Char(string='رقم القرض', required=1, readonly=1, states={'new': [('readonly', 0)]})
     employee_id = fields.Many2one('hr.employee', string='الموظف', required=1, readonly=1, states={'new': [('readonly', 0)]})
-    number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' الرقم الوظيفي')
+    number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' رقم الوظيفة')
     job_id = fields.Many2one(related='employee_id.job_id', store=True, readonly=True, string=' الوظيفة')
     department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string=' الادارة')
     loan_type_id = fields.Many2one('hr.loan.type', string='نوع القرض', required=1, readonly=1, states={'new': [('readonly', 0)]})
@@ -98,7 +98,7 @@ class HrLoan(models.Model):
         self.state = 'waiting'
 
     @api.one
-    def action_refuse(self):
+    def button_refuse(self):
         self.state = 'cancel'
 
     @api.multi
