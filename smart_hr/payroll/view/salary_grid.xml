@@ -27,6 +27,7 @@
 								<field name="basic_salary" />
 								<field name="increase" />
 								<field name="retirement" />
+								<field name="retirement_amount" />
 								<field name="insurance_type" />
 								<field name="insurance" />
 								<field name="net_salary" />
@@ -182,7 +183,7 @@
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="basic_salary" />
 								<field name="increase" />
-								<field name="retirement" />
+								<field name="retirement_amount" />
 								<field name="net_salary" />
 								<field name="date" invisible="1" />
 							</tree>

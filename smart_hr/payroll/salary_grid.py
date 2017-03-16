@@ -103,6 +103,7 @@ class SalaryGridDetail(models.Model):
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
     basic_salary = fields.Float(string='الراتب الأساسي', required=1)
     retirement = fields.Float(string='نسبة المحسوم للتقاعد')
+    retirement_amount = fields.Float(string='مبلغ محسوم التقاعد', readonly=1)
     insurance = fields.Float(string='نسبة  التأمين')
     net_salary = fields.Float(string='صافي الراتب', readonly=1, compute='_compute_net_salary')
     allowance_ids = fields.One2many('salary.grid.detail.allowance', 'grid_detail_id', string='البدلات')
@@ -124,6 +125,7 @@ class SalaryGridDetail(models.Model):
                 net_salary += indemnity.get_value(False)
             # deductions
             retirement = rec.basic_salary * rec.retirement / 100.0
+            rec.retirement_amount = retirement
             insurance = rec.basic_salary * rec.insurance / 100.0
             net_salary -= retirement
             net_salary -= insurance
