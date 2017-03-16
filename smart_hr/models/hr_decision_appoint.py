@@ -533,7 +533,9 @@ class HrDecisionAppoint(models.Model):
             self.emp_degree_id = appoint_line.degree_id.id
             self.emp_department_id = appoint_line.department_id.id
             self.emp_date_direct_action = appoint_line.date_direct_action
-    
+        if self.date_direct_action and self.employee_id:
+            if self.env['hr.holidays'].search_count([('state', '=', 'done'), ('date_from', '<=', self.date_direct_action), ('date_to', '>=', self.date_direct_action), ('employee_id', '=', self.employee_id.id)]) != 0:
+                raise ValidationError(u"هناك تداخل فى تاريخ المباشرة مع يوم إجازة")        
 
     @api.onchange('job_id')
     def _onchange_job_id(self):
@@ -562,11 +564,20 @@ class HrDecisionAppoint(models.Model):
                 self.net_salary = salary_grid_line.net_salary
 
     @api.onchange('date_direct_action')
+    @api.constrains('date_direct_action')
     def _onchange_date_direct_action(self):
         if self.date_direct_action:
             if self.date_hiring > self.date_direct_action:
                 raise ValidationError(u"تاريخ مباشرة العمل يجب ان يكون أكبر من تاريخ التعيين")
-
+            is_holiday = self.env['hr.smart.utils'].check_holiday_weekend_days(self.date_direct_action, self.employee_id)
+            if is_holiday:
+                if is_holiday == "official holiday":
+                    raise ValidationError(u"هناك تداخل فى تاريخ المباشرة مع اعياد و عطل رسمية")
+                elif is_holiday == "weekend":
+                    raise ValidationError(u"هناك تداخل فى تاريخ المباشرة مع عطلة نهاية الاسبوع")
+                elif is_holiday == "holiday":
+                    raise ValidationError(u"هناك تداخل فى تاريخ المباشرة مع يوم إجازة")        
+        
     @api.onchange('date_hiring_end')
     def _onchange_date_hiring_end(self):
         if self.date_hiring_end:

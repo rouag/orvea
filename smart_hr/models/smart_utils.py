@@ -67,3 +67,17 @@ class SmartUtils(models.Model):
             while new_date_to.weekday() in [4, 5] or self.check_holiday_day(new_date_to) is True:
                 new_date_to += timedelta(days=1)
             return new_date_to
+
+# check if date is in official holiday, weekend or employee in holiday
+    def check_holiday_weekend_days(self, date, employee_id):
+        if date:
+            if not isinstance(date, dt.date):
+                date = fields.Date.from_string(date)
+            if self.check_holiday_day(date):
+                return "official holiday"
+            elif date.weekday() in [4, 5]:
+                return "weekend"
+            elif self.env['hr.holidays'].search_count([('state', '=', 'done'), ('date_from', '<=', date), ('date_to', '>=', date), ('employee_id', '=', employee_id.id)]) != 0:
+                return "holiday"
+            else:
+                return False
