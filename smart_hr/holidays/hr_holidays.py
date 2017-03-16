@@ -177,7 +177,7 @@ class HrHolidays(models.Model):
                 current_stock = str("لا تحتاج رصيد")
             else:
                 current_stock = stock['current_stock']
-            self.current_holiday_stock = current_stock
+            holiday.current_holiday_stock = current_stock
 
     @api.multi
     def _compute_is_started(self):
