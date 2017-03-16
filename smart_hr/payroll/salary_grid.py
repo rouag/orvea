@@ -243,7 +243,7 @@ class SalaryGridDetailReward(models.Model):
                 raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
         else:
             salary_grids = self.grid_detail_id
-        basic_salary = salary_grids.basic_salary
+            basic_salary = salary_grids.basic_salary
         # compute
         if self.compute_method == 'amount':
             amount = self.amount
@@ -308,7 +308,7 @@ class SalaryGridDetailIndemnity(models.Model):
                 raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
         else:
             salary_grids = self.grid_detail_id
-        basic_salary = salary_grids.basic_salary
+            basic_salary = salary_grids.basic_salary
         # compute
         if self.compute_method == 'amount':
             amount = self.amount
