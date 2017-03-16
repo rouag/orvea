@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from openerp import models, fields, api, _
 import openerp.addons.decimal_precision as dp
+from openerp.exceptions import ValidationError
 
 
 class HrEmployee(models.Model):
@@ -11,6 +12,7 @@ class HrEmployee(models.Model):
     # basic salary for retired employee
     basic_salary = fields.Float(string=u'الراتب الأساسي', default=0)
     net_salary = fields.Float(string=u'صافي الراتب', compute='_compute_net_salary')
+    hr_employee_allowance_ids = fields.One2many('hr.employee.allowance', 'employee_id', readonly=1)
 
     @api.multi
     def _compute_net_salary(self):
@@ -53,3 +55,12 @@ class HrEmployee(models.Model):
         else:
             basic_salary = self.basic_salary + sum_increases_amount
         return salary_grid_id, basic_salary
+
+
+class HrEmployeeAllowance(models.Model):
+    _name = 'hr.employee.allowance'
+
+    employee_id = fields.Many2one('hr.employee', string='الموظف')
+    allowance_id = fields.Many2one('hr.allowance.type', string='البدل', required=1)
+    amount = fields.Float(string='المبلغ')
+    date = fields.Date(string='التاريخ')
