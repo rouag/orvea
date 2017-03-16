@@ -51,6 +51,7 @@ class HrJob(models.Model):
     type_resevation = fields.Selection([('promotion', u'للترقية')], string=u'نوع الحجز')
     occupied_promotion = fields.Boolean(string='للترقية', )
     promotion_employee_id = fields.Many2one('hr.promotion.employee.job', string=u'الموظف')
+    history_ids = fields.One2many('hr.job.history.actions', 'job_id', string=u'سجل الاجرءات')
 
     @api.multi
     @api.depends('occupation_date_to')
@@ -82,6 +83,16 @@ class HrJob(models.Model):
             'context': context,
             'target': 'new',
         }
+
+
+class HrJobHistoryActions(models.Model):
+    _name = 'hr.job.history.actions'
+    _description = u'سجل الاجرا ءات'
+
+    action = fields.Char(string=u' الاجراء')
+    action_date = fields.Date(string=u'التاريخ')
+    description = fields.Char(string=u'تفصيل الاجراء')
+    job_id = fields.Many2one(string=u'الوظيفة')
 
 
 class HrJobName(models.Model):
@@ -219,6 +230,7 @@ class HrJobCreate(models.Model):
     @api.multi
     def action_done(self):
         self.ensure_one()
+        user = self.env['res.users'].browse(self._uid)
         for line in self.line_ids:
             job_val = {'name': line.name.id,
                        'number': line.job_number,
@@ -232,9 +244,16 @@ class HrJobCreate(models.Model):
                        'creation_source': 'creation'
 
                        }
-            self.env['hr.job'].create(job_val)
+            job_id = self.env['hr.job'].create(job_val)
+            description = u" إحداث الوظيفة من قبل " + " " + unicode(user.name) + u"'"
+            job_history_vals = {
+                'action': 'إحداث الوظيفة',
+                'action_date': date.today(),
+                'description': description,
+                'job_id': job_id.id,
+                }
+            self.env['hr.job.history.actions'].create(job_history_vals)
         self.state = 'done'
-        user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت إحداث الوظائف من قبل '" + unicode(user.name) + u"'")
 
     @api.multi
@@ -441,6 +460,7 @@ class HrJobStripFrom(models.Model):
     @api.multi
     def action_done(self):
         self.ensure_one()
+        user = self.env['res.users'].browse(self._uid)
         for line in self.line_ids:
             job_val = {'name': line.name.id,
                        'number': line.job_number,
@@ -452,7 +472,15 @@ class HrJobStripFrom(models.Model):
                        'serie_id': self.serie_id.id,
                        'creation_source': 'striped_from'
                        }
-            self.env['hr.job'].create(job_val)
+            job_id = self.env['hr.job'].create(job_val)
+            description = u" إحداث الوظيفة بسلخ من قبل " + " " + unicode(user.name) + u"'"
+            job_history_vals = {
+                'action': 'إحداث بسلخ',
+                'action_date': date.today(),
+                'description': description,
+                'job_id':job_id.id
+                }
+            self.env['hr.job.history.actions'].create(job_history_vals)
         self.state = 'done'
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت إحداث الوظائف من قبل '" + unicode(user.name) + u"'")
@@ -632,11 +660,19 @@ class HrJobStripTo(models.Model):
     def action_done(self):
         self.ensure_one()
         self.state = 'done'
+        user = self.env['res.users'].browse(self._uid)
         for job in self.line_ids:
             job.job_id.state = 'cancel'
             job.job_id.is_striped_to = True
             job.job_id.creation_source = 'striped_to'
-        user = self.env['res.users'].browse(self._uid)
+            description = u" إلغاء الوظيفة بسلخها الى " + " " + unicode(self.destination_location) + " " + u"من قبل" + " " + unicode(user.name) + u"'"
+            job_history_vals = {
+                'action': 'سلخ إلى جهة   ',
+                'action_date': date.today(),
+                'description': description,
+                'job_id': job.job_id.id
+                }
+            self.env['hr.job.history.actions'].create(job_history_vals)
         self.message_post(u"تمت إلغاء الوظائف من قبل '" + unicode(user.name) + u"'")
 
     @api.multi
@@ -729,10 +765,18 @@ class HrJobCancel(models.Model):
     def action_done(self):
         self.ensure_one()
         self.state = 'done'
+        user = self.env['res.users'].browse(self._uid)
         for job in self.job_cancel_ids:
             job.job_id.state = 'cancel'
             job.job_id.creation_source = 'cancel'
-        user = self.env['res.users'].browse(self._uid)
+            description = u" إلغاء الوظيفة من قبل " + " " + unicode(user.name) + u"'"
+            job_history_vals = {
+                'action': 'إلغاء الوظيفة',
+                'action_date': date.today(),
+                'description':  description,
+                'job_id':job.job_id.id
+                }
+            self.env['hr.job.history.actions'].create(job_history_vals)
         self.message_post(u"تمت إلغاء الوظائف من قبل '" + unicode(user.name) + u"'")
 
     @api.multi
@@ -908,7 +952,14 @@ class HrJobMoveDeparrtment(models.Model):
     def action_job_unreserve(self):
         self.ensure_one()
         for rec in self.job_movement_ids:
-            rec.job_id.write({'state': 'unoccupied', 'department_id': rec.new_department_id.id, 'creation_source':'move'})
+            rec.job_id.write({'state': 'unoccupied', 'department_id': rec.new_department_id.id, 'creation_source': 'move'})
+            description = u" نقل الوظيفة الى " + " " + unicode(rec.new_department_id.name) + u"'"
+            job_history_vals = {
+                'action': 'نقل الوظيفة',
+                'action_date': date.today(),
+                'description': description,
+                'job_id': rec.job_id.id}
+            self.env['hr.job.history.actions'].create(job_history_vals)
         self.state = 'done'
 
     @api.multi
@@ -1070,8 +1121,19 @@ class HrJobMoveGrade(models.Model):
         for job in self.job_movement_ids:
             job.job_id.grade_id = job.new_grade_id.id
             job.job_id.creation_source = self.move_type
+            if self.move_type == "scale_up":
+                move_type = "رفع"
+            else:
+                move_type = "خفض"
+            description = move_type + " " + u" الوظيفة من المرتبة " + " " + unicode(job.grade_id.name) + " " + u" الى المرتبة" + " " + unicode(job.new_grade_id.name) + u"."
+            job_history_vals = {
+                'action': move_type,
+                'action_date': date.today(),
+                'description': description,
+                'job_id': job.job_id.id}
+            self.env['hr.job.history.actions'].create(job_history_vals)
         user = self.env['res.users'].browse(self._uid)
-        self.message_post(u"تمت " + self.move_type + u" الوظائف من قبل '" + unicode(user.name) + u"'")
+        self.message_post(u"تمت " + move_type + u" الوظائف من قبل '" + unicode(user.name) + u"'")
 
     @api.multi
     def button_refuse(self):
@@ -1337,6 +1399,18 @@ class HrJobMoveUpdate(models.Model):
             rec.job_id.date_update = datetime.now()
             rec.job_id.type_id = rec.new_type_id
             rec.job_id.creation_source = 'update'
+            description = ""
+            if rec.new_name:
+                description += " تحوير المسمى من " + " " + str(rec.old_name.name) + " " + " الى "+ " " + str(rec.new_name.name)+". \n"
+            if rec.new_type_id:
+                description += " تحوير الصنف من " + " " + str(rec.old_type_id.name) + " " + "الى"+ " " + str(rec.new_type_id.name)+"."
+            job_history_vals = {
+                'action': 'تحوير‬ الوظيفة',
+                'action_date': date.today(),
+                'description': description,
+                'job_id':rec.job_id.id
+                }
+            self.env['hr.job.history.actions'].create(job_history_vals)
         self.state = 'done'
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تم تحوير‬ الوظائف من قبل '" + unicode(user.name) + u"'")
