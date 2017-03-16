@@ -164,6 +164,7 @@
         # الرواتب
         'payroll/menu.xml',
         'payroll/data/salary_grid_type_data.xml',
+        'payroll/data/schedulers.xml',
         'payroll/wizard/wizard_bonus_employee.xml',
         'payroll/wizard/wizard_bonus_action.xml',
         'payroll/wizard/wizard_deducation_action.xml',

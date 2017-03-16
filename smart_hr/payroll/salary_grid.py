@@ -103,7 +103,7 @@ class SalaryGridDetail(models.Model):
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
     basic_salary = fields.Float(string='الراتب الأساسي', required=1)
     retirement = fields.Float(string='نسبة المحسوم للتقاعد')
-    retirement_amount = fields.Float(string='مبلغ محسوم التقاعد', readonly=1)
+    retirement_amount = fields.Float(string='المبلغ المحسوم للتقاعد', readonly=1)
     insurance = fields.Float(string='نسبة  التأمين')
     net_salary = fields.Float(string='صافي الراتب', readonly=1, compute='_compute_net_salary')
     allowance_ids = fields.One2many('salary.grid.detail.allowance', 'grid_detail_id', string='البدلات')
@@ -114,7 +114,7 @@ class SalaryGridDetail(models.Model):
     transport_allowance_amout = fields.Float(string='مبلغ بدل النقل', readonly=1)
 
     @api.multi
-    @api.depends('allowance_ids', 'reward_ids', 'indemnity_ids', 'basic_salary', 'retirement', 'insurance', 'retirement')
+    @api.depends('allowance_ids', 'reward_ids', 'indemnity_ids', 'basic_salary', 'retirement', 'insurance')
     def _compute_net_salary(self):
         transport_allowwance = self.env.ref('smart_hr.hr_allowance_type_01')
         for rec in self:
@@ -178,6 +178,7 @@ class SalaryGridDetailAllowance(models.Model):
                 raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
         else:
             salary_grids = self.grid_detail_id
+            basic_salary = salary_grids.basic_salary
         # compute
         if self.compute_method == 'amount':
             amount = self.amount
@@ -348,3 +349,7 @@ class SalaryIncrease(models.Model):
     date = fields.Date(string='التاريخ')
     employee_id = fields.Many2one('hr.employee')
 
+    @api.model
+    def update_salary_increases(self):
+        employee_ids = self.env['hr.employee'].search([()])
+        

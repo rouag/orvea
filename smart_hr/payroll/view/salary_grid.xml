@@ -27,11 +27,11 @@
 								<field name="basic_salary" />
 								<field name="increase" />
 								<field name="retirement" />
-								<field name="retirement_amount" />
+								<field name="retirement_amount" invisible="1" />
 								<field name="insurance_type" />
 								<field name="insurance" />
 								<field name="net_salary" />
-								<field name="transport_allowance_amout" invisible="1" />
+								<field name="transport_allowance_amout" />
 							</group>
 						</group>
 						<notebook>
@@ -244,10 +244,16 @@
 			<field name="arch" type="xml">
 				<tree string="تفاصيل سلالم الرواتب">
 					<field name="grid_id" />
-					<field name="type_id" />
-					<field name="grade_id" />
-					<field name="degree_id" />
+					<field name="type_id"
+						options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+					<field name="grade_id"
+						options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+					<field name="degree_id"
+						options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 					<field name="basic_salary" />
+					<field name="increase" />
+					<field name="retirement_amount" />
+					<field name="transport_allowance_amout" />
 					<field name="net_salary" />
 					<field name="date" />
 				</tree>
