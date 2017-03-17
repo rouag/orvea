@@ -170,7 +170,7 @@
 													<field name="amount_difference" />
 												
 												<field name="deduction" />
-												
+													<field name="raison" />
 												<field name="state" />
 												<button
 													name="%(smart_hr.action_wizard_sanction_action_exclusion)d"
