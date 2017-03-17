@@ -117,7 +117,7 @@ class HrDifference(models.Model):
                 number_of_hours = overtime.heure_number
             # get number of hours
             total_hours = number_of_days * 7 + number_of_hours
-            amount_hour = basic_salary / 22.0 / 7.0  # TODO: 22.0 and 7.0 : get it from worker days
+            amount_hour = basic_salary / 30.0 / 7.0
             rate_hour = overtime_setting.normal_days
             if overtime.type == 'friday_saturday':
                 rate_hour = overtime_setting.friday_saturday

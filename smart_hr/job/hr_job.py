@@ -36,8 +36,10 @@ class HrJob(models.Model):
          ('decrease', u'خفظ')], string=u'الحالة', readonly=1, default='unoccupied')
     employee = fields.Many2one('hr.employee', string=u'الموظف')
     occupied_date = fields.Date(string=u'تاريخ الشغول')
-    creation_source = fields.Selection([('creation', u'إحداث'), ('striped_from', u'سلخ')], readonly=1,
-                                       default='creation', string=u'المصدر')
+    creation_source = fields.Selection([('creation', u'إحداث'), ('striped_from', u'سلخ  من جهة'),
+                                        ('striped_to', u'سلخ إلى جهة'), ('cancel', u'إلغاء'),
+                                        ('scale_up', u'رفع'), ('scale_down', u'خفض'), ('update', u'تحوير‬'),
+                                        ('move', u'نقل')], readonly=1, string=u'المصدر')
     # حجز الوظيفة
     occupation_date_from = fields.Date(string=u'حجز الوظيفة من')
     occupation_date_to = fields.Date(string=u'حجز الوظيفة الى', )
@@ -49,6 +51,7 @@ class HrJob(models.Model):
     type_resevation = fields.Selection([('promotion', u'للترقية')], string=u'نوع الحجز')
     occupied_promotion = fields.Boolean(string='للترقية', )
     promotion_employee_id = fields.Many2one('hr.promotion.employee.job', string=u'الموظف')
+    history_ids = fields.One2many('hr.job.history.actions', 'job_id', string=u'سجل الاجرءات')
 
     @api.multi
     @api.depends('occupation_date_to')
@@ -80,6 +83,16 @@ class HrJob(models.Model):
             'context': context,
             'target': 'new',
         }
+
+
+class HrJobHistoryActions(models.Model):
+    _name = 'hr.job.history.actions'
+    _description = u'سجل الاجرا ءات'
+
+    action = fields.Char(string=u' الاجراء')
+    action_date = fields.Date(string=u'التاريخ')
+    description = fields.Char(string=u'تفصيل الاجراء')
+    job_id = fields.Many2one(string=u'الوظيفة')
 
 
 class HrJobName(models.Model):
@@ -144,10 +157,9 @@ class HrJobCreate(models.Model):
                                   default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)],
                                                                                       limit=1), required=1, readonly=1)
     fiscal_year = fields.Char(string='السنه المالية', default=(date.today().year), readonly=1)
-    decision_number = fields.Char(string=u"رقم القرار", required=1, readonly=1, states={'new': [('readonly', 0)]})
-    decision_date = fields.Date(string=u'تاريخ القرار', required=1, readonly=1, states={'new': [('readonly', 0)]})
-    decision_file = fields.Binary(string=u'نسخة القرار', required=1, readonly=1, states={'new': [('readonly', 0)]},
-                                  attachment=True)
+    decision_number = fields.Char(string=u"رقم القرار")
+    decision_date = fields.Date(string=u'تاريخ القرار')
+    decision_file = fields.Binary(string=u'نسخة القرار', attachment=True)
     decision_file_name = fields.Char(string=u'نسخة القرار مسمى')
     speech_number = fields.Char(string=u'رقم الخطاب')
     speech_date = fields.Date(string=u'تاريخ الخطاب')
@@ -218,6 +230,7 @@ class HrJobCreate(models.Model):
     @api.multi
     def action_done(self):
         self.ensure_one()
+        user = self.env['res.users'].browse(self._uid)
         for line in self.line_ids:
             job_val = {'name': line.name.id,
                        'number': line.job_number,
@@ -228,10 +241,19 @@ class HrJobCreate(models.Model):
                        'specific_id': self.specific_id.id,
                        'serie_id': self.serie_id.id,
                        'activity_type': line.activity_type.id,
+                       'creation_source': 'creation'
+
                        }
-            self.env['hr.job'].create(job_val)
+            job_id = self.env['hr.job'].create(job_val)
+            description = u" إحداث الوظيفة من قبل " + " " + unicode(user.name) + u"'"
+            job_history_vals = {
+                'action': 'إحداث الوظيفة',
+                'action_date': date.today(),
+                'description': description,
+                'job_id': job_id.id,
+                }
+            self.env['hr.job.history.actions'].create(job_history_vals)
         self.state = 'done'
-        user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت إحداث الوظائف من قبل '" + unicode(user.name) + u"'")
 
     @api.multi
@@ -328,9 +350,6 @@ class HrJobStripFrom(models.Model):
     source_location = fields.Many2one('res.partner', string=u"المصدر",
                                       domain=[('company_type', '=', 'governmental_entity')], required=1, readonly=1,
                                       states={'new': [('readonly', 0)]})
-    #     decision_number = fields.Char(string=u"رقم القرار", required=1, readonly=1, states={'new': [('readonly', 0)]})
-    #     decision_date = fields.Date(string=u'تاريخ القرار')
-    #     decision_file = fields.Binary(string=u'نسخة القرار', attachment=True)
     speech_number = fields.Char(string=u'رقم الخطاب')
     speech_date = fields.Date(string=u'تاريخ الخطاب')
     speech_file = fields.Binary(string=u'صورة الخطاب', attachment=True)
@@ -441,6 +460,7 @@ class HrJobStripFrom(models.Model):
     @api.multi
     def action_done(self):
         self.ensure_one()
+        user = self.env['res.users'].browse(self._uid)
         for line in self.line_ids:
             job_val = {'name': line.name.id,
                        'number': line.job_number,
@@ -452,7 +472,15 @@ class HrJobStripFrom(models.Model):
                        'serie_id': self.serie_id.id,
                        'creation_source': 'striped_from'
                        }
-            self.env['hr.job'].create(job_val)
+            job_id = self.env['hr.job'].create(job_val)
+            description = u" إحداث الوظيفة بسلخ من قبل " + " " + unicode(user.name) + u"'"
+            job_history_vals = {
+                'action': 'إحداث بسلخ',
+                'action_date': date.today(),
+                'description': description,
+                'job_id':job_id.id
+                }
+            self.env['hr.job.history.actions'].create(job_history_vals)
         self.state = 'done'
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت إحداث الوظائف من قبل '" + unicode(user.name) + u"'")
@@ -632,10 +660,19 @@ class HrJobStripTo(models.Model):
     def action_done(self):
         self.ensure_one()
         self.state = 'done'
+        user = self.env['res.users'].browse(self._uid)
         for job in self.line_ids:
             job.job_id.state = 'cancel'
             job.job_id.is_striped_to = True
-        user = self.env['res.users'].browse(self._uid)
+            job.job_id.creation_source = 'striped_to'
+            description = u" إلغاء الوظيفة بسلخها الى " + " " + unicode(self.destination_location) + " " + u"من قبل" + " " + unicode(user.name) + u"'"
+            job_history_vals = {
+                'action': 'سلخ إلى جهة   ',
+                'action_date': date.today(),
+                'description': description,
+                'job_id': job.job_id.id
+                }
+            self.env['hr.job.history.actions'].create(job_history_vals)
         self.message_post(u"تمت إلغاء الوظائف من قبل '" + unicode(user.name) + u"'")
 
     @api.multi
@@ -728,9 +765,18 @@ class HrJobCancel(models.Model):
     def action_done(self):
         self.ensure_one()
         self.state = 'done'
+        user = self.env['res.users'].browse(self._uid)
         for job in self.job_cancel_ids:
             job.job_id.state = 'cancel'
-        user = self.env['res.users'].browse(self._uid)
+            job.job_id.creation_source = 'cancel'
+            description = u" إلغاء الوظيفة من قبل " + " " + unicode(user.name) + u"'"
+            job_history_vals = {
+                'action': 'إلغاء الوظيفة',
+                'action_date': date.today(),
+                'description':  description,
+                'job_id':job.job_id.id
+                }
+            self.env['hr.job.history.actions'].create(job_history_vals)
         self.message_post(u"تمت إلغاء الوظائف من قبل '" + unicode(user.name) + u"'")
 
     @api.multi
@@ -836,8 +882,7 @@ class HrJobMoveDeparrtment(models.Model):
             self.state = 'communication_external'
         elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
             self.state = 'hrm2'
-        else:
-            self.action_done()
+
 
     @api.multi
     def action_budget(self):
@@ -849,8 +894,7 @@ class HrJobMoveDeparrtment(models.Model):
             self.state = 'communication_external'
         elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
             self.state = 'hrm2'
-        else:
-            self.action_done()
+
 
     @api.multi
     def action_communication(self):
@@ -859,8 +903,7 @@ class HrJobMoveDeparrtment(models.Model):
             self.state = 'communication_external'
         elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
             self.state = 'hrm2'
-        else:
-            self.action_done()
+
 
     @api.multi
     def action_external(self):
@@ -871,15 +914,6 @@ class HrJobMoveDeparrtment(models.Model):
     def action_hrm2(self):
         self.ensure_one()
         self.state = 'hrm2'
-
-    @api.multi
-    def action_done(self):
-        self.ensure_one()
-        self.state = 'done'
-        for job in self.job_movement_ids:
-            job.job_id.grade_id = job.new_grade_id.id
-        user = self.env['res.users'].browse(self._uid)
-        self.message_post(u"تمت نقل الوظائف من قبل '" + unicode(user.name) + u"'")
 
     @api.multi
     def button_refuse(self):
@@ -918,7 +952,14 @@ class HrJobMoveDeparrtment(models.Model):
     def action_job_unreserve(self):
         self.ensure_one()
         for rec in self.job_movement_ids:
-            rec.job_id.write({'state': 'unoccupied', 'department_id': rec.new_department_id.id})
+            rec.job_id.write({'state': 'unoccupied', 'department_id': rec.new_department_id.id, 'creation_source': 'move'})
+            description = u" نقل الوظيفة الى " + " " + unicode(rec.new_department_id.name) + u"'"
+            job_history_vals = {
+                'action': 'نقل الوظيفة',
+                'action_date': date.today(),
+                'description': description,
+                'job_id': rec.job_id.id}
+            self.env['hr.job.history.actions'].create(job_history_vals)
         self.state = 'done'
 
     @api.multi
@@ -996,10 +1037,9 @@ class HrJobMoveGrade(models.Model):
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب',
                                   default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)],
                                                                                       limit=1), required=1, readonly=1)
-    decision_number = fields.Char(string=u'رقم القرار', required=1)
-    decision_date = fields.Date(string=u'تاريخ القرار', required=1)
-    decision_file = fields.Binary(string=u'نسخة القرار', required=1, readonly=1, states={'new': [('readonly', 0)]},
-                                  attachment=True)
+    decision_number = fields.Char(string=u'رقم القرار')
+    decision_date = fields.Date(string=u'تاريخ القرار')
+    decision_file = fields.Binary(string=u'نسخة القرار',attachment=True)
     move_date = fields.Date(string=u'التاريخ', readonly=1, default=fields.Datetime.now(), required=1)
     fiscal_year = fields.Char(string=u'السنه المالية', default=(date.today().year), readonly=1)
     out_speech_number = fields.Char(string=u'رقم الخطاب الصادر')
@@ -1080,8 +1120,20 @@ class HrJobMoveGrade(models.Model):
         self.state = 'done'
         for job in self.job_movement_ids:
             job.job_id.grade_id = job.new_grade_id.id
+            job.job_id.creation_source = self.move_type
+            if self.move_type == "scale_up":
+                move_type = "رفع"
+            else:
+                move_type = "خفض"
+            description = move_type + " " + u" الوظيفة من المرتبة " + " " + unicode(job.grade_id.name) + " " + u" الى المرتبة" + " " + unicode(job.new_grade_id.name) + u"."
+            job_history_vals = {
+                'action': move_type,
+                'action_date': date.today(),
+                'description': description,
+                'job_id': job.job_id.id}
+            self.env['hr.job.history.actions'].create(job_history_vals)
         user = self.env['res.users'].browse(self._uid)
-        self.message_post(u"تمت " + self.move_type + u" الوظائف من قبل '" + unicode(user.name) + u"'")
+        self.message_post(u"تمت " + move_type + u" الوظائف من قبل '" + unicode(user.name) + u"'")
 
     @api.multi
     def button_refuse(self):
@@ -1129,7 +1181,7 @@ class HrJobMoveGrade(models.Model):
         self.ensure_one()
         for rec in self.job_movement_ids:
             rec.job_id.write({'state': 'unoccupied', 'number': rec.job_number, 'grade_id': rec.new_grade_id.id})
-        self.state = 'done'
+        self.action_done()
 
     @api.multi
     def action_job_reserve(self):
@@ -1240,8 +1292,8 @@ class HrJobMoveUpdate(models.Model):
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب',
                                   default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)],
                                                                                       limit=1), required=1, readonly=1)
-    decision_number = fields.Char(string=u"رقم القرار", required=1, readonly=1, states={'new': [('readonly', 0)]})
-    decision_date = fields.Date(string=u'تاريخ القرار', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    decision_number = fields.Char(string=u"رقم القرار")
+    decision_date = fields.Date(string=u'تاريخ القرار')
     out_speech_number = fields.Char(string=u'رقم الخطاب الصادر')
     out_speech_date = fields.Date(string=u'تاريخ الخطاب الصادر')
     out_speech_file = fields.Binary(string=u'صورة الخطاب الصادر', attachment=True)
@@ -1346,6 +1398,19 @@ class HrJobMoveUpdate(models.Model):
             rec.job_id.name = rec.new_name
             rec.job_id.date_update = datetime.now()
             rec.job_id.type_id = rec.new_type_id
+            rec.job_id.creation_source = 'update'
+            description = ""
+            if rec.new_name:
+                description += " تحوير المسمى من " + " " + str(rec.old_name.name) + " " + " الى "+ " " + str(rec.new_name.name)+". \n"
+            if rec.new_type_id:
+                description += " تحوير الصنف من " + " " + str(rec.old_type_id.name) + " " + "الى"+ " " + str(rec.new_type_id.name)+"."
+            job_history_vals = {
+                'action': 'تحوير‬ الوظيفة',
+                'action_date': date.today(),
+                'description': description,
+                'job_id':rec.job_id.id
+                }
+            self.env['hr.job.history.actions'].create(job_history_vals)
         self.state = 'done'
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تم تحوير‬ الوظائف من قبل '" + unicode(user.name) + u"'")

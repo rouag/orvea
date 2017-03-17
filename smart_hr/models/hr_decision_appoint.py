@@ -112,6 +112,8 @@ class HrDecisionAppoint(models.Model):
                                      readonly=1)
     is_contract = fields.Boolean(string=u'يتطلب إنشاء عقد', related="type_appointment.is_contract")
     pension_ratio = fields.Float(string=u'نسبة التقاعد (%)')
+    job_allowance_ids = fields.One2many('decision.appoint.allowance', 'decision_appoint_id', string=u'بدلات الوظيفة')
+    decision_apoint_allowance_ids = fields.One2many('decision.appoint.allowance', 'decision_appoint_id', string=u'بدلات التعين')
 
     @api.multi
     @api.onchange('type_appointment')
@@ -474,6 +476,13 @@ class HrDecisionAppoint(models.Model):
         self.message_post(u"تمت إحداث تعين جديد '" + unicode(user.name) + u"'")
         # update holidays balance for the employee
         self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date_hiring, "تعيين")
+        # add allowance to the employee
+        for rec in self.job_allowance_ids:
+            self.env['hr.employee.allowance'].create({'employee_id': self.employee_id.id,
+                                                      'allowance_id': rec.allowance_id.id,
+                                                      'amount': rec.amount,
+                                                      'date': fields.Date.from_string(fields.Date.today())
+                                                      })
         self.state = 'done'
         self.env['hr.holidays']._init_balance(self.employee_id)
         # close last active promotion line for the employee
@@ -642,3 +651,58 @@ class HrAllowanceAppoint(models.Model):
     hr_allowance_type_id = fields.Many2one('hr.allowance.type', string=u'بدل التعيين')
     salary_number = fields.Float(string=u'عدد الرواتب')
     appoint_type_id = fields.Many2one('hr.type.appoint', string=u'نوع التعين')
+
+
+class DecisionAppointAllowance(models.Model):
+    _name = 'decision.appoint.allowance'
+    _description = u'بدلات التعين والوظيفة'
+
+    decision_appoint_id = fields.Many2one('hr.decision.appoint', string='التعين', ondelete='cascade')
+    allowance_id = fields.Many2one('hr.allowance.type', string='البدل', required=1)
+    compute_method = fields.Selection([('amount', 'مبلغ'),
+                                       ('percentage', 'نسبة من الراتب الأساسي'),
+                                       ('formula_1', 'نسبة‬ البدل‬ * راتب‬  الدرجة‬ الاولى‬  من‬ المرتبة‬  التي‬ يشغلها‬ الموظف‬'),
+                                       ('formula_2', 'نسبة‬ البدل‬ * راتب‬  الدرجة‬ التي ‬ يشغلها‬ الموظف‬'),
+                                       ('job_location', 'تحتسب  حسب مكان العمل')], required=1, string='طريقة الإحتساب')
+    amount = fields.Float(string='المبلغ')
+    min_amount = fields.Float(string='الحد الأدنى')
+    percentage = fields.Float(string='النسبة')
+    line_ids = fields.One2many('salary.grid.detail.allowance.city', 'allowance_id', string='النسب حسب المدينة')
+
+    @api.model
+    def get_value(self):
+        allowance_city_obj = self.env['salary.grid.detail.allowance.city']
+        degree_obj = self.env['salary.grid.degree']
+        salary_grid_obj = self.env['salary.grid.detail']
+        # employee info
+        employee = self.decision_appoint_id.employee_id
+        ttype = employee.job_id.type_id
+        grade = employee.job_id.grade_id
+        degree = employee.degree_id
+        amount = 0.0
+        # search the correct salary_grid for this employee
+        if employee:
+            salary_grids, basic_salary = employee.get_salary_grid_id(False)
+            if not salary_grids:
+                raise ValidationError(_(u'لا يوجد سلم رواتب للموظف. !'))
+        # compute
+        if self.compute_method == 'amount':
+            amount = self.amount
+        if self.compute_method == 'percentage':
+            amount = self.percentage * basic_salary / 100.0
+        if self.compute_method == 'job_location' and employee and employee.dep_city:
+            citys = allowance_city_obj.search([('allowance_id', '=', self.id), ('city_id', '=', employee.dep_city.id)])
+            if citys:
+                amount = citys[0].percentage * basic_salary / 100.0
+        if self.compute_method == 'formula_1':
+            # get first degree for the grade
+            degrees = degree_obj.search([('grade_id', '=', grade.id)])
+            if degrees:
+                salary_grids = salary_grid_obj.search([('type_id', '=', ttype.id), ('grade_id', '=', grade.id), ('degree_id', '=', degrees[0].id)])
+                if salary_grids:
+                    amount = salary_grids[0].basic_salary * self.percentage / 100.0
+        if self.compute_method == 'formula_2':
+            amount = self.percentage * basic_salary / 100.0
+        if self.min_amount and amount < self.min_amount:
+            amount = self.min_amount
+        return amount
