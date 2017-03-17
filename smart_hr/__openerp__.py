@@ -159,6 +159,7 @@
         'sanction/wizard/wizard_sanction_action.xml',
         'sanction/hr_sanction_type_data.xml',
         'sanction/hr_sanction_view.xml',
+        'sanction/hr_deprivation_premium_view.xml',
         # القرارات
         'view/hr_decision.xml',
         # الرواتب
