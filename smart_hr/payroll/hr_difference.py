@@ -162,12 +162,13 @@ class HrDifference(models.Model):
         # deputation start in this month end finish in this month or after
         deputations1 = deputation_obj.search([('date_from', '>=', self.date_from),
                                               ('date_from', '<=', self.date_to),
-                                              ('state', '=', 'finish')])
+                                              ('state', '=', 'done')])
         # deputation start in last month end finish in this month  or after
         deputations2 = deputation_obj.search([('date_from', '<', self.date_from),
                                               ('date_to', '>=', self.date_from),
-                                              ('state', '=', 'finish')])
+                                              ('state', '=', 'done')])
         deputations = list(set(deputations1 + deputations2))
+        print '--------deputations------',deputations
         for deputation in deputations:
             date_from = deputation.date_from
             date_to = deputation.date_to
@@ -175,11 +176,13 @@ class HrDifference(models.Model):
                 date_from = self.date_from
             if deputation.date_to > self.date_to:
                 date_to = self.date_to
-            number_of_days = days_between(date_from, date_to)
+            number_of_days = self.env['hr.smart.utils'].compute_duration_deputation(date_from, date_to, deputation)
+            print '------------number_of_days----------', number_of_days
             #
             employee = deputation.employee_id
             # get a correct line
             deputation_amount, transport_amount, deputation_allowance = deputation.get_deputation_allowance_amount(number_of_days)
+            print deputation_amount, transport_amount, deputation_allowance
             if transport_amount:
                 # بدل نقل
                 transport_val = {'difference_id': self.id,

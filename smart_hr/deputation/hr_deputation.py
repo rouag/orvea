@@ -136,10 +136,11 @@ class HrDeputation(models.Model):
             res['domain'] = {'employee_id': [('is_member', '=', False)]}
         return res
     
-    @api.one
+    @api.model
     def get_deputation_allowance_amount(self, number_of_days):
         deputation_amount = 0.0
         transport_amount = 0.0
+        deputation_allowance = False
         deputation_allowance_obj = self.env['hr.deputation.allowance']
         employee = self.employee_id
         deputation_allowance_lines = deputation_allowance_obj.search([('grade_ids', 'in', [employee.grade_id.id])])

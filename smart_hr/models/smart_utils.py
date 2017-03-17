@@ -8,15 +8,49 @@ import datetime as dt
 class SmartUtils(models.Model):
     _name = 'hr.smart.utils'
 
-    def compute_duration(self, date_from, date_to):
+    def compute_duration_deputation(self, date_from, date_to, deputation_id):
+        '''
+        @return: return duration betwwen two dates without public holidays, weekends,
+                 and all holidays execpt for sicknes holidays
+        '''
         if date_from and date_to:
             if not isinstance(date_from, dt.date):
                 date_from = fields.Date.from_string(date_from)
             if not isinstance(date_to, dt.date):
                 date_to = fields.Date.from_string(date_to)
-            duration = self.compute_days_minus_weekends(date_from, date_to)
-            duration -= self.compute_holidays_days(date_from, date_to)
+            duration = self.minus_days_deputation(date_from, date_to, deputation_id)
             return duration
+
+    def minus_days_deputation(self, date_from, date_to, deputation_id):
+        dayDelta = timedelta(days=1)
+        diff = 0
+        employee_id = deputation_id.employee_id
+        holidays_ids = set()
+        while date_from <= date_to:
+            diff += 1
+            hol_domain = [('date_from', '>=', date_from),
+                          ('date_to', '<=', date_from),
+                          ('state', '=', 'done'),
+                          ('compute_as_deputation', '=', False),
+                          ('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_illness').id)]
+            if employee_id:
+                hol_domain.append(('employee_id', '=', employee_id.id))
+            if date_from.weekday() not in [4, 5]:
+                diff -= 1
+            # check if looped date is correspanding to none compelling holiday
+            holiday_id = self.env['hr.holidays'].search(hol_domain)
+            if holiday_id:
+                holidays_ids.add(holiday_id)
+                diff -= 1
+            date_from += dayDelta
+        for rec in holidays_ids:
+            diff += rec.deputation_balance_computed
+        # minus 3ids
+        diff -= self.compute_holidays_days(date_from, date_to)
+        if diff > 0:
+            return diff
+        else:
+            return 0
 
     def compute_duration_overtime(self, date_from, date_to, overtime_id):
         '''
@@ -28,10 +62,10 @@ class SmartUtils(models.Model):
                 date_from = fields.Date.from_string(date_from)
             if not isinstance(date_to, dt.date):
                 date_to = fields.Date.from_string(date_to)
-            duration = self.minus_days(date_from, date_to, overtime_id)
+            duration = self.minus_days_overtime(date_from, date_to, overtime_id)
             return duration
 
-    def minus_days(self, date_from, date_to, overtime_id):
+    def minus_days_overtime(self, date_from, date_to, overtime_id):
         dayDelta = timedelta(days=1)
         diff = 0
         employee_id = overtime_id.employee_id
@@ -132,6 +166,16 @@ class SmartUtils(models.Model):
             return diff
         else:
             return 0
+
+    def compute_duration(self, date_from, date_to):
+        if date_from and date_to:
+            if not isinstance(date_from, dt.date):
+                date_from = fields.Date.from_string(date_from)
+            if not isinstance(date_to, dt.date):
+                date_to = fields.Date.from_string(date_to)
+            duration = self.compute_days_minus_weekends(date_from, date_to)
+            duration -= self.compute_holidays_days(date_from, date_to)
+            return duration
 
     def compute_days_minus_weekends(self, date_from, date_to):
         dayDelta = timedelta(days=1)
