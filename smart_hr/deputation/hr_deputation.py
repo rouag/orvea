@@ -168,7 +168,7 @@ class HrDeputation(models.Model):
                         deputation_amount = searchs[0].amount
         return deputation_amount, transport_amount
     
-        @api.onchange('duration')
+    @api.onchange('duration')
     def onchange_duration(self):
         if self.employee_id:
             if self.employee_id.deputation_balance < self.duration:
