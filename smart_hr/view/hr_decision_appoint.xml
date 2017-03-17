@@ -103,7 +103,8 @@
 							attrs="{'invisible':['|',('type_appointment', '=', %(data_hr_recrute_Members)d), ('state','!=', 'audit')]}"
 							groups="smart_hr.group_audit_appointment" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_refuse_audit" string="رفض" type="object"
+						<button name="%(action_hr_refuse_appoint_wizard)d" string="رفض"
+							type="action"
 							attrs="{'invisible':['|',('type_appointment', '=', %(data_hr_recrute_Members)d), ('state','!=', 'audit')]}"
 							groups="smart_hr.group_audit_appointment" icon="fa-times"
 							class="oe_inline oe_stat_button" />
@@ -113,32 +114,37 @@
 							attrs="{'invisible':['|',('type_appointment', '!=', %(data_hr_recrute_Members)d), ('state','!=', 'audit')]}"
 							groups="smart_hr.group_committee_members_recruiter" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_refuse_audit" string="رفض" type="object"
+						<button name="%(action_hr_refuse_appoint1_wizard)d" string="رفض"
+							type="action"
 							attrs="{'invisible':['|',('type_appointment', '!=', %(data_hr_recrute_Members)d), ('state','!=', 'audit')]}"
 							groups="smart_hr.group_committee_members_recruiter" icon="fa-times"
 							class="oe_inline oe_stat_button" />
 						<button name="button_accept_enterview_manager" string="موافق"
 							type="object" states="waiting" groups="smart_hr.group_enterview_manager"
 							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_refuse_enterview_manager" string="رفض"
-							type="object" states="waiting" groups="smart_hr.group_enterview_manager"
+							<button name="%(action_hr_refuse_appoint2_wizard)d" string="رفض"
+							type="action"
+							 states="waiting" groups="smart_hr.group_enterview_manager"
 							icon="fa-times" class="oe_inline oe_stat_button" />
 						<button name="button_accept_recrutment_manager" string="موافق"
 							type="object" states="manager" groups="smart_hr.group_recrutment_manager"
 							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_refuse_recrutment_manager" string="رفض"
-							type="object" states="manager" groups="smart_hr.group_recrutment_manager"
+							<button name="%(action_hr_refuse_appoint3_wizard)d" string="رفض"
+							type="action"
+							states="manager" groups="smart_hr.group_recrutment_manager"
 							icon="fa-times" class="oe_inline oe_stat_button" />
 						<button name="button_accept_recrutment_decider" string="موافق"
 							type="object" states="budget" groups="smart_hr.group_recrutment_decider"
 							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_refuse_recrutment_decider" string="رفض"
-							type="object" states="budget" groups="smart_hr.group_recrutment_decider"
+							<button name="%(action_hr_refuse_appoint4_wizard)d" string="رفض"
+							type="action"
+							states="budget" groups="smart_hr.group_recrutment_decider"
 							icon="fa-times" class="oe_inline oe_stat_button" />
 						<button name="button_accept_direct" string="موافق" type="object"
 							states="direct" groups="smart_hr.group_dm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_refuse_direct" string="رفض" type="object"
+						<button name="%(action_hr_refuse_appoint5_wizard)d" string="رفض"
+							type="action"
 							states="direct" groups="smart_hr.group_dm" icon="fa-times"
 							class="oe_inline oe_stat_button" />
 						<button name="button_accept_personnel_hr" string="موافق"
@@ -148,7 +154,8 @@
 						<button name="button_accept_civil" string="موافق" type="object"
 							states="civil" groups="smart_hr.group_ministry_civil" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_refuse_civil" string="رفض" type="object"
+						<button name="%(action_hr_refuse_appoint6_wizard)d" string="رفض"
+							type="action"
 							states="civil" groups="smart_hr.group_ministry_civil" icon="fa-times"
 							class="oe_inline oe_stat_button" />
 

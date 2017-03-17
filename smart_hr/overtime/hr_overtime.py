@@ -188,9 +188,21 @@ class HrOvertimeLigne(models.Model):
                              ], string='نوع خارج الدوام', default='friday_saturday')
     days_number = fields.Integer(string='عدد الايام ' )
     heure_number = fields.Integer(string='عدد الساعات')
-    date_from = fields.Date(string=u'التاريخ من ')
-    date_to = fields.Date(string=u'الى')
+    date_from = fields.Date(string=u'التاريخ من ', required=1)
+    date_to = fields.Date(string=u'الى', required=1)
+    type_compensation = fields.Selection([('compensatory_leave', ' إجازة تعويضية'),
+                             ('amount', 'مقابل مادي')], string = 'نوع التعويض', default = 'compensatory_leave')
     mission = fields.Text(string='المهمة',required=1)
+   
+
+
+    @api.onchange('date_to')
+    def _onchange_date_to(self):
+        if self.date_to and self.date_from:
+            date_from = fields.Date.from_string(self.date_from)
+            date_to = fields.Date.from_string(self.date_to)
+            days_number = (date_to - date_from).days
+            self.days_number = days_number
 
     @api.onchange('days_number')
     def _onchange_days_number(self):

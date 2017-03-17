@@ -6,7 +6,6 @@ from datetime import date, datetime, timedelta
 
 
 class hrIncrease(models.Model):
-
     _name = 'hr.increase'
     _inherit = ['mail.thread']
     _order = 'id desc'

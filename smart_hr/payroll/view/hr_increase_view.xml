@@ -39,7 +39,9 @@
 							states="hrm" groups="smart_hr.group_hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_done" string="إعتماد" type="object"
 							states="pim2" groups="smart_hr.group_increase_manager" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_refuse_pim2" string="رفض" type="object"
+						<button name="%(action_increase_refuse_wizard)d" string="رفض"
+							type="action"
+						
 							states="pim2" groups="smart_hr.group_increase_manager" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<field name="state" widget="statusbar" statusbar_visible="draft,pim,hrm,pim2,done" />

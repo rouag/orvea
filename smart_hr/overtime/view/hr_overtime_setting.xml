@@ -15,6 +15,10 @@
 							<field name="normal_days" />
 							<field name="friday_saturday" />
 							<field name="holidays" />
+							
+									<field name="days_normal" />
+							<field name="days_holidays" />
+							<field name="days_weekend" />
 							<field name="allowance_transport_id" />
 							<field name="allowance_overtime_id" />
 						</group>

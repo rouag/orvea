@@ -365,26 +365,21 @@ class HrDeputation(models.Model):
 class HrDeputationCategory(models.Model):
     _name = 'hr.deputation.category'
 
-    category = fields.Selection([
-        ('high', u'مرتفعة'),
-        ('a', u'أ'),
-        ('b', u'ب'),
-        ('c', u'ج'),
-    ], string=u'الفئات', default='c')
-    country_city_ids = fields.One2many('hr.country.city', 'duputation_category_id', string=u'البلاد')
+    category = fields.Char(string=u'المسمى')
+    country_city_ids = fields.One2many('hr.country.city', 'country_id', string=u'البلاد')
 
     _sql_constraints = [
         ('unique_category', 'UNIQUE(category)', u"لا يمكن تكرار الفئات  "),
     ]
 
-    @api.multi
-    def name_get(self):
-        res = []
-        for rec in self:
-            name = dict(self.env['hr.deputation.category'].fields_get(allfields=['category'])['category']['selection'])[
-                str(rec.category)]
-            res.append((rec.id, name))
-        return res
+#     @api.multi
+#     def name_get(self):
+#         res = []
+#         for rec in self:
+#             name = dict(self.env['hr.deputation.category'].fields_get(allfields=['category'])['category'])[
+#                 str(rec.category)]
+#             res.append((rec.id, name))
+#         return res
 
 
 class HrCountryCity(models.Model):
@@ -392,4 +387,4 @@ class HrCountryCity(models.Model):
 
     country_id = fields.Many2one('res.country', string=u'البلاد', domain="[('code_nat','!=',False)]")
     city_id = fields.Many2one('res.city', string=u'المدينة', domain="[('country_id','=',country_id)]")
-    duputation_category_id = fields.Many2one('hr.deputation.category', string=u'الفئة')
+  #  duputation_category_id = fields.Many2one('hr.deputation.category', string=u'الفئة')

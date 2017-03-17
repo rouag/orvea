@@ -10,7 +10,7 @@
 				<search string="الانتدابات">
 
 					<field name="employee_id" string="الموظف"
-							   filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]"/>
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
 				</search>
 			</field>
 		</record>
@@ -60,8 +60,7 @@
 							states="waiting" icon="fa-check" class="oe_inline oe_stat_button"
 							groups="smart_hr.group_deputation_department" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
-							type="action"
-							states="waiting" icon="fa-times" class="oe_inline oe_stat_button"
+							type="action" states="waiting" icon="fa-times" class="oe_inline oe_stat_button"
 							groups="smart_hr.group_deputation_department" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_done" string="إنهاء مهمة" type="object"
@@ -237,7 +236,7 @@
 							<field name="category" required="1" />
 							<field name="country_city_ids" editable="bottom">
 								<tree>
-									<field name="country_id" />
+								<field name="country_id" />
 									<field name="city_id" />
 								</tree>
 							</field>

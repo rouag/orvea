@@ -65,8 +65,9 @@
 						<button name="button_accept_dm" string="موافق" type="object"
 							states="dm" groups="smart_hr.group_dm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
-						<button name="button_delay_dm" string="رفض" type="object"
+						
+							<button name="%(action_holidays1_refuse_wizard)d" string="رفض"
+							type="action"
 							states="dm" groups="smart_hr.group_dm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
@@ -74,7 +75,8 @@
 							states="audit" groups="smart_hr.group_holidays_checker" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<button name="button_refuse_audit" string="رفض" type="object"
+						<button name="%(action_holidays2_refuse_wizard)d" string="رفض"
+							type="action"
 							states="audit" groups="smart_hr.group_holidays_checker" icon="fa-times"
 							class="oe_inline oe_stat_button" />
 
@@ -86,15 +88,17 @@
 							type="object" states="external_audit" groups="smart_hr.group_holidays_checker"
 							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<button name="button_refuse_external_audit" string="رفض"
-							type="object" states="external_audit" groups="smart_hr.group_holidays_checker"
+						<button name="%(action_holidays3_refuse_wizard)d" string="رفض"
+							type="action"
+							 states="external_audit" groups="smart_hr.group_holidays_checker"
 							icon="fa-times" class="oe_inline oe_stat_button" />
 
 						<button name="button_accept_revision" string="موافق" type="object"
 							states="revision" groups="smart_hr.group_director_division_salaries_vacations"
 							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<button name="button_refuse_revision" string="رفض" type="object"
+						<button name="%(action_holidays4_refuse_wizard)d" string="رفض"
+							type="action" 
 							states="revision" groups="smart_hr.group_director_division_salaries_vacations"
 							icon="fa-times" class="oe_inline oe_stat_button" />
 
@@ -102,8 +106,9 @@
 							type="object" states="revision_response" groups="smart_hr.group_holidays_checker"
 							icon="fa-times" class="oe_inline oe_stat_button" />
 
-						<button name="button_refuse_revision_response" string="رفض"
-							type="object" states="revision_response" groups="smart_hr.group_holidays_checker"
+						<button name="%(action_holidays5_refuse_wizard)d" string="رفض"
+							type="action"
+							 states="revision_response" groups="smart_hr.group_holidays_checker"
 							icon="fa-times" class="oe_inline oe_stat_button" />
 
 
