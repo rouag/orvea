@@ -393,19 +393,7 @@ class HrDeputationCategory(models.Model):
         ('c', u'ج'),
     ], string=u'الفئات', default='c')
     country_city_ids = fields.One2many('hr.country.city', 'duputation_category_id', string=u'البلاد')
-
-    _sql_constraints = [
-        ('unique_category', 'UNIQUE(category)', u"لا يمكن تكرار الفئات  "),
-    ]
-
-    @api.multi
-    def name_get(self):
-        res = []
-        for rec in self:
-            name = dict(self.env['hr.deputation.category'].fields_get(allfields=['category'])['category']['selection'])[
-                str(rec.category)]
-            res.append((rec.id, name))
-        return res
+    name = fields.Char(string='المسمى', required=1)
 
 
 class HrCountryCity(models.Model):

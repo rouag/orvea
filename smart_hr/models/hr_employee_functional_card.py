@@ -81,9 +81,8 @@ class HrEmployeeFunctionnalCard(models.Model):
 
     @api.model
     def create(self, vals):
+        vals.update({'name': self.env['ir.sequence'].get('hr.employye.card.seq')})
         res = super(HrEmployeeFunctionnalCard, self).create(vals)
-        vals['name'] = self.env['ir.sequence'].get('hr.employye.card.seq')
-        res.write(vals)
         return res
 
     @api.multi

@@ -168,7 +168,6 @@ class HrDifference(models.Model):
                                               ('date_to', '>=', self.date_from),
                                               ('state', '=', 'done')])
         deputations = list(set(deputations1 + deputations2))
-        print '--------deputations------',deputations
         for deputation in deputations:
             date_from = deputation.date_from
             date_to = deputation.date_to
@@ -177,7 +176,6 @@ class HrDifference(models.Model):
             if deputation.date_to > self.date_to:
                 date_to = self.date_to
             number_of_days = self.env['hr.smart.utils'].compute_duration_deputation(date_from, date_to, deputation)
-            print '------------number_of_days----------', number_of_days
             #
             employee = deputation.employee_id
             # get a correct line

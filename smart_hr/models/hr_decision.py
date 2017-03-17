@@ -35,7 +35,16 @@ class HrDecision(models.Model):
     def onchange_date_speech(self):
         self.onchange_decision_type_id()
 
-
+    def _get_hijri_date(self, date, separator):
+        '''
+        convert georging date to hijri date
+        :return hijri date as a string value
+        '''
+        if date:
+            date = fields.Date.from_string(date)
+            hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
+            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)).zfill(2) + separator + str(int(hijri_date.day)).zfill(2)
+        return None
 
     @api.onchange('decision_type_id')
     def onchange_decision_type_id(self):
@@ -48,8 +57,8 @@ class HrDecision(models.Model):
                                      ]:
             employee_line = self.env['hr.employee'].search([('id', '=', self.employee_id.id), ('state', '=', 'done')], limit=1)
             if employee_line :
-                
-                dates = str(self.date).split('-')
+                hijri_date= self._get_hijri_date(self.date, '-')
+                dates = str(hijri_date).split('-')
                 dattz = dates[2]+'-'+dates[1]+'-'+dates[0] or ""
                 employee = self.employee_id.display_name or ""
                 carte_id = self.employee_id.identification_id or ""

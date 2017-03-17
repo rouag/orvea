@@ -487,7 +487,7 @@
 									</field>
 
 								</page>
-								<page string="سجل العلاوات" readonly='True'>
+								<page string="سجل العلاوات" invisible='1'>
 									<field name='salary_increase_ids'>
 										<tree string="سجل العلاوات">
 											<field name="name" />
@@ -497,7 +497,7 @@
 										</tree>
 									</field>
 								</page>
-								<page string="البدلات" readonly="1">
+								<page string="البدلات" invisible='1'>
 									<field name='hr_employee_allowance_ids'>
 										<tree string="البدلات">
 											<field name="allowance_id" />
