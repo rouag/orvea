@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <openerp>
-	<data noupdate="1">
+	<data noupdate="0">
 
 		<!-- hr.overtime.setting -->
 		<record id="data_hr_overtime_setting" model="hr.overtime.setting">

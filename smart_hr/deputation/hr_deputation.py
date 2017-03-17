@@ -136,6 +136,38 @@ class HrDeputation(models.Model):
             res['domain'] = {'employee_id': [('is_member', '=', False)]}
         return res
 
+    @api.one
+    def get_deputation_allowance_amount(self):
+        deputation_amount = 0.0
+        transport_amount = 0.0
+        deputation_allowance_obj = self.env['hr.deputation.allowance']
+        employee = self.employee_id
+        deputation_allowance_lines = deputation_allowance_obj.search([('grade_ids', 'in', [employee.grade_id.id])])
+        if deputation_allowance_lines:
+            deputation_allowance = deputation_allowance_lines[0]
+            if self.type == 'internal':
+                if deputation_allowance.internal_transport_type == 'daily':
+                    transport_amount = deputation_allowance.internal_transport_amount * number_of_days
+                elif deputation_allowance.internal_transport_type == 'monthly':
+                    transport_amount = deputation_allowance.internal_transport_amount
+                if deputation_allowance.internal_deputation_type == 'daily':
+                    deputation_amount = deputation_allowance.internal_deputation_amount * number_of_days
+                elif deputation_allowance.internal_deputation_type == 'monthly':
+                    deputation_amount = deputation_allowance.internal_deputation_amount
+            elif self.type == 'external':
+                if deputation_allowance.external_transport_type == 'daily':
+                    transport_amount = deputation_allowance.external_transport_amount * number_of_days
+                elif deputation_allowance.external_transport_type == 'monthly':
+                    transport_amount = deputation_allowance.external_transport_amount
+                # search a correct category
+                searchs = deputation_allowance.category_ids.search([('category_id', '=', self.category_id.id)])
+                if searchs:
+                    if deputation_allowance.external_deputation_type == 'daily':
+                        deputation_amount = searchs[0].amount * number_of_days
+                    elif deputation_allowance.internal_transport_type == 'monthly':
+                        deputation_amount = searchs[0].amount
+        return deputation_amount, transport_amount
+
     @api.multi
     def action_draft(self):
         self.ensure_one()
@@ -160,7 +192,7 @@ class HrDeputation(models.Model):
                                      fields.Date.from_string(date_to)).years
                 if diff >= dep_setting.annual_balance:
                     raise ValidationError(u"لا يمكن طلب إنتداب هذا الموظف قبل إنتهاء الفترة اللازمة بين طلب أخر.")
-            # ‫check completion of essay periode            
+            # ‫check completion of essay period
 
             task_obj = self.env['hr.employee.task']
             self.env['hr.employee.task'].create({'name': self.task_name,

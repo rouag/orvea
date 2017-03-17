@@ -17,14 +17,19 @@
 							<field name="holidays" />
 							
 									<field name="days_normal" />
+										<field name="days_weekend" />
 							<field name="days_holidays" />
-							<field name="days_weekend" />
+						
 							<field name="allowance_transport_id" />
 							<field name="allowance_overtime_id" />
 						</group>
 						<group>
 							<field name="grade_ids" />
 						</group>
+						<group>
+							<field name="grade_oblig_ids" />
+						</group>
+						
 					</sheet>
 				</form>
 			</field>

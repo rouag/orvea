@@ -179,32 +179,8 @@ class HrDifference(models.Model):
             #
             employee = deputation.employee_id
             # get a correct line
-            deputation_allowance_lines = deputation_allowance_obj.search([('grade_ids', 'in', [employee.grade_id.id])])
-            if deputation_allowance_lines:
-                deputation_allowance = deputation_allowance_lines[0]
-                deputation_amount = 0.0
-                transport_amount = 0.0
-                if deputation.type == 'internal':
-                    if deputation_allowance.internal_transport_type == 'daily':
-                        transport_amount = deputation_allowance.internal_transport_amount * number_of_days
-                    elif deputation_allowance.internal_transport_type == 'monthly':
-                        transport_amount = deputation_allowance.internal_transport_amount
-                    if deputation_allowance.internal_deputation_type == 'daily':
-                        deputation_amount = deputation_allowance.internal_deputation_amount * number_of_days
-                    elif deputation_allowance.internal_deputation_type == 'monthly':
-                        deputation_amount = deputation_allowance.internal_deputation_amount
-                elif deputation.type == 'external':
-                    if deputation_allowance.external_transport_type == 'daily':
-                        transport_amount = deputation_allowance.external_transport_amount * number_of_days
-                    elif deputation_allowance.external_transport_type == 'monthly':
-                        transport_amount = deputation_allowance.external_transport_amount
-                    # search a correct category
-                    searchs = deputation_allowance.category_ids.search([('category_id', '=', deputation.category_id.id)])
-                    if searchs:
-                        if deputation_allowance.external_deputation_type == 'daily':
-                            deputation_amount = searchs[0].amount * number_of_days
-                        elif deputation_allowance.internal_transport_type == 'monthly':
-                            deputation_amount = searchs[0].amount
+            deputation_amount, transport_amount = deputation.get_deputation_allowance_amount()
+            if transport_amount:
                 # بدل نقل
                 transport_val = {'difference_id': self.id,
                                  'name': deputation_allowance.allowance_transport_id.name,
@@ -214,6 +190,7 @@ class HrDifference(models.Model):
                                  'amount': transport_amount,
                                  'type': 'deputation'}
                 line_ids.append(transport_val)
+            if deputation_amount:
                 deputation_amount_rate = 1.0
                 if deputation.the_availability == 'hosing_and_food':
                     deputation_amount_rate = 0.25
