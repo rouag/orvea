@@ -365,11 +365,11 @@ class HrDeputation(models.Model):
 class HrDeputationCategory(models.Model):
     _name = 'hr.deputation.category'
 
-    category = fields.Char(string=u'المسمى')
+    name = fields.Char(string=u'المسمى')
     country_city_ids = fields.One2many('hr.country.city', 'country_id', string=u'البلاد')
 
     _sql_constraints = [
-        ('unique_category', 'UNIQUE(category)', u"لا يمكن تكرار الفئات  "),
+        ('unique_name', 'UNIQUE(name)', u"لا يمكن تكرار الفئات  "),
     ]
 
 #     @api.multi
