@@ -94,11 +94,13 @@ class HrDifference(models.Model):
         # over time start in this month end finish in this month or after
         overtime_lines1 = overtime_line_obj.search([('date_from', '>=', self.date_from),
                                                    ('date_from', '<=', self.date_to),
-                                                   ('overtime_id.state', '=', 'finish')])
+                                                   ('type_compensation', '=', 'amount'),
+                                                   ('overtime_id.state', '=', 'done')])
         # over time start in last month end finish in this month  or after
         overtime_lines2 = overtime_line_obj.search([('date_from', '<', self.date_from),
                                                     ('date_to', '>=', self.date_from),
-                                                   ('overtime_id.state', '=', 'finish')])
+                                                    ('type_compensation', '=', 'amount'),
+                                                    ('overtime_id.state', '=', 'done')])
         overtime_lines = list(set(overtime_lines1 + overtime_lines2))
         # TODO: dont compute not work days
         for overtime in overtime_lines:
@@ -111,18 +113,19 @@ class HrDifference(models.Model):
                 date_from = self.date_from
             if overtime.date_to > self.date_to:
                 date_to = self.date_to
-            number_of_days = days_between(date_from, date_to)
+            # get days witouht weekends and Eids
+            number_of_days = self.env['hr.smart.utils'].compute_duration_overtime(date_from, date_to, overtime)
             number_of_hours = 0.0
             if overtime.date_from >= self.date_from and overtime.date_to <= self.date_to:
                 number_of_hours = overtime.heure_number
             # get number of hours
-            total_hours = number_of_days * 7 + number_of_hours
+            total_hours = number_of_days * number_of_hours
             amount_hour = basic_salary / 30.0 / 7.0
-            rate_hour = overtime_setting.normal_days
+            rate_hour = overtime_setting.days_normal
             if overtime.type == 'friday_saturday':
-                rate_hour = overtime_setting.friday_saturday
+                rate_hour = overtime_setting.days_weekend
             elif overtime.type == 'holidays':
-                rate_hour = overtime_setting.holidays
+                rate_hour = overtime_setting.days_holidays
             amount = amount_hour * rate_hour / 100.0 * total_hours
             overtime_val = {'difference_id': self.id,
                             'name': overtime_setting.allowance_overtime_id.name,
@@ -133,7 +136,7 @@ class HrDifference(models.Model):
                             'type': 'overtime'}
             line_ids.append(overtime_val)
             # add allowance transport
-            if number_of_days:
+            if number_of_days and employee.grade_id not in overtime_setting.grade_ids:
                 # search amount transport from salary grid
                 transport_allowance_id = self.env.ref('smart_hr.hr_allowance_type_01').id
                 transport_allowances = grid_detail_allowance_obj.search([('grid_detail_id', '=', salary_grid.id), ('allowance_id', '=', transport_allowance_id)])
@@ -743,7 +746,7 @@ class HrDifference(models.Model):
                         number_of_days = 30.0
                         allowance_amount += (30 - suspension_number_of_days) * allowance_val
                     val = {'difference_id': self.id,
-                           'name': 'فرق %s كف اليد' % allowance.allowance_id.name,
+                           'name': 'فرق %s كف اليد' % allowance.allowance_id.name.encode('utf-8'),
                            'employee_id': employee.id,
                            'number_of_days': number_of_days,
                            'number_of_hours': 0.0,

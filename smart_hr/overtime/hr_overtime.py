@@ -179,22 +179,19 @@ class HrOvertimeLigne(models.Model):
     _name = 'hr.overtime.ligne'
     _description = u' خارج دوام'
 
-
     overtime_id = fields.Many2one('hr.overtime', string=' خارج دوام', ondelete='cascade')
     employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف', required=1)
     type = fields.Selection([('friday_saturday', ' أيام الجمعة والسبت'),
                              ('holidays', 'أيام الأعياد'),
                              ('normal_days', 'الايام العادية')
                              ], string='نوع خارج الدوام', default='friday_saturday')
-    days_number = fields.Integer(string='عدد الايام ' )
+    days_number = fields.Integer(string='عدد الايام')
     heure_number = fields.Integer(string='عدد الساعات')
     date_from = fields.Date(string=u'التاريخ من ', required=1)
     date_to = fields.Date(string=u'الى', required=1)
     type_compensation = fields.Selection([('compensatory_leave', ' إجازة تعويضية'),
-                             ('amount', 'مقابل مادي')], string = 'نوع التعويض', default = 'compensatory_leave')
+                                          ('amount', 'مقابل مادي')], string='نوع التعويض', default='compensatory_leave')
     mission = fields.Text(string='المهمة',required=1)
-   
-
 
     @api.onchange('date_to')
     def _onchange_date_to(self):
@@ -277,7 +274,7 @@ class HrOvertimeLigne(models.Model):
                     rec.date_from <= self.date_to <= rec.date_to or \
                     self.date_from <= rec.date_from <= self.date_to or \
                     self.date_from <= rec.date_to <= self.date_to:
-                raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الإعارة")
+                raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الابتعاث")
         for rec in termination_obj.search(search_domain):
             if rec.date >= self.date_from :
                 raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في طى القيد")
