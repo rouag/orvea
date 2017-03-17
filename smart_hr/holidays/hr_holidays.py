@@ -151,9 +151,9 @@ class HrHolidays(models.Model):
         if self.deputation_id:
             deputation_date_from = fields.Date.from_string(self.deputation_id.date_from)
             deputation_date_to = fields.Date.from_string(self.deputation_id.date_to)
-            rest_days_deputation = (deputation_date_from - deputation_date_to).days
-            half_holiday_duration = self.duration/2
-            if half_holiday_duration<21:
+            rest_days_deputation = (deputation_date_to - deputation_date_from).days
+            half_holiday_duration = self.duration / 2
+            if half_holiday_duration < 21:
                 min_duration = half_holiday_duration
             else:
                 min_duration = 21
@@ -161,8 +161,6 @@ class HrHolidays(models.Model):
                 self.deputation_balance_computed = rest_days_deputation
             else:
                 self.deputation_balance_computed = min_duration
-
-
 
     def _get_current_holiday_stock(self, employee_id, holiday_status_id, entitlement_type):
             current_stock = 0
