@@ -53,6 +53,20 @@ class HrLoan(models.Model):
                               ], string='الحالة', readonly=1, default='new')
     line_ids = fields.One2many('hr.loan.line', 'loan_id', string='سجل الأقساط', readonly=1)
     history_ids = fields.One2many('hr.loan.history', 'loan_id', string='سجل العمليات', readonly=1)
+    deputation_id = fields.Many2one('hr.deputation', string='الانتداب')
+    is_deputation_advance = fields.Boolean(string='سلفة عن بدل انتداب', related='loan_type_id.is_deputation_advance')
+
+    @api.constrains('amount')
+    @api.onchange('amount')
+    def _onchange_amount(self):
+        if self. amount and self.loan_type_id.is_deputation_advance:
+            tododeputationamout = 'todo'
+            if self.amount > tododeputationamout:
+                warning = {
+                    'title': _('تحذير!'),
+                    'message': _('لا يمكن للسلفة ان تتجاوز بدل الانتداب!'),
+                }
+                return {'warning': warning}
 
     @api.onchange('date_from', 'amount', 'monthly_amount')
     def _onchange_date(self):
@@ -175,7 +189,8 @@ class HrLoanType(models.Model):
 
     name = fields.Char(string=' الوصف', required=1)
     code = fields.Char(string='الرمز', required=1)
-
+    is_deputation_advance = fields.Boolean(string='سلفة عن بدل انتداب')
+    
     @api.multi
     def name_get(self):
         result = []

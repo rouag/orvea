@@ -300,6 +300,7 @@
 								<page name="public" string="بيانات شخصية">
 									<group string="بيانات شخصية">
 										<group>
+											<field name="deputation_balance" invisible="1" />
 											<field name="country_id" options='{"no_open": True, "no_create": True}'
 												attrs="{'required': 1}" domain="[('code_nat','!=',False)]"
 												context="{'compute_name': '_get_natinality','tree_view_ref': 'view_country_tree_nationality'}" />

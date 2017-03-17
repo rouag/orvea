@@ -161,5 +161,25 @@
 				</field>
 			</field>
 		</record>
+		
+		<record id="mail.action_contacts" model="ir.actions.act_window">
+			<field name="name">Contacts</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">res.partner</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">kanban,tree,form</field>
+			<field name="search_view_id" ref="base.view_res_partner_filter" />
+			<field name="domain">[('user_ids','=', False)]</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">
+					Click to add a contact in your address book.
+				</p>
+				<p>
+					Odoo helps you easily track all activities related to
+					a customer; discussions, history of business opportunities,
+					documents, etc.
+				</p>
+			</field>
+		</record>
 	</data>
 </openerp>

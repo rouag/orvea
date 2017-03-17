@@ -50,7 +50,7 @@ class HrDeputation(models.Model):
         return res
 
     order_date = fields.Date(string='تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
-    employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', domain=[('employee_state', '=', 'employee')],
+    employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', domain=[('employee_state', '=', 'employee'), ('emp_state', 'not in', ['suspended', 'terminated'])],
                                   required=1)
     number = fields.Char(string='رقم الوظيفة', readonly=1)
     code = fields.Char(string=u'رمز الوظيفة ', readonly=1)
@@ -63,22 +63,21 @@ class HrDeputation(models.Model):
     job_id = fields.Many2one('hr.job', string='الوظيفة', store=True, readonly=1)
     type_id = fields.Many2one('salary.grid.type', string='الصنف', store=True, readonly=1)
     department_id = fields.Many2one('hr.department', string='الادارة', store=True, readonly=1)
-    department_inter_id = fields.Many2one('hr.department', string='الادارة', )
+    department_inter_id = fields.Many2one('hr.department', string='الادارة',)
     city_id = fields.Many2one(related='department_inter_id.dep_city', store=True, readonly=True, string='المدينة')
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', store=True, readonly=1)
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', store=True, readonly=1)
-    date_from = fields.Date(string=u'تاريخ البدء')
-    date_to = fields.Date(string=u'تاريخ الإنتهاء')
+    date_from = fields.Date(string=u'تاريخ البدء', required=1)
+    date_to = fields.Date(string=u'تاريخ الإنتهاء', required=1)
     date_start = fields.Date(string=u'من')
     date_end = fields.Date(string=u'الى')
     note = fields.Text(string=u'الملاحظات', readonly=1, states={'draft': [('readonly', 0)]})
-    ministre_report = fields.Boolean(string='  قرار من الوزير المختص', default=False)
+    ministre_report = fields.Boolean(string='  قرار من الوزير المختص', compute='_compute_ministre_report')
     decision_number = fields.Char(string='رقم القرارمن الوزير المختص')
     decision_date = fields.Date(string='تاريخ القرارمن الوزير المختص ', default=fields.Datetime.now(), readonly=1)
     file_order = fields.Binary(string=' صورة القرار من الوزير المختص  ', attachment=True)
     file_order_name = fields.Char(string=' صورة القرار من الوزير المختص  ')
-    file_decision = fields.Binary(string='نسخة من الحالة الميزانية', attachment=True)
-    file_decision_name = fields.Char(string='نسخة من الحالة الميزانية')
+    file_decision = fields.Binary(string='نسخة من حالة الميزانية', attachment=True)
     calcul_wekeend = fields.Boolean(string='  احتساب عطلة نهاية الاسبوع', default=False)
 
     lettre_number = fields.Char(string='رقم خطاب التغطية')
@@ -102,10 +101,10 @@ class HrDeputation(models.Model):
         ('hosing_and_food', u'السكن و الطعام '),
         ('hosing_or_food', u'السكن أو الطعام '),
         ('nothing', u'لا شي '),
-    ], string=u'الجهة توفر', default='hosing_and_food')
+    ], string=u'السكن و الطعام ', default='hosing_and_food')
     type = fields.Selection([
-        ('internal', u'داخلى'),
-        ('external', u'خارجى')], string=u'نوع الإنتداب', default='internal')
+        ('internal', u'  داخلى'),
+        ('external', u' خارجى ')], string=u'إنتداب', default='internal')
     # city_id = fields.Many2one('res.city', string=u'المدينة')
     category_id = fields.Many2one('hr.deputation.category', string=u'فئة التصنيف')
     country_ids = fields.Many2one('res.country', string=u'البلاد')
@@ -118,7 +117,7 @@ class HrDeputation(models.Model):
         ('done', u'اعتمدت'),
         ('finish', u'منتهية'),
         ('refuse', u'مرفوضة')
-    ], string=u'حالة', default='draft', )
+    ], string=u'حالة', default='draft',)
     task_name = fields.Char(string=u' المهمة', required=1)
     duration = fields.Integer(string=u'المدة', compute='_compute_duration', readonly=1)
 
@@ -126,6 +125,7 @@ class HrDeputation(models.Model):
         ('member', u'انتداب عضو'),
         ('notmember', u'انتداب غيرعضو')
     ], string=u'انتداب عضو', default='notmember', required=1)
+    deputation_type = fields.Many2one('hr.deputation.type', string='نوع الانتداب', required="1")
 
     @api.onchange('member_deputation')
     def onchange_member_deputation(self):
@@ -136,34 +136,31 @@ class HrDeputation(models.Model):
             res['domain'] = {'employee_id': [('is_member', '=', False)]}
         return res
 
+    @api.onchange('duration')
+    def onchange_duration(self):
+        if self.employee_id:
+            if self.employee_id.deputation_balance < self.duration:
+                warning = {
+                    'title': _('تحذير!'),
+                    'message': _('لقد تم تجاوز الرصيد السنوي للإنتداب!'),
+                }
+                return {'warning': warning}
+            
+    @api.one
+    @api.depends('duration')
+    def _compute_ministre_report(self):
+        dep_setting = self.env['hr.deputation.setting'].search([], limit=1)
+        if self.duration and dep_setting:
+            if self.duration >= dep_setting.period_decision:
+                self.ministre_report = True
+            
     @api.multi
     def action_draft(self):
         self.ensure_one()
-        dep_setting = self.env['hr.deputation.setting'].search([], limit=1)
-        if dep_setting:
-            # check duration
-            if self.duration > dep_setting.annual_balance:
-                raise ValidationError(u"لقد تم تجاوز الحد الأقصى للإنتداب في المرة الواحدة.")
-            # check maximum lends duration in employee's service
-            old_deputation = self.env['hr.deputation'].search(
-                [('state', '=', 'finish'), ('employee_id', '=', self.employee_id.id)])
-            sum_duration = self.duration
+            # ‫check completion of essay periode
 
-            for lend in old_deputation:
-                sum_duration += lend.duration
-            if sum_duration > 0 and dep_setting.annual_balance <= sum_duration:
-                raise ValidationError(u"لقد تم تجاوز الحد الأقصى للإنتداب.")
-            # check duration bettween accepted lend and new one
-            for lend in old_deputation:
-                date_to = lend.date_to
-                diff = relativedelta(fields.Date.from_string(fields.Datetime.now()),
-                                     fields.Date.from_string(date_to)).years
-                if diff >= dep_setting.annual_balance:
-                    raise ValidationError(u"لا يمكن طلب إنتداب هذا الموظف قبل إنتهاء الفترة اللازمة بين طلب أخر.")
-            # ‫check completion of essay periode            
-
-            task_obj = self.env['hr.employee.task']
-            self.env['hr.employee.task'].create({'name': self.task_name,
+        task_obj = self.env['hr.employee.task']
+        self.env['hr.employee.task'].create({'name': self.task_name,
                                                  'employee_id': self.employee_id.id,
                                                  'date_from': self.date_from,
                                                  'date_to': self.date_to,
@@ -171,11 +168,11 @@ class HrDeputation(models.Model):
                                                  'governmental_entity': self.governmental_entity.id,
                                                  'type_procedure': 'deputation',
                                                  })
-            title = u"' إشعار  بطلب إنتداب '"
-            msg = u"' لقد تم  إشعار  بطلب إنتداب '" + unicode(self.employee_id.name) + u"'"
-            group_id = self.env.ref('smart_hr.group_exelence_employee')
-            self.send_exelence_group(group_id, title, msg)
-            self.state = 'audit'
+        title = u" إشعار  بطلب إنتداب "
+        msg = u" إشعار  بطلب إنتداب " + unicode(self.employee_id.display_name)
+        group_id = self.env.ref('smart_hr.group_exelence_employee')
+        self.send_exelence_group(group_id, title, msg)
+        self.state = 'audit'
 
     def send_exelence_group(self, group_id, title, msg):
         '''
@@ -213,38 +210,23 @@ class HrDeputation(models.Model):
     @api.multi
     def action_audit(self):
         for deputation in self:
-            dep_setting = self.env['hr.deputation.setting'].search([], limit=1)
-            if dep_setting:
-                # check duration
-                if deputation.duration > dep_setting.period_decision:
-                    deputation.ministre_report = True
             deputation.state = 'done'
 
     @api.multi
     def action_waiting(self):
         for deputation in self:
-            dep_setting = self.env['hr.deputation.setting'].search([], limit=1)
-            if dep_setting:
-                # check duration
-                if deputation.duration > dep_setting.period_decision:
-                    deputation.ministre_report = True
             deputation.state = 'done'
 
     @api.multi
     def action_done(self):
         self.ensure_one()
-        dep_setting = self.env['hr.deputation.setting'].search([], limit=1)
-        if dep_setting:
-            # check duration
-            if self.duration > dep_setting.period_decision:
-                self.ministre_report = True
         self.state = 'order'
 
     @api.multi
     def button_refuse_audit(self):
         for deputation in self:
             title = u"' إشعار برفض  الإنتداب'"
-            msg = u"' لقد تم إشعار  برفض  الإنتداب  '" + unicode(self.employee_id.name) + u"'"
+            msg = u"' لقد رفض  الإنتداب  '" + unicode(self.employee_id.display_name) + u"'"
             group_id = self.env.ref('smart_hr.group_deputation_department')
             self.send_exelence_group(group_id, title, msg)
             deputation.state = 'refuse'
@@ -328,39 +310,45 @@ class HrDeputation(models.Model):
                                     rec.date_from <= self.date_to <= rec.date_to or \
                                     self.date_from <= rec.date_from <= self.date_to or \
                                     self.date_from <= rec.date_to <= self.date_to:
-                raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الإجازة")
+                raise ValidationError(u"هناك تداخل في التواريخ مع إجازة")
                 # الإنتداب
         for rec in deput_obj.search(search_domain):
             if rec.date_from <= self.date_from <= rec.date_to or \
                                     rec.date_from <= self.date_to <= rec.date_to or \
                                     self.date_from <= rec.date_from <= self.date_to or \
                                     self.date_from <= rec.date_to <= self.date_to:
-                raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الإنتداب")
+                raise ValidationError(u"هناك تداخل في التواريخ مع إنتداب")
         # تكليف
         for rec in comm_obj.search(search_domain):
             if rec.date_from <= self.date_from <= rec.date_to or \
                                     rec.date_from <= self.date_to <= rec.date_to or \
                                     self.date_from <= rec.date_from <= self.date_to or \
                                     self.date_from <= rec.date_to <= self.date_to:
-                raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في التكليف")
+                raise ValidationError(u"هناك تداخل في التواريخ مع تكليف")
         # إعارة
         for rec in lend_obj.search(search_domain):
             if rec.date_from <= self.date_from <= rec.date_to or \
                                     rec.date_from <= self.date_to <= rec.date_to or \
                                     self.date_from <= rec.date_from <= self.date_to or \
                                     self.date_from <= rec.date_to <= self.date_to:
-                raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الإعارة")
+                raise ValidationError(u"هناك تداخل في التواريخ مع إعارة")
         # الابتعاث
         for rec in schol_obj.search(search_domain):
             if rec.date_from <= self.date_from <= rec.date_to or \
                                     rec.date_from <= self.date_to <= rec.date_to or \
                                     self.date_from <= rec.date_from <= self.date_to or \
                                     self.date_from <= rec.date_to <= self.date_to:
-                raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الابتعاث")
+                raise ValidationError(u"هناك تداخل في التواريخ مع ابتعاث")
         for rec in termination_obj.search(search_domain):
             if rec.date <= self.date_from:
-                raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في طى القيد")
-
+                raise ValidationError(u"هناك تداخل في التواريخ مع  طى قيد")
+        # التدريب
+        for rec in candidate_obj.search(search_domain):
+            if rec.date_from <= self.date_from <= rec.date_to or \
+                                    rec.date_from <= self.date_to <= rec.date_to or \
+                                    self.date_from <= rec.date_from <= self.date_to or \
+                                    self.date_from <= rec.date_to <= self.date_to:
+                raise ValidationError(u"هناك تداخل في التواريخ مع تدريب")
 
 class HrDeputationCategory(models.Model):
     _name = 'hr.deputation.category'
@@ -393,3 +381,12 @@ class HrCountryCity(models.Model):
     country_id = fields.Many2one('res.country', string=u'البلاد', domain="[('code_nat','!=',False)]")
     city_id = fields.Many2one('res.city', string=u'المدينة', domain="[('country_id','=',country_id)]")
     duputation_category_id = fields.Many2one('hr.deputation.category', string=u'الفئة')
+
+
+class HrDeputationType(models.Model):
+    _name = 'hr.deputation.type'
+
+    name = fields.Char(string='name')
+    code = fields.Char(string='الرمز')
+    external_balance = fields.Float(string='رصيد الإنتداب الخارجي الذي تستوجب قرار من الوزير')
+

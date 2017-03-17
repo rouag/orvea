@@ -46,7 +46,7 @@ class HrEmployee(models.Model):
                                        ('retired', u'متقاعد'),
                                        ('employee', u'موظف')], string=u'الحالة', default='new')
     # Deputation Stock
-    deputation_stock = fields.Integer(string=u'الأنتدابات', default=60)
+    deputation_balance = fields.Integer(string=u'رصيد الأنتدابات', compute="_compute_deputation_balance")
     service_duration = fields.Integer(string=u'مدة الخدمة(يوم)', readonly=True, size=4)
     religion_state = fields.Many2one('religion.religion', string=u'الديانة', required=1)
     emp_state = fields.Selection([('working', u'على رأس العمل'),
@@ -145,6 +145,21 @@ class HrEmployee(models.Model):
         for rec in self:
             if rec.type_id.is_member == True:
                 rec.is_member = True
+    @api.multi
+    @api.depends('type_id')
+    def _compute_deputation_balance(self):
+        todayDate = fields.Date.from_string(fields.Date.today())
+        year_first_day = todayDate.replace(day=1, month=1)
+        year_last_day = todayDate.replace(day=31, month=12)
+        for rec in self:
+            employee_id = rec.id
+            taken_deputations = self.env['hr.deputation'].search([('state', '=', 'done'),('employee_id', '=', employee_id), ('order_date', '>=', year_first_day), ('order_date', '<=', year_last_day)])
+            duration = 0
+            for dep in taken_deputations:
+                duration += dep.duration
+            dep_setting = self.env['hr.deputation.setting'].search([], limit=1)
+            if dep_setting:
+                rec.deputation_balance = dep_setting.annual_balance - duration
 
     @api.onchange('gender')
     def _onchange_gender(self):

@@ -157,6 +157,7 @@
 							 %(data_hr_holiday_status_sport)d ,%(data_hr_holiday_death)d ])],
 							 'invisible':[('holiday_status_id','not in', [%(data_hr_holiday_accompaniment_exceptional)d,%(data_hr_holiday_status_illness)d,
 							 %(data_hr_holiday_status_sport)d ,%(data_hr_holiday_death)d])] }" />
+
 								<field name="compensation_type"
 									attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)],
 								'required':[('holiday_status_id','=', %(data_hr_holiday_compensation)d)],
@@ -179,7 +180,18 @@
 							<field name="date_to" readonly="1"
 								attrs="{'invisible':[('compensation_type','=','money')]}" />
 						</group>
-
+						<group>
+							<field name="display_compute_as_deputation" invisible="1" />
+							<field name='compute_as_deputation'
+								attrs="{'invisible':[('display_compute_as_deputation','=',False)]}" />
+							<field name="deputation_id"
+								domain="[('state', '=', 'done'), ('employee_id', '=', employee_id),
+                                             ('order_date', '&gt;=', date_from.strftime('%Y-1-1')),
+                                            ('order_date', '&lt;=', date_from.strftime('%Y-12-31'))]"
+								attrs="{'invisible':[('compute_as_deputation','=',False)], 'required':[('compute_as_deputation','=',True)]}" />
+							<field name="deputation_balance_computed"
+								attrs="{'invisible':[('compute_as_deputation','=',False)]}" />
+						</group>
 						<group
 							attrs="{'invisible':[('holiday_status_id','not in', [%(data_hr_holiday_accompaniment_exceptional)d,%(data_hr_holiday_status_illness)d])] }">
 							<group>

@@ -133,9 +133,34 @@ class HrHolidays(models.Model):
     hide_with_advanced_salary = fields.Boolean('hide_with_advanced_salary', default=True)
     # token_compensation_stock will take the value of the compensation_stock for tracability
     token_compensation_stock = fields.Integer(string=u'الرصيد المأخوذ', default=0)
+    compute_as_deputation = fields.Boolean(string=u'تحتسب هذه المدة انتدابا', default=False)
+    display_compute_as_deputation = fields.Boolean('hide_compute_as_deputation', default=False)
+    deputation_id = fields.Many2one('hr.deputation', string='الانتداب')
+    deputation_balance_computed = fields.Float(string='مدة الانتداب المحتسبة', compute='compute_deputation_balance_compUted')
+
+
+
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
+
+    @api.depends("deputation_id")
+    def compute_deputation_balance_compUted(self):
+        if self.deputation_id:
+            deputation_date_from = fields.Date.from_string(self.deputation_id.date_from)
+            deputation_date_to = fields.Date.from_string(self.deputation_id.date_to)
+            rest_days_deputation = (deputation_date_from - deputation_date_to).days
+            half_holiday_duration = self.duration/2
+            if half_holiday_duration<21:
+                min_duration = half_holiday_duration
+            else:
+                min_duration = 21
+            if self.duration > rest_days_deputation:
+                self.deputation_balance_computed = rest_days_deputation
+            else:
+                self.deputation_balance_computed = min_duration
+
+
 
     def _get_current_holiday_stock(self, employee_id, holiday_status_id, entitlement_type):
             current_stock = 0
@@ -210,6 +235,21 @@ class HrHolidays(models.Model):
             res['domain'] = {'entitlement_type': [('code', '=', 'sport')]}
         self.entitlement_type = False
         return res
+
+    @api.onchange('entitlement_type','holiday_status_id')
+    def onchange_entitlement_type(self):
+        deput_obj = self.env['hr.deputation']
+        if self.entitlement_type and self.holiday_status_id:
+            if self.entitlement_type.id == self.env.ref('smart_hr.data_entitlement_illness_normal').id:
+                search_domain = [
+                    ('employee_id', '=', self.employee_id.id),
+                    ('state', '=', 'done'),
+                    ('date_from', '<=', self.date_from),
+                    ('date_to', '>=', self.date_from)
+                    ]
+                in_deputation = deput_obj.search_count(search_domain)
+                if in_deputation:
+                    self.display_compute_as_deputation = True
 
     @api.onchange('employee_id')
     def onchange_employee_id(self):
@@ -1002,7 +1042,9 @@ class HrHolidays(models.Model):
                     rec.date_from <= self.date_to <= rec.date_to or \
                     self.date_from <= rec.date_from <= self.date_to or \
                     self.date_from <= rec.date_to <= self.date_to:
-                raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الإنتداب")
+                if self.holiday_status_id.id != self.env.ref('smart_hr.data_hr_holiday_status_illness').id  and self.entitlement_type!=self.env.ref('smart_hr.data_entitlement_illness_normal').id:
+                    raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الإنتداب")
+                    
  
             """
  
@@ -1037,7 +1079,6 @@ class HrHolidays(models.Model):
 #                         self.date_from <= rec.date_to <= self.date_to:
 #                     raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في تكليف")
 #
-
 
     @api.multi
     def check_constraintes(self):
