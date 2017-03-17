@@ -22,7 +22,7 @@ class HrOvertime(models.Model):
     order_date = fields.Date(string='تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
     amount = fields.Float(string='المبلغ')
     note = fields.Text(string=u'الملاحظات', readonly=1, states={'draft': [('readonly', 0)]})
-    line_ids = fields.One2many('hr.overtime.ligne', 'overtime_id', string=u'خارج دوام',readonly=1, states={'draft': [('readonly', 0)]})
+    line_ids = fields.One2many('hr.overtime.ligne', 'overtime_id', string=u'خارج دوام', readonly=1, states={'draft': [('readonly', 0)]})
     decision_number = fields.Char(string='رقم القرار')
     decision_date = fields.Date(string='تاريخ القرار', default=fields.Datetime.now(), readonly=1)
     file_decision = fields.Binary(string='صورة القرار', attachment=True)
@@ -41,18 +41,18 @@ class HrOvertime(models.Model):
                                ('cut', u'مقطوعة'),
                               ('cancel', u'ملغى'),
                                ('refuse', u'مرفوضة')
-                              ], string=u'حالة', default='draft', )
+                              ], string=u'حالة', default='draft',)
 
     @api.multi
     def button_cancel_overtime(self):
         for overtime in self :
             for line in overtime.line_ids :
                 for rec in line :
-                    date  = fields.Date.from_string(fields.Date.today())
+                    date = fields.Date.from_string(fields.Date.today())
                     if rec.date_from < str(date)  :
                         raise ValidationError(u"لا يمكن الإلغاء نظرا لبدأ  بعض المهام")
-            title= u"' إشعار   بإلغاء  خارج الدوام'"
-            msg= u"' إشعار   بإلغاء  خارج الدوام رقم'"  + unicode(overtime.decision_number) + u"'"
+            title = u"' إشعار   بإلغاء  خارج الدوام'"
+            msg = u"' إشعار   بإلغاء  خارج الدوام رقم'" + unicode(overtime.decision_number) + u"'"
             group_id = self.env.ref('smart_hr.group_overtime_department')
             overtime.state = 'cancel'
 
@@ -61,7 +61,7 @@ class HrOvertime(models.Model):
         for overtime in self:
             for line in overtime.line_ids :
                 for rec in line :
-                    date  = fields.Date.from_string(fields.Date.today())
+                    date = fields.Date.from_string(fields.Date.today())
                     if rec.date_to < str(date)  :
                         raise ValidationError(u"لا يمكن القطع نظرا لإنهاء  بعض المهام")
                     self.env['base.notification'].create({'title': u'إشعار   بقطع  خارج الدوام',
@@ -73,10 +73,10 @@ class HrOvertime(models.Model):
                                              'res_action': 'smart_hr.action_hr_overtime'})
             overtime.state = 'cut'
 
-            title= u"' إشعار   بقطع  خارج الدوام'"
-            msg= u"' إشعار   بقطع  خارج الدوام رقم'"  + unicode(overtime.decision_number) + u"'"
+            title = u"' إشعار   بقطع  خارج الدوام'"
+            msg = u"' إشعار   بقطع  خارج الدوام رقم'" + unicode(overtime.decision_number) + u"'"
             group_id = self.env.ref('smart_hr.group_overtime_department')
-            self.send_overtime_department_group(group_id,title,msg)
+            self.send_overtime_department_group(group_id, title, msg)
 
 
 
@@ -127,10 +127,10 @@ class HrOvertime(models.Model):
                                               'res_id': line.id,
                                              'res_action': 'smart_hr.action_hr_overtime'})
 
-            title= u"' إشعار   بإنهاء  خارج الدوام'"
-            msg= u"' إشعار   بإنهاء  خارج الدوام رقم'"  + unicode(overtime.decision_number) + u"'"
+            title = u"' إشعار   بإنهاء  خارج الدوام'"
+            msg = u"' إشعار   بإنهاء  خارج الدوام رقم'" + unicode(overtime.decision_number) + u"'"
             group_id = self.env.ref('smart_hr.group_overtime_department')
-            self.send_overtime_department_group(group_id,title,msg)
+            self.send_overtime_department_group(group_id, title, msg)
             overtime.state = 'finish'
 
     @api.multi
@@ -180,7 +180,7 @@ class HrOvertimeLigne(models.Model):
     _description = u' خارج دوام'
 
     overtime_id = fields.Many2one('hr.overtime', string=u' خارج دوام', ondelete='cascade')
-    employee_id = fields.Many2one('hr.employee', string=u' الموظف', required=1,Domain=[('emp_state','!=','suspended'),('emp_state','!=','terminated')])
+    employee_id = fields.Many2one('hr.employee', string=u' الموظف', required=1, Domain=[('emp_state', '!=', 'suspended'), ('emp_state', '!=', 'terminated')])
     type = fields.Selection([('friday_saturday', ' أيام الجمعة والسبت'),
                              ('holidays', 'أيام الأعياد'),
                              ('normal_days', 'الايام العادية')
@@ -190,11 +190,10 @@ class HrOvertimeLigne(models.Model):
     date_from = fields.Date(string=u'التاريخ من ', required=1)
     date_to = fields.Date(string=u'الى', required=1)
     type_compensation = fields.Selection([('compensatory_leave', ' إجازة تعويضية'),
-                                          ('amount', 'مقابل مادي')], string='نوع التعويض', default='compensatory_leave')
-                             ('amount', 'مقابل مادي')], string='نوع التعويض', required=1, default ='compensatory_leave')
-    mission = fields.Text(string='المهمة',required=1)
+                                          ('amount', 'مقابل مادي')], string='نوع التعويض', required=1, default='compensatory_leave')
+    mission = fields.Text(string='المهمة', required=1)
 
-    is_grade = fields.Boolean(string=u'يتطلب تكليف', default = False)
+    is_grade = fields.Boolean(string=u'يتطلب تكليف', default=False)
     number_direct_overtime = fields.Char(string='رقم التكليف ')
     date_direct_overtime = fields.Date(string='تاريخ التكليف')
     file_direct_overtime = fields.Binary(string='صورة التكليف', attachment=True)
@@ -217,7 +216,7 @@ class HrOvertimeLigne(models.Model):
     @api.one
     @api.constrains('days_number')
     def check_days_heure_number(self):
-        if self.type_compensation == 'compensatory_leave' and self.days_number <1 :
+        if self.type_compensation == 'compensatory_leave' and self.days_number < 1 :
             raise ValidationError(u"عدد الأيام في إجازة تعويضية يكون أكبر من صفر")
 
 
@@ -233,14 +232,14 @@ class HrOvertimeLigne(models.Model):
         schol_obj = self.env['hr.scholarship']
         termination_obj = self.env['hr.termination']
         over_obj = self.env['hr.overtime.ligne']
-        #TODO  الدورات التدربية
+        # TODO  الدورات التدربية
             # Date validation
         if self.date_from > self.date_to:
             raise ValidationError(u"تاريخ البدء يجب ان يكون أصغر من تاريخ الإنتهاء")
             # check minimum request validation
             # التدريب
         search_domain = [
-                ('employee_id','=', self.employee_id.id)]
+                ('employee_id', '=', self.employee_id.id)]
 
         for rec in candidate_obj.search(search_domain):
             dateto = fields.Date.from_string(rec.date_to)
@@ -270,7 +269,7 @@ class HrOvertimeLigne(models.Model):
                     self.date_from <= rec.date_to <= self.date_to:
                 raise ValidationError(u"هناك تداخل في التواريخ مع إعارة")
 
-        for rec in over_obj.search([('employee_id','=', self.employee_id.id), ('id', '!=', self.id)]):
+        for rec in over_obj.search([('employee_id', '=', self.employee_id.id), ('id', '!=', self.id)]):
              if rec.date_from <= self.date_from <= rec.date_to or \
                     rec.date_from <= self.date_to <= rec.date_to or \
                     self.date_from <= rec.date_from <= self.date_to or \
