@@ -135,8 +135,40 @@ class HrDeputation(models.Model):
         else:
             res['domain'] = {'employee_id': [('is_member', '=', False)]}
         return res
-
-    @api.onchange('duration')
+    
+    @api.one
+    def get_deputation_allowance_amount(self):
+        deputation_amount = 0.0
+        transport_amount = 0.0
+        deputation_allowance_obj = self.env['hr.deputation.allowance']
+        employee = self.employee_id
+        deputation_allowance_lines = deputation_allowance_obj.search([('grade_ids', 'in', [employee.grade_id.id])])
+        if deputation_allowance_lines:
+            deputation_allowance = deputation_allowance_lines[0]
+            if self.type == 'internal':
+                if deputation_allowance.internal_transport_type == 'daily':
+                    transport_amount = deputation_allowance.internal_transport_amount * number_of_days
+                elif deputation_allowance.internal_transport_type == 'monthly':
+                    transport_amount = deputation_allowance.internal_transport_amount
+                if deputation_allowance.internal_deputation_type == 'daily':
+                    deputation_amount = deputation_allowance.internal_deputation_amount * number_of_days
+                elif deputation_allowance.internal_deputation_type == 'monthly':
+                    deputation_amount = deputation_allowance.internal_deputation_amount
+            elif self.type == 'external':
+                if deputation_allowance.external_transport_type == 'daily':
+                    transport_amount = deputation_allowance.external_transport_amount * number_of_days
+                elif deputation_allowance.external_transport_type == 'monthly':
+                    transport_amount = deputation_allowance.external_transport_amount
+                # search a correct category
+                searchs = deputation_allowance.category_ids.search([('category_id', '=', self.category_id.id)])
+                if searchs:
+                    if deputation_allowance.external_deputation_type == 'daily':
+                        deputation_amount = searchs[0].amount * number_of_days
+                    elif deputation_allowance.internal_transport_type == 'monthly':
+                        deputation_amount = searchs[0].amount
+        return deputation_amount, transport_amount
+    
+        @api.onchange('duration')
     def onchange_duration(self):
         if self.employee_id:
             if self.employee_id.deputation_balance < self.duration:

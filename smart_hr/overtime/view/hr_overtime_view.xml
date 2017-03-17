@@ -35,16 +35,14 @@
 							states="audit" icon="fa-check" class="oe_inline oe_stat_button"
 							groups="smart_hr.group_overtime_exelence_employee" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
-							type="action"
-							states="audit" icon="fa-times" class="oe_inline oe_stat_button"
+							type="action" states="audit" icon="fa-times" class="oe_inline oe_stat_button"
 							groups="smart_hr.group_overtime_exelence_employee" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_waiting" string="موافق" type="object"
 							states="waiting" icon="fa-check" class="oe_inline oe_stat_button"
 							groups="smart_hr.group_overtime_hr" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
-							type="action"
-							states="waiting" icon="fa-times" class="oe_inline oe_stat_button"
+							type="action" states="waiting" icon="fa-times" class="oe_inline oe_stat_button"
 							groups="smart_hr.group_overtime_hr" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 
@@ -102,20 +100,30 @@
 									<group>
 										<field name="line_ids" nolabel="1">
 											<tree>
-												<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+												<field name="employee_id"  
+													/>
 												<field name="type" />
 												<field name="date_from" />
 												<field name="date_to" />
 												<field name="days_number" />
 												<field name="heure_number" />
 												<field name="mission" />
+												<field name="type_compensation" />
 											</tree>
 											<form>
 												<group>
 													<group>
-														<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+														<field name="employee_id"  domain="[('employee_state', '=','employee'),('emp_state', 'not in',['suspended','terminated'])]"
+															 />
 														<field name="type" />
 														<field name="mission" />
+														<field name="type_compensation" />
+														<field name="number_direct_overtime"  attrs="{'invisible':[('is_grade', '=', False)]}"/>
+														<field name="date_direct_overtime"  attrs="{'invisible':[('is_grade', '=', False)]}"/>
+														<field name="file_direct_overtime"  filename="file_direct_overtime_name"  attrs="{'invisible':[('is_grade', '=', False)]}" />
+															<field name="file_direct_overtime_name"  invisible="1" />
+																<field name="is_grade"  invisible="1" />
+																
 													</group>
 													<group>
 														<field name="date_from" />
@@ -145,7 +153,7 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 		</record>
-		<menuitem id="hr_overtime_menu" name="خارج دوام" sequence="60" 
+		<menuitem id="hr_overtime_menu" name="خارج دوام" sequence="60"
 			parent="hr_root_workflows" action="action_hr_overtime" />
 
 	</data>

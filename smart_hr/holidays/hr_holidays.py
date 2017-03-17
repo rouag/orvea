@@ -102,6 +102,8 @@ class HrHolidays(models.Model):
     extension_period = fields.Integer(string=u'مدة التمديد', default=0)
     external_authoritie = fields.Many2one('external.authorities', string=u'الجهة الخارجية', compute="_set_external_autoritie")
     entitlement_type = fields.Many2one('hr.holidays.entitlement.config', string=u'خاصيّة الإجازة')
+    sold_overtime = fields.Float(string=u' رصيد خارج الدوام')
+    sold_attendance = fields.Float(string=u'رصيد الحضور و الإنصراف')
     death_person = fields.Char(string=u'المتوفي')
     medical_certification = fields.Binary(string=u'الشهادة الطبية', attachment=True)
     compensation_type = fields.Selection([

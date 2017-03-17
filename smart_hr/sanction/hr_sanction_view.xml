@@ -116,9 +116,6 @@
 							states="update" groups="smart_hr.group_third_party_sanction"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 							
-						<button name="action_refuse_update" string="رفض" type="object"
-							states="update" groups="smart_hr.group_responsable_sanction"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_cancel" context="{'operation': 'cancel'}"
 							string="إلغاء" type="object" states="done"

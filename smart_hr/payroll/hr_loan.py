@@ -59,9 +59,9 @@ class HrLoan(models.Model):
     @api.constrains('amount')
     @api.onchange('amount')
     def _onchange_amount(self):
-        if self. amount and self.loan_type_id.is_deputation_advance:
-            tododeputationamout = 'todo'
-            if self.amount > tododeputationamout:
+        if self. amount and self.loan_type_id.is_deputation_advance and self.deputation_id:
+            deputationamout = self.deputation_id.get_deputation_allowance_amount
+            if self.amount > deputationamout:
                 warning = {
                     'title': _('تحذير!'),
                     'message': _('لا يمكن للسلفة ان تتجاوز بدل الانتداب!'),

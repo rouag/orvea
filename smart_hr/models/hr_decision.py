@@ -3,7 +3,13 @@
 
 from openerp import models, fields, api, _
 from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta, time
+from openerp.exceptions import ValidationError
+from dateutil.relativedelta import relativedelta
+from openerp.exceptions import UserError
+from openerp.addons.smart_base.util.umalqurra import *
 from umalqurra.hijri_date import HijriDate
+from umalqurra.hijri import Umalqurra
 
 
 class HrDecision(models.Model):
@@ -42,7 +48,9 @@ class HrDecision(models.Model):
                                      ]:
             employee_line = self.env['hr.employee'].search([('id', '=', self.employee_id.id), ('state', '=', 'done')], limit=1)
             if employee_line :
-                dattz = self.date or ""
+                
+                dates = str(self.date).split('-')
+                dattz = dates[2]+'-'+dates[1]+'-'+dates[0] or ""
                 employee = self.employee_id.display_name or ""
                 carte_id = self.employee_id.identification_id or ""
                 birthday = self.employee_id.birthday or ""
@@ -91,7 +99,8 @@ class HrDecision(models.Model):
                     self.text = rep_text
         else :
             appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id), ('state', '=', 'done')], limit=1)
-            dattz = self.date or ""
+            dates = str(self.date).split('-')
+            dattz = dates[2]+'-'+dates[1]+'-'+dates[0] or ""
             employee = self.employee_id.name or ""
             carte_id = self.employee_id.identification_id or ""
             birthday = self.employee_id.birthday or ""
