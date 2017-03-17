@@ -48,6 +48,7 @@ class HrDecision(models.Model):
                                      ]:
             employee_line = self.env['hr.employee'].search([('id', '=', self.employee_id.id), ('state', '=', 'done')], limit=1)
             if employee_line :
+                
                 dates = str(self.date).split('-')
                 dattz = dates[2]+'-'+dates[1]+'-'+dates[0] or ""
                 employee = self.employee_id.display_name or ""

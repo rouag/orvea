@@ -20,6 +20,8 @@ class HrOvertimeSetting(models.Model):
     days_normal = fields.Float(string='معدل يوم خارج الدوام للايام العادية مقابل يوم عمل')
     days_holidays = fields.Float(string='معدل يوم خارج الدوام  للأعياد   مقابل يوم عمل')
     days_weekend = fields.Float(string='معدل يوم خارج الدوام ليومي الجمعة و السبت  مقابل يوم عمل')
+    grade_oblig_ids = fields.Many2many('salary.grid.grade',  string=u'المراتب التي تستحق تكليف من الوزير أو من في حكمه')
+    
     
     @api.multi
     def button_setting(self):

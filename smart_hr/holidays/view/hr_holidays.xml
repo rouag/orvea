@@ -167,6 +167,16 @@
 								'required':[('holiday_status_id','=', %(data_hr_holiday_compensation)d)],
 								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_compensation)d)]
 								}" />
+								
+								<field name="sold_overtime"
+									attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)],
+								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_compensation)d)]
+								}" />
+								<field name="sold_attendance"
+									attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)],
+								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_compensation)d)]
+								}" />
+								
 								<field name="token_compensation_stock"
 									attrs="{'readonly':[('state','not in',['draft'])],
 								'invisible':['|', ('compensation_type','!=', 'money'), ('state','!=', 'done')]

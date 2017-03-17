@@ -192,7 +192,7 @@ class HrDeputation(models.Model):
                                      fields.Date.from_string(date_to)).years
                 if diff >= dep_setting.annual_balance:
                     raise ValidationError(u"لا يمكن طلب إنتداب هذا الموظف قبل إنتهاء الفترة اللازمة بين طلب أخر.")
-            # ‫check completion of essay periode            
+            # ‫check completion of essay period
 
             task_obj = self.env['hr.employee.task']
             self.env['hr.employee.task'].create({'name': self.task_name,

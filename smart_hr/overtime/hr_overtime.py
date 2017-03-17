@@ -180,8 +180,8 @@ class HrOvertimeLigne(models.Model):
     _description = u' خارج دوام'
 
 
-    overtime_id = fields.Many2one('hr.overtime', string=' خارج دوام', ondelete='cascade')
-    employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف', required=1)
+    overtime_id = fields.Many2one('hr.overtime', string=u' خارج دوام', ondelete='cascade')
+    employee_id = fields.Many2one('hr.employee', string=u' الموظف', required=1,Domain=[('emp_state','!=','suspended'),('emp_state','!=','terminated')])
     type = fields.Selection([('friday_saturday', ' أيام الجمعة والسبت'),
                              ('holidays', 'أيام الأعياد'),
                              ('normal_days', 'الايام العادية')
@@ -191,10 +191,26 @@ class HrOvertimeLigne(models.Model):
     date_from = fields.Date(string=u'التاريخ من ', required=1)
     date_to = fields.Date(string=u'الى', required=1)
     type_compensation = fields.Selection([('compensatory_leave', ' إجازة تعويضية'),
-                             ('amount', 'مقابل مادي')], string = 'نوع التعويض', default = 'compensatory_leave')
+                             ('amount', 'مقابل مادي')], string='نوع التعويض', required=1, default ='compensatory_leave')
     mission = fields.Text(string='المهمة',required=1)
-   
+    is_grade = fields.Boolean(string=u'يتطلب تكليف', default = False)
+    number_direct_overtime = fields.Char(string='رقم التكليف ')
+    date_direct_overtime = fields.Date(string='تاريخ التكليف')
+    file_direct_overtime = fields.Binary(string='صورة التكليف', attachment=True)
+    file_direct_overtime_name = fields.Char(string='صورة التكليف')
 
+    @api.onchange('employee_id')
+    def _onchange_employee_id(self):
+        for rec in self:
+            domain=[]
+            stock_line = self.env['hr.overtime.setting'].search([],limit = 1)
+            for line in stock_line.grade_oblig_ids :
+                domain.append(line.id)
+            grade = domain
+            if rec.employee_id.grade_id.id in grade:
+                rec.is_grade = True
+            if rec.employee_id.grade_id.id not in grade:
+                rec.is_grade = False
 
     @api.onchange('date_to')
     def _onchange_date_to(self):
@@ -208,6 +224,13 @@ class HrOvertimeLigne(models.Model):
     def _onchange_days_number(self):
         if self.days_number:
             self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.days_number)
+
+    @api.one
+    @api.constrains('days_number')
+    def check_days_heure_number(self):
+        if self.type_compensation == 'compensatory_leave' and self.days_number <1 :
+            raise ValidationError(u"عدد الأيام في إجازة تعويضية يكون أكبر من صفر")
+
 
     @api.one
     @api.constrains('date_from', 'date_to')
@@ -242,53 +265,45 @@ class HrOvertimeLigne(models.Model):
                 rec.date_from <= self.date_to <= rec.date_to or \
                 self.date_from <= rec.date_from <= self.date_to or \
                 self.date_from <= rec.date_to <= self.date_to :
-                raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الإجازة")
-            # الإنتداب
-        for rec in deput_obj.search(search_domain):
-            if rec.date_from <= self.date_from <= rec.date_to or \
-                    rec.date_from <= self.date_to <= rec.date_to or \
-                    self.date_from <= rec.date_from <= self.date_to or \
-                    self.date_from <= rec.date_to <= self.date_to:
-                raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الإنتداب")
-        # تكليف
+                raise ValidationError(u"هناك تداخل في التواريخ مع إجازة")
+    
         for rec in comm_obj.search(search_domain):
             if rec.date_from <= self.date_from <= rec.date_to or \
                     rec.date_from <= self.date_to <= rec.date_to or \
                     self.date_from <= rec.date_from <= self.date_to or \
                     self.date_from <= rec.date_to <= self.date_to:
-                raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في التكليف")
+                raise ValidationError(u"هناك تداخل في التواريخ مع  تكليف")
         # إعارة
         for rec in lend_obj.search(search_domain):
             if rec.date_from <= self.date_from <= rec.date_to or \
                     rec.date_from <= self.date_to <= rec.date_to or \
                     self.date_from <= rec.date_from <= self.date_to or \
                     self.date_from <= rec.date_to <= self.date_to:
-                raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الإعارة")
+                raise ValidationError(u"هناك تداخل في التواريخ مع إعارة")
 
         for rec in over_obj.search([('employee_id','=', self.employee_id.id), ('id', '!=', self.id)]):
              if rec.date_from <= self.date_from <= rec.date_to or \
                     rec.date_from <= self.date_to <= rec.date_to or \
                     self.date_from <= rec.date_from <= self.date_to or \
                     self.date_from <= rec.date_to <= self.date_to:
-                 raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في خارج دوام")
+                 raise ValidationError(u"هناك تداخل في التواريخ مع خارج دوام")
 
         for rec in schol_obj.search(search_domain):
             if rec.date_from <= self.date_from <= rec.date_to or \
                     rec.date_from <= self.date_to <= rec.date_to or \
                     self.date_from <= rec.date_from <= self.date_to or \
                     self.date_from <= rec.date_to <= self.date_to:
-                raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في الإعارة")
-        for rec in termination_obj.search(search_domain):
-            if rec.date >= self.date_from :
-                raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في طى القيد")
+                raise ValidationError(u"هناك تداخل في التواريخ مع  ابتعاث  ")
+
 
 
     @api.one
     @api.constrains('heure_number')
     def check_heure_number(self):
-        if self.heure_number > 7 :
+        if self.heure_number > 7  :
             raise ValidationError(u"عدد الساعات يجب ان يكون أصغر من 7 ساعات")
-
+        if self.heure_number > 0 and self.type_compensation == 'compensatory_leave' :
+            raise ValidationError(u"عدد الساعات في إجازة تعويضية يكون صفر")
 
 
 #       
