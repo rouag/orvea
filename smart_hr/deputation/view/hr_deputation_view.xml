@@ -223,7 +223,6 @@
 				<form string="فئة الدول">
 					<sheet>
 						<group>
-							<field name="name" required="1" />
 							<field name="country_city_ids" editable="bottom">
 								<tree>
 								<field name="country_id" />
@@ -240,7 +239,6 @@
 			<field name="model">hr.deputation.category</field>
 			<field name="arch" type="xml">
 				<tree string="فئات الدول" class="oe_tree_view">
-					<field name="name" />
 					<field name="country_city_ids" />
 				</tree>
 			</field>

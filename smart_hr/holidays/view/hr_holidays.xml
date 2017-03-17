@@ -201,8 +201,8 @@
 								attrs="{'invisible':[('display_compute_as_deputation','=',False)]}" />
 							<field name="deputation_id"
 								domain="[('state', '=', 'done'), ('employee_id', '=', employee_id),
-                                             ('order_date', '&gt;=', date_from.strftime('%Y-1-1')),
-                                            ('order_date', '&lt;=', date_from.strftime('%Y-12-31'))]"
+                                             ('order_date', '&gt;=', time..strftime('%Y-1-1')),
+                                            ('order_date', '&lt;=', time..strftime('%Y-12-31'))]"
 								attrs="{'invisible':[('compute_as_deputation','=',False)], 'required':[('compute_as_deputation','=',True)]}" />
 							<field name="deputation_balance_computed"
 								attrs="{'invisible':[('compute_as_deputation','=',False)]}" />

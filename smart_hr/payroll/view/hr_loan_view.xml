@@ -88,8 +88,8 @@
 								<field name="is_deputation_advance" invisible="1" />
 								<field name="deputation_id"
 									domain="[('state', '=', 'done'), ('employee_id', '=', employee_id),
-                                             ('order_date', '&gt;=', date.strftime('%Y-1-1')),
-                                            ('order_date', '&lt;=', date.strftime('%Y-12-31'))]"
+                                             ('order_date', '&gt;=', time..strftime('%Y-1-1')),
+                                            ('order_date', '&lt;=', time..strftime('%Y-12-31'))]"
 
 									attrs="{'invisible':[('is_deputation_advance','=',False)],'required':[('is_deputation_advance','=',True)]}" />
 								<field name="bank_id" />

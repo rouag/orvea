@@ -137,7 +137,7 @@ class HrDeputation(models.Model):
         return res
     
     @api.one
-    def get_deputation_allowance_amount(self):
+    def get_deputation_allowance_amount(self, number_of_days):
         deputation_amount = 0.0
         transport_amount = 0.0
         deputation_allowance_obj = self.env['hr.deputation.allowance']
@@ -166,7 +166,7 @@ class HrDeputation(models.Model):
                         deputation_amount = searchs[0].amount * number_of_days
                     elif deputation_allowance.internal_transport_type == 'monthly':
                         deputation_amount = searchs[0].amount
-        return deputation_amount, transport_amount
+        return deputation_amount, transport_amount, deputation_allowance
     
     @api.onchange('duration')
     def onchange_duration(self):
@@ -384,7 +384,7 @@ class HrDeputation(models.Model):
 
 class HrDeputationCategory(models.Model):
     _name = 'hr.deputation.category'
-
+    
     category = fields.Selection([
         ('high', u'مرتفعة'),
         ('a', u'أ'),

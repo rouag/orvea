@@ -123,11 +123,12 @@ class HrSanctionLigne(models.Model):
 
     sanction_id = fields.Many2one('hr.sanction', string=' العقوبات', ondelete='cascade')
     employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف', required=1)
-    type_sanction = fields.Many2one(related='sanction_id.type_sanction', string=u'العقوبة')
+    type_sanction = fields.Many2one('hr.type.sanction',related='sanction_id.type_sanction', string=u'العقوبة')
     mast = fields.Boolean(string='سارية', default=True)
     deduction = fields.Boolean(string=u'حسم', default=False)
     days_number = fields.Integer(string='عدد أيام ')
     amount = fields.Integer(string='مبلغ')
+    raison = fields.Char(string='السبب ')
     days_difference = fields.Integer(string='الفروقات بالأيام ')
     amount_difference = fields.Integer(string='الفروقات بالمبلغ ')
     state_sanction = fields.Selection(related='sanction_id.state', store=True, readonly=True, string='الحالة')
