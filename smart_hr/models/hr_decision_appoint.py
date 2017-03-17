@@ -706,3 +706,16 @@ class DecisionAppointAllowance(models.Model):
         if self.min_amount and amount < self.min_amount:
             amount = self.min_amount
         return amount
+
+    @api.onchange('allowance_id')
+    def onchange_allowance_id(self):
+        allowance_nature = self._context.get('allowance_nature', False)
+        if allowance_nature == 'job':
+            allowances_ids = self.decision_appoint_id.job_id.serie_id.allowanse_ids
+            allowances_ids = allowances_ids.ids
+            res = {}
+            if allowances_ids:
+                res['domain'] = {'allowance_id': [('id', 'in', allowances_ids)]}
+            else:
+                res['domain'] = {'allowance_id': [('id', '=', -1)]}
+            return res

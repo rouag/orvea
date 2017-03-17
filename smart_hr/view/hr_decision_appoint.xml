@@ -344,15 +344,15 @@
 								</group>
 							</page>
 							<page string="البدلات" readonly="1">
-								<field name="job_allowance_ids">
+								<field name="job_allowance_ids" context="{'allowance_nature': 'job'}" >
 									<tree>
-										<field name="allowance_id"
+										<field name="allowance_id" string='بدل الوظيفة' 
 											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 									</tree>
 									<form string="البدلات">
 										<group>
 											<group>
-												<field name="allowance_id"
+												<field name="allowance_id" 
 													options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 											</group>
 											<group>
@@ -375,15 +375,15 @@
 										</group>
 									</form>
 								</field>
-								<field name="decision_apoint_allowance_ids">
+								<field name="decision_apoint_allowance_ids" context="{'allowance_nature': 'decision_appoint'}" >
 									<tree>
-										<field name="allowance_id"
+										<field name="allowance_id" string='بدل التعين' 
 											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 									</tree>
 									<form string="البدلات">
 										<group>
 											<group>
-												<field name="allowance_id"
+												<field name="allowance_id" 
 													options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 											</group>
 											<group>
