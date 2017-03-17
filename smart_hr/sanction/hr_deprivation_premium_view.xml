@@ -43,12 +43,7 @@
 							<group>
 								<field name="name" />
 								<field name="order_date" />
-							
-											<field name="deprivation_text" />
-								
 							</group>
-						
-						
 						</group>
 
 						<group>
@@ -63,7 +58,9 @@
 											</tree>
 										</field>
 									</group>
-
+								</page>
+								<page string="نص القرار">
+									<field name="deprivation_text" />
 								</page>
 							</notebook> 
 						</group>
