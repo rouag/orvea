@@ -176,7 +176,7 @@ class HrDifference(models.Model):
             #
             employee = deputation.employee_id
             # get a correct line
-            deputation_amount, transport_amount = deputation.get_deputation_allowance_amount()
+            deputation_amount, transport_amount, deputation_allowance = deputation.get_deputation_allowance_amount(number_of_days)
             if transport_amount:
                 # بدل نقل
                 transport_val = {'difference_id': self.id,
