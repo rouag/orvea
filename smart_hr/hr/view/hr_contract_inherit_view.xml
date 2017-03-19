@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data>
-
+		<record model="ir.ui.view" id="hr_contract_view_search_inherit">
+			<field name="name">hhr.contract.filter.inherit</field>
+			<field name="model">hr.contract</field>
+			<field name="type">search</field>
+			<field name="inherit_id" ref="hr_contract.hr_contract_view_search" />
+			<field name="arch" type="xml">
+				<field name="employee_id" position="replace">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</field>
+			</field>
+		</record>
+		
+		
 		<record id="view_hr_contract_form_inherit" model="ir.ui.view">
 			<field name="name">hr.contract.form.inherit</field>
 			<field name="model">hr.contract</field>
@@ -10,19 +23,21 @@
 			<field name="arch" type="xml">
 
 				<field name="employee_id" position="replace">
-					<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-					<field name="country_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+					<field name="employee_id"
+						options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+					<field name="country_id"
+						options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 					<field name="identification_id" />
 					<field name="identification_date" />
 					<field name="identification_place" />
 					<field name="passport_id" string="رقم الحفيظة" />
 				</field>
-				<div class="oe_title"  position="replace">
-				<group>
+				<div class="oe_title" position="replace">
+					<group>
 						<field name="name" string="مسمى العقد" />
-				</group>
+					</group>
 				</div>
-		
+
 
 
 				<field name="department_id" position="replace">

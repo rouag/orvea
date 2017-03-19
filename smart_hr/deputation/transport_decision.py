@@ -9,13 +9,14 @@ from datetime import date, datetime, timedelta
 
 class HrTransportDecision(models.Model):
     _name = 'hr.transport.decision'
+    _inherit = ['mail.thread']
     _order = 'id desc'
     _rec_name = 'employee_id'
     _description = u'أوامر الإركاب'
 
     order_date = fields.Date(string='تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
     employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', required=1)
-    number = fields.Char(string='الرقم الوظيفي', readonly=1)
+    number = fields.Char(string='رقم الوظيفة', readonly=1)
     amount = fields.Float(string='المبلغ المخصص للإركاب', required=1)
     code = fields.Char(string=u'رمز الوظيفة ', readonly=1)
     trasport_type = fields.Many2one('hr.transport.decision.type', string='نوع  الإركاب', required=1)
@@ -49,7 +50,7 @@ class HrTransportDecision(models.Model):
             deputation.state = 'done'
 
     @api.multi
-    def action_refuse(self):
+    def button_refuse(self):
         for deputation in self:
             deputation.state = 'refuse'
 

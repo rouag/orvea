@@ -30,7 +30,11 @@
 				<form>
 					<header>
 						<button name="action_done" string="إعتماد" type="object" states="new" />
-						<button name="action_refuse" string="رفض" type="object" states="new" />
+					<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action"
+						
+						
+						states="new" />
 						<field name="state" widget="statusbar" statusbar_visible="new,done" />
 					</header>
 					<sheet>
@@ -66,7 +70,8 @@
 			<field name="model">hr.attendance.check</field>
 			<field name="arch" type="xml">
 				<search>
-					<field name="employee_id" />
+					<field name="employee_id" string="الموظف"
+							   filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]"/>
 					<field name="date" />
 					<field name="type" />
 					<field name="department_id" />

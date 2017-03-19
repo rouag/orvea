@@ -34,7 +34,7 @@ class SalaryGrid(models.Model):
         self.state = 'done'
 
     @api.multi
-    def action_refuse(self):
+    def button_refuse(self):
         self.state = 'refused'
 
 
@@ -54,7 +54,7 @@ class SalaryGridType(models.Model):
     retrait_monthly = fields.Integer(string='نسبة الحسم الشهري على التقاعد:')
     assurance_monthly = fields.Integer(string='نسبة التامين الشهري  من الراتب الاساسي:')
     salary_recent = fields.Float(string=' أخر راتب شهري')
-    passing_score = fields.Float(string=u'المجموع المطلوبة للتعين')
+    passing_score = fields.Float(string=u'المجموع المطلوبة لاتعين')
 
 
 class SalaryGridGrade(models.Model):
@@ -90,40 +90,63 @@ class SalaryGridDegree(models.Model):
 class SalaryGridDetail(models.Model):
     _name = 'salary.grid.detail'
     _description = u'تفاصيل سلم الرواتب'
+    _rec_name = 'grid_id'
 
     @api.multi
     def get_default_date(self):
         return self.grid_id.date
 
     grid_id = fields.Many2one('salary.grid', string='سلّم الرواتب', required=1, ondelete='cascade')
-    date = fields.Date()
+    date = fields.Date(string='التاريخ')
     type_id = fields.Many2one('salary.grid.type', string='الصنف', required=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1)
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
     basic_salary = fields.Float(string='الراتب الأساسي', required=1)
     retirement = fields.Float(string='نسبة المحسوم للتقاعد')
+    retirement_amount = fields.Float(string='المبلغ المحسوم للتقاعد', readonly=1, compute='_compute_retirement_amount', store=True)
     insurance = fields.Float(string='نسبة  التأمين')
-    net_salary = fields.Float(string='صافي الراتب', readonly=1, compute='_compute_net_salary')
+    net_salary = fields.Float(string='صافي الراتب', readonly=1, compute='_compute_net_salary', store=True)
     allowance_ids = fields.One2many('salary.grid.detail.allowance', 'grid_detail_id', string='البدلات')
     reward_ids = fields.One2many('salary.grid.detail.reward', 'grid_detail_id', string='المكافآت‬')
     indemnity_ids = fields.One2many('salary.grid.detail.indemnity', 'grid_detail_id', string='التعويضات')
     insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين')
+    increase = fields.Float(string='العلاوة')
+    transport_allowance_amout = fields.Float(string='مبلغ بدل النقل', readonly=1, compute='_compute_transport_allowance_amout', store=True)
 
     @api.multi
-    @api.depends('allowance_ids', 'reward_ids', 'indemnity_ids', 'basic_salary', 'retirement', 'insurance', 'retirement')
+    @api.depends('basic_salary', 'retirement')
+    def _compute_retirement_amount(self):
+        for rec in self:
+            retirement = rec.basic_salary * rec.retirement / 100.0
+            rec.retirement_amount = retirement
+
+    @api.multi
+    @api.depends('allowance_ids')
+    def _compute_transport_allowance_amout(self):
+        transport_allowance = self.env.ref('smart_hr.hr_allowance_type_01')
+        for rec in self:
+            transport_allowance_amout = 0.0
+            for allowance in rec.allowance_ids:
+                amount = allowance.get_value(False)
+                if transport_allowance == allowance.allowance_id:
+                    transport_allowance_amout = amount
+            rec.transport_allowance_amout = transport_allowance_amout
+
+    @api.multi
+    @api.depends('allowance_ids', 'reward_ids', 'indemnity_ids', 'basic_salary', 'retirement', 'insurance')
     def _compute_net_salary(self):
         for rec in self:
             net_salary = rec.basic_salary
             for allowance in rec.allowance_ids:
-                net_salary += allowance.get_value(False)
+                amount = allowance.get_value(False)
+                net_salary += amount
             for reward in rec.reward_ids:
                 net_salary += reward.get_value(False)
             for indemnity in rec.indemnity_ids:
                 net_salary += indemnity.get_value(False)
             # deductions
-            retirement = rec.basic_salary * rec.retirement / 100.0
             insurance = rec.basic_salary * rec.insurance / 100.0
-            net_salary -= retirement
+            net_salary -= rec.retirement_amount
             net_salary -= insurance
             rec.net_salary = net_salary
 
@@ -162,12 +185,12 @@ class SalaryGridDetailAllowance(models.Model):
         amount = 0.0
         # search the correct salary_grid for this employee
         if employee_id:
-            salary_grids = employee.get_salary_grid_id(False)
+            salary_grids, basic_salary = employee.get_salary_grid_id(False)
             if not salary_grids:
-                raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
+                raise ValidationError(_(u'لا يوجد سلم رواتب لأحد الموظفين. !'))
         else:
             salary_grids = self.grid_detail_id
-        basic_salary = salary_grids.basic_salary
+            basic_salary = salary_grids.basic_salary
         # compute
         if self.compute_method == 'amount':
             amount = self.amount
@@ -227,12 +250,12 @@ class SalaryGridDetailReward(models.Model):
         amount = 0.0
         # search the correct salary_grid for this employee
         if employee_id:
-            salary_grids = employee.get_salary_grid_id(False)
+            salary_grids, basic_salary = employee.get_salary_grid_id(False)
             if not salary_grids:
-                raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
+                raise ValidationError(_(u'لا يوجد سلم رواتب لأحد الموظفين. !'))
         else:
             salary_grids = self.grid_detail_id
-        basic_salary = salary_grids.basic_salary
+            basic_salary = salary_grids.basic_salary
         # compute
         if self.compute_method == 'amount':
             amount = self.amount
@@ -292,12 +315,12 @@ class SalaryGridDetailIndemnity(models.Model):
         amount = 0.0
         # search the correct salary_grid for this employee
         if employee_id:
-            salary_grids = employee.get_salary_grid_id(False)
+            salary_grids, basic_salary = employee.get_salary_grid_id(False)
             if not salary_grids:
-                raise ValidationError(_(u'للا يوجد سلم رواتب لأحد الموظفين. !'))
+                raise ValidationError(_(u'لا يوجد سلم رواتب لأحد الموظفين. !'))
         else:
             salary_grids = self.grid_detail_id
-        basic_salary = salary_grids.basic_salary
+            basic_salary = salary_grids.basic_salary
         # compute
         if self.compute_method == 'amount':
             amount = self.amount
@@ -327,3 +350,32 @@ class SalaryGridDetailIndemnityCity(models.Model):
     indemnity_id = fields.Many2one('salary.grid.detail.indemnity', string='البدل', ondelete='cascade')
     city_id = fields.Many2one('res.city', string='المدينة', required=1)
     percentage = fields.Float(string='النسبة', required=1)
+
+
+class SalaryIncrease(models.Model):
+    _name = 'salary.increase'
+
+    name = fields.Char(string='المسمى')
+    amount = fields.Float(string='المبلغ', required=1)
+    salary_grid_detail_id = fields.Many2one('salary.grid.detail', string='تفاصيل سلم الرواتب')
+    date = fields.Date(string='التاريخ')
+    employee_id = fields.Many2one('hr.employee')
+
+#     @api.model
+#     def update_salary_increases(self):
+#         employee_ids = self.env['hr.employee'].search([('employee_state', '=', 'employee')])
+#         res = []
+#         for emp in employee_ids:
+#             salary_grid_line_id, basic_salary = emp.get_salary_grid_id(False)
+#             increase_amout = salary_grid_line_id.increase
+#             if increase_amout > 0:
+#                 employee_amount = {'employee_id': emp.id, 'amount': increase_amout}
+#                 res.append(employee_amount)
+#         for rec in res:
+#             employee_id = rec.get('employee_id')
+#             amount = rec.get('amount')
+#             self.env['salary.increase'].create({'name': u'علاوة سنوية',
+#                                                 'employee_id': employee_id,
+#                                                 'amount': amount,
+#                                                 'date':
+#                                                 })

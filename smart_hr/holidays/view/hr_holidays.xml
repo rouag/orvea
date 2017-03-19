@@ -10,11 +10,11 @@
 			<field name="type">search</field>
 			<field name="inherit_id" ref="hr_holidays.view_hr_holidays_filter" />
 			<field name="arch" type="xml">
-				 <field name="name" position="replace"/>
-				 <field name="employee_id" position="replace">
-					 	<field name="employee_id" string="الموظف"
-							   filter_domain="['|','|','|','|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.name','ilike',self),('employee_id.father_name','ilike',self),('employee_id.grandfather_name','ilike',self),('employee_id.family_name','ilike',self)]"/>
-				 </field>
+				<field name="name" position="replace" />
+				<field name="employee_id" position="replace">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</field>
 			</field>
 		</record>
 
@@ -34,9 +34,10 @@
 						<field name="duration" />
 						<field name="date_from" />
 						<field name="date_to" />
-							<field name="num_decision" />
-							<field name="date_decision" />
+						<field name="num_decision" />
+						<field name="date_decision" />
 						<field name="state" />
+						<field name="is_started" invisible="1" />
 					</tree>
 				</xpath>
 			</field>
@@ -64,8 +65,9 @@
 						<button name="button_accept_dm" string="موافق" type="object"
 							states="dm" groups="smart_hr.group_dm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
-						<button name="button_delay_dm" string="رفض" type="object"
+						
+							<button name="%(action_holidays1_refuse_wizard)d" string="رفض"
+							type="action"
 							states="dm" groups="smart_hr.group_dm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
@@ -73,7 +75,8 @@
 							states="audit" groups="smart_hr.group_holidays_checker" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<button name="button_refuse_audit" string="رفض" type="object"
+						<button name="%(action_holidays2_refuse_wizard)d" string="رفض"
+							type="action"
 							states="audit" groups="smart_hr.group_holidays_checker" icon="fa-times"
 							class="oe_inline oe_stat_button" />
 
@@ -85,15 +88,17 @@
 							type="object" states="external_audit" groups="smart_hr.group_holidays_checker"
 							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<button name="button_refuse_external_audit" string="رفض"
-							type="object" states="external_audit" groups="smart_hr.group_holidays_checker"
+						<button name="%(action_holidays3_refuse_wizard)d" string="رفض"
+							type="action"
+							 states="external_audit" groups="smart_hr.group_holidays_checker"
 							icon="fa-times" class="oe_inline oe_stat_button" />
 
 						<button name="button_accept_revision" string="موافق" type="object"
 							states="revision" groups="smart_hr.group_director_division_salaries_vacations"
 							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<button name="button_refuse_revision" string="رفض" type="object"
+						<button name="%(action_holidays4_refuse_wizard)d" string="رفض"
+							type="action" 
 							states="revision" groups="smart_hr.group_director_division_salaries_vacations"
 							icon="fa-times" class="oe_inline oe_stat_button" />
 
@@ -101,8 +106,9 @@
 							type="object" states="revision_response" groups="smart_hr.group_holidays_checker"
 							icon="fa-times" class="oe_inline oe_stat_button" />
 
-						<button name="button_refuse_revision_response" string="رفض"
-							type="object" states="revision_response" groups="smart_hr.group_holidays_checker"
+						<button name="%(action_holidays5_refuse_wizard)d" string="رفض"
+							type="action"
+							 states="revision_response" groups="smart_hr.group_holidays_checker"
 							icon="fa-times" class="oe_inline oe_stat_button" />
 
 
@@ -123,7 +129,7 @@
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<field name="state" widget="statusbar"
-							statusbar_visible="draft,dm,audit,hrm,external_audit,revision,revision_response,done,cancel,cutoff" />
+							statusbar_visible="draft,dm,audit,hrm,external_audit,revision,revision_response,done,cancel,cutoff,refuse" />
 					</header>
 					<sheet>
 						<field name="spend_advanced_salary" invisible="1" />
@@ -156,10 +162,25 @@
 							 %(data_hr_holiday_status_sport)d ,%(data_hr_holiday_death)d ])],
 							 'invisible':[('holiday_status_id','not in', [%(data_hr_holiday_accompaniment_exceptional)d,%(data_hr_holiday_status_illness)d,
 							 %(data_hr_holiday_status_sport)d ,%(data_hr_holiday_death)d])] }" />
-								<field name="compensation_type" 
+
+								<field name="compensation_type"
 									attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)],
 								'required':[('holiday_status_id','=', %(data_hr_holiday_compensation)d)],
 								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_compensation)d)]
+								}" />
+								
+								<field name="sold_overtime"
+									attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)],
+								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_compensation)d)]
+								}" />
+								<field name="sold_attendance"
+									attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)],
+								'invisible':[('holiday_status_id','!=', %(data_hr_holiday_compensation)d)]
+								}" />
+								
+								<field name="token_compensation_stock"
+									attrs="{'readonly':[('state','not in',['draft'])],
+								'invisible':['|', ('compensation_type','!=', 'money'), ('state','!=', 'done')]
 								}" />
 								<field name="current_holiday_stock" />
 							</group>
@@ -174,7 +195,18 @@
 							<field name="date_to" readonly="1"
 								attrs="{'invisible':[('compensation_type','=','money')]}" />
 						</group>
-
+						<group>
+							<field name="display_compute_as_deputation" invisible="1" />
+							<field name='compute_as_deputation'
+								attrs="{'invisible':[('display_compute_as_deputation','=',False)]}" />
+							<field name="deputation_id"
+								domain="[('state', '=', 'done'), ('employee_id', '=', employee_id),
+                                             ('order_date', '&gt;=', time..strftime('%Y-1-1')),
+                                            ('order_date', '&lt;=', time..strftime('%Y-12-31'))]"
+								attrs="{'invisible':[('compute_as_deputation','=',False)], 'required':[('compute_as_deputation','=',True)]}" />
+							<field name="deputation_balance_computed"
+								attrs="{'invisible':[('compute_as_deputation','=',False)]}" />
+						</group>
 						<group
 							attrs="{'invisible':[('holiday_status_id','not in', [%(data_hr_holiday_accompaniment_exceptional)d,%(data_hr_holiday_status_illness)d])] }">
 							<group>

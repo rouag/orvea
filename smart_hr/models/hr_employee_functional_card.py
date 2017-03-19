@@ -10,11 +10,19 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FO
 
 class HrEmployeeFunctionnalCard(models.Model):
     _name = 'hr.employee.functionnal.card'
+    _inherit = ['mail.thread']
     _description = u'بطاقة موظف'
+
+    @api.multi
+    @api.depends('department_id')
+    def _get_department_name_report(self):
+        for card in self:
+            department_name_report = card.department_id._get_dep_name_employee_form()[0]
+            card.department_name_report = department_name_report[1]
 
     name = fields.Char(string='رقم بطاقة')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1, readonly=1)
-    number = fields.Char(string=u'الرقم الوظيفي', related="employee_id.number", readonly=1)
+    number = fields.Char(string=u'رقم الوظيفة', related="employee_id.number", readonly=1)
     employee_state = fields.Selection(string=u'الحالة', related="employee_id.employee_state", readonly=1)
     last_salary = fields.Float(string='  الراتب الأخير ', store=True, compute='_compute_last_degree_salary', readonly=1)
     birthday_location = fields.Char(string=u'مكان الميلاد', related="employee_id.birthday_location", readonly=1)
@@ -50,6 +58,7 @@ class HrEmployeeFunctionnalCard(models.Model):
                               ], string=u'الحالة', default='draft', )
     training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'التدريب', readonly=1,
                                    related="employee_id.training_ids")
+    department_name_report = fields.Char(compute=_get_department_name_report, store=True)
 
     @api.multi
     @api.depends('employee_id')
@@ -73,9 +82,8 @@ class HrEmployeeFunctionnalCard(models.Model):
 
     @api.model
     def create(self, vals):
+        vals.update({'name': self.env['ir.sequence'].get('hr.employye.card.seq')})
         res = super(HrEmployeeFunctionnalCard, self).create(vals)
-        vals['name'] = self.env['ir.sequence'].get('hr.employye.card.seq')
-        res.write(vals)
         return res
 
     @api.multi
@@ -104,6 +112,6 @@ class HrEmployeeFunctionnalCard(models.Model):
         self.state = 'hrm'
 
     @api.multi
-    def button_refuse_hrm(self):
+    def button_refuse(self):
         self.ensure_one()
         self.state = 'refuse'

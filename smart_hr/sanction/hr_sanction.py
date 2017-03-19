@@ -9,6 +9,7 @@ from datetime import date, datetime, timedelta
 
 class hrSanction(models.Model):
     _name = 'hr.sanction'
+    _inherit = ['mail.thread']
     _order = 'id desc'
     _description = u'إجراء العقوبات'
 
@@ -52,29 +53,30 @@ class hrSanction(models.Model):
         for sanction in self:
             sanction.state = 'done'
 
+    # TODO: check this function  always display this message خلل في تسلسل العقوبات
     @api.multi
     def action_draft(self):
         for rec in self:
-            previous_code = str(int(rec.type_sanction.code) - 1)
-            current_code = rec.type_sanction.code
-            employee_ids = []
-            if int(current_code) >= 1:
-                sanction_ligne_ids = rec.env['hr.sanction.ligne'].search(['&', ('state', '=', 'done'),
-                                                                          '|', ('type_sanction.code', '=', previous_code),
-                                                                          ('type_sanction.code', '=', current_code),
-                                                                          ])
-                employee_ids = [line.employee_id for line in sanction_ligne_ids]
-            # add employee tht dosent have any sanction yet
-            if int(current_code) == 1:
-                employee_ids += rec.env['hr.employee'].search([('sanction_ids', '=', False)])
-            # add employee tht dosent have any sanction yet
-            for line in rec.line_ids:
-                if line.employee_id not in employee_ids:
-                    raise ValidationError(u"لا يمكن تنفيذ هذه العقوبة للموظف  : "+ unicode(line.employee_id.display_name) +u" \n"+ u"-لخلل في تسلسل العقوبات.")
-                rec.state = 'waiting'
+            # previous_code = str(int(rec.type_sanction.code) - 1)
+            # current_code = rec.type_sanction.code
+            # employee_ids = []
+            # if int(current_code) >= 1:
+            #     sanction_ligne_ids = rec.env['hr.sanction.ligne'].search(['&', ('state', '=', 'done'),
+            #                                                               '|', ('type_sanction.code', '=', previous_code),
+            #                                                               ('type_sanction.code', '=', current_code),
+            #                                                               ])
+            #     employee_ids = [line.employee_id for line in sanction_ligne_ids]
+            # # add employee tht dosent have any sanction yet
+            # if int(current_code) == 1:
+            #     employee_ids += rec.env['hr.employee'].search([('sanction_ids', '=', False)])
+            # # add employee tht dosent have any sanction yet
+            # for line in rec.line_ids:
+            #     if line.employee_id not in employee_ids:
+            #         raise ValidationError(u"لا يمكن تنفيذ هذه العقوبة للموظف  : "+ unicode(line.employee_id.display_name) +u" \n"+ u"-لخلل في تسلسل العقوبات.")
+            rec.state = 'waiting'
 
     @api.multi
-    def action_refuse(self):
+    def button_refuse(self):
         for sanction in self:
             sanction.state = 'draft'
 
@@ -122,11 +124,12 @@ class HrSanctionLigne(models.Model):
 
     sanction_id = fields.Many2one('hr.sanction', string=' العقوبات', ondelete='cascade')
     employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف', required=1)
-    type_sanction = fields.Many2one(related='sanction_id.type_sanction', string=u'العقوبة')
+    type_sanction = fields.Many2one('hr.type.sanction',related='sanction_id.type_sanction', string=u'العقوبة')
     mast = fields.Boolean(string='سارية', default=True)
     deduction = fields.Boolean(string=u'حسم', default=False)
     days_number = fields.Integer(string='عدد أيام ')
     amount = fields.Integer(string='مبلغ')
+    raison = fields.Char(string='السبب ')
     days_difference = fields.Integer(string='الفروقات بالأيام ')
     amount_difference = fields.Integer(string='الفروقات بالمبلغ ')
     state_sanction = fields.Selection(related='sanction_id.state', store=True, readonly=True, string='الحالة')

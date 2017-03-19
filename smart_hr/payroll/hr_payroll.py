@@ -51,7 +51,7 @@ class HrPayslipRun(models.Model):
     def onchange_month(self):
         if self.month:
             um = HijriDate.today()
-            if int(um.month)<int(self.month):
+            if int(um.month) < int(self.month):
                 raise UserError(u"لا يمكن انشاء مسير لشهر في المستقبل ")
             self.date_start = get_hijri_month_start(HijriDate, Umalqurra, self.month)
             self.date_end = get_hijri_month_end(HijriDate, Umalqurra, self.month)
@@ -102,7 +102,7 @@ class HrPayslipRun(models.Model):
         self.generate_file()
 
     @api.one
-    def action_cancel(self):
+    def button_refuse(self):
         self.state = 'cancel'
         for slip in self.slip_ids:
             slip.action_cancel()
@@ -184,7 +184,9 @@ class HrPayslipDifferenceHistory(models.Model):
 
 
 class HrPayslip(models.Model):
-    _inherit = 'hr.payslip'
+    _name = 'hr.payslip'
+    _inherit = ['hr.payslip', 'mail.thread']
+    _order = 'date_from desc,id desc'
 
     @api.multi
     def get_default_month(self):
@@ -213,8 +215,46 @@ class HrPayslip(models.Model):
         self.env['hr.loan'].update_loan_date(self.month, self.employee_id.id)
 
     @api.one
-    def action_cancel(self):
+    def button_refuse(self):
         self.state = 'cancel'
+
+    @api.multi
+    @api.onchange('employee_id', 'month')
+    def _onchange_employee_id(self):
+        # check the existance of difference and dedections for current month
+        self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.month)
+        self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.month)
+        if self.env['hr.difference'].search_count([('date_from', '=', self.date_from), ('date_to', '=', self.date_to), ('state', '=', 'done')]) == 0:
+            raise ValidationError(u"لم يتم إحتساب الفروقات لهذا الشهر")
+        if self.env['hr.deduction'].search_count([('date_from', '=', self.date_from), ('date_to', '=', self.date_to), ('state', '=', 'done')]) == 0:
+            raise ValidationError(u"لم يتم إحتساب الحسميات لهذا الشهر")
+        if not self.employee_id and self.month:
+            res = {}
+            employee_ids = self.env['hr.employee'].search([('employee_state', '=', 'employee')])
+            employee_ids = employee_ids.ids
+            termination_ids = self.env['hr.termination'].search([('state', '=', 'done')], order='date_termination desc', limit=1)
+            minus_employee_ids = []
+            for termination_id in termination_ids:
+                if termination_id.date_termination and fields.Date.from_string(termination_id.date_termination) < fields.Date.from_string(self.date_from):
+                    minus_employee_ids.append(termination_id.employee_id)
+            minus_employee_ids = [rec.id for rec in minus_employee_ids]
+            result_employee_ids = list((set(employee_ids) - set(minus_employee_ids)))
+            res['domain'] = {'employee_id': [('id', 'in', result_employee_ids)]}
+            return res
+#         res = {}
+#         if self.type_appointment and self.type_appointment.for_members is True:
+#             employee_ids = self.env['hr.employee'].search(
+#                 [('is_member', '=', True), ('employee_state', 'in', ['done', 'employee'])])
+#             job_ids = self.env['hr.job'].search([('name.members_job', '=', True),('state','=', 'unoccupied'),('type_id.is_member','=',True)])
+#             print"job_ids",job_ids
+#             res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
+#             return res
+#         if self.type_appointment and self.type_appointment.for_members is False:
+#             employee_ids = self.env['hr.employee'].search(
+#                 [('is_member', '=', False), ('employee_state', 'in', ['done', 'employee'])])
+#             job_ids = self.env['hr.job'].search([('name.members_job', '=', False),('state','=', 'unoccupied')])
+#             res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
+#             return res
 
     @api.onchange('employee_id', 'date_from', 'date_to', 'month')
     def onchange_employee(self):
@@ -384,13 +424,9 @@ class HrPayslip(models.Model):
             # generate  lines
             employee = payslip.employee_id
             # search the newest salary_grid for this employee
-            salary_grid = employee.get_salary_grid_id(False)
+            salary_grid, basic_salary = employee.get_salary_grid_id(False)
             if not salary_grid:
                 return
-            if employee.basic_salary == 0:
-                basic_salary = salary_grid.basic_salary
-            else:
-                basic_salary = employee.basic_salary
             # compute
             lines = []
             sequence = 1
@@ -507,12 +543,10 @@ class HrPayslip(models.Model):
                 elif line.type == 'sanction':
                     sanction_days += line.number_of_days
 
-            # get number of days by month
-            worked_days_line_ids, leaves = self.get_worked_day_lines_without_contract(employee.id, employee.calendar_id, payslip.date_from, payslip.date_to, False)
-            days_by_month = worked_days_line_ids and worked_days_line_ids[0].get('number_of_days', 22)
             # حسم‬  التأخير يكون‬ من‬  الراتب‬ الأساسي فقط
             if retard_leave_days:
-                deduction_retard_leave = basic_salary / days_by_month * retard_leave_days
+                # احتساب الحسم يقسم الراتب على 30
+                deduction_retard_leave = basic_salary / 30.0 * retard_leave_days
                 retard_leave_val = {'name': u'تأخير وخروج مبكر',
                                     'slip_id': payslip.id,
                                     'employee_id': employee.id,
@@ -527,7 +561,8 @@ class HrPayslip(models.Model):
                 sequence += 1
             #  حسم‬  الغياب‬ يكون‬ من‬  جميع البدلات . و  الراتب‬ الأساسي للموظفين‬ الرسميين‬ والمستخدمين
             if absence_days:
-                deduction_absence = (basic_salary + allowance_total) / days_by_month * absence_days
+                # احتساب الحسم يقسم الراتب على 30
+                deduction_absence = (basic_salary + allowance_total) / 30.0 * absence_days
                 retard_leave_val = {'name': u'غياب',
                                     'slip_id': payslip.id,
                                     'employee_id': employee.id,
@@ -542,7 +577,8 @@ class HrPayslip(models.Model):
                 sequence += 1
             # عقوبة
             if sanction_days:
-                deduction_sanction = (basic_salary + allowance_total) / days_by_month * sanction_days
+                # احتساب الحسم يقسم الراتب على 30
+                deduction_sanction = (basic_salary + allowance_total) / 30.0 * sanction_days
                 sanction_val = {'name': u'عقوبة',
                                 'slip_id': payslip.id,
                                 'employee_id': employee.id,
@@ -640,18 +676,18 @@ class HrPayslip(models.Model):
     
     
     @api.one
-    @api.constrains('employee_id','month')
+    @api.constrains('employee_id', 'month')
     def _check_payroll(self):
         for rec in self:
-            payroll_count = rec.search_count([('employee_id', '=', rec.employee_id.id),('month', '=', rec.month)])
-            if payroll_count >1:
+            payroll_count = rec.search_count([('employee_id', '=', rec.employee_id.id), ('month', '=', rec.month)])
+            if payroll_count > 1:
                 raise ValidationError(u"لا يمكن إنشاء مسيرين لنفس الموظف في نفس الشهر")
 
     @api.onchange('month')
     def onchange_month(self):
         if self.month:
             um = HijriDate.today()
-            if int(um.month)<int(self.month):
+            if int(um.month) < int(self.month):
                 raise UserError(u"لا يمكن انشاء مسير لشهر في المستقبل ")
             
 class HrPayslipWorkedDays(models.Model):

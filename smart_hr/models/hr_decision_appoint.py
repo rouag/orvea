@@ -24,7 +24,7 @@ class HrDecisionAppoint(models.Model):
     # info about employee
     employee_id = fields.Many2one('hr.employee', string='الموظف', required=1)
     contract_id = fields.Many2one('hr.contract', string='العقد',  Domain=[('state','!=','close')])
-    number = fields.Char(related='employee_id.number', store=True, readonly=True, string=u'الرقم الوظيفي')
+    number = fields.Char(related='employee_id.number', store=True, readonly=True, string=u'رقم الوظيفة')
     emp_code = fields.Char(string=u'رمز الوظيفة ', readonly=1)
     country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
     emp_job_id = fields.Many2one('hr.job', string='الوظيفة', store=True, readonly=1)
@@ -112,6 +112,8 @@ class HrDecisionAppoint(models.Model):
                                      readonly=1)
     is_contract = fields.Boolean(string=u'يتطلب إنشاء عقد', related="type_appointment.is_contract")
     pension_ratio = fields.Float(string=u'نسبة التقاعد (%)')
+    job_allowance_ids = fields.One2many('decision.appoint.allowance', 'decision_appoint_id', string=u'بدلات الوظيفة')
+    decision_apoint_allowance_ids = fields.One2many('decision.appoint.allowance', 'decision_appoint_id', string=u'بدلات التعين')
 
     @api.multi
     @api.onchange('type_appointment')
@@ -138,18 +140,18 @@ class HrDecisionAppoint(models.Model):
         if self.type_appointment and self.employee_id and self.type_appointment.max_pension:
             # get current basic salary of the employee (the employee have an old ta3yin)
             self.pension_ratio = self.max_pension_ratio
-            salary_grid_id = self.employee_id.get_salary_grid_id(False)
+            salary_grid_id, basic_salary = self.employee_id.get_salary_grid_id(False)
             if salary_grid_id:
-                self.basic_salary = salary_grid_id.basic_salary * self.pension_ratio / 100.0
+                self.basic_salary = basic_salary * self.pension_ratio / 100.0
 
     @api.onchange('pension_ratio')
     def _onchange_pension_ratio(self):
         if self.pension_ratio:
             if self.pension_ratio > self.max_pension_ratio:
                 raise ValidationError(u"لا يمكنك تجاوز الحد الأقصى.")
-            salary_grid_id = self.employee_id.get_salary_grid_id(False)
+            salary_grid_id, basic_salary = self.employee_id.get_salary_grid_id(False)
             if salary_grid_id:
-                self.basic_salary = salary_grid_id.basic_salary * self.pension_ratio / 100.0
+                self.basic_salary = basic_salary * self.pension_ratio / 100.0
 
     @api.one
     @api.constrains('score', 'passing_score')
@@ -474,6 +476,13 @@ class HrDecisionAppoint(models.Model):
         self.message_post(u"تمت إحداث تعين جديد '" + unicode(user.name) + u"'")
         # update holidays balance for the employee
         self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date_hiring, "تعيين")
+        # add allowance to the employee
+        for rec in self.job_allowance_ids:
+            self.env['hr.employee.allowance'].create({'employee_id': self.employee_id.id,
+                                                      'allowance_id': rec.allowance_id.id,
+                                                      'amount': rec.amount,
+                                                      'date': fields.Date.from_string(fields.Date.today())
+                                                      })
         self.state = 'done'
         self.env['hr.holidays']._init_balance(self.employee_id)
         # close last active promotion line for the employee
@@ -481,7 +490,8 @@ class HrDecisionAppoint(models.Model):
         previous_promotion = self.env['hr.employee.promotion.history'].search(
             [('employee_id', '=', self.employee_id.id), ('active_duration', '=', True)], limit=1)
         if previous_promotion:
-            previous_promotion.close_promotion_line()
+            previous_promotion.active_duration = False
+            previous_promotion.date_to = fields.Date.from_string(fields.Date.today())
         # create promotion history line
         self.env['hr.employee.promotion.history'].create({'employee_id': self.employee_id.id,
                                                           'date_from': self.date_direct_action,
@@ -532,7 +542,9 @@ class HrDecisionAppoint(models.Model):
             self.emp_degree_id = appoint_line.degree_id.id
             self.emp_department_id = appoint_line.department_id.id
             self.emp_date_direct_action = appoint_line.date_direct_action
-    
+        if self.date_direct_action and self.employee_id:
+            if self.env['hr.holidays'].search_count([('state', '=', 'done'), ('date_from', '<=', self.date_direct_action), ('date_to', '>=', self.date_direct_action), ('employee_id', '=', self.employee_id.id)]) != 0:
+                raise ValidationError(u"هناك تداخل فى تاريخ المباشرة مع يوم إجازة")        
 
     @api.onchange('job_id')
     def _onchange_job_id(self):
@@ -561,11 +573,20 @@ class HrDecisionAppoint(models.Model):
                 self.net_salary = salary_grid_line.net_salary
 
     @api.onchange('date_direct_action')
+    @api.constrains('date_direct_action')
     def _onchange_date_direct_action(self):
         if self.date_direct_action:
             if self.date_hiring > self.date_direct_action:
                 raise ValidationError(u"تاريخ مباشرة العمل يجب ان يكون أكبر من تاريخ التعيين")
-
+            is_holiday = self.env['hr.smart.utils'].check_holiday_weekend_days(self.date_direct_action, self.employee_id)
+            if is_holiday:
+                if is_holiday == "official holiday":
+                    raise ValidationError(u"هناك تداخل فى تاريخ المباشرة مع اعياد و عطل رسمية")
+                elif is_holiday == "weekend":
+                    raise ValidationError(u"هناك تداخل فى تاريخ المباشرة مع عطلة نهاية الاسبوع")
+                elif is_holiday == "holiday":
+                    raise ValidationError(u"هناك تداخل فى تاريخ المباشرة مع يوم إجازة")        
+        
     @api.onchange('date_hiring_end')
     def _onchange_date_hiring_end(self):
         if self.date_hiring_end:
@@ -630,3 +651,71 @@ class HrAllowanceAppoint(models.Model):
     hr_allowance_type_id = fields.Many2one('hr.allowance.type', string=u'بدل التعيين')
     salary_number = fields.Float(string=u'عدد الرواتب')
     appoint_type_id = fields.Many2one('hr.type.appoint', string=u'نوع التعين')
+
+
+class DecisionAppointAllowance(models.Model):
+    _name = 'decision.appoint.allowance'
+    _description = u'بدلات التعين والوظيفة'
+
+    decision_appoint_id = fields.Many2one('hr.decision.appoint', string='التعين', ondelete='cascade')
+    allowance_id = fields.Many2one('hr.allowance.type', string='البدل', required=1)
+    compute_method = fields.Selection([('amount', 'مبلغ'),
+                                       ('percentage', 'نسبة من الراتب الأساسي'),
+                                       ('formula_1', 'نسبة‬ البدل‬ * راتب‬  الدرجة‬ الاولى‬  من‬ المرتبة‬  التي‬ يشغلها‬ الموظف‬'),
+                                       ('formula_2', 'نسبة‬ البدل‬ * راتب‬  الدرجة‬ التي ‬ يشغلها‬ الموظف‬'),
+                                       ('job_location', 'تحتسب  حسب مكان العمل')], required=1, string='طريقة الإحتساب')
+    amount = fields.Float(string='المبلغ')
+    min_amount = fields.Float(string='الحد الأدنى')
+    percentage = fields.Float(string='النسبة')
+    line_ids = fields.One2many('salary.grid.detail.allowance.city', 'allowance_id', string='النسب حسب المدينة')
+
+    @api.model
+    def get_value(self):
+        allowance_city_obj = self.env['salary.grid.detail.allowance.city']
+        degree_obj = self.env['salary.grid.degree']
+        salary_grid_obj = self.env['salary.grid.detail']
+        # employee info
+        employee = self.decision_appoint_id.employee_id
+        ttype = employee.job_id.type_id
+        grade = employee.job_id.grade_id
+        degree = employee.degree_id
+        amount = 0.0
+        # search the correct salary_grid for this employee
+        if employee:
+            salary_grids, basic_salary = employee.get_salary_grid_id(False)
+            if not salary_grids:
+                raise ValidationError(_(u'لا يوجد سلم رواتب للموظف. !'))
+        # compute
+        if self.compute_method == 'amount':
+            amount = self.amount
+        if self.compute_method == 'percentage':
+            amount = self.percentage * basic_salary / 100.0
+        if self.compute_method == 'job_location' and employee and employee.dep_city:
+            citys = allowance_city_obj.search([('allowance_id', '=', self.id), ('city_id', '=', employee.dep_city.id)])
+            if citys:
+                amount = citys[0].percentage * basic_salary / 100.0
+        if self.compute_method == 'formula_1':
+            # get first degree for the grade
+            degrees = degree_obj.search([('grade_id', '=', grade.id)])
+            if degrees:
+                salary_grids = salary_grid_obj.search([('type_id', '=', ttype.id), ('grade_id', '=', grade.id), ('degree_id', '=', degrees[0].id)])
+                if salary_grids:
+                    amount = salary_grids[0].basic_salary * self.percentage / 100.0
+        if self.compute_method == 'formula_2':
+            amount = self.percentage * basic_salary / 100.0
+        if self.min_amount and amount < self.min_amount:
+            amount = self.min_amount
+        return amount
+
+    @api.onchange('allowance_id')
+    def onchange_allowance_id(self):
+        allowance_nature = self._context.get('allowance_nature', False)
+        if allowance_nature == 'job':
+            allowances_ids = self.decision_appoint_id.job_id.serie_id.allowanse_ids
+            allowances_ids = allowances_ids.ids
+            res = {}
+            if allowances_ids:
+                res['domain'] = {'allowance_id': [('id', 'in', allowances_ids)]}
+            else:
+                res['domain'] = {'allowance_id': [('id', '=', -1)]}
+            return res

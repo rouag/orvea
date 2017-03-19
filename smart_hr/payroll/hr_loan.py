@@ -29,7 +29,7 @@ class HrLoan(models.Model):
 
     name = fields.Char(string='رقم القرض', required=1, readonly=1, states={'new': [('readonly', 0)]})
     employee_id = fields.Many2one('hr.employee', string='الموظف', required=1, readonly=1, states={'new': [('readonly', 0)]})
-    number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' الرقم الوظيفي')
+    number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' رقم الوظيفة')
     job_id = fields.Many2one(related='employee_id.job_id', store=True, readonly=True, string=' الوظيفة')
     department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string=' الادارة')
     loan_type_id = fields.Many2one('hr.loan.type', string='نوع القرض', required=1, readonly=1, states={'new': [('readonly', 0)]})
@@ -53,6 +53,20 @@ class HrLoan(models.Model):
                               ], string='الحالة', readonly=1, default='new')
     line_ids = fields.One2many('hr.loan.line', 'loan_id', string='سجل الأقساط', readonly=1)
     history_ids = fields.One2many('hr.loan.history', 'loan_id', string='سجل العمليات', readonly=1)
+    deputation_id = fields.Many2one('hr.deputation', string='الانتداب')
+    is_deputation_advance = fields.Boolean(string='سلفة عن بدل انتداب', related='loan_type_id.is_deputation_advance')
+
+    @api.constrains('amount')
+    @api.onchange('amount')
+    def _onchange_amount(self):
+        if self. amount and self.loan_type_id.is_deputation_advance and self.deputation_id:
+            deputation_amount, transport_amount, deputation_allowance = self.deputation_id.get_deputation_allowance_amount(self.department_id.duration)
+            if self.amount > deputation_amount:
+                warning = {
+                    'title': _('تحذير!'),
+                    'message': _('لا يمكن للسلفة ان تتجاوز بدل الانتداب!'),
+                }
+                return {'warning': warning}
 
     @api.onchange('date_from', 'amount', 'monthly_amount')
     def _onchange_date(self):
@@ -98,7 +112,7 @@ class HrLoan(models.Model):
         self.state = 'waiting'
 
     @api.one
-    def action_refuse(self):
+    def button_refuse(self):
         self.state = 'cancel'
 
     @api.multi
@@ -175,7 +189,8 @@ class HrLoanType(models.Model):
 
     name = fields.Char(string=' الوصف', required=1)
     code = fields.Char(string='الرمز', required=1)
-
+    is_deputation_advance = fields.Boolean(string='سلفة عن بدل انتداب')
+    
     @api.multi
     def name_get(self):
         result = []

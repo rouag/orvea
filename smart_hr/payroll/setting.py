@@ -20,6 +20,13 @@ class HrAllowanceType(models.Model):
             result.append((record.id, name))
         return result
 
+    @api.multi
+    def unlink(self):
+        self.ensure_one()
+        if self.env.ref('smart_hr.hr_allowance_type_01') == self:
+            raise ValidationError(u"لا يمكن حذف هذا النوع! ")
+        return super(HrAllowanceType, self).unlink()
+
 
 class HrRewardType(models.Model):
     _name = 'hr.reward.type'

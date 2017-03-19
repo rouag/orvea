@@ -52,5 +52,9 @@ access_hr_insurance_type_setting,name_hr_insurance_type_setting,model_hr_insuran
 access_hr_insurance_type_payroll,name_hr_insurance_type_payroll,model_hr_insurance_type,group_employee,1,0,0,0
 
 access_hr_payslip_employee,name_access_hr_payslip_employee,model_hr_payslip,group_employee,1,0,0,0
+access_salary_grid_employee,name_access_salary_grid_employee,model_salary_grid,group_employee,1,0,0,0
+access_salary_grid_type_employee,name_access_salary_grid_type_employee,model_salary_grid_type,group_employee,1,0,0,0
+access_salary_increase,name_salary_increase,model_salary_increase,,1,1,1,1
 
-
+access_hr_employee_allowance,hr_employee_allowance,model_hr_employee_allowance,,1,1,1,1
+access_decision_appoint_allowance,decision_appoint_allowance,model_decision_appoint_allowance,,1,1,1,1

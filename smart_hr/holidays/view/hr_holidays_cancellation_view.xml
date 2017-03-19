@@ -2,7 +2,20 @@
 <openerp>
 	<data>
 
+		<!-- view search -->
 
+		<record model="ir.ui.view" id="view_hr_holidays_cancellation_filter_inherit">
+			<field name="name">hr.holidays.cancellation.filter.inherit</field>
+			<field name="model">hr.holidays.cancellation</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="إلغاء أو قطع إجازاتي">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
+		
 		<!-- My Hollidays Cancellation -->
 		<record id="hr_holidays_cancellation_mine_form" model="ir.ui.view">
 			<field name="name">hr.holidays.cancellation.form</field>
@@ -31,8 +44,10 @@
 					<sheet>
 						<group>
 							<field name="name" />
-							<field name="employee_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
-							<field name="holidays" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+							<field name="employee_id"
+								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+							<field name="holidays"
+								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 						</group>
 						<group col="8">
 							<field name="note" />
@@ -122,9 +137,10 @@
 						</h1>
 						<group>
 							<field name="date" readonly="1" />
-							<field name="employee_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+							<field name="employee_id"
+								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 							<field name="holidays" widget="many2many"
-								domain="[('state', '=', 'done'), ('employee_id', '=', employee_id)]" />
+								domain="[('state', '=', 'done'), ('employee_id', '=', employee_id),('is_started','=',False)]" />
 						</group>
 						<group col="8">
 							<field name="note" colspan="8" />
@@ -214,9 +230,10 @@
 						</h1>
 						<group>
 							<field name="date" readonly="1" />
-							<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+							<field name="employee_id"
+								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 							<field name="holidays" widget="many2many"
-								domain="[('state', '=', 'done'), ('employee_id', '=', employee_id)]" />
+								domain="[('state', '=', 'done'), ('employee_id', '=', employee_id),('is_started','=',True)]" />
 						</group>
 						<group col="8">
 							<field name="note" colspan="8" />

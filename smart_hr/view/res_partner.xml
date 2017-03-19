@@ -15,14 +15,15 @@
 					<field name="inter_reg_org" />
 					<field name="insurance" />
 				</field>
-				
+
 			</field>
 		</record>
 
-		
-		<menuitem id="bank_accounts" sequence="35" name="إعدادات البنوك" parent="smart_hr.hr_root_configuration" />
-		
-			
+
+		<menuitem id="bank_accounts" sequence="35" name="إعدادات البنوك"
+			parent="smart_hr.hr_root_configuration" />
+
+
 		<menuitem id="banks_management" name=" البنوك" sequence="1"
 			parent="bank_accounts" action="base.action_res_bank_form" />
 		<menuitem id="banks_accounts_management" name=" الحسابات البنكِيّة"
@@ -149,6 +150,36 @@
 				</p>
 			</field>
 		</record>
-
+		<record id="view_partner_bank_search_inherit" model="ir.ui.view">
+			<field name="name">res.partner.bank.search.inherit</field>
+			<field name="model">res.partner.bank</field>
+			<field name="inherit_id" ref="base.view_partner_bank_search" />
+			<field name="arch" type="xml">
+				<field name="partner_id" position="replace">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</field>
+			</field>
+		</record>
+		
+		<record id="mail.action_contacts" model="ir.actions.act_window">
+			<field name="name">Contacts</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">res.partner</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">kanban,tree,form</field>
+			<field name="search_view_id" ref="base.view_res_partner_filter" />
+			<field name="domain">[('user_ids','=', False)]</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">
+					Click to add a contact in your address book.
+				</p>
+				<p>
+					Odoo helps you easily track all activities related to
+					a customer; discussions, history of business opportunities,
+					documents, etc.
+				</p>
+			</field>
+		</record>
 	</data>
 </openerp>

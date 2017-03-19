@@ -55,7 +55,9 @@
 							states="candidat" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_done" string="إعتماد" type="object"
 							states="review" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_refused" string="رفض" type="object"
+						
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action"
 							attrs="{'invisible': ['|','|','|',('state', '=', 'done'),('state', '=', 'refused'),('state', '=', 'cancel')]}"
 
 
@@ -108,6 +110,10 @@
 							</field>
 						</group>
 					</sheet>
+					
+<div>
+						<field name="message_ids" widget="mail_thread" readonly="1" />
+					</div>
 				</form>
 			</field>
 		</record>
@@ -167,7 +173,16 @@
 
 
 		<!-- الترشيحات -->
-
+		<record id="view_search_hr_candidates" model="ir.ui.view">
+			<field name="name">hr.candidates.search</field>
+			<field name="model">hr.candidates</field>
+			<field name="arch" type="xml">
+				<search string="الترشيحات">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
 		<record model="ir.ui.view" id="hr_candidates_tree">
 			<field name="name">hr.candidates.tree</field>
 			<field name="model">hr.candidates</field>

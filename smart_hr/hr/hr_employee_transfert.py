@@ -8,6 +8,7 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FO
 
 class HrEmployeeTransfert(models.Model):
     _name = 'hr.employee.transfert'
+    _inherit = ['mail.thread']
     _description = u'طلب نقل موظف'
     _rec_name = 'employee_id'
 
@@ -220,7 +221,7 @@ class HrEmployeeTransfert(models.Model):
         self.state = 'pm'
 
     @api.multi
-    def action_refused(self):
+    def button_refuse(self):
         self.ensure_one()
         self.refusing_date = datetime.now()
         self.state = 'refused'

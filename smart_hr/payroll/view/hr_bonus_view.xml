@@ -31,7 +31,9 @@
 							states="new" />
 						<button name="action_done" string="إعتماد" type="object"
 							states="waiting" groups="smart_hr.group_bonus_management" />
-						<button name="action_refuse" string="رفض" type="object"
+						
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action"
 							states="waiting" groups="smart_hr.group_bonus_management" />
 						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
 					</header>

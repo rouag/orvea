@@ -3,6 +3,17 @@
 	<data>
 
 
+		<record model="ir.ui.view" id="view_hr_scholarship_filter">
+			<field name="name">hr.scholarship.search</field>
+			<field name="model">hr.scholarship</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="الابتعاث">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
 		<record id="hr_scholarship_form" model="ir.ui.view">
 			<field name="name">hr.scholarship.form</field>
 			<field name="model">hr.scholarship</field>
@@ -22,7 +33,8 @@
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 
-						<button name="action_refuse" string="رفض" type="object"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action"
 							states="psm" groups="smart_hr.group_scholarship_manager" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
@@ -139,6 +151,9 @@
 							type="action" icon="fa-print" class="oe_inline oe_stat_button" />
 
 					</sheet>
+					<div>
+						<field name="message_ids" widget="mail_thread" readonly="1" />
+					</div>
 				</form>
 			</field>
 		</record>

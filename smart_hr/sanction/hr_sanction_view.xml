@@ -103,7 +103,8 @@
 						<button name="action_waiting" string="موافق" type="object"
 							states="waiting" groups="smart_hr.group_responsable_sanction"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_refuse" string="رفض" type="object"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action"
 							states="waiting" groups="smart_hr.group_responsable_sanction"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
@@ -114,9 +115,7 @@
 						<button name="action_update" string="موافق" type="object"
 							states="update" groups="smart_hr.group_third_party_sanction"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_refuse_update" string="رفض" type="object"
-							states="update" groups="smart_hr.group_responsable_sanction"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							
 
 						<button name="action_cancel" context="{'operation': 'cancel'}"
 							string="إلغاء" type="object" states="done"
@@ -171,7 +170,7 @@
 													<field name="amount_difference" />
 												
 												<field name="deduction" />
-												
+													<field name="raison" />
 												<field name="state" />
 												<button
 													name="%(smart_hr.action_wizard_sanction_action_exclusion)d"
@@ -206,7 +205,9 @@
 						</group>
 						<field name="sanction_text" />
 					</sheet>
-
+<div>
+						<field name="message_ids" widget="mail_thread" readonly="1" />
+					</div>
 				</form>
 			</field>
 		</record>

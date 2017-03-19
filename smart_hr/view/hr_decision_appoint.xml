@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
-
+		<record model="ir.ui.view" id="view_hr_decision_appoint">
+			<field name="name">hr.decision.appoint</field>
+			<field name="model">hr.decision.appoint</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="التعين">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
 		<record model="ir.ui.view" id="hr_type_appoint_tree">
 			<field name="name">hr.type.appoint.tree</field>
 			<field name="model">hr.type.appoint</field>
@@ -93,7 +103,8 @@
 							attrs="{'invisible':['|',('type_appointment', '=', %(data_hr_recrute_Members)d), ('state','!=', 'audit')]}"
 							groups="smart_hr.group_audit_appointment" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_refuse_audit" string="رفض" type="object"
+						<button name="%(action_hr_refuse_appoint_wizard)d" string="رفض"
+							type="action"
 							attrs="{'invisible':['|',('type_appointment', '=', %(data_hr_recrute_Members)d), ('state','!=', 'audit')]}"
 							groups="smart_hr.group_audit_appointment" icon="fa-times"
 							class="oe_inline oe_stat_button" />
@@ -103,32 +114,37 @@
 							attrs="{'invisible':['|',('type_appointment', '!=', %(data_hr_recrute_Members)d), ('state','!=', 'audit')]}"
 							groups="smart_hr.group_committee_members_recruiter" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_refuse_audit" string="رفض" type="object"
+						<button name="%(action_hr_refuse_appoint1_wizard)d" string="رفض"
+							type="action"
 							attrs="{'invisible':['|',('type_appointment', '!=', %(data_hr_recrute_Members)d), ('state','!=', 'audit')]}"
 							groups="smart_hr.group_committee_members_recruiter" icon="fa-times"
 							class="oe_inline oe_stat_button" />
 						<button name="button_accept_enterview_manager" string="موافق"
 							type="object" states="waiting" groups="smart_hr.group_enterview_manager"
 							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_refuse_enterview_manager" string="رفض"
-							type="object" states="waiting" groups="smart_hr.group_enterview_manager"
+							<button name="%(action_hr_refuse_appoint2_wizard)d" string="رفض"
+							type="action"
+							 states="waiting" groups="smart_hr.group_enterview_manager"
 							icon="fa-times" class="oe_inline oe_stat_button" />
 						<button name="button_accept_recrutment_manager" string="موافق"
 							type="object" states="manager" groups="smart_hr.group_recrutment_manager"
 							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_refuse_recrutment_manager" string="رفض"
-							type="object" states="manager" groups="smart_hr.group_recrutment_manager"
+							<button name="%(action_hr_refuse_appoint3_wizard)d" string="رفض"
+							type="action"
+							states="manager" groups="smart_hr.group_recrutment_manager"
 							icon="fa-times" class="oe_inline oe_stat_button" />
 						<button name="button_accept_recrutment_decider" string="موافق"
 							type="object" states="budget" groups="smart_hr.group_recrutment_decider"
 							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_refuse_recrutment_decider" string="رفض"
-							type="object" states="budget" groups="smart_hr.group_recrutment_decider"
+							<button name="%(action_hr_refuse_appoint4_wizard)d" string="رفض"
+							type="action"
+							states="budget" groups="smart_hr.group_recrutment_decider"
 							icon="fa-times" class="oe_inline oe_stat_button" />
 						<button name="button_accept_direct" string="موافق" type="object"
 							states="direct" groups="smart_hr.group_dm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_refuse_direct" string="رفض" type="object"
+						<button name="%(action_hr_refuse_appoint5_wizard)d" string="رفض"
+							type="action"
 							states="direct" groups="smart_hr.group_dm" icon="fa-times"
 							class="oe_inline oe_stat_button" />
 						<button name="button_accept_personnel_hr" string="موافق"
@@ -138,7 +154,8 @@
 						<button name="button_accept_civil" string="موافق" type="object"
 							states="civil" groups="smart_hr.group_ministry_civil" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_refuse_civil" string="رفض" type="object"
+						<button name="%(action_hr_refuse_appoint6_wizard)d" string="رفض"
+							type="action"
 							states="civil" groups="smart_hr.group_ministry_civil" icon="fa-times"
 							class="oe_inline oe_stat_button" />
 
@@ -197,18 +214,19 @@
 										<field name="employee_id"
 											options="{'no_open': True,'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 											attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])],'readonly':['|',('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse']), ('type_appointment','=',False)]}" />
-										
-										
-											<field name="contract_id"  	domain="[('employee_id', '=', employee_id)]"
-												attrs="{'invisible':[('is_contract', '=', False)],'readonly':['|',('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse']), ('type_appointment','=',False)]}" />
-											
-											
-											
+
+
+										<field name="contract_id" domain="[('employee_id', '=', employee_id)]"
+											attrs="{'invisible':[('is_contract', '=', False)],'readonly':['|',('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse']), ('type_appointment','=',False)]}" />
+
+
+
 										<field name="number" />
 										<field name="country_id" />
 										<field name="emp_job_id" />
 										<field name="emp_number_job" />
 										<field name="emp_code" />
+										<field name="emp_department_id" />
 										<field name="date_medical_examination"
 											attrs="{'invisible':['|',('state', 'not in', ['draft','waiting', 'manager','hrm', 'budget', 'done'])],'required':[('type_appointment', '=', %(data_hr_new_agent_public)d)],'readonly':[('state', 'in', [ 'audit','waiting','manager', 'budget','hrm','direct','civil', 'done','refuse'])]}" />
 										<field name="medical_examination_file" filename="medical_examination_name"
@@ -224,18 +242,12 @@
 											attrs="{'invisible':['|',('state', 'not in', ['draft','waiting', 'manager','hrm', 'budget','civil', 'done']),('type_appointment', '!=', %(data_hr_new_agent_public)d)],'readonly':[('state', 'in', [ 'waiting', 'manager', 'hrm', 'budget', 'civil','done'])]}" />
 
 										<field name="file_salar_recent_name" invisible="1" />
-											<field name="is_contract" invisible="1" />
+										<field name="is_contract" invisible="1" />
 										<field name="order_enquiry_file_name" invisible="1" />
 										<field name="medical_examination_name" invisible="1" />
 
 									</group>
 									<group>
-										<field name="emp_type_id" />
-										<field name="emp_grade_id" />
-										<field name="emp_degree_id" />
-										<field name="emp_department_id" />
-										<field name="emp_far_age" />
-										<field name="emp_basic_salary" />
 										<field name="option_contract" invisible="1" />
 									</group>
 								</group>
@@ -266,8 +278,10 @@
 
 											attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'manager', 'budget', 'done','refuse'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'manager', 'budget','civil', 'done','refuse'])]}" />
 										<field name="far_age" />
-										<field name="max_pension_ratio" attrs="{'invisible':[('max_pension', '=', False)]}"/>
-										<field name="pension_ratio" attrs="{'invisible':[('max_pension', '=', False)]}"/>
+										<field name="max_pension_ratio"
+											attrs="{'invisible':[('max_pension', '=', False)]}" />
+										<field name="pension_ratio"
+											attrs="{'invisible':[('max_pension', '=', False)]}" />
 										<field name="basic_salary" />
 										<field name="retirement" />
 										<field name="transport_allow"
@@ -286,11 +300,11 @@
 										<field name="order_picture" filename="order_picture_name"
 											attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct','civil', 'done','refuse'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])]}" />
 										<field name="order_picture_name" invisible="1" />
-										
-										
-											<field name="royal_decree_number"
+
+
+										<field name="royal_decree_number"
 											attrs="{'invisible':['|',('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse']),('type_appointment', '!=', %(data_hr_recrute_Members)d)],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])]}" />
-										<field name="royal_decree_date" 
+										<field name="royal_decree_date"
 											attrs="{'invisible':['|',('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct','civil', 'done','refuse']),('type_appointment', '!=', %(data_hr_recrute_Members)d)],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])]}" />
 									</group>
 									<group>
@@ -328,6 +342,70 @@
 											attrs="{'readonly':[('state', 'not in',['draft','audit'])],'required':[('state', 'in',['draft','audit'])]}" />
 									</group>
 								</group>
+							</page>
+							<page string="البدلات" readonly="1">
+								<field name="job_allowance_ids" context="{'allowance_nature': 'job'}" >
+									<tree>
+										<field name="allowance_id" string='بدل الوظيفة' 
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									</tree>
+									<form string="البدلات">
+										<group>
+											<group>
+												<field name="allowance_id" 
+													options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+											</group>
+											<group>
+												<field name="compute_method" />
+												<field name="amount"
+													attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}" />
+												<field name="percentage"
+													attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}" />
+												<field name="min_amount" />
+												<field name="line_ids"
+													attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+													<tree editable="buttom">
+														<field name="city_id"
+															options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+														<field name="percentage" />
+													</tree>
+												</field>
+
+											</group>
+										</group>
+									</form>
+								</field>
+								<field name="decision_apoint_allowance_ids" context="{'allowance_nature': 'decision_appoint'}" >
+									<tree>
+										<field name="allowance_id" string='بدل التعين' 
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									</tree>
+									<form string="البدلات">
+										<group>
+											<group>
+												<field name="allowance_id" 
+													options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+											</group>
+											<group>
+												<field name="compute_method" />
+												<field name="amount"
+													attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}" />
+												<field name="percentage"
+													attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}" />
+												<field name="min_amount" />
+												<field name="line_ids"
+													attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+													<tree editable="buttom">
+														<field name="city_id"
+															options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+														<field name="percentage" />
+													</tree>
+												</field>
+
+											</group>
+										</group>
+									</form>
+								</field>
 							</page>
 						</notebook>
 					</sheet>

@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data>
+
+		<record model="ir.ui.view" id="view_hr_employee_transfert_filter">
+			<field name="name">hr.employee.transfert..search</field>
+			<field name="model">hr.employee.transfert</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="طلب نقل موظف">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
 		<!-- طلب نقل موظف -->
 		<record id="view_hr_employee_transfert_form" model="ir.ui.view">
 			<field name="name">hr.employee.transfert.form</field>
@@ -16,7 +28,8 @@
 						<button name="action_pm" string="موافق" type="object"
 							states="waiting" groups="smart_hr.group_tranfert_employee_owner"
 							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_refused" string="رفض" type="object"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action"
 							states="waiting" groups="smart_hr.group_tranfert_employee_owner"
 							icon="fa-times" class="oe_inline oe_stat_button" />
 
@@ -147,6 +160,9 @@
 							</page>
 						</notebook>
 					</sheet>
+					<div>
+						<field name="message_ids" widget="mail_thread" readonly="1" />
+					</div>
 				</form>
 			</field>
 		</record>
@@ -237,7 +253,7 @@
 					<header>
 						<button name="action_generate_lines" string="إدراج اللائحة "
 							type="object" groups="smart_hr.group_hr_personnel_officer_commissioning"
-							states="new"/>
+							states="new" />
 						<button name="action_commission_president" string="إرسال "
 							type="object" groups="smart_hr.group_hr_personnel_officer_commissioning"
 							states="new" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />

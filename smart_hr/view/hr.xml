@@ -9,8 +9,8 @@
 			<field name="arch" type="xml">
 				<!-- Add some fields -->
 				<xpath expr="//field[@name='name']" position="replace">
-					<field name="name" string="الإسم"
-						filter_domain="['|','|','|','|',('work_email','ilike',self),('name','ilike',self),('father_name','ilike',self),('grandfather_name','ilike',self),('family_name','ilike',self)]" />
+					<field name="name" string="الموظف"
+						filter_domain="['|','|',('number','ilike',self),('identification_id','ilike',self),('display_name','ilike',self)]" />
 					<filter string="الموظفين العاملين" name="available_employees"
 						domain="[('emp_state','=','working'), ('employee_state','!=', 'non_active'), ('employee_state','!=', 'oh'), ('employee_state','!=', 'retired')]" />
 					<filter string="مكلف خارجي" name="assigned_employees"
@@ -67,7 +67,7 @@
 				'_get_natinality'}
 			</field>
 		</record>
-		
+
 
 		<record id="view_country_tree_nationality" model="ir.ui.view">
 			<field name="name">res.country.tree</field>
@@ -164,7 +164,7 @@
 				<xpath expr="//tree" position='replace'>
 					<tree>
 						<field name="display_name" string="الموظف" />
-						<field name="number" string="الرقم الوظيفي" />
+						<field name="number" string="رقم الوظيفة" />
 
 
 						<field name="employee_state" string="الحالة" />
@@ -173,6 +173,35 @@
 			</field>
 		</record>
 
+		<record id="act_hr_employee_2_hr_holidays" model="ir.actions.act_window">
+			<field name="res_model">hr.holidays</field>
+			<field name="view_type">form</field>
+			<field name="name">طلبات الاجازات</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('employee_id', '=', active_id)]</field>
+		</record>
+
+		<record id="hr_contract.act_hr_employee_2_hr_contract" model="ir.actions.act_window">
+			<field name="res_model">hr.contract</field>
+			<field name="view_type">form</field>
+			<field name="name">العقود</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('employee_id', '=', active_id)]</field>
+		</record>
+		<record id="act_hr_employee_2_hr_loan" model="ir.actions.act_window">
+			<field name="res_model">hr.loan</field>
+			<field name="view_type">form</field>
+			<field name="name">القروض</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('employee_id', '=', active_id)]</field>
+		</record>
+		<record id="act_hr_employee_2_hr_attendance" model="ir.actions.act_window">
+			<field name="res_model">hr.attendance</field>
+			<field name="view_type">form</field>
+			<field name="name">الحضور</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('employee_id', '=', active_id)]</field>
+		</record>
 		<record id="view_employee_request_form" model="ir.ui.view">
 			<field name="name">hr.employee.request.form</field>
 			<field name="model">hr.employee</field>
@@ -190,30 +219,36 @@
 							<button name="%(action_hr_employee_refuse_wizard)d"
 								string="رفض" type="action" groups="smart_hr.group_employee_registration"
 								attrs="{'invisible': [('employee_state', '!=', 'waiting')]}" />
+							<button name="%(report_hr_employee_card)d" type="action"
+								string=" طباعة البطاقة الوظيفية "
+								attrs="{'invisible': [('employee_card_id', '=', False),('employee_state', '!=', 'employee')]}" />
 							<field name="employee_state" widget="statusbar"
 								attrs="{'invisible': [('employee_state', '=', 'employee')]}"
 								statusbar_visible="new,waiting,done,refused" />
 							<field name="emp_state"
 								attrs="{'invisible': [('employee_state', '!=', 'employee')]}" />
+
+
+
 						</header>
 						<sheet>
+							<field name="employee_card_id" invisible="1" />
+							<field name="display_name" invisible="1" />
 							<field name="is_saudian" invisible="1" />
 							<div class="oe_button_box" name="button_box" position="inside">
-								<button name="%(smart_hr.action_hr_loan)d" class="oe_stat_button"
-									context="{'search_default_employee_id': id}" icon="fa-money"
-									type="action">
+								<button name="%(smart_hr.act_hr_employee_2_hr_loan)d"
+									class="oe_stat_button" icon="fa-money" type="action">
 									<field name="loan_count" widget="statinfo" string="القروض" />
 								</button>
 
-								<button name="%(smart_hr.open_view_attendance_inherite)d"
-									class="oe_stat_button" context="{'search_default_employee_id': id}"
+								<button name="%(act_hr_employee_2_hr_attendance)d" class="oe_stat_button"
 									icon="fa-clock-o" type="action">
 									<span>الحضور </span>
 								</button>
-								<button name="%(smart_hr.action_hr_holidays)d" class="oe_stat_button"
-									context="{'search_default_employee_id': id}" icon="fa-clock-o"
-									type="action">
-									<field name="holiday_count" widget="statinfo" string="الإجازات" />
+								<button name="%(smart_hr.act_hr_employee_2_hr_holidays)d"
+									class="oe_stat_button" icon="fa-clock-o" type="action">
+									<field name="holiday_count" widget="statinfo"
+										string="رصيد الإجازات العادية" />
 								</button>
 
 								<button name="%(hr_contract.act_hr_employee_2_hr_contract)d"
@@ -254,9 +289,10 @@
 								<field name="family_name" nolabel="1" colspan="2" />
 							</group>
 
-							<label for="number" class="oe_edit_only"  attrs="{'invisible': [('number', '=', False)]}" />
+							<label for="number" class="oe_edit_only"
+								attrs="{'invisible': [('number', '=', False)]}" />
 							<h1>
-								<field name="number" placeholder="الرقم الوظيفي" class="oe_smart_inline"
+								<field name="number" placeholder="رقم الوظيفة" class="oe_smart_inline"
 									readonly="1" />
 
 							</h1>
@@ -264,6 +300,7 @@
 								<page name="public" string="بيانات شخصية">
 									<group string="بيانات شخصية">
 										<group>
+											<field name="deputation_balance" invisible="1" />
 											<field name="country_id" options='{"no_open": True, "no_create": True}'
 												attrs="{'required': 1}" domain="[('code_nat','!=',False)]"
 												context="{'compute_name': '_get_natinality','tree_view_ref': 'view_country_tree_nationality'}" />
@@ -283,11 +320,18 @@
 												attrs="{'invisible': [('is_saudian','=', True)]}" />
 										</group>
 										<group>
-											<field name="passport_id" string="رقم الحفيظة"
-												attrs="{'required': [('is_saudian','=', False)]}" />
-											<field name="passport_date" attrs="{'required': [('is_saudian','=', False)]}" />
-											<field name="passport_end_date" attrs="{'required': [('is_saudian','=', False)]}" />
-											<field name="passport_place" attrs="{'required': [('is_saudian','=', False)]}" />
+											<field name="passport_id" attrs="{'invisible': [('is_saudian','=', True)]}" />
+											<field name="hoveizeh_id"
+												attrs="{'required': [('is_saudian','=', True)],'invisible': [('is_saudian','=', False)]}" />
+											<field name="passport_date" attrs="{'invisible': [('is_saudian','=', True)]}" />
+											<field name="hoveizeh_date"
+												attrs="{'required': [('is_saudian','=', True)],'invisible': [('is_saudian','=', False)]}" />
+											<field name="passport_end_date" attrs="{'invisible': [('is_saudian','=', True)]}" />
+											<field name="hoveizeh_end_date"
+												attrs="{'required': [('is_saudian','=', True)],'invisible': [('is_saudian','=', False)]}" />
+											<field name="passport_place" attrs="{'invisible': [('is_saudian','=', True)]}" />
+											<field name="hoveizeh_place"
+												attrs="{'required': [('is_saudian','=', True)],'invisible': [('is_saudian','=', False)]}" />
 											<field name="is_resident" attrs="{'required': 1}" />
 										</group>
 									</group>
@@ -315,7 +359,8 @@
 								<page string="بيانات التواصل">
 									<group>
 										<group string="بيانات التواصل">
-											<field name="mobile_phone" attrs="{'invisible': [('show_mobile','=', False)]}" />
+											<field name="mobile_phone"
+												attrs="{'invisible': [('show_mobile','=', False)]}" />
 											<field name="work_location" attrs="{'required': 0}" />
 											<field name="work_email" widget="email" attrs="{'required': 1}" />
 											<field name="work_phone" string="تحويلة العمل" />
@@ -349,8 +394,7 @@
 											<field name="dep_city" options="{'no_create': True}" />
 											<field name="job_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
-											<field name="type_id" attrs="{'required': 1}" 
-												 />
+											<field name="type_id" attrs="{'required': 1}" />
 											<field name="grade_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="degree_id"
@@ -363,7 +407,7 @@
 											<field name="royal_decree_number" attrs="{'invisible': [('is_member','=', False)]}" />
 											<field name="royal_decree_date" attrs="{'invisible': [('is_member','=', False)]}" />
 											<field name="external_decision" />
-											<field name="is_member"  	 invisible="1" />
+											<field name="is_member" invisible="1" />
 										</group>
 										<group string="خصائص أخرى">
 											<field name="user_id"
@@ -371,7 +415,7 @@
 											<field name="recruiter" widget="selection" />
 											<field name="recruiter_date" />
 											<field name="begin_work_date" />
-											<field name="calendar_id" />
+											<field name="calendar_id" string="الورديّات" />
 											<field name="insurance_type" />
 											<field name="medic_exam" string="تاريخ الفحص الطبي" />
 											<field name="vehicle" />
@@ -380,26 +424,21 @@
 									</group>
 								</page>
 								<page string="بيانات البنك">
-
 									<group string="بيانات البنك">
 										<field name="address_home_id" invisible="1" />
 										<field name="bank_account_id" invisible="1" />
-										<field name="bank_account_ids" options="{'no_create': True}"
-											nolabel="1">
-											<tree create="false" delete="false">
+										<field name="bank_account_ids" nolabel="1">
+											<tree delete="false">
 												<field name="acc_number" />
 												<field name="bank_name" string="البنك" />
 												<field name="currency_id" />
 												<field name="account_opening_date" />
 												<field name="is_deposit" />
-
 											</tree>
 										</field>
 									</group>
-
 									<group name="active_group" invisible="1" />
 								</page>
-
 								<page string="أرصدة الاجازات والترقيات" invisible="1">
 									<separator string="أرصدة الاجازات" />
 									<field name="holidays_balance"
@@ -448,7 +487,25 @@
 									</field>
 
 								</page>
-
+								<page string="سجل العلاوات" invisible='1'>
+									<field name='salary_increase_ids'>
+										<tree string="سجل العلاوات">
+											<field name="name" />
+											<field name="salary_grid_detail_id" />
+											<field name="date" />
+											<field name="amount" />
+										</tree>
+									</field>
+								</page>
+								<page string="البدلات" invisible='1'>
+									<field name='hr_employee_allowance_ids'>
+										<tree string="البدلات">
+											<field name="allowance_id" />
+											<field name="amount" />
+											<field name="date" />
+										</tree>
+									</field>
+								</page>
 							</notebook>
 						</sheet>
 						<div class="oe_chatter">
@@ -490,7 +547,7 @@
 			</field>
 		</record>
 		<record model="ir.actions.act_window" id="action_employee_request">
-			<field name="name">طلبات تسجيل موظف</field>
+			<field name="name">طلب توظيف</field>
 			<field name="res_model">hr.employee</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
@@ -499,6 +556,8 @@
 				True,'list_type':'_get_dep_name_employee_form','compute_name':
 				'_get_natinality'}
 			</field>
+			<field name="search_view_id" ref="view_search_hr_employee_inherit" />
+
 		</record>
 		<record id="action_employee_request_tree" model="ir.actions.act_window.view">
 			<field name="view_mode">tree</field>
@@ -511,7 +570,7 @@
 			<field name="act_window_id" ref="action_employee_request" />
 		</record>
 
-		<menuitem id="employee_request_menu" name="طلبات تسجيل موظف"
+		<menuitem id="employee_request_menu" name="طلب توظيف"
 			groups="smart_hr.group_employee_request" sequence="2" parent="hr_root_employees"
 			action="action_employee_request" />
 
@@ -540,6 +599,14 @@
 			</field>
 		</record>
 	</data>
+
+	<record id="hr_payroll.act_hr_employee_payslip_list" model="ir.actions.act_window">
+		<field name="res_model">hr.payslip</field>
+		<field name="name">Payslips</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('employee_id', '=', active_id)]</field>
+	</record>
 	<record id="hr_payroll.payroll_hr_employee_view_form" model="ir.ui.view">
 		<field name="name">payroll.hr.employee.view.form</field>
 		<field name="model">hr.employee</field>

@@ -25,6 +25,7 @@ class HrEmployeeCreateUsers(models.Model):
                 emp.user_id = user
             else:
                 raise Warning(_('الرجاء تعبئة البريد الإلكتروني.'))
+
         self.state = 'done'
 
     @api.model

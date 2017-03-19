@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
+
+		<record model="ir.ui.view" id="view_hr_deputation_filter">
+			<field name="name">hr.deputation.filter</field>
+			<field name="model">hr.deputation</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="الانتدابات">
+
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
+
 		<record model="ir.ui.view" id="hr_deputation_tree">
 			<field name="name">hr.deputation.tree</field>
 			<field name="model">hr.deputation</field>
@@ -17,6 +31,8 @@
 				</tree>
 			</field>
 		</record>
+
+
 
 		<record model="ir.ui.view" id="hr_deputation_form">
 			<field name="name">hr.deputation.form</field>
@@ -36,15 +52,15 @@
 							states="audit" icon="fa-check" class="oe_inline oe_stat_button"
 							groups="smart_hr.group_exelence_employee" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<button name="action_refuse_audit" string="رفض" type="object"
+						<button name="button_refuse_audit" string="رفض" type="object"
 							groups="smart_hr.group_exelence_employee" states="audit" icon="fa-times"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_waiting" string="موافق" type="object"
 							states="waiting" icon="fa-check" class="oe_inline oe_stat_button"
 							groups="smart_hr.group_deputation_department" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_refuse" string="رفض" type="object"
-							states="waiting" icon="fa-times" class="oe_inline oe_stat_button"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" states="waiting" icon="fa-times" class="oe_inline oe_stat_button"
 							groups="smart_hr.group_deputation_department" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_done" string="إنهاء مهمة" type="object"
@@ -64,130 +80,124 @@
 					</header>
 					<sheet>
 						<group>
-							<group>
+							<group col="2">
 								<field name="order_date" />
-
-
-								<field name="type"
+								<field name="type" options="{'horizontal': true}" class="oe_edit_only"
+									widget="radio"
 									attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
+								<field name="deputation_type" />
 								<field name="member_deputation"
 									attrs="{'invisible':[('state', 'not in', [ 'draft'])]}" />
-								<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+								<field name="employee_id"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 									attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
-
-
 								<field name="task_name"
 									attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
+							</group>
+							<group>
 								<field name="date_from"
-									attrs="{'invisible':[('state', 'not in', ['draft', 'audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
+									attrs="{'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
 								<field name="date_to"
-									attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
+									attrs="{'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
 								<field name="duration"
-									attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
+									attrs="{'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
 								<field name="calcul_wekeend" invisible="1"
 									attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
 							</group>
 						</group>
-						<group>
-							<notebook>
-								<page name="public" string="بيانات الموظف">
-									<br></br>
-									<group>
-										<field name="number"
-											attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['draft','audit','waiting','done','order','humain','finish'])]}" />
-										<field name="country_id"
-											attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['draft','audit','waiting','done','order','humain','finish'])]}" />
-										<field name="department_id"
-											attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['draft','audit','waiting','done','order','humain','finish'])]}" />
-										<field name="job_id"
-											attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['draft','audit','waiting','done','order','humain','finish'])]}" />
-										<field name="type_id"
-											attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['draft','audit','waiting','done','order','humain','finish'])]}" />
-										<field name="grade_id"
-											attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['draft','audit','waiting','done','order','humain','finish'])]}" />
-										<field name="degree_id"
-											attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['draft','audit','waiting','done','order','humain','finish'])]}" />
+						<notebook>
+							<page name="public" string="بيانات الموظف">
+								<br></br>
+								<group>
+									<field name="number"
+										attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['draft','audit','waiting','done','order','humain','finish'])]}" />
+									<field name="country_id"
+										attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['draft','audit','waiting','done','order','humain','finish'])]}" />
+									<field name="department_id"
+										attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['draft','audit','waiting','done','order','humain','finish'])]}" />
+									<field name="job_id"
+										attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['draft','audit','waiting','done','order','humain','finish'])]}" />
+									<field name="type_id"
+										attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['draft','audit','waiting','done','order','humain','finish'])]}" />
+									<field name="grade_id"
+										attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['draft','audit','waiting','done','order','humain','finish'])]}" />
+									<field name="degree_id"
+										attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['draft','audit','waiting','done','order','humain','finish'])]}" />
+								</group>
 
-									</group>
+							</page>
+							<page name="public" string="بيانات الإنتداب">
+								<br></br>
+								<group>
 
-								</page>
-								<page name="public" string="بيانات الإنتداب">
-									<br></br>
-									<group>
+									<field name="department_inter_id"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+										attrs="{'invisible':['|',('type', '!=','internal'),('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
+									<field name="governmental_entity"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+										attrs="{'invisible':['|',('type', '!=','external'),('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
+									<field name="city_id"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+										attrs="{'invisible':['|',('type', '!=','internal'),('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
+									<field name="category_id"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+										attrs="{'invisible':['|',('type', '=','internal'),('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
+									<field name="country_ids"
+										attrs="{'invisible':['|',('type', '=','internal'),('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
+								</group>
+								<group string="الجهة توفر">
+									<field name="the_availability"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+										attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
+									<field name="transport_alocation"
+										attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
+									<field name="net_salary"
+										attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
+									<field name="alowance_bonus"
+										attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
+									<field name="anual_balance"
+										attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
+								</group>
+							</page>
+							<page name="public" string="المرفقات">
+								<br></br>
+								<group>
+									<field name="file_decision" filename="file_decision_name"
+										attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'required':[('state','=','draft')],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
+									<field name="decision_number"
+										attrs="{'invisible':['|',('state', 'not in', [ 'done','order','humain','finish']), ('ministre_report', '=', False)],'required':[('ministre_report', '=', True),('state','=','done')],'readonly':[('state', 'in', ['order','humain','finish'])]}" />
+									<field name="decision_date"
+										attrs="{'invisible':['|',('state', 'not in', [ 'done','order','humain','finish']), ('ministre_report', '=', False)],'required':[('ministre_report', '=', True),('state','=','done')],'readonly':[('state', 'in', ['order','humain','finish'])]}" />
+									<field name="report_number"
+										attrs="{'invisible':[('state', 'not in', [ 'order','humain','finish'])],'required':[('state','=','order')],'readonly':[('state', 'in', ['humain','finish'])]}" />
+									<field name="report_date"
+										attrs="{'invisible':[('state', 'not in', ['order','humain','finish'])],'required':[('state','=','order')],'readonly':[('state', 'in', ['humain','finish'])]}" />
+									<field name="file_report" filename="file_report_name"
+										attrs="{'invisible':[('state', 'not in', [ 'order','humain','finish'])],'required':[('state','=','order')],'readonly':[('state', 'in', ['humain','finish'])]}" />
 
-										<field name="department_inter_id"
-											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
-											attrs="{'invisible':['|',('type', '!=','internal'),('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
-										<field name="governmental_entity"
-											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
-											attrs="{'invisible':['|',('type', '!=','external'),('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
-										<field name="city_id"
-											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
-											attrs="{'invisible':['|',('type', '!=','internal'),('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
-										<field name="category_id"
-											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
-											attrs="{'invisible':['|',('type', '=','internal'),('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
-										<field name="country_ids"
-											attrs="{'invisible':['|',('type', '=','internal'),('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
+									<field name="secret_report"
+										attrs="{'invisible':[('state', 'not in', [ 'order','humain','finish'])],'required':[('state','=','humain')],'readonly':[('state', 'in', ['finish'])]}" />
 
-										<field name="the_availability"
-											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
-											attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
-										<field name="transport_alocation"
-											attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
-										<field name="net_salary"
-											attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
-										<field name="alowance_bonus"
-											attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
-										<field name="anual_balance"
-											attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
-									</group>
-								</page>
-								<page name="public" string="المرفقات">
-									<br></br>
-									<group>
-										<field name="file_decision" filename="file_decision_name"
-											attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'required':[('state','=','draft')],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
-
-										<field name="decision_number"
-											attrs="{'invisible':['|',('state', 'not in', [ 'done','order','humain','finish']), ('ministre_report', '=', False)],'required':[('ministre_report', '=', True),('state','=','done')],'readonly':[('state', 'in', ['order','humain','finish'])]}" />
-										<field name="decision_date"
-											attrs="{'invisible':['|',('state', 'not in', [ 'done','order','humain','finish']), ('ministre_report', '=', False)],'required':[('ministre_report', '=', True),('state','=','done')],'readonly':[('state', 'in', ['order','humain','finish'])]}" />
-
-										<field name="file_order" filename="file_order_name"
-											attrs="{'invisible':['|',('state', 'not in', [ 'done','order','humain','finish']), ('ministre_report', '=', False)],'required':[('ministre_report', '=', True),('state','=','done')],'readonly':[('state', 'in', ['order','humain','finish'])]}" />
-
-
-										<field name="report_number"
-											attrs="{'invisible':[('state', 'not in', [ 'order','humain','finish'])],'required':[('state','=','order')],'readonly':[('state', 'in', ['humain','finish'])]}" />
-										<field name="report_date"
-											attrs="{'invisible':[('state', 'not in', ['order','humain','finish'])],'required':[('state','=','order')],'readonly':[('state', 'in', ['humain','finish'])]}" />
-										<field name="file_report" filename="file_report_name"
-											attrs="{'invisible':[('state', 'not in', [ 'order','humain','finish'])],'required':[('state','=','order')],'readonly':[('state', 'in', ['humain','finish'])]}" />
-
-										<field name="secret_report"
-											attrs="{'invisible':[('state', 'not in', [ 'order','humain','finish'])],'required':[('state','=','humain')],'readonly':[('state', 'in', ['finish'])]}" />
-
-										<field name="lettre_number"
-											attrs="{'invisible':[('state', 'not in', ['humain','finish'])],'required':[('state','=','humain')],'readonly':[('state', 'in', ['finish'])]}" />
-										<field name="lettre_date"
-											attrs="{'invisible':[('state', 'not in', ['humain','finish'])],'required':[('state','=','humain')],'readonly':[('state', 'in', ['finish'])]}" />
-										<field name="file_lettre" filename="file_lettre_name"
-											attrs="{'invisible':[('state', 'not in', [ 'humain','finish'])],'required':[ ('state','=','humain')],'readonly':[('state', 'in', ['finish'])]}" />
+									<field name="lettre_number"
+										attrs="{'invisible':[('state', 'not in', ['humain','finish'])],'required':[('state','=','humain')],'readonly':[('state', 'in', ['finish'])]}" />
+									<field name="lettre_date"
+										attrs="{'invisible':[('state', 'not in', ['humain','finish'])],'required':[('state','=','humain')],'readonly':[('state', 'in', ['finish'])]}" />
+									<field name="file_lettre" filename="file_lettre_name"
+										attrs="{'invisible':[('state', 'not in', [ 'humain','finish'])],'required':[ ('state','=','humain')],'readonly':[('state', 'in', ['finish'])]}" />
 
 
 
-										<field name="file_decision_name" invisible="1" />
-										<field name="ministre_report" invisible="1" />
-										<field name="file_report_name" invisible="1" />
-										<field name="file_lettre_name" invisible="1" />
-										<field name="file_decision_name" invisible="1" />
-									</group>
+									<field name="ministre_report" invisible="1" />
+									<field name="file_report_name" invisible="1" />
+									<field name="file_lettre_name" invisible="1" />
+								</group>
 
-								</page>
-							</notebook>
-						</group>
+							</page>
+						</notebook>
 					</sheet>
+					<div>
+						<field name="message_ids" widget="mail_thread" readonly="1" />
+					</div>
 				</form>
 			</field>
 		</record>
@@ -201,8 +211,9 @@
 		</record>
 
 
-		<menuitem id="hr_deputation_menu" name="الإنتدابات" sequence="35" groups="smart_hr.group_deputation_department"
-			parent="hr_root_workflows" action="action_hr_deputation" />
+		<menuitem id="hr_deputation_menu" name="الإنتدابات" sequence="35"
+			groups="smart_hr.group_deputation_department" parent="hr_root_workflows"
+			action="action_hr_deputation" />
 
 		<!-- فئات الدول -->
 		<record id="view_form_hr_deputation_category" model="ir.ui.view">
@@ -212,12 +223,18 @@
 				<form string="فئة الدول">
 					<sheet>
 						<group>
-							<field name="category" required="1" />
+							<field name="name" />
 							<field name="country_city_ids" editable="bottom">
 								<tree>
-									<field name="country_id" />
+								<field name="country_id" />
 									<field name="city_id" />
 								</tree>
+								<form>
+									<group>
+										<field name="country_id" />
+										<field name="city_id" />
+									</group>
+								</form>
 							</field>
 						</group>
 					</sheet>
@@ -229,8 +246,7 @@
 			<field name="model">hr.deputation.category</field>
 			<field name="arch" type="xml">
 				<tree string="فئات الدول" class="oe_tree_view">
-					<field name="category" />
-					<field name="country_city_ids" />
+					<field name="name" />
 				</tree>
 			</field>
 		</record>

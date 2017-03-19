@@ -12,7 +12,7 @@
 				<tree string="الوظائف" create='0' edit='0' delete='0'
 					duplicate='0'>
 					<field name="name" string="المسمى الوظيفي" />
-					<field name="number" string="الرقم الوظيفي" />
+					<field name="number" string="رقم الوظيفة" />
 					<field name="job_name_code" string="الرمز" />
 					<field name="type_id" />
 					<field name="department_id" />
@@ -64,6 +64,17 @@
 								<field name="activity_type" />
 							</group>
 						</group>
+						<notebook>
+							<page string="سجل الاجرا ءات">
+								<field name="history_ids" nolabel="1">
+									<tree>
+										<field name="action" />
+										<field name="action_date" />
+										<field name="description" />
+									</tree>
+								</field>
+							</page>
+						</notebook>
 					</sheet>
 					<div class="oe_chatter">
 						<field name="message_follower_ids" widget="mail_followers"
@@ -85,12 +96,12 @@
 						domain="[('state','=','unoccupied')]" />
 					<filter string="الوظائف المشغولة" name="occupied_jobs"
 						domain="[('state','=','occupied')]" />
-							<filter string="الوظائف الملغاة" name="cancel"
+					<filter string="الوظائف الملغاة" name="cancel"
 						domain="[('state','=','cancel')]" />
-							<filter string="الوظائف المحجوزة" name="reserved"
+					<filter string="الوظائف المحجوزة" name="reserved"
 						domain="[('state','=','reserved')]" />
-						
-						
+
+
 					<group expand="0" string="تجميع حسب...">
 						<filter name="department_id" string="الادارة" domain="[]"
 							context="{'group_by':'department_id'}" />
@@ -150,14 +161,14 @@
 						<button name="action_budget" string="موافقة" type="object"
 							groups="smart_hr.group_new_job_confirmation" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_refuse" string="رفض" type="object"
-							groups="smart_hr.group_new_job_confirmation" states="waiting"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" groups="smart_hr.group_new_job_confirmation"
+							states="waiting" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_hrm" string="موافقة" type="object"
 							groups="smart_hr.group_budget_managment" states="budget_external"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_refuse" string="رفض" type="object"
-							groups="smart_hr.group_budget_managment" states="budget_external" />
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" groups="smart_hr.group_budget_managment" states="budget_external" />
 
 						<button name="action_done" string="موافقة" type="object"
 							groups="smart_hr.group_job_external_managment" states="hrm" />
@@ -183,9 +194,12 @@
 									attrs="{'invisible':[('state', 'not in', ['budget_external','hrm','done'])],'required':[('state','=','budget_external')], 'readonly':[('state', 'in', ['hrm','done'])]}" />
 							</group>
 							<group>
-								<field name="decision_number" />
-								<field name="decision_date" />
-								<field name="decision_file" filename="decision_file_name" />
+								<field name="decision_number"
+									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm')], 'readonly':[('state','!=', 'hrm')]}" />
+								<field name="decision_date"
+									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm')], 'readonly':[('state','!=', 'hrm')]}" />
+								<field name="decision_file" filename="decision_file_name"
+									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm')], 'readonly':[('state','!=', 'hrm')]}" />
 								<field name="fiscal_year" />
 							</group>
 						</group>
@@ -275,8 +289,10 @@
 							groups="smart_hr.group_strip_from_job" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<button name="action_refuse" string="رفض" type="object"
-							groups="smart_hr.group_strip_from_job" states="waiting"
+
+
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" groups="smart_hr.group_strip_from_job" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 
@@ -287,15 +303,15 @@
 						<button name="action_external" string="موافقة" type="object"
 							groups="smart_hr.group_communication_managment" states="communication"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_refuse" string="رفض" type="object"
-							groups="smart_hr.group_communication_managment" states="communication"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" groups="smart_hr.group_communication_managment"
+							states="communication" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_hrm2" string="موافقة" type="object"
 							groups="smart_hr.group_job_external_managment" states="external" />
-						<button name="action_refuse" string="رفض" type="object"
-							groups="smart_hr.group_job_external_managment" states="external"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" groups="smart_hr.group_job_external_managment"
+							states="external" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_done" string="سلخ الوظائف" type="object"
 							groups="smart_hr.group_hr_personnel_officer_jobs" states="hrm2" />
@@ -420,8 +436,8 @@
 							groups="smart_hr.group_strip_from_job" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<button name="action_refuse" string="رفض" type="object"
-							groups="smart_hr.group_strip_from_job" states="waiting"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" groups="smart_hr.group_strip_from_job" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 
@@ -432,9 +448,9 @@
 
 						<button name="action_hrm2" string="موافقة" type="object"
 							groups="smart_hr.group_budget_communication" states="communication_external" />
-						<button name="action_refuse" string="رفض" type="object"
-							groups="smart_hr.group_budget_communication" states="communication_external"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" groups="smart_hr.group_budget_communication"
+							states="communication_external" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_done" string="إلغاء الوظائف" type="object"
 							groups="smart_hr.group_hr_personnel_officer_jobs" states="hrm2" />
@@ -458,13 +474,12 @@
 									attrs="{'invisible':[('state', 'not in', ['hrm1','communication_external','hrm2','done'])],'required':[('state','=','hrm1')], 'readonly':[('state', '!=', 'hrm1')]}" />
 
 								<field name="decision_number"
-									attrs="{'invisible':[('state', 'not in', ['communication_external','hrm2','done'])], 'readonly':[('state', 'in', ['hrm2','done'])]}" />
+									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
 								<field name="decision_date"
-									attrs="{'invisible':[('state', 'not in', ['communication_external','hrm2','done'])], 'readonly':[('state', 'in', ['hrm2','done'])]}" />
+									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
 								<field name="decision_file"
-									attrs="{'invisible':[('state', 'not in', ['communication_external','hrm2','done'])], 'readonly':[('state', 'in', ['hrm2','done'])]}" />
-								<!-- <field name="out_speech_number" attrs="{'invisible':[('state', 
-									'not in', ['communication','external','hrm2','done'])],'required':[('state','=','communication')], 
+									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />								<!-- <field name="out_speech_number" attrs="{'invisible':[('state', 'not 
+									in', ['communication','external','hrm2','done'])],'required':[('state','=','communication')], 
 									'readonly':[('state', 'in', ['external','hrm2','done'])]}" /> <field name="out_speech_date" 
 									attrs="{'invisible':[('state', 'not in', ['communication','external','hrm2','done'])],'required':[('state','=','communication')], 
 									'readonly':[('state', 'in', ['external','hrm2','done'])]}" /> <field name="out_speech_file" 
@@ -554,8 +569,8 @@
 						<button name="action_hrm1" string="موافقة" type="object"
 							groups="smart_hr.group_update_job" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_refuse" string="رفض" type="object"
-							groups="smart_hr.group_update_job" states="waiting"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" groups="smart_hr.group_update_job" states="waiting"
 							context="{'refused_from_state':'waiting'}" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_budget" string="حجز الوظائف" type="object"
 							groups="smart_hr.group_hr_personnel_officer_jobs" states="hrm1" />
@@ -588,8 +603,10 @@
 									attrs="{'invisible':[('state', 'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" />
 							</group>
 							<group>
-								<field name="decision_number" />
-								<field name="decision_date" />
+								<field name="decision_number"
+									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
+								<field name="decision_date"
+									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
 								<field name="in_speech_number"
 									attrs="{'invisible':[('state', 'not in', ['budget_external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','budget_external')]}" />
 								<field name="in_speech_date"
@@ -663,8 +680,8 @@
 						<button name="action_hrm1" string="موافقة" type="object"
 							groups="smart_hr.group_move_job_department" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_refuse" string="رفض" type="object"
-							groups="smart_hr.group_move_job_department" states="waiting"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" groups="smart_hr.group_move_job_department" states="waiting"
 							context="{'refused_from_state':'waiting'}" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_budget" string="حجز الوظائف" type="object"
 							groups="smart_hr.group_hr_personnel_officer_jobs" states="hrm1" />
@@ -675,8 +692,8 @@
 						<button name="action_hrm2" string="موافقة" type="object"
 							groups="smart_hr.group_budget_comm_service" states="communication_external"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_refuse" string="رفض" type="object"
-							groups="smart_hr.group_budget_comm_service" states="communication_external"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" groups="smart_hr.group_budget_comm_service" states="communication_external"
 							context="{'refused_from_state':'communication_external'}"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
@@ -778,8 +795,8 @@
 						<button name="action_hrm1" string="موافقة" type="object"
 							groups="smart_hr.group_move_job_grade" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_refuse" string="رفض" type="object"
-							context="{'refused_from_state':'waiting'}" groups="smart_hr.group_move_job_grade"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" context="{'refused_from_state':'waiting'}" groups="smart_hr.group_move_job_grade"
 							states="waiting" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_budget" string="حجز الوظائف" type="object"
 							groups="smart_hr.group_hr_personnel_officer_jobs" states="hrm1" />
@@ -787,9 +804,10 @@
 
 						<button name="action_hrm2" string="موافقة" type="object"
 							groups="smart_hr.group_budget_managment" states="budget_external" />
-						<button name="action_refuse" string="رفض" type="object"
-							context="{'refused_from_state':'budget_external'}" groups="smart_hr.group_budget_managment"
-							states="budget_external" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" context="{'refused_from_state':'budget_external'}"
+							groups="smart_hr.group_budget_managment" states="budget_external"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_job_unreserve" string="فك حجز الوظيفة"
 							type="object" groups="smart_hr.group_hr_personnel_officer_jobs"
@@ -820,9 +838,13 @@
 									/> -->
 							</group>
 							<group>
-								<field name="decision_number" />
-								<field name="decision_date" />
-								<field name="decision_file" />
+								<field name="decision_number"
+									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
+								/
+								<field name="decision_date"
+									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
+								<field name="decision_file"
+									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
 								<field name="in_speech_number"
 									attrs="{'invisible':[('state', 'not in', ['budget_external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','budget_external')]}" />
 								<field name="in_speech_date"
@@ -909,8 +931,8 @@
 						<button name="action_hrm1" string="موافقة" type="object"
 							groups="smart_hr.group_move_job_grade" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_refuse" string="رفض" type="object"
-							groups="smart_hr.group_move_job_grade" states="waiting"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" groups="smart_hr.group_move_job_grade" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_budget" string="حجز الوظائف" type="object"
 							groups="smart_hr.group_hr_personnel_officer_jobs" states="hrm1" />
@@ -918,8 +940,8 @@
 
 						<button name="action_hrm2" string="موافقة" type="object"
 							groups="smart_hr.group_budget_managment" states="budget_external" />
-						<button name="action_refuse" string="رفض" type="object"
-							groups="smart_hr.group_budget_managment" states="budget_external"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" groups="smart_hr.group_budget_managment" states="budget_external"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_job_unreserve" string="فك حجز الوظيفة"
@@ -951,8 +973,10 @@
 									/> -->
 							</group>
 							<group>
-								<field name="decision_number" />
-								<field name="decision_date" />
+								<field name="decision_number"
+									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
+								<field name="decision_date"
+									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
 								<field name="in_speech_number"
 									attrs="{'invisible':[('state', 'not in', ['budget_external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','budget_external')]}" />
 								<field name="in_speech_date"
@@ -1039,8 +1063,8 @@
 						<button name="action_hrm" string="موافق" type="object"
 							groups="smart_hr.group_job_cancelling" states="waiting" />
 
-						<button name="action_refuse" string="رفض"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" type="object"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 							groups="smart_hr.group_job_cancelling" states="waiting" />
 
 						<button name="action_done" string="إعتماد" type="object"
@@ -1066,11 +1090,11 @@
 							</group>
 							<group>
 								<field name="decision_number"
-									attrs="{'invisible':[('state', 'not in', ['hrm','done'])],'readonly':[('state', '=', 'done')],'required':[('state','=','hrm')]}" />
+									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm')], 'readonly':[('state','!=', 'hrm')]}" />
 								<field name="decision_date"
-									attrs="{'invisible':[('state', 'not in', ['hrm','done'])],'readonly':[('state', '=', 'done')],'required':[('state','=','hrm')]}" />
+									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm')], 'readonly':[('state','!=', 'hrm')]}" />
 								<field name="decision_file" filename="decision_file_name"
-									attrs="{'invisible':[('state', 'not in', ['hrm','done'])],'readonly':[('state', '=', 'done')],'required':[('state','=','hrm')]}" />
+									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm')], 'readonly':[('state','!=', 'hrm')]}" />
 							</group>
 						</group>
 						<field name="job_cancel_ids" string="إلغاء وظائف"

@@ -15,7 +15,8 @@
 						<button name="button_done" string="موافقة" type="object"
 							states="hrm" groups="smart_hr.group_hrm" icon="fa-check"
 							class="oe_inline oe_stat_button" />
-						<button name="button_refuse" string="رفض" type="object"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action"
 							states="hrm" groups="smart_hr.group_hrm" icon="fa-times"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<field name="state" widget="statusbar" statusbar_visible="draft,hrm,done" />
@@ -49,14 +50,16 @@
 									attrs="{'invisible':[('state','=','draft')],
 									 'required':[('state','=','hrm')],
 									   'readonly':[('state','=','done')]  }" />
-								<field name="sentence"
-									attrs="{'invisible':[('condemned','=',False)]}" />
+								<field name="sentence" attrs="{'invisible':[('condemned','=',False)]}" />
 
 							</group>
 						</group>
 						<button name="%(report_hr_suspension_end_report)d" string="طباعة القرار"
 							type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
 					</sheet>
+					<div>
+						<field name="message_ids" widget="mail_thread" readonly="1" />
+					</div>
 				</form>
 			</field>
 		</record>
@@ -79,7 +82,8 @@
 				<search string="إنهاء كف اليد">
 					<field name="name" />
 					<field name="date" />
-					<field name="employee_id" />
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
 					<field name="state" />
 					<separator />
 					<filter string="طلب" domain="[('state','=','draft')]" />

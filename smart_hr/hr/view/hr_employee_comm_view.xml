@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data>
+
+		<record model="ir.ui.view" id="view_hr_employee_commissioning_filter_inherit">
+			<field name="name">hr.employee.commissioning.search</field>
+			<field name="model">hr.employee.commissioning</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="طلب تكليف موظف">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
 		<!-- طلب تكليف موظف -->
 		<record id="view_hr_employee_commissioning_form" model="ir.ui.view">
 			<field name="name">hr.employee.commissioning.form</field>
@@ -23,14 +35,16 @@
 						<!-- employee -->
 						<button name="action_done" string="موافق" type="object"
 							states="accept" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_refused" string="رفض" type="object"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action"
 							states="accept" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 
 						<button name="action_new" string="تعديل" type="object"
 							groups="smart_hr.group_hr_personnel_officer_commissioning"
 							states="pm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_refused" string="رفض" type="object"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action"
 							groups="smart_hr.group_hr_personnel_officer_commissioning"
 							states="pm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
@@ -67,9 +81,12 @@
 									attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
 								<field name="retirement_proportion"
 									attrs="{'invisible':['|', ('pay_retirement', '=', False), ('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
-								<field name="give_allowance_transport" attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
-								<field name="give_allow" attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
-								<field name="give_salary" attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
+								<field name="give_allowance_transport"
+									attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
+								<field name="give_allow"
+									attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
+								<field name="give_salary"
+									attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
 							</group>
 							<field name="note" />
 						</group>
@@ -85,6 +102,9 @@
 							</tree>
 						</field>
 					</sheet>
+					<div>
+						<field name="message_ids" widget="mail_thread" readonly="1" />
+					</div>
 				</form>
 			</field>
 		</record>

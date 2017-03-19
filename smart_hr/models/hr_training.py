@@ -14,6 +14,7 @@ HOURS_PER_DAY = 7
 
 class HrTraining(models.Model):
     _name = 'hr.training'
+    _inherit = ['mail.thread']
     _description = u'التدريب'
 
     @api.one
@@ -113,7 +114,7 @@ class HrTraining(models.Model):
         self.state = 'done'
 
     @api.one
-    def action_refused(self):
+    def button_refuse(self):
         self.state = 'refused'
 
     @api.one
@@ -138,7 +139,7 @@ class HrCandidates(models.Model):
     employee_id = fields.Many2one('hr.employee', string=' إسم الموظف',
                                   default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)],
                                                                                       limit=1), required=1)
-    number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' الرقم الوظيفي')
+    number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' رقم الوظيفة')
     job_id = fields.Many2one(related='employee_id.job_id', store=True, readonly=True, string=' الوظيفة')
     department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string=' الادارة')
     training_id = fields.Many2one('hr.training', string=' الدورة', required=True)

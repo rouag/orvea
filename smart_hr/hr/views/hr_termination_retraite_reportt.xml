@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="hr_termination_retraite_reportt">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.landscape_layout">
+						<div class="page">
+							<div class="col-xs-12 text-center">
+								<br></br>
+								<br></br>
+								<br></br>
+								<h3>
+									<strong>تقرير الموظفين المستحقين للتقاعد النظامي :</strong>
+								<t t-if="o.is_member == 1">
+								للاعظاء
+								</t>
+								<t t-if="o.is_member == 0">
+								لغير الاعظاء
+								</t>
+								</h3>من
+									<span t-esc="get_hijri_date(o.date_from, '-')" />
+									إلى	<span t-esc="get_hijri_date(o.date_to, '-')" />
+							</div>
+							<div class="col-xs-12 text-center">
+								<table class="table table-condensed">
+									<thead>
+										<tr>
+											<th class="text-center">رقم الموظف </th>
+											<th class="text-center">الإسم</th>
+											<th class="text-center">مسمى الوظيفة </th>
+											<th class="text-center">المرتبة</th>
+											<th class="text-center">
+												الادارة
+											</th>
+											<th class="text-center">نوع الموظف</th>
+										</tr>
+									</thead>
+									<t t-set="employee_ids"
+										t-value="get_retraite_employees(o.date_from,o.date_to,o.is_member)" />
+								<t t-if="employee_ids">
+									<t t-foreach="employee_ids" t-as="line">
+										<tr>
+											<td>
+												<span t-field="line.number" />
+											</td>
+											<td>
+												<span t-field="line.display_name" />
+											</td>
+											<td> 
+												<span t-field="line.job_id" />
+											</td>
+											<td>
+												<span t-field="line.grade_id" />
+											</td>
+											<td>
+												<span t-field="line.department_id" />
+											</td>
+											<td>
+												<span t-field="line.type_id" />
+											</td>
+										</tr>
+									</t>
+								</t>
+								</table>
+							</div>
+
+						</div>
+					</t>
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+					

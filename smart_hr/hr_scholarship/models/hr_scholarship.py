@@ -91,7 +91,7 @@ class HrScholarship(models.Model):
         self.state = 'psm'
 
     @api.multi
-    def action_refuse(self):
+    def button_refuse(self):
         self.ensure_one()
         self.state = 'draft'
 
