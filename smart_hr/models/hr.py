@@ -23,7 +23,7 @@ class HrEmployee(models.Model):
         for rec in sanction_obj.search(search_domain):
             self.sanction_ids = rec.sanction_ids
 
-    number = fields.Char(string=u'رقم الوظيفة')
+    number = fields.Char(string=u'رقم الوظيفي')
     gender = fields.Selection([('male', 'Male'), ('female', 'Female'), ], string=u'الجنس')
     marital = fields.Selection(
         [('single', 'Single'), ('married', 'Married'), ('widower', 'Widower'), ('divorced', 'Divorced')],

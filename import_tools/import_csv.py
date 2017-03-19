@@ -2056,6 +2056,7 @@ class import_csv(osv.osv):
         sport=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_sport')[1]
         accompaniment=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_exceptional_accompaniment')[1]
         absent=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_legal_absent')[1]
+        compelling=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_compelling')[1]
         
         move_id=''
         all_move_ids=[]
@@ -2071,7 +2072,7 @@ class import_csv(osv.osv):
                         if  str(row['LEAVE_TYPE']) == '1':
                             type=status_normal
                         elif str(row['LEAVE_TYPE']) == '20':
-                            type=exceptional
+                            type=compelling
                         elif str(row['LEAVE_TYPE']) == '23':
                             type=status_study
                         elif str(row['LEAVE_TYPE']) == '5':
@@ -2406,7 +2407,7 @@ class import_csv(osv.osv):
                             'num_decision':str(row['DECISION_NO']),
                             'date_decision':date1,
                             'date':date2,
-                            'job_id': str(row['position']),
+                            'job_id': str(row['position']) if str(row['position']) !='NULL' else str(row['position_old']),
                             'dep_side': str(row['side']),
                             'grade_id':grade_id,
                             'number':employee_id.job_id.name.name,
@@ -2826,9 +2827,9 @@ class import_csv(osv.osv):
                     passport_end_date = False
                 if passport_date == 'NULL':
                     passport_date = False    
-                print  date_first_tranche               
-                emplyee_obj.write( {'passport_id': str(row['DOC_NO']),'passport_date':date_first_tranche,'passport_place':city_ids[0] if city_ids else False ,
-                                    'passport_end_date':False, }, )
+      
+                emplyee_obj.write( {'hoveizeh_id': str(row['DOC_NO']),'hoveizeh_date':date_first_tranche,'hoveizeh_place':city_ids[0] if city_ids else False ,
+                                    'hoveizeh_end_date':False,}, )
         
         
         return True
@@ -3133,18 +3134,15 @@ class import_csv(osv.osv):
         brth_dates=False
         for row  in reader : 
            
-            if row['DOB_HJ'] != 'NULL':
-                    try:
-                        brth = datetime.strptime(str(row['DOB_HJ']), fmt)
-                        brth_date = umalqurra.hijri_to_gregorian(brth.year, brth.month, brth.day)
-                        brth_dates = date(int(brth_date[0]), int(brth_date[1]), int(brth_date[2]))
-                    except:
-                        brth_dates=str(row['DOB'])
-
-            employee_ids= employee.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
-            if employee_ids and row['LOC_ID']=='3369':
-                emplyee_obj=employee.browse(cr, uid, employee_ids[0]) 
-                emplyee_obj.write( {'birthday': brth_dates,}, )
+            if str(row['LOC_ID']) == "3369":
+                if str(row['BIRTH_PLACE']):
+                        city_ids=city.search(cr, uid, [('code', '=',row['BIRTH_PLACE'])])
+                        
+                employee_ids= employee.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
+                if employee_ids:
+                
+                    emplyee_obj=employee.browse(cr, uid, employee_ids[0]) 
+                    emplyee_obj.write( {'place_of_birth':city_ids[0] if city_ids else False,}, )
         
         
         return True
