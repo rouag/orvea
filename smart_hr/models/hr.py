@@ -429,11 +429,6 @@ class HrEmployeeEducationLevel(models.Model):
     leave_type = fields.Many2one('hr.holidays.status', string='leave type')
     code = fields.Char(string=u'الرمز')
     nomber_year_education = fields.Integer(string=u'عدد سنوات الدراسة', )
-    diploma_id = fields.Many2one('hr.employee.diploma', string=u'المؤهل')
-    specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص')
-    governmental_entity = fields.Many2one('res.partner', string=u'المؤسسة العلمية ',
-                                          domain=[('company_type', '=', 'school')])
-    university_entity = fields.Many2one('res.partner', string=u'الكلية ', domain=[('company_type', '=', 'faculty')])
     secondary = fields.Boolean(string=u'بعد‬ الثانوية', required=1)
     not_secondary = fields.Boolean(string=u'قبل الثانوية', required=1)
 
@@ -455,7 +450,7 @@ class HrEmployeeEducationLevelEmployee(models.Model):
     name = fields.Char(string=u'المستوى')
     employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف')
     level_education_id = fields.Many2one('hr.employee.education.level', string=u' مستوى التعليم')
-    diploma_id = fields.Many2one('hr.employee.diploma', related='level_education_id.diploma_id', string=u'المؤهل')
+    diploma_id = fields.Many2one('hr.employee.diploma', string=u'المؤهل')
     specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص')
     qualification_id = fields.Many2one('hr.qualification.estimate', string=u' تقدير المؤهل العلمي')
     governmental_entity = fields.Many2one('res.partner', string=u'المؤسسة العلمية ',
