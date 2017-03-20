@@ -538,7 +538,7 @@ msgstr "البريد الإلكتروني"
 #: model:ir.model.fields,field_description:base.field_res_partner_title_name
 #: model:ir.model.fields,field_description:base.field_res_users_title
 msgid "Title"
-msgstr "اللقب"
+msgstr "المسمى"
 
 #. module: base
 #: model:ir.model.fields,field_description:base.field_res_partner_function
