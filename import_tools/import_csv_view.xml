@@ -146,7 +146,16 @@
 							type="object" class="oe_highlight" />
 						<button name="import_deputation_settings" string="import deputation settings"
 							type="object" class="oe_highlight" />
-
+							<button name="import_echelle_salaire" string="import salaire echelle "
+							type="object" class="oe_highlight" />
+							<button name="import_echelle_salaire_bonus" string="import salaire echelle bonus"
+							type="object" class="oe_highlight" />
+							<button name="import_universitty" string="import university"
+							type="object" class="oe_highlight" />
+							<button name="update_birthday" string="update  birthday"
+							type="object" class="oe_highlight" />
+							
+							
 
 						<field name="state" widget="statusbar" statusbar_visible="draft,failure,done" />
 					</header>

@@ -171,11 +171,12 @@ class import_csv(osv.osv):
         employee_obj = self.pool.get('hr.employee')
         loan_line_obj = self.pool.get('hr.loan.line')
         loan_obj = self.pool.get('hr.loan')
-       
+        employee_id = employee_obj.search(cr, uid, [('number', '=','01618')])
         fmt = '%d/%m/%Y'
         move_id=''
         all_move_ids=[]
-        loan_ids=loan_obj.search(cr, uid,  [('state', '=','progress'),('id', '<',32200)])
+        
+        loan_ids=loan_obj.search(cr, uid,  [('state', '=','progress'),('employee_id', '=',employee_id[0])])
         date_now= datetime.now()
         print len(loan_ids)
         i=0
@@ -268,28 +269,62 @@ class import_csv(osv.osv):
                         salary_grid_degree_id=salary_grid_degree_ids[0]
             type_id=type.search(cr, uid,  [('code', '=',str(row['BAND_NO']))])
             grade_id =grade.search(cr, uid,  [('code', '=',str(row['GRADE_NO']))])
+            type_obj=type.browse(cr, uid, type_id[0])
             i=i+1
-            echelle_val = {
-                        'name':str(i),
+            slary_grid_ids=slary_grid.search(cr, uid, [('name', '=',type_obj.name)])
+            if not  slary_grid_ids:
+                echelle_val = {
+                        'name':type_obj.name,
                        'code':str(i),
+                        'date': datetime.now(),
                        'enabled':True ,
+                       'state':'done'
                        
                        }
-            slary_grid_id=slary_grid.create(cr, uid, echelle_val,context=context)
+                slary_grid_id=slary_grid.create(cr, uid, echelle_val,context=context)
+            else:
+                slary_grid_id=slary_grid_ids[0]
             if  grade_id and salary_grid_degree_id and type_id :
-
-                    echelle_val_detail = {
-                                   
-                       'grid_id': slary_grid_id,
-                       'type_id': type_id[0] if type_id else False ,
-                       'grade_id': grade_id[0]if grade_id else False ,
-                       'degree_id':salary_grid_degree_id,
-                       'basic_salary':row['BASIC_SAL'],
-                       'net_salary':row['BASIC_SAL'],
-                       }
-                   
-                    slary_grid_detail.create(cr, uid, echelle_val_detail,context=context)
-                    
+                slary_grid_detail_is=slary_grid_detail.search(cr, uid, [('type_id', '=',type_id[0]),('grade_id', '=',grade_id[0]),('degree_id', '=',salary_grid_degree_id)])
+                slary_grid_ids=slary_grid.search(cr, uid, [('name', '=',type_obj.name)])
+                if not slary_grid_detail_is:
+                    if type_obj=="003":
+    
+                        echelle_val_detail = {
+                                       
+                           'grid_id': slary_grid_id or slary_grid_id[0] ,
+                           'type_id': type_id[0] if type_id else False ,
+                           'grade_id': grade_id[0]if grade_id else False ,
+                           'degree_id':salary_grid_degree_id,
+                           'basic_salary':row['BASIC_SAL'],
+                           'net_salary':row['BASIC_SAL'],
+                           'retirement':10,
+                           }
+                    else:
+                         echelle_val_detail = {
+                                       
+                           'grid_id': slary_grid_id or slary_grid_id[0] ,
+                           'type_id': type_id[0] if type_id else False ,
+                           'grade_id': grade_id[0]if grade_id else False ,
+                           'degree_id':salary_grid_degree_id,
+                           'basic_salary':row['BASIC_SAL'],
+                           'net_salary':row['BASIC_SAL'],
+                           'retirement':9,
+                           }
+                        
+                       
+                    hr_allowance__detaile_id=slary_grid_detail.create(cr, uid, echelle_val_detail,context=context)
+                    aallance_val = {
+                                       
+                           'allowance_id':23,
+                           'compute_method':'amount' ,
+                           'amount':float(row['TRANSPORTATION']) if row['TRANSPORTATION'] != 'NULL' else False,
+                           
+                           }
+                    hr_allowance_bonus_detaile_id=hr_allowance__detaile.create(cr, uid, aallance_val,context=context)
+                    slary_grid_detailobj=slary_grid_detail.browse(cr, uid, hr_allowance__detaile_id)
+                    slary_grid_detailobj.write({'allowance_ids':[(6,0,[hr_allowance_bonus_detaile_id])],})
+                        
                     
                  
                
@@ -2021,64 +2056,58 @@ class import_csv(osv.osv):
         sport=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_sport')[1]
         accompaniment=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_exceptional_accompaniment')[1]
         absent=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_legal_absent')[1]
+        compelling=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_compelling')[1]
         
         move_id=''
         all_move_ids=[]
         i=0
         
         for row  in reader :
-            
-            employee=employee_obj.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
-            holidays=holiday_obj.search(cr, uid, [('name', '=',str(row['REQUEST_NO']))])
-            if not  holidays and employee and str(row['DAYS_USED'])!='NULL':
-                if employee:
-                    if   str(row['STATUS_ID']) == '2':
-                        state='done'
-                    elif  str(row['STATUS_ID']) == '8':
-                         state='unkhown'
-                    elif  str(row['STATUS_ID']) == '4':
-                         state='refuse'
-                    else:
-                        state='unkhown'
-                    if  str(row['LEAVE_TYPE']) == '1':
-                        type=status_normal
-                    elif str(row['LEAVE_TYPE']) == '20':
-                        type=status_normal
-                    elif str(row['LEAVE_TYPE']) == '23':
-                        type=status_study
-                    elif str(row['LEAVE_TYPE']) == '5':
-                        type=status_maladie
-                    elif str(row['LEAVE_TYPE']) == '12':
-                        type=sport
-                    elif str(row['LEAVE_TYPE']) == '13':
-                        type=accompaniment
-                    elif str(row['LEAVE_TYPE']) == '333':
-                        type=absent
-                    else :
-                        type=exceptional
-                        
-                        
-                  
-               
-             
-                    try:
-                  
-                        duration = str(row['DAYS_USED']).replace('.00','')
+            if str(row['EMP_NO']) in['01618','07198','07943','03494','04884','03493','07614','07754','05188']:
+                employee=employee_obj.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
+                holidays=holiday_obj.search(cr, uid, [('name', '=',str(row['REQUEST_NO']))])
+                if not  holidays and employee and str(row['DAYS_USED'])!='NULL':
+                    if employee:
+                       
+                        if  str(row['LEAVE_TYPE']) == '1':
+                            type=status_normal
+                        elif str(row['LEAVE_TYPE']) == '20':
+                            type=compelling
+                        elif str(row['LEAVE_TYPE']) == '23':
+                            type=status_study
+                        elif str(row['LEAVE_TYPE']) == '5':
+                            type=status_maladie
+                        elif str(row['LEAVE_TYPE']) == '12':
+                            type=sport
+                        elif str(row['LEAVE_TYPE']) == '13':
+                            type=accompaniment
+                        elif str(row['LEAVE_TYPE']) == '333':
+                            type=absent
+                        else :
+                            type=exceptional
+                            
+                            
+                      
                    
-                        holiday_val={
-                                    'name':row['REQUEST_NO'] if  row['REQUEST_NO'] != 'NULL' else  False,
-                                    'employee_id':employee[0] if employee else False,
-                                    'date_from':row['FROM_DATE']if  row['FROM_DATE'] != 'NULL' else  False,
-                                    'date_to':row['TO_DATE']if  row['TO_DATE'] != 'NULL' else  False,
-                                    'duration':int(duration),
-                                    'date_decision':row['REFERENCE_DATE']  if  row['REFERENCE_DATE'] != 'NULL' else  False,
-                                    'holiday_status_id':type,
-                                    'state': state ,
-                                    }
-                   
-                        holiday_obj.create(cr, uid, holiday_val,context=context)
-                    except Exception, e:
-                        False
+                 
+                        try:
+                      
+                            duration = str(row['DAYS_USED']).replace('.00','')
+                       
+                            holiday_val={
+                                        'name':row['REQUEST_NO'] if  row['REQUEST_NO'] != 'NULL' else  False,
+                                        'employee_id':employee[0] if employee else False,
+                                        'date_from':row['FROM_DATE']if  row['FROM_DATE'] != 'NULL' else  False,
+                                        'date_to':row['TO_DATE']if  row['TO_DATE'] != 'NULL' else  False,
+                                        'duration':int(duration),
+                                        'date_decision':row['REFERENCE_DATE']  if  row['REFERENCE_DATE'] != 'NULL' else  False,
+                                        'holiday_status_id':type,
+                                        'state': 'done' ,
+                                        }
+                       
+                            holiday_obj.create(cr, uid, holiday_val,context=context)
+                        except Exception, e:
+                            False
         stop = timeit.default_timer()
         print 'time for import employee', stop - start       
         return True
@@ -2227,10 +2256,13 @@ class import_csv(osv.osv):
         city_name=False
         job = self.pool.get('hr.job')
         employee = self.pool.get('hr.employee')
+        partner = self.pool.get('res.partner')
         job_education_level= self.pool.get('hr.employee.job.education.level')
-            
+        umalqurra = Umalqurra()
+        fmt = '%d/%m/%Y'
         for row  in reader: 
-            if row['EMP_NO'] and  ( employee.search(cr, uid, [('number', '=',row['EMP_NO'])])) and row['LOC_ID']=='3369' : 
+            employee_ids=employee.search(cr, uid, [('number', '=',row['EMP_NO'])])
+            if employee_ids and row['LOC_ID']=='3369' : 
                 if str(row['MAJOR_NO']):
                     specialiter_ids = specialiter.search(cr, uid, [('code', '=',row['MAJOR_NO'])])
                     if specialiter_ids:
@@ -2239,31 +2271,31 @@ class import_csv(osv.osv):
                     diplome_ids=diploma.search(cr, uid, [('code', '=',row['DEGREE_NO'])])
                     if diplome_ids:
                         diplome_id=diplome_ids[0]
+              
+                if str(row['DEGREE_PLACE']):
+                    partner_ids=partner.search(cr, uid, [('code', '=',row['DEGREE_PLACE'])])
+                    if partner_ids:
+                        partner_id=partner_ids[0]
+                if row['DEGREE_DATE_HJ'] != 'NULL':
+                    try:
+                        dt = datetime.strptime(str(row['DEGREE_DATE_HJ']), fmt)
+                        start_date = umalqurra.hijri_to_gregorian(dt.year, dt.month, dt.day)
+                        date1 = date(int(start_date[0]), int(start_date[1]), int(start_date[2]))
+                    except:
+                        date1 = False
+                
                 vals_education={'name':'01',
                                 'diploma_id':diplome_id,
-                                'specialization_ids':[specialiter_id]
-                                
+                                'specialization_ids':[(6,0,[specialiter_id])],
+                                'diploma_date':date1,
+                                'governmental_entity':partner_id,
                                 }
                 
                 id_eductaion_level=job_education_level.create(cr, uid, vals_education,context=context)
-                employee_ids=employee.search(cr, uid, [('number', '=',row['EMP_NO'])])
                 emplyee_obj=employee.browse(cr, uid, employee_ids[0]) 
                 emplyee_obj.write({'education_level_ids':[(6,0,[id_eductaion_level])],})
-               
-                    
-                
-                    
-               
-                
-               
-             
-              
-                   
-         
-                
-            
-            
-         
+
+   
         stop = timeit.default_timer()
         print 'time for import employee', stop - start
         return True
@@ -2375,7 +2407,7 @@ class import_csv(osv.osv):
                             'num_decision':str(row['DECISION_NO']),
                             'date_decision':date1,
                             'date':date2,
-                            'job_id': str(row['position']),
+                            'job_id': str(row['position']) if str(row['position']) !='NULL' else str(row['position_old']),
                             'dep_side': str(row['side']),
                             'grade_id':grade_id,
                             'number':employee_id.job_id.name.name,
@@ -2772,12 +2804,11 @@ class import_csv(osv.osv):
         all_move_ids=[]
         employee = self.pool.get('hr.employee')
         fmt = '%d/%m/%Y'
-        
+        brth_dates=False
         for row  in reader : 
             if row['ISSUE_DATE_HJ'] != 'NULL':
                     try:
                         row['ISSUE_DATE_HJ'].replace("29/2", "28/2")
-                        print row['ISSUE_DATE_HJ']
                         dt = datetime.strptime(str(row['ISSUE_DATE_HJ']), fmt)
                         start_date = umalqurra.hijri_to_gregorian(dt.year, dt.month, dt.day)
                         date_first_tranche = date(int(start_date[0]), int(start_date[1]), int(start_date[2]))
@@ -2786,6 +2817,7 @@ class import_csv(osv.osv):
 
             if str(row['ISSUE_PLACE_NO']):
                     city_ids=city.search(cr, uid, [('code', '=',row['ISSUE_PLACE_NO'])])
+                    print city_ids
             employee_ids= employee.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
             if employee_ids:
                 emplyee_obj=employee.browse(cr, uid, employee_ids[0]) 
@@ -2795,9 +2827,9 @@ class import_csv(osv.osv):
                     passport_end_date = False
                 if passport_date == 'NULL':
                     passport_date = False    
-                print  date_first_tranche               
-                emplyee_obj.write( {'passport_id': str(row['DOC_NO']),'passport_date':date_first_tranche,'passport_place':city_ids[0] if city_ids else False ,
-                                    'passport_end_date':passport_end_date}, )
+      
+                emplyee_obj.write( {'hoveizeh_id': str(row['DOC_NO']),'hoveizeh_date':date_first_tranche,'hoveizeh_place':city_ids[0] if city_ids else False ,
+                                    'hoveizeh_end_date':False,}, )
         
         
         return True
@@ -3049,7 +3081,71 @@ class import_csv(osv.osv):
                 dep_allowance_line_b = dep_allowance_line.create(cr, uid, dep_allowance_line_vals_b)
                 dep_allowance_line_c = dep_allowance_line.create(cr, uid, dep_allowance_line_vals_c)
                 
+    def import_universitty(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+        
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        move_id=''
+        all_move_ids=[]
+        school = self.pool.get('res.partner')
+        for row  in reader :  
+            school_val={
+                            'name':row['name'],
+                            'code':str(row['code']),
+                            'company_type':'school'
+                            
+                            }
+            
+            school.create(cr, uid, school_val,context=context)
+        
+        
+            
+        
+        return True 
+    
+    def update_birthday(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+        
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        city = self.pool.get('res.city')
+        umalqurra = Umalqurra() 
+        move_id=''
+        all_move_ids=[]
+        employee = self.pool.get('hr.employee')
+        fmt = '%d/%m/%Y'
+        brth_dates=False
+        for row  in reader : 
+           
+            if str(row['LOC_ID']) == "3369":
+                if str(row['BIRTH_PLACE']):
+                        city_ids=city.search(cr, uid, [('code', '=',row['BIRTH_PLACE'])])
+                        
+                employee_ids= employee.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
+                if employee_ids:
                 
+                    emplyee_obj=employee.browse(cr, uid, employee_ids[0]) 
+                    emplyee_obj.write( {'place_of_birth':city_ids[0] if city_ids else False,}, )
+        
+        
+        return True
 import_csv()
 
 

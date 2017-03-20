@@ -328,10 +328,10 @@
 												attrs="{'required': [('is_saudian','=', True)],'invisible': [('is_saudian','=', False)]}" />
 											<field name="passport_end_date" attrs="{'invisible': [('is_saudian','=', True)]}" />
 											<field name="hoveizeh_end_date"
-												attrs="{'required': [('is_saudian','=', True)],'invisible': [('is_saudian','=', False)]}" />
+												attrs="{'invisible': [('is_saudian','=', False)]}" />
 											<field name="passport_place" attrs="{'invisible': [('is_saudian','=', True)]}" />
 											<field name="hoveizeh_place"
-												attrs="{'required': [('is_saudian','=', True)],'invisible': [('is_saudian','=', False)]}" />
+												attrs="{'invisible': [('is_saudian','=', False)]}" />
 											<field name="is_resident" attrs="{'required': 1}" />
 										</group>
 									</group>
@@ -527,7 +527,6 @@
 						<field name="department_id" context="{'list_type':'_get_dep_name_employee_form'}" />
 						<field name="job_id" />
 						<field name="grade_id_number" />
-						<field name="number" />
 						<field name="dep_side" />
 						<field name="type" />
 						<field name="date" />

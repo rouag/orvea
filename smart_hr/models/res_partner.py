@@ -20,7 +20,7 @@ class ResPartner(models.Model):
     inter_reg_org = fields.Boolean(string=u'منظمة دولية أو اقليمية', default=False)
     insurance = fields.Boolean(string=u'تابعة للتأمين', default=False)
     hospital_director = fields.Char(string=u'مدير المستشفى')
-
+    code = fields.Char(string=u'الرمز')
     @api.multi
     def on_change_company_type(self, company_type):
         if company_type == 'hospital':

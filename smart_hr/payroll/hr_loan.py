@@ -23,7 +23,7 @@ class HrLoan(models.Model):
     def _compute_residual_amount(self):
         residual_amount = self.amount
         for line in self.line_ids:
-            if line.date:
+            if line.state=="done":
                 residual_amount -= line.amount
         self.residual_amount = residual_amount
 

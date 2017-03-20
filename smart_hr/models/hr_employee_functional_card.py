@@ -34,10 +34,11 @@ class HrEmployeeFunctionnalCard(models.Model):
     join_date = fields.Date(string=u'تاريخ الالتحاق بالجهة', related="employee_id.join_date", readonly=1)
     begin_work_date = fields.Date(string=u' تاريخ بداية العمل الحكومي', related="employee_id.begin_work_date",
                                   readonly=1)
-    specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص',
-                                          related='education_level.specialization_ids', readonly=1)
+    
     education_level = fields.Many2one('hr.employee.education.level', compute='_compute_education_level',
                                       string=u'المستوى التعليمي', readonly=1)
+    specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص',related='employee_id.education_level_ids.specialization_ids'
+                                          , readonly=1)
     history_ids = fields.One2many('hr.employee.history', 'employee_id', string=u'سجل الاجراءات',
                                   related="employee_id.history_ids", readonly=1)
     emp_name = fields.Char(string=u'إسم الموظف', related="employee_id.display_name", readonly=1)

@@ -9,7 +9,7 @@ class HrScholarshipSucceedWizard(models.TransientModel):
     _description = "Scholarship Succeed Wizard"
 
     level_education_id = fields.Many2one('hr.employee.education.level', string=u' مستوى التعليم', required=1)
-    diploma_id = fields.Many2one('hr.employee.diploma', related='level_education_id.diploma_id', string=u'الشهادة', required=1)
+    diploma_id = fields.Many2one('hr.employee.diploma', string=u'الشهادة', required=1)
     diploma_date = fields.Date(string=u'تاريخ الحصول على الشهادة', required=1)
 
     @api.multi
