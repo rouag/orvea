@@ -96,7 +96,7 @@ class HrEmployeeDeprivation(models.Model):
 
     increase_id = fields.Many2one('hr.increase')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1)
-    reason = fields.Char(string=u'السبب', required=1)
+    reason = fields.Char(string=u'السبب', required=1  ,compute='_compute_raison' )
     department_level1_id = fields.Many2one('hr.department', related='increase_id.department_level1_id')
     department_level2_id = fields.Many2one('hr.department', related='increase_id.department_level2_id')
     department_level3_id = fields.Many2one('hr.department', related='increase_id.department_level3_id')
@@ -132,7 +132,25 @@ class HrEmployeeDeprivation(models.Model):
         result.update({'domain': {'employee_id': [('id', 'in', list(set(employee_ids)))]}})
         return result
 
+    @api.onchange('employee_id')
+    def onchange_employee_id(self):
+        res = {}
+        employee_ids = set()
+        sanctions = self.env['hr.sanction.ligne'].search([('state', '=', 'done'), ('sanction_id.type_sanction', '=', self.env.ref('smart_hr.data_hr_sanction_type_grade').id)])
+        for rec in sanctions:
+            employee_ids.add(rec.employee_id.id)
+        res['domain'] = {'employee_id': [('id', 'in', list(employee_ids))]}
+        return res
 
+    @api.multi
+    @api.depends('employee_id')
+    def _compute_raison(self):
+        for rec in self:
+            sanctions = self.env['hr.sanction.ligne'].search([('state', '=', 'done'),('employee_id','=',rec.employee_id.id), ('sanction_id.type_sanction', '=', self.env.ref('smart_hr.data_hr_sanction_type_grade').id)],limit=1)
+            if sanctions:
+                rec.raison = sanctions.raison
+                
+                
 class hrEmployeeIncreasePercent(models.Model):
 
     _name = 'hr.employee.increase.percent'
