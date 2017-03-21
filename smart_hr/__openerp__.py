@@ -264,13 +264,14 @@
         'overtime/views/report.xml',
         # hr_scholarship
         'hr_scholarship/data/sequences.xml',
-        'hr_scholarship/views/report.xml',
         'hr_scholarship/data/scholarship_data.xml',
         'hr_scholarship/views/report_hr_scholarship_decision.xml',
         'hr_scholarship/view/hr_scholarship.xml',
         'hr_scholarship/view/hr_scholarship_decision_view.xml',
         'hr_scholarship/wizards/view/hr_scholarship_succeed_wizard.xml',
+        'hr_scholarship/wizards/view/hr_scholarship_extend_wizard.xml',
         'hr_scholarship/views/hr_scholarship_extension_report.xml',
+        'hr_scholarship/views/report.xml',
 
         # 'hr_survey/views/website_templates.xml',
         'mysql/security/ir.model.access.csv',

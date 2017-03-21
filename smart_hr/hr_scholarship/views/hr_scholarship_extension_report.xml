@@ -51,9 +51,9 @@
 									لنيل
 									<span t-field="o.diplom_id" />
 									من
-									<span t-field="o.Faculty_id" />
+									<span t-field="o.faculty_id" />
 									ب
-									<span t-field="o.Faculty_id.country_id" />
+									<span t-field="o.faculty_id.country_id" />
 									لمده
 									<span t-esc="o.extended_scholarship_id.duration" />
 									يوم اعتبارا من
@@ -82,9 +82,9 @@
 									لنيل
 									<span t-field="o.diplom_id" />
 									من
-									<span t-field="o.Faculty_id" />
+									<span t-field="o.faculty_id" />
 									ب
-									<span t-field="o.Faculty_id.country_id" />
+									<span t-field="o.faculty_id.country_id" />
 									لمده
 									<span t-esc="o.extended_scholarship_id.duration" />
 									يوم اعتبارا من

@@ -32,7 +32,7 @@
 								<field name="department_id"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="date" attrs="{'readonly':[('state','!=','new')]}" />
-								<field name="scholarship_ids" attrs="{'readonly':[('state','!=','new')]}"
+								<field name="scholarship_id" attrs="{'readonly':[('state','!=','new')]}"
 									domain="[('employee_id', '=', employee_id),('state', 'in', ['finished', 'cutoff'])]" />
 							</group>
 							<group string="بيانات الخطاب">

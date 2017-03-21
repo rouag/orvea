@@ -34,9 +34,8 @@
 
 
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
-							type="action"
-							states="psm" groups="smart_hr.group_scholarship_manager" icon="fa-check"
-							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							type="action" states="psm" groups="smart_hr.group_scholarship_manager"
+							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 
 						<button name="action_succeeded" string="نجح" type="object"
@@ -71,22 +70,22 @@
 							<group>
 								<field name="date" />
 								<field name="employee_id"
+									attrs="{'readonly':[('state','not in', ['draft', 'psm'])]}"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 									readonly="True" />
 								<field name="scholarship_type"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
-									attrs="{'readonly':[('is_extension','=',True)]}" />
+									attrs="{'readonly':['|', ('is_extension','=',True), ('state','not in', ['draft', 'psm'])]}" />
 							</group>
 							<group />
 						</group>
 						<group col="6">
-							<field name="date_from" attrs="{'readonly':[('is_extension','=',True)]}" />
-							<field name="date_to" />
-							<field name="duration" />
-						</group>
-						<group>
-							<field name="salary_percent" />
-							<field name="hr_allowance_type_id" widget="many2many_tags" />
+							<field name="date_from"
+								attrs="{'readonly':['|', ('is_extension','=',True), ('state','not in', ['draft', 'psm'])]}" />
+							<field name="date_to"
+								attrs="{'readonly':[('state','not in', ['draft', 'psm'])]}" />
+							<field name="duration"
+								attrs="{'readonly':[('state','not in', ['draft', 'psm'])]}" />
 						</group>
 
 						<notebook>
@@ -95,13 +94,13 @@
 									<group>
 										<field name="diplom_type"
 											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
-											attrs="{'readonly':[('is_extension','=',True)]}" />
+											attrs="{'readonly':['|', ('is_extension','=',True), ('state','not in', ['draft', 'psm'])]}" />
 										<field name="diplom_id"
 											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
-											attrs="{'readonly':[('is_extension','=',True)]}" />
-										<field name="Faculty_id"
+											attrs="{'readonly':['|', ('is_extension','=',True), ('state','not in', ['draft', 'psm'])]}" />
+										<field name="faculty_id"
 											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
-											attrs="{'readonly':[('is_extension','=',True)]}" />
+											attrs="{'readonly':['|', ('is_extension','=',True), ('state','not in', ['draft', 'psm'])]}" />
 									</group>
 									<group></group>
 								</group>
@@ -109,33 +108,46 @@
 							<page string="المرفقات">
 								<group>
 									<group>
-										<field name="num_speech" />
-										<field name="date_speech" />
-										<field name="speech_file" filename="speech_file_name" />
-										<field name="speech_file_name" invisible="1" />
+										<field name="num_speech"
+											attrs="{'readonly':[('state','not in', ['draft', 'psm'])]}" />
+										<field name="date_speech"
+											attrs="{'readonly':[('state','not in', ['draft', 'psm'])]}" />
+										<field name="speech_file" filename="speech_file_name"
+											attrs="{'readonly':[('state','not in', ['draft', 'psm'])]}" />
+										<field name="speech_file_name" invisible="1"
+											attrs="{'readonly':[('state','not in', ['draft', 'psm'])]}" />
 									</group>
 									<group>
 										<field name="acceptance_certificate" filename="acceptance_certificate_name"
-											attrs="{'readonly':[('is_extension','=',True)]}" />
+											attrs="{'readonly':['|', ('is_extension','=',True), ('state','not in', ['draft', 'psm'])]}" />
 										<field name="acceptance_certificate_name" invisible="1" />
 										<field name="language_exam" filename="language_exam_file_name"
-											attrs="{'readonly':[('is_extension','=',True)]}" />
+											attrs="{'readonly':['|', ('is_extension','=',True), ('state','not in', ['draft', 'psm'])]}" />
 										<field name="language_exam_file_name" invisible="1" />
 									</group>
 
 								</group>
 							</page>
+							<page string="سجل الإجراءت">
+								<field name="scholarship_history_ids">
+									<tree editable="bottom">
+										<field name="name" />
+										<field name="date" />
+									</tree>
+								</field>
+							</page>
+
 							<page string="بيانات الخطاب" attrs="{'invisible':[('is_extension','=',False)]}">
 								<group>
 									<group>
 										<field name="order_source"
-											attrs="{'readonly':[('state','=','done')], 'required':[('is_extension','=',True)]}" />
+											attrs="{'readonly':[('state','not in', ['draft', 'psm'])], 'required':[('is_extension','=',True)]}" />
 										<field name="order_number"
-											attrs="{'readonly':[('state','=','done')], 'required':[('is_extension','=',True)]}" />
+											attrs="{'readonly':[('state','not in', ['draft', 'psm'])], 'required':[('is_extension','=',True)]}" />
 										<field name="order_date"
-											attrs="{'readonly':[('state','=','done')], 'required':[('is_extension','=',True)]}" />
+											attrs="{'readonly':[('state','not in', ['draft', 'psm'])], 'required':[('is_extension','=',True)]}" />
 										<field name="file_decision" filename="file_decision_name"
-											attrs="{'readonly':[('state','=','done')], 'required':[('is_extension','=',True)]}" />
+											attrs="{'readonly':[('state','not in', ['draft', 'psm'])], 'required':[('is_extension','=',True)]}" />
 										<field name="file_decision_name" invisible="1" />
 									</group>
 									<group />
@@ -143,7 +155,8 @@
 							</page>
 						</notebook>
 						<group>
-							<field name="note" />
+							<field name="note"
+								attrs="{'readonly':[('state','not in', ['draft', 'psm'])]}" />
 						</group>
 						<button style="padding-right:10px," name="%(report_hr_scholarship_extension)d"
 							string="طباعة قرار التمديد"
@@ -205,17 +218,20 @@
 				<form string="انواع الابتعاث">
 					<sheet>
 						<group>
-							<field name="name" />
-							<field name="code" />
-							<field name="pension_percent" />
-							<field name="traveling_family_ticket" />
-							<field name="service_duration_needed">
-								<tree editable="bottom">
-									<field name="diplom_type" />
-									<field name="service_duration" />
-								</tree>
-
-							</field>
+							<group>
+								<field name="name" />
+								<field name="code" />
+								<field name="salary_percent" />
+								<field name="hr_allowance_type_id" widget="many2many_tags" />
+								<field name="traveling_family_ticket" />
+								<field name="traveling_periode"
+									attrs="{'invisible':[('traveling_family_ticket', '=', False)]} " />
+							</group>
+							<group string='مدة الخدمة اللازمة قبل الابتعاث'>
+								<field name="licence_bac" />
+								<field name="average_diploma" />
+								<field name="high_diploma" />
+							</group>
 							<field name="note" />
 						</group>
 					</sheet>
