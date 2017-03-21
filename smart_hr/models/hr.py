@@ -23,6 +23,11 @@ class HrEmployee(models.Model):
         for rec in sanction_obj.search(search_domain):
             self.sanction_ids = rec.sanction_ids
 
+    def _get_department_name_report(self):
+        for card in self:
+            department_name_report = card.department_id._get_dep_name_employee_form()[0]
+            card.department_name_report = department_name_report[1]
+
     number = fields.Char(string=u'رقم الوظيفي')
     gender = fields.Selection([('male', 'Male'), ('female', 'Female'), ], string=u'الجنس')
     marital = fields.Selection(
@@ -68,7 +73,7 @@ class HrEmployee(models.Model):
     compensation_stock = fields.Integer(string=u'رصيد إجازات التعويض')
     holiday_peiodes = fields.One2many('hr.holidays.periode', 'employee_id', string='holidays periodes')
     grandfather_name = fields.Char(string=u'اسم الجد', required=1)
-    grandfather2_name = fields.Char(string=u'  اسم الجد الثاني ')
+    grandfather2_name = fields.Char(string=u'‫الفخذ‬')
     family_name = fields.Char(string=u'الاسم العائلي')
     father_middle_name = fields.Char(string=u'middle_name', default=u"بن")
     grandfather_middle_name = fields.Char(string=u'middle_name2', default=u"بن")
@@ -126,6 +131,7 @@ class HrEmployee(models.Model):
     grade_number = fields.Char(related="grade_id.code", string='رقمها')
     service_duration_display = fields.Char(string=u'مدة الخدمة', readonly=True, compute='compute_service_duration_display')
     promotion_duration_display = fields.Char(string=u'مدة الترقية', readonly=True, compute='compute_promotion_duration_display')
+    department_name_report = fields.Char(compute='_get_department_name_report')
 
     @api.multi
     def compute_service_duration_display(self):

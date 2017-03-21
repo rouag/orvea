@@ -42,7 +42,7 @@ class SalaryGridType(models.Model):
     _name = 'salary.grid.type'
     _description = u' الأصناف'
 
-    name = fields.Char(string='الصنف', required=1)
+    name = fields.Char(string='نوع السلم', required=1)
     code = fields.Integer(string='الرمز')
     is_member = fields.Boolean(string='صنف أعضاء')
     grid_id = fields.Many2one('salary.grid', string='سلّم الرواتب')
@@ -90,7 +90,7 @@ class SalaryGridDetail(models.Model):
 
     grid_id = fields.Many2one('salary.grid', string='سلّم الرواتب', required=1, ondelete='cascade')
     date = fields.Date(string='التاريخ')
-    type_id = fields.Many2one('salary.grid.type', string='الصنف', required=1)
+    type_id = fields.Many2one('salary.grid.type', string='نوع السلم', required=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1)
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
     basic_salary = fields.Float(string='الراتب الأساسي', required=1)
