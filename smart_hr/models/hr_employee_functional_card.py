@@ -13,8 +13,6 @@ class HrEmployeeFunctionnalCard(models.Model):
     _inherit = ['mail.thread']
     _description = u'بطاقة موظف'
 
-    @api.multi
-    @api.depends('department_id')
     def _get_department_name_report(self):
         for card in self:
             department_name_report = card.department_id._get_dep_name_employee_form()[0]
@@ -58,7 +56,7 @@ class HrEmployeeFunctionnalCard(models.Model):
                               ], string=u'الحالة', default='draft', )
     training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'التدريب', readonly=1,
                                    related="employee_id.training_ids")
-    department_name_report = fields.Char(compute=_get_department_name_report, store=True)
+    department_name_report = fields.Char(compute='_get_department_name_report')
 
     @api.multi
     @api.depends('employee_id')

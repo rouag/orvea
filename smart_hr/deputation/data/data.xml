@@ -39,8 +39,7 @@
 		</record>
 		
 		<record id="data_hr_deputation_type2" model="hr.deputation.type">
-			<field name="name">تمثيل المملكة في اجتماعات مجالس او منظمات دولية او
-				اقليمية او عربية</field>
+			<field name="name">تمثيل المملكة في اجتماعات مجالس او منظمات دولية او اقليمية او عربية</field>
 			<field name="code" eval="2" />
 			<field name="external_balance" eval="120" />
 		</record>

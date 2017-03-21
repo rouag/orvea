@@ -12,13 +12,14 @@
 				<tree string="الوظائف" create='0' edit='0' delete='0'
 					duplicate='0'>
 					<field name="name" string="المسمى الوظيفي" />
-					<field name="number" string="رقم الوظيفة" />
 					<field name="job_name_code" string="الرمز" />
+					<field name="number" string="رقم الوظيفة" />
 					<field name="type_id" />
 					<field name="department_id" />
 					<field name="grade_id" />
 					<field name="create_date" />
-					<field name="write_date" />
+					<field name="write_date" string="تاريخ حالة الوظيفة" />
+					<field name="occupied_date" />
 					<field name="state" />
 					<field name="creation_source" />
 				</tree>
@@ -863,6 +864,9 @@
 								<field name="type_id" />
 								<field name="department_id" />
 								<field name="grade_id" />
+								<field name="new_job_name" />
+								<field name="new_job_number" />
+								<field name="new_department_id" />
 								<field name="new_grade_id" />
 							</tree>
 						</field>
@@ -995,6 +999,9 @@
 								<field name="type_id" />
 								<field name="department_id" />
 								<field name="grade_id" />
+								<field name="new_job_name" />
+								<field name="new_job_number" />
+								<field name="new_department_id" />
 								<field name="new_grade_id" />
 							</tree>
 						</field>

@@ -194,6 +194,9 @@
 			<field name="name">القروض</field>
 			<field name="view_mode">tree,form</field>
 			<field name="domain">[('employee_id', '=', active_id)]</field>
+			<field name="context">{'search_default_progress':
+				1,'readonly_by_pass':True}
+			</field>
 		</record>
 		<record id="act_hr_employee_2_hr_attendance" model="ir.actions.act_window">
 			<field name="res_model">hr.attendance</field>
@@ -202,6 +205,9 @@
 			<field name="view_mode">tree,form</field>
 			<field name="domain">[('employee_id', '=', active_id)]</field>
 		</record>
+
+
+
 		<record id="view_employee_request_form" model="ir.ui.view">
 			<field name="name">hr.employee.request.form</field>
 			<field name="model">hr.employee</field>
@@ -272,7 +278,7 @@
 									<label name="grandfather_name" string="اسم الجد" />
 								</div>
 								<div class="col-xs-2 div_paddig_right_null" style="text-align:right;width:16.5%;">
-									<label name="grandfather2_name" string="اسم الجد الثاني" />
+									<label name="grandfather2_name" string="‫الفخذ‬" />
 								</div>
 								<div class="col-xs-1 div_paddig_right_null" style="text-align:right;width:16.5%;">
 									<label name="family_name" string="الاسم العائلي" />
@@ -332,7 +338,6 @@
 											<field name="passport_place" attrs="{'invisible': [('is_saudian','=', True)]}" />
 											<field name="hoveizeh_place"
 												attrs="{'invisible': [('is_saudian','=', False)]}" />
-											<field name="is_resident" attrs="{'required': 1}" />
 										</group>
 									</group>
 									<group>
@@ -344,6 +349,7 @@
 										</group>
 										<group string="الميلاد">
 											<field name="birthday" attrs="{'required': 1}" />
+											<field name="age_display" attrs="{'readonly': 1}" />
 											<field name="place_of_birth" />
 
 										</group>
@@ -394,16 +400,20 @@
 											<field name="dep_city" options="{'no_create': True}" />
 											<field name="job_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+											<field name="job_number"
+												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="type_id" attrs="{'required': 1}" />
 											<field name="grade_id"
+												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+											<field name="grade_number"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="degree_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 
 
 											<field name="parent_id" string="المدير المباشر " />
-											<field name="service_duration" attrs="{'readonly': 1}" />
-											<field name="promotion_duration" attrs="{'readonly': 1}" />
+											<field name="service_duration_display" attrs="{'readonly': 1}" />
+											<field name="promotion_duration_display" attrs="{'readonly': 1}" />
 											<field name="royal_decree_number" attrs="{'invisible': [('is_member','=', False)]}" />
 											<field name="royal_decree_date" attrs="{'invisible': [('is_member','=', False)]}" />
 											<field name="external_decision" />
@@ -415,11 +425,9 @@
 											<field name="recruiter" widget="selection" />
 											<field name="recruiter_date" />
 											<field name="begin_work_date" />
-											<field name="calendar_id" string="الورديّات" />
+											<field name="calendar_id" string="‫نوع‬ الدوام" />
 											<field name="insurance_type" />
 											<field name="medic_exam" string="تاريخ الفحص الطبي" />
-											<field name="vehicle" />
-											<field name="vehicle_distance" />
 										</group>
 									</group>
 								</page>
@@ -427,7 +435,8 @@
 									<group string="بيانات البنك">
 										<field name="address_home_id" invisible="1" />
 										<field name="bank_account_id" invisible="1" />
-										<field name="bank_account_ids" nolabel="1">
+										<field name="bank_account_ids" nolabel="1"
+											context="{'default_employee_id':active_id}">
 											<tree delete="false">
 												<field name="acc_number" />
 												<field name="bank_name" string="البنك" />
@@ -435,6 +444,18 @@
 												<field name="account_opening_date" />
 												<field name="is_deposit" />
 											</tree>
+											<form>
+												<group col="4">
+													<field name="acc_number" />
+													<field name="bank_id" string="البنك" />
+													<field name="account_opening_date" />
+													<field name="is_deposit" />
+													<field name="company_id" groups="base.group_multi_company"
+														options="{'no_create': True}" />
+													<field name="currency_id" options="{'no_create': True}" />
+													<field name="employee_id" invisible="1" />
+												</group>
+											</form>
 										</field>
 									</group>
 									<group name="active_group" invisible="1" />
@@ -606,6 +627,7 @@
 		<field name="view_mode">tree,form</field>
 		<field name="domain">[('employee_id', '=', active_id)]</field>
 	</record>
+
 	<record id="hr_payroll.payroll_hr_employee_view_form" model="ir.ui.view">
 		<field name="name">payroll.hr.employee.view.form</field>
 		<field name="model">hr.employee</field>
@@ -621,6 +643,10 @@
 			</data>
 		</field>
 	</record>
+
+
+
+
 	<data noupdate="1">
 		<!-- Remove odoo buttons -->
 		<delete id="hr.hr_employee_action_subordinate_hierachy_mutli"

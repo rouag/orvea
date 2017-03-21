@@ -126,6 +126,8 @@ class HrDeputation(models.Model):
         ('notmember', u'انتداب غيرعضو')
     ], string=u'انتداب عضو', default='notmember', required=1)
     deputation_type = fields.Many2one('hr.deputation.type', string='نوع الانتداب', required="1")
+    deputation_balance_override = fields.Boolean(string=u"تجاوز رصيد الانتدابات")
+    external_deputation_balance_override = fields.Boolean(string=u"تجاوز رصيد الانتداب الخارجي")
 
     @api.onchange('member_deputation')
     def onchange_member_deputation(self):
@@ -168,17 +170,30 @@ class HrDeputation(models.Model):
                     elif deputation_allowance.internal_transport_type == 'monthly':
                         deputation_amount = searchs[0].amount
         return deputation_amount, transport_amount, deputation_allowance
-    
+
     @api.onchange('duration')
     def onchange_duration(self):
+        dep_setting = self.env['hr.deputation.setting'].search([], limit=1)
+        warning={}
         if self.employee_id:
             if self.employee_id.deputation_balance < self.duration:
                 warning = {
                     'title': _('تحذير!'),
                     'message': _('لقد تم تجاوز الرصيد السنوي للإنتداب!'),
                 }
-                return {'warning': warning}
-            
+                self.deputation_balance_override = True
+        if self.duration and dep_setting:
+            if self.duration >= dep_setting.period_decision:
+                self.ministre_report = True
+        if self.type == 'external':
+            external_type_id_balance = self.deputation_type.external_balance
+            external_deputations = self.search([('type', '=', 'external'), ('employee_id', '=', self.employee_id.id), ('state', '=','done'), ('type_id', '=', self.type_id.id )])
+            ext_dep_duration = 0
+            for dep in external_deputations:
+                ext_dep_duration += dep.duration
+            if ext_dep_duration + self.duration > external_type_id_balance:
+                self.external_deputation_balance_override = True
+        return {'warning': warning}
     @api.one
     @api.depends('duration')
     def _compute_ministre_report(self):
@@ -186,7 +201,7 @@ class HrDeputation(models.Model):
         if self.duration and dep_setting:
             if self.duration >= dep_setting.period_decision:
                 self.ministre_report = True
-            
+
     @api.multi
     def action_draft(self):
         self.ensure_one()

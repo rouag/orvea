@@ -123,16 +123,16 @@
 									الجهة:
 									<field name="dep_side"
 										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-
 								</li>
 
 							</group>
-							<!-- <group> <div> <t t-if="is_root == 'true'"> قسم/إدارة رئيسية:نعم 
-								</t> <t t-if="is_root == false"> قسم/إدارة رئيسية:ل </t> </div> </group> -->
-
 						</group>
-
 					</div>
+					<button name="%(hr.act_employee_from_department)d" position="after">
+						<separator />
+						<button class="btn btn-primary" name="button_child_ids"
+							type="object">الإدارات</button>
+					</button>
 				</data>
 			</field>
 		</record>

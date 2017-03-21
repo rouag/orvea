@@ -32,8 +32,6 @@
 			</field>
 		</record>
 
-
-
 		<record model="ir.ui.view" id="hr_deputation_form">
 			<field name="name">hr.deputation.form</field>
 			<field name="model">hr.deputation</field>
@@ -79,8 +77,19 @@
 							statusbar_visible="draft,audit,waiting,order,humain,done,finish,refuse" />
 					</header>
 					<sheet>
+
+						<label name="override balance" string="مدة الانتداب تستوجب قرار من الوزير المختص"
+							style="color: red;font-weight:bold;" attrs="{'invisible':['|', ('ministre_report', '=', False), ('external_deputation_balance_override', '=', True)]}" />
+						<separator/>
+						<label name="override balance" string="رصيد الانتداب غير كافي"
+							style="color: red;font-weight:bold;"
+							attrs="{'invisible':[('deputation_balance_override', '=', False)]}" />
+						<separator/>
+						<label name="override external deputation balance" string="الانتداب  الخارجي يتطلب قرار وزير"
+							style="color: red;font-weight:bold;"
+							attrs="{'invisible':[('external_deputation_balance_override', '=', False)]}" />
 						<group>
-							<group col="2">
+							<group>
 								<field name="order_date" />
 								<field name="type" options="{'horizontal': true}" class="oe_edit_only"
 									widget="radio"
@@ -164,10 +173,12 @@
 								<group>
 									<field name="file_decision" filename="file_decision_name"
 										attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'required':[('state','=','draft')],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
+									<field name="file_order" filename="file_decision_name"
+										attrs="{'invisible':[('state', '=', 'draft'), ('ministre_report','=', False), ('external_deputation_balance_override','=', False)],'required':[('state','=','audit')],'readonly':[('state', 'in', ['waiting','done','order','humain','finish'])]}" />
 									<field name="decision_number"
-										attrs="{'invisible':['|',('state', 'not in', [ 'done','order','humain','finish']), ('ministre_report', '=', False)],'required':[('ministre_report', '=', True),('state','=','done')],'readonly':[('state', 'in', ['order','humain','finish'])]}" />
+										attrs="{'invisible':[('state', '=', 'draft'), ('ministre_report','=', False), ('external_deputation_balance_override','=', False)],'required':[('state','=','audit')],'readonly':[('state', 'in', ['waiting','done','order','humain','finish'])]}" />
 									<field name="decision_date"
-										attrs="{'invisible':['|',('state', 'not in', [ 'done','order','humain','finish']), ('ministre_report', '=', False)],'required':[('ministre_report', '=', True),('state','=','done')],'readonly':[('state', 'in', ['order','humain','finish'])]}" />
+										attrs="{'invisible':[('state', '=', 'draft'), ('ministre_report','=', False), ('external_deputation_balance_override','=', False)],'required':[('state','=','audit')],'readonly':[('state', 'in', ['waiting','done','order','humain','finish'])]}" />
 									<field name="report_number"
 										attrs="{'invisible':[('state', 'not in', [ 'order','humain','finish'])],'required':[('state','=','order')],'readonly':[('state', 'in', ['humain','finish'])]}" />
 									<field name="report_date"
@@ -190,6 +201,10 @@
 									<field name="ministre_report" invisible="1" />
 									<field name="file_report_name" invisible="1" />
 									<field name="file_lettre_name" invisible="1" />
+									<field name="deputation_balance_override" invisible="1" />
+									<field name="external_deputation_balance_override"
+										invisible="1" />
+
 								</group>
 
 							</page>
@@ -226,7 +241,7 @@
 							<field name="name" />
 							<field name="country_city_ids" editable="bottom">
 								<tree>
-								<field name="country_id" />
+									<field name="country_id" />
 									<field name="city_id" />
 								</tree>
 								<form>

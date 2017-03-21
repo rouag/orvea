@@ -233,7 +233,7 @@
 					<field name="degree_id" />
 					<filter string="مفعلة" domain="[('grid_id.enabled','=',True)]" />
 					<group expand="0" string="تجميع حسب">
-						<filter string="الصنف" name="type_id" context="{'group_by':'type_id'}" />
+						<filter string="نوع السلم" name="type_id" context="{'group_by':'type_id'}" />
 						<filter string="المرتبة" name="grade_id" context="{'group_by':'grade_id'}" />
 						<filter string="الدرجة" name="degree_id" context="{'group_by':'degree_id'}" />
 					</group>
