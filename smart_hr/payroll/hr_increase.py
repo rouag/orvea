@@ -41,7 +41,7 @@ class hrIncrease(models.Model):
     department_level2_id = fields.Many2one('hr.department', string='القسم', readonly=1, states={'draft': [('readonly', 0)]})
     department_level3_id = fields.Many2one('hr.department', string='الشعبة', readonly=1, states={'draft': [('readonly', 0)]})
     salary_grid_type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1, states={'draft': [('readonly', 0)]},)
-    
+
 
 
     @api.model
@@ -78,8 +78,16 @@ class hrIncrease(models.Model):
     def action_pim2(self):
         self.state = 'pim2'
 
-    @api.one
+    @api.multi
     def action_done(self):
+        for rec in self :
+            for line in rec.employee_increase_ids: 
+                employee_increase_obj = self.env['employee.increase']
+                self.env['employee.increase'].create({'name': rec.date,
+                                                      'amount': line.increase_percent,
+                                                      'date': self.date,
+                                                      'employee_id': line.employee_id.id,
+                                                  })
         self.state = 'done'
 
 
@@ -169,6 +177,7 @@ class hrEmployeeIncreasePercent(models.Model):
         return result
 
     @api.multi
+    @api.depends('employee_id')
     def increase_percent_count(self):
         for rec in self:
             increase = self.env['salary.grid.detail'].search([('type_id', '=', rec.employee_id.type_id.id), ('degree_id', '=', rec.employee_id.degree_id.id),

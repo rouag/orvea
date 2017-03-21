@@ -45,28 +45,33 @@ class HrdeprivationPremiumLigne(models.Model):
 
     deprivation_id = fields.Many2one('hr.deprivation.premium', string=' قائمة المحرومين من العلاوة', ondelete='cascade')
     employee_id = fields.Many2one('hr.employee', string=u'  الموظف', required=1)
-    raison = fields.Char(string='السبب')
+    raison = fields.Char(string='السبب', readonly=1,  compute='_compute_raison' )
     state = fields.Selection([('waiting', 'في إنتظار التاكيد'),
                               ('excluded', 'مستبعد'),
                               ('done', 'تم التاكيد'),
                               ], string='الحالة', readonly=1, default='waiting')
 
-   
+
 
 
     @api.onchange('employee_id')
     def onchange_employee_id(self):
         res = {}
         employee_ids = set()
-        raison =[]
         sanctions = self.env['hr.sanction.ligne'].search([('state', '=', 'done'), ('sanction_id.type_sanction', '=', self.env.ref('smart_hr.data_hr_sanction_type_grade').id)])
         for rec in sanctions:
             employee_ids.add(rec.employee_id.id)
-            raison.append(rec.raison)
-            print"raison",raison
-        res['domain'] = {'employee_id': [('id', 'in', list(employee_ids))],'raison':raison}
+        res['domain'] = {'employee_id': [('id', 'in', list(employee_ids))]}
         return res
-    
+
+    @api.multi
+    @api.depends('employee_id')
+    def _compute_raison(self):
+        for rec in self:
+            sanctions = self.env['hr.sanction.ligne'].search([('state', '=', 'done'),('employee_id','=',rec.employee_id.id), ('sanction_id.type_sanction', '=', self.env.ref('smart_hr.data_hr_sanction_type_grade').id)],limit=1)
+            if sanctions:
+                rec.raison = sanctions.raison
+
     @api.multi
     def button_cancel(self):
         for deprivation in self:
