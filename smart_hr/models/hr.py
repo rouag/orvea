@@ -132,26 +132,39 @@ class HrEmployee(models.Model):
     service_duration_display = fields.Char(string=u'مدة الخدمة', readonly=True, compute='compute_service_duration_display')
     promotion_duration_display = fields.Char(string=u'مدة الترقية', readonly=True, compute='compute_promotion_duration_display')
     department_name_report = fields.Char(compute='_get_department_name_report')
+    age_display = fields.Char(string=u"العمر", compute='compute_age_display')
+
+    def get_years_months_days(self, duration):
+        years = duration // 354
+        months = (duration % 354) // 30
+        days = (duration % 354) % 30
+        return years, months, days
 
     @api.multi
     def compute_service_duration_display(self):
         for rec in self:
             service_duration = rec.service_duration
-            years = service_duration // 365
-            months = (service_duration % 365) // 30
-            days = (service_duration % 365) % 30
-            res = str(years) + " سنة و" + str(months) + " أشهر و " + str(days) + "أيام"
+            years, months, days = self.get_years_months_days(service_duration)
+            res = str(years) + " سنة و" + str(months) + " شهر و " + str(days) + "يوم"
             rec.service_duration_display = res
 
     @api.multi
     def compute_promotion_duration_display(self):
         for rec in self:
             promotion_duration = rec.promotion_duration
-            years = promotion_duration // 365
-            months = (promotion_duration % 365) // 30
-            days = (promotion_duration % 365) % 30
-            res = str(years) + " سنة و" + str(months) + " أشهر و " + str(days) + "أيام"
+            years, months, days = self.get_years_months_days(promotion_duration)
+            res = str(years) + " سنة و" + str(months) + " شهر و " + str(days) + "يوم"
             rec.promotion_duration_display = res
+
+    @api.multi
+    def compute_age_display(self):
+        for rec in self:
+            today_date = fields.Date.from_string(fields.Date.today())
+            birthday = fields.Date.from_string(rec.birthday)
+            age = (today_date - birthday).days
+            years, months, days = self.get_years_months_days(age)
+            res = str(years) + " سنة و" + str(months) + " شهر و " + str(days) + "يوم"
+            rec.age_display = res
 
     @api.multi
     def _show_mobile(self):

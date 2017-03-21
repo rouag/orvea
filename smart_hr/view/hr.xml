@@ -349,6 +349,7 @@
 										</group>
 										<group string="الميلاد">
 											<field name="birthday" attrs="{'required': 1}" />
+											<field name="age_display" attrs="{'readonly': 1}" />
 											<field name="place_of_birth" />
 
 										</group>
