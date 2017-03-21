@@ -111,14 +111,6 @@ class HrJobName(models.Model):
     job_description = fields.Text(string=u'متطلبات الوظيفية')
     members_job = fields.Boolean(string=u'وظيفية للاعضاء')
 
-    @api.multi
-    def name_get(self):
-        result = []
-        for record in self:
-            name = '[%s] %s' % (record.number, record.name)
-            result.append((record.id, name))
-        return result
-
     _sql_constraints = [('number_uniq', 'unique(number)', 'رمز هذا المسمى موجود.')]
 
 

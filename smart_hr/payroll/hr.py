@@ -8,7 +8,7 @@ class HrEmployee(models.Model):
     _inherit = 'hr.employee'
 
     degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة')
-    salary_increase_ids = fields.One2many('salary.increase', 'employee_id', string=u'العلاوات')
+    salary_increase_ids = fields.One2many('employee.increase', 'employee_id', string=u'العلاوات')
     # basic salary for retired employee
     basic_salary = fields.Float(string=u'الراتب الأساسي', default=0)
     net_salary = fields.Float(string=u'صافي الراتب', compute='_compute_net_salary')
@@ -46,7 +46,7 @@ class HrEmployee(models.Model):
         domain = [('salary_grid_detail_id', '=', salary_grid_id.id)]
         if operation_date:
             domain.append(('date', '<=', operation_date))
-        salary_increase_ids = self.env['salary.increase'].search(domain)
+        salary_increase_ids = self.env['employee.increase'].search(domain)
         sum_increases_amount = 0.0
         for rec in salary_increase_ids:
             sum_increases_amount += rec.amount
@@ -64,3 +64,32 @@ class HrEmployeeAllowance(models.Model):
     allowance_id = fields.Many2one('hr.allowance.type', string='البدل', required=1)
     amount = fields.Float(string='المبلغ')
     date = fields.Date(string='التاريخ')
+
+
+class EmployeeIncrease(models.Model):
+    _name = 'employee.increase'
+
+    name = fields.Char(string='المسمى')
+    amount = fields.Float(string='المبلغ', required=1)
+    salary_grid_detail_id = fields.Many2one('salary.grid.detail', string='تفاصيل سلم الرواتب')
+    date = fields.Date(string='التاريخ')
+    employee_id = fields.Many2one('hr.employee')
+
+#     @api.model
+#     def update_salary_increases(self):
+#         employee_ids = self.env['hr.employee'].search([('employee_state', '=', 'employee')])
+#         res = []
+#         for emp in employee_ids:
+#             salary_grid_line_id, basic_salary = emp.get_salary_grid_id(False)
+#             increase_amout = salary_grid_line_id.increase
+#             if increase_amout > 0:
+#                 employee_amount = {'employee_id': emp.id, 'amount': increase_amout}
+#                 res.append(employee_amount)
+#         for rec in res:
+#             employee_id = rec.get('employee_id')
+#             amount = rec.get('amount')
+#             self.env['employee.increase'].create({'name': u'علاوة سنوية',
+#                                                 'employee_id': employee_id,
+#                                                 'amount': amount,
+#                                                 'date':
+#                                                 })

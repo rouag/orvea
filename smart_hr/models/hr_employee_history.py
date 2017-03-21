@@ -7,6 +7,7 @@ from openerp import models, fields, api, _
 class HrEmployeeHistory(models.Model):
     _name = 'hr.employee.history'
     _description = u'سجل الاجراءات'
+    _order = "date DESC"
 
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1)
     date = fields.Date(string=u'تاريخه')
