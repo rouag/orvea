@@ -135,7 +135,7 @@ class HrDeputation(models.Model):
         else:
             res['domain'] = {'employee_id': [('is_member', '=', False)]}
         return res
-    
+
     @api.model
     def get_deputation_allowance_amount(self, number_of_days):
         deputation_amount = 0.0

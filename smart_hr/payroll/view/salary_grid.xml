@@ -403,9 +403,9 @@
 			sequence="14" parent="hr_configuration_salary_grid" action="action_salary_grid_degree" />
 
 		<!-- العلاوات -->
-		<record id="salary_increase_form" model="ir.ui.view">
-			<field name="name">salary.increase.form</field>
-			<field name="model">salary.increase</field>
+		<record id="employee_increase_form" model="ir.ui.view">
+			<field name="name">employee.increase.form</field>
+			<field name="model">employee.increase</field>
 			<field name="arch" type="xml">
 				<form string="العلاوات">
 					<sheet>

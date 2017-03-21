@@ -350,32 +350,3 @@ class SalaryGridDetailIndemnityCity(models.Model):
     indemnity_id = fields.Many2one('salary.grid.detail.indemnity', string='البدل', ondelete='cascade')
     city_id = fields.Many2one('res.city', string='المدينة', required=1)
     percentage = fields.Float(string='النسبة', required=1)
-
-
-class SalaryIncrease(models.Model):
-    _name = 'salary.increase'
-
-    name = fields.Char(string='المسمى')
-    amount = fields.Float(string='المبلغ', required=1)
-    salary_grid_detail_id = fields.Many2one('salary.grid.detail', string='تفاصيل سلم الرواتب')
-    date = fields.Date(string='التاريخ')
-    employee_id = fields.Many2one('hr.employee')
-
-#     @api.model
-#     def update_salary_increases(self):
-#         employee_ids = self.env['hr.employee'].search([('employee_state', '=', 'employee')])
-#         res = []
-#         for emp in employee_ids:
-#             salary_grid_line_id, basic_salary = emp.get_salary_grid_id(False)
-#             increase_amout = salary_grid_line_id.increase
-#             if increase_amout > 0:
-#                 employee_amount = {'employee_id': emp.id, 'amount': increase_amout}
-#                 res.append(employee_amount)
-#         for rec in res:
-#             employee_id = rec.get('employee_id')
-#             amount = rec.get('amount')
-#             self.env['salary.increase'].create({'name': u'علاوة سنوية',
-#                                                 'employee_id': employee_id,
-#                                                 'amount': amount,
-#                                                 'date':
-#                                                 })

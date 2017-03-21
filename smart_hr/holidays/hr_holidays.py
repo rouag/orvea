@@ -140,8 +140,6 @@ class HrHolidays(models.Model):
     deputation_id = fields.Many2one('hr.deputation', string='الانتداب')
     deputation_balance_computed = fields.Float(string='مدة الانتداب المحتسبة', compute='compute_deputation_balance_compUted')
 
-
-
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
