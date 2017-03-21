@@ -26,7 +26,7 @@ class HrDecision(models.Model):
     num_speech = fields.Char(string='رقم الخطاب')
     date_speech = fields.Date(string='تاريخ الخطاب' )
     employee_ids = fields.Many2many('hr.employee',string='الاعضاء المرقين')
-     
+
     @api.onchange('num_speech', 'date_speech', 'name', 'date')
     def onchange_fileds(self):
         self.onchange_decision_type_id()
@@ -48,8 +48,8 @@ class HrDecision(models.Model):
 
     @api.onchange('decision_type_id')
     def onchange_decision_type_id(self):
-       
-        if self.decision_type_id not in [self.env.ref('smart_hr.data_decision_type6'),
+
+        if self.decision_type_id in [self.env.ref('smart_hr.data_decision_type6'),
                                     self.env.ref('smart_hr.data_decision_type7'),
                                     self.env.ref('smart_hr.data_decision_type8'),
                                     self.env.ref('smart_hr.data_decision_type9'),
@@ -108,26 +108,28 @@ class HrDecision(models.Model):
                     self.text = rep_text
         else :
             appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id), ('state', '=', 'done')], limit=1)
-            dates = str(self.date).split('-')
-            dattz = dates[2]+'-'+dates[1]+'-'+dates[0] or ""
-            employee = self.employee_id.name or ""
-            carte_id = self.employee_id.identification_id or ""
-            birthday = self.employee_id.birthday or ""
-            emp_city = self.employee_id.dep_city.name or ""
-            numero = self.name or ""
-            num_speech = self.num_speech or ""
-            date_speech = self.date_speech or ""
-            salary_grid_id, basic_salary = self.employee_id.get_salary_grid_id(False)
-            salary = salary_grid_id.net_salary  or ""
-            decision_type_line = self.env['hr.decision.type'].search([('id', '=', self.decision_type_id.id)])
-            current_year = datetime.now().year
-            employee_ids_len = len(self.employee_ids.ids)
-            rel_text = decision_type_line.text
+            if employee_line :
+                hijri_date2= self._get_hijri_date(self.date, '-')
+                dates2 = str(hijri_date2).split('-')
+                datee2 = dates2[2]+'-'+dates2[1]+'-'+dates2[0] 
+                employee = self.employee_id.name or ""
+                carte_id = self.employee_id.identification_id or ""
+                birthday = self.employee_id.birthday or ""
+                emp_city = self.employee_id.dep_city.name or ""
+                numero = self.name or ""
+                num_speech = self.num_speech or ""
+                date_speech = self.date_speech or ""
+                salary_grid_id, basic_salary = self.employee_id.get_salary_grid_id(False)
+                salary = salary_grid_id.net_salary  or ""
+                decision_type_line = self.env['hr.decision.type'].search([('id', '=', self.decision_type_id.id)])
+                current_year = datetime.now().year
+                employee_ids_len = len(self.employee_ids.ids)
+                rel_text = decision_type_line.text
 
             if decision_type_line.text:
                 rep_text = rel_text.replace('EMPLOYEE', unicode(employee))
                 rep_text = rep_text.replace('BIRTHDAY', unicode(birthday))
-                rep_text = rep_text.replace('DATE', unicode(dattz))
+                rep_text = rep_text.replace('DATE', unicode(datee2))
                 rep_text = rep_text.replace('CARTEID', unicode(carte_id))
                 rep_text = rep_text.replace('NUMERO', unicode(numero))
                 rep_text = rep_text.replace('DATESTARTINCREASE', unicode(current_year))

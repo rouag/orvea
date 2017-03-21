@@ -75,6 +75,21 @@
 									</tree>
 								</field>
 							</page>
+							<page string="الموظفين المستحقين للعلاوة">
+								<field name="employee_increase_ids" nolabel="1"
+									domain="[('employee_id.type_id','!=',%(data_salary_grid_type6)d)]">
+									<tree editable="bottom">
+										<field name="employee_id" />
+										<field name="increase_percent" />
+											<field name="department_level1_id" invisible="1" />
+										<field name="department_level2_id" invisible="1" />
+										<field name="department_level3_id" invisible="1" />
+										<field name="salary_grid_type_id" invisible="1" />
+										
+									</tree>
+								</field>
+							</page>
+							
 						</notebook>
 						<group>
 							<field name="note" />

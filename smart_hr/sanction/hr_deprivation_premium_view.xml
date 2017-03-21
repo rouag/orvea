@@ -40,9 +40,14 @@
 					</header>
 					<sheet>
 						<group>
-							<group>
+						<group>
+								<field name="date_deprivation"  />
+								
+							</group>
+							<group> 
 								<field name="name" />
 								<field name="order_date" />
+									<field name="deprivation_file" filename="deprivation_file_name"/>
 							</group>
 						</group>
 
@@ -55,13 +60,21 @@
 												<field name="employee_id"   />
 												<field name="raison" />
 												<field name="state" />
+													<button
+													name="%(smart_hr.action_hr_deprivation_cancel_wizard_exclusion)d"
+													type="action" string="إستبعاد" icon="STOCK_CANCEL"
+													/>
+														<button
+													name="%(smart_hr.action_hr_deprivation_confirm_wizard_exclusion)d"
+													type="action" string="إستبعاد" icon="fa-refresh"
+													/>
+														
+											
 											</tree>
 										</field>
 									</group>
 								</page>
-								<page string="نص القرار">
-									<field name="deprivation_text" />
-								</page>
+								
 							</notebook> 
 						</group>
 					</sheet>

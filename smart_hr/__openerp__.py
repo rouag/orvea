@@ -156,6 +156,7 @@
         # sanction
         'sanction/security/ir.model.access.csv',
         'sanction/security/sanction_security.xml',
+        'sanction/wizard/wizard_deprivation_action_view.xml',
         'sanction/wizard/wizard_sanction_action.xml',
         'sanction/hr_sanction_type_data.xml',
         'sanction/hr_sanction_view.xml',

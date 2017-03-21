@@ -2,6 +2,7 @@
 
 from openerp import models, api, fields, _
 from openerp.exceptions import ValidationError
+from openerp.exceptions import UserError
 from datetime import date, datetime, timedelta
 from openerp.addons.smart_base.util.umalqurra import *
 from umalqurra.hijri_date import HijriDate
@@ -18,16 +19,17 @@ class hrIncrease(models.Model):
     def get_default_date(self):
         # get end date of month 01 
         date = get_hijri_month_end(HijriDate, Umalqurra, '01')
-        if fields.date.today() > date:
-            raise ValidationError(u"لا يمكن إنشاء علاوات بعد نهاية شهر محرّم! ")
-        else:
-            return fields.date.today()
+#         if fields.date.today() > date:
+#             raise ValidationError(u"لا يمكن إنشاء علاوات بعد نهاية شهر محرّم! ")
+#         else:
+#             return fields.date.today()
 
     name = fields.Char(string=' المسمى', readonly=1, states={'new': [('readonly', 0)]})
     number_decision = fields.Char(string='رقم القرار', required=1,states={'new': [('readonly', 0)]})
     date_decision = fields.Date(string=' تاريخ القرار', required=1,states={'new': [('readonly', 0)]})
     date = fields.Date(string='تاريخ الطلب', readonly=1, default=get_default_date)
     employee_deprivated_ids = fields.One2many('hr.employee.deprivation', 'increase_id', string=u'الموظفين المستثنين من العلاوة', required=1)
+    employee_increase_ids = fields.One2many('hr.employee.increase.percent', 'increase_id', string=u'الموظفين المستحقين للعلاوة  ', required=1)
     state = fields.Selection([('draft', u'طلب'),
                               ('pim', u'المصاقة على الموظفين المستثنين من العلاوة '),
                               ('hrm', u'مدير شؤون الموظفين'),
@@ -41,6 +43,7 @@ class hrIncrease(models.Model):
     salary_grid_type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1, states={'draft': [('readonly', 0)]},)
     
 
+
     @api.model
     def create(self, vals):
         res = super(hrIncrease, self).create(vals)
@@ -52,6 +55,11 @@ class hrIncrease(models.Model):
 
     @api.one
     def action_pim(self):
+        for rec in self :
+            for line in rec.employee_deprivated_ids :
+                increase_ids = self.env['hr.employee.increase.percent'].search([('employee_id', '=', line.id)])
+                if increase_ids :
+                     raise UserError(u"يجب إنشاء حساب بنكي للإيداع  للموظف  %s " % line.display_name)
         self.state = 'pim'
 
     @api.one
@@ -125,5 +133,47 @@ class hrEmployeeIncreasePercent(models.Model):
 
     _description = u'نسبة العلاوة'
     increase_id  = fields.Many2one('hr.increase')
-    employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1, readonly=1)
-    increase_percent = fields.Float(string=u'نسبة العلاوة', required=1)
+    employee_id = fields.Many2one('hr.employee', string='الموظفين', required=1)
+   # employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1)
+    increase_percent = fields.Float(string=u'المبلغ', required=1, compute='increase_percent_count')
+    department_level1_id = fields.Many2one('hr.department', related='increase_id.department_level1_id')
+    department_level2_id = fields.Many2one('hr.department', related='increase_id.department_level2_id')
+    department_level3_id = fields.Many2one('hr.department', related='increase_id.department_level3_id')
+    salary_grid_type_id = fields.Many2one('salary.grid.type', related='increase_id.salary_grid_type_id')
+
+    @api.onchange('department_level1_id', 'department_level2_id', 'department_level3_id', 'salary_grid_type_id')
+    def onchange_department_level(self):
+        dapartment_obj = self.env['hr.department']
+        employee_obj = self.env['hr.employee']
+        department_level1_id = self.increase_id.department_level1_id and self.increase_id.department_level1_id.id or False
+        department_level2_id = self.increase_id.department_level2_id and self.increase_id.department_level2_id.id or False
+        department_level3_id = self.increase_id.department_level3_id and self.increase_id.department_level3_id.id or False
+        employee_ids = []
+        dapartment_id = False
+        if department_level3_id:
+            dapartment_id = department_level3_id
+        elif department_level2_id:
+            dapartment_id = department_level2_id
+        elif department_level1_id:
+            dapartment_id = department_level1_id
+        if dapartment_id:
+            dapartment = dapartment_obj.browse(dapartment_id)
+            employee_ids += [x.id for x in dapartment.member_ids]
+            for child in dapartment.all_child_ids:
+                employee_ids += [x.id for x in child.member_ids]
+        result = {}
+        if self.salary_grid_type_id:
+            employee_ids = employee_obj.search([('id', 'in', employee_ids), ('type_id', '=', self.increase_id.salary_grid_type_id.id)]).ids
+              # filter by type
+        result.update({'domain': {'employee_id': [('id', 'in', list(set(employee_ids)))]}})
+        return result
+
+    @api.multi
+    def increase_percent_count(self):
+        for rec in self:
+            increase = self.env['salary.grid.detail'].search([('type_id', '=', rec.employee_id.type_id.id), ('degree_id', '=', rec.employee_id.degree_id.id),
+                                                               ('grade_id', '=', rec.employee_id.grade_id.id) ],limit=1)
+            if increase:
+                rec.increase_percent = increase.increase_percent 
+            else:
+                rec.increase_percent = 0
