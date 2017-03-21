@@ -157,8 +157,6 @@ class HrDifference(models.Model):
     def get_difference_deputation(self):
         line_ids = []
         deputation_obj = self.env['hr.deputation']
-        deputation_allowance_obj = self.env['hr.deputation.allowance']
-        deputation_setting = self.env['hr.deputation.setting'].search([], limit=1)
         # deputation start in this month end finish in this month or after
         deputations1 = deputation_obj.search([('date_from', '>=', self.date_from),
                                               ('date_from', '<=', self.date_to),
@@ -176,6 +174,7 @@ class HrDifference(models.Model):
             if deputation.date_to > self.date_to:
                 date_to = self.date_to
             number_of_days = self.env['hr.smart.utils'].compute_duration_deputation(date_from, date_to, deputation)
+            print '----------number_of_days--------------', number_of_days
             #
             employee = deputation.employee_id
             # get a correct line
