@@ -194,6 +194,9 @@
 			<field name="name">القروض</field>
 			<field name="view_mode">tree,form</field>
 			<field name="domain">[('employee_id', '=', active_id)]</field>
+			<field name="context">{'search_default_progress':
+				1,'readonly_by_pass':True}
+			</field>
 		</record>
 		<record id="act_hr_employee_2_hr_attendance" model="ir.actions.act_window">
 			<field name="res_model">hr.attendance</field>
@@ -332,7 +335,6 @@
 											<field name="passport_place" attrs="{'invisible': [('is_saudian','=', True)]}" />
 											<field name="hoveizeh_place"
 												attrs="{'invisible': [('is_saudian','=', False)]}" />
-											<field name="is_resident" attrs="{'required': 1}" />
 										</group>
 									</group>
 									<group>
@@ -394,16 +396,20 @@
 											<field name="dep_city" options="{'no_create': True}" />
 											<field name="job_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+											<field name="job_number"
+												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="type_id" attrs="{'required': 1}" />
 											<field name="grade_id"
+												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+											<field name="grade_number"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="degree_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 
 
 											<field name="parent_id" string="المدير المباشر " />
-											<field name="service_duration" attrs="{'readonly': 1}" />
-											<field name="promotion_duration" attrs="{'readonly': 1}" />
+											<field name="service_duration_display" attrs="{'readonly': 1}" />
+											<field name="promotion_duration_display" attrs="{'readonly': 1}" />
 											<field name="royal_decree_number" attrs="{'invisible': [('is_member','=', False)]}" />
 											<field name="royal_decree_date" attrs="{'invisible': [('is_member','=', False)]}" />
 											<field name="external_decision" />
@@ -415,11 +421,9 @@
 											<field name="recruiter" widget="selection" />
 											<field name="recruiter_date" />
 											<field name="begin_work_date" />
-											<field name="calendar_id" string="الورديّات" />
+											<field name="calendar_id" string="‫نوع‬ الدوام" />
 											<field name="insurance_type" />
 											<field name="medic_exam" string="تاريخ الفحص الطبي" />
-											<field name="vehicle" />
-											<field name="vehicle_distance" />
 										</group>
 									</group>
 								</page>

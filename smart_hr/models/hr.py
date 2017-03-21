@@ -31,7 +31,6 @@ class HrEmployee(models.Model):
     identification_date = fields.Date(string=u'تاريخ إصدار بطاقة الهوية ')
     identification_place = fields.Many2one('res.city', string=u'مكان إصدار بطاقة الهوية')
     father_name = fields.Char(string=u'إسم الأب', required=1)
-    is_resident = fields.Boolean(string=u'موظف مقيم', required=1)
     birthday_location = fields.Char(string=u'مكان الميلاد')
     attachments = fields.Many2many('ir.attachment', 'res_id', string=u"المرفقات")
     recruiter = fields.Many2one('recruiter.recruiter', string=u'جهة التوظيف', required=1)
@@ -123,6 +122,30 @@ class HrEmployee(models.Model):
     mobile_phone = fields.Char(string=u'الجوال')
     is_contract = fields.Boolean(string=u'متعاقد', compute='_compute_is_contract')
     show_mobile = fields.Boolean(string='Show Mobile', compute='_show_mobile', default=True)
+    job_number = fields.Char(related="job_id.number", string='الرمز')
+    grade_number = fields.Char(related="grade_id.code", string='رقمها')
+    service_duration_display = fields.Char(string=u'مدة الخدمة', readonly=True, compute='compute_service_duration_display')
+    promotion_duration_display = fields.Char(string=u'مدة الترقية', readonly=True, compute='compute_promotion_duration_display')
+
+    @api.multi
+    def compute_service_duration_display(self):
+        for rec in self:
+            service_duration = rec.service_duration
+            years = service_duration // 365
+            months = (service_duration % 365) // 30
+            days = (service_duration % 365) % 30
+            res = str(years) + " سنة و" + str(months) + " أشهر و " + str(days) + "أيام"
+            rec.service_duration_display = res
+
+    @api.multi
+    def compute_promotion_duration_display(self):
+        for rec in self:
+            promotion_duration = rec.promotion_duration
+            years = promotion_duration // 365
+            months = (promotion_duration % 365) // 30
+            days = (promotion_duration % 365) % 30
+            res = str(years) + " سنة و" + str(months) + " أشهر و " + str(days) + "أيام"
+            rec.promotion_duration_display = res
 
     @api.multi
     def _show_mobile(self):
@@ -143,8 +166,9 @@ class HrEmployee(models.Model):
     @api.depends('type_id')
     def _compute_type_id(self):
         for rec in self:
-            if rec.type_id.is_member == True:
+            if rec.type_id.is_member is True:
                 rec.is_member = True
+
     @api.multi
     @api.depends('type_id')
     def _compute_deputation_balance(self):
@@ -153,7 +177,7 @@ class HrEmployee(models.Model):
         year_last_day = todayDate.replace(day=31, month=12)
         for rec in self:
             employee_id = rec.id
-            taken_deputations = self.env['hr.deputation'].search([('state', '=', 'done'),('employee_id', '=', employee_id), ('order_date', '>=', year_first_day), ('order_date', '<=', year_last_day)])
+            taken_deputations = self.env['hr.deputation'].search([('state', '=', 'done'), ('employee_id', '=', employee_id), ('order_date', '>=', year_first_day), ('order_date', '<=', year_last_day)])
             duration = 0
             for dep in taken_deputations:
                 duration += dep.duration
@@ -180,7 +204,7 @@ class HrEmployee(models.Model):
     def _compute_holidays_count(self):
         for rec in self:
             stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', rec.id), ('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id),
-                                                               ],limit=1)
+                                                               ], limit=1)
             if stock_line:
                 rec.holiday_count = stock_line.holidays_available_stock 
             else:

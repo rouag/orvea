@@ -78,14 +78,6 @@ class SalaryGridDegree(models.Model):
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة')
     sequence = fields.Integer(string='الترتيب')
 
-    @api.multi
-    def name_get(self):
-        result = []
-        for record in self:
-            name = '[%s] %s' % (record.code, record.name)
-            result.append((record.id, name))
-        return result
-
 
 class SalaryGridDetail(models.Model):
     _name = 'salary.grid.detail'
