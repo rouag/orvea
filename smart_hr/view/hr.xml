@@ -205,6 +205,9 @@
 			<field name="view_mode">tree,form</field>
 			<field name="domain">[('employee_id', '=', active_id)]</field>
 		</record>
+
+
+
 		<record id="view_employee_request_form" model="ir.ui.view">
 			<field name="name">hr.employee.request.form</field>
 			<field name="model">hr.employee</field>
@@ -275,7 +278,7 @@
 									<label name="grandfather_name" string="اسم الجد" />
 								</div>
 								<div class="col-xs-2 div_paddig_right_null" style="text-align:right;width:16.5%;">
-									<label name="grandfather2_name" string="اسم الجد الثاني" />
+									<label name="grandfather2_name" string="‫الفخذ‬" />
 								</div>
 								<div class="col-xs-1 div_paddig_right_null" style="text-align:right;width:16.5%;">
 									<label name="family_name" string="الاسم العائلي" />
@@ -346,6 +349,7 @@
 										</group>
 										<group string="الميلاد">
 											<field name="birthday" attrs="{'required': 1}" />
+											<field name="age_display" attrs="{'readonly': 1}" />
 											<field name="place_of_birth" />
 
 										</group>
@@ -431,7 +435,8 @@
 									<group string="بيانات البنك">
 										<field name="address_home_id" invisible="1" />
 										<field name="bank_account_id" invisible="1" />
-										<field name="bank_account_ids" nolabel="1">
+										<field name="bank_account_ids" nolabel="1"
+											context="{'default_employee_id':active_id}">
 											<tree delete="false">
 												<field name="acc_number" />
 												<field name="bank_name" string="البنك" />
@@ -439,6 +444,18 @@
 												<field name="account_opening_date" />
 												<field name="is_deposit" />
 											</tree>
+											<form>
+												<group col="4">
+													<field name="acc_number" />
+													<field name="bank_id" string="البنك" />
+													<field name="account_opening_date" />
+													<field name="is_deposit" />
+													<field name="company_id" groups="base.group_multi_company"
+														options="{'no_create': True}" />
+													<field name="currency_id" options="{'no_create': True}" />
+													<field name="employee_id" invisible="1" />
+												</group>
+											</form>
 										</field>
 									</group>
 									<group name="active_group" invisible="1" />
@@ -610,6 +627,7 @@
 		<field name="view_mode">tree,form</field>
 		<field name="domain">[('employee_id', '=', active_id)]</field>
 	</record>
+
 	<record id="hr_payroll.payroll_hr_employee_view_form" model="ir.ui.view">
 		<field name="name">payroll.hr.employee.view.form</field>
 		<field name="model">hr.employee</field>
@@ -625,6 +643,10 @@
 			</data>
 		</field>
 	</record>
+
+
+
+
 	<data noupdate="1">
 		<!-- Remove odoo buttons -->
 		<delete id="hr.hr_employee_action_subordinate_hierachy_mutli"

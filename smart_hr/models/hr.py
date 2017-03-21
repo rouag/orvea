@@ -23,6 +23,11 @@ class HrEmployee(models.Model):
         for rec in sanction_obj.search(search_domain):
             self.sanction_ids = rec.sanction_ids
 
+    def _get_department_name_report(self):
+        for card in self:
+            department_name_report = card.department_id._get_dep_name_employee_form()[0]
+            card.department_name_report = department_name_report[1]
+
     number = fields.Char(string=u'رقم الوظيفي')
     gender = fields.Selection([('male', 'Male'), ('female', 'Female'), ], string=u'الجنس')
     marital = fields.Selection(
@@ -68,7 +73,7 @@ class HrEmployee(models.Model):
     compensation_stock = fields.Integer(string=u'رصيد إجازات التعويض')
     holiday_peiodes = fields.One2many('hr.holidays.periode', 'employee_id', string='holidays periodes')
     grandfather_name = fields.Char(string=u'اسم الجد', required=1)
-    grandfather2_name = fields.Char(string=u'  اسم الجد الثاني ')
+    grandfather2_name = fields.Char(string=u'‫الفخذ‬')
     family_name = fields.Char(string=u'الاسم العائلي')
     father_middle_name = fields.Char(string=u'middle_name', default=u"بن")
     grandfather_middle_name = fields.Char(string=u'middle_name2', default=u"بن")
@@ -126,26 +131,40 @@ class HrEmployee(models.Model):
     grade_number = fields.Char(related="grade_id.code", string='رقمها')
     service_duration_display = fields.Char(string=u'مدة الخدمة', readonly=True, compute='compute_service_duration_display')
     promotion_duration_display = fields.Char(string=u'مدة الترقية', readonly=True, compute='compute_promotion_duration_display')
+    department_name_report = fields.Char(compute='_get_department_name_report')
+    age_display = fields.Char(string=u"العمر", compute='compute_age_display')
+
+    def get_years_months_days(self, duration):
+        years = duration // 354
+        months = (duration % 354) // 30
+        days = (duration % 354) % 30
+        return years, months, days
 
     @api.multi
     def compute_service_duration_display(self):
         for rec in self:
             service_duration = rec.service_duration
-            years = service_duration // 365
-            months = (service_duration % 365) // 30
-            days = (service_duration % 365) % 30
-            res = str(years) + " سنة و" + str(months) + " أشهر و " + str(days) + "أيام"
+            years, months, days = self.get_years_months_days(service_duration)
+            res = str(years) + " سنة و" + str(months) + " شهر و " + str(days) + "يوم"
             rec.service_duration_display = res
 
     @api.multi
     def compute_promotion_duration_display(self):
         for rec in self:
             promotion_duration = rec.promotion_duration
-            years = promotion_duration // 365
-            months = (promotion_duration % 365) // 30
-            days = (promotion_duration % 365) % 30
-            res = str(years) + " سنة و" + str(months) + " أشهر و " + str(days) + "أيام"
+            years, months, days = self.get_years_months_days(promotion_duration)
+            res = str(years) + " سنة و" + str(months) + " شهر و " + str(days) + "يوم"
             rec.promotion_duration_display = res
+
+    @api.multi
+    def compute_age_display(self):
+        for rec in self:
+            today_date = fields.Date.from_string(fields.Date.today())
+            birthday = fields.Date.from_string(rec.birthday)
+            age = (today_date - birthday).days
+            years, months, days = self.get_years_months_days(age)
+            res = str(years) + " سنة و" + str(months) + " شهر و " + str(days) + "يوم"
+            rec.age_display = res
 
     @api.multi
     def _show_mobile(self):
@@ -454,7 +473,6 @@ class HrEmployeePromotionHistory(models.Model):
             active_prom.balance -= duration_days
 
 
-
 class HrEmployeeEducationLevel(models.Model):
     _name = 'hr.employee.education.level'
     _description = u'مستويات التعليم'
@@ -466,6 +484,11 @@ class HrEmployeeEducationLevel(models.Model):
     nomber_year_education = fields.Integer(string=u'عدد سنوات الدراسة', )
     secondary = fields.Boolean(string=u'بعد‬ الثانوية', required=1)
     not_secondary = fields.Boolean(string=u'قبل الثانوية', required=1)
+    diplom_type = fields.Selection([('high_diploma', u'دبلوم من الدراسات العليا'),
+                                    ('average_diploma', u'دبلوم متوسط'),
+                                    ('licence_bac', u'الليسانس او الباكالوريوس'),
+                                    ('other', u'أخرى')],
+                                   string='النوع',)
 
     @api.onchange('secondary')
     def onchange_secondry(self):
@@ -598,6 +621,7 @@ class HrEmployeeDiploma(models.Model):
     name = fields.Char(string=u'المسمّى')
     specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص')
     code = fields.Char(string=u'الرمز')
+    education_level_id = fields.Many2one('hr.employee.education.level', string='المستوى التعليمي')
 
 
 class HrEmployeeSpecialization(models.Model):

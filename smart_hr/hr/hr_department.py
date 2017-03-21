@@ -77,6 +77,19 @@ class HrDepartment(models.Model):
                 self.dep_side = self.parent_id.dep_side
 
 
+    @api.multi
+    def button_child_ids(self):
+        chid_ids = self.all_child_ids.ids
+        value = {
+                'name': u'‫الإدارات',
+                'view_type': 'form',
+                'view_mode': 'kanban,form,tree',
+                'res_model': 'hr.department',
+                'view_id': False,
+                'type': 'ir.actions.act_window',
+                'domain': [('id','in', chid_ids)]
+            }
+        return value
 class CitySide(models.Model):
     _name = 'city.side'
     _description = u'الجهة'

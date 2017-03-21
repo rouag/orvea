@@ -402,7 +402,7 @@ class HrDifference(models.Model):
             if grid_id:
                 # 1) البدلات المستثناة
                 alowances_in_grade_id = [rec.allowance_id for rec in grid_id.allowance_ids]
-                for allowance in scholarship_id.hr_allowance_type_id:
+                for allowance in scholarship_id.scholarship_type.hr_allowance_type_id:
                     # check if the allowance in employe's salary_grade_id
                     if allowance in alowances_in_grade_id:
                         amount = 0.0
@@ -419,11 +419,13 @@ class HrDifference(models.Model):
                                     'amount': amount * -1,
                                     'type': 'scholarship'}
                             line_ids.append(vals)
-                # 2) نسبة الراتب
-                amount = basic_salary - ((basic_salary * scholarship_id.salary_percent) / 100.0)
+                # 2) نسبة الراتب بعد حسم التقاعد
+                retirement_amount = basic_salary * grid_id.retirement / 100.0
+                basic_salary_after_retirement = basic_salary - retirement_amount
+                amount = basic_salary_after_retirement - ((basic_salary_after_retirement * scholarship_id.scholarship_type.salary_percent) / 100.0)
                 if amount > 0:
                     vals = {'difference_id': self.id,
-                            'name': u'نسبة الراتب',
+                            'name': u'نسبة الراتب بعد حسم التقاعد',
                             'employee_id': scholarship_id.employee_id.id,
                             'number_of_days': 0.0,
                             'number_of_hours': 0.0,

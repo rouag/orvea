@@ -1112,6 +1112,9 @@ class HrJobMoveGrade(models.Model):
         self.state = 'done'
         for job in self.job_movement_ids:
             job.job_id.grade_id = job.new_grade_id.id
+            job.job_id.department_id = job.new_department_id.id
+            job.job_id.name = job.new_job_name.id
+            job.job_id.number = job.new_job_number
             job.job_id.creation_source = self.move_type
             if self.move_type == "scale_up":
                 move_type = "رفع"
@@ -1223,8 +1226,11 @@ class HrJobMoveGradeLine(models.Model):
     job_name_code = fields.Char(related="job_id.name.number", string='الرمز', readonly=1)
     type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1, required=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة الحالية', readonly=1, required=1)
-    new_grade_id = fields.Many2one('salary.grid.grade', string=' المرتبة الجديد', required=1)
+    new_grade_id = fields.Many2one('salary.grid.grade', string=' المرتبة الجديدة', required=1)
     department_id = fields.Many2one('hr.department', string='الإدارة', readonly=1, required=1)
+    new_job_number = fields.Char(string='رقم الوظيفة الجديد', required=1)
+    new_department_id = fields.Many2one('hr.department', string=' الإدارة الجديدة', required=1)
+    new_job_name = fields.Many2one('hr.job.name', string='المسمى الجديد', required=1)
 
     @api.onchange('job_id')
     def _onchange_job_id(self):

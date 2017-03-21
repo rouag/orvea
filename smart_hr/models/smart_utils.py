@@ -26,6 +26,7 @@ class SmartUtils(models.Model):
         diff = 0
         employee_id = deputation_id.employee_id
         holidays_ids = set()
+        print date_from, date_to 
         while date_from <= date_to:
             diff += 1
             hol_domain = [('date_from', '>=', date_from),
