@@ -22,7 +22,7 @@ class HrEmployeeTransfert(models.Model):
     last_evaluation_result = fields.Many2one('hr.employee.evaluation.level', string=u'أخر تقييم إداء')
     job_id = fields.Many2one('hr.job', default=_get_default_employee_job, string=u'الوظيفة', readonly=1, required=1)
     specific_id = fields.Many2one('hr.groupe.job', related='job_id.specific_id', string=u'المجموعة النوعية', readonly=1, required=1)
-    occupied_date = fields.Date(related='job_id.occupied_date', string=u'تاريخ الشغول')
+    occupied_date = fields.Date(related='job_id.occupied_date', string=u'تاريخ شغلها')
     type_id = fields.Many2one('salary.grid.type', related='employee_id.type_id', string=u'الصنف', readonly=1, required=1)
     new_job_id = fields.Many2one('hr.job', domain=[('state', '=', 'unoccupied')], string=u'الوظيفة المنقول إليها')
     new_specific_id = fields.Many2one('hr.groupe.job', related='new_job_id.specific_id', readonly=1, string=u'المجموعة النوعية')

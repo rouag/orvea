@@ -148,7 +148,7 @@
 						</group>
 						<group>
 							<group>
-								<field name="employee_id" required="1" readonly='1' />
+								<field name="employee_id" required="1"  />
 								<field name="with_advanced_salary"
 									attrs="{'invisible': [('hide_with_advanced_salary','=',True)]}" />
 							</group>

@@ -58,7 +58,7 @@
 							}
 
 						</style>
-						<div class="col-xs-8" style="margin-bottom:20px;">
+						<div class="col-xs-8" style="margin-top:50px;">
 							<h4>
 								<b> <span t-esc="o.emp_name" /></b>
 							</h4>

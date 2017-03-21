@@ -508,7 +508,7 @@
 									</field>
 
 								</page>
-								<page string="سجل العلاوات" >
+								<page string="سجل العلاوات" invisible="1">
 									<field name='salary_increase_ids'>
 										<tree string="سجل العلاوات">
 											<field name="name" />

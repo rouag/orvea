@@ -130,7 +130,7 @@
 					</div>
 					<button name="%(hr.act_employee_from_department)d" position="after">
 						<separator />
-						<button class="btn btn-primary" name="button_child_ids"
+						<button class="btn btn-primary" name="button_child_ids" style="margin-right:2px;"
 							type="object">الإدارات</button>
 					</button>
 				</data>
