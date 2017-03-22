@@ -121,15 +121,18 @@ class HrDecisionAppoint(models.Model):
         # get list of employee depend on type_appointment
         res = {}
         if self.type_appointment and self.type_appointment.for_members is True:
-            employee_ids = self.env['hr.employee'].search(
-                [('is_member', '=', True), ('employee_state', 'in', ['done', 'employee'])])
-            job_ids = self.env['hr.job'].search([('name.members_job', '=', True),('state','=', 'unoccupied'),('type_id.is_member','=',True)])
-            print"job_ids",job_ids
+            if self.type_appointment.id == self.env.ref('smart_hr.data_hr_new_agent_public').id:
+                employee_ids = self.env['hr.employee'].search([('is_member', '=', True), ('employee_state', 'in', ['done'])])
+            else:
+                employee_ids = self.env['hr.employee'].search([('is_member', '=', True), ('employee_state', 'in', ['done', 'employee'])])
+            job_ids = self.env['hr.job'].search([('name.members_job', '=', True), ('state','=', 'unoccupied'), ('type_id.is_member', '=', True)])
             res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
             return res
         if self.type_appointment and self.type_appointment.for_members is False:
-            employee_ids = self.env['hr.employee'].search(
-                [('is_member', '=', False), ('employee_state', 'in', ['done', 'employee'])])
+            if self.type_appointment.id == self.env.ref('smart_hr.data_hr_new_agent_public').id:
+                employee_ids = self.env['hr.employee'].search([('is_member', '=', False), ('employee_state', 'in', ['done'])])
+            else:
+                employee_ids = self.env['hr.employee'].search([('is_member', '=', False), ('employee_state', 'in', ['done', 'employee'])])
             job_ids = self.env['hr.job'].search([('name.members_job', '=', False),('state','=', 'unoccupied')])
             res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
             return res
