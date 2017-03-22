@@ -56,18 +56,23 @@ class HrDecision(models.Model):
                                     self.env.ref('smart_hr.data_decision_type10'),
                                      ]:
             employee_line = self.env['hr.employee'].search([('id', '=', self.employee_id.id), ('state', '=', 'done')], limit=1)
-            if employee_line :
-                hijri_date= self._get_hijri_date(self.date, '-')
+            if employee_line:
+                hijri_date = self._get_hijri_date(self.date, '-')
                 dates = str(hijri_date).split('-')
-                dattz = dates[2]+'-'+dates[1]+'-'+dates[0] or ""
+                dattz = dates[2] + '-' + dates[1] + '-' + dates[0] or ""
                 employee = self.employee_id.display_name or ""
                 carte_id = self.employee_id.identification_id or ""
-                birthday = self.employee_id.birthday or ""
+                birthday_hijri = self._get_hijri_date(self.employee_id.birthday, '-')
+                birthdays = str(birthday_hijri).split('-')
+                birthday = birthdays[2] + '-' + birthdays[1] + '-' + birthdays[0] or ""
                 emp_city = self.employee_id.dep_city.name or ""
                 numero = self.name or ""
                 num_speech = self.num_speech or ""
-                date_speech = self.date_speech or ""
+                hijri_date_speech = self._get_hijri_date(self.date, '-')
+                hijri_date_speech2 = str(hijri_date_speech).split('-')
+                date_speech = hijri_date_speech2[2] + '-' + hijri_date_speech2[1] + '-' + hijri_date_speech2[0] or ""
                 decision_type_line = self.env['hr.decision.type'].search([('id', '=', self.decision_type_id.id)])
+                
                 current_year = datetime.now().year
                 employee_ids_len = len(self.employee_ids.ids)
                 #information employee  old job
@@ -107,17 +112,21 @@ class HrDecision(models.Model):
                     self.text = rep_text
         else :
             appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id), ('state', '=', 'done')], limit=1)
-            if appoint_line :
-                hijri_date2= self._get_hijri_date(self.date, '-')
+            if appoint_line:
+                hijri_date2 = self._get_hijri_date(self.date, '-')
                 dates2 = str(hijri_date2).split('-')
-                datee2 = dates2[2]+'-'+dates2[1]+'-'+dates2[0] or ""
+                datee2 = dates2[2] + '-' + dates2[1] + '-' + dates2[0] or ""
                 employee = self.employee_id.name or ""
                 carte_id = self.employee_id.identification_id or ""
-                birthday = self.employee_id.birthday or ""
+                birthday_hijri = self._get_hijri_date(self.employee_id.birthday, '-')
+                birthdays = str(birthday_hijri).split('-')
+                birthday = birthdays[2] + '-' + birthdays[1] + '-' + birthdays[0] or ""
                 emp_city = self.employee_id.dep_city.name or ""
                 numero = self.name or ""
                 num_speech = self.num_speech or ""
-                date_speech = self.date_speech or ""
+                hijri_date_speech = self._get_hijri_date(self.date, '-')
+                hijri_date_speech2 = str(hijri_date_speech).split('-')
+                date_speech = hijri_date_speech2[2] + '-' + hijri_date_speech2[1] + '-' + hijri_date_speech2[0] or ""
                 salary_grid_id, basic_salary = self.employee_id.get_salary_grid_id(False)
                 salary = salary_grid_id.net_salary  or ""
                 emp_job_id = appoint_line.emp_job_id.name.name or ""
@@ -153,21 +162,21 @@ class HrDecision(models.Model):
                     rep_text = rep_text.replace('DateSpeech', unicode(date_speech))
                     rep_text = rep_text.replace('BASICSALAIRE',unicode(salary))
                     employee_ids_len = rep_text.replace('NUMBEREMPLOYEES', unicode(employee_ids_len))
-               
-                    rep_text = rep_text.replace('NUMBER',unicode(number))
-                    rep_text = rep_text.replace('JOB',unicode(job_id))
-                    rep_text = rep_text.replace('CODE',unicode(code))
-                    rep_text = rep_text.replace('DEGREE',unicode(degree_id))
-                    rep_text = rep_text.replace('GRADE',unicode(grade_id))
 
-                    rep_text = rep_text.replace('DEPARTEMENT',unicode(department_id))
-                    rep_text = rep_text.replace('job',unicode(emp_job_id))
-                    rep_text = rep_text.replace('code',unicode(emp_code))
-                    rep_text = rep_text.replace('numero',unicode(emp_number_job))
-                    rep_text = rep_text.replace('degree',unicode(emp_degree_id))
-                    rep_text = rep_text.replace('grade',unicode(emp_grade_id))
-                    rep_text = rep_text.replace('basicsalaire',unicode(emp_basic_salary))
-                    rep_text = rep_text.replace('department',unicode(emp_department_id))
+                    rep_text = rep_text.replace('NUMBER', unicode(number))
+                    rep_text = rep_text.replace('JOB', unicode(job_id))
+                    rep_text = rep_text.replace('CODE', unicode(code))
+                    rep_text = rep_text.replace('DEGREE', unicode(degree_id))
+                    rep_text = rep_text.replace('GRADE', unicode(grade_id))
+
+                    rep_text = rep_text.replace('DEPARTEMENT', unicode(department_id))
+                    rep_text = rep_text.replace('job', unicode(emp_job_id))
+                    rep_text = rep_text.replace('code', unicode(emp_code))
+                    rep_text = rep_text.replace('numero', unicode(emp_number_job))
+                    rep_text = rep_text.replace('degree', unicode(emp_degree_id))
+                    rep_text = rep_text.replace('grade', unicode(emp_grade_id))
+                    rep_text = rep_text.replace('basicsalaire', unicode(emp_basic_salary))
+                    rep_text = rep_text.replace('department', unicode(emp_department_id))
                     self.text = rep_text
 
 class HrDecisionType(models.Model):

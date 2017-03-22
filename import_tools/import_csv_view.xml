@@ -142,7 +142,7 @@
 							class="oe_highlight" />
 						<button name="update_saudi_citys_coutry" string="update saudi  citys coutry"
 							type="object" class="oe_highlight" />
-						<button name="import_contry_category" string="import country category"
+						<button name="import_contry_categorys" string="import country categorys"
 							type="object" class="oe_highlight" />
 						<button name="import_deputation_settings" string="import deputation settings"
 							type="object" class="oe_highlight" />
@@ -153,6 +153,16 @@
 							<button name="import_universitty" string="import university"
 							type="object" class="oe_highlight" />
 							<button name="update_birthday" string="update  birthday"
+							type="object" class="oe_highlight" />
+							<button name="emplyee_historique_promotion" string="promotion employee"
+							type="object" class="oe_highlight" />
+							
+							<button name="import_update_education_level_employee_before_job" string="level_employee_before_job"
+							type="object" class="oe_highlight" />
+							
+							<button name="import_externel_side" string="import_externel_side"
+							type="object" class="oe_highlight" />
+							<button name="emplyee_historique_before" string="emplyee_historique_before"
 							type="object" class="oe_highlight" />
 							
 							
