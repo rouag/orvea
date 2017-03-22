@@ -219,7 +219,8 @@ class HrHolidays(models.Model):
                     rec.hide_with_advanced_salary = False
                 else:
                     rec.hide_with_advanced_salary = True
-
+    
+    
     @api.onchange('holiday_status_id')
     def onchange_holiday_status_id(self):
         res = {}
@@ -264,6 +265,14 @@ class HrHolidays(models.Model):
                 child_birth_dad_holiday_id = self.env.ref('smart_hr.data_hr_holiday_child_birth_dad').id
                 holiday_status_ids = [rec.id for rec in self.env['hr.holidays.status'].search([]) if rec.id not in [child_birth_dad_holiday_id]]
                 res['domain'] = {'holiday_status_id': [('id', 'in', holiday_status_ids)]}
+            for holiday in self:
+                entitlement_type = holiday.entitlement_type if holiday.entitlement_type else False
+                stock = self._get_current_holiday_stock(holiday.employee_id, holiday.holiday_status_id, entitlement_type)
+                if stock['current_stock'] == 0 and stock['not_need_stock']:
+                    current_stock = str("لا تحتاج رصيد")
+                else:
+                    current_stock = stock['current_stock']
+                holiday.current_holiday_stock = current_stock
             return res
 
     @api.multi

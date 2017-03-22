@@ -2061,53 +2061,67 @@ class import_csv(osv.osv):
         move_id=''
         all_move_ids=[]
         i=0
-        
+        fmt = '%d/%m/%Y'
+        umalqurra = Umalqurra()
         for row  in reader :
-            if str(row['EMP_NO']) in['01618','07198','07943','03494','04884','03493','07614','07754','05188']:
                 employee=employee_obj.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
-                holidays=holiday_obj.search(cr, uid, [('name', '=',str(row['REQUEST_NO']))])
-                if not  holidays and employee and str(row['DAYS_USED'])!='NULL':
+             
+                if  str(row['TOTAL_USED'])!='NULL':
                     if employee:
                        
                         if  str(row['LEAVE_TYPE']) == '1':
-                            type=status_normal
+                            type_holiday=status_normal
                         elif str(row['LEAVE_TYPE']) == '20':
-                            type=compelling
+                            type_holiday=compelling
                         elif str(row['LEAVE_TYPE']) == '23':
-                            type=status_study
+                            type_holiday=status_study
                         elif str(row['LEAVE_TYPE']) == '5':
-                            type=status_maladie
+                            type_holiday=status_maladie
                         elif str(row['LEAVE_TYPE']) == '12':
-                            type=sport
+                            type_holiday=sport
                         elif str(row['LEAVE_TYPE']) == '13':
-                            type=accompaniment
+                            type_holiday=accompaniment
                         elif str(row['LEAVE_TYPE']) == '333':
-                            type=absent
+                            type_holiday=absent
                         else :
-                            type=exceptional
+                            type_holiday=exceptional
                             
                             
                       
-                   
-                 
-                        try:
-                      
-                            duration = str(row['DAYS_USED']).replace('.00','')
+                        
+                        if row['REFERENCE_DATE_HJ'] != 'NULL':
+                                try:
+                                    dt = datetime.strptime(str(row['REFERENCE_DATE_HJ']), fmt)
+                                    start_date = umalqurra.hijri_to_gregorian(dt.year, dt.month, dt.day)
+                                    date2 = date(int(start_date[0]), int(start_date[1]), int(start_date[2]))
+                                    
+                                except:
+                                    date2 = False
+                        else :
+                            date2 = False
+                            
+                          
+                        duration = str(row['TOTAL_USED']).replace('.00','')
+                        start_date=str(row['START_DATE'])[:10]
                        
-                            holiday_val={
+                        date1=datetime.strptime(start_date,"%Y-%m-%d")
+                        date_to=date1+ relativedelta(day=(date1.day+int(duration)-1))
+                        
+                        holiday_val={
                                         'name':row['REQUEST_NO'] if  row['REQUEST_NO'] != 'NULL' else  False,
                                         'employee_id':employee[0] if employee else False,
-                                        'date_from':row['FROM_DATE']if  row['FROM_DATE'] != 'NULL' else  False,
-                                        'date_to':row['TO_DATE']if  row['TO_DATE'] != 'NULL' else  False,
+                                        'date_from':row['START_DATE']if  row['START_DATE'] != 'NULL' else  False,
+                                        'date_to':date_to,
                                         'duration':int(duration),
-                                        'date_decision':row['REFERENCE_DATE']  if  row['REFERENCE_DATE'] != 'NULL' else  False,
-                                        'holiday_status_id':type,
+                                        'date_decision':date2,
+                                        'num_decision':row['REQUEST_NO'] if  row['REQUEST_NO'] != 'NULL' else  False,
+                                        'holiday_status_id':type_holiday if type_holiday!='employee' else False,
                                         'state': 'done' ,
                                         }
-                       
-                            holiday_obj.create(cr, uid, holiday_val,context=context)
-                        except Exception, e:
-                            False
+                        
+                        holiday_obj.create(cr, uid, holiday_val,context=context)
+                        
+                        
         stop = timeit.default_timer()
         print 'time for import employee', stop - start       
         return True
@@ -2134,6 +2148,11 @@ class import_csv(osv.osv):
         status_maladie=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_illness')[1]
         exceptional=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_exceptional')[1]
         compiling=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_compelling')[1]
+        sport=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_sport')[1]
+        accompaniment=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_exceptional_accompaniment')[1]
+        absent=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_legal_absent')[1]
+        compelling=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_compelling')[1]
+        
         move_id=''
         all_move_ids=[]
         i=0
@@ -2141,39 +2160,50 @@ class import_csv(osv.osv):
         for row  in reader :
             
             if  str(row['LEAVE_TYPE']) == '1':
-                type=status_normal
+                type_holiday=status_normal
             elif str(row['LEAVE_TYPE']) == '20':
-                type=status_normal
+                type_holiday=compelling
             elif str(row['LEAVE_TYPE']) == '23':
-                type=status_study
+                type_holiday=status_study
             elif str(row['LEAVE_TYPE']) == '5':
-                type=compiling
+                type_holiday=status_maladie
+            elif str(row['LEAVE_TYPE']) == '12':
+                type_holiday=sport
+            elif str(row['LEAVE_TYPE']) == '13':
+                type_holiday=accompaniment
+            elif str(row['LEAVE_TYPE']) == '333':
+                type_holiday=absent
             else :
-                type=exceptional
+                type_holiday=exceptional        
+                        
+                            
+                            
                 
            
-            holidays_parent=holiday_obj.search(cr, uid, [('name', '=',str(row['REQUEST_NO']))])
+            holidays_parent=holiday_obj.search(cr, uid, [('num_decision', '=',str(row['REQUEST_NO']))])
+            
             if  holidays_parent :
+                holidays=holiday_obj.browse(cr, uid, holidays_parent[0])
+                
               
-              
-                duration = str(row['DAYS_USED']).replace('.00','')
+                duration = str(row['DAYS_USED']).replace('.000','')
                 
                 holiday_val={
-                                'name':row['SEQ_NO'] if  row['SEQ_NO'] != 'NULL' else  False,
+                                'employee_id':holidays.employee_id.id,
                                 'date_from':row['FROM_DATE']if  row['FROM_DATE'] != 'NULL' else  False,
                                 'date_to':row['TO_DATE']if  row['TO_DATE'] != 'NULL' else  False,
                                 'duration':int(duration),
                                 'date_decision':row['REFERENCE_DATE']  if  row['REFERENCE_DATE'] != 'NULL' else  False,
-                                'holiday_status_id':type,
                                 'state': 'done' ,
-                                'parent_id':holidays_parent[0],
+                                'extended_holiday_id':holidays_parent[0],
                                 'num_outspeech':row['REFERENCE_ID'],
+                                'num_decision':row['REQUEST_NO'] if  row['REQUEST_NO'] != 'NULL' else  False,
                                 'is_extension':True,
                                 }
-                try:
-                    holiday_obj.create(cr, uid, holiday_val,context=context)
-                except:
-                    print row['REQUEST_NO']
+                
+                holiday_obj.create(cr, uid, holiday_val,context=context)
+               
+                   
                 
         return True
     
@@ -2289,11 +2319,12 @@ class import_csv(osv.osv):
                                 'specialization_ids':[(6,0,[specialiter_id])],
                                 'diploma_date':date1,
                                 'governmental_entity':partner_id,
+                                'while_serving':True,
                                 }
                 
                 id_eductaion_level=job_education_level.create(cr, uid, vals_education,context=context)
                 emplyee_obj=employee.browse(cr, uid, employee_ids[0]) 
-                emplyee_obj.write({'education_level_ids':[(6,0,[id_eductaion_level])],})
+                emplyee_obj.write({'education_level_ids':[(4,id_eductaion_level)],})
 
    
         stop = timeit.default_timer()
@@ -2410,7 +2441,7 @@ class import_csv(osv.osv):
                             'job_id': str(row['position']) if str(row['position']) !='NULL' else str(row['position_old']),
                             'dep_side': str(row['side']),
                             'grade_id':grade_id,
-                            'number':employee_id.job_id.name.name,
+                            'number':str(row['rank_new'])+str(row['degree_new']),
                             'department_id':employee_id.department_id.id,
                             }
                     history.create(cr, uid, history_line_val,context=context)
@@ -2431,50 +2462,164 @@ class import_csv(osv.osv):
         fileobj = TemporaryFile('w+')
         fileobj.write((base64.decodestring(this.data)))
         fileobj.seek(0)
-        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
+       
         employee = self.pool.get('hr.employee')
         job=self.pool.get('hr.job')
         history = self.pool.get('hr.employee.history')
         grade = self.pool.get('salary.grid.grade')
         appoint = self.pool.get('hr.decision.appoint')
         fmt = '%d/%m/%Y'
-        for row in reader:
-            if row['ACT_TYPE_ID']=='51' and row['FIELD_NAME']=='POSITION_NO':
-                empid = str(row['EMP_NO'].strip(" "))
-                employee_ids = employee.search(cr, uid, [('number', '=', empid)])
-                if employee_ids:
-                    employee_id = employee.browse(cr, uid, employee_ids[0])
-                    dep_side = employee_id.user_id.company_id.name
-                    dates=str(row['FIELD_EFF_DATE'])
-                    dates1=dates[0:10]
-                    grade_id = False
-                    job_id=job.search(cr, uid,  [('number', '=',str(row['FIELD_NEW_VALUE']))])
-                    dt = datetime.strptime((dates1),"%Y-%m-%d")
-                     
-                    date2=dt+ relativedelta(day=dt.day+1)
+        with open('/home/aymen/EMP_JOB_HISTORY.csv') as csvfile:
+            reader = csv.DictReader(csvfile, quotechar='"', delimiter=';')
+            for row in reader:
+                if row['ACT_TYPE_ID']=='51' and row['FIELD_NAME']=='POSITION_NO':
+                    empid = str(row['EMP_NO'].strip(" "))
+                    employee_ids = employee.search(cr, uid, [('number', '=', empid)])
+                    if employee_ids:
+                        employee_id = employee.browse(cr, uid, employee_ids[0])
+                        dep_side = employee_id.user_id.company_id.name
+                        dates=str(row['FIELD_EFF_DATE'])
+                        dates1=dates[0:10]
+                        grade_id = False
+                        job_id=job.search(cr, uid,  [('number', '=',str(row['FIELD_NEW_VALUE']))])
+                        dt = datetime.strptime((dates1),"%Y-%m-%d")
+                         
+                        date2=dt+ relativedelta(day=dt.day+1)
+                        
+                             
+    #                     try:
                     
-                         
-#                     try:
-                    if job_id:
+                        appoint_id=appoint.search(cr, uid,  [('employee_id', '=',employee_ids[0])])
+                        if not appoint_id:
                             apoint_val={                    'employee_id':employee_ids[0],    
-                                                            'name':row['SEQ_NO'],
-                                                           'order_date': row['FIELD_EFF_DATE'],
-                                                           'date_hiring': date2,
-                                                           'date_direct_action': date2,
-                                                           'job_id':job_id[0],
-                                                           'degree_id':employee_id.degree_id.id,
-                                                           'type_appointment':appoint_type,
-                                                           'depend_on_test_periode':True,
-                                                           'state':'done',
-                                                            
-                                                           }
-                         
-                        
+                                                                'name':row['SEQ_NO'],
+                                                               'order_date': row['FIELD_EFF_DATE'],
+                                                               'date_hiring': date2,
+                                                               'date_direct_action': date2,
+                                                               'job_id':job_id[0] if job_id else False,
+                                                               'degree_id':employee_id.degree_id.id,
+                                                               'type_appointment':appoint_type,
+                                                               'depend_on_test_periode':True,
+                                                               'state':'done',
+                                                               'first_appoint':True,
+                                                                
+                                                               }
+                             
+                            
                             appoint.create(cr, uid, apoint_val,context=context)
-#                     except Exception, e:
-#                         cr.rollback()
+    #                     except Exception, e:
+    #                         cr.rollback()
+                             
+                            
+                     
+ 
+        return True
+    
+    
+    def emplyee_historique_promotion(self, cr, uid, ids, context=None):
+        appoint_type=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_promotion_agent')[1]
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])
+        quotechar = '"'
+        delimiter = ';'
+        fileobj = TemporaryFile('w+')
+        fileobj.write((base64.decodestring(this.data)))
+        fileobj.seek(0)
+       
+        employee = self.pool.get('hr.employee')
+        job=self.pool.get('hr.job')
+        history = self.pool.get('hr.employee.history')
+        grade = self.pool.get('salary.grid.grade')
+        appoint = self.pool.get('hr.decision.appoint')
+        promotion=self.pool.get('hr.promotion.employee.job')
+        fmt = '%d/%m/%Y'
+        with open('/home/aymen/EMP_JOB_HISTORY.csv') as csvfile:
+            reader = csv.DictReader(csvfile, quotechar='"', delimiter=';')
+            for row in reader:
+                if (row['ACT_TYPE_ID']=='73' or row['ACT_TYPE_ID']=='96')  :
+                    empid = str(row['EMP_NO'].strip(" "))
+                    employee_ids = employee.search(cr, uid, [('number', '=', empid)])
+                    if employee_ids:
+                        employee_id = employee.browse(cr, uid, employee_ids[0])
+                        dep_side = employee_id.user_id.company_id.name
+                        dates=str(row['FIELD_EFF_DATE'])
+                        dates1=dates[0:10]
+                        grade_id = False
+                        job_id=False
+                        old_job=False
+                        new_grade=False
+                        old_grade=False
+                        if row['FIELD_NAME']=='POSITION_NO':
+                            job_id=job.search(cr, uid,  [('number', '=',str(row['FIELD_NEW_VALUE']))])
+                            old_job=job.search(cr, uid,  [('number', '=',str(row['FIELD_OLD_VALUE']))])
+                        if row['FIELD_NAME']=='GRADE_NO':
+                            new_grade=grade.search(cr, uid,  [('code', '=',str(row['FIELD_NEW_VALUE']))])
+                            old_grade=grade.search(cr, uid,  [('code', '=',str(row['FIELD_OLD_VALUE']))])
+                        dt = datetime.strptime((dates1),"%Y-%m-%d")
                          
-                        
+                        date2=dt+ relativedelta(day=dt.day+1)
+                             
+    #                     try:
+                        appoint_id=appoint.search(cr, uid,  [('name', '=',row['REQUEST_NO'])])
+                        if not appoint_id:
+                            apoint_val={                    
+                                                                  
+                                                                'employee_id':employee_ids[0],    
+                                                                'name':row['REQUEST_NO'],
+                                                               'order_date': row['FIELD_EFF_DATE'],
+                                                               'date_hiring': date2,
+                                                               'date_direct_action': date2,
+                                                               'job_id':job_id[0] if job_id else False,
+                                                               'degree_id':employee_id.degree_id.id,
+                                                               'type_appointment':appoint_type,
+                                                               'depend_on_test_periode':True,
+                                                               'state':'done',
+                                                               
+                                                                
+                                                               }
+                             
+                            
+                            appoint.create(cr, uid, apoint_val,context=context)
+                            promotio_val={                    
+                                                                'employee_id':employee_ids[0],    
+                                                                'name':row['REQUEST_NO'],
+                                                               'date_direct_action': row['FIELD_EFF_DATE'],
+                                                               'old_job_id':old_job[0] if old_job else False,
+                                                               'emp_grade_id_old':old_grade[0] if old_grade else False,
+                                                               'new_job_id':job_id[0] if job_id else False,
+                                                               'emp_grade_id_new':new_grade[0] if new_grade else False,
+                                                               'state':'done',
+                                                               }
+                                                                
+                                                           
+                            promotion.create(cr, uid, promotio_val,context=context)
+                           
+                        else:
+                            print 2
+                            if row['FIELD_NAME']=='POSITION_NO':
+                                job_id=job.search(cr, uid,  [('number', '=',str(row['FIELD_NEW_VALUE']))])
+                                old_job=job.search(cr, uid,  [('number', '=',str(row['FIELD_OLD_VALUE']))]) 
+                                promotion_id=promotion.search(cr, uid,  [('name', '=',row['REQUEST_NO'])])
+                                if promotion_id:
+                                    val={'old_job_id':old_job[0] if old_job else False,'new_job_id':job_id[0] if job_id else False, 'date_direct_action': row['FIELD_EFF_DATE'],}
+                                    promotion.write(cr, uid,promotion_id, val,context=context)
+                                    
+                            if row['FIELD_NAME']=='GRADE_NO':
+                                print 3
+                                new_grade=grade.search(cr, uid,  [('code', '=',str(row['FIELD_NEW_VALUE']))])
+                                old_grade=grade.search(cr, uid,  [('code', '=',str(row['FIELD_OLD_VALUE']))]) 
+                                promotion_id=promotion.search(cr, uid,  [('name', '=',row['REQUEST_NO'])])
+                                if promotion_id:
+                                    val={'emp_grade_id_new':new_grade[0] if new_grade else False, 'emp_grade_id_old':old_grade[0] if old_grade else False, 'date_direct_action': row['FIELD_EFF_DATE'],}
+                                    promotion.write(cr, uid,promotion_id, val,context=context)
+                                   
+                                    
+                      
+    #                     except Exception, e:
+    #                         cr.rollback()
+                             
+                            
                      
  
         return True
@@ -2495,43 +2640,45 @@ class import_csv(osv.osv):
         grade = self.pool.get('salary.grid.grade')
         appoint = self.pool.get('hr.decision.appoint')
         fmt = '%d/%m/%Y'
-        for row in reader:
-            if row['ACT_TYPE_ID']=='52' and row['FIELD_NAME']=='POSITION_NO':
-                empid = str(row['EMP_NO'].strip(" "))
-                employee_ids = employee.search(cr, uid, [('number', '=', empid)])
-                if employee_ids:
-                    employee_id = employee.browse(cr, uid, employee_ids[0])
-                    dep_side = employee_id.user_id.company_id.name
-                    dates=str(row['FIELD_EFF_DATE'])
-                    dates1=dates[0:10]
-                    print employee_id.grade_id.id
-                    grade_id = False
-                    job_id=job.search(cr, uid,  [('number', '=',str(row['FIELD_NEW_VALUE']))])
-                    dt = datetime.strptime((dates1),"%Y-%m-%d")
-                    
-                    date2=dt+ relativedelta(day=dt.day+1)
-                   
+        with open('/home/aymen/Desktop/EMP_JOB_HISTORY.csv') as csvfile:
+            reader = csv.DictReader(csvfile, quotechar=str(quotechar), delimiter=str(delimiter))
+            for row in reader:
+                if row['ACT_TYPE_ID']=='52' and row['FIELD_NAME']=='POSITION_NO':
+                    empid = str(row['EMP_NO'].strip(" "))
+                    employee_ids = employee.search(cr, uid, [('number', '=', empid)])
+                    if employee_ids:
+                        employee_id = employee.browse(cr, uid, employee_ids[0])
+                        dep_side = employee_id.user_id.company_id.name
+                        dates=str(row['FIELD_EFF_DATE'])
+                        dates1=dates[0:10]
+                        print employee_id.grade_id.id
+                        grade_id = False
+                        job_id=job.search(cr, uid,  [('number', '=',str(row['FIELD_NEW_VALUE']))])
+                        dt = datetime.strptime((dates1),"%Y-%m-%d")
                         
-#                     try:
-                    if job_id:
-                            apoint_val={                   'employee_id':employee_ids[0],    
-                                                            'name':row['SEQ_NO'],
-                                                           'order_date': row['FIELD_EFF_DATE'],
-                                                           'date_hiring': date2,
-                                                           'date_direct_action': date2,
-                                                           'job_id':job_id[0],
-                                                           'degree_id':employee_id.degree_id.id,
-                                                           'type_appointment':appoint_type,
-                                                           'depend_on_test_periode':True,
-                                                           'state':'done',
-                                                           
-                                                           }
-                        
+                        date2=dt+ relativedelta(day=dt.day+1)
                        
-                            appoint.create(cr, uid, apoint_val,context=context)
-#                     except Exception, e:
-#                         cr.rollback()
-                        
+                            
+    #                     try:
+                        if job_id:
+                                apoint_val={                   'employee_id':employee_ids[0],    
+                                                                'name':row['SEQ_NO'],
+                                                               'order_date': row['FIELD_EFF_DATE'],
+                                                               'date_hiring': date2,
+                                                               'date_direct_action': date2,
+                                                               'job_id':job_id[0],
+                                                               'degree_id':employee_id.degree_id.id,
+                                                               'type_appointment':appoint_type,
+                                                               'depend_on_test_periode':True,
+                                                               'state':'done',
+                                                               
+                                                               }
+                            
+                           
+                                appoint.create(cr, uid, apoint_val,context=context)
+    #                     except Exception, e:
+    #                         cr.rollback()
+                            
                        
                     
 
@@ -2945,7 +3092,7 @@ class import_csv(osv.osv):
             city.write(cr, uid,city_id, {'country_id':sa_country_id[0]},context=context)
         return True
     
-    def import_contry_category(self, cr, uid, ids, context=None):
+    def import_contry_categorys(self, cr, uid, ids, context=None):
         if context is None:
             context = {}
         this = self.browse(cr, uid, ids[0])   
@@ -2958,7 +3105,7 @@ class import_csv(osv.osv):
         fileobj.write((base64.decodestring(this.data)))   
         fileobj.seek(0)                                    
         reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
-
+        print 6551665454654656454
         country_obj = self.pool.get('res.country')
         city_obj = self.pool.get('res.city')
         categ_obj = self.pool.get('hr.deputation.category')
@@ -2967,6 +3114,7 @@ class import_csv(osv.osv):
         move_id=''
         all_move_ids=[]
         for row  in reader :  
+            print 7777
             #create move line
             code = str(row['code'].strip(" "))
             if code =='0001':
@@ -2978,23 +3126,32 @@ class import_csv(osv.osv):
             if category:
                 category_id = categ_obj.search(cr, uid, [('category', '=',category)])
                 if not category_id:
-                    category_val = categ_obj.create(cr, uid, {'category':category})
+                    print 777755555
+                    category_val = categ_obj.create(cr, uid, {'category':category,'name':category})
                 else:
+                    print 777758888
                     category_val = category_id[0]
                 country = country_obj.search(cr, uid, [('code_nat', '=',code)])
+                country_name=country_obj.browse(cr, uid, country[0]).name
+                print '55555',country_name
                 if country:
                     if city:
                         city_id = city_obj.create(cr, uid, {'name': city, 'country_id': country[0]}, context=context)
+                        print 8888
                         country_city_vals = {
+                            'name':country_name,
                             'country_id': country[0],
                             'city_id': city_id,
                             'duputation_category_id': category_val,
                             }
                     else:
+                        print 1000
                         country_city_vals={
+                            'name':country_name,
                             'country_id':country[0],
                             'duputation_category_id': category_val,
                             }
+                    print 999
                     country_city_obj.create(cr, uid, country_city_vals)
 
 
@@ -3146,6 +3303,187 @@ class import_csv(osv.osv):
         
         
         return True
+    
+    def import_update_education_level_employee_before_job(self, cr, uid, ids, context=None):
+        start = timeit.default_timer()
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+        
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))         
+        employee = self.pool.get('hr.employee')
+       
+        diploma = self.pool.get('hr.employee.diploma')
+     
+        specialiter = self.pool.get('hr.employee.specialization')
+        education_level_id=False
+        grade_id=False
+        diplome_id=False
+        city_id=False
+        religion_id=False
+        salary_grid_level_id=False
+        
+        move_id=''
+        all_move_ids=[]
+        city_name=False
+        job = self.pool.get('hr.job')
+        employee = self.pool.get('hr.employee')
+        partner = self.pool.get('res.partner')
+        job_education_level= self.pool.get('hr.employee.job.education.level')
+        umalqurra = Umalqurra()
+        fmt = '%d/%m/%Y'
+        for row  in reader: 
+            employee_ids=employee.search(cr, uid, [('number', '=',row['EMP_NO'])])
+            if employee_ids  : 
+                if str(row['MAJOR_NO']):
+                    specialiter_ids = specialiter.search(cr, uid, [('code', '=',row['MAJOR_NO'])])
+                    if specialiter_ids:
+                        specialiter_id =specialiter_ids[0]
+                if str(row['DEGREE_NO']):
+                    diplome_ids=diploma.search(cr, uid, [('code', '=',row['DEGREE_NO'])])
+                    if diplome_ids:
+                        diplome_id=diplome_ids[0]
+              
+                if str(row['COLL_NO']):
+                    partner_ids=partner.search(cr, uid, [('code', '=',row['COLL_NO'])])
+                    if partner_ids:
+                        partner_id=partner_ids[0]
+                date1 = False
+                if row['FROM_DATE_HJ'] != 'NULL':
+                    try:
+                        dt = datetime.strptime(str(row['FROM_DATE_HJ']), fmt)
+                        start_date = umalqurra.hijri_to_gregorian(dt.year, dt.month, dt.day)
+                        date1 = date(int(start_date[0]), int(start_date[1]), int(start_date[2]))
+                    except:
+                        date1 = False
+                
+                vals_education={'name':'00',
+                                'diploma_id':diplome_id,
+                                'specialization_ids':[(6,0,[specialiter_id])],
+                                'diploma_date':date1,
+                                'governmental_entity':partner_id,
+                                }
+                
+                id_eductaion_level=job_education_level.create(cr, uid, vals_education,context=context)
+                emplyee_obj=employee.browse(cr, uid, employee_ids[0]) 
+                emplyee_obj.write({'education_level_ids':[(6,0,[id_eductaion_level])],})
+
+   
+        stop = timeit.default_timer()
+        print 'time for import employee', stop - start
+        return True
+    
+    def import_externel_side(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])   
+        quotechar='"'
+        delimiter=';'
+        fileobj = TemporaryFile('w+')
+        sourceEncoding = 'windows-1252'
+        targetEncoding = "utf-8"   
+        fileobj.write((base64.decodestring(this.data)))   
+        fileobj.seek(0)                                    
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))        
+        move_id=''
+        all_move_ids=[]
+        departement = self.pool.get('external.authorities')
+        for row  in reader :
+
+            daprtment_val={
+                            'name':str(row['name']),
+                            'code':str(row['code']),
+                            }
+
+            departement.create(cr, uid, daprtment_val,context=context)
+        return True
+    def emplyee_historique_before(self, cr, uid, ids, context=None):
+        if context is None:
+            context = {}
+        this = self.browse(cr, uid, ids[0])
+        quotechar = '"'
+        delimiter = ';'
+        fileobj = TemporaryFile('w+')
+        fileobj.write((base64.decodestring(this.data)))
+        fileobj.seek(0)
+        reader = csv.DictReader(fileobj, quotechar=str(quotechar), delimiter=str(delimiter))
+        employee = self.pool.get('hr.employee')
+        history = self.pool.get('hr.employee.history')
+        grade = self.pool.get('salary.grid.grade')
+        ext = self.pool.get('external.authorities')
+        for row in reader:
+            if len(str(row['EMP_NO'].strip(" ")))==4:
+                empid = str(0)+str(row['EMP_NO'].strip(" "))
+            elif len(str(row['EMP_NO'].strip(" ")))==3:
+                empid = str(0)+str(0)+str(row['EMP_NO'].strip(" "))
+            elif len(str(row['EMP_NO'].strip(" ")))==2:
+                empid = str(0)+str(0)+str(0)+str(row['EMP_NO'].strip(" "))
+            elif len(str(row['EMP_NO'].strip(" ")))==1:
+                empid = str(0)+str(0)+str(0)+str(0)+str(row['MGR_NO'].strip(" "))
+            else:
+                empid = str(row['EMP_NO'].strip(" "))
+                            
+            employee_ids = employee.search(cr, uid, [('number', '=', empid)])
+            extr_ids = ext.search(cr, uid, [('code', '=', str(row['EXT_ENT_ID']))])
+            fmt = '%d/%m/%Y'
+            date1 = False
+            date2 = False
+            umalqurra = Umalqurra()
+            if row['DECISION_DATE_HJ'] != 'NULL':
+                    try:
+                        dt = datetime.strptime(str(row['DECISION_DATE_HJ']), fmt)
+                        start_date = umalqurra.hijri_to_gregorian(dt.year, dt.month, dt.day)
+                        date1 = date(int(start_date[0]), int(start_date[1]), int(start_date[2]))
+                    except:
+                        date1 = False
+            if row['STATUS_DATE_HJ'] != 'NULL':
+                try:
+                    um_date = HijriDate()
+                    date_end = datetime.strptime(str(row['STATUS_DATE_HJ']), fmt)
+                    start_date2 = umalqurra.hijri_to_gregorian(date_end.year, date_end.month, date_end.day)
+                    date2 = date(int(start_date2[0]), int(start_date2[1]), int(start_date2[2]))
+                except:
+                    date2 = False
+            else:
+                     date1 = False
+            ext_name=False
+            if extr_ids:
+                ext_name=ext.browse(cr, uid, extr_ids[0]).name               
+            if employee_ids:
+                employee_id = employee.browse(cr, uid, employee_ids[0])
+                dep_side = employee_id.user_id.company_id.name
+                grade_id = False
+                grade_ids = grade.search(cr, uid, [('code', '=',row['GRADE_NO'])])
+                if grade_ids:
+                    grade_id=grade_ids[0]
+                if str(row['TITLE_DSCR_AR']) !='NULL':
+                   
+                        history_line_val={
+                                'employee_id':employee_ids[0],
+                                'num_decision':str(row['DECISION_NO']),
+                                'date_decision':date1,
+                                'date':date2,
+                                'job_id': str(row['TITLE_DSCR_AR']),
+                                'dep_side': ext_name,
+                                'grade_id':grade_id,
+                                'number':str(row['EXT_PAY_CODE']),
+                                }
+                        history.create(cr, uid, history_line_val,context=context)
+                        
+                    
+                    
+
+        return True
+   
+            
+
 import_csv()
 
 
