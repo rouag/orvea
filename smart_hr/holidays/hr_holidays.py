@@ -14,6 +14,22 @@ class HrHolidays(models.Model):
     _description = 'hr holidays Request'
     _order = 'id desc'
 
+    @api.model
+    def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
+        #inherit read_group to count holidays type deductible_normal_leave with normal holidays
+        res = super(HrHolidays, self).read_group(domain, fields, groupby, offset=offset, limit=limit, orderby=orderby, lazy=lazy)
+        if 'holiday_status_id' in groupby:
+            for line in res:
+                normal_holiday_status_id = self.env.ref('smart_hr.data_hr_holiday_status_normal').id
+                domain = line['__domain']
+                if '__domain' in line and domain == [('holiday_status_id', '=', normal_holiday_status_id)]:
+                    lines = self.search(['|', ('holiday_status_id', '=', normal_holiday_status_id), ('holiday_status_id.deductible_normal_leave', '=', True)])
+                    hol_count = 0.0
+                    for line2 in lines:
+                        hol_count += line2.duration
+                    line['duration'] = hol_count
+        return res
+
     def _check_date(self, cr, uid, ids, context=None):
         for holiday in self.browse(cr, uid, ids, context=context):
             domain = [
@@ -24,14 +40,12 @@ class HrHolidays(models.Model):
                 ('state', 'not in', ['cancel', 'refuse']),
             ]
             x = self.search(cr, uid, domain, context=context)
-
             nholidays = self.search_count(cr, uid, domain, context=context)
             if holiday.compensation_type == 'money':
                 return True
             if nholidays:
                 return False
         return True
-
 
     @api.multi
     def _set_external_autoritie(self):
@@ -471,13 +485,11 @@ class HrHolidays(models.Model):
             today = date.today()
             d = today - relativedelta(days=1)
             
-#                    مدّة الإجازة الاستثنائية و الدراسية 
+#                    مدّة الإجازة ة 
 
             holiday_uncounted_days = 0
             holiday_uncounted_days = self.search_count([('state', '=', 'done'), ('date_from', '<=', d), ('date_to', '>=', d), ('employee_id', '=', employee.id),
-                                        ('holiday_status_id.id', 'in', [self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional').id,
-                                                       self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id,
-                                                       self.env.ref('smart_hr.data_hr_holiday_status_study').id])])
+                                        ('holiday_status_id.deductible_normal_leave', '=', True)])
             uncounted_days += holiday_uncounted_days
 #                    مدّة كف اليد todo
 

@@ -128,11 +128,10 @@
 							</group>
 						</group>
 					</div>
-					<button name="%(hr.act_employee_from_department)d" position="after">
-						<separator />
+					<div class="col-xs-6 o_kanban_primary_right" position="inside">
 						<button class="btn btn-primary" name="button_child_ids" style="margin-right:2px;"
 							type="object">الإدارات</button>
-					</button>
+					</div>
 				</data>
 			</field>
 		</record>

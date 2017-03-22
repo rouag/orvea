@@ -96,7 +96,7 @@ class HrEmployeeDeprivation(models.Model):
 
     increase_id = fields.Many2one('hr.increase')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1)
-    reason = fields.Char(string=u'السبب', required=1  ,compute='_compute_raison' )
+    reason = fields.Char(string=u'السبب', readonly=1 ,compute='_compute_raison' )
     department_level1_id = fields.Many2one('hr.department', related='increase_id.department_level1_id')
     department_level2_id = fields.Many2one('hr.department', related='increase_id.department_level2_id')
     department_level3_id = fields.Many2one('hr.department', related='increase_id.department_level3_id')
@@ -122,24 +122,23 @@ class HrEmployeeDeprivation(models.Model):
             employee_ids += [x.id for x in dapartment.member_ids]
             for child in dapartment.all_child_ids:
                 employee_ids += [x.id for x in child.member_ids]
-        result = {}
-        if not employee_ids:
-            # get all employee
-            employee_ids = employee_obj.search([('employee_state', '=', 'employee')]).ids
+        result = []
+        result_sanction = []
+        res = {}
         # filter by type
         if self.salary_grid_type_id:
             employee_ids = employee_obj.search([('id', 'in', employee_ids), ('type_id', '=', self.increase_id.salary_grid_type_id.id)]).ids
-        result.update({'domain': {'employee_id': [('id', 'in', list(set(employee_ids)))]}})
-        return result
-
-    @api.onchange('employee_id')
-    def onchange_employee_id(self):
-        res = {}
-        employee_ids = set()
+        result = list(set(employee_ids))
+        liste_employee_ids = set()
         sanctions = self.env['hr.sanction.ligne'].search([('state', '=', 'done'), ('sanction_id.type_sanction', '=', self.env.ref('smart_hr.data_hr_sanction_type_grade').id)])
         for rec in sanctions:
-            employee_ids.add(rec.employee_id.id)
-        res['domain'] = {'employee_id': [('id', 'in', list(employee_ids))]}
+            liste_employee_ids.add(rec.employee_id.id)
+        result_sanction = list(liste_employee_ids)
+        result_inter = []
+        for e in result:
+            if e in result_sanction:
+                result_inter.append(e)
+        res['domain'] = {'employee_id': [('id', 'in', list(result_inter))]}
         return res
 
     @api.multi
@@ -148,9 +147,8 @@ class HrEmployeeDeprivation(models.Model):
         for rec in self:
             sanctions = self.env['hr.sanction.ligne'].search([('state', '=', 'done'),('employee_id','=',rec.employee_id.id), ('sanction_id.type_sanction', '=', self.env.ref('smart_hr.data_hr_sanction_type_grade').id)],limit=1)
             if sanctions:
-                rec.raison = sanctions.raison
-                
-                
+                rec.reason = sanctions.raison
+
 class hrEmployeeIncreasePercent(models.Model):
 
     _name = 'hr.employee.increase.percent'
@@ -188,10 +186,20 @@ class hrEmployeeIncreasePercent(models.Model):
             for child in dapartment.all_child_ids:
                 employee_ids += [x.id for x in child.member_ids]
         result = {}
+        filte_empl = []
+        result_total = []
         if self.salary_grid_type_id:
             employee_ids = employee_obj.search([('id', 'in', employee_ids), ('type_id', '=', self.increase_id.salary_grid_type_id.id)]).ids
               # filter by type
-        result.update({'domain': {'employee_id': [('id', 'in', list(set(employee_ids)))]}})
+        filte_empl = list(set(employee_ids))
+
+        liste_employee_ids = set()
+        sanctions = self.env['hr.sanction.ligne'].search([('state', '=', 'done'), ('sanction_id.type_sanction', '=', self.env.ref('smart_hr.data_hr_sanction_type_grade').id)])
+        for rec in sanctions:
+            liste_employee_ids.add(rec.employee_id.id)
+        result_sanction = list(liste_employee_ids)
+        result_total = set(filte_empl) - set(result_sanction)
+        result.update({'domain': {'employee_id': [('id', 'in',list(result_total))]}})
         return result
 
     @api.multi
