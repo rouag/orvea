@@ -23,7 +23,7 @@ class HrDecisionAppoint(models.Model):
     is_started = fields.Boolean(string=u'مباشر', default=False)
     # info about employee
     employee_id = fields.Many2one('hr.employee', string='الموظف', required=1)
-    contract_id = fields.Many2one('hr.contract', string='العقد',  Domain=[('state','!=','close')])
+    contract_id = fields.Many2one('hr.contract', string='العقد', Domain=[('state', '!=', 'close')])
     number = fields.Char(related='employee_id.number', store=True, readonly=True, string=u'رقم الوظيفة')
     emp_code = fields.Char(string=u'رمز الوظيفة ', readonly=1)
     country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
@@ -36,7 +36,7 @@ class HrDecisionAppoint(models.Model):
     emp_basic_salary = fields.Float(string='الراتب الأساسي', store=True, readonly=1)
     emp_degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', store=True, readonly=1)
     # info about job
-    job_id = fields.Many2one('hr.job', string='الوظيفة', required=1,Domain=[('state','=','unoccupied')])
+    job_id = fields.Many2one('hr.job', string='الوظيفة', required=1, Domain=[('state', '=', 'unoccupied')])
     passing_score = fields.Float(string=u'الدرجة المطلوبه')
     number_job = fields.Char(string='رقم الوظيفة', readonly=1)
     code = fields.Char(string=u'رمز الوظيفة ', readonly=1)
@@ -57,14 +57,14 @@ class HrDecisionAppoint(models.Model):
     royal_decree_number = fields.Char(string=u'رقم الأمر الملكي')
     royal_decree_date = fields.Date(string=u'تاريخ الأمر الملكي ')
     # other info
-    type_appointment = fields.Many2one('hr.type.appoint', string=u'نوع التعيين', required=1, )
+    type_appointment = fields.Many2one('hr.type.appoint', string=u'نوع التعيين', required=1,)
     description = fields.Text(string=' ملاحظات ')
     state_appoint = fields.Selection([
         ('active', u'مفعل'),
         ('close', u'مغلق'),
         ('refuse', u'مرفوض'),
         ('new', u'في الاجراء'),
-    ], string=u' حالةالتعيين ', default='new', )
+    ], string=u' حالةالتعيين ', default='new',)
     state = fields.Selection([
         ('draft', u'طلب'),
         ('audit', u'تدقيق'),
@@ -77,7 +77,7 @@ class HrDecisionAppoint(models.Model):
         ('done', u'اعتمدت'),
         ('refuse', u'رفض'),
         ('cancel', u'ملغاة'),
-    ], string=u'حالة', default='draft', )
+    ], string=u'حالة', default='draft',)
 
     # attachments files
     order_picture = fields.Binary(string='صورة الخطاب', required=1, attachment=True)
@@ -112,8 +112,9 @@ class HrDecisionAppoint(models.Model):
                                      readonly=1)
     is_contract = fields.Boolean(string=u'يتطلب إنشاء عقد', related="type_appointment.is_contract")
     pension_ratio = fields.Float(string=u'نسبة التقاعد (%)')
-    job_allowance_ids = fields.One2many('decision.appoint.allowance', 'decision_appoint_id', string=u'بدلات الوظيفة')
+    job_allowance_ids = fields.One2many('decision.appoint.allowance', 'job_decision_appoint_id', string=u'بدلات الوظيفة')
     decision_apoint_allowance_ids = fields.One2many('decision.appoint.allowance', 'decision_appoint_id', string=u'بدلات التعين')
+    location_allowance_ids = fields.One2many('decision.appoint.allowance', 'location_decision_appoint_id', string=u'بدلات المنطقة')
 
     @api.multi
     @api.onchange('type_appointment')
@@ -125,7 +126,7 @@ class HrDecisionAppoint(models.Model):
                 employee_ids = self.env['hr.employee'].search([('is_member', '=', True), ('employee_state', 'in', ['done'])])
             else:
                 employee_ids = self.env['hr.employee'].search([('is_member', '=', True), ('employee_state', 'in', ['done', 'employee'])])
-            job_ids = self.env['hr.job'].search([('name.members_job', '=', True), ('state','=', 'unoccupied'), ('type_id.is_member', '=', True)])
+            job_ids = self.env['hr.job'].search([('name.members_job', '=', True), ('state', '=', 'unoccupied'), ('type_id.is_member', '=', True)])
             res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
             return res
         if self.type_appointment and self.type_appointment.for_members is False:
@@ -133,7 +134,7 @@ class HrDecisionAppoint(models.Model):
                 employee_ids = self.env['hr.employee'].search([('is_member', '=', False), ('employee_state', 'in', ['done'])])
             else:
                 employee_ids = self.env['hr.employee'].search([('is_member', '=', False), ('employee_state', 'in', ['done', 'employee'])])
-            job_ids = self.env['hr.job'].search([('name.members_job', '=', False),('state','=', 'unoccupied')])
+            job_ids = self.env['hr.job'].search([('name.members_job', '=', False), ('state', '=', 'unoccupied')])
             res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
             return res
 
@@ -486,6 +487,18 @@ class HrDecisionAppoint(models.Model):
                                                       'amount': rec.amount,
                                                       'date': fields.Date.from_string(fields.Date.today())
                                                       })
+        for rec in self.decision_apoint_allowance_ids:
+            self.env['hr.employee.allowance'].create({'employee_id': self.employee_id.id,
+                                                      'allowance_id': rec.allowance_id.id,
+                                                      'amount': rec.amount,
+                                                      'date': fields.Date.from_string(fields.Date.today())
+                                                      })
+        for rec in self.location_allowance_ids:
+            self.env['hr.employee.allowance'].create({'employee_id': self.employee_id.id,
+                                                      'allowance_id': rec.allowance_id.id,
+                                                      'amount': rec.amount,
+                                                      'date': fields.Date.from_string(fields.Date.today())
+                                                      })
         self.state = 'done'
         self.env['hr.holidays']._init_balance(self.employee_id)
 
@@ -544,6 +557,20 @@ class HrDecisionAppoint(models.Model):
             self.far_age = self.job_id.type_id.far_age
             self.grade_id = self.job_id.grade_id.id
             self.department_id = self.job_id.department_id.id
+            location_allowance_ids = []
+            for rec in self.department_id.dep_side.allowance_ids:
+                location_allowance_ids.append({'location_decision_appoint_id': self.id,
+                                               'allowance_id': rec.id,
+                                               'compute_method': 'amount',
+                                               'amount': 0.0})
+            self.location_allowance_ids = location_allowance_ids
+            job_allowance_ids = []
+            for rec in self.job_id.serie_id.allowanse_ids:
+                job_allowance_ids.append({'job_decision_appoint_id': self.id,
+                                          'allowance_id': rec.id,
+                                          'compute_method': 'amount',
+                                          'amount': 0.0})
+            self.job_allowance_ids = job_allowance_ids
 
     @api.onchange('degree_id')
     def _onchange_degree_id(self):
@@ -647,6 +674,8 @@ class DecisionAppointAllowance(models.Model):
     _description = u'بدلات التعين والوظيفة'
 
     decision_appoint_id = fields.Many2one('hr.decision.appoint', string='التعين', ondelete='cascade')
+    job_decision_appoint_id = fields.Many2one('hr.decision.appoint', string='التعين', ondelete='cascade')
+    location_decision_appoint_id = fields.Many2one('hr.decision.appoint', string='التعين', ondelete='cascade')
     allowance_id = fields.Many2one('hr.allowance.type', string='البدل', required=1)
     compute_method = fields.Selection([('amount', 'مبلغ'),
                                        ('percentage', 'نسبة من الراتب الأساسي'),
@@ -696,15 +725,3 @@ class DecisionAppointAllowance(models.Model):
             amount = self.min_amount
         return amount
 
-    @api.onchange('allowance_id')
-    def onchange_allowance_id(self):
-        allowance_nature = self._context.get('allowance_nature', False)
-        if allowance_nature == 'job':
-            allowances_ids = self.decision_appoint_id.job_id.serie_id.allowanse_ids
-            allowances_ids = allowances_ids.ids
-            res = {}
-            if allowances_ids:
-                res['domain'] = {'allowance_id': [('id', 'in', allowances_ids)]}
-            else:
-                res['domain'] = {'allowance_id': [('id', '=', -1)]}
-            return res

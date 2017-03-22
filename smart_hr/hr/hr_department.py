@@ -90,12 +90,15 @@ class HrDepartment(models.Model):
                 'domain': [('id','in', chid_ids)]
             }
         return value
+
+
 class CitySide(models.Model):
     _name = 'city.side'
     _description = u'الجهة'
 
     name = fields.Char(string=u'المسمّى')
     code = fields.Char(string='الرمز')
+    allowance_ids = fields.Many2many('hr.allowance.type', string=u'بدلات مناطق الجبلية أو النائية')
 
 
 class HrDepartmentType(models.Model):

@@ -161,6 +161,7 @@ class HrHolidays(models.Model):
     @api.multi
     @api.depends("deputation_id")
     def compute_deputation_balance_compUted(self):
+
         for rec in self:
             if rec.deputation_id:
                 deputation_date_from = fields.Date.from_string(rec.deputation_id.date_from)
