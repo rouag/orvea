@@ -61,7 +61,7 @@ class HrScholarship(models.Model):
         if self.date_from and self.date_to:
             self.duration = self.env['hr.smart.utils'].compute_duration(self.date_from, self.date_to)
 
-    @api.onchange('diplom_id', 'diplom_type')
+    @api.onchange('diplom_id')
     def onchange_diplom_id(self):
         res = {}
         if not self.diplom_id and self.diplom_type:
@@ -145,7 +145,7 @@ class HrScholarship(models.Model):
             if fields.Date.from_string(self.date_to) > fields.Date.from_string(fields.Date.today()):
                 raise ValidationError(u"الدورة لم تنتهي بعد")
         self.result = 'not_succeed'
-        self.env['hr.employee.promotion.history'].decrement_promotion_duration(self.employee_id, self.duration)
+        self.employee_id.promotion_duration -= self.duration
         self.state = 'finished'
 
     @api.multi

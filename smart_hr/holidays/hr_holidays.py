@@ -419,9 +419,6 @@ class HrHolidays(models.Model):
             if self.compensation_type == 'money':
                 self.token_compensation_stock = self.employee_id.compensation_stock
                 self.employee_id.compensation_stock = 0
-#                 مدة الترقية
-        if self.holiday_status_id.promotion_deductible:
-            self.env['hr.employee.promotion.history'].decrement_promotion_duration(self.employee_id, self.duration)
 
         if self.holiday_status_id.deductible_duration_service:
             self.employee_id.service_duration -= self.duration

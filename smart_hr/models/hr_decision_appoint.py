@@ -121,7 +121,7 @@ class HrDecisionAppoint(models.Model):
         # get list of employee depend on type_appointment
         res = {}
         if self.type_appointment and self.type_appointment.for_members is True:
-            if self.type_appointment.id == self.env.ref('smart_hr.data_hr_new_agent_public').id:
+            if self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_Members').id:
                 employee_ids = self.env['hr.employee'].search([('is_member', '=', True), ('employee_state', 'in', ['done'])])
             else:
                 employee_ids = self.env['hr.employee'].search([('is_member', '=', True), ('employee_state', 'in', ['done', 'employee'])])
@@ -488,20 +488,6 @@ class HrDecisionAppoint(models.Model):
                                                       })
         self.state = 'done'
         self.env['hr.holidays']._init_balance(self.employee_id)
-        # close last active promotion line for the employee
-        promotion_obj = self.env['hr.employee.promotion.history']
-        previous_promotion = self.env['hr.employee.promotion.history'].search(
-            [('employee_id', '=', self.employee_id.id), ('active_duration', '=', True)], limit=1)
-        if previous_promotion:
-            previous_promotion.active_duration = False
-            previous_promotion.date_to = fields.Date.from_string(fields.Date.today())
-        # create promotion history line
-        self.env['hr.employee.promotion.history'].create({'employee_id': self.employee_id.id,
-                                                          'date_from': self.date_direct_action,
-                                                          'active_duration': True,
-                                                          'decision_appoint_id': self.id,
-                                                          'appoint_type': self.type_appointment.name
-                                                          })
 
     def send_notification_refuse_to_group(self, group_id):
         for recipient in group_id.users:

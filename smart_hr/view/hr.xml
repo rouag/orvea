@@ -475,15 +475,6 @@
 									<group>
 										<field name="compensation_stock" readonly="1" class="oe_inline" />
 									</group>
-									<separator string="سِجل التعيينات" />
-									<field name="promotions_history" readonly="1">
-										<tree string="سِجل التعيينات">
-											<field name="appoint_type" />
-											<field name="date_from" />
-											<field name="date_to" />
-											<field name="balance" />
-										</tree>
-									</field>
 
 								</page>
 
