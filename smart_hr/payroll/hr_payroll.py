@@ -227,10 +227,10 @@ class HrPayslip(models.Model):
         # check the existance of difference and dedections for current month
         self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.month)
         self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.month)
-        if self.env['hr.difference'].search_count([('date_from', '=', self.date_from), ('date_to', '=', self.date_to), ('state', '=', 'done')]) == 0:
-            raise ValidationError(u"لم يتم إحتساب الفروقات لهذا الشهر")
-        if self.env['hr.deduction'].search_count([('date_from', '=', self.date_from), ('date_to', '=', self.date_to), ('state', '=', 'done')]) == 0:
-            raise ValidationError(u"لم يتم إحتساب الحسميات لهذا الشهر")
+#         if self.env['hr.difference'].search_count([('date_from', '=', self.date_from), ('date_to', '=', self.date_to), ('state', '=', 'done')]) == 0:
+#             raise ValidationError(u"لم يتم إحتساب الفروقات لهذا الشهر")
+#         if self.env['hr.deduction'].search_count([('date_from', '=', self.date_from), ('date_to', '=', self.date_to), ('state', '=', 'done')]) == 0:
+#             raise ValidationError(u"لم يتم إحتساب الحسميات لهذا الشهر")
         if not self.employee_id and self.month:
             res = {}
             employee_ids = self.env['hr.employee'].search([('employee_state', '=', 'employee')])

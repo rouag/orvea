@@ -157,22 +157,25 @@ class HrHolidays(models.Model):
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
-
+    
+    @api.multi
     @api.depends("deputation_id")
     def compute_deputation_balance_compUted(self):
-        if self.deputation_id:
-            deputation_date_from = fields.Date.from_string(self.deputation_id.date_from)
-            deputation_date_to = fields.Date.from_string(self.deputation_id.date_to)
-            rest_days_deputation = (deputation_date_to - deputation_date_from).days
-            half_holiday_duration = self.duration / 2
-            if half_holiday_duration < 21:
-                min_duration = half_holiday_duration
-            else:
-                min_duration = 21
-            if self.duration > rest_days_deputation:
-                self.deputation_balance_computed = rest_days_deputation
-            else:
-                self.deputation_balance_computed = min_duration
+
+        for rec in self:
+            if rec.deputation_id:
+                deputation_date_from = fields.Date.from_string(rec.deputation_id.date_from)
+                deputation_date_to = fields.Date.from_string(rec.deputation_id.date_to)
+                rest_days_deputation = (deputation_date_to - deputation_date_from).days
+                half_holiday_duration = rec.duration / 2
+                if half_holiday_duration < 21:
+                    min_duration = half_holiday_duration
+                else:
+                    min_duration = 21
+                if rec.duration > rest_days_deputation:
+                    rec.deputation_balance_computed = rest_days_deputation
+                else:
+                    rec.deputation_balance_computed = min_duration
 
     def _get_current_holiday_stock(self, employee_id, holiday_status_id, entitlement_type):
             current_stock = 0
@@ -233,7 +236,8 @@ class HrHolidays(models.Model):
                     rec.hide_with_advanced_salary = False
                 else:
                     rec.hide_with_advanced_salary = True
-
+    
+    
     @api.onchange('holiday_status_id')
     def onchange_holiday_status_id(self):
         res = {}
@@ -278,6 +282,14 @@ class HrHolidays(models.Model):
                 child_birth_dad_holiday_id = self.env.ref('smart_hr.data_hr_holiday_child_birth_dad').id
                 holiday_status_ids = [rec.id for rec in self.env['hr.holidays.status'].search([]) if rec.id not in [child_birth_dad_holiday_id]]
                 res['domain'] = {'holiday_status_id': [('id', 'in', holiday_status_ids)]}
+            for holiday in self:
+                entitlement_type = holiday.entitlement_type if holiday.entitlement_type else False
+                stock = self._get_current_holiday_stock(holiday.employee_id, holiday.holiday_status_id, entitlement_type)
+                if stock['current_stock'] == 0 and stock['not_need_stock']:
+                    current_stock = str("لا تحتاج رصيد")
+                else:
+                    current_stock = stock['current_stock']
+                holiday.current_holiday_stock = current_stock
             return res
 
     @api.multi

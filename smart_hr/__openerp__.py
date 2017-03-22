@@ -114,17 +114,16 @@
         'views/report_hr_direct_appoint.xml',
         'views/hr_employee_functionnal_card_report.xml',
         'views/hr_employee_card_report.xml',
-        
-        
+
         'views/hr_emp_card_report.xml',
         'report/reports.xml',
         'report/hr_suspension_end_report.xml',
         'report/hr_suspension_report.xml',
         'report/hr_termination_report.xml',
         'views/employee_situation_order_report.xml',
+        'report/hr_suspension_report_decision.xml',
         'wizards/view/hr_refuse_wizard_view.xml',
         'view/hr_decision_appoint.xml',
-
 
 
 
@@ -277,7 +276,7 @@
         # 'hr_survey/views/website_templates.xml',
         'mysql/security/ir.model.access.csv',
         'mysql/mysql_confg_view.xml',
-
+        
     ],
     'auto_install': False,
     'sequence': 150,
