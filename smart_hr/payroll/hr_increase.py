@@ -206,9 +206,9 @@ class hrEmployeeIncreasePercent(models.Model):
     @api.depends('employee_id')
     def increase_percent_count(self):
         for rec in self:
-            increase = self.env['salary.grid.detail'].search([('type_id', '=', rec.employee_id.type_id.id), ('degree_id', '=', rec.employee_id.degree_id.id),
+            increase_ids = self.env['salary.grid.detail'].search([('type_id', '=', rec.employee_id.type_id.id), ('degree_id', '=', rec.employee_id.degree_id.id),
                                                                ('grade_id', '=', rec.employee_id.grade_id.id) ],limit=1)
-            if increase:
-                rec.increase_percent = increase.increase_percent 
+            if increase_ids:
+                rec.increase_percent = increase_ids.increase 
             else:
                 rec.increase_percent = 0
