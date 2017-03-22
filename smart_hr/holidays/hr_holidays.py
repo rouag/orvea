@@ -157,22 +157,25 @@ class HrHolidays(models.Model):
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
-
+    
+    @api.multi
     @api.depends("deputation_id")
     def compute_deputation_balance_compUted(self):
-        if rec.deputation_id:
-            deputation_date_from = fields.Date.from_string(rec.deputation_id.date_from)
-            deputation_date_to = fields.Date.from_string(rec.deputation_id.date_to)
-            rest_days_deputation = (deputation_date_to - deputation_date_from).days
-            half_holiday_duration = rec.duration / 2
-            if half_holiday_duration < 21:
-                min_duration = half_holiday_duration
-            else:
-                min_duration = 21
-            if rec.duration > rest_days_deputation:
-                rec.deputation_balance_computed = rest_days_deputation
-            else:
-                rec.deputation_balance_computed = min_duration
+
+        for rec in self:
+            if rec.deputation_id:
+                deputation_date_from = fields.Date.from_string(rec.deputation_id.date_from)
+                deputation_date_to = fields.Date.from_string(rec.deputation_id.date_to)
+                rest_days_deputation = (deputation_date_to - deputation_date_from).days
+                half_holiday_duration = rec.duration / 2
+                if half_holiday_duration < 21:
+                    min_duration = half_holiday_duration
+                else:
+                    min_duration = 21
+                if rec.duration > rest_days_deputation:
+                    rec.deputation_balance_computed = rest_days_deputation
+                else:
+                    rec.deputation_balance_computed = min_duration
 
     def _get_current_holiday_stock(self, employee_id, holiday_status_id, entitlement_type):
             current_stock = 0
