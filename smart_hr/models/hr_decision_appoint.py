@@ -581,9 +581,9 @@ class HrDecisionAppoint(models.Model):
             job_allowance_ids = []
             for rec in self.job_id.serie_id.allowanse_ids:
                 job_allowance_ids.append({'job_decision_appoint_id': self.id,
-                                           'allowance_id': rec.id,
-                                           'compute_method': 'amount',
-                                           'amount': 0.0})
+                                          'allowance_id': rec.id,
+                                          'compute_method': 'amount',
+                                          'amount': 0.0})
             self.job_allowance_ids = job_allowance_ids
 
     @api.onchange('degree_id')
