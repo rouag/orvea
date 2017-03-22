@@ -2968,13 +2968,6 @@ class import_csv(osv.osv):
             employee_ids= employee.search(cr, uid, [('number', '=',str(row['EMP_NO']))])
             if employee_ids:
                 emplyee_obj=employee.browse(cr, uid, employee_ids[0]) 
-                passport_end_date  = row['EXPIRY_DATE']
-                passport_date  = row['ISSUE_DATE']
-                if passport_end_date == 'NULL':
-                    passport_end_date = False
-                if passport_date == 'NULL':
-                    passport_date = False    
-      
                 emplyee_obj.write( {'hoveizeh_id': str(row['DOC_NO']),'hoveizeh_date':date_first_tranche,'hoveizeh_place':city_ids[0] if city_ids else False ,
                                     'hoveizeh_end_date':False,}, )
         
