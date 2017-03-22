@@ -15,7 +15,6 @@
 							<field name="days_number" />
 							<field name="amount" />
 						</group>
-
 						<group>
 							<field name="reason" string="السبب" placeholder="السبب ..." />
 						</group>

@@ -9,10 +9,10 @@
 					<sheet>
 						<group>
 							<field name="host" required="1" />
-							<field name="user" required="1" />
-							<field name="port"  />
-							<field name="passwd" required="1" />
+							<field name="port" />
 							<field name="db" required="1" />
+							<field name="user" required="1" />
+							<field name="passwd" required="1" password="True" />
 							<field name="latest_date_import" />
 							<button name="action_done" string="تحديث" type="object" />
 						</group>

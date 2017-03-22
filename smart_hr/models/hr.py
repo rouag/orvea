@@ -473,7 +473,6 @@ class HrEmployeePromotionHistory(models.Model):
             active_prom.balance -= duration_days
 
 
-
 class HrEmployeeEducationLevel(models.Model):
     _name = 'hr.employee.education.level'
     _description = u'مستويات التعليم'
@@ -485,6 +484,11 @@ class HrEmployeeEducationLevel(models.Model):
     nomber_year_education = fields.Integer(string=u'عدد سنوات الدراسة', )
     secondary = fields.Boolean(string=u'بعد‬ الثانوية', required=1)
     not_secondary = fields.Boolean(string=u'قبل الثانوية', required=1)
+    diplom_type = fields.Selection([('high_diploma', u'دبلوم من الدراسات العليا'),
+                                    ('average_diploma', u'دبلوم متوسط'),
+                                    ('licence_bac', u'الليسانس او الباكالوريوس'),
+                                    ('other', u'أخرى')],
+                                   string='النوع',)
 
     @api.onchange('secondary')
     def onchange_secondry(self):
@@ -617,6 +621,7 @@ class HrEmployeeDiploma(models.Model):
     name = fields.Char(string=u'المسمّى')
     specialization_ids = fields.Many2many('hr.employee.specialization', string=u'التخصص')
     code = fields.Char(string=u'الرمز')
+    education_level_id = fields.Many2one('hr.employee.education.level', string='المستوى التعليمي')
 
 
 class HrEmployeeSpecialization(models.Model):

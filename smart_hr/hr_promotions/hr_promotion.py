@@ -515,6 +515,7 @@ class HrPromotionDemande(models.Model):
     _name = 'hr.promotion.employee.demande'
     _order = 'id desc'
 
+
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب',
                                   default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)],
@@ -537,6 +538,12 @@ class HrPromotionDemande(models.Model):
     @api.model
     def create(self, vals):
         ret = super(HrPromotionDemande, self).create(vals)
+        scholarship_ids = self.env['hr.scholarship'].search([('employee_id', '=', ret.employee_id.id),
+                                                             ('date_to', '>=', fields.Date.today()),
+                                                             ('state', '=', 'done')
+                                                             ])
+        if scholarship_ids:
+            raise ValidationError(u"لا يمكن إنشاء طلب ترقية مع وجود ابتعاث ساري!") 
         # Sequence
         vals = {}
         vals['name'] = self.env['ir.sequence'].get('hr.employee.demande.promotion.seq')

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<record id="view_hr_deprivation_cancel_wizard" model="ir.ui.view">
+			<field name="name">hr.deprivation.cancel.wizard.form</field>
+			<field name="model">hr.deprivation.cancel.wizard</field>
+			<field name="arch" type="xml">
+				<form>
+					<sheet>
+						<footer>
+							<button icon="fa-cogs" string="تأكيد" name="button_cancel"
+								type="object" class="oe_highlight" />
+							أو
+							<button string="إلغاء" class="oe_link" special="cancel" />
+						</footer>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="action_hr_deprivation_cancel_wizard_exclusion"
+			model="ir.actions.act_window">
+			<field name="name">إستبعاد موظف</field>
+			<field name="res_model">hr.deprivation.cancel.wizard</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="view_hr_deprivation_cancel_wizard" />
+			<field name="target">new</field>
+		</record>
+		
+		
+		
+				<record id="view_hr_deprivation_confirm_wizard" model="ir.ui.view">
+			<field name="name">hr.deprivation.confirm.wizard.form</field>
+			<field name="model">hr.deprivation.confirm.wizard</field>
+			<field name="arch" type="xml">
+				<form>
+					<sheet>
+						<footer>
+							<button icon="fa-cogs" string="تأكيد" name="button_confirm"
+								type="object" class="oe_highlight" />
+							أو
+							<button string="إلغاء" class="oe_link" special="cancel" />
+						</footer>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="action_hr_deprivation_confirm_wizard_exclusion"
+			model="ir.actions.act_window">
+			<field name="name">إستبعاد موظف</field>
+			<field name="res_model">hr.deprivation.confirm.wizard</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="view_hr_deprivation_confirm_wizard" />
+			<field name="target">new</field>
+		</record>
+
+	</data>
+</openerp>
+		

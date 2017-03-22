@@ -1,3 +1,9 @@
+----21-03-2017----
+modifier Landscape Report	for employee card
+height 160
+
+
+
 ------13-03-2017-----------------------
 update hr_employee set type_id = (select type_id from hr_job j where j.id=job_id);
 

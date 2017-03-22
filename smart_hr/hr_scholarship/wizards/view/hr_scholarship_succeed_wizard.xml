@@ -10,7 +10,6 @@
 				<form string="احتساب مؤهل علمي جديد">
 					<separator string="بيانات المؤهل الجديد" />
 					<group>
-						<field name="level_education_id" />
 						<field name="diploma_id" />
 						<field name="diploma_date" />
 					</group>

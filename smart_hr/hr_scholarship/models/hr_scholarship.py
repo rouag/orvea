@@ -22,7 +22,7 @@ class HrScholarship(models.Model):
                               ], string='الحالة', readonly=1, default='draft')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1,
                                   default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)],
-                                                                                      limit=1) )
+                                                                                      limit=1))
     note = fields.Text(string='ملاحظات')
     date_from = fields.Date(string=u'تاريخ البدء', required=1)
     date_to = fields.Date(string=u'تاريخ الإنتهاء', required=1)
@@ -34,46 +34,39 @@ class HrScholarship(models.Model):
     date_speech = fields.Date(string=u'تاريخ القرار', required=1)
     speech_file = fields.Binary(string=u'القرار', required=1, attachment=True)
     speech_file_name = fields.Char()
-    diplom_type = fields.Selection(
-        [('hight', u'دبلوم من الدراسات العليا'), ('middle', u'الليسانس او الباكالوريوس او دبلوم متوسط')],
-        string='نوع الدبلوم', required=1)
+    diplom_type = fields.Selection([('high_diploma', u'دبلوم من الدراسات العليا'),
+                                    ('licence_bac', u'الليسانس او الباكالوريوس'),
+                                    ('average_diploma', u'دبلوم متوسط')],
+                                   string='نوع الابتعاث',)
     acceptance_certificate = fields.Binary(string=u'مرفق القبول من الجامعة او المعهد', required=1, attachment=True)
     acceptance_certificate_name = fields.Char()
     language_exam = fields.Binary(string=u'مرفق اجتياز امتحان في لغة الدراسة', required=1, attachment=True)
     language_exam_file_name = fields.Char()
     scholarship_type = fields.Many2one('hr.scholarship.type', string='نوع الابتعاث', required=1)
     diplom_id = fields.Many2one('hr.employee.diploma', string="الشهادة", required=1)
-    Faculty_id = fields.Many2one('res.partner', string="  الجامعة/المعهد", required=1,
+    faculty_id = fields.Many2one('res.partner', string="  الجامعة/المعهد", required=1,
                                  domain=[('company_type', 'in', ['faculty', 'school'])])
-    is_extension = fields.Boolean(string=u'ممددة')
-    parent_id = fields.Many2one('hr.scholarship', string=u'Parent')
-    extension_scholarship_ids = fields.One2many('hr.scholarship', 'parent_id', string=u'التمديدات')
-    extended_scholarship_id = fields.Many2one('hr.scholarship', string=u'الابتعاث الممدد')
+    is_extension = fields.Boolean(string=u'ممددة', default=False)
+    scholarship_history_ids = fields.One2many('hr.scholarship.history', 'scholarship_id', string=u'الإجراءت', readonly=1)
     order_number = fields.Char(string=u'رقم الخطاب')
     order_date = fields.Date(string=u'تاريخ الخطاب')
     file_decision = fields.Binary(string=u'الخطاب', attachment=True)
     file_decision_name = fields.Char(string=u'اسم الخطاب')
     order_source = fields.Char(string=u'مصدر الخطاب')
     is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started', default=False)
-    salary_percent = fields.Float(string=u'نسبة الراتب(%)')
-    hr_allowance_type_id = fields.Many2many('hr.allowance.type', string='البدلات المستثنات')
-
-    @api.one
-    @api.depends('extension_scholarship_ids')
-    def _is_extended(self):
-        # Check if the holiday have a pending or completed extension leave
-        is_extended = False
-        for ext in self.extension_scholarship_ids:
-            if ext.state != 'refuse':
-                is_extended = True
-                break
-        self.is_extended = is_extended
 
     @api.one
     @api.depends('date_from', 'date_to')
     def _compute_duration(self):
         if self.date_from and self.date_to:
             self.duration = self.env['hr.smart.utils'].compute_duration(self.date_from, self.date_to)
+
+    @api.onchange('diplom_id', 'diplom_type')
+    def onchange_diplom_id(self):
+        res = {}
+        if not self.diplom_id and self.diplom_type:
+            res['domain'] = {'diplom_id': [('education_level_id.diplom_type', '=', self.diplom_type)]}
+        return res
 
     @api.model
     def create(self, vals):
@@ -108,6 +101,9 @@ class HrScholarship(models.Model):
         self.ensure_one()
         if not self.is_started:
             raise ValidationError(u'لا يمكن قطع ابتعاث لم يبدأ بعد.')
+        self.env['hr.scholarship.history'].create({'name': u'قطع',
+                                                   'scholarship_id': self.id
+                                                   })
         self.state = 'cutoff'
 
     @api.multi
@@ -115,6 +111,9 @@ class HrScholarship(models.Model):
         self.ensure_one()
         if self.is_started:
             raise ValidationError(u' لا يمكن الغاء ابتعاث بدأ.')
+        self.env['hr.scholarship.history'].create({'name': u'الغاء',
+                                                   'scholarship_id': self.id
+                                                   })
         self.state = 'cancel'
 
     @api.multi
@@ -123,13 +122,21 @@ class HrScholarship(models.Model):
         if fields.Date.from_string(self.date_to) > fields.Date.from_string(fields.Date.today()):
             raise ValidationError(u"الدورة لم تنتهي بعد")
         else:
+            context = self._context.copy()
+            today = fields.Date.today()
+            context.update({
+                u'default_diploma_id': self.diplom_id.id,
+                u'default_diploma_date': today
+            })
             return {
                 'type': 'ir.actions.act_window',
                 'name': u'احتساب مؤهل علمي جديد',
                 'res_model': 'hr.scholarship.succced.wizard',
                 'view_type': 'form',
                 'view_mode': 'form',
-                'target': 'new'}
+                'target': 'new',
+                'context': context
+            }
 
     @api.multi
     def action_not_succeeded(self):
@@ -188,36 +195,21 @@ class HrScholarship(models.Model):
     @api.multi
     def button_extend(self):
 
-        view_id = self.env.ref('smart_hr.hr_scholarship_form').id
         context = self._context.copy()
-        default_date_from = fields.Date.to_string(fields.Date.from_string(self.date_to) + timedelta(days=1))
         context.update({
-            u'default_is_extension': True,
-            u'default_extended_scholarship_id': self.id,
-            u'default_date_from': default_date_from,
-            u'readonly_by_pass': True,
-            u'default_diplom_type': self.diplom_type,
-            u'default_scholarship_type': self.scholarship_type.id,
-            u'default_employee_id': self.employee_id.id,
-            u'default_diplom_id': self.diplom_id.id,
-            u'default_Faculty_id': self.Faculty_id.id,
-            u'default_acceptance_certificate': self.acceptance_certificate,
-            u'default_language_exam': self.language_exam,
-            u'default_acceptance_certificate_name': self.acceptance_certificate_name,
-            u'default_language_exam_file_name': self.language_exam_file_name,
+            u'default_is_extension': self.diplom_id.id,
+            u'default_date_from': self.date_from,
+            u'default_date_to': self.date_to,
         })
         return {
-            'name': 'تمديد الابتعاث',
-            'view_type': 'form',
-            'view_mode': 'tree',
-            'views': [(view_id, 'form')],
-            'res_model': 'hr.scholarship',
-            'view_id': view_id,
             'type': 'ir.actions.act_window',
-            'res_id': False,
-            'target': 'current',
-            'context': context,
-        }
+            'name': u'تمديد الابتعاث',
+            'res_model': 'hr.scholarship.extend.wizard',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': context
+            }
 
     @api.multi
     def _compute_is_started(self):
@@ -250,11 +242,14 @@ class HrScholarshipType(models.Model):
 
     name = fields.Char(string=' المسمى')
     code = fields.Char(string=' الرمز')
-    pension_percent = fields.Float(string=u'نسبة راتب التقاعد(%)')
+    salary_percent = fields.Float(string=u'نسبة الراتب(%)')
+    hr_allowance_type_id = fields.Many2many('hr.allowance.type', string='البدلات المستثنات')
     traveling_family_ticket = fields.Boolean(string=u'تذكرة سفر عائليّة', default=False)
+    traveling_periode = fields.Integer(string=u'المدة التي تتطلب تذكرة سفر عائلية (باليوم)', default=365)
     note = fields.Text(string='ملاحظات')
-    service_duration_needed = fields.One2many('hr.scholarship.service.duration', 'scholarship_type',
-                                              string=u'مدة الخدمة اللازمة قبل الابتعاث')
+    licence_bac = fields.Integer(string=u'الليسانس أو الباكالوريوس (باليوم)')
+    average_diploma = fields.Integer(string=u'دبلوم متوسط (باليوم)')
+    high_diploma = fields.Integer(string=u'دبلوم من الدراسات العليا (باليوم)')
 
     @api.multi
     def name_get(self):
@@ -265,10 +260,10 @@ class HrScholarshipType(models.Model):
         return result
 
     @api.one
-    @api.constrains('pension_percent')
-    def check_pension_percent(self):
-        if self.pension_percent < 0 or self.pension_percent > 100:
-            raise ValidationError(u"نسبة راتب التقاعد خاطئة ")
+    @api.constrains('salary_percent')
+    def check_salary_percent(self):
+        if self.salary_percent < 0 or self.salary_percent > 100:
+            raise ValidationError(u"نسبة الراتب خاطئة ")
 
 
 class HrScholarshipServiceDuration(models.Model):
@@ -280,6 +275,18 @@ class HrScholarshipServiceDuration(models.Model):
     name = fields.Char(string=' المسمى')
     service_duration = fields.Integer(string=u'(المدة (يوم')
     diplom_type = fields.Selection(
-        [('hight', u'دبلوم من الدراسات العليا'), ('middle', u'الليسانس او الباكالوريوس او دبلوم متوسط')],
-        string='نوع الدبلوم', )
+        [('high_diploma', u'دبلوم من الدراسات العليا'), ('licence_bac', u'الليسانس او الباكالوريوس'), ('average_diploma', u'دبلوم متوسط')],
+        string='نوع الابتعاث',)
     scholarship_type = fields.Many2one('hr.scholarship.type')
+
+
+class HrScholarshipHistory(models.Model):
+    _name = 'hr.scholarship.history'
+    _inherit = ['mail.thread']
+    _order = 'id desc'
+    _description = u'سجل الإجراءت'
+
+    date = fields.Date(string='تاريخ الإجراء', readonly=1, default=fields.Datetime.now())
+    name = fields.Char(string='الإجراء', readonly=1)
+    scholarship_id = fields.Many2one('hr.scholarship', string=u'الابتعاث')
+

@@ -48,15 +48,15 @@
 							<group>
 								<field name="name" invisible="1" />
 								<field name="date" />
-								<field name="number_decision" attrs="{'readonly': [('state', '!=', 'draft')]}" />
-								<field name="date_decision" attrs="{'readonly': [('state', '!=', 'draft')]}" />
+								<field name="number_decision" attrs="{'readonly': [('state', 'in', ['pim','hrm','pim2','done'])]}" />
+								<field name="date_decision" attrs="{'readonly': [('state', 'in', ['pim','hrm','pim2','done'])]}" />
 							</group>
 							<group />
 						</group>
 						<group col="4" string="فلترة">
-							<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]" />
-							<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]" />
-							<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]" />
+							<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]" attrs="{'readonly': [('state', 'in', ['pim','hrm','pim2','done'])]}" />
+							<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]" attrs="{'readonly': [('state', 'in', ['pim','hrm','pim2','done'])]}" />
+							<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]" attrs="{'readonly': [('state', 'in', ['pim','hrm','pim2','done'])]}" /> />
 							<field name="salary_grid_type_id" />
 						</group>
 						<notebook>
@@ -75,6 +75,21 @@
 									</tree>
 								</field>
 							</page>
+							<page string="الموظفين المستحقين للعلاوة">
+								<field name="employee_increase_ids" nolabel="1"
+									domain="[('employee_id.type_id','!=',%(data_salary_grid_type6)d)]">
+									<tree editable="bottom">
+										<field name="employee_id" />
+										<field name="increase_percent" />
+											<field name="department_level1_id" invisible="1" />
+										<field name="department_level2_id" invisible="1" />
+										<field name="department_level3_id" invisible="1" />
+										<field name="salary_grid_type_id" invisible="1" />
+										
+									</tree>
+								</field>
+							</page>
+							
 						</notebook>
 						<group>
 							<field name="note" />
