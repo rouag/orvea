@@ -8,6 +8,81 @@ import datetime as dt
 class SmartUtils(models.Model):
     _name = 'hr.smart.utils'
 
+    def compute_duration_difference(self, employee_id, date_from, date_to, normal_day, weekend, holidays):
+        days = 0
+        dayDelta = timedelta(days=1)
+        res = []
+        mydict = {}
+        if date_from and date_to:
+            if not isinstance(date_from, dt.date):
+                date_from = fields.Date.from_string(date_from)
+            if not isinstance(date_to, dt.date):
+                date_to = fields.Date.from_string(date_to)
+            grid_id_start, basic_salary_start = employee_id.get_salary_grid_id(date_from)
+            grid_id_end, basic_salary_end = employee_id.get_salary_grid_id(date_to)
+            if grid_id_start == grid_id_end:
+                grid_id = grid_id_start
+                basic_salary = basic_salary_start
+                mydict = {'date_from': date_from, 'date_to': date_to, 'days': days, 'grid_id': grid_id, 'basic_salary': basic_salary}
+            # case 1: same salary grid_id for all periode
+            if mydict:
+                while date_from <= date_to:
+                    days += 1
+                    # minus normal days
+                    if not normal_day and date_from.weekday() not in [4, 5]:
+                        days -= 1
+                    # minus vendredi et samedi
+                    if not weekend and date_from.weekday() in [4, 5]:
+                        days -= 1
+                    # minus jours fiérie
+                    if not holidays:
+                        hol_domain = [('date_from', '<=', date_from),
+                                      ('date_to', '>=', date_from),
+                                      ('state', '=', 'done')
+                                      ]
+                        holiday_id = self.env['hr.holidays'].search(hol_domain, limit=1)
+                        if holiday_id:
+                            days -= 1
+                    date_from += dayDelta
+                mydict['days'] = days
+                res.append(mydict)
+            # case 2: different salary grid_ids for all periode
+            if not mydict:
+                grid_id, basic_salary = employee_id.get_salary_grid_id(date_from)
+                while date_from <= date_to:
+                    days += 1
+                    # minus normal days
+                    if not normal_day and date_from.weekday() not in [4, 5]:
+                        days -= 1
+                    # minus vendredi et samedi
+                    if not weekend and date_from.weekday() in [4, 5]:
+                        days -= 1
+                    # minus jours fiérie
+                    if not holidays:
+                        hol_domain = [('date_from', '<=', date_from),
+                                      ('date_to', '>=', date_from),
+                                      ('state', '=', 'done')
+                                      ]
+                        holiday_id = self.env['hr.holidays'].search(hol_domain, limit=1)
+                        if holiday_id:
+                            days -= 1
+                    # add one day
+                    date_from += dayDelta
+                    # update my_dict
+                    grid_id_temp, basic_salary_temp = employee_id.get_salary_grid_id(date_from)
+                    if grid_id != grid_id_temp:
+                        # append old value of my_dict
+                        res.append(mydict)
+                        days = 0
+                        grid_id = grid_id_temp
+                        basic_salary = basic_salary_temp
+                        mydict = {'date_from': date_from, 'date_to': False, 'days': days, 'grid_id': grid_id, 'basic_salary': basic_salary}
+                    else:
+                        mydict['date_to': date_from]
+                        mydict['days': days]
+                mydict['days'] = days
+        return res
+
     def compute_duration_deputation(self, date_from, date_to, deputation_id):
         '''
         @return: return duration betwwen two dates without public holidays, weekends,
@@ -26,7 +101,6 @@ class SmartUtils(models.Model):
         diff = 0
         employee_id = deputation_id.employee_id
         holidays_ids = set()
-        print date_from, date_to 
         while date_from <= date_to:
             diff += 1
             hol_domain = [('date_from', '>=', date_from),

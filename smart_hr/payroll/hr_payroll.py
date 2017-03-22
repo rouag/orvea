@@ -202,6 +202,9 @@ class HrPayslip(models.Model):
                               ('cancel', 'ملغى'),
                               ], 'الحالة', select=1, readonly=1, copy=False)
     with_advanced_salary = fields.Boolean(string=u"مع صرف راتب مسبق", default=False, readonly=1)
+    grade_id = fields.Many2one('salary.grid.grade', string=u'المرتبة')
+    degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة')
+    type_id = fields.Many2one('salary.grid.type', string=u'صنف الموظف')
 
     @api.one
     def action_verify(self):
@@ -265,6 +268,10 @@ class HrPayslip(models.Model):
         self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.month)
         self.name = _('راتب موظف %s لشهر %s') % (employee_id.name, self.month)
         self.company_id = employee_id.company_id
+        print 'self.employee_id.grade_id', self.employee_id.grade_id.id
+        self.grade_id = self.employee_id.grade_id.id
+        self.degree_id = self.employee_id.degree_id.id
+        self.type_id = self.employee_id.type_id.id
         # computation of أيام العمل
         worked_days_line_ids, leaves = self.get_worked_day_lines_without_contract(self.employee_id.id, self.employee_id.calendar_id, self.date_from, self.date_to)
         deductions = self.get_all_deduction(self.employee_id.id, self.month)
