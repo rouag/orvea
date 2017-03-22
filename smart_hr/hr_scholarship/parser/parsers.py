@@ -47,6 +47,7 @@ class hrScholarShipDecisionnRepaortParse(report_sxw.rml_parse):
         convert georging date to hijri date
         :return hijri date as a string value
         '''
+        print '-----------date--------', date
         if date:
             date = fields.Date.from_string(date)
             hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
@@ -55,7 +56,7 @@ class hrScholarShipDecisionnRepaortParse(report_sxw.rml_parse):
 
 
 class ReporthrScholarShipDecisionRepaortParse(osv.AbstractModel):
-    _name = 'report.smart_hr.report_hr_scholarship_decision'
+    _name = 'report.smart_hr.hr_scholarship_decision_report'
     _inherit = 'report.abstract_report'
-    _template = 'smart_hr.report_hr_scholarship_decision'
+    _template = 'smart_hr.hr_scholarship_decision_report'
     _wrapped_report_class = hrScholarShipDecisionnRepaortParse

@@ -5,21 +5,28 @@
 		<!-- Report Actions -->
 
 
-		<report id="report_hr_scholarship_decision_report" model="hr.scholarship.decision"
-			name="smart_hr.report_hr_scholarship_decision_report" report_type="qweb-pdf"
-			string="قرار مباشرة" file="smart_hr.report_hr_scholarship_decision_report" />
-			
+		<report id="report_hr_scholarship_decision" model="hr.scholarship.decision"
+			string="قرار مباشرة ابتعاث" report_type="qweb-pdf"
+			name="smart_hr.hr_scholarship_decision_report" file="smart_hr.report_hr_scholarship_decision_report" />
+
 		<report id="report_hr_scholarship_extension" model="hr.scholarship"
-			string="قرار تمديد ابتعاث" report_type="qweb-pdf" name="smart_hr.hr_scholarship_extension_report"
-			file="smart_hr.hr_scholarship_extension_reportt" menu="False" />
-			
-			
+			string="قرار تمديد ابتعاث" report_type="qweb-pdf"
+			name="smart_hr.hr_scholarship_extension_report" file="smart_hr.hr_scholarship_extension_reportt"
+			menu="False" />
+
+
 		<record id="report_hr_scholarship_extension" model="ir.actions.report.xml">
 			<field name="paperformat_id" ref="smart_base.paperformat_landscape" />
 			<field name="download_filename">${o.employee_id.name}_قرار تمديد ابتعاث.pdf</field>
 		</record>
 		
-		
+		<record id="report_hr_scholarship_decision" model="ir.actions.report.xml">
+			<field name="paperformat_id" ref="smart_base.paperformat_landscape" />
+			<field name="download_filename">${o.employee_id.name}_قرار مباشرة ابتعاث.pdf
+			</field>
+		</record>
+
+
 	</data>
 </openerp>
 		
