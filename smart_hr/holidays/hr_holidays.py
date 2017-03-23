@@ -99,6 +99,7 @@ class HrHolidays(models.Model):
     # Cancellation
     is_cancelled = fields.Boolean(string=u'ملغاة', compute='_is_cancelled')
     is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started')
+    is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started', )
     holiday_cancellation = fields.Many2one('hr.holidays.cancellation')    
     # Extension
     is_extension = fields.Boolean(string=u'تمديد إجازة')
@@ -108,7 +109,7 @@ class HrHolidays(models.Model):
     extension_holidays_ids = fields.One2many('hr.holidays', 'parent_id', string=u'التمديدات')
     is_extensible = fields.Integer(string=u'يمكن تمديدها', related='holiday_status_id.extension_number')
     # decision
-    need_num_decisionision = fields.Boolean('status_id need decision', related='holiday_status_id.need_decision')
+    need_decision = fields.Boolean('status_id need decision', related='holiday_status_id.need_decision')
     num_decision = fields.Char(string=u'رقم القرار')
     date_decision = fields.Date(string=u'تاريخ القرار')
     childbirth_date = fields.Date(string=u'تاريخ ولادة الطفل')

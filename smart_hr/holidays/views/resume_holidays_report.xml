@@ -28,9 +28,7 @@
 										<th> الوظيفة</th>
 										<th> المرتبة</th>
 										<th> الرقم</th>
-										<th> القسم</th>
 										<th> الجهة</th>
-										<th> المدينة</th>
 
 									</tr>
 								</thead>
@@ -50,14 +48,57 @@
 										<td>
 											<span t-esc="employee_id.job_id.number" />
 										</td>
-										<td>
-											<span t-esc="employee_id.department_id.name" />
-										</td>
+
 										<td>
 											<span t-esc="employee_id.dep_side.name" />
 										</td>
+
+
+									</tr>
+								</tbody>
+								<thead>
+									<tr>
+										<th>بداية الخدمة</th>
+										<th> نهايتها</th>
+										<th>
+											استحقاقته لما قبل عام
+											<span t-esc="get_years(o.date_from ,'-')" />
+										</th>
+										<th>
+											استحقاقته من
+											<u>
+												<span t-esc="get_hijri_date(o.date_from , '-')" />
+
+											</u>
+											حتى
+											<u>
+												<span t-esc="get_hijri_date(o.date_to, '-')" />
+
+											</u>
+										</th>
+										<th>
+											استحقاقته من
+											<span t-esc="get_hijri_date(o.date_to, '-')" />
+											حتى نهاية الخدمة
+										</th>
+
+									</tr>
+								</thead>
+								<tbody>
+									<t t-set="employee_id" t-value="get_employee(data['form'])" />
+									<tr>
+
+										<td>	<span t-esc="get_recrute_employee(data['form'],o.employee_id.recruiter_date, '-')" />
+										</td>
 										<td>
-											<span t-esc="employee_id.dep_city.name" />
+										</td>
+										<td>
+
+										</td>
+										<td>
+										</td>
+
+										<td>
 										</td>
 
 
@@ -66,68 +107,96 @@
 
 							</table>
 
-							<div class="col-xs-12 text-center">
-								<strong>الاجازات التي تمتع بها </strong>
-								<p>
-									من
-									<u>
-										<span t-esc="get_hijri_date(o.date_from, '-')" />
-
-									</u>
-									الى
-									<u>
-										<span t-esc="get_hijri_date(o.date_to, '-')" />
-
-									</u>
-
-								</p>
-
-
-								<br />
-								<br />
-							</div>
 
 
 							<table class="table table-bordered">
 								<!-- head table -->
 								<thead>
 									<tr>
-										<th>نوع الاجازة</th>
 										<th> مدة الاجازة</th>
-										<th> تاريخ بدئها</th>
+										<th> تاريخ التمتع بالاجازة </th>
 										<th> تاريخ انتهائها</th>
-										<th> رقم القرار</th>
-										<th> تاريخ القرار</th>
-
+										<th> رقم الأمر</th>
+										<th> تاريخه</th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr t-foreach="get_lines(data['form'])" t-as="line">
+									<t t-foreach="get_lines(data['form'])" t-as="line">
+									
+										<tr>
+									
+												<td>
+													<span t-esc="line.duration" />
+												</td>
+												<td>
+													<span t-esc="get_hijri_date(line.date_from,'-')" />
+												</td>
+												<td>
+													<span t-esc="get_hijri_date(line.date_to,'-')" />
+												</td>
+												<td>
+													<span t-esc="line.name" />
+												</td>
+												<td>
+													<span t-esc="get_hijri_date(line.date,'-')" />
+												</td>
+												
+										</tr>
+										</t>
+								</tbody>
+							</table>
+
+
+							<table class="table table-bordered">
+								<!-- head table -->
+
+								<thead>
+									<tr>
+										<th> مجموع استحقاقته إلى</th>
+										<th> مجموع ما تمتع به</th>
+										<th> الرصيد الباقي</th>
+										<th>
+											مجموع استحقاقته من
+											<span t-esc="get_years(o.date_to,'-')" />
+											إلى نهاية الخدمة
+										</th>
+										<th> ما تمتع به من حتى نهاية الخدمة</th>
+										<th>الرصيد الباقي في إجازته </th>
+										<th>مجموع المدة التي يستحق عنها التعويض</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
 										<td>
-											<span t-esc="line.holiday_status_id.name" />
 										</td>
 										<td>
-											<span t-esc="line.duration" />
 										</td>
 										<td>
-											<span t-esc="get_hijri_date(line.date_from, '-')" />
 										</td>
 										<td>
-											<span t-esc="get_hijri_date(line.date_to, '-')" />
 										</td>
 										<td>
-											<span t-esc="line.name" />
 										</td>
 										<td>
-											<span t-esc="get_hijri_date(line.date, '-')" />
+										</td>
+										<td>
 										</td>
 									</tr>
 
 								</tbody>
 
-							</table>
 
+							</table>
+							
+							<div class="row">
+							<div>
+								<div class="col-xs-4">االموظف المختص: أسمه ...........................توقيعه </div>
+								<div class="col-xs-4  text-center">الختم الرسمي</div>
+								<div class="col-xs-4">مدير إدارة شؤون الموضفين : أسمه .................................توقيعه</div>
+							</div>
 						</div>
+						</div>
+
 					</t>
 
 				</t>

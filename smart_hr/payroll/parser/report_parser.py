@@ -11,6 +11,7 @@ import time as time_date
 from datetime import datetime
 from openerp.addons.smart_base.util.time_util import days_between
 from openerp.addons.smart_base.util.umalqurra import *
+from umalqurra.hijri_date import HijriDate
 from umalqurra.hijri import Umalqurra
 
 
@@ -154,7 +155,7 @@ class ReportPayslipExtension(report_sxw.rml_parse):
                 total = total + sum
         return total
 
-    def _get_total_deductions(self,type_id, slip_ids):
+    def _get_total_deductions(self, type_id, slip_ids):
         total = 0
         for line in slip_ids :
             if line.employee_id.type_id.id == type_id:
@@ -165,7 +166,7 @@ class ReportPayslipExtension(report_sxw.rml_parse):
                 total = total + sum
         return total
 
-    def _get_total_salary_net(self, type_id,slip_ids):
+    def _get_total_salary_net(self, type_id, slip_ids):
         total = 0
         for line in slip_ids :
             if line.employee_id.type_id.id == type_id:
@@ -208,7 +209,7 @@ class ReportHrErrorEmployee(report_sxw.rml_parse):
     def _get_all_employees(self, month):
 
         payslip_pbj = self.pool.get('hr.payslip')
-        search_ids = payslip_pbj.search(self.cr, self.uid, [('month','=',month),('salary_net','=',0.0)])
+        search_ids = payslip_pbj.search(self.cr, self.uid, [('month', '=', month), ('salary_net', '=', 0.0)])
         return payslip_pbj.browse(self.cr, self.uid, search_ids)
 
     def _get_error_employees(self, month):
@@ -218,25 +219,24 @@ class ReportHrErrorEmployee(report_sxw.rml_parse):
         search_empl_ids = employe_pbj.search(self.cr, self.uid, [('employee_state', '=', 'employee')])
         search_ids = []
         for rec in search_empl_ids:
-            temp = payslip_pbj.search(self.cr, self.uid, [('month','=',month),('employee_id','=',rec)])
+            temp = payslip_pbj.search(self.cr, self.uid, [('month', '=', month), ('employee_id', '=', rec)])
             search_ids += temp
         domain.append(search_ids)
-        payslip_pbj= payslip_pbj.browse(self.cr, self.uid, search_ids)
+        payslip_pbj = payslip_pbj.browse(self.cr, self.uid, search_ids)
         emp_ids = [rec.employee_id.id for rec in payslip_pbj]
         emp_ids = set(emp_ids)
-        result=[]
+        result = []
         result = set(search_empl_ids) - emp_ids
         return employe_pbj.browse(self.cr, self.uid, list(result))
 
 
     def _get_termination_employees(self, month):
-        date_from = get_hijri_month_start(HijriDate, Umalqurra,month)
-        date_to = get_hijri_month_end(HijriDate, Umalqurra,month)
+        date_from = get_hijri_month_start(HijriDate, Umalqurra, month)
+        date_to = get_hijri_month_end(HijriDate, Umalqurra, month)
         domain = []
         termination_pbj = self.pool.get('hr.termination')
-        search_empl_ids = termination_pbj.search(self.cr, self.uid, [('date_termination', '>', date_from),('date_termination', '<', date_to)])
+        search_empl_ids = termination_pbj.search(self.cr, self.uid, [('date_termination', '>', date_from), ('date_termination', '<', date_to)])
         return termination_pbj.browse(self.cr, self.uid, search_empl_ids)
-       
 
     def _get_hijri_date(self, date, separator):
         '''
@@ -255,6 +255,55 @@ class HrErrorEmployeeReport(osv.AbstractModel):
     _inherit = 'report.abstract_report'
     _template = 'smart_hr.report_hr_error_employee'
     _wrapped_report_class = ReportHrErrorEmployee
-    
-    
-    
+
+
+class ReportPayslipChangement(report_sxw.rml_parse):
+
+    def __init__(self, cr, uid, name, context):
+        super(ReportPayslipChangement, self).__init__(cr, uid, name, context=context)
+        self.localcontext.update({
+            'get_hijri_date': self._get_hijri_date,
+            'get_lines': self._get_lines,
+        })
+
+    def _get_lines(self, employee_ids, month):
+        res = []
+        date_from = get_hijri_month_start(HijriDate, Umalqurra, month)
+        date_to = get_hijri_month_end(HijriDate, Umalqurra, month)
+        payslip_obj = self.pool.get('hr.payslip')
+        payslip__ids = payslip_obj.search(self.cr, self.uid, [('date_from', '=', date_from),
+                                                              ('date_to', '=', date_to),
+                                                              ('state', '=', 'done'),
+                                                              ('employee_id', 'in', employee_ids.ids)])
+        for rec in payslip_obj.browse(self.cr, self.uid, payslip__ids):
+            if (rec.salary_net - rec.employee_id.net_salary) != 0:
+                line_ids = rec.line_ids.search([('category', 'in', ['changing_allowance', 'difference', 'deduction'])])
+                print '-----line_ids--------', line_ids
+                res.append({'employee_name': rec.employee_id.display_name,
+                            'number': rec.employee_id.number,
+                            'department_name': rec.employee_id.department_id.name,
+                            'employee_net_salary': rec.employee_id.net_salary,
+                            'payslip_net_salary': rec.salary_net,
+                            'diff': rec.salary_net - rec.employee_id.net_salary,
+                            'payslip_lines': line_ids,
+                            })
+        print res
+        return res
+
+    def _get_hijri_date(self, date, separator):
+        '''
+        convert georging date to hijri date
+        :return hijri date as a string value
+        '''
+        if date:
+            date = fields.Date.from_string(date)
+            hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
+            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+        return None
+
+
+class PayslipChangementReport(osv.AbstractModel):
+    _name = 'report.smart_hr.report_hr_payslip_changement'
+    _inherit = 'report.abstract_report'
+    _template = 'smart_hr.report_hr_payslip_changement'
+    _wrapped_report_class = ReportPayslipChangement
