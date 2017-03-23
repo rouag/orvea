@@ -99,8 +99,9 @@
 								<field name="special_justification_text"
 									attrs="{'invisible':[('special_conditions', '=', False)],'required':[('special_conditions', '=', True)]}" />
 
-								<field name="attachments"
-									attrs="{'invisible':[('state', 'in', ['waiting','new'])],'readonly':[('state', 'in', ['consult','pm','waiting','done', 'refused'])]}" />
+								<field name="attachments" widget="many2many_binary"
+											
+									attrs="{'readonly':[('state', 'in', ['consult','pm','waiting','done', 'refused'])]}" />
 
 								<field name="note"
 									attrs="{'invisible':[('state', 'in', ['waiting','new'])],'readonly':[('state', 'in', ['done', 'refused'])]}" />

@@ -29,7 +29,7 @@ class HrEmployeeTransfert(models.Model):
     new_type_id = fields.Many2one('salary.grid.type', related='new_job_id.type_id', readonly=1, string=u'الصنف')
     justification_text = fields.Text(string=u'مبررات النقل', readonly=1, states={'new': [('readonly', 0)]})
     note = fields.Text(string=u'ملاحظات')
-    attachments = fields.Many2many('ir.attachment', 'res_id', string=u"المرفقات")
+    attachments = fields.Many2many('ir.attachment',string=u"المرفقات")
     same_group = fields.Boolean(compute='_compute_same_specific_group', default=False)
     ready_tobe_done = fields.Boolean(default=False)
     decision_number = fields.Char(string=u"رقم القرار")
