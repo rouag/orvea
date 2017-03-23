@@ -107,7 +107,7 @@
 				<tree string="أنواع القرارات">
 					<field name="name" />
 					<field name="code" />
-					<field name="create_date" />
+					<field name="create_date" string="تاريخ الإنشاء"  />
 				</tree>
 			</field>
 		</record>

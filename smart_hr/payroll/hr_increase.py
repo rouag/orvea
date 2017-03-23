@@ -19,10 +19,10 @@ class hrIncrease(models.Model):
     def get_default_date(self):
         # get end date of month 01 
         date = get_hijri_month_end(HijriDate, Umalqurra, '01')
-#         if fields.date.today() > date:
-#             raise ValidationError(u"لا يمكن إنشاء علاوات بعد نهاية شهر محرّم! ")
-#         else:
-#             return fields.date.today()
+        if fields.date.today() > date:
+            raise ValidationError(u"لا يمكن إنشاء علاوات بعد نهاية شهر محرّم! ")
+        else:
+            return fields.date.today()
 
     name = fields.Char(string=' المسمى', readonly=1, states={'new': [('readonly', 0)]})
     number_decision = fields.Char(string='رقم القرار', required=1,states={'new': [('readonly', 0)]})
