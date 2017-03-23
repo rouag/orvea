@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<record id="view_wizard_payslip_changement" model="ir.ui.view">
+			<field name="name">wizard.payslip.changement.form</field>
+			<field name="model">wizard.payslip.changement</field>
+			<field name="arch" type="xml">
+				<form>
+					<group>
+						<field name="month" />
+					</group>
+					<group col="4">
+						<field name="department_level1_id" />
+						<field name="department_level2_id" />
+						<field name="department_level3_id" />
+						<field name="salary_grid_type_id" />
+					</group>
+					<group>
+						<field name="employee_ids" />
+					</group>
+					<footer>
+						<button icon="fa-cogs" string="تأكيد" name="print_report"
+							type="object" class="oe_highlight" />
+						أو
+						<button string="إلغاء" class="oe_link" special="cancel" />
+					</footer>
+				</form>
+			</field>
+		</record>
+
+		<record id="action_wizard_payslip_changement" model="ir.actions.act_window">
+			<field name="name">تقرير لحصر الموظفين الذين طرأ تغيير في مسيرهم
+			</field>
+			<field name="res_model">wizard.payslip.changement</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="view_wizard_payslip_changement" />
+			<field name="target">new</field>
+		</record>
+		<menuitem id="wizard_payslip_changement_menu" name="الموظفين الذين طرأ تغيير في مسيرهم"
+			sequence="15" groups="group_payroll_management" parent="hr_payroll_reporting"
+			action="action_wizard_payslip_changement" />
+
+	</data>
+</openerp>
