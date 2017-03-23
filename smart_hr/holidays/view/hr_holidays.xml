@@ -150,6 +150,7 @@
 						</group>
 						<group>
 							<group>
+							<field name="extended_holiday_id" attrs="{'invisible': [('is_extension','=',False)]}" readonly="True"/>
 								<field name="employee_id" required="1" />
 								<field name="with_advanced_salary"
 									attrs="{'invisible': [('hide_with_advanced_salary','=',True)]}" />
