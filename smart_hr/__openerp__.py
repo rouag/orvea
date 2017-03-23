@@ -93,7 +93,7 @@
         'hr/data/hr_department_type_data.xml',
         'hr/data/hr_data.xml',
         'hr/view/hr_employee_transfert_view.xml',
-        'hr/view/hr_employee_desire_view.xml',
+       
         'hr/view/hr_setting.xml',
         'hr/view/hr_employee_lend_view.xml',
         'hr/view/hr_employee_comm_view.xml',

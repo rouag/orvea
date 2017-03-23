@@ -18,7 +18,7 @@ class HrEmployeeTransfert(models.Model):
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
     sequence = fields.Integer(string=u'رتبة الطلب')
-    employee_id = fields.Many2one('hr.employee', string=u'صاحب الطلب', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1, readonly=1)
+    employee_id = fields.Many2one('hr.employee', string=u'صاحب الطلب', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1)
     last_evaluation_result = fields.Many2one('hr.employee.evaluation.level', string=u'أخر تقييم إداء')
     job_id = fields.Many2one('hr.job', default=_get_default_employee_job, string=u'الوظيفة', readonly=1, required=1)
     specific_id = fields.Many2one('hr.groupe.job', related='job_id.specific_id', string=u'المجموعة النوعية', readonly=1, required=1)
@@ -29,22 +29,26 @@ class HrEmployeeTransfert(models.Model):
     new_type_id = fields.Many2one('salary.grid.type', related='new_job_id.type_id', readonly=1, string=u'الصنف')
     justification_text = fields.Text(string=u'مبررات النقل', readonly=1, states={'new': [('readonly', 0)]})
     note = fields.Text(string=u'ملاحظات')
+    attachments = fields.Many2many('ir.attachment', 'res_id', string=u"المرفقات")
     same_group = fields.Boolean(compute='_compute_same_specific_group', default=False)
     ready_tobe_done = fields.Boolean(default=False)
     decision_number = fields.Char(string=u"رقم القرار")
     decision_date = fields.Date(string=u'تاريخ القرار')
     decision_file = fields.Binary(string=u'نسخة القرار', attachment=True)
+    decision_file_name = fields.Char(string=u'نسخة القرار')
     degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة')
     date_direct_action = fields.Date(string=u'تاريخ مباشرة العمل')
     governmental_entity = fields.Many2one('res.partner', string=u'الجهة الحكومية', domain=[('company_type', '=', 'governmental_entity')])
-    desire_ids = fields.Many2many('hr.employee.desire', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    desire_ids = fields.One2many('hr.employee.desire', 'employee_id', required=1, string=u'رغبات النقل', readonly=1, states={'new': [('readonly', 0)]})
     refusing_date = fields.Date(string=u'تاريخ الرفض', readonly=1)
     # ‫المدنتية ‫الخدمة‬ ‫موافلقة‬
     speech_number = fields.Char(string=u'رقم الخطاب')
     speech_date = fields.Date(string=u'تاريخ الخطاب')
     speech_file = fields.Binary(string=u'نسخة الخطاب', attachment=True)
+    speech_file_name = fields.Char(string=u'نسخة الخطاب')
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', u'صاحب الصلاحية'),
+                               ('consult', u'صاحب الطلب'),
                               ('pm', u'شؤون الموظفين'),
                               ('done', u'اعتمدت'),
                               ('refused', u'رفض'),
@@ -65,12 +69,23 @@ class HrEmployeeTransfert(models.Model):
     is_ended = fields.Boolean(string=u'انتهت', compute='_compute_is_ended')
     for_members = fields.Boolean(string=u'للاعضاء')
     tobe_cancelled = fields.Boolean(string=u'سيلغى', default=False)
-    is_current_user = fields.Boolean(string='Is Current User', compute='_is_current_user')
+    is_current_user = fields.Boolean(string='Is Current User', compute='_is_current_user', default=False)
     salary_proportion = fields.Float(string=u'نسبة الراتب التي توفرها الجهة (%)', default=100)
     # fields for ordering
     begin_work_date = fields.Date(string=u'تاريخ بداية العمل الحكومي', readonly=1)
     recruiter_date = fields.Date(string=u'تاريخ التعين بالجهة', readonly=1)
     age = fields.Integer(string=u'السن', readonly=1)
+
+
+    @api.onchange('transfert_nature')
+    def onchange_transfert_nature(self):
+        res = {}
+        if self.transfert_nature == 'external_transfert_in':
+            employee_search_ids = self.env['hr.employee'].search([('employee_state','=','new')])
+            print"job_search_ids",employee_search_ids
+            employee_ids = [rec.id for rec in employee_search_ids]
+            res['domain'] = {'employee_id': [('id', 'in', employee_ids)]}
+            return res
 
     @api.multi
     @api.depends('employee_id')
@@ -157,8 +172,8 @@ class HrEmployeeTransfert(models.Model):
                         raise ValidationError(u"لايمكن طلب نقل خلال فترة التجربة")
             # ‫التترقية‬ ‫سنة‬ ‫إستلكمال‬
             if self.employee_id.promotion_duration < 1:
-                            raise ValidationError(u"لايمكن طلب نقل خلال أقل من سنة منذ أخر ترقية")
-            # check desire_ids length from config
+                    raise ValidationError(u"لايمكن طلب نقل خلال أقل من سنة منذ أخر ترقية")
+#             # check desire_ids length from config
             if hr_config:
                 if len(self.desire_ids) > hr_config.desire_number:
                     raise ValidationError(u"لا يمكن إضافة أكثر من " + str(hr_config.desire_number) + u" رغبات.")
@@ -185,6 +200,13 @@ class HrEmployeeTransfert(models.Model):
     def action_waiting(self):
         self.ensure_one()
         self.state = 'waiting'
+
+    @api.multi
+    def action_consultation(self):
+        self.ensure_one()
+        self.state = 'pm'
+
+  
 
     @api.multi
     def action_cancelled(self):
@@ -218,7 +240,7 @@ class HrEmployeeTransfert(models.Model):
                     self.action_refused()
                     return
 
-        self.state = 'pm'
+        self.state = 'consult'
 
     @api.multi
     def button_refuse(self):
@@ -336,14 +358,17 @@ class HrEmployeeTransfertPeriode(models.Model):
 
 class HrTransfertSorting(models.Model):
     _name = 'hr.transfert.sorting'
+    _inherit = ['mail.thread']
     _description = u'‫ترتيب طلبات النقل مع الوظائف المناسبة‬‬'
 
     name = fields.Char(string=u'المسمى', required=1, readonly=1, states={'new': [('readonly', 0)]})
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
     line_ids = fields.One2many('hr.transfert.sorting.line', 'hr_transfert_sorting_id', string=u'طلبات النقل', readonly=0, states={'done': [('readonly', 1)]})
     state = fields.Selection([('new', u'طلب'),
+                              ('waiting', u'إعتماد الموظفين'),
                               ('commission_president', u'رئيس الجهة'),
                               ('done', u'اعتمدت'),
+                              ('refused', u'مرفوضة')
                               ], readonly=1, default='new', string=u'الحالة')
 
     @api.multi
@@ -363,6 +388,17 @@ class HrTransfertSorting(models.Model):
             line_ids.append(vals)
             sequence += 1
         self.line_ids = line_ids
+
+
+    @api.multi
+    def action_waiting(self):
+        self.ensure_one()
+        self.state = 'commission_president'
+
+    @api.multi
+    def button_refuse(self):
+        self.ensure_one()
+        self.state = 'refused'
 
     @api.multi
     def action_commission_president(self):
@@ -386,6 +422,7 @@ class HrTransfertSortingLine(models.Model):
 
     hr_transfert_sorting_id = fields.Many2one('hr.transfert.sorting', string=u'إجراء الترتيب')
     hr_employee_transfert_id = fields.Many2one('hr.employee.transfert', string=u'طلب نقل موظف')
+    state = fields.Selection(related='hr_employee_transfert_id.state' ,string=u'الحالة')
     sequence = fields.Integer(string=u'رتبة الطلب', related='hr_employee_transfert_id.sequence', readonly=1)
     recruiter_date = fields.Date(string=u'تاريخ التعين بالجهة', related='hr_employee_transfert_id.employee_id.recruiter_date', readonly=1)
     age = fields.Integer(string=u'السن', related='hr_employee_transfert_id.employee_id.age', readonly=1)
@@ -393,7 +430,7 @@ class HrTransfertSortingLine(models.Model):
     begin_work_date = fields.Date(related='hr_employee_transfert_id.employee_id.begin_work_date', string=u'تاريخ بداية العمل الحكومي', readonly=1)
     transfert_create_date = fields.Datetime(string=u'تاريخ الطلب', related="hr_employee_transfert_id.create_date", readonly=1)
     last_evaluation_result = fields.Many2one('hr.employee.evaluation.level', related="hr_employee_transfert_id.last_evaluation_result", string=u'أخر تقييم إداء')
-    new_job_id = fields.Many2one('hr.job', domain=[('state', '=', 'unoccupied')], string=u'الوظيفة المنقول إليها', required=1)
+    new_job_id = fields.Many2one('hr.job', domain=[('state', '=', 'unoccupied')], string=u'الوظيفة المنقول إليها')
     is_conflected = fields.Boolean(compute='_compute_is_conflected')
 
     @api.multi

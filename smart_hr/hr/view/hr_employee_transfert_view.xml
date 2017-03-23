@@ -29,9 +29,16 @@
 							states="waiting" groups="smart_hr.group_tranfert_employee_owner"
 							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
-							type="action"
-							states="waiting" groups="smart_hr.group_tranfert_employee_owner"
+							type="action" states="waiting" groups="smart_hr.group_tranfert_employee_owner"
 							icon="fa-times" class="oe_inline oe_stat_button" />
+
+						<button name="action_consultation" string="موافق" type="object"
+							states="consult" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" states="consult" icon="fa-times" class="oe_inline oe_stat_button" />
+
+
 
 						<button name="action_done" string="إعتماد" type="object"
 							groups="smart_hr.group_hr_personnel_officer_jobs"
@@ -54,10 +61,11 @@
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="%(hr_employee_transfert_report)d" string="طباعة القرار"
-							type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+							groups="smart_hr.group_hr_personnel_officer_jobs" type="action"
+							states="done" icon="fa-print" class="oe_inline oe_stat_button" />
 
 						<field name="state" widget="statusbar"
-							statusbar_visible="new,waiting,pm,done,refused,cancelled" />
+							statusbar_visible="new,waiting,consult,pm,done,refused,cancelled" />
 					</header>
 					<sheet>
 						<field name="is_ended" invisible="1" />
@@ -73,9 +81,10 @@
 						</group>
 						<group>
 							<group>
+								<field name="transfert_nature" />
 								<field name="employee_id"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-								<field name="transfert_nature" />
+
 								<field name="transfert_type" />
 								<field name="special_conditions"
 									attrs="{'invisible':[('transfert_type', '!=', 'member')]}" />
@@ -90,17 +99,21 @@
 								<field name="special_justification_text"
 									attrs="{'invisible':[('special_conditions', '=', False)],'required':[('special_conditions', '=', True)]}" />
 
+								<field name="attachments"
+									attrs="{'invisible':[('state', 'in', ['waiting','new'])],'readonly':[('state', 'in', ['consult','pm','waiting','done', 'refused'])]}" />
+
 								<field name="note"
 									attrs="{'invisible':[('state', 'in', ['waiting','new'])],'readonly':[('state', 'in', ['done', 'refused'])]}" />
 								<field name="refusing_date" attrs="{'invisible':[('state', '!=', 'refused')]}" />
 							</group>
 							<group string="قرار الجهة المختصة"
 								attrs="{'invisible':['|','|', ('state', 'not in', ['pm','done']), ('same_group', '=', False),('ready_tobe_done','=',False)]}">
-								<field name="decision_number"
+								<field name="decision_number" groups="smart_hr.group_hr_personnel_officer_jobs"
 									attrs="{'required':[('same_group', '=', True),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm')]}" />
-								<field name="decision_date"
+								<field name="decision_date" groups="smart_hr.group_hr_personnel_officer_jobs"
 									attrs="{'required':[('same_group', '=', True),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm')]}" />
-								<field name="decision_file"
+								<field name="decision_file" filename="decision_file_name"
+									groups="smart_hr.group_hr_personnel_officer_jobs"
 									attrs="{'required':[('same_group', '=', True),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm'),]}" />
 							</group>
 							<group string="موافقة الخدمة المدنية"
@@ -109,8 +122,10 @@
 									attrs="{'required':[('same_group', '=', False),('state', '=', 'pm'),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm')]}" />
 								<field name="speech_date"
 									attrs="{'required':[('same_group', '=', False),('state', '=', 'pm'),('new_job_id', '!=', False) ],'readonly':[('state', '!=', 'pm')]}" />
-								<field name="speech_file"
+								<field name="speech_file" filename="speech_file_name"
 									attrs="{'required':[('same_group', '=', False),('state', '=', 'pm'),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm')]}" />
+								<field name="decision_file_name" invisible="1" />
+								<field name="speech_file_name" invisible="1" />
 							</group>
 						</group>
 						<notebook>
@@ -133,7 +148,7 @@
 								<br></br>
 								<group>
 									<group>
-										<field name="new_job_id"
+										<field name="new_job_id" groups="smart_hr.group_hr_personnel_officer_jobs"
 											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 											readonly="1" />
 										<field name="new_specific_id" />
@@ -152,9 +167,10 @@
 							<page name="desires" string="ترتيب الرغبات">
 								<br></br>
 								<field name="desire_ids">
-									<tree>
-										<field name="sequence" widget="handle" />
-										<field name="name" readonly="1" />
+									<tree editable="bottom">
+										<field name="sequence" widget="handle" readonly="1" />
+										<field name="name" />
+										<field name="employee_id" invisible="1" />
 									</tree>
 								</field>
 							</page>
@@ -254,16 +270,25 @@
 						<button name="action_generate_lines" string="إدراج اللائحة "
 							type="object" groups="smart_hr.group_hr_personnel_officer_commissioning"
 							states="new" />
+							
+								<button name="action_waiting" string="إشعار الموظفين" type="object"
+							states="new" icon="fa-check" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							
+							
 						<button name="action_commission_president" string="إرسال "
 							type="object" groups="smart_hr.group_hr_personnel_officer_commissioning"
-							states="new" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							states="waiting" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_done" string="إعتماد " type="object"
 							groups="smart_hr.group_hr_commissioning_requests" states="commission_president"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" groups="smart_hr.group_hr_commissioning_requests"
+							states="commission_president" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 
 
-						<field name="state" widget="statusbar" statusbar_visible="new,commission_president,done" />
+						<field name="state" widget="statusbar" statusbar_visible="new,waiting,commission_president,done" />
 					</header>
 					<sheet>
 						<group>
@@ -281,11 +306,17 @@
 								<field name="recruiter_date" />
 								<field name="age" />
 								<field name="last_evaluation_result" readonly="1" />
-								<field name="new_job_id" options='{"no_open": True, "no_create": True}' />
+								<field name="new_job_id" required="1"
+									options='{"no_open": True, "no_create": True}' />
+
+								<field name="state" />
 								<field name="is_conflected" invisible="1" />
 							</tree>
 						</field>
 					</sheet>
+					<div>
+						<field name="message_ids" widget="mail_thread" readonly="1" />
+					</div>
 				</form>
 			</field>
 		</record>

@@ -23,7 +23,7 @@ class HrJob(models.Model):
     general_id = fields.Many2one('hr.groupe.job', ' المجموعة العامة', ondelete='cascade', required=1)
     specific_id = fields.Many2one('hr.groupe.job', ' المجموعة النوعية', ondelete='cascade', required=1)
     serie_id = fields.Many2one('hr.groupe.job', ' سلسلة الفئات', ondelete='cascade', required=1)
-    type_id = fields.Many2one('salary.grid.type', string='الصنف', required=1, states={'unoccupied': [('readonly', 0)]})
+    type_id = fields.Many2one('salary.grid.type', string='نوع السلم', required=1, states={'unoccupied': [('readonly', 0)]})
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1,
                                states={'unoccupied': [('readonly', 0)]})
     state = fields.Selection(
@@ -289,7 +289,7 @@ class HrJobCreateLine(models.Model):
     job_nature = fields.Selection([('supervisory', u'اشرافية'), ('not_supervisory', u'غير اشرافية')],
                                   string=u'طبيعة الوظيفة', default='not_supervisory')
     job_number = fields.Char(string='رقم الوظيفة', required=1)
-    type_id = fields.Many2one('salary.grid.type', string='الصنف', required=1)
+    type_id = fields.Many2one('salary.grid.type', string='نوع السلم', required=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1)
     department_id = fields.Many2one('hr.department', string='الإدارة', required=1)
     job_create_id = fields.Many2one('hr.job.create', string=' وظائف')
@@ -515,7 +515,7 @@ class HrJobStripFromLine(models.Model):
     job_name_code = fields.Char(related="name.number", string='الرمز', required=1)
     number = fields.Char(string=u'الرمز', required=1)
     job_number = fields.Char(string=u'رقم الوظيفة', required=1)
-    type_id = fields.Many2one('salary.grid.type', string=u'الصنف', required=1)
+    type_id = fields.Many2one('salary.grid.type', string=u'نوع السلم', required=1)
     grade_id = fields.Many2one('salary.grid.grade', string=u'المرتبة', required=1)
     department_id = fields.Many2one('hr.department', string=u'الإدارة', required=1)
     job_strip_from_id = fields.Many2one('hr.job.strip.from', string=u' وظائف')
@@ -705,7 +705,7 @@ class HrJobStripToLine(models.Model):
     job_id = fields.Many2one('hr.job', string='الوظيفة', required=1)
     job_number = fields.Char(related='job_id.number', string='رقم الوظيفة', readonly=1)
     job_name_code = fields.Char(related="job_id.name.number", string='الرمز', required=1, readonly=1)
-    type_id = fields.Many2one('salary.grid.type', string='الصنف', required=1, readonly=1)
+    type_id = fields.Many2one('salary.grid.type', string='نوع السلم', required=1, readonly=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1, readonly=1)
     department_id = fields.Many2one('hr.department', string='الإدارة', required=1, readonly=1)
 
@@ -806,7 +806,7 @@ class HrJobCancelLine(models.Model):
     job_id = fields.Many2one('hr.job', string='الوظيفة', required=1)
     job_number = fields.Char(related='job_id.number', string='رقم الوظيفة', readonly=1)
     job_name_code = fields.Char(related="job_id.name.number", string='الرمز', required=1)
-    type_id = fields.Many2one('salary.grid.type', string='الصنف', required=1, readonly=1)
+    type_id = fields.Many2one('salary.grid.type', string='نوع السلم', required=1, readonly=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', required=1, readonly=1)
     department_id = fields.Many2one('hr.department', string='الإدارة', required=1, readonly=1)
 
@@ -994,7 +994,7 @@ class HrJobMoveDeparrtmentLine(models.Model):
     job_id = fields.Many2one('hr.job', string='الوظيفة', required=1)
     job_number = fields.Char(related='job_id.number', string='رقم الوظيفة', readonly=1)
     job_name_code = fields.Char(related="job_id.name.number", string='الرمز', readonly=1)
-    type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1, required=1)
+    type_id = fields.Many2one('salary.grid.type', string='نوع السلم', readonly=1, required=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة ', readonly=1, required=1)
     department_id = fields.Many2one('hr.department', string='الإدارة', readonly=1, required=1)
     new_department_id = fields.Many2one('hr.department', string='الإدارة الجديد', required=1)
@@ -1224,7 +1224,7 @@ class HrJobMoveGradeLine(models.Model):
     job_id = fields.Many2one('hr.job', string='الوظيفة', required=1)
     job_number = fields.Char(string='رقم الوظيفة', required=1)
     job_name_code = fields.Char(related="job_id.name.number", string='الرمز', readonly=1)
-    type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1, required=1)
+    type_id = fields.Many2one('salary.grid.type', string='نوع السلم', readonly=1, required=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة الحالية', readonly=1, required=1)
     new_grade_id = fields.Many2one('salary.grid.grade', string=' المرتبة الجديدة', required=1)
     department_id = fields.Many2one('hr.department', string='الإدارة', readonly=1, required=1)
@@ -1401,7 +1401,7 @@ class HrJobMoveUpdate(models.Model):
             if rec.new_name:
                 description += " تحوير المسمى من " + " " + str(rec.old_name.name) + " " + " الى "+ " " + str(rec.new_name.name)+". \n"
             if rec.new_type_id:
-                description += " تحوير الصنف من " + " " + str(rec.old_type_id.name) + " " + "الى"+ " " + str(rec.new_type_id.name)+"."
+                description += " تحوير نوع السلم من " + " " + str(rec.old_type_id.name) + " " + "الى"+ " " + str(rec.new_type_id.name)+"."
             job_history_vals = {
                 'action': 'تحوير‬ الوظيفة',
                 'action_date': date.today(),
@@ -1456,8 +1456,8 @@ class HrJobMoveUpdateLine(models.Model):
     job_number = fields.Char(related='job_id.number', string=u'رقم الوظيفة', readonly=1)
     old_name = fields.Many2one('hr.job.name', readonly=1, string=u'المسمى', required=1)
     new_name = fields.Many2one('hr.job.name', string=u'المسمى الجديد', required=1)
-    old_type_id = fields.Many2one('salary.grid.type', string=u'الصنف', readonly=1, required=1)
-    new_type_id = fields.Many2one('salary.grid.type', string=u'الصنف الجديد', required=1)
+    old_type_id = fields.Many2one('salary.grid.type', string=u'نوع السلم', readonly=1, required=1)
+    new_type_id = fields.Many2one('salary.grid.type', string=u'نوع السلم الجديد', required=1)
     grade_id = fields.Many2one('salary.grid.grade', related='job_id.grade_id', string=u'المرتبة', readonly=1,
                                required=1)
     department_id = fields.Many2one('hr.department', related='job_id.department_id', string=u'الإدارة', readonly=1,

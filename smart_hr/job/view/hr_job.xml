@@ -59,7 +59,7 @@
 							<group>
 								<field name="number" />
 								<field name="name_number" />
-								<field name="type_id" string="الصنف" />
+								<field name="type_id" string="نوع السلم" />
 								<field name="grade_id" />
 									<field name="department_id"  string="مقر الوظيفة" />
 								<field name="activity_type" />
@@ -101,7 +101,7 @@
 						domain="[('state','=','cancel')]" />
 					<filter string="الوظائف المحجوزة" name="reserved"
 						domain="[('state','=','reserved')]" />
-					<field name="type_id" string="الصنف" />
+					<field name="type_id" string="نوع السلم" />
 					<field name="grade_id"  string="المرتبة" />
 					<field name="department_id"  string="مقر الوظيفة" />
 					
@@ -109,7 +109,7 @@
 					<group expand="0" string="تجميع حسب...">
 						<filter name="state" string="الحالة" domain="[]"
 							context="{'group_by':'state'}" />
-							<filter name="type_id" string="الصنف" domain="[]"
+							<filter name="type_id" string="نوع السلم" domain="[]"
 							context="{'group_by':'type_id'}" />
 							<filter name="grade_id" string="المرتبة" domain="[]"
 							context="{'group_by':'grade_id'}" />
