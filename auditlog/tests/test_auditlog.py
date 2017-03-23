@@ -82,7 +82,7 @@ class TestAuditlogFull(TransactionCase, TestAuditlog):
         self.groups_rule = self.env['auditlog.rule'].create({
             'name': 'testrule for groups',
             'model_id': self.groups_model_id,
-            'log_read': True,
+            '': True,
             'log_create': True,
             'log_write': True,
             'log_unlink': True,
@@ -103,7 +103,7 @@ class TestAuditlogFast(TransactionCase, TestAuditlog):
         self.groups_rule = self.env['auditlog.rule'].create({
             'name': 'testrule for groups',
             'model_id': self.groups_model_id,
-            'log_read': True,
+            '': True,
             'log_create': True,
             'log_write': True,
             'log_unlink': True,
