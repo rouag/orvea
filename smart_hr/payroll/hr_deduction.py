@@ -34,9 +34,48 @@ class HrDeduction(models.Model):
                               ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
     line_ids = fields.One2many('hr.deduction.line', 'deduction_id', string='الحسميات', readonly=1, states={'new': [('readonly', 0)]})
     history_ids = fields.One2many('hr.deduction.history', 'deduction_id', string='سجل التغييرات', readonly=1)
+    department_level1_id = fields.Many2one('hr.department', string='الفرع', readonly=1, states={'new': [('readonly', 0)]})
+    department_level2_id = fields.Many2one('hr.department', string='القسم', readonly=1, states={'new': [('readonly', 0)]})
+    department_level3_id = fields.Many2one('hr.department', string='الشعبة', readonly=1, states={'new': [('readonly', 0)]})
+    salary_grid_type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1, states={'new': [('readonly', 0)]},)
+    employee_ids = fields.Many2many('hr.employee', string='الموظفين', readonly=1, states={'new': [('readonly', 0)]})
+
+    @api.onchange('department_level1_id', 'department_level2_id', 'department_level3_id', 'salary_grid_type_id')
+    def onchange_department_level(self):
+        dapartment_obj = self.env['hr.department']
+        employee_obj = self.env['hr.employee']
+        department_level1_id = self.department_level1_id and self.department_level1_id.id or False
+        department_level2_id = self.department_level2_id and self.department_level2_id.id or False
+        department_level3_id = self.department_level3_id and self.department_level3_id.id or False
+        employee_ids = []
+        dapartment_id = False
+        if department_level3_id:
+            dapartment_id = department_level3_id
+        elif department_level2_id:
+            dapartment_id = department_level2_id
+        elif department_level1_id:
+            dapartment_id = department_level1_id
+        if dapartment_id:
+            dapartment = dapartment_obj.browse(dapartment_id)
+            employee_ids += [x.id for x in dapartment.member_ids]
+            for child in dapartment.all_child_ids:
+                employee_ids += [x.id for x in child.member_ids]
+        result = {}
+        if not employee_ids:
+            # get all employee
+            employee_ids = employee_obj.search([('employee_state', '=', 'employee')]).ids
+        # filter by type
+        if self.salary_grid_type_id:
+            employee_ids = employee_obj.search([('id', 'in', employee_ids), ('type_id', '=', self.salary_grid_type_id.id)]).ids
+        result.update({'domain': {'employee_ids': [('id', 'in', list(set(employee_ids)))]}})
+        return result
 
     @api.onchange('month')
     def onchange_month(self):
+        self.name = u'حسميات شهر %s' % self.month
+
+    @api.multi
+    def compute_deductions(self):
         self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.month)
         self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.month)
         self.name = u'حسميات شهر %s' % self.month
@@ -54,21 +93,22 @@ class HrDeduction(models.Model):
             absence_type = deduction_type_obj.search([('type', '=', 'absence')])[0]
             for summary in monthly_summarys_retard + monthly_summarys_absence:
                 employee = summary.employee_id
-                val = {'deduction_id': self.id,
-                       'employee_id': employee.id,
-                       'department_id': employee.department_id and employee.department_id.id or False,
-                       'job_id': employee.job_id and employee.job_id.id or False,
-                       'number': employee.number,
-                       'state': 'waiting'}
-                if summary.days_retard:
-                    val.update({'amount': summary.days_retard, 'deduction_type_id': retard_leave_type.id})
-                    line_ids.append(val)
-                elif summary.days_absence:
-                    val_absence = val.copy()
-                    val_absence.update({'amount': summary.days_absence, 'deduction_type_id': absence_type.id})
-                    line_ids.append(val_absence)
-            # العقوبات
-            line_ids += self.deduction_sanctions()
+                if employee in self.employee_ids:
+                    val = {'deduction_id': self.id,
+                           'employee_id': employee.id,
+                           'department_id': employee.department_id and employee.department_id.id or False,
+                           'job_id': employee.job_id and employee.job_id.id or False,
+                           'number': employee.number,
+                           'state': 'waiting'}
+                    if summary.days_retard:
+                        val.update({'amount': summary.days_retard, 'deduction_type_id': retard_leave_type.id})
+                        line_ids.append(val)
+                    elif summary.days_absence:
+                        val_absence = val.copy()
+                        val_absence.update({'amount': summary.days_absence, 'deduction_type_id': absence_type.id})
+                        line_ids.append(val_absence)
+                # العقوبات
+                line_ids += self.deduction_sanctions()
             self.line_ids = line_ids
 
     @api.one

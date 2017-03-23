@@ -512,7 +512,7 @@ class HrPayslip(models.Model):
                              'employee_id': employee.id,
                              'rate': 0.0,
                              'amount': bonus_amount,
-                             'category': 'allowance',
+                             'category': 'changing_allowance',
                              'type': bonus_type,
                              'sequence': sequence
                              }
@@ -680,8 +680,7 @@ class HrPayslip(models.Model):
             lines.append(salary_net_val)
             payslip.salary_net = salary_net
             payslip.line_ids = lines
-    
-    
+
     @api.one
     @api.constrains('employee_id', 'month')
     def _check_payroll(self):
@@ -696,7 +695,8 @@ class HrPayslip(models.Model):
             um = HijriDate.today()
             if int(um.month) < int(self.month):
                 raise UserError(u"لا يمكن انشاء مسير لشهر في المستقبل ")
-            
+
+
 class HrPayslipWorkedDays(models.Model):
     _inherit = 'hr.payslip.worked_days'
 
@@ -716,6 +716,7 @@ class HrPayslipLine(models.Model):
     # added
     category = fields.Selection([('basic_salary', 'الراتب الأساسي'),
                                  ('allowance', 'البدلات'),
+                                 ('changing_allowance', 'البدلات المتغيرة'),
                                  ('difference', 'فروقات'),
                                  ('deduction', 'الحسميات'),
                                  ('retirement', 'التقاعد'),

@@ -39,3 +39,5 @@ from . import hr_employee_create_users
 from . import employee_situation_order
 from . import res_country
 from . import smart_utils
+
+from . import hr_decision_setting

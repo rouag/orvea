@@ -171,6 +171,9 @@
 			<field name="age_nomember" eval="65"/>
 		</record>
 		
-
+		<!-- hr.decision.setting -->
+		<record id="data_hr_decision_setting" model="hr.decision.setting">
+			<field name="name">اعدادات تسلسل القرارات</field>
+		</record>
 	</data>
 </openerp>

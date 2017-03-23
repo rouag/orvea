@@ -18,9 +18,9 @@
 
 											<p align="center">
 												قرار إداري رقم
-												<span t-esc="o.name" />
+												<span t-esc="o.decision_number" />
 												بتاريخ
-												<span t-esc="get_hijri_date(o.date, '-')" />
+												<span t-esc="get_hijri_date(o.decision_date, '-')" />
 											</p>
 											<p align="left">
 												رقم الهوية الوطنية:
@@ -102,9 +102,9 @@
 
 											<p align="center">
 												قرار إداري رقم
-												<span t-esc="o.name" />
+												<span t-esc="o.decision_number" />
 												بتاريخ
-												<span t-esc="get_hijri_date(o.date, '-')" />
+												<span t-esc="get_hijri_date(o.decision_date, '-')" />
 											</p>
 											<p align="left">
 												رقم الهوية الوطنية:
@@ -190,9 +190,9 @@
 
 											<p align="center">
 												قرار إداري رقم
-												<span t-esc="o.name" />
+												<span t-esc="o.decision_number" />
 												بتاريخ
-												<span t-esc="get_hijri_date(o.date, '-')" />
+												<span t-esc="get_hijri_date(o.decision_date, '-')" />
 											</p>
 											<p align="left">
 												رقم الهوية الوطنية:
@@ -286,9 +286,9 @@
 
 											<p align="center">
 												قرار إداري رقم
-												<span t-esc="o.name" />
+												<span t-esc="o.decision_number" />
 												بتاريخ
-												<span t-esc="get_hijri_date(o.date, '-')" />
+												<span t-esc="get_hijri_date(o.decision_date, '-')" />
 											</p>
 											<p align="left">
 												رقم الهوية الوطنية:
@@ -378,9 +378,9 @@
 
 											<p align="center">
 												قرار إداري رقم
-												<span t-esc="o.name" />
+												<span t-esc="o.decision_number" />
 												بتاريخ
-												<span t-esc="get_hijri_date(o.date, '-')" />
+												<span t-esc="get_hijri_date(o.decision_date, '-')" />
 											</p>
 											<p align="left">
 												رقم الهوية الوطنية:
