@@ -153,10 +153,31 @@ class HrHolidays(models.Model):
     display_compute_as_deputation = fields.Boolean('hide_compute_as_deputation', default=False)
     deputation_id = fields.Many2one('hr.deputation', string='الانتداب')
     deputation_balance_computed = fields.Float(string='مدة الانتداب المحتسبة', compute='compute_deputation_balance_compUted')
+    can_be_cutted = fields.Boolean(string=u'يمكن قطعها',related='holiday_status_id.can_be_cutted')
+    can_be_cancelled = fields.Boolean(string=u'يمكن الغاؤها', related='holiday_status_id.can_be_cancelled')
+    display_button_cancel = fields.Boolean(compute='_compute_display_button_cancel')
+    display_button_cut = fields.Boolean(compute='_compute_display_button_cut')
+
 
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
+
+    @api.multi
+    def _compute_display_button_cancel(self):
+        for rec in self:
+            if not rec.can_be_cancelled or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is True:
+                rec.display_button_cancel = False
+            else:
+                rec.display_button_cancel = True
+
+    @api.multi
+    def _compute_display_button_cut(self):
+        for rec in self:
+            if not rec.can_be_cutted or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is False:
+                rec.display_button_cut = False
+            else:
+                rec.display_button_cancel = True
 
     @api.multi
     @api.depends("deputation_id")
@@ -1368,7 +1389,7 @@ class HrHolidaysStatus(models.Model):
     advanced_salary_periode = fields.Integer(string=u'مدة صرف راتب مسبق (باليوم)', default=30)
     maximum_minimum = fields.Integer(string=u'الحد الاقصى للايام الممكنة اقل من الحد الأدنى')
     min_duration_cut_hoiday = fields.Integer(string=u'المدة اللازمة لقطع الاجازة العادية خلال الثلاث سنوات الاخيرة') 
-    
+    can_be_cutted = fields.Boolean(string=u'يمكن قطعها', default=True)
     
     
     @api.onchange('deductible_duration_service')

@@ -56,6 +56,10 @@
 					<field name="is_started" invisible="1" />
 					<field name="is_delayed" invisible="1" />
 					<field name="is_extensible" invisible="1" />
+					<field name="can_be_cancelled" invisible="1" />
+					<field name="can_be_cutted" invisible="1" />
+					<field name="display_button_cut" invisible="1" />
+					<field name="display_button_cancel" invisible="1" />
 					<header name="main">
 
 						<button name="send_holiday_request" string="إرسال طلب"
@@ -114,13 +118,13 @@
 
 						<button name="button_cancel" context="{'operation': 'cancel'}"
 							string="إلغاء الإجازة" type="object"
-							attrs="{'invisible':['|','|','|',('state','!=','done'),('is_cancelled','=',True),('is_started','=',True)]}"
+							attrs="{'invisible':[('display_button_cut','=',False)]}"
 							icon="fa-times-circle-o" class="oe_inline oe_stat_button"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="button_cut" context="{'operation': 'cut'}"
 							string="قطع الاجازة" type="object"
-							attrs="{'invisible':['|','|','|',('state','!=','done'),('is_cancelled','=',True),('is_started','=',False)]}"
+							attrs="{'invisible':[('display_button_cut','=',False)]}"
 							icon="fa-times-circle-o" class="oe_inline oe_stat_button"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="%(report_hr_holidays)d" string="طباعة القرار"
@@ -469,7 +473,7 @@
 									<field name="maximum_minimum" />
 									<field name="maximum" />
 									<field name="postponement_period" />
-									<field name="min_duration_cut_hoiday"/>
+									<field name="min_duration_cut_hoiday" />
 								</group>
 								<group string="الأثر المالي">
 									<field name="salary_spending" />
@@ -493,6 +497,8 @@
 									<field name="employees_director_decision" />
 									<field name="external_decision" />
 									<field name="can_be_cancelled" />
+									<field name="can_be_cutted" />
+
 								</group>
 								<group string="إعدادات عامّة">
 									<field name="for_saudi" />
