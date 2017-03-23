@@ -98,7 +98,7 @@ class HrHolidays(models.Model):
     inspeech_file_name = fields.Char(string=u'الخطاب الوارد name')
     # Cancellation
     is_cancelled = fields.Boolean(string=u'ملغاة', compute='_is_cancelled')
-    is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started', store=True)
+    is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started', )
     holiday_cancellation = fields.Many2one('hr.holidays.cancellation')    
     # Extension
     is_extension = fields.Boolean(string=u'تمديد إجازة')
