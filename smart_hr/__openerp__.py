@@ -162,6 +162,7 @@
         'sanction/hr_deprivation_premium_view.xml',
         # القرارات
         'view/hr_decision.xml',
+        'view/hr_decision_setting.xml',
         # الرواتب
         'payroll/menu.xml',
         'payroll/data/salary_grid_type_data.xml',

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+	
+		<!-- إعدادات القرارات -->
+		<record id="view_hr_decision_setting" model="ir.ui.view">
+			<field name="name">hr.decision.setting.form</field>
+			<field name="model">hr.decision.setting</field>
+			<field name="arch" type="xml">
+				<form string="إعدادات القرارات" create='0'  delete='0' duplicate='0'>
+
+					<sheet>
+						<group>
+							<field name="name" invisible="1" />
+							<field name="sequence_id" invisible="1" />
+							<field name="number_next" />
+							<field name="new_number_next" class="oe_edit_only"/>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="ir_actions_button_hr_decision_setting" model="ir.actions.server">
+			<field name="sequence" eval="5" />
+			<field name="state">code</field>
+			<field name="type">ir.actions.server</field>
+			<field name="model_id" ref="model_hr_decision_setting" />
+			<field name="code">action=pool.get('hr.decision.setting').button_setting(cr,uid,None,)
+			</field>
+			<field name="condition">True</field>
+			<field name="name">إعدادات القرارات</field>
+		</record>
+
+		<menuitem name="الإعدادات " id="hr_decision_setting_menu"
+			parent="hr_root_decision" sequence="10"
+		 />
+			
+	
+		<menuitem name="اعدادات تسلسل القرارات" id="hr_decision_sequence_menu"
+			parent="hr_decision_setting_menu" sequence="15"
+			action="ir_actions_button_hr_decision_setting" />	
+	</data>
+	</openerp>

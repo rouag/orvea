@@ -108,6 +108,12 @@
 			<field eval="1" name="number_increment" />
 			<field name="padding">5</field>
 		</record>
-
+		
+		<record id="hr_decision_seq" forcecreate="1" model="ir.sequence">
+			<field name="name">Decisions sequence</field>
+			<field name="code">hr.decision.sequence</field>
+			<field eval="1" name="number_increment" />
+			<field name="padding">4</field>
+		</record>
 	</data>
 </openerp>
