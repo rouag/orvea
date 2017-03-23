@@ -59,7 +59,6 @@ class hr_suspension_end(models.Model):
             release_date = fields.Date.from_string(self.release_date)
             suspension_date = fields.Date.from_string(self.suspension_id.suspension_date)
             duration = (release_date - suspension_date).days
-            self.env['hr.employee.promotion.history'].decrement_promotion_duration(self.employee_id, duration)
             self.employee_id.service_duration -= duration
             holiday_balance = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
                                                                              ('holiday_status_id', '=', self.env.ref(

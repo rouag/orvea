@@ -78,6 +78,9 @@
 							<group col="4">
 								<field name="month" />
 								<field name="employee_id" />
+								<field name="degree_id" invisible="1"/>
+								<field name="grade_id" invisible="1"/>
+								<field name="type_id" invisible="1"/>
 								<label for="date_from" string="الفترة" invisible="1"/>
 								<div invisible="1">
 									<field name="date_from" class="oe_inline" />

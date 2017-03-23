@@ -22,13 +22,19 @@
 						<button name="button_hrm" string="إرسال طلب" type="object"
 							states="draft" groups="smart_hr.group_hr" icon="fa-paper-plane"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_done" string="موافقة" type="object"
+
+						<button name="button_make_decision" string="موافقة" type="object"
 							states="hrm" groups="smart_hr.group_hrm" icon="fa-check"
+							class="oe_inline oe_stat_button" />
+						<button name="button_done" string="موافقة" type="object"
+							states="make_decision" groups="smart_hr.group_hrm" icon="fa-check"
 							class="oe_inline oe_stat_button" />
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" states="hrm" groups="smart_hr.group_hrm" icon="fa-times"
 							class="oe_inline oe_stat_button" />
-						<field name="state" widget="statusbar" statusbar_visible="draft,hrm,done" />
+						<button name="%(report_hr_suspension_report_decision)d" string="طباعة القرار"
+							type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+						<field name="state" widget="statusbar" statusbar_visible="draft,hrm,make_decision,done" />
 					</header>
 					<sheet>
 						<label for="name" class="oe_edit_only" />
@@ -57,9 +63,15 @@
 									attrs="{'readonly':[('state','!=','draft')]}" />
 								<field name="suspension_attachment" attrs="{'readonly':[('state','!=','draft')]}" />
 							</group>
+							<group string="معلومات القرار" attrs="{'invisible':[('state','not in',['make_decision','done'])]}">
+
+								<field name="decision_number"
+									attrs="{'invisible':[('state','not in',['make_decision','done'])], 'required':[('state','=','make_decision')], 'readonly':[('state','=','done')]}" />
+								<field name="decision_date"
+									attrs="{'invisible':[('state','not in',['make_decision','done'])], 'required':[('state','=','make_decision')], 'readonly':[('state','=','done')]}" />
+							</group>
 						</group>
-						<button name="%(report_hr_suspension_report)d" string="طباعة القرار"
-							type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+
 
 					</sheet>
 					<div>

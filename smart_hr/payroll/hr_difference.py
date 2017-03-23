@@ -174,12 +174,10 @@ class HrDifference(models.Model):
             if deputation.date_to > self.date_to:
                 date_to = self.date_to
             number_of_days = self.env['hr.smart.utils'].compute_duration_deputation(date_from, date_to, deputation)
-            print '----------number_of_days--------------', number_of_days
             #
             employee = deputation.employee_id
             # get a correct line
             deputation_amount, transport_amount, deputation_allowance = deputation.get_deputation_allowance_amount(number_of_days)
-            print deputation_amount, transport_amount, deputation_allowance
             if transport_amount:
                 # بدل نقل
                 transport_val = {'difference_id': self.id,
@@ -448,61 +446,129 @@ class HrDifference(models.Model):
             date_to = fields.Date.from_string(self.date_to)
             duration_in_month = 0
             if date_from >= lend_date_from and lend_date_to >= date_to:
-                duration_in_month = self.env['hr.smart.utils'].compute_duration(date_from, date_to)
+                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, date_from, date_to, True, True, True)
             if lend_date_from >= date_from and lend_date_to <= date_to:
-                duration_in_month = self.env['hr.smart.utils'].compute_duration(lend_date_to, lend_date_from)
+                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_to, lend_date_from, True, True, True)
             if lend_date_from >= date_from and lend_date_to >= date_to:
-                duration_in_month = self.env['hr.smart.utils'].compute_duration(date_to, lend_date_from)
-            grid_id, basic_salary = lend_id.employee_id.get_salary_grid_id(False)
-            if grid_id and duration_in_month > 0:
-                # 1) نسبة الراتب
-                amount = ((duration_in_month * (basic_salary / 22) * lend_id.salary_proportion) / 100.0) * -1
-                if amount < 0:
-                    vals = {'difference_id': self.id,
-                            'name': 'نسبة الراتب',
-                            'employee_id': lend_id.employee_id.id,
-                            'number_of_days': duration_in_month,
-                            'number_of_hours': 0.0,
-                            'amount': amount,
-                            'type': 'lend'}
-                    line_ids.append(vals)
-                # 2) البدلات في الإعارة
-                alowances_in_grade_id = [rec.allowance_id for rec in grid_id.allowance_ids]
-                for allowance in lend_id.allowance_ids:
-                    if allowance not in alowances_in_grade_id:
+                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_from, date_to, True, True, True)
+            # case 1: one salary grid for all the periode
+            if len(res) == 1:
+                res = res[0]
+                duration_in_month = res['days']
+                grid_id = res['grid_id']
+                basic_salary = res['basic_salary']
+                if grid_id and duration_in_month > 0:
+                    # 1) نسبة الراتب
+                    amount = ((duration_in_month * (basic_salary / 22) * lend_id.salary_proportion) / 100.0) * -1
+                    if amount < 0:
                         vals = {'difference_id': self.id,
-                                'name': allowance.allowance_id.name,
+                                'name': 'نسبة الراتب',
                                 'employee_id': lend_id.employee_id.id,
                                 'number_of_days': duration_in_month,
                                 'number_of_hours': 0.0,
-                                'amount': allowance.amount,
+                                'amount': amount,
                                 'type': 'lend'}
                         line_ids.append(vals)
-                # 3) حصة الحكومة من التقاعد
-                if lend_id.pay_retirement:
-                    hr_setting = self.env['hr.setting'].search([], limit=1)
-                    if hr_setting:
-                        amount = (basic_salary * hr_setting.retirement_proportion) / 100.0
-                        if amount > 0:
+                    # 2) البدلات في الإعارة
+                    alowances_in_grade_id = [rec.allowance_id for rec in grid_id.allowance_ids]
+                    for allowance in lend_id.allowance_ids:
+                        if allowance not in alowances_in_grade_id:
                             vals = {'difference_id': self.id,
-                                    'name': 'حصة الحكومة من التقاعد',
+                                    'name': allowance.allowance_id.name,
                                     'employee_id': lend_id.employee_id.id,
                                     'number_of_days': duration_in_month,
                                     'number_of_hours': 0.0,
-                                    'amount': amount,
+                                    'amount': allowance.amount,
                                     'type': 'lend'}
                             line_ids.append(vals)
-                # 4) فرق الراتب
-                amount = ((lend_id.lend_salary - lend_id.basic_salary) / 22) * duration_in_month
-                if amount > 0:
+                    # 3) حصة الحكومة من التقاعد
+                    if lend_id.pay_retirement:
+                        hr_setting = self.env['hr.setting'].search([], limit=1)
+                        if hr_setting:
+                            amount = (basic_salary * hr_setting.retirement_proportion) / 100.0
+                            if amount > 0:
+                                vals = {'difference_id': self.id,
+                                        'name': 'حصة الحكومة من التقاعد',
+                                        'employee_id': lend_id.employee_id.id,
+                                        'number_of_days': duration_in_month,
+                                        'number_of_hours': 0.0,
+                                        'amount': amount,
+                                        'type': 'lend'}
+                                line_ids.append(vals)
+                    # 4) فرق الراتب
+                    amount = ((lend_id.lend_salary - lend_id.basic_salary) / 22) * duration_in_month
+                    if amount > 0:
+                        vals = {'difference_id': self.id,
+                                'name': 'فرق الراتب',
+                                'employee_id': lend_id.employee_id.id,
+                                'number_of_days': duration_in_month,
+                                'number_of_hours': 0.0,
+                                'amount': amount,
+                                'type': 'lend'}
+                        line_ids.append(vals)
+            # case 2: many salary grid for all the periode
+            else:
+                mydict = {}
+                for rec in res:
+                    duration_in_month = rec['days']
+                    grid_id = rec['grid_id']
+                    basic_salary = rec['basic_salary']
+                    if grid_id and duration_in_month > 0:
+                        # 1) نسبة الراتب
+                        amount = ((duration_in_month * (basic_salary / 22) * lend_id.salary_proportion) / 100.0) * -1
+                        mydict['duration_in_month'] += duration_in_month
+                        mydict['amount'] += amount
+                if mydict:
                     vals = {'difference_id': self.id,
-                            'name': 'فرق الراتب',
+                            'name': 'نسبة الراتب',
                             'employee_id': lend_id.employee_id.id,
-                            'number_of_days': duration_in_month,
+                            'number_of_days': mydict['duration_in_month'],
                             'number_of_hours': 0.0,
-                            'amount': amount,
+                            'amount': mydict['amount'],
                             'type': 'lend'}
                     line_ids.append(vals)
+                mydict = {}
+                for rec in res:
+                    duration_in_month = rec['days']
+                    grid_id = rec['grid_id']
+                    basic_salary = rec['basic_salary']
+                    # 2) البدلات في الإعارة
+                    alowances_in_grade_id = [rec.allowance_id for rec in grid_id.allowance_ids]
+                    for allowance in lend_id.allowance_ids:
+                        if allowance not in alowances_in_grade_id:
+                            vals = {'difference_id': self.id,
+                                    'name': allowance.allowance_id.name,
+                                    'employee_id': lend_id.employee_id.id,
+                                    'number_of_days': duration_in_month,
+                                    'number_of_hours': 0.0,
+                                    'amount': allowance.amount,
+                                    'type': 'lend'}
+                            line_ids.append(vals)
+                    # 3) حصة الحكومة من التقاعد
+                    if lend_id.pay_retirement:
+                        hr_setting = self.env['hr.setting'].search([], limit=1)
+                        if hr_setting:
+                            amount = (basic_salary * hr_setting.retirement_proportion) / 100.0
+                            if amount > 0:
+                                vals = {'difference_id': self.id,
+                                        'name': 'حصة الحكومة من التقاعد',
+                                        'employee_id': lend_id.employee_id.id,
+                                        'number_of_days': duration_in_month,
+                                        'number_of_hours': 0.0,
+                                        'amount': amount,
+                                        'type': 'lend'}
+                                line_ids.append(vals)
+                    # 4) فرق الراتب
+                    amount = ((lend_id.lend_salary - lend_id.basic_salary) / 22) * duration_in_month
+                    if amount > 0:
+                        vals = {'difference_id': self.id,
+                                'name': 'فرق الراتب',
+                                'employee_id': lend_id.employee_id.id,
+                                'number_of_days': duration_in_month,
+                                'number_of_hours': 0.0,
+                                'amount': amount,
+                                'type': 'lend'}
+                        line_ids.append(vals)
         return line_ids
 
     @api.multi

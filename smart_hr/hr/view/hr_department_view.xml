@@ -129,8 +129,8 @@
 						</group>
 					</div>
 					<div class="col-xs-6 o_kanban_primary_right" position="inside">
-						<button class="btn btn-primary" name="button_child_ids" style="margin-right:2px;"
-							type="object">الإدارات</button>
+						<button class="btn btn-primary" name="button_child_ids"
+							style="margin-right:2px;" type="object">الإدارات</button>
 					</div>
 				</data>
 			</field>
@@ -157,6 +157,8 @@
 						<group>
 							<field name="name" />
 							<field name="code" />
+							<field name="allowance_ids" widget="many2many_tags"
+								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 
 						</group>
 					</sheet>

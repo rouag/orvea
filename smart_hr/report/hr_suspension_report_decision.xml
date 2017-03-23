@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="hr_suspension_report_decision">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.landscape_layout">
+						<div class="page" style="direction:rtl;">
+							<div class="row">
+								<div style="font-size:22px;">
+
+									<p>
+										<b align="right">ادارة الموارد البشرية</b>
+										<b align="left">قرار كف يد</b>
+									</p>
+
+								</div>
+								<div class="text-center" style="font-size:22px;">
+									<p>
+										قرار إداري رقم
+										<span t-esc="o.decision_number" />
+										بتاريخ
+										<span t-esc="get_hijri_date(o.decision_date, '-')" />
+									</p>
+									<p align="left">
+										رقم الهوية الوطنية:
+										<span t-field="o.employee_id.identification_id" />
+
+									</p>
+								</div>
+							</div>
+
+							<div class="row">
+
+								<br />
+								<br />
+								<p style="font-size:22px;">إن رئيس هيئة التحقيق و الادعاء العام</p>
+								<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
+								<p style="font-size:22px;">
+									و إشارة إلى خطاب
+									<span t-field="o.letter_sender" />
+									رقم
+									<span t-field="o.letter_number" />
+									و تاريخ
+									<span t-field="o.letter_date" />
+									المتضمن ايقاف الموظف ب
+									<span t-field="o.employee_id.department_id.name" />
+									/<span t-field="o.employee_id.display_name" />
+									لاتهامه ب
+									<span t-field="o.raison" />
+									بتاريخ
+									<span t-field="o.suspension_date" />
+								</p>
+								<p style="font-size:22px;">و استنادا لمقتضى المادة (١٩) من نظام الخدمة المدنية و
+									لموافقتنا
+									على ذلك
+
+								</p>
+								<p align="center" style="font-size:22px;">:يقرر ما يلى</p>
+								<p style="font-size:22px;">
+									اولا: كف يد الموظف ب
+									<span t-field="o.employee_id.department_id.name" />
+									<span t-field="o.employee_id.display_name" />
+									/
+									المثبت على وظيفة
+									<span t-field="o.employee_id.job_id.name.name" />
+
+									بالمرتبة
+									<span t-esc="o.employee_id.job_id.grade_id.name" />
+									رقم
+									<span t-esc="o.employee_id.job_id.number" />
+									درجته
+									<span t-esc="o.employee_id.degree_id.name" />
+									و راتبه
+									<span t-esc="o.employee_id.net_salary" />
+									ريالا اعتبارا من
+									<span t-field="o.suspension_date" />
+								</p>
+								<p style="font-size:22px;">ثانيا : يصرف له نصف صافي راتبه اعتبارا من تاريخ كف
+									يده
+								</p>
+								<p style="font-size:22px;"> ثالثا:يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
+							</div>
+							<br></br>
+							<br></br>
+							<p align="left">
+								<br />
+								<b>
+									رئيس هيئة التحقيق و الادعاء العام
+									<br />
+									<span
+										t-field="o.employee_id.user_id.company_id.company_president.display_name" />
+								</b>
+							</p>
+						</div>
+					</t>
+				</t>
+			</t>
+		</template>
+
+	</data>
+</openerp>

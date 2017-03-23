@@ -122,30 +122,26 @@
 						<button name="button_accept_enterview_manager" string="موافق"
 							type="object" states="waiting" groups="smart_hr.group_enterview_manager"
 							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-							<button name="%(action_hr_refuse_appoint2_wizard)d" string="رفض"
-							type="action"
-							 states="waiting" groups="smart_hr.group_enterview_manager"
+						<button name="%(action_hr_refuse_appoint2_wizard)d" string="رفض"
+							type="action" states="waiting" groups="smart_hr.group_enterview_manager"
 							icon="fa-times" class="oe_inline oe_stat_button" />
 						<button name="button_accept_recrutment_manager" string="موافق"
 							type="object" states="manager" groups="smart_hr.group_recrutment_manager"
 							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-							<button name="%(action_hr_refuse_appoint3_wizard)d" string="رفض"
-							type="action"
-							states="manager" groups="smart_hr.group_recrutment_manager"
+						<button name="%(action_hr_refuse_appoint3_wizard)d" string="رفض"
+							type="action" states="manager" groups="smart_hr.group_recrutment_manager"
 							icon="fa-times" class="oe_inline oe_stat_button" />
 						<button name="button_accept_recrutment_decider" string="موافق"
 							type="object" states="budget" groups="smart_hr.group_recrutment_decider"
 							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-							<button name="%(action_hr_refuse_appoint4_wizard)d" string="رفض"
-							type="action"
-							states="budget" groups="smart_hr.group_recrutment_decider"
+						<button name="%(action_hr_refuse_appoint4_wizard)d" string="رفض"
+							type="action" states="budget" groups="smart_hr.group_recrutment_decider"
 							icon="fa-times" class="oe_inline oe_stat_button" />
 						<button name="button_accept_direct" string="موافق" type="object"
 							states="direct" groups="smart_hr.group_dm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="%(action_hr_refuse_appoint5_wizard)d" string="رفض"
-							type="action"
-							states="direct" groups="smart_hr.group_dm" icon="fa-times"
+							type="action" states="direct" groups="smart_hr.group_dm" icon="fa-times"
 							class="oe_inline oe_stat_button" />
 						<button name="button_accept_personnel_hr" string="موافق"
 							type="object" states="hrm" groups="smart_hr.group_personnel_hr"
@@ -155,9 +151,8 @@
 							states="civil" groups="smart_hr.group_ministry_civil" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="%(action_hr_refuse_appoint6_wizard)d" string="رفض"
-							type="action"
-							states="civil" groups="smart_hr.group_ministry_civil" icon="fa-times"
-							class="oe_inline oe_stat_button" />
+							type="action" states="civil" groups="smart_hr.group_ministry_civil"
+							icon="fa-times" class="oe_inline oe_stat_button" />
 
 
 
@@ -344,15 +339,26 @@
 								</group>
 							</page>
 							<page string="البدلات" readonly="1">
-								<field name="job_allowance_ids" context="{'allowance_nature': 'job'}" >
+							<h3 class="o_horizontal_separator">بدلات الوظيفة</h3>
+								<field name="job_allowance_ids" string="بدلات الوظيفة">
+									<tree editable="bottom">
+										<field name="allowance_id" />
+										<field name="compute_method" />
+										<field name="amount" />
+									</tree>
+								</field>
+								<h3 class="o_horizontal_separator">بدلات التعين</h3>
+								<field name="decision_apoint_allowance_ids">
 									<tree>
-										<field name="allowance_id" string='بدل الوظيفة' 
+										<field name="allowance_id"
 											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+										<field name="compute_method" />
+										<field name="amount" />
 									</tree>
 									<form string="البدلات">
 										<group>
 											<group>
-												<field name="allowance_id" 
+												<field name="allowance_id"
 													options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 											</group>
 											<group>
@@ -375,36 +381,13 @@
 										</group>
 									</form>
 								</field>
-								<field name="decision_apoint_allowance_ids" context="{'allowance_nature': 'decision_appoint'}" >
-									<tree>
-										<field name="allowance_id" string='بدل التعين' 
-											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<h3 class="o_horizontal_separator">بدلات المنطقة</h3>
+								<field name="location_allowance_ids" string="بدلات المنطقة">
+									<tree editable="bottom">
+										<field name="allowance_id" />
+										<field name="compute_method" />
+										<field name="amount" />
 									</tree>
-									<form string="البدلات">
-										<group>
-											<group>
-												<field name="allowance_id" 
-													options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-											</group>
-											<group>
-												<field name="compute_method" />
-												<field name="amount"
-													attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}" />
-												<field name="percentage"
-													attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}" />
-												<field name="min_amount" />
-												<field name="line_ids"
-													attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
-													<tree editable="buttom">
-														<field name="city_id"
-															options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-														<field name="percentage" />
-													</tree>
-												</field>
-
-											</group>
-										</group>
-									</form>
 								</field>
 							</page>
 						</notebook>

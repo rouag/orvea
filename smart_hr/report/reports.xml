@@ -1,48 +1,38 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <openerp>
-    <data>
+	<data>
 
-        <report id="report_hr_suspension_report"
-                model="hr.suspension"
-                string="قرار كف اليد"
-                report_type="qweb-pdf"
-                name="smart_hr.hr_suspension_report"
-                file="smart_hr.hr_suspension_report"
-                attachment_use="True"
-                attachment="('Suspension_'+(object.name).replace('/','')+'.pdf')"
-                menu="False"/>
+		<report id="report_hr_suspension_report" model="hr.suspension"
+			string="قرار كف اليد" report_type="qweb-pdf" name="smart_hr.hr_suspension_report"
+			file="smart_hr.hr_suspension_report" attachment_use="True"
+			attachment="('Suspension_'+(object.name).replace('/','')+'.pdf')"
+			menu="False" />
 
-        <report id="report_hr_suspension_end_report"
-                model="hr.suspension.end"
-                string="إنهاء كف اليد"
-                report_type="qweb-pdf"
-                name="smart_hr.hr_suspension_end_report"
-                file="smart_hr.hr_suspension_end_report"
-                attachment_use="True"
-                attachment="('Suspension_End_'+(object.name).replace('/','')+'.pdf')"
-                menu="False"/>
-                
-                
-        <report id="report_hr_promotion_report"
-                model="hr.promotion"
-                string="محضر الترقيات"
-                report_type="qweb-pdf"
-                name="smart_hr.hr_promotion_report"
-                file="smart_hr.hr_promotion_report"
-                attachment_use="False"
-               />
-                
-                
-                
-         <report id="report_hr_termination_report"
-                model="hr.termination"
-                string="قرار طى القيد"
-                report_type="qweb-pdf"
-                name="smart_hr.hr_termination_report"
-                file="smart_hr.hr_termination_report"
-                	attachment_use="False"
-                attachment="('Termination_'+(object.name).replace('/','')+'.pdf')"
-                menu="False"/>
-    </data>
+		<report id="report_hr_suspension_end_report" model="hr.suspension.end"
+			string="إنهاء كف اليد" report_type="qweb-pdf"
+			name="smart_hr.hr_suspension_end_report" file="smart_hr.hr_suspension_end_report"
+			attachment_use="True"
+			attachment="('Suspension_End_'+(object.name).replace('/','')+'.pdf')"
+			menu="False" />
+
+
+		<report id="report_hr_promotion_report" model="hr.promotion"
+			string="محضر الترقيات" report_type="qweb-pdf" name="smart_hr.hr_promotion_report"
+			file="smart_hr.hr_promotion_report" attachment_use="False" />
+
+
+
+		<report id="report_hr_termination_report" model="hr.termination"
+			string="قرار طى القيد" report_type="qweb-pdf" name="smart_hr.hr_termination_report"
+			file="smart_hr.hr_termination_report" attachment_use="False"
+			attachment="('Termination_'+(object.name).replace('/','')+'.pdf')"
+			menu="False" />
+
+		<report id="report_hr_suspension_report_decision" model="hr.suspension"
+			string="قرار كف يد" report_type="qweb-pdf" name="smart_hr.hr_suspension_report_decision"
+			file="smart_hr.hr_suspension_report_decision" attachment_use="False"
+			attachment="('suspension_'+(object.name).replace('/','')+'.pdf')"
+			menu="False" />
+	</data>
 </openerp>
 

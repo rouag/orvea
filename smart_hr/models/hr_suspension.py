@@ -25,17 +25,20 @@ class hr_suspension(models.Model):
     letter_number = fields.Integer(string=u'رقم الخطاب', )
     letter_date = fields.Date(string=u'تاريخ الخطاب')
     suspension_date = fields.Date(string=u'تاريخ بدء الإيقاف')
-    suspension_attachment = fields.Binary(string=u'الصورة الضوئية للقرار', attachment=True)
+    suspension_attachment = fields.Binary(string=u'الصورة الضوئية للخطاب', attachment=True)
 
     raison = fields.Text(string=u'سبب كف اليد')
     suspension_end_id = fields.Many2one('hr.suspension.end', string=u'قرار إنهاء كف اليد')
     state = fields.Selection([
         ('draft', u'طلب'),
         ('hrm', u'مدير شؤون الموظفين'),
+        ('make_decision' ,u'اصدار قرار'),
         ('done', u'اعتمدت'),
         ('refuse', u'رفض'),
     ], string=u'الحالة', default='draft')
-
+    decision_number = fields.Char(string='رقم القرار')
+    decision_date = fields.Date(string='تاريخ القرار ')
+ 
     def num2hindi(self, string_number):
         if string_number:
             hindi_numbers = {'0': '٠', '1': '١', '2': '٢', '3': '٣', '4': '٤', '5': '٥', '6': '٦', '7': '٧', '8': '٨',
@@ -77,7 +80,14 @@ class hr_suspension(models.Model):
         for rec in self:
             rec.state = 'hrm'
             rec.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"'")
-
+            
+    @api.one
+    def button_make_decision(self):
+        user = self.env['res.users'].browse(self._uid)
+        for rec in self:
+            rec.state = 'make_decision'
+            rec.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"'")
+            
     @api.one
     def button_done(self):
         user = self.env['res.users'].browse(self._uid)
