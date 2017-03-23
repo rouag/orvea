@@ -31,13 +31,51 @@ class HrDifference(models.Model):
                               ('cancel', 'مرفوض'),
                               ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
     line_ids = fields.One2many('hr.difference.line', 'difference_id', string='الفروقات', readonly=1, states={'new': [('readonly', 0)]})
+    department_level1_id = fields.Many2one('hr.department', string='الفرع', readonly=1, states={'new': [('readonly', 0)]})
+    department_level2_id = fields.Many2one('hr.department', string='القسم', readonly=1, states={'new': [('readonly', 0)]})
+    department_level3_id = fields.Many2one('hr.department', string='الشعبة', readonly=1, states={'new': [('readonly', 0)]})
+    salary_grid_type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1, states={'new': [('readonly', 0)]},)
+    employee_ids = fields.Many2many('hr.employee', string='الموظفين', readonly=1, states={'new': [('readonly', 0)]})
+
+    @api.onchange('department_level1_id', 'department_level2_id', 'department_level3_id', 'salary_grid_type_id')
+    def onchange_department_level(self):
+        dapartment_obj = self.env['hr.department']
+        employee_obj = self.env['hr.employee']
+        department_level1_id = self.department_level1_id and self.department_level1_id.id or False
+        department_level2_id = self.department_level2_id and self.department_level2_id.id or False
+        department_level3_id = self.department_level3_id and self.department_level3_id.id or False
+        employee_ids = []
+        dapartment_id = False
+        if department_level3_id:
+            dapartment_id = department_level3_id
+        elif department_level2_id:
+            dapartment_id = department_level2_id
+        elif department_level1_id:
+            dapartment_id = department_level1_id
+        if dapartment_id:
+            dapartment = dapartment_obj.browse(dapartment_id)
+            employee_ids += [x.id for x in dapartment.member_ids]
+            for child in dapartment.all_child_ids:
+                employee_ids += [x.id for x in child.member_ids]
+        result = {}
+        if not employee_ids:
+            # get all employee
+            employee_ids = employee_obj.search([('employee_state', '=', 'employee')]).ids
+        # filter by type
+        if self.salary_grid_type_id:
+            employee_ids = employee_obj.search([('id', 'in', employee_ids), ('type_id', '=', self.salary_grid_type_id.id)]).ids
+        result.update({'domain': {'employee_ids': [('id', 'in', list(set(employee_ids)))]}})
+        return result
 
     @api.onchange('month')
     def onchange_month(self):
+        self.name = u'فروقات شهر %s' % self.month
+
+    @api.multi
+    def compute_differences(self):
         if self.month:
             self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.month)
             self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.month)
-            self.name = u'فروقات شهر %s' % self.month
             line_ids = []
             # فروقات خارج الدوام
             line_ids += self.get_difference_overtime()
@@ -65,13 +103,6 @@ class HrDifference(models.Model):
             line_ids += self.get_difference_transport_decision()
             self.line_ids = line_ids
 
-    @api.model
-    def create(self, vals):
-        if 'product_id' in vals:
-            vals['product_id'] = vals['product_id'][0]
-        res = super(HrDifference, self).create(vals)
-        return res
-
     @api.one
     def action_waiting(self):
         self.state = 'waiting'
@@ -94,11 +125,13 @@ class HrDifference(models.Model):
         # over time start in this month end finish in this month or after
         overtime_lines1 = overtime_line_obj.search([('date_from', '>=', self.date_from),
                                                    ('date_from', '<=', self.date_to),
+                                                   ('employee_id', 'in', self.employee_ids.ids),
                                                    ('type_compensation', '=', 'amount'),
                                                    ('overtime_id.state', '=', 'done')])
         # over time start in last month end finish in this month  or after
         overtime_lines2 = overtime_line_obj.search([('date_from', '<', self.date_from),
                                                     ('date_to', '>=', self.date_from),
+                                                    ('employee_id', 'in', self.employee_ids.ids),
                                                     ('type_compensation', '=', 'amount'),
                                                     ('overtime_id.state', '=', 'done')])
         overtime_lines = list(set(overtime_lines1 + overtime_lines2))
@@ -160,10 +193,12 @@ class HrDifference(models.Model):
         # deputation start in this month end finish in this month or after
         deputations1 = deputation_obj.search([('date_from', '>=', self.date_from),
                                               ('date_from', '<=', self.date_to),
+                                              ('employee_id', 'in', self.employee_ids.ids),
                                               ('state', '=', 'done')])
         # deputation start in last month end finish in this month  or after
         deputations2 = deputation_obj.search([('date_from', '<', self.date_from),
                                               ('date_to', '>=', self.date_from),
+                                              ('employee_id', 'in', self.employee_ids.ids),
                                               ('state', '=', 'done')])
         deputations = list(set(deputations1 + deputations2))
         for deputation in deputations:
@@ -214,6 +249,7 @@ class HrDifference(models.Model):
         if hr_setting:
             transfert_ids = self.env['hr.employee.transfert'].search([('create_date', '>=', self.date_from),
                                                                       ('create_date', '<=', self.date_to),
+                                                                      ('employee_id', 'in', self.employee_ids.ids),
                                                                       ('state', '=', 'done')])
             for transfert in transfert_ids:
                 # get تفاصيل سلم الرواتب
@@ -273,6 +309,7 @@ class HrDifference(models.Model):
                                                                             ('state_appoint', '=', 'active'),
                                                                             ('date_direct_action', '>=', self.date_from),
                                                                             ('date_direct_action', '<=', self.date_to),
+                                                                            ('employee_id', 'in', self.employee_ids.ids),
                                                                             ], order="date_direct_action desc")
         for decision_appoint in last_decision_appoint_ids:
             grid_id, basic_salary = decision_appoint.employee_id.get_salary_grid_id(decision_appoint.date_direct_action)
@@ -295,6 +332,7 @@ class HrDifference(models.Model):
         line_ids = []
         assign_ids = self.env['hr.employee.commissioning'].search([('date_to', '>=', self.date_from),
                                                                    ('date_to', '<=', self.date_to),
+                                                                   ('employee_id', 'in', self.employee_ids.ids),
                                                                    ('state', '=', 'done')])
         for assign_id in assign_ids:
             # get تفاصيل سلم الرواتب
@@ -393,6 +431,7 @@ class HrDifference(models.Model):
         line_ids = []
         scholarship_ids = self.env['hr.scholarship'].search([('date_to', '>=', self.date_from),
                                                              ('date_to', '<=', self.date_to),
+                                                             ('employee_id', 'in', self.employee_ids.ids),
                                                              ('state', '=', 'done')
                                                              ])
         for scholarship_id in scholarship_ids:
@@ -436,7 +475,8 @@ class HrDifference(models.Model):
     def get_difference_lend(self):
         self.ensure_one()
         line_ids = []
-        lend_ids = self.env['hr.employee.lend'].search([('state', '=', 'done')
+        lend_ids = self.env['hr.employee.lend'].search([('state', '=', 'done'),
+                                                        ('employee_id', 'in', self.employee_ids.ids),
                                                         ])
         for lend_id in lend_ids:
             # overlaped days in current month
@@ -577,6 +617,7 @@ class HrDifference(models.Model):
         line_ids = []
         holidays_ids = self.env['hr.holidays'].search([('date_to', '>=', self.date_from),
                                                        ('date_to', '<=', self.date_to),
+                                                       ('employee_id', 'in', self.employee_ids.ids),
                                                        ('state', '=', 'done')
                                                        ])
         for holiday_id in holidays_ids:
@@ -670,6 +711,7 @@ class HrDifference(models.Model):
                                                            ('state', '=', 'done'),
                                                            ('suspension_end_id.release_date', '>=', self.date_from),
                                                            ('suspension_end_id.release_date', '<=', self.date_to),
+                                                           ('employee_id', 'in', self.employee_ids.ids),
                                                            ('suspension_end_id.state', '=', 'done'),
                                                            ])
         for suspension in suspension_ids:
@@ -689,11 +731,13 @@ class HrDifference(models.Model):
         suspension_ids = self.env['hr.suspension'].search([('suspension_date', '>=', self.date_from),
                                                            ('suspension_date', '<=', self.date_to),
                                                            ('state', '=', 'done'),
+                                                           ('employee_id', 'in', self.employee_ids.ids),
                                                            ('suspension_end_id', '=', False)
                                                            ])
         suspension_ids += self.env['hr.suspension'].search([('suspension_date', '>=', self.date_from),
                                                             ('suspension_date', '<=', self.date_to),
                                                             ('state', '=', 'done'),
+                                                            ('employee_id', 'in', self.employee_ids.ids),
                                                             ('suspension_end_id.release_date', '>', self.date_to),
                                                             ('suspension_end_id.state', '=', 'done'),
                                                             ])
@@ -708,10 +752,12 @@ class HrDifference(models.Model):
         # get started suspension before this month and not yet ended
         suspension_ids = self.env['hr.suspension'].search([('suspension_date', '<', self.date_from),
                                                            ('state', '=', 'done'),
+                                                           ('employee_id', 'in', self.employee_ids.ids),
                                                            ('suspension_end_id', '=', False)
                                                            ])
         suspension_ids += self.env['hr.suspension'].search([('suspension_date', '<', self.date_from),
                                                             ('state', '=', 'done'),
+                                                            ('employee_id', 'in', self.employee_ids.ids),
                                                             ('suspension_end_id.release_date', '>', self.date_to),
                                                             ('suspension_end_id.state', '=', 'done'),
                                                             ])
@@ -726,6 +772,7 @@ class HrDifference(models.Model):
         # get started suspension before this month and ended in current month
         suspension_ids = self.env['hr.suspension'].search([('suspension_date', '<', self.date_from),
                                                            ('state', '=', 'done'),
+                                                           ('employee_id', 'in', self.employee_ids.ids),
                                                            ('suspension_end_id.release_date', '>=', self.date_from),
                                                            ('suspension_end_id.release_date', '<=', self.date_to),
                                                            ('suspension_end_id.state', '=', 'done'),
@@ -808,6 +855,7 @@ class HrDifference(models.Model):
         line_ids = []
         termination_ids = self.env['hr.termination'].search([('date', '>=', self.date_from),
                                                              ('date', '<=', self.date_to),
+                                                             ('employee_id', 'in', self.employee_ids.ids),
                                                              ('state', '=', 'done')
                                                              ])
         for termination in termination_ids:
@@ -880,7 +928,9 @@ class HrDifference(models.Model):
     def get_difference_one_third_salary(self):
         self.ensure_one()
         line_ids = []
-        difference_history_ids = self.env['hr.payslip.difference.history'].search([('month', '=', fields.Date.from_string(self.date_from).month)])
+        difference_history_ids = self.env['hr.payslip.difference.history'].search([('month', '=', fields.Date.from_string(self.date_from).month),
+                                                                                   ('employee_id', 'in', self.employee_ids.ids),
+                                                                                   ])
         for difference_history in difference_history_ids:
             vals = {'difference_id': self.id,
                     'name': 'فرق الحسميات أكثر من ثلث الراتب',
@@ -898,6 +948,7 @@ class HrDifference(models.Model):
         line_ids = []
         transfert_decision_ids = self.env['hr.transport.decision'].search([('order_date', '>=', self.date_from),
                                                                            ('order_date', '<=', self.date_to),
+                                                                           ('employee_id', 'in', self.employee_ids.ids),
                                                                            ('state', 'in', ['done', 'finish'])
                                                                            ])
         for transfert_decision in transfert_decision_ids:

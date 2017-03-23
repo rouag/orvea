@@ -25,14 +25,13 @@
 			<field name="arch" type="xml">
 				<form string="الفروقات">
 					<header>
+					<button string="إحتسب" name="compute_differences" type="object" states="new" class="oe_highlight" />
 						<button name="action_waiting" string="إرسال للإعتماد" type="object"
 							states="new" groups="smart_hr.group_difference_management" />
 						<button name="action_done" string="إعتماد" type="object"
 							states="waiting" groups="smart_hr.group_difference_management" />
-					<button name="%(action_hr_refuse_wizard)d" string="رفض"
-							type="action"
-						
-							states="waiting" groups="smart_hr.group_difference_management" />
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" states="waiting" groups="smart_hr.group_difference_management" />
 						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
 					</header>
 					<sheet>
@@ -40,14 +39,23 @@
 							<group>
 								<field name="month" />
 								<field name="name" />
-								<field name="date_from" invisible="1"/>
-								<field name="date_to" invisible="1"/>
+								<field name="date_from" invisible="1" />
+								<field name="date_to" invisible="1" />
 							</group>
 							<group>
 								<field name="date" />
 							</group>
 						</group>
 						<notebook>
+							<page string="الموظفين">
+								<group col="4" string="فلترة">
+									<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]" />
+									<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]" />
+									<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]" />
+									<field name="salary_grid_type_id" />
+								</group>
+								<field name="employee_ids" />
+							</page>
 							<page string="التفاصيل">
 								<group>
 									<field name="line_ids" nolabel="1">
