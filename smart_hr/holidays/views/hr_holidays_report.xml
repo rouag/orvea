@@ -60,12 +60,9 @@
 										يوما اعتبارا من
 										<span t-esc="get_hijri_date(o.date_from, '-')" />
 									</p>
-									<t t-if="o.spend_advanced_salary == True">
-										<p style="font-size:22px;">2) يصرف راتبه مقدما.</p>
-									</t>
-									<t t-if="o.spend_advanced_salary == False">
-										<p style="font-size:22px;">2) لا يصرف راتبه مقدما.</p>
-									</t>
+										<p style="font-size:22px;">2) يصرف له 
+										<span t-esc="o.salary_number" />
+										راتب ‫مسبق‬</p>
 									<p style="font-size:22px;">3) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
 								</div>
 								<br></br>

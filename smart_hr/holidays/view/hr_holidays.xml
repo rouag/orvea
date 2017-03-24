@@ -154,6 +154,7 @@
 								<field name="employee_id" required="1" />
 								<field name="with_advanced_salary"
 									attrs="{'invisible': [('hide_with_advanced_salary','=',True)]}" />
+								<field name="salary_number" attrs="{'invisible': [('with_advanced_salary','=',False)],'readonly': [('state','not in',['draft','audit'])]}" />
 							</group>
 							<group>
 								<field name="holiday_status_id" options='{"no_open": True, "no_create": True}'
