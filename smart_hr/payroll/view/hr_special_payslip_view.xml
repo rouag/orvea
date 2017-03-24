@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<!-- إعداد مسيّر إفرادي -->
+
+		<record id="view_hr_special_payslip_tree_inherit" model="ir.ui.view">
+			<field name="name">hr.payslip.tree.inherit</field>
+			<field name="model">hr.payslip</field>
+			<field name="inherit_id" ref="hr_payroll.view_hr_payslip_tree" />
+			<field name="arch" type="xml">
+				<xpath expr="/tree" position='replace'>
+					<tree decoration-info="state == 'draft'" decoration-muted="state == 'cancel'">
+						<field name="number" string="التسلسل" />
+						<field name="employee_id" />
+						<field name="month" />
+						<field name="date_from" />
+						<field name="date_to" string="إلى" />
+						<field name="salary_net" />
+						<field name="state" />
+						<field name="company_id" groups="base.group_multi_company"
+							options="{'no_create': True}" />
+						<field name="payslip_run_id" invisible="1" />
+					</tree>
+				</xpath>
+			</field>
+		</record>
+
+		<record id="view_hr_special_payslip_filter_inherit" model="ir.ui.view">
+			<field name="name">hr.payslip.select.inherit</field>
+			<field name="model">hr.payslip</field>
+			<field name="inherit_id" ref="hr_payroll.view_hr_payslip_filter" />
+			<field name="arch" type="xml">
+				<xpath expr="/search" position='replace'>
+					<search string="البحث">
+						<field name="name" string="تسلسل المسير"
+							filter_domain="['|',('name','ilike',self),('number','ilike',self)]" />
+						<field name="month" />
+						<field name="date_from" />
+						<filter string="مسودة" domain="[('state','=','draft')]" />
+						<filter string="في إنتظار الإعتماد" domain="[('state','=','verify')]" />
+						<filter string="تم" domain="[('state','=','done')]" />
+						<field name="employee_id" />
+						<group expand="0" string="تجميع حسب">
+							<filter string="الموظف" name="employee_id" context="{'group_by':'employee_id'}" />
+							<filter string="الشهر" name="month" context="{'group_by':'month'}" />
+							<filter string="المسير الجماعي" name="payslip_run_id"
+								context="{'group_by':'payslip_run_id'}" />
+							<filter string="التاريخ" name="date_from" context="{'group_by':'date_from'}" />
+							<filter string="Companies" name="company_id" groups="base.group_multi_company"
+								context="{'group_by':'company_id'}" />
+							<filter string="الحالة" name="state" context="{'group_by':'state'}" />
+							<filter name="special_state" context="{'group_by':'special_state'}" />
+						</group>
+					</search>
+				</xpath>
+			</field>
+		</record>
+
+
+
+		<record id="view_hr_special_payslip_form" model="ir.ui.view">
+			<field name="name">hr.payslip.form</field>
+			<field name="model">hr.payslip</field>
+			<field name="arch" type="xml">
+				<form string="Payslip">
+					<header>
+						<button string="إحتسب" name="special_compute_sheet" type="object"
+							class="oe_highlight" attrs="{'invisible':[('special_state','!=','new')]}" />
+						<button name="action_verify" string="إرسال للموافقة" type="object"
+							attrs="{'invisible':[('special_state','!=','new')]}" />
+						<button name="action_division_director" string="موافق"
+							type="object" attrs="{'invisible':[('special_state','!=','verify')]}" />
+						<button name="%(action_payroll_refuse_wizard)d" string="رفض" context="{'special_payslip_from_state':'verify'}"
+							type="action" attrs="{'invisible':[('special_state','!=','verify')]}"
+							icon="fa-times" class="oe_inline oe_stat_button" />
+						<button name="action_hrm" string="موافق" type="object"
+							attrs="{'invisible':[('special_state','!=','division_director')]}" />
+						<button name="%(action_payroll_refuse_wizard)d" string="رفض" context="{'special_payslip_from_state':'division_director'}"
+							type="action" attrs="{'invisible':[('special_state','!=','division_director')]}"
+							icon="fa-times" class="oe_inline oe_stat_button" />
+						<button name="action_done" string="إعتماد" type="object"
+							attrs="{'invisible':[('special_state','!=','hrm')]}" />
+
+
+						<field name="special_state" widget="statusbar"
+							statusbar_visible="new,verify,division_director,hrm,done" />
+						<field name="state" widget="statusbar" invisible="1" />
+					</header>
+					<sheet>
+						<group>
+							<field name="create_date" />
+						</group>
+						<group col="4">
+							<field name="owner_employee_id" />
+							<field name="payslip_type_ids" widget="many2many_tags"
+								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+							<field name="employee_id" string="الموظف" />
+							<field name="number" string="التسلسل" readonly="1" />
+							<field name="degree_id" invisible="1" />
+							<field name="grade_id" invisible="1" />
+							<field name="type_id" invisible="1" />
+							<field name="credit_note" invisible="1" />
+							<field name="struct_id" invisible="1" />
+							<field name="contract_id" invisible="1" />
+							<field name="is_special" invisible="1" />
+						</group>
+						<notebook>
+							<page string="تفاصيل الراتب">
+								<field name="line_ids" colspan="4" nolabel="1" readonly='1'>
+									<tree string="تفاصيل الراتب" editable="bottom"
+										decoration-info="amount == 0">
+										<field name="name" string="المسمى" />
+										<field name="code" invisible="1" />
+										<field name="category" />
+										<field name="sequence" invisible="1" />
+										<field name="amount" />
+									</tree>
+									<form string="تفاصيل الراتب">
+										<group col="4">
+											<field name="name" string="المسمى" />
+											<field name="code" invisible="1" />
+											<field name="category" readonly='0' />
+											<field name="sequence" invisible="1" />
+											<field name="amount" />
+										</group>
+									</form>
+								</field>
+							</page>
+
+							<page string="أيام العمل" invisible="1">
+								<separator string="أيام العمل" />
+								<field name="worked_days_line_ids" readonly='1'>
+									<tree string="أيام العمل" editable="bottom">
+										<field name="name" />
+										<field name="code" invisible="0" />
+										<field name="number_of_days" sum="Total Working Days" />
+										<field name="number_of_hours" sum="Total Working Hours" />
+										<field name="contract_id" invisible="1" />
+										<field name="sequence" invisible="1" />
+									</tree>
+									<form string="أيام العمل">
+										<group col="4">
+											<field name="name" string="المسمى" />
+											<field name="code" invisible="1" />
+											<field name="sequence" invisible="1" />
+											<field name="number_of_days" />
+											<field name="number_of_hours" />
+											<field name="contract_id" invisible="1" />
+										</group>
+									</form>
+								</field>
+								<separator string="الإجازات والحسميات" />
+								<field name="days_off_line_ids" colspan="4" nolabel="1"
+									readonly='1'>
+									<tree string="الإجازات والغيابات" editable="bottom">
+										<field name="name" />
+										<field name="code" />
+										<field name="number_of_days" />
+										<field name="number_of_hours" />
+										<field name="type" />
+									</tree>
+									<form string="الإجازات والحسميات">
+										<group col="4">
+											<field name="name" />
+											<field name="code" />
+											<field name="number_of_days" />
+											<field name="number_of_hours" />
+											<field name="type" />
+										</group>
+									</form>
+								</field>
+							</page>
+
+							<page string="تفاصيل حسب فئات قواعد الراتب" invisible="1">
+								<field name="details_by_salary_rule_category" context="{'group_by':'category_id'}"
+									domain="[('appears_on_payslip', '=', True)]">
+									<tree string="Payslip Lines" decoration-info="total == 0">
+										<field name="category_id" />
+										<field name="name" />
+										<field name="code" invisible="0" />
+										<field name="total" />
+									</tree>
+								</field>
+							</page>
+							<page string="Accounting Information" invisible="1">
+								<group>
+									<group string="Miscellaneous">
+										<field name="company_id" groups="base.group_multi_company" />
+										<field name="payslip_run_id" domain="[('state','=','draft')]" />
+									</group>
+									<group name="accounting" string="Accounting">
+										<field name="paid" readonly="1" />
+									</group>
+								</group>
+								<div colspan="4">
+									<field name="note" placeholder="Add an internal note..." />
+								</div>
+							</page>
+						</notebook>
+					</sheet>
+					<div>
+						<field name="message_ids" widget="mail_thread" readonly="1" />
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_hr_special_payslip_line_tree" model="ir.ui.view">
+			<field name="name">hr.payslip.line.tree</field>
+			<field name="model">hr.payslip.line</field>
+			<field name="inherit_id" ref="hr_payroll.view_hr_payslip_line_tree" />
+			<field name="arch" type="xml">
+				<xpath expr="/tree" position='replace'>
+					<tree string="Salary Structure" editable="bottom"
+						decoration-info="total == 0">
+						<field name="category_id" />
+						<field name="employee_id" invisible="1" />
+						<field name="sequence" invisible="1" />
+						<field name="name" string="المسمى" />
+						<field name="code" invisible="1" />
+						<field name="quantity" />
+						<field name="rate" />
+						<field name="amount" />
+						<field name="total" />
+						<field name="amount_select" invisible="1" />
+						<field name="register_id" invisible="1" />
+					</tree>
+				</xpath>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_special_payslip">
+			<field name="name">إعداد مسير إفرادي خاص</field>
+			<field name="res_model">hr.payslip</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+		<record id="action_hr_special_payslip_form" model="ir.actions.act_window.view">
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="view_hr_special_payslip_form" />
+			<field name="act_window_id" ref="action_hr_special_payslip" />
+		</record>
+
+		<menuitem id="hr_special_payslip_menu" name="إعداد مسيّر إفرادي"
+			sequence="3" groups="group_payroll_management" parent="hr_special_payslip_root"
+			action="action_hr_special_payslip" />
+
+		<!-- إعداد مسيّر جماعي -->
+
+		<record model="ir.ui.view" id="hr_special_payslip_run_tree">
+			<field name="name">hr.payslip.run.tree</field>
+			<field name="model">hr.payslip.run</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="مسيّر جماعي" decoration-info="state == 'draft'"
+					decoration-muted="state == 'cancel'">
+					<field name="name" string="المسمى" />
+					<field name="date_start" invisible='1' />
+					<field name="date_end" invisible='1' />
+					<field name="create_date" string="تاريخ الإنشاء" />
+					<field name="month" />
+					<field name="amount_total" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="hr_special_payslip_run_filter" model="ir.ui.view">
+			<field name="name">hr.payslip.run.search</field>
+			<field name="model">hr.payslip.run</field>
+			<field name="arch" type="xml">
+				<search string="بحث">
+					<field name="name" />
+					<field name="month" />
+					<filter string="مسودة" domain="[('state','=','draft')]" />
+					<filter string="في إنتظار الإعتماد" domain="[('state','=','verify')]" />
+					<filter name="done_filter" string="تم" domain="[('state','=','done')]" />
+					<group expand="0" string="تجميع حسب">
+						<filter string="الشهر" name="month" context="{'group_by':'month'}" />
+						<filter string="التاريخ" name="date_start" context="{'group_by':'date_start'}" />
+						<filter string="الحالة" name="state" context="{'group_by':'state'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+
+
+		<record model="ir.ui.view" id="hr_special_payslip_run_form">
+			<field name="name">hr.payslip.run.form</field>
+			<field name="model">hr.payslip.run</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="مسيّر جماعي">
+					<header>
+						<button string="إحتسب" name="compute_sheet" type="object"
+							states="draft" class="oe_highlight" />
+						<button name="action_verify" string="إرسال للإعتماد" type="object"
+							states="draft" />
+						<button name="action_done" string="إعتماد" type="object"
+							states="verify" />
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" states="verify" />
+						<field name="state" widget="statusbar" statusbar_visible="draft,verify,done" />
+					</header>
+					<sheet>
+						<group>
+							<group>
+								<field name="month" />
+								<field name="bank_file" readonly="1" filename="bank_file_name"
+									attrs="{'invisible':[('state','!=','done')]}" />
+								<field name="bank_file_name" invisible="1" />
+								<label for="date_start" string="الفترة" invisible="1" />
+								<div invisible="1">
+									<field name="date_start" class="oe_inline" />
+									-
+									<field name="date_end" class="oe_inline" />
+								</div>
+
+							</group>
+							<group>
+								<field name="name" string="المسمى" />
+							</group>
+						</group>
+						<notebook>
+							<page string="الموظفين">
+								<group col="4" string="فلترة">
+									<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]" />
+									<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]" />
+									<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]" />
+									<field name="salary_grid_type_id" />
+								</group>
+								<field name="employee_ids" />
+							</page>
+							<page string="المسيّرات الإفرادية">
+								<field name="slip_ids" readonly='1'>
+									<tree create='0' edit='0'>
+										<field name="number" string="التسلسل" />
+										<field name="employee_id" />
+										<field name="salary_net" />
+										<field name="state" />
+									</tree>
+								</field>
+							</page>
+						</notebook>
+					</sheet>
+					<div>
+						<field name="message_ids" widget="mail_thread" readonly="1" />
+					</div>
+				</form>
+			</field>
+		</record>
+
+
+
+		<record model="ir.actions.act_window" id="action_hr_special_payslip_run">
+			<field name="name">إعداد مسيّر جماعي</field>
+			<field name="res_model">hr.payslip.run</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+
+		<record id="action_hr_special_payslip_run_tree" model="ir.actions.act_window.view">
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="hr_special_payslip_run_tree" />
+			<field name="act_window_id" ref="action_hr_special_payslip_run" />
+		</record>
+
+		<record id="action_hr_special_payslip_run_form" model="ir.actions.act_window.view">
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="hr_special_payslip_run_form" />
+			<field name="act_window_id" ref="action_hr_special_payslip_run" />
+		</record>
+
+		<menuitem id="hr_special_payslip_run_menu" name="إعداد مسيّر جماعي"
+			sequence="4" groups="group_payroll_management" parent="hr_special_payslip_root"
+			action="action_hr_special_payslip_run" />
+
+
+
+
+
+	</data>
+</openerp>

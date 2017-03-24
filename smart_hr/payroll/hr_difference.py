@@ -77,10 +77,6 @@ class HrDifference(models.Model):
             self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.month)
             self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.month)
             line_ids = []
-            # فروقات خارج الدوام
-            line_ids += self.get_difference_overtime()
-            # فروقات الأنتداب
-            line_ids += self.get_difference_deputation()
             # فروقات النقل
             line_ids += self.get_difference_transfert()
             # فروقات التعين
@@ -99,8 +95,6 @@ class HrDifference(models.Model):
             line_ids += self.get_difference_termination()
             # فرق الحسميات أكثر من ثلث الراتب
             line_ids += self.get_difference_one_third_salary()
-            # أوامر الإركاب
-            line_ids += self.get_difference_transport_decision()
             self.line_ids = line_ids
 
     @api.one
@@ -114,132 +108,6 @@ class HrDifference(models.Model):
     @api.one
     def button_refuse(self):
         self.state = 'cancel'
-
-    @api.multi
-    def get_difference_overtime(self):
-        line_ids = []
-        overtime_line_obj = self.env['hr.overtime.ligne']
-        grid_detail_allowance_obj = self.env['salary.grid.detail.allowance']
-        # 1- overtime
-        overtime_setting = self.env['hr.overtime.setting'].search([], limit=1)
-        # over time start in this month end finish in this month or after
-        overtime_lines1 = overtime_line_obj.search([('date_from', '>=', self.date_from),
-                                                   ('date_from', '<=', self.date_to),
-                                                   ('employee_id', 'in', self.employee_ids.ids),
-                                                   ('type_compensation', '=', 'amount'),
-                                                   ('overtime_id.state', '=', 'done')])
-        # over time start in last month end finish in this month  or after
-        overtime_lines2 = overtime_line_obj.search([('date_from', '<', self.date_from),
-                                                    ('date_to', '>=', self.date_from),
-                                                    ('employee_id', 'in', self.employee_ids.ids),
-                                                    ('type_compensation', '=', 'amount'),
-                                                    ('overtime_id.state', '=', 'done')])
-        overtime_lines = list(set(overtime_lines1 + overtime_lines2))
-        # TODO: dont compute not work days
-        for overtime in overtime_lines:
-            employee = overtime.employee_id
-            salary_grid, basic_salary = employee.get_salary_grid_id(False)
-            #
-            date_from = overtime.date_from
-            date_to = overtime.date_to
-            if overtime.date_from < self.date_from:
-                date_from = self.date_from
-            if overtime.date_to > self.date_to:
-                date_to = self.date_to
-            # get days witouht weekends and Eids
-            number_of_days = self.env['hr.smart.utils'].compute_duration_overtime(date_from, date_to, overtime)
-            number_of_hours = 0.0
-            if overtime.date_from >= self.date_from and overtime.date_to <= self.date_to:
-                number_of_hours = overtime.heure_number
-            # get number of hours
-            total_hours = number_of_days * number_of_hours
-            amount_hour = basic_salary / 30.0 / 7.0
-            rate_hour = overtime_setting.days_normal
-            if overtime.type == 'friday_saturday':
-                rate_hour = overtime_setting.days_weekend
-            elif overtime.type == 'holidays':
-                rate_hour = overtime_setting.days_holidays
-            amount = amount_hour * rate_hour / 100.0 * total_hours
-            overtime_val = {'difference_id': self.id,
-                            'name': overtime_setting.allowance_overtime_id.name,
-                            'employee_id': employee.id,
-                            'number_of_days': number_of_days,
-                            'number_of_hours': number_of_hours,
-                            'amount': amount,
-                            'type': 'overtime'}
-            line_ids.append(overtime_val)
-            # add allowance transport
-            if number_of_days and employee.grade_id not in overtime_setting.grade_ids:
-                # search amount transport from salary grid
-                transport_allowance_id = self.env.ref('smart_hr.hr_allowance_type_01').id
-                transport_allowances = grid_detail_allowance_obj.search([('grid_detail_id', '=', salary_grid.id), ('allowance_id', '=', transport_allowance_id)])
-                transport_amount = 0.0
-                if transport_allowances:
-                    transport_amount = transport_allowances[0].get_value(employee.id) / 30.0 * number_of_days
-                allowance_transport_val = {'difference_id': self.id,
-                                           'name': overtime_setting.allowance_transport_id.name,
-                                           'employee_id': employee.id,
-                                           'number_of_days': number_of_days,
-                                           'number_of_hours': number_of_hours,
-                                           'amount': transport_amount,
-                                           'type': 'overtime'}
-                line_ids.append(allowance_transport_val)
-        return line_ids
-
-    @api.multi
-    def get_difference_deputation(self):
-        line_ids = []
-        deputation_obj = self.env['hr.deputation']
-        # deputation start in this month end finish in this month or after
-        deputations1 = deputation_obj.search([('date_from', '>=', self.date_from),
-                                              ('date_from', '<=', self.date_to),
-                                              ('employee_id', 'in', self.employee_ids.ids),
-                                              ('state', '=', 'done')])
-        # deputation start in last month end finish in this month  or after
-        deputations2 = deputation_obj.search([('date_from', '<', self.date_from),
-                                              ('date_to', '>=', self.date_from),
-                                              ('employee_id', 'in', self.employee_ids.ids),
-                                              ('state', '=', 'done')])
-        deputations = list(set(deputations1 + deputations2))
-        for deputation in deputations:
-            date_from = deputation.date_from
-            date_to = deputation.date_to
-            if deputation.date_from < self.date_from:
-                date_from = self.date_from
-            if deputation.date_to > self.date_to:
-                date_to = self.date_to
-            number_of_days = self.env['hr.smart.utils'].compute_duration_deputation(date_from, date_to, deputation)
-            #
-            employee = deputation.employee_id
-            # get a correct line
-            deputation_amount, transport_amount, deputation_allowance = deputation.get_deputation_allowance_amount(number_of_days)
-            if transport_amount:
-                # بدل نقل
-                transport_val = {'difference_id': self.id,
-                                 'name': deputation_allowance.allowance_transport_id.name,
-                                 'employee_id': employee.id,
-                                 'number_of_days': number_of_days,
-                                 'number_of_hours': 0.0,
-                                 'amount': transport_amount,
-                                 'type': 'deputation'}
-                line_ids.append(transport_val)
-            if deputation_amount:
-                deputation_amount_rate = 1.0
-                if deputation.the_availability == 'hosing_and_food':
-                    deputation_amount_rate = 0.25
-                elif deputation.the_availability == 'hosing_or_food':
-                    deputation_amount_rate = 0.5
-                deputation_amount = deputation_amount * deputation_amount_rate
-                # بدل إنتداب
-                deputation_val = {'difference_id': self.id,
-                                  'name': deputation_allowance.allowance_deputation_id.name,
-                                  'employee_id': employee.id,
-                                  'number_of_days': number_of_days,
-                                  'number_of_hours': 0.0,
-                                  'amount': deputation_amount,
-                                  'type': 'deputation'}
-                line_ids.append(deputation_val)
-        return line_ids
 
     @api.multi
     def get_difference_transfert(self):
@@ -261,26 +129,6 @@ class HrDifference(models.Model):
                         amount /= 100
                     vals = {'difference_id': self.id,
                             'name': hr_setting.allowance_job_nature.name,
-                            'employee_id': transfert.employee_id.id,
-                            'number_of_days': 0,
-                            'number_of_hours': 0.0,
-                            'amount': amount,
-                            'type': 'transfert'}
-                    line_ids.append(vals)
-                    # 2- بدل إنتداب
-                    amount = (hr_setting.deputation_days * (basic_salary / 22))
-                    vals = {'difference_id': self.id,
-                            'name': hr_setting.allowance_deputation.name,
-                            'employee_id': transfert.employee_id.id,
-                            'number_of_days': hr_setting.deputation_days,
-                            'number_of_hours': 0.0,
-                            'amount': amount,
-                            'type': 'transfert'}
-                    line_ids.append(vals)
-                    # 3- بدل ترحيل
-                    amount = hr_setting.deportation_amount
-                    vals = {'difference_id': self.id,
-                            'name': hr_setting.allowance_deportation.name,
                             'employee_id': transfert.employee_id.id,
                             'number_of_days': 0,
                             'number_of_hours': 0.0,
@@ -939,26 +787,6 @@ class HrDifference(models.Model):
                     'number_of_hours': 0.0,
                     'amount': difference_history.amount,
                     'type': 'one_third_salary'}
-            line_ids.append(vals)
-        return line_ids
-
-    @api.multi
-    def get_difference_transport_decision(self):
-        self.ensure_one()
-        line_ids = []
-        transfert_decision_ids = self.env['hr.transport.decision'].search([('order_date', '>=', self.date_from),
-                                                                           ('order_date', '<=', self.date_to),
-                                                                           ('employee_id', 'in', self.employee_ids.ids),
-                                                                           ('state', 'in', ['done', 'finish'])
-                                                                           ])
-        for transfert_decision in transfert_decision_ids:
-            vals = {'difference_id': self.id,
-                    'name': 'فرق أمر اركاب',
-                    'employee_id': transfert_decision.employee_id.id,
-                    'number_of_days': 0.0,
-                    'number_of_hours': 0.0,
-                    'amount': transfert_decision.amount,
-                    'type': 'transfert_decision'}
             line_ids.append(vals)
         return line_ids
 
