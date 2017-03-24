@@ -37,7 +37,7 @@ class HrPayslip(models.Model):
                                       ], 'الحالة', default='new', select=1, readonly=1, copy=False)
     is_special = fields.Boolean(string='مسير خاص', default=True)
     transfert_decision_ids = fields.One2many('hr.transport.decision', 'payslip_id')
-    overtime_line_ids = fields.One2many('hr.overtime.line', 'payslip_id')
+    overtime_line_ids = fields.One2many('hr.overtime.ligne', 'payslip_id')
     deputation_ids = fields.One2many('hr.deputation', 'payslip_id')
     transfert_ids = fields.One2many('hr.employee.transfert', 'payslip_id')
 
