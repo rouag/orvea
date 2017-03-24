@@ -118,7 +118,7 @@
 
 						<button name="button_cancel" context="{'operation': 'cancel'}"
 							string="إلغاء الإجازة" type="object"
-							attrs="{'invisible':[('display_button_cut','=',False)]}"
+							attrs="{'invisible':[('display_button_cancel','=',False)]}"
 							icon="fa-times-circle-o" class="oe_inline oe_stat_button"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
@@ -186,7 +186,7 @@
 								'invisible':['|', ('compensation_type','!=', 'money'), ('state','!=', 'done')]
 								}" />
 								<field name="current_holiday_stock"
-									attrs="{'invisible':[('holiday_status_id','=', %(data_hr_holiday_status_illness)d)] }" />
+									attrs="{'invisible':[('holiday_status_id','in', [%(data_hr_holiday_status_illness)d,%(data_hr_holiday_exam)d])] }" />
 							</group>
 						</group>
 

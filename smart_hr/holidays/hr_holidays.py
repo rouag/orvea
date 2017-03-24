@@ -56,7 +56,8 @@ class HrHolidays(models.Model):
 
     name = fields.Char(string=u'رقم القرار',)
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now)
-    employee_id = fields.Many2one('hr.employee', string=u'الموظف', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1),)
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف', domain=[('emp_state', 'not in', ['suspended','terminated']), ('employee_state', '=', 'employee')],
+                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1),)
     raison = fields.Selection([('other', u'سبب أخر'), ('husband', u'مرافقة الزوج'),
                                ('wife', u'مرافقة الزوجة'), ('legit', u'مرافقة كمحرم شرعي')],
                                default="other", string=u'السبب ')
@@ -670,13 +671,6 @@ class HrHolidays(models.Model):
         self.is_cancelled = is_cancelled
 
     holiday_cancellation = fields.Many2one('hr.holidays.cancellation')    
-    # Extension
-    is_extension = fields.Boolean(string=u'تمديد إجازة')
-    is_extended = fields.Boolean(string=u'ممددة', compute='_is_extended')
-    extended_holiday_id = fields.Many2one('hr.holidays', string=u'الإجازة الممددة')
-    parent_id = fields.Many2one('hr.holidays', string=u'Parent')
-    extension_holidays_ids = fields.One2many('hr.holidays', 'parent_id', string=u'التمديدات')
-
 
     @api.model
     def _check_state_access_right(self, vals):

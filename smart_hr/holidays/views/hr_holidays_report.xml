@@ -18,9 +18,9 @@
 
 											<p align="center">
 												قرار إداري رقم
-												<span t-esc="o.decision_number" />
+												<span t-esc="o.num_decision" />
 												بتاريخ
-												<span t-esc="get_hijri_date(o.decision_date, '-')" />
+												<span t-esc="get_hijri_date(o.date_decision, '-')" />
 											</p>
 											<p align="left">
 												رقم الهوية الوطنية:
@@ -60,7 +60,12 @@
 										يوما اعتبارا من
 										<span t-esc="get_hijri_date(o.date_from, '-')" />
 									</p>
-									<p style="font-size:22px;">2) لا يصرف راتبه مقدما.</p>
+									<t t-if="o.spend_advanced_salary == True">
+										<p style="font-size:22px;">2) يصرف راتبه مقدما.</p>
+									</t>
+									<t t-if="o.spend_advanced_salary == False">
+										<p style="font-size:22px;">2) لا يصرف راتبه مقدما.</p>
+									</t>
 									<p style="font-size:22px;">3) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
 								</div>
 								<br></br>
@@ -102,9 +107,9 @@
 
 											<p align="center">
 												قرار إداري رقم
-												<span t-esc="o.decision_number" />
+												<span t-esc="o.num_decision" />
 												بتاريخ
-												<span t-esc="get_hijri_date(o.decision_date, '-')" />
+												<span t-esc="get_hijri_date(o.date_decision, '-')" />
 											</p>
 											<p align="left">
 												رقم الهوية الوطنية:
@@ -190,9 +195,9 @@
 
 											<p align="center">
 												قرار إداري رقم
-												<span t-esc="o.decision_number" />
+												<span t-esc="o.num_decision" />
 												بتاريخ
-												<span t-esc="get_hijri_date(o.decision_date, '-')" />
+												<span t-esc="get_hijri_date(o.date_decision, '-')" />
 											</p>
 											<p align="left">
 												رقم الهوية الوطنية:
@@ -286,9 +291,9 @@
 
 											<p align="center">
 												قرار إداري رقم
-												<span t-esc="o.decision_number" />
+												<span t-esc="o.num_decision" />
 												بتاريخ
-												<span t-esc="get_hijri_date(o.decision_date, '-')" />
+												<span t-esc="get_hijri_date(o.date_decision, '-')" />
 											</p>
 											<p align="left">
 												رقم الهوية الوطنية:
@@ -378,9 +383,9 @@
 
 											<p align="center">
 												قرار إداري رقم
-												<span t-esc="o.decision_number" />
+												<span t-esc="o.num_decision" />
 												بتاريخ
-												<span t-esc="get_hijri_date(o.decision_date, '-')" />
+												<span t-esc="get_hijri_date(o.date_decision, '-')" />
 											</p>
 											<p align="left">
 												رقم الهوية الوطنية:
