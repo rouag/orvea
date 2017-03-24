@@ -78,7 +78,7 @@ class HrEmployee(models.Model):
     grandfather_middle_name = fields.Char(string=u'middle_name2', default=u"بن")
     space = fields.Char(string=' ', default=" ", readonly=True)
     begin_work_date = fields.Date(string=u' تاريخ بداية العمل الحكومي')
-    promotion_duration = fields.Integer(string=u'مدة الترقية(يوم)', compute='_compute_promotion_days')
+    promotion_duration = fields.Integer(string=u'مدة الترقية(يوم)')
     dep_city = fields.Many2one('res.city', strin=u'المدينة', related="department_id.dep_city", readonly=True)
     dep_side = fields.Many2one('city.side', string=u'الجهة', related="department_id.dep_side", readonly=True)
     history_ids = fields.One2many('hr.employee.history', 'employee_id', string=u'سجل الاجراءات')
@@ -296,81 +296,79 @@ class HrEmployee(models.Model):
             display_name += ' ' + self.family_name
         self.display_name = display_name
 
-    @api.multi
-    def _compute_promotion_days(self):
-        appoint_promotion_ids = [self.env.ref('smart_hr.data_hr_promotion_agent').id, self.env.ref('smart_hr.data_hr_promotion_member').id]
-        today_date = fields.Date.from_string(fields.Date.today())
-        for emp in self:
-            emp_last_promotion = self.env['hr.decision.appoint'].search([('type_appointment', 'in', appoint_promotion_ids), ('employee_id', '=', emp.id)], order="date_direct_action desc", limit=1)
-            emp_last_appoint = self.env['hr.decision.appoint'].search([('employee_id', '=', emp.id)], order="date_direct_action desc", limit=1)
-            if emp_last_promotion:
-                date_direct_action = fields.Date.from_string(emp_last_promotion.date_direct_action)
-            else:
-                date_direct_action = fields.Date.from_string(emp_last_appoint.date_direct_action)
-            if date_direct_action:
-                promotion_days = (today_date - date_direct_action).days
-                # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
-                uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', emp.id), ('action', '=', 'absence'),
-                                                                                            ('date', '<=', today_date),
-                                                                                            ('date', '>=', date_direct_action)])
-                promotion_days -= uncounted_absence_days
-
-#                 مدة الاجازات
-                uncounted_holidays_days = self.env['hr.holidays'].search([('employee_id', '=', emp.id), ('state', '=', 'done'), ('date_from', '<', today_date),
-                                                                          ('date_from', '>', date_direct_action), ('holiday_status_id.promotion_deductible', '=', True)])
-                for holiday in uncounted_holidays_days:
-                    holiday_date_to = fields.Date.from_string(holiday.date_to)
-                    if holiday_date_to <= today_date:
-                        promotion_days -= holiday.duration
-                    else:
-                        duration = (today_date - holiday.date_from).days
-                        promotion_days -= duration
-#                 مدة الابتعاث
-                uncounted_scholaship_days = self.env['hr.scholarship'].search([('employee_id', '=', emp.id), ('state', '=', 'finished'), ('result', '=', 'not_succeed'),
-                                                                               ('date_from', '>=', date_direct_action), ('date_to', '<=', today_date)])
-                for sholarship in uncounted_scholaship_days:
-                    promotion_days -= sholarship.duration
-
-#                 مدة  الدورات الدراسيّة
-                uncounted_courses_days = self.env['courses.followup'].search([('employee_id', '=', emp.id), ('state', '=', 'done'), ('result', '=', 'not_succeed'),
-                                                                              ('date_from', '>=', date_direct_action), ('date_to', '<=', today_date)])
-                for course in uncounted_courses_days:
-                    promotion_days -= course.duration
-#                 مدة كف اليد عند الادانة
-
-                uncounted_suspension_end_days = self.env['hr.suspension.end'].search([('employee_id', '=', emp.id), ('state', '=', 'done'), ('condemned', '=', True),
-                                                                                      ('release_date', '>=', date_direct_action), ('release_date', '<=', today_date)])
-                for suspension_end in uncounted_suspension_end_days:
+#     @api.multi
+#     def _compute_promotion_days(self):
+#         appoint_promotion_ids = [self.env.ref('smart_hr.data_hr_promotion_agent').id, self.env.ref('smart_hr.data_hr_promotion_member').id]
+#         today_date = fields.Date.from_string(fields.Date.today())
+#         for emp in self:
+#             emp_last_promotion = self.env['hr.decision.appoint'].search([('type_appointment', 'in', appoint_promotion_ids), ('employee_id', '=', emp.id)], order="date_direct_action desc", limit=1)
+#             emp_last_appoint = self.env['hr.decision.appoint'].search([('employee_id', '=', emp.id)], order="date_direct_action desc", limit=1)
+#             if emp_last_promotion:
+#                 date_direct_action = fields.Date.from_string(emp_last_promotion.date_direct_action)
+#             else:
+#                 date_direct_action = fields.Date.from_string(emp_last_appoint.date_direct_action)
+#             if date_direct_action:
+#                 promotion_days = (today_date - date_direct_action).days
+#                 # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
+#                 uncounted_absence_days = self.env['hr.attendance.report_day'].search_count([('employee_id', '=', emp.id), ('action', '=', 'absence'),
+#                                                                                             ('date', '<=', today_date),
+#                                                                                             ('date', '>=', date_direct_action)])
+#                 promotion_days -= uncounted_absence_days
+# 
+# #                 مدة الاجازات
+#                 uncounted_holidays_days = self.env['hr.holidays'].search([('employee_id', '=', emp.id), ('state', '=', 'done'), ('date_from', '<', today_date),
+#                                                                           ('date_from', '>', date_direct_action), ('holiday_status_id.promotion_deductible', '=', True)])
+#                 for holiday in uncounted_holidays_days:
+#                     holiday_date_to = fields.Date.from_string(holiday.date_to)
+#                     if holiday_date_to <= today_date:
+#                         promotion_days -= holiday.duration
+#                     else:
+#                         duration = (today_date - holiday.date_from).days
+#                         promotion_days -= duration
+# #                 مدة الابتعاث
+#                 uncounted_scholaship_days = self.env['hr.scholarship'].search([('employee_id', '=', emp.id), ('state', '=', 'finished'), ('result', '=', 'not_succeed'),
+#                                                                                ('date_from', '>=', date_direct_action), ('date_to', '<=', today_date)])
+#                 for sholarship in uncounted_scholaship_days:
+#                     promotion_days -= sholarship.duration
+# 
+# #                 مدة  الدورات الدراسيّة
+#                 uncounted_courses_days = self.env['courses.followup'].search([('employee_id', '=', emp.id), ('state', '=', 'done'), ('result', '=', 'not_succeed'),
+#                                                                               ('date_from', '>=', date_direct_action), ('date_to', '<=', today_date)])
+#                 for course in uncounted_courses_days:
+#                     promotion_days -= course.duration
+# #                 مدة كف اليد عند الادانة
+# 
+#                 uncounted_suspension_end_days = self.env['hr.suspension.end'].search([('employee_id', '=', emp.id), ('state', '=', 'done'), ('condemned', '=', True),
+#                                                                                       ('release_date', '>=', date_direct_action), ('release_date', '<=', today_date)])
+#                 for suspension_end in uncounted_suspension_end_days:
 #                     suspension_date_from = fields.Date.from_string(suspension_end.suspension_id.suspension_date)
 #                     release_date_to = fields.Date.from_string(suspension_end.release_date)
 #                     if suspension_date_from >= date_direct_action:
 #                         promotion_days -= (release_date_to - suspension_date_from).days
 #                     else:
 #                         duration = (release_date_to - date_direct_action).days
-                    promotion_days -= suspension_end.sentence
-                emp.promotion_duration = promotion_days
+#                     promotion_days -= suspension_end.sentence
+#                 emp.promotion_duration = promotion_days
+    @api.model
+    def update_promotion_days(self):
+        today_date = fields.Date.from_string(fields.Date.today())
+        for emp in self.search([('employee_state', '=', 'employee')]):
+                emp.promotion_duration += 1
+                # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
+                uncounted_absence_days = self.env['hr.attendance.report_day'].search_count(
+                    [('employee_id', '=', emp.id), ('action', '=', 'absence'), ('date', '=', today_date - relativedelta(days=1))])
+                emp.promotion_duration -= uncounted_absence_days
 
     @api.model
     def update_service_duration(self):
         today_date = fields.Date.from_string(fields.Date.today())
         for emp in self.search([('employee_state', '=', 'employee')]):
-            first_decision_appoint_id = self.env['hr.decision.appoint'].search([('state', '=', 'done'),('employee_id', '=', emp.id)], order="date_direct_action asc",limit=1)
-            if first_decision_appoint_id:
-                first_date_direct_action = first_decision_appoint_id.date_direct_action
-                date_direct_action = fields.Date.from_string(first_date_direct_action)
-                current_service_duration = emp.service_duration
-                if current_service_duration == 0:
-                    emp.service_duration = (today_date - date_direct_action).days
-                    uncounted_absence_days = self.env['hr.attendance.report_day'].search_count(
-                        [('employee_id', '=', emp.id), ('action', '=', 'absence'),
-                         ('date', '>=', date_direct_action)])
-                else:
-                    emp.service_duration += 1
+            emp.service_duration += 1
                 # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
-                    uncounted_absence_days = self.env['hr.attendance.report_day'].search_count(
+            uncounted_absence_days = self.env['hr.attendance.report_day'].search_count(
                         [('employee_id', '=', emp.id), ('action', '=', 'absence'),
-                         ('date', '=', today_date-relativedelta(days=1))])
-                emp.service_duration -= uncounted_absence_days
+                         ('date', '=', today_date - relativedelta(days=1))])
+            emp.service_duration -= uncounted_absence_days
 
     @api.depends('birthday')
     def _compute_age(self):
@@ -631,6 +629,7 @@ class HrEmployeeSpecialization(models.Model):
 
 
 class HrEmployeeSanction(models.Model):
+
     _name = 'hr.employee.sanction'
     _description = u'العقوبات'
 
