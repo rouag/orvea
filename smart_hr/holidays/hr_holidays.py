@@ -546,9 +546,17 @@ class HrHolidays(models.Model):
     @api.multi
     def button_extend(self):
         # check if its possible to extend this holiday
-        extensions_number = self.env['hr.holidays'].search_count([('extended_holiday_id', '=', self.id), ('extended_holiday_id', '!=', False), ('state', '=', 'done')])
-        if extensions_number >= self.holiday_status_id.extension_number and self.holiday_status_id.extension_number > 0:
-            raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من%s " % str(self.holiday_status_id.extension_number))
+        if not self.is_extension:
+            extensions_number = self.env['hr.holidays'].search_count([('extended_holiday_id', '=', self.id), ('extended_holiday_id', '!=', False), ('state', '=', 'done')])
+            if extensions_number >= self.holiday_status_id.extension_number and self.holiday_status_id.extension_number > 0:
+                raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من%s " % str(self.holiday_status_id.extension_number))
+        else:
+            original_holiday = self.extended_holiday_id
+            extensions_number = 1
+            while original_holiday.is_extension:
+                extensions_number+=1
+            if extensions_number >= self.holiday_status_id.extension_number and self.holiday_status_id.extension_number > 0:
+                raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من%s " % str(self.holiday_status_id.extension_number))
         view_id = self.env.ref('smart_hr.hr_holidays_form').id
         context = self._context.copy()
         default_date_from = fields.Date.to_string(fields.Date.from_string(self.date_to) + timedelta(days=1))
