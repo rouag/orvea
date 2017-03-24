@@ -56,7 +56,8 @@ class HrHolidays(models.Model):
 
     name = fields.Char(string=u'رقم القرار',)
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now)
-    employee_id = fields.Many2one('hr.employee', string=u'الموظف', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1),)
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف', domain=[('emp_state', 'not in', ['suspended','terminated']), ('employee_state', '=', 'employee')],
+                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1),)
     raison = fields.Selection([('other', u'سبب أخر'), ('husband', u'مرافقة الزوج'),
                                ('wife', u'مرافقة الزوجة'), ('legit', u'مرافقة كمحرم شرعي')],
                                default="other", string=u'السبب ')
@@ -64,7 +65,7 @@ class HrHolidays(models.Model):
     date_to = fields.Date(string=u'التاريخ الى')
     duration = fields.Integer(string=u'مدتها' , required=1)
     holiday_status_id = fields.Many2one('hr.holidays.status', string=u'نوع الأجازة', default=lambda self: self.env.ref('smart_hr.data_hr_holiday_status_normal'),)
-    spend_advanced_salary = fields.Boolean(string=u'يصرف له راتب مسبق', related='holiday_status_id.spend_advanced_salary')
+    spend_advanced_salary = fields.Boolean(string=u'طلب صرف راتب مسبق', related='holiday_status_id.spend_advanced_salary')
     advanced_salary_periode = fields.Integer(string=u'مدة صرف راتب مسبق (باليوم)', related='holiday_status_id.advanced_salary_periode')
     with_advanced_salary = fields.Boolean(string=u'مع صرف راتب مسبقاً', readonly=1, states={'draft': [('readonly', 0)]})
     state = fields.Selection([
@@ -157,12 +158,19 @@ class HrHolidays(models.Model):
     can_be_cancelled = fields.Boolean(string=u'يمكن الغاؤها', related='holiday_status_id.can_be_cancelled')
     display_button_cancel = fields.Boolean(compute='_compute_display_button_cancel')
     display_button_cut = fields.Boolean(compute='_compute_display_button_cut')
+    salary_number = fields.Integer(string=u'عدد الرواتب')
 
-
+    
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
-
+    
+    @api.onchange('salary_number','duartion')
+    def onchange_salary_number(self):
+        if self.duration and self.salary_number:
+            if self.duration< self.salary_number*30:
+                raise ValidationError(u"لا يمكن طلب اكثر من" + str(self.duration//30) +u"رواتب مسبقة")
+            
     @api.multi
     def _compute_display_button_cancel(self):
         for rec in self:
@@ -440,7 +448,9 @@ class HrHolidays(models.Model):
             if self.compensation_type == 'money':
                 self.token_compensation_stock = self.employee_id.compensation_stock
                 self.employee_id.compensation_stock = 0
-
+#                 مدة الترقية
+        if self.holiday_status_id.promotion_deductible:
+            self.employee_id.promotion_duration -= self.duration
         if self.holiday_status_id.deductible_duration_service:
             self.employee_id.service_duration -= self.duration
 
@@ -546,9 +556,17 @@ class HrHolidays(models.Model):
     @api.multi
     def button_extend(self):
         # check if its possible to extend this holiday
-        extensions_number = self.env['hr.holidays'].search_count([('extended_holiday_id', '=', self.id), ('extended_holiday_id', '!=', False), ('state', '=', 'done')])
-        if extensions_number >= self.holiday_status_id.extension_number and self.holiday_status_id.extension_number > 0:
-            raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من%s " % str(self.holiday_status_id.extension_number))
+        if not self.is_extension:
+            extensions_number = self.env['hr.holidays'].search_count([('extended_holiday_id', '=', self.id), ('extended_holiday_id', '!=', False), ('state', '=', 'done')])
+            if extensions_number >= self.holiday_status_id.extension_number and self.holiday_status_id.extension_number > 0:
+                raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من%s " % str(self.holiday_status_id.extension_number))
+        else:
+            original_holiday = self.extended_holiday_id
+            extensions_number = 1
+            while original_holiday.is_extension:
+                extensions_number+=1
+            if extensions_number >= self.holiday_status_id.extension_number and self.holiday_status_id.extension_number > 0:
+                raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من%s " % str(self.holiday_status_id.extension_number))
         view_id = self.env.ref('smart_hr.hr_holidays_form').id
         context = self._context.copy()
         default_date_from = fields.Date.to_string(fields.Date.from_string(self.date_to) + timedelta(days=1))
@@ -662,13 +680,6 @@ class HrHolidays(models.Model):
         self.is_cancelled = is_cancelled
 
     holiday_cancellation = fields.Many2one('hr.holidays.cancellation')    
-    # Extension
-    is_extension = fields.Boolean(string=u'تمديد إجازة')
-    is_extended = fields.Boolean(string=u'ممددة', compute='_is_extended')
-    extended_holiday_id = fields.Many2one('hr.holidays', string=u'الإجازة الممددة')
-    parent_id = fields.Many2one('hr.holidays', string=u'Parent')
-    extension_holidays_ids = fields.One2many('hr.holidays', 'parent_id', string=u'التمديدات')
-
 
     @api.model
     def _check_state_access_right(self, vals):
@@ -1365,7 +1376,7 @@ class HrHolidaysStatus(models.Model):
     direct_decision = fields.Boolean(string=u'تحتاج إلى قرار مباشرة')
     direct_director_decision = fields.Boolean(string=u'موافقة مدير مباشر', default=True)
     external_decision = fields.Boolean(string=u'موافقة خارجية', default=False)
-    salary_spending = fields.Boolean(string=u'يجوز صرف راتبها')
+    salary_spending = fields.Boolean(string=u' صرف راتب مسبق')
     employees_director_decision = fields.Boolean(string=u'موافقة مدير شؤون الموظفين', default=True)
     can_be_cancelled = fields.Boolean(string=u'يمكن الغاؤها', default=True)
     evaluation_condition = fields.Boolean(string=u'يطبق شرط تقييم الأداء')
@@ -1391,7 +1402,8 @@ class HrHolidaysStatus(models.Model):
     min_duration_cut_hoiday = fields.Integer(string=u'المدة اللازمة لقطع الاجازة العادية خلال الثلاث سنوات الاخيرة') 
     can_be_cutted = fields.Boolean(string=u'يمكن قطعها', default=True)
     
-    
+
+            
     @api.onchange('deductible_duration_service')
     def onchange_deductible_duration_service(self):
         if self.deductible_duration_service:

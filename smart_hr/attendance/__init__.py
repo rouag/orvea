@@ -6,3 +6,5 @@ from . import hr_request_transfer
 from . import wizard
 from . import hr
 from . import parser
+from . import hr_attendance_config
+

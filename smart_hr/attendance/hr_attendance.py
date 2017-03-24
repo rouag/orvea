@@ -164,8 +164,10 @@ class HrAttendanceImport(models.Model):
         # first delete all actions for this day
         report_day_ids = report_day_obj.search([('date', '=', date)])
         report_day_ids.unlink()
-        #
-        for employee in employee_obj.search([]):
+        # لا يقوم بإحتساب من ليس لديهم وردية
+        for employee in employee_obj.search([('calendar_id', '!=', False), ('emp_state', '!=', 'terminated')]):
+            # if not employee.calendar_id:
+            #   raise ValidationError(u"يجب تحديد الورديّات للموظف %s " % employee.display_name)
             day = self.get_day_number(date)
             time_from, time_to, late, time_from_max, time_to_min = self.get_time_from_to_calendar(employee.calendar_id.id, day)
             self.chek_sign_in(date, employee.id, time_to, datetime.now())
@@ -483,15 +485,16 @@ class HrAttendanceImport(models.Model):
         report_day_ids.unlink()
         # get latest time for attendance
         all_attendances = attendance_obj.search([('name', '>=', str(date_start)), ('name', '<=', str(date_stop))])
-        latest_time = datetime.strptime(all_attendances[0].name, '%Y-%m-%d %H:%M:%S').time()
-        # check for each employee
-        employees = employee_obj.search([('employee_state', '=', 'employee')])
-        for employee in employees:
-            if not employee.calendar_id:
-                raise ValidationError(u"يجب تحديد الورديّات للموظف %s " % employee.name)
-
-            self.chek_sign_in(date, employee.id, latest_time, all_attendances[0].name)
-            self.chek_sign_out(date, employee.id, latest_time, all_attendances[0].name)
+        if all_attendances:
+            latest_time = datetime.strptime(all_attendances[0].name, '%Y-%m-%d %H:%M:%S').time()
+            # check for each employee
+            employees = employee_obj.search([('employee_state', '=', 'employee')])
+            for employee in employees:
+                # if not employee.calendar_id:
+                    # raise ValidationError(u"يجب تحديد الورديّات للموظف %s " % employee.display_name)
+                if employee.calendar_id:
+                    self.chek_sign_in(date, employee.id, latest_time, all_attendances[0].name)
+                    self.chek_sign_out(date, employee.id, latest_time, all_attendances[0].name)
 
         return True
 
