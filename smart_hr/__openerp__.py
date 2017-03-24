@@ -202,6 +202,7 @@
         'attendance/view/hr_attendance.xml',
         'attendance/view/hr_extra_hours.xml',
         'attendance/view/hr_authorization_view.xml',
+        'attendance/view/hr_attendance_config.xml',
         'attendance/view/hr_request_transfer_view.xml',
         'attendance/view/report_day_view.xml',
         'attendance/view/hr_attendance_check_view.xml',
@@ -275,9 +276,7 @@
         'hr_scholarship/views/report.xml',
 
         # 'hr_survey/views/website_templates.xml',
-        'mysql/security/ir.model.access.csv',
-        'mysql/mysql_confg_view.xml',
-        
+
     ],
     'auto_install': False,
     'sequence': 150,
