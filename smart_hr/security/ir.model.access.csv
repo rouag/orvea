@@ -201,4 +201,6 @@ access_hr_qualification_estimate_setting,name_access_hr_qualification_estimate_s
 access_hr_employee_configuration,access_hr_employee_configuration,model_hr_employee_configuration,,1,0,0,0
 access_hr_employee_configuration_setting,access_hr_employee_configuration_setting,model_hr_employee_configuration,smart_hr.group_configuration,1,1,1,1
 
+access_hr_employee_hr_suspension_end,access_hr_employee_hr_suspension_end,model_hr_suspension_end,,1,0,0,0
+
 

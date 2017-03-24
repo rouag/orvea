@@ -501,6 +501,10 @@ class HrDecisionAppoint(models.Model):
                                                       })
         self.state = 'done'
         self.env['hr.holidays']._init_balance(self.employee_id)
+        grade_id = int(self.emp_job_id.grade_id.code)
+        new_grade_id = int(self.grade_id.code)
+        if (grade_id != new_grade_id) or (self.job_id.name.members_job is False and self.emp_job_id.name.members_job is True):
+            self.employee_id.promotion_duration = 0
 
     def send_notification_refuse_to_group(self, group_id):
         for recipient in group_id.users:
