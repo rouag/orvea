@@ -694,6 +694,7 @@ class import_csv(osv.osv):
                        'serie_id': serie_id[0]if serie_id else False,
                        'state':'unoccupied',
                        }
+                    hr_job.create(cr, uid, job_val,context=context)
                    
                     
                  
