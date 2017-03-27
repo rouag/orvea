@@ -515,8 +515,8 @@ class HrAttendanceImport(models.Model):
         for row in reader:
             date = row['trndatetime2'].split(' ')[0]
             all_dates.add(date)
-        if len(all_dates) != 1:
-            raise ValidationError(u"الحضور و الإنصراف يجب أن يكون ليوم واحد")
+#         if len(all_dates) != 1:
+#             raise ValidationError(u"الحضور و الإنصراف يجب أن يكون ليوم واحد")
         fileobj.seek(0)
         for row in reader:
             if len(str(row['empid'].strip(" "))) == 4:
