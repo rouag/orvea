@@ -107,8 +107,8 @@ class HrDeduction(models.Model):
                         val_absence = val.copy()
                         val_absence.update({'amount': summary.days_absence, 'deduction_type_id': absence_type.id})
                         line_ids.append(val_absence)
-                # العقوبات
-                line_ids += self.deduction_sanctions()
+            # العقوبات
+            line_ids += self.deduction_sanctions()
             self.line_ids = line_ids
 
     @api.one
