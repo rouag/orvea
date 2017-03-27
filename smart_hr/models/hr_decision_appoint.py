@@ -588,7 +588,7 @@ class HrDecisionAppoint(models.Model):
             salary_grid_line = salary_grid_line[0]
             if salary_grid_line and not self.type_appointment.max_pension:
                 self.basic_salary = salary_grid_line.basic_salary
-                #   self.transport_allow = salary_grid_line.transport_allow
+                self.transport_allow = salary_grid_line.transport_allowance_amout
                 self.retirement = salary_grid_line.retirement
                 self.net_salary = salary_grid_line.net_salary
 

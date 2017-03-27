@@ -659,11 +659,13 @@ class HrDifference(models.Model):
             date_start = datetime.strptime(suspension['date_from'], '%Y-%m-%d')
             while date_start.strftime('%Y-%m-%d') <= suspension['date_to']:
                 salary_grid, basic_salary = employee.get_salary_grid_id(date_start.strftime('%Y-%m-%d'))
-                amount += basic_salary / 30.0 / 2.0
+                retirement_amount = basic_salary * salary_grid.retirement / 100.0
+                amount += (basic_salary - retirement_amount) / 30.0 / 2.0
                 date_start = date_start + relativedelta(days=1)
             if _all_days_in_month(suspension['date_from'], suspension['date_to']):
                 number_of_days = 30.0
-                amount += (30 - suspension_number_of_days) * basic_salary / 30.0 / 2.0
+                retirement_amount = basic_salary * salary_grid.retirement / 100.0
+                amount += (30 - suspension_number_of_days) * (basic_salary - retirement_amount) / 30.0 / 2.0
             val = {'difference_id': self.id,
                    'name': 'فرق الراتب الأساسي كف اليد',
                    'employee_id': employee.id,
