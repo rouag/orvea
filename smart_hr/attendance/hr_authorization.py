@@ -13,9 +13,9 @@ class HrAuthorization(models.Model):
     _description = u'طلبات الإستئذان'
 
     name = fields.Char(string='التسلسل', readonly=1)
-    employee_id = fields.Many2one('hr.employee', string='الموظف', required=1, domain=[('employee_state', '=', 'employee')],
-                                  readonly=1,
-                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1))
+    employee_id = fields.Many2one('hr.employee', string='الموظف', required=1,
+                                  readonly=1,domain=[('emp_state', 'not in', ['suspended','terminated']), ('employee_state', '=', 'employee')],
+                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended','terminated'])], limit=1),)
     number = fields.Char(string='رقم الوظيفة', readonly=1)
     department_id = fields.Many2one('hr.department', string='الادارة', readonly=1)
     job_id = fields.Many2one('hr.job', string='الوظيفة', readonly=1)

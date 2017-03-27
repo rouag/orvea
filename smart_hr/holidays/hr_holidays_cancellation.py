@@ -30,7 +30,7 @@ class hrHolidaysCancellation(models.Model):
         ('cut', u'قطع'),
         ('cancellation', u'إلغاء'),
     ], string=u'النوع', default='cancellation', )
-    note = fields.Text(string=u'الملاحظات', required=True)
+    note = fields.Text(string=u'الملاحظات', required=1)
     employee_is_the_creator = fields.Boolean(string='employee_is_the_creator', compute='_employee_is_the_creator')
     dm_is_the_creator = fields.Boolean(string='dm_is_the_creator', compute='_dm_is_the_creator')
     is_the_exellencies = fields.Boolean(string='Is Current User exellencies', compute='_employee_is_the_exellencies')

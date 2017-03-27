@@ -21,7 +21,7 @@
 			<field name="name">hr.holidays.cancellation.form</field>
 			<field name="model">hr.holidays.cancellation</field>
 			<field name="arch" type="xml">
-				<form string="إلغاء أو قطع إجازاتي" create="0" edit="0">
+				<form string="إلغاء أو قطع إجازاتي" create="0">
 					<field name="display_audit_buttons" invisible="1" />
 					<field name="dispay_draft_buttons" invisible="1" />
 					<header>
@@ -38,16 +38,16 @@
 					</header>
 					<sheet>
 						<group>
-							<field name="name" />
-							<field name="employee_id"
+							<field name="name" readonly="1" />
+							<field name="employee_id" readonly="1" 
 								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-							<field name="holiday_id" />
-							<field name="holiday_status_id" />
-							<field name="date_from" />
-							<field name="date_to" />
-							<field name="duration" />
+							<field name="holiday_id" readonly="1" />
+							<field name="holiday_status_id" readonly="1" />
+							<field name="date_from" readonly="1" />
+							<field name="date_to" readonly="1" />
+							<field name="duration" readonly="1" />
 						</group>
-						<group col="8">
+						<group>
 							<field name="note" />
 						</group>
 
@@ -61,7 +61,7 @@
 			<field name="model">hr.holidays.cancellation</field>
 			<field name="arch" type="xml">
 				<tree string="إلغاء أو قطع إجازاتي" class="oe_tree_view"
-					create="0" edit="0">
+					create="0">
 					<field name="name" />
 					<field name="holiday_id" />
 					<field name="holiday_status_id" />
@@ -133,17 +133,16 @@
 						</h1>
 						<group>
 							<field name="date" readonly="1" />
-							<field name="employee_id"
+							<field name="employee_id" readonly="1" 
 								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-							<field name="holiday_id" />
-							<field name="holiday_id" />
-							<field name="holiday_status_id" />
-							<field name="date_from" />
-							<field name="date_to" />
-							<field name="duration" />
+							<field name="holiday_id" readonly="1" />
+							<field name="holiday_status_id" readonly="1" />
+							<field name="date_from" readonly="1" />
+							<field name="date_to" readonly="1" />
+							<field name="duration" readonly="1" />
 						</group>
-						<group col="8">
-							<field name="note" colspan="8" />
+						<group>
+							<field name="note"/>
 						</group>
 
 					</sheet>
@@ -231,17 +230,16 @@
 						</h1>
 						<group>
 							<field name="date" readonly="1" />
-							<field name="employee_id"
+							<field name="employee_id" readonly="1" 
 								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-							<field name="holiday_id" />
-							<field name="holiday_id" />
-							<field name="holiday_status_id" />
-							<field name="date_from" />
-							<field name="date_to" />
-							<field name="duration" />
+							<field name="holiday_id" readonly="1" />
+							<field name="holiday_status_id" readonly="1" />
+							<field name="date_from" readonly="1" />
+							<field name="date_to" readonly="1" />
+							<field name="duration" readonly="1" />
 						</group>
-						<group col="8">
-							<field name="note" colspan="8" />
+						<group>
+							<field name="note"/>
 						</group>
 
 
@@ -257,7 +255,7 @@
 			<field name="name">hr.holidays.cancellation.tree</field>
 			<field name="model">hr.holidays.cancellation</field>
 			<field name="arch" type="xml">
-				<tree string="قطع إجازات" class="oe_tree_view" create="0" edit="0"
+				<tree string="قطع إجازات" class="oe_tree_view" create="0" 
 					fonts="bold:state in ['draft','done']"
 					row_classes="state-refuse:state=='refuse';state-in-progress:state not in ['draft','refuse','done'];">
 					<field name="name" />

@@ -21,8 +21,8 @@ class HrScholarship(models.Model):
                               ('cutoff', u'مقطوع'),
                               ], string='الحالة', readonly=1, default='draft')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1,
-                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)],
-                                                                                      limit=1))
+                                  domain=[('emp_state', 'not in', ['suspended','terminated']), ('employee_state', '=', 'employee')],
+                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended','terminated'])], limit=1),)
     note = fields.Text(string='ملاحظات')
     date_from = fields.Date(string=u'تاريخ البدء', required=1)
     date_to = fields.Date(string=u'تاريخ الإنتهاء', required=1)

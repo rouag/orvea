@@ -57,7 +57,7 @@ class HrHolidays(models.Model):
     name = fields.Char(string=u'رقم القرار',)
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now)
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', domain=[('emp_state', 'not in', ['suspended','terminated']), ('employee_state', '=', 'employee')],
-                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1),)
+                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended','terminated'])], limit=1),)
     raison = fields.Selection([('other', u'سبب أخر'), ('husband', u'مرافقة الزوج'),
                                ('wife', u'مرافقة الزوجة'), ('legit', u'مرافقة كمحرم شرعي')],
                                default="other", string=u'السبب ')
@@ -100,6 +100,7 @@ class HrHolidays(models.Model):
     # Cancellation
     is_cancelled = fields.Boolean(string=u'ملغاة', compute='_is_cancelled')
     is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started')
+    is_finished = fields.Boolean(string=u'انتهت', compute='_compute_is_finished')
     holiday_cancellation = fields.Many2one('hr.holidays.cancellation')    
     # Extension
     is_extension = fields.Boolean(string=u'تمديد إجازة')
@@ -140,7 +141,7 @@ class HrHolidays(models.Model):
     prove_exam_duration_name = fields.Char(string=u'إثبات اداء الامتحان ومدته مسمى')
     medical_report_number = fields.Char(string=u'رقم التقرير الطبي')
     medical_report_date = fields.Date(string=u'تاريخ التقرير الطبي')
-    courses_city = fields.Many2one('res.city', strin=u'المدينة',)
+    courses_city = fields.Many2one('res.city', string=u'المدينة',)
     courses_country = fields.Many2one('res.country', string=u'البلاد')
     current_holiday_stock = fields.Char(string=u'الرصيد الحالي', compute='_compute_current_holiday_stock')
     sport_participation_topic = fields.Char(string=u'موضوع المشاركة')
@@ -160,21 +161,21 @@ class HrHolidays(models.Model):
     display_button_cut = fields.Boolean(compute='_compute_display_button_cut')
     salary_number = fields.Integer(string=u'عدد الرواتب')
 
-    
+
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
-    
+
     @api.onchange('salary_number','duartion')
     def onchange_salary_number(self):
         if self.duration and self.salary_number:
             if self.duration< self.salary_number*30:
                 raise ValidationError(u"لا يمكن طلب اكثر من" + str(self.duration//30) +u"رواتب مسبقة")
-            
+
     @api.multi
     def _compute_display_button_cancel(self):
         for rec in self:
-            if not rec.can_be_cancelled or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is True:
+            if not rec.can_be_cancelled or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is True or rec.is_finished is True:
                 rec.display_button_cancel = False
             else:
                 rec.display_button_cancel = True
@@ -182,10 +183,10 @@ class HrHolidays(models.Model):
     @api.multi
     def _compute_display_button_cut(self):
         for rec in self:
-            if not rec.can_be_cutted or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is False:
+            if not rec.can_be_cutted or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is False or rec.is_finished is True:
                 rec.display_button_cut = False
             else:
-                rec.display_button_cancel = True
+                rec.display_button_cut = True
 
     @api.multi
     @api.depends("deputation_id")
@@ -257,7 +258,13 @@ class HrHolidays(models.Model):
         for rec in self:
             if rec.date_from <= datetime.today().strftime('%Y-%m-%d'):
                 rec.is_started = True
-
+                
+    @api.multi
+    def _compute_is_finished(self):
+        for rec in self:
+            if rec.date_to < datetime.today().strftime('%Y-%m-%d'):
+                rec.is_finished = True
+                
     @api.multi
     @api.onchange('holiday_status_id', 'duration')
     def onchange_hide_with_advanced_salary(self):
