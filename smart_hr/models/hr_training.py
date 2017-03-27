@@ -135,10 +135,10 @@ class HrCandidates(models.Model):
     _sql_constraints = [
         ('name_uniq', 'unique(employee_id, training_id)', 'هذا الموظف موجود بالدورة التدريبية!'),
     ]
+    employee_id = fields.Many2one('hr.employee', string='إسم الموظف', required=1, readonly=1,
+                                  domain=[('emp_state', 'not in', ['suspended', 'terminated']), ('employee_state', '=', 'employee')],
+                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended', 'terminated'])], limit=1))
 
-    employee_id = fields.Many2one('hr.employee', string=' إسم الموظف',
-                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)],
-                                                                                      limit=1), required=1)
     number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' رقم الوظيفة')
     job_id = fields.Many2one(related='employee_id.job_id', store=True, readonly=True, string=' الوظيفة')
     department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string=' الادارة')

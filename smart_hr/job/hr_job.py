@@ -145,9 +145,9 @@ class HrJobCreate(models.Model):
 
     name = fields.Char(string='مسمى الطلب', required=1, readonly=1, states={'new': [('readonly', 0)]})
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now())
-    employee_id = fields.Many2one('hr.employee', string='صاحب الطلب',
-                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)],
-                                                                                      limit=1), required=1, readonly=1)
+    employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', required=1, readonly=1,
+                                  domain=[('emp_state', 'not in', ['suspended', 'terminated']), ('employee_state', '=', 'employee')],
+                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended', 'terminated'])], limit=1))
     fiscal_year = fields.Char(string='السنه المالية', default=(date.today().year), readonly=1)
     decision_number = fields.Char(string=u"رقم القرار")
     decision_date = fields.Date(string=u'تاريخ القرار')
@@ -335,9 +335,10 @@ class HrJobStripFrom(models.Model):
     _description = u'سلخ وظائف من جهة'
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now())
-    employee_id = fields.Many2one('hr.employee', string='صاحب الطلب',
-                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)],
-                                                                                      limit=1), required=1, readonly=1)
+    employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', required=1, readonly=1,
+                                  domain=[('emp_state', 'not in', ['suspended', 'terminated']), ('employee_state', '=', 'employee')],
+                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended', 'terminated'])], limit=1))
+
     fiscal_year = fields.Char(string='السنه المالية', default=(date.today().year), readonly=1)
     source_location = fields.Many2one('res.partner', string=u"المصدر",
                                       domain=[('company_type', '=', 'governmental_entity')], required=1, readonly=1,
@@ -551,9 +552,9 @@ class HrJobStripTo(models.Model):
     _rec_name = 'employee_id'
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now())
-    employee_id = fields.Many2one('hr.employee', string='صاحب الطلب',
-                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)],
-                                                                                      limit=1), required=1, readonly=1)
+    employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', required=1, readonly=1,
+                                  domain=[('emp_state', 'not in', ['suspended', 'terminated']), ('employee_state', '=', 'employee')],
+                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended', 'terminated'])], limit=1))
     speech_number = fields.Char(string=u'رقم الخطاب')
     destination_location = fields.Many2one('res.partner', string=u"الوجهة",
                                            domain=[('company_type', '=', 'governmental_entity')], required=1,
@@ -724,9 +725,10 @@ class HrJobCancel(models.Model):
     _rec_name = 'speech_number'
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now())
-    employee_id = fields.Many2one('hr.employee', string='صاحب الطلب',
-                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)],
-                                                                                      limit=1), required=1, readonly=1)
+    employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', required=1, readonly=1,
+                                  domain=[('emp_state', 'not in', ['suspended', 'terminated']), ('employee_state', '=', 'employee')],
+                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended', 'terminated'])], limit=1))
+
     speech_number = fields.Char(string='رقم الخطاب', required=1)
     speech_date = fields.Date(string='تاريخ الخطاب', required=1)
     speech_file = fields.Binary(string='صورة الخطاب', required=1, attachment=True)
@@ -824,9 +826,10 @@ class HrJobMoveDeparrtment(models.Model):
     _description = u'نقل وظائف'
     _rec_name = 'employee_id'
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now())
-    employee_id = fields.Many2one('hr.employee', string='صاحب الطلب',
-                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)],
-                                                                                      limit=1), required=1, readonly=1)
+    employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', required=1, readonly=1,
+                                  domain=[('emp_state', 'not in', ['suspended', 'terminated']), ('employee_state', '=', 'employee')],
+                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended', 'terminated'])], limit=1))
+
     out_speech_number = fields.Char(string=u'رقم الخطاب الصادر')
     out_speech_date = fields.Date(string=u'تاريخ الخطاب الصادر')
     out_speech_file = fields.Binary(string=u'صورة الخطاب الصادر', attachment=True)
@@ -1026,9 +1029,10 @@ class HrJobMoveGrade(models.Model):
     _rec_name = 'decision_number'
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now())
-    employee_id = fields.Many2one('hr.employee', string='صاحب الطلب',
-                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)],
-                                                                                      limit=1), required=1, readonly=1)
+    employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', required=1, readonly=1,
+                                  domain=[('emp_state', 'not in', ['suspended', 'terminated']), ('employee_state', '=', 'employee')],
+                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended', 'terminated'])], limit=1))
+
     decision_number = fields.Char(string=u'رقم القرار')
     decision_date = fields.Date(string=u'تاريخ القرار')
     decision_file = fields.Binary(string=u'نسخة القرار',attachment=True)
@@ -1293,9 +1297,10 @@ class HrJobMoveUpdate(models.Model):
     _rec_name = "employee_id"
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now())
-    employee_id = fields.Many2one('hr.employee', string='صاحب الطلب',
-                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)],
-                                                                                      limit=1), required=1, readonly=1)
+    employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', required=1, readonly=1,
+                                  domain=[('emp_state', 'not in', ['suspended', 'terminated']), ('employee_state', '=', 'employee')],
+                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended', 'terminated'])], limit=1))
+
     decision_number = fields.Char(string=u"رقم القرار")
     decision_date = fields.Date(string=u'تاريخ القرار')
     out_speech_number = fields.Char(string=u'رقم الخطاب الصادر')
