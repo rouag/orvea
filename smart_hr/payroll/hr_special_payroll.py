@@ -282,7 +282,7 @@ class HrPayslip(models.Model):
                 grid_id, basic_salary = transfert.employee_id.get_salary_grid_id(transfert.create_date)
                 if grid_id:
                     # 2- بدل إنتداب
-                    amount = (hr_setting.deputation_days * (basic_salary / 22))
+                    amount = (hr_setting.deputation_days * (basic_salary / 30))
                     vals = {'difference_id': self.id,
                             'name': hr_setting.allowance_deputation.name,
                             'employee_id': transfert.employee_id.id,
