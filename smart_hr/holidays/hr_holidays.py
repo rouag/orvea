@@ -233,11 +233,13 @@ class HrHolidays(models.Model):
                     current_stock = entitlement_line.holiday_stock_default
                 if entitlement_line and not entitlement_line.periode and entitlement_line.holiday_stock_default == 0:
                     not_need_stock = True
-  
+
             if holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_compensation').id:
                 current_stock = employee_id.compensation_stock
-            return{'current_stock':current_stock, 'not_need_stock':not_need_stock}
-            
+            if holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_legal_absent').id:
+                return self._get_current_holiday_stock(employee_id, self.env.ref('smart_hr.data_hr_holiday_status_normal'), False)
+            return{'current_stock': current_stock, 'not_need_stock': not_need_stock}
+
     @api.multi
     @api.depends("holiday_status_id", "entitlement_type")
     def _compute_current_holiday_stock(self):
@@ -454,11 +456,6 @@ class HrHolidays(models.Model):
         if self.holiday_status_id.deductible_duration_service:
             self.employee_id.service_duration -= self.duration
 
-
-#             create history_line
-#         type = " منح"+" " +self.holiday_status_id.name.encode('utf-8')
-#         self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
-
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_study'):
             self.env['courses.followup'].create({'employee_id':self.employee_id.id, 'state':'progress',
                                                  'holiday_id':self.id, 'name':self.study_subject,
@@ -471,6 +468,28 @@ class HrHolidays(models.Model):
                                               'notif': True,
                                               'res_id': self.id,
                                              'res_action': 'smart_hr.action_hr_holidays_form'})
+#         رصيد الغياب بعذر يجب ان تحسم من رصيد الإجازة العادية ولا يكون لها رصيد مستقل
+
+        if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_legal_absent').id:
+            holiday_status_id = self.env.ref('smart_hr.data_hr_holiday_status_normal')
+            normal_stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
+                                                                         ('holiday_status_id', '=', holiday_status_id.id),
+                                                                         ])
+            normal_periodes = self.env['hr.holidays.periode'].search([('employee_id', '=', self.employee_id.id),
+                                                                      ('holiday_status_id', '=', holiday_status_id.id),
+                                                                      ('active', '=', True)])
+            normal_open_period = False
+            if normal_periodes:
+                for periode in normal_periodes:
+                    if fields.Datetime.from_string(periode.date_to) > fields.Datetime.from_string(self.date_to) and fields.Datetime.from_string(periode.date_from) < fields.Datetime.from_string(self.date_from):
+                        normal_open_period = periode
+                    else:
+                        periode.normal_open_period = False
+            if normal_stock_line:
+                stock_line.holidays_available_stock -= self.duration
+                stock_line.token_holidays_sum += self.duration
+            if normal_open_period:
+                open_period.holiday_stock -= self.duration
 
         self.num_decision = self.env['ir.sequence'].get('hr.decision.sequence')
         self.date_decision = fields.Date.today()
@@ -1127,13 +1146,13 @@ class HrHolidays(models.Model):
             raise ValidationError(u"هناك تداخل في تاريخ البدء مع عطلة نهاية الاسبوع  ")
         if fields.Date.from_string(self.date_to).weekday() in [4, 5] and self.holiday_status_id != self.env.ref('smart_hr.data_hr_holiday_status_normal'):
             raise ValidationError(u"هناك تداخل في تاريخ الإنتهاء مع عطلة نهاية الاسبوع")
-        for public_holiday in hr_public_holiday_obj.search([('state', '=', 'done')]):
-            if not self.is_extension:
-                if public_holiday.date_from <= self.date_from <= public_holiday.date_to or \
-                    public_holiday.date_from <= self.date_to <= public_holiday.date_to or \
-                    self.date_from <= public_holiday.date_from <= self.date_to or \
-                    self.date_from <= public_holiday.date_to <= self.date_to :
-                    raise ValidationError(u"هناك تداخل فى التواريخ مع اعياد و عطل رسمية")
+#         for public_holiday in hr_public_holiday_obj.search([('state', '=', 'done')]):
+#             if not self.is_extension:
+#                 if public_holiday.date_from <= self.date_from <= public_holiday.date_to or \
+#                     public_holiday.date_from <= self.date_to <= public_holiday.date_to or \
+#                     self.date_from <= public_holiday.date_from <= self.date_to or \
+#                     self.date_from <= public_holiday.date_to <= self.date_to :
+#                     raise ValidationError(u"هناك تداخل فى التواريخ مع اعياد و عطل رسمية")
                 
 #             # تكليف
 #         if self.holiday_status_id != self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
@@ -1165,7 +1184,7 @@ class HrHolidays(models.Model):
             if en.entitlment_category.id == entitlement_type.id:
                 right_entitlement = en
                 break
-        if not right_entitlement:
+        if not right_entitlement and self.holiday_status_id.id != self.env.ref('smart_hr.data_hr_holiday_status_legal_absent').id:
             raise ValidationError(u" الرجاء مراجعة الإستحقاقات في إعدادات الإجازة")
 
         date_from = fields.Date.from_string(self.date_from)

@@ -91,7 +91,7 @@ class HrJobHistoryActions(models.Model):
 
     action = fields.Char(string=u' الاجراء')
     action_date = fields.Date(string=u'التاريخ')
-    description = fields.Char(string=u'تفصيل الاجراء')
+    description = fields.Text(string=u'تفصيل الاجراء')
     job_id = fields.Many2one(string=u'الوظيفة')
 
 
@@ -1111,22 +1111,28 @@ class HrJobMoveGrade(models.Model):
         self.ensure_one()
         self.state = 'done'
         for job in self.job_movement_ids:
-            job.job_id.grade_id = job.new_grade_id.id
-            job.job_id.department_id = job.new_department_id.id
-            job.job_id.name = job.new_job_name.id
-            job.job_id.number = job.new_job_number
-            job.job_id.creation_source = self.move_type
             if self.move_type == "scale_up":
                 move_type = "رفع"
             else:
                 move_type = "خفض"
-            description = move_type + " " + u" الوظيفة من المرتبة " + " " + unicode(job.grade_id.name) + " " + u" الى المرتبة" + " " + unicode(job.new_grade_id.name) + u"."
+            description = move_type + u" الوظيفة من المرتبة " + unicode(job.grade_id.name) +u" الى المرتبة " +unicode(job.new_grade_id.name) + '.\n'
+            if job.new_job_name:
+                description += " تغيير المسمى من " + unicode(job.job_id.name.name) + u"  الى " + unicode(job.new_job_name.name)+ ".\n"
+            if job.new_job_number:
+                description += " تغيير رقم الوظيفة من " +unicode(job.job_id.number) +u" الى " + unicode(job.new_job_number)+ ".\n"
+            if job.new_department_id:
+                description += "  تغيير الادارة من " +unicode(job.job_id.department_id.name) + u" الى " +unicode(job.new_department_id.name)+ ".\n"
             job_history_vals = {
                 'action': move_type,
                 'action_date': date.today(),
                 'description': description,
                 'job_id': job.job_id.id}
             self.env['hr.job.history.actions'].create(job_history_vals)
+            job.job_id.grade_id = job.new_grade_id.id
+            job.job_id.department_id = job.new_department_id.id
+            job.job_id.name = job.new_job_name.id
+            job.job_id.number = job.new_job_number
+            job.job_id.creation_source = self.move_type
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت " + move_type + u" الوظائف من قبل '" + unicode(user.name) + u"'")
 
