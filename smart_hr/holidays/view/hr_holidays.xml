@@ -340,10 +340,10 @@
 								<field name="num_outspeech" filename="out_speech_file_name"
 									attrs="{'readonly':[('state','!=','external_audit')], 'required':[('state','=','external_audit')]}" />
 								<field name="date_outspeech"
-									attrs="{'readonly':[('state','!=','external_audit')]}" />
+									attrs="{'readonly':[('state','!=','external_audit')], 'required':[('state','=','external_audit')]}" />
 								<field name="outspeech_file_name" invisible="1" />
 								<field name="outspeech_file" filename="outspeech_file_name"
-									attrs="{'readonly':[('state','!=','external_audit')]}" />
+									attrs="{'readonly':[('state','!=','external_audit')], 'required':[('state','=','external_audit')]}"/>
 							</group>
 							<group
 								attrs="{'invisible':[('state','not in',['revision_response','done'])],}">
@@ -351,10 +351,10 @@
 									attrs="{'readonly':[('state','!=','revision_response')],
 									 'required':[('state','=','revision_response')]}" />
 								<field name="date_inspeech"
-									attrs="{'readonly':[('state','!=','revision_response')]}" />
+									attrs="{'readonly':[('state','!=','revision_response')], 'required':[('state','=','revision_response')]}" />
 								<field name="inspeech_file_name" invisible="1" />
 								<field name="inspeech_file" filename="inspeech_file_name"
-									attrs="{'readonly':[('state','!=','revision_response')]}" />
+									attrs="{'readonly':[('state','!=','revision_response')], 'required':[('state','=','revision_response')]}" />
 							</group>
 						</group>
 						<group
