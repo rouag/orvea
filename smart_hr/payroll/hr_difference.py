@@ -18,11 +18,15 @@ class HrDifference(models.Model):
     _description = u'الفروقات'
 
     @api.multi
-    def get_default_month(self):
-        return get_current_month_hijri(HijriDate)
+    def get_default_period_id(self):
+        period_id = self.env['account.period'].search([('date_start', '<=', fields.Date.today()),
+                                                       ('date_stop', '>=', fields.Date.today()),
+                                                       ]
+                                                      )
+        return period_id
 
     name = fields.Char(string=' المسمى', required=1, readonly=1, states={'new': [('readonly', 0)]})
-    month = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=get_default_month)
+    period_id = fields.Many2one('account.period', string=u'الفترة', domain=[('is_open', '=', True)], default=get_default_period_id)
     date = fields.Date(string='تاريخ الإنشاء', required=1, default=fields.Datetime.now(), readonly=1, states={'new': [('readonly', 0)]})
     date_from = fields.Date('تاريخ من', readonly=1, states={'new': [('readonly', 0)]})
     date_to = fields.Date('إلى', readonly=1, states={'new': [('readonly', 0)]})
@@ -67,15 +71,15 @@ class HrDifference(models.Model):
         result.update({'domain': {'employee_ids': [('id', 'in', list(set(employee_ids)))]}})
         return result
 
-    @api.onchange('month')
-    def onchange_month(self):
-        self.name = u'فروقات شهر %s' % self.month
+    @api.onchange('period_id')
+    def onchange_period_id(self):
+        self.name = u'فروقات شهر %s' % self.period_id.name
 
     @api.multi
     def compute_differences(self):
-        if self.month:
-            self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.month)
-            self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.month)
+        if self.period_id:
+            self.date_from = self.period_id.date_start
+            self.date_to = self.period_id.date_stop
             line_ids = []
             # فروقات النقل
             line_ids += self.get_difference_transfert()
@@ -542,8 +546,8 @@ class HrDifference(models.Model):
         # إذا كان عدد أيام الشهر أصغر من 30 يتم احتساب قيمة أيام فرق  مساوي إلى قيمة أخر يوم في الشهر.
         # مثلا شهر فيه 28 يوم يكون  قيمة يوم 29 و-30 مساوي لقيمة يوم 28.
 
-        date_start_month = str(get_hijri_month_start(HijriDate, Umalqurra, self.month))
-        date_end_month = str(get_hijri_month_end(HijriDate, Umalqurra, self.month))
+        date_start_month = str(self.period_id.date_start)
+        date_end_month = str(self.period_id.date_stop)
 
         def _all_days_in_month(date_from, date_to):
             if date_start_month >= date_from and date_end_month <= date_to:
@@ -811,7 +815,7 @@ class HrDifferenceLine(models.Model):
     amount = fields.Float(string='المبلغ')
     number_of_days = fields.Float(string='عدد الأيام')
     number_of_hours = fields.Float(string='عدد الساعات')
-    month = fields.Selection(MONTHS, related='difference_id.month', store=True, readonly=True, string='الشهر')
+    period_id = fields.Many2one('account.period', related='difference_id.period_id', store=True, readonly=True, string='الشهر')
     # TODO: do the store for state
     state = fields.Selection(related='difference_id.state', string='الحالة')
     type = fields.Selection([('increase', 'علاوة'),
