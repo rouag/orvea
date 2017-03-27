@@ -2055,9 +2055,12 @@ class import_csv(osv.osv):
         exceptional=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_exceptional')[1]
         compiling=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_compelling')[1]
         sport=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_sport')[1]
-        accompaniment=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_exceptional_accompaniment')[1]
+        accompaniment=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_accompaniment_exceptional')[1]
         absent=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_legal_absent')[1]
         compelling=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_compelling')[1]
+        exam=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_exam')[1]
+        etude=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_status_study')[1]
+        dialis=self.pool.get('ir.model.data').get_object_reference(cr, uid, 'smart_hr', 'data_hr_holiday_dialysis')[1]
         
         move_id=''
         all_move_ids=[]
@@ -2078,12 +2081,20 @@ class import_csv(osv.osv):
                             type_holiday=status_study
                         elif str(row['LEAVE_TYPE']) == '5':
                             type_holiday=status_maladie
-                        elif str(row['LEAVE_TYPE']) == '12':
+                        elif str(row['LEAVE_TYPE']) == '12' or   str(row['LEAVE_TYPE'])=="28":
                             type_holiday=sport
-                        elif str(row['LEAVE_TYPE']) == '13':
+                        elif str(row['LEAVE_TYPE']) == '24':
+                            type_holiday=exam
+                        elif str(row['LEAVE_TYPE']) == '13' or   str(row['LEAVE_TYPE'])=="31":
                             type_holiday=accompaniment
                         elif str(row['LEAVE_TYPE']) == '333':
                             type_holiday=absent
+                        elif str(row['LEAVE_TYPE']) == '4':
+                            type_holiday=exceptional
+                        elif str(row['LEAVE_TYPE']) == '4':
+                            type_holiday=exam
+                        elif str(row['LEAVE_TYPE']) == '15':
+                            type_holiday=dialis
                         else :
                             type_holiday=exceptional
                             
@@ -2109,7 +2120,7 @@ class import_csv(osv.osv):
                         date_to=date1+ relativedelta(day=(date1.day+int(duration)-1))
                         
                         holiday_val={
-                                        'name':row['REQUEST_NO'] if  row['REQUEST_NO'] != 'NULL' else  False,
+                                        
                                         'employee_id':employee[0] if employee else False,
                                         'date_from':row['START_DATE']if  row['START_DATE'] != 'NULL' else  False,
                                         'date_to':date_to,
@@ -2119,8 +2130,10 @@ class import_csv(osv.osv):
                                         'holiday_status_id':type_holiday if type_holiday!='employee' else False,
                                         'state': 'done' ,
                                         }
-                        
-                        holiday_obj.create(cr, uid, holiday_val,context=context)
+                        try:
+                            holiday_obj.create(cr, uid, holiday_val,context=context)
+                        except:
+                            False
                         
                         
         stop = timeit.default_timer()

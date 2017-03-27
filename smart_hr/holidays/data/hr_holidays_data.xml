@@ -136,7 +136,7 @@
 
 		<!-- أنواع خاصيّة الإجازة -->
 		<record id="data_hr_holiday_accompaniment_exceptional" model="hr.holidays.status">
-			<field name="name">اجازة مرافقة استثنائية</field>
+			<field name="name">اجازة مرافقة </field>
 			<field name="code">accompaniment</field>
 		</record>
 		<record id="data_hr_holiday_entitlement_types_parent" model="hr.holidays.entitlement.config">

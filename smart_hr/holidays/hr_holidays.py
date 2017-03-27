@@ -1146,13 +1146,13 @@ class HrHolidays(models.Model):
             raise ValidationError(u"هناك تداخل في تاريخ البدء مع عطلة نهاية الاسبوع  ")
         if fields.Date.from_string(self.date_to).weekday() in [4, 5] and self.holiday_status_id != self.env.ref('smart_hr.data_hr_holiday_status_normal'):
             raise ValidationError(u"هناك تداخل في تاريخ الإنتهاء مع عطلة نهاية الاسبوع")
-        for public_holiday in hr_public_holiday_obj.search([('state', '=', 'done')]):
-            if not self.is_extension:
-                if public_holiday.date_from <= self.date_from <= public_holiday.date_to or \
-                    public_holiday.date_from <= self.date_to <= public_holiday.date_to or \
-                    self.date_from <= public_holiday.date_from <= self.date_to or \
-                    self.date_from <= public_holiday.date_to <= self.date_to :
-                    raise ValidationError(u"هناك تداخل فى التواريخ مع اعياد و عطل رسمية")
+#         for public_holiday in hr_public_holiday_obj.search([('state', '=', 'done')]):
+#             if not self.is_extension:
+#                 if public_holiday.date_from <= self.date_from <= public_holiday.date_to or \
+#                     public_holiday.date_from <= self.date_to <= public_holiday.date_to or \
+#                     self.date_from <= public_holiday.date_from <= self.date_to or \
+#                     self.date_from <= public_holiday.date_to <= self.date_to :
+#                     raise ValidationError(u"هناك تداخل فى التواريخ مع اعياد و عطل رسمية")
                 
 #             # تكليف
 #         if self.holiday_status_id != self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
