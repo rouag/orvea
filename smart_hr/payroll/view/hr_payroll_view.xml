@@ -219,7 +219,7 @@
 				</xpath>
 			</field>
 		</record>
-		<record model="ir.actions.act_window" id="action_hr_payslip">
+		<record model="ir.actions.act_window" id="action_smart_hr_payslip">
 			<field name="name">إعداد مسيّر إفرادي</field>
 			<field name="res_model">hr.payslip</field>
 			<field name="type">ir.actions.act_window</field>
@@ -231,18 +231,18 @@
 		<record id="action_hr_payslip_form" model="ir.actions.act_window.view">
 			<field name="view_mode">form</field>
 			<field name="view_id" ref="view_hr_payslip_form" />
-			<field name="act_window_id" ref="action_hr_payslip" />
+			<field name="act_window_id" ref="action_smart_hr_payslip" />
 		</record>
-		<record id="action_hr_payslip_tree" model="ir.actions.act_window.view">
+		<record id="action_hr_payslip_tree_value" model="ir.actions.act_window.view">
 			<field name="view_mode">tree</field>
 			<field name="sequence">10</field>
 			<field name="view_id" ref="view_hr_payslip_tree_inherit" />
-			<field name="act_window_id" ref="action_hr_payslip" />
+			<field name="act_window_id" ref="action_smart_hr_payslip" />
 		</record>
 
 		<menuitem id="hr_payslip_menu" name="إعداد مسيّر إفرادي"
 			sequence="3" groups="group_payroll_management" parent="hr_payroll_root"
-			action="action_hr_payslip" />
+			action="action_smart_hr_payslip" />
 
 		<!-- إعداد مسيّر جماعي -->
 
