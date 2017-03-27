@@ -75,7 +75,8 @@ class HrEmployeeTransfert(models.Model):
     begin_work_date = fields.Date(string=u'تاريخ بداية العمل الحكومي', readonly=1)
     recruiter_date = fields.Date(string=u'تاريخ التعين بالجهة', readonly=1)
     age = fields.Integer(string=u'السن', readonly=1)
-
+    is_paied = fields.Boolean(string='is paied', default=False)
+    payslip_id = fields.Many2one('hr.payslip')
 
     @api.onchange('transfert_nature')
     def onchange_transfert_nature(self):
@@ -205,8 +206,6 @@ class HrEmployeeTransfert(models.Model):
     def action_consultation(self):
         self.ensure_one()
         self.state = 'pm'
-
-  
 
     @api.multi
     def action_cancelled(self):

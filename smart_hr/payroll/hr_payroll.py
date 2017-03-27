@@ -205,6 +205,7 @@ class HrPayslip(models.Model):
     grade_id = fields.Many2one('salary.grid.grade', string=u'المرتبة')
     degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة')
     type_id = fields.Many2one('salary.grid.type', string=u'صنف الموظف')
+    is_special = fields.Boolean(string='مسير خاص', default=False)
 
     @api.one
     def action_verify(self):
@@ -685,7 +686,7 @@ class HrPayslip(models.Model):
     @api.constrains('employee_id', 'month')
     def _check_payroll(self):
         for rec in self:
-            payroll_count = rec.search_count([('employee_id', '=', rec.employee_id.id), ('month', '=', rec.month)])
+            payroll_count = rec.search_count([('employee_id', '=', rec.employee_id.id), ('month', '=', rec.month), ('is_special', '=', False)])
             if payroll_count > 1:
                 raise ValidationError(u"لا يمكن إنشاء مسيرين لنفس الموظف في نفس الشهر")
 

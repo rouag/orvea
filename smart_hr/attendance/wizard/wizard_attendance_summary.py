@@ -14,8 +14,8 @@ from umalqurra.hijri import Umalqurra
 class WizardAttendanceSummary(models.TransientModel):
     _name = 'wizard.attendance.summary'
 
-    date_from = fields.Date(string='التاريخ من', default=lambda *a: time.strftime('%Y-%m-%d'), required=1)
-    date_to = fields.Date(string='إلى', default=lambda *a: time.strftime('%Y-%m-%d'), required=1)
+    date_from = fields.Date(string='التاريخ من',  required=1)
+    date_to = fields.Date(string='إلى', required=1)
     employee_id = fields.Many2one('hr.employee', string='موظف')
     department_id = fields.Many2one('hr.department', string='قسم')
 

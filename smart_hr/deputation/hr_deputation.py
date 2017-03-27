@@ -128,6 +128,8 @@ class HrDeputation(models.Model):
     deputation_type = fields.Many2one('hr.deputation.type', string='نوع الانتداب', required="1")
     deputation_balance_override = fields.Boolean(string=u"تجاوز رصيد الانتدابات")
     external_deputation_balance_override = fields.Boolean(string=u"تجاوز رصيد الانتداب الخارجي")
+    is_paied = fields.Boolean(string='is paied', default=False)
+    payslip_id = fields.Many2one('hr.payslip')
 
     @api.onchange('member_deputation')
     def onchange_member_deputation(self):

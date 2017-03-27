@@ -26,8 +26,8 @@ class CoursesFollowUp(models.Model):
     date_from = fields.Date(string=u' تاريخ البدء  ', related='holiday_id.date_from')
     date_to = fields.Date(string=u' تاريخ الإنتهاء ', related='holiday_id.date_to')
     duration = fields.Integer(string=u'الأيام', related='holiday_id.duration')
-    courses_city = fields.Char(string=u'المدينة', related='holiday_id.courses_city', readonly=True)
-    courses_country = fields.Char(string=u'الدولة', related='holiday_id.courses_country', readonly=True)
+    courses_city =fields.Many2one('res.city',string=u'المدينة', related='holiday_id.courses_city', readonly=True)
+    courses_country = fields.Many2one('res.country',string=u'الدولة', related='holiday_id.courses_country', readonly=True)
 
     @api.one
     def action_succeeded(self):

@@ -38,6 +38,8 @@ class HrTransportDecision(models.Model):
         ('finish', u'منتهية'),
         ('cancel', u'ملغى')
     ], string=u'حالة', default='draft', )
+    is_paied = fields.Boolean(string='is paied', default=False)
+    payslip_id = fields.Many2one('hr.payslip')
 
     @api.multi
     def action_audit(self):

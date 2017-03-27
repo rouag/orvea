@@ -63,7 +63,7 @@ class HrHolidays(models.Model):
                                default="other", string=u'السبب ')
     date_from = fields.Date(string=u'التاريخ من ', default=fields.Datetime.now)
     date_to = fields.Date(string=u'التاريخ الى')
-    duration = fields.Integer(string=u'مدتها' , required=1)
+    duration = fields.Integer(string=u'مدتها' , required=1,default=0)
     holiday_status_id = fields.Many2one('hr.holidays.status', string=u'نوع الأجازة', default=lambda self: self.env.ref('smart_hr.data_hr_holiday_status_normal'),)
     spend_advanced_salary = fields.Boolean(string=u'طلب صرف راتب مسبق', related='holiday_status_id.spend_advanced_salary')
     advanced_salary_periode = fields.Integer(string=u'مدة صرف راتب مسبق (باليوم)', related='holiday_status_id.advanced_salary_periode')
@@ -140,8 +140,8 @@ class HrHolidays(models.Model):
     prove_exam_duration_name = fields.Char(string=u'إثبات اداء الامتحان ومدته مسمى')
     medical_report_number = fields.Char(string=u'رقم التقرير الطبي')
     medical_report_date = fields.Date(string=u'تاريخ التقرير الطبي')
-    courses_city = fields.Char(string=u'المدينة')
-    courses_country = fields.Char(string=u'الدولة')
+    courses_city = fields.Many2one('res.city', strin=u'المدينة',)
+    courses_country = fields.Many2one('res.country', string=u'البلاد')
     current_holiday_stock = fields.Char(string=u'الرصيد الحالي', compute='_compute_current_holiday_stock')
     sport_participation_topic = fields.Char(string=u'موضوع المشاركة')
     birth_certificate_child_birth_dad = fields.Binary(string=u'شهادة الميلاد', attachment=True)
@@ -746,9 +746,11 @@ class HrHolidays(models.Model):
                         self.date_to = date_to + timedelta(days=2)
                     elif date_to.weekday() == 5:
                         self.date_to = date_to + timedelta(days=1)
-                        self.duration = self.duration - 1
+                        if  self.duration!=0:
+                            self.duration = self.duration - 1
                     elif date_to.weekday() == 6:
-                        self.duration = self.duration - 2
+                        if  self.duration!=0:
+                            self.duration = self.duration - 2
                 else:
                     if date_to.weekday() == 4:
                         self.duration = self.duration + 2

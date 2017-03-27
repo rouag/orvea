@@ -24,3 +24,5 @@ access_hr_request_transfer_all,name_hr_request_transfer_all,model_hr_request_tra
 ,,,,,,,
 access_hr_authorization_stock_setting_employee,name_access_hr_authorization_stock_setting_employee,model_hr_authorization_stock_setting,group_employee,1,0,0,0
 access_hr_employee_authorization_history_employee,name_access_hr_employee_authorization_history_employee,model_hr_employee_authorization_history,group_employee,1,0,0,0
+,,,,,,,
+name_hr_attendance_config,access_hr_attendance_config,model_hr_attendance_config,,1,1,0,0

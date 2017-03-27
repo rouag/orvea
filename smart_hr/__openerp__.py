@@ -173,8 +173,10 @@
         'payroll/wizard/wizard_loan_action.xml',
         'payroll/wizard/wizard_error_employee_view.xml',
         'payroll/wizard/wizard_payslip_changement.xml',
+        'payroll/wizard/hr_refuse_wizard_view.xml',
         'payroll/view/salary_grid.xml',
         'payroll/view/hr_payroll_view.xml',
+        'payroll/view/hr_special_payslip_view.xml',
         'payroll/view/setting_view.xml',
         'payroll/view/hr_salary_rule_view.xml',
         'payroll/view/hr_deduction.xml',
@@ -202,6 +204,7 @@
         'attendance/view/hr_attendance.xml',
         'attendance/view/hr_extra_hours.xml',
         'attendance/view/hr_authorization_view.xml',
+        'attendance/view/hr_attendance_config.xml',
         'attendance/view/hr_request_transfer_view.xml',
         'attendance/view/report_day_view.xml',
         'attendance/view/hr_attendance_check_view.xml',
@@ -275,9 +278,7 @@
         'hr_scholarship/views/report.xml',
 
         # 'hr_survey/views/website_templates.xml',
-        'mysql/security/ir.model.access.csv',
-        'mysql/mysql_confg_view.xml',
-        
+
     ],
     'auto_install': False,
     'sequence': 150,
