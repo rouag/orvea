@@ -116,7 +116,6 @@ class HrPayslipRun(models.Model):
                            'name': _('راتب موظف %s لشهر %s') % (employee.display_name, self.month),
                            'payslip_run_id': self.id,
                            'date_from': self.date_start,
-                           'date_to': self.date_end
                            }
             payslip = payslip_obj.create(payslip_val)
             payslip.onchange_employee()
@@ -268,7 +267,6 @@ class HrPayslip(models.Model):
         self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.month)
         self.name = _('راتب موظف %s لشهر %s') % (employee_id.name, self.month)
         self.company_id = employee_id.company_id
-        print 'self.employee_id.grade_id', self.employee_id.grade_id.id
         self.grade_id = self.employee_id.grade_id.id
         self.degree_id = self.employee_id.degree_id.id
         self.type_id = self.employee_id.type_id.id

@@ -47,7 +47,7 @@ class HrPayslip(models.Model):
     @api.multi
     def action_new(self):
         self.ensure_one()
-        self.state = 'new'
+        self.state = 'draft'
         self.special_state = 'new'
 
     @api.multi
@@ -309,3 +309,94 @@ class HrSpecialPayslipType(models.Model):
     name = fields.Char(string='نوع المسير')
 
 
+class HrPayslipRun(models.Model):
+    _name = 'hr.payslip.run'
+    _inherit = ['hr.payslip.run', 'mail.thread']
+
+    special_state = fields.Selection([('new', 'جديد'),
+                                      ('verify', 'المراجعة'),
+                                      ('division_director', 'مدير الشعبة'),
+                                      ('hrm', 'مدير الشؤون الموظفين'),
+                                      ('done', 'منتهية'),
+                                      ], 'الحالة', default='new', select=1, readonly=1, copy=False)
+    is_special = fields.Boolean(string='مسير خاص')
+    speech_number = fields.Char(string=u'رقم الخطاب', readonly=1, required=1, states={'draft': [('readonly', 0)]})
+    speech_date = fields.Date(string=u'تاريخ الخطاب', readonly=1, required=1, states={'draft': [('readonly', 0)]})
+    speech_file = fields.Binary(string=u'صورة الخطاب', attachment=True, readonly=1, required=1, states={'draft': [('readonly', 0)]})
+
+    @api.multi
+    def special_compute_sheet(self):
+        self.slip_ids.unlink()
+        payslip_obj = self.env['hr.payslip']
+        for employee in self.employee_ids:
+            payslip_val = {'employee_id': employee.id,
+                           'month': self.month,
+                           'name': _('راتب موظف %s لشهر %s') % (employee.display_name, self.month),
+                           'payslip_run_id': self.id,
+                           'date_from': self.date_start,
+                           'date_to': self.date_end,
+                           'is_special': self.is_special,
+                           'speech_number': self.speech_number,
+                           'speech_date': self.speech_date,
+                           'speech_file': self.speech_file,
+                           }
+            payslip = payslip_obj.create(payslip_val)
+            payslip.onchange_employee()
+            payslip.special_compute_sheet()
+
+    @api.multi
+    def action_new(self):
+        self.ensure_one()
+        self.state = 'draft'
+        self.special_state = 'new'
+        for slip in self.slip_ids:
+            slip.action_new()
+
+    @api.multi
+    def action_verify(self):
+        self.ensure_one()
+        self.special_compute_sheet()
+        self.number = self.env['ir.sequence'].get('seq.hr.payslip')
+        for slip in self.slip_ids:
+            slip.action_verify()
+        self.state = 'verify'
+        self.special_state = 'verify'
+
+    @api.multi
+    def action_division_director(self):
+        self.ensure_one()
+        self.special_state = 'division_director'
+        for slip in self.slip_ids:
+            slip.action_division_director()
+
+    @api.multi
+    def action_hrm(self):
+        self.ensure_one()
+        self.special_state = 'hrm'
+        for slip in self.slip_ids:
+            slip.action_hrm()
+
+    @api.multi
+    def action_done(self):
+        self.ensure_one()
+        self.state = 'done'
+        self.special_state = 'done'
+        for slip in self.slip_ids:
+            slip.action_done()
+        self.generate_file()
+
+    @api.multi
+    def button_refuse_division_director(self):
+        self.ensure_one()
+        self.state = 'verify'
+        self.special_state = 'verify'
+        for slip in self.slip_ids:
+            slip.button_refuse_division_director()
+
+    @api.multi
+    def button_refuse_verify(self):
+        self.ensure_one()
+        self.state = 'draft'
+        self.special_state = 'new'
+        for slip in self.slip_ids:
+            slip.button_refuse_verify()
