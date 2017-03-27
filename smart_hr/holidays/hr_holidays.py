@@ -100,6 +100,7 @@ class HrHolidays(models.Model):
     # Cancellation
     is_cancelled = fields.Boolean(string=u'ملغاة', compute='_is_cancelled')
     is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started')
+    is_finished = fields.Boolean(string=u'انتهت', compute='_compute_is_finished')
     holiday_cancellation = fields.Many2one('hr.holidays.cancellation')    
     # Extension
     is_extension = fields.Boolean(string=u'تمديد إجازة')
@@ -160,21 +161,21 @@ class HrHolidays(models.Model):
     display_button_cut = fields.Boolean(compute='_compute_display_button_cut')
     salary_number = fields.Integer(string=u'عدد الرواتب')
 
-    
+
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
-    
+
     @api.onchange('salary_number','duartion')
     def onchange_salary_number(self):
         if self.duration and self.salary_number:
             if self.duration< self.salary_number*30:
                 raise ValidationError(u"لا يمكن طلب اكثر من" + str(self.duration//30) +u"رواتب مسبقة")
-            
+
     @api.multi
     def _compute_display_button_cancel(self):
         for rec in self:
-            if not rec.can_be_cancelled or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is True:
+            if not rec.can_be_cancelled or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is True or rec.is_finished is True:
                 rec.display_button_cancel = False
             else:
                 rec.display_button_cancel = True
@@ -182,10 +183,10 @@ class HrHolidays(models.Model):
     @api.multi
     def _compute_display_button_cut(self):
         for rec in self:
-            if not rec.can_be_cutted or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is False:
+            if not rec.can_be_cutted or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is False or rec.is_finished is True:
                 rec.display_button_cut = False
             else:
-                rec.display_button_cancel = True
+                rec.display_button_cut = True
 
     @api.multi
     @api.depends("deputation_id")
@@ -257,7 +258,13 @@ class HrHolidays(models.Model):
         for rec in self:
             if rec.date_from <= datetime.today().strftime('%Y-%m-%d'):
                 rec.is_started = True
-
+                
+    @api.multi
+    def _compute_is_finished(self):
+        for rec in self:
+            if rec.date_to < datetime.today().strftime('%Y-%m-%d'):
+                rec.is_finished = True
+                
     @api.multi
     @api.onchange('holiday_status_id', 'duration')
     def onchange_hide_with_advanced_salary(self):
