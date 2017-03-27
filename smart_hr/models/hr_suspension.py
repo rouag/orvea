@@ -36,8 +36,8 @@ class hr_suspension(models.Model):
         ('done', u'اعتمدت'),
         ('refuse', u'رفض'),
     ], string=u'الحالة', default='draft')
-    decision_number = fields.Char(string='رقم القرار')
-    decision_date = fields.Date(string='تاريخ القرار ')
+    decision_number = fields.Char(string='رقم القرار', readonly=1)
+    decision_date = fields.Date(string='تاريخ القرار ', readonly=1)
  
     def num2hindi(self, string_number):
         if string_number:
@@ -80,14 +80,16 @@ class hr_suspension(models.Model):
         for rec in self:
             rec.state = 'hrm'
             rec.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"'")
-            
+
     @api.one
     def button_make_decision(self):
         user = self.env['res.users'].browse(self._uid)
         for rec in self:
+            self.decision_number = self.env['ir.sequence'].get('hr.decision.sequence')
+            self.decision_date = fields.Date.today()
             rec.state = 'make_decision'
             rec.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"'")
-            
+
     @api.one
     def button_done(self):
         user = self.env['res.users'].browse(self._uid)
