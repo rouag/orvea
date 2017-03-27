@@ -35,11 +35,14 @@ class HrPayslip(models.Model):
                                       ('hrm', 'مدير الشؤون الموظفين'),
                                       ('done', 'منتهية'),
                                       ], 'الحالة', default='new', select=1, readonly=1, copy=False)
-    is_special = fields.Boolean(string='مسير خاص', default=True)
-    transfert_decision_ids = fields.One2many('hr.transport.decision', 'payslip_id')
+    is_special = fields.Boolean(string='مسير خاص')
+    transport_decision_ids = fields.One2many('hr.transport.decision', 'payslip_id')
     overtime_line_ids = fields.One2many('hr.overtime.ligne', 'payslip_id')
     deputation_ids = fields.One2many('hr.deputation', 'payslip_id')
     transfert_ids = fields.One2many('hr.employee.transfert', 'payslip_id')
+    speech_number = fields.Char(string=u'رقم الخطاب', readonly=1, required=1, states={'draft': [('readonly', 0)]})
+    speech_date = fields.Date(string=u'تاريخ الخطاب', readonly=1, required=1, states={'draft': [('readonly', 0)]})
+    speech_file = fields.Binary(string=u'صورة الخطاب', attachment=True, readonly=1, required=1, states={'draft': [('readonly', 0)]})
 
     @api.multi
     def action_new(self):
@@ -68,6 +71,14 @@ class HrPayslip(models.Model):
     @api.multi
     def action_done(self):
         self.ensure_one()
+        for rec in self.transport_decision_ids:
+            rec.is_paied = True
+        for rec in self.overtime_line_ids:
+            rec.is_paied = True
+        for rec in self.deputation_ids:
+            rec.is_paied = True
+        for rec in self.transfert_ids:
+            rec.is_paied = True
         self.state = 'done'
         self.special_state = 'done'
 
@@ -88,10 +99,10 @@ class HrPayslip(models.Model):
         for payslip in self:
             # delete old line
             payslip.line_ids.unlink()
-            payslip.transfert_decision_ids.unlink()
-            payslip.overtime_line_ids.unlink()
-            payslip.deputation_ids.unlink()
-            payslip.transfert_ids.unlink()
+            payslip.transport_decision_ids = []
+            payslip.overtime_line_ids = []
+            payslip.deputation_ids = []
+            payslip.transfert_ids = []
             # generate  lines
             employee = payslip.employee_id
             # search the newest salary_grid for this employee
@@ -133,13 +144,13 @@ class HrPayslip(models.Model):
     def get_difference_transport_decision(self):
         self.ensure_one()
         line_ids = []
-        transfert_decision_ids = self.env['hr.transport.decision'].search([('employee_id', '=', self.employee_id.id),
+        transport_decision_ids = self.env['hr.transport.decision'].search([('employee_id', '=', self.employee_id.id),
                                                                            ('state', '=', 'done'),
                                                                            ('is_paied', '=', False),
                                                                            ])
-        if transfert_decision_ids:
-            self.transfert_decision_ids = transfert_decision_ids.ids
-        for transfert_decision in transfert_decision_ids:
+        if transport_decision_ids:
+            self.transport_decision_ids = transport_decision_ids.ids
+        for transfert_decision in transport_decision_ids:
             vals = {'difference_id': self.id,
                     'name': 'فرق أمر اركاب',
                     'employee_id': transfert_decision.employee_id.id,

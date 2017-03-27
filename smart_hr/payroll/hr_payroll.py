@@ -205,7 +205,6 @@ class HrPayslip(models.Model):
     grade_id = fields.Many2one('salary.grid.grade', string=u'المرتبة')
     degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة')
     type_id = fields.Many2one('salary.grid.type', string=u'صنف الموظف')
-    is_special = fields.Boolean(string='مسير خاص', default=False)
 
     @api.one
     def action_verify(self):
