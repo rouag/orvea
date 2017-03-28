@@ -4,6 +4,7 @@ from dateutil.relativedelta import relativedelta
 from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
+from pyasn1.compat.octets import null
 
 
 class HrEmployeeTransfert(models.Model):
@@ -441,39 +442,42 @@ class HrTransfertSorting(models.Model):
         for rec in self :
             line_ids = []
             for line in rec.line_ids2 :
-                if line.is_conflected:
-                    raise ValidationError(u"الرجاء حل الخلاف في الوظائف المختارة.")
-                if int(line.degree_id.code) > int(line.new_degree_id.code):
-                    vals = {'hr_employee_transfert_id': line.hr_employee_transfert_id.id,
-                               'hr_employee_transfert_id.state':'consult',
-                                'new_job_id': line.new_job_id.id,
-                                'new_type_id': line.new_type_id.id,
-                                'res_city': line.res_city.id,
-                                'new_degree_id': line.new_degree_id.id,
-                                'specific_group': line.specific_group,
-                               }
-                    line.hr_employee_transfert_id.state ='consult'
-                    self.env['base.notification'].create({'title': u'إشعار  بخفض درجة',
-                                               'message': u'لقد تم خفض درجة',
-                                               'user_id': line.hr_employee_transfert_id.employee_id.user_id.id,
-                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-                                               'notif': True,
-                                                 'res_id': self.id,
-                                                   })
-
-                    line_ids.append(vals)
-                if int(line.degree_id.code) <= int(line.new_degree_id.code):
-                    vals = {'hr_employee_transfert_id': line.hr_employee_transfert_id.id,
-                               'state': line.state,
-                                'new_job_id': line.new_job_id.id,
-                                'new_type_id': line.new_type_id.id,
-                                'res_city': line.res_city.id,
-                                'new_degree_id': line.new_degree_id.id,
-                                'specific_group': line.specific_group,
-                               }
-                    line_ids.append(vals)
-            rec.line_ids3 = line_ids
-            rec.state = 'waiting'
+                if   line.new_job_id.id != 0 :
+#                 if line.is_conflected:
+#                     raise ValidationError(u"الرجاء حل الخلاف في الوظائف المختارة.")
+                    if int(line.degree_id.code) > int(line.new_degree_id.code):
+                        vals = {'hr_employee_transfert_id': line.hr_employee_transfert_id.id,
+                                   'hr_employee_transfert_id.state':'consult',
+                                    'new_job_id': line.new_job_id.id,
+                                    'new_type_id': line.new_type_id.id,
+                                    'res_city': line.res_city.id,
+                                    'new_degree_id': line.new_degree_id.id,
+                                    'specific_group': line.specific_group,
+                                   }
+                        line.hr_employee_transfert_id.state ='consult'
+                        self.env['base.notification'].create({'title': u'إشعار  بخفض درجة',
+                                                   'message': u'لقد تم خفض درجة',
+                                                   'user_id': line.hr_employee_transfert_id.employee_id.user_id.id,
+                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                   'notif': True,
+                                                     'res_id': self.id,
+                                                       })
+    
+                        line_ids.append(vals)
+                    if int(line.degree_id.code) <= int(line.new_degree_id.code):
+                        vals = {'hr_employee_transfert_id': line.hr_employee_transfert_id.id,
+                                   'state': line.state,
+                                    'new_job_id': line.new_job_id.id,
+                                    'new_type_id': line.new_type_id.id,
+                                    'res_city': line.res_city.id,
+                                    'new_degree_id': line.new_degree_id.id,
+                                    'specific_group': line.specific_group,
+                                   }
+                        line_ids.append(vals)
+                    rec.line_ids3 = line_ids
+                    rec.state = 'waiting'
+                else :
+                    rec.state = 'draft'
     @api.multi
     def button_refuse(self):
         self.ensure_one()

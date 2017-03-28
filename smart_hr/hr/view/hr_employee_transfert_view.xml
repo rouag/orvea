@@ -363,10 +363,10 @@
 							</page>
 
 							<page string="طلبات النقل"
-								attrs="{'invisible':[('state', 'not in', ['draft','waiting'])]}">
+								attrs="{'invisible':[('state', 'not in', ['draft'])]}">
 								<br></br>
 								<field name="line_ids2" string=" طلبات النقل"  options="{'no_create': True}"
-									attrs="{'invisible':[('state', 'not in', ['draft','waiting'])],'readonly':[('state', 'in', [ 'draft','waiting'])]}">
+									attrs="{'invisible':[('state', 'not in', ['draft','waiting'])],'readonly':[('state', 'in', [ 'draft'])]}">
 									<tree editable="bottom" colors="red:is_conflected==True;">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
@@ -389,11 +389,11 @@
 									</tree>
 								</field>
 							</page>
-						<!-- 	<page string="طلبات النقل"
-								attrs="{'invisible':[('state', 'not in', ['commission_president'])]}">
+							<page string="طلبات النقل"
+								attrs="{'invisible':[('state', 'not in', ['waiting'])]}">
 								<br></br>
 								<field name="line_ids3"  options="{'no_create': True}"
-									attrs="{'invisible':[('state', 'not in', ['commission_president'])],'readonly':[('state', 'in', [ 'commission_president'])]}"
+									attrs="{'invisible':[('state', 'not in', ['waiting'])],'readonly':[('state', 'in', [ 'waiting'])]}"
 									string=" طلبات النقل">
 									<tree editable="bottom" colors="red:is_conflected==True;">
 										<field name="sequence" />
@@ -413,7 +413,7 @@
 										<field name="is_conflected" invisible="1" />
 									</tree>
 								</field>
-							</page> -->
+							</page>
 
 							<page string="طلبات النقل"
 								attrs="{'invisible':[('state', 'not in', ['commission_president','done'])],'readonly':[('state', 'in', [ 'commission_president','done'])]}">
