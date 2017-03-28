@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<record id="view_wizard_employee_transfert" model="ir.ui.view">
+			<field name="name">wizard.employee.transfert.form</field>
+			<field name="model">wizard.employee.transfert</field>
+			<field name="arch" type="xml">
+				<form>
+					<sheet>
+						<group>
+							<group>
+								<field name="employee_id" />
+								<field name="job_id" />
+								<field name="specific_id" />
+								<field name="type_id" />
+								<field name="department_id" />
+								<field name="degree_id" />
+								<field name="dep_city" />
+								<field name="employee_desire_ids" />
+							</group>
+							<group>
+								<field name="res_city" />
+								<field name="specific_group" />
+								<field name="new_job_id"  />
+								<field name="new_specific_id" />
+								<field name="new_type_id" />
+								<field name="new_department_id" />
+								<field name="new_degree_id" />
+
+							</group>
+						</group>
+						<group>
+						</group>
+						<footer>
+							<button icon="fa-cogs" string="تأكيد" name="action_transfert"
+								type="object" class="oe_highlight" />
+							أو
+							<button string="إلغاء" class="oe_link" special="cancel" />
+						</footer>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="action_wizard_employee_transfert" model="ir.actions.act_window">
+			<field name="name">طلب نقل موظف</field>
+			<field name="res_model">wizard.employee.transfert</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="view_wizard_employee_transfert" />
+			<field name="target">new</field>
+		</record>
+
+
+
+	</data>
+</openerp>

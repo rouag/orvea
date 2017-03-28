@@ -77,6 +77,8 @@
         'hr/security/hr_security.xml',
         'hr/security/ir.model.access.csv',
         'hr/wizard/hr_termination_wizard_view.xml',
+        'hr/wizard/hr_transfert_wizard_view.xml',
+        
         'hr/menu.xml',
         
         'hr/view/hierarchy_level.xml',

@@ -52,9 +52,8 @@ class HrImproveSituatim(models.Model):
     @api.onchange('type_id1')
     def onchange_type_id1(self):
         res = {}
-        if  self.type_id1:
-            job_search_ids = self.env['hr.job'].search([('type_id','=',self.type_id1.id)])
-            print"job_search_ids",job_search_ids
+        if  self.type_id1 :
+            job_search_ids = self.env['hr.job'].search([('type_id', '=' , self.type_id1.id)])
             job_ids = [rec.id for rec in job_search_ids]
             res['domain'] = {'new_job_id': [('id', 'in', job_ids)]}
             return res

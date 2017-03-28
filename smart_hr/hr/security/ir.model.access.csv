@@ -22,3 +22,5 @@ access_hr_monthly_summary_line,access_hr_monthly_summary_line,model_hr_monthly_s
 access_hr_transfert_cancel,access_hr_transfert_cancel,model_hr_transfert_cancel,,1,0,0,0
 access_hr_authority_board_setting,access_hr_authority_board_setting,model_hr_authority_board_setting,,1,0,0,0
 access_hr_authority_board_setting_resp,access_hr_authority_board_setting_resp,model_hr_authority_board_setting,smart_hr.group_configuration,1,1,1,1
+
+

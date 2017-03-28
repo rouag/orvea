@@ -400,7 +400,7 @@ class HrHolidays(models.Model):
                     stock_line.period_id = open_period.id
                     stock_line.holidays_available_stock = open_period.holiday_stock
                     stock_line.token_holidays_sum = 0
-            
+
             open_period.holiday_stock -= self.duration
             stock_line.holidays_available_stock -= self.duration
             stock_line.token_holidays_sum += self.duration

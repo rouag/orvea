@@ -17,7 +17,7 @@ class HrMysqlConfig(models.Model):
     _name = 'hr.mysql.config'
     _description = u'إجراء  جدول الحضور و الإنصراف'
     _rec_name ='db'
-    
+
     host = fields.Char(string='مكان الاستضافة')
     user = fields.Char(string='المستخدم')
     passwd = fields.Char(string='كلمة المرور')
