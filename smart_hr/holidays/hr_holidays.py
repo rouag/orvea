@@ -1406,7 +1406,7 @@ class HrHolidaysStatus(models.Model):
     direct_decision = fields.Boolean(string=u'تحتاج إلى قرار مباشرة')
     direct_director_decision = fields.Boolean(string=u'موافقة مدير مباشر', default=True)
     external_decision = fields.Boolean(string=u'موافقة خارجية', default=False)
-    salary_spending = fields.Boolean(string=u' صرف راتب مسبق')
+    salary_spending = fields.Boolean(string=u'مدفوعة الأجر')
     employees_director_decision = fields.Boolean(string=u'موافقة مدير شؤون الموظفين', default=True)
     can_be_cancelled = fields.Boolean(string=u'يمكن الغاؤها', default=True)
     evaluation_condition = fields.Boolean(string=u'يطبق شرط تقييم الأداء')
