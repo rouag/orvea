@@ -9,7 +9,6 @@ from openerp.addons.smart_base.util.time_util import days_between
 from openerp.addons.smart_base.util.umalqurra import *
 from umalqurra.hijri import Umalqurra
 
-
 class ReportHrErrorEmployee(report_sxw.rml_parse):
 
     def __init__(self, cr, uid, name, context):

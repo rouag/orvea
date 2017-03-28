@@ -224,7 +224,6 @@ class HrPayslip(models.Model):
     @api.one
     def action_done(self):
         self.state = 'done'
-        #TODO
         # update_loan_date
         month = fields.Date.from_string(self.period_id.date_start).month
         year = fields.Date.from_string(self.period_id.date_start).month
