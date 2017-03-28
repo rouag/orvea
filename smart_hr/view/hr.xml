@@ -226,7 +226,7 @@
 								string="رفض" type="action" groups="smart_hr.group_employee_registration"
 								attrs="{'invisible': [('employee_state', '!=', 'waiting')]}" />
 							<button name="%(report_hr_employee_card)d" type="action"
-								string=" طباعة البطاقة الوظيفية "
+								string=" طباعة بطاقة الموظف "
 								attrs="{'invisible': [('employee_card_id', '=', False),('employee_state', '!=', 'employee')]}" />
 							<field name="employee_state" widget="statusbar"
 								attrs="{'invisible': [('employee_state', '=', 'employee')]}"

@@ -1044,7 +1044,7 @@ class HrJobMoveGrade(models.Model):
     in_speech_number = fields.Char(string=u'رقم الخطاب الوارد')
     in_speech_date = fields.Date(string=u'تاريخ الخطاب الوارد')
     in_speech_file = fields.Binary(string=u'صورة الخطاب الوارد', attachment=True)
-    job_movement_ids = fields.One2many('hr.job.move.grade.line', 'job_move_grade_id')
+    job_movement_ids = fields.One2many('hr.job.move.grade.line', 'job_move_grade_id', required=1)
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', u'صاحب الصلاحية'),
                               ('hrm1', u'شؤون الموظفين'),
@@ -1309,7 +1309,7 @@ class HrJobMoveUpdate(models.Model):
     in_speech_number = fields.Char(string=u'رقم الخطاب الوارد')
     in_speech_date = fields.Date(string=u'تاريخ الخطاب الوارد')
     in_speech_file = fields.Binary(string=u'صورة الخطاب الوارد', attachment=True)
-    job_update_ids = fields.One2many('hr.job.update.line', 'job_update_id')
+    job_update_ids = fields.One2many('hr.job.update.line', 'job_update_id', required=1)
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', u'صاحب الصلاحية'),
                               ('hrm1', u'شؤون الموظفين'),
