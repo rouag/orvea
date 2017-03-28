@@ -227,7 +227,10 @@ class HrHolidays(models.Model):
                         entitlement_line = self.env['hr.holidays.status.entitlement'].search([('leave_type', '=', holiday_status_id.id),
                                                                ('entitlment_category.id', '=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)])
                 if stock_line:
-                    current_stock = stock_line.holidays_available_stock
+                    if entitlement_line.periode:
+                        current_stock = stock_line.holidays_available_stock
+                    else:
+                        current_stock = entitlement_line.holiday_stock_default
                 elif entitlement_line and entitlement_line.periode:
                     current_stock = entitlement_line.holiday_stock_default
                 elif entitlement_line and not entitlement_line.periode:
@@ -772,10 +775,10 @@ class HrHolidays(models.Model):
                         self.date_to = date_to + timedelta(days=2)
                     elif date_to.weekday() == 5:
                         self.date_to = date_to + timedelta(days=1)
-                        if  self.duration!=0:
+                        if self.duration != 0:
                             self.duration = self.duration - 1
                     elif date_to.weekday() == 6:
-                        if  self.duration!=0:
+                        if self.duration != 0:
                             self.duration = self.duration - 2
                 else:
                     if date_to.weekday() == 4:

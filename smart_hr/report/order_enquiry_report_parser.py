@@ -26,7 +26,7 @@ class OrderEnquiryReportParser(report_sxw.rml_parse):
         if date:
             date = fields.Date.from_string(date)
             hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
-            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+            return str(int(hijri_date.day)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.year))
         return None
 
     def _get_employee_jurdicial_precedents(self, employee):

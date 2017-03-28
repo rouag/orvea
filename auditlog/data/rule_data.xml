@@ -1,0 +1,840 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data noupdate="1">
+
+		<record id="data_rule_hr_employee" model="auditlog.rule">
+			<field name="name">الموظفون</field>
+			<field name="model_id" ref="hr.model_hr_employee" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_employee_judicial_precedent_order" model="auditlog.rule">
+			<field name="name">السوابق العدلية</field>
+			<field name="model_id" ref="smart_hr.model_employee_judicial_precedent_order" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_contract" model="auditlog.rule">
+			<field name="name">العقود</field>
+			<field name="model_id" ref="hr_contract.model_hr_contract" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_employee_functionnal_card" model="auditlog.rule">
+			<field name="name">بطاقة وظيفية</field>
+			<field name="model_id" ref="smart_hr.model_hr_employee_functionnal_card" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_decision_appoint" model="auditlog.rule">
+			<field name="name">التعيين</field>
+			<field name="model_id" ref="smart_hr.model_hr_decision_appoint" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_direct_appoint" model="auditlog.rule">
+			<field name="name">قرار مباشرة التعين</field>
+			<field name="model_id" ref="smart_hr.model_hr_direct_appoint" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_promotion" model="auditlog.rule">
+			<field name="name">طلبات الترقية</field>
+			<field name="model_id" ref="smart_hr.model_hr_promotion" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_promotion_employee_demande" model="auditlog.rule">
+			<field name="name">طلباتي فالترقية</field>
+			<field name="model_id" ref="smart_hr.model_hr_promotion_employee_demande" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_deputation" model="auditlog.rule">
+			<field name="name">الإنتدابات</field>
+			<field name="model_id" ref="smart_hr.model_hr_deputation" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_transport_decision" model="auditlog.rule">
+			<field name="name">أوامر الإركاب</field>
+			<field name="model_id" ref="smart_hr.model_hr_transport_decision" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_overtime" model="auditlog.rule">
+			<field name="name">خارج دوام</field>
+			<field name="model_id" ref="smart_hr.model_hr_overtime" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_employee_task" model="auditlog.rule">
+			<field name="name">المهام</field>
+			<field name="model_id" ref="smart_hr.model_hr_employee_task" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_scholarship" model="auditlog.rule">
+			<field name="name">الابتعاث</field>
+			<field name="model_id" ref="smart_hr.model_hr_scholarship" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_scholarship_decision" model="auditlog.rule">
+			<field name="name">قرار مباشرة الإبتعاث‬‬</field>
+			<field name="model_id" ref="smart_hr.model_hr_scholarship_decision" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_transfert_sorting" model="auditlog.rule">
+			<field name="name">ترتيب طلبات النقل</field>
+			<field name="model_id" ref="smart_hr.model_hr_transfert_sorting" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_employee_lend" model="auditlog.rule">
+			<field name="name">طلب إعارة موظف</field>
+			<field name="model_id" ref="smart_hr.model_hr_employee_lend" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_employee_commissioning" model="auditlog.rule">
+			<field name="name">طلب تكليف موظف</field>
+			<field name="model_id" ref="smart_hr.model_hr_employee_commissioning" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_sanction" model="auditlog.rule">
+			<field name="name">العقوبات</field>
+			<field name="model_id" ref="smart_hr.model_hr_sanction" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_deprivation_premium" model="auditlog.rule">
+			<field name="name">حرمان من العلاوة</field>
+			<field name="model_id" ref="smart_hr.model_hr_deprivation_premium" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_increase" model="auditlog.rule">
+			<field name="name">العلاوة</field>
+			<field name="model_id" ref="smart_hr.model_hr_increase" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_suspension" model="auditlog.rule">
+			<field name="name">كف اليد</field>
+			<field name="model_id" ref="smart_hr.model_hr_suspension" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_suspension_end" model="auditlog.rule">
+			<field name="name">إنهاء كف اليد</field>
+			<field name="model_id" ref="smart_hr.model_hr_suspension_end" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_termination" model="auditlog.rule">
+			<field name="name">طى القيد</field>
+			<field name="model_id" ref="smart_hr.model_hr_termination" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_improve_situation" model="auditlog.rule">
+			<field name="name">تحسين الوضع</field>
+			<field name="model_id" ref="smart_hr.model_hr_improve_situation" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_wizard_hr_termination" model="auditlog.rule">
+			<field name="name"> المستحقين للتقاعد النظامي</field>
+			<field name="model_id" ref="smart_hr.model_wizard_hr_termination" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_type_appoint" model="auditlog.rule">
+			<field name="name"> أنواع التعين</field>
+			<field name="model_id" ref="smart_hr.model_hr_type_appoint" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_deputation_setting" model="auditlog.rule">
+			<field name="name">الإنتدابات إعدادات </field>
+			<field name="model_id" ref="smart_hr.model_hr_deputation_setting" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_deputation_type" model="auditlog.rule">
+			<field name="name"> الإنتدابات أنواع</field>
+			<field name="model_id" ref="smart_hr.model_hr_deputation_type" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_transport_decision_type" model="auditlog.rule">
+			<field name="name">أنواع أوامر الإركاب</field>
+			<field name="model_id" ref="smart_hr.model_hr_transport_decision_type" />
+			<field name="log_read" eval="False" />
+		</record>
+
+
+		<record id="data_rule_hr_overtime_setting" model="auditlog.rule">
+			<field name="name">إعدادات خارج الدوام</field>
+			<field name="model_id" ref="smart_hr.model_hr_overtime_setting" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_scholarship_type" model="auditlog.rule">
+			<field name="name"> أنواع الابتعاث</field>
+			<field name="model_id" ref="smart_hr.model_hr_scholarship_type" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_employee_transfert_periode" model="auditlog.rule">
+			<field name="name"> فترات النقل</field>
+			<field name="model_id" ref="smart_hr.model_hr_employee_transfert_periode" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_setting" model="auditlog.rule">
+			<field name="name"> إعدادات النقل، الإعارة والتكليف</field>
+			<field name="model_id" ref="smart_hr.model_hr_setting" />
+			<field name="log_read" eval="False" />
+		</record>
+
+
+		<record id="data_rule_hr_employee_commissioning_type" model="auditlog.rule">
+			<field name="name"> أنواع التكليف</field>
+			<field name="model_id" ref="smart_hr.model_hr_employee_commissioning_type" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_type_sanction" model="auditlog.rule">
+			<field name="name"> أنواع العقوبات</field>
+			<field name="model_id" ref="smart_hr.model_hr_type_sanction" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_termination_type" model="auditlog.rule">
+			<field name="name"> أنواع طى القيد</field>
+			<field name="model_id" ref="smart_hr.model_hr_termination_type" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_type_improve_situation" model="auditlog.rule">
+			<field name="name"> أنواع تحسين الوضع</field>
+			<field name="model_id" ref="smart_hr.model_hr_type_improve_situation" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_authority_board_setting" model="auditlog.rule">
+			<field name="name"> إعدادات مجلس الهيئة</field>
+			<field name="model_id" ref="smart_hr.model_hr_authority_board_setting" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_department" model="auditlog.rule">
+			<field name="name">الهيكل الإدارى</field>
+			<field name="model_id" ref="hr.model_hr_department" />
+			<field name="log_read" eval="False" />
+		</record>
+
+
+		<record id="data_rule_hr_department_type" model="auditlog.rule">
+			<field name="name">أنواع الإدارات</field>
+			<field name="model_id" ref="smart_hr.model_hr_department_type" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hierarchy_level" model="auditlog.rule">
+			<field name="name">أنواع الإدارات</field>
+			<field name="model_id" ref="smart_hr.model_hierarchy_level" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_job" model="auditlog.rule">
+			<field name="name">الوظائف</field>
+			<field name="model_id" ref="smart_hr.model_hr_job" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_job_create" model="auditlog.rule">
+			<field name="name">إحداث وظائف</field>
+			<field name="model_id" ref="smart_hr.model_hr_job_create" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_job_update" model="auditlog.rule">
+			<field name="name">تحوير‬ وظائف</field>
+			<field name="model_id" ref="smart_hr.model_hr_job_update" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_job_move_department" model="auditlog.rule">
+			<field name="name">نقل وظائف</field>
+			<field name="model_id" ref="smart_hr.model_hr_job_move_department" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_job_move_grade" model="auditlog.rule">
+			<field name="name">رفع وظائف</field>
+			<field name="model_id" ref="smart_hr.model_hr_job_move_grade" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_job_move_grade" model="auditlog.rule">
+			<field name="name">رفع وظائف</field>
+			<field name="model_id" ref="smart_hr.model_hr_job_move_grade" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_job_strip_from" model="auditlog.rule">
+			<field name="name"> سلخ من جهة</field>
+			<field name="model_id" ref="smart_hr.model_hr_job_strip_from" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_job_strip_to" model="auditlog.rule">
+			<field name="name"> سلخ وظائف إلى جهة</field>
+			<field name="model_id" ref="smart_hr.model_hr_job_strip_to" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_job_cancel" model="auditlog.rule">
+			<field name="name"> إلغاء وظائف</field>
+			<field name="model_id" ref="smart_hr.model_hr_job_cancel" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_groupe_job" model="auditlog.rule">
+			<field name="name"> هيكل المجموعة العامة</field>
+			<field name="model_id" ref="smart_hr.model_hr_groupe_job" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_job_name" model="auditlog.rule">
+			<field name="name"> المسميات الوظيفية</field>
+			<field name="model_id" ref="smart_hr.model_hr_job_name" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_job_type_activity" model="auditlog.rule">
+			<field name="name"> انواع الانشطة</field>
+			<field name="model_id" ref="smart_hr.model_hr_job_type_activity" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_skils_job" model="auditlog.rule">
+			<field name="name">‫المهارات‬ ‫و‬ ‫القدرات</field>
+			<field name="model_id" ref="smart_hr.model_hr_skils_job" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_skils_job" model="auditlog.rule">
+			<field name="name">لادارة الوظائف المخطط الإنسيابي</field>
+			<field name="model_id" ref="smart_hr.model_hr_job_workflow" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_holidays" model="auditlog.rule">
+			<field name="name">طلبات الاجازات</field>
+			<field name="model_id" ref="smart_hr.model_hr_holidays" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_holidays_cancellation" model="auditlog.rule">
+			<field name="name">إلغاء أو قطع إجازات</field>
+			<field name="model_id" ref="smart_hr.model_hr_holidays_cancellation" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_holidays_extension" model="auditlog.rule">
+			<field name="name">تمديد رصيد الاجازات</field>
+			<field name="model_id" ref="smart_hr.model_hr_holidays_extension" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_courses_followup" model="auditlog.rule">
+			<field name="name">الدورات الدراسيّة</field>
+			<field name="model_id" ref="smart_hr.model_courses_followup" />
+			<field name="log_read" eval="False" />
+		</record>
+
+
+		<record id="data_rule_hr_holidays_decision" model="auditlog.rule">
+			<field name="name">قرار مباشرة إجازات‬‬</field>
+			<field name="model_id" ref="smart_hr.model_hr_holidays_decision" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_employee_situation_order" model="auditlog.rule">
+			<field name="name">طلب إفادة عن حالة موظف‬‬‬‬</field>
+			<field name="model_id" ref="smart_hr.model_hr_employee_situation_order" />
+			<field name="log_read" eval="False" />
+		</record>
+
+
+		<record id="data_rule_hr_holidays_status" model="auditlog.rule">
+			<field name="name">أنواع الأجازات‬‬‬‬</field>
+			<field name="model_id" ref="smart_hr.model_hr_holidays_status" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_holidays_entitlement_config" model="auditlog.rule">
+			<field name="name">اصناف استحقاقات الأجازات‬‬‬‬</field>
+			<field name="model_id" ref="smart_hr.model_hr_holidays_entitlement_config" />
+			<field name="log_read" eval="False" />
+		</record>
+
+
+		<record id="data_rule_hr_holidays_status_salary_percentage"
+			model="auditlog.rule">
+			<field name="name"> نسب الراتب المحتسبة في الاجازات</field>
+			<field name="model_id"
+				ref="smart_hr.model_hr_holidays_status_salary_percentage" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_payslip" model="auditlog.rule">
+			<field name="name"> إعداد مسيّر إفرادي</field>
+			<field name="model_id" ref="smart_hr.model_hr_payslip" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_payslip_run" model="auditlog.rule">
+			<field name="name"> إعداد مسيّر جماعي</field>
+			<field name="model_id" ref="smart_hr.model_hr_payslip_run" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_bonus" model="auditlog.rule">
+			<field name="name"> إسناد المزايا المالية</field>
+			<field name="model_id" ref="smart_hr.model_hr_bonus" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_bonus_line" model="auditlog.rule">
+			<field name="name"> البدلات</field>
+			<field name="model_id" ref="smart_hr.model_hr_bonus_line" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_deduction_line" model="auditlog.rule">
+			<field name="name">الحسميات بالموظف</field>
+			<field name="model_id" ref="smart_hr.model_hr_deduction_line" />
+			<field name="log_read" eval="False" />
+		</record>
+
+
+		<record id="data_rule_hr_loan" model="auditlog.rule">
+			<field name="name">القروض</field>
+			<field name="model_id" ref="smart_hr.model_hr_loan" />
+			<field name="log_read" eval="False" />
+		</record>
+
+
+		<record id="data_rule_hr_difference" model="auditlog.rule">
+			<field name="name"> الفروقات</field>
+			<field name="model_id" ref="smart_hr.model_hr_difference" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_difference_line" model="auditlog.rule">
+			<field name="name"> الفروقات بالموظف</field>
+			<field name="model_id" ref="smart_hr.model_hr_difference_line" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_payslip_line" model="auditlog.rule">
+			<field name="name"> تفاصيل الرواتب</field>
+			<field name="model_id" ref="smart_hr.model_hr_payslip_line" />
+			<field name="log_read" eval="False" />
+		</record>
+
+
+		<record id="data_rule_wizard_payslip_changement" model="auditlog.rule">
+			<field name="name"> تقرير لحصر الموظفين الذين طرأ تغيير في مسيرهم
+			</field>
+			<field name="model_id" ref="smart_hr.model_wizard_payslip_changement" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_wizard_error_employee" model="auditlog.rule">
+			<field name="name"> الموظفين المسثنين من المسير الجماعي</field>
+			<field name="model_id" ref="smart_hr.model_wizard_error_employee" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_allowance_type" model="auditlog.rule">
+			<field name="name"> اأنواع البدلات</field>
+			<field name="model_id" ref="smart_hr.model_hr_allowance_type" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_reward_type" model="auditlog.rule">
+			<field name="name"> اأنواع المكافآت</field>
+			<field name="model_id" ref="smart_hr.model_hr_reward_type" />
+			<field name="log_read" eval="False" />
+		</record>
+
+
+		<record id="data_rule_hr_indemnity_type" model="auditlog.rule">
+			<field name="name"> اأنواع التعويضات</field>
+			<field name="model_id" ref="smart_hr.model_hr_indemnity_type" />
+			<field name="log_read" eval="False" />
+		</record>
+
+
+		<record id="data_rule_hr_increase_type" model="auditlog.rule">
+			<field name="name"> اأنواع العلاوة</field>
+			<field name="model_id" ref="smart_hr.model_hr_increase_type" />
+			<field name="log_read" eval="False" />
+		</record>
+
+
+		<record id="data_rule_hr_deduction_type" model="auditlog.rule">
+			<field name="name"> اأنواع الحسميات</field>
+			<field name="model_id" ref="smart_hr.model_hr_deduction_type" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_insurance_type" model="auditlog.rule">
+			<field name="name"> اأنواع التأمين</field>
+			<field name="model_id" ref="smart_hr.model_hr_insurance_type" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_loan_type" model="auditlog.rule">
+			<field name="name"> اأنواع القروض</field>
+			<field name="model_id" ref="smart_hr.model_hr_loan_type" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_training" model="auditlog.rule">
+			<field name="name"> الدورات التدربية</field>
+			<field name="model_id" ref="smart_hr.model_hr_training" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_candidates" model="auditlog.rule">
+			<field name="name"> الدورات التدربية الترشيحات</field>
+			<field name="model_id" ref="smart_hr.model_hr_candidates" />
+			<field name="log_read" eval="False" />
+		</record>
+
+
+		<record id="data_rule_hr_training_type" model="auditlog.rule">
+			<field name="name">أنواع التدريب</field>
+			<field name="model_id" ref="smart_hr.model_hr_training_type" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_decision" model="auditlog.rule">
+			<field name="name">القرارات</field>
+			<field name="model_id" ref="smart_hr.model_hr_decision" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_decision_type" model="auditlog.rule">
+			<field name="name">أنواع القرارات</field>
+			<field name="model_id" ref="smart_hr.model_hr_decision_type" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_decision_setting" model="auditlog.rule">
+			<field name="name">اعدادات تسلسل القرارات</field>
+			<field name="model_id" ref="smart_hr.model_hr_decision_setting" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_attendance" model="auditlog.rule">
+			<field name="name">سجل الحظور والإنصراف</field>
+			<field name="model_id" ref="smart_hr.model_hr_attendance" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_authorization" model="auditlog.rule">
+			<field name="name">طلبات الإستئذان</field>
+			<field name="model_id" ref="smart_hr.model_hr_authorization" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_attendance_check" model="auditlog.rule">
+			<field name="name">الساعات الإضافية</field>
+			<field name="model_id" ref="smart_hr.model_hr_attendance_check" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_request_transfer" model="auditlog.rule">
+			<field name="name">طلبات تحويل ساعات التأخير</field>
+			<field name="model_id" ref="smart_hr.model_hr_request_transfer" />
+			<field name="log_read" eval="False" />
+		</record>
+
+
+		<record id="data_rule_hr_attendance_summary" model="auditlog.rule">
+			<field name="name">ملخص الحضور و الإنصراف</field>
+			<field name="model_id" ref="smart_hr.model_hr_attendance_summary" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_wizard_attendance_summary" model="auditlog.rule">
+			<field name="name">طباعة تقرير الحضور والإنصراف</field>
+			<field name="model_id" ref="smart_hr.model_wizard_attendance_summary" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_monthly_summary" model="auditlog.rule">
+			<field name="name">الخلاصة الشهرية</field>
+			<field name="model_id" ref="smart_hr.model_hr_monthly_summary" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_resource_calendar" model="auditlog.rule">
+			<field name="name">الورديّات</field>
+			<field name="model_id" ref="smart_hr.model_resource_calendar" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_attendance_schedule" model="auditlog.rule">
+			<field name="name">خطة الحضور والإنصراف</field>
+			<field name="model_id" ref="smart_hr.model_hr_attendance_schedule" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_public_holiday" model="auditlog.rule">
+			<field name="name">الأعياد و العطل الرسمية</field>
+			<field name="model_id" ref="smart_hr.model_hr_public_holiday" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_authorization_type" model="auditlog.rule">
+			<field name="name">أنواع الإستئذانات</field>
+			<field name="model_id" ref="smart_hr.model_hr_authorization_type" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_authorization_stock_setting" model="auditlog.rule">
+			<field name="name">اعداد رصيد الاستئذان‬ات</field>
+			<field name="model_id" ref="smart_hr.model_hr_authorization_stock_setting" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_attendance_import" model="auditlog.rule">
+			<field name="name">تحديث سجل الحضور والإنصراف</field>
+			<field name="model_id" ref="smart_hr.model_hr_attendance_import" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_attendance_config" model="auditlog.rule">
+			<field name="name">الربط مع قاعدة البيانات</field>
+			<field name="model_id" ref="smart_hr.model_hr_attendance_config" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_appraisal" model="auditlog.rule">
+			<field name="name">تقييم</field>
+			<field name="model_id" ref="smart_hr.model_hr_appraisal" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_appraisal" model="auditlog.rule">
+			<field name="name">الإستفتاءات</field>
+			<field name="model_id" ref="survey.model_survey_survey" />
+			<field name="log_read" eval="False" />
+		</record>
+
+
+		<record id="data_rule_hr_evaluation_point" model="auditlog.rule">
+			<field name="name">قواعد احتساب النقاط</field>
+			<field name="model_id" ref="smart_hr.model_hr_evaluation_point" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_evaluation_result_foctionality" model="auditlog.rule">
+			<field name="name">إعدادات نتائج تقييم موظف</field>
+			<field name="model_id" ref="smart_hr.model_hr_evaluation_result_foctionality" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_res_users" model="auditlog.rule">
+			<field name="name">المستخدمون</field>
+			<field name="model_id" ref="smart_hr.model_res_users" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_employee_hr_create_users" model="auditlog.rule">
+			<field name="name">انشاء مستخدم</field>
+			<field name="model_id" ref="smart_hr.model_hr_employee_create_users" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_salary_grid" model="auditlog.rule">
+			<field name="name">سلّم الرواتب</field>
+			<field name="model_id" ref="smart_hr.model_salary_grid" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_salary_grid" model="auditlog.rule">
+			<field name="name">سلّم الرواتب</field>
+			<field name="model_id" ref="smart_hr.model_salary_grid" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_salary_grid_detail" model="auditlog.rule">
+			<field name="name">تفاصيل سلالم الرواتب</field>
+			<field name="model_id" ref="smart_hr.model_salary_grid_detail" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_salary_grid_grade" model="auditlog.rule">
+			<field name="name">المراتب</field>
+			<field name="model_id" ref="smart_hr.model_salary_grid_grade" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_salary_grid_degree" model="auditlog.rule">
+			<field name="name">الدرجات</field>
+			<field name="model_id" ref="smart_hr.model_salary_grid_degree" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_salary_grid_degree" model="auditlog.rule">
+			<field name="name">الدرجات</field>
+			<field name="model_id" ref="smart_hr.model_salary_grid_degree" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_salary_grid_type" model="auditlog.rule">
+			<field name="name">الأصناف</field>
+			<field name="model_id" ref="smart_hr.model_salary_grid_type" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_employee_education_level" model="auditlog.rule">
+			<field name="name">المستوى التعليمي</field>
+			<field name="model_id" ref="smart_hr.model_hr_employee_education_level" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_employee_specialization" model="auditlog.rule">
+			<field name="name">التخصص</field>
+			<field name="model_id" ref="smart_hr.model_hr_employee_specialization" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_employee_diploma" model="auditlog.rule">
+			<field name="name">الشهادة العلمية</field>
+			<field name="model_id" ref="smart_hr.model_hr_employee_diploma" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_qualification_estimate" model="auditlog.rule">
+			<field name="name">تقدير المؤهل العلمي</field>
+			<field name="model_id" ref="smart_hr.model_hr_qualification_estimate" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_medical_category" model="auditlog.rule">
+			<field name="name">الفحص الطبي</field>
+			<field name="model_id" ref="smart_hr.model_medical_category" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_judicial_precedents" model="auditlog.rule">
+			<field name="name">أنواع السوابق العدلية</field>
+			<field name="model_id" ref="smart_hr.model_judicial_precedent" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_recruiter_recruiter" model="auditlog.rule">
+			<field name="name">أنواع جهات التوظيف</field>
+			<field name="model_id" ref="smart_hr.model_recruiter_recruiter" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_contract_item" model="auditlog.rule">
+			<field name="name">مواد العقد</field>
+			<field name="model_id" ref="smart_hr.model_hr_contract_item" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_contract_payement" model="auditlog.rule">
+			<field name="name">الدفع المجدول</field>
+			<field name="model_id" ref="smart_hr.model_hr_contract_payement" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_employee_configuration" model="auditlog.rule">
+			<field name="name">اعدادات الموظف</field>
+			<field name="model_id" ref="smart_hr.model_hr_employee_configuration" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_res_bank" model="auditlog.rule">
+			<field name="name">البنوك</field>
+			<field name="model_id" ref="base.model_res_bank" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_res_partner_bank" model="auditlog.rule">
+			<field name="name">الحسابات البنكية</field>
+			<field name="model_id" ref="base.model_res_partner_bank" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_res_city" model="auditlog.rule">
+			<field name="name">المدن</field>
+			<field name="model_id" ref="smart_hr.model_res_city" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_city_side" model="auditlog.rule">
+			<field name="name">الجهات الجغرافية</field>
+			<field name="model_id" ref="smart_hr.model_city_side" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_external_authorities" model="auditlog.rule">
+			<field name="name">الجهات الخارجية</field>
+			<field name="model_id" ref="smart_hr.model_external_authorities" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_res_partner" model="auditlog.rule">
+			<field name="name">جهات الاتصال</field>
+			<field name="model_id" ref="smart_hr.model_res_partner" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_res_country" model="auditlog.rule">
+			<field name="name">الدول</field>
+			<field name="model_id" ref="smart_hr.model_res_country" />
+			<field name="log_read" eval="False" />
+		</record>
+
+		<record id="data_rule_hr_deputation_category" model="auditlog.rule">
+			<field name="name">فئات الدول</field>
+			<field name="model_id" ref="smart_hr.model_hr_deputation_category" />
+			<field name="log_read" eval="False" />
+		</record>		
+
+		<record id="data_rule_religion_religion" model="auditlog.rule">
+			<field name="name">أنواع الديانات</field>
+			<field name="model_id" ref="smart_hr.model_religion_religion" />
+			<field name="log_read" eval="False" />
+		</record>		
+
+
+
+
+
+
+
+
+
+
+
+
+	</data>
+</openerp>
+		

@@ -66,7 +66,7 @@ def get_hijri_date(date, separator):
     '''
     if date:
         hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
-        return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+        return str(int(hijri_date.day)).zfill(2) + separator + str(int(hijri_date.month)).zfill(2) + separator + str(int(hijri_date.year))
     return None
 
 

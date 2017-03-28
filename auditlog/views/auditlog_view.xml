@@ -119,10 +119,6 @@
 								<field name="name" readonly="1" />
 							</group>
 						</group>
-						<group string="سياق HTTP">
-							<field name="http_session_id" />
-							<field name="http_request_id" />
-						</group>
 						<group string="تجديد الحقول">
 							<field name="line_ids" readonly="1" nolabel="1">
 								<form string="Log - Field updated">
