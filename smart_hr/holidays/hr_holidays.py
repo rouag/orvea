@@ -772,10 +772,10 @@ class HrHolidays(models.Model):
                         self.date_to = date_to + timedelta(days=2)
                     elif date_to.weekday() == 5:
                         self.date_to = date_to + timedelta(days=1)
-                        if  self.duration!=0:
+                        if self.duration != 0:
                             self.duration = self.duration - 1
                     elif date_to.weekday() == 6:
-                        if  self.duration!=0:
+                        if self.duration != 0:
                             self.duration = self.duration - 2
                 else:
                     if date_to.weekday() == 4:
