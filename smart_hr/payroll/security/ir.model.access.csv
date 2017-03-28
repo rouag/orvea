@@ -61,5 +61,5 @@ access_decision_appoint_allowance,decision_appoint_allowance,model_decision_appo
 
 access_hr_special_payslip_type,hr_special_payslip_type,model_hr_special_payslip_type,,1,1,1,1
 
-access_hr_period,hr_period,model_hr_period,account.group_account_user,1,1,1,1
-access_hr_fiscalyear,hr.fiscalyear,model_hr_fiscalyear,account.group_account_user,1,1,1,1
+access_hr_period,hr_period,model_hr_period,,1,1,1,1
+access_hr_fiscalyear,hr.fiscalyear,model_hr_fiscalyear,,1,1,1,1
