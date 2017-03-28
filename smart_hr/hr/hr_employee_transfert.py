@@ -498,10 +498,9 @@ class HrTransfertSorting(models.Model):
                         'specific_group': line.specific_group,
                     }
                     line_ids.append(vals)
-                rec.line_ids4 = line_ids
-            rec.state = 'commission_president'
-            for line in rec.line_ids3 :
-                if line.hr_employee_transfert_id.state =='consult':
+                    rec.line_ids4 = line_ids
+                    rec.state = 'commission_president'
+                else : 
                     rec.state = 'waiting'
     @api.multi
     def action_commission(self):
