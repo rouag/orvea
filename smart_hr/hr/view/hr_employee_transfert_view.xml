@@ -103,7 +103,7 @@
 
 								<field name="attachments" widget="many2many_binary"
 
-									attrs="{'readonly':[('state', 'in', [''waiting'','consult','pm','waiting','done', 'refused'])]}" />
+									attrs="{'readonly':[('state', 'in', ['waiting','consult','pm','done', 'refused'])]}" />
 
 								<field name="note"
 									attrs="{'invisible':[('state', 'in', ['waiting','new'])],'readonly':[('state', 'in', ['done', 'refused'])]}" />
@@ -172,7 +172,7 @@
 							</page>
 							<page name="desires" string="ترتيب الرغبات">
 								<br></br>
-								<field name="desire_ids"	attrs="{'readonly':[('state', 'in', [''waiting','consult','pm','waiting','done', 'refused'])]}"  >
+								<field name="desire_ids"	attrs="{'readonly':[('state', 'in', ['waiting','consult','pm','done', 'refused'])]}"  >
 									<tree editable="bottom">
 										<field name="sequence" widget="handle" readonly="1" />
 										<field name="name" />
