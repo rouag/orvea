@@ -27,7 +27,7 @@ class JobGradeReport(report_sxw.rml_parse):
         if date:
             date = fields.Date.from_string(date)
             hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
-            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+            return str(int(hijri_date.day)).zfill(2) + separator + str(int(hijri_date.month)).zfill(2) + separator + str(int(hijri_date.year))
         return None
 
     def _get_current_date(self):
@@ -83,7 +83,7 @@ class JobUpdateReport(report_sxw.rml_parse):
         if date:
             date = fields.Date.from_string(date)
             hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
-            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+            return str(int(hijri_date.day)).zfill(2) + separator + str(int(hijri_date.month)).zfill(2) + separator + str(int(hijri_date.year))
         return None
 
     def _get_current_date(self):
@@ -141,7 +141,7 @@ class JobDescriptionReport(report_sxw.rml_parse):
         if date:
             date = fields.Date.from_string(date)
             hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
-            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+            return str(int(hijri_date.day)).zfill(2) + separator + str(int(hijri_date.month)).zfill(2) + separator + str(int(hijri_date.year))
         return None
 
     def _get_employee_last_training(self, job):
@@ -223,7 +223,7 @@ class JobMoveDepReport(report_sxw.rml_parse):
         if date:
             date = fields.Date.from_string(date)
             hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
-            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+            return str(int(hijri_date.day)).zfill(2) + separator + str(int(hijri_date.month)).zfill(2) + separator + str(int(hijri_date.year))
         return None
 
     def _get_company(self):
@@ -285,7 +285,7 @@ class JobUpdateModelReport(report_sxw.rml_parse):
         if date:
             date = fields.Date.from_string(date)
             hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
-            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+            return str(int(hijri_date.day)).zfill(2) + separator + str(int(hijri_date.month)).zfill(2) + separator + str(int(hijri_date.year))
         return None
 
     def _get_company(self):
@@ -355,7 +355,7 @@ class JobScaleDownModelReport(report_sxw.rml_parse):
         if date:
             date = fields.Date.from_string(date)
             hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
-            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+            return str(int(hijri_date.day)).zfill(2) + separator + str(int(hijri_date.month)).zfill(2) + separator + str(int(hijri_date.year))
         return None
 
     def _get_company(self):
@@ -422,7 +422,7 @@ class JobCreateModelReport(report_sxw.rml_parse):
         if date:
             date = fields.Date.from_string(date)
             hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
-            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+            return str(int(hijri_date.day)).zfill(2) + separator + str(int(hijri_date.month)).zfill(2) + separator + str(int(hijri_date.year))
         return None
 
     def _get_statstics_by_grade(self, grade_number):
@@ -512,7 +512,7 @@ class JobModifyingModelReport(report_sxw.rml_parse):
         if date:
             date = fields.Date.from_string(date)
             hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
-            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+            return str(int(hijri_date.day)).zfill(2) + separator + str(int(hijri_date.month)).zfill(2) + separator + str(int(hijri_date.year))
         return None
 
     def _get_statstics_by_grade(self, grade_number):
@@ -627,7 +627,7 @@ class JobCareerModelReport(report_sxw.rml_parse):
         if date:
             date = fields.Date.from_string(date)
             hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
-            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+            return str(int(hijri_date.day)).zfill(2) + separator + str(int(hijri_date.month)).zfill(2) + separator + str(int(hijri_date.year))
         return None
 
     def _get_move_dep_ids(self, job_id):

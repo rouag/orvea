@@ -56,15 +56,16 @@ class HrHolidays(models.Model):
 
     name = fields.Char(string=u'رقم القرار',)
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now)
-    employee_id = fields.Many2one('hr.employee', string=u'الموظف', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1),)
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف', domain=[('emp_state', 'not in', ['suspended','terminated']), ('employee_state', '=', 'employee')],
+                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended','terminated'])], limit=1),)
     raison = fields.Selection([('other', u'سبب أخر'), ('husband', u'مرافقة الزوج'),
                                ('wife', u'مرافقة الزوجة'), ('legit', u'مرافقة كمحرم شرعي')],
                                default="other", string=u'السبب ')
     date_from = fields.Date(string=u'التاريخ من ', default=fields.Datetime.now)
     date_to = fields.Date(string=u'التاريخ الى')
-    duration = fields.Integer(string=u'مدتها' , required=1)
+    duration = fields.Integer(string=u'مدتها' , required=1,default=1)
     holiday_status_id = fields.Many2one('hr.holidays.status', string=u'نوع الأجازة', default=lambda self: self.env.ref('smart_hr.data_hr_holiday_status_normal'),)
-    spend_advanced_salary = fields.Boolean(string=u'يصرف له راتب مسبق', related='holiday_status_id.spend_advanced_salary')
+    spend_advanced_salary = fields.Boolean(string=u'طلب صرف راتب مسبق', related='holiday_status_id.spend_advanced_salary')
     advanced_salary_periode = fields.Integer(string=u'مدة صرف راتب مسبق (باليوم)', related='holiday_status_id.advanced_salary_periode')
     with_advanced_salary = fields.Boolean(string=u'مع صرف راتب مسبقاً', readonly=1, states={'draft': [('readonly', 0)]})
     state = fields.Selection([
@@ -99,6 +100,7 @@ class HrHolidays(models.Model):
     # Cancellation
     is_cancelled = fields.Boolean(string=u'ملغاة', compute='_is_cancelled')
     is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started')
+    is_finished = fields.Boolean(string=u'انتهت', compute='_compute_is_finished')
     holiday_cancellation = fields.Many2one('hr.holidays.cancellation')    
     # Extension
     is_extension = fields.Boolean(string=u'تمديد إجازة')
@@ -139,8 +141,8 @@ class HrHolidays(models.Model):
     prove_exam_duration_name = fields.Char(string=u'إثبات اداء الامتحان ومدته مسمى')
     medical_report_number = fields.Char(string=u'رقم التقرير الطبي')
     medical_report_date = fields.Date(string=u'تاريخ التقرير الطبي')
-    courses_city = fields.Char(string=u'المدينة')
-    courses_country = fields.Char(string=u'الدولة')
+    courses_city = fields.Many2one('res.city', string=u'المدينة',)
+    courses_country = fields.Many2one('res.country', string=u'البلاد')
     current_holiday_stock = fields.Char(string=u'الرصيد الحالي', compute='_compute_current_holiday_stock')
     sport_participation_topic = fields.Char(string=u'موضوع المشاركة')
     birth_certificate_child_birth_dad = fields.Binary(string=u'شهادة الميلاد', attachment=True)
@@ -157,16 +159,23 @@ class HrHolidays(models.Model):
     can_be_cancelled = fields.Boolean(string=u'يمكن الغاؤها', related='holiday_status_id.can_be_cancelled')
     display_button_cancel = fields.Boolean(compute='_compute_display_button_cancel')
     display_button_cut = fields.Boolean(compute='_compute_display_button_cut')
+    salary_number = fields.Integer(string=u'عدد الرواتب')
 
 
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
 
+    @api.onchange('salary_number','duartion')
+    def onchange_salary_number(self):
+        if self.duration and self.salary_number:
+            if self.duration< self.salary_number*30:
+                raise ValidationError(u"لا يمكن طلب اكثر من" + str(self.duration//30) +u"رواتب مسبقة")
+
     @api.multi
     def _compute_display_button_cancel(self):
         for rec in self:
-            if not rec.can_be_cancelled or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is True:
+            if not rec.can_be_cancelled or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is True or rec.is_finished is True:
                 rec.display_button_cancel = False
             else:
                 rec.display_button_cancel = True
@@ -174,10 +183,10 @@ class HrHolidays(models.Model):
     @api.multi
     def _compute_display_button_cut(self):
         for rec in self:
-            if not rec.can_be_cutted or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is False:
+            if not rec.can_be_cutted or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is False or rec.is_finished is True:
                 rec.display_button_cut = False
             else:
-                rec.display_button_cancel = True
+                rec.display_button_cut = True
 
     @api.multi
     @api.depends("deputation_id")
@@ -218,18 +227,23 @@ class HrHolidays(models.Model):
                         entitlement_line = self.env['hr.holidays.status.entitlement'].search([('leave_type', '=', holiday_status_id.id),
                                                                ('entitlment_category.id', '=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)])
                 if stock_line:
-                    current_stock = stock_line.holidays_available_stock
+                    if entitlement_line.periode:
+                        current_stock = stock_line.holidays_available_stock
+                    else:
+                        current_stock = entitlement_line.holiday_stock_default
                 elif entitlement_line and entitlement_line.periode:
                     current_stock = entitlement_line.holiday_stock_default
                 elif entitlement_line and not entitlement_line.periode:
                     current_stock = entitlement_line.holiday_stock_default
                 if entitlement_line and not entitlement_line.periode and entitlement_line.holiday_stock_default == 0:
                     not_need_stock = True
-  
+
             if holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_compensation').id:
                 current_stock = employee_id.compensation_stock
-            return{'current_stock':current_stock, 'not_need_stock':not_need_stock}
-            
+            if holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_legal_absent').id:
+                return self._get_current_holiday_stock(employee_id, self.env.ref('smart_hr.data_hr_holiday_status_normal'), False)
+            return{'current_stock': current_stock, 'not_need_stock': not_need_stock}
+
     @api.multi
     @api.depends("holiday_status_id", "entitlement_type")
     def _compute_current_holiday_stock(self):
@@ -247,7 +261,13 @@ class HrHolidays(models.Model):
         for rec in self:
             if rec.date_from <= datetime.today().strftime('%Y-%m-%d'):
                 rec.is_started = True
-
+                
+    @api.multi
+    def _compute_is_finished(self):
+        for rec in self:
+            if rec.date_to < datetime.today().strftime('%Y-%m-%d'):
+                rec.is_finished = True
+                
     @api.multi
     @api.onchange('holiday_status_id', 'duration')
     def onchange_hide_with_advanced_salary(self):
@@ -440,14 +460,11 @@ class HrHolidays(models.Model):
             if self.compensation_type == 'money':
                 self.token_compensation_stock = self.employee_id.compensation_stock
                 self.employee_id.compensation_stock = 0
-
+#                 مدة الترقية
+        if self.holiday_status_id.promotion_deductible:
+            self.employee_id.promotion_duration -= self.duration
         if self.holiday_status_id.deductible_duration_service:
             self.employee_id.service_duration -= self.duration
-
-
-#             create history_line
-#         type = " منح"+" " +self.holiday_status_id.name.encode('utf-8')
-#         self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
 
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_study'):
             self.env['courses.followup'].create({'employee_id':self.employee_id.id, 'state':'progress',
@@ -461,6 +478,28 @@ class HrHolidays(models.Model):
                                               'notif': True,
                                               'res_id': self.id,
                                              'res_action': 'smart_hr.action_hr_holidays_form'})
+#         رصيد الغياب بعذر يجب ان تحسم من رصيد الإجازة العادية ولا يكون لها رصيد مستقل
+
+        if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_legal_absent').id:
+            holiday_status_id = self.env.ref('smart_hr.data_hr_holiday_status_normal')
+            normal_stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
+                                                                         ('holiday_status_id', '=', holiday_status_id.id),
+                                                                         ])
+            normal_periodes = self.env['hr.holidays.periode'].search([('employee_id', '=', self.employee_id.id),
+                                                                      ('holiday_status_id', '=', holiday_status_id.id),
+                                                                      ('active', '=', True)])
+            normal_open_period = False
+            if normal_periodes:
+                for periode in normal_periodes:
+                    if fields.Datetime.from_string(periode.date_to) > fields.Datetime.from_string(self.date_to) and fields.Datetime.from_string(periode.date_from) < fields.Datetime.from_string(self.date_from):
+                        normal_open_period = periode
+                    else:
+                        periode.normal_open_period = False
+            if normal_stock_line:
+                stock_line.holidays_available_stock -= self.duration
+                stock_line.token_holidays_sum += self.duration
+            if normal_open_period:
+                open_period.holiday_stock -= self.duration
 
         self.num_decision = self.env['ir.sequence'].get('hr.decision.sequence')
         self.date_decision = fields.Date.today()
@@ -546,9 +585,17 @@ class HrHolidays(models.Model):
     @api.multi
     def button_extend(self):
         # check if its possible to extend this holiday
-        extensions_number = self.env['hr.holidays'].search_count([('extended_holiday_id', '=', self.id), ('extended_holiday_id', '!=', False), ('state', '=', 'done')])
-        if extensions_number >= self.holiday_status_id.extension_number and self.holiday_status_id.extension_number > 0:
-            raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من%s " % str(self.holiday_status_id.extension_number))
+        if not self.is_extension:
+            extensions_number = self.env['hr.holidays'].search_count([('extended_holiday_id', '=', self.id), ('extended_holiday_id', '!=', False), ('state', '=', 'done')])
+            if extensions_number >= self.holiday_status_id.extension_number and self.holiday_status_id.extension_number > 0:
+                raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من%s " % str(self.holiday_status_id.extension_number))
+        else:
+            original_holiday = self.extended_holiday_id
+            extensions_number = 1
+            while original_holiday.is_extension:
+                extensions_number+=1
+            if extensions_number >= self.holiday_status_id.extension_number and self.holiday_status_id.extension_number > 0:
+                raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من%s " % str(self.holiday_status_id.extension_number))
         view_id = self.env.ref('smart_hr.hr_holidays_form').id
         context = self._context.copy()
         default_date_from = fields.Date.to_string(fields.Date.from_string(self.date_to) + timedelta(days=1))
@@ -589,6 +636,8 @@ class HrHolidays(models.Model):
         holiday_cancellation_id = holidays_cancellation_obj.create(vals)
         # Add to log
         self.message_post(u"تم ارسال طلب إلغاء من قبل '" + unicode(user.name) + u"'")
+        self.holiday_cancellation = holiday_cancellation_id.id
+
         return {
                     'name': u'طلب إلغاء',
                     'view_type': 'form',
@@ -598,6 +647,7 @@ class HrHolidays(models.Model):
                     'type': 'ir.actions.act_window',
                     'res_id': holiday_cancellation_id.id,
                 }
+        
     @api.multi
     def button_cut(self):
         # Objects
@@ -641,34 +691,24 @@ class HrHolidays(models.Model):
                     'res_id': holiday_cancellation_id.id,
                 }
         
-    @api.one
-    @api.depends('extension_holidays_ids')
+    @api.multi
     def _is_extended(self):
         # Check if the holiday have a pending or completed extension leave
-        is_extended = False
-        for ext in self.extension_holidays_ids:
-            if ext.state != 'refuse':
-                is_extended = True
-                break
-        self.is_extended = is_extended
+        for rec in self:
+            is_extended = False
+            for ext in rec.extension_holidays_ids:
+                if ext.state != 'refuse':
+                    is_extended = True
+                    break
+            rec.is_extended = is_extended
         
-    @api.one
-    @api.depends('holiday_cancellation')
+    @api.multi
     def _is_cancelled(self):
         # Check if the holidays have a pending or completed holidays cancellation
-        is_cancelled = False
-        if self.holiday_cancellation and self.holiday_cancellation.state != 'refuse': 
-            is_cancelled = True
-        self.is_cancelled = is_cancelled
-
-    holiday_cancellation = fields.Many2one('hr.holidays.cancellation')    
-    # Extension
-    is_extension = fields.Boolean(string=u'تمديد إجازة')
-    is_extended = fields.Boolean(string=u'ممددة', compute='_is_extended')
-    extended_holiday_id = fields.Many2one('hr.holidays', string=u'الإجازة الممددة')
-    parent_id = fields.Many2one('hr.holidays', string=u'Parent')
-    extension_holidays_ids = fields.One2many('hr.holidays', 'parent_id', string=u'التمديدات')
-
+        for rec in self:
+            is_cancelled = False
+            if rec.holiday_cancellation and rec.holiday_cancellation.state != 'refuse': 
+                rec.is_cancelled = True
 
     @api.model
     def _check_state_access_right(self, vals):
@@ -693,58 +733,59 @@ class HrHolidays(models.Model):
                 self.is_direct_manager = True
 
 
-    @api.onchange('date_from')
-    def onchange_date_from(self):
 
-        if self.date_from and self.duration:
-            new_date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration-1)
-            self.date_to = new_date_to
-        elif self.date_from:
-            self.date_to = self.date_from
-            if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_normal') and fields.Date.from_string(self.date_to).weekday() in [4, 5]:
-                warning = {
-                    'title': _('تحذير!'),
-                    'message': _('هناك تداخل في تاريخ الإنتهاء مع عطلة نهاية الاسبوع!'),
-                }
-                return {'warning': warning}
-
-    @api.onchange('duration')
+    @api.onchange('duration','date_from')
     def onchange_duration(self):
-        self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration-1)
+
+        date_from = fields.Date.from_string(self.date_from)
+        date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration-1)
+        prev_min_holidays = self.env['hr.holidays'].search([('state', '=', 'done'), ('employee_id', '=', self.employee_id.id), ('duration', '<', self.holiday_status_id.maximum_minimum),
+                                                                   ('holiday_status_id', '=', self.holiday_status_id.id), ('date_from', '>=', date(date_from.year, 1, 1))])
+        prev_min_holidays_duration = 0
+        for holid in prev_min_holidays:
+            prev_min_holidays_duration += holid.duration
+        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_normal'):
+
+            if self.duration > self.holiday_status_id.maximum_minimum and self.duration < self.holiday_status_id.minimum:
+                raise ValidationError(u"ا كثر فترة يمكن طلبها من نوع إجازة  عادية اقل من " + str(self.holiday_status_id.minimum) + u" ايام هي" + str(self.holiday_status_id.maximum_minimum) + u" أيام")
+            elif self.duration < self.holiday_status_id.maximum_minimum:
+ 
+                if prev_min_holidays_duration + self.duration > self.holiday_status_id.maximum_minimum and self.duration < self.holiday_status_id.minimum:
+                    raise ValidationError(u"ليس لديك الرصيد الكافي للتمتع ب‬اجازة مدتها اقل من‬ " + str(self.holiday_status_id.maximum_minimum) + u" أيام")
+
+            if date_to.weekday() in [4,5] and self.duration:
+                if date_to.weekday() == 4:
+                    duration = self.duration - 1
+                elif date_to.weekday() == 5:
+                    duration = self.duration - 2
+                if duration < self.holiday_status_id.maximum_minimum:
+                    if prev_min_holidays_duration + duration < self.holiday_status_id.maximum_minimum:
+                        self.duration = duration
+                        self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=duration - 1)
+            elif self.duration:
+                self.date_to = date_to
+            else:
+                self.date_to = self.date_from
+
+        else:
+            if date_to.weekday() in [4,5] and self.duration:
+                if date_to.weekday() == 4:
+                    self.date_to = date_to - timedelta(days=1)
+                    self.duration = self.duration - 1
+                elif date_to.weekday() == 5:
+                    self.date_to = date_to - timedelta(days=2)
+                    self.duration = self.duration - 2
+            else:
+                if self.date_from and self.duration:
+                    self.date_to = date_to
+                elif self.date_from:
+                    self.date_to = self.date_from
         warning = {}
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_normal') and fields.Date.from_string(self.date_to).weekday() in [4, 5]:
             warning = {
                     'title': _('تحذير!'),
                     'message': _('هناك تداخل في تاريخ الإنتهاء مع عطلة نهاية الاسبوع!'),
-                }
-        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_normal'):
-            date_from = fields.Date.from_string(self.date_from)
-            date_to = fields.Date.from_string(self.date_to)
-            if self.duration > self.holiday_status_id.maximum_minimum and self.duration < self.holiday_status_id.minimum:
-                raise ValidationError(u"ا كثر فترة يمكن طلبها من نوع إجازة  عادية اقل من " + str(self.holiday_status_id.minimum) + u" ايام هي" + str(self.holiday_status_id.maximum_minimum) + u" أيام")
-            else:
-                prev_min_holidays = self.env['hr.holidays'].search([('state', '=', 'done'), ('employee_id', '=', self.employee_id.id), ('duration', '<', self.holiday_status_id.maximum_minimum),
-                                                                   ('holiday_status_id', '=', self.holiday_status_id.id), ('date_from', '>=', date(date_from.year, 1, 1))])
-                prev_min_holidays_duration = 0
-                for holid in prev_min_holidays:
-                    prev_min_holidays_duration += holid.duration
-                if prev_min_holidays_duration + self.duration > self.holiday_status_id.maximum_minimum and self.duration < self.holiday_status_id.minimum:
-                    raise ValidationError(u"ليس لديك الرصيد الكافي للتمتع ب‬اجازة مدتها اقل من‬ " + str(self.holiday_status_id.maximum_minimum) + u" أيام")
-                if prev_min_holidays_duration < self.holiday_status_id.maximum_minimum:
-                    if date_to.weekday() == 4:
-                        self.date_to = date_to + timedelta(days=2)
-                    elif date_to.weekday() == 5:
-                        self.date_to = date_to + timedelta(days=1)
-                        self.duration = self.duration - 1
-                    elif date_to.weekday() == 6:
-                        self.duration = self.duration - 2
-                else:
-                    if date_to.weekday() == 4:
-                        self.duration = self.duration + 2
-                        self.date_to = date_to + timedelta(days=2)
-                    elif date_to.weekday() == 5:
-                        self.duration = self.duration + 1
-                        self.date_to = date_to + timedelta(days=1)
+                }           
         if warning:
             return {'warning': warning}
 
@@ -1114,13 +1155,13 @@ class HrHolidays(models.Model):
             raise ValidationError(u"هناك تداخل في تاريخ البدء مع عطلة نهاية الاسبوع  ")
         if fields.Date.from_string(self.date_to).weekday() in [4, 5] and self.holiday_status_id != self.env.ref('smart_hr.data_hr_holiday_status_normal'):
             raise ValidationError(u"هناك تداخل في تاريخ الإنتهاء مع عطلة نهاية الاسبوع")
-        for public_holiday in hr_public_holiday_obj.search([('state', '=', 'done')]):
-            if not self.is_extension:
-                if public_holiday.date_from <= self.date_from <= public_holiday.date_to or \
-                    public_holiday.date_from <= self.date_to <= public_holiday.date_to or \
-                    self.date_from <= public_holiday.date_from <= self.date_to or \
-                    self.date_from <= public_holiday.date_to <= self.date_to :
-                    raise ValidationError(u"هناك تداخل فى التواريخ مع اعياد و عطل رسمية")
+#         for public_holiday in hr_public_holiday_obj.search([('state', '=', 'done')]):
+#             if not self.is_extension:
+#                 if public_holiday.date_from <= self.date_from <= public_holiday.date_to or \
+#                     public_holiday.date_from <= self.date_to <= public_holiday.date_to or \
+#                     self.date_from <= public_holiday.date_from <= self.date_to or \
+#                     self.date_from <= public_holiday.date_to <= self.date_to :
+#                     raise ValidationError(u"هناك تداخل فى التواريخ مع اعياد و عطل رسمية")
                 
 #             # تكليف
 #         if self.holiday_status_id != self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
@@ -1152,7 +1193,7 @@ class HrHolidays(models.Model):
             if en.entitlment_category.id == entitlement_type.id:
                 right_entitlement = en
                 break
-        if not right_entitlement:
+        if not right_entitlement and self.holiday_status_id.id != self.env.ref('smart_hr.data_hr_holiday_status_legal_absent').id:
             raise ValidationError(u" الرجاء مراجعة الإستحقاقات في إعدادات الإجازة")
 
         date_from = fields.Date.from_string(self.date_from)
@@ -1365,7 +1406,7 @@ class HrHolidaysStatus(models.Model):
     direct_decision = fields.Boolean(string=u'تحتاج إلى قرار مباشرة')
     direct_director_decision = fields.Boolean(string=u'موافقة مدير مباشر', default=True)
     external_decision = fields.Boolean(string=u'موافقة خارجية', default=False)
-    salary_spending = fields.Boolean(string=u'يجوز صرف راتبها')
+    salary_spending = fields.Boolean(string=u' صرف راتب مسبق')
     employees_director_decision = fields.Boolean(string=u'موافقة مدير شؤون الموظفين', default=True)
     can_be_cancelled = fields.Boolean(string=u'يمكن الغاؤها', default=True)
     evaluation_condition = fields.Boolean(string=u'يطبق شرط تقييم الأداء')
@@ -1391,7 +1432,8 @@ class HrHolidaysStatus(models.Model):
     min_duration_cut_hoiday = fields.Integer(string=u'المدة اللازمة لقطع الاجازة العادية خلال الثلاث سنوات الاخيرة') 
     can_be_cutted = fields.Boolean(string=u'يمكن قطعها', default=True)
     
-    
+
+            
     @api.onchange('deductible_duration_service')
     def onchange_deductible_duration_service(self):
         if self.deductible_duration_service:

@@ -25,7 +25,7 @@ class HrEmployeeFunctionnalCard(models.Model):
     last_salary = fields.Float(string='  الراتب الأخير ', store=True, compute='_compute_last_degree_salary', readonly=1)
     birthday_location = fields.Char(string=u'مكان الميلاد', related="employee_id.birthday_location", readonly=1)
     birthday = fields.Date(string=u'تاريخ الميلاد', related="employee_id.birthday", readonly=1)
-    degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', compute='_compute_last_degree_salary',
+    degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', related='employee_id.degree_id',
                                 readonly=1)
     identification_id = fields.Char(string=u'رقم الهوية', related="employee_id.identification_id", readonly=1)
     passport_id = fields.Char(string=u'رقم الحفيظة', related="employee_id.passport_id", readonly=1)
@@ -58,8 +58,6 @@ class HrEmployeeFunctionnalCard(models.Model):
                                    related="employee_id.training_ids")
     department_name_report = fields.Char(compute='_get_department_name_report')
 
-    @api.multi
-    @api.depends('employee_id')
     def _compute_education_level(self):
         for card in self:
             employee_id = card.employee_id
@@ -69,14 +67,10 @@ class HrEmployeeFunctionnalCard(models.Model):
                     self.education_level = level.level_education_id.id
                     break
 
-    @api.one
-    @api.depends('employee_id')
     def _compute_last_degree_salary(self):
-        last_decision_appoint = self.env['hr.decision.appoint'].search(
-            [('employee_id', '=', self.employee_id.id), ('state_appoint', '=', 'active')], limit=1)
-        if last_decision_appoint:
-            self.last_salary = last_decision_appoint.basic_salary
-            self.degree_id = last_decision_appoint.degree_id.id
+        for card in self:
+            salary_grid, basic_salary = card.employee_id.get_salary_grid_id(False)
+            card.last_salary = basic_salary
 
     @api.model
     def create(self, vals):

@@ -517,9 +517,9 @@ class HrPromotionDemande(models.Model):
 
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now())
-    employee_id = fields.Many2one('hr.employee', string='صاحب الطلب',
-                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)],
-                                                                                      limit=1), required=1, readonly=1)
+    employee_id = fields.Many2one('hr.employee', string='صاحب الطلب',required=1, readonly=1,
+                                  domain=[('emp_state', 'not in', ['suspended','terminated']), ('employee_state', '=', 'employee')],
+                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended','terminated'])], limit=1),)
     name = fields.Char(string=u'رقم الطلب', )
     description1 = fields.Text(string='رغبات الموظف', )
     description2 = fields.Text(string='رغبات الموظف', )

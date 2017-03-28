@@ -66,9 +66,9 @@
 							<group string="معلومات القرار" attrs="{'invisible':[('state','not in',['make_decision','done'])]}">
 
 								<field name="decision_number"
-									attrs="{'invisible':[('state','not in',['make_decision','done'])], 'required':[('state','=','make_decision')], 'readonly':[('state','=','done')]}" />
+									attrs="{'invisible':[('state','not in',['make_decision','done'])]}" />
 								<field name="decision_date"
-									attrs="{'invisible':[('state','not in',['make_decision','done'])], 'required':[('state','=','make_decision')], 'readonly':[('state','=','done')]}" />
+									attrs="{'invisible':[('state','not in',['make_decision','done'])]}" />
 							</group>
 						</group>
 

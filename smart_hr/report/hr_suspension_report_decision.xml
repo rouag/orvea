@@ -42,14 +42,14 @@
 									رقم
 									<span t-field="o.letter_number" />
 									و تاريخ
-									<span t-field="o.letter_date" />
+									<span t-esc="get_hijri_date(o.letter_date, '-')" />
 									المتضمن ايقاف الموظف ب
 									<span t-field="o.employee_id.department_id.name" />
 									/<span t-field="o.employee_id.display_name" />
 									لاتهامه ب
 									<span t-field="o.raison" />
 									بتاريخ
-									<span t-field="o.suspension_date" />
+									<span t-esc="get_hijri_date(o.suspension_date, '-')"/>
 								</p>
 								<p style="font-size:22px;">و استنادا لمقتضى المادة (١٩) من نظام الخدمة المدنية و
 									لموافقتنا
@@ -74,7 +74,7 @@
 									و راتبه
 									<span t-esc="o.employee_id.net_salary" />
 									ريالا اعتبارا من
-									<span t-field="o.suspension_date" />
+									<span t-esc="get_hijri_date(o.suspension_date, '-')"/>
 								</p>
 								<p style="font-size:22px;">ثانيا : يصرف له نصف صافي راتبه اعتبارا من تاريخ كف
 									يده

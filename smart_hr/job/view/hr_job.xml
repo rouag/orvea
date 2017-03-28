@@ -863,7 +863,7 @@
 									attrs="{'invisible':[('state', 'not in', ['budget_external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','budget_external')]}" />
 							</group>
 						</group>
-						<field name="job_movement_ids" context="{'operation':'scale_up'}"
+						<field name="job_movement_ids" context="{'operation':'scale_up'}" required="True"
 							attrs="{'readonly':[('state', '!=', 'new')]}" string=" الوظائف">
 							<tree editable="bottom">
 								<field name="job_id"

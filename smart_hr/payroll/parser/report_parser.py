@@ -80,7 +80,7 @@ class MessierSalaires(report_sxw.rml_parse):
         if date:
             date = fields.Date.from_string(date)
             hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
-            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+            return str(int(hijri_date.day)).zfill(2) + separator + str(int(hijri_date.month)).zfill(2) + separator + str(int(hijri_date.year))
         return None
 
 
@@ -184,7 +184,7 @@ class ReportPayslipExtension(report_sxw.rml_parse):
         if date:
             date = fields.Date.from_string(date)
             hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
-            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+            return str(int(hijri_date.day)).zfill(2) + separator + str(int(hijri_date.month)).zfill(2) + separator + str(int(hijri_date.year))
         return None
 
 
@@ -246,7 +246,7 @@ class ReportHrErrorEmployee(report_sxw.rml_parse):
         if date:
             date = fields.Date.from_string(date)
             hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
-            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+            return str(int(hijri_date.day)).zfill(2) + separator + str(int(hijri_date.month)).zfill(2) + separator + str(int(hijri_date.year))
         return None
 
 
@@ -268,8 +268,8 @@ class ReportPayslipChangement(report_sxw.rml_parse):
 
     def _get_lines(self, employee_ids, month):
         res = []
-        date_from = get_hijri_month_start(HijriDate, Umalqurra, month)
-        date_to = get_hijri_month_end(HijriDate, Umalqurra, month)
+        date_from = month.date_start
+        date_to = month.date_stop
         payslip_obj = self.pool.get('hr.payslip')
         payslip__ids = payslip_obj.search(self.cr, self.uid, [('date_from', '=', date_from),
                                                               ('date_to', '=', date_to),
@@ -298,7 +298,7 @@ class ReportPayslipChangement(report_sxw.rml_parse):
         if date:
             date = fields.Date.from_string(date)
             hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
-            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+            return str(int(hijri_date.day)).zfill(2) + separator + str(int(hijri_date.month)).zfill(2) + separator + str(int(hijri_date.year))
         return None
 
 

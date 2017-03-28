@@ -3,30 +3,30 @@
 from datetime import date, timedelta
 
 # for month use
-MONTHS = [('01', 'محرّم'),
-          ('02', 'صفر'),
-          ('03', 'ربيع الأول'),
-          ('04', 'ربيع الثاني'),
-          ('05', 'جمادي الأولى'),
-          ('06', 'جمادي الآخرة'),
-          ('07', 'رجب'),
-          ('08', 'شعبان'),
-          ('09', 'رمضان'),
-          ('10', 'شوال'),
-          ('11', 'ذو القعدة'),
-          ('12', 'ذو الحجة')]
-DAYS = {'01': 30,
-        '02': 29,
-        '03': 30,
-        '04': 30,
-        '05': 30,
-        '06': 29,
-        '07': 29,
-        '08': 30,
-        '09': 29,
-        '10': 29,
-        '11': 30,
-        '12': 29}
+MONTHS = {1: 'محرّم',
+          2: 'صفر',
+          3: 'ربيع الأول',
+          4: 'ربيع الثاني',
+          5: 'جمادي الأولى',
+          6: 'جمادي الآخرة',
+          7: 'رجب',
+          8: 'شعبان',
+          9: 'رمضان',
+          10: 'شوال',
+          11: 'ذو القعدة',
+          12: 'ذو الحجة'}
+DAYS = {1: 30,
+        2: 29,
+        3: 30,
+        4: 30,
+        5: 30,
+        6: 29,
+        7: 29,
+        8: 30,
+        9: 29,
+        10: 29,
+        11: 30,
+        12: 29}
 
 
 def get_current_month_hijri(HijriDate):
@@ -37,7 +37,7 @@ def get_current_month_hijri(HijriDate):
 def get_hijri_month_start(HijriDate, Umalqurra, month):
     if month:
         um = HijriDate.today()
-        um.set_date(um.year, int(month), 1)
+        um.set_date(um.year, month, 1)
         umalqurra = Umalqurra()
         start_date = umalqurra.hijri_to_gregorian(um.year, um.month, um.day)
         return date(int(start_date[0]), int(start_date[1]), int(start_date[2]))
@@ -46,10 +46,17 @@ def get_hijri_month_start(HijriDate, Umalqurra, month):
 def get_hijri_month_end(HijriDate, Umalqurra, month):
     if month:
         um = HijriDate.today()
-        um.set_date(um.year, int(month), DAYS[month])
+        um.set_date(um.year, month, DAYS[month])
         umalqurra = Umalqurra()
         end_date = umalqurra.hijri_to_gregorian(um.year, um.month, um.day)
         return date(int(end_date[0]), int(end_date[1]), int(end_date[2]))
+
+
+def get_hijri_year_by_date(HijriDate, Umalqurra, date):
+    if date:
+        um = HijriDate(date.year, date.month, date.day, gr=True)
+        um.year
+        return int(um.year)
 
 
 def get_hijri_date(date, separator):
@@ -59,7 +66,7 @@ def get_hijri_date(date, separator):
     '''
     if date:
         hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
-        return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+        return str(int(hijri_date.day)).zfill(2) + separator + str(int(hijri_date.month)).zfill(2) + separator + str(int(hijri_date.year))
     return None
 
 

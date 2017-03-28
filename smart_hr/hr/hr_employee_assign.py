@@ -20,7 +20,8 @@ class HrEmployeeCommissioning(models.Model):
         return self.env['res.company']._company_default_get('smart_hr').id
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
-    demand_owner_id = fields.Many2one('hr.employee', string='صاحب الطلب', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1, readonly=1)
+    demand_owner_id = fields.Many2one('hr.employee', string='صاحب الطلب', domain=[('emp_state', 'not in', ['suspended','terminated']), ('employee_state', '=', 'employee')],
+                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended','terminated'])], limit=1),)
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1, readonly=1, states={'new': [('readonly', 0)]})
     comm_type = fields.Many2one('hr.employee.commissioning.type', string=u'نوع التكليف', required=1, readonly=1, states={'new': [('readonly', 0)]})
     date_from = fields.Date(string=u'التاريخ من ', default=fields.Datetime.now(), readonly=1, states={'new': [('readonly', 0)]})

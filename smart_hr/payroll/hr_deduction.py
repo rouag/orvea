@@ -10,6 +10,7 @@ from umalqurra.hijri_date import HijriDate
 from umalqurra.hijri import Umalqurra
 
 
+
 class HrDeduction(models.Model):
     _name = 'hr.deduction'
     _inherit = ['mail.thread']
@@ -17,12 +18,17 @@ class HrDeduction(models.Model):
     _description = u'الحسميات'
 
     @api.multi
-    def get_default_month(self):
-        return get_current_month_hijri(HijriDate)
+    def get_default_period_id(self):
+        month = get_current_month_hijri(HijriDate)
+        date = get_hijri_month_start(HijriDate, Umalqurra, int(month))
+        period_id = self.env['hr.period'].search([('date_start', '<=', date),
+                                                       ('date_stop', '>=', date),
+                                                       ]
+                                                      )
+        return period_id
 
     name = fields.Char(string=' المسمى', required=1, readonly=1, states={'new': [('readonly', 0)]})
-    # TODO: get default MONTH
-    month = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=get_default_month)
+    period_id = fields.Many2one('hr.period', string=u'الفترة', domain=[('is_open', '=', True)], default=get_default_period_id)
     date = fields.Date(string='تاريخ الإنشاء', required=1, default=fields.Datetime.now(), readonly=1, states={'new': [('readonly', 0)]})
     date_from = fields.Date('تاريخ من', readonly=1, states={'new': [('readonly', 0)]})
     date_to = fields.Date('إلى', readonly=1, states={'new': [('readonly', 0)]})
@@ -70,23 +76,23 @@ class HrDeduction(models.Model):
         result.update({'domain': {'employee_ids': [('id', 'in', list(set(employee_ids)))]}})
         return result
 
-    @api.onchange('month')
-    def onchange_month(self):
-        self.name = u'حسميات شهر %s' % self.month
+    @api.onchange('period_id')
+    def onchange_period_id(self):
+        self.name = u'حسميات شهر %s' % self.period_id.name
 
     @api.multi
     def compute_deductions(self):
-        self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.month)
-        self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.month)
-        self.name = u'حسميات شهر %s' % self.month
-        if self.month:
+        self.date_from = self.period_id.date_start
+        self.date_to = self.period_id.date_stop
+        self.name = u'حسميات شهر %s' % self.period_id.name
+        if self.period_id:
             line_ids = []
             # delete current line
             self.line_ids.unlink()
             # get حسميات  from الخلاصة الشهرية للغيابات والتأخير
             monthly_summary_obj = self.env['hr.monthly.summary.line']
             deduction_type_obj = self.env['hr.deduction.type']
-            domain = [('monthly_summary_id.name', '=', self.month), ('monthly_summary_id.state', '=', 'done')]
+            domain = [('monthly_summary_id.name', '=', self.period_id.id), ('monthly_summary_id.state', '=', 'done')]
             monthly_summarys_retard = monthly_summary_obj.search(domain + [('days_retard', '!=', 0.0)])
             monthly_summarys_absence = monthly_summary_obj.search(domain + [('days_absence', '!=', 0.0)])
             retard_leave_type = deduction_type_obj.search([('type', '=', 'retard_leave')])[0]
@@ -107,8 +113,8 @@ class HrDeduction(models.Model):
                         val_absence = val.copy()
                         val_absence.update({'amount': summary.days_absence, 'deduction_type_id': absence_type.id})
                         line_ids.append(val_absence)
-                # العقوبات
-                line_ids += self.deduction_sanctions()
+            # العقوبات
+            line_ids += self.deduction_sanctions()
             self.line_ids = line_ids
 
     @api.one
@@ -156,10 +162,10 @@ class HrDeduction(models.Model):
 
     @api.multi
     def unlink(self):
-        self.ensure_one()
-        if self.state != 'new':
-            raise ValidationError(u"لا يمكن حذف الحسميات إلا في حالة مسودة أو ملغاه! ")
-        return super(HrDeduction, self).unlink()
+        for rec in self:
+            if rec.state != 'new':
+                raise ValidationError(u"لا يمكن حذف الحسميات إلا في حالة مسودة أو ملغاه! ")
+            super(HrDeduction, rec).unlink()
 
 
 class HrDeductionLine(models.Model):
@@ -173,7 +179,7 @@ class HrDeductionLine(models.Model):
     department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string=' الادارة')
     deduction_type_id = fields.Many2one('hr.deduction.type', string='نوع الحسم', required=1)
     amount = fields.Char(string='عدد أيام الحسم', required=1)
-    month = fields.Selection(MONTHS, related='deduction_id.month', store=True, readonly=True, string='الشهر')
+    period_id = fields.Many2one('hr.period', related='deduction_id.period_id', store=True, readonly=True, string='الشهر')
     hr_sanction_ligne_id = fields.Many2one('hr.sanction.ligne', string='العقوبة')
     # do the store=True
     deduction_state = fields.Selection(related='deduction_id.state', store=True, string='الحالة')

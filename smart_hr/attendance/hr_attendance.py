@@ -164,8 +164,10 @@ class HrAttendanceImport(models.Model):
         # first delete all actions for this day
         report_day_ids = report_day_obj.search([('date', '=', date)])
         report_day_ids.unlink()
-        #
-        for employee in employee_obj.search([]):
+        # لا يقوم بإحتساب من ليس لديهم وردية
+        for employee in employee_obj.search([('calendar_id', '!=', False), ('emp_state', '!=', 'terminated')]):
+            # if not employee.calendar_id:
+            #   raise ValidationError(u"يجب تحديد الورديّات للموظف %s " % employee.display_name)
             day = self.get_day_number(date)
             time_from, time_to, late, time_from_max, time_to_min = self.get_time_from_to_calendar(employee.calendar_id.id, day)
             self.chek_sign_in(date, employee.id, time_to, datetime.now())
@@ -483,15 +485,16 @@ class HrAttendanceImport(models.Model):
         report_day_ids.unlink()
         # get latest time for attendance
         all_attendances = attendance_obj.search([('name', '>=', str(date_start)), ('name', '<=', str(date_stop))])
-        latest_time = datetime.strptime(all_attendances[0].name, '%Y-%m-%d %H:%M:%S').time()
-        # check for each employee
-        employees = employee_obj.search([('employee_state', '=', 'employee')])
-        for employee in employees:
-            if not employee.calendar_id:
-                raise ValidationError(u"يجب تحديد الورديّات للموظف %s " % employee.name)
-
-            self.chek_sign_in(date, employee.id, latest_time, all_attendances[0].name)
-            self.chek_sign_out(date, employee.id, latest_time, all_attendances[0].name)
+        if all_attendances:
+            latest_time = datetime.strptime(all_attendances[0].name, '%Y-%m-%d %H:%M:%S').time()
+            # check for each employee
+            employees = employee_obj.search([('employee_state', '=', 'employee')])
+            for employee in employees:
+                # if not employee.calendar_id:
+                    # raise ValidationError(u"يجب تحديد الورديّات للموظف %s " % employee.display_name)
+                if employee.calendar_id:
+                    self.chek_sign_in(date, employee.id, latest_time, all_attendances[0].name)
+                    self.chek_sign_out(date, employee.id, latest_time, all_attendances[0].name)
 
         return True
 
@@ -512,8 +515,8 @@ class HrAttendanceImport(models.Model):
         for row in reader:
             date = row['trndatetime2'].split(' ')[0]
             all_dates.add(date)
-        if len(all_dates) != 1:
-            raise ValidationError(u"الحضور و الإنصراف يجب أن يكون ليوم واحد")
+#         if len(all_dates) != 1:
+#             raise ValidationError(u"الحضور و الإنصراف يجب أن يكون ليوم واحد")
         fileobj.seek(0)
         for row in reader:
             if len(str(row['empid'].strip(" "))) == 4:
@@ -706,10 +709,16 @@ class HrMonthlySummary(models.Model):
     _order = 'id desc'
 
     @api.multi
-    def get_default_month(self):
-        return get_current_month_hijri(HijriDate)
+    def get_default_period_id(self):
+        month = get_current_month_hijri(HijriDate)
+        date = get_hijri_month_start(HijriDate, Umalqurra, int(month))
+        period_id = self.env['hr.period'].search([('date_start', '<=', date),
+                                                       ('date_stop', '>=', date),
+                                                       ]
+                                                      )
+        return period_id
 
-    name = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=get_default_month)
+    name = fields.Many2one('hr.period', string='الشهر', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=get_default_period_id)
     date = fields.Date(string='التاريخ', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=fields.Datetime.now())
     date_from = fields.Date('تاريخ من', readonly=1, states={'new': [('readonly', 0)]})
     date_to = fields.Date('إلى', readonly=1, states={'new': [('readonly', 0)]})
@@ -723,8 +732,8 @@ class HrMonthlySummary(models.Model):
     @api.onchange('name')
     def onchange_month(self):
         if self.name:
-            self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.name)
-            self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.name)
+            self.date_from = self.name.date_start
+            self.date_to = self.name.date_stop
             line_ids = []
             # delete current line
             self.line_ids.unlink()

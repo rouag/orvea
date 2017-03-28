@@ -501,6 +501,10 @@ class HrDecisionAppoint(models.Model):
                                                       })
         self.state = 'done'
         self.env['hr.holidays']._init_balance(self.employee_id)
+        grade_id = int(self.emp_job_id.grade_id.code)
+        new_grade_id = int(self.grade_id.code)
+        if (grade_id != new_grade_id) or (self.job_id.name.members_job is False and self.emp_job_id.name.members_job is True):
+            self.employee_id.promotion_duration = 0
 
     def send_notification_refuse_to_group(self, group_id):
         for recipient in group_id.users:
@@ -584,7 +588,7 @@ class HrDecisionAppoint(models.Model):
             salary_grid_line = salary_grid_line[0]
             if salary_grid_line and not self.type_appointment.max_pension:
                 self.basic_salary = salary_grid_line.basic_salary
-                #   self.transport_allow = salary_grid_line.transport_allow
+                self.transport_allow = salary_grid_line.transport_allowance_amout
                 self.retirement = salary_grid_line.retirement
                 self.net_salary = salary_grid_line.net_salary
 
@@ -687,8 +691,8 @@ class DecisionAppointAllowance(models.Model):
     percentage = fields.Float(string='النسبة')
     line_ids = fields.One2many('salary.grid.detail.allowance.city', 'allowance_id', string='النسب حسب المدينة')
 
-    @api.model
-    def get_value(self):
+    @api.onchange('compute_method', 'amount', 'percentage')
+    def onchange_get_value(self):
         allowance_city_obj = self.env['salary.grid.detail.allowance.city']
         degree_obj = self.env['salary.grid.degree']
         salary_grid_obj = self.env['salary.grid.detail']
@@ -723,5 +727,5 @@ class DecisionAppointAllowance(models.Model):
             amount = self.percentage * basic_salary / 100.0
         if self.min_amount and amount < self.min_amount:
             amount = self.min_amount
-        return amount
+        self.amount = amount
 

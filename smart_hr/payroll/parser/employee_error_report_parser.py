@@ -9,8 +9,6 @@ from openerp.addons.smart_base.util.time_util import days_between
 from openerp.addons.smart_base.util.umalqurra import *
 from umalqurra.hijri import Umalqurra
 
-
-
 class ReportHrErrorEmployee(report_sxw.rml_parse):
 
     def __init__(self, cr, uid, name, context):
@@ -53,7 +51,7 @@ class ReportHrErrorEmployee(report_sxw.rml_parse):
     def _get_all_employees(self, month, department_level1_id, department_level2_id, department_level3_id, salary_grid_type_id):
         employee_ids = self.get_employee_ids(self.cr, self.uid, department_level1_id, department_level2_id, department_level3_id, salary_grid_type_id)
         payslip_pbj = self.pool.get('hr.payslip')
-        search_ids = payslip_pbj.search(self.cr, self.uid, [('month','=',month),('salary_net','=',0.0), ('employee_id.id','in',employee_ids)])
+        search_ids = payslip_pbj.search(self.cr, self.uid, [('period_id','=',month.id),('salary_net','=',0.0), ('employee_id.id','in',employee_ids)])
         return payslip_pbj.browse(self.cr, self.uid, search_ids)
 
     def _get_error_employees(self, month, department_level1_id, department_level2_id, department_level3_id, salary_grid_type_id):
@@ -63,7 +61,7 @@ class ReportHrErrorEmployee(report_sxw.rml_parse):
         search_empl_ids = self.get_employee_ids(self.cr, self.uid,department_level1_id, department_level2_id, department_level3_id, salary_grid_type_id)
         search_ids = []
         for rec in search_empl_ids:
-            temp = payslip_pbj.search(self.cr, self.uid, [('month','=',month),('employee_id','=',rec)])
+            temp = payslip_pbj.search(self.cr, self.uid, [('period_id','=',month.id),('employee_id','=',rec)])
             search_ids += temp
         domain.append(search_ids)
         payslip_pbj= payslip_pbj.browse(self.cr, self.uid, search_ids)
@@ -94,7 +92,7 @@ class ReportHrErrorEmployee(report_sxw.rml_parse):
         if date:
             date = fields.Date.from_string(date)
             hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
-            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)) + separator + str(int(hijri_date.day))
+            return str(int(hijri_date.day)).zfill(2) + separator + str(int(hijri_date.month)).zfill(2) + separator + str(int(hijri_date.year))
         return None
 
 

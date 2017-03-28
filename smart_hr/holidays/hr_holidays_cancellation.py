@@ -14,27 +14,66 @@ class hrHolidaysCancellation(models.Model):
 
     name = fields.Char(string=u'رقم القرار', )
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now())
-    employee_id = fields.Many2one('hr.employee',  string=u'الموظف', domain=[('employee_state','=','employee')],  required=1)
-    is_the_creator = fields.Boolean(string='Is Current User', compute='_employee_is_the_creator')
-    
-    holiday_id = fields.Many2one('hr.holidays' ,string=u'الإجازة')
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف', domain=[('employee_state', '=', 'employee')], required=1)
+    holiday_id = fields.Many2one('hr.holidays', string=u'الإجازة')
+    holiday_status_id = fields.Many2one(related='holiday_id.holiday_status_id')
+    date_from = fields.Date(related='holiday_id.date_from')
+    date_to = fields.Date(related='holiday_id.date_to')
+    duration = fields.Integer(related='holiday_id.duration')
     state = fields.Selection([
         ('draft', u'طلب'),
         ('audit', u'مراجعة'),
         ('done', u'إعتمد'),
         ('refuse', u'رفض'),
-    ], string=u'حالة', default='draft', )
+    ], string=u'الحالة', default='draft', )
     type = fields.Selection([
         ('cut', u'قطع'),
         ('cancellation', u'إلغاء'),
-    ], string=u'نوع', default='cancellation', )
-    note = fields.Text(string = u'الملاحظات', required = True)
-    
+    ], string=u'النوع', default='cancellation', )
+    note = fields.Text(string=u'الملاحظات', required=1)
+    employee_is_the_creator = fields.Boolean(string='employee_is_the_creator', compute='_employee_is_the_creator')
+    dm_is_the_creator = fields.Boolean(string='dm_is_the_creator', compute='_dm_is_the_creator')
+    is_the_exellencies = fields.Boolean(string='Is Current User exellencies', compute='_employee_is_the_exellencies')
+    dispay_draft_buttons = fields.Boolean(string='dispay_draft_buttons', compute='_compute_dispay_draft_buttons')
+    display_audit_buttons = fields.Boolean(string='display_audit_buttons', compute='_compute_display_audit_buttons')
+    employee_is_current_user = fields.Boolean(string='employee_is_current_user', compute='_compute_employee_is_current_user')
+    dm_is_current_user = fields.Boolean(string='dm_is_current_user', compute='_compute_dm_is_current_user')
+
+    def _compute_dispay_draft_buttons(self):
+        for rec in self:
+            if rec.state == 'draft' and ((rec.employee_is_the_creator is True and rec.employee_is_current_user is True) or (rec.dm_is_the_creator is True and rec.dm_is_current_user is True) or rec.is_the_exellencies is True):
+                rec.dispay_draft_buttons = True
+
+    def _compute_display_audit_buttons(self):
+        for rec in self:
+            if rec.state == 'audit' and ((rec.employee_is_the_creator is True and rec.dm_is_current_user is True) or (rec.dm_is_the_creator is True and rec.employee_is_current_user is True) or rec.is_the_exellencies is True):
+                rec.display_audit_buttons = True
+
+    def _employee_is_the_exellencies(self):
+        for rec in self:
+            if self.env.user.has_group('smart_hr.group_excellencies'):
+                rec.is_the_exellencies = True
+
     def _employee_is_the_creator(self):
         for rec in self:
-            if self.env.user.id == rec.create_uid.id:
-                rec.is_the_creator = True
-                
+            if rec.employee_id.user_id.id == rec.create_uid.id:
+                rec.employee_is_the_creator = True
+
+    def _dm_is_the_creator(self):
+        for rec in self:
+            if rec.employee_id.parent_id.user_id.id == rec.create_uid.id:
+                rec.dm_is_the_creator = True
+
+    def _compute_employee_is_current_user(self):
+        for rec in self:
+            if rec.employee_id.user_id.id == self.env.user.id:
+                rec.employee_is_current_user = True
+
+    def _compute_dm_is_current_user(self):
+        for rec in self:
+            if rec.employee_id.parent_id.user_id.id == self.env.user.id:
+                rec.dm_is_current_user = True
+
     @api.model
     def create(self, vals):
         res = super(hrHolidaysCancellation, self).create(vals)
@@ -60,7 +99,7 @@ class hrHolidaysCancellation(models.Model):
         for cancellation in self:
             cancellation.state = 'audit'
             # send notification for requested the DM
-            if self.is_the_creator: 
+            if self.employee_is_the_creator: 
                 self.env['base.notification'].create({'title': u'إشعار بإلغاء أو قطع إجازة',
                                                   'message': u'الرجاء مراجعة طلب الإلغاء أو القطع',
                                                   'user_id': self.employee_id.parent_id.user_id.id,
@@ -81,7 +120,7 @@ class hrHolidaysCancellation(models.Model):
                                                   'res_model':'hr.holidays.cancellation',
                                                   'res_id': self.id,
                                                   'res_action': res_model})
-                
+
             cancellation.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"'")
 
     @api.one

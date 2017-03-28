@@ -278,12 +278,12 @@ msgstr "مسار"
 #: model:ir.model.fields,field_description:auditlog.field_auditlog_log_res_id
 #: model:ir.ui.view,arch_db:auditlog.view_auditlog_log_search
 msgid "Resource ID"
-msgstr "معرف المورد"
+msgstr "معرف النموذج"
 
 #. module: auditlog
 #: model:ir.model.fields,field_description:auditlog.field_auditlog_log_name
 msgid "Resource Name"
-msgstr "اسم المورد"
+msgstr "اسم النموذج"
 
 #. module: auditlog
 #: model:ir.model.fields,field_description:auditlog.field_auditlog_http_request_root_url

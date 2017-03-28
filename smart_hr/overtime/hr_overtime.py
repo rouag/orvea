@@ -198,6 +198,8 @@ class HrOvertimeLigne(models.Model):
     date_direct_overtime = fields.Date(string='تاريخ التكليف')
     file_direct_overtime = fields.Binary(string='صورة التكليف', attachment=True)
     file_direct_overtime_name = fields.Char(string='صورة التكليف')
+    is_paied = fields.Boolean(string='is paied', default=False)
+    payslip_id = fields.Many2one('hr.payslip')
 
 
     @api.onchange('date_to')

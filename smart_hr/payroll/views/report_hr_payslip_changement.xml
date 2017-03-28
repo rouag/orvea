@@ -15,7 +15,7 @@
 								</h3>
 								<br></br>
 								<strong>لشهر: </strong>
-								<span t-esc='o.month' />
+								<span t-esc='o.month.name' />
 								<span></span>
 								<br></br>
 								<br></br>
@@ -57,6 +57,9 @@
 									</tr>
 								</thead>
 								<tbody>
+									<t t-set='tot_emp_net_salary' t-value='0' />
+									<t t-set='tot_slip_net_salary' t-value='0' />
+									<t t-set='tot_diff' t-value='0' />
 									<tr t-foreach="lines" t-as="line">
 										<td t-esc="line['employee_name']" />
 										<td t-esc="line['number']" />
@@ -71,9 +74,17 @@
 												<t t-esc='pline.amount' />
 												<br></br>
 											</t>
-
-
 										</td>
+										<t t-set='tot_emp_net_salary' t-value="tot_emp_net_salary + line['employee_net_salary']" />
+										<t t-set='tot_slip_net_salary' t-value="tot_slip_net_salary + line['payslip_net_salary']" />
+										<t t-set='tot_diff' t-value="tot_diff + line['diff']" />
+									</tr>
+									<tr>
+										<td colspan="3">المجموع</td>
+										<td t-esc="tot_emp_net_salary"/>
+										<td t-esc="tot_slip_net_salary"/>
+										<td t-esc="tot_diff"/>
+										<td></td>
 									</tr>
 								</tbody>
 							</table>

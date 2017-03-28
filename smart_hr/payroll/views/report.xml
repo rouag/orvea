@@ -8,7 +8,7 @@
 			
 		<report id="hr_payslip_changement_report" model="hr.deduction" menu="False"
 			report_type="qweb-pdf" string="الموظفين الذين طرأ تغيير في مسيرهم" name="smart_hr.report_hr_payslip_changement"
-			file="smart_hr.report_hr_payslip_changement" /> 
+			file="smart_hr.report_hr_payslip_changement" paperformat="smart_base.paperformat_landscape"/> 
 			
 	
 			
