@@ -691,8 +691,8 @@ class DecisionAppointAllowance(models.Model):
     percentage = fields.Float(string='النسبة')
     line_ids = fields.One2many('salary.grid.detail.allowance.city', 'allowance_id', string='النسب حسب المدينة')
 
-    @api.model
-    def get_value(self):
+    @api.onchange('compute_method', 'amount', 'percentage')
+    def onchange_get_value(self):
         allowance_city_obj = self.env['salary.grid.detail.allowance.city']
         degree_obj = self.env['salary.grid.degree']
         salary_grid_obj = self.env['salary.grid.detail']
@@ -727,5 +727,5 @@ class DecisionAppointAllowance(models.Model):
             amount = self.percentage * basic_salary / 100.0
         if self.min_amount and amount < self.min_amount:
             amount = self.min_amount
-        return amount
+        self.amount = amount
 
