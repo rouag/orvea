@@ -196,14 +196,14 @@ class HrEmployeeTransfert(models.Model):
             last_transfert_id = self.env['hr.employee.transfert'].search([('id', '!=', self.id)], order="create_date desc", limit=1)
             today = date.today()
             create_date = fields.Date.from_string(last_transfert_id.create_date)
-            if create_date:
-                years = relativedelta(today - create_date).years
-                if hr_config:
-                    if years < hr_config.years_last_transfert:
-                        raise ValidationError(u"لم تتم " + str(hr_config.years_last_transfert) + u" سنوات من أخر نقل.")
-            # chek if there is any sanction for the emmployee
-            if len(self.employee_id.sanction_ids) > 0:
-                raise ValidationError(u"لدى الموظف عقوبات.")
+#             if create_date:
+#                 years = relativedelta(today - create_date).years
+#                 if hr_config:
+#                     if years < hr_config.years_last_transfert:
+#                         raise ValidationError(u"لم تتم " + str(hr_config.years_last_transfert) + u" سنوات من أخر نقل.")
+#             # chek if there is any sanction for the emmployee
+#             if len(self.employee_id.sanction_ids) > 0:
+#                 raise ValidationError(u"لدى الموظف عقوبات.")
 
     @api.multi
     def action_waiting(self):
@@ -491,11 +491,12 @@ class HrTransfertSorting(models.Model):
                         'new_type_id': line.new_type_id.id,
                         'res_city': line.res_city.id,
                         'new_degree_id': line.new_degree_id.id,
-                         'specific_group': line.specific_group,
+                        'specific_group': line.specific_group,
                     }
                     line_ids.append(vals)
-                    rec.line_ids4 = line_ids
-                rec.state = 'commission_president'
+                rec.line_ids4 = line_ids
+            rec.state = 'commission_president'
+            for line in rec.line_ids3 :
                 if line.hr_employee_transfert_id.state =='consult':
                     rec.state = 'waiting'
     @api.multi
