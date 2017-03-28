@@ -22,7 +22,7 @@ class HrPayslipRun(models.Model):
     def get_default_period_id(self):
         month = get_current_month_hijri(HijriDate)
         date = get_hijri_month_start(HijriDate, Umalqurra, int(month))
-        period_id = self.env['account.period'].search([('date_start', '<=', date),
+        period_id = self.env['hr.period'].search([('date_start', '<=', date),
                                                        ('date_stop', '>=', date),
                                                        ]
                                                       )
@@ -36,7 +36,7 @@ class HrPayslipRun(models.Model):
             amount_total += line.salary_net
         self.amount_total = amount_total
 
-    period_id = fields.Many2one('account.period', string=u'الفترة', domain=[('is_open', '=', True)], default=get_default_period_id)
+    period_id = fields.Many2one('hr.period', string=u'الفترة', domain=[('is_open', '=', True)], default=get_default_period_id)
     employee_ids = fields.Many2many('hr.employee', string='الموظفين', readonly=1, states={'draft': [('readonly', 0)]})
     state = fields.Selection([('draft', 'مسودة'),
                               ('verify', 'في إنتظار الإعتماد'),
@@ -197,12 +197,12 @@ class HrPayslip(models.Model):
     def get_default_period_id(self):
         month = get_current_month_hijri(HijriDate)
         date = get_hijri_month_start(HijriDate, Umalqurra, int(month))
-        period_id = self.env['account.period'].search([('date_start', '<=', date),
+        period_id = self.env['hr.period'].search([('date_start', '<=', date),
                                                        ('date_stop', '>=', date),
                                                        ]
                                                       )
         return period_id
-    period_id = fields.Many2one('account.period', string=u'الفترة', domain=[('is_open', '=', True)], readonly=1, states={'draft': [('readonly', 0)]}, default=get_default_period_id)
+    period_id = fields.Many2one('hr.period', string=u'الفترة', domain=[('is_open', '=', True)], readonly=1, states={'draft': [('readonly', 0)]}, default=get_default_period_id)
     days_off_line_ids = fields.One2many('hr.payslip.days_off', 'payslip_id', 'الإجازات والغيابات', readonly=True, states={'draft': [('readonly', False)]})
     salary_net = fields.Float(string='صافي الراتب')
     difference_history_ids = fields.One2many('hr.payslip.difference.history', 'payslip_id', 'الفروقات المتخلدة')

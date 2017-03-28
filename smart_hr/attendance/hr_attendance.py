@@ -712,13 +712,13 @@ class HrMonthlySummary(models.Model):
     def get_default_period_id(self):
         month = get_current_month_hijri(HijriDate)
         date = get_hijri_month_start(HijriDate, Umalqurra, int(month))
-        period_id = self.env['account.period'].search([('date_start', '<=', date),
+        period_id = self.env['hr.period'].search([('date_start', '<=', date),
                                                        ('date_stop', '>=', date),
                                                        ]
                                                       )
         return period_id
 
-    name = fields.Many2one('account.period', string='الشهر', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=get_default_period_id)
+    name = fields.Many2one('hr.period', string='الشهر', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=get_default_period_id)
     date = fields.Date(string='التاريخ', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=fields.Datetime.now())
     date_from = fields.Date('تاريخ من', readonly=1, states={'new': [('readonly', 0)]})
     date_to = fields.Date('إلى', readonly=1, states={'new': [('readonly', 0)]})
