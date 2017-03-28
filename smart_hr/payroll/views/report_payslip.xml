@@ -59,7 +59,7 @@
 
 									:
 								</strong>
-								<span t-field="o.month" />
+								<span t-field="o.period_id.name" />
 							</div>
 
 							<br></br>

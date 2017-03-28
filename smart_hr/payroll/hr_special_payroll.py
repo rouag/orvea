@@ -40,8 +40,8 @@ class HrPayslip(models.Model):
     overtime_line_ids = fields.One2many('hr.overtime.ligne', 'payslip_id')
     deputation_ids = fields.One2many('hr.deputation', 'payslip_id')
     transfert_ids = fields.One2many('hr.employee.transfert', 'payslip_id')
-    speech_number = fields.Char(string=u'رقم الخطاب', readonly=1, required=1, states={'draft': [('readonly', 0)]})
-    speech_date = fields.Date(string=u'تاريخ الخطاب', readonly=1, required=1, states={'draft': [('readonly', 0)]})
+    speech_number = fields.Char(string=u'رقم الخطاب', readonly=1, states={'draft': [('readonly', 0)]})
+    speech_date = fields.Date(string=u'تاريخ الخطاب', readonly=1, states={'draft': [('readonly', 0)]})
     speech_file = fields.Binary(string=u'صورة الخطاب', attachment=True, readonly=1, required=1, states={'draft': [('readonly', 0)]})
 
     @api.multi
