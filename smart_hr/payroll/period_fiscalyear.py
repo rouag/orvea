@@ -7,8 +7,8 @@ from umalqurra.hijri_date import HijriDate
 from umalqurra.hijri import Umalqurra
 
 
-class AccountFiscalyear(models.Model):
-    _name = "account.fiscalyear"
+class HrFiscalyear(models.Model):
+    _name = "hr.fiscalyear"
     _description = "السنة المالية"
     _order = "date_start, id"
 
@@ -16,12 +16,12 @@ class AccountFiscalyear(models.Model):
     name = fields.Char(string='السنة المالية', required=True)
     date_start = fields.Date(string=u'تاريخ البدء', required=True)
     date_stop = fields.Date(string=u'تاريخ الانتهاء', required=True)
-    period_ids = fields.One2many('account.period', 'fiscalyear_id', string=u'الفترات')
+    period_ids = fields.One2many('hr.period', 'fiscalyear_id', string=u'الفترات')
     company_id = fields.Many2one('res.company', string=u'شركة', required=True, default=lambda self: self.env['res.users'].search([('id', '=', self._uid)]).company_id.id)
 
     @api.multi
     def create_period(self):
-        period_obj = self.env['account.period']
+        period_obj = self.env['hr.period']
         for fy in self:
             ds = datetime.strptime(fy.date_start, '%Y-%m-%d')
             ihijri_month = 0
@@ -43,8 +43,8 @@ class AccountFiscalyear(models.Model):
         return True
 
 
-class AccountPeriod(models.Model):
-    _name = 'account.period'
+class HrPeriod(models.Model):
+    _name = 'hr.period'
     _order = "date_start"
     _rec_name = 'name'
 
@@ -53,7 +53,7 @@ class AccountPeriod(models.Model):
     code = fields.Char('الشفرة', size=12)
     date_start = fields.Date('بداية الفترة', required=True)
     date_stop = fields.Date('نهاية الفترة', required=True)
-    fiscalyear_id = fields.Many2one('account.fiscalyear', 'السنة المالية', required=True, select=True)
+    fiscalyear_id = fields.Many2one('hr.fiscalyear', 'السنة المالية', required=True, select=True)
     company_id = fields.Many2one('res.company', related='fiscalyear_id.company_id', string='شركة', store=True, readonly=True)
     is_open = fields.Boolean('مفتوحة', default=True)
     _sql_constraints = [
