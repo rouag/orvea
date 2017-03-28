@@ -109,7 +109,9 @@
 								<field name="line_ids" nolabel="1">
 									<tree editable="bottom">
 										<field name="amount" />
-										<field name="month" />
+										<field name="month" invisible="1" />
+										<field name="year" invisible="1"/>
+										<field name="name" />
 										<field name="date" />
 										<field name="state" />
 									</tree>

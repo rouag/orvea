@@ -37,7 +37,7 @@
 					<sheet>
 						<group>
 							<group>
-								<field name="period_id" />
+								<field name="period_id" options='{"no_open": True, "no_create": True}'/>
 								<field name="name" />
 								<field name="date_from" invisible="1" />
 								<field name="date_to" invisible="1" />
@@ -146,7 +146,7 @@
 								<field name="department_id" />
 							</group>
 							<group string="بيانات الفروقات">
-								<field name="period_id" />
+								<field name="period_id" options='{"no_open": True, "no_create": True}' />
 								<field name="type" />
 								<field name="amount" />
 							</group>

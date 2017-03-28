@@ -19,8 +19,10 @@ class HrDifference(models.Model):
 
     @api.multi
     def get_default_period_id(self):
-        period_id = self.env['account.period'].search([('date_start', '<=', fields.Date.today()),
-                                                       ('date_stop', '>=', fields.Date.today()),
+        month = get_current_month_hijri(HijriDate)
+        date = get_hijri_month_start(HijriDate, Umalqurra, int(month))
+        period_id = self.env['account.period'].search([('date_start', '<=', date),
+                                                       ('date_stop', '>=', date),
                                                        ]
                                                       )
         return period_id
@@ -798,10 +800,10 @@ class HrDifference(models.Model):
 
     @api.multi
     def unlink(self):
-        self.ensure_one()
-        if self.state != 'new':
-            raise ValidationError(u"لا يمكن حذف الفروقات إلا في حالة مسودة أو ملغاه! ")
-        return super(HrDifference, self).unlink()
+        for rec in self:
+            if rec.state != 'new':
+                raise ValidationError(u"لا يمكن حذف الفروقات إلا في حالة مسودة أو ملغاه! ")
+            super(HrDifference, rec).unlink()
 
 
 class HrDifferenceLine(models.Model):

@@ -57,7 +57,7 @@
 					<sheet>
 						<group>
 							<group>
-								<field name="month" />
+								<field name="period_id" options='{"no_open": True, "no_create": True}'/>
 								<field name="name" />
 								<field name="date" readonly='1' />
 							</group>
@@ -165,7 +165,7 @@
 					<field name="number" />
 					<field name="job_id" />
 					<field name="department_id" />
-					<field name="month" />
+					<field name="period_id" />
 					<field name="deduction_type_id" />
 					<field name="amount" />
 					<field name="state" />
@@ -188,7 +188,7 @@
 								<field name="department_id" />
 							</group>
 							<group string="بيانات الحسمية">
-								<field name="month" />
+								<field name="period_id" options='{"no_open": True, "no_create": True}'/>
 								<field name="deduction_type_id" />
 								<field name="amount" />
 							</group>

@@ -15,7 +15,7 @@
 								</h3>
 								<br></br>
 								<strong>لشهر: </strong>
-								<span t-esc='o.month' />
+								<span t-esc='o.month.name' />
 								<span></span>
 								<br></br>
 								<br></br>

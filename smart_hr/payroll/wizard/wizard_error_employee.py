@@ -17,10 +17,16 @@ class WizardErrorEmployee(models.TransientModel):
     _name = 'wizard.error.employee'
 
     @api.multi
-    def get_default_month(self):
-        return get_current_month_hijri(HijriDate)
+    def get_default_period_id(self):
+        month = get_current_month_hijri(HijriDate)
+        date = get_hijri_month_start(HijriDate, Umalqurra, int(month))
+        period_id = self.env['account.period'].search([('date_start', '<=', date),
+                                                       ('date_stop', '>=', date),
+                                                       ]
+                                                      )
+        return period_id
 
-    month = fields.Selection(MONTHS, string='الشهر', required=1,  default=get_default_month)
+    month = fields.Many2one('account.period', string=u'الفترة', required=1, domain=[('is_open', '=', True)], default=get_default_period_id)
     employee_id = fields.Many2one('hr.employee', string='موظف')
     department_level1_id = fields.Many2one('hr.department', string='الفرع')
     department_level2_id = fields.Many2one('hr.department', string='القسم')

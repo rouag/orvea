@@ -3,6 +3,8 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 from openerp.addons.smart_base.util.umalqurra import *
 from openerp import models, api, fields, _
+from umalqurra.hijri_date import HijriDate
+from umalqurra.hijri import Umalqurra
 
 
 class AccountFiscalyear(models.Model):
@@ -25,20 +27,16 @@ class AccountFiscalyear(models.Model):
             ihijri_month = 0
             while ds.strftime('%Y-%m-%d') < fy.date_stop:
                 de = ds + relativedelta(months=1, days=-2)
+                year = get_hijri_year_by_date(HijriDate, Umalqurra, de)
                 ihijri_month += 1
-                if ihijri_month < 10:
-                    month_name = '0' + str(ihijri_month)
-                else:
-                    month_name = str(ihijri_month)
-
-                if de.strftime('%Y-%m-%d') > fy.date_stop:
-                    de = datetime.strptime(fy.date_stop, '%Y-%m-%d')
-
+                month_name = MONTHS[ihijri_month] + '/' + str(year)
+                date_start = get_hijri_month_start(HijriDate, Umalqurra, ihijri_month)
+                date_stop = get_hijri_month_end(HijriDate, Umalqurra, ihijri_month)
                 period_obj.create({
                     'name': month_name,
-                    'code': ds.strftime('%m/%Y'),
-                    'date_start': ds.strftime('%Y-%m-%d'),
-                    'date_stop': de.strftime('%Y-%m-%d'),
+                    'code': str(ihijri_month) + '/' + str(year),
+                    'date_start': date_start,
+                    'date_stop': date_stop,
                     'fiscalyear_id': fy.id,
                 })
                 ds = ds + relativedelta(months=1)
@@ -51,7 +49,7 @@ class AccountPeriod(models.Model):
     _rec_name = 'name'
 
     _description = "فترة الحساب"
-    name = fields.Selection(MONTHS, 'اسم الفترة', required=True)
+    name = fields.Char('اسم الفترة', required=True)
     code = fields.Char('الشفرة', size=12)
     date_start = fields.Date('بداية الفترة', required=True)
     date_stop = fields.Date('نهاية الفترة', required=True)
