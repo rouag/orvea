@@ -52,11 +52,11 @@
 									attrs="{'invisible':[('type','!=','indemnity')], 'required': [('type','=','indemnity')]}" />
 								<field name="increase_id"
 									attrs="{'invisible':[('type','!=','increase')], 'required': [('type','=','increase')]}" />
-								<label for="month_from" />
+								<label for="period_from_id" />
 								<div>
-									<field name="month_from" class="oe_inline" />
+									<field name="period_from_id" class="oe_inline" options='{"no_open": True, "no_create": True}'/>
 									<label string="-" class="oe_inline" />
-									<field name="month_to" class="oe_inline" />
+									<field name="period_to_id" class="oe_inline" options='{"no_open": True, "no_create": True}'/>
 								</div>
 							</group>
 							<group>
@@ -183,8 +183,8 @@
 					<field name="compute_method" />
 					<field name="amount" />
 					<field name="percentage" />
-					<field name="month_from" />
-					<field name="month_to" />
+					<field name="period_from_id" />
+					<field name="period_to_id" />
 					<field name="state" />
 				</tree>
 			</field>
@@ -238,8 +238,8 @@
 					<field name="compute_method" />
 					<field name="amount" />
 					<field name="percentage" />
-					<field name="month_from" />
-					<field name="month_to" />
+					<field name="period_from_id" />
+					<field name="period_to_id" />
 					<field name="state" />
 				</tree>
 			</field>
@@ -290,8 +290,8 @@
 					<field name="compute_method" />
 					<field name="amount" />
 					<field name="percentage" />
-					<field name="month_from" />
-					<field name="month_to" />
+					<field name="period_from_id" />
+					<field name="period_to_id" />
 					<field name="state" />
 				</tree>
 			</field>
@@ -345,8 +345,8 @@
 					<field name="compute_method" />
 					<field name="amount" />
 					<field name="percentage" />
-					<field name="month_from" />
-					<field name="month_to" />
+					<field name="period_from_id" />
+					<field name="period_to_id" />
 					<field name="state" />
 				</tree>
 			</field>

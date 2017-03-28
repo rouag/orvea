@@ -9,7 +9,7 @@
     'description':
         """
         """,
-    'depends': ['hr', 'hr_holidays', 'odoo_rtl', 'web_readonly_bypass', 'hr_payroll', 'hr_attendance', 'smart_base', 'survey', 'hr_appraisal', 'website'],
+    'depends': ['account', 'hr', 'hr_holidays', 'odoo_rtl', 'web_readonly_bypass', 'hr_payroll', 'hr_attendance', 'smart_base', 'survey', 'hr_appraisal', 'website'],
     'data': [
 
 
@@ -183,6 +183,7 @@
         'payroll/view/hr_bonus_view.xml',
         'payroll/view/hr_loan_view.xml',
         'payroll/view/hr_increase_view.xml',
+        'payroll/view/period_fiscalyear.xml',
         'payroll/view/hr_difference.xml',
         'payroll/views/report_hr_deduction.xml',
         'payroll/views/report_payslip.xml',

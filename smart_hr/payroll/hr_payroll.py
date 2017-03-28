@@ -19,8 +19,14 @@ class HrPayslipRun(models.Model):
     _inherit = ['hr.payslip.run', 'mail.thread']
 
     @api.multi
-    def get_default_month(self):
-        return get_current_month_hijri(HijriDate)
+    def get_default_period_id(self):
+        month = get_current_month_hijri(HijriDate)
+        date = get_hijri_month_start(HijriDate, Umalqurra, int(month))
+        period_id = self.env['account.period'].search([('date_start', '<=', date),
+                                                       ('date_stop', '>=', date),
+                                                       ]
+                                                      )
+        return period_id
 
     @api.one
     @api.depends('slip_ids.salary_net')
@@ -30,7 +36,7 @@ class HrPayslipRun(models.Model):
             amount_total += line.salary_net
         self.amount_total = amount_total
 
-    month = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'draft': [('readonly', 0)]}, default=get_default_month)
+    period_id = fields.Many2one('account.period', string=u'الفترة', domain=[('is_open', '=', True)], default=get_default_period_id)
     employee_ids = fields.Many2many('hr.employee', string='الموظفين', readonly=1, states={'draft': [('readonly', 0)]})
     state = fields.Selection([('draft', 'مسودة'),
                               ('verify', 'في إنتظار الإعتماد'),
@@ -47,15 +53,15 @@ class HrPayslipRun(models.Model):
     department_level3_id = fields.Many2one('hr.department', string='الشعبة', readonly=1, states={'draft': [('readonly', 0)]})
     salary_grid_type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1, states={'draft': [('readonly', 0)]},)
 
-    @api.onchange('month')
-    def onchange_month(self):
-        if self.month:
-            um = HijriDate.today()
-            if int(um.month) < int(self.month):
+    @api.onchange('period_id')
+    def onchange_period_id(self):
+        if self.period_id:
+            today = fields.Date.today()
+            if today < self.period_id.date_stop:
                 raise UserError(u"لا يمكن انشاء مسير لشهر في المستقبل ")
-            self.date_start = get_hijri_month_start(HijriDate, Umalqurra, self.month)
-            self.date_end = get_hijri_month_end(HijriDate, Umalqurra, self.month)
-            self.name = u'مسير جماعي  شهر %s' % self.month
+            self.date_start = self.period_id.date_start
+            self.date_end = self.period_id.date_stop
+            self.name = u'مسير جماعي  شهر %s' % self.period_id.name
 
     @api.onchange('department_level1_id', 'department_level2_id', 'department_level3_id', 'salary_grid_type_id')
     def onchange_department_level(self):
@@ -112,8 +118,8 @@ class HrPayslipRun(models.Model):
         payslip_obj = self.env['hr.payslip']
         for employee in self.employee_ids:
             payslip_val = {'employee_id': employee.id,
-                           'month': self.month,
-                           'name': _('راتب موظف %s لشهر %s') % (employee.display_name, self.month),
+                           'period_id': self.period_id.id,
+                           'name': _('راتب موظف %s لشهر %s') % (employee.display_name, self.period_id.name),
                            'payslip_run_id': self.id,
                            'date_from': self.date_start,
                            }
@@ -165,7 +171,7 @@ class HrPayslipRun(models.Model):
         file_dec = file_dec[0:len(file_dec) - 1]
         fp.write(file_dec.encode('utf-8'))
         fp.seek(0)
-        bank_file_name = u'مسير جماعي  شهر %s.%s' % (self.month, 'txt')
+        bank_file_name = u'مسير جماعي  شهر %s.%s' % (self.period_id.name, 'txt')
         self.bank_file = base64.encodestring(fp.read())
         self.bank_file_name = bank_file_name
         fp.close()
@@ -188,10 +194,15 @@ class HrPayslip(models.Model):
     _order = 'date_from desc,id desc'
 
     @api.multi
-    def get_default_month(self):
-        return get_current_month_hijri(HijriDate)
-
-    month = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'draft': [('readonly', 0)]}, default=get_default_month)
+    def get_default_period_id(self):
+        month = get_current_month_hijri(HijriDate)
+        date = get_hijri_month_start(HijriDate, Umalqurra, int(month))
+        period_id = self.env['account.period'].search([('date_start', '<=', date),
+                                                       ('date_stop', '>=', date),
+                                                       ]
+                                                      )
+        return period_id
+    period_id = fields.Many2one('account.period', string=u'الفترة', domain=[('is_open', '=', True)], readonly=1, states={'draft': [('readonly', 0)]}, default=get_default_period_id)
     days_off_line_ids = fields.One2many('hr.payslip.days_off', 'payslip_id', 'الإجازات والغيابات', readonly=True, states={'draft': [('readonly', False)]})
     salary_net = fields.Float(string='صافي الراتب')
     difference_history_ids = fields.One2many('hr.payslip.difference.history', 'payslip_id', 'الفروقات المتخلدة')
@@ -213,24 +224,27 @@ class HrPayslip(models.Model):
     @api.one
     def action_done(self):
         self.state = 'done'
+        #TODO
         # update_loan_date
-        self.env['hr.loan'].update_loan_date(self.month, self.employee_id.id)
+        month = fields.Date.from_string(self.period_id.date_start).month
+        year = fields.Date.from_string(self.period_id.date_start).month
+        self.env['hr.loan'].update_loan_date(year, month, self.employee_id.id)
 
     @api.one
     def button_refuse(self):
         self.state = 'cancel'
 
     @api.multi
-    @api.onchange('employee_id', 'month')
+    @api.onchange('employee_id', 'period_id')
     def _onchange_employee_id(self):
         # check the existance of difference and dedections for current month
-        self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.month)
-        self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.month)
+        self.date_from = self.period_id.date_start
+        self.date_to = self.period_id.date_stop
 #         if self.env['hr.difference'].search_count([('date_from', '=', self.date_from), ('date_to', '=', self.date_to), ('state', '=', 'done')]) == 0:
 #             raise ValidationError(u"لم يتم إحتساب الفروقات لهذا الشهر")
 #         if self.env['hr.deduction'].search_count([('date_from', '=', self.date_from), ('date_to', '=', self.date_to), ('state', '=', 'done')]) == 0:
 #             raise ValidationError(u"لم يتم إحتساب الحسميات لهذا الشهر")
-        if not self.employee_id and self.month:
+        if not self.employee_id and self.period_id:
             res = {}
             employee_ids = self.env['hr.employee'].search([('employee_state', '=', 'employee')])
             employee_ids = employee_ids.ids
@@ -258,21 +272,21 @@ class HrPayslip(models.Model):
 #             res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
 #             return res
 
-    @api.onchange('employee_id', 'date_from', 'date_to', 'month')
+    @api.onchange('employee_id', 'date_from', 'date_to', 'period_id')
     def onchange_employee(self):
         if (not self.employee_id) or (not self.date_from) or (not self.date_to):
             return
         employee_id = self.employee_id
-        self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.month)
-        self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.month)
-        self.name = _('راتب موظف %s لشهر %s') % (employee_id.name, self.month)
+        self.date_from = self.period_id.date_start
+        self.date_to = self.period_id.date_stop
+        self.name = _('راتب موظف %s لشهر %s') % (employee_id.name, self.period_id.name)
         self.company_id = employee_id.company_id
         self.grade_id = self.employee_id.grade_id.id
         self.degree_id = self.employee_id.degree_id.id
         self.type_id = self.employee_id.type_id.id
         # computation of أيام العمل
         worked_days_line_ids, leaves = self.get_worked_day_lines_without_contract(self.employee_id.id, self.employee_id.calendar_id, self.date_from, self.date_to)
-        deductions = self.get_all_deduction(self.employee_id.id, self.month)
+        deductions = self.get_all_deduction(self.employee_id.id, self.period_id)
         # TODO : remove nb days deducation absence from nb worked_days
         self.worked_days_line_ids = worked_days_line_ids
         self.days_off_line_ids = leaves + deductions
@@ -337,15 +351,15 @@ class HrPayslip(models.Model):
         leaves = [value for key, value in leaves.items()]
         return [attendances], leaves
 
-    def get_all_deduction(self, employee_id, month):
+    def get_all_deduction(self, employee_id, period_id):
         """
    احتساب عدد الأيام الحسميات
         :param employee_id:
-        :param month:
+        :param period_id:
         """
         deduction_ids = self.env['hr.deduction.line'].search([('state', '=', 'waiting'),
                                                               ('employee_id', '=', employee_id),
-                                                              ('month', '=', month)])
+                                                              ('period_id', '=', period_id.id)])
         # deduction_type
         deductions = {}
         for deduction in deduction_ids:
@@ -382,25 +396,21 @@ class HrPayslip(models.Model):
         # raise UserError(u"لقد تم طي قيد %s " % self.employee_id.name)
         # check if the salary is allready given in the last payslip for the previous month
         previous_month_payslip = False
-        if self.month != '01':
-            # previous month in current year
-            previous_month = '0' + str((int(self.month) - 1))
-            current_year_date = str(fields.Date.from_string(self.date_from).year) + '-01-01'
-            current_year_date = fields.Date.from_string(current_year_date)
-            previous_month_payslip = self.env['hr.payslip'].search_count([('date_from', '>=', current_year_date),
-                                                                          ('employee_id', '=', self.employee_id.id),
-                                                                          ('month', '=', previous_month),
+        month = fields.Date.from_string(self.period_id.date_start).month
+        year = fields.Date.from_string(self.date_from).year
+        if month > 1:
+            # previous period in current year
+            previous_month_payslip = self.env['hr.payslip'].search_count([('period_id', '=', (self.period_id.id - 1)),
                                                                           ('with_advanced_salary', '=', True),
                                                                           ('state', '=', 'done')
                                                                           ])
         else:
-            # previous month in previous year
-            previous_month = '0' + str((int(self.month) - 1))
-            previous_year_date = str(fields.Date.from_string(self.date_from).year - 1) + '-12-31'
+            # previous period in previous year
+            previous_year_date = str(year - 1) + '-12-31'
             previous_year_date = fields.Date.from_string(previous_year_date)
-            previous_month_payslip = self.env['hr.payslip'].search_count([('date_to', '<=', previous_year_date),
+            previous_month_payslip = self.env['hr.payslip'].search_count([('date_from', '>=', previous_year_date),
+                                                                          ('date_to', '<=', previous_year_date),
                                                                           ('employee_id', '=', self.employee_id.id),
-                                                                          ('month', '=', previous_month),
                                                                           ('with_advanced_salary', '=', True),
                                                                           ('state', '=', 'done')
                                                                           ])
@@ -430,6 +440,7 @@ class HrPayslip(models.Model):
             employee = payslip.employee_id
             # search the newest salary_grid for this employee
             salary_grid, basic_salary = employee.get_salary_grid_id(False)
+            print 'salary_grid, basic_salary', salary_grid, basic_salary
             if not salary_grid:
                 return
             # compute
@@ -495,7 +506,7 @@ class HrPayslip(models.Model):
                 sequence += 1
             # 3- البدلات المتغيرة
             bonus_lines = bonus_line_obj.search([('employee_id', '=', employee.id), ('state', '=', 'progress'),
-                                                ('month_from', '<=', payslip.month), ('month_to', '>=', payslip.month)])
+                                                ('period_from_id', '<=', payslip.period_id.id), ('period_to_id', '>=', payslip.period_id.id)])
             for bonus in bonus_lines:
                 bonus_type = 'allowance'
                 if bonus.reward_id:
@@ -518,7 +529,7 @@ class HrPayslip(models.Model):
                 allowance_total += bonus_amount
                 sequence += 1
             # 4 - الفروقات
-            difference_lines = difference_line_obj.search([('employee_id', '=', employee.id), ('difference_id.state', '=', 'done'), ('month', '<=', payslip.month)])
+            difference_lines = difference_line_obj.search([('employee_id', '=', employee.id), ('difference_id.state', '=', 'done'), ('period_id', '=', payslip.period_id.id)])
             for difference in difference_lines:
                 difference_val = {'name': difference.name,
                                   'slip_id': payslip.id,
@@ -597,7 +608,7 @@ class HrPayslip(models.Model):
                 deduction_total += deduction_sanction
                 sequence += 1
             # 5- القروض
-            loans = loan_obj.get_loan_employee_month(payslip.month, employee.id)
+            loans = loan_obj.get_loan_employee_month(year, month, employee.id)
             for loan in loans:
                 loan_val = {'name': loan['name'],
                             'slip_id': payslip.id,
@@ -626,8 +637,7 @@ class HrPayslip(models.Model):
                 deduction_total -= basic_salary / 3
                 sequence += 1
                 # save the rest for the next month
-                month = fields.Date.from_string(self.date_from).month + 1
-                if month > 12:
+                if month + 1 > 12:
                     month = 1
                 self.env['hr.payslip.difference.history'].create({'payslip_id': self.id,
                                                                   'amount': deduction_total - basic_salary / 3,
@@ -680,18 +690,18 @@ class HrPayslip(models.Model):
             payslip.line_ids = lines
 
     @api.one
-    @api.constrains('employee_id', 'month')
+    @api.constrains('employee_id', 'period_id')
     def _check_payroll(self):
         for rec in self:
-            payroll_count = rec.search_count([('employee_id', '=', rec.employee_id.id), ('month', '=', rec.month), ('is_special', '=', False)])
+            payroll_count = rec.search_count([('employee_id', '=', rec.employee_id.id), ('period_id', '=', rec.period_id.id), ('is_special', '=', False)])
             if payroll_count > 1:
                 raise ValidationError(u"لا يمكن إنشاء مسيرين لنفس الموظف في نفس الشهر")
 
-    @api.onchange('month')
-    def onchange_month(self):
-        if self.month:
-            um = HijriDate.today()
-            if int(um.month) < int(self.month):
+    @api.onchange('period_id')
+    def onchange_period_id(self):
+        if self.period_id:
+            today = fields.Date.today()
+            if today < self.period_id.date_stop:
                 raise UserError(u"لا يمكن انشاء مسير لشهر في المستقبل ")
 
 

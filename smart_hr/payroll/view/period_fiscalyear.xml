@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+	<data>
+
+		<!-- السنة المالية -->
+		<record id="view_account_fiscalyear_form" model="ir.ui.view">
+			<field name="name">account.fiscalyear.form</field>
+			<field name="model">account.fiscalyear</field>
+			<field name="arch" type="xml">
+				<form string="السنة المالية">
+					<header>
+						<button name="create_period" string="إنشاء فترات شهرية"
+							type="object" class="oe_highlight" />
+					</header>
+					<br></br>
+					<group>
+						<group>
+							<field name="name" />
+							<field name="code" />
+							<field name="company_id" groups="base.group_multi_company" />
+						</group>
+						<group>
+							<field name="date_start" />
+							<field name="date_stop" />
+						</group>
+					</group>
+					<field colspan="4" name="period_ids" nolabel="1" widget="one2many_list">
+						<form string="Period">
+							<group col="4">
+								<field name="name" />
+								<field name="code" />
+								<field name="date_start" />
+								<field name="date_stop" />
+							</group>
+						</form>
+					</field>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_account_fiscalyear_tree" model="ir.ui.view">
+			<field name="name">account.fiscalyear.tree</field>
+			<field name="model">account.fiscalyear</field>
+			<field name="arch" type="xml">
+				<tree string="السنة المالية">
+					<field name="code" />
+					<field name="name" />
+					<field name="company_id" groups="base.group_multi_company" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="view_account_fiscalyear_search" model="ir.ui.view">
+			<field name="name">account.fiscalyear.search</field>
+			<field name="model">account.fiscalyear</field>
+			<field name="arch" type="xml">
+				<search string="السنة المالية">
+					<field name="name"
+						filter_domain="['|', ('name','ilike',self), ('code','ilike',self)]"
+						string="Fiscal Year" />
+				</search>
+			</field>
+		</record>
+
+		<record id="action_account_fiscalyear" model="ir.actions.act_window">
+			<field name="name">السنة المالية</field>
+			<field name="res_model">account.fiscalyear</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">
+					انقر لبدء سنة مالية جديدة.
+				</p>
+				<p>
+					حدد السنة المالية لشركتك وفقا لاحتياجاتك. ا
+					                 السنة المالية هي فترة في نهاية الشركة
+					                 الحسابات (تتكون عادة من 12 شهرا). السنة المالية هي
+					                 ويشار إليها عادة بالتاريخ الذي تنتهي فيه. فمثلا،
+					                 إذا كانت السنة المالية للشركة تنتهي في 30 نوفمبر
+					2017، ثم
+					                 كل شيء بين 1 ديسمبر 2016 و 30 نوفمبر 2017
+					                 سيشار إليها في السنة المالية 2017.
+				</p>
+			</field>
+		</record>
+		<menuitem id="menu_action_account_fiscalyear" action="action_account_fiscalyear"
+			parent="hr_payroll_setting" />
+
+		<!-- فترة -->
+		<record id="view_account_period_form" model="ir.ui.view">
+			<field name="name">account.period.form</field>
+			<field name="model">account.period</field>
+			<field name="arch" type="xml">
+				<form string="فترة الحساب">
+					<sheet>
+						<group>
+							<group>
+								<field name="name" />
+								<field name="fiscalyear_id" widget="selection" />
+								<field name="is_open" />
+
+							</group>
+							<group>
+								<field name="code" />
+								<field name="company_id" widget="selection" groups="base.group_multi_company" />
+								<field name="date_start" />
+								<field name="date_stop" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_account_period_tree" model="ir.ui.view">
+			<field name="name">account.period.tree</field>
+			<field name="model">account.period</field>
+			<field name="arch" type="xml">
+				<tree string="فترة" default_order='date_start'>
+					<field name="name" />
+					<field name="code" invisible="1"/>
+					<field name="date_start" />
+					<field name="date_stop" />
+					<field name="company_id" groups="base.group_multi_company" />
+					<field name="is_open" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="view_account_period_search" model="ir.ui.view">
+			<field name="name">account.period.search</field>
+			<field name="model">account.period</field>
+			<field name="arch" type="xml">
+				<search string="فترة البحث">
+					<field name="name"
+						filter_domain="['|', ('name','ilike',self), ('code','ilike',self)]"
+						string="فترة" />
+				</search>
+			</field>
+		</record>
+
+		<record id="action_account_period" model="ir.actions.act_window">
+			<field name="name">الفترات</field>
+			<field name="res_model">account.period</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'search_default_draft': 1}</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">
+					انقر لإضافة فترة مالية.
+				</p>
+				<p>
+					وعادة ما تكون الفترة المحاسبية شهر أو ربع سنة. ذلك
+					                 عادة ما يقابل فترات الإقرار الضريبي.
+				</p>
+			</field>
+		</record>
+		<menuitem id="menu_action_account_period" action="action_account_period"
+			parent="hr_payroll_setting" />
+	</data>
+</odoo>

@@ -268,8 +268,8 @@ class ReportPayslipChangement(report_sxw.rml_parse):
 
     def _get_lines(self, employee_ids, month):
         res = []
-        date_from = get_hijri_month_start(HijriDate, Umalqurra, month)
-        date_to = get_hijri_month_end(HijriDate, Umalqurra, month)
+        date_from = month.date_start
+        date_to = month.date_stop
         payslip_obj = self.pool.get('hr.payslip')
         payslip__ids = payslip_obj.search(self.cr, self.uid, [('date_from', '=', date_from),
                                                               ('date_to', '=', date_to),

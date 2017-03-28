@@ -45,13 +45,13 @@ class HrPayslip(models.Model):
     speech_file = fields.Binary(string=u'صورة الخطاب', attachment=True, readonly=1, required=1, states={'draft': [('readonly', 0)]})
 
     @api.multi
-    def action_new(self):
+    def action_special_new(self):
         self.ensure_one()
         self.state = 'draft'
         self.special_state = 'new'
 
     @api.multi
-    def action_verify(self):
+    def action_special_verify(self):
         self.ensure_one()
         self.special_compute_sheet()
         self.number = self.env['ir.sequence'].get('seq.hr.payslip')
@@ -59,17 +59,17 @@ class HrPayslip(models.Model):
         self.special_state = 'verify'
 
     @api.multi
-    def action_division_director(self):
+    def action_special_division_director(self):
         self.ensure_one()
         self.special_state = 'division_director'
 
     @api.multi
-    def action_hrm(self):
+    def action_special_hrm(self):
         self.ensure_one()
         self.special_state = 'hrm'
 
     @api.multi
-    def action_done(self):
+    def action_special_done(self):
         self.ensure_one()
         for rec in self.transport_decision_ids:
             rec.is_paied = True
@@ -345,44 +345,44 @@ class HrPayslipRun(models.Model):
             payslip.special_compute_sheet()
 
     @api.multi
-    def action_new(self):
+    def action_special_new(self):
         self.ensure_one()
         self.state = 'draft'
         self.special_state = 'new'
         for slip in self.slip_ids:
-            slip.action_new()
+            slip.action_special_new()
 
     @api.multi
-    def action_verify(self):
+    def action_special_verify(self):
         self.ensure_one()
         self.special_compute_sheet()
         self.number = self.env['ir.sequence'].get('seq.hr.payslip')
         for slip in self.slip_ids:
-            slip.action_verify()
+            slip.action_special_verify()
         self.state = 'verify'
         self.special_state = 'verify'
 
     @api.multi
-    def action_division_director(self):
+    def action_special_division_director(self):
         self.ensure_one()
         self.special_state = 'division_director'
         for slip in self.slip_ids:
-            slip.action_division_director()
+            slip.action_special_division_director()
 
     @api.multi
-    def action_hrm(self):
+    def action_special_hrm(self):
         self.ensure_one()
         self.special_state = 'hrm'
         for slip in self.slip_ids:
-            slip.action_hrm()
+            slip.action_special_hrm()
 
     @api.multi
-    def action_done(self):
+    def action_special_done(self):
         self.ensure_one()
         self.state = 'done'
         self.special_state = 'done'
         for slip in self.slip_ids:
-            slip.action_done()
+            slip.action_special_done()
         self.generate_file()
 
     @api.multi

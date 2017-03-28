@@ -60,3 +60,6 @@ access_hr_employee_allowance,hr_employee_allowance,model_hr_employee_allowance,,
 access_decision_appoint_allowance,decision_appoint_allowance,model_decision_appoint_allowance,,1,1,1,1
 
 access_hr_special_payslip_type,hr_special_payslip_type,model_hr_special_payslip_type,,1,1,1,1
+
+access_account_period,account.period,model_account_period,account.group_account_user,1,1,1,1
+access_account_fiscalyear,account.fiscalyear,model_account_fiscalyear,account.group_account_user,1,1,1,1

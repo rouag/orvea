@@ -709,10 +709,16 @@ class HrMonthlySummary(models.Model):
     _order = 'id desc'
 
     @api.multi
-    def get_default_month(self):
-        return get_current_month_hijri(HijriDate)
+    def get_default_period_id(self):
+        month = get_current_month_hijri(HijriDate)
+        date = get_hijri_month_start(HijriDate, Umalqurra, int(month))
+        period_id = self.env['account.period'].search([('date_start', '<=', date),
+                                                       ('date_stop', '>=', date),
+                                                       ]
+                                                      )
+        return period_id
 
-    name = fields.Selection(MONTHS, string='الشهر', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=get_default_month)
+    name = fields.Many2one('account.period', string='الشهر', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=get_default_period_id)
     date = fields.Date(string='التاريخ', required=1, readonly=1, states={'new': [('readonly', 0)]}, default=fields.Datetime.now())
     date_from = fields.Date('تاريخ من', readonly=1, states={'new': [('readonly', 0)]})
     date_to = fields.Date('إلى', readonly=1, states={'new': [('readonly', 0)]})
@@ -726,8 +732,8 @@ class HrMonthlySummary(models.Model):
     @api.onchange('name')
     def onchange_month(self):
         if self.name:
-            self.date_from = get_hijri_month_start(HijriDate, Umalqurra, self.name)
-            self.date_to = get_hijri_month_end(HijriDate, Umalqurra, self.name)
+            self.date_from = self.name.date_start
+            self.date_to = self.name.date_stop
             line_ids = []
             # delete current line
             self.line_ids.unlink()

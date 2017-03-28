@@ -17,7 +17,7 @@ class hrIncrease(models.Model):
 
     @api.multi
     def get_default_date(self):
-        # get end date of month 01 
+        # get end date of month 01
         date = get_hijri_month_end(HijriDate, Umalqurra, '01')
         if fields.date.today() > date:
             raise ValidationError(u"لا يمكن إنشاء علاوات بعد نهاية شهر محرّم! ")

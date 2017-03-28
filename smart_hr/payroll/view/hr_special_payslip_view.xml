@@ -30,21 +30,21 @@
 						<button string="إحتسب" name="special_compute_sheet" type="object"
 							groups="smart_hr.group_allowance_employee" class="oe_highlight"
 							attrs="{'invisible':[('special_state','!=','new')]}" />
-						<button name="action_verify" string="إرسال للموافقة" type="object"
+						<button name="action_special_verify" string="إرسال للموافقة" type="object"
 							groups="smart_hr.group_allowance_employee" attrs="{'invisible':[('special_state','!=','new')]}" />
-						<button name="action_division_director" string="موافق"
+						<button name="action_special_division_director" string="موافق"
 							type="object" attrs="{'invisible':[('special_state','!=','verify')]}" />
 						<button name="%(action_payroll_refuse_wizard)d" string="رفض"
 							context="{'special_payslip_from_state':'verify'}" type="action"
 							attrs="{'invisible':[('special_state','!=','verify')]}" icon="fa-times"
 							class="oe_inline oe_stat_button" />
-						<button name="action_hrm" string="موافق" type="object"
+						<button name="action_special_hrm" string="موافق" type="object"
 							attrs="{'invisible':[('special_state','!=','division_director')]}" />
 						<button name="%(action_payroll_refuse_wizard)d" string="رفض"
 							context="{'special_payslip_from_state':'division_director'}"
 							type="action" attrs="{'invisible':[('special_state','!=','division_director')]}"
 							icon="fa-times" class="oe_inline oe_stat_button" />
-						<button name="action_done" string="إعتماد" groups="smart_hr.group_hrm"
+						<button name="action_special_done" string="إعتماد" groups="smart_hr.group_hrm"
 							type="object" attrs="{'invisible':[('special_state','!=','hrm')]}" />
 
 
@@ -241,7 +241,7 @@
 					<field name="date_start" invisible='1' />
 					<field name="date_end" invisible='1' />
 					<field name="create_date" string="تاريخ الإنشاء" />
-					<field name="month" />
+					<field name="period_id" />
 					<field name="amount_total" />
 					<field name="state" />
 				</tree>
@@ -258,21 +258,21 @@
 						<button string="إحتسب" name="special_compute_sheet" type="object"
 							groups="smart_hr.group_allowance_employee" class="oe_highlight"
 							attrs="{'invisible':[('special_state','!=','new')]}" />
-						<button name="action_verify" string="إرسال للموافقة" type="object"
+						<button name="action_special_verify" string="إرسال للموافقة" type="object"
 							groups="smart_hr.group_allowance_employee" attrs="{'invisible':[('special_state','!=','new')]}" />
-						<button name="action_division_director" string="موافق"
+						<button name="action_special_division_director" string="موافق"
 							type="object" attrs="{'invisible':[('special_state','!=','verify')]}" />
 						<button name="%(action_payroll_refuse_wizard)d" string="رفض"
 							context="{'special_payslip_from_state':'verify'}" type="action"
 							attrs="{'invisible':[('special_state','!=','verify')]}" icon="fa-times"
 							class="oe_inline oe_stat_button" />
-						<button name="action_hrm" string="موافق" type="object"
+						<button name="action_special_hrm" string="موافق" type="object"
 							attrs="{'invisible':[('special_state','!=','division_director')]}" />
 						<button name="%(action_payroll_refuse_wizard)d" string="رفض"
 							context="{'special_payslip_from_state':'division_director'}"
 							type="action" attrs="{'invisible':[('special_state','!=','division_director')]}"
 							icon="fa-times" class="oe_inline oe_stat_button" />
-						<button name="action_done" string="إعتماد" groups="smart_hr.group_hrm"
+						<button name="action_special_done" string="إعتماد" groups="smart_hr.group_hrm"
 							type="object" attrs="{'invisible':[('special_state','!=','hrm')]}" />
 
 
@@ -283,7 +283,7 @@
 					<sheet>
 						<group>
 							<group>
-								<field name="month" />
+								<field name="period_id" />
 								<field name="bank_file" readonly="1" filename="bank_file_name"
 									attrs="{'invisible':[('state','!=','done')]}" />
 								<field name="bank_file_name" invisible="1" />
