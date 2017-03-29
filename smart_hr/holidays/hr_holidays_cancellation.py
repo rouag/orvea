@@ -32,21 +32,21 @@ class hrHolidaysCancellation(models.Model):
     ], string=u'النوع', default='cancellation', )
     note = fields.Text(string=u'الملاحظات', required=1)
     employee_is_the_creator = fields.Boolean(string='employee_is_the_creator', compute='_employee_is_the_creator')
-    dm_is_the_creator = fields.Boolean(string='dm_is_the_creator', compute='_dm_is_the_creator')
     is_the_exellencies = fields.Boolean(string='Is Current User exellencies', compute='_employee_is_the_exellencies')
     dispay_draft_buttons = fields.Boolean(string='dispay_draft_buttons', compute='_compute_dispay_draft_buttons')
     display_audit_buttons = fields.Boolean(string='display_audit_buttons', compute='_compute_display_audit_buttons')
     employee_is_current_user = fields.Boolean(string='employee_is_current_user', compute='_compute_employee_is_current_user')
     dm_is_current_user = fields.Boolean(string='dm_is_current_user', compute='_compute_dm_is_current_user')
-
+    is_holidays_specialist = fields.Boolean(string='Is Current User exellencies', compute='is_holidays_specialist')
+    
     def _compute_dispay_draft_buttons(self):
         for rec in self:
-            if rec.state == 'draft' and ((rec.employee_is_the_creator is True and rec.employee_is_current_user is True) or (rec.dm_is_the_creator is True and rec.dm_is_current_user is True) or rec.is_the_exellencies is True):
+            if rec.state == 'draft' and ((rec.employee_is_the_creator is True and rec.employee_is_current_user is True) or (rec.employee_is_the_creator is False and (rec.dm_is_current_user is True or rec.is_holidays_specialist is True)) or rec.is_the_exellencies is True):
                 rec.dispay_draft_buttons = True
 
     def _compute_display_audit_buttons(self):
         for rec in self:
-            if rec.state == 'audit' and ((rec.employee_is_the_creator is True and rec.dm_is_current_user is True) or (rec.dm_is_the_creator is True and rec.employee_is_current_user is True) or rec.is_the_exellencies is True):
+            if rec.state == 'audit' and ((rec.employee_is_the_creator is True and (rec.dm_is_current_user is True or rec.is_holidays_specialist is True)) or (rec.employee_is_the_creator is False and rec.employee_is_current_user is True) or rec.is_the_exellencies is True):
                 rec.display_audit_buttons = True
 
     def _employee_is_the_exellencies(self):
@@ -59,11 +59,6 @@ class hrHolidaysCancellation(models.Model):
             if rec.employee_id.user_id.id == rec.create_uid.id:
                 rec.employee_is_the_creator = True
 
-    def _dm_is_the_creator(self):
-        for rec in self:
-            if rec.employee_id.parent_id.user_id.id == rec.create_uid.id:
-                rec.dm_is_the_creator = True
-
     def _compute_employee_is_current_user(self):
         for rec in self:
             if rec.employee_id.user_id.id == self.env.user.id:
@@ -73,7 +68,13 @@ class hrHolidaysCancellation(models.Model):
         for rec in self:
             if rec.employee_id.parent_id.user_id.id == self.env.user.id:
                 rec.dm_is_current_user = True
+    
+    def is_holidays_specialist(self):
+        for rec in self:
+            if self.env.user.has_group('smart_hr.group_holidays_specialist'):
+                rec.is_holidays_specialist = True
 
+            
     @api.model
     def create(self, vals):
         res = super(hrHolidaysCancellation, self).create(vals)

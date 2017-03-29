@@ -160,11 +160,16 @@ class HrHolidays(models.Model):
     display_button_cancel = fields.Boolean(compute='_compute_display_button_cancel')
     display_button_cut = fields.Boolean(compute='_compute_display_button_cut')
     salary_number = fields.Integer(string=u'عدد الرواتب')
-
+    is_holidays_specialist_user = fields.Boolean(string='Is Current User exellencies', compute='_is_holidays_specialist_user')
 
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
+    
+    def _is_holidays_specialist_user(self):
+        for rec in self:
+            if self.env.user.has_group('smart_hr.group_holidays_specialist'):
+                rec.is_holidays_specialist_user = True
 
     @api.onchange('salary_number','duartion')
     def onchange_salary_number(self):
@@ -175,7 +180,7 @@ class HrHolidays(models.Model):
     @api.multi
     def _compute_display_button_cancel(self):
         for rec in self:
-            if not rec.can_be_cancelled or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is True or rec.is_finished is True:
+            if not rec.can_be_cancelled or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is True or rec.is_finished is True or (rec.is_current_user is False and rec.is_holidays_specialist_user is False):
                 rec.display_button_cancel = False
             else:
                 rec.display_button_cancel = True
@@ -183,7 +188,7 @@ class HrHolidays(models.Model):
     @api.multi
     def _compute_display_button_cut(self):
         for rec in self:
-            if not rec.can_be_cutted or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is False or rec.is_finished is True:
+            if not rec.can_be_cutted or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is False or rec.is_finished is True or rec.is_finished is True or (rec.is_current_user is False and rec.is_holidays_specialist_user is False):
                 rec.display_button_cut = False
             else:
                 rec.display_button_cut = True
