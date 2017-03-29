@@ -420,7 +420,7 @@ class HrHolidays(models.Model):
                     stock_line.period_id = open_period.id
                     stock_line.holidays_available_stock = open_period.holiday_stock
                     stock_line.token_holidays_sum = 0
-            
+
             open_period.holiday_stock -= self.duration
             stock_line.holidays_available_stock -= self.duration
             stock_line.token_holidays_sum += self.duration
@@ -1429,7 +1429,7 @@ class HrHolidaysStatus(models.Model):
     direct_decision = fields.Boolean(string=u'تحتاج إلى قرار مباشرة')
     direct_director_decision = fields.Boolean(string=u'موافقة مدير مباشر', default=True)
     external_decision = fields.Boolean(string=u'موافقة خارجية', default=False)
-    salary_spending = fields.Boolean(string=u' صرف راتب مسبق')
+    salary_spending = fields.Boolean(string=u'مدفوعة الأجر')
     employees_director_decision = fields.Boolean(string=u'موافقة مدير شؤون الموظفين', default=True)
     can_be_cancelled = fields.Boolean(string=u'يمكن الغاؤها', default=True)
     evaluation_condition = fields.Boolean(string=u'يطبق شرط تقييم الأداء')

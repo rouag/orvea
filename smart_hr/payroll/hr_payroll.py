@@ -215,6 +215,7 @@ class HrPayslip(models.Model):
     grade_id = fields.Many2one('salary.grid.grade', string=u'المرتبة')
     degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة')
     type_id = fields.Many2one('salary.grid.type', string=u'صنف الموظف')
+    number_of_days = fields.Integer(string=u'عدد أيام العمل', readonly=1)
 
     @api.one
     def action_verify(self):
@@ -289,6 +290,10 @@ class HrPayslip(models.Model):
         # TODO : remove nb days deducation absence from nb worked_days
         self.worked_days_line_ids = worked_days_line_ids
         self.days_off_line_ids = leaves + deductions
+        worked_days_line_id = self.worked_days_line_ids.search([('code', '=', 'WORK100')])
+        if worked_days_line_id:
+            self.number_of_days = worked_days_line_id.number_of_days
+
 
     def get_worked_day_lines_without_contract(self, employee_id, working_hours, date_from, date_to, compute_leave=True):
         """

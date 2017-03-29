@@ -58,7 +58,6 @@ class WizardSanctionAction(models.TransientModel):
                     sanction_line.days_number = self.days_number
                     sanction_line.deduction = False
                
-                
                 if sanction_line.amount != self.amount and sanction_line.deduction == True :
                     sanction_line.amount_difference = sanction_line.amount - self.amount
                     sanction_line.amount = self.amount
