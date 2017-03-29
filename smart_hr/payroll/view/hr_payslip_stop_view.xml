@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<record model="ir.ui.view" id="hr_payslip_stop_tree">
+			<field name="name">hr.payslip.stop.tree</field>
+			<field name="model">hr.payslip.stop</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string=" ايقاف راتب موظف">
+					<field name="name" />
+					<field name="date" />
+					<field name="order_date" />
+					<field name="employee_id" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_payslip_stop_form">
+			<field name="name">hr.payslip.stop.form</field>
+			<field name="model">hr.payslip.stop</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string=" ايقاف راتب موظف">
+					<header>
+						<button name="action_draft" string=" ارسال " type="object"
+							states="draft" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_waiting" string="تأكيد" type="object"
+							states="waiting" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+					
+
+						<field name="state" widget="statusbar" statusbar_visible="draft,waiting,done,refused" />
+
+					</header>
+					<sheet>
+						<group>
+							<group>
+								<field name="date" attrs="{'readonly':[('state', 'in', ['draft','waiting','done','refused'])]}" />
+								<field name="name" />
+								<field name="order_date" />
+								<field name="employee_id" />
+								<field name="payslip_file" filename="payslip_file_name" />
+								<field name="payslip_file_name" invisible="1" />
+							</group>
+						</group>
+						<notebook>
+							<page string="الفترات">
+
+								<field name="period_ids" nolabel="1">
+										<tree editable="bottom">
+										<field name="state" invisible="1" />
+										<field name="period_id" />
+										<field name="stop_period" />
+										<button name="action_cancel" string=" إلغاء إيقاف  راتب"  attrs="{'invisible':[('state', 'not in', ['done'])]}" 
+										icon="STOCK_CANCEL"	type="object" />
+									</tree>
+								</field>
+							</page>
+						</notebook>
+					</sheet>
+					<div>
+						<field name="message_ids" widget="mail_thread" readonly="1" />
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_payslip_stop">
+			<field name="name"> ايقاف راتب موظف</field>
+			<field name="res_model">hr.payslip.stop</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+		
+		<menuitem id="hr_payslip_stop_menu" name=" ايقاف راتب موظف" sequence="35" 
+			parent="hr_payslip_stop_root_menu" action="action_hr_payslip_stop" />
+
+	</data>
+</openerp>
+	

@@ -4,7 +4,8 @@ from dateutil.relativedelta import relativedelta
 from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
-from pyasn1.compat.octets import null
+
+
 
 
 class HrEmployeeTransfert(models.Model):
@@ -533,7 +534,7 @@ class HrTransfertSorting(models.Model):
                 rec.line_ids5 = line_ids
                 rec.state = 'commission_third'
                 if line.specific_group =='same_specific' :
-
+                    line.hr_employee_transfert_id.state ='done'
                     rec.state = 'done'
 
 

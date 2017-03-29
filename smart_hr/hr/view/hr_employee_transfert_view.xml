@@ -320,7 +320,7 @@
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 
-						<button name="action_commission_president" string="إرسال "
+						<button name="_president" string="إرسال "
 							type="object" groups="smart_hr.group_hr_personnel_officer_commissioning"
 							states="waiting" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
