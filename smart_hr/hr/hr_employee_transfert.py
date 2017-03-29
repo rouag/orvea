@@ -5,10 +5,8 @@ from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
-<<<<<<< HEAD
 
-=======
->>>>>>> branch '9.0' of https://gitlab.com/smartek/addons_smart.git
+
 
 
 class HrEmployeeTransfert(models.Model):
