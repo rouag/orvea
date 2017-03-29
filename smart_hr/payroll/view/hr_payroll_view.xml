@@ -4,8 +4,8 @@
 
 		<!-- إعداد مسيّر إفرادي -->
 
-		<record id="view_hr_payslip_tree_inherit" model="ir.ui.view">
-			<field name="name">hr.payslip.tree.inherit</field>
+		<record id="view_hr_payslip_tree_inheritt" model="ir.ui.view">
+			<field name="name">hr.payslip.tree.inheritt</field>
 			<field name="model">hr.payslip</field>
 			<field name="inherit_id" ref="hr_payroll.view_hr_payslip_tree" />
 			<field name="arch" type="xml">
@@ -25,8 +25,8 @@
 			</field>
 		</record>
 
-		<record id="view_hr_payslip_filter_inherit" model="ir.ui.view">
-			<field name="name">hr.payslip.select.inherit</field>
+		<record id="view_hr_payslip_filter_inheritt" model="ir.ui.view">
+			<field name="name">hr.payslip.select.inheritt</field>
 			<field name="model">hr.payslip</field>
 			<field name="inherit_id" ref="hr_payroll.view_hr_payslip_filter" />
 			<field name="arch" type="xml">
@@ -237,7 +237,7 @@
 		<record id="action_hr_payslip_tree_value" model="ir.actions.act_window.view">
 			<field name="view_mode">tree</field>
 			<field name="sequence">10</field>
-			<field name="view_id" ref="view_hr_payslip_tree_inherit" />
+			<field name="view_id" ref="view_hr_payslip_tree_inheritt" />
 			<field name="act_window_id" ref="action_smart_hr_payslip" />
 		</record>
 
