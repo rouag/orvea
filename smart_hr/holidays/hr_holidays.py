@@ -149,7 +149,7 @@ class HrHolidays(models.Model):
     birth_certificate_file_name_file_name = fields.Char(string=u'شهادة الميلاد')
     speech_source = fields.Char(string=u'مصدر الخطابات')
     hide_with_advanced_salary = fields.Boolean('hide_with_advanced_salary', default=True)
-    # token_compensation_stock will take the value of the compensation_stock for tracability
+    # token_compen#id=4&view_type=form&model=salary.grid.grade&menu_id=603sation_stock will take the value of the compensation_stock for tracability
     token_compensation_stock = fields.Integer(string=u'الرصيد المأخوذ', default=0)
     compute_as_deputation = fields.Boolean(string=u'تحتسب هذه المدة انتدابا', default=False)
     display_compute_as_deputation = fields.Boolean('hide_compute_as_deputation', default=False)
@@ -160,11 +160,16 @@ class HrHolidays(models.Model):
     display_button_cancel = fields.Boolean(compute='_compute_display_button_cancel')
     display_button_cut = fields.Boolean(compute='_compute_display_button_cut')
     salary_number = fields.Integer(string=u'عدد الرواتب')
-
+    is_holidays_specialist_user = fields.Boolean(string='Is Current User holidays specialist', compute='_is_holidays_specialist_user')
 
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
+    
+    def _is_holidays_specialist_user(self):
+        for rec in self:
+            if self.env.user.has_group('smart_hr.group_holidays_specialist'):
+                rec.is_holidays_specialist_user = True
 
     @api.onchange('salary_number','duartion')
     def onchange_salary_number(self):
@@ -175,7 +180,7 @@ class HrHolidays(models.Model):
     @api.multi
     def _compute_display_button_cancel(self):
         for rec in self:
-            if not rec.can_be_cancelled or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is True or rec.is_finished is True:
+            if not rec.can_be_cancelled or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is True or rec.is_finished is True or (rec.is_current_user is False and rec.is_holidays_specialist_user is False):
                 rec.display_button_cancel = False
             else:
                 rec.display_button_cancel = True
@@ -183,7 +188,7 @@ class HrHolidays(models.Model):
     @api.multi
     def _compute_display_button_cut(self):
         for rec in self:
-            if not rec.can_be_cutted or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is False or rec.is_finished is True:
+            if not rec.can_be_cutted or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is False or rec.is_finished is True or rec.is_finished is True or (rec.is_current_user is False and rec.is_holidays_specialist_user is False):
                 rec.display_button_cut = False
             else:
                 rec.display_button_cut = True
@@ -284,7 +289,15 @@ class HrHolidays(models.Model):
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_illness'):
             res['domain'] = {'entitlement_type': [('code', '=', 'illness')]}
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_death'):
-            res['domain'] = {'entitlement_type': [('code', '=', 'death')]}
+            if self.employee_id:
+                gender = self.employee_id.gender
+                if gender == 'female':
+                    res['domain'] = {'entitlement_type': [('code', '=', 'death')]}
+                else:
+                    data_hr_holiday_entitlement_types_parent = self.env.ref('smart_hr.data_hr_holiday_entitlement_types_parent').id
+                    data_hr_holiday_entitlement_types_branch = self.env.ref('smart_hr.data_hr_holiday_entitlement_types_branch').id
+                    domain_male = [data_hr_holiday_entitlement_types_parent, data_hr_holiday_entitlement_types_branch]
+                    res['domain'] = {'entitlement_type': [('id', 'in', domain_male)]}
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional'):
             res['domain'] = {'entitlement_type': [('code', '=', 'accompaniment_exceptional')]}
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_sport'):
@@ -379,16 +392,15 @@ class HrHolidays(models.Model):
             if en.entitlment_category.id == entitlement_type.id:
                 right_entitlement = en
                 break
-
+        
         open_period = False
-
+        
         if right_entitlement.periode and right_entitlement.periode != 100 and self.holiday_status_id.id != self.env.ref('smart_hr.data_hr_holiday_compensation').id:
             periodes = self.env['hr.holidays.periode'].search([('employee_id', '=', self.employee_id.id),
                                                            ('holiday_status_id', '=', self.holiday_status_id.id),
                                                            ('entitlement_id', '=', en.id),
                                                            ('active', '=', True),
                                                            ])
-
             stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
                                                                          ('holiday_status_id', '=', self.holiday_status_id.id),
                                                                          ('entitlement_id.id', '=', right_entitlement.id),
@@ -496,10 +508,10 @@ class HrHolidays(models.Model):
                     else:
                         periode.normal_open_period = False
             if normal_stock_line:
-                stock_line.holidays_available_stock -= self.duration
-                stock_line.token_holidays_sum += self.duration
+                normal_stock_line.holidays_available_stock -= self.duration
+                normal_stock_line.token_holidays_sum += self.duration
             if normal_open_period:
-                open_period.holiday_stock -= self.duration
+                normal_open_period.holiday_stock -= self.duration
 
         self.num_decision = self.env['ir.sequence'].get('hr.decision.sequence')
         self.date_decision = fields.Date.today()
@@ -1231,7 +1243,7 @@ class HrHolidays(models.Model):
             if en.entitlment_category.id == entitlement_type.id:
                 right_entitlement = en
                 break
-        if not right_entitlement and self.holiday_status_id.id != self.env.ref('smart_hr.data_hr_holiday_status_legal_absent').id:
+        if not right_entitlement:
             raise ValidationError(u" الرجاء مراجعة الإستحقاقات في إعدادات الإجازة")
 
         date_from = fields.Date.from_string(self.date_from)

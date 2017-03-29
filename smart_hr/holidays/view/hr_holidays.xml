@@ -117,13 +117,13 @@
 							type="object" icon="fa-check" class="oe_inline oe_stat_button" />
 
 						<button name="button_cancel" context="{'operation': 'cancel'}"
-							string="إلغاء الإجازة" type="object"
+							string="إلغاء الإجازة" type="object" 
 							attrs="{'invisible':[('display_button_cancel','=',False)]}"
 							icon="fa-times-circle-o" class="oe_inline oe_stat_button"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="button_cut" context="{'operation': 'cut'}"
-							string="قطع الاجازة" type="object"
+							string="قطع الاجازة" type="object" 
 							attrs="{'invisible':[('display_button_cut','=',False)]}"
 							icon="fa-times-circle-o" class="oe_inline oe_stat_button"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
