@@ -387,16 +387,15 @@ class HrHolidays(models.Model):
             if en.entitlment_category.id == entitlement_type.id:
                 right_entitlement = en
                 break
-
+        
         open_period = False
-
+        
         if right_entitlement.periode and right_entitlement.periode != 100 and self.holiday_status_id.id != self.env.ref('smart_hr.data_hr_holiday_compensation').id:
             periodes = self.env['hr.holidays.periode'].search([('employee_id', '=', self.employee_id.id),
                                                            ('holiday_status_id', '=', self.holiday_status_id.id),
                                                            ('entitlement_id', '=', en.id),
                                                            ('active', '=', True),
                                                            ])
-
             stock_line = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
                                                                          ('holiday_status_id', '=', self.holiday_status_id.id),
                                                                          ('entitlement_id.id', '=', right_entitlement.id),
@@ -504,10 +503,10 @@ class HrHolidays(models.Model):
                     else:
                         periode.normal_open_period = False
             if normal_stock_line:
-                stock_line.holidays_available_stock -= self.duration
-                stock_line.token_holidays_sum += self.duration
+                normal_stock_line.holidays_available_stock -= self.duration
+                normal_stock_line.token_holidays_sum += self.duration
             if normal_open_period:
-                open_period.holiday_stock -= self.duration
+                normal_open_period.holiday_stock -= self.duration
 
         self.num_decision = self.env['ir.sequence'].get('hr.decision.sequence')
         self.date_decision = fields.Date.today()
@@ -1239,7 +1238,7 @@ class HrHolidays(models.Model):
             if en.entitlment_category.id == entitlement_type.id:
                 right_entitlement = en
                 break
-        if not right_entitlement and self.holiday_status_id.id != self.env.ref('smart_hr.data_hr_holiday_status_legal_absent').id:
+        if not right_entitlement:
             raise ValidationError(u" الرجاء مراجعة الإستحقاقات في إعدادات الإجازة")
 
         date_from = fields.Date.from_string(self.date_from)
