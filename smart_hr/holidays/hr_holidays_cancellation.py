@@ -37,7 +37,7 @@ class hrHolidaysCancellation(models.Model):
     display_audit_buttons = fields.Boolean(string='display_audit_buttons', compute='_compute_display_audit_buttons')
     employee_is_current_user = fields.Boolean(string='employee_is_current_user', compute='_compute_employee_is_current_user')
     dm_is_current_user = fields.Boolean(string='dm_is_current_user', compute='_compute_dm_is_current_user')
-    is_holidays_specialist = fields.Boolean(string='Is Current User exellencies', compute='is_holidays_specialist')
+    is_holidays_specialist = fields.Boolean(string='Is Current User exellencies', compute='_is_holidays_specialist')
     
     def _compute_dispay_draft_buttons(self):
         for rec in self:
@@ -69,12 +69,11 @@ class hrHolidaysCancellation(models.Model):
             if rec.employee_id.parent_id.user_id.id == self.env.user.id:
                 rec.dm_is_current_user = True
     
-    def is_holidays_specialist(self):
+    def _is_holidays_specialist(self):
         for rec in self:
             if self.env.user.has_group('smart_hr.group_holidays_specialist'):
                 rec.is_holidays_specialist = True
 
-            
     @api.model
     def create(self, vals):
         res = super(hrHolidaysCancellation, self).create(vals)
@@ -94,27 +93,26 @@ class hrHolidaysCancellation(models.Model):
                 raise ValidationError(u'لا يمكن حذف طلب إلغاء الإجازة فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(hrHolidaysCancellation, self).unlink()
 
-    @api.one
+    @api.multi
     def button_send(self):
         user = self.env['res.users'].browse(self._uid)
-        for cancellation in self:
-            cancellation.state = 'audit'
+        self.state = 'audit'
             # send notification for requested the DM
-            if self.employee_is_the_creator: 
-                self.env['base.notification'].create({'title': u'إشعار بإلغاء أو قطع إجازة',
+        if self.employee_is_the_creator: 
+            self.env['base.notification'].create({'title': u'إشعار بإلغاء أو قطع إجازة',
                                                   'message': u'الرجاء مراجعة طلب الإلغاء أو القطع',
                                                   'user_id': self.employee_id.parent_id.user_id.id,
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                   'res_model':'hr.holidays.cancellation',
                                                   'res_id': self.id,
                                                   })
-            else:
+        else:
                 # send notification for requested employee
-                if self._context['operation'] == 'cancel':
-                    res_model = 'smart_hr.action_hr_holidays_cancellation_employees'
-                else:
-                    res_model = 'smart_hr.action_hr_holidays_cut_employees'
-                self.env['base.notification'].create({'title': u'إشعار بإلغاء أو قطع إجازة',
+            if self.type == 'cancellation':
+                res_model = 'smart_hr.action_hr_holidays_cancellation_employees'
+            else:
+                res_model = 'smart_hr.action_hr_holidays_cut_employees'
+            self.env['base.notification'].create({'title': u'إشعار بإلغاء أو قطع إجازة',
                                                   'message': u'الرجاء مراجعة طلب الإلغاء أو القطع',
                                                   'user_id': self.employee_id.user_id.id,
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
@@ -122,7 +120,7 @@ class hrHolidaysCancellation(models.Model):
                                                   'res_id': self.id,
                                                   'res_action': res_model})
 
-            cancellation.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"'")
+        self.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"'")
 
     @api.one
     def button_done(self):

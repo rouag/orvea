@@ -160,7 +160,7 @@ class HrHolidays(models.Model):
     display_button_cancel = fields.Boolean(compute='_compute_display_button_cancel')
     display_button_cut = fields.Boolean(compute='_compute_display_button_cut')
     salary_number = fields.Integer(string=u'عدد الرواتب')
-    is_holidays_specialist_user = fields.Boolean(string='Is Current User exellencies', compute='_is_holidays_specialist_user')
+    is_holidays_specialist_user = fields.Boolean(string='Is Current User holidays specialist', compute='_is_holidays_specialist_user')
 
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
