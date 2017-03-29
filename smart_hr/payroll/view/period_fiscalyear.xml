@@ -2,12 +2,12 @@
 <odoo>
 	<data>
 
-		<!-- السنة المالية -->
+		<!--السنوات -->
 		<record id="view_hr_fiscalyear_form" model="ir.ui.view">
 			<field name="name">hr.fiscalyear.form</field>
 			<field name="model">hr.fiscalyear</field>
 			<field name="arch" type="xml">
-				<form string="السنة المالية">
+				<form string="السنة">
 					<header>
 						<button name="create_period" string="إنشاء فترات شهرية"
 							type="object" class="oe_highlight" />
@@ -42,7 +42,7 @@
 			<field name="name">hr.fiscalyear.tree</field>
 			<field name="model">hr.fiscalyear</field>
 			<field name="arch" type="xml">
-				<tree string="السنة المالية">
+				<tree string="السنة">
 					<field name="code" />
 					<field name="name" />
 					<field name="company_id" groups="base.group_multi_company" />
@@ -54,7 +54,7 @@
 			<field name="name">hr.fiscalyear.search</field>
 			<field name="model">hr.fiscalyear</field>
 			<field name="arch" type="xml">
-				<search string="السنة المالية">
+				<search string="السنة">
 					<field name="name"
 						filter_domain="['|', ('name','ilike',self), ('code','ilike',self)]"
 						string="Fiscal Year" />
@@ -63,7 +63,7 @@
 		</record>
 
 		<record id="action_hr_fiscalyear" model="ir.actions.act_window">
-			<field name="name">السنة المالية</field>
+			<field name="name">السنوات</field>
 			<field name="res_model">hr.fiscalyear</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
@@ -83,7 +83,7 @@
 				</p>
 			</field>
 		</record>
-		<menuitem id="menu_action_hr_fiscalyear" action="action_hr_fiscalyear"
+		<menuitem id="menu_action_hr_fiscalyear" action="action_hr_fiscalyear" name="السنوات"
 			parent="hr_payroll_setting" />
 
 		<!-- فترة -->

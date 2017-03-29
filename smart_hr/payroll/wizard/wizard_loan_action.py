@@ -9,7 +9,7 @@ from openerp.addons.smart_base.util.umalqurra import *
 class WizardLoanAction(models.TransientModel):
     _name = 'wizard.loan.action'
 
-    month = fields.Selection(MONTHS, string='الشهر', required=1)
+    month = fields.Many2one('hr.period', string=u'الفترة', domain=[('is_open', '=', True)], required=1, default=get_default_period_id)
     number_decision = fields.Char(string='رقم القرار')
     date_decision = fields.Date(string='تاريخ القرار')
     reason = fields.Text(string='السبب')
