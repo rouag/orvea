@@ -149,7 +149,7 @@ class HrHolidays(models.Model):
     birth_certificate_file_name_file_name = fields.Char(string=u'شهادة الميلاد')
     speech_source = fields.Char(string=u'مصدر الخطابات')
     hide_with_advanced_salary = fields.Boolean('hide_with_advanced_salary', default=True)
-    # token_compensation_stock will take the value of the compensation_stock for tracability
+    # token_compen#id=4&view_type=form&model=salary.grid.grade&menu_id=603sation_stock will take the value of the compensation_stock for tracability
     token_compensation_stock = fields.Integer(string=u'الرصيد المأخوذ', default=0)
     compute_as_deputation = fields.Boolean(string=u'تحتسب هذه المدة انتدابا', default=False)
     display_compute_as_deputation = fields.Boolean('hide_compute_as_deputation', default=False)
@@ -284,7 +284,15 @@ class HrHolidays(models.Model):
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_illness'):
             res['domain'] = {'entitlement_type': [('code', '=', 'illness')]}
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_death'):
-            res['domain'] = {'entitlement_type': [('code', '=', 'death')]}
+            if self.employee_id:
+                gender = self.employee_id.gender
+                if gender == 'female':
+                    res['domain'] = {'entitlement_type': [('code', '=', 'death')]}
+                else:
+                    data_hr_holiday_entitlement_types_parent = self.env.ref('smart_hr.data_hr_holiday_entitlement_types_parent').id
+                    data_hr_holiday_entitlement_types_branch = self.env.ref('smart_hr.data_hr_holiday_entitlement_types_branch').id
+                    domain_male = [data_hr_holiday_entitlement_types_parent, data_hr_holiday_entitlement_types_branch]
+                    res['domain'] = {'entitlement_type': [('id', 'in', domain_male)]}
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional'):
             res['domain'] = {'entitlement_type': [('code', '=', 'accompaniment_exceptional')]}
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_sport'):
