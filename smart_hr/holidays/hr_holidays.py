@@ -773,14 +773,22 @@ class HrHolidays(models.Model):
                 duration -= 2
             if duration < self.holiday_status_id.maximum_minimum:
                 if prev_min_holidays_duration + duration < self.holiday_status_id.maximum_minimum:
-                    self.duration = duration
-                    self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration - 1)
+                    if duration >= 0:
+                        self.duration = duration
+                        self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration - 1)
+                    else:
+                        self.duation = 0
+                        self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration - 1)
                 else:
                     self.duration = self.holiday_status_id.minimum
                     self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration - 1)
             else:
-                self.duration = duration
-                self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration - 1)
+                if duration >= 0:
+                    self.duration = duration
+                    self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration - 1)
+                else:
+                    self.duation = 0
+                    self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration - 1)
             warning = {
                     'title': _('تحذير!'),
                     'message': _('هناك تداخل في تاريخ الإنتهاء مع عطلة او عيد!'),
@@ -796,15 +804,22 @@ class HrHolidays(models.Model):
                 duration = self.duration - 2
             if duration < self.holiday_status_id.maximum_minimum:
                 if prev_min_holidays_duration + duration < self.holiday_status_id.maximum_minimum:
+                    if duration>=0:
+                        self.duration = duration
+                        self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration - 1)
+                    else:
+                        self.duation = 0
+                        self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration - 1)
+                else:
+                    self.duration = self.holiday_status_id.minimum
+                    self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration - 1)
+            else:
+                if duration>=0:
                     self.duration = duration
                     self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration - 1)
                 else:
-                    self.duration = self.holiday_status_id.minimum
-                    self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=duration - 1)
-            else:
-                self.duration = duration
-                self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=duration - 1)
-
+                    self.duation = 0
+                    self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration - 1)
         elif self.duration:
             self.date_to = date_to
         else:
