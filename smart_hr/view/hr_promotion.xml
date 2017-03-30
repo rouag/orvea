@@ -47,8 +47,8 @@
 								<field name="number" />
 						
 							</group>
-							<group string="الوظيفة المرشح إليها">
-								<field name="job_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+							<group string="الوظيفة المرشح إليها"> 
+								<field name="job_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" domain="[('state','=','unoccupied')]"/>
 								<field name="number_job"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 								<field name="grade_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 								<field name="department_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
