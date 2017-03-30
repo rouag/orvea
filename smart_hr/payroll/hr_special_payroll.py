@@ -28,7 +28,7 @@ class HrPayslip(models.Model):
     owner_employee_id = fields.Many2one('hr.employee', string='صاحب الطلب',
                                         default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)],
                                                                                             limit=1), required=1, readonly=1)
-    payslip_type_ids = fields.Many2many('hr.special.payslip.type', string=u'نوع المسير', default=get_default_payslip_type_ids)
+    payslip_type_ids = fields.Many2many('hr.special.payslip.type', string=u'نوع المسير', default=get_default_payslip_type_ids, readonly=1, states={'draft': [('readonly', 0)]})
     special_state = fields.Selection([('new', 'جديد'),
                                       ('verify', 'المراجعة'),
                                       ('division_director', 'مدير الشعبة'),
@@ -43,6 +43,7 @@ class HrPayslip(models.Model):
     speech_number = fields.Char(string=u'رقم الخطاب', readonly=1, states={'draft': [('readonly', 0)]})
     speech_date = fields.Date(string=u'تاريخ الخطاب', readonly=1, states={'draft': [('readonly', 0)]})
     speech_file = fields.Binary(string=u'صورة الخطاب', attachment=True, readonly=1, required=1, states={'draft': [('readonly', 0)]})
+    speech_file_name = fields.Char(string='speech_file_name')
 
     @api.multi
     def action_special_new(self):
@@ -113,9 +114,6 @@ class HrPayslip(models.Model):
             lines = []
             line_ids = []
             sequence = 1
-            # أوامر الإركاب
-            if self.env.ref('smart_hr.hr_special_payslip_type_transport') in self.payslip_type_ids:
-                line_ids += self.get_difference_transport_decision()
             # فروقات خارج الدوام
             if self.env.ref('smart_hr.hr_special_payslip_type_overtime') in self.payslip_type_ids:
                 line_ids += self.get_difference_overtime()
@@ -133,33 +131,14 @@ class HrPayslip(models.Model):
                         'rate': 0.0,
                         'amount': line_id['amount'],
                         'category': 'difference',
-                        'type': 'difference',
+                        'number_of_days': line_id['number_of_days'],
+                        'number_of_hours': line_id['number_of_hours'],
+                        'type': 'allowance',
                         'sequence': sequence
                         }
                 lines.append(vals)
                 sequence += 1
             payslip.line_ids = lines
-
-    @api.multi
-    def get_difference_transport_decision(self):
-        self.ensure_one()
-        line_ids = []
-        transport_decision_ids = self.env['hr.transport.decision'].search([('employee_id', '=', self.employee_id.id),
-                                                                           ('state', '=', 'done'),
-                                                                           ('is_paied', '=', False),
-                                                                           ])
-        if transport_decision_ids:
-            self.transport_decision_ids = transport_decision_ids.ids
-        for transfert_decision in transport_decision_ids:
-            vals = {'difference_id': self.id,
-                    'name': 'فرق أمر اركاب',
-                    'employee_id': transfert_decision.employee_id.id,
-                    'number_of_days': 0.0,
-                    'number_of_hours': 0.0,
-                    'amount': transfert_decision.amount,
-                    'type': 'transfert_decision'}
-            line_ids.append(vals)
-        return line_ids
 
     @api.multi
     def get_difference_overtime(self):
@@ -264,6 +243,23 @@ class HrPayslip(models.Model):
                                   'amount': deputation_amount,
                                   'type': 'deputation'}
                 line_ids.append(deputation_val)
+        # أوامر الإركاب
+        transport_decision_ids = self.env['hr.transport.decision'].search([('employee_id', '=', self.employee_id.id),
+                                                                           ('state', '=', 'done'),
+                                                                           ('transport_type', '=', self.env.ref('smart_hr.data_hr_transport_setting2')),
+                                                                           ('is_paied', '=', False),
+                                                                           ])
+        if transport_decision_ids:
+            self.transport_decision_ids = transport_decision_ids.ids
+        for transfert_decision in transport_decision_ids:
+            vals = {'difference_id': self.id,
+                    'name': 'فرق أمر اركاب',
+                    'employee_id': transfert_decision.employee_id.id,
+                    'number_of_days': 0.0,
+                    'number_of_hours': 0.0,
+                    'amount': transfert_decision.amount,
+                    'type': 'transfert_decision'}
+            line_ids.append(vals)
         return line_ids
 
     @api.multi
@@ -301,6 +297,23 @@ class HrPayslip(models.Model):
                             'amount': amount,
                             'type': 'transfert'}
                     line_ids.append(vals)
+        # أوامر الإركاب
+        transport_decision_ids = self.env['hr.transport.decision'].search([('employee_id', '=', self.employee_id.id),
+                                                                           ('state', '=', 'done'),
+                                                                           ('transport_type', '=', self.env.ref('smart_hr.data_hr_transport_setting3')),
+                                                                           ('is_paied', '=', False),
+                                                                           ])
+        if transport_decision_ids:
+            self.transport_decision_ids = transport_decision_ids.ids
+        for transfert_decision in transport_decision_ids:
+            vals = {'difference_id': self.id,
+                    'name': 'فرق أمر اركاب',
+                    'employee_id': transfert_decision.employee_id.id,
+                    'number_of_days': 0.0,
+                    'number_of_hours': 0.0,
+                    'amount': transfert_decision.amount,
+                    'type': 'transfert_decision'}
+            line_ids.append(vals)
         return line_ids
 
 

@@ -717,6 +717,8 @@ class HrPayslipLine(models.Model):
     salary_rule_id = fields.Many2one('hr.salary.rule', 'Rule', required=False)
     code = fields.Char('Code', size=64, required=False)
     category_id = fields.Many2one('hr.salary.rule.category', 'Category', required=False)
+    number_of_days = fields.Float(string='عدد الأيام')
+    number_of_hours = fields.Float(string='عدد الساعات')
 
     # added
     category = fields.Selection([('basic_salary', 'الراتب الأساسي'),
