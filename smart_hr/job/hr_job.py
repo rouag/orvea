@@ -35,6 +35,7 @@ class HrJob(models.Model):
          ('service_transfet', u'نقل خدمات'), ('promotion', u'ترقية'), ('mission', u'تكليف'), ('increase', u'رفع'),
          ('decrease', u'خفظ')], string=u'الحالة', readonly=1, default='unoccupied')
     employee = fields.Many2one('hr.employee', string=u'الموظف')
+    number=fields.Char(related='employee.number', string='رقم الوظيفي', readonly=1)
     occupied_date = fields.Date(string=u'تاريخ شغلها')
     creation_source = fields.Selection([('creation', u'إحداث'), ('striped_from', u'سلخ  من جهة'),
                                         ('striped_to', u'سلخ إلى جهة'), ('cancel', u'إلغاء'),
@@ -1144,14 +1145,30 @@ class HrJobMoveGrade(models.Model):
                 'description': description,
                 'job_id': job.job_id.id}
             self.env['hr.job.history.actions'].create(job_history_vals)
-            job.job_id.grade_id = job.new_grade_id.id
-            job.job_id.department_id = job.new_department_id.id
-            job.job_id.name = job.new_job_name.id
-            job.job_id.number = job.new_job_number
-            job.job_id.creation_source = self.move_type
-        user = self.env['res.users'].browse(self._uid)
-        self.message_post(u"تمت " + move_type + u" الوظائف من قبل '" + unicode(user.name) + u"'")
-
+            job.job_id.state = 'cancel'
+            new_job_description = u"إحداث ب"+move_type + u" الوظيفة من المرتبة " + unicode(job.grade_id.name) +u" الى المرتبة " +unicode(job.new_grade_id.name) + '.\n'
+            new_job_vals = {
+            'grade_id' : job.new_grade_id.id,
+            'department_id' : job.new_department_id.id,
+            'name': job.new_job_name.id,
+            'number' : job.new_job_number,
+            'creation_source' : self.move_type,
+            'state' : 'unoccupied',
+            'serie_id': job.job_id.serie_id.id,
+            'general_id': job.job_id.general_id.id,
+            'specific_id': job.job_id.specific_id.id,
+            'activity_type': job.job_id.activity_type.id,
+            'creation_source': self.move_type,
+            'type_id' : job.job_id.type_id.id,
+            }
+            new_job = self.env['hr.job'].create(new_job_vals)
+            new_job_history_vals = {
+                'action': move_type,
+                'action_date': date.today(),
+                'description': new_job_description,
+                'job_id': new_job.id}
+            self.env['hr.job.history.actions'].create(new_job_history_vals)
+            
     @api.multi
     def button_refuse(self):
         self.ensure_one()
@@ -1200,11 +1217,10 @@ class HrJobMoveGrade(models.Model):
             rec.job_id.write({'state': 'unoccupied', 'number': rec.job_number, 'grade_id': rec.new_grade_id.id})
         self.action_done()
 
-    @api.multi
+    @api.one
     def action_job_reserve(self):
-        self.ensure_one()
         for rec in self.job_movement_ids:
-            rec.job_id.write({'state': 'reserved'})
+            rec.job_id.state = 'reserved'
 
     def send_notification_to_group(self, group_id):
         '''

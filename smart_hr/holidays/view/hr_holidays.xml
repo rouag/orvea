@@ -29,6 +29,7 @@
 				<xpath expr="/tree" position='replace'>
 					<tree string="طلبات الاجازات">
 						<field name="name" string="رقم الاجازة" />
+						<field name="is_extension"/>
 						<field name="employee_id" />
 						<field name="holiday_status_id" />
 						<field name="duration" />

@@ -30,7 +30,7 @@
 						<button string="إحتسب" name="special_compute_sheet" type="object"
 							groups="smart_hr.group_allowance_employee" class="oe_highlight"
 							attrs="{'invisible':[('special_state','!=','new')]}" />
-						<button name="action_special_verify" string="إرسال للموافقة" type="object"
+						<button name="action_special_verify" string=" إرسال للمراجعة" type="object"
 							groups="smart_hr.group_allowance_employee" attrs="{'invisible':[('special_state','!=','new')]}" />
 						<button name="action_special_division_director" string="موافق"
 							type="object" attrs="{'invisible':[('special_state','!=','verify')]}" />
@@ -74,7 +74,8 @@
 							<group col="2">
 								<field name="speech_number" attrs="{'required':[('is_special','=', True)]}" />
 								<field name="speech_date" attrs="{'required':[('is_special','=', True)]}"/>
-								<field name="speech_file" attrs="{'required':[('is_special','=', True)]}"/>
+								<field name="speech_file" attrs="{'required':[('is_special','=', True)]}" filename="speech_file_name" />
+								<field name="speech_file_name" invisible="1"  />
 							</group>
 						</group>
 						<notebook>
@@ -86,6 +87,8 @@
 										<field name="code" invisible="1" />
 										<field name="category" />
 										<field name="sequence" invisible="1" />
+										<field name="number_of_days" />
+										<field name="number_of_hours" />
 										<field name="amount" />
 									</tree>
 									<form string="تفاصيل الراتب">

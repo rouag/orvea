@@ -285,10 +285,7 @@
 			<field name="name">خارج الدوام</field>
 		</record>
 		<record id="hr_special_payslip_type_tranfert" model="hr.special.payslip.type">
-			<field name="name">نقل المنتهي</field>
-		</record>
-		<record id="hr_special_payslip_type_transport" model="hr.special.payslip.type">
-			<field name="name">أوامر الإركاب</field>
+			<field name="name">نقل</field>
 		</record>
 		‫
 	</data>

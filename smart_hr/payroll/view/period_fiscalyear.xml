@@ -2,12 +2,12 @@
 <odoo>
 	<data>
 
-		<!-- السنة المالية -->
+		<!--السنوات -->
 		<record id="view_hr_fiscalyear_form" model="ir.ui.view">
 			<field name="name">hr.fiscalyear.form</field>
 			<field name="model">hr.fiscalyear</field>
 			<field name="arch" type="xml">
-				<form string="السنة المالية">
+				<form string="السنة">
 					<header>
 						<button name="create_period" string="إنشاء فترات شهرية"
 							type="object" class="oe_highlight" />
@@ -42,7 +42,7 @@
 			<field name="name">hr.fiscalyear.tree</field>
 			<field name="model">hr.fiscalyear</field>
 			<field name="arch" type="xml">
-				<tree string="السنة المالية">
+				<tree string="السنة">
 					<field name="code" />
 					<field name="name" />
 					<field name="company_id" groups="base.group_multi_company" />
@@ -54,7 +54,7 @@
 			<field name="name">hr.fiscalyear.search</field>
 			<field name="model">hr.fiscalyear</field>
 			<field name="arch" type="xml">
-				<search string="السنة المالية">
+				<search string="السنة">
 					<field name="name"
 						filter_domain="['|', ('name','ilike',self), ('code','ilike',self)]"
 						string="Fiscal Year" />
@@ -63,7 +63,7 @@
 		</record>
 
 		<record id="action_hr_fiscalyear" model="ir.actions.act_window">
-			<field name="name">السنة المالية</field>
+			<field name="name">السنوات</field>
 			<field name="res_model">hr.fiscalyear</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
@@ -73,25 +73,38 @@
 				</p>
 				<p>
 					حدد السنة المالية لشركتك وفقا لاحتياجاتك. ا
-					                 السنة المالية هي فترة في نهاية الشركة
-					                 الحسابات (تتكون عادة من 12 شهرا). السنة المالية هي
-					                 ويشار إليها عادة بالتاريخ الذي تنتهي فيه. فمثلا،
-					                 إذا كانت السنة المالية للشركة تنتهي في 30 نوفمبر
+					                 السنة
+					المالية هي فترة في نهاية الشركة
+					                 الحسابات (تتكون
+					عادة من 12 شهرا). السنة المالية هي
+					                 ويشار إليها عادة
+					بالتاريخ الذي تنتهي فيه. فمثلا،
+					                 إذا كانت السنة
+					المالية للشركة تنتهي في 30 نوفمبر
 					2017، ثم
-					                 كل شيء بين 1 ديسمبر 2016 و 30 نوفمبر 2017
-					                 سيشار إليها في السنة المالية 2017.
+					                 كل شيء
+					بين 1 ديسمبر 2016 و 30 نوفمبر 2017
+					                 سيشار إليها في
+					السنة المالية 2017.
 				</p>
 			</field>
 		</record>
 		<menuitem id="menu_action_hr_fiscalyear" action="action_hr_fiscalyear"
-			parent="hr_payroll_setting" />
+			name="السنوات" parent="hr_payroll_setting" />
 
 		<!-- فترة -->
 		<record id="view_hr_period_form" model="ir.ui.view">
 			<field name="name">hr.period.form</field>
 			<field name="model">hr.period</field>
 			<field name="arch" type="xml">
-				<form string="فترة الحساب">
+				<form string="فترة الحساب" create='0' edit='0'>
+					<header>
+						<button name="button_open_period" string="فتح الفترة" attrs="{'invisible':[('is_open','=',True)]}"
+							type="object" class="oe_highlight" />
+						<button name="button_close_period" string="غلق الفترة"
+							type="object" class="oe_highlight"  attrs="{'invisible':[('is_open','=',False)]}"/>
+					</header>
+					<br></br>
 					<sheet>
 						<group>
 							<group>
@@ -116,9 +129,9 @@
 			<field name="name">hr.period.tree</field>
 			<field name="model">hr.period</field>
 			<field name="arch" type="xml">
-				<tree string="فترة" default_order='date_start'>
+				<tree string="فترة" default_order='date_start' create='0' edit='0'>
 					<field name="name" />
-					<field name="code" invisible="1"/>
+					<field name="code" invisible="1" />
 					<field name="date_start" />
 					<field name="date_stop" />
 					<field name="company_id" groups="base.group_multi_company" />
