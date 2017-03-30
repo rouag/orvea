@@ -73,24 +73,38 @@ class ReportHrErrorEmployee(report_sxw.rml_parse):
         return employe_pbj.browse(self.cr, self.uid, list(result))
      
     def _get_payslip_stop_employees(self, month,department_level1_id, department_level2_id, department_level3_id, salary_grid_type_id):
-        payslip_stp_obj = self.env['hr.payslip.stop.line']
-        employee_search_ids = payslip_stp_obj.search([( 'stop_period','=', True), ('period_id','=', month.id),('state','=','done')])
-        print"employee_search_ids",employee_search_ids
-        stop_employee_ids=[]
-        for line in employee_search_ids:
-            stop_employee_ids.append(line.payslip_id.employee_id.id)
-        stop_employee_ids = stop_employee_ids
+        payslip_stp_obj = self.pool.get('hr.payslip.stop.line')
+        employe_pbj = self.pool.get('hr.employee')
+        domain = []
+        search_empl_ids = self.get_employee_ids(self.cr, self.uid,department_level1_id, department_level2_id, department_level3_id, salary_grid_type_id)
+        search_ids = []
+        for rec in search_empl_ids:
+            temp = payslip_stp_obj.search(self.cr, self.uid, [( 'stop_period','=', True), ('period_id','=', month.id),('payslip_id.employee_id', '=',rec),('state','=','done')])
+            search_ids += temp
+        domain.append(search_ids)
+        payslip_stp_obj= payslip_stp_obj.browse(self.cr, self.uid, search_ids)
+        emp_ids = [rec.payslip_id.employee_id.id for rec in payslip_stp_obj]
+        emp_ids = set(emp_ids)
+        return employe_pbj.browse(self.cr, self.uid, list(emp_ids))
+        
+
 
     def _get_termination_employees(self, month,department_level1_id, department_level2_id, department_level3_id, salary_grid_type_id):
-        date_from = get_hijri_month_start(HijriDate, Umalqurra,month)
-        date_to = get_hijri_month_end(HijriDate, Umalqurra,month)
-        emp_pbj = self.pool.get('hr.employee')
+        employe_pbj = self.pool.get('hr.employee')
         domain = []
         termination_pbj = self.pool.get('hr.termination')
-        empl_ids = self.get_employee_ids(self.cr, self.uid,department_level1_id, department_level2_id, department_level3_id, salary_grid_type_id)
-        search_empl_ids = termination_pbj.search(self.cr, self.uid, [('state','=','done'),('employee_id', 'in',empl_ids),('date_termination', '>', date_from),('date_termination', '<', date_to)])
-        emp_ids = [rec.employee_id.id for rec in search_empl_ids]
-        return emp_pbj.browse(self.cr, self.uid, emp_ids)
+        search_empl_ids = self.get_employee_ids(self.cr, self.uid,department_level1_id, department_level2_id, department_level3_id, salary_grid_type_id)
+        search_ids = []
+        for rec in search_empl_ids:
+            temp = termination_pbj.search(self.cr, self.uid, [('state','=','done'),('employee_id','=',rec),('date_termination', '>', month.date_start),('date_termination', '<', month.date_stop)])
+            search_ids += temp
+        domain.append(search_ids)
+        termination_pbj= termination_pbj.browse(self.cr, self.uid, search_ids)
+        emp_ids = [rec.employee_id.id for rec in termination_pbj]
+        emp_ids = set(emp_ids)
+        return employe_pbj.browse(self.cr, self.uid, list(emp_ids))
+        
+
 
 
     def _get_hijri_date(self, date, separator):
