@@ -129,7 +129,7 @@
 												تاريخ الالتحاق بالهيئة
 											</td>
 											<td>
-											<span t-esc="get_hijri_date(o.join_date, '-')" />
+											<span t-esc="get_hijri_date(o.recruiter_date, '-')" />
 											</td>
 										</tr>
 										<tr>

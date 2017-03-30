@@ -119,13 +119,12 @@ class HrPayslipStopRun(models.Model):
     @api.multi
     def button_refuse(self):
         for rec in self:
-            
             for employee in rec.employee_ids:
                 payslip_stop_obj = self.env['hr.payslip.stop']
                 payslip_stop = payslip_stop_obj.search([('employee_id', '=', employee.id), ('name', '=', rec.name),('order_date','=',rec.order_date)])
                 if payslip_stop :
                     for line in payslip_stop.period_ids:
-                        line.stop_period =False,
+                        line.write({'stop_period': False, 'period_id': line.period_id.id,'state':'refused'})
                     payslip_stop.state ='refused'
             rec.state = 'refused'
 

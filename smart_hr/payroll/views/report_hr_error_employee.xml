@@ -117,6 +117,41 @@
 										</t>
 									</table>
 									</div>
+									
+									
+									<div class="col-xs-12 text-center">
+						<br></br> <strong>موظفين:  طي القيد</strong>
+									<table class="table table-condensed">
+										<thead>
+											<tr>
+												<th class="text-center">رقم الموظف </th>
+												<th class="text-center">الإسم</th>
+												<th class="text-center">مسمى الوظيفة </th>
+												<th class="text-center">رقم الوظيفة</th>
+												<th class="text-center">السبب</th>
+											</tr>
+										</thead>
+										<t t-set="employee_ids" t-value="get_payslip_stop_employees(o.month,o.department_level1_id,o.department_level2_id,o.department_level3_id,o.salary_grid_type_id)" />
+										<t t-foreach="employee_ids" t-as="line">
+											<tr>
+												<td>
+													<span t-field="line.number" />
+												</td>
+												<td>
+													<span t-field="line.display_name" />
+												</td>
+												<td>
+													<span t-field="line.job_id" />
+												</td>
+												<td>
+													<span t-field="line.job_id.number" />
+												</td>
+												<td>
+												</td>
+											</tr>
+										</t>
+									</table>
+									</div>
 								</div>
 							</div>
 					</t>

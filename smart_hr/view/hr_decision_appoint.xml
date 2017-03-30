@@ -318,26 +318,30 @@
 										<field name="file_direct_appoint" filename="file_direct_appoint_name"
 											attrs="{'invisible':[('state', 'not in', ['hrm','direct', 'budget','civil', 'done','refuse'])],'required':[('state','=','hrm')],'readonly':[('state', 'in', [ 'direct', 'budget','civil', 'done','refuse'])]}" />
 									</group>
-
-
 									<field name="file_direct_appoint_name" invisible="1" />
 									<field name="file_appoint_name" invisible="1" />
 
 								</group>
 							</page>
 
-							<page name="public" string="بيانات تقييم مترشح"
-								attrs="{'invisible':[('type_appointment', '!=', %(data_hr_recrute_Members)d)]}">
+							<page name="مترشح" string="بيانات تقييم المقابلة" 
+								attrs="{'invisible':[ '|',('is_enterview_manager','!=',True),('state', 'not in',['waiting','hrm','manager', 'direct', 'budget','civil', 'done','refuse'])]}">
 								<br></br>
 								<group>
 									<group>
 										<field name="passing_score"
-											attrs="{'readonly':[('state', 'not in',['draft','audit'])],'required':[('state', 'in',['draft','audit'])]}" />
+												attrs="{'invisible':[('state', 'not in',['waiting','hrm','manager','direct', 'budget','civil', 'done','refuse'])],'readonly':[('state', 'in', ['hrm','direct', 'budget','civil', 'done','refuse'])]}" />
 										<field name="score"
-											attrs="{'readonly':[('state', 'not in',['draft','audit'])],'required':[('state', 'in',['draft','audit'])]}" />
+											attrs="{'invisible':[('state', 'not in',['waiting','hrm','manager','direct', 'budget','civil', 'done','refuse'])],'readonly':[('state', 'in', [ 'hrm','direct', 'budget','civil', 'done','refuse'])]}" />
+											 	<field name="note_interview"
+											attrs="{'invisible':[('state', 'not in',['waiting','hrm','manager','direct', 'budget','civil', 'done','refuse'])],'readonly':[('state', 'in', [ 'hrm','direct', 'budget','civil', 'done','refuse'])]}" />
+											 
+											 <field name="is_enterview_manager" invisible="1" />
 									</group>
 								</group>
 							</page>
+							
+							
 							<page string="البدلات" readonly="1">
 								<h3 class="o_horizontal_separator">بدلات الوظيفة</h3>
 								<field name="job_allowance_ids" string="بدلات الوظيفة">

@@ -18,6 +18,7 @@ class ReportHrErrorEmployee(report_sxw.rml_parse):
             'get_all_employees': self._get_all_employees,
             'get_error_employees':self._get_error_employees,
             'get_termination_employees':self._get_termination_employees,
+            'get_payslip_stop_employees':self._get_payslip_stop_employees,
 
         })
 
@@ -70,7 +71,15 @@ class ReportHrErrorEmployee(report_sxw.rml_parse):
         result=[]
         result = set(search_empl_ids) - emp_ids
         return employe_pbj.browse(self.cr, self.uid, list(result))
-
+     
+    def _get_payslip_stop_employees(self, month,department_level1_id, department_level2_id, department_level3_id, salary_grid_type_id):
+        payslip_stp_obj = self.env['hr.payslip.stop.line']
+        employee_search_ids = payslip_stp_obj.search([( 'stop_period','=', True), ('period_id','=', month.id),('state','=','done')])
+        print"employee_search_ids",employee_search_ids
+        stop_employee_ids=[]
+        for line in employee_search_ids:
+            stop_employee_ids.append(line.payslip_id.employee_id.id)
+        stop_employee_ids = stop_employee_ids
 
     def _get_termination_employees(self, month,department_level1_id, department_level2_id, department_level3_id, salary_grid_type_id):
         date_from = get_hijri_month_start(HijriDate, Umalqurra,month)

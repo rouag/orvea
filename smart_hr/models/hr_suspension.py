@@ -104,23 +104,45 @@ class hr_suspension(models.Model):
         for rec in self:
             rec.state = 'refuse'
 
-    @api.one
+    @api.multi
     def button_suspension_end(self):
+        print"ffffffffffffffffffffff"
+        suspension_end_obj = self.env['hr.suspension.end']
+        print "dddddd"
+        vals = {
+                'employee_id': self.employee_id.id,
+                'suspension_id': self.id,
+            }
+        print'vals',vals
+        suspension_end_id = suspension_end_obj.create(vals)
+        print'suspension_end_id',suspension_end_id
+        if suspension_end_id :
+            value = {
+                    'name': u'إنهاء كف اليد',
+                    'view_type': 'form',
+                    'view_mode': 'form',
+                    'res_model': 'hr.suspension.end',
+                    'view_id': False,
+                    'type': 'ir.actions.act_window',
+                   'res_id': suspension_end_id.id,
+                   }
+        return value
+
         # Objects
-        susp_end_obj = self.env['hr.suspension.end']
-        user = self.env['res.users'].browse(self._uid)
-        # Create suspension end
-        for rec in self:
-            # Validation
-            if not rec.suspension_end_id:
-                vals = {
-                    'employee_id': rec.employee_id.id,
-                    'suspension_id': rec.id,
-                }
-                susp_end_id = susp_end_obj.create(vals)
-                if susp_end_id:
-                    rec.suspension_end_id = susp_end_id
-                    rec.message_post(u"تم إنهاء كف اليد من قبل '" + unicode(user.name) + u"'")
+#         susp_end_obj = self.env['hr.suspension.end']
+#         user = self.env['res.users'].browse(self._uid)
+#         # Create suspension end
+#         for rec in self:
+#             # Validation
+#             if not rec.suspension_end_id:
+#                 vals = {
+#                     'employee_id': rec.employee_id.id,
+#                     'suspension_id': rec.id,
+#                 }
+#                 susp_end_id = susp_end_obj.create(vals)
+#                 if susp_end_id:
+#                     rec.suspension_end_id = susp_end_id
+#                     rec.message_post(u"تم إنهاء كف اليد من قبل '" + unicode(user.name) + u"'")
 
     @api.model
     def _needaction_domain_get(self):
