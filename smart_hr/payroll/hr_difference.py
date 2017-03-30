@@ -82,6 +82,7 @@ class HrDifference(models.Model):
         if self.period_id:
             self.date_from = self.period_id.date_start
             self.date_to = self.period_id.date_stop
+            self.line_ids.unlink()
             line_ids = []
             # فروقات النقل
             line_ids += self.get_difference_transfert()
