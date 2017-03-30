@@ -46,8 +46,8 @@ class HrTerminationRetraiteReport(report_sxw.rml_parse):
             for line in hr_member_searchs:
                 birthday = emp_pbj.browse(self.cr, self.uid, line).birthday
                 birthday = fields.Date.from_string(birthday)
-                years_from = (date_from - birthday).days / 365
-                years_to = (date_to - birthday).days / 365
+                years_from = (date_from - birthday).days / 354
+                years_to = (date_to - birthday).days / 354
                 if years_from >= age_member and years_to <= age_member :
                     domain.append(line)
             return emp_pbj.browse(self.cr, self.uid, domain)
@@ -55,8 +55,8 @@ class HrTerminationRetraiteReport(report_sxw.rml_parse):
             for rec in hr_nomember_searchs:
                 birthday = emp_pbj.browse(self.cr, self.uid, rec).birthday
                 birthday = fields.Date.from_string(birthday)
-                years_from = (date_from - birthday).days / 365
-                years_to = (date_to - birthday).days / 365
+                years_from = (date_from - birthday).days / 354
+                years_to = (date_to - birthday).days / 354
                 if years_from >= age_nomember and years_to <= age_nomember :
                     domain.append(rec)
             return emp_pbj.browse(self.cr, self.uid, domain)
