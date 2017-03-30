@@ -183,7 +183,7 @@
 		</record>
 
 		<menuitem id="hr_difference_line_menu" name="الفروقات بالموظف"
-			groups="smart_hr.group_difference_management" sequence="35"
+			groups="smart_hr.group_difference_management" sequence="25"
 			parent="hr_difference_root" action="action_hr_difference_line" />
 
 

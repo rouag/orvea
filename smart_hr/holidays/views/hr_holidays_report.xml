@@ -451,6 +451,168 @@
 								</div>
 							</div>
 						</t>
+						
+						<!-- إجازة الأمومة -->
+						<t
+							t-if="o.holiday_status_id in [docs.env.ref('smart_hr.data_hr_holiday_status_maternity')]">
+							<div class="page" style="direction:rtl;">
+
+								<div class="row">
+									<div class="col-md-12 text-center">
+										<b>
+											<p align="center">قرار  إجازة الأمومة</p>
+
+											<p align="center">
+												قرار إداري رقم
+												<span t-esc="o.num_decision" />
+												بتاريخ
+												<span t-esc="get_hijri_date(o.date_decision, '-')" />
+											</p>
+											<p align="left">
+												رقم الهوية الوطنية:
+												<span t-field="o.employee_id.identification_id" />
+
+											</p>
+										</b>
+									</div>
+								</div>
+								<div class="row">
+
+									<br />
+									<br />
+									<br />
+									<t t-set="decision_appoint"
+										t-value="docs.env['hr.decision.appoint'].search([('employee_id','=',o.employee_id.id)],limit=1)" />
+									<p style="font-size:22px;">إن رئيس هيئة التحقيق والإدعاء العام</p>
+									<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له,</p>
+									<p style="font-size:22px;">
+										واشارة إلى خطابات
+										<span t-field="o.speech_source" />
+										رقم
+										<span t-field="o.num_outspeech" />
+										بتاريخ
+										<span t-esc="get_hijri_date(o.date_outspeech, '-')" />
+										ورقم
+										<span t-field="o.num_inspeech" />
+
+										وتاريخ
+										<span t-esc="get_hijri_date(o.date_inspeech, '-')" />
+
+										بشان طلب
+										الموافقة على منح الموظفة
+										<span t-field="o.employee_id.display_name" />
+										إجازة الأمومة لمدة
+										<span t-esc="o.duration" />
+									</p>
+
+									<p style="font-size:22px;">واستنادا للمادة (٢٤) من لائحة الإجازات ولموافقتنا
+										على
+										ذلك.
+									</p>
+									<p align="center" style="font-size:22px;">:يقرر ما يلى</p>
+									<p style="font-size:22px;">
+										١) يمنح الموظفة /
+										<span t-field="o.employee_id.display_name" />
+										إجازة الأمومة لمدة
+										<span t-esc="o.duration" />
+										يوما اعتبارا من
+										<span t-esc="get_hijri_date(o.date_from, '-')" />
+									</p>
+									<p style="font-size:22px;">٢) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
+								</div>
+								<br />
+								<br />
+								<br />
+								<div class="col-xs-5 pull-right" style="font-size:22px;">
+									<span>رئيس هيئة التحقيق والإدعاء العام</span>
+									<br></br>
+									<span
+										t-field="o.employee_id.user_id.company_id.company_president.display_name" />
+
+								</div>
+							</div>
+						</t>
+						
+							<!-- إجازة المولود -->
+						<t
+							t-if="o.holiday_status_id in [docs.env.ref('smart_hr.data_hr_holiday_child_birth_dad')]">
+							<div class="page" style="direction:rtl;">
+
+								<div class="row">
+									<div class="col-md-12 text-center">
+										<b>
+											<p align="center">قرار  إجازة المولود</p>
+
+											<p align="center">
+												قرار إداري رقم
+												<span t-esc="o.num_decision" />
+												بتاريخ
+												<span t-esc="get_hijri_date(o.date_decision, '-')" />
+											</p>
+											<p align="left">
+												رقم الهوية الوطنية:
+												<span t-field="o.employee_id.identification_id" />
+
+											</p>
+										</b>
+									</div>
+								</div>
+								<div class="row">
+
+									<br />
+									<br />
+									<br />
+									<t t-set="decision_appoint"
+										t-value="docs.env['hr.decision.appoint'].search([('employee_id','=',o.employee_id.id)],limit=1)" />
+									<p style="font-size:22px;">إن رئيس هيئة التحقيق والإدعاء العام</p>
+									<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له,</p>
+									<p style="font-size:22px;">
+										واشارة إلى خطابات
+										<span t-field="o.speech_source" />
+										رقم
+										<span t-field="o.num_outspeech" />
+										بتاريخ
+										<span t-esc="get_hijri_date(o.date_outspeech, '-')" />
+										ورقم
+										<span t-field="o.num_inspeech" />
+
+										وتاريخ
+										<span t-esc="get_hijri_date(o.date_inspeech, '-')" />
+
+										بشان طلب
+										الموافقة على منح الموظفة
+										<span t-field="o.employee_id.display_name" />
+										إجازة المولود لمدة
+										<span t-esc="o.duration" />
+									</p>
+
+									<p style="font-size:22px;">واستنادا للمادة (٢٤) من لائحة الإجازات ولموافقتنا
+										على
+										ذلك.
+									</p>
+									<p align="center" style="font-size:22px;">:يقرر ما يلى</p>
+									<p style="font-size:22px;">
+										١) يمنح الموظفة /
+										<span t-field="o.employee_id.display_name" />
+										إجازة المولود لمدة
+										<span t-esc="o.duration" />
+										يوما اعتبارا من
+										<span t-esc="get_hijri_date(o.date_from, '-')" />
+									</p>
+									<p style="font-size:22px;">٢) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
+								</div>
+								<br />
+								<br />
+								<br />
+								<div class="col-xs-5 pull-right" style="font-size:22px;">
+									<span>رئيس هيئة التحقيق والإدعاء العام</span>
+									<br></br>
+									<span
+										t-field="o.employee_id.user_id.company_id.company_president.display_name" />
+
+								</div>
+							</div>
+						</t>
 
 					</t>
 				</t>

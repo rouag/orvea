@@ -4,7 +4,9 @@ from dateutil.relativedelta import relativedelta
 from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
-from pyasn1.compat.octets import null
+
+
+
 
 
 class HrEmployeeTransfert(models.Model):
@@ -40,6 +42,7 @@ class HrEmployeeTransfert(models.Model):
     decision_file = fields.Binary(string=u'نسخة القرار', attachment=True)
     decision_file_name = fields.Char(string=u'نسخة القرار')
     degree_id = fields.Many2one('salary.grid.degree',related='employee_id.degree_id', string=u'الدرجة', readonly=1)
+    new_degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة', readonly=1)
     date_direct_action = fields.Date(string=u'تاريخ مباشرة العمل')
     governmental_entity = fields.Many2one('res.partner', string=u'الجهة الحكومية', domain=[('company_type', '=', 'governmental_entity')])
     desire_ids = fields.One2many('hr.employee.desire',  'desire_id', store=True,required=1, string=u'رغبات النقل', readonly=1, states={'new': [('readonly', 0)]})
@@ -454,7 +457,11 @@ class HrTransfertSorting(models.Model):
                                     'new_degree_id': line.new_degree_id.id,
                                     'specific_group': line.specific_group,
                                    }
+                        line.hr_employee_transfert_id.ready_tobe_done =True
                         line.hr_employee_transfert_id.state ='consult'
+                        line.hr_employee_transfert_id.new_job_id =line.new_job_id.id,
+                        line.hr_employee_transfert_id.new_type_id =line.new_type_id.id,
+                        line.hr_employee_transfert_id.new_degree_id =line.new_degree_id.id,
                         self.env['base.notification'].create({'title': u'إشعار  بخفض درجة',
                                                    'message': u'لقد تم خفض درجة',
                                                    'user_id': line.hr_employee_transfert_id.employee_id.user_id.id,
@@ -473,11 +480,14 @@ class HrTransfertSorting(models.Model):
                                     'new_degree_id': line.new_degree_id.id,
                                     'specific_group': line.specific_group,
                                    }
+                        line.hr_employee_transfert_id.ready_tobe_done =True
+                        line.hr_employee_transfert_id.new_job_id =line.new_job_id.id,
+                        line.hr_employee_transfert_id.new_type_id =line.new_type_id.id,
+                        line.hr_employee_transfert_id.new_degree_id =line.new_degree_id.id,
                         line_ids.append(vals)
-                    rec.line_ids3 = line_ids
-                    rec.state = 'waiting'
-                else :
-                    rec.state = 'draft'
+            rec.line_ids3 = line_ids
+            rec.state = 'waiting'
+              
     @api.multi
     def button_refuse(self):
         self.ensure_one()
@@ -525,7 +535,7 @@ class HrTransfertSorting(models.Model):
                 rec.line_ids5 = line_ids
                 rec.state = 'commission_third'
                 if line.specific_group =='same_specific' :
-
+                    line.hr_employee_transfert_id.state ='done'
                     rec.state = 'done'
 
 

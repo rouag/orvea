@@ -179,6 +179,8 @@
         'payroll/view/salary_grid.xml',
         'payroll/view/hr_payroll_view.xml',
         'payroll/view/hr_special_payslip_view.xml',
+        'payroll/view/hr_payslip_stop_view.xml',
+        'payroll/view/hr_payslip_stop_run_view.xml',
         'payroll/view/setting_view.xml',
         'payroll/view/hr_salary_rule_view.xml',
         'payroll/view/hr_deduction.xml',

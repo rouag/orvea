@@ -19,8 +19,6 @@
 									<br />
 								</h3>
 							</div>
-
-
 							<table class="table table-bordered">
 								<thead>
 									<tr>
@@ -29,13 +27,11 @@
 										<th> المرتبة</th>
 										<th> الرقم</th>
 										<th> الجهة</th>
-
 									</tr>
 								</thead>
 								<tbody>
 									<t t-set="employee_id" t-value="get_employee(data['form'])" />
 									<tr>
-
 										<td>
 											<span t-esc="employee_id.display_name" />
 										</td>
@@ -52,8 +48,6 @@
 										<td>
 											<span t-esc="employee_id.dep_side.name" />
 										</td>
-
-
 									</tr>
 								</tbody>
 								<thead>

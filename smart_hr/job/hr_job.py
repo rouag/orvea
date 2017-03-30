@@ -188,6 +188,8 @@ class HrJobCreate(models.Model):
     @api.multi
     def action_waiting(self):
         self.ensure_one()
+        if not self.line_ids:
+            raise ValidationError(u"الرجاء ادخال وظيفة.")
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_autority_owner')):
             self.state = 'waiting'
         elif self.check_workflow_state(self.env.ref('smart_hr.work_job_budg__minis')):
@@ -386,6 +388,8 @@ class HrJobStripFrom(models.Model):
     @api.multi
     def action_waiting(self):
         self.ensure_one()
+        if not self.line_ids:
+            raise ValidationError(u"الرجاء ادخال وظيفة.")
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_autority_owner')):
             self.state = 'waiting'
         elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
@@ -592,6 +596,8 @@ class HrJobStripTo(models.Model):
     @api.multi
     def action_waiting(self):
         self.ensure_one()
+        if not self.line_ids:
+            raise ValidationError(u"الرجاء ادخال وظيفة.")
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_autority_owner')):
             self.state = 'waiting'
         elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
@@ -749,6 +755,8 @@ class HrJobCancel(models.Model):
     @api.multi
     def action_waiting(self):
         self.ensure_one()
+        if not self.job_cancel_ids:
+            raise ValidationError(u"الرجاء ادخال وظيفة.")
         self.state = 'waiting'
 
     @api.multi
@@ -854,6 +862,8 @@ class HrJobMoveDeparrtment(models.Model):
     @api.multi
     def action_waiting(self):
         self.ensure_one()
+        if not self.job_movement_ids:
+            raise ValidationError(u"الرجاء ادخال وظيفة.")
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_autority_owner')):
             self.state = 'waiting'
         elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
@@ -1063,6 +1073,8 @@ class HrJobMoveGrade(models.Model):
     @api.multi
     def action_waiting(self):
         self.ensure_one()
+        if not self.job_movement_ids:
+            raise ValidationError(u"الرجاء ادخال وظيفة.")
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_autority_owner')):
             self.state = 'waiting'
         elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):
@@ -1324,6 +1336,8 @@ class HrJobMoveUpdate(models.Model):
 
     @api.multi
     def action_waiting(self):
+        if not self.job_update_ids:
+            raise ValidationError(u"الرجاء ادخال وظيفة.")
         if self.check_workflow_state(self.env.ref('smart_hr.work_job_autority_owner')):
             self.state = 'waiting'
         elif self.check_workflow_state(self.env.ref('smart_hr.work_job_personnel_affairs')):

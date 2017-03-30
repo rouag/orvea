@@ -708,24 +708,26 @@ class DecisionAppointAllowance(models.Model):
             if not salary_grids:
                 raise ValidationError(_(u'لا يوجد سلم رواتب للموظف. !'))
         # compute
-        if self.compute_method == 'amount':
-            amount = self.amount
-        if self.compute_method == 'percentage':
-            amount = self.percentage * basic_salary / 100.0
-        if self.compute_method == 'job_location' and employee and employee.dep_city:
-            citys = allowance_city_obj.search([('allowance_id', '=', self.id), ('city_id', '=', employee.dep_city.id)])
-            if citys:
-                amount = citys[0].percentage * basic_salary / 100.0
-        if self.compute_method == 'formula_1':
+            if self.compute_method == 'amount':
+                amount = self.amount
+            if self.compute_method == 'percentage':
+                amount = self.percentage * basic_salary / 100.0
+            if self.compute_method == 'job_location' and employee and employee.dep_city:
+                citys = allowance_city_obj.search([('allowance_id', '=', self.id), ('city_id', '=', employee.dep_city.id)])
+                if citys:
+                    amount = citys[0].percentage * basic_salary / 100.0
+            if self.compute_method == 'formula_1':
             # get first degree for the grade
-            degrees = degree_obj.search([('grade_id', '=', grade.id)])
-            if degrees:
-                salary_grids = salary_grid_obj.search([('type_id', '=', ttype.id), ('grade_id', '=', grade.id), ('degree_id', '=', degrees[0].id)])
-                if salary_grids:
-                    amount = salary_grids[0].basic_salary * self.percentage / 100.0
-        if self.compute_method == 'formula_2':
-            amount = self.percentage * basic_salary / 100.0
-        if self.min_amount and amount < self.min_amount:
-            amount = self.min_amount
-        self.amount = amount
+                degrees = degree_obj.search([('grade_id', '=', grade.id)])
+                if degrees:
+                    salary_grids = salary_grid_obj.search([('type_id', '=', ttype.id), ('grade_id', '=', grade.id), ('degree_id', '=', degrees[0].id)])
+                    if salary_grids:
+                        amount = salary_grids[0].basic_salary * self.percentage / 100.0
+            if self.compute_method == 'formula_2':
+                amount = self.percentage * basic_salary / 100.0
+                if self.min_amount and amount < self.min_amount:
+                    amount = self.min_amount
+            self.amount = amount
+        else:
+            raise ValidationError(_(u'لا يوجد موظف. !'))
 

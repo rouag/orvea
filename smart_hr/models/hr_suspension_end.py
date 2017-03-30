@@ -55,6 +55,7 @@ class hr_suspension_end(models.Model):
     def button_done(self):
         self.ensure_one()
         self.employee_id.employee_state = 'employee'
+        self.employee_id.emp_state = 'working'
         if self.condemned:
             release_date = fields.Date.from_string(self.release_date)
             suspension_date = fields.Date.from_string(self.suspension_id.suspension_date)

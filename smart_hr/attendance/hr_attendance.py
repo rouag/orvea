@@ -78,6 +78,12 @@ class HrPlanPresence(models.Model):
     min_sup_hour = fields.Float(string=u'الحد الادنى للوقت الاضافي بدقائق')
     max_sup_hour = fields.Float(string=u'الحد الأقصى للوقت الاضافي بدقائق')
 
+    normal_days_start = fields.Float(string=u'وقت البداية')
+    normal_days_end = fields.Float(string=u'وقت النهاية')
+    weekend_start = fields.Float(string=u'وقت البداية')
+    weekend_end = fields.Float(string=u'وقت النهاية')
+    holidays_start = fields.Float(string=u'وقت البداية')
+    holidays_end = fields.Float(string=u'وقت النهاية')
 
 class HrAttendanceImport(models.Model):
     _name = 'hr.attendance.import'
@@ -343,6 +349,18 @@ class HrAttendanceImport(models.Model):
 
         return True
 
+    def correspand_to_public_holidays_weekend(self, date):
+        # check weekend
+        weekday = date.weekday()
+        if weekday in [4, 5]:
+            return True
+        # check public holidays
+        hr_public_holiday_obj = self.env['hr.public.holiday']
+        res = hr_public_holiday_obj.search([('state', '=', 'done'), ('date_from', '<=', date), ('date_to', '>=', date)])
+        if res:
+            return True
+        return False
+
     def chek_sign_out(self, date, employee_id, latest_time, latest_date_import):
         """
         التحقق من بصمة أو بصمات الخروج لكل موظف أثناء كل عملية تحديث لسجل الحضور و الإنصراف
@@ -384,6 +402,20 @@ class HrAttendanceImport(models.Model):
             else:
                 last_sign_out = employee_attendances_sign_out[0]
                 last_sign_out_time = datetime.strptime(last_sign_out.name, '%Y-%m-%d %H:%M:%S').time()
+                # check if last_sign_out_time  is correspending to normal days
+                enter_supp_time = False
+                normal_days_start = employee.calendar_id.schedule_id.normal_days_start
+                normal_days_end = employee.calendar_id.schedule_id.normal_days_end
+                normal_days_start_str = float_time_convert_str(normal_days_start) + ':00'
+                normal_days_end_str = float_time_convert_str(normal_days_end) + ':00'
+                normal_days_start_float = time_float_convert(normal_days_start_str)
+                normal_days_end_float = time_float_convert(normal_days_end_str)
+                last_sign_out_time_float = time_float_convert(last_sign_out_time)
+                # check normal_days interval
+                if not self.correspand_to_public_holidays_weekend(fields.Date.from_string(last_sign_out.name)) and \
+                                                last_sign_out_time > time_to and last_sign_out_time_float >= normal_days_start_float and \
+                                                last_sign_out_time_float <= normal_days_end_float:
+                    enter_supp_time = True
                 if last_sign_out_time < time_to_min:
                     delay_leave = datetime.strptime(str(time_to), FORMAT_TIME) - datetime.strptime(str(last_sign_out_time), FORMAT_TIME)
                     delay_leave_seconds = delay_leave.seconds
@@ -397,8 +429,12 @@ class HrAttendanceImport(models.Model):
                             'latest_date_import': latest_date_import}
                     report_day_obj.create(vals)
                 # احتساب وقت إضافي
-                elif last_sign_out_time > time_to:
-                    delay_hours_supp = datetime.strptime(str(last_sign_out_time), FORMAT_TIME) - datetime.strptime(str(time_to), FORMAT_TIME)
+                elif last_sign_out_time > time_to and enter_supp_time:
+                    if last_sign_out_time_float > normal_days_end_float:
+                        time_max = normal_days_end_str
+                    else:
+                        time_max = str(last_sign_out_time)
+                    delay_hours_supp = datetime.strptime(time_max, FORMAT_TIME) - datetime.strptime(normal_days_start_str, FORMAT_TIME)
                     min_sup_hour = employee.calendar_id.schedule_id.min_sup_hour * 60.0
                     max_sup_hour = employee.calendar_id.schedule_id.max_sup_hour * 60.0
                     delay_hours_supp = delay_hours_supp.seconds
@@ -485,7 +521,8 @@ class HrAttendanceImport(models.Model):
         report_day_ids.unlink()
         # get latest time for attendance
         all_attendances = attendance_obj.search([('name', '>=', str(date_start)), ('name', '<=', str(date_stop))])
-        if all_attendances:
+        # case1: normal days
+        if all_attendances and not self.correspand_to_public_holidays_weekend(fields.Date.from_string(date)):
             latest_time = datetime.strptime(all_attendances[0].name, '%Y-%m-%d %H:%M:%S').time()
             # check for each employee
             employees = employee_obj.search([('employee_state', '=', 'employee')])
@@ -496,7 +533,73 @@ class HrAttendanceImport(models.Model):
                     self.chek_sign_in(date, employee.id, latest_time, all_attendances[0].name)
                     self.chek_sign_out(date, employee.id, latest_time, all_attendances[0].name)
 
+        # case2: weekends or public holidays
+        if all_attendances and self.correspand_to_public_holidays_weekend(fields.Date.from_string(date)):
+            latest_time = datetime.strptime(all_attendances[0].name, '%Y-%m-%d %H:%M:%S').time()
+            employee_ids = set()
+            # check for each employee
+            for rec in all_attendances:
+                employee_ids.add(rec.employee_id)
+            employee_ids = list(employee_ids)
+            for employee in employee_ids:
+                if employee.calendar_id:
+                    self.calculate_worked_hours(employee, fields.Date.from_string(date), all_attendances[0].name)
+
         return True
+
+    def calculate_worked_hours(self, employee_id, date, latest_date_import):
+        report_day_obj = self.env['hr.attendance.report_day']
+        attendance_obj = self.env['hr.attendance']
+        # set the interval from the configuration
+        # case 1: weekend
+        weekday = date.weekday()
+        if weekday in [4, 5]:
+            date_start = employee_id.calendar_id.schedule_id.weekend_start
+            date_stop = employee_id.calendar_id.schedule_id.weekend_end
+        # case 2: puclic holidays
+        hr_public_holiday_obj = self.env['hr.public.holiday']
+        res = hr_public_holiday_obj.search([('state', '=', 'done'), ('date_from', '<=', date), ('date_to', '>=', date)])
+        if res:
+            date_start = employee_id.calendar_id.schedule_id.holidays_start
+            date_stop = employee_id.calendar_id.schedule_id.holidays_end
+        date_start_time_str = float_time_convert_str(date_start) + ':00'
+        date_stop_time_str = float_time_convert_str(date_stop) + ':00'
+        # get all sing-out attendances betttwen the interval
+        date_start = datetime.strptime(fields.Date.to_string(date) + ' ' + date_start_time_str, '%Y-%m-%d %H:%M:%S')
+        date_stop = datetime.strptime(fields.Date.to_string(date) + ' ' + date_stop_time_str, '%Y-%m-%d %H:%M:%S')
+        employee_attendances_sign_out = attendance_obj.search([('employee_id', '=', employee_id.id),
+                                                               ('action', '=', 'sign_out'),
+                                                               ('name', '>=', str(date_start)),
+                                                               ('name', '<=', str(date_stop))])
+        sum_worked_time = 0
+        for rec in employee_attendances_sign_out:
+            sum_worked_time += rec.worked_hours
+        vals = {'employee_id': employee_id.id,
+                'hour_attendance': time_float_convert(date_start_time_str),
+                'hour_calendar_to': time_float_convert(date_stop_time_str),
+                'delay_hours_supp': sum_worked_time / 3600.0,
+                'date': date,
+                'action': 'hour_supp',
+                'latest_date_import': latest_date_import}
+        report_day_obj.create(vals)
+        # case 3: sing-in without singout
+        sign_in_count = attendance_obj.search_count([('employee_id', '=', employee_id.id),
+                                                     ('action', '=', 'sign_in'),
+                                                     ('name', '>=', str(date_start)),
+                                                     ('name', '<=', str(date_stop))])
+        sign_out_count = attendance_obj.search_count([('employee_id', '=', employee_id.id),
+                                                      ('action', '=', 'sign_out'),
+                                                      ('name', '>=', str(date_start)),
+                                                      ('name', '<=', str(date_stop))])
+        if sign_in_count != sign_out_count and sign_in_count > 0 and sign_out_count > 0:
+            vals = {'employee_id': employee_id.id,
+                    'hour_attendance': time_float_convert(date_start_time_str),
+                    'hour_calendar_to': time_float_convert(date_stop_time_str),
+                    'delay_hours_supp': sum_worked_time / 3600.0,
+                    'date': date,
+                    'action': 'no_leave',
+                    'latest_date_import': latest_date_import}
+            report_day_obj.create(vals)
 
     @api.multi
     def import_attendance(self):
