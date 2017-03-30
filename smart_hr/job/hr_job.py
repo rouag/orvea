@@ -1281,12 +1281,19 @@ class HrJobMoveGradeLine(models.Model):
             grade_ids = []
             grides = []
             # get grades
-            grade_ids_scale_up = self.env['salary.grid.grade'].search([(int('code'), '>=', int(self.job_id.grade_id.code))])
-            grade_ids_scale_down = self.env['salary.grid.grade'].search([(int('code'), '<=', int(self.job_id.grade_id.code))])
-            if self._context['operation'] == 'scale_down':
-                res['domain'] = {'new_grade_id': [('id', 'in', grade_ids_scale_down.ids)]}
-            if self._context['operation'] == 'scale_up':
-                res['domain'] = {'new_grade_id': [('id', 'in', grade_ids_scale_up.ids)]}
+            for rec in self.env['salary.grid.grade'].search([]):
+                if int(rec.code) >= int(self.job_id.serie_id.rank_from.code) and int(rec.code) <= int(
+                        self.job_id.serie_id.rank_to.code):
+                    grides.append(rec)
+            # get availble grades depend on move_type type رفع أو خفض
+            for rec in grides:
+                if self._context['operation'] == 'scale_down':
+                    if int(self.job_id.grade_id.code) > int(rec.code):
+                        grade_ids.append(rec.id)
+                if self._context['operation'] == 'scale_up':
+                    if int(self.job_id.grade_id.code) < int(rec.code):
+                        grade_ids.append(rec.id)
+            res['domain'] = {'new_grade_id': [('id', 'in', grade_ids)]}
             return res
 
         if not self.job_id:
