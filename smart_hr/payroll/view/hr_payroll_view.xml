@@ -105,6 +105,7 @@
 											<field name="code" invisible="1" />
 											<field name="category" />
 											<field name="sequence" invisible="1" />
+											<field name="number_of_days" />
 											<field name="amount" />
 										</tree>
 										<form string="تفاصيل الراتب">
