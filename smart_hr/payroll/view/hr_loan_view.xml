@@ -109,8 +109,8 @@
 								<field name="line_ids" nolabel="1">
 									<tree editable="bottom">
 										<field name="amount" />
-										<field name="month" invisible="1" />
-										<field name="year" invisible="1"/>
+										<field name="date_start" invisible="1" />
+										<field name="date_stop" invisible="1"/>
 										<field name="name" />
 										<field name="date" />
 										<field name="state" />
@@ -123,7 +123,7 @@
 										<field name="action" />
 										<field name="create_date" string="التاريخ" />
 										<field name="create_uid" string="المستخدم" />
-										<field name="month" />
+										<field name="period_id" />
 										<field name="number_decision" />
 										<field name="date_decision" />
 										<field name="reason" />

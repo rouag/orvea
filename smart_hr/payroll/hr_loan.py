@@ -7,6 +7,9 @@ from umalqurra.hijri_date import HijriDate
 from openerp.exceptions import UserError
 from datetime import datetime
 from openerp.addons.smart_base.util.umalqurra import *
+from umalqurra.hijri_date import HijriDate
+from umalqurra.hijri import Umalqurra
+
 
 
 class HrLoan(models.Model):
@@ -85,10 +88,12 @@ class HrLoan(models.Model):
                 um = HijriDate()
                 dates = str(dt).split('-')
                 um.set_date_from_gr(int(dates[0]), int(dates[1]), int(dates[2]))
+                date_start = get_hijri_month_start_by_year(HijriDate, Umalqurra, int(um.year), int(um.month))
+                date_stop = get_hijri_month_end__by_year(HijriDate, Umalqurra, int(um.year), int(um.month))
                 month_val = {'loan_id': self.id,
                              'amount': self.monthly_amount,
-                             'month': int(dates[1]),
-                             'year': int(dates[0]),
+                             'date_start': date_start,
+                             'date_stop': date_stop,
                              'name': MONTHS[int(um.month)] + '/' + str(int(um.year)),
                              'state': 'progress'
                              }
@@ -126,7 +131,7 @@ class HrLoan(models.Model):
         self.state = 'done'
 
     @api.multi
-    def get_loan_employee_month(self, year, month, employee_id):
+    def get_loan_employee_month(self, date_from, date_to, employee_id):
         # search all loan for this employee
         loans = self.search([('employee_id', '=', employee_id), ('state', '=', 'progress')])
         res = []
@@ -137,13 +142,13 @@ class HrLoan(models.Model):
                 res.append({'name': u'سداد كامل المبلغ  القرض رقم %s' % loan.name, 'amount': loan.residual_amount})
             else:
                 # just add amount for current month
-                lines = loan.line_ids.search([('year', '=', year), ('month', '=', month)])
+                lines = loan.line_ids.search([('date_start', '=', date_from), ('date_stop', '=', date_to)])
                 if lines:
                     res.append({'name': u'قرض  رقم : %s' % loan.name, 'amount': lines[0].amount})
         return res
 
     @api.multi
-    def update_loan_date(self, year, month, employee_id):
+    def update_loan_date(self, date_from, date_to, employee_id):
         # search all loan for this employee
         loans = self.search([('employee_id', '=', employee_id), ('state', '=', 'progress')])
         for loan in loans:
@@ -152,7 +157,7 @@ class HrLoan(models.Model):
                 loan.line_ids.write({'date': datetime.now().date(), 'state': 'done'})
             # else just update date for current month
             else:
-                lines = loan.line_ids.search([('year', '=', year), ('month', '=', month)])
+                lines = loan.line_ids.search([('date_start', '=', date_from), ('date_stop', '=', date_to)])
                 lines.write({'date': datetime.now().date(), 'state': 'done'})
             # if residual_amount = 0 make this loan as done
             if loan.residual_amount == 0.0:
@@ -168,8 +173,8 @@ class HrLoanLine(models.Model):
     department_id = fields.Many2one(related='loan_id.employee_id.department_id', store=True, readonly=True, string=' الادارة')
     amount = fields.Float(string='قيمة القسط', required=1)
     date = fields.Date('تاريخ الحسم', required=False)
-    month = fields.Integer(string='الشهر')
-    year = fields.Integer(string='السنة')
+    date_start = fields.Date('بداية الفترة', required=True)
+    date_stop = fields.Date('نهاية الفترة', required=True)
     name = fields.Char(string='المسمى')
     state = fields.Selection([('progress', ' غير مسدد'),
                               ('done', ' مسدد'),
@@ -182,7 +187,7 @@ class HrLoanHistory(models.Model):
     loan_id = fields.Many2one('hr.loan', string='القرض', ondelete='cascade')
     action = fields.Selection([('across', 'تجاوز شهر'), ('full_amount', 'سداد كامل المبلغ')], string='الإجراء')
     reason = fields.Char(string='السبب')
-    month = fields.Integer(string='الشهر')
+    period_id = fields.Many2one('hr.period', string=u'الفترة')
     number_decision = fields.Char(string='رقم القرار')
     date_decision = fields.Date(string='تاريخ القرار')
 

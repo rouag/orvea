@@ -52,11 +52,42 @@ def get_hijri_month_end(HijriDate, Umalqurra, month):
         return date(int(end_date[0]), int(end_date[1]), int(end_date[2]))
 
 
+def get_hijri_month_start_by_year(HijriDate, Umalqurra, year, month):
+    if month:
+        um = HijriDate.today()
+        um.set_date(year, month, 1)
+        umalqurra = Umalqurra()
+        start_date = umalqurra.hijri_to_gregorian(um.year, um.month, um.day)
+        return date(int(start_date[0]), int(start_date[1]), int(start_date[2]))
+
+
+def get_hijri_month_end__by_year(HijriDate, Umalqurra, year, month):
+    if month:
+        um = HijriDate.today()
+        um.set_date(year, month, DAYS[month])
+        umalqurra = Umalqurra()
+        end_date = umalqurra.hijri_to_gregorian(um.year, um.month, um.day)
+        return date(int(end_date[0]), int(end_date[1]), int(end_date[2]))
+
+
 def get_hijri_year_by_date(HijriDate, Umalqurra, date):
+    """
+    @param: date: georgian date
+    @return: hijri year
+    """
     if date:
-        um = HijriDate(date.year, date.month, date.day, gr=True)
-        um.year
-        return int(um.year)
+        hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
+        return int(str(int(hijri_date.year)).zfill(2))
+
+
+def get_hijri_month_by_date(HijriDate, Umalqurra, date):
+    """
+    @param: date: georgian date
+    @return: hijri month
+    """
+    if date:
+        hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
+        return int(str(int(hijri_date.month)).zfill(2))
 
 
 def get_hijri_date(date, separator):

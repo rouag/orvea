@@ -3,13 +3,15 @@
 from openerp import api, fields, models, _
 from openerp.exceptions import UserError
 from openerp.addons.smart_base.util.umalqurra import *
-# TODO: move MONTHS to smart_base and get it here and all another file
+from umalqurra.hijri_date import HijriDate
+from umalqurra.hijri import Umalqurra
+from dateutil.relativedelta import relativedelta
 
 
 class WizardLoanAction(models.TransientModel):
     _name = 'wizard.loan.action'
 
-    month = fields.Selection(MONTHS, string='الشهر', required=1)
+    period_id = fields.Many2one('hr.period', string=u'الفترة', domain=[('is_open', '=', True)], required=1)
     number_decision = fields.Char(string='رقم القرار')
     date_decision = fields.Date(string='تاريخ القرار')
     reason = fields.Text(string='السبب')
@@ -19,9 +21,19 @@ class WizardLoanAction(models.TransientModel):
         res = super(WizardLoanAction, self).default_get(fields)
         loan_id = self._context.get('active_id', False)
         loan_line_obj = self.env['hr.loan.line']
-        loan_lines = loan_line_obj.search([('loan_id', '=', loan_id), ('date', '=', False)])
+        loan_lines = loan_line_obj.search([('loan_id', '=', loan_id), ('state', '=', 'progress')])
         if loan_lines:
-            res.update({'month': loan_lines[0].month})
+            date_start = loan_lines[0].date_start
+            date_stop = loan_lines[0].date_stop
+            # get period_id for specific month
+            print 'date_start, date_stop', date_start, date_stop
+            period_id = self.env['hr.period'].search([('date_start', '>=', date_start),
+                                                      ('date_stop', '<=', date_stop),
+                                                      ]
+                                                     )
+            print 'period_id', period_id
+            if period_id:
+                res.update({'period_id': period_id.id})
         else:
             raise UserError(_(u'إنتهى القرض  لا يوجد شهر يمكن تجاوزه.'))
         return res
@@ -32,24 +44,34 @@ class WizardLoanAction(models.TransientModel):
         loan_obj = self.env['hr.loan']
         loan_line_obj = self.env['hr.loan.line']
         action = self._context.get('action', False)
+        dt = fields.Date.from_string(self.period_id.date_start)
+        day = dt.day
         if loan_id:
             if action == 'across':  # تجاوز شهر
                 # must delete this month add another month
-                loan_lines = loan_line_obj.search([('loan_id', '=', loan_id), ('month', '=', self.month)])
+                loan_lines = loan_line_obj.search([('loan_id', '=', loan_id), ('date_start', '=', self.period_id.date_start), ('date_stop', '=', self.period_id.date_stop)])
+                print 'loan_lines', loan_lines
                 loan_lines.unlink()
-                # create new month
+                # TODO: review +30
                 loan = loan_obj.search([('id', '=', loan_id)])
-                last_month = loan.line_ids[-1].month
-                new_month = int(last_month) + 1
+                last_date_start = fields.Date.from_string(loan.line_ids[-1].date_start)
+                last_date_stop = fields.Date.from_string(loan.line_ids[-1].date_stop)
+                new_date_start = last_date_start + relativedelta(days=30)
+                new_date_stop = last_date_stop + relativedelta(days=30)
+                um = HijriDate()
+                dates = str(new_date_start).split('-')
+                um.set_date_from_gr(int(dates[0]), int(dates[1]), day)
                 new_line_val = {'loan_id': loan_id,
                                 'amount': loan.monthly_amount,
-                                'month': str(int(new_month)).zfill(2)
+                                'date_start': new_date_start,
+                                'date_stop': new_date_stop,
+                                'name': MONTHS[int(um.month)] + '/' + str(int(um.year)),
                                 }
                 loan_line_obj.create(new_line_val)
             val = {
                 'loan_id': loan_id,
                 'reason': self.reason,
-                'month': self.month,
+                'period_id': self.period_id.id,
                 'number_decision': self.number_decision,
                 'date_decision': self.date_decision,
                 'action': action,

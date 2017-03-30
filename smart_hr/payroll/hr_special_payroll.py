@@ -320,9 +320,9 @@ class HrPayslipRun(models.Model):
                                       ('done', 'منتهية'),
                                       ], 'الحالة', default='new', select=1, readonly=1, copy=False)
     is_special = fields.Boolean(string='مسير خاص')
-    speech_number = fields.Char(string=u'رقم الخطاب', readonly=1, required=1, states={'draft': [('readonly', 0)]})
-    speech_date = fields.Date(string=u'تاريخ الخطاب', readonly=1, required=1, states={'draft': [('readonly', 0)]})
-    speech_file = fields.Binary(string=u'صورة الخطاب', attachment=True, readonly=1, required=1, states={'draft': [('readonly', 0)]})
+    speech_number = fields.Char(string=u'رقم الخطاب', readonly=1, states={'draft': [('readonly', 0)]})
+    speech_date = fields.Date(string=u'تاريخ الخطاب', readonly=1, states={'draft': [('readonly', 0)]})
+    speech_file = fields.Binary(string=u'صورة الخطاب', attachment=True, readonly=1, states={'draft': [('readonly', 0)]})
 
     @api.multi
     def special_compute_sheet(self):

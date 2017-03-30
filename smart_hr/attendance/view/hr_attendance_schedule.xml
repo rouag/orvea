@@ -3,19 +3,25 @@
 	<data>
 
 		<record id="view_treehr_attendance_schedule" model="ir.ui.view">
-			<field name="name">hr.attendance.schedule.form</field>
+			<field name="name">hr.attendance.schedule.tree</field>
 			<field name="model">hr.attendance.schedule</field>
 			<field name="arch" type="xml">
 				<tree string="خطة الحضور والإنصراف" class="oe_tree_view">
 					<field name="name" />
-					<field name="late" widget="float_time"/>
+					<field name="late" widget="float_time" />
 					<field name="leave" widget="float_time" />
-					<field name="min_sup_hour" widget="float_time"/>
-					<field name="max_sup_hour" widget="float_time"/>
+					<field name="min_sup_hour" widget="float_time" />
+					<field name="max_sup_hour" widget="float_time" />
+					<field name="normal_days_start" widget="float_time" />
+					<field name="normal_days_end" widget="float_time" />
+					<field name="weekend_start" widget="float_time" />
+					<field name="weekend_end" widget="float_time" />
+					<field name="holidays_start" widget="float_time" />
+					<field name="holidays_end" widget="float_time" />
 				</tree>
 			</field>
 		</record>
-		
+
 		<record id="view_hr_attendance_schedule" model="ir.ui.view">
 			<field name="name">hr.attendance.schedule.form</field>
 			<field name="model">hr.attendance.schedule</field>
@@ -27,11 +33,26 @@
 						</group>
 						<group>
 							<group>
-								<field name="late" widget="float_time"/>
-								<field name="leave" widget="float_time"/>
-								<field name="min_sup_hour" widget="float_time"/>
-								<field name="max_sup_hour" widget="float_time"/>
+								<field name="late" widget="float_time" />
+								<field name="leave" widget="float_time" />
+								<field name="min_sup_hour" widget="float_time" />
+								<field name="max_sup_hour" widget="float_time" />
 							</group>
+							<group col="1">
+								<group col="4" string="الأيام العادية">
+									<field name="normal_days_start" widget="float_time" />
+									<field name="normal_days_end" widget="float_time" />
+								</group>
+								<group col="4" string="أيام الجمعة والسبت">
+									<field name="weekend_start" widget="float_time" />
+									<field name="weekend_end" widget="float_time" />
+								</group>
+								<group col="4" string="أيام العطل الرسمية">
+									<field name="holidays_start" widget="float_time" />
+									<field name="holidays_end" widget="float_time" />
+								</group>
+							</group>
+
 							<group />
 						</group>
 					</sheet>
@@ -61,9 +82,9 @@
 		</record>
 
 
-		<menuitem name='خطة الحضور والإنصراف' action="action_hr_attendance_schedule" groups="smart_hr.group_sys_manager"
-			id="menu_hr_attendance_schedule" parent="menu_attendance_configuration"
-			sequence="10" />
+		<menuitem name='خطة الحضور والإنصراف' action="action_hr_attendance_schedule"
+			groups="smart_hr.group_sys_manager" id="menu_hr_attendance_schedule"
+			parent="menu_attendance_configuration" sequence="10" />
 
 
 

@@ -35,6 +35,7 @@ class HrJob(models.Model):
          ('service_transfet', u'نقل خدمات'), ('promotion', u'ترقية'), ('mission', u'تكليف'), ('increase', u'رفع'),
          ('decrease', u'خفظ')], string=u'الحالة', readonly=1, default='unoccupied')
     employee = fields.Many2one('hr.employee', string=u'الموظف')
+    number=fields.Char(related='employee.number', string='رقم الوظيفي', readonly=1)
     occupied_date = fields.Date(string=u'تاريخ شغلها')
     creation_source = fields.Selection([('creation', u'إحداث'), ('striped_from', u'سلخ  من جهة'),
                                         ('striped_to', u'سلخ إلى جهة'), ('cancel', u'إلغاء'),
