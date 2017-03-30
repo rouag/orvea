@@ -376,7 +376,7 @@ class HrEmployee(models.Model):
             if emp.birthday:
                 today_date = fields.Date.from_string(fields.Date.today())
                 birthday = fields.Date.from_string(emp.birthday)
-                years = (today_date - birthday).days / 365
+                years = (today_date - birthday).days / 354
                 if years > -1:
                     emp.age = years
 
@@ -436,7 +436,7 @@ class HrEmployee(models.Model):
     def _compute_point(self):
         if self.job_id:
             if self.job_id.grade_id.years_job:
-                years_supp = (self.service_duration / 365) - self.job_id.grade_id.years_job
+                years_supp = (self.service_duration / 354) - self.job_id.grade_id.years_job
                 if years_supp > 0:
                     regle_point = self.env['hr.evaluation.point'].search([('grade_id', '=', self.job_id.grade_id)])
                     for seniority in regle_point.seniority_ids:
@@ -548,7 +548,7 @@ class HrEmployeeConfiguration(models.Model):
         for line in hr_member:
             today_date = fields.Date.from_string(fields.Date.today())
             birthday = fields.Date.from_string(line.birthday)
-            years = (today_date - birthday).days / 365
+            years = (today_date - birthday).days / 354
             if years >= age_member and line.is_member:
                 self.env['hr.termination'].create({
                     'name': 'تقاعد طبيعي ',

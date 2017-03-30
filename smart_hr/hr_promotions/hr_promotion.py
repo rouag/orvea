@@ -121,7 +121,7 @@ class HrPromotion(models.Model):
                     [('state', '=', 'done'), ('date_sanction_start', '>', datetime.now() + relativedelta(years=-1))])
                 saanction_days = True
                 if not suspend and not holidays_status_exceptiona and not holidays_status_study:
-                    if emp.promotion_duration / 365 > emp.job_id.grade_id.years_job:
+                    if emp.promotion_duration / 354 > emp.job_id.grade_id.years_job:
                         days = 0
                         if emp.sanction_ids:
                             for sanction in sanctions:
@@ -145,7 +145,7 @@ class HrPromotion(models.Model):
             education_point = 0
             trining_point = 0
             point_functionality = 0
-            years_supp = (emp_promotion.service_duration / 365) - emp_promotion.job_id.grade_id.years_job
+            years_supp = (emp_promotion.service_duration / 354) - emp_promotion.job_id.grade_id.years_job
             if years_supp > 0:
                 for year in xrange(1, years_supp):
                     for seniority in regle_point.seniority_ids:

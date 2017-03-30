@@ -70,7 +70,7 @@ class HrEmployeeLend(models.Model):
             sum_duration = self.duration
             for lend in old_lends:
                 sum_duration += lend.duration
-            if sum_duration > 0 and hr_config.max_lend_duration_sum <= sum_duration / 365:
+            if sum_duration > 0 and hr_config.max_lend_duration_sum <= sum_duration / 354:
                 raise ValidationError(u"لقد تم تجاوز الحد الأقصى للإعارة.")
             # check duration bettween accepted lend and new one
             for lend in old_lends:
