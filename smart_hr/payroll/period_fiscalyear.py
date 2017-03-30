@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from openerp.addons.smart_base.util.umalqurra import *
 from openerp import models, api, fields, _
+from openerp.addons.smart_base.util.umalqurra import *
 from umalqurra.hijri_date import HijriDate
 from umalqurra.hijri import Umalqurra
 
@@ -24,17 +24,15 @@ class HrFiscalyear(models.Model):
         period_obj = self.env['hr.period']
         for fy in self:
             ds = datetime.strptime(fy.date_start, '%Y-%m-%d')
-            ihijri_month = 0
             while ds.strftime('%Y-%m-%d') < fy.date_stop:
-                de = ds + relativedelta(months=1, days=-2)
-                year = get_hijri_year_by_date(HijriDate, Umalqurra, de)
-                ihijri_month += 1
-                month_name = MONTHS[ihijri_month] + '/' + str(year)
-                date_start = get_hijri_month_start(HijriDate, Umalqurra, ihijri_month)
-                date_stop = get_hijri_month_end(HijriDate, Umalqurra, ihijri_month)
+                hijri_month = get_hijri_month_by_date(HijriDate, Umalqurra, ds)
+                hijri_year = get_hijri_year_by_date(HijriDate, Umalqurra, ds)
+                month_name = MONTHS[hijri_month] + '/' + str(hijri_year)
+                date_start = get_hijri_month_start_by_year(HijriDate, Umalqurra, hijri_year, hijri_month)
+                date_stop = get_hijri_month_end__by_year(HijriDate, Umalqurra, hijri_year, hijri_month)
                 period_obj.create({
                     'name': month_name,
-                    'code': str(ihijri_month) + '/' + str(year),
+                    'code': str(hijri_month) + '/' + str(hijri_year),
                     'date_start': date_start,
                     'date_stop': date_stop,
                     'fiscalyear_id': fy.id,

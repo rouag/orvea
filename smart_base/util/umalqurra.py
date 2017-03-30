@@ -77,7 +77,7 @@ def get_hijri_year_by_date(HijriDate, Umalqurra, date):
     """
     if date:
         hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
-        return int(str(int(hijri_date.month)).zfill(2))
+        return int(str(int(hijri_date.year)).zfill(2))
 
 
 def get_hijri_month_by_date(HijriDate, Umalqurra, date):
