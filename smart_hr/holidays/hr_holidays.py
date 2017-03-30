@@ -770,8 +770,9 @@ class HrHolidays(models.Model):
         return prev_min_holidays_duration
 
     @api.onchange('duration', 'date_from')
-    def onchange_duration(self):
-        warning = {}
+    @api.constrains('duration')
+    def onchange_duration_min(self):
+        self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration - 1)
 #         maximum_minimum duration test
         prev_min_holidays_duration = self.compute_prev_min_holidays(self.employee_id, self.holiday_status_id, self.date_from)
         if self.duration > self.holiday_status_id.maximum_minimum and self.duration < self.holiday_status_id.minimum:
@@ -779,6 +780,13 @@ class HrHolidays(models.Model):
         elif self.duration < self.holiday_status_id.maximum_minimum:
             if prev_min_holidays_duration + self.duration > self.holiday_status_id.maximum_minimum and self.duration < self.holiday_status_id.minimum:
                 raise ValidationError(u"ليس لديك الرصيد الكافي للتمتع ب‬اجازة مدتها اقل من‬ " + str(self.holiday_status_id.maximum_minimum) + u" أيام")
+#         compute  duration and date_to
+
+    @api.onchange('duration', 'date_from')
+    def onchange_duration(self):
+        warning = {}
+#         maximum_minimum duration test
+        prev_min_holidays_duration = self.compute_prev_min_holidays(self.employee_id, self.holiday_status_id, self.date_from)
 #         compute  duration and date_to
         date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration - 1)
         if self.public_holiday_intersection(date_to):
