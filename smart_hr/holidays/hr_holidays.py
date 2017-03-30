@@ -695,6 +695,8 @@ class HrHolidays(models.Model):
         holiday_cancellation_id = holidays_cancellation_obj.create(vals)
         # Add to log
         self.message_post(u"تم ارسال طلب القطع من قبل '" + unicode(user.name) + u"'")
+        self.holiday_cancellation = holiday_cancellation_id.id
+
         return {
                     'name': u'طلب قطع',
                     'view_type': 'form',
