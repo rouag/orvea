@@ -101,6 +101,8 @@ class HrDecisionAppoint(models.Model):
     order_enquiry_file_name = fields.Char(string=' طلب الاستسفار')
     file_salar_recent_name = fields.Char(string=' تعهد من الموظف')
     file_appoint_name = fields.Char(string='اسم قرار التعين')
+    degree_interview = fields.Char(string='درجة المقابلة')
+    note_interview = fields.Text(string='الملاحظات')
     score = fields.Float(string=u'نتيجة المترشح')
     depend_on_test_periode = fields.Boolean(string=u'مدة التجربة', required=1, readonly=1,
                                             states={'draft': [('readonly', 0)]}, default=False)
@@ -115,6 +117,7 @@ class HrDecisionAppoint(models.Model):
     job_allowance_ids = fields.One2many('decision.appoint.allowance', 'job_decision_appoint_id', string=u'بدلات الوظيفة')
     decision_apoint_allowance_ids = fields.One2many('decision.appoint.allowance', 'decision_appoint_id', string=u'بدلات التعين')
     location_allowance_ids = fields.One2many('decision.appoint.allowance', 'location_decision_appoint_id', string=u'بدلات المنطقة')
+    is_enterview_manager = fields.Boolean(string=u'مقابلة شخصية',related="type_appointment.enterview_manager")
 
     @api.multi
     @api.onchange('type_appointment')
@@ -192,7 +195,7 @@ class HrDecisionAppoint(models.Model):
         self.ensure_one()
         if self.type_appointment.audit and self.type_appointment.enterview_manager:
             self.state = 'waiting'
-        if self.type_appointment.audit and self.type_appointment.recrutment_manager:
+        elif self.type_appointment.audit and self.type_appointment.recrutment_manager:
             self.state = 'manager'
 
     @api.multi

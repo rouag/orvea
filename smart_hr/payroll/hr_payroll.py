@@ -56,17 +56,21 @@ class HrPayslipRun(models.Model):
     @api.onchange('period_id')
     def onchange_period_id(self):
         if self.period_id:
+            res = {}
             today = fields.Date.today()
             if today < self.period_id.date_stop:
                 raise UserError(u"لا يمكن انشاء مسير لشهر في المستقبل ")
             self.date_start = self.period_id.date_start
             self.date_end = self.period_id.date_stop
             self.name = u'مسير جماعي  شهر %s' % self.period_id.name
+            
+          
 
-    @api.onchange('department_level1_id', 'department_level2_id', 'department_level3_id', 'salary_grid_type_id')
+    @api.onchange('department_level1_id', 'department_level2_id', 'department_level3_id', 'salary_grid_type_id','period_id')
     def onchange_department_level(self):
         dapartment_obj = self.env['hr.department']
         employee_obj = self.env['hr.employee']
+      
         department_level1_id = self.department_level1_id and self.department_level1_id.id or False
         department_level2_id = self.department_level2_id and self.department_level2_id.id or False
         department_level3_id = self.department_level3_id and self.department_level3_id.id or False
@@ -87,11 +91,24 @@ class HrPayslipRun(models.Model):
         if not employee_ids:
             # get all employee
             employee_ids = employee_obj.search([('employee_state', '=', 'employee')]).ids
+            print"employee_ids",employee_ids
         # filter by type
         if self.salary_grid_type_id:
             employee_ids = employee_obj.search([('id', 'in', employee_ids), ('type_id', '=', self.salary_grid_type_id.id)]).ids
-        result.update({'domain': {'employee_ids': [('id', 'in', list(set(employee_ids)))]}})
+            
+        if self.period_id:
+            payslip_stp_obj = self.env['hr.payslip.stop.line']
+            employee_search_ids = payslip_stp_obj.search([( 'stop_period','=', True), ('period_id','=', self.period_id.id),('state','=','done')])
+            print"employee_search_ids",employee_search_ids
+            stop_employee_ids=[]
+            for line in employee_search_ids:
+                stop_employee_ids.append(line.payslip_id.employee_id.id)
+                print"line",stop_employee_ids
+            employee_ids = list((set(employee_ids) - set(stop_employee_ids))) 
+        result.update({'domain': {'employee_ids': [('id', 'in', employee_ids)]}})
         return result
+           
+    
 
     @api.one
     def action_verify(self):
