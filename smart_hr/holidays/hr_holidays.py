@@ -754,7 +754,8 @@ class HrHolidays(models.Model):
         inter = hr_public_holiday_obj.search([('state', '=', 'done'), ('date_from', '<=', date), ('date_to', '>=', date)], limit=1)
         if inter:
             date_from = fields.Date.from_string(inter.date_from)
-            return (date - date_from).days
+            inter_count = (date - date_from).days + 1
+            return inter_count
 
 
     def compute_prev_min_holidays(self, employee_id, holiday_status_id,date_from):
@@ -791,7 +792,7 @@ class HrHolidays(models.Model):
                         self.duration = duration
                         self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration - 1)
                     else:
-                        self.duation = 0
+                        self.duration = 0
                         self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration - 1)
                 else:
                     self.duration = self.holiday_status_id.minimum
@@ -808,10 +809,11 @@ class HrHolidays(models.Model):
                     'message': _('هناك تداخل في تاريخ الإنتهاء مع عطلة او عيد!'),
                 }
         elif date_to.weekday() in [4,5] and self.duration:
-            warning = {
-                'title': _('تحذير!'),
-                'message': _('هناك تداخل في تاريخ الإنتهاء مع عطلة نهاية الاسبوع!'),
-            }
+            if not warning:
+                warning = {
+                    'title': _('تحذير!'),
+                    'message': _('هناك تداخل في تاريخ الإنتهاء مع عطلة نهاية الاسبوع!'),
+                }
             if date_to.weekday() == 4:
                 duration = self.duration - 1
             elif date_to.weekday() == 5:
