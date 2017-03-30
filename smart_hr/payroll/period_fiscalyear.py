@@ -57,3 +57,14 @@ class HrPeriod(models.Model):
     _sql_constraints = [
         ('name_company_uniq', 'unique(name, company_id)', 'يجب أن يكون اسم الفترة فريدة من نوعها لكل شركة!'),
     ]
+
+    @api.multi
+    def button_open_period(self):
+        self.ensure_one()
+        self.is_open = True
+
+    @api.multi
+    def button_close_period(self):
+        self.ensure_one()
+        self.is_open = False
+

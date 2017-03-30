@@ -36,7 +36,7 @@ class HrPayslipRun(models.Model):
             amount_total += line.salary_net
         self.amount_total = amount_total
 
-    period_id = fields.Many2one('hr.period', string=u'الفترة', domain=[('is_open', '=', True)], default=get_default_period_id)
+    period_id = fields.Many2one('hr.period', string=u'الفترة', domain=[('is_open', '=', True)], default=get_default_period_id, required=1, readonly=1, states={'draft': [('readonly', 0)]})
     employee_ids = fields.Many2many('hr.employee', string='الموظفين', readonly=1, states={'draft': [('readonly', 0)]})
     state = fields.Selection([('draft', 'مسودة'),
                               ('verify', 'في إنتظار الإعتماد'),
@@ -57,8 +57,8 @@ class HrPayslipRun(models.Model):
     def onchange_period_id(self):
         if self.period_id:
             today = fields.Date.today()
-            if today < self.period_id.date_stop:
-                raise UserError(u"لا يمكن انشاء مسير لشهر في المستقبل ")
+#             if today < self.period_id.date_stop:
+#                 raise UserError(u"لا يمكن انشاء مسير لشهر في المستقبل ")
             self.date_start = self.period_id.date_start
             self.date_end = self.period_id.date_stop
             self.name = u'مسير جماعي  شهر %s' % self.period_id.name
@@ -202,7 +202,7 @@ class HrPayslip(models.Model):
                                                        ]
                                                       )
         return period_id
-    period_id = fields.Many2one('hr.period', string=u'الفترة', domain=[('is_open', '=', True)], readonly=1, states={'draft': [('readonly', 0)]}, default=get_default_period_id)
+    period_id = fields.Many2one('hr.period', string=u'الفترة', domain=[('is_open', '=', True)], readonly=1, required=1, states={'draft': [('readonly', 0)]}, default=get_default_period_id)
     days_off_line_ids = fields.One2many('hr.payslip.days_off', 'payslip_id', 'الإجازات والغيابات', readonly=True, states={'draft': [('readonly', False)]})
     salary_net = fields.Float(string='صافي الراتب')
     difference_history_ids = fields.One2many('hr.payslip.difference.history', 'payslip_id', 'الفروقات المتخلدة')
@@ -274,26 +274,26 @@ class HrPayslip(models.Model):
 
     @api.onchange('employee_id', 'date_from', 'date_to', 'period_id')
     def onchange_employee(self):
-        if (not self.employee_id) or (not self.date_from) or (not self.date_to):
-            return
-        employee_id = self.employee_id
-        self.date_from = self.period_id.date_start
-        self.date_to = self.period_id.date_stop
-        self.name = _('راتب موظف %s لشهر %s') % (employee_id.name, self.period_id.name)
-        self.company_id = employee_id.company_id
-        self.grade_id = self.employee_id.grade_id.id
-        self.degree_id = self.employee_id.degree_id.id
-        self.type_id = self.employee_id.type_id.id
-        # computation of أيام العمل
-        worked_days_line_ids, leaves = self.get_worked_day_lines_without_contract(self.employee_id.id, self.employee_id.calendar_id, self.date_from, self.date_to)
-        deductions = self.get_all_deduction(self.employee_id.id, self.period_id)
-        # TODO : remove nb days deducation absence from nb worked_days
-        self.worked_days_line_ids = worked_days_line_ids
-        self.days_off_line_ids = leaves + deductions
-        worked_days_line_id = self.worked_days_line_ids.search([('code', '=', 'WORK100')])
-        if worked_days_line_id:
-            self.number_of_days = worked_days_line_id[0].number_of_days
-
+        for rec in self:
+            if (not rec.employee_id) or (not rec.date_from) or (not rec.date_to):
+                return
+            employee_id = rec.employee_id
+            rec.date_from = rec.period_id.date_start
+            rec.date_to = rec.period_id.date_stop
+            rec.name = _('راتب موظف %s لشهر %s') % (employee_id.name, rec.period_id.name)
+            rec.company_id = employee_id.company_id
+            rec.grade_id = rec.employee_id.grade_id.id
+            rec.degree_id = rec.employee_id.degree_id.id
+            rec.type_id = rec.employee_id.type_id.id
+            # computation of أيام العمل
+            worked_days_line_ids, leaves = rec.get_worked_day_lines_without_contract(rec.employee_id.id, rec.employee_id.calendar_id, rec.date_from, rec.date_to)
+            deductions = rec.get_all_deduction(rec.employee_id.id, rec.period_id)
+            # TODO : remove nb days deducation absence from nb worked_days
+            rec.worked_days_line_ids = worked_days_line_ids
+            rec.days_off_line_ids = leaves + deductions
+            worked_days_line_id = rec.worked_days_line_ids.search([('code', '=', 'WORK100')])
+            if worked_days_line_id:
+                rec.number_of_days = worked_days_line_id[0].number_of_days
 
     def get_worked_day_lines_without_contract(self, employee_id, working_hours, date_from, date_to, compute_leave=True):
         """
