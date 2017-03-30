@@ -61,7 +61,7 @@ class HrHolidaysExtension(models.Model):
         if right_entitlement:
             if current_holiday_status_stock:
                 if current_holiday_status_stock.holidays_available_stock>0 :
-                    if current_holiday_status_stock.token_holidays_sum<right_entitlement.extension_period*365:
+                    if current_holiday_status_stock.token_holidays_sum<right_entitlement.extension_period*354:
                         raise ValidationError(u'لا يمكن تمديد  رصيد إجازة قبل إنتهاء رصيدها')
             else:
                 raise ValidationError(u'لا يمكن تمديد  رصيد إجازة قبل إنتهاء رصيدها')
@@ -86,7 +86,7 @@ class HrHolidaysExtension(models.Model):
                 sum_days = 0
                 for extension in old_extensions:
                     sum_days += extension.duration
-                if extension_period*365 < sum_days+self.duration:
+                if extension_period*354 < sum_days+self.duration:
                     raise ValidationError(u'ليس لديك الرصيد الكافي للتمديد')
         else:
             raise ValidationError(u'لا يمكن تمديد  استحقاق هذه الاجازة')
