@@ -330,8 +330,8 @@ class HrPayslipRun(models.Model):
         payslip_obj = self.env['hr.payslip']
         for employee in self.employee_ids:
             payslip_val = {'employee_id': employee.id,
-                           'month': self.month,
-                           'name': _('راتب موظف %s لشهر %s') % (employee.display_name, self.month),
+                           'period_id': self.period_id.id,
+                           'name': _('راتب موظف %s لشهر %s') % (employee.display_name, self.period_id.name),
                            'payslip_run_id': self.id,
                            'date_from': self.date_start,
                            'date_to': self.date_end,
