@@ -226,9 +226,9 @@ class HrPayslip(models.Model):
     def action_done(self):
         self.state = 'done'
         # update_loan_date
-        month = fields.Date.from_string(self.period_id.date_start).month
-        year = fields.Date.from_string(self.period_id.date_start).month
-        self.env['hr.loan'].update_loan_date(year, month, self.employee_id.id)
+        date_start = fields.Date.from_string(self.period_id.date_start)
+        date_stop = fields.Date.from_string(self.period_id.date_stop)
+        self.env['hr.loan'].update_loan_date(date_start, date_stop, self.employee_id.id)
 
     @api.one
     def button_refuse(self):
@@ -612,7 +612,7 @@ class HrPayslip(models.Model):
                 deduction_total += deduction_sanction
                 sequence += 1
             # 5- القروض
-            loans = loan_obj.get_loan_employee_month(year, month, employee.id)
+            loans = loan_obj.get_loan_employee_month(self.date_from, self.date_to, employee.id)
             for loan in loans:
                 loan_val = {'name': loan['name'],
                             'slip_id': payslip.id,
@@ -700,13 +700,6 @@ class HrPayslip(models.Model):
             payroll_count = rec.search_count([('employee_id', '=', rec.employee_id.id), ('period_id', '=', rec.period_id.id), ('is_special', '=', False)])
             if payroll_count > 1:
                 raise ValidationError(u"لا يمكن إنشاء مسيرين لنفس الموظف في نفس الشهر")
-
-    @api.onchange('period_id')
-    def onchange_period_id(self):
-        if self.period_id:
-            today = fields.Date.today()
-            if today < self.period_id.date_stop:
-                raise UserError(u"لا يمكن انشاء مسير لشهر في المستقبل ")
 
 
 class HrPayslipWorkedDays(models.Model):
