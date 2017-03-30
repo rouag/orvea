@@ -103,7 +103,7 @@ class HrHolidays(models.Model):
     is_finished = fields.Boolean(string=u'انتهت', compute='_compute_is_finished')
     holiday_cancellation = fields.Many2one('hr.holidays.cancellation')    
     # Extension
-    is_extension = fields.Boolean(string=u'تمديد إجازة')
+    is_extension = fields.Boolean(string=u'اجازة ممددة')
     is_extended = fields.Boolean(string=u'ممددة', compute='_is_extended')
     extended_holiday_id = fields.Many2one('hr.holidays', string=u'الإجازة الممددة')
     parent_id = fields.Many2one('hr.holidays', string=u'Parent')
@@ -371,7 +371,8 @@ class HrHolidays(models.Model):
                                                                                     'periode': en.periode,
                                                                                     'entitlement_id':en.id})
                             open_period = self.create_holiday_periode(employee_id, holiday_status_id, en)
-#
+                            balance_line.period_id = open_period.id
+#balance_line
 #                         else:
 #                             if holiday_status_id.id in [self.env.ref('smart_hr.data_hr_holiday_status_illness').id,self.env.ref('smart_hr.data_hr_holiday_status_contractor').id]:
 #                                 balance_line = self.env['hr.employee.holidays.stock'].create({'holidays_available_stock': en.holiday_stock_default,
@@ -560,7 +561,7 @@ class HrHolidays(models.Model):
             current_normal_holiday_stock = holiday_balance.holidays_available_stock
             today = date.today()
             d = today - relativedelta(days=1)
-            
+
 #                    مدّة الإجازة ة 
 
             holiday_uncounted_days = 0
@@ -606,6 +607,7 @@ class HrHolidays(models.Model):
             extensions_number = 1
             while original_holiday.is_extension:
                 extensions_number+=1
+                original_holiday = original_holiday.extended_holiday_id
             if extensions_number >= self.holiday_status_id.extension_number and self.holiday_status_id.extension_number > 0:
                 raise ValidationError(u"لا يمكن تمديد هذا النوع من الاجازة أكثر من%s " % str(self.holiday_status_id.extension_number))
         view_id = self.env.ref('smart_hr.hr_holidays_form').id

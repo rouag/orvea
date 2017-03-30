@@ -101,6 +101,8 @@ class HrDecisionAppoint(models.Model):
     order_enquiry_file_name = fields.Char(string=' طلب الاستسفار')
     file_salar_recent_name = fields.Char(string=' تعهد من الموظف')
     file_appoint_name = fields.Char(string='اسم قرار التعين')
+    degree_interview = fields.Char(string='درجة المقابلة')
+    note_interview = fields.Text(string='الملاحظات')
     score = fields.Float(string=u'نتيجة المترشح')
     depend_on_test_periode = fields.Boolean(string=u'مدة التجربة', required=1, readonly=1,
                                             states={'draft': [('readonly', 0)]}, default=False)
@@ -112,9 +114,10 @@ class HrDecisionAppoint(models.Model):
                                      readonly=1)
     is_contract = fields.Boolean(string=u'يتطلب إنشاء عقد', related="type_appointment.is_contract")
     pension_ratio = fields.Float(string=u'نسبة التقاعد (%)')
-    job_allowance_ids = fields.One2many('decision.appoint.allowance', 'job_decision_appoint_id', string=u'بدلات الوظيفة')
+    job_allowance_ids = fields.One2many('decision.appoint.allowance', 'decision_appoint_id', string=u'بدلات الوظيفة')
     decision_apoint_allowance_ids = fields.One2many('decision.appoint.allowance', 'decision_appoint_id', string=u'بدلات التعين')
     location_allowance_ids = fields.One2many('decision.appoint.allowance', 'location_decision_appoint_id', string=u'بدلات المنطقة')
+    is_enterview_manager = fields.Boolean(string=u'مقابلة شخصية',related="type_appointment.enterview_manager")
 
     @api.multi
     @api.onchange('type_appointment')
@@ -192,7 +195,7 @@ class HrDecisionAppoint(models.Model):
         self.ensure_one()
         if self.type_appointment.audit and self.type_appointment.enterview_manager:
             self.state = 'waiting'
-        if self.type_appointment.audit and self.type_appointment.recrutment_manager:
+        elif self.type_appointment.audit and self.type_appointment.recrutment_manager:
             self.state = 'manager'
 
     @api.multi
@@ -503,8 +506,16 @@ class HrDecisionAppoint(models.Model):
         self.env['hr.holidays']._init_balance(self.employee_id)
         grade_id = int(self.emp_job_id.grade_id.code)
         new_grade_id = int(self.grade_id.code)
-        if (grade_id != new_grade_id) or (self.job_id.name.members_job is False and self.emp_job_id.name.members_job is True):
+        #remettre compteur à 0 si sollam a changé ou martaba a changé ou kén 3odhw asb7a idéri
+        if self.job_id.type_id != self.emp_job_id.type_id or (grade_id != new_grade_id) or (self.job_id.name.members_job is False and self.emp_job_id.name.members_job is True):
             self.employee_id.promotion_duration = 0
+            holiday_balance = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
+                                                                             ('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id),])
+            if holiday_balance:
+                holiday_balance.holidays_available_stock = 0
+                holiday_balance.token_holidays_sum = 0
+                if holiday_balance.period_id:
+                    holiday_balance.period_id.holiday_stock = 0
 
     def send_notification_refuse_to_group(self, group_id):
         for recipient in group_id.users:
@@ -570,7 +581,7 @@ class HrDecisionAppoint(models.Model):
             self.location_allowance_ids = location_allowance_ids
             job_allowance_ids = []
             for rec in self.job_id.serie_id.allowanse_ids:
-                job_allowance_ids.append({'job_decision_appoint_id': self.id,
+                job_allowance_ids.append({'decision_appoint_id': self.id,
                                           'allowance_id': rec.id,
                                           'compute_method': 'amount',
                                           'amount': 0.0})
@@ -678,7 +689,6 @@ class DecisionAppointAllowance(models.Model):
     _description = u'بدلات التعين والوظيفة'
 
     decision_appoint_id = fields.Many2one('hr.decision.appoint', string='التعين', ondelete='cascade')
-    job_decision_appoint_id = fields.Many2one('hr.decision.appoint', string='التعين', ondelete='cascade')
     location_decision_appoint_id = fields.Many2one('hr.decision.appoint', string='التعين', ondelete='cascade')
     allowance_id = fields.Many2one('hr.allowance.type', string='البدل', required=1)
     compute_method = fields.Selection([('amount', 'مبلغ'),
@@ -691,20 +701,68 @@ class DecisionAppointAllowance(models.Model):
     percentage = fields.Float(string='النسبة')
     line_ids = fields.One2many('salary.grid.detail.allowance.city', 'allowance_id', string='النسب حسب المدينة')
 
+
+
+    def get_salary_grid_id(self, employee_id, type_id, grade_id, degree_id, operation_date):
+        '''
+        @return:  two values value1: salary grid detail, value2: basic salary
+        '''
+        # search for  the newest salary grid detail
+        domain = [('grid_id.state', '=', 'done'),
+                  ('grid_id.enabled', '=', True),
+                  ('type_id', '=', type_id.id),
+                  ('grade_id', '=', grade_id.id),
+                  ('degree_id', '=', degree_id.id)
+                  ]
+        if operation_date:
+            # search the right salary grid detail for the given operation_date
+            domain.append(('date', '<=', operation_date))
+        salary_grid_id = self.env['salary.grid.detail'].search(domain, order='date desc', limit=1)
+        if not salary_grid_id:
+            # doamin for  the newest salary grid detail
+            if len(domain) == 6:
+                domain.pop(5)
+            salary_grid_id = self.env['salary.grid.detail'].search(domain, order='date desc', limit=1)
+        # retreive old salary increases to add them with basic_salary
+        domain = [('salary_grid_detail_id', '=', salary_grid_id.id)]
+        if operation_date:
+            domain.append(('date', '<=', operation_date))
+        salary_increase_ids = self.env['employee.increase'].search(domain)
+        sum_increases_amount = 0.0
+        for rec in salary_increase_ids:
+            sum_increases_amount += rec.amount
+        if employee_id.basic_salary == 0:
+            basic_salary = salary_grid_id.basic_salary + sum_increases_amount
+        else:
+            basic_salary = employee_id.basic_salary + sum_increases_amount
+        return salary_grid_id, basic_salary
+    
+    
+    
     @api.onchange('compute_method', 'amount', 'percentage')
     def onchange_get_value(self):
         allowance_city_obj = self.env['salary.grid.detail.allowance.city']
         degree_obj = self.env['salary.grid.degree']
         salary_grid_obj = self.env['salary.grid.detail']
         # employee info
-        employee = self.decision_appoint_id.employee_id
+        appoint_id = self.decision_appoint_id
+        employee = appoint_id.employee_id
         ttype = employee.job_id.type_id
         grade = employee.job_id.grade_id
         degree = employee.degree_id
         amount = 0.0
         # search the correct salary_grid for this employee
         if employee:
-            salary_grids, basic_salary = employee.get_salary_grid_id(False)
+            if appoint_id.type_id:
+                type_id = appoint_id.type_id
+            else:
+                raise ValidationError(_(u' الرجاء ادخال الصنف  !'))
+            if appoint_id.degree_id:
+                degree_id = appoint_id.degree_id
+            else:
+                raise ValidationError(_(u' الرجاء ادخال الدرجة  !'))
+            grade_id = appoint_id.grade_id
+            salary_grids, basic_salary = self.get_salary_grid_id(employee,type_id, grade_id, degree_id, False)
             if not salary_grids:
                 raise ValidationError(_(u'لا يوجد سلم رواتب للموظف. !'))
         # compute

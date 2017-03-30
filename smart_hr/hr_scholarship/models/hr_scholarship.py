@@ -245,7 +245,7 @@ class HrScholarshipType(models.Model):
     salary_percent = fields.Float(string=u'نسبة الراتب(%)')
     hr_allowance_type_id = fields.Many2many('hr.allowance.type', string='البدلات المستثنات')
     traveling_family_ticket = fields.Boolean(string=u'تذكرة سفر عائليّة', default=False)
-    traveling_periode = fields.Integer(string=u'المدة التي تتطلب تذكرة سفر عائلية (باليوم)', default=365)
+    traveling_periode = fields.Integer(string=u'المدة التي تتطلب تذكرة سفر عائلية (باليوم)', default=354)
     note = fields.Text(string='ملاحظات')
     licence_bac = fields.Integer(string=u'الليسانس أو الباكالوريوس (باليوم)')
     average_diploma = fields.Integer(string=u'دبلوم متوسط (باليوم)')

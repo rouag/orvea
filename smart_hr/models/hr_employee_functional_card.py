@@ -29,7 +29,7 @@ class HrEmployeeFunctionnalCard(models.Model):
                                 readonly=1)
     identification_id = fields.Char(string=u'رقم الهوية', related="employee_id.identification_id", readonly=1)
     passport_id = fields.Char(string=u'رقم الحفيظة', related="employee_id.passport_id", readonly=1)
-    join_date = fields.Date(string=u'تاريخ الالتحاق بالجهة', related="employee_id.join_date", readonly=1)
+    recruiter_date = fields.Date(string=u'تاريخ الالتحاق بالجهة', related="employee_id.recruiter_date", readonly=1)
     begin_work_date = fields.Date(string=u' تاريخ بداية العمل الحكومي', related="employee_id.begin_work_date",
                                   readonly=1)
     
@@ -64,8 +64,7 @@ class HrEmployeeFunctionnalCard(models.Model):
             emp_level_ids = employee_id.education_level_ids
             for level in reversed(emp_level_ids):
                 if level.job_specialite:
-                    self.education_level = level.level_education_id.id
-                    break
+                    card.education_level = level.level_education_id.id
 
     def _compute_last_degree_salary(self):
         for card in self:

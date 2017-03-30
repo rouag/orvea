@@ -86,7 +86,7 @@
 									<field name="degree_id" />
 									<field name="department_id" context="{'list_type':'_get_dep_name_employee_form'}"/>
 									<field name="begin_work_date" />
-									<field name="join_date" />
+									<field name="recruiter_date" />
 								</group>
 							</page>
 							<page string="الحياة الوظيفية" attrs="{'invisible':[('state','=', 'draft')]}">
