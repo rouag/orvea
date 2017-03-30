@@ -199,7 +199,7 @@
 		</record>
 		<menuitem id="menu_hr_holidays_cancellation_employees"
 			action="action_hr_holidays_cancellation_employees" parent="menu_hr_holiday_root"
-			sequence="40" groups="smart_hr.group_dm" name="طلبات الإلغاء" />
+			sequence="40" groups="smart_hr.group_dm,smart_hr.group_holidays_specialist" name="طلبات الإلغاء" />
 
 
 		<!-- Employees' Hollidays قطع -->
@@ -295,7 +295,7 @@
 			<field name="act_window_id" ref="action_hr_holidays_cut_employees" />
 		</record>
 		<menuitem id="menu_hr_holidays_cut_employees" action="action_hr_holidays_cut_employees"
-			parent="menu_hr_holiday_root" sequence="50" groups="smart_hr.group_dm"
+			parent="menu_hr_holiday_root" sequence="50" groups="smart_hr.group_dm,smart_hr.group_holidays_specialist"
 			name="طلبات القطع" />
 
 
