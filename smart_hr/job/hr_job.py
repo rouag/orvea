@@ -1145,14 +1145,30 @@ class HrJobMoveGrade(models.Model):
                 'description': description,
                 'job_id': job.job_id.id}
             self.env['hr.job.history.actions'].create(job_history_vals)
-            job.job_id.grade_id = job.new_grade_id.id
-            job.job_id.department_id = job.new_department_id.id
-            job.job_id.name = job.new_job_name.id
-            job.job_id.number = job.new_job_number
-            job.job_id.creation_source = self.move_type
-        user = self.env['res.users'].browse(self._uid)
-        self.message_post(u"تمت " + move_type + u" الوظائف من قبل '" + unicode(user.name) + u"'")
-
+            job.job_id.state = 'cancel'
+            new_job_description = u"إحداث ب"+move_type + u" الوظيفة من المرتبة " + unicode(job.grade_id.name) +u" الى المرتبة " +unicode(job.new_grade_id.name) + '.\n'
+            new_job_vals = {
+            'grade_id' : job.new_grade_id.id,
+            'department_id' : job.new_department_id.id,
+            'name': job.new_job_name.id,
+            'number' : job.new_job_number,
+            'creation_source' : self.move_type,
+            'state' : 'unoccupied',
+            'serie_id': job.job_id.serie_id.id,
+            'general_id': job.job_id.general_id.id,
+            'specific_id': job.job_id.specific_id.id,
+            'activity_type': job.job_id.activity_type.id,
+            'creation_source': self.move_type,
+            'type_id' : job.job_id.type_id.id,
+            }
+            new_job = self.env['hr.job'].create(new_job_vals)
+            new_job_history_vals = {
+                'action': move_type,
+                'action_date': date.today(),
+                'description': new_job_description,
+                'job_id': new_job.id}
+            self.env['hr.job.history.actions'].create(new_job_history_vals)
+            
     @api.multi
     def button_refuse(self):
         self.ensure_one()
@@ -1201,11 +1217,10 @@ class HrJobMoveGrade(models.Model):
             rec.job_id.write({'state': 'unoccupied', 'number': rec.job_number, 'grade_id': rec.new_grade_id.id})
         self.action_done()
 
-    @api.multi
+    @api.one
     def action_job_reserve(self):
-        self.ensure_one()
         for rec in self.job_movement_ids:
-            rec.job_id.write({'state': 'reserved'})
+            rec.job_id.state = 'reserved'
 
     def send_notification_to_group(self, group_id):
         '''
@@ -1266,19 +1281,12 @@ class HrJobMoveGradeLine(models.Model):
             grade_ids = []
             grides = []
             # get grades
-            for rec in self.env['salary.grid.grade'].search([]):
-                if int(rec.code) >= int(self.job_id.serie_id.rank_from.code) and int(rec.code) <= int(
-                        self.job_id.serie_id.rank_to.code):
-                    grides.append(rec)
-            # get availble grades depend on move_type type رفع أو خفض
-            for rec in grides:
-                if self._context['operation'] == 'scale_down':
-                    if int(self.job_id.grade_id.code) > int(rec.code):
-                        grade_ids.append(rec.id)
-                if self._context['operation'] == 'scale_up':
-                    if int(self.job_id.grade_id.code) < int(rec.code):
-                        grade_ids.append(rec.id)
-            res['domain'] = {'new_grade_id': [('id', 'in', grade_ids)]}
+            grade_ids_scale_up = self.env['salary.grid.grade'].search([(int('code'), '>=', int(self.job_id.grade_id.code))])
+            grade_ids_scale_down = self.env['salary.grid.grade'].search([(int('code'), '<=', int(self.job_id.grade_id.code))])
+            if self._context['operation'] == 'scale_down':
+                res['domain'] = {'new_grade_id': [('id', 'in', grade_ids_scale_down.ids)]}
+            if self._context['operation'] == 'scale_up':
+                res['domain'] = {'new_grade_id': [('id', 'in', grade_ids_scale_up.ids)]}
             return res
 
         if not self.job_id:
