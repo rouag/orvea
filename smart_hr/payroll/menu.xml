@@ -15,7 +15,9 @@
 
 		<menuitem id="hr_difference_root" parent="hr_payroll_root" name="الفروقات" sequence="22" />
 		
-		<menuitem id="hr_payroll_reporting" name="التقارير" groups="group_payroll_management" sequence="25" parent="hr_payroll_root" />
+			<menuitem id="hr_payslip_stop_root_menu" parent="hr_payroll_root" name="ايقاف راتب" sequence="34" />
+		
+		<menuitem id="hr_payroll_reporting" name="التقارير" groups="group_payroll_management" sequence="45" parent="hr_payroll_root" />
 			
 		<menuitem id="hr_payroll_setting" name="الإعدادات" groups="group_payroll_setting" sequence="50" parent="hr_payroll_root" />		
 			

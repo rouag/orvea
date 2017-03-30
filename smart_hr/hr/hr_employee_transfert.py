@@ -7,6 +7,8 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FO
 
 
 
+
+
 class HrEmployeeTransfert(models.Model):
     _name = 'hr.employee.transfert'
     _inherit = ['mail.thread']
@@ -533,7 +535,7 @@ class HrTransfertSorting(models.Model):
                 rec.line_ids5 = line_ids
                 rec.state = 'commission_third'
                 if line.specific_group =='same_specific' :
-
+                    line.hr_employee_transfert_id.state ='done'
                     rec.state = 'done'
 
 

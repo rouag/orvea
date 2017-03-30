@@ -292,7 +292,7 @@ class HrPayslip(models.Model):
         self.days_off_line_ids = leaves + deductions
         worked_days_line_id = self.worked_days_line_ids.search([('code', '=', 'WORK100')])
         if worked_days_line_id:
-            self.number_of_days = worked_days_line_id.number_of_days
+            self.number_of_days = worked_days_line_id[0].number_of_days
 
 
     def get_worked_day_lines_without_contract(self, employee_id, working_hours, date_from, date_to, compute_leave=True):
