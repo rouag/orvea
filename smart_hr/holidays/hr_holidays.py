@@ -232,10 +232,11 @@ class HrHolidays(models.Model):
                         entitlement_line = self.env['hr.holidays.status.entitlement'].search([('leave_type', '=', holiday_status_id.id),
                                                                ('entitlment_category.id', '=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)])
                 if stock_line:
-                    if entitlement_line.periode:
-                        current_stock = stock_line.holidays_available_stock
-                    else:
-                        current_stock = entitlement_line.holiday_stock_default
+                    if entitlement_line:
+                        if entitlement_line.periode:
+                            current_stock = stock_line.holidays_available_stock
+                        else:
+                            current_stock = entitlement_line.holiday_stock_default
                 elif entitlement_line and entitlement_line.periode:
                     current_stock = entitlement_line.holiday_stock_default
                 elif entitlement_line and not entitlement_line.periode:
@@ -547,7 +548,7 @@ class HrHolidays(models.Model):
                 break
         for employee in self.env['hr.employee'].search([('employee_state', '=', 'employee')]):
             todayDate = datetime.now()
-            first_day_date = todayDate.replace(day=1, month=1)
+            first_day_date = todayDate.replace(year = todayDate.year-1, day=31, month=12)
             open_periode = self.env['hr.holidays.periode'].search([('employee_id', '=', employee.id),
                                                                    ('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id),
                                                                    ('entitlement_id', '=', right_entitlement.id), ('active', '=', True),
@@ -618,7 +619,26 @@ class HrHolidays(models.Model):
             u'default_extended_holiday_id': self.id,
             u'default_date_from': default_date_from,
             u'readonly_by_pass': True,
-        u'default_holiday_status_id': self.holiday_status_id.id,
+            u'default_holiday_status_id': self.holiday_status_id.id,
+            u'default_entitlement_type': self.entitlement_type.id,
+            u'default_compensation_type': self.compensation_type,
+            u'default_sold_overtime': self.sold_overtime,
+            u'default_sold_attendance': self.sold_attendance,
+            u'default_medical_report_number': self.medical_report_number,
+            u'default_medical_report_date': self.medical_report_date,
+            u'default_medical_report': self.medical_report,
+            u'default_accompaniment_type': self.accompaniment_type,
+            u'default_accompanied_child_age': self.accompanied_child_age,
+            u'default_birth_certificate': self.birth_certificate,
+            u'default_sport_participation_topic': self.sport_participation_topic,
+            u'default_childbirth_date': self.childbirth_date,
+            u'default_birth_certificate_child_birth_dad': self.birth_certificate_child_birth_dad,
+            u'default_study_subject': self.study_subject,
+            u'default_courses_city': self.courses_city.id,
+            u'default_courses_country': self.courses_country.id,
+            u'default_death_person': self.death_person,
+            u'default_prove_exam_duration': self.prove_exam_duration,
+            u'default_raison': self.raison,
 
         })
         return {
@@ -675,8 +695,8 @@ class HrHolidays(models.Model):
             if (today_date - date_from).days < self.holiday_status_id.minimum:
                 raise ValidationError(u"لا يمكن قطع اجازة قبل التمتع بالحد الادنى منها.")
             min_duration_cut_hoiday = self.holiday_status_id.min_duration_cut_hoiday
-            taken_holidays = self.search([('state', '=', 'done'), ('employee_id', '=', self.employee_id.id),
-                                          ('holiday_status_id', '=', self.holiday_status_id.id), ('date_from', '>=', date(today_date.year-2, 1, 1)),
+            taken_holidays = self.search([('state', '=', 'done'), ('employee_id', '=', self.employee_id.id), ('date_from', '<=', date(date_from.year, 12, 30)),
+                                          ('holiday_status_id', '=', self.holiday_status_id.id), ('date_from', '>=', date(today_date.year-3, 12, 31)),
                                           ('date_to', '<=', today_date)])
             duration_cut_hoiday = 0
             for hol in taken_holidays:
@@ -763,7 +783,8 @@ class HrHolidays(models.Model):
     def compute_prev_min_holidays(self, employee_id, holiday_status_id,date_from):
         date_from = fields.Date.from_string(self.date_from)
         prev_min_holidays = self.env['hr.holidays'].search([('state', '=', 'done'), ('employee_id', '=', employee_id.id), ('duration', '<', holiday_status_id.maximum_minimum),
-                                                                   ('holiday_status_id', '=', holiday_status_id.id), ('date_from', '>=', date(date_from.year, 1, 1))])
+                                                                   ('holiday_status_id', '=', holiday_status_id.id), ('date_from', '>=', date(date_from.year-1, 12, 31)),
+                                                                   ('date_from', '<=', date(date_from.year, 12, 30))])
         prev_min_holidays_duration = 0
         for holid in prev_min_holidays:
             prev_min_holidays_duration += holid.duration        
@@ -1100,7 +1121,7 @@ class HrHolidays(models.Model):
                holiday_stock = 0
             else:
                 holiday_stock = entitlement.holiday_stock_default
-            date_from = date(date.today().year, 1, 1)
+            date_from = date(date.today().year-1, 12, 31)
             open_periode = self.env['hr.holidays.periode'].sudo().create({'holiday_status_id': holiday_status_id.id,
                                                            'employee_id': employee_id.id,
                                                             'date_to': date_from + relativedelta(years=entitlement.periode),
@@ -1287,7 +1308,7 @@ class HrHolidays(models.Model):
                 raise ValidationError(u"لم تتحصل على المستوى الدراسي المطلوب.")
             
         # Constraintes for service years required
-        if self.holiday_status_id.service_years_required * 364 > self.employee_id.service_duration:
+        if self.holiday_status_id.service_years_required * 354 > self.employee_id.service_duration:
                 raise ValidationError(u" ليس لديك" + str(self.holiday_status_id.service_years_required) + u"سنوات خدمة  ")
             
          # Constraintes for evaluation_required
@@ -1311,7 +1332,7 @@ class HrHolidays(models.Model):
         # demand_number_max
         if self.holiday_status_id.demand_number_max > 0:
             past_demand_number = self.env['hr.holidays'].search_count([('state', '=', 'done'), ('employee_id', '=', self.employee_id.id),
-                                                                   ('holiday_status_id', '=', self.holiday_status_id.id), ('date_from', '>=', date(date_from.year, 1, 1))])
+                                                                   ('holiday_status_id', '=', self.holiday_status_id.id), ('date_from', '>=', date(date_from.year-1, 12, 31)), ('date_from', '<=', date(date_from.year, 12, 30))])
             if self.holiday_status_id.demand_number_max <= past_demand_number :
                 raise ValidationError(u" لا يمكن تجزئة هذا النوع من الإجازات على أكثر من %s مرّة " % self.holiday_status_id.demand_number_max)
                   
@@ -1336,7 +1357,7 @@ class HrHolidays(models.Model):
                 raise ValidationError(u"لا يتمتّع بإجازة الامومة إلّا النساء")
             date_from = fields.Date.from_string(self.date_from)
             date_birth = fields.Date.from_string(self.childbirth_date)
-            if (date_from - date_birth).days > 1095:
+            if (date_from - date_birth).days > 1062:
                 raise ValidationError(u"لا يمكن التمتع باجازة الامومة بعد اكثر من ثلاث سنوات من الوضع")
 
         # Constraintes for adoption الحضانة
