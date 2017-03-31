@@ -101,9 +101,9 @@
 			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 
-		<menuitem id="hr_request_transfer_menu" name="طلبات تحويل ساعات التأخير" groups="smart_hr.group_employee"
-			sequence="50" parent="menu_attendance_root" action="action_hr_request_transfer" />
-			
+		<!--<menuitem id="hr_request_transfer_menu" name="طلبات تحويل ساعات التأخير" groups="smart_hr.group_employee"-->
+			<!--sequence="50" parent="menu_attendance_root" action="action_hr_request_transfer" />-->
+			<!---->
 			
 	</data>
 </openerp>

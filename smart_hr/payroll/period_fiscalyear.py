@@ -9,11 +9,11 @@ from umalqurra.hijri import Umalqurra
 
 class HrFiscalyear(models.Model):
     _name = "hr.fiscalyear"
-    _description = "السنة المالية"
+    _description = "السنة "
     _order = "date_start, id"
 
     code = fields.Char(string='الرمز', size=6, required=True)
-    name = fields.Char(string='السنة المالية', required=True)
+    name = fields.Char(string='السنة ', required=True)
     date_start = fields.Date(string=u'تاريخ البدء', required=True)
     date_stop = fields.Date(string=u'تاريخ الانتهاء', required=True)
     period_ids = fields.One2many('hr.period', 'fiscalyear_id', string=u'الفترات')
@@ -51,11 +51,11 @@ class HrPeriod(models.Model):
     code = fields.Char('الشفرة', size=12)
     date_start = fields.Date('بداية الفترة', required=True)
     date_stop = fields.Date('نهاية الفترة', required=True)
-    fiscalyear_id = fields.Many2one('hr.fiscalyear', 'السنة المالية', required=True, select=True)
+    fiscalyear_id = fields.Many2one('hr.fiscalyear', 'السنة ', required=True, select=True)
     company_id = fields.Many2one('res.company', related='fiscalyear_id.company_id', string='شركة', store=True, readonly=True)
     is_open = fields.Boolean('مفتوحة', default=True)
     _sql_constraints = [
-        ('name_company_uniq', 'unique(name, company_id)', 'يجب أن يكون اسم الفترة فريدة من نوعها لكل شركة!'),
+        ('name_company_uniq', 'unique(name, company_id)', 'يجب أن يكون اسم الفترة فريدة من نوعها!'),
     ]
 
     @api.multi
