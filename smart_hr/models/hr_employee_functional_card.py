@@ -93,7 +93,7 @@ class HrEmployeeFunctionnalCard(models.Model):
             if card_validity:
                 periode_validity = card_validity.period
                 self.start_date = fields.Datetime.now()
-                self.end_date = (fields.Date.from_string(self.start_date) + relativedelta(years=+int(periode_validity)))
+                self.end_date = (fields.Date.from_string(self.start_date) + relativedelta(days=int(periode_validity)*354))
                 self.employee_id.write({'employee_card_id': self.id})
         self.state = 'done'
 

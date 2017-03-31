@@ -191,8 +191,8 @@ class HrEmployee(models.Model):
     @api.depends('type_id')
     def _compute_deputation_balance(self):
         todayDate = fields.Date.from_string(fields.Date.today())
-        year_first_day = todayDate.replace(day=1, month=1)
-        year_last_day = todayDate.replace(day=31, month=12)
+        year_first_day = todayDate.replace(year=todayDate.year-1, day=31, month=12)
+        year_last_day = todayDate.replace(day=30, month=12)
         for rec in self:
             employee_id = rec.id
             taken_deputations = self.env['hr.deputation'].search([('state', '=', 'done'), ('employee_id', '=', employee_id), ('order_date', '>=', year_first_day), ('order_date', '<=', year_last_day)])
