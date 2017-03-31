@@ -114,8 +114,8 @@ class HrDecisionAppoint(models.Model):
                                      readonly=1)
     is_contract = fields.Boolean(string=u'يتطلب إنشاء عقد', related="type_appointment.is_contract")
     pension_ratio = fields.Float(string=u'نسبة التقاعد (%)')
-    job_allowance_ids = fields.One2many('decision.appoint.allowance', 'decision_appoint_id', string=u'بدلات الوظيفة')
-    decision_apoint_allowance_ids = fields.One2many('decision.appoint.allowance', 'decision_appoint_id', string=u'بدلات التعين')
+    job_allowance_ids = fields.One2many('decision.appoint.allowance', 'job_decision_appoint_id', string=u'بدلات الوظيفة')
+    decision_apoint_allowance_ids = fields.One2many('decision.appoint.allowance', 'decision_decision_appoint_id', string=u'بدلات التعين')
     location_allowance_ids = fields.One2many('decision.appoint.allowance', 'location_decision_appoint_id', string=u'بدلات المنطقة')
     is_enterview_manager = fields.Boolean(string=u'مقابلة شخصية',related="type_appointment.enterview_manager")
 
@@ -484,7 +484,7 @@ class HrDecisionAppoint(models.Model):
         # update holidays balance for the employee
         self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date_hiring, "تعيين")
         # add allowance to the employee
-        grid_id, basic_salary = self.employee_id.get_salary_grid_id(False),
+        grid_id, basic_salary = self.employee_id.get_salary_grid_id(False)
         for rec in self.job_allowance_ids:
             self.env['hr.employee.allowance'].create({'employee_id': self.employee_id.id,
                                                       'allowance_id': rec.allowance_id.id,
@@ -685,7 +685,8 @@ class DecisionAppointAllowance(models.Model):
     _name = 'decision.appoint.allowance'
     _description = u'بدلات التعين والوظيفة'
 
-    decision_appoint_id = fields.Many2one('hr.decision.appoint', string='التعين', ondelete='cascade')
+    job_decision_appoint_id = fields.Many2one('hr.decision.appoint', string='التعين', ondelete='cascade')
+    decision_decision_appoint_id = fields.Many2one('hr.decision.appoint', string='التعين', ondelete='cascade')
     location_decision_appoint_id = fields.Many2one('hr.decision.appoint', string='التعين', ondelete='cascade')
     allowance_id = fields.Many2one('hr.allowance.type', string='البدل', required=1)
     compute_method = fields.Selection([('amount', 'مبلغ'),
@@ -742,7 +743,12 @@ class DecisionAppointAllowance(models.Model):
         degree_obj = self.env['salary.grid.degree']
         salary_grid_obj = self.env['salary.grid.detail']
         # employee info
-        appoint_id = self.decision_appoint_id
+        appoint_id = self.job_decision_appoint_id
+        if self.decision_decision_appoint_id:
+            appoint_id = self.decision_decision_appoint_id
+        if self.location_decision_appoint_id:
+            appoint_id = self.location_decision_appoint_id
+
         employee = appoint_id.employee_id
         ttype = employee.job_id.type_id
         grade = employee.job_id.grade_id
