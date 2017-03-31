@@ -115,6 +115,7 @@ class HrDifferentialLine(models.Model):
     allowance_amount = fields.Float(string='فرق البدلات')
     total_amount = fields.Float(string='المجموع')
     defferential_detail_ids = fields.One2many('hr.differential.detail', 'difference_line_id')
+    line_allowance_ids = fields.One2many('hr.differential.line.allowance', 'line_id', string='البدلات')
 
     @api.multi
     def generate_periodes(self):
@@ -160,6 +161,7 @@ class HrDifferentialLine(models.Model):
         @return: differences for basic_salary, retirement, allowances
         """
         self.ensure_one()
+        line_allowance_ids = []
         # get salary_grid_id the day of the acceptation of the promotion
         new_salary_grid_id, new_basic_salary = self.employee_id.get_salary_grid_id(self.date_stop)
         # get salary_grid_id before the acceptation of the promotion
@@ -179,12 +181,22 @@ class HrDifferentialLine(models.Model):
             for old_elt in old_hr_employee_allowance_ids:
                 if new_elt.allowance_id == old_elt.allowance_id:
                     #  it's a old allowance
-                    allowance_amount += (new_elt.amount - old_elt.amount) * number_of_days
+                    amount = (new_elt.amount - old_elt.amount) * number_of_days
+                    allowance_amount += amount
+                    line_allowance_ids.append({'line_id': self.id,
+                                               'allowance_id': new_elt.allowance_id.id,
+                                               'amount': amount
+                                               })
                     find = True
                     break
             if not find:
                 #  it's a new allowance
-                allowance_amount += (new_elt.amount) * number_of_days
+                amount = (new_elt.amount) * number_of_days
+                line_allowance_ids.append({'line_id': self.id,
+                                           'allowance_id': new_elt.allowance_id.id,
+                                           'amount': amount
+                                           })
+                allowance_amount += amount
         # step 2: decision_appoint allowances
         last_active_decision_appoint_id = self.env['hr.decision.appoint'].search([('is_started', '=', True),
                                                                                   ('state_appoint', '=', 'active'),
@@ -199,13 +211,32 @@ class HrDifferentialLine(models.Model):
             for old_decision_apoint_allowance_id in last_closed_decision_appoint_id.decision_apoint_allowance_ids:
                 if new_decision_apoint_allowance_id.allowance_id == old_decision_apoint_allowance_id.allowance_id:
                     #  it's a old allowance
-                    allowance_amount += (new_decision_apoint_allowance_id.amount - old_decision_apoint_allowance_id.amount) * number_of_days
+                    amount = (new_decision_apoint_allowance_id.amount - old_decision_apoint_allowance_id.amount) * number_of_days
+                    line_allowance_ids.append({'line_id': self.id,
+                                               'allowance_id': new_decision_apoint_allowance_id.allowance_id.id,
+                                               'amount': amount
+                                               })
+                    allowance_amount += amount
                     find = True
                     break
             if not find:
                 #  it's a new allowance
-                allowance_amount += (new_decision_apoint_allowance_id.amount) * number_of_days
+                amount = (new_decision_apoint_allowance_id.amount) * number_of_days
+                line_allowance_ids.append({'line_id': self.id,
+                                           'allowance_id': new_decision_apoint_allowance_id.allowance_id.id,
+                                           'amount': amount
+                                           })
+                allowance_amount += amount
+        self.line_allowance_ids = line_allowance_ids
         return basic_salary_amount, retirement_amount, allowance_amount
+
+
+class HrDifferentialLineAllowance(models.Model):
+    _name = 'hr.differential.line.allowance'
+
+    line_id = fields.Many2one('hr.differential.line', ondelete='cascade')
+    allowance_id = fields.Many2one('hr.allowance.type', string='البدل', required=1)
+    amount = fields.Float(string='المبلغ')
 
 
 class HrDifferentialDetail(models.Model):
