@@ -985,6 +985,7 @@ class HrHolidays(models.Model):
     @api.multi
     def button_delay_hrm(self):
         self.ensure_one()
+        self.state = 'refuse'
         self.env['base.notification'].create({'title': u'إشعار برفض إجازة',
                                               'message': u'لقد تم رفض الإجازة من طرف مدير شؤون الموظفين',
                                               'user_id': self.employee_id.user_id.id,
@@ -992,12 +993,7 @@ class HrHolidays(models.Model):
                                               'res_id': self.id,
                                               'res_action': 'smart_hr.action_hr_holidays_form',
                                               'notif': True})
-        if self.holiday_status_id.audit:
-            self.state = 'audit'
-        elif self.holiday_status_id.direct_director_decision:
-            self.state = 'dm'
-        else:
-            self.state = 'draft'
+
 
     @api.multi
     def button_accept_external_audit(self):

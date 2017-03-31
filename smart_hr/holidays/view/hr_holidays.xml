@@ -86,6 +86,9 @@
 						<button name="button_accept_hrm" string="موافق" type="object"
 							states="hrm" groups="smart_hr.group_hrm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="button_delay_hrm" string="رفض" type="object"
+							states="hrm" groups="smart_hr.group_hrm" icon="fa-check"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />							
 
 						<button name="button_accept_external_audit" string="موافق"
 							type="object" states="external_audit" groups="smart_hr.group_holidays_checker"
