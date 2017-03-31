@@ -4,6 +4,7 @@
         <xpath expr="." position="inside">
 <!--             <link rel="stylesheet" href="/calendar/static/src/less/calendar.less"/> -->
             <script type="text/javascript" src="/smart_base/static/src/js/notification.js"></script>
+             <script type="text/javascript" src="/smart_base/static/src/js/odoo.js"></script>
              <link rel="stylesheet" href="/smart_base/static/src/css/notification.css"></link>
         </xpath>
     </template>
