@@ -15,20 +15,20 @@ class HrEmployeeFunctionnalCard(models.Model):
 
     def _get_department_name_report(self):
         for card in self:
-            department_name_report = card.department_id._get_dep_name_employee_form()[0]
-            card.department_name_report = department_name_report[1]
+            department_name_report = card.department_id._get_dep_name_employee_form()
+            if department_name_report:
+                card.department_name_report = department_name_report[0][1]
 
     name = fields.Char(string='رقم بطاقة')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1, readonly=1)
     number = fields.Char(string=u'رقم الوظيفة', related="employee_id.number", readonly=1)
     employee_state = fields.Selection(string=u'الحالة', related="employee_id.employee_state", readonly=1)
-    last_salary = fields.Float(string='  الراتب الأخير ', store=True, compute='_compute_last_degree_salary', readonly=1)
-    birthday_location = fields.Char(string=u'مكان الميلاد', related="employee_id.birthday_location", readonly=1)
+    last_salary = fields.Float(string='  الراتب الأخير ', compute='_compute_last_degree_salary', readonly=1)
+    birthday_location = fields.Many2one(string=u'مكان الميلاد', related="employee_id.place_of_birth", readonly=1)
     birthday = fields.Date(string=u'تاريخ الميلاد', related="employee_id.birthday", readonly=1)
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', related='employee_id.degree_id',
                                 readonly=1)
     identification_id = fields.Char(string=u'رقم الهوية', related="employee_id.identification_id", readonly=1)
-    passport_id = fields.Char(string=u'رقم الحفيظة', related="employee_id.passport_id", readonly=1)
     recruiter_date = fields.Date(string=u'تاريخ الالتحاق بالجهة', related="employee_id.recruiter_date", readonly=1)
     begin_work_date = fields.Date(string=u' تاريخ بداية العمل الحكومي', related="employee_id.begin_work_date",
                                   readonly=1)
@@ -43,9 +43,6 @@ class HrEmployeeFunctionnalCard(models.Model):
     emp_age = fields.Integer(string=u'السن', related="employee_id.age", readonly=1)
     department_id = fields.Many2one('hr.department', string=u'مكان العمل', related="employee_id.department_id",
                                     readonly=1)
-    passport_date = fields.Date(string=u'تاريخ إصدار الحفيظة ', related='employee_id.passport_date', readonly=1)
-    passport_place = fields.Many2one('res.city', string=u'مكان إصدار الحفيظة', related='employee_id.passport_place',
-                                     readonly=1)
     date = fields.Date(string=u'التاريخ ', default=fields.Datetime.now(), readonly=1)
     start_date = fields.Date(string=u'تاريخ بدأ الصلاحية  ', readonly=1)
     end_date = fields.Date(string=u'تاريخ إنتهاء الصلاحية ', readonly=1)
@@ -57,6 +54,12 @@ class HrEmployeeFunctionnalCard(models.Model):
     training_ids = fields.One2many('hr.candidates', 'employee_id', string=u'التدريب', readonly=1,
                                    related="employee_id.training_ids")
     department_name_report = fields.Char(compute='_get_department_name_report')
+    passport_id = fields.Char(string=u'رقم جواز السفر', related='employee_id.passport_id')
+    passport_date = fields.Date(string=u'تاريخ إصدار جواز السفر ',  related='employee_id.passport_date')
+    passport_place = fields.Many2one('res.city', string=u'مكان إصدار جواز السفر', related='employee_id.passport_place')
+    hoveizeh_id = fields.Char(string=u'رقم الحفيظة', related='employee_id.hoveizeh_id')
+    hoveizeh_date = fields.Date(string=u'تاريخ إصدار الحفيظة ',related='employee_id.hoveizeh_date')
+    hoveizeh_place = fields.Many2one('res.city', string=u'مكان إصدار الحفيظة',related='employee_id.hoveizeh_place')
 
     def _compute_education_level(self):
         for card in self:

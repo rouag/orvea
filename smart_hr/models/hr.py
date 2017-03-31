@@ -25,8 +25,9 @@ class HrEmployee(models.Model):
 
     def _get_department_name_report(self):
         for card in self:
-            department_name_report = card.department_id._get_dep_name_employee_form()[0]
-            card.department_name_report = department_name_report[1]
+            department_name_report = card.department_id._get_dep_name_employee_form()
+            if department_name_report:
+                card.department_name_report = department_name_report[0][1]
 
     number = fields.Char(string=u'رقم الوظيفي')
     gender = fields.Selection([('male', 'Male'), ('female', 'Female'), ], string=u'الجنس')
