@@ -516,7 +516,7 @@ class HrPromotionDemande(models.Model):
     _order = 'id desc'
 
 
-    create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now())
+    create_date = fields.Date(string=u'تاريخ الطلب', default=fields.Date.today())
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب',required=1, readonly=1,
                                   domain=[('emp_state', 'not in', ['suspended','terminated']), ('employee_state', '=', 'employee')],
                                   default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended','terminated'])], limit=1),)
@@ -534,6 +534,7 @@ class HrPromotionDemande(models.Model):
                               ('waiting', 'في إنتظار الإعتماد'),
                               ('cancel', 'رفض'),
                               ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
+    activation_date = fields.Date(string='تاريخ التفعيل')
 
     @api.model
     def create(self, vals):
