@@ -695,7 +695,7 @@ class HrHolidays(models.Model):
             if (today_date - date_from).days < self.holiday_status_id.minimum:
                 raise ValidationError(u"لا يمكن قطع اجازة قبل التمتع بالحد الادنى منها.")
             min_duration_cut_hoiday = self.holiday_status_id.min_duration_cut_hoiday
-            taken_holidays = self.search([('state', '=', 'done'), ('employee_id', '=', self.employee_id.id), ('date_from', '<=', date(date_from.year, 12, 30))
+            taken_holidays = self.search([('state', '=', 'done'), ('employee_id', '=', self.employee_id.id), ('date_from', '<=', date(date_from.year, 12, 30)),
                                           ('holiday_status_id', '=', self.holiday_status_id.id), ('date_from', '>=', date(today_date.year-3, 12, 31)),
                                           ('date_to', '<=', today_date)])
             duration_cut_hoiday = 0
