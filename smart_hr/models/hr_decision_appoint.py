@@ -484,22 +484,19 @@ class HrDecisionAppoint(models.Model):
         # update holidays balance for the employee
         self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date_hiring, "تعيين")
         # add allowance to the employee
+        grid_id, basic_salary = self.employee_id.get_salary_grid_id(False),
         for rec in self.job_allowance_ids:
             self.env['hr.employee.allowance'].create({'employee_id': self.employee_id.id,
                                                       'allowance_id': rec.allowance_id.id,
                                                       'amount': rec.amount,
-                                                      'date': fields.Date.from_string(fields.Date.today())
-                                                      })
-        for rec in self.decision_apoint_allowance_ids:
-            self.env['hr.employee.allowance'].create({'employee_id': self.employee_id.id,
-                                                      'allowance_id': rec.allowance_id.id,
-                                                      'amount': rec.amount,
+                                                      'salary_grid_detail_id': grid_id.id,
                                                       'date': fields.Date.from_string(fields.Date.today())
                                                       })
         for rec in self.location_allowance_ids:
             self.env['hr.employee.allowance'].create({'employee_id': self.employee_id.id,
                                                       'allowance_id': rec.allowance_id.id,
                                                       'amount': rec.amount,
+                                                      'salary_grid_detail_id': grid_id.id,
                                                       'date': fields.Date.from_string(fields.Date.today())
                                                       })
         self.state = 'done'
