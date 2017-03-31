@@ -232,10 +232,11 @@ class HrHolidays(models.Model):
                         entitlement_line = self.env['hr.holidays.status.entitlement'].search([('leave_type', '=', holiday_status_id.id),
                                                                ('entitlment_category.id', '=', self.env.ref('smart_hr.data_hr_holiday_entitlement_all').id)])
                 if stock_line:
-                    if entitlement_line.periode:
-                        current_stock = stock_line.holidays_available_stock
-                    else:
-                        current_stock = entitlement_line.holiday_stock_default
+                    if entitlement_line:
+                        if entitlement_line.periode:
+                            current_stock = stock_line.holidays_available_stock
+                        else:
+                            current_stock = entitlement_line.holiday_stock_default
                 elif entitlement_line and entitlement_line.periode:
                     current_stock = entitlement_line.holiday_stock_default
                 elif entitlement_line and not entitlement_line.periode:
@@ -618,7 +619,26 @@ class HrHolidays(models.Model):
             u'default_extended_holiday_id': self.id,
             u'default_date_from': default_date_from,
             u'readonly_by_pass': True,
-        u'default_holiday_status_id': self.holiday_status_id.id,
+            u'default_holiday_status_id': self.holiday_status_id.id,
+            u'default_entitlement_type': self.entitlement_type.id,
+            u'default_compensation_type': self.compensation_type,
+            u'default_sold_overtime': self.sold_overtime,
+            u'default_sold_attendance': self.sold_attendance,
+            u'default_medical_report_number': self.medical_report_number,
+            u'default_medical_report_date': self.medical_report_date,
+            u'default_medical_report': self.medical_report,
+            u'default_accompaniment_type': self.accompaniment_type,
+            u'default_accompanied_child_age': self.accompanied_child_age,
+            u'default_birth_certificate': self.birth_certificate,
+            u'default_sport_participation_topic': self.sport_participation_topic,
+            u'default_childbirth_date': self.childbirth_date,
+            u'default_birth_certificate_child_birth_dad': self.birth_certificate_child_birth_dad,
+            u'default_study_subject': self.study_subject,
+            u'default_courses_city': self.courses_city.id,
+            u'default_courses_country': self.courses_country.id,
+            u'default_death_person': self.death_person,
+            u'default_prove_exam_duration': self.prove_exam_duration,
+            u'default_raison': self.raison,
 
         })
         return {
