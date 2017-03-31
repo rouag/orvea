@@ -161,7 +161,7 @@
 								<field name="salary_number" attrs="{'invisible': [('with_advanced_salary','=',False)],'readonly': [('state','not in',['draft','audit'])]}" />
 							</group>
 							<group>
-								<field name="holiday_status_id" options='{"no_open": True, "no_create": True}'
+								<field name="holiday_status_id" options='{"no_open": True, "no_create": True}' attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)]}"
 									required="1" />
 								<field name="entitlement_type"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
