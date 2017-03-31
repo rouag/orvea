@@ -23,8 +23,6 @@
 							states="job_promotion" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 							groups="smart_hr.group_responsable_promotion" />
 
-
-
 						<button name="button_transfer_employee" string=" إرسال للموظفين "
 							groups="smart_hr.group_responsable_promotion" type="object"
 							attrs="{'invisible': ['|',('emplyoee_state', '=', True ),('state', '!=', 'manager' )]}"

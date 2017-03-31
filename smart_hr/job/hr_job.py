@@ -1510,8 +1510,8 @@ class HrJobMoveUpdateLine(models.Model):
             res = {}
             # get jobs that are  updated or created from more than one year
             today = date.today()
-            d = today - relativedelta(years=1)
-            dt = datetime.today() - relativedelta(years=1)
+            d = today - relativedelta(days=354)
+            dt = datetime.today() - relativedelta(days=354)
             all_job_ids = self.env['hr.job'].search(['|', ('update_date', '>=', d), ('create_date', '>=', str(dt))])
             res['domain'] = {'job_id': [('id', 'in', all_job_ids.ids)]}
             return res

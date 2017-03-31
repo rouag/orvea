@@ -74,7 +74,7 @@ class HrPromotion(models.Model):
                                                                        'sum_point': employee_line.sum_point,
                                                                        })
                 sanctions = self.env['hr.sanction'].search(
-                    [('state', '=', 'done'), ('date_sanction_start', '>', datetime.now() + relativedelta(years=-2))])
+                    [('state', '=', 'done'), ('date_sanction_start', '>', datetime.now() + relativedelta(days=-709))])
                 days = 0
                 emp_id.employee_job_ids = emp_id.change_employee_id()
                 if employee_line.employee_id.type_id.id == self.env.ref('smart_hr.data_salary_grid_type').id:
@@ -118,7 +118,7 @@ class HrPromotion(models.Model):
                      ('duration', '>', 180)])
 
                 sanctions = self.env['hr.sanction'].search(
-                    [('state', '=', 'done'), ('date_sanction_start', '>', datetime.now() + relativedelta(years=-1))])
+                    [('state', '=', 'done'), ('date_sanction_start', '>', datetime.now() + relativedelta(days=-354))])
                 saanction_days = True
                 if not suspend and not holidays_status_exceptiona and not holidays_status_study:
                     if emp.promotion_duration / 354 > emp.job_id.grade_id.years_job:
