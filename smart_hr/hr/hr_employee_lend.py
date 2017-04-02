@@ -85,7 +85,7 @@ class HrEmployeeLend(models.Model):
                 if fields.Date.from_string(testing_date_to) >= fields.Date.from_string(fields.Datetime.now()):
                     raise ValidationError(u"لايمكن طلب إعارة خلال فترة التجربة")
             # ‫التترقية‬ ‫سنة‬ ‫إستلكمال‬
-            if self.employee_id.promotion_duration < 1:
+            if self.employee_id.promotion_duration < 354:
                         raise ValidationError(u"لايمكن طلب إعارة خلال أقل من سنة منذ أخر ترقية")
 
     @api.multi

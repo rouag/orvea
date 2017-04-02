@@ -74,7 +74,7 @@ class HrPromotion(models.Model):
                                                                        'sum_point': employee_line.sum_point,
                                                                        })
                 sanctions = self.env['hr.sanction'].search(
-                    [('state', '=', 'done'), ('date_sanction_start', '>', datetime.now() + relativedelta(years=-2))])
+                    [('state', '=', 'done'), ('date_sanction_start', '>', datetime.now() + relativedelta(days=-709))])
                 days = 0
                 emp_id.employee_job_ids = emp_id.change_employee_id()
                 if employee_line.employee_id.type_id.id == self.env.ref('smart_hr.data_salary_grid_type').id:
@@ -118,7 +118,7 @@ class HrPromotion(models.Model):
                      ('duration', '>', 180)])
 
                 sanctions = self.env['hr.sanction'].search(
-                    [('state', '=', 'done'), ('date_sanction_start', '>', datetime.now() + relativedelta(years=-1))])
+                    [('state', '=', 'done'), ('date_sanction_start', '>', datetime.now() + relativedelta(days=-354))])
                 saanction_days = True
                 if not suspend and not holidays_status_exceptiona and not holidays_status_study:
                     if emp.promotion_duration / 354 > emp.job_id.grade_id.years_job:
@@ -516,7 +516,7 @@ class HrPromotionDemande(models.Model):
     _order = 'id desc'
 
 
-    create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now())
+    create_date = fields.Date(string=u'تاريخ الطلب', default=fields.Date.today())
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب',required=1, readonly=1,
                                   domain=[('emp_state', 'not in', ['suspended','terminated']), ('employee_state', '=', 'employee')],
                                   default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended','terminated'])], limit=1),)
@@ -534,6 +534,7 @@ class HrPromotionDemande(models.Model):
                               ('waiting', 'في إنتظار الإعتماد'),
                               ('cancel', 'رفض'),
                               ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
+    activation_date = fields.Date(string='تاريخ التفعيل')
 
     @api.model
     def create(self, vals):

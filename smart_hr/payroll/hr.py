@@ -64,6 +64,7 @@ class HrEmployeeAllowance(models.Model):
     allowance_id = fields.Many2one('hr.allowance.type', string='البدل', required=1)
     amount = fields.Float(string='المبلغ')
     date = fields.Date(string='التاريخ')
+    salary_grid_detail_id = fields.Many2one('salary.grid.detail', string='تفاصيل سلم الرواتب')
 
 
 class EmployeeIncrease(models.Model):

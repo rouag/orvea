@@ -37,8 +37,7 @@
 							states="hrm" groups="smart_hr.group_hrm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
-							type="action"
-							states="hrm" groups="smart_hr.group_hrm" icon="fa-times"
+							type="action" states="hrm" groups="smart_hr.group_hrm" icon="fa-times"
 							class="oe_inline oe_stat_button" />
 						<field name="state" widget="statusbar" statusbar_visible="draft,hrm,done,refuse" />
 					</header>
@@ -71,20 +70,22 @@
 									<field name="emp_age" />
 									<field name="birthday_location" />
 									<field name="identification_id" />
-									<field name="passport_id" string="رقم الحفيظة" />
-									<field name="passport_place" />
-									<field name="passport_date" />
+									<field name="passport_id" attrs="{'invisible': [('employee_id.is_saudian','=', True)]}" />
+									<field name="hoveizeh_id" attrs="{'invisible': [('employee_id.is_saudian','=', False)]}" />
+									<field name="passport_date" attrs="{'invisible': [('employee_id.is_saudian','=', True)]}" />
+									<field name="hoveizeh_date" attrs="{'invisible': [('employee_id.is_saudian','=', False)]}" />
+									<field name="passport_place" attrs="{'invisible': [('employee_id.is_saudian','=', True)]}" />
+									<field name="hoveizeh_place" attrs="{'invisible': [('employee_id.is_saudian','=', False)]}" />
 									<field name="education_level" />
 									<field name="specialization_ids" widget="many2many_tags" />
 								</group>
 							</page>
-							<page attrs="{'invisible':[('state','=', 'draft')]}"
-								string="بيانات العمل">
+							<page attrs="{'invisible':[('state','=', 'draft')]}" string="بيانات العمل">
 								<group>
 
 									<field name="employee_state" />
 									<field name="degree_id" />
-									<field name="department_id" context="{'list_type':'_get_dep_name_employee_form'}"/>
+									<field name="department_id" context="{'list_type':'_get_dep_name_employee_form'}" />
 									<field name="begin_work_date" />
 									<field name="recruiter_date" />
 								</group>
@@ -153,9 +154,9 @@
 			<field name="view_mode">tree,form</field>
 			<field name="help" type="html">
 				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
-				
+
 			</field>
-			
+
 		</record>
 
 		<menuitem id="menu_hr_employee_functionnal_card" action="action_hr_employee_functionnal_card"

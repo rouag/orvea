@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <template>
-    
+
+    <!-- Widget Notification   -->
+
     <t t-name="BaseNotification" t-extend="Notification">
         <t t-jquery=".o_notification_title > t" t-operation="replace">
             <span  t-attf-class="link2event eid_{{widget.eid}}">
@@ -13,6 +15,13 @@
             <button type="button" class="btn btn-sm btn-link link2event">التفاصيل</button>
             <button type="button" class="btn btn-sm btn-link link2recall">تأجيل</button>
             
+        </t>
+    </t>
+
+    <!-- Remove  Button Open in Many2One Field -->
+
+    <t  t-extend="FieldMany2One">
+        <t t-jquery="button" t-operation="replace">
         </t>
     </t>
 

@@ -14,3 +14,4 @@ from . import hr_difference
 from . import parser
 from . import hr_special_payroll
 from . import hr_payslip_stop
+from . import hr_differential
