@@ -273,10 +273,13 @@
                 <search string="بحث">
                     <field name="name"/>
 					<field name="period_id"/>
+					 <filter name="period_id" string="الشهر"  />
+					 <filter string="التاريخ" name="date_start"/>
                     <filter string="مسودة" domain="[('state','=','draft')]"/>
 					<filter string="في إنتظار الإعتماد" domain="[('state','=','verify')]"/>
 					<filter name="done_filter" string="تم" domain="[('state','=','done')]"/>
 					<group expand="0" string="تجميع حسب">
+					
 						<filter string="الشهر" name="period_id" context="{'group_by':'period_id'}"/>
 						<filter string="التاريخ" name="date_start" context="{'group_by':'date_start'}"/>
 						<filter string="الحالة" name="state" context="{'group_by':'state'}"/>

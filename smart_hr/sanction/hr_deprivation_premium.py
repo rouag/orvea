@@ -1,28 +1,38 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api
+from openerp.exceptions import ValidationError
+from openerp.tools import SUPERUSER_ID
+from umalqurra.hijri_date import HijriDate
 
 
 class HrDeprivationPremium(models.Model):
     _name = 'hr.deprivation.premium'
-    _inherit = ['mail.thread']
+    _inherit = ['mail.thread', 'ir.needaction_mixin']
     _order = 'id desc'
     _description = u'قرار حرمان من العلاوة'
 
-    name = fields.Char(string='رقم القرار', required=1, readonly=1, states={'draft': [('readonly', 0)]})
+    name = fields.Char(string='رقم القرار')
     order_date = fields.Date(string='تاريخ القرار', default=fields.Datetime.now())
     deprivation_file = fields.Binary(string='ملف القرار', states={'draft': [('readonly', 0)]})
     date_deprivation = fields.Date(string='التاريخ' , default=fields.Datetime.now(), states={'draft': [('readonly', 0)]})
     deprivation_file_name = fields.Char(string='ملف القرار')
+    years_id = fields.Many2one('hr.fiscalyear', string=u'  السنة ',)
+    department_level1_id = fields.Many2one('hr.department', string='الفرع', readonly=1, states={'draft': [('readonly', 0)]})
+    department_level2_id = fields.Many2one('hr.department', string='القسم', readonly=1, states={'draft': [('readonly', 0)]})
+    department_level3_id = fields.Many2one('hr.department', string='الشعبة', readonly=1, states={'draft': [('readonly', 0)]})
+    salary_grid_type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1, states={'draft': [('readonly', 0)]},)
+    
     deprivation_ids = fields.One2many('hr.deprivation.premium.ligne', 'deprivation_id',
                                       string=u'قائمة المحرومين من العلاوة', readonly=1,
                                       states={'draft': [('readonly', 0)]})
     state = fields.Selection([('draft', '  طلب'),
                               ('waiting', u'في إنتظار الاعتماد'),
-                              ('done', u'اعتمدت'),
+                              ('order',u'إصدار قرار'),
+                              ('done', u'منتهي'),
                               ('refused', u'مرفوضة'),
                               ], string='الحالة', readonly=1, default='draft')
-
+    
     @api.multi
     def action_draft(self):
         for deprivation in self:
@@ -32,12 +42,37 @@ class HrDeprivationPremium(models.Model):
     def button_refuse(self):
         for deprivation in self:
             deprivation.state = 'refused'
-
+            
     @api.multi
     def action_waiting(self):
-        for deprivation in self:
-            deprivation.state = 'done'
+        for rec in self:
+            sanction_obj = self.env['hr.sanction']
+            sanction_val = {
+                                    'name':rec.name,
+                                   'type_sanction':self.env.ref('smart_hr.data_hr_sanction_type_grade').id,
+                                    'state':'done',
+                           }
+            lines = []
+            sanction = sanction_obj.create(sanction_val)
+            for  temp in rec.deprivation_ids :
+                    employee_val = {
+                              'employee_id': temp.employee_id,
+                              'state':'done',
+                              }
+                    lines.append(employee_val)
+            sanction.difference_ids = lines
+            rec.state = 'done'
+            
 
+#             
+#     @api.model
+#     def create(self, vals):
+#         res = super(HrDeprivationPremium, self).create(vals)
+#         # Sequence
+#         vals = {}
+#         vals['name'] = self.env['ir.sequence'].get('hr.deprivation.premium.seq')
+#         res.write(vals)
+#         return res
 
 class HrdeprivationPremiumLigne(models.Model):
     _name = 'hr.deprivation.premium.ligne'
@@ -46,23 +81,61 @@ class HrdeprivationPremiumLigne(models.Model):
     deprivation_id = fields.Many2one('hr.deprivation.premium', string=' قائمة المحرومين من العلاوة', ondelete='cascade')
     employee_id = fields.Many2one('hr.employee', string=u'  الموظف', required=1)
     raison = fields.Char(string='السبب', readonly=1,  compute='_compute_raison' )
+    
+    department_level1_id = fields.Many2one('hr.department',related='deprivation_id.department_level1_id', string='الفرع', readonly=1, states={'draft': [('readonly', 0)]})
+    department_level2_id = fields.Many2one('hr.department',related='deprivation_id.department_level2_id',  string='القسم', readonly=1, states={'draft': [('readonly', 0)]})
+    department_level3_id = fields.Many2one('hr.department',related='deprivation_id.department_level3_id',  string='الشعبة', readonly=1, states={'draft': [('readonly', 0)]})
+    salary_grid_type_id = fields.Many2one('salary.grid.type', related='deprivation_id.salary_grid_type_id', string='الصنف', readonly=1, states={'draft': [('readonly', 0)]},)
     state = fields.Selection([('waiting', 'في إنتظار التاكيد'),
                               ('excluded', 'مستبعد'),
                               ('done', 'تم التاكيد'),
                               ], string='الحالة', readonly=1, default='waiting')
+    
+    
+    
+    @api.onchange('department_level1_id', 'department_level2_id', 'department_level3_id', 'salary_grid_type_id')
+    def onchange_department_level(self):
+        dapartment_obj = self.env['hr.department']
+        employee_obj = self.env['hr.employee']
+        department_level1_id = self.department_level1_id and self.department_level1_id.id or False
+        department_level2_id = self.department_level2_id and self.department_level2_id.id or False
+        department_level3_id = self.department_level3_id and self.department_level3_id.id or False
+        employee_ids = []
+        dapartment_id = False
+        if department_level3_id:
+            dapartment_id = department_level3_id
+        elif department_level2_id:
+            dapartment_id = department_level2_id
+        elif department_level1_id:
+            dapartment_id = department_level1_id
+        if dapartment_id:
+            dapartment = dapartment_obj.browse(dapartment_id)
+            employee_ids += [x.id for x in dapartment.member_ids]
+            for child in dapartment.all_child_ids:
+                employee_ids += [x.id for x in child.member_ids]
+        result = {}
+        if not employee_ids:
+            # get all employee
+            employee_ids = employee_obj.search([('employee_state', '=', 'employee')]).ids
+        # filter by type
+        if self.salary_grid_type_id:
+            employee_ids = employee_obj.search([('id', 'in', employee_ids), ('type_id', '=', self.salary_grid_type_id.id)]).ids
+        result.update({'domain': {'employee_id': [('id', 'in', list(set(employee_ids)))]}})
+        return result
+  
 
 
 
 
-    @api.onchange('employee_id')
-    def onchange_employee_id(self):
-        res = {}
-        employee_ids = set()
-        sanctions = self.env['hr.sanction.ligne'].search([('state', '=', 'done'), ('sanction_id.type_sanction', '=', self.env.ref('smart_hr.data_hr_sanction_type_grade').id)])
-        for rec in sanctions:
-            employee_ids.add(rec.employee_id.id)
-        res['domain'] = {'employee_id': [('id', 'in', list(employee_ids))]}
-        return res
+#     @api.onchange('employee_id')
+#     def onchange_employee_id(self):
+#         res = {}
+#         employee_ids = set()
+#         sanctions = self.env['hr.sanction.ligne'].search([('state', '=', 'done'), ('sanction_id.type_sanction', '=', self.env.ref('smart_hr.data_hr_sanction_type_grade').id)])
+#         for rec in sanctions:
+#             employee_ids.add(rec.employee_id.id)
+#         res['domain'] = {'employee_id': [('id', 'in', list(employee_ids))]}
+#         return res
 
     @api.multi
     @api.depends('employee_id')

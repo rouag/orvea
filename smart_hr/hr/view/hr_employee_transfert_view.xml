@@ -108,7 +108,7 @@
 									attrs="{'invisible':[('state', 'in', ['waiting','new'])],'readonly':[('state', 'in', ['done', 'refused'])]}" />
 								<field name="refusing_date" attrs="{'invisible':[('state', '!=', 'refused')]}" />
 							</group>
-							<group string="قرار الجهة المختصة"
+						<!-- 	<group string="قرار الجهة المختصة"
 								attrs="{'invisible':['|','|', ('state', 'not in', ['pm','done']), ('same_group', '=', False),('ready_tobe_done','=',False)]}">
 								<field name="decision_number" groups="smart_hr.group_hr_personnel_officer_jobs"
 									attrs="{'required':[('same_group', '=', True),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm')]}" />
@@ -117,7 +117,7 @@
 								<field name="decision_file" filename="decision_file_name"
 									groups="smart_hr.group_hr_personnel_officer_jobs"
 									attrs="{'required':[('same_group', '=', True),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm'),]}" />
-							</group>
+							</group> -->
 							<group string="موافقة الخدمة المدنية"
 								attrs="{'invisible':['|', '|', ('state', 'not in', ['pm','done']), ('same_group', '=', True), ('ready_tobe_done','=',False)]}">
 								<field name="speech_number"
@@ -318,25 +318,22 @@
 						<button name="action_waiting" string="إسناد الوظائف" type="object"
 							states="draft" icon="fa-check" class="oe_inline oe_stat_button"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
-
-						<button name="_president" string="إرسال "
+							
+							<button name="action_commissioning" string="إرسال "
 							type="object" groups="smart_hr.group_hr_personnel_officer_commissioning"
 							states="waiting" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<button name="action_commission" string="إعتماد " type="object"
-							groups="smart_hr.group_hr_commissioning_requests" states="commission_president"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="%(action_hr_refuse_wizard)d" string="رفض"
-							type="action" groups="smart_hr.group_hr_commissioning_requests"
+
+						<button name="action_commission_president" string="إرسال "
+							type="object" groups="smart_hr.group_hr_personnel_officer_commissioning"
 							states="commission_president" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<button name="action_done" string="إعتماد " type="object"
+						
+
+						<button name="action_done"    	attrs="{'invisible':['|',('is_commission_third', '!=', True), ('state','!=', 'commission_third')]}" string="إرسال " type="object"
 							groups="smart_hr.group_hr_commissioning_requests" states="commission_third"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="%(action_hr_refuse_wizard)d" string="رفض"
-							type="action" groups="smart_hr.group_hr_commissioning_requests"
-							states="commission_third" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
 
 
 
@@ -348,6 +345,7 @@
 							<group>
 								<field name="name" />
 								<field name="is_ended" invisible="1" />
+								<field name="is_commission_third" invisible="1" />
 							</group>
 						</group>
 						<notebook>
@@ -357,8 +355,6 @@
 									attrs="{'invisible':[('state', 'not in', ['new'])]}" options="{'no_create': True}">
 									<tree editable="bottom" colors="red:is_conflected==True;">
 										<field name="sequence" />
-
-
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
 										<field name="begin_work_date" readonly="1" />
@@ -366,6 +362,8 @@
 										<field name="age" />
 										<field name="last_evaluation_result" readonly="1" />
 										<field name="is_conflected" invisible="1" />
+											
+										
 									</tree>
 								</field>
 							</page>
@@ -391,83 +389,95 @@
 										<field name="new_type_id" />
 										<field name="res_city" />
 										<field name="state" />
+									
 										<button name="%(smart_hr.action_wizard_employee_transfert)d"
 											type="action" string="تعديل" icon="fa-refresh" />
 										<field name="is_conflected" invisible="1" />
 									</tree>
 								</field>
 							</page>
-							<page string="طلبات النقل"
+							<page string="طلبات النقل" options="{'no_create': True}"
 								attrs="{'invisible':[('state', 'not in', ['waiting'])]}">
 								<br></br>
-								<field name="line_ids3" options="{'no_create': True}"
-									attrs="{'invisible':[('state', 'not in', ['waiting'])],'readonly':[('state', 'in', [ 'waiting'])]}"
+								<field name="line_ids3"  options="{'no_create': True}"
+									attrs="{'invisible':[('state', 'not in', ['waiting'])]}"
 									string=" طلبات النقل">
 									<tree editable="bottom" colors="red:is_conflected==True;">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
 										<field name="begin_work_date" readonly="1" />
-										<field name="recruiter_date" />
-										<field name="age" />
+										<field name="recruiter_date"  readonly="1" />
+										<field name="age" readonly="1" />
 										<field name="last_evaluation_result" readonly="1" />
-										<field name="new_job_id" />
-										<field name="specific_group" />
-										<field name="new_department_id" />
-										<field name="new_degree_id" />
-										<field name="new_type_id" />
-										<field name="res_city" />
-										<field name="state" />
+										<field name="new_job_id"  readonly="1" />
+										<field name="specific_group"  readonly="1" />
+										<field name="new_department_id" readonly="1" />
+										<field name="new_degree_id" readonly="1" />
+										<field name="new_type_id" readonly="1" />
+										<field name="res_city" readonly="1" />
+										<field name="state" readonly="1"  />
 										<field name="is_conflected" invisible="1" />
 									</tree>
 								</field>
 							</page>
 
-							<page string="طلبات النقل"
+							<page string="طلبات النقل" options="{'no_create': True}"
 								attrs="{'invisible':[('state', 'not in', ['commission_president','done'])],'readonly':[('state', 'in', [ 'commission_president','done','refused'])]}">
 								<br></br>
-								<field name="line_ids4" options="{'no_create': True}" attrs="{'invisible':[('state', 'not in', ['commission_president','done'])],'readonly':[('state', 'in', [ 'commission_president','done','refused'])]}"
+								<field name="line_ids4"  options="{'no_create': True}"
+									attrs="{'invisible':[('state', 'not in', ['commission_president','done'])]}"
 									string=" طلبات النقل">
 									<tree editable="bottom" colors="red:is_conflected==True;">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
 										<field name="begin_work_date" readonly="1" />
-										<field name="recruiter_date" />
-										<field name="age" />
+										<field name="recruiter_date"  readonly="1" />
+										<field name="age"  readonly="1" />
 										<field name="last_evaluation_result" readonly="1" />
-										<field name="new_job_id" />
-										<field name="specific_group" />
-										<field name="new_department_id" />
-										<field name="new_degree_id" />
-										<field name="new_type_id" />
-										<field name="res_city" />
-										<field name="state" />
+										<field name="new_job_id"  readonly="1" />
+										<field name="specific_group" readonly="1" />
+										<field name="new_department_id"  readonly="1" />
+										<field name="new_degree_id"  readonly="1" />
+										<field name="new_type_id"  readonly="1" />
+										<field name="res_city" readonly="1" />
+										<field name="state"  readonly="1" />
+										<field name="accept_trasfert"
+											attrs="{'invisible':['|',('cancel_trasfert','!=',False),('state', 'in', [ 'done','refused'])], 'readonly':[('state', 'in', [ 'done','refused'])]}"/>
+										<field name="cancel_trasfert"
+											attrs="{'invisible':['|',('accept_trasfert','!=',False),('state', 'in', [ 'done','refused'])],'readonly':[('state', 'in', [ 'done','refused'])]}"/>
+
 										<field name="is_conflected" invisible="1" />
 									</tree>
 								</field>
 							</page>
 
-							<page string="طلبات النقل"
-								attrs="{'invisible':[('state', 'not in', ['commission_third'])],'readonly':[('state', 'in', [ 'commission_third','refused'])]}">
+							<page string="طلبات النقل" options="{'no_create': True}"
+								attrs="{'invisible':[('state', 'not in', ['commission_third'])],'readonly':[('state', 'in', [ 'done','refused'])]}">
 								<br></br>
-								<field name="line_ids5" options="{'no_create': True}" attrs="{'invisible':[('state', 'not in', ['commission_third'])],'readonly':[('state', 'in', [ 'commission_third','refused'])]}"
+								<field name="line_ids5"  options="{'no_create': True}"
+									attrs="{'invisible':[('state', 'not in', ['commission_third'])],'readonly':[('state', 'in', [ 'done','refused'])]}"
 									string=" طلبات النقل">
 									<tree editable="bottom" colors="red:is_conflected==True;">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
 										<field name="begin_work_date" readonly="1" />
-										<field name="recruiter_date" />
-										<field name="age" />
+										<field name="recruiter_date"  readonly="1" />
+										<field name="age"  readonly="1" />
 										<field name="last_evaluation_result" readonly="1" />
-										<field name="new_job_id" />
-										<field name="specific_group" />
-										<field name="new_department_id" />
-										<field name="new_degree_id" />
-										<field name="new_type_id" />
-										<field name="res_city" />
-										<field name="state" />
+										<field name="new_job_id"  readonly="1" />
+										<field name="specific_group"  readonly="1" />
+										<field name="new_department_id" readonly="1" />
+										<field name="new_degree_id"  readonly="1" />
+										<field name="new_type_id"  readonly="1" />
+										<field name="res_city" readonly="1" />
+										<field name="state"  readonly="1" />
+										<field name="accept_trasfert"
+											attrs="{'invisible':[('cancel_trasfert','!=',False)]}" />
+										<field name="cancel_trasfert"
+											attrs="{'invisible':[('accept_trasfert','!=',False)]}" />
 										<field name="is_conflected" invisible="1" />
 									</tree>
 								</field>

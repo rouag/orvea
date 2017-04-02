@@ -15,19 +15,19 @@ class hrIncrease(models.Model):
     _order = 'id desc'
     _description = u'العلاوة'
 
-    @api.multi
-    def get_default_date(self):
-        # get end date of month 01
-        date = get_hijri_month_end(HijriDate, Umalqurra, '01')
-        if fields.date.today() > date:
-            raise ValidationError(u"لا يمكن إنشاء علاوات بعد نهاية شهر محرّم! ")
-        else:
-            return fields.date.today()
+#     @api.multi
+#     def get_default_date(self):
+#         # get end date of month 01
+#         date = get_hijri_month_end(HijriDate, Umalqurra, '01')
+#         if fields.date.today() > date:
+#             raise ValidationError(u"لا يمكن إنشاء علاوات بعد نهاية شهر محرّم! ")
+#         else:
+#             return fields.date.today()
 
     name = fields.Char(string=' المسمى', readonly=1, states={'new': [('readonly', 0)]})
     number_decision = fields.Char(string='رقم القرار', required=1,states={'new': [('readonly', 0)]})
     date_decision = fields.Date(string=' تاريخ القرار', required=1,states={'new': [('readonly', 0)]})
-    date = fields.Date(string='تاريخ الطلب', readonly=1, default=get_default_date)
+    date = fields.Date(string='تاريخ الطلب', readonly=1)
     employee_deprivated_ids = fields.One2many('hr.employee.deprivation', 'increase_id', string=u'الموظفين المستثنين من العلاوة', required=1)
     employee_increase_ids = fields.One2many('hr.employee.increase.percent', 'increase_id', string=u'الموظفين المستحقين للعلاوة  ', required=1)
     state = fields.Selection([('draft', u'طلب'),
