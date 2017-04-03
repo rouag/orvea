@@ -21,7 +21,7 @@ class HrPayslip(models.Model):
 
     @api.multi
     def compute_deductions(self, allowance_total):
-        # العقوبات
+        # الحسميات
 
         line_ids = []
         #  حسم‬  الغياب‬ يكون‬ من‬  جميع البدلات . و  الراتب‬ الأساسي للموظفين‬ الرسميين‬ والمستخدمين
