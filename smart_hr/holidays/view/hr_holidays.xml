@@ -10,7 +10,8 @@
 			<field name="type">search</field>
 			<field name="arch" type="xml">
 				<search string="Search Leave">
-					<filter domain="[('state','=','draft')]" string="الحالة:طلب" name="draft" />
+					<filter domain="[('state','=','draft')]" string="الحالة:طلب"
+						name="draft" />
 					<filter domain="[('state','=','dm')]" string="الحالة:مدير المباشر"
 						name="dm" />
 					<filter domain="[('state','=','audit')]" string="الحالة:تدقيق "
@@ -40,7 +41,7 @@
 							context="{'group_by':'holiday_status_id'}" />
 					</group>
 				</search>
-				</field>
+			</field>
 		</record>
 
 		<!-- الطلبات -->
@@ -217,7 +218,7 @@
 								'invisible':['|', ('compensation_type','!=', 'money'), ('state','!=', 'done')]
 								}" />
 								<field name="current_holiday_stock"
-									attrs="{'invisible':[('holiday_status_id','in', [%(data_hr_holiday_status_illness)d,%(data_hr_holiday_exam)d])] }" />
+									attrs="{'invisible':[('holiday_status_id','in', [%(data_hr_holiday_status_illness)d,%(data_hr_holiday_exam)d,%(data_hr_holiday_status_exceptional)d])] }" />
 							</group>
 						</group>
 
