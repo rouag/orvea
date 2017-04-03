@@ -362,8 +362,7 @@ class HrEmployee(models.Model):
         for emp in self.search([('employee_state', '=', 'employee')]):
                 emp.promotion_duration += 1
                 # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
-                uncounted_absence_days = self.env['hr.attendance.report_day'].search_count(
-                    [('employee_id', '=', emp.id), ('action', '=', 'absence'), ('date', '=', today_date - relativedelta(days=1))])
+                uncounted_absence_days = self.env['hr.attendance.summary'].search([('employee_id', '=', emp.id), ('date', '=', today_date - relativedelta(days=1))]).absence
                 emp.promotion_duration -= uncounted_absence_days
 
     @api.model
@@ -372,9 +371,7 @@ class HrEmployee(models.Model):
         for emp in self.search([('employee_state', '=', 'employee')]):
             emp.service_duration += 1
                 # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
-            uncounted_absence_days = self.env['hr.attendance.report_day'].search_count(
-                        [('employee_id', '=', emp.id), ('action', '=', 'absence'),
-                         ('date', '=', today_date - relativedelta(days=1))])
+            uncounted_absence_days = self.env['hr.attendance.summary'].search([('employee_id', '=', emp.id), ('date', '=', today_date - relativedelta(days=1))]).absence
             emp.service_duration -= uncounted_absence_days
 
     @api.depends('birthday')

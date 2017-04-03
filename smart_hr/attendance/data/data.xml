@@ -28,9 +28,16 @@
 			<field name="code">03</field>
 		</record>
 
-		<record id="seq_hr_request_transfer" model="ir.sequence">
+		<record id="seq_hr_request_transfer_delay" model="ir.sequence">
 			<field name="name">طلبات تحويل ساعات التأخير</field>
-			<field name="code">seq.hr.request.transfer</field>
+			<field name="code">seq.hr.request.transfer.delay</field>
+			<field name="prefix"></field>
+			<field name="padding">3</field>
+		</record>
+		
+		<record id="seq_hr_request_transfer_absence" model="ir.sequence">
+			<field name="name">طلبات تحويل ايام الغياب بدون عذر</field>
+			<field name="code">seq.hr.request.transfer.absence</field>
 			<field name="prefix"></field>
 			<field name="padding">3</field>
 		</record>
