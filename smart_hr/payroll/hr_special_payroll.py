@@ -116,13 +116,13 @@ class HrPayslip(models.Model):
             sequence = 1
             # فروقات خارج الدوام
             if self.env.ref('smart_hr.hr_special_payslip_type_overtime') in self.payslip_type_ids:
-                line_ids += self.get_difference_overtime()
+                line_ids += self.get_special_difference_overtime()
             # فروقات الأنتداب
             if self.env.ref('smart_hr.hr_special_payslip_type_allowance') in self.payslip_type_ids:
-                line_ids += self.get_difference_deputation()
+                line_ids += self.get_special_difference_deputation()
             # فروقات النقل
             if self.env.ref('smart_hr.hr_special_payslip_type_tranfert') in self.payslip_type_ids:
-                line_ids += self.get_difference_transfert()
+                line_ids += self.get_special_difference_transfert()
 
             for line_id in line_ids:
                 vals = {'name': line_id['name'],
@@ -141,7 +141,7 @@ class HrPayslip(models.Model):
             payslip.line_ids = lines
 
     @api.multi
-    def get_difference_overtime(self):
+    def get_special_difference_overtime(self):
         line_ids = []
         overtime_line_obj = self.env['hr.overtime.ligne']
         grid_detail_allowance_obj = self.env['salary.grid.detail.allowance']
@@ -201,7 +201,7 @@ class HrPayslip(models.Model):
         return line_ids
 
     @api.multi
-    def get_difference_deputation(self):
+    def get_special_difference_deputation(self):
         line_ids = []
         deputation_obj = self.env['hr.deputation']
         deputations = deputation_obj.search([('employee_id', '=', self.employee_id.id),
@@ -263,7 +263,7 @@ class HrPayslip(models.Model):
         return line_ids
 
     @api.multi
-    def get_difference_transfert(self):
+    def get_special_difference_transfert(self):
         self.ensure_one()
         line_ids = []
         hr_setting = self.env['hr.setting'].search([], limit=1)
@@ -300,7 +300,7 @@ class HrPayslip(models.Model):
         # أوامر الإركاب
         transport_decision_ids = self.env['hr.transport.decision'].search([('employee_id', '=', self.employee_id.id),
                                                                            ('state', '=', 'done'),
-                                                                           ('transport_type', '=', self.env.ref('smart_hr.data_hr_transport_setting3')),
+                                                                           ('transport_type', '=', self.env.ref('smart_hr.data_hr_transport_setting3').id),
                                                                            ('is_paied', '=', False),
                                                                            ])
         if transport_decision_ids:

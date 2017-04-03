@@ -5,6 +5,8 @@ from openerp import models, fields, api, tools, _
 import openerp.addons.decimal_precision as dp
 from datetime import datetime
 from datetime import timedelta
+from dateutil.relativedelta import relativedelta
+from openerp.addons.smart_base.util.time_util import days_between
 from openerp.addons.smart_base.util.umalqurra import *
 from umalqurra.hijri_date import HijriDate
 from umalqurra.hijri import Umalqurra
@@ -215,9 +217,9 @@ class HrPayslip(models.Model):
         month = get_current_month_hijri(HijriDate)
         date = get_hijri_month_start(HijriDate, Umalqurra, int(month))
         period_id = self.env['hr.period'].search([('date_start', '<=', date),
-                                                       ('date_stop', '>=', date),
-                                                       ]
-                                                      )
+                                                  ('date_stop', '>=', date),
+                                                  ]
+                                                 )
         return period_id
     period_id = fields.Many2one('hr.period', string=u'الفترة', domain=[('is_open', '=', True)], readonly=1, required=1, states={'draft': [('readonly', 0)]}, default=get_default_period_id)
     days_off_line_ids = fields.One2many('hr.payslip.days_off', 'payslip_id', 'الإجازات والغيابات', readonly=True, states={'draft': [('readonly', False)]})
@@ -257,10 +259,6 @@ class HrPayslip(models.Model):
         # check the existance of difference and dedections for current month
         self.date_from = self.period_id.date_start
         self.date_to = self.period_id.date_stop
-#         if self.env['hr.difference'].search_count([('date_from', '=', self.date_from), ('date_to', '=', self.date_to), ('state', '=', 'done')]) == 0:
-#             raise ValidationError(u"لم يتم إحتساب الفروقات لهذا الشهر")
-#         if self.env['hr.deduction'].search_count([('date_from', '=', self.date_from), ('date_to', '=', self.date_to), ('state', '=', 'done')]) == 0:
-#             raise ValidationError(u"لم يتم إحتساب الحسميات لهذا الشهر")
         if not self.employee_id and self.period_id:
             res = {}
             employee_ids = self.env['hr.employee'].search([('employee_state', '=', 'employee')])
@@ -378,22 +376,21 @@ class HrPayslip(models.Model):
         :param employee_id:
         :param period_id:
         """
-        deduction_ids = self.env['hr.deduction.line'].search([('state', '=', 'waiting'),
-                                                              ('employee_id', '=', employee_id),
-                                                              ('period_id', '=', period_id.id)])
+        deduction_ids = self.compute_deductions()
         # deduction_type
         deductions = {}
         for deduction in deduction_ids:
-            if deduction.deduction_type_id.id in deductions:
-                deductions[deduction.deduction_type_id.id]['number_of_days'] += deduction.amount
+            deduction_type_obj = self.env['hr.deduction.type'].search([('id', '=', deduction['deduction_type_id'])], limit=1)
+            if deduction_type_obj.id in deductions:
+                deductions[deduction_type_obj.id]['number_of_days'] += deduction.amount
             else:
-                deductions[deduction.deduction_type_id.id] = {'name': deduction.deduction_type_id.name,
-                                                              'sequence': 5,
-                                                              'code': deduction.deduction_type_id.id,
-                                                              'number_of_days': deduction.amount,
-                                                              'type': deduction.deduction_type_id.type,
-                                                              # 'number_of_hours': working_hours_on_day,you can get the working_hours_on_day only for day
-                                                              }
+                deductions[deduction_type_obj.id] = {'name': deduction_type_obj.name,
+                                                     'sequence': 5,
+                                                     'code': deduction_type_obj.id,
+                                                     'number_of_days': deduction['amount'],
+                                                     'type': deduction_type_obj.type,
+                                                     # 'number_of_hours': working_hours_on_day,you can get the working_hours_on_day only for day
+                                                     }
         deductions = [value for key, value in deductions.items()]
         return deductions
 
@@ -610,21 +607,21 @@ class HrPayslip(models.Model):
                 difference_total += diff_allowance_amount
                 sequence += 1
 #             # 4 - الفروقات
-#             difference_lines = difference_line_obj.search([('employee_id', '=', employee.id), ('difference_id.state', '=', 'done'), ('period_id', '=', payslip.period_id.id)])
-#             for difference in difference_lines:
-#                 difference_val = {'name': difference.name,
-#                                   'slip_id': payslip.id,
-#                                   'employee_id': employee.id,
-#                                   'rate': 0.0,
-#                                   'number_of_days': difference.number_of_days,
-#                                   'amount': difference.amount,
-#                                   'category': 'difference',
-#                                   'type': 'difference',
-#                                   'sequence': sequence
-#                                   }
-#                 lines.append(difference_val)
-#                 difference_total += difference.amount
-#                 sequence += 1
+            difference_lines = payslip.compute_differences()
+            for difference in difference_lines:
+                difference_val = {'name': difference['name'],
+                                  'slip_id': payslip.id,
+                                  'employee_id': employee.id,
+                                  'rate': 0.0,
+                                  'number_of_days': difference['number_of_days'],
+                                  'amount': difference['amount'],
+                                  'category': 'difference',
+                                  'type': 'difference',
+                                  'sequence': sequence
+                                  }
+                lines.append(difference_val)
+                difference_total += difference['amount']
+                sequence += 1
             # 4- الحسميات
             retard_leave_days = 0
             absence_days = 0
