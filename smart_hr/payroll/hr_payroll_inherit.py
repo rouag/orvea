@@ -519,8 +519,6 @@ class HrPayslip(models.Model):
             # case of  نوع التعويض    مقابل ‫مادي‬ ‬   اجازة التعويض
             if grid_id:
                 if holiday_id.compensation_type and holiday_id.compensation_type == 'money':
-                    print '------holiday_id.current_holiday_stock------', holiday_id.token_compensation_stock
-                    print '------basic_salary--------', basic_salary
                     amount = (holiday_id.token_compensation_stock * (basic_salary / 30))
                     if amount != 0:
                         vals = {'difference_id': self.id,
