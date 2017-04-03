@@ -311,7 +311,8 @@
 						<button name="promotion_confirmed" string="موافقة" type="object"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" states="employee_confirmed" />
 
-						<button name="promotion_refuse" string="رفض" type="object"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" states="employee_confirmed" />
 						<field name="state" widget="statusbar" statusbar_visible="employee_confirmed,done,refuse" />
 					</header>

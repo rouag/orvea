@@ -170,6 +170,7 @@ class HrDeduction(models.Model):
 
 class HrDeductionLine(models.Model):
     _name = 'hr.deduction.line'
+    _rec_name = 'employee_id'
 
     # TODO: get name
     deduction_id = fields.Many2one('hr.deduction', string=' الحسميات', ondelete='cascade')

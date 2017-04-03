@@ -109,3 +109,24 @@ class hr_refuse_holidays5_wizard(models.TransientModel):
                 rec_id = model_obj.browse(cx.get('active_id'))
                 rec_id.message_post(u'سبب الرفض: ' + unicode(wiz.message))
                 return rec_id.button_refuse_revision_response()
+            
+            
+            
+            
+class hr_refuse_holidays6_wizard(models.TransientModel):
+    _name = "hr.refuse.holidays6.wizard"
+    _description = "Refuse Wizard"
+
+    message = fields.Text(string = u'سبب الرفض')
+
+    @api.multi
+    def button_refuse(self):
+        # Variables
+        cx = self.env.context or {}
+        # Write refuse message
+        for wiz in self:
+            if wiz.message and cx.get('active_id', False) and cx.get('active_model', False):
+                model_obj = self.env[cx.get('active_model')]
+                rec_id = model_obj.browse(cx.get('active_id'))
+                rec_id.message_post(u'سبب الرفض: ' + unicode(wiz.message))
+                return rec_id.button_delay_hrm()

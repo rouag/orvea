@@ -47,7 +47,7 @@
 								</p>
 								<br></br>
 								<p>
-								1- تكليف الموظف / <t t-esc="o.employee_id.name" /> ، الذي يشغل وظيفة (<t t-esc="o.employee_id.job_id.name.name" />) مرتبه (<t t-esc="o.employee_id.job_id.grade_id.code" />) رقم (<t t-esc="o.employee_id.job_id.number" />) للقيام بأعمال وظيفة (<t t-esc="o.employee_id.job_id.name.name" />).
+								1- تكليف الموظف / <t t-esc="o.employee_id.display_name" /> ، الذي يشغل وظيفة (<t t-esc="o.employee_id.job_id.name.name" />) مرتبه (<t t-esc="o.employee_id.grade_id.code" />) رقم (<t t-esc="o.employee_id.job_id.number" />) للقيام بأعمال وظيفة (<t t-esc="o.employee_id.job_id.name.name" />).
 								</p>
 								<p>2- يعتبر تكليفه إعتباراً من تاريخ صدور هذا القرار ولمدة سنة.
 								</p>

@@ -114,6 +114,20 @@
 			<field name="code">hr.decision.sequence</field>
 			<field eval="1" name="number_increment" />
 			<field name="padding">4</field>
+			
+			
+			
 		</record>
+		
+		<record id="hr_deprivation_premium_seq" forcecreate="1" model="ir.sequence">
+			<field name="name">hr deprivation premium</field>
+			<field name="code">hr.deprivation.premium.seq</field>
+			<field eval="1" name="number_increment" />
+			<field name="padding">6</field>
+			
+			
+			
+		</record>
+		
 	</data>
 </openerp>
