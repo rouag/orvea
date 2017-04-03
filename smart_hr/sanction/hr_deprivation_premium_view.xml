@@ -39,7 +39,7 @@
 					<sheet>
 						<group>
 							<group>
-					<field name="name" 	attrs="{'readonly':[('state', 'in', ['waiting','order','done','cancel'])]}" />
+					<field name="name"  readonly="1"	/>
 								<field name="date_deprivation"
 									attrs="{'readonly':[('state', 'in', ['waiting','order','done','cancel'])]}" />
 								<field name="years_id"

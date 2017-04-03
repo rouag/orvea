@@ -50,9 +50,9 @@
 							states="audit" icon="fa-check" class="oe_inline oe_stat_button"
 							groups="smart_hr.group_exelence_employee" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<button name="button_refuse_audit" string="رفض" type="object"
-							groups="smart_hr.group_exelence_employee" states="audit" icon="fa-times"
-							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="%(action_hr_deputation_refuse_wizard)d" string="رفض"
+							type="action" groups="smart_hr.group_exelence_employee" states="audit"
+							icon="fa-times" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_waiting" string="موافق" type="object"
 							states="waiting" icon="fa-check" class="oe_inline oe_stat_button"
@@ -79,12 +79,13 @@
 					<sheet>
 
 						<label name="override balance" string="مدة الانتداب تستوجب قرار من الوزير المختص"
-							style="color: red;font-weight:bold;" attrs="{'invisible':['|', ('ministre_report', '=', False), ('external_deputation_balance_override', '=', True)]}" />
-						<separator/>
+							style="color: red;font-weight:bold;"
+							attrs="{'invisible':['|', ('ministre_report', '=', False), ('external_deputation_balance_override', '=', True)]}" />
+						<separator />
 						<label name="override balance" string="رصيد الانتداب غير كافي"
 							style="color: red;font-weight:bold;"
 							attrs="{'invisible':[('deputation_balance_override', '=', False)]}" />
-						<separator/>
+						<separator />
 						<label name="override external deputation balance" string="الانتداب  الخارجي يتطلب قرار وزير"
 							style="color: red;font-weight:bold;"
 							attrs="{'invisible':[('external_deputation_balance_override', '=', False)]}" />

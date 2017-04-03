@@ -466,7 +466,7 @@ class HrPromotionLigneEmployeeJob(models.Model):
             self.done = True
 
     @api.multi
-    def promotion_refuse(self):
+    def button_refuse(self):
         if self.new_job_id:
             self.new_job_id.state = 'unoccupied'
             self.state = "refuse"
@@ -535,6 +535,7 @@ class HrPromotionDemande(models.Model):
                               ('cancel', 'رفض'),
                               ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
     activation_date = fields.Date(string='تاريخ التفعيل')
+    defferential_is_paied = fields.Boolean(string='defferential is paied', default=False)
 
     @api.model
     def create(self, vals):

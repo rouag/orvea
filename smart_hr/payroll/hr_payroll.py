@@ -451,7 +451,6 @@ class HrPayslip(models.Model):
                 break
         bonus_line_obj = self.env['hr.bonus.line']
         loan_obj = self.env['hr.loan']
-        difference_line_obj = self.env['hr.difference.line']
         for payslip in self:
             # delete old line
             payslip.line_ids.unlink()
@@ -554,22 +553,78 @@ class HrPayslip(models.Model):
                 lines.append(bonus_val)
                 allowance_total += bonus_amount
                 sequence += 1
-            # 4 - الفروقات
-            difference_lines = difference_line_obj.search([('employee_id', '=', employee.id), ('difference_id.state', '=', 'done'), ('period_id', '=', payslip.period_id.id)])
+            # 4 -  الفروقات الجديدة
+            difference_lines = self.env['hr.differential.line'].search([('difference_id.state', '=', 'done'),
+                                                                        ('difference_id.period_id', '=', payslip.period_id.id),
+                                                                        ('employee_id', '=', employee.id)])
+            diff_basic_salary_amount = 0.0
+            diff_retirement_amount = 0.0
+            diff_allowance_amount = 0.0
+            diff_number_of_days = 0.0
             for difference in difference_lines:
-                difference_val = {'name': difference.name,
+                diff_basic_salary_amount += difference.basic_salary_amount
+                diff_retirement_amount += difference.retirement_amount
+                diff_allowance_amount += difference.allowance_amount
+                for rec in difference.defferential_detail_ids:
+                    diff_number_of_days += rec.number_of_days
+            if diff_basic_salary_amount != 0:
+                difference_val = {'name': 'فرق الراتب الأساسي',
                                   'slip_id': payslip.id,
                                   'employee_id': employee.id,
                                   'rate': 0.0,
-                                  'number_of_days': difference.number_of_days,
-                                  'amount': difference.amount,
+                                  'number_of_days': diff_number_of_days,
+                                  'amount': diff_basic_salary_amount,
                                   'category': 'difference',
                                   'type': 'difference',
                                   'sequence': sequence
                                   }
                 lines.append(difference_val)
-                difference_total += difference.amount
+                difference_total += diff_retirement_amount
                 sequence += 1
+            if diff_retirement_amount != 0:
+                difference_val = {'name': 'فرق التقاعد',
+                                  'slip_id': payslip.id,
+                                  'employee_id': employee.id,
+                                  'rate': 0.0,
+                                  'number_of_days': diff_number_of_days,
+                                  'amount': diff_retirement_amount,
+                                  'category': 'difference',
+                                  'type': 'difference',
+                                  'sequence': sequence
+                                  }
+                lines.append(difference_val)
+                difference_total += diff_retirement_amount
+                sequence += 1
+            if diff_allowance_amount != 0:
+                difference_val = {'name': 'فرق البدلات',
+                                  'slip_id': payslip.id,
+                                  'employee_id': employee.id,
+                                  'rate': 0.0,
+                                  'number_of_days': diff_number_of_days,
+                                  'amount': diff_allowance_amount,
+                                  'category': 'difference',
+                                  'type': 'difference',
+                                  'sequence': sequence
+                                  }
+                lines.append(difference_val)
+                difference_total += diff_allowance_amount
+                sequence += 1
+#             # 4 - الفروقات
+#             difference_lines = difference_line_obj.search([('employee_id', '=', employee.id), ('difference_id.state', '=', 'done'), ('period_id', '=', payslip.period_id.id)])
+#             for difference in difference_lines:
+#                 difference_val = {'name': difference.name,
+#                                   'slip_id': payslip.id,
+#                                   'employee_id': employee.id,
+#                                   'rate': 0.0,
+#                                   'number_of_days': difference.number_of_days,
+#                                   'amount': difference.amount,
+#                                   'category': 'difference',
+#                                   'type': 'difference',
+#                                   'sequence': sequence
+#                                   }
+#                 lines.append(difference_val)
+#                 difference_total += difference.amount
+#                 sequence += 1
             # 4- الحسميات
             retard_leave_days = 0
             absence_days = 0

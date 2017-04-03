@@ -47,6 +47,7 @@ class HrImproveSituatim(models.Model):
     basic_salary1 = fields.Float(string='الراتب الأساسي')
     net_salary1 = fields.Float(string='صافي الراتب')
     is_same_type = fields.Boolean(string='نفس الصنف',related="type_improve.is_same_type")
+    defferential_is_paied = fields.Boolean(string='defferential is paied', default=False)
 
 
     @api.onchange('type_id1')

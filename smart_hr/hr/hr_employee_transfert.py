@@ -6,9 +6,6 @@ from datetime import date, datetime, timedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 
-
-
-
 class HrEmployeeTransfert(models.Model):
     _name = 'hr.employee.transfert'
     _inherit = ['mail.thread']
@@ -82,6 +79,7 @@ class HrEmployeeTransfert(models.Model):
     recruiter_date = fields.Date(string=u'تاريخ التعين بالجهة', readonly=1)
     age = fields.Integer(string=u'السن', readonly=1)
     is_paied = fields.Boolean(string='is paied', default=False)
+    defferential_is_paied = fields.Boolean(string='defferential is paied', default=False)
     payslip_id = fields.Many2one('hr.payslip')
 
     @api.multi

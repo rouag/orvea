@@ -118,6 +118,7 @@ class HrDecisionAppoint(models.Model):
     decision_apoint_allowance_ids = fields.One2many('decision.appoint.allowance', 'decision_decision_appoint_id', string=u'بدلات التعين')
     location_allowance_ids = fields.One2many('decision.appoint.allowance', 'location_decision_appoint_id', string=u'بدلات المنطقة')
     is_enterview_manager = fields.Boolean(string=u'مقابلة شخصية',related="type_appointment.enterview_manager")
+    defferential_is_paied = fields.Boolean(string='defferential is paied', default=False)
 
     @api.multi
     @api.onchange('type_appointment')
@@ -597,7 +598,7 @@ class HrDecisionAppoint(models.Model):
             if salary_grid_line and not self.type_appointment.max_pension:
                 self.basic_salary = salary_grid_line.basic_salary
                 self.transport_allow = salary_grid_line.transport_allowance_amout
-                self.retirement = salary_grid_line.retirement
+                self.retirement = self.basic_salary * salary_grid_line.retirement / 100.0
                 self.net_salary = salary_grid_line.net_salary
 
     @api.onchange('date_direct_action')

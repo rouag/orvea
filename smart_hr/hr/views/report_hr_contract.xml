@@ -84,7 +84,7 @@
 								<p style="font-size:22px;" align="right">
 									المادة : ١
 									يعمل
-									<span t-field="o.employee_id.name" />
+									<span t-field="o.employee_id.display_name" />
 									الطرف الثاني لدى الطرف الاول في
 									بوظيفة
 									/
