@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<template id="hr_holidays_report">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_hr.external_layout_hr">
+						<t t-if="len(o.employee_id.ids) == 1">
+							<div class="page" style="direction:rtl;">
+								<div class="row">
+									<div class="col-md-12 text-center">
+										<b>
+											<p align="center">قرار حسم بسبب التأخير فردي</p>
+
+											<p align="center">
+												قرار إداري رقم
+												<span t-esc="o.num_decision" />
+												و تاريخ
+												<span t-esc="get_hijri_date(o.date_decision, '-')" />
+											</p>
+											<p align="left">
+												رقم الهوية الوطنية:
+												<span t-field="o.employee_id.identification_id" />
+
+											</p>
+
+										</b>
+									</div>
+
+								</div>
+
+							</div>
+						</t>
+
+
+
+
+
+
+
+
+
+					</t>
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>

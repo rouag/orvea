@@ -27,6 +27,8 @@ class HrRequestTransferDelayHours(models.Model):
     department_level2_id = fields.Many2one('hr.department', string='القسم', readonly=1, states={'dm': [('readonly', 0)]})
     department_level3_id = fields.Many2one('hr.department', string='الشعبة', readonly=1, states={'dm': [('readonly', 0)]})
     salary_grid_type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1, states={'dm': [('readonly', 0)]},)
+    num_decision = fields.Char(string=u'رقم القرار')
+    date_decision = fields.Date(string=u'تاريخ القرار')
 
     @api.multi
     def action_audit(self):
@@ -43,7 +45,7 @@ class HrRequestTransferDelayHours(models.Model):
     def action_done(self):
         self.state = 'done'
         for employee in self.employee_ids:
-            employee.employee_id.delay_hours_balance -= employee.number_request
+            employee.employee_id.delay_hours_balance -= employee.number_request*7
 
     @api.multi
     def button_cancel(self):
@@ -63,8 +65,8 @@ class HrEmployeeDelayHours(models.Model):
 
     name = fields.Char(string='التسلسل', readonly=1)
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', domain=[('employee_state', '=', 'employee')], resquired=1)
-    number_request = fields.Integer(string='عدد الساعات المراد تحويلها', required=1)
-    balance = fields.Float(string='الرصيد الحالي', readonly=1, related='employee_id.delay_hours_balance')
+    number_request = fields.Integer(string='عدد الايام المراد تحويلها', required=1)
+    balance = fields.Float(string='(ساعات)الرصيد الحالي', readonly=1, related='employee_id.delay_hours_balance')
     request_id = fields.Many2one('hr.request.transfer.delay.hours')
 
     @api.onchange('employee_id')
@@ -99,8 +101,8 @@ class HrEmployeeDelayHours(models.Model):
 
     @api.onchange('number_request')
     def onchange_number_request(self):
-        if self.number_request > self.balance:
-            self.number_request = 0.0
+        if self.number_request*7 > self.balance:
+            self.number_request = self.balance // 7
             warning = {'title': _('تحذير!'), 'message': _(u'رصيد الموظف غير كافي')}
             return {'warning': warning}
 
