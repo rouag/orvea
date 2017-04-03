@@ -201,6 +201,7 @@
         'attendance/security/attendance_security.xml',
         'attendance/security/ir.model.access.csv',
         'attendance/data/data.xml',
+        'attendance/data/schedulers.xml',
         'attendance/menu.xml',
         'attendance/view/hr_resource_calendar.xml',
         'attendance/view/hr_attendance_schedule.xml',
@@ -222,6 +223,7 @@
         'attendance/views/attendance_summary_report.xml',
         'attendance/views/monthly_summary_report.xml',
         'attendance/views/monthly_summary_report_all.xml',
+        'attendance/views/request_transfer_delay_hours_report.xml',
         'attendance/views/report.xml',
         
         # تصنيف الوظائف

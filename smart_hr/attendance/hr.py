@@ -51,6 +51,6 @@ class HrEmployee(models.Model):
         for emp in self.search([('employee_state', '=', 'employee')]):
                 # مدّة غياب‬ ‫الموظف بدو‬عذر
                 attendance_summary = self.env['hr.attendance.summary'].search([('employee_id', '=', emp.id), ('date', '=', today_date - relativedelta(days=1))])
-                emp.delay_hours += (attendance_summary.retard+attendance_summary.leave)
+                emp.delay_hours_balance += (attendance_summary.retard+attendance_summary.leave)
                 emp.absence_balance += attendance_summary.absence
 
