@@ -24,32 +24,45 @@ class HrPayslip(models.Model):
     @api.multi
     def compute_deductions(self):
         line_ids = []
-        # get حسميات  from الخلاصة الشهرية للغيابات والتأخير
-        monthly_summary_obj = self.env['hr.monthly.summary.line']
-        deduction_type_obj = self.env['hr.deduction.type']
-        domain = [('monthly_summary_id.name', '=', self.period_id.id), ('monthly_summary_id.state', '=', 'done')]
-        monthly_summarys_retard = monthly_summary_obj.search(domain + [('days_retard', '!=', 0.0)])
-        monthly_summarys_absence = monthly_summary_obj.search(domain + [('days_absence', '!=', 0.0)])
-        retard_leave_type = deduction_type_obj.search([('type', '=', 'retard_leave')])[0]
-        absence_type = deduction_type_obj.search([('type', '=', 'absence')])[0]
-        for summary in monthly_summarys_retard + monthly_summarys_absence:
-            employee = summary.employee_id
-            if employee in self.employee_ids:
-                val = {'deduction_id': self.id,
-                       'employee_id': employee.id,
-                       'department_id': employee.department_id and employee.department_id.id or False,
-                       'job_id': employee.job_id and employee.job_id.id or False,
-                       'number': employee.number,
-                       'state': 'waiting'}
-                if summary.days_retard:
-                    val.update({'amount': summary.days_retard, 'deduction_type_id': retard_leave_type.id})
-                    line_ids.append(val)
-                elif summary.days_absence:
-                    val_absence = val.copy()
-                    val_absence.update({'amount': summary.days_absence, 'deduction_type_id': absence_type.id})
-                    line_ids.append(val_absence)
         # العقوبات
+        line_ids += self.deduction_days()
         line_ids += self.deduction_sanctions()
+        return line_ids
+
+    @api.multi
+    def deduction_days(self, allowance_total):
+        line_ids = []
+        abscence_ids = self.env['hr.employee.absence.days'].search([('request_id.date', '>=', self.date_from),
+                                                                    ('request_id.date', '<=', self.date_to),
+                                                                    ('request_id.state', '=', 'done')
+                                                                    ])
+        for line in abscence_ids:
+            salary_grid, basic_salary = line.employee_id.get_salary_grid_id(False)
+            deduction_absence = (basic_salary + allowance_total) / 30.0 * line.number_request
+            vals = {'name': 'غياب بدون عذر',
+                    'employee_id': line.employee_id.id,
+                    'number_of_days': line.number_request,
+                    'number_of_hours': 0.0,
+                    'amount': deduction_absence,
+                    'category': 'deduction',
+                    'type': 'absence'}
+            line_ids.append(vals)
+
+        delays_ids = self.env['hr.employee.delay.hours'].search([('request_id.date', '>=', self.date_from),
+                                                                 ('request_id.date', '<=', self.date_to),
+                                                                 ('request_id.state', '=', 'done')
+                                                                 ])
+        for line in delays_ids:
+            salary_grid, basic_salary = line.employee_id.get_salary_grid_id(False)
+            deduction_delay = (basic_salary) / 30.0 * line.number_request
+            vals = {'name': 'ساعات تأخير',
+                    'employee_id': line.employee_id.id,
+                    'number_of_days': 0.0,
+                    'number_of_hours': line.number_request,
+                    'amount': deduction_delay,
+                    'category': 'deduction',
+                    'type': 'retard_leave'}
+            line_ids.append(vals)
         return line_ids
 
     @api.multi
