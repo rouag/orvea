@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="hr_deprivation_premium_report">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_hr.external_layout_hr">
+						<div class="page" style="direction:rtl;">
+								<br></br>
+									<div class="text-center">
+										<b align="left">قرار حرمان موظف من علاوة دورية</b>
+										<p>
+											قرار إداري رقم
+											<span t-esc="o.name" />
+											بتاريخ
+											<span t-esc="get_hijri_date(o.order_date, '-')" />
+										</p>
+									</div>
+
+
+									<br></br>
+									<div class="text-right">
+									إن مدير عام الشؤون الإدارية و المالية
+
+									<br></br>
+									بناء على الصلاحيات الممنوحة له
+
+									و اشارة إلى خطاب رئيس التفتيش و المتابعة رقم
+									<br></br>
+									(
+									<span t-esc="o.name" />
+									)و تاريخ
+									<span t-esc="get_hijri_date(o.order_date, '-')" />
+									المتضمن ما راته الدائرة من حرمان الموظف الموضح إسمه و بياناته
+									أدناه من علاوة دورية واحدة.
+
+									و استناد للمادة رقم (٣٢/اولا/٤) من نظام تاديب الموظفين و لموافقة
+									معالي رئيس هيئة على ذلك.
+
+									يقرر ما يلي
+									<t t-foreach="o.employee_ids" t-as="line">
+										<span t-field="line.display_name" />
+										<br></br>
+									</t>
+									٢.يبلغ هذا القرار لمن يلزم لإنفاذه
+</div>
+								
+								<br></br>
+								<br></br>
+								<br></br>
+							</div>
+					</t>
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+								
+							
+								
