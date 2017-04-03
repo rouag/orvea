@@ -42,10 +42,6 @@ access_hr_increase_hrm,name_access_hr_increase_hrm,model_hr_increase,group_hrm,1
 access_hr_increase_type_hrm,name_access_hr_increase_type_hrm,model_hr_increase_type,group_hrm,1,1,1,0
 access_hr_increase_percent_hrm,name_access_hr_increase_percent_hrm,model_hr_employee_increase_percent,group_hrm,1,1,1,0
 ,,,,,,,
-access_hr_difference_all,name_hr_difference_all,model_hr_difference,,1,0,0,0
-access_hr_difference_manager,name_hr_difference_manager,model_hr_difference,group_difference_management,1,1,1,0
-access_hr_difference_line_all,name_hr_difference_line_all,model_hr_difference_line,,1,0,0,0
-access_hr_difference_line_manager,name_hr_difference_line_manager,model_hr_difference_line,group_difference_management,1,1,1,0
 access_hr_payslip_difference_history, name_hr_payslip_difference_history,model_hr_payslip_difference_history,,1,1,1,1
 access_hr_differential_all,name_hr_differential_all,model_hr_differential,,1,0,0,0
 access_hr_differential_manager,name_hr_differential_manager,model_hr_differential,group_difference_management,1,1,1,0

@@ -24,7 +24,6 @@
 			<field name="paperformat_id" ref="report.paperformat_euro" />
 			<field name="download_filename">${o.name}_قرار تحويل ساعات التأخير.pdf</field>
 		</record>
-
 	</data>
 </openerp>
 		
