@@ -31,10 +31,9 @@
 							states="new" />
 						<button name="action_done" string="إعتماد" type="object"
 							states="waiting" groups="smart_hr.group_bonus_management" />
-						
+
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
-							type="action"
-							states="waiting" groups="smart_hr.group_bonus_management" />
+							type="action" states="waiting" groups="smart_hr.group_bonus_management" />
 						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
 					</header>
 					<sheet>
@@ -44,7 +43,8 @@
 								<field name="name" />
 								<field name="date" />
 								<field name="type" />
-								<field name="allowance_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+								<field name="allowance_id"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 									attrs="{'invisible':[('type','!=','allowance')], 'required': [('type','=','allowance')]}" />
 								<field name="reward_id"
 									attrs="{'invisible':[('type','!=','reward')], 'required': [('type','=','reward')]}" />
@@ -54,9 +54,11 @@
 									attrs="{'invisible':[('type','!=','increase')], 'required': [('type','=','increase')]}" />
 								<label for="period_from_id" />
 								<div>
-									<field name="period_from_id" class="oe_inline" options='{"no_open": True, "no_create": True}'/>
+									<field name="period_from_id" class="oe_inline"
+										options='{"no_open": True, "no_create": True}' />
 									<label string="-" class="oe_inline" />
-									<field name="period_to_id" class="oe_inline" options='{"no_open": True, "no_create": True}'/>
+									<field name="period_to_id" class="oe_inline"
+										options='{"no_open": True, "no_create": True}' />
 								</div>
 							</group>
 							<group>
@@ -81,7 +83,7 @@
 						</group>
 						<notebook>
 							<page string="التفاصيل">
-													
+
 								<field name="line_ids" nolabel="1">
 									<tree editable="bottom" create="0" edit="0">
 										<field name="employee_id" />
@@ -106,7 +108,7 @@
 								<button name="%(smart_hr.action_wizard_bonus_employee)d"
 									type="action" string="إضافة موظفون" class="oe_link oe_edit_only"
 									attrs="{'invisible':[('state','!=','new')]}" />
-		
+
 							</page>
 							<page string="سجل التغييرات">
 								<field name="history_ids" nolabel="1" readonly="1">
@@ -149,9 +151,13 @@
 						domain="[('type','=','draft', 'reward')]" />
 					<filter name="indemnity" string="التعويضات"
 						domain="[('type','=','draft', 'indemnity')]" />
+						
 					<group expand="0" string="تجميع حسب">
 						<filter name="date" string="التاريخ" context="{'group_by':'date'}" />
 						<filter name="type" string="النوع" context="{'group_by':'type'}" />
+						<filter name="allowance" string="البدلات" context="{'group_by':'allowance'}" />
+						<filter name="reward" string="المكافآت" context="{'group_by':'reward'}" />
+						<filter name="indemnity" string="التعويضات" context="{'group_by':'indemnity'}" />
 					</group>
 				</search>
 			</field>

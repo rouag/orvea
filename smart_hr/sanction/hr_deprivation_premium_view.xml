@@ -33,28 +33,35 @@
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" states="waiting" groups="smart_hr.group_responsable_sanction"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
-						<field name="state" widget="statusbar" statusbar_visible="draft,waiting,done,cancel" />
+						<field name="state" widget="statusbar" statusbar_visible="draft,waiting,order,done,cancel" />
 
 					</header>
 					<sheet>
 						<group>
 							<group>
+					<field name="name" 	attrs="{'readonly':[('state', 'in', ['waiting','order','done','cancel'])]}" />
 								<field name="date_deprivation"
-									attrs="{'readonly':[('state', 'in', ['waiting','done','cancel'])]}" />
-
+									attrs="{'readonly':[('state', 'in', ['waiting','order','done','cancel'])]}" />
+								<field name="years_id"
+									attrs="{'readonly':[('state', 'in', ['waiting','order','done','cancel'])]}" />
 							</group>
 							<group>
-								<field name="name"
-									attrs="{'readonly':[('state', 'in', ['waiting','done','cancel'])]}" />
+								
 								<field name="order_date"
-									attrs="{'readonly':[('state', 'in', ['waiting','done','cancel'])]}" />
+									attrs="{'invisible':[('state',' in',['draft','waiting'])],'readonly':[('state', 'in', ['order','done','cancel'])]}" />
 								<field name="deprivation_file" filename="deprivation_file_name"
-									attrs="{'readonly':[('state', 'in', ['waiting','done','cancel'])]}" />
+									attrs="{'invisible':[('state','in',['draft','waiting'])],'readonly':[('state', 'in', ['order','done','cancel'])]}" />
 								<field name="deprivation_file_name" invisible="1" />
 							</group>
 						</group>
-
+						<group>
+							<group col="4" string="فلترة">
+								<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]" />
+								<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]" />
+								<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]" />
+								<field name="salary_grid_type_id" />
+							</group>
+						</group>
 						<group>
 							<notebook>
 								<page string="قائمة المحرومين من العلاوة">
@@ -70,8 +77,6 @@
 												<button
 													name="%(smart_hr.action_hr_deprivation_confirm_wizard_exclusion)d"
 													type="action" string="إستبعاد" icon="fa-refresh" />
-
-
 											</tree>
 										</field>
 									</group>

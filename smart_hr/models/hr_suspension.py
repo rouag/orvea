@@ -106,9 +106,7 @@ class hr_suspension(models.Model):
 
     @api.multi
     def button_suspension_end(self):
-        print"ffffffffffffffffffffff"
         suspension_end_obj = self.env['hr.suspension.end']
-        print "dddddd"
         vals = {
                 'employee_id': self.employee_id.id,
                 'suspension_id': self.id,
