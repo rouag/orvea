@@ -13,7 +13,7 @@ class hrSanction(models.Model):
     _order = 'id desc'
     _description = u'إجراء العقوبات'
 
-    name = fields.Char(string='رقم القرار', required=1, readonly=1, states={'draft': [('readonly', 0)]})
+    name = fields.Char(string='رقم القرار',readonly=1, states={'draft': [('readonly', 0)]})
     order_date = fields.Date(string='تاريخ العقوبة', default=fields.Datetime.now(), readonly=1)
     sanction_text = fields.Text(string=u'محتوى العقوبة', readonly=1, states={'draft': [('readonly', 0)]})
     order_picture = fields.Binary(string='صورة القرار', required=1, readonly=1, states={'draft': [('readonly', 0)]}, attachment=True)

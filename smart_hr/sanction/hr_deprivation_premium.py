@@ -4,6 +4,7 @@ from openerp import models, fields, api
 from openerp.exceptions import ValidationError
 from openerp.tools import SUPERUSER_ID
 from umalqurra.hijri_date import HijriDate
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 
 class HrDeprivationPremium(models.Model):
@@ -12,7 +13,7 @@ class HrDeprivationPremium(models.Model):
     _order = 'id desc'
     _description = u'قرار حرمان من العلاوة'
 
-    name = fields.Char(string='رقم القرار')
+    name = fields.Char(string='رقم القرار',)
     order_date = fields.Date(string='تاريخ القرار', default=fields.Datetime.now())
     deprivation_file = fields.Binary(string='ملف القرار', states={'draft': [('readonly', 0)]})
     date_deprivation = fields.Date(string='التاريخ' , default=fields.Datetime.now(), states={'draft': [('readonly', 0)]})
@@ -32,11 +33,14 @@ class HrDeprivationPremium(models.Model):
                               ('done', u'منتهي'),
                               ('refused', u'مرفوضة'),
                               ], string='الحالة', readonly=1, default='draft')
-    
+
+
     @api.multi
     def action_draft(self):
-        for deprivation in self:
-            deprivation.state = 'waiting'
+        self.ensure_one()
+        self.name = self.env['ir.sequence'].get('hr.deprivation.premium.seq')
+        self.state = 'waiting'
+
 
     @api.multi
     def button_refuse(self):
@@ -62,17 +66,8 @@ class HrDeprivationPremium(models.Model):
                     lines.append(employee_val)
             sanction.difference_ids = lines
             rec.state = 'done'
-            
-
-#             
-#     @api.model
-#     def create(self, vals):
-#         res = super(HrDeprivationPremium, self).create(vals)
-#         # Sequence
-#         vals = {}
-#         vals['name'] = self.env['ir.sequence'].get('hr.deprivation.premium.seq')
-#         res.write(vals)
-#         return res
+ 
+   
 
 class HrdeprivationPremiumLigne(models.Model):
     _name = 'hr.deprivation.premium.ligne'

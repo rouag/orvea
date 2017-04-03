@@ -27,6 +27,9 @@
 			<field name="view_id" ref="view_form_hr_refuse_training_wizard" />
 			<field name="target">new</field>
 		</record>
+		
+		
+		
 
 	</data>
 </openerp>

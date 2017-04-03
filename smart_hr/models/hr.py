@@ -185,7 +185,7 @@ class HrEmployee(models.Model):
     @api.depends('type_id')
     def _compute_type_id(self):
         for rec in self:
-            if rec.type_id.is_member is True:
+            if rec.type_id.is_member:
                 rec.is_member = True
 
     @api.multi
@@ -212,6 +212,12 @@ class HrEmployee(models.Model):
         else:
             self.father_middle_name = u'بن'
             self.grandfather_middle_name = u'بن'
+
+    @api.onchange('type_id')
+    def _onchange_type_id(self):
+        if self.type_id.is_member:
+            self.is_member = True
+
 
     @api.multi
     def _compute_loans_count(self):

@@ -858,6 +858,9 @@ class HrJobMoveDeparrtment(models.Model):
                               ], readonly=1, default='new')
     out_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الصادر')
     in_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الوارد')
+    decision_number = fields.Char(string=u'رقم القرار')
+    decision_date = fields.Date(string=u'تاريخ القرار')
+    decision_file = fields.Binary(string=u'نسخة القرار', attachment=True)
 
     @api.multi
     def action_waiting(self):
@@ -1212,9 +1215,6 @@ class HrJobMoveGrade(models.Model):
 
     @api.multi
     def action_job_unreserve(self):
-        self.ensure_one()
-        for rec in self.job_movement_ids:
-            rec.job_id.write({'state': 'unoccupied', 'number': rec.job_number, 'grade_id': rec.new_grade_id.id})
         self.action_done()
 
     @api.one
@@ -1260,7 +1260,7 @@ class HrJobMoveGradeLine(models.Model):
 
     job_move_grade_id = fields.Many2one('hr.job.move.grade', string='الوظيفة', required=1, ondelete="cascade")
     job_id = fields.Many2one('hr.job', string='الوظيفة', required=1)
-    job_number = fields.Char(string='رقم الوظيفة', required=1)
+    job_number = fields.Char(string='رقم الوظيفة', required=1, readonly=1)
     job_name_code = fields.Char(related="job_id.name.number", string='الرمز', readonly=1)
     type_id = fields.Many2one('salary.grid.type', string='نوع السلم', readonly=1, required=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة الحالية', readonly=1, required=1)

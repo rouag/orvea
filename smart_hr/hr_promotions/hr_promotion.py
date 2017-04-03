@@ -466,7 +466,7 @@ class HrPromotionLigneEmployeeJob(models.Model):
             self.done = True
 
     @api.multi
-    def promotion_refuse(self):
+    def button_refuse(self):
         if self.new_job_id:
             self.new_job_id.state = 'unoccupied'
             self.state = "refuse"
