@@ -535,6 +535,7 @@ class HrPromotionDemande(models.Model):
                               ('cancel', 'رفض'),
                               ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
     activation_date = fields.Date(string='تاريخ التفعيل')
+    defferential_is_paied = fields.Boolean(string='defferential is paied', default=False)
 
     @api.model
     def create(self, vals):

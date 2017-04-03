@@ -17,12 +17,28 @@ class HrDifferential(models.Model):
     _order = 'id desc'
     _description = u'الفروقات'
 
+    @api.multi
+    def get_default_period_id(self):
+        month = get_current_month_hijri(HijriDate)
+        date = get_hijri_month_start(HijriDate, Umalqurra, int(month))
+        period_id = self.env['hr.period'].search([('date_start', '<=', date),
+                                                  ('date_stop', '>=', date),
+                                                  ]
+                                                 )
+        return period_id
+
     name = fields.Char(default="الفروقات")
+    period_id = fields.Many2one('hr.period', string=u'الفترة', domain=[('is_open', '=', True)], default=get_default_period_id, required=1, readonly=1, states={'new': [('readonly', 0)]})
     date = fields.Date(string='تاريخ الإنشاء', required=1, default=fields.Datetime.now(), readonly=1)
     state = fields.Selection([('new', 'إعداد'),
                               ('waiting', 'في إنتظار الإعتماد'),
                               ('cancel', 'مرفوض'),
                               ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
+    action_type = fields.Selection([('promotion', 'ترقية'),
+                                    ('decision_appoint', 'تعيين'),
+                                    ('tranfert', 'نقل'),
+                                    ('improve_condition', 'تحسين وضع')
+                                    ], string=' نوع الإجراء', readonly=1, required=1, default='promotion', states={'new': [('readonly', 0)]})
     line_ids = fields.One2many('hr.differential.line', 'difference_id', string='الفروقات', readonly=1, states={'new': [('readonly', 0)]})
     department_level1_id = fields.Many2one('hr.department', string='الفرع', readonly=1, states={'new': [('readonly', 0)]})
     department_level2_id = fields.Many2one('hr.department', string='القسم', readonly=1, states={'new': [('readonly', 0)]})
@@ -67,19 +83,51 @@ class HrDifferential(models.Model):
         # تقسيم فترة الفرق الفترات شهرية
         for employee_id in self.employee_ids:
             # check  if there is a promotion demand for current employee
-            promotion_id = self.env['hr.promotion.employee.demande'].search([('employee_id', '=', employee_id.id),
-                                                                            ('state', '=', 'done')], limit=1)
-            if promotion_id and promotion_id.activation_date > promotion_id.create_date:
-                date_start = promotion_id.create_date
-                date_stop = promotion_id.activation_date
+            if self.action_type == 'promotion':
+                record_id = self.env['hr.promotion.employee.demande'].search([('employee_id', '=', employee_id.id),
+                                                                              ('defferential_is_paied', '=', False),
+                                                                              ('state', '=', 'done')], limit=1)
+                if record_id:
+                    date_start = record_id.create_date
+                    date_stop = record_id.activation_date
+            if self.action_type == 'decision_appoint':
+                record_id = self.env['hr.decision.appoint'].search([('is_started', '=', True),
+                                                                    ('state_appoint', '=', 'active'),
+                                                                    ('employee_id', '=', employee_id.id),
+                                                                    ('defferential_is_paied', '=', False),
+                                                                    ], order="date_direct_action desc", limit=1)
+                if record_id:
+                    date_start = record_id.date_hiring
+                    date_stop = record_id.date_direct_action
+            if self.action_type == 'transfert':
+                record_id = self.env['hr.employee.transfert'].search([('state', '=', 'done'),
+                                                                      ('employee_id', '=', employee_id.id),
+                                                                      ('defferential_is_paied', '=', False),
+                                                                      ], limit=1)
+                if record_id:
+                    # TODO: review date_stop
+                    date_start = record_id.create_date
+                    date_stop = record_id.create_date
+            if self.action_type == 'improve_condition':
+                record_id = self.env['hr.improve.situation'].search([('state', '=', 'done'),
+                                                                     ('employee_id', '=', employee_id.id),
+                                                                     ('defferential_is_paied', '=', False),
+                                                                     ], limit=1)
+                if record_id:
+                    # TODO: review date_stop
+                    date_start = record_id.order_date
+                    date_stop = record_id.order_date
+            if record_id and date_stop > date_start:
                 vals = {'difference_id': self.id,
                         'employee_id': employee_id.id,
                         'date_start': date_start,
                         'date_stop': date_stop,
+                        'model_name': record_id._name,
+                        'object_id': record_id.id,
                         }
                 line_ids.append(vals)
             self.line_ids = line_ids
-        # generateing periodes for each line
+        # generate periodes for each line
         for rec in self.line_ids:
             rec.generate_periodes()
 
@@ -90,6 +138,8 @@ class HrDifferential(models.Model):
     @api.multi
     def action_done(self):
         self.state = 'done'
+        for line in self.line_ids:
+            self.env[line.model_name].search([('id', '=', line.object_id)], limit=1).write({'defferential_is_paied': True})
 
     @api.one
     def button_refuse(self):
@@ -116,6 +166,8 @@ class HrDifferentialLine(models.Model):
     total_amount = fields.Float(string='المجموع')
     defferential_detail_ids = fields.One2many('hr.differential.detail', 'difference_line_id')
     line_allowance_ids = fields.One2many('hr.differential.line.allowance', 'line_id', string='البدلات')
+    model_name = fields.Char('model name')
+    object_id = fields.Integer('Object name')
 
     @api.multi
     def generate_periodes(self):
@@ -194,36 +246,6 @@ class HrDifferentialLine(models.Model):
                 amount = (new_elt.amount) * number_of_days
                 line_allowance_ids.append({'line_id': self.id,
                                            'allowance_id': new_elt.allowance_id.id,
-                                           'amount': amount
-                                           })
-                allowance_amount += amount
-        # step 2: decision_appoint allowances
-        last_active_decision_appoint_id = self.env['hr.decision.appoint'].search([('is_started', '=', True),
-                                                                                  ('state_appoint', '=', 'active'),
-                                                                                  ('employee_id', '=', self.employee_id.id),
-                                                                                  ], order="date_direct_action desc", limit=1)
-        last_closed_decision_appoint_id = self.env['hr.decision.appoint'].search([('is_started', '=', True),
-                                                                                  ('state_appoint', '=', 'close'),
-                                                                                  ('employee_id', '=', self.employee_id.id),
-                                                                                  ], order="date_direct_action desc", limit=1)
-        for new_decision_apoint_allowance_id in last_active_decision_appoint_id.decision_apoint_allowance_ids:
-            find = False
-            for old_decision_apoint_allowance_id in last_closed_decision_appoint_id.decision_apoint_allowance_ids:
-                if new_decision_apoint_allowance_id.allowance_id == old_decision_apoint_allowance_id.allowance_id:
-                    #  it's a old allowance
-                    amount = (new_decision_apoint_allowance_id.amount - old_decision_apoint_allowance_id.amount) * number_of_days
-                    line_allowance_ids.append({'line_id': self.id,
-                                               'allowance_id': new_decision_apoint_allowance_id.allowance_id.id,
-                                               'amount': amount
-                                               })
-                    allowance_amount += amount
-                    find = True
-                    break
-            if not find:
-                #  it's a new allowance
-                amount = (new_decision_apoint_allowance_id.amount) * number_of_days
-                line_allowance_ids.append({'line_id': self.id,
-                                           'allowance_id': new_decision_apoint_allowance_id.allowance_id.id,
                                            'amount': amount
                                            })
                 allowance_amount += amount
