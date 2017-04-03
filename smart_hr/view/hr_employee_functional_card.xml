@@ -70,12 +70,13 @@
 									<field name="emp_age" />
 									<field name="birthday_location" />
 									<field name="identification_id" />
-									<field name="passport_id" attrs="{'invisible': [('employee_id.is_saudian','=', True)]}" />
-									<field name="hoveizeh_id" attrs="{'invisible': [('employee_id.is_saudian','=', False)]}" />
-									<field name="passport_date" attrs="{'invisible': [('employee_id.is_saudian','=', True)]}" />
-									<field name="hoveizeh_date" attrs="{'invisible': [('employee_id.is_saudian','=', False)]}" />
-									<field name="passport_place" attrs="{'invisible': [('employee_id.is_saudian','=', True)]}" />
-									<field name="hoveizeh_place" attrs="{'invisible': [('employee_id.is_saudian','=', False)]}" />
+									<field name="is_saudian" invisible="1"></field>
+									<field name="passport_id" attrs="{'invisible': [('is_saudian','=', True)]}" />
+									<field name="hoveizeh_id" attrs="{'invisible': [('is_saudian','=', False)]}" />
+									<field name="passport_date" attrs="{'invisible': [('is_saudian','=', True)]}" />
+									<field name="hoveizeh_date" attrs="{'invisible': [('is_saudian','=', False)]}" />
+									<field name="passport_place" attrs="{'invisible': [('is_saudian','=', True)]}" />
+									<field name="hoveizeh_place" attrs="{'invisible': [('is_saudian','=', False)]}" />
 									<field name="education_level" />
 									<field name="specialization_ids" widget="many2many_tags" />
 								</group>

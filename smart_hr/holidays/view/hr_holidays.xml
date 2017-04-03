@@ -4,18 +4,43 @@
 
 		<!-- view search -->
 
-		<record model="ir.ui.view" id="view_hr_holidays_filter_inherit">
+		<record model="ir.ui.view" id="hr_holidays.view_hr_holidays_filter">
 			<field name="name">hr.holidays.filter.inherit</field>
 			<field name="model">hr.holidays</field>
 			<field name="type">search</field>
-			<field name="inherit_id" ref="hr_holidays.view_hr_holidays_filter" />
 			<field name="arch" type="xml">
-				<field name="name" position="replace" />
-				<field name="employee_id" position="replace">
+				<search string="Search Leave">
+					<filter domain="[('state','=','draft')]" string="الحالة:طلب" name="draft" />
+					<filter domain="[('state','=','dm')]" string="الحالة:مدير المباشر"
+						name="dm" />
+					<filter domain="[('state','=','audit')]" string="الحالة:تدقيق "
+						name="audit" />
+					<filter domain="[('state','=','external_audit')]" string="الحالة:جهة خارجية"
+						name="external_audit" />
+					<filter domain="[('state','=','revision')]" string="الحالة:مراجعة الخطاب"
+						name="revision" />
+					<filter domain="[('state','=','revision_response')]" string="الحالة:تسجيل رد الجهة"
+						name="revision_response" />
+					<filter domain="[('state','=','done')]" string="الحالة:اعتمدت"
+						name="done" />
+					<filter domain="[('state','=','cancel')]" string="الحالة:ملغاة"
+						name="cancel" />
+					<filter domain="[('state','=','cutoff')]" string="الحالة:مقطوعة"
+						name="cutoff" />
+					<filter domain="[('state','=','refuse')]" string="الحالة:مرفوضة"
+						name="refuse" />
 					<field name="employee_id" string="الموظف"
 						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+					<field name="department_id" />
+					<field name="holiday_status_id" />
+					<group expand="0" string="Group By">
+						<filter name="group_employee" string="Employee"
+							context="{'group_by':'employee_id'}" />
+						<filter name="group_type" string="Type"
+							context="{'group_by':'holiday_status_id'}" />
+					</group>
+				</search>
 				</field>
-			</field>
 		</record>
 
 		<!-- الطلبات -->
@@ -29,7 +54,7 @@
 				<xpath expr="/tree" position='replace'>
 					<tree string="طلبات الاجازات">
 						<field name="name" string="رقم الاجازة" />
-						<field name="is_extension"/>
+						<field name="is_extension" />
 						<field name="employee_id" />
 						<field name="holiday_status_id" />
 						<field name="duration" />
@@ -88,7 +113,7 @@
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="button_delay_hrm" string="رفض" type="object"
 							states="hrm" groups="smart_hr.group_hrm" icon="fa-check"
-							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />							
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="button_accept_external_audit" string="موافق"
 							type="object" states="external_audit" groups="smart_hr.group_holidays_checker"
@@ -121,16 +146,14 @@
 							type="object" icon="fa-check" class="oe_inline oe_stat_button" />
 
 						<button name="button_cancel" context="{'operation': 'cancel'}"
-							string="إلغاء الإجازة" type="object" 
-							attrs="{'invisible':[('display_button_cancel','=',False)]}"
-							icon="fa-times-circle-o" class="oe_inline oe_stat_button"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							string="إلغاء الإجازة" type="object"
+							attrs="{'invisible':[('display_button_cancel','=',False)]}" icon="fa-times-circle-o"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="button_cut" context="{'operation': 'cut'}"
-							string="قطع الاجازة" type="object" 
-							attrs="{'invisible':[('display_button_cut','=',False)]}"
-							icon="fa-times-circle-o" class="oe_inline oe_stat_button"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							string="قطع الاجازة" type="object"
+							attrs="{'invisible':[('display_button_cut','=',False)]}" icon="fa-times-circle-o"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="%(report_hr_holidays)d" string="طباعة القرار"
 							groups="smart_hr.group_hrm" type="action" states="done" icon="fa-print"
 							class="oe_inline oe_stat_button" />
@@ -154,14 +177,17 @@
 						</group>
 						<group>
 							<group>
-							<field name="extended_holiday_id" attrs="{'invisible': [('is_extension','=',False)]}" readonly="True"/>
+								<field name="extended_holiday_id" attrs="{'invisible': [('is_extension','=',False)]}"
+									readonly="True" />
 								<field name="employee_id" required="1" />
 								<field name="with_advanced_salary"
 									attrs="{'invisible': [('hide_with_advanced_salary','=',True)]}" />
-								<field name="salary_number" attrs="{'invisible': [('with_advanced_salary','=',False)],'readonly': [('state','not in',['draft','audit'])]}" />
+								<field name="salary_number"
+									attrs="{'invisible': [('with_advanced_salary','=',False)],'readonly': [('state','not in',['draft','audit'])]}" />
 							</group>
 							<group>
-								<field name="holiday_status_id" options='{"no_open": True, "no_create": True}' attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)]}"
+								<field name="holiday_status_id" options='{"no_open": True, "no_create": True}'
+									attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)]}"
 									required="1" />
 								<field name="entitlement_type"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
@@ -209,7 +235,7 @@
 							<field name='compute_as_deputation'
 								attrs="{'invisible':[('display_compute_as_deputation','=',False)]}" />
 							<field name="deputation_id"
-									domain="[('state', '=', 'done'), ('employee_id', '=', employee_id),
+								domain="[('state', '=', 'done'), ('employee_id', '=', employee_id),
                                              ('order_date', '&gt;=', (context_today().replace(year = context_today().year-1, day=31, month=12)).strftime('%Y-%m-%d')),
                                             ('order_date', '&lt;=', (context_today().replace(day=30, month=12)).strftime('%Y-%m-%d'))]"
 								attrs="{'invisible':[('compute_as_deputation','=',False)], 'required':[('compute_as_deputation','=',True)]}" />
@@ -347,7 +373,7 @@
 									attrs="{'readonly':[('state','!=','external_audit')], 'required':[('state','=','external_audit')]}" />
 								<field name="outspeech_file_name" invisible="1" />
 								<field name="outspeech_file" filename="outspeech_file_name"
-									attrs="{'readonly':[('state','!=','external_audit')], 'required':[('state','=','external_audit')]}"/>
+									attrs="{'readonly':[('state','!=','external_audit')], 'required':[('state','=','external_audit')]}" />
 							</group>
 							<group
 								attrs="{'invisible':[('state','not in',['revision_response','done'])],}">
