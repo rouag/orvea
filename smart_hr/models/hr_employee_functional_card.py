@@ -60,7 +60,7 @@ class HrEmployeeFunctionnalCard(models.Model):
     hoveizeh_id = fields.Char(string=u'رقم الحفيظة', related='employee_id.hoveizeh_id')
     hoveizeh_date = fields.Date(string=u'تاريخ إصدار الحفيظة ',related='employee_id.hoveizeh_date')
     hoveizeh_place = fields.Many2one('res.city', string=u'مكان إصدار الحفيظة',related='employee_id.hoveizeh_place')
-
+    is_saudian = fields.Boolean(realated='employee_id.is_saudian')
     def _compute_education_level(self):
         for card in self:
             employee_id = card.employee_id
