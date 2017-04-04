@@ -25,7 +25,7 @@ class HrDeprivationPremium(models.Model):
     department_level3_id = fields.Many2one('hr.department', string='الشعبة', readonly=1, states={'draft': [('readonly', 0)]})
     salary_grid_type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1, states={'draft': [('readonly', 0)]},)
     deprivation_ids = fields.One2many('hr.deprivation.premium.ligne', 'deprivation_id',
-                                      string=u'قائمة المحرومين من العلاوة', readonly=1,
+                                      string=u'قائمة المحرومين من العلاوة', 
                                       states={'draft': [('readonly', 0)]})
     state = fields.Selection([('draft', '  طلب'),
                               ('waiting', u'في إنتظار الاعتماد'),
@@ -121,11 +121,11 @@ class HrdeprivationPremiumLigne(models.Model):
     _description = u' قائمة المحرومين من العلاوة'
 
     deprivation_id = fields.Many2one('hr.deprivation.premium', string=' قائمة المحرومين من العلاوة', ondelete='cascade')
-  #  state_deprivation = fields.Selection(related='deprivation_id.state' ,string=u'الحالة')
+    state = fields.Selection(related='deprivation_id.state' ,string=u'الحالة')
     employee_id = fields.Many2one('hr.employee', string=u'  الموظف', required=1)
     raison = fields.Char(string='السبب' )
     is_cancel = fields.Boolean(string='مستبعد' , default=False)
-    state = fields.Selection([('waiting' , 'في إنتظار التاكيد'),
+    state_deprivation = fields.Selection([('waiting' , 'في إنتظار التاكيد'),
                               ('excluded', 'مستبعد'),
                               ('done', 'تم التاكيد'),
                               ], string='الحالة', readonly=1, default='waiting')

@@ -28,6 +28,7 @@ class hr_suspension_end(models.Model):
     ], string=u'الحالة', default='draft', )
     condemned = fields.Boolean(string=u'‫صدر‬ في حقه‬ عقوبة‬', default=False)
     sentence = fields.Integer(string=u'مدة العقوبة (بالأيام)')
+    suspension_attachment = fields.Binary(string=u'الصورة الضوئية للخطاب', attachment=True)
 
     @api.model
     def create(self, vals):

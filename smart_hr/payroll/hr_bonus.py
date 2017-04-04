@@ -41,13 +41,15 @@ class hrBonus(models.Model):
                               ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
     line_ids = fields.One2many('hr.bonus.line', 'bonus_id', string='التفاصيل', readonly=1, states={'new': [('readonly', 0)]})
     history_ids = fields.One2many('hr.bonus.history', 'bonus_id', string='سجل التغييرات', readonly=1)
+    
     employee_ids = fields.Many2many('hr.employee', string='الموظفين', readonly=1, states={'new': [('readonly', 0)]})
     deccription = fields.Char(string='ملاحظات', )
+    
     department_level1_id = fields.Many2one('hr.department', string='الفرع', readonly=1, states={'new': [('readonly', 0)]})
     department_level2_id = fields.Many2one('hr.department', string='القسم', readonly=1, states={'new': [('readonly', 0)]})
     department_level3_id = fields.Many2one('hr.department', string='الشعبة', readonly=1, states={'new': [('readonly', 0)]})
     salary_grid_type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1, states={'new': [('readonly', 0)]},)
-    
+  
     @api.onchange('department_level1_id', 'department_level2_id', 'department_level3_id', 'salary_grid_type_id')
     def onchange_department_level(self):
         dapartment_obj = self.env['hr.department']
@@ -80,9 +82,6 @@ class hrBonus(models.Model):
 
 
 
-    
-    
-    
     @api.onchange('period_from_id', 'period_to_id')
     def onchange_date(self):
         if self.period_from_id and self.period_to_id and self.period_from_id.date_stop > self.period_to_id.date_stop:
@@ -92,7 +91,16 @@ class hrBonus(models.Model):
 
     @api.one
     def action_waiting(self):
-        self.state = 'waiting'
+        for rec in self :
+            line_ids=[]
+            for line in rec.employee_ids :
+                vals = {'employee_id':line.id,
+                        'compute_method':rec.compute_method,
+                         'period_from_id': rec.period_from_id.id,
+                        'period_to_id': rec.period_to_id.id,}
+                line_ids.append(vals)
+            rec.line_ids = line_ids
+            rec.state = 'waiting'
 
     @api.multi
     def action_done(self):
@@ -152,20 +160,13 @@ class hrBonusLine(models.Model):
     amount = fields.Float(string='القيمة')
     percentage = fields.Float(string='النسبة')
     min_amount = fields.Float(string='الحد الأدنى')
-    
-    department_level1_id = fields.Many2one('hr.department', related='bonus_id.department_level1_id')
-    department_level2_id = fields.Many2one('hr.department', related='bonus_id.department_level2_id')
-    department_level3_id = fields.Many2one('hr.department', related='bonus_id.department_level3_id')
-    salary_grid_type_id = fields.Many2one('salary.grid.type', related='bonus_id.salary_grid_type_id')
-
-   
-
+    state = fields.Selection(related='bonus_id.state' ,string=u'الحالة')
 
     compute_method = fields.Selection([('amount', 'مبلغ'),
                                        ('percentage', 'نسبة من الراتب الأساسي'),
                                        ('salary_grid', 'تحتسب من سلم الرواتب'),
                                        ('job', 'تحتسب من  الوظيفة'),
-                                       ('job_location', 'تحتسب  حسب مكان العمل')], string='طريقة الإحتساب', required=1)
+                                       ('job_location', 'تحتسب  حسب مكان العمل')], required=1,string='طريقة الإحتساب',)
     state = fields.Selection([('progress', 'ساري'),
                               ('stop', 'إيقاف'),
                               ('expired', 'منتهي')

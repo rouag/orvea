@@ -42,6 +42,13 @@ class HrGrouupGeneral(models.Model):
     ]
 
 
+class HrTypeJobBooking(models.Model):
+    _name = 'hr.type.job.booking'
+    _description = u'أنواع حجز الوظائف '
+   
+    name = fields.Char(string=u' المسمى  ', required=1,)
+
+
 class HrJobTraining(models.Model):
     _name = 'hr.job.training'
     name = fields.Char(string=u' المسمى الدورات التدريبية ', required=1, related='traninig_id.name', readonly=1)

@@ -103,12 +103,14 @@ class hr_termination(models.Model):
             # Update Employee State
             ter.employee_id.emp_state = 'terminated'
             # Update Job
-            ter.employee_id.job_id.employee_id = False
+            ter.employee_id.job_id.write({'state': 'unoccupied', 'category': 'unooccupied_termination'})
+            ter.employee_id.job_id.employee = False
             ter.employee_id.job_id = False
             # Update State
             ter.state = 'done'
             # Set the termination date with the date of the final approve
             ter.termination_date = fields.Date.today()
+
         self.create_report_attachment()
 
     @api.one

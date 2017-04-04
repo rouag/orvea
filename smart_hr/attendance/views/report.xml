@@ -15,14 +15,24 @@
 			report_type="qweb-pdf" string="الخلاصة الشهرية للغيابات والتأخير - عام"
 			name="smart_hr.report_monthly_summary_all" file="smart_hr.report_monthly_summary_all"
 			paperformat="smart_base.paperformat_landscape" />
-			
-		<report id="report_request_transfer_delay_hours" model="hr.request.transfer.delay.hours" string="طلب تحويل ساعات التأخير"
-			report_type="qweb-pdf" name="smart_hr.request_transfer_delay_hours_report" file="smart_hr.request_transfer_delay_hours_report"
+
+		<report id="report_request_transfer_delay_hours" model="hr.request.transfer.delay.hours"
+			string="طلب تحويل ساعات التأخير" report_type="qweb-pdf"
+			name="smart_hr.request_transfer_delay_hours_report" file="smart_hr.request_transfer_delay_hours_report"
 			menu="False" />
 
 		<record id="report_request_transfer_delay_hours" model="ir.actions.report.xml">
 			<field name="paperformat_id" ref="report.paperformat_euro" />
-			<field name="download_filename">${o.name}_قرار تحويل ساعات التأخير.pdf</field>
+			<field name="download_filename">قرار_تحويل_ساعات_التأخير.pdf</field>
+		</record>
+		<report id="report_request_transfer_absence_days" model="hr.request.transfer.absence"
+			string="طلب تحويل ايام غياب" report_type="qweb-pdf"
+			name="smart_hr.request_transfer_absence_days_report" file="smart_hr.request_transfer_absence_days_report"
+			menu="False" />
+
+		<record id="report_request_transfer_absence_days" model="ir.actions.report.xml">
+			<field name="paperformat_id" ref="report.paperformat_euro" />
+			<field name="download_filename">قرار_تحويل_ايام_غياب.pdf</field>
 		</record>
 	</data>
 </openerp>

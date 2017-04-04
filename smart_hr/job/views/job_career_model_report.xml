@@ -87,7 +87,7 @@
 									<div>
 										<t  t-foreach="recuitments" t-as="line">
 											<div style="width:20%;float:right;"><span t-esc="line.employee_id.number"/></div>
-											<div style="width:20%;float:right;"><span t-esc="line.employee_id.name"/></div>
+											<div style="width:20%;float:right;"><span t-esc="line.employee_id.display_name"/></div>
 											<div style="width:20%;float:right;"><span t-esc="line.emp_job_id.name.name"/></div>
 											<div style="width:20%;float:right;"><span t-esc="get_hijri_date(line.date_direct_action, '-')" /></div>
 											<div style="width:20%;float:right;"><span t-esc="line.type_appointment.name"/></div>

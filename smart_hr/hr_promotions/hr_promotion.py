@@ -324,9 +324,9 @@ class HrPromotion(models.Model):
                                                       'notif': True,
                                                       'res_id': self.id,
                                                       'res_action': 'smart_hr.action_hr_decision_appoint', })
-
-            for job in self.job_promotion_line_ids:
-                job.new_job_id.occupied_promotion = False
+                emp.employee_id.job_id.write({'state': 'unoccupied', 'category': 'unoccupied_promotion' ,'employee': False})
+                for job in self.job_promotion_line_ids:
+                    job.employee_id.new_job_id.occupied_promotion = False
 
     @api.one
     def button_refuse(self):
