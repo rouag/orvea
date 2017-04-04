@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<template id="request_transfer_absence_days_report">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_hr.external_layout_hr">
+						<t t-if="len(o.employee_ids.ids) == 1">
+							<div class="page" style="direction:rtl;">
+								<div class="row">
+									<div class="col-md-12 text-center">
+										<b>
+											<p align="center" style="font-size:22px;">قرار حسم بسبب الغياب و التأخر عن
+												العمل فردي
+											</p>
+
+											<p align="center" style="font-size:22px;">
+												قرار إداري رقم
+												<span t-esc="o.num_decision" />
+												و تاريخ
+												<span t-esc="get_hijri_date(o.date_decision, '-')" />
+											</p>
+											<p align="left" style="font-size:22px;">
+												رقم الهوية الوطنية:
+												<span t-field="o.employee_ids[0].employee_id.identification_id" />
+
+											</p>
+
+										</b>
+									</div>
+
+								</div>
+								<div class="row">
+
+									<br />
+									<br />
+									<p style="font-size:22px;">ان مدير عام الشؤون الادارية و المالية المكلف</p>
+									<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
+									<p style="font-size:22px;">
+										و إشارة إلى خطاب
+										<span t-field="o.speech_source" />
+										رقم(
+										<span t-field="o.num_speech" />
+										)
+										و تاريخ
+										<span t-esc="get_hijri_date(o.date_speech, '-')" />
+										المتضمن تغيب
+										<span t-field="o.employee_ids[0].employee_id.type_id.name" />
+										ب
+										<span t-field="o.employee_ids[0].employee_id.department_id.name" />
+										<span t-field="o.employee_ids[0].employee_id.display_name" />
+										لمدة
+										<span t-field="o.employee_ids[0].number_request" />
+										ايام
+									</p>
+									<p style="font-size:22px;">و استنادا للمادة(٢١) من نظام الخدمة المدنية و
+										لموافقتنا على
+										ذلك
+									</p>
+									<p align="center" style="font-size:22px;">:يقرر ما يلى</p>
+									<p style="font-size:22px;">
+										١.حسم راتب و بدلات المذكور اعلاه مدة الغياب المحددة و عددها (
+										<span t-field="o.employee_ids[0].number_request" />
+										) ايام للاسباب الموضحة
+										اعلاه مع مراعاة ما جاء بقرار مجلس
+										الوزراء (٧٤٧) لعام ١٣٩١ الذي نظم
+										مجازاة الاشخاص الذين يتغيبون
+										بعد عطلتي عيد الفطر و عيد الاضحى
+										.
+										و ذلك بمضاعفة الحسم اليوم
+										بيومين حتى خمسة عشر يوما من بدء
+										العمل بعد العطلة
+									</p>
+
+									<p style="font-size:22px;">٢. يبلغ هذا القرار لمن يلزم لإنفاذه</p>
+								</div>
+								<p align="left" style="font-size:22px;">
+									مدير عام الشؤون الادارية و المالية
+									المكلف
+								</p>
+							</div>
+						</t>
+
+
+						<t t-if="len(o.employee_ids.ids) > 1">
+							<t t-call="smart_hr.external_layout_hr">
+
+								<div class="page" style="direction:rtl;">
+									<div class="row">
+										<div class="col-md-12 text-center">
+											<b>
+												<p align="center" style="font-size:22px;">
+													(قرار حسم بسبب الغياب و التأخر عن العمل (جماعي
+												</p>
+
+												<p align="center" style="font-size:22px;">
+													قرار إداري رقم
+													<span t-esc="o.num_decision" />
+													و تاريخ
+													<span t-esc="get_hijri_date(o.date_decision, '-')" />
+												</p>
+												<p align="left" style="font-size:22px;">
+													رقم الهوية الوطنية:
+													<span t-field="o.employee_ids[0].employee_id.identification_id" />
+
+												</p>
+
+											</b>
+										</div>
+
+									</div>
+									<div class="row">
+
+										<br />
+										<br />
+										<p style="font-size:22px;">ان مدير عام الشؤون الادارية و المالية المكلف</p>
+										<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
+										<p style="font-size:22px;">
+											و إشارة إلى خطاب
+											<span t-field="o.speech_source" />
+											رقم(
+											<span t-field="o.num_speech" />
+											)
+											و تاريخ
+											<span t-esc="get_hijri_date(o.date_speech, '-')" />
+											المتضمن غياب و تأخر
+											الموضحة اسماؤهم بالبيان المرفق
+											عن العمل بدون عذر او مبرر نظامي
+											كل حسب
+											المدة الموضحة امام اسمه خلال شهر
+											............
+										</p>
+										<p style="font-size:22px;">و استنادا للمادة(٢١) من نظام الخدمة المدنية و
+											لموافقتنا على
+											ذلك
+										</p>
+										<p align="center" style="font-size:22px;">:يقرر ما يلى</p>
+										<p style="font-size:22px;">
+											١يحسم من راتب و بدلات الموضح اسماؤهم بالبيان المرفق مدد ا
+											لغياب و التاخير
+											المحددة امام اسم كل منهم و عددهم
+											<span t-esc="len(o.employee_ids.ids)" />
+											اشخاص
+										</p>
+
+										<p style="font-size:22px;">٢. يبلغ هذا القرار لمن يلزم لإنفاذه</p>
+									</div>
+
+
+
+
+									<p align="left" style="font-size:22px;">
+										مدير عام الشؤون الادارية و المالية
+										المكلف
+									</p>
+
+
+								</div>
+
+								<div class="page" style="direction:rtl;">
+									<p align="center">
+										بيان حسم ا يام الغياب و ساعات التاخير من الراتب لمرفق بالقرار
+										رقم
+										<span t-esc="o.num_decision" />
+										و تاريخ
+										<span t-esc="get_hijri_date(o.date_decision, '-')" />
+									</p>
+
+
+									<table class="table table-condensed">
+										<thead>
+											<tr>
+												<th class="text-center">الإسم</th>
+												<th class="text-center">رقم الملف</th>
+												<th class="text-center">المرتبة</th>
+												<th class="text-center">ساعات التاخير </th>
+												<th class="text-center">ايام الغياب</th>
+												<th class="text-center">فترة الغياب</th>
+												<th class="text-center">المقر الرئيسي</th>
+
+											</tr>
+										</thead>
+										<tbody>
+											<t t-foreach="o.employee_ids" t-as="line">
+												<tr>
+
+													<td>
+														<span t-field="line.employee_id.display_name" />
+													</td>
+													<td>
+														<span t-field="line.employee_id.number" />
+													</td>
+													<td>
+														<span t-field="line.employee_id.grade_id.name" />
+													</td>
+													<td>
+														-
+													</td>
+													<td>
+														<span t-field="line.number_request" />
+													</td>
+
+													<td>
+														-
+													</td>
+													<td>
+														<span t-field="line.employee_id.department_id.name" />
+													</td>
+
+												</tr>
+											</t>
+										</tbody>
+									</table>
+								</div>
+
+							</t>
+						</t>
+					</t>
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>

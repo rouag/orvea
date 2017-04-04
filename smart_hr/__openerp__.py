@@ -202,6 +202,7 @@
         'attendance/data/data.xml',
         'attendance/data/schedulers.xml',
         'attendance/menu.xml',
+        'attendance/views/report.xml',
         'attendance/view/hr_resource_calendar.xml',
         'attendance/view/hr_attendance_schedule.xml',
         'attendance/view/hr_public_holiday.xml',
@@ -217,13 +218,12 @@
         'attendance/view/hr_attendance_report_view.xml',
         'attendance/view/hr_monthly_summary_view.xml',
         'attendance/wizard/wizard_attendance_summary_view.xml',
-  
-        
         'attendance/views/attendance_summary_report.xml',
         'attendance/views/monthly_summary_report.xml',
         'attendance/views/monthly_summary_report_all.xml',
         'attendance/views/request_transfer_delay_hours_report.xml',
-        'attendance/views/report.xml',
+        'attendance/views/request_transfer_absence_days_report.xml',
+
         
         # تصنيف الوظائف
         'job/view/hr_job_setting.xml',
