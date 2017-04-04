@@ -153,7 +153,7 @@ class HrPayslip(models.Model):
                                                    ('overtime_id.state', '=', 'finish')])
         if overtime_lines:
             self.overtime_line_ids = overtime_lines.ids
-        # TODO: dont compute not work days
+
         for overtime in overtime_lines:
             employee = overtime.employee_id
             salary_grid, basic_salary = employee.get_salary_grid_id(False)
@@ -162,9 +162,7 @@ class HrPayslip(models.Model):
             date_to = overtime.date_to
             # get days witouht weekends and Eids
             number_of_days = self.env['hr.smart.utils'].compute_duration_overtime(date_from, date_to, overtime)
-            number_of_hours = 0.0
-            if overtime.date_from >= self.date_from and overtime.date_to <= self.date_to:
-                number_of_hours = overtime.heure_number
+            number_of_hours = overtime.heure_number
             # get number of hours
             total_hours = number_of_days * number_of_hours
             amount_hour = basic_salary / 30.0 / 7.0
@@ -178,7 +176,7 @@ class HrPayslip(models.Model):
                             'name': overtime_setting.allowance_overtime_id.name,
                             'employee_id': employee.id,
                             'number_of_days': number_of_days,
-                            'number_of_hours': number_of_hours,
+                            'number_of_hours': total_hours,
                             'amount': amount,
                             'type': 'overtime'}
             line_ids.append(overtime_val)
@@ -246,7 +244,7 @@ class HrPayslip(models.Model):
         # أوامر الإركاب
         transport_decision_ids = self.env['hr.transport.decision'].search([('employee_id', '=', self.employee_id.id),
                                                                            ('state', '=', 'done'),
-                                                                           ('transport_type', '=', self.env.ref('smart_hr.data_hr_transport_setting2')),
+                                                                           ('trasport_type', '=', self.env.ref('smart_hr.data_hr_transport_setting2').id),
                                                                            ('is_paied', '=', False),
                                                                            ])
         if transport_decision_ids:
@@ -300,7 +298,7 @@ class HrPayslip(models.Model):
         # أوامر الإركاب
         transport_decision_ids = self.env['hr.transport.decision'].search([('employee_id', '=', self.employee_id.id),
                                                                            ('state', '=', 'done'),
-                                                                           ('transport_type', '=', self.env.ref('smart_hr.data_hr_transport_setting3').id),
+                                                                           ('trasport_type', '=', self.env.ref('smart_hr.data_hr_transport_setting3').id),
                                                                            ('is_paied', '=', False),
                                                                            ])
         if transport_decision_ids:
