@@ -40,6 +40,7 @@ class HrPayslip(models.Model):
     overtime_line_ids = fields.One2many('hr.overtime.ligne', 'payslip_id')
     deputation_ids = fields.One2many('hr.deputation', 'payslip_id')
     transfert_ids = fields.One2many('hr.employee.transfert', 'payslip_id')
+    holiday_id = fields.Many2one('hr.holidays')
     speech_number = fields.Char(string=u'رقم الخطاب', readonly=1, states={'draft': [('readonly', 0)]})
     speech_date = fields.Date(string=u'تاريخ الخطاب', readonly=1, states={'draft': [('readonly', 0)]})
     speech_file = fields.Binary(string=u'صورة الخطاب', attachment=True, readonly=1, required=1, states={'draft': [('readonly', 0)]})
@@ -80,6 +81,8 @@ class HrPayslip(models.Model):
             rec.is_paied = True
         for rec in self.transfert_ids:
             rec.is_paied = True
+        if self.holiday_id:
+            self.holiday_id.advanced_salary_is_paied = True
         self.state = 'done'
         self.special_state = 'done'
 
@@ -114,16 +117,107 @@ class HrPayslip(models.Model):
             lines = []
             line_ids = []
             sequence = 1
+            # فروقات اجازات مسبوقة الدفع
+            if self.env.ref('smart_hr.special_payslip_type_holidays') in self.payslip_type_ids:
+                holidays_id = self.env['hr.holidays'].search([('state', '=', 'done'),
+                                                              ('employee_id', '=', self.employee_id.id),
+                                                              ('with_advanced_salary', '=', True),
+                                                              ('advanced_salary_is_paied', '=', False)], limit=1)
+                if holidays_id:
+                    payslip.holiday_id = holidays_id.id
+                    salary_multiplication = holidays_id.salary_number
+                    # 1- الراتب الأساسي
+                    basic_salary_val = {'name': u'الراتب الأساسي',
+                                        'slip_id': payslip.id,
+                                        'employee_id': employee.id,
+                                        'rate': 0.0,
+                                        'number_of_days': 30,
+                                        'amount': basic_salary * salary_multiplication,
+                                        'category': 'basic_salary',
+                                        'type': 'basic_salary',
+                                        'sequence': sequence,
+                                        }
+                    lines.append(basic_salary_val)
+                    # 2- البدلات القارة
+                    for allowance in salary_grid.allowance_ids:
+                        sequence += 1
+                        amount = allowance.get_value(employee.id)
+                        allowance_val = {'name': allowance.allowance_id.name,
+                                         'slip_id': payslip.id,
+                                         'employee_id': employee.id,
+                                         'rate': 0.0,
+                                         'number_of_days': 30,
+                                         'amount': amount * salary_multiplication,
+                                         'category': 'allowance',
+                                         'type': 'allowance',
+                                         'sequence': sequence,
+                                         }
+                        lines.append(allowance_val)
+                    for reward in salary_grid.reward_ids:
+                        sequence += 1
+                        amount = reward.get_value(employee.id)
+                        reward_val = {'name': reward.reward_id.name,
+                                      'slip_id': payslip.id,
+                                      'employee_id': employee.id,
+                                      'rate': 0.0,
+                                      'number_of_days': 30,
+                                      'amount': amount * salary_multiplication,
+                                      'category': 'allowance',
+                                      'type': 'reward',
+                                      'sequence': sequence,
+                                      }
+                        lines.append(reward_val)
+                    for indemnity in salary_grid.indemnity_ids:
+                        sequence += 1
+                        amount = indemnity.get_value(employee.id)
+                        indemnity_val = {'name': indemnity.indemnity_id.name,
+                                         'slip_id': payslip.id,
+                                         'employee_id': employee.id,
+                                         'rate': 0.0,
+                                         'number_of_days': 30,
+                                         'amount': amount * salary_multiplication,
+                                         'category': 'allowance',
+                                         'type': 'indemnity',
+                                         'sequence': sequence,
+                                         }
+                        lines.append(indemnity_val)
+                    # 3- التقاعد
+                    retirement_amount = basic_salary * salary_grid.retirement / 100.0
+                    if retirement_amount:
+                        retirement_val = {'name': 'التقاعد',
+                                          'slip_id': payslip.id,
+                                          'employee_id': employee.id,
+                                          'rate': 0.0,
+                                          'number_of_days': 30,
+                                          'amount': retirement_amount * salary_multiplication,
+                                          'category': 'deduction',
+                                          'type': 'retirement',
+                                          'sequence': sequence}
+                        lines.append(retirement_val)
+                        sequence += 1
+                    # 4- التأمينات
+                    insurance_amount = basic_salary * salary_grid.insurance / 100.0
+                    if insurance_amount:
+                        insurance_val = {'name': 'التأمين',
+                                         'slip_id': payslip.id,
+                                         'employee_id': employee.id,
+                                         'rate': 0.0,
+                                         'number_of_days': 30,
+                                         'amount': insurance_amount * salary_multiplication,
+                                         'category': 'deduction',
+                                         'type': 'insurance',
+                                         'sequence': sequence}
+                        lines.append(insurance_val)
+                        sequence += 1
             # فروقات خارج الدوام
-            if self.env.ref('smart_hr.hr_special_payslip_type_overtime') in self.payslip_type_ids:
+            if self.env.ref('smart_hr.special_payslip_type_overtime') in self.payslip_type_ids:
                 line_ids += self.get_special_difference_overtime()
             # فروقات الأنتداب
-            if self.env.ref('smart_hr.hr_special_payslip_type_allowance') in self.payslip_type_ids:
+            if self.env.ref('smart_hr.special_payslip_type_allowance') in self.payslip_type_ids:
                 line_ids += self.get_special_difference_deputation()
             # فروقات النقل
-            if self.env.ref('smart_hr.hr_special_payslip_type_tranfert') in self.payslip_type_ids:
+            if self.env.ref('smart_hr.special_payslip_type_tranfert') in self.payslip_type_ids:
                 line_ids += self.get_special_difference_transfert()
-
             for line_id in line_ids:
                 vals = {'name': line_id['name'],
                         'slip_id': payslip.id,
@@ -246,7 +340,7 @@ class HrPayslip(models.Model):
         # أوامر الإركاب
         transport_decision_ids = self.env['hr.transport.decision'].search([('employee_id', '=', self.employee_id.id),
                                                                            ('state', '=', 'done'),
-                                                                           ('transport_type', '=', self.env.ref('smart_hr.data_hr_transport_setting2')),
+                                                                           ('trasport_type', '=', self.env.ref('smart_hr.data_hr_transport_setting2').id),
                                                                            ('is_paied', '=', False),
                                                                            ])
         if transport_decision_ids:
@@ -300,7 +394,7 @@ class HrPayslip(models.Model):
         # أوامر الإركاب
         transport_decision_ids = self.env['hr.transport.decision'].search([('employee_id', '=', self.employee_id.id),
                                                                            ('state', '=', 'done'),
-                                                                           ('transport_type', '=', self.env.ref('smart_hr.data_hr_transport_setting3').id),
+                                                                           ('trasport_type', '=', self.env.ref('smart_hr.data_hr_transport_setting3').id),
                                                                            ('is_paied', '=', False),
                                                                            ])
         if transport_decision_ids:

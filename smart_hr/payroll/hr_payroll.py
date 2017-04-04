@@ -227,7 +227,6 @@ class HrPayslip(models.Model):
                               ('done', 'تم'),
                               ('cancel', 'ملغى'),
                               ], 'الحالة', select=1, readonly=1, copy=False)
-    with_advanced_salary = fields.Boolean(string=u"مع صرف راتب مسبق", default=False, readonly=1)
     grade_id = fields.Many2one('salary.grid.grade', string=u'المرتبة')
     degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة')
     type_id = fields.Many2one('salary.grid.type', string=u'صنف الموظف')
@@ -304,10 +303,7 @@ class HrPayslip(models.Model):
             number_of_days = 0
             for rec in rec.days_off_line_ids:
                 number_of_days += rec['number_of_days']
-            print '---number_of_days-----', number_of_days
-            print '---rec.number_of_days-----', rec.number_of_days
             rec.number_of_days = 30 - number_of_days
-            print '---rec.number_of_days-----', rec.number_of_days
 
     def get_worked_day_lines_without_contract(self, employee_id, working_hours, date_from, date_to, compute_leave=True):
         """
@@ -377,50 +373,6 @@ class HrPayslip(models.Model):
 
     @api.multi
     def compute_sheet(self):
-        # amount_multiplication is 1 normale payslip generation
-        # amount_multiplication will be 2 if self.with_advanced_salary is true;
-        # amount_multiplication will be 0 if current payslip's salary grid is allready generated for the previous month's payslip ;
-        amount_multiplication = 1
-        # check weither the employee is terminated
-        # TODO: must remove this message raise !
-        # if self.employee_id.emp_state == 'terminated':
-        # termination_id = self.env['hr.termination'].search([('employee_id', '=', self.employee_id.id), ('state', '=', 'done')], order='date_termination desc', limit=1)
-        # if fields.Date.from_string(termination_id.date_termination) < fields.Date.from_string(self.date_from) or fields.Date.from_string(termination_id.date_termination) > fields.Date.from_string(self.date_to):
-        # raise UserError(u"لقد تم طي قيد %s " % self.employee_id.name)
-        # check if the salary is allready given in the last payslip for the previous month
-        previous_month_payslip = False
-        month = fields.Date.from_string(self.period_id.date_start).month
-        year = fields.Date.from_string(self.date_from).year
-        if month > 1:
-            # previous period in current year
-            previous_month_payslip = self.env['hr.payslip'].search_count([('period_id', '=', (self.period_id.id - 1)),
-                                                                          ('with_advanced_salary', '=', True),
-                                                                          ('state', '=', 'done')
-                                                                          ])
-        else:
-            # previous period in previous year
-            previous_year_date = str(year - 1) + '-12-31'
-            previous_year_date = fields.Date.from_string(previous_year_date)
-            previous_month_payslip = self.env['hr.payslip'].search_count([('date_from', '>=', previous_year_date),
-                                                                          ('date_to', '<=', previous_year_date),
-                                                                          ('employee_id', '=', self.employee_id.id),
-                                                                          ('with_advanced_salary', '=', True),
-                                                                          ('state', '=', 'done')
-                                                                          ])
-        if previous_month_payslip > 0:
-            # the employee is allready have the salary_grid of the current month
-            amount_multiplication = 0
-        # check if the employee need an advanced salary from the holidays
-        holidays_ids = self.env['hr.holidays'].search([('date_to', '>=', self.date_from),
-                                                       ('date_to', '<=', self.date_to),
-                                                       ('employee_id', '=', self.employee_id.id),
-                                                       ('state', '=', 'done')
-                                                       ])
-        for holiday_id in holidays_ids:
-            if holiday_id.with_advanced_salary:
-                self.with_advanced_salary = True
-                amount_multiplication = 2
-                break
         bonus_line_obj = self.env['hr.bonus.line']
         loan_obj = self.env['hr.loan']
         for payslip in self:
@@ -440,13 +392,14 @@ class HrPayslip(models.Model):
             allowance_total = 0.0
             deduction_total = 0.0
             difference_total = 0.0
+            month = fields.Date.from_string(self.period_id.date_start).month
             # 1- الراتب الأساسي
             basic_salary_val = {'name': u'الراتب الأساسي',
                                 'slip_id': payslip.id,
                                 'employee_id': employee.id,
                                 'rate': 0.0,
                                 'number_of_days': 30,
-                                'amount': basic_salary * amount_multiplication,
+                                'amount': basic_salary,
                                 'category': 'basic_salary',
                                 'type': 'basic_salary',
                                 'sequence': sequence,
@@ -455,7 +408,7 @@ class HrPayslip(models.Model):
             # 2- البدلات القارة
             for allowance in salary_grid.allowance_ids:
                 sequence += 1
-                amount = allowance.get_value(employee.id) * amount_multiplication
+                amount = allowance.get_value(employee.id)
                 allowance_val = {'name': allowance.allowance_id.name,
                                  'slip_id': payslip.id,
                                  'employee_id': employee.id,
@@ -470,7 +423,7 @@ class HrPayslip(models.Model):
                 allowance_total += amount
             for reward in salary_grid.reward_ids:
                 sequence += 1
-                amount = reward.get_value(employee.id) * amount_multiplication
+                amount = reward.get_value(employee.id)
                 reward_val = {'name': reward.reward_id.name,
                               'slip_id': payslip.id,
                               'employee_id': employee.id,
@@ -485,7 +438,7 @@ class HrPayslip(models.Model):
                 allowance_total += amount
             sequence += 1
             for indemnity in salary_grid.indemnity_ids:
-                amount = indemnity.get_value(employee.id) * amount_multiplication
+                amount = indemnity.get_value(employee.id)
                 indemnity_val = {'name': indemnity.indemnity_id.name,
                                  'slip_id': payslip.id,
                                  'employee_id': employee.id,
@@ -657,7 +610,7 @@ class HrPayslip(models.Model):
                                                                   })
             # 6- التقاعد‬
             # old : retirement_amount = (basic_salary * amount_multiplication + allowance_total - deduction_total) * salary_grid.retirement / 100.0
-            retirement_amount = (basic_salary * amount_multiplication) * salary_grid.retirement / 100.0
+            retirement_amount = basic_salary * salary_grid.retirement / 100.0
             if retirement_amount:
                 retirement_val = {'name': 'التقاعد',
                                   'slip_id': payslip.id,
@@ -673,7 +626,7 @@ class HrPayslip(models.Model):
                 sequence += 1
             # 7- التأمينات‬
             # old insurance_amount = (basic_salary * amount_multiplication + allowance_total) * salary_grid.insurance / 100.0
-            insurance_amount = (basic_salary * amount_multiplication) * salary_grid.insurance / 100.0
+            insurance_amount = basic_salary * salary_grid.insurance / 100.0
             if insurance_amount:
                 insurance_val = {'name': 'التأمين',
                                  'slip_id': payslip.id,
@@ -688,7 +641,7 @@ class HrPayslip(models.Model):
                 deduction_total += insurance_amount
                 sequence += 1
             # 0- صافي الراتب
-            salary_net = basic_salary * amount_multiplication + allowance_total + difference_total - deduction_total
+            salary_net = basic_salary + allowance_total + difference_total - deduction_total
             salary_net_val = {'name': u'صافي الراتب',
                               'slip_id': payslip.id,
                               'employee_id': employee.id,
