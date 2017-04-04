@@ -29,10 +29,10 @@
 								<strong>نوع الموظف
 									:
 								</strong>
-								<span t-field="o.employee_id.employee_state" />
+								<span t-field="o.type_id.name" />
 								<br></br>
 								<strong>المرتبة :</strong>
-								<span t-field="o.grade_id" />
+								<span t-field="o.grade_id.name" />
 								<br></br>
 
 								<br></br>
@@ -96,7 +96,7 @@
 												<span t-field="o.employee_id.job_id.number" />
 											</td>
 											<td rowspan="2">
-												<span t-field="o.degree_id" />
+												<span t-field="o.degree_id.name" />
 											</td>
 											<td rowspan="2">
 												<span t-esc="get_basic_salary(o.employee_id)" />
