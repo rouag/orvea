@@ -421,31 +421,7 @@
   <p style="text-align: left;"><strong>
 			 رئيس هيئة التحقيق و الإدعاء العام </strong></p>   ]]></field>
 		</record>
-		<record id="data_decision_type16" model="hr.decision.type">
-			<field name="name">قرار إيقاف عامل  على بند الأجور</field>
-			<field name="text"><![CDATA[
-			<p>قرار إداري رقم
-			 (NUMERO)و تاريخ  DATE</p>
-			<p style="text-align: center;"><strong>
-			 
-			 رقم الهوية
-			 CARTEID </strong></p>
-<p><strong>إن رئيس هيئة التحقيق و الإدعاء العام</strong></p>
-<p>بناء على صلاحيات الممنوحة له</p>
-<p>و اشارة إلى خطاب    رئيس دائرة  التفتيش و المتابعة رقم ( )و تاريخ DATE المتضمن ما راته الدائرة بكف يد العامل على بند الأجور بدائرة التحقيق بالمحافظة (..................) / EMPLOYEE ، عن العمل وذلك لايقافه  بقضية إسمه (..................)</p>
-<p>و استناد إلى لائحة المعينين على بند الأجور ،و لموافقتنا على ذلك.</p>
-
-
-<p style="text-align: center;"> <strong>يقرر ما يلي</strong></p>
-<p>أولا : إيقاف العامل بدائرة التحقيق بالمحافظة () / EMPLOYEE ،المثبت على وظيفة (JOB) رقمها(CODE) بالمرتبة (GRADE) بالدرجة(DEGREE) براتب شهري قدره(BASICSALAIRE) ريال  عن العمل إعتبارا من  (..................) و إيقاف صرف راتبه لحين إنتهاء موضوعه</p>
-<p>ثانيا :يوبلغ هذا القرار لمن يلزم لإنفاذه</p>
-          
-            <p></p> 
-   <p></p> 
-    <p></p> 
-  <p style="text-align: left;"><strong>
-			 رئيس هيئة التحقيق و الإدعاء العام </strong></p>   ]]></field>
-		</record>
+	
 		<record id="data_decision_type17" model="hr.decision.type">
 			<field name="name">قرار إحالة موظف  للتقاعد المبكر بسبب عجزه الصحي
 			</field>
@@ -689,7 +665,7 @@
 			 رئيس هيئة التحقيق و الإدعاء العام </strong></p>   ]]></field>
 		</record>
 		<record id="data_decision_type27" model="hr.decision.type">
-			<field name="name">قرار إنهاء كف اليد  لموظف</field>
+			<field name="name">قرار إنهاء كف اليد  لموظف مع عقوبة</field>
 			<field name="text"><![CDATA[
 			<p>قرار إداري رقم
 			 (NUMERO)و تاريخ  DATE</p>
@@ -820,7 +796,7 @@
 			 رئيس هيئة التحقيق و الإدعاء العام </strong></p>   ]]></field>
 		</record>
 		<record id="data_decision_type32" model="hr.decision.type">
-			<field name="name"> قرارطي قيد و إنهاء كف يد موظف لوفاته</field>
+			<field name="name"> قرار طي قيد و إنهاء كف يد موظف لوفاته</field>
 			<field name="text"><![CDATA[
 			<p>قرار إداري رقم
 			 (NUMERO)و تاريخ  DATE</p>

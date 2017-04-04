@@ -36,7 +36,7 @@
 			
 		<report id="job_career_model_report" model="False" report_type="qweb-pdf"
 			string="نموذج الحياة الوظيفية" name="smart_hr.report_job_career_model"
-			file="smart_hr.report_job_career_model" />
+			file="smart_hr.report_job_career_model"  paperformat="smart_base.paperformat_landscape" />
 
 
 	</data>

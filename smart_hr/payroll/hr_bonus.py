@@ -94,9 +94,9 @@ class hrBonus(models.Model):
         for rec in self :
             line_ids=[]
             for line in rec.employee_ids :
-                vals = {'employee_id':line.id,
-                        'compute_method':rec.compute_method,
-                         'period_from_id': rec.period_from_id.id,
+                vals = {'employee_id': line.id,
+                        'compute_method': rec.compute_method,
+                        'period_from_id': rec.period_from_id.id,
                         'period_to_id': rec.period_to_id.id,}
                 line_ids.append(vals)
             rec.line_ids = line_ids

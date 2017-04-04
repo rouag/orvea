@@ -79,7 +79,6 @@ class HrImproveSituatim(models.Model):
                                                 'code': self.new_job_id.name.number,
                                                 'grade_id': self.new_job_id.grade_id.id,
                                                 'department_id': self.new_job_id.department_id.id,
-                                                'number_job': self.new_job_id,
                                                 'degree_id': self.degree_id1.id,
                                                 'date_hiring': self.order_date,
                                                 'order_date': fields.Datetime.now(),
@@ -92,7 +91,7 @@ class HrImproveSituatim(models.Model):
         self.message_post(u"تمت إحداث تحسين الوضع جديد '" + unicode(user.name) + u"'")
 
     @api.one
-    def action_refuse(self):
+    def button_refuse(self):
         self.state = 'new'
 
     @api.onchange('employee_id')

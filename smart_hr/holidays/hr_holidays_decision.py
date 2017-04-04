@@ -22,7 +22,11 @@ class hrHolidaysDecision(models.Model):
                              ('cancel', 'رفض')
                              ], string='الحالة', readonly=1, default='new')
 
-    holidays = fields.Many2many('hr.holidays', string=u'الإجازات',required=1)
+    holidays = fields.Many2many('hr.holidays', string=u'الإجازة',required=1)
+    holiday_status_id = fields.Many2one('hr.holidays.status', string=u'نوع الأجازة',  required=1, default=lambda self: self.env.ref('smart_hr.data_hr_holiday_status_normal'),)
+    date_from = fields.Date(string=u'تاريخ البدء ',readonly=True)
+    date_to = fields.Date(string=u'تاريخ الإنتهاء',readonly=True)
+    duration = fields.Integer(string=u'مدتها' ,readonly=True )
     name = fields.Char(string='رقم الخطاب', required=1)
     order_date = fields.Date(string='تاريخ الخطاب', required=1) 
     file_decision = fields.Binary(string='الخطاب', attachment=True)
@@ -47,9 +51,24 @@ class hrHolidaysDecision(models.Model):
             if self.env['hr.holidays'].search_count([('state', '=', 'done'), ('date_from', '<=', self.date), ('date_to', '>=', self.date), ('employee_id', '=', self.employee_id.id)]) != 0:
                 raise ValidationError(u"هناك تداخل فى تاريخ المباشرة مع يوم إجازة")
 
+    @api.onchange('holiday_status_id')
+    def onchange_holiday_status_id(self):
+        for rec in self :
+            if rec.date and rec.employee_id:
+                holiday_ids = self.env['hr.holidays'].search([('state', '=', 'done'), ('date_from', '<=', rec.date), ('date_to', '>=', rec.date), ('employee_id', '=', rec.employee_id.id)],limit=1) 
+                if holiday_ids:
+                    rec.date_from = holiday_ids.date_from
+                    rec.date_to = holiday_ids.date_to
+                    rec.duration = holiday_ids.duration
+
     @api.one
     def action_waiting(self):
-        self.state = 'waiting'
+        for rec in self :
+            if rec.date and rec.employee_id:
+                holiday_ids = self.env['hr.holidays'].search_count([('state', '=', 'done'), ('date_from', '<=', rec.date), ('date_to', '>=', rec.date), ('employee_id', '=', rec.employee_id.id)]) 
+                if holiday_ids == 0:
+                   raise ValidationError(u"لا يوجد إجازة للموظف في هذه الفترة تطلب قرار مباشرة")
+                rec.state = 'waiting'
 
     @api.one
     def action_cancel(self):
