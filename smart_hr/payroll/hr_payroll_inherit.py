@@ -17,80 +17,70 @@ from openerp.exceptions import ValidationError
 
 
 class HrPayslip(models.Model):
-    _name = 'hr.payslip'
-    _inherit = ['hr.payslip', 'mail.thread']
-    _order = 'date_from desc,id desc'
+    _inherit = 'hr.payslip'
 
     @api.multi
-    def compute_deductions(self):
-        line_ids = []
-        # العقوبات
-        line_ids += self.deduction_days()
-        line_ids += self.deduction_sanctions()
-        return line_ids
+    def compute_deductions(self, allowance_total):
+        # الحسميات
 
-    @api.multi
-    def deduction_days(self, allowance_total):
         line_ids = []
+        #  حسم‬  الغياب‬ يكون‬ من‬  جميع البدلات . و  الراتب‬ الأساسي للموظفين‬ الرسميين‬ والمستخدمين
         abscence_ids = self.env['hr.employee.absence.days'].search([('request_id.date', '>=', self.date_from),
                                                                     ('request_id.date', '<=', self.date_to),
                                                                     ('request_id.state', '=', 'done')
                                                                     ])
+        salary_grid, basic_salary = self.employee_id.get_salary_grid_id(False)
         for line in abscence_ids:
-            salary_grid, basic_salary = line.employee_id.get_salary_grid_id(False)
-            deduction_absence = (basic_salary + allowance_total) / 30.0 * line.number_request
+            amount = (basic_salary + allowance_total) / 30.0 * line.number_request
             vals = {'name': 'غياب بدون عذر',
                     'employee_id': line.employee_id.id,
                     'number_of_days': line.number_request,
                     'number_of_hours': 0.0,
-                    'amount': deduction_absence,
+                    'amount': -1 * amount,
                     'category': 'deduction',
                     'type': 'absence'}
             line_ids.append(vals)
 
+        # حسم‬  التأخير يكون‬ من‬  الراتب‬ الأساسي فقط
         delays_ids = self.env['hr.employee.delay.hours'].search([('request_id.date', '>=', self.date_from),
                                                                  ('request_id.date', '<=', self.date_to),
                                                                  ('request_id.state', '=', 'done')
                                                                  ])
         for line in delays_ids:
-            salary_grid, basic_salary = line.employee_id.get_salary_grid_id(False)
-            deduction_delay = (basic_salary) / 30.0 * line.number_request
-            vals = {'name': 'ساعات تأخير',
+            amount = basic_salary / 30.0 * line.number_request
+            vals = {'name': 'حسم التأخير والخروج المبكر',
                     'employee_id': line.employee_id.id,
-                    'number_of_days': 0.0,
-                    'number_of_hours': line.number_request,
-                    'amount': deduction_delay,
+                    'number_of_days': line.number_request,
+                    'number_of_hours': 0.0,
+                    'amount': -1 * amount,
                     'category': 'deduction',
                     'type': 'retard_leave'}
             line_ids.append(vals)
-        return line_ids
 
-    @api.multi
-    def deduction_sanctions(self):
-        line_ids = []
+        # عقوبة
         sanction_line_ids = self.env['hr.sanction.ligne'].search([('sanction_id.date_sanction_start', '>=', self.date_from),
                                                                   ('sanction_id.date_sanction_start', '<=', self.date_to),
                                                                   ('sanction_id.type_sanction.deduction', '=', True),
                                                                   ('sanction_id.state', '=', 'done')
                                                                   ])
-        deduction_type_obj = self.env['hr.deduction.type']
-        sanction_deduction_type = deduction_type_obj.search([('type', '=', 'sanction')], limit=1)
-        if sanction_deduction_type:
-            for line in sanction_line_ids:
-                vals = {'deduction_id': self.id,
-                        'employee_id': line.employee_id.id,
-                        'department_id': line.employee_id.department_id and line.employee_id.department_id.id or False,
-                        'job_id': line.employee_id.job_id and line.employee_id.job_id.id or False,
-                        'number': line.employee_id.number,
-                        'amount': line.days_number,
-                        'deduction_type_id': sanction_deduction_type.id,
-                        'state': 'waiting'
-                        }
-                line_ids.append(vals)
+
+        for sanction in sanction_line_ids:
+            amount = (basic_salary + allowance_total) / 30.0 * sanction.days_number
+            vals = {'name': u'عقوبة',
+                    'employee_id': sanction.employee_id.id,
+                    'rate': sanction.days_number,
+                    'number_of_days': sanction.days_number,
+                    'amount': amount,
+                    'category': 'deduction',
+                    'type': 'sanction',
+                    }
+            line_ids.append(vals)
+
         return line_ids
 
     @api.multi
     def compute_differences(self):
+        # احتساب الأثر المالي
         line_ids = []
         # فروقات النقل
         line_ids += self.get_difference_transfert()

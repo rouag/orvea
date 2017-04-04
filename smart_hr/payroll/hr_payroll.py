@@ -299,10 +299,8 @@ class HrPayslip(models.Model):
             rec.type_id = rec.employee_id.type_id.id
             # computation of أيام العمل
             worked_days_line_ids, leaves = rec.get_worked_day_lines_without_contract(rec.employee_id.id, rec.employee_id.calendar_id, rec.date_from, rec.date_to)
-            deductions = rec.get_all_deduction(rec.employee_id.id, rec.period_id)
-            # TODO : remove nb days deducation absence from nb worked_days
             rec.worked_days_line_ids = worked_days_line_ids
-            rec.days_off_line_ids = leaves + deductions
+            rec.days_off_line_ids = leaves
             worked_days_line_id = rec.worked_days_line_ids.search([('code', '=', 'WORK100')])
             if worked_days_line_id:
                 rec.number_of_days = worked_days_line_id[0].number_of_days
@@ -366,30 +364,6 @@ class HrPayslip(models.Model):
                     attendances['number_of_hours'] += working_hours_on_day
         leaves = [value for key, value in leaves.items()]
         return [attendances], leaves
-
-    def get_all_deduction(self, employee_id, period_id):
-        """
-   احتساب عدد الأيام الحسميات
-        :param employee_id:
-        :param period_id:
-        """
-        deduction_ids = self.compute_deductions()
-        # deduction_type
-        deductions = {}
-        for deduction in deduction_ids:
-            deduction_type_obj = self.env['hr.deduction.type'].search([('id', '=', deduction['deduction_type_id'])], limit=1)
-            if deduction_type_obj.id in deductions:
-                deductions[deduction_type_obj.id]['number_of_days'] += deduction.amount
-            else:
-                deductions[deduction_type_obj.id] = {'name': deduction_type_obj.name,
-                                                     'sequence': 5,
-                                                     'code': deduction_type_obj.id,
-                                                     'number_of_days': deduction['amount'],
-                                                     'type': deduction_type_obj.type,
-                                                     # 'number_of_hours': working_hours_on_day,you can get the working_hours_on_day only for day
-                                                     }
-        deductions = [value for key, value in deductions.items()]
-        return deductions
 
     def get_all_structures_for_payslip(self, cr, uid, structure_id, context):
         structure_ids = [structure_id]
@@ -546,7 +520,8 @@ class HrPayslip(models.Model):
                 lines.append(bonus_val)
                 allowance_total += bonus_amount
                 sequence += 1
-            # 4 -  الفروقات الجديدة
+
+            # 4 -  الفروقات
             difference_lines = self.env['hr.differential.line'].search([('difference_id.state', '=', 'done'),
                                                                         ('difference_id.period_id', '=', payslip.period_id.id),
                                                                         ('employee_id', '=', employee.id)])
@@ -602,7 +577,8 @@ class HrPayslip(models.Model):
                 lines.append(difference_val)
                 difference_total += diff_allowance_amount
                 sequence += 1
-#             # 4 - الفروقات
+
+            # 5- الأثر المالي
             difference_lines = payslip.compute_differences()
             for difference in difference_lines:
                 difference_val = {'name': difference['name'],
@@ -618,74 +594,25 @@ class HrPayslip(models.Model):
                 lines.append(difference_val)
                 difference_total += difference['amount']
                 sequence += 1
-            # 4- الحسميات
-            retard_leave_days = 0
-            absence_days = 0
-            holiday_days = 0
-            sanction_days = 0
 
-            for line in payslip.days_off_line_ids:
-                if line.type == 'retard_leave':
-                    retard_leave_days += line.number_of_days
-                elif line.type == 'absence':
-                    absence_days += line.number_of_days
-                elif line.type == 'holiday':
-                    holiday_days += line.number_of_days
-                elif line.type == 'sanction':
-                    sanction_days += line.number_of_days
+            # 6- الحسميات
+            deduction_lines = payslip.compute_deductions(allowance_total)
+            for deduction in deduction_lines:
+                deduction_val = {'name': deduction['name'],
+                                 'slip_id': payslip.id,
+                                 'employee_id': employee.id,
+                                 'rate': 0.0,
+                                 'number_of_days': deduction['number_of_days'],
+                                 'amount': deduction['amount'],
+                                 'category': deduction['category'],
+                                 'type': deduction['type'],
+                                 'sequence': sequence
+                                 }
+                lines.append(deduction_val)
+                deduction_total += difference['amount']
+                sequence += 1
 
-            # حسم‬  التأخير يكون‬ من‬  الراتب‬ الأساسي فقط
-            if retard_leave_days:
-                # احتساب الحسم يقسم الراتب على 30
-                deduction_retard_leave = basic_salary / 30.0 * retard_leave_days
-                retard_leave_val = {'name': u'تأخير وخروج مبكر',
-                                    'slip_id': payslip.id,
-                                    'employee_id': employee.id,
-                                    'rate': retard_leave_days,
-                                    'number_of_days': retard_leave_days,
-                                    'amount': deduction_retard_leave,
-                                    'category': 'deduction',
-                                    'type': 'retard_leave',
-                                    'sequence': sequence
-                                    }
-                lines.append(retard_leave_val)
-                deduction_total += deduction_retard_leave
-                sequence += 1
-            #  حسم‬  الغياب‬ يكون‬ من‬  جميع البدلات . و  الراتب‬ الأساسي للموظفين‬ الرسميين‬ والمستخدمين
-            if absence_days:
-                # احتساب الحسم يقسم الراتب على 30
-                deduction_absence = (basic_salary + allowance_total) / 30.0 * absence_days
-                retard_leave_val = {'name': u'غياب',
-                                    'slip_id': payslip.id,
-                                    'employee_id': employee.id,
-                                    'rate': absence_days,
-                                    'number_of_days': absence_days,
-                                    'amount': deduction_absence,
-                                    'category': 'deduction',
-                                    'type': 'absence',
-                                    'sequence': sequence
-                                    }
-                lines.append(retard_leave_val)
-                deduction_total += deduction_absence
-                sequence += 1
-            # عقوبة
-            if sanction_days:
-                # احتساب الحسم يقسم الراتب على 30
-                deduction_sanction = (basic_salary + allowance_total) / 30.0 * sanction_days
-                sanction_val = {'name': u'عقوبة',
-                                'slip_id': payslip.id,
-                                'employee_id': employee.id,
-                                'rate': sanction_days,
-                                'number_of_days': sanction_days,
-                                'amount': deduction_sanction,
-                                'category': 'deduction',
-                                'type': 'sanction',
-                                'sequence': sequence
-                                }
-                lines.append(sanction_val)
-                deduction_total += deduction_sanction
-                sequence += 1
-            # 5- القروض
+            # 7- القروض
             loans = loan_obj.get_loan_employee_month(self.date_from, self.date_to, employee.id)
             for loan in loans:
                 loan_val = {'name': loan['name'],
