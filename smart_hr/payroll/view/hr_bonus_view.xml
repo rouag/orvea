@@ -61,6 +61,7 @@
 										options='{"no_open": True, "no_create": True}' />
 								</div>
 							</group>
+							
 							<group>
 								<separator colspan="2" string="الأثر المالي" />
 								<field name="compute_method" />
@@ -81,9 +82,25 @@
 								<field name="date_decision" />
 							</group>
 						</group>
+						
+						<group col="4" string="فلترة">
+									<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]" />
+									<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]" />
+									<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]" />
+									<field name="salary_grid_type_id" />
+								</group>
 						<notebook>
-							<page string="التفاصيل">
-
+								<page string="قائمة الموظفين" attrs="{'invisible':[('state','not in',['new'])]}">
+									<group>
+										<field name="employee_ids" nolabel="1" />
+									</group>
+								</page>
+						
+						
+						
+						
+							<page string="التفاصيل"
+						attrs="{'invisible':[('state','not in', ['waiting','done'])],'readonly':[('state', 'in', ['done'])]}">
 								<field name="line_ids" nolabel="1">
 									<tree editable="bottom" create="0" edit="0">
 										<field name="employee_id" />
@@ -110,7 +127,7 @@
 									attrs="{'invisible':[('state','!=','new')]}" />
 
 							</page>
-							<page string="سجل التغييرات">
+							<page string="سجل التغييرات" attrs="{'invisible':[('state','not in', ['waiting','done'])],'readonly':[('state', 'in', ['done'])]}">
 								<field name="history_ids" nolabel="1" readonly="1">
 									<tree editable="bottom">
 										<field name="action" />

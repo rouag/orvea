@@ -74,24 +74,21 @@ class HrLoan(models.Model):
     @api.onchange('date_from', 'amount', 'monthly_amount')
     def _onchange_date(self):
         if self.date_from and self.amount and self.monthly_amount:
-            number = self.amount / (self.monthly_amount or 1.0)
-            installment_number = int(number)
-            if number > installment_number:
-                installment_number += 1
-            self.installment_number = installment_number
-            # TODO: review the * 30
-            self.date_to = fields.Date.from_string(self.date_from) + relativedelta(days=installment_number * 30)
             # get lines
             dt = fields.Date.from_string(self.date_from)
             months = []
-            while dt < fields.Date.from_string(self.date_to):
+            amount = 0.0
+            diff = self.amount - amount
+            installment_number = 0
+            final_amount = self.monthly_amount
+            while diff > 0:
                 um = HijriDate()
                 dates = str(dt).split('-')
                 um.set_date_from_gr(int(dates[0]), int(dates[1]), int(dates[2]))
                 date_start = get_hijri_month_start_by_year(HijriDate, Umalqurra, int(um.year), int(um.month))
                 date_stop = get_hijri_month_end__by_year(HijriDate, Umalqurra, int(um.year), int(um.month))
                 month_val = {'loan_id': self.id,
-                             'amount': self.monthly_amount,
+                             'amount': final_amount,
                              'date_start': date_start,
                              'date_stop': date_stop,
                              'name': MONTHS[int(um.month)] + '/' + str(int(um.year)),
@@ -99,6 +96,14 @@ class HrLoan(models.Model):
                              }
                 months.append(month_val)
                 dt = fields.Date.from_string(str(dt)) + relativedelta(days=30)
+                installment_number += 1
+                amount += self.monthly_amount
+                diff = self.amount - amount
+                if diff >= self.monthly_amount:
+                    final_amount = self.monthly_amount
+                else:
+                    final_amount = diff
+            self.installment_number = installment_number
             self.line_ids = months
 
     @api.one

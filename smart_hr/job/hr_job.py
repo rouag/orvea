@@ -49,7 +49,7 @@ class HrJob(models.Model):
     is_striped_to = fields.Boolean(string='is striped to', default=False)
     # تحوير‬
     update_date = fields.Date(string=u'تاريخ التحوير')
-    type_resevation = fields.Selection([('promotion', u'للترقية')], string=u'نوع الحجز')
+    type_resevation = fields.Many2one('hr.type.job.booking', string=u'نوع الحجز')
     occupied_promotion = fields.Boolean(string='للترقية', )
     promotion_employee_id = fields.Many2one('hr.promotion.employee.job', string=u'الموظف')
     history_ids = fields.One2many('hr.job.history.actions', 'job_id', string=u'سجل الاجرءات')
@@ -122,7 +122,7 @@ class HrJobReservation(models.Model):
 
     date_from = fields.Date(string=u'التاريخ من', readonly=1, default=fields.Datetime.now())
     date_to = fields.Date(string=u'التاريخ الى')
-    type_resevation = fields.Selection([('promotion', u'للترقية')], string=u'نوع الحجز')
+    type_resevation = fields.Many2one('hr.type.job.booking', string=u'نوع الحجز')
 
     @api.onchange('date_from', 'date_to')
     def onchange_dates(self):
@@ -136,7 +136,7 @@ class HrJobReservation(models.Model):
         if self.date_from and self.date_to:
             self.env['hr.job'].search([('id', '=', self._context['job_id'])]).write(
                 {'occupation_date_from': self.date_from, 'occupation_date_to': self.date_to, 'state': 'reserved',
-                 'type_resevation': self.type_resevation})
+                 'type_resevation': self.type_resevation.id})
 
 
 class HrJobCreate(models.Model):

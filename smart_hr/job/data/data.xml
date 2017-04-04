@@ -15,6 +15,20 @@
 			<field name="code">act03</field>
 		</record>
 
+		<record id="hr_type_job_booking_01" model="hr.type.job.booking">
+			<field name="name">للترقية </field>
+		</record>
+		<record id="hr_type_job_booking_02" model="hr.type.job.booking">
+			<field name="name">للتعيين</field>
+		</record>
+		<record id="hr_type_job_booking_03" model="hr.type.job.booking">
+			<field name="name">للنقل</field>
+		</record>
+
+
+
+
+
 		<!-- المسميات الوظيفية -->
 <!-- 		<record id="hr_job_name_0000001" model="hr.job.name"> -->
 <!-- 			<field name="name">عامل فئة (أ)</field> -->
