@@ -325,6 +325,7 @@ class HrEmployeeTransfert(models.Model):
             recruiter_id._onchange_degree_id()
             recruiter_id.action_done()
             rec.state = 'done'
+
             # create history_line
 #             self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, False, False, "نقل")
             if rec.transfert_type == 'internal_transfert':

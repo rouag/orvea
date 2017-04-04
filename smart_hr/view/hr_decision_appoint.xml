@@ -345,8 +345,8 @@
 							<page string="البدلات" readonly="1">
 								<h3 class="o_horizontal_separator">بدلات الوظيفة</h3>
 								<field name="job_allowance_ids" string="بدلات الوظيفة">
-									<tree editable="bottom">
-										<field name="allowance_id" />
+									<tree editable="bottom" create="false">
+										<field name="allowance_id" readonly="1"/>
 										<field name="compute_method" />
 										<field name="amount" />
 									</tree>
@@ -362,8 +362,8 @@
 								</field>
 								<h3 class="o_horizontal_separator">بدلات المنطقة</h3>
 								<field name="location_allowance_ids" string="بدلات المنطقة">
-									<tree editable="bottom">
-										<field name="allowance_id" />
+									<tree editable="bottom" create="false">
+										<field name="allowance_id" readonly="1"/>
 										<field name="compute_method" />
 										<field name="amount" />
 									</tree>

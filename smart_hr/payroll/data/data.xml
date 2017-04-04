@@ -278,14 +278,17 @@
 		</record>
 		
 		<!-- نوع المسير -->
-		<record id="hr_special_payslip_type_allowance" model="hr.special.payslip.type">
+		<record id="special_payslip_type_allowance" model="hr.special.payslip.type">
 			<field name="name">إنتداب</field>
 		</record>
-		<record id="hr_special_payslip_type_overtime" model="hr.special.payslip.type">
+		<record id="special_payslip_type_overtime" model="hr.special.payslip.type">
 			<field name="name">خارج الدوام</field>
 		</record>
-		<record id="hr_special_payslip_type_tranfert" model="hr.special.payslip.type">
+		<record id="special_payslip_type_tranfert" model="hr.special.payslip.type">
 			<field name="name">نقل</field>
+		</record>
+		<record id="special_payslip_type_holidays" model="hr.special.payslip.type">
+			<field name="name">اجازات مسبوقة الدفع</field>
 		</record>
 		‫
 	</data>
