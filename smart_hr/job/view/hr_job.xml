@@ -15,7 +15,7 @@
 					<field name="job_name_code" string="الرمز" />
 					<field name="number" string="رقم الوظيفة" />
 					<field name="type_id" />
-					<field name="department_id"  string="مقر الوظيفة" />
+					<field name="department_id" string="مقر الوظيفة" />
 					<field name="grade_id" />
 					<field name="create_date" />
 					<field name="write_date" string="تاريخ حالة الوظيفة" />
@@ -61,7 +61,7 @@
 								<field name="name_number" />
 								<field name="type_id" string="نوع السلم" />
 								<field name="grade_id" />
-									<field name="department_id"  string="مقر الوظيفة" />
+								<field name="department_id" string="مقر الوظيفة" />
 								<field name="activity_type" />
 							</group>
 						</group>
@@ -101,19 +101,35 @@
 						domain="[('state','=','cancel')]" />
 					<filter string="الوظائف المحجوزة" name="reserved"
 						domain="[('state','=','reserved')]" />
+					<separator />
+					<filter string="معلنة" name="announced" domain="[('state','=','not_fount')]" />
+					<separator />
+					<filter string="نشطة" name="active_jobs" domain="[('state','!=','cancel')]" />
+					<filter string="غير نشطة" name="inactive_jobs" domain="[('state','=','cancel')]" />
+					<separator />
+					<filter string="مشغولة بالترقية لها" name="occupied_promotion"
+						domain="[('category','=','occupied_promotion')]" />
+					<filter string="مشغولة بالنقل إليها" name="occupied_transfer"
+						domain="[('category','=','occupied_transfer')]" />
+					<filter string="مشغولة بالتعيين عليها" name="occupied_appoint"
+						domain="[('category','=','occupied_appoint')]" />
+					<filter string="شاغرة بترقية شاغلها" name="unoccupied_promotion"
+						domain="[('category','=','unoccupied_promotion')]" />
+					<filter string="شاغرة بترقية شاغلها" name="unooccupied_transfer"
+						domain="[('category','=','unooccupied_transfer')]" />
+					<filter string="شاغرة بطي قيد شاغلها" name="unooccupied_appoint"
+						domain="[('category','=','unooccupied_termination')]" />
 					<field name="type_id" string="نوع السلم" />
-					<field name="grade_id"  string="المرتبة" />
-					<field name="department_id"  string="مقر الوظيفة" />
-					
-
+					<field name="grade_id" string="المرتبة" />
+					<field name="department_id" string="مقر الوظيفة" />
 					<group expand="0" string="تجميع حسب...">
 						<filter name="state" string="الحالة" domain="[]"
 							context="{'group_by':'state'}" />
-							<filter name="type_id" string="نوع السلم" domain="[]"
+						<filter name="type_id" string="نوع السلم" domain="[]"
 							context="{'group_by':'type_id'}" />
-							<filter name="grade_id" string="المرتبة" domain="[]"
+						<filter name="grade_id" string="المرتبة" domain="[]"
 							context="{'group_by':'grade_id'}" />
-							<filter name="department_id" string="مقر الوظيفة" domain="[]"
+						<filter name="department_id" string="مقر الوظيفة" domain="[]"
 							context="{'group_by':'department_id'}" />
 					</group>
 				</search>
@@ -124,6 +140,8 @@
 			<field name="res_model">hr.job</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
+			<field name="context">{'search_default_active_jobs':1}
+			</field>
 		</record>
 		<record id="action_hr_job_tree" model="ir.actions.act_window.view">
 			<field name="view_mode">tree</field>
@@ -742,14 +760,14 @@
 									attrs="{'invisible':[('state', 'not in', ['communication_external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','communication_external')]}" />
 							</group>
 						</group>
-							<group col="2">
-								<field name="decision_number"
-									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
-								<field name="decision_date"
-									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
-								<field name="decision_file" filename="decision_file_name"
-									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
-						<group/>
+						<group col="2">
+							<field name="decision_number"
+								attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
+							<field name="decision_date"
+								attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
+							<field name="decision_file" filename="decision_file_name"
+								attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
+							<group />
 						</group>
 						<field name="job_movement_ids" string="نقل وظائف"
 							context="{'job_movement_ids': job_movement_ids}" attrs="{'readonly':[('state', '!=', 'new')]}">
@@ -871,8 +889,9 @@
 									attrs="{'invisible':[('state', 'not in', ['budget_external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','budget_external')]}" />
 							</group>
 						</group>
-						<field name="job_movement_ids" context="{'operation':'scale_up'}" required="True"
-							attrs="{'readonly':[('state', '!=', 'new')]}" string=" الوظائف">
+						<field name="job_movement_ids" context="{'operation':'scale_up'}"
+							required="True" attrs="{'readonly':[('state', '!=', 'new')]}"
+							string=" الوظائف">
 							<tree editable="bottom">
 								<field name="job_id"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />

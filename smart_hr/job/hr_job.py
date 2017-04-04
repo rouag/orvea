@@ -53,6 +53,14 @@ class HrJob(models.Model):
     occupied_promotion = fields.Boolean(string='للترقية', )
     promotion_employee_id = fields.Many2one('hr.promotion.employee.job', string=u'الموظف')
     history_ids = fields.One2many('hr.job.history.actions', 'job_id', string=u'سجل الاجرءات')
+    category = fields.Selection([('occupied_promotion', u'مشغولة بالترقية لها'),
+                                 ('occupied_transfer', u' مشغولة بالنقل إليها'),
+                                 ('occupied_appoint', u' مشغولة بالتعيين عليها'),
+                                 ('unoccupied_promotion', u'شاغرة بترقية شاغلها'),
+                                 ('unooccupied_transfer', u'شاغرة بنقل شاغلها'),
+                                 ('unooccupied_termination', u'شاغرة بطي قيد شاغلها'),
+                                 ],
+                                string=u' نوع شغر الوظيفةالنشطة و شغولها')
 
     @api.multi
     @api.depends('occupation_date_to')
