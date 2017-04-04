@@ -6,47 +6,50 @@
 				<t t-foreach="docs" t-as="o">
 					<t t-call="smart_hr.external_layout_hr">
 						<div class="page" style="direction:rtl;">
-								<br></br>
-									<div class="text-center">
-										<b align="left">قرار حرمان موظف من علاوة دورية</b>
-										<p>
-											قرار إداري رقم
-											<span t-esc="o.name" />
-											بتاريخ
-											<span t-esc="get_hijri_date(o.order_date, '-')" />
-										</p>
-									</div>
-									<br></br>
-									<div class="text-left">
-									إن مدير عام الشؤون الإدارية و المالية
-
-									<br></br>
-									بناء على الصلاحيات الممنوحة له
-
-									و اشارة إلى خطاب رئيس التفتيش و المتابعة رقم
-									<br></br>
-									(
+							<br></br>
+							<div class="text-center">
+								<b align="left">قرار حرمان موظف من علاوة دورية</b>
+								<p>
+									 رقم
 									<span t-esc="o.name" />
-									)و تاريخ
+									بتاريخ
 									<span t-esc="get_hijri_date(o.order_date, '-')" />
-									المتضمن ما راته الدائرة من حرمان الموظف الموضح إسمه و بياناته
-									أدناه من علاوة دورية واحدة.
-
-									و استناد للمادة رقم (٣٢/اولا/٤) من نظام تاديب الموظفين و لموافقة
-									معالي رئيس هيئة على ذلك.
-
-									يقرر ما يلي
-									<t t-foreach="o.employee_ids" t-as="line">
-										<span t-field="line.display_name" />
-										<br></br>
-									</t>
-									٢.يبلغ هذا القرار لمن يلزم لإنفاذه
-</div>
-								
-								<br></br>
-								<br></br>
-								<br></br>
+								</p>
 							</div>
+							<br></br>
+							<p>
+								إن مدير عام الشؤون الإدارية و المالية
+							</p>
+							<p> بناء على الصلاحيات الممنوحة له
+							</p>
+							<p> و اشارة إلى خطاب رئيس التفتيش و المتابعة رقم
+							
+								(
+								<span t-esc="o.name" />
+								)و تاريخ
+								<span t-esc="get_hijri_date(o.order_date, '-')" />
+								المتضمن ما راته الدائرة من حرمان الموظفين الموضح أسمائهم و بياناتهم
+								أدناه من علاوة دورية واحدة.
+
+								و استناد للمادة رقم (٣٢/اولا/٤) من
+								نظام تاديب الموظفين و لموافقة
+								معالي رئيس هيئة على ذلك.
+							</p>
+							<p class="text-center">
+							<strong>
+								يقرر ما يلي
+						</strong>	</p>
+							<t t-foreach="o.employee_ids" t-as="line">
+								<p>
+
+									<span t-field="line.display_name" />
+								</p>
+							</t>
+
+
+							<p> ٢.يبلغ هذا القرار لمن يلزم لإنفاذه
+							</p>
+						</div>
 					</t>
 				</t>
 			</t>
