@@ -95,6 +95,7 @@ class hrBonus(models.Model):
             line_ids=[]
             for line in rec.employee_ids :
                 vals = {'employee_id':line.id,
+                        'compute_method':rec.compute_method,
                          'period_from_id': rec.period_from_id.id,
                         'period_to_id': rec.period_to_id.id,}
                 line_ids.append(vals)
@@ -160,13 +161,12 @@ class hrBonusLine(models.Model):
     percentage = fields.Float(string='النسبة')
     min_amount = fields.Float(string='الحد الأدنى')
     state = fields.Selection(related='bonus_id.state' ,string=u'الحالة')
-  
 
     compute_method = fields.Selection([('amount', 'مبلغ'),
                                        ('percentage', 'نسبة من الراتب الأساسي'),
                                        ('salary_grid', 'تحتسب من سلم الرواتب'),
                                        ('job', 'تحتسب من  الوظيفة'),
-                                       ('job_location', 'تحتسب  حسب مكان العمل')], string='طريقة الإحتساب',)
+                                       ('job_location', 'تحتسب  حسب مكان العمل')], required=1,string='طريقة الإحتساب',)
     state = fields.Selection([('progress', 'ساري'),
                               ('stop', 'إيقاف'),
                               ('expired', 'منتهي')
