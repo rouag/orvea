@@ -456,9 +456,7 @@ class HrPayslip(models.Model):
     def get_difference_holidays(self):
         self.ensure_one()
         line_ids = []
-        holidays_ids = self.env['hr.holidays'].search([('date_to', '>=', self.date_from),
-                                                       ('date_to', '<=', self.date_to),
-                                                       ('employee_id', '=', self.employee_id.id),
+        holidays_ids = self.env['hr.holidays'].search([('employee_id', '=', self.employee_id.id),
                                                        ('state', '=', 'done')
                                                        ])
         holiday_status_maternity = self.env.ref('smart_hr.data_hr_holiday_status_maternity')
@@ -488,7 +486,7 @@ class HrPayslip(models.Model):
             else:
                 entitlement_type = holiday_id.entitlement_type
             # case of لا يصرف له الراتب
-            if grid_id and not holiday_status_id.salary_spending:
+            if grid_id and not holiday_status_id.salary_spending and not holiday_status_id.percentages:
                 amount = (duration_in_month * (basic_salary / 30))
                 if duration_in_month > 0 and amount != 0:
                     vals = {'difference_id': self.id,
@@ -499,17 +497,27 @@ class HrPayslip(models.Model):
                             'amount': amount * -1,
                             'type': 'holiday'}
                     line_ids.append(vals)
-            # case of  يصرف له الراتب
-            if grid_id and not holiday_status_id.salary_spending:
+            # case of  لا يصرف له راتب كامل
+            if grid_id and not holiday_status_id.salary_spending and holiday_status_id.percentages:
                 for rec in holiday_status_id.percentages:
                     if entitlement_type == rec.entitlement_id.entitlment_category and rec.month_from <= months_from_holiday_start <= rec.month_to:
-                        amount = (duration_in_month * (basic_salary / 30) * 100 - rec.salary_proportion) / 100.0
+                        amount = (duration_in_month * (basic_salary / 30) * (100 - rec.salary_proportion)) / 100.0
                         if holiday_status_maternity == holiday_status_id:
                             retirement_amount = basic_salary * grid_id.retirement / 100.0
-                            holidays_diff_amount = amount
-                            amount = basic_salary - holidays_diff_amount - retirement_amount
-                            if amount < holiday_status_maternity.min_amount:
-                                amount = holidays_diff_amount + (holiday_status_maternity.min_amount - amount)
+                            amount = ((basic_salary - retirement_amount) * (100 - rec.salary_proportion)) / 100.0
+                            diff = holiday_status_maternity.min_amount - (((basic_salary - retirement_amount)) * (rec.salary_proportion)) / 100.0
+                            if diff > 0:
+                                amount -= diff
+                            print '--amount---', amount
+                            # amout depend of number of days
+                            amount = amount * duration_in_month / 30
+                            print '--basic_salary---', basic_salary
+                            print '--retirement_amount---', retirement_amount
+                            print '--basic_salary-retirement_amount---', basic_salary - retirement_amount
+                            print '--75%---', ((basic_salary - retirement_amount) * (100 - rec.salary_proportion)) / 100.0
+                            print '--25%---', ((basic_salary - retirement_amount) * (rec.salary_proportion)) / 100.0
+                            print '--1500 - 25%---', holiday_status_maternity.min_amount - (((basic_salary - retirement_amount)) * (rec.salary_proportion)) / 100.0
+                            print '--amount---', amount
                         if amount != 0:
                             vals = {'difference_id': self.id,
                                     'name': holiday_id.holiday_status_id.name,
