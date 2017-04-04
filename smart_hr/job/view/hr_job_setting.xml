@@ -371,6 +371,54 @@
 		<menuitem id="job_type_activity_menu" name="أنواع الأنشطة"
 			sequence="5" parent="hr_job_setting" action="action_hr_job_type_activity" />
 
+		<!-- أنواع حجز الوظائف -->
+
+		<record id="hr_type_job_booking_form" model="ir.ui.view">
+			<field name="name">hr.type.job.booking.form</field>
+			<field name="model">hr.type.job.booking</field>
+			<field name="arch" type="xml">
+				<form string="أنواع حجز الوظائف">
+					<sheet>
+						<group>
+							<group>
+								<field name="name"  />
+							</group>
+
+						</group>
+
+
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="hr_type_job_booking_tree" model="ir.ui.view">
+			<field name="name">hr.type.job.booking.tree</field>
+			<field name="model">hr.type.job.booking</field>
+			<field name="arch" type="xml">
+				<tree string="أنواع حجز الوظائف">
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+
+
+
+		<record model="ir.actions.act_window" id="action_hr_type_job_booking">
+			<field name="name">أنواع حجز الوظائف</field>
+			<field name="res_model">hr.type.job.booking</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="hr_type_job_booking_form" />
+		</record>
+		<record id="action_action_groupe_specific_tree" model="ir.actions.act_window.view">
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="hr_type_job_booking_tree" />
+			<field name="act_window_id" ref="action_hr_type_job_booking" />
+		</record>
+		<menuitem id="hr_type_job_booking_menu" name="أنواع حجز الوظائف"
+			sequence="6" parent="hr_job_setting" action="action_hr_type_job_booking" />
+
 
 
 
