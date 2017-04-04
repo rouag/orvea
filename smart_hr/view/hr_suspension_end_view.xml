@@ -16,8 +16,7 @@
 							states="hrm" groups="smart_hr.group_hrm" icon="fa-check"
 							class="oe_inline oe_stat_button" />
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
-							type="action"
-							states="hrm" groups="smart_hr.group_hrm" icon="fa-times"
+							type="action" states="hrm" groups="smart_hr.group_hrm" icon="fa-times"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<field name="state" widget="statusbar" statusbar_visible="draft,hrm,done" />
 					</header>
@@ -41,6 +40,8 @@
 								<field name="letter_no" required="1"
 									attrs="{'readonly':[('state','!=','draft')]}" />
 								<field name="letter_date" required="1"
+									attrs="{'readonly':[('state','!=','draft')]}" />
+								<field name="suspension_attachment" required="1"
 									attrs="{'readonly':[('state','!=','draft')]}" />
 								<field name="release_date" required="1"
 									attrs="{'readonly':[('state','!=','draft')]}" />

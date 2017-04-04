@@ -12,7 +12,8 @@
 				<tree string="طلبات تحويل ساعات التأخير">
 					<field name="name" />
 					<field name="date" />
-					<field name="employee_ids" widget="many2many_tags" />
+					<field name="num_decision" />
+					<field name="date_decision" />
 					<field name="state" />
 				</tree>
 			</field>
@@ -34,29 +35,52 @@
 							states="hrm" groups="smart_hr.group_hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" states="audit,hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<field name="state" widget="statusbar" statusbar_visible="refuse" />
+						<button name="%(report_request_transfer_delay_hours)d"
+							string="طباعة القرار" groups="smart_hr.group_hrm" type="action"
+							states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+						<field name="state" widget="statusbar" statusbar_visible="dm,audit,hrm,done,refuse" />
 					</header>
 					<sheet>
 						<h3>
-							<field name="name" invisible="1"/>
+							<field name="name" invisible="1" />
 						</h3>
 						<group>
 							<field name="date" />
 						</group>
 						<group col="4" string="فلترة">
-							<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]" options="{'no_create': True}"/>
-							<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]" options="{'no_create': True}"/>
-							<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]" options="{'no_create': True}"/>
-							<field name="salary_grid_type_id" options="{'no_create': True}"/>
+							<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]"
+								options="{'no_create': True}" />
+							<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]"
+								options="{'no_create': True}" />
+							<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]"
+								options="{'no_create': True}" />
+							<field name="salary_grid_type_id" options="{'no_create': True}" />
 						</group>
 
 						<field name="employee_ids">
 							<tree editable="bottom">
-								<field name="employee_id" options="{'no_create': True}"/>
+								<field name="employee_id" options="{'no_create': True}" />
 								<field name="balance" />
 								<field name="number_request" />
 							</tree>
 						</field>
+						<group>
+							<group string="بيانات الخطاب">
+								<field name="speech_source"
+									attrs="{'invisible':[('state','not in',['hrm','done'])], 'required':[('state','=','hrm')], 'readonly':[('state','=','done')]}" />
+								<field name="num_speech"
+									attrs="{'invisible':[('state','not in',['hrm','done'])], 'required':[('state','=','hrm')], 'readonly':[('state','=','done')]}" />
+								<field name="date_speech"
+									attrs="{'invisible':[('state','not in',['hrm','done'])], 'required':[('state','=','hrm')], 'readonly':[('state','=','done')]}" />
+								<field name="speech_file"
+									attrs="{'invisible':[('state','not in',['hrm','done'])], 'required':[('state','=','hrm')], 'readonly':[('state','=','done')]}" />
+							</group>
+							<group string="بيانات القرار" attrs="{'invisible':[('state','not in',['done'])]}">
+								<field name="num_decision" />
+								<field name="date_decision" />
+							</group>
+						</group>
+
 						<group>
 
 							<field name="description" placeholder="ملاحظات ..."
@@ -112,7 +136,8 @@
 				<tree string="طلبات تحويل ايام الغياب بدون عذر">
 					<field name="name" />
 					<field name="date" />
-					<field name="employee_ids" widget="many2many_tags" />
+					<field name="num_decision" />
+					<field name="date_decision" />
 					<field name="state" />
 				</tree>
 			</field>
@@ -134,29 +159,51 @@
 							states="hrm" groups="smart_hr.group_hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" states="audit,hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<field name="state" widget="statusbar" statusbar_visible="sm,audit,hrm,done,cancel" />
+						<button name="%(report_request_transfer_absence_days)d"
+							string="طباعة القرار" groups="smart_hr.group_hrm" type="action"
+							states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+						<field name="state" widget="statusbar" statusbar_visible="dm,audit,hrm,done,refuse" />
 					</header>
 					<sheet>
 						<h3>
-							<field name="name"  invisible="1"/>
+							<field name="name" invisible="1" />
 						</h3>
 						<group>
 							<field name="date" />
 						</group>
 						<group col="4" string="فلترة">
-							<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]" options="{'no_create': True}"/>
-							<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]" options="{'no_create': True}"/>
-							<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]" options="{'no_create': True}"/>
-							<field name="salary_grid_type_id" options="{'no_create': True}"/>
+							<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]"
+								options="{'no_create': True}" />
+							<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]"
+								options="{'no_create': True}" />
+							<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]"
+								options="{'no_create': True}" />
+							<field name="salary_grid_type_id" options="{'no_create': True}" />
 						</group>
 
 						<field name="employee_ids">
 							<tree editable="bottom">
-								<field name="employee_id" options="{'no_create': True}"/>
+								<field name="employee_id" options="{'no_create': True}" />
 								<field name="balance" />
 								<field name="number_request" />
 							</tree>
 						</field>
+						<group>
+							<group string="بيانات الخطاب">
+								<field name="speech_source"
+									attrs="{'invisible':[('state','not in',['hrm','done'])], 'required':[('state','=','hrm')], 'readonly':[('state','=','done')]}" />
+								<field name="num_speech"
+									attrs="{'invisible':[('state','not in',['hrm','done'])], 'required':[('state','=','hrm')],'readonly':[('state','=','done')]}" />
+								<field name="date_speech"
+									attrs="{'invisible':[('state','not in',['hrm','done'])], 'required':[('state','=','hrm')], 'readonly':[('state','=','done')]}" />
+								<field name="speech_file"
+									attrs="{'invisible':[('state','not in',['hrm','done'])], 'required':[('state','=','hrm')], 'readonly':[('state','=','done')]}" />
+							</group>
+							<group string="بيانات القرار" attrs="{'invisible':[('state','not in',['done'])]}">
+								<field name="num_decision" />
+								<field name="date_decision" />
+							</group>
+						</group>
 						<group>
 
 							<field name="description" placeholder="ملاحظات ..."

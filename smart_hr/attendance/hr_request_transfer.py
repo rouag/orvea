@@ -27,9 +27,13 @@ class HrRequestTransferDelayHours(models.Model):
     department_level2_id = fields.Many2one('hr.department', string='القسم', readonly=1, states={'dm': [('readonly', 0)]})
     department_level3_id = fields.Many2one('hr.department', string='الشعبة', readonly=1, states={'dm': [('readonly', 0)]})
     salary_grid_type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1, states={'dm': [('readonly', 0)]},)
-    num_decision = fields.Char(string=u'رقم القرار')
-    date_decision = fields.Date(string=u'تاريخ القرار')
-
+    num_decision = fields.Char(string=u'رقم القرار', readonly=1)
+    date_decision = fields.Date(string=u'تاريخ القرار', readonly=1)
+    speech_source = fields.Char(string=u'مصدر الخطاب')
+    num_speech = fields.Char(string=u'رقم الخطاب الصادر')
+    date_speech = fields.Date(string=u'تاريخ الخطاب الصادر')
+    speech_file = fields.Binary(string=u'الخطاب الصادر', attachment=True)
+    
     @api.multi
     def action_audit(self):
         self.name = self.env['ir.sequence'].get('seq.hr.request.transfer.delay')
@@ -46,6 +50,8 @@ class HrRequestTransferDelayHours(models.Model):
         self.state = 'done'
         for employee in self.employee_ids:
             employee.employee_id.delay_hours_balance -= employee.number_request*7
+        self.num_decision = self.env['ir.sequence'].get('hr.decision.sequence')
+        self.date_decision = fields.Date.today()
 
     @api.multi
     def button_cancel(self):
@@ -66,7 +72,7 @@ class HrEmployeeDelayHours(models.Model):
     name = fields.Char(string='التسلسل', readonly=1)
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', domain=[('employee_state', '=', 'employee')], resquired=1)
     number_request = fields.Integer(string='عدد الايام المراد تحويلها', required=1)
-    balance = fields.Float(string='(ساعات)الرصيد الحالي', readonly=1, related='employee_id.delay_hours_balance')
+    balance = fields.Float(string='(الرصيد الحالي(ساعات', readonly=1, related='employee_id.delay_hours_balance')
     request_id = fields.Many2one('hr.request.transfer.delay.hours')
 
     @api.onchange('employee_id')
@@ -128,8 +134,12 @@ class HrRequestTransferAbsence(models.Model):
     department_level2_id = fields.Many2one('hr.department', string='القسم', readonly=1, states={'dm': [('readonly', 0)]})
     department_level3_id = fields.Many2one('hr.department', string='الشعبة', readonly=1, states={'dm': [('readonly', 0)]})
     salary_grid_type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1, states={'dm': [('readonly', 0)]},)
-    employee_id_domain = fields.Char()
-
+    num_decision = fields.Char(string=u'رقم القرار', readonly=1)
+    date_decision = fields.Date(string=u'تاريخ القرار', readonly=1)
+    speech_source = fields.Char(string=u'مصدر الخطاب')
+    num_speech = fields.Char(string=u'رقم الخطاب الصادر')
+    date_speech = fields.Date(string=u'تاريخ الخطاب الصادر')
+    speech_file = fields.Binary(string=u'الخطاب الصادر', attachment=True)
     @api.multi
     def action_audit(self):
         self.name = self.env['ir.sequence'].get('seq.hr.request.transfer.absence')
@@ -146,6 +156,8 @@ class HrRequestTransferAbsence(models.Model):
         self.state = 'done'
         for employee in self.employee_ids:
             employee.employee_id.absence_balance -= employee.number_request
+        self.num_decision = self.env['ir.sequence'].get('hr.decision.sequence')
+        self.date_decision = fields.Date.today()
 
     @api.multi
     def button_cancel(self):
@@ -166,7 +178,7 @@ class HrEmployeeAbsenceDays(models.Model):
     name = fields.Char(string='التسلسل', readonly=1)
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', domain=[('employee_state', '=', 'employee')], resquired=1)
     number_request = fields.Integer(string='عدد الايام المراد تحويلها', required=1)
-    balance = fields.Float(string='الرصيد الحالي', readonly=1, related='employee_id.absence_balance')
+    balance = fields.Float(string='(الرصيد الحالي(ساعات', readonly=1, related='employee_id.absence_balance')
     request_id = fields.Many2one('hr.request.transfer.absence')
 
     @api.onchange('employee_id')

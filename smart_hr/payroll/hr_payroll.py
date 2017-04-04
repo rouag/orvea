@@ -231,7 +231,7 @@ class HrPayslip(models.Model):
     grade_id = fields.Many2one('salary.grid.grade', string=u'المرتبة')
     degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة')
     type_id = fields.Many2one('salary.grid.type', string=u'صنف الموظف')
-    number_of_days = fields.Integer(string=u'عدد أيام', readonly=1)
+    number_of_days = fields.Integer(string=u'عدد أيام العمل', readonly=1)
 
     @api.one
     def action_verify(self):
@@ -301,9 +301,13 @@ class HrPayslip(models.Model):
             worked_days_line_ids, leaves = rec.get_worked_day_lines_without_contract(rec.employee_id.id, rec.employee_id.calendar_id, rec.date_from, rec.date_to)
             rec.worked_days_line_ids = worked_days_line_ids
             rec.days_off_line_ids = leaves
-            worked_days_line_id = rec.worked_days_line_ids.search([('code', '=', 'WORK100')])
-            if worked_days_line_id:
-                rec.number_of_days = worked_days_line_id[0].number_of_days
+            number_of_days = 0
+            for rec in rec.days_off_line_ids:
+                number_of_days += rec['number_of_days']
+            print '---number_of_days-----', number_of_days
+            print '---rec.number_of_days-----', rec.number_of_days
+            rec.number_of_days = 30 - number_of_days
+            print '---rec.number_of_days-----', rec.number_of_days
 
     def get_worked_day_lines_without_contract(self, employee_id, working_hours, date_from, date_to, compute_leave=True):
         """
@@ -441,7 +445,7 @@ class HrPayslip(models.Model):
                                 'slip_id': payslip.id,
                                 'employee_id': employee.id,
                                 'rate': 0.0,
-                                'number_of_days': self.number_of_days,
+                                'number_of_days': 30,
                                 'amount': basic_salary * amount_multiplication,
                                 'category': 'basic_salary',
                                 'type': 'basic_salary',
@@ -456,7 +460,7 @@ class HrPayslip(models.Model):
                                  'slip_id': payslip.id,
                                  'employee_id': employee.id,
                                  'rate': 0.0,
-                                 'number_of_days': self.number_of_days,
+                                 'number_of_days': 30,
                                  'amount': amount,
                                  'category': 'allowance',
                                  'type': 'allowance',
@@ -471,7 +475,7 @@ class HrPayslip(models.Model):
                               'slip_id': payslip.id,
                               'employee_id': employee.id,
                               'rate': 0.0,
-                              'number_of_days': self.number_of_days,
+                              'number_of_days': 30,
                               'amount': amount,
                               'category': 'allowance',
                               'type': 'reward',
@@ -486,7 +490,7 @@ class HrPayslip(models.Model):
                                  'slip_id': payslip.id,
                                  'employee_id': employee.id,
                                  'rate': 0.0,
-                                 'number_of_days': self.number_of_days,
+                                 'number_of_days': 30,
                                  'amount': amount,
                                  'category': 'allowance',
                                  'type': 'indemnity',
@@ -511,7 +515,7 @@ class HrPayslip(models.Model):
                              'slip_id': payslip.id,
                              'employee_id': employee.id,
                              'rate': 0.0,
-                             'number_of_days': self.number_of_days,
+                             'number_of_days': 30,
                              'amount': bonus_amount,
                              'category': 'changing_allowance',
                              'type': bonus_type,
@@ -659,7 +663,7 @@ class HrPayslip(models.Model):
                                   'slip_id': payslip.id,
                                   'employee_id': employee.id,
                                   'rate': 0.0,
-                                  'number_of_days': self.number_of_days,
+                                  'number_of_days': 30,
                                   'amount': retirement_amount,
                                   'category': 'deduction',
                                   'type': 'retirement',
@@ -675,7 +679,7 @@ class HrPayslip(models.Model):
                                  'slip_id': payslip.id,
                                  'employee_id': employee.id,
                                  'rate': 0.0,
-                                 'number_of_days': self.number_of_days,
+                                 'number_of_days': 30,
                                  'amount': insurance_amount,
                                  'category': 'deduction',
                                  'type': 'insurance',
@@ -689,7 +693,7 @@ class HrPayslip(models.Model):
                               'slip_id': payslip.id,
                               'employee_id': employee.id,
                               'rate': 0.0,
-                              'number_of_days': self.number_of_days,
+                              'number_of_days': 30,
                               'amount': salary_net,
                               'category': 'salary_net',
                               'type': 'salary_net',

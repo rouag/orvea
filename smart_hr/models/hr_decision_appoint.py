@@ -466,8 +466,14 @@ class HrDecisionAppoint(models.Model):
                 number_id.write({'number': number})
         if self.date_medical_examination:
             self.employee_id.write({'medical_exam': self.date_medical_examination})
+        if self.type_appointment.id in (self.env.ref('smart_hr.data_hr_promotion_agent').id, self.env.ref('smart_hr.data_hr_promotion_member').id):
+            category = "occupied_promotion"
+        elif self.type_appointment.id in [self.env.ref('smart_hr.data_hr_recrute_from_transfert').id]:
+            category = "occupied_transfer"
+        else:
+            category = "occupied_appoint"
         self.job_id.write(
-            {'state': 'occupied', 'employee': self.employee_id.id, 'occupied_date': fields.Datetime.now()})
+            {'state': 'occupied', 'employee': self.employee_id.id, 'occupied_date': fields.Datetime.now(), 'category': category})
         if self.max_pension:
             self.employee_id.write({'basic_salary': self.basic_salary})
         else:
@@ -508,7 +514,7 @@ class HrDecisionAppoint(models.Model):
         if self.job_id.type_id != self.emp_job_id.type_id or (grade_id != new_grade_id) or (self.job_id.name.members_job is False and self.emp_job_id.name.members_job is True):
             self.employee_id.promotion_duration = 0
             holiday_balance = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
-                                                                             ('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id),])
+                                                                             ('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id),],limit=1)
             if holiday_balance:
                 holiday_balance.holidays_available_stock = 0
                 holiday_balance.token_holidays_sum = 0
