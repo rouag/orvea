@@ -186,7 +186,8 @@
 								<field name="date_direct_action"
 									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct','civil', 'done','refuse'])],'readonly':[('state', 'in', [ 'waiting', 'done','refuse'])]}" />
 								<field name="date_hiring_end"
-									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct','civil', 'done','refuse'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done','refuse'])]}" />
+									attrs="{'invisible':[('type_appointment', '!=', %(data_hr_recrute_contrat)d)],
+									'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done','refuse'])]}" />
 								<field name="testing_date_from"
 									attrs="{'invisible':[('depend_on_test_periode', '=', False)],'readonly':[('state', '!=', 'draft')]}" />
 								<field name="testing_date_to"

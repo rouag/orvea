@@ -274,21 +274,6 @@ class HrDecisionAppoint(models.Model):
             self.state = 'hrm'
         if self.type_appointment.recrutment_decider:
             self.action_done()
-            self.state_appoint = 'active'
-            direct_appoint_obj = self.env['hr.direct.appoint']
-            self.env['hr.direct.appoint'].create({'employee_id': self.employee_id.id,
-                                                  'number': self.number,
-                                                  'country_id': self.country_id.id,
-                                                  'date_hiring': self.date_hiring,
-                                                  'type_id': self.type_id.id,
-                                                  'job_id': self.job_id.id,
-                                                  'number_job': self.number_job,
-                                                  'state_appoint': self.state_appoint,
-                                                  'grade_id': self.grade_id.id,
-                                                  'type_appointment': self.type_appointment.id,
-                                                  'degree_id': self.degree_id.id,
-                                                  'date_direct_action': self.date_direct_action
-                                                  })
 
         # Add to log
         user = self.env['res.users'].browse(self._uid)
@@ -318,21 +303,6 @@ class HrDecisionAppoint(models.Model):
             self.state = 'direct'
         elif self.type_appointment.personnel_hr:
             self.action_done()
-            self.state_appoint = 'active'
-            direct_appoint_obj = self.env['hr.direct.appoint']
-            self.env['hr.direct.appoint'].create({'employee_id': self.employee_id.id,
-                                                  'number': self.number,
-                                                  'country_id': self.country_id.id,
-                                                  'date_hiring': self.date_hiring,
-                                                  'type_id': self.type_id.id,
-                                                  'job_id': self.job_id.id,
-                                                  'number_job': self.number_job,
-                                                  'state_appoint': self.state_appoint,
-                                                  'grade_id': self.grade_id.id,
-                                                  'type_appointment': self.type_appointment.id,
-                                                  'degree_id': self.degree_id.id,
-                                                  'date_direct_action': self.date_direct_action
-                                                  })
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
 
@@ -350,21 +320,6 @@ class HrDecisionAppoint(models.Model):
         self.ensure_one()
         if self.type_appointment.direct_manager:
             self.action_done()
-            self.state_appoint = 'active'
-            direct_appoint_obj = self.env['hr.direct.appoint']
-            self.env['hr.direct.appoint'].create({'employee_id': self.employee_id.id,
-                                                  'number': self.number,
-                                                  'job_id': self.job_id.id,
-                                                  'number_job': self.number_job,
-                                                  'country_id': self.country_id.id,
-                                                  'date_hiring': self.date_hiring,
-                                                  'type_id': self.type_id.id,
-                                                  'state_appoint': self.state_appoint,
-                                                  'grade_id': self.grade_id.id,
-                                                  'type_appointment': self.type_appointment.id,
-                                                  'degree_id': self.degree_id.id,
-                                                  'date_direct_action': self.date_direct_action,
-                                                  })
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
 
@@ -411,7 +366,7 @@ class HrDecisionAppoint(models.Model):
     def control_prensence_employee(self):
         today_date = fields.Date.from_string(fields.Date.today())
         appoints = self.env['hr.decision.appoint'].search(
-            [('state_appoint', '=', 'active'), ('state', '=', 'done'), ('is_started', '=', False)])
+            [('state', '=', 'done'), ('is_started', '=', False)])
         for appoint in appoints:
             direct_appoint_period = appoint.type_appointment.direct_appoint_period
             prev_days_end = fields.Date.from_string(appoint.date_direct_action) + relativedelta(
@@ -437,6 +392,22 @@ class HrDecisionAppoint(models.Model):
                         rec.write({'state_direct': 'cancel'})
                         group_id = self.env.ref('smart_hr.group_personnel_hr')
                         self.send_notification_refuse_to_group(group_id)
+
+    @api.model
+    def update_appoint_direct_action(self):
+        today_date = fields.Date.from_string(fields.Date.today())
+        for appoint in self.search([('state', '=', 'done'), ('state_appoint', '=', 'new')]):
+            if appoint.date_direct_action:
+                if fields.Date.from_string(appoint.date_direct_action) == today_date:
+                    if appoint.first_appoint:
+                        appoint.employee_id.write(
+                            {'begin_work_date': appoint.date_direct_action, 'recruiter_date': appoint.date_direct_action})
+                        appoint.write({'state_appoint': 'active', 'is_started': True})
+                    else:
+                        appoint.write({'state_appoint': 'active', 'is_started': True})
+                direct_action = self.env['hr.direct.appoint'].search([('date_direct_action', '=', appoint.date_direct_action), ('employee_id', '=', appoint.employee_id.id), ('state', '=', 'waiting')], limit=1)
+                if direct_action:
+                    direct_action.write({'state': 'done'})
 
     @api.multi
     def button_refuse_direct(self):
