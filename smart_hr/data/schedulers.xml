@@ -51,16 +51,16 @@
 			<field name="function">update_service_duration</field>
 			<field name="args">()</field>
 		</record>
-		<record id="ir_cron_hr_direct_appoint" model="ir.cron">
-			<field name="name">employee appoint</field>
-			<field name="interval_number">1</field>
-			<field name="interval_type">days</field>
-			<field name="numbercall">-1</field>
-			<field name="doall">0</field>
-			<field name="model">hr.decision.appoint</field>
-			<field name="function">control_prensence_employee</field>
-			<field name="args">()</field>
-		</record>
+<!-- 		<record id="ir_cron_hr_direct_appoint" model="ir.cron"> -->
+<!-- 			<field name="name">employee appoint</field> -->
+<!-- 			<field name="interval_number">1</field> -->
+<!-- 			<field name="interval_type">days</field> -->
+<!-- 			<field name="numbercall">-1</field> -->
+<!-- 			<field name="doall">0</field> -->
+<!-- 			<field name="model">hr.decision.appoint</field> -->
+<!-- 			<field name="function">control_prensence_employee</field> -->
+<!-- 			<field name="args">()</field> -->
+<!-- 		</record> -->
 		
 		<record id="ir_cron_control_test_periode_employee" model="ir.cron">
 			<field name="name">employee test periode exprience</field>
@@ -103,7 +103,15 @@
 			<field name="function">update_promotion_days</field>
 			<field name="args">()</field>
 		</record>
-		
-		
+		<record id="ir_cron_appoint_direct_action" model="ir.cron">
+			<field name="name">employee appoint direct action updater</field>
+			<field name="interval_number">1</field>
+			<field name="interval_type">days</field>
+			<field name="numbercall">-1</field>
+			<field name="doall">0</field>
+			<field name="model">hr.decision.appoint</field>
+			<field name="function">update_appoint_direct_action</field>
+			<field name="args">()</field>
+		</record>		
 	</data>
 </openerp>

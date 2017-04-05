@@ -35,7 +35,6 @@ class HrJob(models.Model):
          ('service_transfet', u'نقل خدمات'), ('promotion', u'ترقية'), ('mission', u'تكليف'), ('increase', u'رفع'),
          ('decrease', u'خفظ')], string=u'الحالة', readonly=1, default='unoccupied')
     employee = fields.Many2one('hr.employee', string=u'الموظف')
-    number=fields.Char(related='employee.number', string='رقم الوظيفي', readonly=1)
     occupied_date = fields.Date(string=u'تاريخ شغلها')
     creation_source = fields.Selection([('creation', u'إحداث'), ('striped_from', u'سلخ  من جهة'),
                                         ('striped_to', u'سلخ إلى جهة'), ('cancel', u'إلغاء'),
@@ -1336,7 +1335,6 @@ class HrJobMoveUpdate(models.Model):
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', required=1, readonly=1,
                                   domain=[('emp_state', 'not in', ['suspended', 'terminated']), ('employee_state', '=', 'employee')],
                                   default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended', 'terminated'])], limit=1))
-
     decision_number = fields.Char(string=u"رقم القرار")
     decision_date = fields.Date(string=u'تاريخ القرار')
     out_speech_number = fields.Char(string=u'رقم الخطاب الصادر')
@@ -1441,23 +1439,22 @@ class HrJobMoveUpdate(models.Model):
     def action_job_unreserve(self):
         self.ensure_one()
         for rec in self.job_update_ids:
-            rec.job_id.write({'state': 'unoccupied'})
-            rec.job_id.name = rec.new_name
-            rec.job_id.date_update = datetime.now()
-            rec.job_id.type_id = rec.new_type_id
-            rec.job_id.creation_source = 'update'
+
             description = ""
             if rec.new_name:
-                description += " تحوير المسمى من " + " " + str(rec.old_name.name) + " " + " الى "+ " " + str(rec.new_name.name)+". \n"
+                description += " تحوير المسمى من " + " " + str(rec.old_name.name) + " " + " الى " + " " + str(rec.new_name.name) + ". \n"
+                description += " تحوير الرمز الوظيفي من " + " " + str(rec.old_name.number) + " " + " الى " + " " + str(rec.new_name.number) + ". \n"
             if rec.new_type_id:
-                description += " تحوير نوع السلم من " + " " + str(rec.old_type_id.name) + " " + "الى"+ " " + str(rec.new_type_id.name)+"."
+                description += " تحوير نوع السلم من " + " " + str(rec.old_type_id.name) + " " + "الى" + " " + str(rec.new_type_id.name) + ". \n"
+            if rec.new_job_number:
+                description += " تحوير رقم الوظيفة " + " " + str(rec.job_number) + " " + "الى" + " " + str(rec.new_job_number) + ". \n"
             job_history_vals = {
                 'action': 'تحوير‬ الوظيفة',
                 'action_date': date.today(),
                 'description': description,
-                'job_id':rec.job_id.id
-                }
+                'job_id': rec.job_id.id}
             self.env['hr.job.history.actions'].create(job_history_vals)
+            rec.job_id.write({'state': 'unoccupied', 'name': rec.new_name.id, 'date_update': datetime.now(), 'type_id': rec.new_type_id.id, 'number': rec.new_job_number, 'creation_source': 'update'})
         self.state = 'done'
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تم تحوير‬ الوظائف من قبل '" + unicode(user.name) + u"'")
@@ -1501,7 +1498,7 @@ class HrJobMoveUpdateLine(models.Model):
 
     job_update_id = fields.Many2one('hr.job.update', string=u'التحوير‬')
     job_id = fields.Many2one('hr.job', string=u'الوظيفة', required=1)
-    job_name_code = fields.Char(related="job_id.number", string='الرمز', required=1)
+    job_name_code = fields.Char(string='الرمز')
     job_number = fields.Char(related='job_id.number', string=u'رقم الوظيفة', readonly=1)
     old_name = fields.Many2one('hr.job.name', readonly=1, string=u'المسمى', required=1)
     new_name = fields.Many2one('hr.job.name', string=u'المسمى الجديد', required=1)
@@ -1511,6 +1508,7 @@ class HrJobMoveUpdateLine(models.Model):
                                required=1)
     department_id = fields.Many2one('hr.department', related='job_id.department_id', string=u'الإدارة', readonly=1,
                                     required=1)
+    new_job_number = fields.Char(string=u'رقم الوظيفة الجديد', required=1)
 
     @api.onchange('job_id')
     def onchange_job_id(self):
@@ -1529,9 +1527,12 @@ class HrJobMoveUpdateLine(models.Model):
             # fill old value
             self.old_name = self.job_id.name.id
             self.old_type_id = self.job_id.type_id.id
+            self.job_name_code = self.job_id.name.number
+            self.job_number = self.job_id.number
             domain['new_name'] = [('id', '!=', self.job_id.name.id)]
             domain['new_type_id'] = [('id', '!=', self.job_id.type_id.id)]
             res['domain'] = domain
+            
             return res
 
 

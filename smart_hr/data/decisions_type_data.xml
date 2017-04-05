@@ -149,7 +149,7 @@
 <p><strong>إن رئيس هيئة التحقيق و الإدعاء العام</strong></p>
 <p>بناء على صلاحيات الممنوحة له</p>
 <p> و إشارة إلى القرار الإداري رقم(..................) و تاريخ DATE  القاضي بتعين المواطن / EMPLOYEE على وظيفة (JOB)  فئة (GRADE) بالدرجة(DEGREE) رقمها (..................) بالمقرالرئيس </p>
-<p>current_year
+<p>
 و اشارة إلى خطاب مدير الشؤون الإدارية و المالية بفرع الهيئة بالمنظقة رقم(..................) وتاريخ(..................)  بشأن عدم مباشرة  المذكور مهام وظفته حتى تاريخه .</p>
 <p>و استناد إلى  لائحة  المعينين على بند الأجور ،و لموافقتنا على ذلك.</p>
 
@@ -421,7 +421,7 @@
   <p style="text-align: left;"><strong>
 			 رئيس هيئة التحقيق و الإدعاء العام </strong></p>   ]]></field>
 		</record>
-	
+
 		<record id="data_decision_type17" model="hr.decision.type">
 			<field name="name">قرار إحالة موظف  للتقاعد المبكر بسبب عجزه الصحي
 			</field>
@@ -1055,10 +1055,10 @@
 			 رئيس هيئة التحقيق و الإدعاء العام </strong></p>  ]]></field>
 
 		</record>
-		
-		
+
+
 		<record id="data_decision_promotion" model="hr.decision.type">
-			<field name="name"> قرار ترقية  موظف</field>
+			<field name="name"> قرار ترقية موظف</field>
 			<field name="text"><![CDATA[
 			<p>قرار إداري رقم
 			 (NUMERO)و تاريخ  DATE</p>
@@ -1091,7 +1091,7 @@
 		</record>
 
 		<record id="data_decision_promotion_member" model="hr.decision.type">
-			<field name="name"> قرار ترقية  اعضاء</field>
+			<field name="name"> قرار ترقية اعضاء</field>
 			<field name="text"><![CDATA[
 			<p>قرار إداري رقم
 			 (NUMERO)و تاريخ  DATE</p>
@@ -1118,6 +1118,331 @@
   
             ]]></field>
 		</record>
+		<!--أنواع الاجازات -->
+		<record id="data_normal_leave" model="hr.decision.type">
+			<field name="name"> قرار إجازة عادية</field>
+			<field name="text"><![CDATA[
+			<p>قرار إداري رقم
+			 (NUMERO)و تاريخ  DATE</p>
+			<p style="text-align: center;"><strong>
+			 رقم الهوية
+			 CARTEID </strong></p>
+									<p style="font-size:22px;">إن .........................</p>
+									<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
+									<p style="font-size:22px;"> و إشارة إلى طلب الإجازة المرفق و استنادا إلى المادة
+										رقم (الثانية) من لائحة الاجازات
+									</p>
+									<p align="center" style="font-size:22px;">:يقرر ما يلى</p>
+									
+									<p style="font-size:22px;">
+										1) الموافقة على تمتع الموظف /
+									 EMPLOYEE  الذى يشغل وظيفة  (JOB) رقمها(CODE) رمزها (NUMBER)) بالمرتبة (GRADE) بالدرجة(DEGREE)
+											DURATION	بإجازة عادية لمده
+										
+										 FROMDET اعتبارا من
+										
+									</p>
+										<p style="font-size:22px;">2) يصرف له 
+									
+										راتب ‫مسبق‬</p>
+									<p style="font-size:22px;">3) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
+								</div>
+								<p></p>
+								<p></p>
+								
+									<p />
+									..................................
+									<p />
+									..................................
+								</p>
+								<p>
+									<p />
+									صورة مع التحية لسعادة مدير عام شؤون الموظفين برئاسة الهيئة
+									<p />
+									الاصل مع الاساس لملف المذكور(
+									
+									)
+									<p />
+									للإفادة عن تاريخ عودته
+									<p />
+									ص/للارشيف
+									<p />
+									صورة للاتصالات الادارية لتسديد القيد رقم.....و تاريخ ../../..ه
+
+
+								</p>
+									
+
+            ]]></field>
+		</record>
+
+
+		<record id="data_exceptionnel_leave" model="hr.decision.type">
+			<field name="name"> قرار إجازة استثنائية</field>
+			<field name="text"><![CDATA[
+			<p>قرار إداري رقم
+			 (NUMERO)و تاريخ  DATE</p>
+			<p style="text-align: center;"><strong>
+			 رقم الهوية
+			 CARTEID </strong></p>
+									<p style="font-size:22px;">إن رئيس هيئة التحقيق والإدعاء العام</p>
+								<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
+								<p style="font-size:22px;">و إشارة إلى طلب الإجازة المرفق و استنادا إلى المادة
+									(العشرين) من لائحة الإجازات
+								</p>
+								<p align="center" style="font-size:22px;">:يقرر ما يلى</p>
+								<p style="font-size:22px;">
+								
+								<p style="font-size:22px;">
+									١) منح إجازة استثنائية للموظف
+										 EMPLOYEE  المثبت على وظيفة (JOB) رقمها(CODE) رمزها (NUMBER)) بالمرتبة (GRADE) بالدرجة(DEGREE)
+									
+
+									بفرع الهيئة بمنطقة
+								DURATION	لمدة
+								FROMDET	 اعتبارا من
+									وحتى نهاية يوم
+								</p>
+								<p style="font-size:22px;">٢ ) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
+								<p align="left" style="font-size:22px;">
+
+									رئيس هيئة التحقيق والإدعاء العام
+
+								</p>
+								<p>
+									ص/ مع التحية لوزارة الخدمة المدنية
+									<br />
+									الاصل مع الاساس لملف المذكور(
+									)
+									ص/ للرواتب و الإجازات ص/للارشيف ص/للموظف
+								</p>
+								<p>
+									ص/ لفرع الهيئة بمنطقة
+									للإفادة عن تاريخ عودته
+								
+									
+
+            ]]></field>
+		</record>
+
+
+		<record id="data_leave_satisfactory" model="hr.decision.type">
+			<field name="name"> قرار إجازة مرضية</field>
+			<field name="text"><![CDATA[
+			<p>قرار إداري رقم
+			 (NUMERO)و تاريخ  DATE</p>
+			<p style="text-align: center;"><strong>
+			 رقم الهوية
+			 CARTEID </strong></p>
+									<p style="font-size:22px;">إن ................</p>
+								<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
+								<p style="font-size:22px;">
+									وبناءً على التقرير الطبي الصادر من رقم
+
+									و تاريخ
+									القاضي
+									يمنح الموظف إسمه أدناه إجازة مرضية.
+								</p>
+								<p style="font-size:22px;">وبناءً على المادة (الحادية عشر) من لائحة الإجازات ،
+									ولموافقتنا على ذلك.
+								</p>
+								<p align="center" style="font-size:22px;">:يقرر ما يلى</p>
+								<p style="font-size:22px;">
+									<p style="font-size:22px;">
+									١) منح المستخدم /
+									
+ EMPLOYEE  المثبت على وظيفة  (JOB) رقمها(CODE) رمزها (NUMBER)) بالمرتبة (GRADE) بالدرجة(DEGREE)
+
+								DURATION	إجازة مرضية لمده
+								 FROMDET	يومااعتبارا من
+								<p style="font-size:22px;">٢) يعامل من حيث راتب الإجازة على أساس ..............
+								</p>
+								<p style="font-size:22px;">٣) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
+								<p align="left">
+									<br />
+									..................................
+									<br />
+									..................................
+								</p>
+								<br />
+									صورة مع التحية لسعادة مدير عام شؤون الموظفين برئاسة الهيئة
+									<br />
+									الاصل مع الاساس لملف المذكور(
+									)
+									<br />
+									صورة للاحاطة
+									<br />
+									ص/للارشيف
+									<br />
+									صورة للاتصالات الادارية لتسديد القيد رقم.....و تاريخ ../../..ه
+
+            ]]></field>
+		</record>
+
+
+
+		<record id="data_leave_escort" model="hr.decision.type">
+			<field name="name"> قرار إجازة مرافقة</field>
+			<field name="text"><![CDATA[
+			<p>قرار إداري رقم
+			 (NUMERO)و تاريخ  DATE</p>
+			<p style="text-align: center;"><strong>
+			 رقم الهوية
+			 CARTEID </strong></p>
+									<p style="font-size:22px;">إن مدير شؤون الموظفين</p>
+								<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
+								<p style="font-size:22px;">
+									وبناءً على التقرير الطبي الصادر من رقم
+
+									و تاريخ
+								</p>
+
+
+								<p style="font-size:22px;">و إستناداً على المادة (الخامسة عشر) من لائحة الإجازات
+									.
+								</p>
+								<p align="center" style="font-size:22px;">:يقرر ما يلى</p>
+									<p style="font-size:22px;">
+								<p style="font-size:22px;">
+									1) يمنح الموظف /
+ EMPLOYEE  المثبت على وظيفة  (JOB) رقمها(CODE) رمزها (NUMBER)) بالمرتبة (GRADE) بالدرجة(DEGREE)
+								</p>
+								<p style="font-size:22px;">
+								DURATION	إجازة مرافقة لمده
+									يوم اعتبارا من
+								</p>
+								<p style="font-size:22px;">2) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
+								
+								<p align="left">
+									<br />
+									..................................
+									<br />
+									..................................
+								</p>
+									<br />
+									صورة مع التحية لسعادة مدير عام شؤون الموظفين برئاسة الهيئة
+									<br />
+									الاصل مع الاساس لملف المذكور(
+									)
+									<br />
+									ص/................. للإحاطة و الإفادة عن تاريخ عودته
+									<br />
+									ص/للارشيف
+									<br />
+									ص/لتسديد القيد رقم.....و تاريخ ../../..ه
+								
+								
+								            ]]></field>
+		</record>
+
+		<record id="data_leave_sport" model="hr.decision.type">
+			<field name="name"> قرار إجازة رياضية</field>
+			<field name="text"><![CDATA[
+			<p>قرار إداري رقم
+			 (NUMERO)و تاريخ  DATE</p>
+			<p style="text-align: center;"><strong>
+			 رقم الهوية
+			 CARTEID </strong></p>
+									<br />
+									<br />
+									<br />
+									<p style="font-size:22px;">إن رئيس هيئة التحقيق والإدعاء العام</p>
+									<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له,</p>
+									<p style="font-size:22px;">
+										واشارة إلى خطابات
+										رقم
+										بتاريخ
+										ورقم
+
+										وتاريخ
+
+										بشان طلب
+										
+										الموافقة على منح الموظف
+										 EMPLOYEE  
+									DURATION	إجازة رياضية لمدة
+										يوم للمشاركة في
+
+									</p>
+
+									<p style="font-size:22px;">واستنادا للمادة (٢٤) من لائحة الإجازات ولموافقتنا
+										على
+										ذلك.
+									</p>
+									<p align="center" style="font-size:22px;">:يقرر ما يلى</p>
+									<p style="font-size:22px;">
+									 EMPLOYEE  	١) يمنح الموظف /
+									DURATION	إجازة رياضية لمدة
+										يوما اعتبارا من
+									</p>
+									<p style="font-size:22px;">٢) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
+								<br />
+								<br />
+								<br />
+								<div class="col-xs-5 pull-right" style="font-size:22px;">
+									<span>رئيس هيئة التحقيق والإدعاء العام</span>
+									</div>
+									
+									
+								
+								            ]]></field>
+		</record>
+
+
+		<record id="data_leave_motherhood" model="hr.decision.type">
+			<field name="name"> قرار إجازة الأمومة</field>
+			<field name="text"><![CDATA[
+			<p>قرار إداري رقم
+			 (NUMERO)و تاريخ  DATE</p>
+			<p style="text-align: center;"><strong>
+			 رقم الهوية
+			 CARTEID </strong></p>
+									<br />
+									<br />
+									<p style="font-size:22px;">إن رئيس هيئة التحقيق والإدعاء العام</p>
+									<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له,</p>
+									<p style="font-size:22px;">
+										واشارة إلى خطابات
+										رقم
+										بتاريخ
+										ورقم
+
+										وتاريخ
+
+										بشان طلب
+										الموافقة على منح الموظفة
+										إجازة الأمومة لمدة
+									</p>
+									
+									
+									<p style="font-size:22px;">واستنادا للمادة (٢٤) من لائحة الإجازات ولموافقتنا
+										على
+										ذلك.
+									</p>
+									<p align="center" style="font-size:22px;">:يقرر ما يلى</p>
+									<p style="font-size:22px;">
+										١) يمنح الموظفة /
+										 EMPLOYEE 
+										إجازة الأمومة لمدة
+									DURATION
+										يوما اعتبارا من
+									</p>
+									<p style="font-size:22px;">٢) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
+								</div>
+								<br />
+								<br />
+								<br />
+								<div class="col-xs-5 pull-right" style="font-size:22px;">
+									<span>رئيس هيئة التحقيق والإدعاء العام</span>
+									<br></br>
+									
+									</div>
+								
+								            ]]></field>
+		</record>
+
+
+
 
 
 	</data>
