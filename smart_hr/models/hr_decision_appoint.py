@@ -392,24 +392,22 @@ class HrDecisionAppoint(models.Model):
                         group_id = self.env.ref('smart_hr.group_personnel_hr')
                         self.send_notification_refuse_to_group(group_id)
 
-
     @api.model
     def update_appoint_direct_action(self):
         today_date = fields.Date.from_string(fields.Date.today())
-        for appoint in self.search([('state', '=', 'done')]):
+        for appoint in self.search([('state', '=', 'done'), ('state_appoint', '=', 'new')]):
             if appoint.date_direct_action:
-                if appoint.date_direct_action==today_date:
+                if fields.Date.from_string(appoint.date_direct_action) == today_date:
                     if appoint.first_appoint:
                         appoint.employee_id.write(
                             {'begin_work_date': appoint.date_direct_action, 'recruiter_date': appoint.date_direct_action})
-                        appoint.write({'state_appoint': 'active'})
+                        appoint.write({'state_appoint': 'active', 'is_started': True})
                     else:
-                        appoint.write({'state_appoint': 'active'})
-                direct_action = self.env['hr.direct.appoint'].search([('date_direct_action', '=', appoint.date_direct_action), ('employee_id', '=', appoint.employee_id.id),
-                                                                      ('state', '=', 'waiting')], limit=1)
+                        appoint.write({'state_appoint': 'active', 'is_started': True})
+                direct_action = self.env['hr.direct.appoint'].search([('date_direct_action', '=', appoint.date_direct_action), ('employee_id', '=', appoint.employee_id.id), ('state', '=', 'waiting')], limit=1)
                 if direct_action:
-                    direct_action.state = 'done'
-                    direct_action.is_started = True
+                    direct_action.write({'state': 'done'})
+
     @api.multi
     def button_refuse_direct(self):
         self.ensure_one()

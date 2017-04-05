@@ -20,7 +20,6 @@
 				<tree string="قرار مباشرة التعين" delete='0'>
 					<field name="employee_id" />
 					<field name="number" />
-					<field name="type_appointment" />
 					<field name="job_id" />
 					<field name="number_job" />
 					<field name="date_direct_action" />
@@ -49,11 +48,11 @@
 					<sheet>
 						<group col="4">
 							<field name="date" />
-							<field name="date_direct_action" />
+							<field name="date_direct_action" attrs="{'readonly': [('state','!=', 'waiting')]}"/>
 						</group>
 						<group>
 							<group string="بيانات الموظف">
-								<field name="employee_id" />
+								<field name="employee_id" attrs="{'readonly': [('state','!=', 'waiting')]}"/>
 								<field name="number" />
 								<field name="state_direct" invisible="1" />
 								<field name="country_id" />

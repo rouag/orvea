@@ -15,7 +15,7 @@ class HrDirectAppoint(models.Model):
     _rec_name = 'employee_id'
 
     employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', required=1)
-    number = fields.Char(string='رقم الوظيفة', readonly=1)
+    number = fields.Char(string='الرقم الوظيفي', readonly=1)
     code = fields.Char(string=u'رمز الوظيفة ', readonly=1)
     country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
     job_id = fields.Many2one('hr.job', string='الوظيفة', store=True, readonly=1)
@@ -105,7 +105,7 @@ class HrDirectAppoint(models.Model):
             if appoint_line:
                 self.job_id = appoint_line.job_id.id
                 self.code = appoint_line.job_id.name.number
-                self.number_job = appoint_line.number
+                self.number_job = appoint_line.job_id.number
                 self.type_id = appoint_line.type_id.id
                 self.far_age = appoint_line.type_id.far_age
                 self.grade_id = appoint_line.grade_id.id
