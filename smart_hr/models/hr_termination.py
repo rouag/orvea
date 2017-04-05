@@ -51,6 +51,7 @@ class hr_termination(models.Model):
         ('done', u'اعتمدت'),
         ('refuse', u'رفض'),
     ], string=u'الحالة', default='draft')
+    done_date = fields.Date(string='تاريخ التفعيل')
 
     @api.onchange('termination_type_id')
     def _onchange_termination_type_id(self):
@@ -108,6 +109,7 @@ class hr_termination(models.Model):
             ter.employee_id.job_id.employee = False
             ter.employee_id.job_id = False
             # Update State
+            ter.done_date = fields.Date.today()
             ter.state = 'done'
             # Set the termination date with the date of the final approve
             ter.termination_date = fields.Date.today()

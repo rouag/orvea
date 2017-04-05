@@ -36,6 +36,7 @@ class HrEmployeeLend(models.Model):
     basic_salary = fields.Float(string=u'الراتب الأساسي', readonly=1)
     lend_salary = fields.Float(string=u'الراتب في الإعارة', readonly=1, states={'new': [('readonly', 0)]})
     pay_retirement = fields.Boolean(string=u'يدفع له نسبة التقاعد', readonly=1, states={'new': [('readonly', 0)]})
+    done_date = fields.Date(string='تاريخ التفعيل')
 
     @api.multi
     @api.depends('date_from', 'duration')
@@ -91,6 +92,7 @@ class HrEmployeeLend(models.Model):
     @api.multi
     def action_done(self):
         self.ensure_one()
+        self.done_date = fields.Date.today()
         self.state = 'done'
         # create history_line
 #         self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, False, False, "إعارة")

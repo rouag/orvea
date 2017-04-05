@@ -168,6 +168,7 @@ class HrHolidays(models.Model):
     is_holidays_specialist_user = fields.Boolean(string='Is Current User holidays specialist', compute='_is_holidays_specialist_user')
     advanced_salary_is_paied = fields.Boolean('advanced_salary_is_paied', default=False)
     decission_id  = fields.Many2one('hr.decision', string=u'القرارات',)
+    done_date = fields.Date(string='تاريخ التفعيل')
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
@@ -308,7 +309,6 @@ class HrHolidays(models.Model):
         res = {}
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_illness'):
             res['domain'] = {'entitlement_type': [('code', '=', 'illness')]}
-            self.text_resolution = self.env.ref('smart_hr.data_leave_satisfactory').text
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_death'):
             if self.employee_id:
                 gender = self.employee_id.gender
@@ -592,6 +592,7 @@ class HrHolidays(models.Model):
 
         self.num_decision = self.env['ir.sequence'].get('hr.decision.sequence')
         self.date_decision = fields.Date.today()
+        self.done_date = fields.Date.today()
         self.state = 'done'
 
 

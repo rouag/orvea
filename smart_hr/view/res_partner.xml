@@ -15,7 +15,12 @@
 					<field name="inter_reg_org" />
 					<field name="insurance" />
 				</field>
-
+				<page name="sales_purchases" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</page>
+				<page name="accounting" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</page>
 			</field>
 		</record>
 
@@ -161,7 +166,7 @@
 				</field>
 			</field>
 		</record>
-		
+
 		<record id="mail.action_contacts" model="ir.actions.act_window">
 			<field name="name">Contacts</field>
 			<field name="type">ir.actions.act_window</field>
@@ -176,7 +181,8 @@
 				</p>
 				<p>
 					Odoo helps you easily track all activities related to
-					a customer; discussions, history of business opportunities,
+					a customer;
+					discussions, history of business opportunities,
 					documents, etc.
 				</p>
 			</field>

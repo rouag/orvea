@@ -119,6 +119,7 @@ class HrDecisionAppoint(models.Model):
     location_allowance_ids = fields.One2many('decision.appoint.allowance', 'location_decision_appoint_id', string=u'بدلات المنطقة')
     is_enterview_manager = fields.Boolean(string=u'مقابلة شخصية',related="type_appointment.enterview_manager")
     defferential_is_paied = fields.Boolean(string='defferential is paied', default=False)
+    done_date = fields.Date(string='تاريخ التفعيل')
 
     @api.multi
     @api.onchange('type_appointment')
@@ -273,21 +274,6 @@ class HrDecisionAppoint(models.Model):
             self.state = 'hrm'
         if self.type_appointment.recrutment_decider:
             self.action_done()
-            self.state_appoint = 'active'
-            direct_appoint_obj = self.env['hr.direct.appoint']
-            self.env['hr.direct.appoint'].create({'employee_id': self.employee_id.id,
-                                                  'number': self.number,
-                                                  'country_id': self.country_id.id,
-                                                  'date_hiring': self.date_hiring,
-                                                  'type_id': self.type_id.id,
-                                                  'job_id': self.job_id.id,
-                                                  'number_job': self.number_job,
-                                                  'state_appoint': self.state_appoint,
-                                                  'grade_id': self.grade_id.id,
-                                                  'type_appointment': self.type_appointment.id,
-                                                  'degree_id': self.degree_id.id,
-                                                  'date_direct_action': self.date_direct_action
-                                                  })
 
         # Add to log
         user = self.env['res.users'].browse(self._uid)
@@ -317,21 +303,6 @@ class HrDecisionAppoint(models.Model):
             self.state = 'direct'
         elif self.type_appointment.personnel_hr:
             self.action_done()
-            self.state_appoint = 'active'
-            direct_appoint_obj = self.env['hr.direct.appoint']
-            self.env['hr.direct.appoint'].create({'employee_id': self.employee_id.id,
-                                                  'number': self.number,
-                                                  'country_id': self.country_id.id,
-                                                  'date_hiring': self.date_hiring,
-                                                  'type_id': self.type_id.id,
-                                                  'job_id': self.job_id.id,
-                                                  'number_job': self.number_job,
-                                                  'state_appoint': self.state_appoint,
-                                                  'grade_id': self.grade_id.id,
-                                                  'type_appointment': self.type_appointment.id,
-                                                  'degree_id': self.degree_id.id,
-                                                  'date_direct_action': self.date_direct_action
-                                                  })
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
 
@@ -349,21 +320,6 @@ class HrDecisionAppoint(models.Model):
         self.ensure_one()
         if self.type_appointment.direct_manager:
             self.action_done()
-            self.state_appoint = 'active'
-            direct_appoint_obj = self.env['hr.direct.appoint']
-            self.env['hr.direct.appoint'].create({'employee_id': self.employee_id.id,
-                                                  'number': self.number,
-                                                  'job_id': self.job_id.id,
-                                                  'number_job': self.number_job,
-                                                  'country_id': self.country_id.id,
-                                                  'date_hiring': self.date_hiring,
-                                                  'type_id': self.type_id.id,
-                                                  'state_appoint': self.state_appoint,
-                                                  'grade_id': self.grade_id.id,
-                                                  'type_appointment': self.type_appointment.id,
-                                                  'degree_id': self.degree_id.id,
-                                                  'date_direct_action': self.date_direct_action,
-                                                  })
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
 
@@ -410,7 +366,7 @@ class HrDecisionAppoint(models.Model):
     def control_prensence_employee(self):
         today_date = fields.Date.from_string(fields.Date.today())
         appoints = self.env['hr.decision.appoint'].search(
-            [('state_appoint', '=', 'active'), ('state', '=', 'done'), ('is_started', '=', False)])
+            [('state', '=', 'done'), ('is_started', '=', False)])
         for appoint in appoints:
             direct_appoint_period = appoint.type_appointment.direct_appoint_period
             prev_days_end = fields.Date.from_string(appoint.date_direct_action) + relativedelta(
@@ -436,6 +392,22 @@ class HrDecisionAppoint(models.Model):
                         rec.write({'state_direct': 'cancel'})
                         group_id = self.env.ref('smart_hr.group_personnel_hr')
                         self.send_notification_refuse_to_group(group_id)
+
+    @api.model
+    def update_appoint_direct_action(self):
+        today_date = fields.Date.from_string(fields.Date.today())
+        for appoint in self.search([('state', '=', 'done'), ('state_appoint', '=', 'new')]):
+            if appoint.date_direct_action:
+                if fields.Date.from_string(appoint.date_direct_action) == today_date:
+                    if appoint.first_appoint:
+                        appoint.employee_id.write(
+                            {'begin_work_date': appoint.date_direct_action, 'recruiter_date': appoint.date_direct_action})
+                        appoint.write({'state_appoint': 'active', 'is_started': True})
+                    else:
+                        appoint.write({'state_appoint': 'active', 'is_started': True})
+                direct_action = self.env['hr.direct.appoint'].search([('date_direct_action', '=', appoint.date_direct_action), ('employee_id', '=', appoint.employee_id.id), ('state', '=', 'waiting')], limit=1)
+                if direct_action:
+                    direct_action.write({'state': 'done'})
 
     @api.multi
     def button_refuse_direct(self):
@@ -478,6 +450,7 @@ class HrDecisionAppoint(models.Model):
             self.employee_id.write({'basic_salary': self.basic_salary})
         else:
             self.employee_id.write({'basic_salary': 0.0})
+        self.done_date = fields.Date.today()
         self.state = 'done'
         # close last active appoint for the employee
         last_appoint = self.employee_id.decision_appoint_ids.search(
@@ -506,6 +479,7 @@ class HrDecisionAppoint(models.Model):
                                                       'salary_grid_detail_id': grid_id.id,
                                                       'date': fields.Date.from_string(fields.Date.today())
                                                       })
+        self.done_date = fields.Date.today()
         self.state = 'done'
         self.env['hr.holidays']._init_balance(self.employee_id)
         grade_id = int(self.emp_job_id.grade_id.code)
@@ -569,53 +543,26 @@ class HrDecisionAppoint(models.Model):
 
     @api.onchange('job_id')
     def _onchange_job_id(self):
-        for rec in self :
-            if rec.employee_id.is_member == True :
-                job_obj = self.env['hr.job'].search([('state', '=', 'unoccupied'),('name.members_job','=',True)])
-                if job_obj:
-                    rec.number_job = rec.job_id.number
-                    rec.code = rec.job_id.name.number
-                    rec.type_id = rec.job_id.type_id.id
-                    rec.far_age = rec.job_id.type_id.far_age
-                    rec.grade_id = rec.job_id.grade_id.id
-                    rec.department_id = rec.job_id.department_id.id
-                    location_allowance_ids = []
-                    for rec in rec.department_id.dep_side.allowance_ids:
-                        location_allowance_ids.append({'location_decision_appoint_id': rec.id,
+            self.number_job = self.job_id.number
+            self.code = self.job_id.name.number
+            self.type_id = self.job_id.type_id.id
+            self.far_age = self.job_id.type_id.far_age
+            self.grade_id = self.job_id.grade_id.id
+            self.department_id = self.job_id.department_id.id
+            location_allowance_ids = []
+            for rec in self.department_id.dep_side.allowance_ids:
+                location_allowance_ids.append({'location_decision_appoint_id': self.id,
                                                'allowance_id': rec.id,
                                                'compute_method': 'amount',
                                                'amount': 0.0})
-                        rec.location_allowance_ids = location_allowance_ids
-                        job_allowance_ids = []
-                        for rec in rec.job_id.serie_id.allowanse_ids:
-                            job_allowance_ids.append({'decision_appoint_id': rec.id,
+            self.location_allowance_ids = location_allowance_ids
+            job_allowance_ids = []
+            for rec in self.job_id.serie_id.allowanse_ids:
+                job_allowance_ids.append({'decision_appoint_id': self.id,
                                           'allowance_id': rec.id,
                                           'compute_method': 'amount',
                                           'amount': 0.0})
-                            rec.job_allowance_ids = job_allowance_ids
-            if rec.employee_id.is_member == False :
-                job_obj = self.env['hr.job'].search([('state', '=', 'unoccupied'),('name.members_job','=',True)])
-                if job_obj:
-                    rec.number_job = rec.job_id.number
-                    rec.code = rec.job_id.name.number
-                    rec.type_id = rec.job_id.type_id.id
-                    rec.far_age = rec.job_id.type_id.far_age
-                    rec.grade_id = rec.job_id.grade_id.id
-                    rec.department_id = rec.job_id.department_id.id
-                    location_allowance_ids = []
-                    for rec in rec.department_id.dep_side.allowance_ids:
-                        location_allowance_ids.append({'location_decision_appoint_id': rec.id,
-                                               'allowance_id': rec.id,
-                                               'compute_method': 'amount',
-                                               'amount': 0.0})
-                        rec.location_allowance_ids = location_allowance_ids
-                        job_allowance_ids = []
-                        for rec in rec.job_id.serie_id.allowanse_ids:
-                            job_allowance_ids.append({'decision_appoint_id': rec.id,
-                                          'allowance_id': rec.id,
-                                          'compute_method': 'amount',
-                                          'amount': 0.0})
-                            rec.job_allowance_ids = job_allowance_ids
+            self.job_allowance_ids = job_allowance_ids
 
     @api.onchange('degree_id')
     def _onchange_degree_id(self):
@@ -733,7 +680,6 @@ class DecisionAppointAllowance(models.Model):
     line_ids = fields.One2many('salary.grid.detail.allowance.city', 'allowance_id', string='النسب حسب المدينة')
 
 
-
     def get_salary_grid_id(self, employee_id, type_id, grade_id, degree_id, operation_date):
         '''
         @return:  two values value1: salary grid detail, value2: basic salary
@@ -767,9 +713,7 @@ class DecisionAppointAllowance(models.Model):
         else:
             basic_salary = employee_id.basic_salary + sum_increases_amount
         return salary_grid_id, basic_salary
-    
-    
-    
+
     @api.onchange('compute_method', 'amount', 'percentage')
     def onchange_get_value(self):
         allowance_city_obj = self.env['salary.grid.detail.allowance.city']
@@ -798,7 +742,7 @@ class DecisionAppointAllowance(models.Model):
             else:
                 raise ValidationError(_(u' الرجاء ادخال الدرجة  !'))
             grade_id = appoint_id.grade_id
-            salary_grids, basic_salary = self.get_salary_grid_id(employee,type_id, grade_id, degree_id, False)
+            salary_grids, basic_salary = self.get_salary_grid_id(employee, type_id, grade_id, degree_id, False)
             if not salary_grids:
                 raise ValidationError(_(u'لا يوجد سلم رواتب للموظف. !'))
         # compute

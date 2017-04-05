@@ -8,6 +8,7 @@ from openerp.exceptions import ValidationError
 from datetime import date
 from datetime import date, datetime, timedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
+from umalqurra.hijri_date import HijriDate
 
 
 class HrEmployee(models.Model):
@@ -159,10 +160,29 @@ class HrEmployee(models.Model):
     @api.multi
     def compute_age_display(self):
         for rec in self:
-            today_date = fields.Date.from_string(fields.Date.today())
-            birthday = fields.Date.from_string(rec.birthday)
-            age = (today_date - birthday).days
-            years, months, days = self.get_years_months_days(age)
+            today_date = date(int(HijriDate.today().year), int(HijriDate.today().month), int(HijriDate.today().day))
+            gr_birthday = fields.Date.from_string(rec.birthday)
+            hijri_birthday = HijriDate(gr_birthday.year, gr_birthday.month, gr_birthday.day, gr=True)
+            birthday = date(int(hijri_birthday.year), int(hijri_birthday.month), int(hijri_birthday.day))
+            born = birthday.replace(year=today_date.year)
+            if born > today_date:
+                years = today_date.year - birthday.year - 1
+            else:
+                years = today_date.year - birthday.year
+            if today_date.month < birthday.month:
+                months = 12 - (birthday.month - today_date.month)
+            else:
+                months = today_date.month - birthday.month
+            if today_date.month == birthday.month:
+                if today_date.day >= birthday.day:
+                    days = today_date.day - birthday.day
+                else:
+                    days = birthday.day - today_date.day
+            else:
+                if today_date.month >= birthday.month:
+                    days = (30 - today_date.day) + birthday.day
+                else:
+                    days = (30 - birthday.day) + today_date.day
             res = str(years) + " سنة و" + str(months) + " شهر و " + str(days) + "يوم"
             rec.age_display = res
 
@@ -360,10 +380,11 @@ class HrEmployee(models.Model):
     def update_promotion_days(self):
         today_date = fields.Date.from_string(fields.Date.today())
         for emp in self.search([('employee_state', '=', 'employee')]):
-                emp.promotion_duration += 1
+            emp.promotion_duration += 1
                 # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
-                uncounted_absence_days = self.env['hr.attendance.summary'].search([('employee_id', '=', emp.id), ('date', '=', today_date - relativedelta(days=1))]).absence
-                emp.promotion_duration -= uncounted_absence_days
+            uncounted_absence_days = self.env['hr.attendance.summary'].search([('employee_id', '=', emp.id), ('date', '=', today_date - relativedelta(days=1))])
+            if uncounted_absence_days:
+                emp.promotion_duration -= uncounted_absence_days.absence
 
     @api.model
     def update_service_duration(self):
@@ -371,8 +392,9 @@ class HrEmployee(models.Model):
         for emp in self.search([('employee_state', '=', 'employee')]):
             emp.service_duration += 1
                 # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
-            uncounted_absence_days = self.env['hr.attendance.summary'].search([('employee_id', '=', emp.id), ('date', '=', today_date - relativedelta(days=1))]).absence
-            emp.service_duration -= uncounted_absence_days
+            uncounted_absence_days = self.env['hr.attendance.summary'].search([('employee_id', '=', emp.id), ('date', '=', today_date - relativedelta(days=1))], limit=1)
+            if uncounted_absence_days:
+                emp.service_duration -= uncounted_absence_days.absence
 
     @api.depends('birthday')
     def _compute_age(self):

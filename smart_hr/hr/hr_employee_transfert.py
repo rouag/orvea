@@ -81,6 +81,7 @@ class HrEmployeeTransfert(models.Model):
     is_paied = fields.Boolean(string='is paied', default=False)
     defferential_is_paied = fields.Boolean(string='defferential is paied', default=False)
     payslip_id = fields.Many2one('hr.payslip')
+    done_date = fields.Date(string='تاريخ التفعيل')
 
     @api.multi
     @api.onchange('transfert_nature')
@@ -324,6 +325,7 @@ class HrEmployeeTransfert(models.Model):
             recruiter_id._onchange_job_id()
             recruiter_id._onchange_degree_id()
             recruiter_id.action_done()
+            rec.done_date = fields.Date.today()
             rec.state = 'done'
 
             # create history_line
