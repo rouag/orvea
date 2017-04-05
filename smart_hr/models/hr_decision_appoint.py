@@ -119,6 +119,7 @@ class HrDecisionAppoint(models.Model):
     location_allowance_ids = fields.One2many('decision.appoint.allowance', 'location_decision_appoint_id', string=u'بدلات المنطقة')
     is_enterview_manager = fields.Boolean(string=u'مقابلة شخصية',related="type_appointment.enterview_manager")
     defferential_is_paied = fields.Boolean(string='defferential is paied', default=False)
+    activation_date = fields.Date(string='تاريخ التفعيل')
 
     @api.multi
     @api.onchange('type_appointment')
@@ -478,6 +479,7 @@ class HrDecisionAppoint(models.Model):
             self.employee_id.write({'basic_salary': self.basic_salary})
         else:
             self.employee_id.write({'basic_salary': 0.0})
+        self.activation_date = fields.Date.today()
         self.state = 'done'
         # close last active appoint for the employee
         last_appoint = self.employee_id.decision_appoint_ids.search(
@@ -506,6 +508,7 @@ class HrDecisionAppoint(models.Model):
                                                       'salary_grid_detail_id': grid_id.id,
                                                       'date': fields.Date.from_string(fields.Date.today())
                                                       })
+        self.activation_date = fields.Date.today()
         self.state = 'done'
         self.env['hr.holidays']._init_balance(self.employee_id)
         grade_id = int(self.emp_job_id.grade_id.code)

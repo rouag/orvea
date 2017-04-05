@@ -202,6 +202,7 @@ class HrPayslipDifferenceHistory(models.Model):
     employee_id = fields.Many2one('hr.employee', string=u'الموظف')
     month = fields.Integer(string=u'الشهر')
     amount = fields.Float(string=u'المبلغ المتخلد')
+    activation_date = fields.Date(string='تاريخ التفعيل')
 
 
 class HrPayslip(models.Model):
@@ -607,6 +608,7 @@ class HrPayslip(models.Model):
                                                                   'amount': deduction_total - basic_salary / 3,
                                                                   'employee_id': employee.id,
                                                                   'month': month,
+                                                                  'activation_date': fields.Date.today(),
                                                                   })
             # 6- التقاعد‬
             # old : retirement_amount = (basic_salary * amount_multiplication + allowance_total - deduction_total) * salary_grid.retirement / 100.0

@@ -38,6 +38,7 @@ class hr_suspension(models.Model):
     ], string=u'الحالة', default='draft')
     decision_number = fields.Char(string='رقم القرار', readonly=1)
     decision_date = fields.Date(string='تاريخ القرار ', readonly=1)
+    activation_date = fields.Date(string='تاريخ التفعيل')
  
     def num2hindi(self, string_number):
         if string_number:
@@ -95,6 +96,7 @@ class hr_suspension(models.Model):
         user = self.env['res.users'].browse(self._uid)
         for rec in self:
             rec.employee_id.emp_state = 'suspended'
+            rec.activation_date = fields.Date.today()
             rec.state = 'done'
             rec.message_post(u"تم الإعتماد من قبل '" + unicode(user.name) + u"'")
             rec.create_report_attachment()

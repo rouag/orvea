@@ -47,6 +47,7 @@ class HrEmployeeCommissioning(models.Model):
     give_salary = fields.Boolean(string=u'راتب', default=False)
     pay_retirement = fields.Boolean(string=u'يدفع له نسبة التقاعد', related="comm_type.pay_retirement", readonly=1)
     retirement_proportion = fields.Float(string=u'حصة الحكومة من التقاعد (%)', default=9)
+    activation_date = fields.Date(string='تاريخ التفعيل')
 
     @api.multi
     @api.depends('date_from', 'duration')
@@ -120,6 +121,7 @@ class HrEmployeeCommissioning(models.Model):
     @api.multi
     def action_done(self):
         self.ensure_one()
+        self.activation_date = fields.Date.today()
         self.state = 'done'
         # create history_line
 #         self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, False, False, "تكليف")

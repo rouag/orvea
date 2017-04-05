@@ -54,6 +54,7 @@ class HrScholarship(models.Model):
     file_decision_name = fields.Char(string=u'اسم الخطاب')
     order_source = fields.Char(string=u'مصدر الخطاب')
     is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started', default=False)
+    activation_date = fields.Date(string='تاريخ التفعيل')
 
     @api.one
     @api.depends('date_from', 'date_to')
@@ -94,6 +95,7 @@ class HrScholarship(models.Model):
         self.ensure_one()
         type = self.scholarship_type.name.encode('utf-8')
         #         self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.num_speech, self.date_speech, "ابتعاث")
+        self.activation_date = fields.Date.today()
         self.state = 'done'
 
     @api.multi
