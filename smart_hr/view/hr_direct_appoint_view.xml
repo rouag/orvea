@@ -17,14 +17,13 @@
 			<field name="model">hr.direct.appoint</field>
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
-				<tree string="قرار مباشرة التعين" create='0' delete='0'
-					duplicate='0'>
+				<tree string="قرار مباشرة التعين" delete='0'>
 					<field name="employee_id" />
 					<field name="number" />
 					<field name="type_appointment" />
 					<field name="job_id" />
 					<field name="number_job" />
-					<field name="date" />
+					<field name="date_direct_action" />
 					<field name="state" />
 				</tree>
 			</field>
@@ -34,35 +33,32 @@
 			<field name="model">hr.direct.appoint</field>
 			<field name="type">form</field>
 			<field name="arch" type="xml">
-				<form string=" قرار مباشرة التعين" create='0' delete='0' edit='0'
-					duplicate='0'>
+				<form string=" قرار مباشرة التعين" delete='0'>
 					<header>
-						<button name="button_cancel_appoint" 
-							string="إلغاء التعين لعدم المباشرة" type="object" 
-							groups="smart_hr.group_department_employee" icon="fa-times-circle-o" 
-							attrs="{'invisible':['|',('state', 'not in ',['waiting']),('state_direct', '!=', 'cancel')]}" 
+						<button name="button_cancel_appoint" string="إلغاء المباشرة"
+							type="object" groups="smart_hr.group_department_employee" icon="fa-times-circle-o"
 							class="oe_inline oe_stat_button" />
 
-						<button name="button_direct_appoint" 
-							string="تفعيل التعين بالمباشرة" type="object" 
-							groups="smart_hr.group_department_employee" icon="fa-times-circle-o"
+						<button name="button_direct_appoint" string="تفعيل التعين بالمباشرة"
+							type="object" groups="smart_hr.group_department_employee" icon="fa-times-circle-o"
 							attrs="{'invisible':['|',('state', 'not in ',['waiting']),('state_direct', '!=', 'confirm')]}"
 							class="oe_inline oe_stat_button" />
-							
-								<field name="state" widget="statusbar" statusbar_visible="waiting,done,cancel" />
+
+						<field name="state" widget="statusbar" statusbar_visible="waiting,done,cancel" />
 					</header>
 					<sheet>
+						<group col="4">
+							<field name="date" />
+							<field name="date_direct_action" />
+						</group>
 						<group>
 							<group string="بيانات الموظف">
 								<field name="employee_id" />
-								
 								<field name="number" />
-									<field name="state_direct" invisible="1" />
+								<field name="state_direct" invisible="1" />
 								<field name="country_id" />
 								<field name="far_age" />
 								<field name="department_id" />
-								<field name="date_direct_action" />
-								<field name="type_appointment" />
 							</group>
 							<group string="بيانات الوظيفة">
 								<field name="job_id" />
@@ -72,7 +68,6 @@
 								<field name="grade_id" />
 								<field name="degree_id" />
 								<field name="basic_salary" />
-								<field name="date" />
 							</group>
 
 
