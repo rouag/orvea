@@ -360,10 +360,11 @@ class HrEmployee(models.Model):
     def update_promotion_days(self):
         today_date = fields.Date.from_string(fields.Date.today())
         for emp in self.search([('employee_state', '=', 'employee')]):
-                emp.promotion_duration += 1
+            emp.promotion_duration += 1
                 # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
-                uncounted_absence_days = self.env['hr.attendance.summary'].search([('employee_id', '=', emp.id), ('date', '=', today_date - relativedelta(days=1))]).absence
-                emp.promotion_duration -= uncounted_absence_days
+            uncounted_absence_days = self.env['hr.attendance.summary'].search([('employee_id', '=', emp.id), ('date', '=', today_date - relativedelta(days=1))])
+            if uncounted_absence_days:
+                emp.promotion_duration -= uncounted_absence_days.absence
 
     @api.model
     def update_service_duration(self):
@@ -371,8 +372,9 @@ class HrEmployee(models.Model):
         for emp in self.search([('employee_state', '=', 'employee')]):
             emp.service_duration += 1
                 # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
-            uncounted_absence_days = self.env['hr.attendance.summary'].search([('employee_id', '=', emp.id), ('date', '=', today_date - relativedelta(days=1))]).absence
-            emp.service_duration -= uncounted_absence_days
+            uncounted_absence_days = self.env['hr.attendance.summary'].search([('employee_id', '=', emp.id), ('date', '=', today_date - relativedelta(days=1))], limit=1)
+            if uncounted_absence_days:
+                emp.service_duration -= uncounted_absence_days.absence
 
     @api.depends('birthday')
     def _compute_age(self):
