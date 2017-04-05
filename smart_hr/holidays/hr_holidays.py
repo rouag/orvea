@@ -162,6 +162,7 @@ class HrHolidays(models.Model):
     salary_number = fields.Integer(string=u'عدد الرواتب')
     is_holidays_specialist_user = fields.Boolean(string='Is Current User holidays specialist', compute='_is_holidays_specialist_user')
     advanced_salary_is_paied = fields.Boolean('advanced_salary_is_paied', default=False)
+    activation_date = fields.Date(string='تاريخ التفعيل')
 
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
@@ -518,6 +519,7 @@ class HrHolidays(models.Model):
 
         self.num_decision = self.env['ir.sequence'].get('hr.decision.sequence')
         self.date_decision = fields.Date.today()
+        self.activation_date = fields.Date.today()
         self.state = 'done'
 
 
