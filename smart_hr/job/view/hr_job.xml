@@ -654,6 +654,7 @@
 								<field name="grade_id" />
 								<field name="old_name" />
 								<field name="old_type_id" />
+								<field name="new_job_number"/>
 								<field name="new_name" />
 								<field name="new_type_id" />
 							</tree>
