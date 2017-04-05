@@ -89,7 +89,7 @@ class HrDifferential(models.Model):
                                                                               ('state', '=', 'done')], limit=1)
                 if record_id:
                     date_start = record_id.create_date
-                    date_stop = record_id.activation_date
+                    date_stop = record_id.done_date
             if self.action_type == 'decision_appoint':
                 record_id = self.env['hr.decision.appoint'].search([('is_started', '=', True),
                                                                     ('state_appoint', '=', 'active'),
