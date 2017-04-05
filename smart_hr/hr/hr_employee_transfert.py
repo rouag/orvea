@@ -402,6 +402,7 @@ class HrTransfertSorting(models.Model):
                               ('waiting', u'إعتماد الموظفين'),
                               ('commission_president', u'رئيس الجهة'),
                               ('commission_third', u'الخدمة المدنية'),
+                              ('benefits', u'إسناد المزايا'),
                               ('done', u'اعتمدت'),
                               ('refused', u'مرفوضة')
                               ], readonly=1, default='new', string=u'الحالة')
@@ -523,8 +524,7 @@ class HrTransfertSorting(models.Model):
     def button_refuse(self):
         self.ensure_one()
         self.state = 'refused'
-
- 
+    
     @api.multi
     def action_commission_president(self):
         for rec in self :
@@ -580,10 +580,10 @@ class HrTransfertSorting(models.Model):
                         line.hr_employee_transfert_id.state ='refused'
 
             if len(result) > 0:
-                rec.line_ids5 = result 
+                rec.line_ids5 = result
                 rec.state = 'commission_third'
-            else :
-                rec.state = 'done'
+            else:
+                rec.state = 'benefits'
 
 
     @api.multi
@@ -607,7 +607,7 @@ class HrTransfertSorting(models.Model):
                                                       'res_id': rec.id,
                                                       'notif': True
                                                       })
-                    line.hr_employee_transfert_id.state ='done'
+                    line.hr_employee_transfert_id.action_done()
                    # line.hr_employee_transfert_id.accept_trasfert = True
                    # line_ids.append(vals)
                     line.hr_employee_transfert_id.employee_id.job_id = line.new_job_id.id
@@ -705,6 +705,29 @@ class HrTransfertSortingLine4(models.Model):
     hr_transfert_sorting_id4 = fields.Many2one('hr.transfert.sorting', string=u'إجراء الترتيب')
     accept_trasfert = fields.Boolean(string='قبول')
     cancel_trasfert = fields.Boolean(string='رفض')
+    job_allowance_ids = fields.One2many('hr.transfert.allowance', 'job_transfert_id', string=u'بدلات الوظيفة')
+    transfert_allowance_ids = fields.One2many('hr.transfert.allowance', 'transfert_id', string=u'بدلات النقل')
+    location_allowance_ids = fields.One2many('hr.transfert.allowance', 'location_transfert_id', string=u'بدلات المنطقة')
+
+
+class HrTransfertAllowance(models.Model):
+    _name = 'hr.transfert.allowance'
+    _description = u'those allowances will be transmitted to the decision appointment'
+    _description = u'بدلات'
+
+    job_transfert_id = fields.Many2one('hr.transfert.sorting.line4', string='النقل', ondelete='cascade')
+    transfert_id = fields.Many2one('hr.transfert.sorting.line4', string='النقل', ondelete='cascade')
+    location_transfert_id = fields.Many2one('hr.transfert.sorting.line4', string='النقل', ondelete='cascade')
+    allowance_id = fields.Many2one('hr.allowance.type', string='البدل', required=1)
+    compute_method = fields.Selection([('amount', 'مبلغ'),
+                                       ('percentage', 'نسبة من الراتب الأساسي'),
+                                       ('formula_1', 'نسبة‬ البدل‬ * راتب‬  الدرجة‬ الاولى‬  من‬ المرتبة‬  التي‬ يشغلها‬ الموظف‬'),
+                                       ('formula_2', 'نسبة‬ البدل‬ * راتب‬  الدرجة‬ التي ‬ يشغلها‬ الموظف‬'),
+                                       ('job_location', 'تحتسب  حسب مكان العمل')], required=1, string='طريقة الإحتساب')
+    amount = fields.Float(string='المبلغ')
+    min_amount = fields.Float(string='الحد الأدنى')
+    percentage = fields.Float(string='النسبة')
+    line_ids = fields.One2many('salary.grid.detail.allowance.city', 'allowance_id', string='النسب حسب المدينة')
 
 
 class HrTransfertSortingLine5(models.Model):
