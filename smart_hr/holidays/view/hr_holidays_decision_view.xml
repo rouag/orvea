@@ -26,23 +26,26 @@
 						<button name="action_done" string="إعتماد" type="object"
 							states="waiting" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 							groups="smart_hr.group_hrm" />
-						
+
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
-							type="action"
-							states="waiting" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							type="action" states="waiting" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 							groups="smart_hr.group_hrm" />
 
 						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done,cancel" />
 					</header>
 					<sheet>
 						<group>
-							<field name="name" attrs="{'readonly':[('state','!=','new')]}" />
-							<field name="order_date" attrs="{'readonly':[('state','!=','new')]}" />
-							<field name="file_decision" filename="file_decision_name"
-								attrs="{'readonly':[('state','!=','new')]}" />
-							<field name="file_decision_name" invisible="1"
-								attrs="{'readonly':[('state','!=','new')]}" />
-
+							<group>
+								<field name="name" attrs="{'readonly':[('state','!=','new')]}" />
+								<field name="order_date" attrs="{'readonly':[('state','!=','new')]}" />
+								<field name="file_decision" filename="file_decision_name"
+									attrs="{'readonly':[('state','!=','new')]}" />
+								<field name="file_decision_name" invisible="1"
+									attrs="{'readonly':[('state','!=','new')]}" />
+							</group>
+							<group>
+								<field name="date" attrs="{'readonly':[('state','!=','new')]}" />
+							</group>
 						</group>
 						<group>
 							<group string="بيانات الموظف">
@@ -52,15 +55,17 @@
 								<field name="job_id"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="department_id" />
-
 							</group>
 							<group>
-								<field name="date" attrs="{'readonly':[('state','!=','new')]}" />
-
-								<field name="holidays" attrs="{'readonly':[('state','!=','new')]}"
-									domain="[('employee_id', '=', employee_id),('state', '=', 'done'),('holiday_status_id.direct_decision', '=', True)]" />
-
-
+								<group string="بيانات الأجازة">
+									<field name="holiday_status_id" attrs="{'readonly':[('state','!=','new')]}"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									<field name="date_from" />
+									<field name="date_to"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									<field name="duration" />
+								</group>
+							
 							</group>
 						</group>
 					</sheet>
@@ -93,7 +98,7 @@
 		</record>
 
 		<menuitem id="menu_hr_holidays_decision" parent="menu_hr_holiday_root"
-			name="قرار مباشرة" sequence="60" action="action_hr_holidays_decision"
+			sequence="55" name="قرار مباشرة" action="action_hr_holidays_decision"
 			groups="smart_hr.group_employee_request,smart_hr.group_hrm" />
 
 

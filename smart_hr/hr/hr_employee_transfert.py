@@ -182,9 +182,9 @@ class HrEmployeeTransfert(models.Model):
                     if fields.Date.from_string(testing_date_to) >= fields.Date.from_string(fields.Datetime.now()):
                         raise ValidationError(u"لايمكن طلب نقل خلال فترة التجربة")
             # ‫التترقية‬ ‫سنة‬ ‫إستلكمال‬
-            if self.employee_id.promotion_duration < 354:
+                if self.employee_id.promotion_duration < 354:
                     raise ValidationError(u"لايمكن طلب نقل خلال أقل من سنة منذ أخر ترقية")
-#             # check desire_ids length from config
+# #             # check desire_ids length from config
             if hr_config:
                 if len(self.desire_ids) > hr_config.desire_number:
                     raise ValidationError(u"لا يمكن إضافة أكثر من " + str(hr_config.desire_number) + u" رغبات.")
@@ -192,17 +192,17 @@ class HrEmployeeTransfert(models.Model):
         # 2- constraintes for members without special conditions
         if self.transfert_type == 'member' and self.special_conditions is False:
             # ‫التترقية‬ ‫سنة‬ ‫إستلكمال‬
-            if self.employee_id.promotion_duration < 1:
-                            raise ValidationError(u"لايمكن طلب نقل خلال أقل من سنة منذ أخر ترقية أو تعين")
-            # check 3 years constrainte from last transfert
+#             if self.employee_id.promotion_duration < 1:
+#                             raise ValidationError(u"لايمكن طلب نقل خلال أقل من سنة منذ أخر ترقية أو تعين")
+#             # check 3 years constrainte from last transfert
             last_transfert_id = self.env['hr.employee.transfert'].search([('id', '!=', self.id)], order="create_date desc", limit=1)
             today = date.today()
             create_date = fields.Date.from_string(last_transfert_id.create_date)
-#             if create_date:
-#                 years = relativedelta(today - create_date).years
-#                 if hr_config:
-#                     if years < hr_config.years_last_transfert:
-#                         raise ValidationError(u"لم تتم " + str(hr_config.years_last_transfert) + u" سنوات من أخر نقل.")
+            if create_date:
+                years = relativedelta(today - create_date).years
+                if hr_config:
+                    if years < hr_config.years_last_transfert:
+                        raise ValidationError(u"لم تتم " + str(hr_config.years_last_transfert) + u" سنوات من أخر نقل.")
 #             # chek if there is any sanction for the emmployee
 #             if len(self.employee_id.sanction_ids) > 0:
 #                 raise ValidationError(u"لدى الموظف عقوبات.")
@@ -556,6 +556,8 @@ class HrTransfertSorting(models.Model):
                 if line.specific_group =='same_specific' :
                     if line.accept_trasfert == True :
                         line.hr_employee_transfert_id.state ='done'
+                        line.hr_employee_transfert_id.employee_id.job_id = line.new_job_id.id
+                        line.hr_employee_transfert_id.new_job_id.state='occupied'
                         #line_ids1.append(vals)
                         self.env['base.notification'].create({'title': u'إشعار بموافقة طلب',
                                                       'message': u'لقد تمت الموافقة على طلب النقل.',
@@ -606,7 +608,8 @@ class HrTransfertSorting(models.Model):
                     line.hr_employee_transfert_id.state ='done'
                    # line.hr_employee_transfert_id.accept_trasfert = True
                    # line_ids.append(vals)
-                  #  line.hr_employee_transfert_id.write({'new_job_id': rec.new_job_id.id, 'ready_tobe_done': True,'state':'done'})
+                    line.hr_employee_transfert_id.employee_id.job_id = line.new_job_id.id
+                    line.hr_employee_transfert_id.new_job_id.state = 'occupied'
                 if line.accept_trasfert == False :
                     self.env['base.notification'].create({'title': u'إشعار برفض طلب',
                                                       'message': u'لقد تمت رفض  الطلب من الجهة.',

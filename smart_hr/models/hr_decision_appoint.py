@@ -542,27 +542,53 @@ class HrDecisionAppoint(models.Model):
 
     @api.onchange('job_id')
     def _onchange_job_id(self):
-        if self.job_id:
-            self.number_job = self.job_id.number
-            self.code = self.job_id.name.number
-            self.type_id = self.job_id.type_id.id
-            self.far_age = self.job_id.type_id.far_age
-            self.grade_id = self.job_id.grade_id.id
-            self.department_id = self.job_id.department_id.id
-            location_allowance_ids = []
-            for rec in self.department_id.dep_side.allowance_ids:
-                location_allowance_ids.append({'location_decision_appoint_id': self.id,
+        for rec in self :
+            if rec.employee_id.is_member == True :
+                job_obj = self.env['hr.job'].search([('state', '=', 'unoccupied'),('name.members_job','=',True)])
+                if job_obj:
+                    rec.number_job = rec.job_id.number
+                    rec.code = rec.job_id.name.number
+                    rec.type_id = rec.job_id.type_id.id
+                    rec.far_age = rec.job_id.type_id.far_age
+                    rec.grade_id = rec.job_id.grade_id.id
+                    rec.department_id = rec.job_id.department_id.id
+                    location_allowance_ids = []
+                    for rec in rec.department_id.dep_side.allowance_ids:
+                        location_allowance_ids.append({'location_decision_appoint_id': rec.id,
                                                'allowance_id': rec.id,
                                                'compute_method': 'amount',
                                                'amount': 0.0})
-            self.location_allowance_ids = location_allowance_ids
-            job_allowance_ids = []
-            for rec in self.job_id.serie_id.allowanse_ids:
-                job_allowance_ids.append({'decision_appoint_id': self.id,
+                        rec.location_allowance_ids = location_allowance_ids
+                        job_allowance_ids = []
+                        for rec in rec.job_id.serie_id.allowanse_ids:
+                            job_allowance_ids.append({'decision_appoint_id': rec.id,
                                           'allowance_id': rec.id,
                                           'compute_method': 'amount',
                                           'amount': 0.0})
-            self.job_allowance_ids = job_allowance_ids
+                            rec.job_allowance_ids = job_allowance_ids
+            if rec.employee_id.is_member == False :
+                job_obj = self.env['hr.job'].search([('state', '=', 'unoccupied'),('name.members_job','=',True)])
+                if job_obj:
+                    rec.number_job = rec.job_id.number
+                    rec.code = rec.job_id.name.number
+                    rec.type_id = rec.job_id.type_id.id
+                    rec.far_age = rec.job_id.type_id.far_age
+                    rec.grade_id = rec.job_id.grade_id.id
+                    rec.department_id = rec.job_id.department_id.id
+                    location_allowance_ids = []
+                    for rec in rec.department_id.dep_side.allowance_ids:
+                        location_allowance_ids.append({'location_decision_appoint_id': rec.id,
+                                               'allowance_id': rec.id,
+                                               'compute_method': 'amount',
+                                               'amount': 0.0})
+                        rec.location_allowance_ids = location_allowance_ids
+                        job_allowance_ids = []
+                        for rec in rec.job_id.serie_id.allowanse_ids:
+                            job_allowance_ids.append({'decision_appoint_id': rec.id,
+                                          'allowance_id': rec.id,
+                                          'compute_method': 'amount',
+                                          'amount': 0.0})
+                            rec.job_allowance_ids = job_allowance_ids
 
     @api.onchange('degree_id')
     def _onchange_degree_id(self):

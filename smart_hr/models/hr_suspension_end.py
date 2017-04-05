@@ -13,7 +13,7 @@ class hr_suspension_end(models.Model):
 
     name = fields.Char(string=u'رقم  إجراء إنهاء كف اليد', )
     date = fields.Date(string=u'التاريخ', default=fields.Datetime.now())
-    employee_id = fields.Many2one('hr.employee', string=u'الموظف', )
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف',  domain=[('emp_state', '=', 'suspended')])
     letter_sender = fields.Char(string=u'جهة الخطاب', )
     letter_no = fields.Char(string=u'رقم الخطاب', )
     letter_date = fields.Date(string=u'تاريخ الخطاب', default=fields.Datetime.now())
