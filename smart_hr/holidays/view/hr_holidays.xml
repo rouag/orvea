@@ -156,12 +156,18 @@
 							attrs="{'invisible':[('display_button_cut','=',False)]}" icon="fa-times-circle-o"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="%(report_hr_holidays)d" string="طباعة القرار"
-							groups="smart_hr.group_hrm" type="action" states="done" icon="fa-print"
+							groups="smart_hr.group_hrm" type="action" icon="fa-print" 	attrs="{'invisible':[('state','!=','done'),('is_decision','=',False)]}"
+							class="oe_inline oe_stat_button" />
+							
+							<button name="open_decission" string="إنشاء و تعديل القرار"
+							groups="smart_hr.group_hrm" type="object" states="done" icon="fa-print"
 							class="oe_inline oe_stat_button" />
 						<field name="state" widget="statusbar"
 							statusbar_visible="draft,dm,audit,hrm,external_audit,revision,revision_response,done,cancel,cutoff,refuse" />
 					</header>
 					<sheet>
+					
+					<field name="is_decision" invisible="1" />
 						<field name="spend_advanced_salary" invisible="1" />
 						<field name="advanced_salary_periode" invisible="1" />
 						<field name="hide_with_advanced_salary" invisible="1" />
@@ -398,6 +404,9 @@
 						<group>
 							<field name="notes" string="ملاحظات"
 								attrs="{'readonly':[('state','!=','draft')]}" />
+								
+									<field name="text_resolution" string="نص القرار"
+								attrs="{'invisible':[('state','!=','done')]}" />
 						</group>
 
 

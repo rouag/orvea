@@ -39,6 +39,7 @@ class hr_termination(models.Model):
                             string=u'الحد الاقصى لأيام الإجازة')
 
     reason = fields.Char(string=u'السبب')
+    number_order = fields.Char(string=u'رقم القرار')
     letter_source = fields.Char(string=u'جهة الخطاب', )
     letter_no = fields.Char(string=u'رقم الخطاب')
     letter_date = fields.Date(string=u'تاريخ الخطاب')
