@@ -154,23 +154,23 @@ class HrDeputation(models.Model):
                 if deputation_allowance.internal_transport_type == 'daily':
                     transport_amount = deputation_allowance.internal_transport_amount * number_of_days
                 elif deputation_allowance.internal_transport_type == 'monthly':
-                    transport_amount = deputation_allowance.internal_transport_amount
+                    transport_amount = deputation_allowance.internal_transport_amount / 30.0 * number_of_days
                 if deputation_allowance.internal_deputation_type == 'daily':
                     deputation_amount = deputation_allowance.internal_deputation_amount * number_of_days
                 elif deputation_allowance.internal_deputation_type == 'monthly':
-                    deputation_amount = deputation_allowance.internal_deputation_amount
+                    deputation_amount = deputation_allowance.internal_deputation_amount / 30.0 * number_of_days
             elif self.type == 'external':
                 if deputation_allowance.external_transport_type == 'daily':
                     transport_amount = deputation_allowance.external_transport_amount * number_of_days
                 elif deputation_allowance.external_transport_type == 'monthly':
-                    transport_amount = deputation_allowance.external_transport_amount
+                    transport_amount = deputation_allowance.external_transport_amount / 30.0 * number_of_days
                 # search a correct category
                 searchs = deputation_allowance.category_ids.search([('category_id', '=', self.category_id.id)])
                 if searchs:
                     if deputation_allowance.external_deputation_type == 'daily':
                         deputation_amount = searchs[0].amount * number_of_days
                     elif deputation_allowance.internal_transport_type == 'monthly':
-                        deputation_amount = searchs[0].amount
+                        deputation_amount = searchs[0].amount / 30.0 * number_of_days
         return deputation_amount, transport_amount, deputation_allowance
 
     @api.onchange('duration')

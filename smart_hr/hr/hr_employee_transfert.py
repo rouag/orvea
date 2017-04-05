@@ -85,7 +85,7 @@ class HrEmployeeTransfert(models.Model):
     @api.multi
     @api.onchange('transfert_nature')
     def onchange_transfert_nature(self):
-        #TODO: 
+        #TODO: ???
         res = {}
         if self.transfert_nature == 'internal_transfert' or self.transfert_nature == 'external_transfert_out' :
             employee_search_ids = self.env['hr.employee'].search([('employee_state','=','employee')])
