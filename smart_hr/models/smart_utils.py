@@ -149,10 +149,10 @@ class SmartUtils(models.Model):
         if type == 'normal_days':
             while date_from <= date_to:
                 dep_domain = [('date_from', '>=', date_from),
-                              ('date_to', '<=', date_from),
+                              ('date_to', '>=', date_from),
                               ('state', '=', 'done')]
                 hol_domain = [('date_from', '>=', date_from),
-                              ('date_to', '<=', date_from),
+                              ('date_to', '>=', date_from),
                               ('state', '=', 'done'),
                               ('holiday_status_id', '!=', self.env.ref('smart_hr.data_hr_holiday_status_compelling').id)]
                 if employee_id:
@@ -175,10 +175,10 @@ class SmartUtils(models.Model):
         if type == 'friday_saturday':
             while date_from <= date_to:
                 dep_domain = [('date_from', '>=', date_from),
-                              ('date_to', '<=', date_from),
+                              ('date_to', '>=', date_from),
                               ('state', '=', 'done')]
                 hol_domain = [('date_from', '>=', date_from),
-                              ('date_to', '<=', date_from),
+                              ('date_to', '>=', date_from),
                               ('state', '=', 'done'),
                               ('holiday_status_id', '!=', self.env.ref('smart_hr.data_hr_holiday_status_compelling').id)]
                 if employee_id:
@@ -198,6 +198,7 @@ class SmartUtils(models.Model):
         # case 3: 3ids
         if type == 'holidays':
             hr_public_holiday_obj = self.env['hr.public.holiday']
+            # TODO: check this domain
             hr_public_holiday_ids = hr_public_holiday_obj.search(['|', '&', ('state', '=', 'done'), '&', ('date_from', '<=', date_to),
                                                                   ('date_to', '>=', date_to),
                                                                   '&', ('state', '=', 'done'),
@@ -219,10 +220,10 @@ class SmartUtils(models.Model):
                 while date_from <= date_to:
                     diff += 1
                     dep_domain = [('date_from', '>=', date_from),
-                                  ('date_to', '<=', date_from),
+                                  ('date_to', '>=', date_from),
                                   ('state', '=', 'done')]
                     hol_domain = [('date_from', '>=', date_from),
-                                  ('date_to', '<=', date_from),
+                                  ('date_to', '>=', date_from),
                                   ('state', '=', 'done'),
                                   ('holiday_status_id', '!=', self.env.ref('smart_hr.data_hr_holiday_status_compelling').id)]
                     if employee_id:
