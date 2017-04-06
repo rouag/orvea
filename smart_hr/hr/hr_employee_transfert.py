@@ -18,8 +18,7 @@ class HrEmployeeTransfert(models.Model):
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
     sequence = fields.Integer(string=u'رتبة الطلب')
-    employee_id = fields.Many2one('hr.employee', string=u'صاحب الطلب', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1, readonly=1, states={'new': [('readonly', 0)]})
-    employee_id = fields.Many2one('hr.employee', string=u'صاحب الطلب',  required=1, domain=[('emp_state', 'not in', ['suspended','terminated']), ('employee_state', '=', 'employee')],
+    employee_id = fields.Many2one('hr.employee', string=u'صاحب الطلب',  required=1, domain=[('emp_state', 'not in', ['suspended','terminated'])],
                                   default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended','terminated'])], limit=1),)
     last_evaluation_result = fields.Many2one('hr.employee.evaluation.level', string=u'أخر تقييم إداء')
     job_id = fields.Many2one('hr.job', default=_get_default_employee_job, string=u'الوظيفة', readonly=1, required=1)
@@ -93,13 +92,11 @@ class HrEmployeeTransfert(models.Model):
         res = {}
         if self.transfert_nature == 'internal_transfert' or self.transfert_nature == 'external_transfert_out' :
             employee_search_ids = self.env['hr.employee'].search([('employee_state','=','employee')])
-            employee_ids = [rec.id for rec in employee_search_ids]
-            res['domain'] = {'employee_id': [('id', 'in', employee_ids)]}
+            res['domain'] = {'employee_id': [('id', 'in', employee_search_ids.ids)]}
             return res
         if self.transfert_nature == 'external_transfert_in':
             employee_search_ids = self.env['hr.employee'].search([('employee_state','=','new')])
-            employee_ids = [rec.id for rec in employee_search_ids]
-            res['domain'] = {'employee_id': [('id', 'in', employee_ids)]}
+            res['domain'] = {'employee_id': [('id', 'in', employee_search_ids.ids)]}
             return res
         
     @api.multi
