@@ -4,6 +4,7 @@ from dateutil.relativedelta import relativedelta
 from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
+from smart_hr.models import recruiter
 
 
 class HrEmployeeTransfert(models.Model):
@@ -82,6 +83,10 @@ class HrEmployeeTransfert(models.Model):
     defferential_is_paied = fields.Boolean(string='defferential is paied', default=False)
     payslip_id = fields.Many2one('hr.payslip')
     done_date = fields.Date(string='تاريخ التفعيل')
+
+    job_allowance_ids = fields.One2many('hr.transfert.allowance', 'job_transfert_id', string=u'بدلات الوظيفة')
+    transfert_allowance_ids = fields.One2many('hr.transfert.allowance', 'transfert_id', string=u'بدلات النقل')
+    location_allowance_ids = fields.One2many('hr.transfert.allowance', 'location_transfert_id', string=u'بدلات المنطقة')
 
     @api.multi
     @api.onchange('transfert_nature')
@@ -284,6 +289,7 @@ class HrEmployeeTransfert(models.Model):
                                               })
         self.refusing_date = datetime.now()
         self.state = 'refused'
+
     @api.multi
     def action_done(self):
         for rec in self:
@@ -321,12 +327,41 @@ class HrEmployeeTransfert(models.Model):
                     'order_picture': rec.speech_file
                 }
             recruiter_id = self.env['hr.decision.appoint'].create(vals)
-            recruiter_id._onchange_employee_id()
-            recruiter_id._onchange_job_id()
-            recruiter_id._onchange_degree_id()
-            recruiter_id.action_done()
-            rec.done_date = fields.Date.today()
-            rec.state = 'done'
+            if recruiter_id:
+                recruiter_id._onchange_employee_id()
+                recruiter_id._onchange_job_id()
+                recruiter_id._onchange_degree_id()
+                # copy allowances from transfert to the decision_appoint
+                # بدلات الوظيفة
+                job_allowance_ids = []
+                for allowance in rec.job_allowance_ids:
+                    job_allowance_ids.append({'job_decision_appoint_id': recruiter_id.id,
+                                              'allowance_id': allowance.allowance_id.id,
+                                              'compute_method': allowance.compute_method,
+                                              'amount': allowance.amount
+                                              })
+                recruiter_id.job_allowance_ids = job_allowance_ids
+                # بدلات التعين
+                transfert_allowance_ids = []
+                for allowance in rec.transfert_allowance_ids:
+                    job_allowance_ids.append({'decision_decision_appoint_id': recruiter_id.id,
+                                              'allowance_id': allowance.allowance_id.id,
+                                              'compute_method': allowance.compute_method,
+                                              'amount': allowance.amount
+                                              })
+                recruiter_id.decision_apoint_allowance_ids = transfert_allowance_ids
+                # بدلات المنطقة
+                location_allowance_ids = []
+                for allowance in rec.location_allowance_ids:
+                    location_allowance_ids.append({'location_decision_appoint_id': recruiter_id.id,
+                                                   'allowance_id': allowance.allowance_id.id,
+                                                   'compute_method': allowance.compute_method,
+                                                   'amount': allowance.amount
+                                                   })
+                recruiter_id.location_allowance_ids = location_allowance_ids
+                # change state of the decision to done
+                recruiter_id.action_done()
+                rec.done_date = fields.Date.today()
 
             # create history_line
 #             self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, False, False, "نقل")
@@ -357,6 +392,26 @@ class HrEmployeeTransfert(models.Model):
             return True
         else:
             return False
+
+
+class HrTransfertAllowance(models.Model):
+    _name = 'hr.transfert.allowance'
+    _description = u'those allowances will be transmitted to the decision appointment'
+    _description = u'بدلات'
+
+    job_transfert_id = fields.Many2one('hr.employee.transfert', string='النقل', ondelete='cascade')
+    transfert_id = fields.Many2one('hr.employee.transfert', string='النقل', ondelete='cascade')
+    location_transfert_id = fields.Many2one('hr.employee.transfert', string='النقل', ondelete='cascade')
+    allowance_id = fields.Many2one('hr.allowance.type', string='البدل', required=1)
+    compute_method = fields.Selection([('amount', 'مبلغ'),
+                                       ('percentage', 'نسبة من الراتب الأساسي'),
+                                       ('formula_1', 'نسبة‬ البدل‬ * راتب‬  الدرجة‬ الاولى‬  من‬ المرتبة‬  التي‬ يشغلها‬ الموظف‬'),
+                                       ('formula_2', 'نسبة‬ البدل‬ * راتب‬  الدرجة‬ التي ‬ يشغلها‬ الموظف‬'),
+                                       ('job_location', 'تحتسب  حسب مكان العمل')], required=1, string='طريقة الإحتساب')
+    amount = fields.Float(string='المبلغ')
+    min_amount = fields.Float(string='الحد الأدنى')
+    percentage = fields.Float(string='النسبة')
+    line_ids = fields.One2many('salary.grid.detail.allowance.city', 'allowance_id', string='النسب حسب المدينة')
 
 
 class HrEmployeeTransfertPeriode(models.Model):
@@ -502,18 +557,19 @@ class HrTransfertSorting(models.Model):
 
     @api.multi
     def action_commissioning(self):
-        for rec in self :
+        for rec in self:
             line_ids = []
+            print '--rec.line_ids3---', rec.line_ids3
             for line in rec.line_ids3 :
                 if line.hr_employee_transfert_id.state =='consult' :
                     raise ValidationError(u"يوجد طلبات في قائمة الانتظار.")
                 vals = {'hr_employee_transfert_id': line.hr_employee_transfert_id.id,
-                            'hr_employee_transfert_id.state':'pm',
-                            'new_job_id': line.new_job_id.id,
-                            'new_type_id': line.new_type_id.id,
-                            'res_city': line.res_city.id,
-                            'new_degree_id': line.new_degree_id.id,
-                            'specific_group': line.specific_group, }
+                        'hr_employee_transfert_id.state':'pm',
+                        'new_job_id': line.new_job_id.id,
+                        'new_type_id': line.new_type_id.id,
+                        'res_city': line.res_city.id,
+                        'new_degree_id': line.new_degree_id.id,
+                        'specific_group': line.specific_group, }
                 line_ids.append(vals)
             rec.line_ids4 = line_ids
             rec.state = 'commission_president'
@@ -587,7 +643,7 @@ class HrTransfertSorting(models.Model):
 
 
     @api.multi
-    def action_done(self):
+    def action_commission_third(self):
         for rec in self :
             line_ids = []
             for line in rec.line_ids5:
@@ -607,7 +663,6 @@ class HrTransfertSorting(models.Model):
                                                       'res_id': rec.id,
                                                       'notif': True
                                                       })
-                    line.hr_employee_transfert_id.action_done()
                    # line.hr_employee_transfert_id.accept_trasfert = True
                    # line_ids.append(vals)
                     line.hr_employee_transfert_id.employee_id.job_id = line.new_job_id.id
@@ -623,6 +678,13 @@ class HrTransfertSorting(models.Model):
                     #line.hr_employee_transfert_id.accept_trasfert = False
                     line.hr_employee_transfert_id.state ='refused'
             rec.line_ids4 = line_ids
+            rec.state = 'benefits'
+
+    @api.multi
+    def action_done(self):
+        for rec in self:
+            for line in rec.line_ids4:
+                line.hr_employee_transfert_id.action_done()
             rec.state = 'done'
 
 class HrTransfertSortingLine(models.Model):
@@ -705,29 +767,6 @@ class HrTransfertSortingLine4(models.Model):
     hr_transfert_sorting_id4 = fields.Many2one('hr.transfert.sorting', string=u'إجراء الترتيب')
     accept_trasfert = fields.Boolean(string='قبول')
     cancel_trasfert = fields.Boolean(string='رفض')
-    job_allowance_ids = fields.One2many('hr.transfert.allowance', 'job_transfert_id', string=u'بدلات الوظيفة')
-    transfert_allowance_ids = fields.One2many('hr.transfert.allowance', 'transfert_id', string=u'بدلات النقل')
-    location_allowance_ids = fields.One2many('hr.transfert.allowance', 'location_transfert_id', string=u'بدلات المنطقة')
-
-
-class HrTransfertAllowance(models.Model):
-    _name = 'hr.transfert.allowance'
-    _description = u'those allowances will be transmitted to the decision appointment'
-    _description = u'بدلات'
-
-    job_transfert_id = fields.Many2one('hr.transfert.sorting.line4', string='النقل', ondelete='cascade')
-    transfert_id = fields.Many2one('hr.transfert.sorting.line4', string='النقل', ondelete='cascade')
-    location_transfert_id = fields.Many2one('hr.transfert.sorting.line4', string='النقل', ondelete='cascade')
-    allowance_id = fields.Many2one('hr.allowance.type', string='البدل', required=1)
-    compute_method = fields.Selection([('amount', 'مبلغ'),
-                                       ('percentage', 'نسبة من الراتب الأساسي'),
-                                       ('formula_1', 'نسبة‬ البدل‬ * راتب‬  الدرجة‬ الاولى‬  من‬ المرتبة‬  التي‬ يشغلها‬ الموظف‬'),
-                                       ('formula_2', 'نسبة‬ البدل‬ * راتب‬  الدرجة‬ التي ‬ يشغلها‬ الموظف‬'),
-                                       ('job_location', 'تحتسب  حسب مكان العمل')], required=1, string='طريقة الإحتساب')
-    amount = fields.Float(string='المبلغ')
-    min_amount = fields.Float(string='الحد الأدنى')
-    percentage = fields.Float(string='النسبة')
-    line_ids = fields.One2many('salary.grid.detail.allowance.city', 'allowance_id', string='النسب حسب المدينة')
 
 
 class HrTransfertSortingLine5(models.Model):

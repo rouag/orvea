@@ -61,37 +61,33 @@ class TransfertBenefitsWizard(models.TransientModel):
 
     @api.multi
     def action_transfert(self):
-        location_allowance_ids = []
-        self.location_allowance_ids.unlink()
-        for rec in self.job_allowance_ids:
-            location_allowance_ids.append({'location_transfert_id': self.transfert_line_obj.id,
-                                           'allowance_id': rec.allowance_id.id,
-                                           'compute_method': rec.compute_method,
-                                           'amount': rec.amount
-                                           })
-        self.transfert_line_obj.location_allowance_ids = location_allowance_ids
+        self.transfert_line_obj.hr_employee_transfert_id.location_allowance_ids.unlink()
+        self.transfert_line_obj.hr_employee_transfert_id.job_allowance_ids.unlink()
+        self.transfert_line_obj.hr_employee_transfert_id.transfert_allowance_ids.unlink()
         job_allowance_ids = []
-        self.job_allowance_ids.unlink()
-        for rec in self.transfert_allowance_ids:
-            job_allowance_ids.append({'job_transfert_id': self.transfert_line_obj.id,
+        for rec in self.job_allowance_ids:
+            job_allowance_ids.append({'job_transfert_id': self.transfert_line_obj.hr_employee_transfert_id.id,
                                       'allowance_id': rec.allowance_id.id,
                                       'compute_method': rec.compute_method,
                                       'amount': rec.amount
                                       })
-        self.transfert_line_obj.job_allowance_ids = job_allowance_ids
+        self.transfert_line_obj.hr_employee_transfert_id.job_allowance_ids = job_allowance_ids
         transfert_allowance_ids = []
-        self.transfert_allowance_ids.unlink()
+        for rec in self.transfert_allowance_ids:
+            job_allowance_ids.append({'transfert_id': self.transfert_line_obj.hr_employee_transfert_id.id,
+                                      'allowance_id': rec.allowance_id.id,
+                                      'compute_method': rec.compute_method,
+                                      'amount': rec.amount
+                                      })
+        self.transfert_line_obj.hr_employee_transfert_id.transfert_allowance_ids = transfert_allowance_ids
+        location_allowance_ids = []
         for rec in self.location_allowance_ids:
-            transfert_allowance_ids.append({'transfert_id': self.transfert_line_obj.id,
-                                            'allowance_id': rec.allowance_id.id,
-                                            'compute_method': rec.compute_method,
-                                            'amount': rec.amount
-                                            })
-        self.transfert_line_obj.transfert_allowance_ids = transfert_allowance_ids
-        print self.transfert_line_obj.location_allowance_ids
-        print self.transfert_line_obj.job_allowance_ids
-        print self.transfert_line_obj.transfert_allowance_ids
-
+            location_allowance_ids.append({'location_transfert_id': self.transfert_line_obj.hr_employee_transfert_id.id,
+                                           'allowance_id': rec.allowance_id.id,
+                                           'compute_method': rec.compute_method,
+                                           'amount': rec.amount
+                                           })
+        self.transfert_line_obj.hr_employee_transfert_id.location_allowance_ids = location_allowance_ids
 
 
 class TransfertAppointAllowance(models.TransientModel):

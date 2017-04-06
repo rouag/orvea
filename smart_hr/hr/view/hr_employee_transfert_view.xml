@@ -327,10 +327,13 @@
 						<button name="action_commission_president" string="إرسال "
 							type="object" groups="smart_hr.group_hr_personnel_officer_commissioning"
 							states="commission_president" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
+						
+						<button name="action_commission_third" attrs="{'invisible':[('state','!=', 'commission_third')]}"
+							string="إعتماد " type="object" groups="smart_hr.group_hr_commissioning_requests"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_done" attrs="{'invisible':[('state','!=', 'benefits')]}"
-							string="إرسال " type="object" groups="smart_hr.group_hr_commissioning_requests"
+							string="إعتماد " type="object"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 
