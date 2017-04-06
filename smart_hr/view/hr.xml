@@ -393,11 +393,11 @@
 								<page string="بيانات العمل">
 									<group>
 										<group string="بيانات العمل">
-											<field name="department_id"
+											<field name="department_id" attrs="{'invisible': [('employee_state','!=', 'employee')]}"
 												context="{'list_type':'_get_dep_name_employee_form'}"
 												on_change="onchange_department_id(department_id)" />
-											<field name="dep_side" options="{'no_create': True}" />
-											<field name="dep_city" options="{'no_create': True}" />
+											<field name="dep_side" options="{'no_create': True}"  attrs="{'invisible': [('employee_state','!=', 'employee')]}"/>
+											<field name="dep_city" options="{'no_create': True}"  attrs="{'invisible': [('employee_state','!=', 'employee')]}"/>
 											<field name="job_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="job_number"
