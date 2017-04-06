@@ -18,7 +18,6 @@ class HrEmployeeTransfert(models.Model):
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
     sequence = fields.Integer(string=u'رتبة الطلب')
-    employee_id = fields.Many2one('hr.employee', string=u'صاحب الطلب', default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1), required=1, readonly=1, states={'new': [('readonly', 0)]})
     employee_id = fields.Many2one('hr.employee', string=u'صاحب الطلب',  required=1, domain=[('emp_state', 'not in', ['suspended','terminated']), ('employee_state', '=', 'employee')],
                                   default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended','terminated'])], limit=1),)
     last_evaluation_result = fields.Many2one('hr.employee.evaluation.level', string=u'أخر تقييم إداء')
@@ -40,7 +39,6 @@ class HrEmployeeTransfert(models.Model):
     decision_file_name = fields.Char(string=u'نسخة القرار')
     degree_id = fields.Many2one('salary.grid.degree',related='employee_id.degree_id', string=u'الدرجة', readonly=1)
     new_degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة', readonly=1)
-    date_direct_action = fields.Date(string=u'تاريخ مباشرة العمل')
     governmental_entity = fields.Many2one('res.partner', string=u'الجهة الحكومية', domain=[('company_type', '=', 'governmental_entity')])
     desire_ids = fields.One2many('hr.employee.desire',  'desire_id', store=True,required=1, string=u'رغبات النقل', readonly=1, states={'new': [('readonly', 0)]})
     refusing_date = fields.Date(string=u'تاريخ الرفض', readonly=1)
@@ -102,7 +100,7 @@ class HrEmployeeTransfert(models.Model):
             employee_ids = [rec.id for rec in employee_search_ids]
             res['domain'] = {'employee_id': [('id', 'in', employee_ids)]}
             return res
-
+        
     @api.multi
     @api.depends('employee_id')
     def _is_current_user(self):
@@ -299,31 +297,33 @@ class HrEmployeeTransfert(models.Model):
             # create hr.decision.appoint object
             # with decision file
             if rec.new_specific_id == rec.specific_id:
-                if not rec.decision_number:
-                    raise ValidationError(u"لم يتم إصدار قرار بشأن النقل.")
+#                 if not rec.decision_number:
+#                     raise ValidationError(u"لم يتم إصدار قرار بشأن النقل.")
                 vals = {
                     'type_appointment': self.env.ref('smart_hr.data_hr_recrute_from_transfert').id,
-                    'date_direct_action': rec.date_direct_action,
                     'employee_id': rec.employee_id.id,
                     'job_id': rec.new_job_id.id,
                     'degree_id': rec.degree_id.id,
                     'name': rec.decision_number,
                     'order_date': rec.decision_date,
-                    'order_picture': rec.decision_file
+                    'order_picture': rec.decision_file,
+                    'transfer_id': rec.id
+                    
                 }
             else:
-                if not rec.speech_number:
-                    raise ValidationError(u"لم يتم خطاب قرار بشأن النقل.")
+#                 if not rec.speech_number:
+#                     raise ValidationError(u"لم يتم خطاب قرار بشأن النقل.")
                 # with speech file
                 vals = {
                     'type_appointment': self.env.ref('smart_hr.data_hr_recrute_from_transfert').id,
-                    'date_direct_action': rec.date_direct_action,
                     'employee_id': rec.employee_id.id,
                     'job_id': rec.new_job_id.id,
                     'degree_id': rec.degree_id.id,
                     'name': rec.speech_number,
                     'order_date': rec.speech_date,
-                    'order_picture': rec.speech_file
+                    'order_picture': rec.speech_file,
+                    'transfer_id': rec.id
+
                 }
             recruiter_id = self.env['hr.decision.appoint'].create(vals)
             if recruiter_id:

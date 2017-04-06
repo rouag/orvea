@@ -38,6 +38,7 @@ class HrEmployeeCommissioning(models.Model):
     note = fields.Text(string=u'ملاحظات')
     current_city = fields.Many2one('res.city', string=u'مقر الموظف', related='employee_id.dep_city', required=0)
     city = fields.Many2one('res.city', string=u'مقر التكليف', required=1, readonly=1, states={'new': [('readonly', 0)]})
+ 
     decision_number = fields.Char(string=u"رقم القرار", required=1, readonly=1, states={'new': [('readonly', 0)]})
     decision_date = fields.Date(string=u'تاريخ القرار', required=1, readonly=1, states={'new': [('readonly', 0)]})
     decision_file = fields.Binary(string=u'نسخة القرار', required=1, readonly=1, states={'new': [('readonly', 0)]}, attachment=True)
@@ -48,6 +49,9 @@ class HrEmployeeCommissioning(models.Model):
     pay_retirement = fields.Boolean(string=u'يدفع له نسبة التقاعد', related="comm_type.pay_retirement", readonly=1)
     retirement_proportion = fields.Float(string=u'حصة الحكومة من التقاعد (%)', default=9)
     done_date = fields.Date(string='تاريخ التفعيل')
+    commissioning_job_id = fields.Many2one('hr.job', string='الوظيفة المكلف عليها' ,Domain=[('state', '=', 'unoccupied'),('state_job','=','mission')])
+    type_id = fields.Many2one('salary.grid.type', string='نوع السلم', related = 'commissioning_job_id.type_id' , readonly=1)
+    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', related = 'commissioning_job_id.grade_id' , readonly=1)
 
     @api.multi
     @api.depends('date_from', 'duration')
@@ -122,6 +126,8 @@ class HrEmployeeCommissioning(models.Model):
     def action_done(self):
         self.ensure_one()
         self.done_date = fields.Date.today()
+        self.employee_id.commissioning_job_id = self.commissioning_job_id
+        self.commissioning_job_id.state='occupied'
         self.state = 'done'
         # create history_line
 #         self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, False, False, "تكليف")

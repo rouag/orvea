@@ -165,7 +165,6 @@
 					<field name="name" />
 					<field name="date" />
 					<field name="holiday_id" />
-					<field name="holiday_id" />
 					<field name="holiday_status_id" />
 					<field name="date_from" />
 					<field name="date_to" />
@@ -265,7 +264,6 @@
 					row_classes="state-refuse:state=='refuse';state-in-progress:state not in ['draft','refuse','done'];">
 					<field name="name" />
 					<field name="date" />
-					<field name="holiday_id" />
 					<field name="holiday_id" />
 					<field name="holiday_status_id" />
 					<field name="date_from" />

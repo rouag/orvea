@@ -427,7 +427,7 @@ class HrHolidays(models.Model):
     def open_decission(self):
         decision_obj= self.env['hr.decision']
         if self.decission_id:
-            decission_id = self.decission_id.id           
+            decission_id = self.decission_id.id
         else :
             decision_type_id = 1
             decision_date = fields.Date.today() # new date

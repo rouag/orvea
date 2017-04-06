@@ -50,14 +50,28 @@ class HrDecision(models.Model):
     @api.onchange('decision_type_id')
     def onchange_decision_type_id(self):
         type= False
-        if self.decision_type_id:
-                         
-          
+        if self.decision_type_id in [self.env.ref('smart_hr.data_decision_type6'),
+                                    self.env.ref('smart_hr.data_decision_type7'),
+                                    self.env.ref('smart_hr.data_decision_type8'),
+                                    self.env.ref('smart_hr.data_decision_type9'),
+                                    self.env.ref('smart_hr.data_decision_type10')]:
+            object_type= 'employee'
             self.text = self.replace_text(self.employee_id, self.date,self.decision_type_id.id,'employee')
-      
+        if self.decision_type_id in [self.env.ref('smart_hr.data_normal_leave'),
+                                              self.env.ref('smart_hr.data_exceptionnel_leave'),
+                                              self.env.ref('smart_hr.data_leave_satisfactory'),
+                                              self.env.ref('smart_hr.data_leave_escort'),
+                                            self.env.ref('smart_hr.data_leave_sport'),
+                                              self.env.ref('smart_hr.data_leave_motherhood'),]:
+            object_type= 'holidays'
+            self.text = self.replace_text(self.employee_id, self.date,self.decision_type_id.id,'holidays')
+
+        elif self.decision_type_id :
+            object_type= 'appoint'
+            self.text = self.replace_text(self.employee_id, self.date,self.decision_type_id.id,'appoint')
 
     def replace_text(self,employee_id,date,decision_type_id,object_type):
-        
+
         decision_text =''
         decision_type_line = self.env['hr.decision.type'].search([('id', '=', decision_type_id)])
         if decision_type_line.text:
@@ -101,10 +115,10 @@ class HrDecision(models.Model):
             decision_text = decision_text.replace('DEGREE', unicode(degree_id))
             decision_text = decision_text.replace('GRADE', unicode(grade_id))
             decision_text = decision_text.replace('DEPARTEMENT', unicode(department_id))
-                        
-            
-            if type == 'holidays' :
+
+            if object_type == 'holidays' :
                 holidays_line = self.env['hr.holidays'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
+                print"holidays_line",holidays_line
                 if holidays_line :
                     duration = holidays_line.duration or ""
                     if holidays_line.date_from:
@@ -112,10 +126,16 @@ class HrDecision(models.Model):
                         date_from = str(date_from).split('-')
                         date_from = date_from[2] + '-' + date_from[1] + '-' + date_from[0] or ""
                     fromdate = date_from or ""
+                    if holidays_line.date_to:
+                        date_to = self._get_hijri_date(holidays_line.date_to, '-')
+                        date_to = str(date_to).split('-')
+                        date_to = date_to[2] + '-' + date_to[1] + '-' + date_to[0] or ""
+                    ENDDET = date_to or ""
                     decision_text = decision_text.replace('DURATION', unicode(duration))
                     decision_text = decision_text.replace('FROMDET', unicode(fromdate))
+                    decision_text = decision_text.replace('ENDDET', unicode(date_to))
    
-            if type =='appoint':
+            if object_type =='appoint':
                 appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
                 if appoint_line :
                     emp_job_id = appoint_line.emp_job_id.name.name or ""

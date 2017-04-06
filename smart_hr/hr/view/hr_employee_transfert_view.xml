@@ -118,8 +118,7 @@
 								groups="smart_hr.group_hr_personnel_officer_jobs" attrs="{'required':[('same_group', 
 								'=', True),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm'),]}" 
 								/> </group> -->
-							<group string="موافقة الخدمة المدنية"
-								attrs="{'invisible':['|', '|', ('state', 'not in', ['pm','done']), ('same_group', '=', True), ('ready_tobe_done','=',False)]}">
+							<group string="موافقة الخدمة المدنية">
 								<field name="speech_number"
 									attrs="{'required':[('same_group', '=', False),('state', '=', 'pm'),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm')]}" />
 								<field name="speech_date"
@@ -160,8 +159,6 @@
 
 									</group>
 									<group>
-										<field name="date_direct_action"
-											attrs="{'readonly':[('state', '!=', 'pm')], 'invisible':[('ready_tobe_done', '=', False)]}" />
 										<field name="new_degree_id"
 											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 											attrs="{'readonly':[('state', '!=', 'pm')],'required':[('state', '=', 'pm'),('new_job_id', '!=', False)], 'invisible':[('ready_tobe_done', '=', False)]}" />
