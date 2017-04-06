@@ -78,6 +78,12 @@
 								<field name="comm_type" options='{"no_open": True, "no_create": True}' />
 								<field name="governmental_entity" options='{"no_open": True, "no_create": True}'
 									attrs="{'invisible':[('comm_type', '!=', %(data_hr_commissioning_type_02)d)], 'required':[('comm_type', '=', %(data_hr_commissioning_type_02)d)]}" />
+							
+							
+								<field name="commissioning_job_id" options='{"no_open": True, "no_create": True}' 	attrs="{'readonly':[('state', 'in', ['done','refused'])]}"  />
+								<field name="type_id" options='{"no_open": True, "no_create": True}' />
+								<field name="grade_id" options='{"no_open": True, "no_create": True}' />
+								
 								<field name="city" options='{"no_open": True, "no_create": True}' />
 								<field name="pay_retirement"
 									attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />

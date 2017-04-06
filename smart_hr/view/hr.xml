@@ -409,6 +409,7 @@
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="degree_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+												
 
 
 											<field name="parent_id" string="المدير المباشر " />
@@ -428,6 +429,12 @@
 											<field name="calendar_id" string="‫نوع‬ الدوام" />
 											<field name="insurance_type" />
 											<field name="medic_exam" string="تاريخ الفحص الطبي" />
+											<field name="commissioning_job_id"
+											attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+											<field name="commissioning_type_id"
+											attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+											<field name="commissioning_grade_id"
+											attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 										</group>
 									</group>
 								</page>
