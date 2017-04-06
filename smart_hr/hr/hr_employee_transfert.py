@@ -4,7 +4,6 @@ from dateutil.relativedelta import relativedelta
 from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
-from smart_hr.models import recruiter
 
 
 class HrEmployeeTransfert(models.Model):
