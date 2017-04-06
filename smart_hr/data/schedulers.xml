@@ -48,7 +48,7 @@
 			<field name="numbercall">-1</field>
 			<field name="doall">0</field>
 			<field name="model">hr.employee</field>
-			<field name="function">update_service_duration</field>
+			<field name="function">_update_service_duration</field>
 			<field name="args">()</field>
 		</record>
 <!-- 		<record id="ir_cron_hr_direct_appoint" model="ir.cron"> -->

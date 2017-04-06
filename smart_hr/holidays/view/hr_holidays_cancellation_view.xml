@@ -4,102 +4,102 @@
 
 		<!-- view search -->
 
-		<record model="ir.ui.view" id="view_hr_holidays_cancellation_filter_inherit">
-			<field name="name">hr.holidays.cancellation.filter.inherit</field>
-			<field name="model">hr.holidays.cancellation</field>
-			<field name="type">search</field>
-			<field name="arch" type="xml">
-				<search string="إلغاء أو قطع إجازاتي">
-					<field name="employee_id" string="الموظف"
-						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
-				</search>
-			</field>
-		</record>
+<!-- 		<record model="ir.ui.view" id="view_hr_holidays_cancellation_filter_inherit"> -->
+<!-- 			<field name="name">hr.holidays.cancellation.filter.inherit</field> -->
+<!-- 			<field name="model">hr.holidays.cancellation</field> -->
+<!-- 			<field name="type">search</field> -->
+<!-- 			<field name="arch" type="xml"> -->
+<!-- 				<search string="إلغاء أو قطع إجازاتي"> -->
+<!-- 					<field name="employee_id" string="الموظف" -->
+<!-- 						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" /> -->
+<!-- 				</search> -->
+<!-- 			</field> -->
+<!-- 		</record> -->
 
 		<!-- My Hollidays Cancellation -->
-		<record id="hr_holidays_cancellation_mine_form" model="ir.ui.view">
-			<field name="name">hr.holidays.cancellation.form</field>
-			<field name="model">hr.holidays.cancellation</field>
-			<field name="arch" type="xml">
-				<form string="إلغاء أو قطع إجازاتي" create="0">
-					<field name="display_audit_buttons" invisible="1" />
-					<field name="dispay_draft_buttons" invisible="1" />
-					<header>
-						<button name="button_send" string="إرسال طلب" type="object"
-							attrs="{'invisible':[('dispay_draft_buttons','=', False)]}" icon="fa-paper-plane"
-							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_done" string="موافق" type="object"
-							attrs="{'invisible':[('display_audit_buttons','=', False)]}"
-							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="%(action_hr_refuse_wizard)d" string="رفض"
-							type="action" attrs="{'invisible':[('display_audit_buttons','=', False)]}"
-							icon="fa-times" class="oe_inline oe_stat_button" />
-						<field name="state" widget="statusbar" statusbar_visible="draft,audit,done" />
-					</header>
-					<sheet>
-						<group>
-							<field name="name" readonly="1" />
-							<field name="employee_id" readonly="1" 
-								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-							<field name="holiday_id" readonly="1" />
-							<field name="holiday_status_id" readonly="1" />
-							<field name="date_from" readonly="1" />
-							<field name="date_to" readonly="1" />
-							<field name="duration" readonly="1" />
-						</group>
-						<group>
-							<field name="note" />
-						</group>
+<!-- 		<record id="hr_holidays_cancellation_mine_form" model="ir.ui.view"> -->
+<!-- 			<field name="name">hr.holidays.cancellation.form</field> -->
+<!-- 			<field name="model">hr.holidays.cancellation</field> -->
+<!-- 			<field name="arch" type="xml"> -->
+<!-- 				<form string="إلغاء أو قطع إجازاتي" create="0"> -->
+<!-- 					<field name="display_audit_buttons" invisible="1" /> -->
+<!-- 					<field name="dispay_draft_buttons" invisible="1" /> -->
+<!-- 					<header> -->
+<!-- 						<button name="button_send" string="إرسال طلب" type="object" -->
+<!-- 							attrs="{'invisible':[('dispay_draft_buttons','=', False)]}" icon="fa-paper-plane" -->
+<!-- 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" /> -->
+<!-- 						<button name="button_done" string="موافق" type="object" -->
+<!-- 							attrs="{'invisible':[('display_audit_buttons','=', False)]}" -->
+<!-- 							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" /> -->
+<!-- 						<button name="%(action_hr_refuse_wizard)d" string="رفض" -->
+<!-- 							type="action" attrs="{'invisible':[('display_audit_buttons','=', False)]}" -->
+<!-- 							icon="fa-times" class="oe_inline oe_stat_button" /> -->
+<!-- 						<field name="state" widget="statusbar" statusbar_visible="draft,audit,done" /> -->
+<!-- 					</header> -->
+<!-- 					<sheet> -->
+<!-- 						<group> -->
+<!-- 							<field name="name" readonly="1" /> -->
+<!-- 							<field name="employee_id" readonly="1"  -->
+<!-- 								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" /> -->
+<!-- 							<field name="holiday_id" readonly="1" /> -->
+<!-- 							<field name="holiday_status_id" readonly="1" /> -->
+<!-- 							<field name="date_from" readonly="1" /> -->
+<!-- 							<field name="date_to" readonly="1" /> -->
+<!-- 							<field name="duration" readonly="1" /> -->
+<!-- 						</group> -->
+<!-- 						<group> -->
+<!-- 							<field name="note" /> -->
+<!-- 						</group> -->
 
-					</sheet>
-				</form>
-			</field>
-		</record>
+<!-- 					</sheet> -->
+<!-- 				</form> -->
+<!-- 			</field> -->
+<!-- 		</record> -->
 
-		<record id="hr_holidays_cancellation_mine_tree" model="ir.ui.view">
-			<field name="name">hr.holidays.cancellation.tree</field>
-			<field name="model">hr.holidays.cancellation</field>
-			<field name="arch" type="xml">
-				<tree string="إلغاء أو قطع إجازاتي" class="oe_tree_view"
-					create="0">
-					<field name="name" />
-					<field name="holiday_id" />
-					<field name="holiday_status_id" />
-					<field name="date_from" />
-					<field name="date_to" />
-					<field name="duration" />
-					<field name="state" />
-					<field name="type" />
-				</tree>
-			</field>
-		</record>
+<!-- 		<record id="hr_holidays_cancellation_mine_tree" model="ir.ui.view"> -->
+<!-- 			<field name="name">hr.holidays.cancellation.tree</field> -->
+<!-- 			<field name="model">hr.holidays.cancellation</field> -->
+<!-- 			<field name="arch" type="xml"> -->
+<!-- 				<tree string="إلغاء أو قطع إجازاتي" class="oe_tree_view" -->
+<!-- 					create="0"> -->
+<!-- 					<field name="name" /> -->
+<!-- 					<field name="holiday_id" /> -->
+<!-- 					<field name="holiday_status_id" /> -->
+<!-- 					<field name="date_from" /> -->
+<!-- 					<field name="date_to" /> -->
+<!-- 					<field name="duration" /> -->
+<!-- 					<field name="state" /> -->
+<!-- 					<field name="type" /> -->
+<!-- 				</tree> -->
+<!-- 			</field> -->
+<!-- 		</record> -->
 
-		<record id="action_hr_holidays_cancellation_mine" model="ir.actions.act_window">
-			<field name="name">إلغاء أو قطع إجازاتي</field>
-			<field name="res_model">hr.holidays.cancellation</field>
-			<field name="domain">[('employee_id.user_id', '=',
-				uid),('employee_id.employee_state', 'in',['employee', 'done'])]
-			</field>
-			<field name="view_type">form</field>
-			<field name="view_mode">tree,form</field>
-			<field name="help" type="html">
-				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
-			</field>
-		</record>
+<!-- 		<record id="action_hr_holidays_cancellation_mine" model="ir.actions.act_window"> -->
+<!-- 			<field name="name">إلغاء أو قطع إجازاتي</field> -->
+<!-- 			<field name="res_model">hr.holidays.cancellation</field> -->
+<!-- 			<field name="domain">[('employee_id.user_id', '=', -->
+<!-- 				uid),('employee_id.employee_state', 'in',['employee', 'done'])] -->
+<!-- 			</field> -->
+<!-- 			<field name="view_type">form</field> -->
+<!-- 			<field name="view_mode">tree,form</field> -->
+<!-- 			<field name="help" type="html"> -->
+<!-- 				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p> -->
+<!-- 			</field> -->
+<!-- 		</record> -->
 
-		<record id="action_hr_holidays_cancellation_mine_tree" model="ir.actions.act_window.view">
-			<field name="view_mode">tree</field>
-			<field name="view_id" ref="hr_holidays_cancellation_mine_tree" />
-			<field name="act_window_id" ref="action_hr_holidays_cancellation_mine" />
-		</record>
+<!-- 		<record id="action_hr_holidays_cancellation_mine_tree" model="ir.actions.act_window.view"> -->
+<!-- 			<field name="view_mode">tree</field> -->
+<!-- 			<field name="view_id" ref="hr_holidays_cancellation_mine_tree" /> -->
+<!-- 			<field name="act_window_id" ref="action_hr_holidays_cancellation_mine" /> -->
+<!-- 		</record> -->
 
-		<record id="action_hr_holidays_cancellation_mine_form" model="ir.actions.act_window.view">
-			<field name="view_mode">form</field>
-			<field name="view_id" ref="hr_holidays_cancellation_mine_form" />
-			<field name="act_window_id" ref="action_hr_holidays_cancellation_mine" />
-		</record>
-		<menuitem id="menu_hr_my_Hollidays_cancellation" action="action_hr_holidays_cancellation_mine"
-			parent="menu_hr_holiday_root" sequence="30" name="إلغاء أو قطع إجازاتي" />
+<!-- 		<record id="action_hr_holidays_cancellation_mine_form" model="ir.actions.act_window.view"> -->
+<!-- 			<field name="view_mode">form</field> -->
+<!-- 			<field name="view_id" ref="hr_holidays_cancellation_mine_form" /> -->
+<!-- 			<field name="act_window_id" ref="action_hr_holidays_cancellation_mine" /> -->
+<!-- 		</record> -->
+<!-- 		<menuitem id="menu_hr_my_Hollidays_cancellation" action="action_hr_holidays_cancellation_mine" -->
+<!-- 			parent="menu_hr_holiday_root" sequence="30" name="إلغاء أو قطع إجازاتي" /> -->
 
 
 
@@ -114,17 +114,19 @@
 					<field name="display_audit_buttons" invisible="1" />
 					<field name="dispay_draft_buttons" invisible="1" />
 					<header>
-						<button name="button_send" string="إرسال طلب" type="object"
+						<button name="button_send" string="إرسال" type="object"
 							attrs="{'invisible':[('dispay_draft_buttons','=', False)]}" icon="fa-paper-plane"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_done" string="موافق" type="object"
-							attrs="{'invisible':[('display_audit_buttons','=', False)]}"
+						<button name="button_hrm" string="إرسال " type="object" 							
+						attrs="{'invisible':[('display_audit_buttons','=', False)]}"
+							icon="fa-paper-plane"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />							
+						<button name="button_done" string="إرسال" type="object"  groups="smart_hr.group_hrm" states="hrm"
 							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" attrs="{'invisible':[('display_audit_buttons','=', False)]}"
 							icon="fa-times" class="oe_inline oe_stat_button" />
-
-						<field name="state" widget="statusbar" statusbar_visible="draft,audit,done" />
+						<field name="state" widget="statusbar" statusbar_visible="draft,audit,hrm,done,refuse" />
 					</header>
 					<sheet>
 						<label for="name" class="oe_edit_only" />
@@ -199,7 +201,7 @@
 		</record>
 		<menuitem id="menu_hr_holidays_cancellation_employees"
 			action="action_hr_holidays_cancellation_employees" parent="menu_hr_holiday_root"
-			sequence="40" groups="smart_hr.group_dm,smart_hr.group_holidays_specialist" name="طلبات الإلغاء" />
+			sequence="40"  name="طلبات الإلغاء" />
 
 
 		<!-- Employees' Hollidays قطع -->
@@ -211,17 +213,19 @@
 					<field name="display_audit_buttons" invisible="1" />
 					<field name="dispay_draft_buttons" invisible="1" />
 					<header>
-						<button name="button_send" string="إرسال طلب" type="object"
+						<button name="button_send" string="إرسال" type="object"
 							attrs="{'invisible':[('dispay_draft_buttons','=', False)]}" icon="fa-paper-plane"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_done" string="موافق" type="object"
-							attrs="{'invisible':[('display_audit_buttons','=', False)]}"
+						<button name="button_hrm" string="إرسال " type="object" 							
+						attrs="{'invisible':[('display_audit_buttons','=', False)]}"
+							icon="fa-paper-plane"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />							
+						<button name="button_done" string="موافق" type="object"  groups="smart_hr.group_hrm" states="hrm"
 							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" attrs="{'invisible':[('display_audit_buttons','=', False)]}"
 							icon="fa-times" class="oe_inline oe_stat_button" />
-
-						<field name="state" widget="statusbar" statusbar_visible="draft,audit,done" />
+						<field name="state" widget="statusbar" statusbar_visible="draft,audit,hrm,done,refuse" />
 					</header>
 					<sheet>
 						<label for="name" class="oe_edit_only" />
@@ -230,6 +234,7 @@
 						</h1>
 						<group>
 							<field name="date" readonly="1" />
+							<field name="cancellation_date" required="1" attrs="{'readonly':[('state','=', 'done')]}"/>
 							<field name="employee_id" readonly="1" 
 								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 							<field name="holiday_id" readonly="1" />
@@ -295,7 +300,7 @@
 			<field name="act_window_id" ref="action_hr_holidays_cut_employees" />
 		</record>
 		<menuitem id="menu_hr_holidays_cut_employees" action="action_hr_holidays_cut_employees"
-			parent="menu_hr_holiday_root" sequence="50" groups="smart_hr.group_dm,smart_hr.group_holidays_specialist"
+			parent="menu_hr_holiday_root" sequence="50" 
 			name="طلبات القطع" />
 
 

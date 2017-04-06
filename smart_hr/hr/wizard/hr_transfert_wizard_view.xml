@@ -22,7 +22,7 @@
 							<group>
 								<field name="res_city" />
 								<field name="specific_group" />
-								<field name="new_job_id"  />
+								<field name="new_job_id" />
 								<field name="new_specific_id" />
 								<field name="new_type_id" />
 								<field name="new_department_id" />
@@ -49,6 +49,71 @@
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="view_id" ref="view_wizard_employee_transfert" />
+			<field name="target">new</field>
+		</record>
+
+		<!-- إسناد المزايا -->
+		<record id="view_wizard_transfert_benefits" model="ir.ui.view">
+			<field name="name">transfert.benefits.wizard.form</field>
+			<field name="model">transfert.benefits.wizard</field>
+			<field name="arch" type="xml">
+				<form>
+					<sheet>
+						<group>
+							<group>
+								<field name="employee_id" />
+								<field name="job_id" />
+								<field name="specific_id" />
+								
+							</group>
+							<group>
+								<field name="type_id" />
+								<field name="department_id" />
+								<field name="degree_id" />
+								<field name="grade_id" />
+							</group>
+							<h3 class="o_horizontal_separator">بدلات الوظيفة</h3>
+								<field name="job_allowance_ids" string="بدلات الوظيفة">
+									<tree create="false">
+										<field name="allowance_id" readonly="1"/>
+										<field name="compute_method" />
+										<field name="amount" />
+									</tree>
+								</field>
+								<h3 class="o_horizontal_separator">بدلات النقل</h3>
+								<field name="transfert_allowance_ids">
+									<tree>
+										<field name="allowance_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+										<field name="compute_method" />
+										<field name="amount" />
+									</tree>
+								</field>
+								<h3 class="o_horizontal_separator">بدلات المنطقة</h3>
+								<field name="location_allowance_ids" string="بدلات المنطقة">
+									<tree create="false">
+										<field name="allowance_id" readonly="1"/>
+										<field name="compute_method" />
+										<field name="amount" />
+									</tree>
+								</field>
+						</group>
+						<footer>
+							<button icon="fa-cogs" string="تأكيد" name="action_transfert"
+								type="object" class="oe_highlight" />
+							أو
+							<button string="إلغاء" class="oe_link" special="cancel" />
+						</footer>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="action_wizard_transfert_benefits" model="ir.actions.act_window">
+			<field name="name">إسناد المزايا</field>
+			<field name="res_model">transfert.benefits.wizard</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="view_wizard_transfert_benefits" />
 			<field name="target">new</field>
 		</record>
 
