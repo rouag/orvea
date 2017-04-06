@@ -28,35 +28,29 @@ class HrDirectAppoint(models.Model):
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', store=True, readonly=1)
     date_direct_action = fields.Date(string='تاريخ المباشرة ', required=1)
     type_appointment = fields.Many2one('hr.type.appoint', string=u'نوع التعيين')
-    decision_appoint_ids = fields.One2many('hr.decision.appoint', 'employee_id', string=u'تعيينات الموظف')
+    appoint_id = fields.Many2one('hr.decision.appoint', string=u'تعيين الموظف')
     date = fields.Date(string=u'التاريخ ', default=fields.Datetime.now(), readonly=1)
     state = fields.Selection([('new', '  طلب'),
                               ('waiting', u'في إنتظار المباشرة'),
                               ('done', u'مباشرة'),
-                              ('cancel', u'ملغاة')], string='الحالة', readonly=1, default='waiting')
+                              ('cancel', u'ملغاة')], string='الحالة', readonly=1, default='new')
 
-    state_direct = fields.Selection([
-        ('waiting', u'في إنتظار المباشرة'),
-        ('confirm', u'لتأكيد المباشرة '),
-        ('done', u'تم الاجراء'),
-        ('cancel', u'للإلغاء ')], string='الحالة', readonly=1, default='waiting')
+    type = fields.Selection([
+        ('appoint' , u'تعيين'),
+        ('transfer', u'نقل'),
+        ('promotion', u'ترقية')], string='نوع قرار المباشرة', required=1)
 
     @api.multi
     def action_waiting(self):
-
+        if self.appoint_id:
+            self.appoint_id.write({'date_direct_action': self.date_direct_action})
+            if not self.employee_id.recruiter_date:
+                self.employee_id.recruiter_date = self.date_direct_action
+            if not self.employee_id.begin_work_date:
+                self.employee_id.begin_work_date = self.date_direct_action
+        else:
+            raise ValidationError(u"لا يوجد تعيين غير مفعل للموظف!")
         self.state = 'waiting'
-
-    @api.one
-    def action_cancel(self):
-        self.state = 'cancel'
-
-    @api.one
-    def action_done(self):
-        self.state = 'done'
-
-    @api.one
-    def action_refuse(self):
-        self.state = 'cancel'
 
     @api.multi
     def button_cancel_appoint(self):
@@ -67,41 +61,49 @@ class HrDirectAppoint(models.Model):
         for line in appoint_line:
             line.write({'state_appoint': 'refuse'})
         self.state = 'cancel'
-        self.state_direct = 'done'
 
     @api.multi
     def button_direct_appoint(self):
         self.ensure_one()
-        # TODO
 
-        appoint_line = self.env['hr.decision.appoint'].search(
-            [('employee_id', '=', self.employee_id.id), ('state', '=', 'done'), ('is_started', '=', False),
-             ('state_appoint', '=', 'active')], limit=1)
-        for line in appoint_line:
-            if line.first_appoint:
-                line.employee_id.write(
-                    {'begin_work_date': line.date_direct_action, 'recruiter_date': line.date_direct_action})
-                line.write({'is_started': True, 'state_appoint': 'active'})
-            else:
-                line.write({'is_started': True, 'state_appoint': 'active'})
-
-            title = u"' إشعار بمباشرة التعين'"
-            msg = u"' إشعار بمباشرة التعين'" + unicode(line.employee_id.display_name) + u"'"
-            group_id = self.env.ref('smart_hr.group_department_employee')
-            self.send_appoint_group(group_id, title, msg)
-            self.env['hr.employee.history'].sudo().add_action_line(line.employee_id, "", self.date, "مباشرة")
-
+        self.appoint_id.write({'is_started': True, 'state_appoint': 'active'})
+        title = u"' إشعار بمباشرة التعين'"
+        msg = u"' إشعار بمباشرة التعين'" + unicode(self.employee_id.display_name) + u"'"
+        group_id = self.env.ref('smart_hr.group_department_employee')
+        self.send_appoint_group(group_id, title, msg)
+        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, "", self.date, "مباشرة")
+        if self.type == 'transfer':
+            self.appoint_id.transfer_id.done_date = self.date_direct_action
+        if self.type == 'promotion':
+            self.appoint_id.promotion_id.done_date = self.date_direct_action
         self.state = 'done'
-        self.state_direct = 'done'
 
-
-    @api.onchange('employee_id')
+    @api.onchange('employee_id','type')
     def _onchange_employee_id(self):
         if self.employee_id:
             self.number = self.employee_id.number
-            self.country_id = self.employee_id.country_id
-            appoint_line = self.env['hr.decision.appoint'].search(
-                [('employee_id', '=', self.employee_id.id), ('state', '=', 'done')], limit=1)
+            self.country_id = self.employee_id.country_id.id
+            type_appointment_transfer = self.env.ref('smart_hr.data_hr_recrute_from_transfert').id
+            type_appointment_promotion = [self.env.ref('smart_hr.data_hr_promotion_agent').id, self.env.ref('smart_hr.data_hr_promotion_member').id]
+            if self.type == 'transfer':
+                type_appointment = type_appointment_transfer
+                appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),
+                                                                        ('state', '=', 'done'),
+                                                                        ('type_appointment', '=', type_appointment),
+                                                                        ('state_appoint', '=', 'new')], limit=1)
+            elif self.type == 'promotion':
+                type_appointment = [self.env.ref('smart_hr.data_hr_promotion_agent').id, self.env.ref('smart_hr.data_hr_promotion_member').id]
+                appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),
+                                                                        ('state', '=', 'done'),
+                                                                        ('type_appointment', '=', type_appointment),
+                                                                        ('state_appoint', '=', 'new')], limit=1)
+            else:
+                appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),
+                                                                        ('state', '=', 'done'),
+                                                                        ('type_appointment', '!=', type_appointment_transfer),
+                                                                        ('type_appointment', 'not in', type_appointment_promotion),
+                                                                        ('state_appoint', '=', 'new')], limit=1)
+                
             if appoint_line:
                 self.job_id = appoint_line.job_id.id
                 self.code = appoint_line.job_id.name.number
@@ -110,13 +112,9 @@ class HrDirectAppoint(models.Model):
                 self.far_age = appoint_line.type_id.far_age
                 self.grade_id = appoint_line.grade_id.id
                 self.department_id = appoint_line.department_id.id
-                self.date_direct_action = appoint_line.date_direct_action
-
-    @api.onchange('date_direct_action')
-    def _onchange_date_direct_action(self):
-        appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id), ('state', '=', 'done')], limit=1)
-        if appoint_line:
-            appoint_line.write({'date_direct_action': self.date_direct_action})
+                self.appoint_id = appoint_line.id
+                
+                
 
     def send_appoint_group(self, group_id, title, msg):
         """

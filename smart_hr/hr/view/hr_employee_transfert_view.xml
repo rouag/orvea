@@ -160,8 +160,6 @@
 
 									</group>
 									<group>
-										<field name="date_direct_action"
-											attrs="{'readonly':[('state', '!=', 'pm')], 'invisible':[('ready_tobe_done', '=', False)]}" />
 										<field name="new_degree_id"
 											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 											attrs="{'readonly':[('state', '!=', 'pm')],'required':[('state', '=', 'pm'),('new_job_id', '!=', False)], 'invisible':[('ready_tobe_done', '=', False)]}" />

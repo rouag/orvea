@@ -40,7 +40,6 @@ class HrEmployeeTransfert(models.Model):
     decision_file_name = fields.Char(string=u'نسخة القرار')
     degree_id = fields.Many2one('salary.grid.degree',related='employee_id.degree_id', string=u'الدرجة', readonly=1)
     new_degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة', readonly=1)
-    date_direct_action = fields.Date(string=u'تاريخ مباشرة العمل')
     governmental_entity = fields.Many2one('res.partner', string=u'الجهة الحكومية', domain=[('company_type', '=', 'governmental_entity')])
     desire_ids = fields.One2many('hr.employee.desire',  'desire_id', store=True,required=1, string=u'رغبات النقل', readonly=1, states={'new': [('readonly', 0)]})
     refusing_date = fields.Date(string=u'تاريخ الرفض', readonly=1)
@@ -83,21 +82,6 @@ class HrEmployeeTransfert(models.Model):
     payslip_id = fields.Many2one('hr.payslip')
     done_date = fields.Date(string='تاريخ التفعيل')
 
-    @api.multi
-    @api.onchange('transfert_nature')
-    def onchange_transfert_nature(self):
-        #TODO: ???
-        res = {}
-        if self.transfert_nature == 'internal_transfert' or self.transfert_nature == 'external_transfert_out' :
-            employee_search_ids = self.env['hr.employee'].search([('employee_state','=','employee')])
-            employee_ids = [rec.id for rec in employee_search_ids]
-            res['domain'] = {'employee_id': [('id', 'in', employee_ids)]}
-            return res
-        if self.transfert_nature == 'external_transfert_in':
-            employee_search_ids = self.env['hr.employee'].search([('employee_state','=','new')])
-            employee_ids = [rec.id for rec in employee_search_ids]
-            res['domain'] = {'employee_id': [('id', 'in', employee_ids)]}
-            return res
 
     @api.multi
     @api.depends('employee_id')
@@ -124,31 +108,6 @@ class HrEmployeeTransfert(models.Model):
             else:
                 rec.same_group = False
 
-    @api.onchange('transfert_periode_id', 'transfert_type')
-    def _onchange_transfert_periode_id(self):
-        if not self.transfert_periode_id:
-            # do not allow creating tranfert if there is no open periode
-            res = {}
-            open_periodes = self.env['hr.employee.transfert.periode'].search([('date_to', '>=', datetime.today().strftime('%Y-%m-%d'))])
-            if open_periodes:
-                open_periodes_ids = [rec.id for rec in open_periodes]
-                res['domain'] = {'transfert_periode_id': [('id', 'in', open_periodes_ids), ('for_member', '=', (self.transfert_type == 'member'))]}
-                return res
-            else:
-                res['domain'] = {'transfert_periode_id': [('id', '=', -1)]}
-                return res
-
-    @api.onchange('employee_id')
-    def _onchange_employee_id(self):
-        # get last evaluation result
-        if self.employee_id:
-            previews_year = int(date.today().year) - 1
-            last_evaluation_result = self.employee_id.evaluation_level_ids.search([('year', '=', int(previews_year))])
-            if last_evaluation_result:
-                self.last_evaluation_result = last_evaluation_result
-            self.begin_work_date = self.employee_id.begin_work_date
-            self.recruiter_date = self.employee_id.recruiter_date
-            self.age = self.employee_id.age
 
     @api.one
     @api.constrains('employee_id')
@@ -298,13 +257,14 @@ class HrEmployeeTransfert(models.Model):
                     raise ValidationError(u"لم يتم إصدار قرار بشأن النقل.")
                 vals = {
                     'type_appointment': self.env.ref('smart_hr.data_hr_recrute_from_transfert').id,
-                    'date_direct_action': rec.date_direct_action,
                     'employee_id': rec.employee_id.id,
                     'job_id': rec.new_job_id.id,
                     'degree_id': rec.degree_id.id,
                     'name': rec.decision_number,
                     'order_date': rec.decision_date,
-                    'order_picture': rec.decision_file
+                    'order_picture': rec.decision_file,
+                    'transfer_id': rec.id
+                    
                 }
             else:
                 if not rec.speech_number:
@@ -312,13 +272,14 @@ class HrEmployeeTransfert(models.Model):
                 # with speech file
                 vals = {
                     'type_appointment': self.env.ref('smart_hr.data_hr_recrute_from_transfert').id,
-                    'date_direct_action': rec.date_direct_action,
                     'employee_id': rec.employee_id.id,
                     'job_id': rec.new_job_id.id,
                     'degree_id': rec.degree_id.id,
                     'name': rec.speech_number,
                     'order_date': rec.speech_date,
-                    'order_picture': rec.speech_file
+                    'order_picture': rec.speech_file,
+                    'transfer_id': rec.id
+
                 }
             recruiter_id = self.env['hr.decision.appoint'].create(vals)
             recruiter_id._onchange_employee_id()
