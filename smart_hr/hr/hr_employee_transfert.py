@@ -18,7 +18,7 @@ class HrEmployeeTransfert(models.Model):
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
     sequence = fields.Integer(string=u'رتبة الطلب')
-    employee_id = fields.Many2one('hr.employee', string=u'صاحب الطلب',  required=1, domain=[('emp_state', 'not in', ['suspended','terminated'])],
+    employee_id = fields.Many2one('hr.employee', string=u'صاحب الطلب',  required=1, domain=[('emp_state', 'not in', ['suspended','terminated']), ('employee_state', '=', 'employee')],
                                   default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended','terminated'])], limit=1),)
     last_evaluation_result = fields.Many2one('hr.employee.evaluation.level', string=u'أخر تقييم إداء')
     job_id = fields.Many2one('hr.job', default=_get_default_employee_job, string=u'الوظيفة', readonly=1, required=1)
@@ -683,6 +683,7 @@ class HrTransfertSorting(models.Model):
             for line in rec.line_ids4:
                 line.hr_employee_transfert_id.action_done()
             rec.state = 'done'
+
 
 class HrTransfertSortingLine(models.Model):
     _name = 'hr.transfert.sorting.line'

@@ -154,9 +154,7 @@
 						<button name="action_done" string="إعتماد" type="object"
 							states="verify" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
-							type="action"
-						
-							states="verify" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							type="action" states="verify" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<field name="state" widget="statusbar" statusbar_visible="draft,verify,done,refused" />
 					</header>
 					<sheet>
@@ -169,14 +167,12 @@
 									attrs="{'readonly':[('state', 'not in', [ 'draft'])]}" />
 							</group>
 							<group>
-								<field name="enabled"
-									attrs="{'readonly':[('state', 'not in', [ 'draft'])]}" />
+								<field name="enabled" />
 								<field name="date"
 									attrs="{'readonly':[('state', 'not in', [ 'draft'])]}" />
 							</group>
 						</group>
-						<field name="grid_ids" string=" سلّم الرواتب"
-							attrs="{'readonly':[('state', 'not in', [ 'draft'])]}">
+						<field name="grid_ids" string=" سلّم الرواتب" domain="[('is_old','=', False)]">
 							<tree>
 								<field name="type_id"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
@@ -189,7 +185,10 @@
 								<field name="retirement_amount" />
 								<field name="transport_allowance_amout" />
 								<field name="net_salary" />
+								<button name="%(smart_hr.action_wizard_update_salary_grid)d"
+									type="action" string="إسناد المزايا" icon="fa-clipboard" />
 								<field name="date" invisible="1" />
+								<field name="is_old" invisible="1" />
 							</tree>
 						</field>
 					</sheet>

@@ -177,6 +177,7 @@
         'payroll/wizard/wizard_error_employee_view.xml',
         'payroll/wizard/wizard_payslip_changement.xml',
         'payroll/wizard/hr_refuse_wizard_view.xml',
+        'payroll/wizard/wizard_update_salary_grid_view.xml',
         'payroll/view/salary_grid.xml',
         'payroll/view/hr_payroll_view.xml',
         'payroll/view/hr_special_payslip_view.xml',
