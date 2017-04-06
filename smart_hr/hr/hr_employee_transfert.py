@@ -86,7 +86,22 @@ class HrEmployeeTransfert(models.Model):
     transfert_allowance_ids = fields.One2many('hr.transfert.allowance', 'transfert_id', string=u'بدلات النقل')
     location_allowance_ids = fields.One2many('hr.transfert.allowance', 'location_transfert_id', string=u'بدلات المنطقة')
 
-
+    @api.multi
+    @api.onchange('transfert_nature')
+    def onchange_transfert_nature(self):
+        #TODO: ???
+        res = {}
+        if self.transfert_nature == 'internal_transfert' or self.transfert_nature == 'external_transfert_out' :
+            employee_search_ids = self.env['hr.employee'].search([('employee_state','=','employee')])
+            employee_ids = [rec.id for rec in employee_search_ids]
+            res['domain'] = {'employee_id': [('id', 'in', employee_ids)]}
+            return res
+        if self.transfert_nature == 'external_transfert_in':
+            employee_search_ids = self.env['hr.employee'].search([('employee_state','=','new')])
+            employee_ids = [rec.id for rec in employee_search_ids]
+            res['domain'] = {'employee_id': [('id', 'in', employee_ids)]}
+            return res
+        
     @api.multi
     @api.depends('employee_id')
     def _is_current_user(self):
@@ -112,6 +127,31 @@ class HrEmployeeTransfert(models.Model):
             else:
                 rec.same_group = False
 
+    @api.onchange('transfert_periode_id', 'transfert_type')
+    def _onchange_transfert_periode_id(self):
+        if not self.transfert_periode_id:
+            # do not allow creating tranfert if there is no open periode
+            res = {}
+            open_periodes = self.env['hr.employee.transfert.periode'].search([('date_to', '>=', datetime.today().strftime('%Y-%m-%d'))])
+            if open_periodes:
+                open_periodes_ids = [rec.id for rec in open_periodes]
+                res['domain'] = {'transfert_periode_id': [('id', 'in', open_periodes_ids), ('for_member', '=', (self.transfert_type == 'member'))]}
+                return res
+            else:
+                res['domain'] = {'transfert_periode_id': [('id', '=', -1)]}
+                return res
+
+    @api.onchange('employee_id')
+    def _onchange_employee_id(self):
+        # get last evaluation result
+        if self.employee_id:
+            previews_year = int(date.today().year) - 1
+            last_evaluation_result = self.employee_id.evaluation_level_ids.search([('year', '=', int(previews_year))])
+            if last_evaluation_result:
+                self.last_evaluation_result = last_evaluation_result
+            self.begin_work_date = self.employee_id.begin_work_date
+            self.recruiter_date = self.employee_id.recruiter_date
+            self.age = self.employee_id.age
 
     @api.one
     @api.constrains('employee_id')
