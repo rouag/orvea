@@ -21,7 +21,7 @@ class HrEmployeeTransfertWizard(models.TransientModel):
     job_id = fields.Many2one('hr.job', related='employee_id.job_id', string=u'الوظيفة', readonly=1)
     specific_id = fields.Many2one('hr.groupe.job', related='employee_id.job_id.specific_id', string=u'المجموعة النوعية', readonly=1)
     type_id = fields.Many2one('salary.grid.type', related='employee_id.type_id', string=u'الصنف', readonly=1)
-    new_type_id = fields.Many2one('salary.grid.type', string=u'الصنف', readonly=1)
+    new_type_id = fields.Many2one('salary.grid.type', related='new_job_id.type_id', string=u'الصنف', readonly=1)
     dep_city = fields.Many2one('res.city',  related='employee_id.job_id.department_id.dep_city', string=u'المدينة',readonly=1)
     new_specific_id = fields.Many2one('hr.groupe.job', related='new_job_id.specific_id', string=u'المجموعة النوعية', readonly=1)
     employee_id = fields.Many2one('hr.employee', readonly=1, string=u'  الموظف')

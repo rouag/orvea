@@ -32,7 +32,7 @@ class HrEvaluationPointSeniority(models.Model):
     hr_evaluation_point_id = fields.Many2one('hr.evaluation.point', string='المرتبة', )
     year_from = fields.Integer(string=u'من (سنة)', required=1)
     year_to = fields.Integer(string=u'إلى (سنة)', required=1)
-    point = fields.Integer(string=u'عدد النقاط', required=1)
+    point = fields.Float(string=u'عدد النقاط', required=1)
 
 
 class hr_evaluation_point_education(models.Model):

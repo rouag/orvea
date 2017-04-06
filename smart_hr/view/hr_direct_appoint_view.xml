@@ -34,27 +34,31 @@
 			<field name="arch" type="xml">
 				<form string=" قرار مباشرة التعين" delete='0'>
 					<header>
+						<button name="action_waiting" string="ارسال" states="new"
+							type="object" groups="smart_hr.group_department_employee" icon="fa-times-circle-o"
+							class="oe_inline oe_stat_button" />
+						<button name="button_direct_appoint" string="تفعيل التعين"
+							states="waiting" type="object" groups="smart_hr.group_department_employee"
+							icon="fa-times-circle-o" class="oe_inline oe_stat_button" />
 						<button name="button_cancel_appoint" string="إلغاء المباشرة"
-							type="object" groups="smart_hr.group_department_employee" icon="fa-times-circle-o"
-							class="oe_inline oe_stat_button" />
+							states="waiting" type="object" groups="smart_hr.group_department_employee"
+							icon="fa-times-circle-o" class="oe_inline oe_stat_button" />
 
-						<button name="button_direct_appoint" string="تفعيل التعين بالمباشرة"
-							type="object" groups="smart_hr.group_department_employee" icon="fa-times-circle-o"
-							attrs="{'invisible':['|',('state', 'not in ',['waiting']),('state_direct', '!=', 'confirm')]}"
-							class="oe_inline oe_stat_button" />
-
-						<field name="state" widget="statusbar" statusbar_visible="waiting,done,cancel" />
+						<field name="state" widget="statusbar" statusbar_visible="new_waiting,done,cancel" />
 					</header>
 					<sheet>
-						<group col="4">
+						<group>
 							<field name="date" />
-							<field name="date_direct_action" attrs="{'readonly': [('state','!=', 'waiting')]}"/>
+						</group>
+						<group col="4">
+							<field name="date_direct_action" attrs="{'readonly': [('state','!=', 'new')]}" />
+							<field name="type" attrs="{'readonly': [('state','!=', 'new')]}" />
+
 						</group>
 						<group>
 							<group string="بيانات الموظف">
-								<field name="employee_id" attrs="{'readonly': [('state','!=', 'waiting')]}"/>
+								<field name="employee_id" attrs="{'readonly': [('state','!=', 'new')]}" />
 								<field name="number" />
-								<field name="state_direct" invisible="1" />
 								<field name="country_id" />
 								<field name="far_age" />
 								<field name="department_id" />
@@ -67,6 +71,7 @@
 								<field name="grade_id" />
 								<field name="degree_id" />
 								<field name="basic_salary" />
+								<field name="appoint_id"  invisible="1"/>
 							</group>
 
 
