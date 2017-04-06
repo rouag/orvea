@@ -686,6 +686,7 @@ class HrTransfertSorting(models.Model):
                 line.hr_employee_transfert_id.action_done()
             rec.state = 'done'
 
+
 class HrTransfertSortingLine(models.Model):
     _name = 'hr.transfert.sorting.line'
     _description = u'‫طلبات النقل‬‬'
