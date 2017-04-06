@@ -119,7 +119,7 @@ class HrDecisionAppoint(models.Model):
     location_allowance_ids = fields.One2many('decision.appoint.allowance', 'location_decision_appoint_id', string=u'بدلات المنطقة')
     is_enterview_manager = fields.Boolean(string=u'مقابلة شخصية',related="type_appointment.enterview_manager")
     defferential_is_paied = fields.Boolean(string='defferential is paied', default=False)
-    activation_date = fields.Date(string='تاريخ التفعيل')
+    done_date = fields.Date(string='تاريخ التفعيل')
 
     @api.multi
     @api.onchange('type_appointment')
@@ -450,7 +450,7 @@ class HrDecisionAppoint(models.Model):
             self.employee_id.write({'basic_salary': self.basic_salary})
         else:
             self.employee_id.write({'basic_salary': 0.0})
-        self.activation_date = fields.Date.today()
+        self.done_date = fields.Date.today()
         self.state = 'done'
         # close last active appoint for the employee
         last_appoint = self.employee_id.decision_appoint_ids.search(
@@ -479,7 +479,7 @@ class HrDecisionAppoint(models.Model):
                                                       'salary_grid_detail_id': grid_id.id,
                                                       'date': fields.Date.from_string(fields.Date.today())
                                                       })
-        self.activation_date = fields.Date.today()
+        self.done_date = fields.Date.today()
         self.state = 'done'
         self.env['hr.holidays']._init_balance(self.employee_id)
         grade_id = int(self.emp_job_id.grade_id.code)
@@ -543,53 +543,26 @@ class HrDecisionAppoint(models.Model):
 
     @api.onchange('job_id')
     def _onchange_job_id(self):
-        for rec in self :
-            if rec.employee_id.is_member == True :
-                job_obj = self.env['hr.job'].search([('state', '=', 'unoccupied'),('name.members_job','=',True)])
-                if job_obj:
-                    rec.number_job = rec.job_id.number
-                    rec.code = rec.job_id.name.number
-                    rec.type_id = rec.job_id.type_id.id
-                    rec.far_age = rec.job_id.type_id.far_age
-                    rec.grade_id = rec.job_id.grade_id.id
-                    rec.department_id = rec.job_id.department_id.id
-                    location_allowance_ids = []
-                    for rec in rec.department_id.dep_side.allowance_ids:
-                        location_allowance_ids.append({'location_decision_appoint_id': rec.id,
+            self.number_job = self.job_id.number
+            self.code = self.job_id.name.number
+            self.type_id = self.job_id.type_id.id
+            self.far_age = self.job_id.type_id.far_age
+            self.grade_id = self.job_id.grade_id.id
+            self.department_id = self.job_id.department_id.id
+            location_allowance_ids = []
+            for rec in self.department_id.dep_side.allowance_ids:
+                location_allowance_ids.append({'location_decision_appoint_id': self.id,
                                                'allowance_id': rec.id,
                                                'compute_method': 'amount',
                                                'amount': 0.0})
-                        rec.location_allowance_ids = location_allowance_ids
-                        job_allowance_ids = []
-                        for rec in rec.job_id.serie_id.allowanse_ids:
-                            job_allowance_ids.append({'decision_appoint_id': rec.id,
+            self.location_allowance_ids = location_allowance_ids
+            job_allowance_ids = []
+            for rec in self.job_id.serie_id.allowanse_ids:
+                job_allowance_ids.append({'decision_appoint_id': self.id,
                                           'allowance_id': rec.id,
                                           'compute_method': 'amount',
                                           'amount': 0.0})
-                            rec.job_allowance_ids = job_allowance_ids
-            if rec.employee_id.is_member == False :
-                job_obj = self.env['hr.job'].search([('state', '=', 'unoccupied'),('name.members_job','=',True)])
-                if job_obj:
-                    rec.number_job = rec.job_id.number
-                    rec.code = rec.job_id.name.number
-                    rec.type_id = rec.job_id.type_id.id
-                    rec.far_age = rec.job_id.type_id.far_age
-                    rec.grade_id = rec.job_id.grade_id.id
-                    rec.department_id = rec.job_id.department_id.id
-                    location_allowance_ids = []
-                    for rec in rec.department_id.dep_side.allowance_ids:
-                        location_allowance_ids.append({'location_decision_appoint_id': rec.id,
-                                               'allowance_id': rec.id,
-                                               'compute_method': 'amount',
-                                               'amount': 0.0})
-                        rec.location_allowance_ids = location_allowance_ids
-                        job_allowance_ids = []
-                        for rec in rec.job_id.serie_id.allowanse_ids:
-                            job_allowance_ids.append({'decision_appoint_id': rec.id,
-                                          'allowance_id': rec.id,
-                                          'compute_method': 'amount',
-                                          'amount': 0.0})
-                            rec.job_allowance_ids = job_allowance_ids
+            self.job_allowance_ids = job_allowance_ids
 
     @api.onchange('degree_id')
     def _onchange_degree_id(self):
@@ -707,7 +680,6 @@ class DecisionAppointAllowance(models.Model):
     line_ids = fields.One2many('salary.grid.detail.allowance.city', 'allowance_id', string='النسب حسب المدينة')
 
 
-
     def get_salary_grid_id(self, employee_id, type_id, grade_id, degree_id, operation_date):
         '''
         @return:  two values value1: salary grid detail, value2: basic salary
@@ -741,9 +713,7 @@ class DecisionAppointAllowance(models.Model):
         else:
             basic_salary = employee_id.basic_salary + sum_increases_amount
         return salary_grid_id, basic_salary
-    
-    
-    
+
     @api.onchange('compute_method', 'amount', 'percentage')
     def onchange_get_value(self):
         allowance_city_obj = self.env['salary.grid.detail.allowance.city']
@@ -772,7 +742,7 @@ class DecisionAppointAllowance(models.Model):
             else:
                 raise ValidationError(_(u' الرجاء ادخال الدرجة  !'))
             grade_id = appoint_id.grade_id
-            salary_grids, basic_salary = self.get_salary_grid_id(employee,type_id, grade_id, degree_id, False)
+            salary_grids, basic_salary = self.get_salary_grid_id(employee, type_id, grade_id, degree_id, False)
             if not salary_grids:
                 raise ValidationError(_(u'لا يوجد سلم رواتب للموظف. !'))
         # compute

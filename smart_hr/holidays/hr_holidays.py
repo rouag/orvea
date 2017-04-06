@@ -7,6 +7,9 @@ from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 import datetime as dt
+from openerp.addons.smart_base.util.umalqurra import *
+from umalqurra.hijri_date import HijriDate
+from umalqurra.hijri import Umalqurra
 
 
 class HrHolidays(models.Model):
@@ -63,6 +66,8 @@ class HrHolidays(models.Model):
                                default="other", string=u'السبب ')
     date_from = fields.Date(string=u'التاريخ من ', default=fields.Datetime.now)
     date_to = fields.Date(string=u'التاريخ الى')
+    text_resolution = fields.Html(string='نص القرار')
+    is_decision  = fields.Boolean(string=u'نص القرار',default=False)
     duration = fields.Integer(string=u'مدتها' , required=1,default=1)
     holiday_status_id = fields.Many2one('hr.holidays.status', string=u'نوع الأجازة', default=lambda self: self.env.ref('smart_hr.data_hr_holiday_status_normal'),)
     spend_advanced_salary = fields.Boolean(string=u'طلب صرف راتب مسبق', related='holiday_status_id.spend_advanced_salary')
@@ -162,8 +167,8 @@ class HrHolidays(models.Model):
     salary_number = fields.Integer(string=u'عدد الرواتب')
     is_holidays_specialist_user = fields.Boolean(string='Is Current User holidays specialist', compute='_is_holidays_specialist_user')
     advanced_salary_is_paied = fields.Boolean('advanced_salary_is_paied', default=False)
-    activation_date = fields.Date(string='تاريخ التفعيل')
-
+    decission_id  = fields.Many2one('hr.decision', string=u'القرارات',)
+    done_date = fields.Date(string='تاريخ التفعيل')
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
@@ -285,6 +290,19 @@ class HrHolidays(models.Model):
                     rec.hide_with_advanced_salary = False
                 else:
                     rec.hide_with_advanced_salary = True
+    
+    def _get_hijri_date(self, date, separator):
+        '''
+        convert georging date to hijri date
+        :return hijri date as a string value
+        '''
+        if date:
+            date = fields.Date.from_string(date)
+            hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
+            return str(int(hijri_date.year)) + separator + str(int(hijri_date.month)).zfill(2) + separator + str(int(hijri_date.day)).zfill(2)
+        return None
+    
+  
 
     @api.onchange('holiday_status_id')
     def onchange_holiday_status_id(self):
@@ -303,8 +321,25 @@ class HrHolidays(models.Model):
                     res['domain'] = {'entitlement_type': [('id', 'in', domain_male)]}
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional'):
             res['domain'] = {'entitlement_type': [('code', '=', 'accompaniment_exceptional')]}
+           
+        
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_sport'):
             res['domain'] = {'entitlement_type': [('code', '=', 'sport')]}
+            self.text_resolution = self.env.ref('smart_hr.data_leave_sport').text
+        if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_maternity'):
+            self.text_resolution = self.env.ref('smart_hr.data_leave_motherhood').text
+#         
+#         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_normal'):
+#             text =self.env.ref('smart_hr.data_normal_leave').text
+#             print"teeeeeext",text
+#             type ='holidays'
+#             employee_id = self.employee_id
+#             date = self.date
+#             self.text_resolution = self.env['hr.decision'].replace_text(employee_id, date,text,False)
+#             print"ssssssssssssssssssss", self.text_resolution
+#          #   self.text_resolution =  self.env['hr.decision'].replace_text(self.employee_id,self.medical_report_date, self.env.ref('smart_hr.data_normal_leave'), 'holidays').text
+#            # self.text_resolution = self.env.ref('smart_hr.data_normal_leave').text
+
         self.entitlement_type = False
         return res
 
@@ -385,6 +420,43 @@ class HrHolidays(models.Model):
 #                                                                                     'periode': en.periode,
 #                                                                                     'entitlement_id':en.id})
 
+
+
+
+    @api.multi
+    def open_decission(self):
+        decision_obj= self.env['hr.decision']
+        if self.decission_id:
+            decission_id = self.decission_id.id           
+        else :
+            decision_type_id = 1
+            decision_date = fields.Date.today() # new date
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_normal').id:
+                decision_type_id = self.env.ref('smart_hr.data_normal_leave').id
+            # create decission
+            decission_val={
+                'name': self.env['ir.sequence'].get('hr.holidays.seq'),
+                'decision_type_id':decision_type_id,
+                'date':decision_date,
+                'employee_id' :self.employee_id.id }
+            decision = decision_obj.create(decission_val)
+            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'holidays')
+            self.is_decision =True
+            decission_id = decision.id
+            self.decission_id =  decission_id
+        return {
+            'name': _(u'قرار إجازة'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'hr.decision',
+            'view_id': self.env.ref('smart_hr.hr_decision_form').id,
+            'type': 'ir.actions.act_window',
+            'res_id': decission_id,               
+            'target': 'new'
+            }
+
+
+
     @api.multi
     def smart_action_done(self):
         right_entitlement = False
@@ -421,7 +493,6 @@ class HrHolidays(models.Model):
                 open_period = self.create_holiday_periode(self.employee_id, self.holiday_status_id, right_entitlement)
                 open_period.active = True
                 if stock_line:
-                    
                     open_period.holiday_stock = stock_line.holidays_available_stock
                     stock_line.period_id = open_period.id
                 else:
@@ -516,10 +587,12 @@ class HrHolidays(models.Model):
                 normal_stock_line.token_holidays_sum += self.duration
             if normal_open_period:
                 normal_open_period.holiday_stock -= self.duration
+        
+     
 
         self.num_decision = self.env['ir.sequence'].get('hr.decision.sequence')
         self.date_decision = fields.Date.today()
-        self.activation_date = fields.Date.today()
+        self.done_date = fields.Date.today()
         self.state = 'done'
 
 

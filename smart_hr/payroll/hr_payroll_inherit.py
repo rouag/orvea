@@ -84,7 +84,7 @@ class HrPayslip(models.Model):
         line_ids = []
         # case 1: احتساب الأثر المالي لهذا الشهر
         # فروقات النقل
-        line_ids += self.get_difference_transfert(self.date_from, self.date_to, self.employee_id, False)
+        # يتم احتساب الأثار المالي للنقل في نفس حالة التعين
         # فروقات التعين
         line_ids += self.get_difference_decision_appoint(self.date_from, self.date_to, self.employee_id, False)
         # فروقات التكليف
@@ -132,50 +132,6 @@ class HrPayslip(models.Model):
         return line_ids
 
     @api.multi
-    def get_difference_transfert(self, date_from, date_to, employee_id, for_last_month):
-        self.ensure_one()
-        line_ids = []
-        hr_setting = self.env['hr.setting'].search([], limit=1)
-        if hr_setting:
-            domain = [('create_date', '>=', date_from),
-                      ('create_date', '<=', date_to),
-                      ('employee_id', '=', employee_id.id),
-                      ('state', '=', 'done')]
-            name = ''
-            if for_last_month:
-                domain.append(('activation_date', '>=', date_from))
-                domain.append(('activation_date', '<=', date_to))
-                name = u' للشهر الفارط '
-            transfert_ids = self.env['hr.employee.transfert'].search(domain)
-            for transfert in transfert_ids:
-                # get تفاصيل سلم الرواتب
-                grid_id, basic_salary = transfert.employee_id.get_salary_grid_id(transfert.create_date)
-                if grid_id:
-                    # 1- بدل طبيعة العمل
-                    amount = (hr_setting.allowance_proportion * basic_salary)
-                    if amount > 0:
-                        amount /= 100
-                    vals = {'name': hr_setting.allowance_job_nature.name + name,
-                            'employee_id': transfert.employee_id.id,
-                            'number_of_days': 0,
-                            'number_of_hours': 0.0,
-                            'amount': amount,
-                            'type': 'transfert'}
-                    line_ids.append(vals)
-                    # 4- نسبة الراتب
-                    if transfert.salary_proportion > 0:
-                        amount = (((100 - transfert.salary_proportion) * basic_salary) / 100) * -1
-                        if amount < 0:
-                            vals = {'name': u'فرق الراتب التي توفرها الجهة' + name,
-                                    'employee_id': transfert.employee_id.id,
-                                    'number_of_days': 0,
-                                    'number_of_hours': 0.0,
-                                    'amount': amount,
-                                    'type': 'transfert'}
-                            line_ids.append(vals)
-        return line_ids
-
-    @api.multi
     def get_difference_decision_appoint(self, date_from, date_to, employee_id, for_last_month):
         self.ensure_one()
         line_ids = []
@@ -186,22 +142,20 @@ class HrPayslip(models.Model):
                   ('date_direct_action', '<=', date_to),
                   ('employee_id', '=', employee_id.id)]
         if for_last_month:
-            domain.append(('activation_date', '>=', date_from))
-            domain.append(('activation_date', '<=', date_to))
+            domain.append(('done_date', '>=', date_from))
+            domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         last_decision_appoint_ids = self.env['hr.decision.appoint'].search(domain, order="date_direct_action desc")
         for decision_appoint in last_decision_appoint_ids:
-            grid_id, basic_salary = decision_appoint.employee_id.get_salary_grid_id(decision_appoint.date_direct_action)
-            if grid_id:
-                for allowance in decision_appoint.type_appointment.hr_allowance_appoint_id:
-                    amount = allowance.salary_number * basic_salary
-                    vals = {'name': ' فروقات ' + decision_appoint.type_appointment.name + ' : ' + allowance.hr_allowance_type_id.name + name,
-                            'employee_id': decision_appoint.employee_id.id,
-                            'number_of_days': 0,
-                            'number_of_hours': 0.0,
-                            'amount': amount,
-                            'type': 'appoint'}
-                    line_ids.append(vals)
+            for allowance in decision_appoint.decision_apoint_allowance_ids:
+                amount = allowance.amount
+                vals = {'name': decision_appoint.type_appointment.name + ' : ' + allowance.allowance_id.name + name,
+                        'employee_id': decision_appoint.employee_id.id,
+                        'number_of_days': 0,
+                        'number_of_hours': 0.0,
+                        'amount': amount,
+                        'type': 'appoint'}
+                line_ids.append(vals)
         return line_ids
 
     @api.multi
@@ -214,8 +168,8 @@ class HrPayslip(models.Model):
                   ('employee_id', '=', employee_id.id),
                   ('state', '=', 'done')]
         if for_last_month:
-            domain.append(('activation_date', '>=', date_from))
-            domain.append(('activation_date', '<=', date_to))
+            domain.append(('done_date', '>=', date_from))
+            domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         assign_ids = self.env['hr.employee.commissioning'].search(domain)
         for assign_id in assign_ids:
@@ -314,8 +268,8 @@ class HrPayslip(models.Model):
                   ('state', '=', 'done')
                   ]
         if for_last_month:
-            domain.append(('activation_date', '>=', date_from))
-            domain.append(('activation_date', '<=', date_to))
+            domain.append(('done_date', '>=', date_from))
+            domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         scholarship_ids = self.env['hr.scholarship'].search(domain)
         for scholarship_id in scholarship_ids:
@@ -362,8 +316,8 @@ class HrPayslip(models.Model):
                   ('employee_id', '=', employee_id.id),
                   ]
         if for_last_month:
-            domain.append(('activation_date', '>=', date_from))
-            domain.append(('activation_date', '<=', date_to))
+            domain.append(('done_date', '>=', date_from))
+            domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         lend_ids = self.env['hr.employee.lend'].search(domain)
         for lend_id in lend_ids:
@@ -500,8 +454,8 @@ class HrPayslip(models.Model):
         domain = [('employee_id', '=', employee_id.id),
                   ('state', '=', 'done')]
         if for_last_month:
-            domain.append(('activation_date', '>=', date_from))
-            domain.append(('activation_date', '<=', date_to))
+            domain.append(('done_date', '>=', date_from))
+            domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         holidays_ids = self.env['hr.holidays'].search(domain)
         holiday_status_maternity = self.env.ref('smart_hr.data_hr_holiday_status_maternity')
@@ -602,8 +556,8 @@ class HrPayslip(models.Model):
                   ]
         name = ''
         if for_last_month:
-            domain.append(('activation_date', '>=', date_from))
-            domain.append(('activation_date', '<=', date_to))
+            domain.append(('done_date', '>=', date_from))
+            domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         # get  started and ended suspension in current month
         suspension_ids = self.env['hr.suspension'].search(domain)
@@ -628,8 +582,8 @@ class HrPayslip(models.Model):
                   ('suspension_end_id', '=', False)
                   ]
         if for_last_month:
-            domain.append(('activation_date', '>=', date_from))
-            domain.append(('activation_date', '<=', date_to))
+            domain.append(('done_date', '>=', date_from))
+            domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         suspension_ids = self.env['hr.suspension'].search(domain)
         domain = [('suspension_date', '>=', date_from),
@@ -640,8 +594,8 @@ class HrPayslip(models.Model):
                   ('suspension_end_id.state', '=', 'done'),
                   ]
         if for_last_month:
-            domain.append(('activation_date', '>=', date_from))
-            domain.append(('activation_date', '<=', date_to))
+            domain.append(('done_date', '>=', date_from))
+            domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         suspension_ids += self.env['hr.suspension'].search(domain)
         for suspension in suspension_ids:
@@ -659,8 +613,8 @@ class HrPayslip(models.Model):
                   ('suspension_end_id', '=', False)
                   ]
         if for_last_month:
-            domain.append(('activation_date', '>=', date_from))
-            domain.append(('activation_date', '<=', date_to))
+            domain.append(('done_date', '>=', date_from))
+            domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         suspension_ids = self.env['hr.suspension'].search(domain)
         domain = [('suspension_date', '<', date_from),
@@ -670,8 +624,8 @@ class HrPayslip(models.Model):
                   ('suspension_end_id.state', '=', 'done'),
                   ]
         if for_last_month:
-            domain.append(('activation_date', '>=', date_from))
-            domain.append(('activation_date', '<=', date_to))
+            domain.append(('done_date', '>=', date_from))
+            domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         suspension_ids += self.env['hr.suspension'].search(domain)
         for suspension in suspension_ids:
@@ -691,8 +645,8 @@ class HrPayslip(models.Model):
                   ('suspension_end_id.state', '=', 'done'),
                   ]
         if for_last_month:
-            domain.append(('activation_date', '>=', date_from))
-            domain.append(('activation_date', '<=', date_to))
+            domain.append(('done_date', '>=', date_from))
+            domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         suspension_ids = self.env['hr.suspension'].search(domain)
         for suspension in suspension_ids:
@@ -778,8 +732,8 @@ class HrPayslip(models.Model):
                   ]
         name = ''
         if for_last_month:
-            domain.append(('activation_date', '>=', date_from))
-            domain.append(('activation_date', '<=', date_to))
+            domain.append(('done_date', '>=', date_from))
+            domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         termination_ids = self.env['hr.termination'].search(domain)
         for termination in termination_ids:
@@ -853,8 +807,8 @@ class HrPayslip(models.Model):
                   ]
         name = ''
         if for_last_month:
-            domain.append(('activation_date', '>=', date_from))
-            domain.append(('activation_date', '<=', date_to))
+            domain.append(('done_date', '>=', date_from))
+            domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         difference_history_ids = self.env['hr.payslip.difference.history'].search(domain)
         for difference_history in difference_history_ids:

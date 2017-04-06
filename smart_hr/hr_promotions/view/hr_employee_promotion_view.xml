@@ -39,7 +39,7 @@
 							<group>
 								<field name="employee_id" />
 								<field name="name" readonly="1" attrs="{'invisible': [('state', '=', 'new')]}" />
-								<field name="activation_date" />
+								<field name="done_date" />
 							</group>
 							<group>
 								<field name="city_fovorite" options="{'no_create': True}"

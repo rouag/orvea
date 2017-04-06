@@ -81,12 +81,12 @@ class HrEmployeeTransfert(models.Model):
     is_paied = fields.Boolean(string='is paied', default=False)
     defferential_is_paied = fields.Boolean(string='defferential is paied', default=False)
     payslip_id = fields.Many2one('hr.payslip')
-    activation_date = fields.Date(string='تاريخ التفعيل')
+    done_date = fields.Date(string='تاريخ التفعيل')
 
     @api.multi
     @api.onchange('transfert_nature')
     def onchange_transfert_nature(self):
-        #TODO: 
+        #TODO: ???
         res = {}
         if self.transfert_nature == 'internal_transfert' or self.transfert_nature == 'external_transfert_out' :
             employee_search_ids = self.env['hr.employee'].search([('employee_state','=','employee')])
@@ -325,7 +325,7 @@ class HrEmployeeTransfert(models.Model):
             recruiter_id._onchange_job_id()
             recruiter_id._onchange_degree_id()
             recruiter_id.action_done()
-            rec.activation_date = fields.Date.today()
+            rec.done_date = fields.Date.today()
             rec.state = 'done'
 
             # create history_line
