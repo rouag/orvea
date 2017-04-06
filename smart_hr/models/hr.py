@@ -170,18 +170,21 @@ class HrEmployee(models.Model):
             else:
                 years = today_date.year - birthday.year
             if today_date.month < birthday.month:
-                months = 12 - (birthday.month - today_date.month)
+                if today_date.day < birthday.day:
+                    months = 12 - (birthday.month - today_date.month)-1
+                else:
+                    months = 12 - (birthday.month - today_date.month)
             else:
-                months = today_date.month - birthday.month
+                if today_date.day < birthday.day and today_date.month != birthday.month:
+                    months = today_date.month - birthday.month-1
+                else:
+                    months = today_date.month - birthday.month
             if today_date.month == birthday.month:
                 if today_date.day >= birthday.day:
                     days = today_date.day - birthday.day
                 else:
                     days = birthday.day - today_date.day
             else:
-                if today_date.month >= birthday.month:
-                    days = (30 - today_date.day) + birthday.day
-                else:
                     days = (30 - birthday.day) + today_date.day
             res = str(years) + " سنة و" + str(months) + " شهر و " + str(days) + "يوم"
             rec.age_display = res

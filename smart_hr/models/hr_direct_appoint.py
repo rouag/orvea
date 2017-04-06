@@ -75,7 +75,9 @@ class HrDirectAppoint(models.Model):
         if self.type == 'transfer':
             self.appoint_id.transfer_id.done_date = self.date_direct_action
         if self.type == 'promotion':
-            self.appoint_id.promotion_id.done_date = self.date_direct_action
+            promotion_id = self.env['hr.promotion.employee.demande'].search([('employee_id', '=', self.employee_id.id),('state', '=', 'done')])
+            if promotion_id:
+                promotion_id.done_date = self.date_direct_action
         self.state = 'done'
 
     @api.onchange('employee_id','type')

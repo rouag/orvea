@@ -258,8 +258,8 @@ class HrEmployeeTransfert(models.Model):
             # create hr.decision.appoint object
             # with decision file
             if rec.new_specific_id == rec.specific_id:
-                if not rec.decision_number:
-                    raise ValidationError(u"لم يتم إصدار قرار بشأن النقل.")
+#                 if not rec.decision_number:
+#                     raise ValidationError(u"لم يتم إصدار قرار بشأن النقل.")
                 vals = {
                     'type_appointment': self.env.ref('smart_hr.data_hr_recrute_from_transfert').id,
                     'employee_id': rec.employee_id.id,
@@ -272,8 +272,8 @@ class HrEmployeeTransfert(models.Model):
                     
                 }
             else:
-                if not rec.speech_number:
-                    raise ValidationError(u"لم يتم خطاب قرار بشأن النقل.")
+#                 if not rec.speech_number:
+#                     raise ValidationError(u"لم يتم خطاب قرار بشأن النقل.")
                 # with speech file
                 vals = {
                     'type_appointment': self.env.ref('smart_hr.data_hr_recrute_from_transfert').id,
