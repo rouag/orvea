@@ -190,11 +190,11 @@ class hrHolidaysCancellation(models.Model):
     @api.one
     def button_refuse(self):
         for cancellation in self:
-            cancellation.state = 'draft'
+            cancellation.state = 'refuse'
                 # send notification for requested the DM
             self.env['base.notification'].create({'title': u'إشعار برفض إلغاء أو قطع إجازة',
-                                                  'message': u' '+self.employee_id.name +u'لقد تم الرفض من قبل ',
-                                                  'user_id': self.employee_id.parent_id.user_id.id,
+                                                  'message': u' '+ self.env.user.name +u'لقد تم الرفض من قبل ',
+                                                  'user_id': self.employee_id.user_id.id,
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                   'res_model':'hr.holidays.cancellation',
                                                   'res_id': self.id,
