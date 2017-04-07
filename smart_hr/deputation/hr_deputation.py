@@ -119,7 +119,7 @@ class HrDeputation(models.Model):
         ('refuse', u'مرفوضة')
     ], string=u'حالة', default='draft',)
     task_name = fields.Char(string=u' المهمة', required=1)
-    duration = fields.Integer(string=u'المدة', compute='_compute_duration', readonly=1)
+    duration = fields.Integer(string=u'المدة')
 
     member_deputation = fields.Selection([
         ('member', u'انتداب عضو'),
@@ -214,6 +214,7 @@ class HrDeputation(models.Model):
             if ext_dep_duration + self.duration > external_type_id_balance:
                 self.external_deputation_balance_override = True
         return {'warning': warning}
+    
     @api.one
     @api.depends('duration')
     def _compute_ministre_report(self):
@@ -322,9 +323,19 @@ class HrDeputation(models.Model):
         for deputation in self:
             deputation.state = 'refuse'
 
-    @api.one
-    @api.depends('date_from', 'date_to')
-    def _compute_duration(self):
+    @api.constrains('date_from', 'date_to')
+    @api.onchange('date_from', 'date_to')
+    def onchange_date_to(self):
+        if self.date_from:
+            if fields.Date.from_string(self.date_from).weekday() in [4, 5]:
+                raise ValidationError(u"هناك تداخل في تاريخ البدء مع عطلة نهاية الاسبوع  ")
+            if self.env['hr.smart.utils'].public_holiday_intersection(self.date_from):
+                raise ValidationError(u"هناك تداخل في تاريخ البدء مع  عطلة او عيد  ")
+        if self.date_to:
+            if fields.Date.from_string(self.date_to).weekday() in [4, 5]:
+                raise ValidationError(u"هناك تداخل في تاريخ الإنتهاء مع عطلة نهاية الاسبوع")
+            if self.env['hr.smart.utils'].public_holiday_intersection(self.date_from):
+                raise ValidationError(u"هناك تداخل في تاريخ الإنتهاء مع  عطلة او عيد  ")        
         if self.date_from and self.date_to:
             self.duration = self.env['hr.smart.utils'].compute_duration(self.date_from, self.date_to)
 
