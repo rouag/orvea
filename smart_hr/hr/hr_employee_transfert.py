@@ -92,13 +92,11 @@ class HrEmployeeTransfert(models.Model):
         res = {}
         if self.transfert_nature == 'internal_transfert' or self.transfert_nature == 'external_transfert_out' :
             employee_search_ids = self.env['hr.employee'].search([('employee_state','=','employee')])
-            employee_ids = [rec.id for rec in employee_search_ids]
-            res['domain'] = {'employee_id': [('id', 'in', employee_ids)]}
+            res['domain'] = {'employee_id': [('id', 'in', employee_search_ids.ids)]}
             return res
         if self.transfert_nature == 'external_transfert_in':
             employee_search_ids = self.env['hr.employee'].search([('employee_state','=','new')])
-            employee_ids = [rec.id for rec in employee_search_ids]
-            res['domain'] = {'employee_id': [('id', 'in', employee_ids)]}
+            res['domain'] = {'employee_id': [('id', 'in', employee_search_ids.ids)]}
             return res
         
     @api.multi
