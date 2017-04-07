@@ -177,8 +177,6 @@ class HrPayslip(models.Model):
             date_from = fields.Date.from_string(date_from)
             assign_date_to = fields.Date.from_string(assign_id.date_to)
             date_to = fields.Date.from_string(date_to)
-            print 'assign_date_from, date_from', assign_date_from, date_from
-            print 'assign_date_to, date_to', assign_date_to, date_to
             duration_in_month = 0
             res = {}
             amount_allowance = 0.0
@@ -189,7 +187,6 @@ class HrPayslip(models.Model):
                 res = self.env['hr.smart.utils'].compute_duration_difference(assign_id.employee_id, assign_date_from, assign_date_to, True, True, True)
             if assign_date_from >= date_from and assign_date_to >= date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(assign_id.employee_id, assign_date_from, date_to, True, True, True)
-            print '--res----', res
             if len(res) == 1:
                 res = res[0]
                 duration_in_month = res['days']
@@ -243,9 +240,7 @@ class HrPayslip(models.Model):
         self.ensure_one()
         line_ids = []
         name = ''
-        domain = [('date_to', '>=', date_from),
-                  ('date_to', '<=', date_to),
-                  ('employee_id', '=', employee_id.id),
+        domain = [('employee_id', '=', employee_id.id),
                   ('state', '=', 'done')
                   ]
         if for_last_month:
@@ -253,39 +248,79 @@ class HrPayslip(models.Model):
             domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         scholarship_ids = self.env['hr.scholarship'].search(domain)
+        final_retirement_amount = 0.0
+        allow_exception_amount = 0.0
         for scholarship_id in scholarship_ids:
-            grid_id, basic_salary = scholarship_id.employee_id.get_salary_grid_id(scholarship_id.date_to)
-            if grid_id:
-                # 1) البدلات المستثناة
-                alowances_in_grade_id = [rec.allowance_id for rec in grid_id.allowance_ids]
+            # overlaped days in current month
+            scholarship_date_from = fields.Date.from_string(scholarship_id.date_from)
+            date_from = fields.Date.from_string(date_from)
+            scholarship_date_to = fields.Date.from_string(scholarship_id.date_to)
+            date_to = fields.Date.from_string(date_to)
+            duration_in_month = 0
+            retirement_amount = 0.0
+            res = {}
+            if date_from >= scholarship_date_from and scholarship_date_to >= date_to:
+                res = self.env['hr.smart.utils'].compute_duration_difference(scholarship_id.employee_id, date_from, date_to, True, True, True)
+            if scholarship_date_from >= date_from and scholarship_date_to <= date_to:
+                res = self.env['hr.smart.utils'].compute_duration_difference(scholarship_id.employee_id, scholarship_date_from, scholarship_date_to, True, True, True)
+            if scholarship_date_from >= date_from and scholarship_date_to >= date_to:
+                res = self.env['hr.smart.utils'].compute_duration_difference(scholarship_id.employee_id, scholarship_date_from, date_to, True, True, True)
+            if len(res) == 1:
+                res = res[0]
+                duration_in_month = res['days']
+                grid_id = res['grid_id']
+                basic_salary = res['basic_salary']
+                retirement_amount = duration_in_month * basic_salary / 30.0 * grid_id.retirement / 100.0
+                basic_salary_after_retirement = duration_in_month * basic_salary / 30.0 - retirement_amount
+                final_retirement_amount += basic_salary_after_retirement - ((basic_salary_after_retirement * scholarship_id.scholarship_type.salary_percent) / 100.0)
+                final_retirement_amount *= -1
+                # البدلات المستثناة
+                alowances_in_grid_id = [rec.allowance_id for rec in grid_id.allowance_ids]
                 for allowance in scholarship_id.scholarship_type.hr_allowance_type_id:
                     # check if the allowance in employe's salary_grade_id
-                    if allowance in alowances_in_grade_id:
-                        amount = 0.0
+                    if allowance in alowances_in_grid_id:
                         for allow in grid_id.allowance_ids:
                             if allow.allowance_id == allowance:
-                                amount = allow.get_value(scholarship_id.employee_id.id)
+                                allow_exception_amount = allow.get_value(scholarship_id.employee_id.id)
                                 break
-                        if amount > 0:
-                            vals = {'name': allowance.name + name,
-                                    'employee_id': scholarship_id.employee_id.id,
-                                    'number_of_days': 0.0,
-                                    'number_of_hours': 0.0,
-                                    'amount': amount * -1,
-                                    'type': 'scholarship'}
-                            line_ids.append(vals)
-                # 2) نسبة الراتب بعد حسم التقاعد
-                retirement_amount = basic_salary * grid_id.retirement / 100.0
-                basic_salary_after_retirement = basic_salary - retirement_amount
-                amount = basic_salary_after_retirement - ((basic_salary_after_retirement * scholarship_id.scholarship_type.salary_percent) / 100.0)
-                if amount > 0:
-                    vals = {'name': u'نسبة الراتب بعد حسم التقاعد' + name,
-                            'employee_id': scholarship_id.employee_id.id,
-                            'number_of_days': 0.0,
-                            'number_of_hours': 0.0,
-                            'amount': amount * -1,
-                            'type': 'scholarship'}
-                    line_ids.append(vals)
+                allow_exception_amount *= -1
+            else:
+                for rec in res:
+                    grid_id = rec['grid_id']
+                    basic_salary = rec['basic_salary']
+                    days = rec['days']
+                    duration_in_month += days
+                    retirement_amount = days * basic_salary / 30.0 * grid_id.retirement / 100.0
+                    basic_salary_after_retirement = days * basic_salary / 30.0 - retirement_amount
+                    final_retirement_amount += basic_salary_after_retirement - ((basic_salary_after_retirement * scholarship_id.scholarship_type.salary_percent) / 100.0)
+                    # البدلات المستثناة
+                    alowances_in_grid_id = [allow.allowance_id for allow in grid_id.allowance_ids]
+                    for allowance in scholarship_id.scholarship_type.hr_allowance_type_id:
+                        # check if the allowance in employe's salary_grade_id
+                        if allowance in alowances_in_grid_id:
+                            for allow in grid_id.allowance_ids:
+                                if allow.allowance_id == allowance:
+                                    allow_exception_amount += days * allow.get_value(scholarship_id.employee_id.id) / 100.0
+                                    break
+                final_retirement_amount *= -1
+            # 1) البدلات المستثناة
+            if allow_exception_amount < 0:
+                vals = {'name': '' + allowance.name + name,
+                        'employee_id': scholarship_id.employee_id.id,
+                        'number_of_days': duration_in_month,
+                        'number_of_hours': 0.0,
+                        'amount': allow_exception_amount,
+                        'type': 'scholarship'}
+                line_ids.append(vals)
+            # 2) نسبة الراتب بعد حسم التقاعد
+            if final_retirement_amount < 0:
+                vals = {'name': u'نسبة الراتب بعد حسم التقاعد' + name,
+                        'employee_id': scholarship_id.employee_id.id,
+                        'number_of_days': duration_in_month,
+                        'number_of_hours': 0.0,
+                        'amount': final_retirement_amount,
+                        'type': 'scholarship'}
+                line_ids.append(vals)
         return line_ids
 
     @api.multi
@@ -303,6 +338,7 @@ class HrPayslip(models.Model):
         lend_ids = self.env['hr.employee.lend'].search(domain)
         amount_retirement = 0.0
         allowance_amount = 0.0
+        amount = 0.0
         for lend_id in lend_ids:
             # overlaped days in current month
             lend_date_from = fields.Date.from_string(lend_id.date_from)
@@ -360,7 +396,7 @@ class HrPayslip(models.Model):
                         allowance_amount *= -1
 
             # 1 الراتب
-            if grid_id and duration_in_month and amount < 0:
+            if amount < 0:
                 vals = {'name': 'نسبة الراتب' + name,
                         'employee_id': lend_id.employee_id.id,
                         'number_of_days': duration_in_month,
@@ -445,7 +481,6 @@ class HrPayslip(models.Model):
                 for rec in holiday_status_id.percentages:
                     if entitlement_type == rec.entitlement_id.entitlment_category and rec.month_from <= months_from_holiday_start <= rec.month_to:
                         amount = (duration_in_month * (basic_salary / 30) * (100 - rec.salary_proportion)) / 100.0
-                        print '--amount--', amount
                         if holiday_status_maternity == holiday_status_id:
                             retirement_amount = basic_salary * grid_id.retirement / 100.0
                             amount = ((basic_salary - retirement_amount) * (100 - rec.salary_proportion)) / 100.0
