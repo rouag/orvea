@@ -352,7 +352,7 @@
 								<br></br>
 								<field name="line_ids" string=" طلبات النقل"
 									attrs="{'invisible':[('state', 'not in', ['new'])]}" options="{'no_create': True}">
-									<tree editable="bottom" colors="red:is_conflected==True;">
+									<tree editable="bottom" colors="red:is_conflected==True;" create="false">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
@@ -361,8 +361,6 @@
 										<field name="age" />
 										<field name="last_evaluation_result" readonly="1" />
 										<field name="is_conflected" invisible="1" />
-
-
 									</tree>
 								</field>
 							</page>
