@@ -24,6 +24,7 @@
 					<field name="name" />
 					<field name="decision_type_id" />
 					<field name="create_date" string="تاريخ الإنشاء" />
+					<field name="state" />
 				</tree>
 			</field>
 		</record>
@@ -34,6 +35,11 @@
 			<field name="type">form</field>
 			<field name="arch" type="xml">
 				<form string="القرارات">
+					<header>
+						<button name="button_done" string="إعتماد" type="object" states="draft" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
+						<field name="state" widget="statusbar"
+							statusbar_visible="draft,done,cancel" />
+					</header>
 					<sheet>
 						<group>
 							<group>

@@ -16,5 +16,6 @@ from . import sanction
 from . import deputation
 from . import overtime
 from . import hr_scholarship
+from . import hr_decision
 from . import parser
 
