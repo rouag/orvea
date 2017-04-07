@@ -107,7 +107,7 @@ class HrDeputation(models.Model):
         ('external', u' خارجى ')], string=u'إنتداب', default='internal')
     # city_id = fields.Many2one('res.city', string=u'المدينة')
     category_id = fields.Many2one('hr.deputation.category', string=u'فئة التصنيف')
-    country_ids = fields.Many2one('res.country', string=u'البلاد')
+    country_ids = fields.Many2one('hr.country.city', string=u'البلاد'  ) 
     state = fields.Selection([
         ('draft', u'طلب'),
         ('audit', u'دراسة الطلب'),
@@ -130,6 +130,24 @@ class HrDeputation(models.Model):
     external_deputation_balance_override = fields.Boolean(string=u"تجاوز رصيد الانتداب الخارجي")
     is_paied = fields.Boolean(string='is paied', default=False)
     payslip_id = fields.Many2one('hr.payslip')
+
+#     @api.onchange('category_id')
+#     def onchange_category_id(self):
+#         res = []
+#         if  self.category_id :
+#             category_search_ids = self.env['hr.deputation.category'].search([('id', '=' , self.category_id.id)]).country_city_ids
+#             for rec in category_search_ids :
+#                 self.country_ids =rec.id
+#                 print"category_search_ids",category_search_ids
+# #             result_employee_ids = list(minus_employee_ids)
+# #             print"result_employee_ids",result_employee_ids
+# #             res = {'country_ids': [('id', 'in', result_employee_ids.country_id)]}
+# #             return res
+# #             
+# #             print"category_search_ids",category_search_ids
+# #             res.update({'domain': {'country_ids': [('id', 'in', category_search_ids.country_id.id)]}})
+# #         return res
+          
 
     @api.onchange('member_deputation')
     def onchange_member_deputation(self):
@@ -402,13 +420,13 @@ class HrDeputation(models.Model):
 
 class HrDeputationCategory(models.Model):
     _name = 'hr.deputation.category'
-    
-    category = fields.Selection([
-        ('high', u'مرتفعة'),
-        ('a', u'أ'),
-        ('b', u'ب'),
-        ('c', u'ج'),
-    ], string=u'الفئات', default='c')
+     
+#     category = fields.Selection([
+#         ('high', u'مرتفعة'),
+#         ('a', u'أ'),
+#         ('b', u'ب'),
+#         ('c', u'ج'),
+#     ], string=u'الفئات', default='c')
     country_city_ids = fields.One2many('hr.country.city', 'duputation_category_id', string=u'البلاد')
     name = fields.Char(string='المسمى', required=1)
 

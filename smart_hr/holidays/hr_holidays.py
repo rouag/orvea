@@ -427,7 +427,7 @@ class HrHolidays(models.Model):
     def open_decission(self):
         decision_obj= self.env['hr.decision']
         if self.decission_id:
-            decission_id = self.decission_id.id           
+            decission_id = self.decission_id.id
         else :
             decision_type_id = 1
             decision_date = fields.Date.today() # new date
@@ -753,7 +753,7 @@ class HrHolidays(models.Model):
                     'view_type': 'form',
                     'view_mode': 'form',
                     'res_model': 'hr.holidays.cancellation',
-                    'view_id': self.env.ref('smart_hr.hr_holidays_cancellation_mine_form').id,
+                    'view_id': self.env.ref('smart_hr.hr_holidays_cancellation_employee_form').id,
                     'type': 'ir.actions.act_window',
                     'res_id': holiday_cancellation_id.id,
                 }
@@ -798,7 +798,7 @@ class HrHolidays(models.Model):
                     'view_type': 'form',
                     'view_mode': 'form',
                     'res_model': 'hr.holidays.cancellation',
-                    'view_id': self.env.ref('smart_hr.hr_holidays_cancellation_mine_form').id,
+                    'view_id': self.env.ref('smart_hr.hr_holidays_cut_employee_form').id,
                     'type': 'ir.actions.act_window',
                     'res_id': holiday_cancellation_id.id,
                 }
@@ -869,7 +869,6 @@ class HrHolidays(models.Model):
     @api.onchange('duration', 'date_from')
     @api.constrains('duration')
     def onchange_duration_min(self):
-        self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration - 1)
 #         maximum_minimum duration test
         prev_min_holidays_duration = self.compute_prev_min_holidays(self.employee_id, self.holiday_status_id, self.date_from)
         if self.duration > self.holiday_status_id.maximum_minimum and self.duration < self.holiday_status_id.minimum:
@@ -886,6 +885,7 @@ class HrHolidays(models.Model):
         prev_min_holidays_duration = self.compute_prev_min_holidays(self.employee_id, self.holiday_status_id, self.date_from)
 #         compute  duration and date_to
         date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration - 1)
+        self.date_to = date_to
         if self.public_holiday_intersection(date_to):
             duration = self.duration - self.public_holiday_intersection(date_to)
             date_to = fields.Date.from_string(self.date_from) + timedelta(days=duration - 1)
@@ -1312,29 +1312,7 @@ class HrHolidays(models.Model):
             raise ValidationError(u"هناك تداخل في تاريخ البدء مع عطلة نهاية الاسبوع  ")
         if fields.Date.from_string(self.date_to).weekday() in [4, 5] and self.holiday_status_id != self.env.ref('smart_hr.data_hr_holiday_status_normal'):
             raise ValidationError(u"هناك تداخل في تاريخ الإنتهاء مع عطلة نهاية الاسبوع")
-#         for public_holiday in hr_public_holiday_obj.search([('state', '=', 'done')]):
-#             if not self.is_extension:
-#                 if public_holiday.date_from <= self.date_from <= public_holiday.date_to or \
-#                     public_holiday.date_from <= self.date_to <= public_holiday.date_to or \
-#                     self.date_from <= public_holiday.date_from <= self.date_to or \
-#                     self.date_from <= public_holiday.date_to <= self.date_to :
-#                     raise ValidationError(u"هناك تداخل فى التواريخ مع اعياد و عطل رسمية")
-                
-#             # تكليف
-#         if self.holiday_status_id != self.env.ref('smart_hr.data_hr_holiday_status_compelling'):
-#             search_domain = [
-#                 ('employee_id', '=', self.employee_id.id),
-#                 ('overtime_id.state', '=', 'done'),
-#                 ]
-#             overtime_line_obj = self.env['hr.overtime.line']
-# 
-#             for rec in overtime_line_obj.search(search_domain):
-#                 if rec.date_from <= self.date_from <= rec.date_to or \
-#                         rec.date_from <= self.date_to <= rec.date_to or \
-#                         self.date_from <= rec.date_from <= self.date_to or \
-#                         self.date_from <= rec.date_to <= self.date_to:
-#                     raise ValidationError(u"هناك تداخل في التواريخ مع قرار سابق في تكليف")
-#
+        return True
 
     @api.multi
     def check_constraintes(self):

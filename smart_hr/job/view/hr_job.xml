@@ -618,29 +618,36 @@
 					<sheet>
 						<group col="2">
 							<field name="create_date" string="تاريخ الطلب" readonly="1" />
+							<field name="employee_id"
+								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 						</group>
-						<group col="2">
+
+						<group>
+						<group>
+							<field name="decision_number"
+								attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
+							<field name="decision_date"
+								attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
+						</group> 
+						<group/>
+						</group>
+						<group>
 							<group>
-								<field name="employee_id"
-									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+
 								<field name="out_speech_number"
-									attrs="{'invisible':[('state', 'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" />
+									attrs="{'invisible':[('state', 'not in', ['hrm1','budget_external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['budget_external', 'hrm2', 'done'])],'required':[('state','=','hrm1')]}" />
 								<field name="out_speech_date"
-									attrs="{'invisible':[('state', 'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" />
+									attrs="{'invisible':[('state', 'not in', ['hrm1','budget_external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['budget_external', 'hrm2', 'done'])],'required':[('state','=','hrm1')]}" />
 								<field name="out_speech_file" filename="outspeech_file_name"
-									attrs="{'invisible':[('state', 'not in', ['communication','external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['external', 'hrm2', 'done'])],'required':[('state','=','communication')]}" />
+									attrs="{'invisible':[('state', 'not in', ['hrm1','budget_external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['budget_external', 'hrm2', 'done'])],'required':[('state','=','hrm1')]}" />
 							</group>
 							<group>
-								<field name="decision_number"
-									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
-								<field name="decision_date"
-									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
 								<field name="in_speech_number"
-									attrs="{'invisible':[('state', 'not in', ['budget_external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','budget_external')]}" />
+									attrs="{'invisible':[('state', 'not in', ['hrm1','budget_external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['budget_external', 'hrm2', 'done'])],'required':[('state','=','hrm1')]}" />
 								<field name="in_speech_date"
-									attrs="{'invisible':[('state', 'not in', ['budget_external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','budget_external')]}" />
+									attrs="{'invisible':[('state', 'not in', ['hrm1','budget_external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['budget_external', 'hrm2', 'done'])],'required':[('state','=','hrm1')]}" />
 								<field name="in_speech_file" filename="in_speech_file_name"
-									attrs="{'invisible':[('state', 'not in', ['budget_external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','budget_external')]}" />
+									attrs="{'invisible':[('state', 'not in', ['hrm1','budget_external', 'hrm2', 'done'])],'readonly':[('state', 'in', ['budget_external', 'hrm2', 'done'])],'required':[('state','=','hrm1')]}" />
 							</group>
 						</group>
 
@@ -654,7 +661,7 @@
 								<field name="grade_id" />
 								<field name="old_name" />
 								<field name="old_type_id" />
-								<field name="new_job_number"/>
+								<field name="new_job_number" />
 								<field name="new_name" />
 								<field name="new_type_id" />
 							</tree>
@@ -751,8 +758,7 @@
 
 							</group>
 							<group>
-								<field name="move_raison"
-									attrs="{'readonly':[('state', '!=','new')]}" />
+								<field name="move_raison" attrs="{'readonly':[('state', '!=','new')]}" />
 								<field name="in_speech_number"
 									attrs="{'invisible':[('state', 'not in', ['communication_external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','communication_external')]}" />
 								<field name="in_speech_date"
@@ -760,22 +766,21 @@
 								<field name="in_speech_file" filename="in_speech_file_name"
 									attrs="{'invisible':[('state', 'not in', ['communication_external', 'hrm2', 'done'])],'readonly':[('state', 'in', [ 'hrm2', 'done'])],'required':[('state','=','communication_external')]}" />
 							</group>
-						<group>
-							<field name="decision_number"
-								attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
-							<field name="decision_date"
-								attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
-							<field name="decision_file" filename="decision_file_name"
-								attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
+							<group>
+								<field name="decision_number"
+									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
+								<field name="decision_date"
+									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
+								<field name="decision_file" filename="decision_file_name"
+									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
+							</group>
 						</group>
-						</group>
-			
+
 						<field name="job_movement_ids" string="نقل وظائف"
 							context="{'job_movement_ids': job_movement_ids}" attrs="{'readonly':[('state', '!=', 'new')]}">
 							<tree editable="bottom">
 								<field name="job_id" domain="[('state','=','unoccupied') ]"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-								<field name="job_number" />
 								<field name="job_name_code" />
 								<field name="type_id" />
 								<field name="grade_id" />

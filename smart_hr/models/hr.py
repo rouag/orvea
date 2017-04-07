@@ -134,6 +134,10 @@ class HrEmployee(models.Model):
     promotion_duration_display = fields.Char(string=u'مدة الترقية', readonly=True, compute='compute_promotion_duration_display')
     department_name_report = fields.Char(compute='_get_department_name_report')
     age_display = fields.Char(string=u"العمر", compute='compute_age_display')
+    commissioning_job_id = fields.Many2one('hr.job', string='الوظيفة المكلف عليها',Domain=[('state', '=', 'unoccupied'),('state_job','=','mission')])
+    commissioning_type_id = fields.Many2one('salary.grid.type', string='نوع السلم',related='commissioning_job_id.type_id',readonly=1)
+    commissioning_grade_id = fields.Many2one('salary.grid.grade', string='المرتبة',related='commissioning_job_id.grade_id',readonly=1)
+
 
     def get_years_months_days(self, duration):
         years = duration // 354
@@ -170,18 +174,21 @@ class HrEmployee(models.Model):
             else:
                 years = today_date.year - birthday.year
             if today_date.month < birthday.month:
-                months = 12 - (birthday.month - today_date.month)
+                if today_date.day < birthday.day:
+                    months = 12 - (birthday.month - today_date.month)-1
+                else:
+                    months = 12 - (birthday.month - today_date.month)
             else:
-                months = today_date.month - birthday.month
+                if today_date.day < birthday.day and today_date.month != birthday.month:
+                    months = today_date.month - birthday.month-1
+                else:
+                    months = today_date.month - birthday.month
             if today_date.month == birthday.month:
                 if today_date.day >= birthday.day:
                     days = today_date.day - birthday.day
                 else:
                     days = birthday.day - today_date.day
             else:
-                if today_date.month >= birthday.month:
-                    days = (30 - today_date.day) + birthday.day
-                else:
                     days = (30 - birthday.day) + today_date.day
             res = str(years) + " سنة و" + str(months) + " شهر و " + str(days) + "يوم"
             rec.age_display = res

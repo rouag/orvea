@@ -93,6 +93,27 @@ class HrJob(models.Model):
         }
 
 
+    @api.multi
+    def name_get(self):
+        result = []
+        for record in self:
+            name = '[%s] %s' % (record.number, record.name.name)
+            result.append((record.id, name))
+        return result
+
+    @api.model
+    def name_search(self, name='', args=None, operator='ilike', limit=100):
+        args = args or []
+        recs = self.browse()
+        if name:
+            domain = ['|', ('number', 'like', name), ('name.name', 'like', name)]
+
+            recs = self.search(domain + args, limit=limit)
+        if not recs:
+            recs = self.search([('name', operator, name)] + args, limit=limit)
+        return recs.name_get()
+
+
 class HrJobHistoryActions(models.Model):
     _name = 'hr.job.history.actions'
     _description = u'سجل الاجرا ءات'

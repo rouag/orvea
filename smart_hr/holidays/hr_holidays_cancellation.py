@@ -23,6 +23,7 @@ class hrHolidaysCancellation(models.Model):
     state = fields.Selection([
         ('draft', u'طلب'),
         ('audit', u'مراجعة'),
+        ('hrm', u'مدير شؤون الموظفين'),
         ('done', u'إعتمد'),
         ('refuse', u'رفض'),
     ], string=u'الحالة', default='draft', )
@@ -38,7 +39,8 @@ class hrHolidaysCancellation(models.Model):
     employee_is_current_user = fields.Boolean(string='employee_is_current_user', compute='_compute_employee_is_current_user')
     dm_is_current_user = fields.Boolean(string='dm_is_current_user', compute='_compute_dm_is_current_user')
     is_holidays_specialist = fields.Boolean(string='Is Current User exellencies', compute='_is_holidays_specialist')
-    
+    cancellation_date = fields.Date(string=u'تاريخ القطع')
+
     def _compute_dispay_draft_buttons(self):
         for rec in self:
             if rec.state == 'draft' and ((rec.employee_is_the_creator is True and rec.employee_is_current_user is True) or (rec.employee_is_the_creator is False and (rec.dm_is_current_user is True or rec.is_holidays_specialist is True)) or rec.is_the_exellencies is True):
@@ -68,7 +70,7 @@ class hrHolidaysCancellation(models.Model):
         for rec in self:
             if rec.employee_id.parent_id.user_id.id == self.env.user.id:
                 rec.dm_is_current_user = True
-    
+
     def _is_holidays_specialist(self):
         for rec in self:
             if self.env.user.has_group('smart_hr.group_holidays_specialist'):
@@ -95,24 +97,28 @@ class hrHolidaysCancellation(models.Model):
 
     @api.multi
     def button_send(self):
-        user = self.env['res.users'].browse(self._uid)
-        self.state = 'audit'
+        if self.is_the_exellencies:
+            self.button_done()
+        else:
+            user = self.env['res.users'].browse(self._uid)
+            self.state = 'audit'
             # send notification for requested the DM
-        if self.employee_is_the_creator: 
-            self.env['base.notification'].create({'title': u'إشعار بإلغاء أو قطع إجازة',
+
+            if self.employee_is_the_creator:
+                self.env['base.notification'].create({'title': u'إشعار بإلغاء أو قطع إجازة',
                                                   'message': u'الرجاء مراجعة طلب الإلغاء أو القطع',
                                                   'user_id': self.employee_id.parent_id.user_id.id,
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                   'res_model':'hr.holidays.cancellation',
                                                   'res_id': self.id,
                                                   })
-        else:
-                # send notification for requested employee
-            if self.type == 'cancellation':
-                res_model = 'smart_hr.action_hr_holidays_cancellation_employees'
             else:
-                res_model = 'smart_hr.action_hr_holidays_cut_employees'
-            self.env['base.notification'].create({'title': u'إشعار بإلغاء أو قطع إجازة',
+                # send notification for requested employee
+                if self.type == 'cancellation':
+                    res_model = 'smart_hr.action_hr_holidays_cancellation_employees'
+                else:
+                    res_model = 'smart_hr.action_hr_holidays_cut_employees'
+                self.env['base.notification'].create({'title': u'إشعار بإلغاء أو قطع إجازة',
                                                   'message': u'الرجاء مراجعة طلب الإلغاء أو القطع',
                                                   'user_id': self.employee_id.user_id.id,
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
@@ -120,12 +126,16 @@ class hrHolidaysCancellation(models.Model):
                                                   'res_id': self.id,
                                                   'res_action': res_model})
 
-        self.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"'")
+            self.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"'")
+
+    @api.multi
+    def button_hrm(self):
+        self.state = 'hrm'
 
     @api.one
     def button_done(self):
         for cancellation in self:
-            if cancellation.type=='cancellation':
+            if cancellation.type == 'cancellation':
                     for en in cancellation.holiday_id.holiday_status_id.entitlements:
                         right_entitlement = False
                         if not cancellation.holiday_id.entitlement_type:
@@ -146,45 +156,45 @@ class hrHolidaysCancellation(models.Model):
                         # Update the holiday state
                     cancellation.holiday_id.write({'state': 'cancel'})
                     if cancellation.holiday_id.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_study'):
-                        study_followup = self.env['courses.followup'].search([('employee_id','=','holiday.employee_id.id'),
-                                                                              ('state','=','progress'),
-                                                                              ('holiday_id','=','holiday.id'),
+                        study_followup = self.env['courses.followup'].search([('employee_id', '=', 'holiday.employee_id.id'),
+                                                                              ('state', '=', 'progress'),
+                                                                              ('holiday_id', '=', 'holiday.id'),
                                                                               ])
                         if study_followup:
-                            study_followup.state='cancel'
-            if cancellation.type=='cut':
+                            study_followup.state = 'cancel'
+            if cancellation.type == 'cut':
                     for holiday_balance in cancellation.holiday_id.employee_id.holidays_balance:
                         end_date = fields.Date.from_string(cancellation.holiday_id.date_to)
-                        now = fields.Date.from_string(fields.Datetime.now())
-                        cuted_duration = (end_date - now).days
+                        cancellation_date = fields.Date.from_string(cancellation.cancellation_date)
+                        cuted_duration = (end_date - cancellation_date).days
                         if holiday_balance.holiday_status_id.id == cancellation.holiday_id.holiday_status_id.id:
                             holiday_balance.holidays_available_stock += cuted_duration
                             holiday_balance.token_holidays_sum -= cuted_duration
                             cancellation.holiday_id.duration -= cuted_duration
+                            cancellation.holiday_id.onchange_duration()
                             break
-                        
                     if cancellation.holiday_id.open_period:
                         cancellation.holiday_id.open_period.holiday_stock += cuted_duration
                     cancellation.holiday_id.write({'state': 'cutoff'})
 #                     type = " قطع"+" " +holiday.holiday_status_id.name.encode('utf-8')
 #                     self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
                     if cancellation.holiday_id.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_study'):
-                        study_followup = self.env['courses.followup'].search([('employee_id','=','holiday.employee_id.id'),
-                                                                              ('state','=','progress'),
-                                                                              ('holiday_id','=','holiday.id'),
+                        study_followup = self.env['courses.followup'].search([('employee_id', '=', 'holiday.employee_id.id'),
+                                                                              ('state', '=', 'progress'),
+                                                                              ('holiday_id', '=', 'holiday.id'),
                                                                               ])
                         if study_followup:
-                            study_followup.state='cut'
+                            study_followup.state = 'cut'
             cancellation.state = 'done'
 
     @api.one
     def button_refuse(self):
         for cancellation in self:
-            cancellation.state = 'draft'
+            cancellation.state = 'refuse'
                 # send notification for requested the DM
             self.env['base.notification'].create({'title': u'إشعار برفض إلغاء أو قطع إجازة',
-                                                  'message': u' '+self.employee_id.name +u'لقد تم الرفض من قبل ',
-                                                  'user_id': self.employee_id.parent_id.user_id.id,
+                                                  'message': u' '+ self.env.user.name +u'لقد تم الرفض من قبل ',
+                                                  'user_id': self.employee_id.user_id.id,
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                   'res_model':'hr.holidays.cancellation',
                                                   'res_id': self.id,

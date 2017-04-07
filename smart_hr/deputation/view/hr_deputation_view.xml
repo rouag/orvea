@@ -95,7 +95,8 @@
 								<field name="type" options="{'horizontal': true}" class="oe_edit_only"
 									widget="radio"
 									attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
-								<field name="deputation_type" />
+								<field name="deputation_type" 
+									attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
 								<field name="member_deputation"
 									attrs="{'invisible':[('state', 'not in', [ 'draft'])]}" />
 								<field name="employee_id"
@@ -152,7 +153,7 @@
 									<field name="category_id"
 										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 										attrs="{'invisible':['|',('type', '=','internal'),('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
-									<field name="country_ids"
+									<field name="country_ids"  
 										attrs="{'invisible':['|',('type', '=','internal'),('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
 								</group>
 								<group string="الجهة توفر">
