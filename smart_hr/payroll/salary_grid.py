@@ -18,7 +18,8 @@ class SalaryGrid(models.Model):
     numero_order = fields.Char(string='رقم القرار')
     date = fields.Date(string='التاريخ')
     enabled = fields.Boolean(string='مفعل')
-    grid_ids = fields.One2many('salary.grid.detail', 'grid_id')
+    grid_ids = fields.One2many('salary.grid.detail', 'grid_id', domain=[('is_old', '=', False)])
+    attachments = fields.Many2many('ir.attachment', string=u"المرفقات")
     state = fields.Selection([('draft', 'مسودة'),
                               ('verify', 'في إنتظار الإعتماد'),
                               ('done', 'اعتمدت'),

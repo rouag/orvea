@@ -172,25 +172,33 @@
 									attrs="{'readonly':[('state', 'not in', [ 'draft'])]}" />
 							</group>
 						</group>
-						<field name="grid_ids" string=" سلّم الرواتب" domain="[('is_old','=', False)]">
-							<tree edit="false" colors="red:is_old==True;" default_order='is_old desc'>
-								<field name="type_id" attrs="{'readonly':[('is_old', '=', True)]}"
-									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-								<field name="grade_id" attrs="{'readonly':[('is_old', '=', True)]}"
-									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-								<field name="degree_id" attrs="{'readonly':[('is_old', '=', True)]}"
-									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-								<field name="basic_salary" attrs="{'readonly':[('is_old', '=', True)]}"/> 
-								<field name="increase" attrs="{'readonly':[('is_old', '=', True)]}"/>
-								<field name="retirement_amount" attrs="{'readonly':[('is_old', '=', True)]}"/>
-								<field name="transport_allowance_amout" attrs="{'readonly':[('is_old', '=', True)]}"/>
-								<field name="net_salary" attrs="{'readonly':[('is_old', '=', True)]}"/>
-								<field name="is_old" attrs="{'readonly':[('is_old', '=', True)]}"/>
-								<button name="%(smart_hr.action_wizard_update_salary_grid)d" attrs="{'invisible':[('is_old', '=', True)]}"
-									type="action" string="إسناد المزايا" icon="fa-clipboard" />
-								<field name="date" invisible="1" />
-							</tree>
-						</field>
+						<notebook>
+							<page string="التفاصيل">
+								<field name="grid_ids" string=" سلّم الرواتب" domain="[('is_old','=', False)]">
+									<tree edit="false" colors="red:is_old==True;" default_order='is_old desc'>
+										<field name="type_id" attrs="{'readonly':[('is_old', '=', True)]}"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+										<field name="grade_id" attrs="{'readonly':[('is_old', '=', True)]}"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+										<field name="degree_id" attrs="{'readonly':[('is_old', '=', True)]}"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+										<field name="basic_salary" attrs="{'readonly':[('is_old', '=', True)]}"/>
+										<field name="increase" attrs="{'readonly':[('is_old', '=', True)]}"/>
+										<field name="retirement_amount" attrs="{'readonly':[('is_old', '=', True)]}"/>
+										<field name="transport_allowance_amout" attrs="{'readonly':[('is_old', '=', True)]}"/>
+										<field name="net_salary" attrs="{'readonly':[('is_old', '=', True)]}"/>
+										<field name="is_old" invisible="1"/>
+										<button name="%(smart_hr.action_wizard_update_salary_grid)d" attrs="{'invisible':[('is_old', '=', True)]}"
+											type="action" string="إسناد المزايا" icon="fa-clipboard" />
+										<field name="date" invisible="1" />
+									</tree>
+								</field>
+							</page>
+							<page string="القرارات">
+								<field name="attachments" widget="many2many_binary" string="إضافة قرار"/>
+							</page>
+
+						</notebook>
 					</sheet>
 				</form>
 			</field>
