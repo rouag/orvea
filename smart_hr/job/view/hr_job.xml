@@ -536,7 +536,6 @@
 							<tree editable="bottom">
 								<field name="job_id" domain="[('state','=','unoccupied')]"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-								<field name="job_number" />
 								<field name="job_name_code" string="الرمز" />
 								<field name="type_id" readonly="1" />
 								<field name="department_id"
@@ -656,7 +655,6 @@
 							<tree editable="bottom">
 								<field name="job_id"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-								<field name="job_number" />
 								<field name="department_id" />
 								<field name="grade_id" />
 								<field name="old_name" />
@@ -901,7 +899,6 @@
 							<tree editable="bottom">
 								<field name="job_id"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-								<field name="job_number" />
 								<field name="job_name_code" />
 								<field name="type_id" />
 								<field name="department_id" />
@@ -1036,7 +1033,6 @@
 							<tree editable="bottom">
 								<field name="job_id"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-								<field name="job_number" />
 								<field name="job_name_code" />
 								<field name="type_id" />
 								<field name="department_id" />

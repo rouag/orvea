@@ -373,7 +373,7 @@ class HrPayslip(models.Model):
             else:
                 entitlement_type = holiday_id.entitlement_type
             # case of لا يصرف له الراتب
-            if grid_id and not holiday_status_id.salary_spending and not holiday_status_id.percentages:
+            if grid_id and not holiday_status_id.salary_spending:
                 amount = (duration_in_month * (basic_salary / 30))
                 if duration_in_month > 0 and amount != 0:
                     vals = {'name': holiday_id.holiday_status_id.name + name,
@@ -384,10 +384,11 @@ class HrPayslip(models.Model):
                             'type': 'holiday'}
                     line_ids.append(vals)
             # case of  لا يصرف له راتب كامل
-            if grid_id and not holiday_status_id.salary_spending and holiday_status_id.percentages:
+            if grid_id and holiday_status_id.salary_spending and holiday_status_id.percentages:
                 for rec in holiday_status_id.percentages:
                     if entitlement_type == rec.entitlement_id.entitlment_category and rec.month_from <= months_from_holiday_start <= rec.month_to:
                         amount = (duration_in_month * (basic_salary / 30) * (100 - rec.salary_proportion)) / 100.0
+                        print '--amount--', amount
                         if holiday_status_maternity == holiday_status_id:
                             retirement_amount = basic_salary * grid_id.retirement / 100.0
                             amount = ((basic_salary - retirement_amount) * (100 - rec.salary_proportion)) / 100.0
@@ -645,10 +646,6 @@ class HrPayslip(models.Model):
             # سعودي
             if termination.employee_id.country_id and termination.employee_id.country_id.code == 'SA':
                 if grid_id:
-                    if termination.employee_id.basic_salary == 0:
-                        basic_salary = grid_id.basic_salary
-                    else:
-                        basic_salary = termination.employee_id.basic_salary
                     # 1) عدد الرواتب المستحق
                     if termination.termination_type_id.nb_salaire > 0:
                         amount = basic_salary * (termination.termination_type_id.nb_salaire - 1)

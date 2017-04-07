@@ -24,7 +24,7 @@ class HrDecisionAppoint(models.Model):
     # info about employee
     employee_id = fields.Many2one('hr.employee', string='الموظف', required=1)
     contract_id = fields.Many2one('hr.contract', string='العقد', Domain=[('state', '!=', 'close')])
-    number = fields.Char(related='employee_id.number', store=True, readonly=True, string=u'رقم الوظيفة')
+    number = fields.Char(related='employee_id.number', store=True, readonly=True, string=u'الرقم الوظيفي')
     emp_code = fields.Char(string=u'رمز الوظيفة ', readonly=1)
     country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
     emp_job_id = fields.Many2one('hr.job', string='الوظيفة', store=True, readonly=1)

@@ -21,7 +21,6 @@
 					<field name="employee_id" />
 					<field name="number" />
 					<field name="job_id" />
-					<field name="number_job" />
 					<field name="date_direct_action" />
 					<field name="state" />
 				</tree>
@@ -65,7 +64,6 @@
 							</group>
 							<group string="بيانات الوظيفة">
 								<field name="job_id" />
-								<field name="number_job" />
 								<field name="code" />
 								<field name="type_id" />
 								<field name="grade_id" />
