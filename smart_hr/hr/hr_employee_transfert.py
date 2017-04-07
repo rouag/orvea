@@ -482,16 +482,17 @@ class HrTransfertSorting(models.Model):
 
     @api.multi
     def action_draft(self):
-        for rec in self :
+        for rec in self:
             if not rec.line_ids:
                 raise ValidationError(u"لايوجد طلبات حالياً.")
             line_ids = []
-            for line in rec.line_ids :
-                vals = {'hr_employee_transfert_id': line.hr_employee_transfert_id.id,
-                        'hr_employee_transfert_id.state':'pm',
-                    'state': line.state ,
-                    }
-                line_ids.append(vals)
+            for line in rec.line_ids:
+                if line.hr_employee_transfert_id:
+                    vals = {'hr_employee_transfert_id': line.hr_employee_transfert_id.id,
+                            'hr_employee_transfert_id.state':'pm',
+                            'state': line.state ,
+                            }
+                    line_ids.append(vals)
             rec.line_ids2 = line_ids
             rec.state = 'draft'
 

@@ -18,19 +18,33 @@
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" states="hrm" groups="smart_hr.group_hrm" icon="fa-times"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="%(hr_termination_report)d" string="طباعة القرار"
+							groups="smart_hr.group_hrm" type="action" icon="fa-print"
+							attrs="{'invisible':[('state','!=','done'),('is_decision','=',False)]}"
+							class="oe_inline oe_stat_button" />
+
+						<button name="open_decission" string="إنشاء و تعديل القرار"
+							groups="smart_hr.group_hrm" type="object" states="done" icon="fa-print"
+							class="oe_inline oe_stat_button" />
+
+
+
 						<field name="state" widget="statusbar" statusbar_visible="draft,hrm,done" />
 					</header>
 					<sheet>
-						<label for="name" class="oe_edit_only" />
-						<h1>
-							<field name="name" attrs="{'readonly':[('state','!=','draft')]}" />
-							<field name="employee_state" invisible="1" />
-						</h1>
+
+						<!-- <label for="name" class="oe_edit_only" /> <h1> <field name="name" 
+							attrs="{'readonly':[('state','!=','draft')]}" /> <field name="employee_state" 
+							invisible="1" /> </h1> -->
 						<group>
-							<field name="date" readonly="1" />
-							<field name="employee_id" attrs="{'readonly':[('state','!=','draft')]}"
-								required="1"
-								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+							<group>
+								<field name="is_decision" invisible="1" />
+								<field name="date" readonly="1" />
+								<field name="employee_id" attrs="{'readonly':[('state','!=','draft')]}"
+									required="1"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+							</group>
 						</group>
 						<group>
 							<group string="معلومات الموظف">

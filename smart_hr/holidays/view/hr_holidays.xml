@@ -28,8 +28,9 @@
 						name="cancel" />
 					<filter domain="[('state','=','cutoff')]" string="الحالة:مقطوعة"
 						name="cutoff" />
-					<filter domain="[('state','=','refuse')]" string="الحالة:مرفوضة"
-						name="refuse" />
+					<separator/>
+					<filter domain="[('holiday_status_id.deductible_normal_leave','=','True')]" string="الإجازات المؤثرة في رصيد الإجازات العادية"
+						name="deductibe_normal_leave" />
 					<field name="employee_id" string="الموظف"
 						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
 					<field name="department_id" />
