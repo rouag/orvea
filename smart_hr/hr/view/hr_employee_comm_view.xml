@@ -52,55 +52,38 @@
 					</header>
 					<sheet>
 						<field name="current_city" invisible="1" />
-						<group>
-							<group>
-								<field name="create_date" />
-								<field name="demand_owner_id"
-									attrs="{'readonly':[('state', 'in', ['done','refused'])]}" />
 
-							</group>
-						</group>
-						<group col="6">
-							<field name="date_from" required="1" />
-							<field name="duration" />
-							<field name="date_to" />
-						</group>
 						<group>
-							<group>
+							<group  string="بيانات الطلب">
+								<field name="create_date" />
+								<field name="demand_owner_id"  attrs="{'readonly':[('state', 'in', ['done','refused'])]}" />
 								<field name="employee_id" options='{"no_open": True, "no_create": True}' />
-								<field name="decision_number" />
-								<field name="decision_date" />
-								<field name="decision_file"   filename="decision_file_name"/>
-									<field name="decision_file_name"  invisible="1"  />
-								
+								<field name="date_from" />
+								<field name="duration" />
+								<field name="date_to" />
 							</group>
-							<group>
+							<group  string="بيانات التكليف">
 								<field name="comm_type" options='{"no_open": True, "no_create": True}' />
 								<field name="governmental_entity" options='{"no_open": True, "no_create": True}'
 									attrs="{'invisible':[('comm_type', '!=', %(data_hr_commissioning_type_02)d)], 'required':[('comm_type', '=', %(data_hr_commissioning_type_02)d)]}" />
-							
-							
 								<field name="commissioning_job_id" options='{"no_open": True, "no_create": True}' 	attrs="{'readonly':[('state', 'in', ['done','refused'])]}"  />
 								<field name="type_id" options='{"no_open": True, "no_create": True}' />
 								<field name="grade_id" options='{"no_open": True, "no_create": True}' />
-								
 								<field name="city" options='{"no_open": True, "no_create": True}' />
 								<field name="pay_retirement"
 									attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
-								<field name="retirement_proportion"
-									attrs="{'invisible':['|', ('pay_retirement', '=', False), ('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
-								<field name="give_allowance_transport"
+								<field name="allowance_transport_rate"
+									attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
+								<field name="salary_rate"
 									attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
 								<field name="give_allow"
 									attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
-								<field name="give_salary"
-									attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
 							</group>
-							<field name="note" />
 						</group>
-						<field name="task_ids" widget="many2many"  	attrs="{'readonly':[('state', 'in', ['done','refused'])]}"   options='{"no_open": True, "no_create": True}'
-							domain="[('state', '=', 'done'), ('governmental_entity', '=', governmental_entity), ('employee_id', '=', employee_id)]">
-							<tree editable="bottom">
+
+						<separator string="المهام"/>
+						<field name="task_ids" 	attrs="{'readonly':[('state', 'in', ['done','refused'])]}" >
+							<tree>
 								<field name="name" readonly="1" />
 								<field name="date_from" readonly="1" />
 								<field name="duration" readonly="1" />
@@ -109,6 +92,7 @@
 								<field name="employee_id" invisible="1" />
 							</tree>
 						</field>
+						<field name="note" placeholder="ملاحظات ..." colspan="4" />
 					</sheet>
 					<div>
 						<field name="message_ids" widget="mail_thread" readonly="1" />

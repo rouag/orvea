@@ -181,7 +181,7 @@ class HrPayslip(models.Model):
                 reward_ids = grid_id.reward_ids
                 indemnity_ids = grid_id.indemnity_ids
                 # راتب
-                if assign_id.give_salary:
+                if assign_id.salary_rate:
                     amount = basic_salary
                     if amount:
                             vals = {'name': 'فرق الراتب التي توفرها الجهة' + name,
@@ -192,7 +192,7 @@ class HrPayslip(models.Model):
                                     'type': 'commissioning'}
                             line_ids.append(vals)
                 # بدل النقل
-                if assign_id.give_allowance_transport:
+                if assign_id.allowance_transport_rate:
                     allowance_transport_id = self.env.ref('smart_hr.hr_allowance_type_01')
                     if allowance_transport_id:
                         amount = 0.0
@@ -208,53 +208,6 @@ class HrPayslip(models.Model):
                                     'amount': amount * -1,
                                     'type': 'commissioning'}
                             line_ids.append(vals)
-                # بدلات، مكافأة أو تعويضات
-                if assign_id.give_allow:
-                    # بدلات
-                    for allow in allowance_ids:
-                        if allow.allowance_id != self.env.ref('smart_hr.hr_allowance_type_01'):
-                            amount = allow.get_value(assign_id.employee_id.id)
-                            if amount:
-                                vals = {'name': allow.allowance_id.name + name,
-                                        'employee_id': assign_id.employee_id.id,
-                                        'number_of_days': 0,
-                                        'number_of_hours': 0.0,
-                                        'amount': amount * -1,
-                                        'type': 'commissioning'}
-                                line_ids.append(vals)
-                    # مكافأة
-                    for reward in reward_ids:
-                        amount = reward.get_value(assign_id.employee_id.id)
-                        if amount:
-                            vals = {'name': reward.reward_id.name + name,
-                                    'employee_id': assign_id.employee_id.id,
-                                    'number_of_days': 0,
-                                    'number_of_hours': 0.0,
-                                    'amount': amount * -1,
-                                    'type': 'commissioning'}
-                            line_ids.append(vals)
-                    # تعويضات
-                    for indemnity in indemnity_ids:
-                        amount = indemnity.get_value(assign_id.employee_id.id)
-                        if amount:
-                            vals = {'name': indemnity.indemnity_id.name + name,
-                                    'employee_id': assign_id.employee_id.id,
-                                    'number_of_days': 0,
-                                    'number_of_hours': 0.0,
-                                    'amount': amount * -1,
-                                    'type': 'commissioning'}
-                            line_ids.append(vals)
-                # 3) حصة الحكومة من التقاعد
-                if assign_id.comm_type.pay_retirement:
-                    amount = (basic_salary * assign_id.retirement_proportion) / 100.0
-                    if amount > 0:
-                        vals = {'name': 'حصة الحكومة من التقاعد' + name,
-                                'employee_id': assign_id.employee_id.id,
-                                'number_of_days': 0,
-                                'number_of_hours': 0.0,
-                                'amount': amount,
-                                'type': 'commissioning'}
-                        line_ids.append(vals)
         return line_ids
 
     @api.multi
