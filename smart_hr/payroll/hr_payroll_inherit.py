@@ -173,8 +173,21 @@ class HrPayslip(models.Model):
             name = u' للشهر الفارط '
         assign_ids = self.env['hr.employee.commissioning'].search(domain)
         for assign_id in assign_ids:
+            # overlaped days in current month
+            assign_date_from = fields.Date.from_string(assign_id.date_from)
+            date_from = fields.Date.from_string(date_from)
+            assign_date_to = fields.Date.from_string(assign_id.date_to)
+            date_to = fields.Date.from_string(date_to)
+            duration_in_month = 0
+            res = {}
+            if date_from >= assign_date_from and assign_date_to >= date_to:
+                res = self.env['hr.smart.utils'].compute_duration_difference(assign_id.employee_id, date_from, date_to, True, True, True)
+            if assign_date_from >= date_from and assign_date_to <= date_to:
+                res = self.env['hr.smart.utils'].compute_duration_difference(assign_id.employee_id, assign_date_to, assign_date_from, True, True, True)
+            if assign_date_from >= date_from and assign_date_to >= date_to:
+                res = self.env['hr.smart.utils'].compute_duration_difference(assign_id.employee_id, assign_date_from, date_to, True, True, True)
             # get تفاصيل سلم الرواتب
-            grid_id, basic_salary = assign_id.employee_id.get_salary_grid_id(assign_id.date_to)
+            grid_id, basic_salary = assign_id.employee_id.get_salary_grid_id(False)
             if grid_id:
                 # تفاصيل سلم الرواتب
                 allowance_ids = grid_id.allowance_ids
