@@ -19,7 +19,7 @@ class HrEmployeeLend(models.Model):
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1, readonly=1, states={'new': [('readonly', 0)]})
-    insurance_entity = fields.Many2one('res.partner', string=u'الجهة المعار إليها', domain=[('insurance', '=', True)], required=1, readonly=1, states={'new': [('readonly', 0)]})
+    insurance_entity = fields.Many2one('res.partner', string=u'الجهة المعار إليها', domain=[('governmental_entity', '=', True)], required=1, readonly=1, states={'new': [('readonly', 0)]})
     decision_number = fields.Char(string=u"رقم القرار", readonly=1, states={'new': [('readonly', 0)]})
     decision_date = fields.Date(string=u'تاريخ القرار', readonly=1, states={'new': [('readonly', 0)]})
     decision_file = fields.Binary(string=u'نسخة القرار', readonly=1, states={'new': [('readonly', 0)]}, attachment=True)
@@ -35,7 +35,7 @@ class HrEmployeeLend(models.Model):
     salary_proportion = fields.Float(string=u'نسبة الراتب التي تتحملها الجهة', default=100.0, readonly=1, states={'new': [('readonly', 0)]})
     basic_salary = fields.Float(string=u'الراتب الأساسي', readonly=1)
     lend_salary = fields.Float(string=u'الراتب في الإعارة', readonly=1, states={'new': [('readonly', 0)]})
-    pay_retirement = fields.Boolean(string=u'يدفع له نسبة التقاعد', readonly=1, states={'new': [('readonly', 0)]})
+    pay_retirement = fields.Boolean(string=u'يتحمل  الموظف الحسميات التقاعدية كاملة', readonly=1, states={'new': [('readonly', 0)]})
     done_date = fields.Date(string='تاريخ التفعيل')
 
     @api.multi

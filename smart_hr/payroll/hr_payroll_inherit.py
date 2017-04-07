@@ -287,116 +287,52 @@ class HrPayslip(models.Model):
                 res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_to, lend_date_from, True, True, True)
             if lend_date_from >= date_from and lend_date_to >= date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_from, date_to, True, True, True)
-            # case 1: one salary grid for all the periode
+
+            hr_setting = self.env['hr.setting'].search([], limit=1)
             if len(res) == 1:
                 res = res[0]
                 duration_in_month = res['days']
                 grid_id = res['grid_id']
                 basic_salary = res['basic_salary']
-                if grid_id and duration_in_month > 0:
-                    # 1) نسبة الراتب
-                    amount = ((duration_in_month * (basic_salary / 30) * lend_id.salary_proportion) / 100.0) * -1
-                    if amount < 0:
-                        vals = {'name': 'نسبة الراتب' + name,
-                                'employee_id': lend_id.employee_id.id,
-                                'number_of_days': duration_in_month,
-                                'number_of_hours': 0.0,
-                                'amount': amount,
-                                'type': 'lend'}
-                        line_ids.append(vals)
-                    # 2) البدلات في الإعارة
-                    alowances_in_grade_id = [rec.allowance_id for rec in grid_id.allowance_ids]
-                    for allowance in lend_id.allowance_ids:
-                        if allowance not in alowances_in_grade_id:
-                            vals = {'name': allowance.allowance_id.name + name,
-                                    'employee_id': lend_id.employee_id.id,
-                                    'number_of_days': duration_in_month,
-                                    'number_of_hours': 0.0,
-                                    'amount': allowance.amount,
-                                    'type': 'lend'}
-                            line_ids.append(vals)
-                    # 3) حصة الحكومة من التقاعد
-                    if lend_id.pay_retirement:
-                        hr_setting = self.env['hr.setting'].search([], limit=1)
-                        if hr_setting:
-                            amount = (basic_salary * hr_setting.retirement_proportion) / 100.0
-                            if amount > 0:
-                                vals = {'name': 'حصة الحكومة من التقاعد' + name,
-                                        'employee_id': lend_id.employee_id.id,
-                                        'number_of_days': duration_in_month,
-                                        'number_of_hours': 0.0,
-                                        'amount': amount,
-                                        'type': 'lend'}
-                                line_ids.append(vals)
-                    # 4) فرق الراتب
-                    amount = ((lend_id.lend_salary - lend_id.basic_salary) / 30) * duration_in_month
-                    if amount > 0:
-                        vals = {'name': 'فرق الراتب' + name,
-                                'employee_id': lend_id.employee_id.id,
-                                'number_of_days': duration_in_month,
-                                'number_of_hours': 0.0,
-                                'amount': amount,
-                                'type': 'lend'}
-                        line_ids.append(vals)
-            # case 2: many salary grid for all the periode
+                amount = ((duration_in_month * (basic_salary / 30) * lend_id.salary_proportion) / 100.0) * -1
+                if hr_setting and lend_id.pay_retirement:
+                    amount_retirement = (basic_salary * hr_setting.retirement_proportion) / 100.0
             else:
-                mydict = {}
                 for rec in res:
-                    duration_in_month = rec['days']
                     grid_id = rec['grid_id']
                     basic_salary = rec['basic_salary']
-                    if grid_id and duration_in_month > 0:
-                        # 1) نسبة الراتب
-                        amount = ((duration_in_month * (basic_salary / 30) * lend_id.salary_proportion) / 100.0) * -1
-                        mydict['duration_in_month'] += duration_in_month
-                        mydict['amount'] += amount
-                if mydict:
-                    vals = {'name': 'نسبة الراتب' + name,
-                            'employee_id': lend_id.employee_id.id,
-                            'number_of_days': mydict['duration_in_month'],
-                            'number_of_hours': 0.0,
-                            'amount': mydict['amount'],
-                            'type': 'lend'}
-                    line_ids.append(vals)
-                mydict = {}
-                for rec in res:
-                    duration_in_month = rec['days']
-                    grid_id = rec['grid_id']
-                    basic_salary = rec['basic_salary']
-                    # 2) البدلات في الإعارة
-                    alowances_in_grade_id = [rec.allowance_id for rec in grid_id.allowance_ids]
-                    for allowance in lend_id.allowance_ids:
-                        if allowance not in alowances_in_grade_id:
-                            vals = {'name': allowance.allowance_id.name + name,
-                                    'employee_id': lend_id.employee_id.id,
-                                    'number_of_days': duration_in_month,
-                                    'number_of_hours': 0.0,
-                                    'amount': allowance.amount,
-                                    'type': 'lend'}
-                            line_ids.append(vals)
-                    # 3) حصة الحكومة من التقاعد
-                    if lend_id.pay_retirement:
-                        hr_setting = self.env['hr.setting'].search([], limit=1)
-                        if hr_setting:
-                            amount = (basic_salary * hr_setting.retirement_proportion) / 100.0
-                            if amount > 0:
-                                vals = {'name': 'حصة الحكومة من التقاعد' + name,
-                                        'employee_id': lend_id.employee_id.id,
-                                        'number_of_days': duration_in_month,
-                                        'number_of_hours': 0.0,
-                                        'amount': amount,
-                                        'type': 'lend'}
-                                line_ids.append(vals)
-                    # 4) فرق الراتب
-                    amount = ((lend_id.lend_salary - lend_id.basic_salary) / 30) * duration_in_month
-                    if amount > 0:
-                        vals = {'name': 'فرق الراتب' + name,
-                                'employee_id': lend_id.employee_id.id,
-                                'number_of_days': duration_in_month,
-                                'number_of_hours': 0.0,
-                                'amount': amount,
-                                'type': 'lend'}
-                        line_ids.append(vals)
+                    days = rec['days']
+                    if grid_id and days > 0:
+                        rec_amount = ((days * (basic_salary / 30) * lend_id.salary_proportion) / 100.0) * -1
+                        duration_in_month += days
+                        amount += rec_amount
+                        if hr_setting and lend_id.pay_retirement:
+                            amount_retirement = (days * (basic_salary / 30) * hr_setting.retirement_proportion / 100.0) * -1
+
+            # 1 الراتب
+            if grid_id and duration_in_month and amount < 0:
+                vals = {'name': 'نسبة الراتب' + name,
+                        'employee_id': lend_id.employee_id.id,
+                        'number_of_days': duration_in_month,
+                        'number_of_hours': 0.0,
+                        'amount': amount,
+                        'type': 'lend'
+                        }
+                line_ids.append(vals)
+
+            # 2 -البدلات
+
+
+            # 3) حصة الحكومة من التقاعد
+            if amount_retirement:
+                vals = {'name': 'حصة الحكومة من التقاعد' + name,
+                        'employee_id': lend_id.employee_id.id,
+                        'number_of_days': duration_in_month,
+                        'number_of_hours': 0.0,
+                        'amount': amount_retirement,
+                        'type': 'lend'}
+                line_ids.append(vals)
+
         return line_ids
 
     @api.multi
