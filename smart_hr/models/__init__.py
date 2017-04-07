@@ -3,7 +3,6 @@
 
 from . import courses_follow_up
 from . import employee_situation_order
-from . import external_authorities
 from . import hierarchy_level
 from . import hr
 from . import hr_assessment

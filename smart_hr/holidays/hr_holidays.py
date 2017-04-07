@@ -50,13 +50,6 @@ class HrHolidays(models.Model):
                 return False
         return True
 
-    @api.multi
-    def _set_external_autoritie(self):
-        for holiday in self:
-            search_external_authoritie = self.env["external.authorities"].search([('holiday_status', '=', holiday.holiday_status_id.id)])
-            if search_external_authoritie:
-                holiday.external_authoritie = search_external_authoritie[0]
-
     name = fields.Char(string=u'رقم القرار',)
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now)
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', domain=[('emp_state', 'not in', ['suspended','terminated']), ('employee_state', '=', 'employee')],
@@ -67,7 +60,7 @@ class HrHolidays(models.Model):
     date_from = fields.Date(string=u'التاريخ من ', default=fields.Datetime.now)
     date_to = fields.Date(string=u'التاريخ الى')
     text_resolution = fields.Html(string='نص القرار')
-    is_decision  = fields.Boolean(string=u'نص القرار',default=False)
+    is_decision = fields.Boolean(string=u'نص القرار',default=False)
     duration = fields.Integer(string=u'مدتها' , required=1,default=1)
     holiday_status_id = fields.Many2one('hr.holidays.status', string=u'نوع الأجازة', default=lambda self: self.env.ref('smart_hr.data_hr_holiday_status_normal'),)
     spend_advanced_salary = fields.Boolean(string=u'طلب صرف راتب مسبق', related='holiday_status_id.spend_advanced_salary')
@@ -106,7 +99,7 @@ class HrHolidays(models.Model):
     is_cancelled = fields.Boolean(string=u'ملغاة', compute='_is_cancelled')
     is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started')
     is_finished = fields.Boolean(string=u'انتهت', compute='_compute_is_finished')
-    holiday_cancellation = fields.Many2one('hr.holidays.cancellation')    
+    holiday_cancellation = fields.Many2one('hr.holidays.cancellation')
     # Extension
     is_extension = fields.Boolean(string=u'اجازة ممددة')
     is_extended = fields.Boolean(string=u'ممددة', compute='_is_extended')
@@ -121,7 +114,7 @@ class HrHolidays(models.Model):
     childbirth_date = fields.Date(string=u'تاريخ ولادة الطفل')
     birth_certificate = fields.Binary(string=u'شهادة الميلاد', attachment=True)
     extension_period = fields.Integer(string=u'مدة التمديد', default=0)
-    external_authoritie = fields.Many2one('external.authorities', string=u'الجهة الخارجية', compute="_set_external_autoritie")
+    external_authoritie = fields.Many2one('res.partner', string=u'الجهة الخارجية', domain="[('company_type', '=', 'governmental_entity')]")
     entitlement_type = fields.Many2one('hr.holidays.entitlement.config', string=u'خاصيّة الإجازة')
     sold_overtime = fields.Float(string=u' رصيد خارج الدوام')
     sold_attendance = fields.Float(string=u'رصيد الحضور و الإنصراف')
@@ -160,29 +153,29 @@ class HrHolidays(models.Model):
     display_compute_as_deputation = fields.Boolean('hide_compute_as_deputation', default=False)
     deputation_id = fields.Many2one('hr.deputation', string='الانتداب')
     deputation_balance_computed = fields.Float(string='مدة الانتداب المحتسبة', compute='compute_deputation_balance_compUted')
-    can_be_cutted = fields.Boolean(string=u'يمكن قطعها',related='holiday_status_id.can_be_cutted')
+    can_be_cutted = fields.Boolean(string=u'يمكن قطعها', related='holiday_status_id.can_be_cutted')
     can_be_cancelled = fields.Boolean(string=u'يمكن الغاؤها', related='holiday_status_id.can_be_cancelled')
     display_button_cancel = fields.Boolean(compute='_compute_display_button_cancel')
     display_button_cut = fields.Boolean(compute='_compute_display_button_cut')
     salary_number = fields.Integer(string=u'عدد الرواتب')
     is_holidays_specialist_user = fields.Boolean(string='Is Current User holidays specialist', compute='_is_holidays_specialist_user')
     advanced_salary_is_paied = fields.Boolean('advanced_salary_is_paied', default=False)
-    decission_id  = fields.Many2one('hr.decision', string=u'القرارات',)
+    decission_id = fields.Many2one('hr.decision', string=u'القرارات',)
     done_date = fields.Date(string='تاريخ التفعيل')
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
-    
+
     def _is_holidays_specialist_user(self):
         for rec in self:
             if self.env.user.has_group('smart_hr.group_holidays_specialist'):
                 rec.is_holidays_specialist_user = True
 
-    @api.onchange('salary_number','duartion')
+    @api.onchange('salary_number', 'duartion')
     def onchange_salary_number(self):
         if self.duration and self.salary_number:
-            if self.duration< self.salary_number*30:
-                raise ValidationError(u"لا يمكن طلب اكثر من" + str(self.duration//30) +u"رواتب مسبقة")
+            if self.duration < self.salary_number * 30:
+                raise ValidationError(u"لا يمكن طلب اكثر من" + str(self.duration//30) + u"رواتب مسبقة")
 
     @api.multi
     def _compute_display_button_cancel(self):
@@ -321,7 +314,6 @@ class HrHolidays(models.Model):
                     res['domain'] = {'entitlement_type': [('id', 'in', domain_male)]}
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional'):
             res['domain'] = {'entitlement_type': [('code', '=', 'accompaniment_exceptional')]}
-           
         
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_sport'):
             res['domain'] = {'entitlement_type': [('code', '=', 'sport')]}
@@ -433,6 +425,18 @@ class HrHolidays(models.Model):
             decision_date = fields.Date.today() # new date
             if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_normal').id:
                 decision_type_id = self.env.ref('smart_hr.data_normal_leave').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id:
+                decision_type_id = self.env.ref('smart_hr.data_exceptionnel_leave').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_illness').id:
+                decision_type_id = self.env.ref('smart_hr.data_leave_satisfactory').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional').id:
+                decision_type_id = self.env.ref('smart_hr.data_leave_escort').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_sport').id:
+                decision_type_id = self.env.ref('smart_hr.data_leave_sport').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_leave_motherhood').id:
+                decision_type_id = self.env.ref('smart_hr.data_leave_motherhood').id
+            else :
+                decision_type_id = self.env.ref('smart_hr.data_normal_leave').id
             # create decission
             decission_val={
                 'name': self.env['ir.sequence'].get('hr.holidays.seq'),
@@ -441,7 +445,6 @@ class HrHolidays(models.Model):
                 'employee_id' :self.employee_id.id }
             decision = decision_obj.create(decission_val)
             decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'holidays')
-            self.is_decision =True
             decission_id = decision.id
             self.decission_id =  decission_id
         return {

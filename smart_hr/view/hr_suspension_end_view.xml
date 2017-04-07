@@ -18,6 +18,10 @@
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" states="hrm" groups="smart_hr.group_hrm" icon="fa-times"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						
+							<button name="open_decission_suspension" string="معاينة القرار"
+							groups="smart_hr.group_hrm" type="object" states="done" icon="fa-print"
+							class="oe_inline oe_stat_button" />
 						<field name="state" widget="statusbar" statusbar_visible="draft,hrm,done" />
 					</header>
 					<sheet>
@@ -55,8 +59,6 @@
 
 							</group>
 						</group>
-						<button name="%(report_hr_suspension_end_report)d" string="طباعة القرار"
-							type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
 					</sheet>
 					<div>
 						<field name="message_ids" widget="mail_thread" readonly="1" />

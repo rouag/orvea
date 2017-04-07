@@ -111,6 +111,7 @@ class hrHolidaysCancellation(models.Model):
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                   'res_model':'hr.holidays.cancellation',
                                                   'res_id': self.id,
+                                                  'notif': True,
                                                   })
             else:
                 # send notification for requested employee
@@ -124,7 +125,8 @@ class hrHolidaysCancellation(models.Model):
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                   'res_model':'hr.holidays.cancellation',
                                                   'res_id': self.id,
-                                                  'res_action': res_model})
+                                                  'res_action': res_model,
+                                                  'notif': True,})
 
             self.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"'")
 
@@ -192,14 +194,26 @@ class hrHolidaysCancellation(models.Model):
         for cancellation in self:
             cancellation.state = 'refuse'
                 # send notification for requested the DM
-            self.env['base.notification'].create({'title': u'إشعار برفض إلغاء أو قطع إجازة',
+            if cancellation.type == 'cancellation':
+                self.env['base.notification'].create({'title': u'إشعار برفض إلغاء إجازة',
                                                   'message': u' '+ self.env.user.name +u'لقد تم الرفض من قبل ',
                                                   'user_id': self.employee_id.user_id.id,
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                   'res_model':'hr.holidays.cancellation',
-                                                  'res_id': self.id,
+                                                  'res_id': cancellation.id,
+                                                  'notif': True,
+                                                  'res_action': 'smart_hr.action_hr_holidays_cancellation_employees'
                                                   })
-
+            else:
+                self.env['base.notification'].create({'title': u'إشعار برفض قطع إجازة',
+                                                  'message': u' '+ self.env.user.name +u'لقد تم الرفض من قبل ',
+                                                  'user_id': self.employee_id.user_id.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_model':'hr.holidays.cancellation',
+                                                  'res_id': cancellation.id,
+                                                  'notif': True,
+                                                  'res_action': 'smart_hr.action_hr_holidays_cut_employees'
+                                                  })
     @api.model
     def _needaction_domain_get(self):
         return [

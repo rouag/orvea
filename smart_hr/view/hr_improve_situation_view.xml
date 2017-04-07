@@ -54,6 +54,7 @@
 					<field name="employee_id" />
 					<field name="number" />
 					<field name="job_id" />
+				
 
 				</tree>
 			</field>
@@ -72,13 +73,16 @@
 							<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" 	states="waiting"
 					/>
+					<button name="open_decission_improve" string="معاينة القرار"
+							groups="smart_hr.group_hrm" type="object" states="done" icon="fa-print"
+							class="oe_inline oe_stat_button" />
+					 
 						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
 					</header>
 					<sheet>
 						<group>
 							<group>
 								<field name="order_date" readonly="1" />
-
 								<field name="order_number"  attrs="{'readonly':[('state','in', ['waiting','done'])]}"  />
 							</group>
 						</group>
@@ -87,6 +91,7 @@
 							<group string="بيانات الموظف">
 								<field name="employee_id"  attrs="{'readonly':[('state','in', ['waiting','done'])]}"  />
 								<field name="job_id" />
+							
 								<field name="type_id" />
 								<field name="department_id" />
 								<field name="grade_id" />
