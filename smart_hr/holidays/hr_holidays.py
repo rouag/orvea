@@ -449,7 +449,7 @@ class HrHolidays(models.Model):
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'hr.decision',
-            'view_id': self.env.ref('smart_hr.hr_decision_form').id,
+            'view_id': self.env.ref('smart_hr.hr_decision_wizard_form').id,
             'type': 'ir.actions.act_window',
             'res_id': decission_id,
             'target': 'new'
