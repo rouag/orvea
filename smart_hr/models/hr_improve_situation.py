@@ -5,6 +5,7 @@ from openerp.exceptions import Warning
 from dateutil.relativedelta import relativedelta
 from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
+from openerp.tools import SUPERUSER_ID
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 
@@ -48,6 +49,46 @@ class HrImproveSituatim(models.Model):
     net_salary1 = fields.Float(string='صافي الراتب')
     is_same_type = fields.Boolean(string='نفس الصنف',related="type_improve.is_same_type")
     defferential_is_paied = fields.Boolean(string='defferential is paied', default=False)
+    decission_id  = fields.Many2one('hr.decision', string=u'القرارات',)
+
+
+
+    @api.multi
+    def open_decission_improve(self):
+        decision_obj= self.env['hr.decision']
+        if self.decission_id:
+            decission_id = self.decission_id.id
+        else :
+            decision_type_id = 1
+            decision_date = fields.Date.today() # new date
+            if self.type_improve and self.employee_id.type_id.id == self.env.ref('smart_hr.data_salary_grid_type3').id:
+                decision_type_id = self.env.ref('smart_hr.data_decision_type7').id
+            if self.type_improve and self.employee_id.type_id.id == self.env.ref('smart_hr.data_salary_grid_type4').id:
+                decision_type_id = self.env.ref('smart_hr.data_decision_type9').id
+            if self.type_improve :
+                decision_type_id = self.env.ref('smart_hr.data_decision_type7').id
+            # create decission
+            decission_val={
+                'name': self.env['ir.sequence'].get('hr.improve.seq'),
+                'decision_type_id':decision_type_id,
+                'date':decision_date,
+                'employee_id' :self.employee_id.id }
+            decision = decision_obj.create(decission_val)
+            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'employee')
+            decission_id = decision.id
+            self.decission_id =  decission_id
+        return {
+            'name': _(u'قرار تحسين الوضع'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'hr.decision',
+            'view_id': self.env.ref('smart_hr.hr_decision_wizard_form').id,
+            'type': 'ir.actions.act_window',
+            'res_id': decission_id,
+            'target': 'new'
+            }
+
+
 
 
     @api.onchange('type_id1')

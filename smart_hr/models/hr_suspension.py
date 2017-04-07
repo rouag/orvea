@@ -39,6 +39,7 @@ class hr_suspension(models.Model):
     decision_number = fields.Char(string='رقم القرار', readonly=1)
     decision_date = fields.Date(string='تاريخ القرار ', readonly=1)
     done_date = fields.Date(string='تاريخ التفعيل')
+    decission_id  = fields.Many2one('hr.decision', string=u'القرارات',)
  
     def num2hindi(self, string_number):
         if string_number:
@@ -99,7 +100,7 @@ class hr_suspension(models.Model):
             rec.done_date = fields.Date.today()
             rec.state = 'done'
             rec.message_post(u"تم الإعتماد من قبل '" + unicode(user.name) + u"'")
-            rec.create_report_attachment()
+          #  rec.create_report_attachment()
 
     @api.one
     def button_refuse(self):
@@ -128,21 +129,36 @@ class hr_suspension(models.Model):
                    }
         return value
 
-        # Objects
-#         susp_end_obj = self.env['hr.suspension.end']
-#         user = self.env['res.users'].browse(self._uid)
-#         # Create suspension end
-#         for rec in self:
-#             # Validation
-#             if not rec.suspension_end_id:
-#                 vals = {
-#                     'employee_id': rec.employee_id.id,
-#                     'suspension_id': rec.id,
-#                 }
-#                 susp_end_id = susp_end_obj.create(vals)
-#                 if susp_end_id:
-#                     rec.suspension_end_id = susp_end_id
-#                     rec.message_post(u"تم إنهاء كف اليد من قبل '" + unicode(user.name) + u"'")
+    @api.multi
+    def button_suspension(self):
+        decision_obj= self.env['hr.decision']
+        if self.decission_id:
+            decission_id = self.decission_id.id
+        else :
+            decision_type_id = 1
+            decision_date = fields.Date.today() # new date
+            if self.employee_id.id:
+                decision_type_id = self.env.ref('smart_hr.data_decision_type29').id
+            # create decission
+            decission_val={
+                'name': self.env['ir.sequence'].get('hr.suspension.seq'),
+                'decision_type_id':decision_type_id,
+                'date':decision_date,
+                'employee_id' :self.employee_id.id }
+            decision = decision_obj.create(decission_val)
+            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'employee')
+            decission_id = decision.id
+            self.decission_id =  decission_id
+        return {
+            'name': _(u'قرار كف اليد'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'hr.decision',
+            'view_id': self.env.ref('smart_hr.hr_decision_wizard_form').id,
+            'type': 'ir.actions.act_window',
+            'res_id': decission_id,
+            'target': 'new'
+            }
 
     @api.model
     def _needaction_domain_get(self):
@@ -170,6 +186,3 @@ class hr_suspension(models.Model):
         if string:
             return str(string)[::-1]
 
-    @api.multi
-    def create_report_attachment(self):
-        self.env['report'].get_pdf(self, 'smart_hr.hr_suspension_report')
