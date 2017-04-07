@@ -144,7 +144,6 @@
         'view/hr_termination_view.xml',
         'view/hr_suspension_view.xml',
         'view/hr_suspension_end_view.xml',
-        'view/external_autorities.xml',
         'view/religion.xml',
         'view/courses_follow_up.xml',
         'view/hr_direct_appoint_view.xml',
