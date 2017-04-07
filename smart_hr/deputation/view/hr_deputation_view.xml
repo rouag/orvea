@@ -244,12 +244,10 @@
 							<field name="country_city_ids" editable="bottom">
 								<tree>
 									<field name="country_id" />
-									<field name="city_id" />
 								</tree>
 								<form>
 									<group>
 										<field name="country_id" />
-										<field name="city_id" />
 									</group>
 								</form>
 							</field>
