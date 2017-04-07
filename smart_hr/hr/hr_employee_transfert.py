@@ -95,6 +95,7 @@ class HrEmployeeTransfert(models.Model):
             return res
         else:
             res['domain'] = {'employee_id': [('employee_state', '=', 'done')]}
+            self.employee_id = False
             return res
 
     @api.multi
