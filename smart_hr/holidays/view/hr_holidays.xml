@@ -176,8 +176,8 @@
 						<group>
 							<field name="date" readonly="1" />
 							<field name="external_authoritie"
-								attrs="{'invisible':[('state','!=','external_audit')]}"
-								readonly='1' />
+								attrs="{'invisible':[('state','!=','external_audit')], 'required':[('state','=','external_audit')]}"
+								/>
 						</group>
 						<group>
 							<group>
