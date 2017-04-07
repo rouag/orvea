@@ -12,7 +12,8 @@ class hr_termination(models.Model):
     _inherit = ['ir.needaction_mixin','mail.thread']
     _description = 'Termination'
 
-    name = fields.Char(string=u'مسمى طي القيد', required=1)
+   # name = fields.Char(string=u'مسمى طي القيد', required=1)
+    name = fields.Char(string=u'رقم القرار',)
     date = fields.Date(string=u'تاريخ', default=fields.Datetime.now())
     date_termination = fields.Date(string=u'تاريخ طي القيد  ', default=fields.Datetime.now())
     termination_date = fields.Date(string=u'تاريخ الإعتماد')
@@ -45,6 +46,8 @@ class hr_termination(models.Model):
     letter_date = fields.Date(string=u'تاريخ الخطاب')
     file_attachment = fields.Binary(string=u'مرفق الصورة الضوئية', attachment=True)
     file_attachment_name = fields.Char(string=u'مرفق الصورة الضوئية')
+    is_decision  = fields.Boolean(string=u'نص القرار',default=False)
+    decission_id  = fields.Many2one('hr.decision', string=u'القرارات',)
     state = fields.Selection([
         ('draft', u'طلب'),
         ('hrm', u'مدير شؤون الموظفين'),
@@ -114,7 +117,7 @@ class hr_termination(models.Model):
             # Set the termination date with the date of the final approve
             ter.termination_date = fields.Date.today()
 
-        self.create_report_attachment()
+      #  self.create_report_attachment()
 
     @api.one
     def button_refuse(self):
@@ -127,13 +130,48 @@ class hr_termination(models.Model):
             ('state', '=', 'hrm'),
         ]
 
+    @api.multi
+    def open_decission(self):
+        decision_obj= self.env['hr.decision']
+        if self.decission_id:
+            decission_id = self.decission_id.id
+        else :
+            decision_type_id = 1
+            decision_date = fields.Date.today() # new date
+            if self.termination_type_id.id == self.env.ref('smart_hr.data_hr_ending_period_experience').id:
+                decision_type_id = self.env.ref('smart_hr.data_decision_type15').id
+            # create decission
+            decission_val={
+                'name': self.env['ir.sequence'].get('hr.termination.seq'),
+                'decision_type_id':decision_type_id,
+                'date':decision_date,
+                'employee_id' :self.employee_id.id }
+            decision = decision_obj.create(decission_val)
+            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,False)
+            self.is_decision =True
+            decission_id = decision.id
+            self.decission_id =  decission_id
+        return {
+            'name': _(u'قرار طى القيد'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'hr.decision',
+            'view_id': self.env.ref('smart_hr.hr_decision_form').id,
+            'type': 'ir.actions.act_window',
+            'res_id': decission_id,               
+            'target': 'new'
+            }
+
+
+
+
     """
     Report Methods
     """
 
-    @api.multi
-    def create_report_attachment(self):
-        self.env['report'].get_pdf(self, 'smart_hr.hr_termination_report')
+#     @api.multi
+#     def create_report_attachment(self):
+#         self.env['report'].get_pdf(self, 'smart_hr.hr_termination_report')
 
 
 class hr_termination_type(models.Model):

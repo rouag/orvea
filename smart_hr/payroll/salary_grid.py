@@ -59,9 +59,10 @@ class SalaryGridType(models.Model):
 
 class SalaryGridGrade(models.Model):
     _name = 'salary.grid.grade'
+    _inherit = ['mail.thread']
     _description = u'المراتب'
 
-    name = fields.Char(string='المسمى', required=1)
+    name = fields.Char(string='المسمى', required=1, track_visibility='onchange')
     code = fields.Char(string='الرمز')
     job_create_id = fields.Many2one('hr.job.create', string=' وظائف')
     job_strip_from_id = fields.Many2one('hr.job.strip.from', string=' وظائف')
