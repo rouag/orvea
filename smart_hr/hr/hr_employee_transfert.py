@@ -18,7 +18,7 @@ class HrEmployeeTransfert(models.Model):
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
     sequence = fields.Integer(string=u'رتبة الطلب')
-    employee_id = fields.Many2one('hr.employee', string=u'صاحب الطلب',  required=1, domain=[('emp_state', 'not in', ['suspended','terminated']), ('employee_state', '=', 'employee')],
+    employee_id = fields.Many2one('hr.employee', string=u'صاحب الطلب',  required=1,
                                   default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended','terminated'])], limit=1),)
     last_evaluation_result = fields.Many2one('hr.employee.evaluation.level', string=u'أخر تقييم إداء')
     job_id = fields.Many2one('hr.job', default=_get_default_employee_job, string=u'الوظيفة', readonly=1, required=1)
@@ -90,15 +90,14 @@ class HrEmployeeTransfert(models.Model):
     def onchange_transfert_nature(self):
         #TODO: ???
         res = {}
-        if self.transfert_nature == 'internal_transfert' or self.transfert_nature == 'external_transfert_out' :
-            employee_search_ids = self.env['hr.employee'].search([('employee_state','=','employee')])
-            res['domain'] = {'employee_id': [('id', 'in', employee_search_ids.ids)]}
+        if self.transfert_nature == 'internal_transfert' or self.transfert_nature == 'external_transfert_out':
+            res['domain'] = {'employee_id': [('employee_state', '=', 'employee')]}
             return res
-        if self.transfert_nature == 'external_transfert_in':
-            employee_search_ids = self.env['hr.employee'].search([('employee_state','=','new')])
-            res['domain'] = {'employee_id': [('id', 'in', employee_search_ids.ids)]}
+        else:
+            res['domain'] = {'employee_id': [('employee_state', '=', 'done')]}
+            self.employee_id = False
             return res
-        
+
     @api.multi
     @api.depends('employee_id')
     def _is_current_user(self):
@@ -482,16 +481,17 @@ class HrTransfertSorting(models.Model):
 
     @api.multi
     def action_draft(self):
-        for rec in self :
+        for rec in self:
             if not rec.line_ids:
                 raise ValidationError(u"لايوجد طلبات حالياً.")
             line_ids = []
-            for line in rec.line_ids :
-                vals = {'hr_employee_transfert_id': line.hr_employee_transfert_id.id,
-                        'hr_employee_transfert_id.state':'pm',
-                    'state': line.state ,
-                    }
-                line_ids.append(vals)
+            for line in rec.line_ids:
+                if line.hr_employee_transfert_id:
+                    vals = {'hr_employee_transfert_id': line.hr_employee_transfert_id.id,
+                            'hr_employee_transfert_id.state':'pm',
+                            'state': line.state ,
+                            }
+                    line_ids.append(vals)
             rec.line_ids2 = line_ids
             rec.state = 'draft'
 

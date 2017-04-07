@@ -163,98 +163,79 @@ class HrPayslip(models.Model):
         self.ensure_one()
         line_ids = []
         name = ''
-        domain = [('date_to', '>=', date_from),
-                  ('date_to', '<=', date_to),
-                  ('employee_id', '=', employee_id.id),
+        domain = [('employee_id', '=', employee_id.id),
                   ('state', '=', 'done')]
         if for_last_month:
             domain.append(('done_date', '>=', date_from))
             domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         assign_ids = self.env['hr.employee.commissioning'].search(domain)
+        allowance_transport_id = self.env.ref('smart_hr.hr_allowance_type_01')
         for assign_id in assign_ids:
-            # get تفاصيل سلم الرواتب
-            grid_id, basic_salary = assign_id.employee_id.get_salary_grid_id(assign_id.date_to)
-            if grid_id:
-                # تفاصيل سلم الرواتب
-                allowance_ids = grid_id.allowance_ids
-                reward_ids = grid_id.reward_ids
-                indemnity_ids = grid_id.indemnity_ids
-                # راتب
-                if assign_id.give_salary:
-                    amount = basic_salary
-                    if amount:
-                            vals = {'name': 'فرق الراتب التي توفرها الجهة' + name,
-                                    'employee_id': assign_id.employee_id.id,
-                                    'number_of_days': 0,
-                                    'number_of_hours': 0.0,
-                                    'amount': amount * -1,
-                                    'type': 'commissioning'}
-                            line_ids.append(vals)
-                # بدل النقل
-                if assign_id.give_allowance_transport:
-                    allowance_transport_id = self.env.ref('smart_hr.hr_allowance_type_01')
-                    if allowance_transport_id:
-                        amount = 0.0
+            # overlaped days in current month
+            assign_date_from = fields.Date.from_string(assign_id.date_from)
+            date_from = fields.Date.from_string(date_from)
+            assign_date_to = fields.Date.from_string(assign_id.date_to)
+            date_to = fields.Date.from_string(date_to)
+            print 'assign_date_from, date_from', assign_date_from, date_from
+            print 'assign_date_to, date_to', assign_date_to, date_to
+            duration_in_month = 0
+            res = {}
+            amount_allowance = 0.0
+            salary_rate_amount = 0.0
+            if date_from >= assign_date_from and assign_date_to >= date_to:
+                res = self.env['hr.smart.utils'].compute_duration_difference(assign_id.employee_id, date_from, date_to, True, True, True)
+            if assign_date_from >= date_from and assign_date_to <= date_to:
+                res = self.env['hr.smart.utils'].compute_duration_difference(assign_id.employee_id, assign_date_from, assign_date_to, True, True, True)
+            if assign_date_from >= date_from and assign_date_to >= date_to:
+                res = self.env['hr.smart.utils'].compute_duration_difference(assign_id.employee_id, assign_date_from, date_to, True, True, True)
+            print '--res----', res
+            if len(res) == 1:
+                res = res[0]
+                duration_in_month = res['days']
+                grid_id = res['grid_id']
+                basic_salary = res['basic_salary']
+                if assign_id.salary_rate:
+                    salary_rate_amount = (duration_in_month * (basic_salary / 30) * assign_id.salary_rate / 100.0) * -1
+                if assign_id.allowance_transport_rate:
+                    allowance_ids = grid_id.allowance_ids
+                    for allow in allowance_ids:
+                        if allow.allowance_id == allowance_transport_id:
+                            amount_allowance = (duration_in_month * (allow.get_value(assign_id.employee_id.id) / 30) * assign_id.allowance_transport_rate / 100.0) * -1
+                            break
+            else:
+                for rec in res:
+                    grid_id = rec['grid_id']
+                    basic_salary = rec['basic_salary']
+                    days = rec['days']
+                    duration_in_month += days
+                    if grid_id and days > 0 and assign_id.salary_rate:
+                        rec_amount = ((days * (basic_salary / 30) * assign_id.salary_rate) / 100.0) * -1
+                        salary_rate_amount += rec_amount
+                    if grid_id and days > 0 and assign_id.allowance_transport_rate:
+                        allowance_ids = grid_id.allowance_ids
                         for allow in allowance_ids:
                             if allow.allowance_id == allowance_transport_id:
-                                amount = allow.get_value(assign_id.employee_id.id)
+                                amount_allowance += (days * (allow.get_value(assign_id.employee_id.id) / 30) * assign_id.allowance_transport_rate / 100.0) * -1
                                 break
-                        if amount:
-                            vals = {'name': 'فرق بدل النقل الذي توفره الجهة' + name,
-                                    'employee_id': assign_id.employee_id.id,
-                                    'number_of_days': 0,
-                                    'number_of_hours': 0.0,
-                                    'amount': amount * -1,
-                                    'type': 'commissioning'}
-                            line_ids.append(vals)
-                # بدلات، مكافأة أو تعويضات
-                if assign_id.give_allow:
-                    # بدلات
-                    for allow in allowance_ids:
-                        if allow.allowance_id != self.env.ref('smart_hr.hr_allowance_type_01'):
-                            amount = allow.get_value(assign_id.employee_id.id)
-                            if amount:
-                                vals = {'name': allow.allowance_id.name + name,
-                                        'employee_id': assign_id.employee_id.id,
-                                        'number_of_days': 0,
-                                        'number_of_hours': 0.0,
-                                        'amount': amount * -1,
-                                        'type': 'commissioning'}
-                                line_ids.append(vals)
-                    # مكافأة
-                    for reward in reward_ids:
-                        amount = reward.get_value(assign_id.employee_id.id)
-                        if amount:
-                            vals = {'name': reward.reward_id.name + name,
-                                    'employee_id': assign_id.employee_id.id,
-                                    'number_of_days': 0,
-                                    'number_of_hours': 0.0,
-                                    'amount': amount * -1,
-                                    'type': 'commissioning'}
-                            line_ids.append(vals)
-                    # تعويضات
-                    for indemnity in indemnity_ids:
-                        amount = indemnity.get_value(assign_id.employee_id.id)
-                        if amount:
-                            vals = {'name': indemnity.indemnity_id.name + name,
-                                    'employee_id': assign_id.employee_id.id,
-                                    'number_of_days': 0,
-                                    'number_of_hours': 0.0,
-                                    'amount': amount * -1,
-                                    'type': 'commissioning'}
-                            line_ids.append(vals)
-                # 3) حصة الحكومة من التقاعد
-                if assign_id.comm_type.pay_retirement:
-                    amount = (basic_salary * assign_id.retirement_proportion) / 100.0
-                    if amount > 0:
-                        vals = {'name': 'حصة الحكومة من التقاعد' + name,
-                                'employee_id': assign_id.employee_id.id,
-                                'number_of_days': 0,
-                                'number_of_hours': 0.0,
-                                'amount': amount,
-                                'type': 'commissioning'}
-                        line_ids.append(vals)
+
+            # 1 الراتب
+            if salary_rate_amount < 0:
+                vals = {'name': ' فرق الراتب التي توفرها الجهة: تكليف' + name,
+                        'employee_id': assign_id.employee_id.id,
+                        'number_of_days': duration_in_month,
+                        'number_of_hours': 0.0,
+                        'amount': salary_rate_amount,
+                        'type': 'commissioning'}
+                line_ids.append(vals)
+            if amount_allowance < 0:
+                vals = {'name': 'فرق بدل النقل الذي توفره الجهة: تكليف' + name,
+                        'employee_id': assign_id.employee_id.id,
+                        'number_of_days': duration_in_month,
+                        'number_of_hours': 0.0,
+                        'amount': amount_allowance,
+                        'type': 'commissioning'}
+                line_ids.append(vals)
         return line_ids
 
     @api.multi
@@ -320,6 +301,8 @@ class HrPayslip(models.Model):
             domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         lend_ids = self.env['hr.employee.lend'].search(domain)
+        amount_retirement = 0.0
+        allowance_amount = 0.0
         for lend_id in lend_ids:
             # overlaped days in current month
             lend_date_from = fields.Date.from_string(lend_id.date_from)
@@ -331,119 +314,82 @@ class HrPayslip(models.Model):
             if date_from >= lend_date_from and lend_date_to >= date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, date_from, date_to, True, True, True)
             if lend_date_from >= date_from and lend_date_to <= date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_to, lend_date_from, True, True, True)
+                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_from, lend_date_to, True, True, True)
             if lend_date_from >= date_from and lend_date_to >= date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_from, date_to, True, True, True)
-            # case 1: one salary grid for all the periode
+
+            hr_setting = self.env['hr.setting'].search([], limit=1)
+            employee_allowances = lend_id.employee_id.hr_employee_allowance_ids
             if len(res) == 1:
                 res = res[0]
                 duration_in_month = res['days']
                 grid_id = res['grid_id']
                 basic_salary = res['basic_salary']
-                if grid_id and duration_in_month > 0:
-                    # 1) نسبة الراتب
-                    amount = ((duration_in_month * (basic_salary / 30) * lend_id.salary_proportion) / 100.0) * -1
-                    if amount < 0:
-                        vals = {'name': 'نسبة الراتب' + name,
-                                'employee_id': lend_id.employee_id.id,
-                                'number_of_days': duration_in_month,
-                                'number_of_hours': 0.0,
-                                'amount': amount,
-                                'type': 'lend'}
-                        line_ids.append(vals)
-                    # 2) البدلات في الإعارة
-                    alowances_in_grade_id = [rec.allowance_id for rec in grid_id.allowance_ids]
-                    for allowance in lend_id.allowance_ids:
-                        if allowance not in alowances_in_grade_id:
-                            vals = {'name': allowance.allowance_id.name + name,
-                                    'employee_id': lend_id.employee_id.id,
-                                    'number_of_days': duration_in_month,
-                                    'number_of_hours': 0.0,
-                                    'amount': allowance.amount,
-                                    'type': 'lend'}
-                            line_ids.append(vals)
-                    # 3) حصة الحكومة من التقاعد
-                    if lend_id.pay_retirement:
-                        hr_setting = self.env['hr.setting'].search([], limit=1)
-                        if hr_setting:
-                            amount = (basic_salary * hr_setting.retirement_proportion) / 100.0
-                            if amount > 0:
-                                vals = {'name': 'حصة الحكومة من التقاعد' + name,
-                                        'employee_id': lend_id.employee_id.id,
-                                        'number_of_days': duration_in_month,
-                                        'number_of_hours': 0.0,
-                                        'amount': amount,
-                                        'type': 'lend'}
-                                line_ids.append(vals)
-                    # 4) فرق الراتب
-                    amount = ((lend_id.lend_salary - lend_id.basic_salary) / 30) * duration_in_month
-                    if amount > 0:
-                        vals = {'name': 'فرق الراتب' + name,
-                                'employee_id': lend_id.employee_id.id,
-                                'number_of_days': duration_in_month,
-                                'number_of_hours': 0.0,
-                                'amount': amount,
-                                'type': 'lend'}
-                        line_ids.append(vals)
-            # case 2: many salary grid for all the periode
+                amount = ((duration_in_month * (basic_salary / 30.0) * lend_id.salary_proportion) / 100.0) * -1
+                if hr_setting and lend_id.pay_retirement:
+                    amount_retirement = (duration_in_month * basic_salary / 30.0 * hr_setting.retirement_proportion) / 100.0
+                # البدلات
+                employee_allowances = lend_id.employee_id.hr_employee_allowance_ids
+                for allowance in lend_id.allowance_ids:
+                    for rec in employee_allowances:
+                        if rec.salary_grid_detail_id == grid_id and allowance.allowance_id == rec.allowance_id:
+                            if allowance.amount < rec.amount:
+                                allowance_amount += duration_in_month * allowance.amount / 30.0
+                            if allowance.amount >= rec.amount:
+                                allowance_amount += duration_in_month * rec.amount / 30.0
+                allowance_amount *= -1
             else:
-                mydict = {}
                 for rec in res:
-                    duration_in_month = rec['days']
                     grid_id = rec['grid_id']
                     basic_salary = rec['basic_salary']
-                    if grid_id and duration_in_month > 0:
-                        # 1) نسبة الراتب
-                        amount = ((duration_in_month * (basic_salary / 30) * lend_id.salary_proportion) / 100.0) * -1
-                        mydict['duration_in_month'] += duration_in_month
-                        mydict['amount'] += amount
-                if mydict:
-                    vals = {'name': 'نسبة الراتب' + name,
-                            'employee_id': lend_id.employee_id.id,
-                            'number_of_days': mydict['duration_in_month'],
-                            'number_of_hours': 0.0,
-                            'amount': mydict['amount'],
-                            'type': 'lend'}
-                    line_ids.append(vals)
-                mydict = {}
-                for rec in res:
-                    duration_in_month = rec['days']
-                    grid_id = rec['grid_id']
-                    basic_salary = rec['basic_salary']
-                    # 2) البدلات في الإعارة
-                    alowances_in_grade_id = [rec.allowance_id for rec in grid_id.allowance_ids]
-                    for allowance in lend_id.allowance_ids:
-                        if allowance not in alowances_in_grade_id:
-                            vals = {'name': allowance.allowance_id.name + name,
-                                    'employee_id': lend_id.employee_id.id,
-                                    'number_of_days': duration_in_month,
-                                    'number_of_hours': 0.0,
-                                    'amount': allowance.amount,
-                                    'type': 'lend'}
-                            line_ids.append(vals)
-                    # 3) حصة الحكومة من التقاعد
-                    if lend_id.pay_retirement:
-                        hr_setting = self.env['hr.setting'].search([], limit=1)
-                        if hr_setting:
-                            amount = (basic_salary * hr_setting.retirement_proportion) / 100.0
-                            if amount > 0:
-                                vals = {'name': 'حصة الحكومة من التقاعد' + name,
-                                        'employee_id': lend_id.employee_id.id,
-                                        'number_of_days': duration_in_month,
-                                        'number_of_hours': 0.0,
-                                        'amount': amount,
-                                        'type': 'lend'}
-                                line_ids.append(vals)
-                    # 4) فرق الراتب
-                    amount = ((lend_id.lend_salary - lend_id.basic_salary) / 30) * duration_in_month
-                    if amount > 0:
-                        vals = {'name': 'فرق الراتب' + name,
-                                'employee_id': lend_id.employee_id.id,
-                                'number_of_days': duration_in_month,
-                                'number_of_hours': 0.0,
-                                'amount': amount,
-                                'type': 'lend'}
-                        line_ids.append(vals)
+                    days = rec['days']
+                    if grid_id and days > 0:
+                        rec_amount = ((days * (basic_salary / 30) * lend_id.salary_proportion) / 100.0) * -1
+                        duration_in_month += days
+                        amount += rec_amount
+                        if hr_setting and lend_id.pay_retirement:
+                            amount_retirement += (days * (basic_salary / 30) * hr_setting.retirement_proportion / 100.0) * -1
+                        # البدلات
+                        for allowance in lend_id.allowance_ids:
+                            for rec in employee_allowances:
+                                if rec.salary_grid_detail_id == grid_id and allowance.allowance_id == rec.allowance_id:
+                                    if allowance.amount < rec.amount:
+                                        allowance_amount += days * allowance.amount / 30.0
+                                    if allowance.amount >= rec.amount:
+                                        allowance_amount += days * rec.amount / 30.0
+                        allowance_amount *= -1
+
+            # 1 الراتب
+            if grid_id and duration_in_month and amount < 0:
+                vals = {'name': 'نسبة الراتب' + name,
+                        'employee_id': lend_id.employee_id.id,
+                        'number_of_days': duration_in_month,
+                        'number_of_hours': 0.0,
+                        'amount': amount,
+                        'type': 'lend'
+                        }
+                line_ids.append(vals)
+
+            # 2 -البدلات
+            if allowance_amount < 0:
+                vals = {'name': 'فرق البدلات التي تتحملها الجهة: إعارة' + name,
+                        'employee_id': lend_id.employee_id.id,
+                        'number_of_days': duration_in_month,
+                        'number_of_hours': 0.0,
+                        'amount': allowance_amount,
+                        'type': 'lend'
+                        }
+                line_ids.append(vals)
+            # 3) حصة الحكومة من التقاعد
+            if amount_retirement:
+                vals = {'name': 'حصة الحكومة من التقاعد' + name,
+                        'employee_id': lend_id.employee_id.id,
+                        'number_of_days': duration_in_month,
+                        'number_of_hours': 0.0,
+                        'amount': amount_retirement,
+                        'type': 'lend'}
+                line_ids.append(vals)
+
         return line_ids
 
     @api.multi
@@ -484,7 +430,7 @@ class HrPayslip(models.Model):
             else:
                 entitlement_type = holiday_id.entitlement_type
             # case of لا يصرف له الراتب
-            if grid_id and not holiday_status_id.salary_spending and not holiday_status_id.percentages:
+            if grid_id and not holiday_status_id.salary_spending:
                 amount = (duration_in_month * (basic_salary / 30))
                 if duration_in_month > 0 and amount != 0:
                     vals = {'name': holiday_id.holiday_status_id.name + name,
@@ -495,10 +441,11 @@ class HrPayslip(models.Model):
                             'type': 'holiday'}
                     line_ids.append(vals)
             # case of  لا يصرف له راتب كامل
-            if grid_id and not holiday_status_id.salary_spending and holiday_status_id.percentages:
+            if grid_id and holiday_status_id.salary_spending and holiday_status_id.percentages:
                 for rec in holiday_status_id.percentages:
                     if entitlement_type == rec.entitlement_id.entitlment_category and rec.month_from <= months_from_holiday_start <= rec.month_to:
                         amount = (duration_in_month * (basic_salary / 30) * (100 - rec.salary_proportion)) / 100.0
+                        print '--amount--', amount
                         if holiday_status_maternity == holiday_status_id:
                             retirement_amount = basic_salary * grid_id.retirement / 100.0
                             amount = ((basic_salary - retirement_amount) * (100 - rec.salary_proportion)) / 100.0
@@ -756,10 +703,6 @@ class HrPayslip(models.Model):
             # سعودي
             if termination.employee_id.country_id and termination.employee_id.country_id.code == 'SA':
                 if grid_id:
-                    if termination.employee_id.basic_salary == 0:
-                        basic_salary = grid_id.basic_salary
-                    else:
-                        basic_salary = termination.employee_id.basic_salary
                     # 1) عدد الرواتب المستحق
                     if termination.termination_type_id.nb_salaire > 0:
                         amount = basic_salary * (termination.termination_type_id.nb_salaire - 1)

@@ -25,7 +25,7 @@
 		</record>
 
 		<record id="action_wizard_loan_action" model="ir.actions.act_window">
-			<field name="name">تجاوز شهر</field>
+			<field name="name">اجراءت قرض</field>
 			<field name="res_model">wizard.loan.action</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>

@@ -17,7 +17,7 @@ class HrJob(models.Model):
     name_number = fields.Char(related='name.number', string=u'الرمز الوظيفي', readonly=1)
     job_name_code = fields.Char(related="name.number", string='الرمز', required=1)
     activity_type = fields.Many2one('hr.job.type.activity', string=u'نوع النشاط')
-    number = fields.Char(string='رقم الوظيفة', required=1, states={'unoccupied': [('readonly', 0)]})
+    number = fields.Char(string='الرقم الوظيفي', required=1, states={'unoccupied': [('readonly', 0)]})
     department_id = fields.Many2one('hr.department', string='الإدارة', required=1,
                                     states={'unoccupied': [('readonly', 0)]})
     general_id = fields.Many2one('hr.groupe.job', ' المجموعة العامة', ondelete='cascade', required=1)

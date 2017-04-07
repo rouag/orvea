@@ -20,11 +20,20 @@ class HrEmployeeCommissioning(models.Model):
         return self.env['res.company']._company_default_get('smart_hr').id
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
-    demand_owner_id = fields.Many2one('hr.employee', string='صاحب الطلب', domain=[('emp_state', 'not in', ['suspended','terminated']), ('employee_state', '=', 'employee')],
-                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended','terminated'])], limit=1),)
-    employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1, readonly=1, states={'new': [('readonly', 0)]})
-    comm_type = fields.Many2one('hr.employee.commissioning.type', string=u'نوع التكليف', required=1, readonly=1, states={'new': [('readonly', 0)]})
-    date_from = fields.Date(string=u'التاريخ من ', default=fields.Datetime.now(), readonly=1, states={'new': [('readonly', 0)]})
+    demand_owner_id = fields.Many2one('hr.employee', string='صاحب الطلب',
+                                      domain=[('emp_state', 'not in', ['suspended', 'terminated']),
+                                              ('employee_state', '=', 'employee')],
+                                      default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid),
+                                                                                           ('emp_state', 'not in',
+                                                                                            ['suspended',
+                                                                                             'terminated'])],
+                                                                                          limit=1), )
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1, readonly=1,
+                                  states={'new': [('readonly', 0)]})
+    comm_type = fields.Many2one('hr.employee.commissioning.type', string=u'نوع التكليف', required=1, readonly=1,
+                                states={'new': [('readonly', 0)]})
+    date_from = fields.Date(string=u'التاريخ من ', default=fields.Datetime.now(), readonly=1,
+                            states={'new': [('readonly', 0)]})
     date_to = fields.Date(string=u'التاريخ الى', compute='_compute_date_to', store=True)
     duration = fields.Integer(string=u'الأيام', required=1, readonly=1, states={'new': [('readonly', 0)]})
     state = fields.Selection([('new', u'طلب'),
@@ -33,25 +42,29 @@ class HrEmployeeCommissioning(models.Model):
                               ('done', u'اعتمدت'),
                               ('refused', u'رفض'),
                               ], readonly=1, default='new', string=u'الحالة')
-    governmental_entity = fields.Many2one('res.partner', string=u'الجهة الحكومية', domain=[('company_type', '=', 'governmental_entity')], default=_get_default_company, readonly=1, states={'new': [('readonly', 0)]})
+    governmental_entity = fields.Many2one('res.partner', string=u'الجهة الحكومية',
+                                          domain=[('company_type', '=', 'governmental_entity')],
+                                          default=_get_default_company, readonly=1, states={'new': [('readonly', 0)]})
     task_ids = fields.One2many('hr.employee.task', 'comm_id', string=u'المهام')
     note = fields.Text(string=u'ملاحظات')
     current_city = fields.Many2one('res.city', string=u'مقر الموظف', related='employee_id.dep_city', required=0)
     city = fields.Many2one('res.city', string=u'مقر التكليف', required=1, readonly=1, states={'new': [('readonly', 0)]})
- 
-    decision_number = fields.Char(string=u"رقم القرار", required=1, readonly=1, states={'new': [('readonly', 0)]})
-    decision_date = fields.Date(string=u'تاريخ القرار', required=1, readonly=1, states={'new': [('readonly', 0)]})
-    decision_file = fields.Binary(string=u'نسخة القرار', required=1, readonly=1, states={'new': [('readonly', 0)]}, attachment=True)
-    decision_file_name = fields.Char(string=u'نسخة القرار')
-    give_allowance_transport = fields.Boolean(string=u'بدل النقل', default=False)
-    give_allow = fields.Boolean(string=u'بدلات، مكافأة أو تعويضات', default=False)
-    give_salary = fields.Boolean(string=u'راتب', default=False)
+
+    decision_number = fields.Char(string=u"رقم القرار", readonly=1)
+    decision_date = fields.Date(string=u'تاريخ القرار', readonly=1)
+
+    allowance_transport_rate = fields.Float(string=u'نسبة بدل النقل التي توفرها الجهة')
+    salary_rate = fields.Float(string=u'نسبة  الراتب التي توفرها الجهة ')
+    give_allow = fields.Boolean(string=u'الجهة توفر بدلات، مكافأة أو تعويضات')
+
     pay_retirement = fields.Boolean(string=u'يدفع له نسبة التقاعد', related="comm_type.pay_retirement", readonly=1)
-    retirement_proportion = fields.Float(string=u'حصة الحكومة من التقاعد (%)', default=9)
     done_date = fields.Date(string='تاريخ التفعيل')
-    commissioning_job_id = fields.Many2one('hr.job', string='الوظيفة المكلف عليها' ,Domain=[('state', '=', 'unoccupied'),('state_job','=','mission')])
-    type_id = fields.Many2one('salary.grid.type', string='نوع السلم', related = 'commissioning_job_id.type_id' , readonly=1)
-    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', related = 'commissioning_job_id.grade_id' , readonly=1)
+    commissioning_job_id = fields.Many2one('hr.job', string='الوظيفة المكلف عليها', required=1,
+                                           Domain=[('state', '=', 'unoccupied'), ('state_job', '=', 'mission')])
+    type_id = fields.Many2one('salary.grid.type', string='نوع السلم', related='commissioning_job_id.type_id',
+                              readonly=1)
+    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', related='commissioning_job_id.grade_id',
+                               readonly=1)
 
     @api.multi
     @api.depends('date_from', 'duration')
@@ -61,7 +74,7 @@ class HrEmployeeCommissioning(models.Model):
             new_date_to = self.env['hr.smart.utils'].compute_date_to(self.date_from, self.duration)
             self.date_to = new_date_to
         elif self.date_from:
-                self.date_to = self.date_from
+            self.date_to = self.date_from
 
     @api.multi
     def _get_distance(self, city_code_from, city_code_to):
@@ -86,7 +99,8 @@ class HrEmployeeCommissioning(models.Model):
         hr_deputation_setting = self.env['hr.deputation.setting'].search([], limit=1)
         if hr_config:
             # check if there is another commissiong for the employee
-            comm_count = self.env['hr.employee.commissioning'].search_count([('state', '=', 'done'), ('employee_id', '=', self.employee_id.id), ('date_to', '>=', self.date_from)])
+            comm_count = self.env['hr.employee.commissioning'].search_count(
+                [('state', '=', 'done'), ('employee_id', '=', self.employee_id.id), ('date_to', '>=', self.date_from)])
             if comm_count > 0:
                 raise ValidationError(u"لا يمكن إنشاء إعارة قبل إتمام مدة أخر إعارة للموظف.")
             # check assignment periode
@@ -127,10 +141,12 @@ class HrEmployeeCommissioning(models.Model):
         self.ensure_one()
         self.done_date = fields.Date.today()
         self.employee_id.commissioning_job_id = self.commissioning_job_id
-        self.commissioning_job_id.state='occupied'
+        self.commissioning_job_id.state = 'occupied'
         self.state = 'done'
         # create history_line
-#         self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, False, False, "تكليف")
+
+
+# self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, False, False, "تكليف")
 
 
 class HrEmployeeCommissioningType(models.Model):

@@ -54,7 +54,8 @@
 					<field name="employee_id" />
 					<field name="number" />
 					<field name="job_id" />
-					<field name="number_job" />
+				
+
 				</tree>
 			</field>
 		</record>
@@ -90,7 +91,7 @@
 							<group string="بيانات الموظف">
 								<field name="employee_id"  attrs="{'readonly':[('state','in', ['waiting','done'])]}"  />
 								<field name="job_id" />
-								<field name="number_job" />
+							
 								<field name="type_id" />
 								<field name="department_id" />
 								<field name="grade_id" />
@@ -106,6 +107,8 @@
 								<field name="is_same_type" invisible="1" />
 							</group>
 						</group>
+
+
 					</sheet>
 					<div class="oe_chatter">
 						<field name="message_follower_ids" widget="mail_followers"

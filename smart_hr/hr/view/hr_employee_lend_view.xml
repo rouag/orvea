@@ -35,35 +35,26 @@
 					</header>
 					<sheet>
 						<group>
-							<field name="create_date" />
-						</group>
-						<group col="6">
-							<field name="date_from" required="1" />
-							<field name="duration" />
-							<field name="date_to" />
-						</group>
-						<group>
-							<group>
+							<group  string="بيانات الطلب">
+								<field name="create_date" />
 								<field name="employee_id"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="insurance_entity" options='{"no_open": True, "no_create": True}' />
+								<field name="date_from" required="1" />
+								<field name="duration" />
+								<field name="date_to" />
+							</group>
+							<group string="الأثر المالي">
+								<field name="basic_salary" />
+								<field name="lend_salary" />
+								<field name="salary_proportion" />
+								<field name="pay_retirement" />
 								<field name="allowance_ids">
 									<tree editable="bottom">
 										<field name="allowance_id" options='{"no_open": True, "no_create": True}' />
 										<field name="amount" />
 									</tree>
 								</field>
-								<field name="basic_salary" />
-								<field name="lend_salary" />
-								<field name="salary_proportion" />
-								<field name="pay_retirement" />
-
-							</group>
-							<group>
-								<field name="decision_number" />
-								<field name="decision_date" />
-								<field name="decision_file" />
-								<field name="decision_file_name" invisible="1" />
 							</group>
 						</group>
 					</sheet>

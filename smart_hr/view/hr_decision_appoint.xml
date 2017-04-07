@@ -219,7 +219,6 @@
 										<field name="number" />
 										<field name="country_id" />
 										<field name="emp_job_id" />
-										<field name="emp_number_job" />
 										<field name="emp_code" />
 										<field name="emp_department_id" />
 										<field name="date_medical_examination"
@@ -261,7 +260,6 @@
 										<field name="job_id" domain="[('state','=','unoccupied')]"
 											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 											attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'manager', 'hrm', 'budget', 'done','refuse'])],'readonly':[('state', 'in', [ 'waiting', 'manager', 'hrm', 'budget','civil', 'done','refuse'])]}" />
-										<field name="number_job" />
 										<field name="code" />
 										<field name="type_id" />
 										<field name="department_id" />

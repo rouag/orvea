@@ -19,7 +19,7 @@ class HrDecisionPromotion(models.Model):
     employee_decision = fields.Boolean(string=u'مباشر', default=False)
     # info about employee
     employee_id = fields.Many2one('hr.employee', string='الموظف', required=1)
-    number = fields.Char(string='رقم الوظيفة', readonly=1)
+    number = fields.Char(string='الرقم الوظيفي', readonly=1)
     emp_code = fields.Char(string=u'رمز الوظيفة ', readonly=1)
     country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
     emp_job_id = fields.Many2one('hr.job', string='الوظيفة', store=True, readonly=1)
