@@ -105,7 +105,7 @@ class SalaryGridDetail(models.Model):
     insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين')
     increase = fields.Float(string='العلاوة')
     transport_allowance_amout = fields.Float(string='مبلغ بدل النقل', readonly=1, compute='_compute_transport_allowance_amout', store=True)
-    is_old = fields.Boolean(string='is_old', default=False)
+    is_old = fields.Boolean(string='غير ساري المفعول', default=False)
 
     @api.multi
     @api.depends('basic_salary', 'retirement')
