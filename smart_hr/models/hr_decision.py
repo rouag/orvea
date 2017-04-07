@@ -66,7 +66,7 @@ class HrDecision(models.Model):
             object_type= 'holidays'
             self.text = self.replace_text(self.employee_id, self.date,self.decision_type_id.id,'holidays')
 
-        elif self.decision_type_id :
+        if self.decision_type_id :
             object_type= 'appoint'
             self.text = self.replace_text(self.employee_id, self.date,self.decision_type_id.id,'appoint')
 
@@ -130,7 +130,7 @@ class HrDecision(models.Model):
                         date_to = self._get_hijri_date(holidays_line.date_to, '-')
                         date_to = str(date_to).split('-')
                         date_to = date_to[2] + '-' + date_to[1] + '-' + date_to[0] or ""
-                    ENDDET = date_to or ""
+                    date_to = date_to or ""
                     decision_text = decision_text.replace('DURATION', unicode(duration))
                     decision_text = decision_text.replace('FROMDET', unicode(fromdate))
                     decision_text = decision_text.replace('ENDDET', unicode(date_to))
