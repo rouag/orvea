@@ -316,3 +316,15 @@ class SmartUtils(models.Model):
                 return "holiday"
             else:
                 return False
+
+    def public_holiday_intersection(self, date):
+        if not isinstance(date, dt.date):
+            date = fields.Date.from_string(date)
+
+        hr_public_holiday_obj = self.env['hr.public.holiday']
+        inter = hr_public_holiday_obj.search([('state', '=', 'done'), ('date_from', '<=', date), ('date_to', '>=', date)], limit=1)
+        if inter:
+            date_from = fields.Date.from_string(inter.date_from)
+            inter_count = (date - date_from).days + 1
+            return inter_count
+
