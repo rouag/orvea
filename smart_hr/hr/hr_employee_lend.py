@@ -19,7 +19,7 @@ class HrEmployeeLend(models.Model):
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1, readonly=1, states={'new': [('readonly', 0)]})
-    insurance_entity = fields.Many2one('res.partner', string=u'الجهة المعار إليها', domain=[('governmental_entity', '=', True)], required=1, readonly=1, states={'new': [('readonly', 0)]})
+    insurance_entity = fields.Many2one('res.partner', string=u'الجهة المعار إليها', domain=[('company_type', '=', 'governmental_entity')], required=1, readonly=1, states={'new': [('readonly', 0)]})
     decision_number = fields.Char(string=u"رقم القرار", readonly=1, states={'new': [('readonly', 0)]})
     decision_date = fields.Date(string=u'تاريخ القرار', readonly=1, states={'new': [('readonly', 0)]})
     decision_file = fields.Binary(string=u'نسخة القرار', readonly=1, states={'new': [('readonly', 0)]}, attachment=True)

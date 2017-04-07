@@ -302,6 +302,7 @@ class HrPayslip(models.Model):
             name = u' للشهر الفارط '
         lend_ids = self.env['hr.employee.lend'].search(domain)
         amount_retirement = 0.0
+        allowance_amount = 0.0
         for lend_id in lend_ids:
             # overlaped days in current month
             lend_date_from = fields.Date.from_string(lend_id.date_from)
@@ -318,14 +319,25 @@ class HrPayslip(models.Model):
                 res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_from, date_to, True, True, True)
 
             hr_setting = self.env['hr.setting'].search([], limit=1)
+            employee_allowances = lend_id.employee_id.hr_employee_allowance_ids
             if len(res) == 1:
                 res = res[0]
                 duration_in_month = res['days']
                 grid_id = res['grid_id']
                 basic_salary = res['basic_salary']
-                amount = ((duration_in_month * (basic_salary / 30) * lend_id.salary_proportion) / 100.0) * -1
+                amount = ((duration_in_month * (basic_salary / 30.0) * lend_id.salary_proportion) / 100.0) * -1
                 if hr_setting and lend_id.pay_retirement:
-                    amount_retirement = (basic_salary * hr_setting.retirement_proportion) / 100.0
+                    amount_retirement = (duration_in_month * basic_salary / 30.0 * hr_setting.retirement_proportion) / 100.0
+                # البدلات
+                employee_allowances = lend_id.employee_id.hr_employee_allowance_ids
+                for allowance in lend_id.allowance_ids:
+                    for rec in employee_allowances:
+                        if rec.salary_grid_detail_id == grid_id and allowance.allowance_id == rec.allowance_id:
+                            if allowance.amount < rec.amount:
+                                allowance_amount += duration_in_month * allowance.amount / 30.0
+                            if allowance.amount >= rec.amount:
+                                allowance_amount += duration_in_month * rec.amount / 30.0
+                allowance_amount *= -1
             else:
                 for rec in res:
                     grid_id = rec['grid_id']
@@ -336,7 +348,16 @@ class HrPayslip(models.Model):
                         duration_in_month += days
                         amount += rec_amount
                         if hr_setting and lend_id.pay_retirement:
-                            amount_retirement = (days * (basic_salary / 30) * hr_setting.retirement_proportion / 100.0) * -1
+                            amount_retirement += (days * (basic_salary / 30) * hr_setting.retirement_proportion / 100.0) * -1
+                        # البدلات
+                        for allowance in lend_id.allowance_ids:
+                            for rec in employee_allowances:
+                                if rec.salary_grid_detail_id == grid_id and allowance.allowance_id == rec.allowance_id:
+                                    if allowance.amount < rec.amount:
+                                        allowance_amount += days * allowance.amount / 30.0
+                                    if allowance.amount >= rec.amount:
+                                        allowance_amount += days * rec.amount / 30.0
+                        allowance_amount *= -1
 
             # 1 الراتب
             if grid_id and duration_in_month and amount < 0:
@@ -350,8 +371,15 @@ class HrPayslip(models.Model):
                 line_ids.append(vals)
 
             # 2 -البدلات
-
-
+            if allowance_amount < 0:
+                vals = {'name': 'فرق البدلات التي تتحملها الجهة: إعارة' + name,
+                        'employee_id': lend_id.employee_id.id,
+                        'number_of_days': duration_in_month,
+                        'number_of_hours': 0.0,
+                        'amount': allowance_amount,
+                        'type': 'lend'
+                        }
+                line_ids.append(vals)
             # 3) حصة الحكومة من التقاعد
             if amount_retirement:
                 vals = {'name': 'حصة الحكومة من التقاعد' + name,
