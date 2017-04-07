@@ -118,16 +118,7 @@
 								groups="smart_hr.group_hr_personnel_officer_jobs" attrs="{'required':[('same_group', 
 								'=', True),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm'),]}" 
 								/> </group> -->
-							<group string="موافقة الخدمة المدنية">
-								<field name="speech_number"
-									attrs="{'required':[('same_group', '=', False),('state', '=', 'pm'),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm')]}" />
-								<field name="speech_date"
-									attrs="{'required':[('same_group', '=', False),('state', '=', 'pm'),('new_job_id', '!=', False) ],'readonly':[('state', '!=', 'pm')]}" />
-								<field name="speech_file" filename="speech_file_name"
-									attrs="{'required':[('same_group', '=', False),('state', '=', 'pm'),('new_job_id', '!=', False)],'readonly':[('state', '!=', 'pm')]}" />
-								<field name="decision_file_name" invisible="1" />
-								<field name="speech_file_name" invisible="1" />
-							</group>
+
 						</group>
 						<notebook>
 							<page name="job" string="بيانات الوظيفة">
@@ -324,14 +315,14 @@
 						<button name="action_commission_president" string="إرسال "
 							type="object" groups="smart_hr.group_hr_personnel_officer_commissioning"
 							states="commission_president" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						
-						<button name="action_commission_third" attrs="{'invisible':[('state','!=', 'commission_third')]}"
+
+						<button name="action_commission_third"
+							attrs="{'invisible':[('state','!=', 'commission_third')]}"
 							string="إعتماد " type="object" groups="smart_hr.group_hr_commissioning_requests"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_done" attrs="{'invisible':[('state','!=', 'benefits')]}"
-							string="إعتماد " type="object"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							string="إعتماد " type="object" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 
 
@@ -343,6 +334,20 @@
 						<group>
 							<group>
 								<field name="name" />
+							</group>
+							<group string="موافقة الخدمة المدنية"
+								attrs="{'invisible':[('state', 'not in', ['commission_third','benefits','done'])]}">
+								<field name="speech_number"
+									attrs="{'invisible':[('state', 'not in', ['commission_third'])],'required':[('state', '=', 'commission_third')],'readonly':[('state', 'in', ['benefits','done'])]}" />
+								<field name="speech_date"
+									attrs="{'invisible':[('state', 'not in', ['commission_third'])],'required':[('state', '=', 'commission_third')],'readonly':[('state', 'in', ['benefits','done'])]}" />
+								<field name="speech_file" filename="speech_file_name"
+									attrs="{'invisible':[('state', 'not in', ['commission_third'])],'required':[('state', '=', 'commission_third')],'readonly':[('state', 'in', ['benefits','done'])]}" />
+
+								<field name="speech_file_name" invisible="1" />
+
+
+
 								<field name="is_ended" invisible="1" />
 								<field name="is_commission_third" invisible="1" />
 							</group>
@@ -352,7 +357,8 @@
 								<br></br>
 								<field name="line_ids" string=" طلبات النقل"
 									attrs="{'invisible':[('state', 'not in', ['new'])]}" options="{'no_create': True}">
-									<tree editable="bottom" colors="red:is_conflected==True;" create="false">
+									<tree editable="bottom" colors="red:is_conflected==True;"
+										create="false">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />

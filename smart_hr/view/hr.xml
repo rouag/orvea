@@ -417,15 +417,13 @@
 											<field name="degree_id"
 												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 
+											<field name="commissioning_job_id"
+												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+											<field name="commissioning_type_id"
+												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+											<field name="commissioning_grade_id"
+												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
 
-
-											<field name="parent_id" string="المدير المباشر " />
-											<field name="service_duration_display" attrs="{'readonly': 1}" />
-											<field name="promotion_duration_display" attrs="{'readonly': 1}" />
-											<field name="royal_decree_number" attrs="{'invisible': [('is_member','=', False)]}" />
-											<field name="royal_decree_date" attrs="{'invisible': [('is_member','=', False)]}" />
-											<field name="external_decision" />
-											<field name="is_member" invisible="1" />
 										</group>
 										<group string="خصائص أخرى">
 											<field name="user_id"
@@ -436,12 +434,15 @@
 											<field name="calendar_id" string="‫نوع‬ الدوام" />
 											<field name="insurance_type" />
 											<field name="medic_exam" string="تاريخ الفحص الطبي" />
-											<field name="commissioning_job_id"
-												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
-											<field name="commissioning_type_id"
-												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
-											<field name="commissioning_grade_id"
-												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+
+											<field name="parent_id" string="المدير المباشر " />
+											<field name="service_duration_display" attrs="{'readonly': 1}" />
+											<field name="promotion_duration_display" attrs="{'readonly': 1}" />
+											<field name="royal_decree_number" attrs="{'invisible': [('is_member','=', False)]}" />
+											<field name="royal_decree_date" attrs="{'invisible': [('is_member','=', False)]}" />
+											<field name="external_decision" />
+											<field name="is_member" invisible="1" />
+
 										</group>
 									</group>
 								</page>

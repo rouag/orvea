@@ -440,6 +440,10 @@ class HrTransfertSorting(models.Model):
 
     name = fields.Char(string=u'المسمى', required=1, readonly=1, states={'new': [('readonly', 0)]})
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
+    speech_number = fields.Char(string=u'رقم الخطاب')
+    speech_date = fields.Date(string=u'تاريخ الخطاب')
+    speech_file = fields.Binary(string=u'نسخة الخطاب', attachment=True)
+    speech_file_name = fields.Char(string=u'نسخة الخطاب')
     line_ids = fields.One2many('hr.transfert.sorting.line', 'hr_transfert_sorting_id', string=u'طلبات النقل', readonly=0, states={'done': [('readonly', 1)]})
     line_ids2 = fields.One2many('hr.transfert.sorting.line2', 'hr_transfert_sorting_id2', string=u'طلبات النقل',)
     line_ids3 = fields.One2many('hr.transfert.sorting.line3', 'hr_transfert_sorting_id3', string=u'طلبات النقل',)
