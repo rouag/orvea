@@ -98,7 +98,6 @@
 										<field name="begin_work_date" readonly="1" />
 										<field name="demande_promotion_id" readonly="1" />
 										<field name="old_job_id" readonly="1" />
-										<field name="old_number_job" readonly="1" />
 										<field name="decision_appoint_date" readonly="1" />
 										<field name="emp_department_old_id" readonly="1" />
 										<field name="emp_grade_id_old" readonly="1" />
@@ -118,7 +117,6 @@
 									<tree editable="buttom" create="0" delete="0">
 										<field name="new_job_id" domain="[('state','=','unoccupied')]"
 											options='{"no_open": True, "no_create": True}' />
-										<field name="new_number_job" />
 										<field name="emp_grade_id_new" />
 										<button string="حجز" name="job_reserved" class="oe_highlight btn"
 											type="object" attrs="{'readonly': [('job_state', '=', True)]}" />
@@ -141,7 +139,6 @@
 										<field name="city_fovorite" readonly="1"
 											options='{"no_open": True, "no_create": True}' />
 										<field name="old_job_id" readonly="1" />
-										<field name="old_number_job" readonly="1" />
 										<field name="emp_department_old_id" readonly="1" />
 										<field name="emp_grade_id_old" readonly="1" />
 										<field name="point_seniority" readonly="1" />
@@ -151,7 +148,6 @@
 										<field name="sum_point" readonly="1" />
 										<field name="new_job_id" options='{"no_open": True, "no_create": True}'
 											domain="[('occupied_promotion','=',True)]" />
-										<field name="new_number_job" readonly="1" />
 										<field name="new_city_jobs" readonly="1" />
 										<field name="emp_grade_id_new" readonly="1" />
 										<field name="state" readonly="1" />
@@ -280,7 +276,6 @@
 					<field name="city_fovorite" readonly="1"
 						options='{"no_open": True, "no_create": True}' />
 					<field name="old_job_id" readonly="1" />
-					<field name="old_number_job" readonly="1" />
 					<field name="emp_department_old_id" readonly="1" />
 					<field name="emp_grade_id_old" readonly="1" />
 					<field name="point_seniority" readonly="1" />
@@ -289,7 +284,6 @@
 					<field name="point_functionality" readonly="1" />
 					<field name="sum_point" readonly="1" />
 					<field name="new_job_id" readonly="1" />
-					<field name="new_number_job" readonly="1" />
 					<field name="new_city_jobs" readonly="1" />
 					<field name="state" readonly="1" />
 					<field name="emp_grade_id_new" readonly="1" />
@@ -319,7 +313,6 @@
 					<sheet string="الترشيحات للترقية">
 						<group string="الوظيفة التي تم ترشيحك عليها">
 							<field name="new_job_id" readonly="1" />
-							<field name="new_number_job" readonly="1" />
 							<field name="emp_grade_id_new" readonly="1" />
 							<field name="new_city_jobs" readonly="1" />
 						</group>

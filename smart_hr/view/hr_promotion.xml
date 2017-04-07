@@ -13,7 +13,6 @@
 					<field name="employee_id" />
 					<field name="number" />
 					<field name="job_id" />
-					<field name="number_job" />
 					<field name="grade_id" />
 					<field name="department_id" />
 					<field name="education" />
@@ -49,7 +48,6 @@
 							</group>
 							<group string="الوظيفة المرشح إليها"> 
 								<field name="job_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" domain="[('state','=','unoccupied')]"/>
-								<field name="number_job"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 								<field name="grade_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
 								<field name="department_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 							</group>
