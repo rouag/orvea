@@ -5,7 +5,6 @@ from . import payroll
 from . import hr
 from . import report
 from . import attendance
-
 from . import job
 from . import holidays
 from . import models

@@ -37,9 +37,13 @@
 							type="object" states="done" icon="fa-times"
 							class="oe_inline oe_stat_button" />
 							
+								<button name="button_suspension" string="معاينة القرار"
+							groups="smart_hr.group_hrm" type="object" states="done" icon="fa-print"
+							class="oe_inline oe_stat_button" />
 							
-						<button name="%(report_hr_suspension_report_decision)d" string="طباعة القرار"
-							type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+				
+							
+							
 						<field name="state" widget="statusbar" statusbar_visible="draft,hrm,make_decision,done" />
 					</header>
 					<sheet>

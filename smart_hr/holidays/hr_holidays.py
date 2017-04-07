@@ -314,7 +314,6 @@ class HrHolidays(models.Model):
                     res['domain'] = {'entitlement_type': [('id', 'in', domain_male)]}
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional'):
             res['domain'] = {'entitlement_type': [('code', '=', 'accompaniment_exceptional')]}
-           
         
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_sport'):
             res['domain'] = {'entitlement_type': [('code', '=', 'sport')]}
@@ -426,6 +425,18 @@ class HrHolidays(models.Model):
             decision_date = fields.Date.today() # new date
             if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_normal').id:
                 decision_type_id = self.env.ref('smart_hr.data_normal_leave').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id:
+                decision_type_id = self.env.ref('smart_hr.data_exceptionnel_leave').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_illness').id:
+                decision_type_id = self.env.ref('smart_hr.data_leave_satisfactory').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional').id:
+                decision_type_id = self.env.ref('smart_hr.data_leave_escort').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_sport').id:
+                decision_type_id = self.env.ref('smart_hr.data_leave_sport').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_leave_motherhood').id:
+                decision_type_id = self.env.ref('smart_hr.data_leave_motherhood').id
+            else :
+                decision_type_id = self.env.ref('smart_hr.data_normal_leave').id
             # create decission
             decission_val={
                 'name': self.env['ir.sequence'].get('hr.holidays.seq'),
@@ -434,7 +445,6 @@ class HrHolidays(models.Model):
                 'employee_id' :self.employee_id.id }
             decision = decision_obj.create(decission_val)
             decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'holidays')
-            self.is_decision =True
             decission_id = decision.id
             self.decission_id =  decission_id
         return {

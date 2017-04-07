@@ -29,6 +29,7 @@ class hr_suspension_end(models.Model):
     condemned = fields.Boolean(string=u'‫صدر‬ في حقه‬ عقوبة‬', default=False)
     sentence = fields.Integer(string=u'مدة العقوبة (بالأيام)')
     suspension_attachment = fields.Binary(string=u'الصورة الضوئية للخطاب', attachment=True)
+    decission_id  = fields.Many2one('hr.decision', string=u'القرارات',)
 
     @api.model
     def create(self, vals):
@@ -72,6 +73,43 @@ class hr_suspension_end(models.Model):
         self.suspension_id.write({'suspension_end_id': self.id})
         self.state = 'done'
 
+    @api.multi
+    def open_decission_suspension(self):
+        decision_obj= self.env['hr.decision']
+        if self.decission_id:
+            decission_id = self.decission_id.id
+        else :
+            decision_type_id = 1
+            decision_date = fields.Date.today() # new date
+            if self.suspension_id and self.employee_id.type_id.id == self.env.ref('smart_hr.data_salary_grid_type').id:
+                decision_type_id = self.env.ref('smart_hr.data_decision_type28').id
+            if self.suspension_id and self.employee_id.type_id.id == self.env.ref('smart_hr.data_salary_grid_type7').id:
+                decision_type_id = self.env.ref('smart_hr.data_decision_type30').id
+            if self.suspension_id :
+                decision_type_id = self.env.ref('smart_hr.data_decision_type28').id
+            # create decission
+            decission_val={
+                'name': self.env['ir.sequence'].get('hr.suspension.end.seq'),
+                'decision_type_id':decision_type_id,
+                'date':decision_date,
+                'employee_id' :self.employee_id.id }
+            decision = decision_obj.create(decission_val)
+            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'employee')
+            decission_id = decision.id
+            self.decission_id =  decission_id
+        return {
+            'name': _(u'قرار تحسين الوضع'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'hr.decision',
+            'view_id': self.env.ref('smart_hr.hr_decision_wizard_form').id,
+            'type': 'ir.actions.act_window',
+            'res_id': decission_id,
+            'target': 'new'
+            }
+
+
+
     @api.one
     def button_refuse(self):
         for rec in self:
@@ -91,6 +129,4 @@ class hr_suspension_end(models.Model):
     def get_hindi_nums(self, string_number):
         return string_number
 
-    @api.multi
-    def create_report_attachment(self):
-        self.env['report'].get_pdf(self, 'smart_hr.hr_suspension_end_report')
+
