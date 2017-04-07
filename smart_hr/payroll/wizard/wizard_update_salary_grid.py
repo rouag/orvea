@@ -157,9 +157,6 @@ class WizardUpdateGrid(models.TransientModel):
         salary_grid_line.insurance = self.new_insurance
         salary_grid_line.net_salary = self.new_net_salary
         # update allowance, increase, indemnity
-        old_salary_grid_line.allowance_ids.unlink()
-        old_salary_grid_line.reward_ids.unlink()
-        old_salary_grid_line.indemnity_ids.unlink()
         allowance_ids = []
         for rec in self.allowance_ids:
             allowance_ids.append({'grid_detail_id': salary_grid_line.id,
@@ -181,9 +178,9 @@ class WizardUpdateGrid(models.TransientModel):
                                   'compute_method': rec.compute_method,
                                   'amount': rec.amount
                                   })
-        old_salary_grid_line.allowance_ids = allowance_ids
-        old_salary_grid_line.reward_ids = reward_ids
-        old_salary_grid_line.indemnity_ids = indemnity_ids
+        salary_grid_line.allowance_ids = allowance_ids
+        salary_grid_line.reward_ids = reward_ids
+        salary_grid_line.indemnity_ids = indemnity_ids
         # change the grade name
         if self.new_grade_name:
             old_grade_name = self.grade_id.name
