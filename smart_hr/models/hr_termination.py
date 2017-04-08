@@ -6,14 +6,14 @@ from openerp.tools import SUPERUSER_ID
 from datetime import date, datetime, timedelta
 
 
-class hr_termination(models.Model):
+class HrTermination(models.Model):
     _name = 'hr.termination'
     _order = 'id desc'
     _inherit = ['ir.needaction_mixin', 'mail.thread']
-    _description = 'Termination'
+    _description = u'طي القيد'
 
-   # name = fields.Char(string=u'مسمى طي القيد', required=1)
-    name = fields.Char(string=u'رقم القرار',)
+    # name = fields.Char(string=u'مسمى طي القيد', required=1)
+    name = fields.Char(string=u'رقم القرار', )
     date = fields.Date(string=u'تاريخ', default=fields.Datetime.now())
     date_termination = fields.Date(string=u'تاريخ طي القيد  ', default=fields.Datetime.now())
     termination_date = fields.Date(string=u'تاريخ الإعتماد')
@@ -31,7 +31,7 @@ class hr_termination(models.Model):
     age = fields.Integer(string=u'السن', related='employee_id.age')
     country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
     # Termination Info
-    termination_type_id = fields.Many2one('hr.termination.type', string=u'نوع الطي',)
+    termination_type_id = fields.Many2one('hr.termination.type', string=u'نوع الطي', )
     nb_salaire = fields.Float(related='termination_type_id.nb_salaire', store=True, readonly=True,
                               string=u'عدد الرواتب المستحق')
     all_holidays = fields.Boolean(related='termination_type_id.all_holidays', store=True, readonly=True,
@@ -41,12 +41,12 @@ class hr_termination(models.Model):
 
     reason = fields.Char(string=u'السبب')
     number_order = fields.Char(string=u'رقم القرار')
-    letter_source = fields.Char(string=u'جهة الخطاب',)
+    letter_source = fields.Char(string=u'جهة الخطاب', )
     letter_no = fields.Char(string=u'رقم الخطاب')
     letter_date = fields.Date(string=u'تاريخ الخطاب')
     file_attachment = fields.Binary(string=u'مرفق الصورة الضوئية', attachment=True)
     file_attachment_name = fields.Char(string=u'مرفق الصورة الضوئية')
-    decission_id = fields.Many2one('hr.decision', string=u'القرارات',)
+    decission_id = fields.Many2one('hr.decision', string=u'القرارات', )
     state = fields.Selection([
         ('draft', u'طلب'),
         ('hrm', u'مدير شؤون الموظفين'),
@@ -64,14 +64,13 @@ class hr_termination(models.Model):
                 rec.all_holidays = 0
                 rec.max_days = 0
                 rec.nationality = True
-    
 
     @api.multi
     def unlink(self):
         for rec in self:
             if rec.state != 'draft' and self._uid != SUPERUSER_ID:
                 raise ValidationError(u'لا يمكن حذف طي القيد فى هذه المرحلة يرجى مراجعة مدير النظام')
-        return super(hr_termination, self).unlink()
+        return super(HrTermination, self).unlink()
 
     #     @api.constrains('employee_id')
     #     def check_employee_id(self):
@@ -108,16 +107,16 @@ class hr_termination(models.Model):
             # Update Employee State
             ter.employee_id.emp_state = 'terminated'
             # Update Job
-          #  ter.employee_id.job_id.write({'state': 'unoccupied', 'category': 'unooccupied_termination'})
-          #  ter.employee_id.job_id.employee = False
-         #   ter.employee_id.job_id = False
+            #  ter.employee_id.job_id.write({'state': 'unoccupied', 'category': 'unooccupied_termination'})
+            #  ter.employee_id.job_id.employee = False
+            #   ter.employee_id.job_id = False
             # Update State
             ter.done_date = fields.Date.today()
             ter.state = 'done'
             # Set the termination date with the date of the final approve
             ter.termination_date = fields.Date.today()
 
-      #  self.create_report_attachment()
+            #  self.create_report_attachment()
 
     @api.one
     def button_refuse(self):
@@ -130,49 +129,66 @@ class hr_termination(models.Model):
             ('state', '=', 'hrm'),
         ]
 
-
     @api.multi
     def open_decission_termination(self):
         decision_obj = self.env['hr.decision']
         if self.decission_id:
             decission_id = self.decission_id.id
-        else :
-            decision_type_id = 1
+        else:
+            decision_type_id = False
             decision_date = fields.Date.today()  # new date
-            if self.termination_type_id.id == self.env.ref('smart_hr.data_hr_ending_service_early').id and self.employee_id.type_id.id == self.env.ref('smart_hr.data_salary_grid_type').id:
+            if self.termination_type_id.id == self.env.ref(
+                    'smart_hr.data_hr_ending_service_early').id and self.employee_id.type_id.id == self.env.ref(
+                    'smart_hr.data_salary_grid_type').id:
                 decision_type_id = self.env.ref('smart_hr.data_decision_type11').id
-            if self.termination_type_id.id == self.env.ref('smart_hr.data_hr_ending_service_type_normal').id and self.employee_id.type_id.id == self.env.ref('smart_hr.data_salary_grid_type').id:
+            elif self.termination_type_id.id == self.env.ref(
+                    'smart_hr.data_hr_ending_service_type_normal').id and self.employee_id.type_id.id == self.env.ref(
+                    'smart_hr.data_salary_grid_type').id:
                 decision_type_id = self.env.ref('smart_hr.data_decision_type14').id
-            if self.termination_type_id.id == self.env.ref('smart_hr.data_hr_ending_service_type_normal').id and self.employee_id.type_id.id == self.env.ref('smart_hr.data_salary_grid_type4').id:
+            elif self.termination_type_id.id == self.env.ref(
+                    'smart_hr.data_hr_ending_service_type_normal').id and self.employee_id.type_id.id == self.env.ref(
+                    'smart_hr.data_salary_grid_type4').id:
                 decision_type_id = self.env.ref('smart_hr.data_decision_type19').id
-            if self.termination_type_id.id == self.env.ref('smart_hr.data_hr_ending_service_type_healthy').id and self.employee_id.type_id.id == self.env.ref('smart_hr.data_salary_grid_type').id:
+            elif self.termination_type_id.id == self.env.ref(
+                    'smart_hr.data_hr_ending_service_type_healthy').id and self.employee_id.type_id.id == self.env.ref(
+                    'smart_hr.data_salary_grid_type').id:
                 decision_type_id = self.env.ref('smart_hr.data_decision_type17').id
-            if self.termination_type_id.id == self.env.ref('smart_hr.data_hr_ending_service_demision').id and self.employee_id.type_id.id == self.env.ref('smart_hr.data_salary_grid_type').id:
+            elif self.termination_type_id.id == self.env.ref(
+                    'smart_hr.data_hr_ending_service_demision').id and self.employee_id.type_id.id == self.env.ref(
+                    'smart_hr.data_salary_grid_type').id:
                 decision_type_id = self.env.ref('smart_hr.data_decision_type22').id
-            if self.termination_type_id.id == self.env.ref('smart_hr.data_hr_ending_service_demision').id and self.employee_id.type_id.id == self.env.ref('smart_hr.data_salary_grid_type3').id:
+            elif self.termination_type_id.id == self.env.ref(
+                    'smart_hr.data_hr_ending_service_demision').id and self.employee_id.type_id.id == self.env.ref(
+                    'smart_hr.data_salary_grid_type3').id:
                 decision_type_id = self.env.ref('smart_hr.data_decision_type24').id
-            if self.termination_type_id.id == self.env.ref('smart_hr.data_hr_ending_service_absence').id and self.employee_id.type_id.id == self.env.ref('smart_hr.data_salary_grid_type').id:
+            elif self.termination_type_id.id == self.env.ref(
+                    'smart_hr.data_hr_ending_service_absence').id and self.employee_id.type_id.id == self.env.ref(
+                    'smart_hr.data_salary_grid_type').id:
                 decision_type_id = self.env.ref('smart_hr.data_decision_type18').id
-            if self.termination_type_id.id == self.env.ref('smart_hr.data_hr_ending_service_absence').id and self.employee_id.type_id.id == self.env.ref('smart_hr.data_salary_grid_type3').id:
+            elif self.termination_type_id.id == self.env.ref(
+                    'smart_hr.data_hr_ending_service_absence').id and self.employee_id.type_id.id == self.env.ref(
+                    'smart_hr.data_salary_grid_type3').id:
                 decision_type_id = self.env.ref('smart_hr.data_decision_type23').id
-            if self.termination_type_id.id == self.env.ref('smart_hr.data_hr_ending_service_job').id:
+            elif self.termination_type_id.id == self.env.ref('smart_hr.data_hr_ending_service_job').id:
                 decision_type_id = self.env.ref('smart_hr.data_decision_type11').id
-            if self.termination_type_id.id == self.env.ref('smart_hr.data_hr_ending_service_death').id:
+            elif self.termination_type_id.id == self.env.ref('smart_hr.data_hr_ending_service_death').id:
                 decision_type_id = self.env.ref('smart_hr.data_decision_type35').id
-            if self.termination_type_id.id == self.env.ref('smart_hr.data_hr_ending_period_experience').id and self.employee_id.type_id.id == self.env.ref('smart_hr.data_salary_grid_type3').id:
+            elif self.termination_type_id.id == self.env.ref(
+                    'smart_hr.data_hr_ending_period_experience').id and self.employee_id.type_id.id == self.env.ref(
+                    'smart_hr.data_salary_grid_type3').id:
                 decision_type_id = self.env.ref('smart_hr.data_decision_type15').id
-            if self.termination_type_id.id == self.env.ref('smart_hr.data_hr_ending_estimite_less').id:
+            elif self.termination_type_id.id == self.env.ref('smart_hr.data_hr_ending_estimite_less').id:
                 decision_type_id = self.env.ref('smart_hr.data_decision_type11').id
-            if self.termination_type_id.id == self.env.ref('smart_hr.data_hr_ending_reason_todbeah').id:
+            elif self.termination_type_id.id == self.env.ref('smart_hr.data_hr_ending_reason_todbeah').id:
                 decision_type_id = self.env.ref('smart_hr.data_decision_type11').id
-
-
+            if not decision_type_id:
+                raise ValidationError(u'لا يوجد قرار من نوع %s  في النظام .' % self.termination_type_id.name)
             # create decission
             decission_val = {
                 'name': self.env['ir.sequence'].get('hr.termination.seq'),
-                'decision_type_id':decision_type_id,
-                'date':decision_date,
-                'employee_id' :self.employee_id.id }
+                'decision_type_id': decision_type_id,
+                'date': decision_date,
+                'employee_id': self.employee_id.id}
             decision = decision_obj.create(decission_val)
             decision.text = decision.replace_text(self.employee_id, decision_date, decision_type_id, 'termination')
             decission_id = decision.id
@@ -186,9 +202,10 @@ class hr_termination(models.Model):
             'type': 'ir.actions.act_window',
             'res_id': decission_id,
             'target': 'new'
-            }
+        }
 
-class hr_termination_type(models.Model):
+
+class HrTerminationType(models.Model):
     _name = 'hr.termination.type'
     _description = 'Termination Type'
 
@@ -204,4 +221,3 @@ class hr_termination_type(models.Model):
     evaluation_required = fields.Many2many('hr.evaluation.result.foctionality', string=u'التقييمات المطلوبة')
     include_members = fields.Boolean(string=u'تشمل اعضاء الهيئة')
     years = fields.Integer(string=u'السن')
-

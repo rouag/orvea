@@ -662,7 +662,9 @@ class HrPayslip(models.Model):
     @api.constrains('employee_id', 'period_id')
     def _check_payroll(self):
         for rec in self:
-            payroll_count = rec.search_count([('employee_id', '=', rec.employee_id.id), ('period_id', '=', rec.period_id.id), ('is_special', '=', False)])
+            payroll_count = rec.search_count([('employee_id', '=', rec.employee_id.id),
+                                              ('period_id', '=', rec.period_id.id),
+                                              ('is_special', '=', False)])
             if payroll_count > 1:
                 raise ValidationError(u"لا يمكن إنشاء مسيرين لنفس الموظف في نفس الشهر")
 

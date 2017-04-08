@@ -112,7 +112,7 @@ class HrPayslip(models.Model):
             create_date = datetime.strptime(payslip_id.create_date, '%Y-%m-%d %H:%M:%S')
             create_date = create_date.strftime('%Y-%m-%d')
             # TODO: review payslip.create_date
-            line_ids += self.get_difference_transfert(create_date, self.date_from, self.employee_id, True)
+            # فروقات النقل
             # فروقات التعين
             line_ids += self.get_difference_decision_appoint(create_date, self.date_to, self.employee_id, True)
             # فروقات التكليف
