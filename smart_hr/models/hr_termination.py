@@ -135,7 +135,7 @@ class HrTermination(models.Model):
         if self.decission_id:
             decission_id = self.decission_id.id
         else:
-            decision_type_id = False
+            decision_type_id = 130
             decision_date = fields.Date.today()  # new date
             if self.termination_type_id.id == self.env.ref(
                     'smart_hr.data_hr_ending_service_early').id and self.employee_id.type_id.id == self.env.ref(
