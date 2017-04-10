@@ -85,6 +85,7 @@ class HrPlanPresence(models.Model):
     holidays_start = fields.Float(string=u'أيام العطل الرسمية من')
     holidays_end = fields.Float(string=u'إلى')
 
+
 class HrAttendanceImport(models.Model):
     _name = 'hr.attendance.import'
     _description = u'ملف الحضور والإنصراف'
