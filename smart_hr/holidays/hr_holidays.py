@@ -162,6 +162,8 @@ class HrHolidays(models.Model):
     advanced_salary_is_paied = fields.Boolean('advanced_salary_is_paied', default=False)
     decission_id = fields.Many2one('hr.decision', string=u'القرارات',)
     done_date = fields.Date(string='تاريخ التفعيل')
+    display_button_extend = fields.Boolean(compute='_compute_display_button_extend')
+    
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
@@ -192,6 +194,14 @@ class HrHolidays(models.Model):
                 rec.display_button_cut = False
             else:
                 rec.display_button_cut = True
+
+    @api.multi
+    def _compute_display_button_extend(self):
+        for rec in self:
+            if rec.state != 'done' or rec.is_extensible == 0 or rec.is_started is False or (rec.is_current_user is False and self.env.user.has_group('smart_hr.group_holidays_extend_responsable') is False):
+                rec.display_button_extend = False
+            else:
+                rec.display_button_extend = True
 
     @api.multi
     @api.depends("deputation_id")
