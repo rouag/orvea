@@ -174,9 +174,9 @@ class HrPayslip(models.Model):
         for assign_id in assign_ids:
             # overlaped days in current month
             assign_date_from = fields.Date.from_string(assign_id.date_from)
-            date_from = fields.Date.from_string(date_from)
+            date_from = fields.Date.from_string(str(date_from))
             assign_date_to = fields.Date.from_string(assign_id.date_to)
-            date_to = fields.Date.from_string(date_to)
+            date_to = fields.Date.from_string(str(date_to))
             duration_in_month = 0
             res = {}
             amount_allowance = 0.0
@@ -446,7 +446,7 @@ class HrPayslip(models.Model):
             date_from = date_from
             holiday_date_to = holiday_id.date_to
             date_to = date_to
-            days = days_between(holiday_id.date_from, date_from)
+            days = days_between(holiday_id.date_from, date_from)-1
             today = fields.Date.from_string(fields.Date.today())
             months_from_holiday_start = relativedelta(today, fields.Date.from_string(holiday_id.date_from)).months
             # days in current month
@@ -480,9 +480,9 @@ class HrPayslip(models.Model):
                 # فرق البدلات
                 amount = 0.0
                 for allowance in grid_id.allowance_ids:
-                    amount = allowance.get_value(holiday_id.employee_id.id) - allowance.get_value(holiday_id.employee_id.id) / 30.0 * duration_in_month
+                    amount = allowance.get_value(holiday_id.employee_id.id) / 30.0 * duration_in_month
                 if duration_in_month > 0 and amount != 0:
-                    vals = {'name': 'فرق بدلات نوع إجازة' + holiday_id.holiday_status_id.name + name,
+                    vals = {'name': 'فرق بدلات ' + holiday_id.holiday_status_id.name + name,
                             'employee_id': holiday_id.employee_id.id,
                             'number_of_days': duration_in_month,
                             'number_of_hours': 0.0,
@@ -492,7 +492,7 @@ class HrPayslip(models.Model):
                 # فرق التقاعد
                 retirement_amount = basic_salary * grid_id.retirement / 100.0 / 30.0 * duration_in_month
                 if duration_in_month > 0 and retirement_amount != 0:
-                    vals = {'name': 'فرق التقاعد‬ نوع إجازة' + holiday_id.holiday_status_id.name + name,
+                    vals = {'name': 'فرق التقاعد‬ ' + holiday_id.holiday_status_id.name + name,
                             'employee_id': holiday_id.employee_id.id,
                             'number_of_days': duration_in_month,
                             'number_of_hours': 0.0,
@@ -525,7 +525,7 @@ class HrPayslip(models.Model):
                         for allowance in grid_id.allowance_ids:
                             amount = allowance.get_value(holiday_id.employee_id.id) * (100 - rec.salary_proportion) / 100.0
                         if duration_in_month > 0 and amount != 0:
-                            vals = {'name': 'فرق بدلات نوع: ' + holiday_id.holiday_status_id.name + name,
+                            vals = {'name': 'فرق بدلات : ' + holiday_id.holiday_status_id.name + name,
                                     'employee_id': holiday_id.employee_id.id,
                                     'number_of_days': duration_in_month,
                                     'number_of_hours': 0.0,
@@ -535,7 +535,7 @@ class HrPayslip(models.Model):
                         # فرق التقاعد
                         retirement_amount = basic_salary * grid_id.retirement / 100.0 * (100 - rec.salary_proportion) / 100.0
                         if duration_in_month > 0 and retirement_amount != 0:
-                            vals = {'name': 'فرق التقاعد‬ نوع: ' + holiday_id.holiday_status_id.name + name,
+                            vals = {'name': 'فرق التقاعد‬ : ' + holiday_id.holiday_status_id.name + name,
                                     'employee_id': holiday_id.employee_id.id,
                                     'number_of_days': duration_in_month,
                                     'number_of_hours': 0.0,
