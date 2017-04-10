@@ -113,7 +113,7 @@
 						<button name="button_accept_hrm" string="موافق" type="object"
 							states="hrm" groups="smart_hr.group_hrm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="%(action_holidays6_refuse_wizard)d" string="رفض"
+						<button name="%(action_holidays6_refuse_wizard)d" string="رفض" type="action"
 							states="hrm" groups="smart_hr.group_hrm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
@@ -183,7 +183,7 @@
 							<group>
 								<field name="extended_holiday_id" attrs="{'invisible': [('is_extension','=',False)]}"
 									readonly="True" />
-								<field name="employee_id" required="1" />
+								<field name="employee_id" required="1" attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)]}"/>
 								<field name="with_advanced_salary"
 									attrs="{'invisible': [('hide_with_advanced_salary','=',True)]}" />
 								<field name="salary_number"
