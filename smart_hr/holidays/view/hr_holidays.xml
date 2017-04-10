@@ -88,6 +88,7 @@
 					<field name="can_be_cutted" invisible="1" />
 					<field name="display_button_cut" invisible="1" />
 					<field name="display_button_cancel" invisible="1" />
+					<field name="display_button_extend" invisible="1" />
 					<header name="main">
 
 						<button name="send_holiday_request" string="إرسال طلب"
@@ -113,7 +114,7 @@
 						<button name="button_accept_hrm" string="موافق" type="object"
 							states="hrm" groups="smart_hr.group_hrm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="%(action_holidays6_refuse_wizard)d" string="رفض"
+						<button name="%(action_holidays6_refuse_wizard)d" string="رفض" type="action"
 							states="hrm" groups="smart_hr.group_hrm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
@@ -144,7 +145,7 @@
 
 
 						<button name="button_extend" string="تمديد الإجازة"
-							attrs="{'invisible':['|','|',('state', '!=', 'done'),('is_extensible', '=', 0),('is_current_user','=',False)] } "
+							attrs="{'invisible':[('display_button_extend','=',False)] } "
 							type="object" icon="fa-check" class="oe_inline oe_stat_button" />
 
 						<button name="button_cancel" context="{'operation': 'cancel'}"
@@ -183,7 +184,7 @@
 							<group>
 								<field name="extended_holiday_id" attrs="{'invisible': [('is_extension','=',False)]}"
 									readonly="True" />
-								<field name="employee_id" required="1" />
+								<field name="employee_id" required="1" attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)]}"/>
 								<field name="with_advanced_salary"
 									attrs="{'invisible': [('hide_with_advanced_salary','=',True)]}" />
 								<field name="salary_number"

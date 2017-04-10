@@ -301,12 +301,9 @@ class HrEmployeeTransfert(models.Model):
                     'employee_id': rec.employee_id.id,
                     'job_id': rec.new_job_id.id,
                     'degree_id': rec.degree_id.id,
-                    'name': rec.decision_number,
-                    'order_date': rec.decision_date,
-                    'order_picture': rec.decision_file,
-                    'transfer_id': rec.id
-                    
-                }
+                    'transfer_id': rec.id,
+                    'name': rec.speech_number,
+                    'order_date': rec.speech_date,}
             else:
 #                 if not rec.speech_number:
 #                     raise ValidationError(u"لم يتم خطاب قرار بشأن النقل.")
@@ -316,11 +313,9 @@ class HrEmployeeTransfert(models.Model):
                     'employee_id': rec.employee_id.id,
                     'job_id': rec.new_job_id.id,
                     'degree_id': rec.degree_id.id,
+                    'transfer_id': rec.id,
                     'name': rec.speech_number,
                     'order_date': rec.speech_date,
-                    'order_picture': rec.speech_file,
-                    'transfer_id': rec.id
-
                 }
             recruiter_id = self.env['hr.decision.appoint'].create(vals)
             if recruiter_id:
@@ -458,9 +453,11 @@ class HrTransfertSorting(models.Model):
                               ('commission_president', u'رئيس الجهة'),
                               ('commission_third', u'الخدمة المدنية'),
                               ('benefits', u'إسناد المزايا'),
+                              ('issuing_decision', u'استصدار قرار'),
                               ('done', u'اعتمدت'),
                               ('refused', u'مرفوضة')
                               ], readonly=1, default='new', string=u'الحالة')
+    decision_id = fields.Many2one('hr.decision')
 
     @api.multi
     def action_generate_lines(self):
@@ -682,9 +679,15 @@ class HrTransfertSorting(models.Model):
             rec.state = 'benefits'
 
     @api.multi
+    def action_issuing_decision(self):
+        self.state='issuing_decision'   
+
+    @api.multi
     def action_done(self):
         for rec in self:
             for line in rec.line_ids4:
+                line.hr_employee_transfert_id.speech_number = rec.decision_id.name
+                line.hr_employee_transfert_id.speech_date = rec.decision_id.date
                 line.hr_employee_transfert_id.action_done()
             rec.state = 'done'
 

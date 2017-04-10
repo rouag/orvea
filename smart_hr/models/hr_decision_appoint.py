@@ -15,7 +15,7 @@ class HrDecisionAppoint(models.Model):
     _description = u'قرار تعيين'
 
     name = fields.Char(string='رقم الخطاب', required=1, states={'draft': [('readonly', 0)]})
-    order_date = fields.Date(string='تاريخ الخطاب', required=1)
+    order_date = fields.Date(string='تاريخ الخطاب')
     date_hiring = fields.Date(string='تاريخ الطلب', default=fields.Datetime.now())
     date_hiring_end = fields.Date(string=u'تاريخ إنتهاء التعيين')
     date_direct_action = fields.Date(string='تاريخ مباشرة العمل')
@@ -80,7 +80,7 @@ class HrDecisionAppoint(models.Model):
     ], string=u'حالة', default='draft',)
 
     # attachments files
-    order_picture = fields.Binary(string='صورة الخطاب', required=1, attachment=True)
+    order_picture = fields.Binary(string='صورة الخطاب',attachment=True)
     order_picture_name = fields.Char(string='صورة الخطاب')
     medical_examination_file = fields.Binary(string='وثيقة الفحص الطبي', attachment=True)
     date_medical_examination = fields.Date(string='تاريخ الفحص الطبي')
