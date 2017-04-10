@@ -60,7 +60,7 @@ class HrEmployeeCommissioning(models.Model):
     pay_retirement = fields.Boolean(string=u'يدفع له نسبة التقاعد', related="comm_type.pay_retirement", readonly=1)
     done_date = fields.Date(string='تاريخ التفعيل')
     commissioning_job_id = fields.Many2one('hr.job', string='الوظيفة المكلف عليها', required=1,
-                                           Domain=[('state', '=', 'unoccupied'), ('state_job', '=', 'mission')])
+                                           domain=[('state', '=', 'unoccupied')])
     type_id = fields.Many2one('salary.grid.type', string='نوع السلم', related='commissioning_job_id.type_id',
                               readonly=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', related='commissioning_job_id.grade_id',
