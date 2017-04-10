@@ -347,7 +347,7 @@ class HrDecisionAppoint(models.Model):
         group_id = self.env.ref('smart_hr.group_department_employee')
         for line in appoints:
             title = u"' إشعار بلوغ سن " + str(self.env.ref('smart_hr.data_hr_ending_service_type_normal').years) + u"'"
-            msg = u"' إشعار ببلوغ الموظف   '" + unicode(line.employee_id.name) + u"'" + u"عمر" + str(
+            msg = u"' إشعار ببلوغ الموظف   '" + unicode(line.employee_id.display_name) + u"'" + u"عمر" + str(
                 self.env.ref('smart_hr.data_hr_ending_service_type_normal').years) + u"'"
             self.send_test_periode_group(group_id, title, msg)
 
