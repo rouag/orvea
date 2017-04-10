@@ -393,7 +393,7 @@ class HrEmployee(models.Model):
         today_date = fields.Date.from_string(fields.Date.today())
         for emp in self.search([('employee_state', '=', 'employee')]):
             emp.promotion_duration += 1
-                # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
+            # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
             uncounted_absence_days = self.env['hr.attendance.summary'].search([('employee_id', '=', emp.id), ('date', '=', today_date - relativedelta(days=1))])
             if uncounted_absence_days:
                 emp.promotion_duration -= uncounted_absence_days.absence

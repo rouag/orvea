@@ -144,10 +144,7 @@ class HrSanctionLigne(models.Model):
             res = {}
             grade_min = int(self.sanction_id.type_sanction.min_grade_id.code)
             grade_max = int(self.sanction_id.type_sanction.max_grade_id.code)
-            employee_ids = []
-            for rec in self.env['hr.employee'].search([]):
-                if int(rec.grade_id.code) >= grade_min and int(rec.grade_id.code) <= grade_max:
-                    employee_ids.append(rec.id)
+            employee_ids= self.env['hr.employee'].search([('grade_id.code','>=',grade_min),('grade_id.code','<=',grade_max)]).ids
             res['domain'] = {'employee_id': [('id', 'in', employee_ids)]}
             return res
           
