@@ -27,19 +27,20 @@ class HrEmployeeTransfertWizard(models.TransientModel):
     employee_id = fields.Many2one('hr.employee', readonly=1, string=u'  الموظف')
     res_city = fields.Many2one('res.city',  string=u'المدينة')
     specific_group = fields.Selection([('same_specific', 'في نفس المجموعة النوعية'), ('other_specific', 'في مجموعة أخرى') ],  string=u'نوع المجموعة')
-    employee_desire_ids = fields.One2many(related='hr_employee_transfert_id.desire_ids', string=u'رغبات النقل')
+    employee_desire_ids = fields.Many2many('hr.employee.desire', string=u'رغبات النقل', readonly=1)
 
 
     @api.model
     def default_get(self, fields):
         res = super(HrEmployeeTransfertWizard, self).default_get(fields)
         transfert_line = self._context.get('active_id', False)
-        print"transfert_line",transfert_line
+        print"transfert_line", transfert_line
         transfert_line_obj = self.env['hr.transfert.sorting.line2']
         transfert = transfert_line_obj.search([('id', '=', transfert_line)])
         if transfert:
             res.update({'employee_id': transfert[0].hr_employee_transfert_id.employee_id.id,
-                       })
+                        'employee_desire_ids': transfert[0].hr_employee_transfert_id.desire_ids.ids
+                        })
         return res
 
     @api.multi

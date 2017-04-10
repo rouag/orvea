@@ -14,7 +14,6 @@ class TransfertBenefitsWizard(models.TransientModel):
     def default_get(self, fields):
         res = super(TransfertBenefitsWizard, self).default_get(fields)
         transfert_line = self._context.get('active_id', False)
-        print"transfert_line", transfert_line
         transfert_line_obj = self.env['hr.transfert.sorting.line4']
         transfert = transfert_line_obj.search([('id', '=', transfert_line)], limit=1)
         if transfert:
