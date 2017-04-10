@@ -32,6 +32,15 @@ class HrDepartment(models.Model):
     dep_type = fields.Many2one('hr.department.type', string=u'نوع الإدارة')
     child_parent_ids = fields.One2many('hr.department', 'parent_id', 'Children')
     all_child_ids = fields.Many2many('hr.department', compute=_get_child_ids, string="Child Departments")
+    branch_id = fields.Many2one('hr.department', string=u'الفرع', compute="_compute_branch_id")
+
+    def _compute_branch_id(self):
+        for dep in self:
+                # get the FAR3 of current department
+            branche_dep_id = dep
+            while branche_dep_id.parent_id and branche_dep_id.dep_type.level and branche_dep_id.dep_type.level != 1:
+                branche_dep_id = branche_dep_id.parent_id
+            dep.branch_id = branche_dep_id.id
 
     @api.multi
     def name_get(self):
@@ -39,7 +48,7 @@ class HrDepartment(models.Model):
             return getattr(self, self._context[u'list_type'])()
         else:
             return super(HrDepartment, self).name_get()
- 
+
     def _get_dep_name_employee_form(self):
         res = []
         for dep in self:
@@ -76,7 +85,6 @@ class HrDepartment(models.Model):
                 self.dep_city = self.parent_id.dep_city
                 self.dep_side = self.parent_id.dep_side
 
-
     @api.multi
     def button_child_ids(self):
         chid_ids = self.all_child_ids.ids
@@ -90,7 +98,6 @@ class HrDepartment(models.Model):
                 'domain': [('id','in', chid_ids)]
             }
         return value
-
 
 class CitySide(models.Model):
     _name = 'city.side'

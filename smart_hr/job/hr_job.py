@@ -60,6 +60,7 @@ class HrJob(models.Model):
                                  ('unooccupied_termination', u'شاغرة بطي قيد شاغلها'),
                                  ],
                                 string=u' نوع شغر الوظيفةالنشطة و شغولها')
+    branch_id = fields.Many2one('hr.department', string=u'الفرع', related='department_id.branch_id')
 
     @api.multi
     @api.depends('occupation_date_to')
