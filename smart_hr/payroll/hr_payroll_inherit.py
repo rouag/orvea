@@ -287,7 +287,6 @@ class HrPayslip(models.Model):
             else:
                 for rec in res:
                     grid_id = rec['grid_id']
-                    basic_salary = rec['basic_salary']
                     days = rec['days']
                     duration_in_month += days
                     retirement_amount = days * basic_salary / 30.0 * grid_id.retirement / 100.0
