@@ -49,6 +49,9 @@ class SmartUtils(models.Model):
             # case 2: different salary grid_ids for all periode
             if not mydict:
                 grid_id, basic_salary = employee_id.get_salary_grid_id(date_from)
+                mydict['grid_id'] = grid_id
+                mydict['date_from'] = date_from
+                mydict['basic_salary'] = basic_salary
                 while date_from <= date_to:
                     days += 1
                     # minus normal days
@@ -78,8 +81,8 @@ class SmartUtils(models.Model):
                         basic_salary = basic_salary_temp
                         mydict = {'date_from': date_from, 'date_to': False, 'days': days, 'grid_id': grid_id, 'basic_salary': basic_salary}
                     else:
-                        mydict['date_to': date_from]
-                        mydict['days': days]
+                        mydict['date_to'] = date_from
+                        mydict['days'] = days
                 mydict['days'] = days
         return res
 

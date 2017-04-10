@@ -455,7 +455,6 @@ class HrPayslip(models.Model):
                 sequence += 1
             # 3- التقاعد‬
             # old : retirement_amount = (basic_salary * amount_multiplication + allowance_total - deduction_total) * salary_grid.retirement / 100.0
-            print '--salary_grid----', salary_grid
             retirement_amount = basic_salary * salary_grid.retirement / 100.0
             if retirement_amount:
                 retirement_val = {'name': 'التقاعد',
@@ -511,7 +510,7 @@ class HrPayslip(models.Model):
                 for rec in difference.defferential_detail_ids:
                     diff_number_of_days += rec.number_of_days
             if diff_basic_salary_amount != 0:
-                difference_val = {'name': 'فرق الراتب الأساسي',
+                difference_val = {'name': 'فرق: الراتب الأساسي',
                                   'slip_id': payslip.id,
                                   'employee_id': employee.id,
                                   'rate': 0.0,
@@ -525,7 +524,7 @@ class HrPayslip(models.Model):
                 difference_total += diff_retirement_amount
                 sequence += 1
             if diff_retirement_amount != 0:
-                difference_val = {'name': 'فرق التقاعد',
+                difference_val = {'name': 'فرق: التقاعد',
                                   'slip_id': payslip.id,
                                   'employee_id': employee.id,
                                   'rate': 0.0,
@@ -539,7 +538,7 @@ class HrPayslip(models.Model):
                 difference_total += diff_retirement_amount
                 sequence += 1
             if diff_allowance_amount != 0:
-                difference_val = {'name': 'فرق البدلات',
+                difference_val = {'name': 'فرق: البدلات',
                                   'slip_id': payslip.id,
                                   'employee_id': employee.id,
                                   'rate': 0.0,
@@ -556,7 +555,7 @@ class HrPayslip(models.Model):
             # 5- الأثر المالي
             difference_lines = payslip.compute_differences()
             for difference in difference_lines:
-                difference_val = {'name': difference['name'],
+                difference_val = {'name': difference['name'] + ' :الأثر المالي',
                                   'slip_id': payslip.id,
                                   'employee_id': employee.id,
                                   'rate': 0.0,
@@ -569,11 +568,10 @@ class HrPayslip(models.Model):
                 lines.append(difference_val)
                 difference_total += difference['amount']
                 sequence += 1
-
             # 6- الحسميات
             deduction_lines = payslip.compute_deductions(allowance_total)
             for deduction in deduction_lines:
-                deduction_val = {'name': deduction['name'],
+                deduction_val = {'name': deduction['name'] + ' :الحسميات',
                                  'slip_id': payslip.id,
                                  'employee_id': employee.id,
                                  'rate': 0.0,
@@ -590,7 +588,7 @@ class HrPayslip(models.Model):
             # 7- القروض
             loans = loan_obj.get_loan_employee_month(self.date_from, self.date_to, employee.id)
             for loan in loans:
-                loan_val = {'name': loan['name'],
+                loan_val = {'name': loan['name'] + ' :القروض',
                             'slip_id': payslip.id,
                             'employee_id': employee.id,
                             'rate': 0.0,
