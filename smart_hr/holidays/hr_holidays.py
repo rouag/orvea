@@ -103,7 +103,7 @@ class HrHolidays(models.Model):
     # Extension
     is_extension = fields.Boolean(string=u'اجازة ممددة')
     is_extended = fields.Boolean(string=u'ممددة', compute='_is_extended')
-    extended_holiday_id = fields.Many2one('hr.holidays', string=u'الإجازة الممددة')
+    extended_holiday_id = fields.Many2one('hr.holidays', string=u'تمديد الإجازة')
     parent_id = fields.Many2one('hr.holidays', string=u'Parent')
     extension_holidays_ids = fields.One2many('hr.holidays', 'parent_id', string=u'التمديدات')
     is_extensible = fields.Integer(string=u'يمكن تمديدها', related='holiday_status_id.extension_number')
