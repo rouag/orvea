@@ -174,9 +174,9 @@ class HrPayslip(models.Model):
         for assign_id in assign_ids:
             # overlaped days in current month
             assign_date_from = fields.Date.from_string(assign_id.date_from)
-            date_from = fields.Date.from_string(date_from)
+            date_from = fields.Date.from_string(str(date_from))
             assign_date_to = fields.Date.from_string(assign_id.date_to)
-            date_to = fields.Date.from_string(date_to)
+            date_to = fields.Date.from_string(str(date_to))
             duration_in_month = 0
             res = {}
             amount_allowance = 0.0
