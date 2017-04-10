@@ -320,23 +320,25 @@
 							attrs="{'invisible':[('state','!=', 'commission_third')]}"
 							string="إعتماد " type="object" groups="smart_hr.group_hr_commissioning_requests"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
-						<button name="action_done" attrs="{'invisible':[('state','!=', 'benefits')]}"
+						<button name="action_issuing_decision" attrs="{'invisible':[('state','!=', 'benefits')]}"
+							string="إعتماد " type="object" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_done" attrs="{'invisible':[('state','!=', 'issuing_decision')]}"
 							string="إعتماد " type="object" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 
 
 
 						<field name="state" widget="statusbar"
-							statusbar_visible="new,draft,waiting,commission_president,commission_third,benefits,done" />
+							statusbar_visible="new,draft,waiting,commission_president,commission_third,benefits,issuing_decision,done" />
 					</header>
 					<sheet>
 						<group>
 							<group>
 								<field name="name" />
+								<field name="decision_id" attrs="{'invisible':[('state', '!=', 'issuing_decision')]}"/>
 							</group>
 							<group string="موافقة الخدمة المدنية"
-								attrs="{'invisible':[('state', 'not in', ['commission_third','benefits','done'])]}">
+								attrs="{'invisible':[('state', 'not in', ['commission_third'])]}">
 								<field name="speech_number"
 									attrs="{'invisible':[('state', 'not in', ['commission_third'])],'required':[('state', '=', 'commission_third')],'readonly':[('state', 'in', ['benefits','done'])]}" />
 								<field name="speech_date"
@@ -459,9 +461,9 @@
 							<page string="طلبات النقل" options="{'no_create': True}"
 								attrs="{'invisible':[('state', '!=', 'benefits')]}">
 								<br></br>
-								<field name="line_ids4" options="{'no_create': True}"
+								<field name="line_ids4"
 									attrs="{'invisible':[('state', '!=', 'benefits')]}" string=" طلبات النقل">
-									<tree editable="bottom" colors="red:is_conflected==True;">
+									<tree editable="bottom" colors="red:is_conflected==True;" create="false">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />

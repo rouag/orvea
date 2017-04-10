@@ -112,7 +112,7 @@ class HrPayslip(models.Model):
             create_date = datetime.strptime(payslip_id.create_date, '%Y-%m-%d %H:%M:%S')
             create_date = create_date.strftime('%Y-%m-%d')
             # TODO: review payslip.create_date
-            line_ids += self.get_difference_transfert(create_date, self.date_from, self.employee_id, True)
+            # فروقات النقل
             # فروقات التعين
             line_ids += self.get_difference_decision_appoint(create_date, self.date_to, self.employee_id, True)
             # فروقات التكليف
@@ -174,11 +174,9 @@ class HrPayslip(models.Model):
         for assign_id in assign_ids:
             # overlaped days in current month
             assign_date_from = fields.Date.from_string(assign_id.date_from)
-            date_from = fields.Date.from_string(date_from)
+            date_from = fields.Date.from_string(str(date_from))
             assign_date_to = fields.Date.from_string(assign_id.date_to)
-            date_to = fields.Date.from_string(date_to)
-            print 'assign_date_from, date_from', assign_date_from, date_from
-            print 'assign_date_to, date_to', assign_date_to, date_to
+            date_to = fields.Date.from_string(str(date_to))
             duration_in_month = 0
             res = {}
             amount_allowance = 0.0
@@ -189,19 +187,18 @@ class HrPayslip(models.Model):
                 res = self.env['hr.smart.utils'].compute_duration_difference(assign_id.employee_id, assign_date_from, assign_date_to, True, True, True)
             if assign_date_from >= date_from and assign_date_to >= date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(assign_id.employee_id, assign_date_from, date_to, True, True, True)
-            print '--res----', res
             if len(res) == 1:
                 res = res[0]
                 duration_in_month = res['days']
                 grid_id = res['grid_id']
                 basic_salary = res['basic_salary']
                 if assign_id.salary_rate:
-                    salary_rate_amount = (duration_in_month * (basic_salary / 30) * assign_id.salary_rate / 100.0) * -1
+                    salary_rate_amount = (duration_in_month * (basic_salary / 30.0) * assign_id.salary_rate / 100.0) * -1
                 if assign_id.allowance_transport_rate:
                     allowance_ids = grid_id.allowance_ids
                     for allow in allowance_ids:
                         if allow.allowance_id == allowance_transport_id:
-                            amount_allowance = (duration_in_month * (allow.get_value(assign_id.employee_id.id) / 30) * assign_id.allowance_transport_rate / 100.0) * -1
+                            amount_allowance = (duration_in_month * (allow.get_value(assign_id.employee_id.id) / 30.0) * assign_id.allowance_transport_rate / 100.0) * -1
                             break
             else:
                 for rec in res:
@@ -210,13 +207,13 @@ class HrPayslip(models.Model):
                     days = rec['days']
                     duration_in_month += days
                     if grid_id and days > 0 and assign_id.salary_rate:
-                        rec_amount = ((days * (basic_salary / 30) * assign_id.salary_rate) / 100.0) * -1
+                        rec_amount = ((days * (basic_salary / 30.0) * assign_id.salary_rate) / 100.0) * -1
                         salary_rate_amount += rec_amount
                     if grid_id and days > 0 and assign_id.allowance_transport_rate:
                         allowance_ids = grid_id.allowance_ids
                         for allow in allowance_ids:
                             if allow.allowance_id == allowance_transport_id:
-                                amount_allowance += (days * (allow.get_value(assign_id.employee_id.id) / 30) * assign_id.allowance_transport_rate / 100.0) * -1
+                                amount_allowance += (days * (allow.get_value(assign_id.employee_id.id) / 30.0) * assign_id.allowance_transport_rate / 100.0) * -1
                                 break
 
             # 1 الراتب
@@ -243,9 +240,7 @@ class HrPayslip(models.Model):
         self.ensure_one()
         line_ids = []
         name = ''
-        domain = [('date_to', '>=', date_from),
-                  ('date_to', '<=', date_to),
-                  ('employee_id', '=', employee_id.id),
+        domain = [('employee_id', '=', employee_id.id),
                   ('state', '=', 'done')
                   ]
         if for_last_month:
@@ -253,39 +248,78 @@ class HrPayslip(models.Model):
             domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         scholarship_ids = self.env['hr.scholarship'].search(domain)
+        final_retirement_amount = 0.0
+        allow_exception_amount = 0.0
         for scholarship_id in scholarship_ids:
-            grid_id, basic_salary = scholarship_id.employee_id.get_salary_grid_id(scholarship_id.date_to)
-            if grid_id:
-                # 1) البدلات المستثناة
-                alowances_in_grade_id = [rec.allowance_id for rec in grid_id.allowance_ids]
+            # overlaped days in current month
+            scholarship_date_from = fields.Date.from_string(scholarship_id.date_from)
+            date_from = fields.Date.from_string(date_from)
+            scholarship_date_to = fields.Date.from_string(scholarship_id.date_to)
+            date_to = fields.Date.from_string(date_to)
+            duration_in_month = 0
+            retirement_amount = 0.0
+            res = {}
+            if date_from >= scholarship_date_from and scholarship_date_to >= date_to:
+                res = self.env['hr.smart.utils'].compute_duration_difference(scholarship_id.employee_id, date_from, date_to, True, True, True)
+            if scholarship_date_from >= date_from and scholarship_date_to <= date_to:
+                res = self.env['hr.smart.utils'].compute_duration_difference(scholarship_id.employee_id, scholarship_date_from, scholarship_date_to, True, True, True)
+            if scholarship_date_from >= date_from and scholarship_date_to >= date_to:
+                res = self.env['hr.smart.utils'].compute_duration_difference(scholarship_id.employee_id, scholarship_date_from, date_to, True, True, True)
+            if len(res) == 1:
+                res = res[0]
+                duration_in_month = res['days']
+                grid_id = res['grid_id']
+                basic_salary = res['basic_salary']
+                retirement_amount = duration_in_month * basic_salary / 30.0 * grid_id.retirement / 100.0
+                basic_salary_after_retirement = duration_in_month * basic_salary / 30.0 - retirement_amount
+                final_retirement_amount += basic_salary_after_retirement - ((basic_salary_after_retirement * scholarship_id.scholarship_type.salary_percent) / 100.0)
+                final_retirement_amount *= -1
+                # البدلات المستثناة
+                alowances_in_grid_id = [rec.allowance_id for rec in grid_id.allowance_ids]
                 for allowance in scholarship_id.scholarship_type.hr_allowance_type_id:
                     # check if the allowance in employe's salary_grade_id
-                    if allowance in alowances_in_grade_id:
-                        amount = 0.0
+                    if allowance in alowances_in_grid_id:
                         for allow in grid_id.allowance_ids:
                             if allow.allowance_id == allowance:
-                                amount = allow.get_value(scholarship_id.employee_id.id)
+                                allow_exception_amount = allow.get_value(scholarship_id.employee_id.id)
                                 break
-                        if amount > 0:
-                            vals = {'name': allowance.name + name,
-                                    'employee_id': scholarship_id.employee_id.id,
-                                    'number_of_days': 0.0,
-                                    'number_of_hours': 0.0,
-                                    'amount': amount * -1,
-                                    'type': 'scholarship'}
-                            line_ids.append(vals)
-                # 2) نسبة الراتب بعد حسم التقاعد
-                retirement_amount = basic_salary * grid_id.retirement / 100.0
-                basic_salary_after_retirement = basic_salary - retirement_amount
-                amount = basic_salary_after_retirement - ((basic_salary_after_retirement * scholarship_id.scholarship_type.salary_percent) / 100.0)
-                if amount > 0:
-                    vals = {'name': u'نسبة الراتب بعد حسم التقاعد' + name,
-                            'employee_id': scholarship_id.employee_id.id,
-                            'number_of_days': 0.0,
-                            'number_of_hours': 0.0,
-                            'amount': amount * -1,
-                            'type': 'scholarship'}
-                    line_ids.append(vals)
+                allow_exception_amount *= -1
+            else:
+                for rec in res:
+                    grid_id = rec['grid_id']
+                    days = rec['days']
+                    duration_in_month += days
+                    retirement_amount = days * basic_salary / 30.0 * grid_id.retirement / 100.0
+                    basic_salary_after_retirement = days * basic_salary / 30.0 - retirement_amount
+                    final_retirement_amount += basic_salary_after_retirement - ((basic_salary_after_retirement * scholarship_id.scholarship_type.salary_percent) / 100.0)
+                    # البدلات المستثناة
+                    alowances_in_grid_id = [allow.allowance_id for allow in grid_id.allowance_ids]
+                    for allowance in scholarship_id.scholarship_type.hr_allowance_type_id:
+                        # check if the allowance in employe's salary_grade_id
+                        if allowance in alowances_in_grid_id:
+                            for allow in grid_id.allowance_ids:
+                                if allow.allowance_id == allowance:
+                                    allow_exception_amount += days * allow.get_value(scholarship_id.employee_id.id) / 100.0
+                                    break
+                final_retirement_amount *= -1
+            # 1) البدلات المستثناة
+            if allow_exception_amount < 0:
+                vals = {'name': '' + allowance.name + name,
+                        'employee_id': scholarship_id.employee_id.id,
+                        'number_of_days': duration_in_month,
+                        'number_of_hours': 0.0,
+                        'amount': allow_exception_amount,
+                        'type': 'scholarship'}
+                line_ids.append(vals)
+            # 2) نسبة الراتب بعد حسم التقاعد
+            if final_retirement_amount < 0:
+                vals = {'name': u'نسبة الراتب بعد حسم التقاعد' + name,
+                        'employee_id': scholarship_id.employee_id.id,
+                        'number_of_days': duration_in_month,
+                        'number_of_hours': 0.0,
+                        'amount': final_retirement_amount,
+                        'type': 'scholarship'}
+                line_ids.append(vals)
         return line_ids
 
     @api.multi
@@ -303,6 +337,7 @@ class HrPayslip(models.Model):
         lend_ids = self.env['hr.employee.lend'].search(domain)
         amount_retirement = 0.0
         allowance_amount = 0.0
+        amount = 0.0
         for lend_id in lend_ids:
             # overlaped days in current month
             lend_date_from = fields.Date.from_string(lend_id.date_from)
@@ -344,11 +379,11 @@ class HrPayslip(models.Model):
                     basic_salary = rec['basic_salary']
                     days = rec['days']
                     if grid_id and days > 0:
-                        rec_amount = ((days * (basic_salary / 30) * lend_id.salary_proportion) / 100.0) * -1
+                        rec_amount = ((days * (basic_salary / 30.0) * lend_id.salary_proportion) / 100.0) * -1
                         duration_in_month += days
                         amount += rec_amount
                         if hr_setting and lend_id.pay_retirement:
-                            amount_retirement += (days * (basic_salary / 30) * hr_setting.retirement_proportion / 100.0) * -1
+                            amount_retirement += (days * (basic_salary / 30.0) * hr_setting.retirement_proportion / 100.0) * -1
                         # البدلات
                         for allowance in lend_id.allowance_ids:
                             for rec in employee_allowances:
@@ -360,7 +395,7 @@ class HrPayslip(models.Model):
                         allowance_amount *= -1
 
             # 1 الراتب
-            if grid_id and duration_in_month and amount < 0:
+            if amount < 0:
                 vals = {'name': 'نسبة الراتب' + name,
                         'employee_id': lend_id.employee_id.id,
                         'number_of_days': duration_in_month,
@@ -406,13 +441,12 @@ class HrPayslip(models.Model):
         holidays_ids = self.env['hr.holidays'].search(domain)
         holiday_status_maternity = self.env.ref('smart_hr.data_hr_holiday_status_maternity')
         for holiday_id in holidays_ids:
+            holiday_status_id = holiday_id.holiday_status_id
             holiday_date_from = holiday_id.date_from
             date_from = date_from
             holiday_date_to = holiday_id.date_to
             date_to = date_to
-            days = days_between(holiday_id.date_from, date_from)
-            today = fields.Date.from_string(fields.Date.today())
-            months_from_holiday_start = relativedelta(today, fields.Date.from_string(holiday_id.date_from)).months
+            days = days_between(holiday_id.date_from, date_from) - 1
             # days in current month
             if days < 0 and holiday_id.date_to <= date_to:
                 duration_in_month = days_between(date_from, holiday_date_to)
@@ -423,7 +457,6 @@ class HrPayslip(models.Model):
             if days >= 0 and holiday_id.date_to > date_to:
                 duration_in_month = days_between(holiday_date_from, date_to) - days
             grid_id, basic_salary = holiday_id.employee_id.get_salary_grid_id(False)
-            holiday_status_id = holiday_id.holiday_status_id
             # get the entitlement type
             if not holiday_id.entitlement_type:
                 entitlement_type = self.env.ref('smart_hr.data_hr_holiday_entitlement_all')
@@ -431,7 +464,8 @@ class HrPayslip(models.Model):
                 entitlement_type = holiday_id.entitlement_type
             # case of لا يصرف له الراتب
             if grid_id and not holiday_status_id.salary_spending:
-                amount = (duration_in_month * (basic_salary / 30))
+                # فرق الراتب الأساسي
+                amount = (duration_in_month * (basic_salary / 30.0))
                 if duration_in_month > 0 and amount != 0:
                     vals = {'name': holiday_id.holiday_status_id.name + name,
                             'employee_id': holiday_id.employee_id.id,
@@ -440,12 +474,43 @@ class HrPayslip(models.Model):
                             'amount': amount * -1,
                             'type': 'holiday'}
                     line_ids.append(vals)
+                # فرق البدلات
+                amount = 0.0
+                for allowance in grid_id.allowance_ids:
+                    amount = allowance.get_value(holiday_id.employee_id.id) / 30.0 * duration_in_month
+                if duration_in_month > 0 and amount != 0:
+                    vals = {'name': 'فرق بدلات ' + holiday_id.holiday_status_id.name + name,
+                            'employee_id': holiday_id.employee_id.id,
+                            'number_of_days': duration_in_month,
+                            'number_of_hours': 0.0,
+                            'amount': amount * -1,
+                            'type': 'holiday'}
+                    line_ids.append(vals)
+                # فرق التقاعد
+                retirement_amount = basic_salary * grid_id.retirement / 100.0 / 30.0 * duration_in_month
+                if duration_in_month > 0 and retirement_amount != 0:
+                    vals = {'name': 'فرق التقاعد‬ ' + holiday_id.holiday_status_id.name + name,
+                            'employee_id': holiday_id.employee_id.id,
+                            'number_of_days': duration_in_month,
+                            'number_of_hours': 0.0,
+                            'amount': retirement_amount,
+                            'type': 'holiday'}
+                    line_ids.append(vals)
             # case of  لا يصرف له راتب كامل
             if grid_id and holiday_status_id.salary_spending and holiday_status_id.percentages:
                 for rec in holiday_status_id.percentages:
-                    if entitlement_type == rec.entitlement_id.entitlment_category and rec.month_from <= months_from_holiday_start <= rec.month_to:
-                        amount = (duration_in_month * (basic_salary / 30) * (100 - rec.salary_proportion)) / 100.0
-                        print '--amount--', amount
+                    today = fields.Date.from_string(fields.Date.today())
+                    if rec.entitlement_id.periode:
+                        get_from_date = today - relativedelta(years=rec.entitlement_id.periode)
+                        # get first token holiday with same type
+                        oldest_holiday_id = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
+                                                                            ('employee_id', '=', holiday_id.employee_id.id),
+                                                                            ('state', '=', 'done'),
+                                                                            ('date_from', '>=', get_from_date),
+                                                                            ], order='done_date asc', limit=1)
+                        months_from_holiday_start = relativedelta(today, fields.Date.from_string(oldest_holiday_id.date_from)).months
+                    if entitlement_type == rec.entitlement_id.entitlment_category and rec.month_from <= months_from_holiday_start <= rec.month_to and duration_in_month > 0:
+                        amount = (duration_in_month * (basic_salary / 30.0) * (100 - rec.salary_proportion)) / 100.0
                         if holiday_status_maternity == holiday_status_id:
                             retirement_amount = basic_salary * grid_id.retirement / 100.0
                             amount = ((basic_salary - retirement_amount) * (100 - rec.salary_proportion)) / 100.0
@@ -453,7 +518,7 @@ class HrPayslip(models.Model):
                             if diff > 0:
                                 amount -= diff
                             # amout depend of number of days
-                            amount = amount * duration_in_month / 30
+                            amount = amount * duration_in_month / 30.0
                         if amount != 0:
                             vals = {'name': holiday_id.holiday_status_id.name + name,
                                     'employee_id': holiday_id.employee_id.id,
@@ -462,10 +527,32 @@ class HrPayslip(models.Model):
                                     'amount': amount * -1,
                                     'type': 'holiday'}
                             line_ids.append(vals)
+                        # فرق البدلات
+                        amount = 0.0
+                        for allowance in grid_id.allowance_ids:
+                            amount = allowance.get_value(holiday_id.employee_id.id) * (100 - rec.salary_proportion) / 100.0
+                        if duration_in_month > 0 and amount != 0:
+                            vals = {'name': 'فرق بدلات : ' + holiday_id.holiday_status_id.name + name,
+                                    'employee_id': holiday_id.employee_id.id,
+                                    'number_of_days': duration_in_month,
+                                    'number_of_hours': 0.0,
+                                    'amount': amount * -1,
+                                    'type': 'holiday'}
+                            line_ids.append(vals)
+                        # فرق التقاعد
+                        retirement_amount = basic_salary * grid_id.retirement / 100.0 * (100 - rec.salary_proportion) / 100.0
+                        if duration_in_month > 0 and retirement_amount != 0:
+                            vals = {'name': 'فرق التقاعد‬ : ' + holiday_id.holiday_status_id.name + name,
+                                    'employee_id': holiday_id.employee_id.id,
+                                    'number_of_days': duration_in_month,
+                                    'number_of_hours': 0.0,
+                                    'amount': retirement_amount,
+                                    'type': 'holiday'}
+                            line_ids.append(vals)
             # case of  نوع التعويض    مقابل ‫مادي‬ ‬   اجازة التعويض
             if grid_id:
                 if holiday_id.compensation_type and holiday_id.compensation_type == 'money':
-                    amount = (holiday_id.token_compensation_stock * (basic_salary / 30))
+                    amount = (holiday_id.token_compensation_stock * (basic_salary / 30.0))
                     if amount != 0:
                         vals = {'name': holiday_id.holiday_status_id.name + u"(تعويض مالي)" + name,
                                 'employee_id': holiday_id.employee_id.id,
@@ -636,7 +723,7 @@ class HrPayslip(models.Model):
             if _all_days_in_month(suspension['date_from'], suspension['date_to']):
                 number_of_days = 30.0
                 retirement_amount = basic_salary * salary_grid.retirement / 100.0
-                amount += (30 - suspension_number_of_days) * (basic_salary - retirement_amount) / 30.0 / 2.0
+                amount += (30.0 - suspension_number_of_days) * (basic_salary - retirement_amount) / 30.0 / 2.0
             val = {'name': 'فرق الراتب الأساسي كف اليد' + name,
                    'employee_id': employee.id,
                    'number_of_days': number_of_days,
@@ -656,7 +743,7 @@ class HrPayslip(models.Model):
                         date_start = date_start + relativedelta(days=1)
                     if _all_days_in_month(suspension['date_from'], suspension['date_to']):
                         number_of_days = 30.0
-                        allowance_amount += (30 - suspension_number_of_days) * allowance_val
+                        allowance_amount += (30.0 - suspension_number_of_days) * allowance_val
                     val = {'name': 'فرق %s كف اليد' % allowance.allowance_id.name.encode('utf-8') + name,
                            'employee_id': employee.id,
                            'number_of_days': number_of_days,
@@ -690,7 +777,7 @@ class HrPayslip(models.Model):
                 date_from = date_from
                 date_to = termination.date
                 worked_days = days_between(date_from, date_to) - 1
-                unworked_days = 30 - worked_days
+                unworked_days = 30.0 - worked_days
                 if unworked_days > 0:
                     amount = (basic_salary / 30.0) * unworked_days
                     vals = {'name': termination.termination_type_id.name + " " + u'(فرق الأيام المخصومة من الشهر)' + name,
@@ -708,7 +795,7 @@ class HrPayslip(models.Model):
                         amount = basic_salary * (termination.termination_type_id.nb_salaire - 1)
                         vals = {'name': termination.termination_type_id.name + " " + u'(عدد الرواتب)' + name,
                                 'employee_id': termination.employee_id.id,
-                                'number_of_days': (termination.termination_type_id.nb_salaire - 1) * 30,
+                                'number_of_days': (termination.termination_type_id.nb_salaire - 1) * 30.0,
                                 'number_of_hours': 0.0,
                                 'amount': amount,
                                 'type': 'termination'}
@@ -719,7 +806,7 @@ class HrPayslip(models.Model):
             # 2) الإجازة
             if not termination.termination_type_id.all_holidays and sum_days >= termination.termination_type_id.max_days:
                 if grid_id:
-                    amount = (basic_salary / 30) * termination.termination_type_id.max_days
+                    amount = (basic_salary / 30.0) * termination.termination_type_id.max_days
                     if amount != 0.0:
                         vals = {'name': 'رصيد إجازة (طي القيد)' + name,
                                 'employee_id': termination.employee_id.id,
@@ -730,7 +817,7 @@ class HrPayslip(models.Model):
                         line_ids.append(vals)
             if termination.termination_type_id.all_holidays and sum_days > 0:
                 if grid_id:
-                    amount = (basic_salary / 30) * sum_days
+                    amount = (basic_salary / 30.0) * sum_days
                     if amount != 0.0:
                         vals = {'name': 'رصيد إجازة (طي القيد)' + name,
                                 'employee_id': termination.employee_id.id,

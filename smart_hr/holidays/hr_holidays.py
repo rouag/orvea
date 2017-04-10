@@ -103,7 +103,7 @@ class HrHolidays(models.Model):
     # Extension
     is_extension = fields.Boolean(string=u'اجازة ممددة')
     is_extended = fields.Boolean(string=u'ممددة', compute='_is_extended')
-    extended_holiday_id = fields.Many2one('hr.holidays', string=u'الإجازة الممددة')
+    extended_holiday_id = fields.Many2one('hr.holidays', string=u'تمديد الإجازة')
     parent_id = fields.Many2one('hr.holidays', string=u'Parent')
     extension_holidays_ids = fields.One2many('hr.holidays', 'parent_id', string=u'التمديدات')
     is_extensible = fields.Integer(string=u'يمكن تمديدها', related='holiday_status_id.extension_number')
@@ -162,6 +162,8 @@ class HrHolidays(models.Model):
     advanced_salary_is_paied = fields.Boolean('advanced_salary_is_paied', default=False)
     decission_id = fields.Many2one('hr.decision', string=u'القرارات',)
     done_date = fields.Date(string='تاريخ التفعيل')
+    display_button_extend = fields.Boolean(compute='_compute_display_button_extend')
+    
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
@@ -192,6 +194,14 @@ class HrHolidays(models.Model):
                 rec.display_button_cut = False
             else:
                 rec.display_button_cut = True
+
+    @api.multi
+    def _compute_display_button_extend(self):
+        for rec in self:
+            if rec.state != 'done' or rec.is_extensible == 0 or rec.is_started is False or (rec.is_current_user is False and self.env.user.has_group('smart_hr.group_holidays_extend_responsable') is False):
+                rec.display_button_extend = False
+            else:
+                rec.display_button_extend = True
 
     @api.multi
     @api.depends("deputation_id")
@@ -420,23 +430,25 @@ class HrHolidays(models.Model):
         decision_obj= self.env['hr.decision']
         if self.decission_id:
             decission_id = self.decission_id.id
-        else :
+        else:
             decision_type_id = 1
             decision_date = fields.Date.today() # new date
             if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_normal').id:
                 decision_type_id = self.env.ref('smart_hr.data_normal_leave').id
-            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id:
+            elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id:
                 decision_type_id = self.env.ref('smart_hr.data_exceptionnel_leave').id
-            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_illness').id:
+            elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_illness').id:
                 decision_type_id = self.env.ref('smart_hr.data_leave_satisfactory').id
-            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional').id:
+            elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional').id:
                 decision_type_id = self.env.ref('smart_hr.data_leave_escort').id
-            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_sport').id:
+            elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_sport').id:
                 decision_type_id = self.env.ref('smart_hr.data_leave_sport').id
-            if self.holiday_status_id.id == self.env.ref('smart_hr.data_leave_motherhood').id:
+            elif self.holiday_status_id.id == self.env.ref('smart_hr.data_leave_motherhood').id:
                 decision_type_id = self.env.ref('smart_hr.data_leave_motherhood').id
-            else :
+            else:
                 decision_type_id = self.env.ref('smart_hr.data_normal_leave').id
+
+
             # create decission
             decission_val={
                 'name': self.env['ir.sequence'].get('hr.holidays.seq'),

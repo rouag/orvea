@@ -29,17 +29,12 @@ class HrJob(models.Model):
     state = fields.Selection(
         [('unoccupied', u'شاغرة'), ('occupied', u'مشغولة'), ('cancel', u'ملغاة'), ('reserved', u'محجوزة')],
         string=u'الحالة', readonly=1, default='unoccupied')
-    state_job = fields.Selection(
-        [('unoccupied', u'شاغرة'), ('occupied', u'مشغولة'), ('cancel', u'ملغاة'), ('reserved', u'محجوزة'),
-         ('offer', u'إعلان'), ('addjustment', u'تحوير'), ('transfert', u'نقل'), ('recrutment', u'تعيين'),
-         ('service_transfet', u'نقل خدمات'), ('promotion', u'ترقية'), ('mission', u'تكليف'), ('increase', u'رفع'),
-         ('decrease', u'خفظ')], string=u'الحالة', readonly=1, default='unoccupied')
     employee = fields.Many2one('hr.employee', string=u'الموظف')
     occupied_date = fields.Date(string=u'تاريخ شغلها')
     creation_source = fields.Selection([('creation', u'إحداث'), ('striped_from', u'سلخ  من جهة'),
                                         ('striped_to', u'سلخ إلى جهة'), ('cancel', u'إلغاء'),
                                         ('scale_up', u'رفع'), ('scale_down', u'خفض'), ('update', u'تحوير‬'),
-                                        ('move', u'نقل')], readonly=1, string=u'المصدر')
+                                        ('move', u'نقل')], readonly=1, string=u' مصدر الوظيفة')
     # حجز الوظيفة
     occupation_date_from = fields.Date(string=u'حجز الوظيفة من')
     occupation_date_to = fields.Date(string=u'حجز الوظيفة الى', )
@@ -59,7 +54,8 @@ class HrJob(models.Model):
                                  ('unooccupied_transfer', u'شاغرة بنقل شاغلها'),
                                  ('unooccupied_termination', u'شاغرة بطي قيد شاغلها'),
                                  ],
-                                string=u' نوع شغر الوظيفةالنشطة و شغولها')
+                                string=u'مصدر الحالة')
+    branch_id = fields.Many2one('hr.department', string=u'الفرع', related='department_id.branch_id')
 
     @api.multi
     @api.depends('occupation_date_to')
@@ -1288,7 +1284,7 @@ class HrJobMoveGradeLine(models.Model):
 
     job_move_grade_id = fields.Many2one('hr.job.move.grade', string='الوظيفة', required=1, ondelete="cascade")
     job_id = fields.Many2one('hr.job', string='الوظيفة', required=1)
-    job_number = fields.Char(string='رقم الوظيفة', required=1, readonly=1)
+    job_number = fields.Char(string='رقم الوظيفة', readonly=1)
     job_name_code = fields.Char(related="job_id.name.number", string='الرمز', readonly=1)
     type_id = fields.Many2one('salary.grid.type', string='نوع السلم', readonly=1, required=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة الحالية', readonly=1, required=1)

@@ -73,7 +73,7 @@
 									<field name="dep_city"
 										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								</group>
-
+							<field name="branch_id" invisible="1"/>
 							</group>
 						</sheet>
 						<div class="oe_chatter">

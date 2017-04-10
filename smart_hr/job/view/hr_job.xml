@@ -21,7 +21,10 @@
 					<field name="write_date" string="تاريخ حالة الوظيفة" />
 					<field name="occupied_date" />
 					<field name="state" />
+					<field name="category" />
 					<field name="creation_source" />
+
+
 				</tree>
 			</field>
 		</record>
@@ -115,7 +118,7 @@
 						domain="[('category','=','occupied_appoint')]" />
 					<filter string="شاغرة بترقية شاغلها" name="unoccupied_promotion"
 						domain="[('category','=','unoccupied_promotion')]" />
-					<filter string="شاغرة بترقية شاغلها" name="unooccupied_transfer"
+					<filter string="شاغرة بنقل شاغلها" name="unooccupied_transfer"
 						domain="[('category','=','unooccupied_transfer')]" />
 					<filter string="شاغرة بطي قيد شاغلها" name="unooccupied_appoint"
 						domain="[('category','=','unooccupied_termination')]" />
@@ -536,6 +539,8 @@
 							<tree editable="bottom">
 								<field name="job_id" domain="[('state','=','unoccupied')]"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="job_number" invisible="1" />
+
 								<field name="job_name_code" string="الرمز" />
 								<field name="type_id" readonly="1" />
 								<field name="department_id"
@@ -622,13 +627,13 @@
 						</group>
 
 						<group>
-						<group>
-							<field name="decision_number"
-								attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
-							<field name="decision_date"
-								attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
-						</group> 
-						<group/>
+							<group>
+								<field name="decision_number"
+									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
+								<field name="decision_date"
+									attrs="{'invisible':[('state', 'in', ['new','waiting'])],'required':[('state','=','hrm1')], 'readonly':[('state','!=', 'hrm1')]}" />
+							</group>
+							<group />
 						</group>
 						<group>
 							<group>
@@ -655,6 +660,7 @@
 							<tree editable="bottom">
 								<field name="job_id"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="job_number" invisible="1" />
 								<field name="department_id" />
 								<field name="grade_id" />
 								<field name="old_name" />
@@ -779,6 +785,7 @@
 							<tree editable="bottom">
 								<field name="job_id" domain="[('state','=','unoccupied') ]"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="job_number" invisible="1" />
 								<field name="job_name_code" />
 								<field name="type_id" />
 								<field name="grade_id" />
@@ -899,6 +906,8 @@
 							<tree editable="bottom">
 								<field name="job_id"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="job_number" invisible="1" />
+
 								<field name="job_name_code" />
 								<field name="type_id" />
 								<field name="department_id" />

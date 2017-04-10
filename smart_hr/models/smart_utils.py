@@ -49,6 +49,9 @@ class SmartUtils(models.Model):
             # case 2: different salary grid_ids for all periode
             if not mydict:
                 grid_id, basic_salary = employee_id.get_salary_grid_id(date_from)
+                mydict['grid_id'] = grid_id
+                mydict['date_from'] = date_from
+                mydict['basic_salary'] = basic_salary
                 while date_from <= date_to:
                     days += 1
                     # minus normal days
@@ -78,8 +81,8 @@ class SmartUtils(models.Model):
                         basic_salary = basic_salary_temp
                         mydict = {'date_from': date_from, 'date_to': False, 'days': days, 'grid_id': grid_id, 'basic_salary': basic_salary}
                     else:
-                        mydict['date_to': date_from]
-                        mydict['days': days]
+                        mydict['date_to'] = date_from
+                        mydict['days'] = days
                 mydict['days'] = days
         return res
 
@@ -316,3 +319,15 @@ class SmartUtils(models.Model):
                 return "holiday"
             else:
                 return False
+
+    def public_holiday_intersection(self, date):
+        if not isinstance(date, dt.date):
+            date = fields.Date.from_string(date)
+
+        hr_public_holiday_obj = self.env['hr.public.holiday']
+        inter = hr_public_holiday_obj.search([('state', '=', 'done'), ('date_from', '<=', date), ('date_to', '>=', date)], limit=1)
+        if inter:
+            date_from = fields.Date.from_string(inter.date_from)
+            inter_count = (date - date_from).days + 1
+            return inter_count
+
