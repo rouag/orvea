@@ -338,7 +338,7 @@
 								<field name="decision_id" attrs="{'invisible':[('state', '!=', 'issuing_decision')]}"/>
 							</group>
 							<group string="موافقة الخدمة المدنية"
-								attrs="{'invisible':[('state', 'not in', ['commission_third','benefits','done'])]}">
+								attrs="{'invisible':[('state', 'not in', ['commission_third'])]}">
 								<field name="speech_number"
 									attrs="{'invisible':[('state', 'not in', ['commission_third'])],'required':[('state', '=', 'commission_third')],'readonly':[('state', 'in', ['benefits','done'])]}" />
 								<field name="speech_date"
@@ -461,9 +461,9 @@
 							<page string="طلبات النقل" options="{'no_create': True}"
 								attrs="{'invisible':[('state', '!=', 'benefits')]}">
 								<br></br>
-								<field name="line_ids4" options="{'no_create': True}"
+								<field name="line_ids4"
 									attrs="{'invisible':[('state', '!=', 'benefits')]}" string=" طلبات النقل">
-									<tree editable="bottom" colors="red:is_conflected==True;">
+									<tree editable="bottom" colors="red:is_conflected==True;" create="false">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
