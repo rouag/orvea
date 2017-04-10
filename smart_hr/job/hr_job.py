@@ -39,7 +39,7 @@ class HrJob(models.Model):
     creation_source = fields.Selection([('creation', u'إحداث'), ('striped_from', u'سلخ  من جهة'),
                                         ('striped_to', u'سلخ إلى جهة'), ('cancel', u'إلغاء'),
                                         ('scale_up', u'رفع'), ('scale_down', u'خفض'), ('update', u'تحوير‬'),
-                                        ('move', u'نقل')], readonly=1, string=u'المصدر')
+                                        ('move', u'نقل')], readonly=1, string=u' مصدر الوظيفة')
     # حجز الوظيفة
     occupation_date_from = fields.Date(string=u'حجز الوظيفة من')
     occupation_date_to = fields.Date(string=u'حجز الوظيفة الى', )
@@ -59,7 +59,8 @@ class HrJob(models.Model):
                                  ('unooccupied_transfer', u'شاغرة بنقل شاغلها'),
                                  ('unooccupied_termination', u'شاغرة بطي قيد شاغلها'),
                                  ],
-                                string=u' نوع شغر الوظيفةالنشطة و شغولها')
+                                string=u'مصدر الحالة')
+    branch_id = fields.Many2one('hr.department', string=u'الفرع', related='department_id.branch_id')
 
     @api.multi
     @api.depends('occupation_date_to')

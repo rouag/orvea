@@ -137,8 +137,8 @@ class HrEmployee(models.Model):
     commissioning_job_id = fields.Many2one('hr.job', string='الوظيفة المكلف عليها',Domain=[('state', '=', 'unoccupied'),('state_job','=','mission')])
     commissioning_type_id = fields.Many2one('salary.grid.type', string='نوع السلم المكلف عليها',related='commissioning_job_id.type_id',readonly=1)
     commissioning_grade_id = fields.Many2one('salary.grid.grade', string='المرتبة المكلف عليها',related='commissioning_job_id.grade_id',readonly=1)
-
-
+    branch_id = fields.Many2one('hr.department', string=u'الفرع', related='department_id.branch_id')
+        
     def get_years_months_days(self, duration):
         years = duration // 354
         months = (duration % 354) // 30
