@@ -44,16 +44,16 @@ class HrEmployeeTransfertWizard(models.TransientModel):
         return res
 
     @api.multi
-    @api.onchange('res_city','specific_group')
+    @api.onchange('res_city', 'specific_group')
     def _onchange_res_city(self):
         # get list of job depend on type_appointment
         res = {}
-        if  self.res_city  and  self.specific_group =='other_specific':
-            job_ids = self.env['hr.job'].search([('department_id.dep_city', '=', self.res_city.id),('state','=', 'unoccupied'),('specific_id','!=',self.specific_id.id)])
+        if self.res_city and self.specific_group == 'other_specific':
+            job_ids = self.env['hr.job'].search([('department_id.dep_city', '=', self.res_city.id), ('state', '=', 'unoccupied'), ('specific_id', '!=', self.specific_id.id)])
             res['domain'] = {'new_job_id': [('id', 'in', job_ids.ids)]}
             return res
-        if self.res_city  and  self.specific_group =='same_specific':
-            job_ids = self.env['hr.job'].search([('department_id.dep_city', '=', self.res_city.id),('state','=', 'unoccupied'),('specific_id','=',self.specific_id.id)])
+        if self.res_city and self.specific_group == 'same_specific':
+            job_ids = self.env['hr.job'].search([('department_id.dep_city', '=', self.res_city.id), ('state', '=', 'unoccupied'), ('specific_id', '=', self.specific_id.id)])
             res['domain'] = {'new_job_id': [('id', 'in', job_ids.ids)]}
             return res
 
