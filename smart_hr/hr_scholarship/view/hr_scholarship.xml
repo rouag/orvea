@@ -59,6 +59,11 @@
 						<button name="button_extend" string="تمديد الابتعاث"
 							attrs="{'invisible':[('state', 'not in', ['done'])]} " type="object"
 							icon="fa-check" class="oe_inline oe_stat_button" />
+							
+							<button name="open_decission_scholarship" string="معاينة القرار"
+							attrs="{'invisible':['|',('is_extension','=',False),('state','not in',['done','finished'])]}"
+						 type="object" states="done" icon="fa-print"
+							class="oe_inline oe_stat_button" />
 
 
 					</header>
@@ -158,10 +163,7 @@
 							<field name="note"
 								attrs="{'readonly':[('state','not in', ['draft', 'psm'])]}" />
 						</group>
-						<button style="padding-right:10px," name="%(report_hr_scholarship_extension)d"
-							string="طباعة قرار التمديد"
-							attrs="{'invisible':['|',('is_extension','=',False),('state','not in',['done','finished'])]}"
-							type="action" icon="fa-print" class="oe_inline oe_stat_button" />
+					
 
 					</sheet>
 					<div>

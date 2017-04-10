@@ -122,8 +122,47 @@ class HrDecisionAppoint(models.Model):
     done_date = fields.Date(string='تاريخ التفعيل')
     transfer_id = fields.Many2one('hr.employee.transfert')
     promotion_id = fields.Many2one('hr.promotion.employee.demande')
-    
-    
+    decission_id = fields.Many2one('hr.decision', string=u'القرارات')
+
+
+    @api.multi
+    def open_decission_appoint(self):
+        decision_obj= self.env['hr.decision']
+        if self.decission_id:
+            decission_id = self.decission_id.id
+        else :
+            decision_type_id = 1
+            decision_date = fields.Date.today() # new date
+            if self.employee_id.gender == 'male':
+                decision_type_id = self.env.ref('smart_hr.data_decision_type').id 
+            if self.employee_id.gender == 'female':
+                decision_type_id = self.env.ref('smart_hr.data_decision_type1').id
+
+
+            # create decission
+            decission_val={
+                'name': self.env['ir.sequence'].get('hr.decision.appoint.seq'),
+                'decision_type_id':decision_type_id,
+                'date':decision_date,
+                'employee_id' :self.employee_id.id }
+            decision = decision_obj.create(decission_val)
+            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'appoint')
+            decission_id = decision.id
+            self.decission_id =  decission_id
+        return {
+            'name': _(u'قرار مباشرة التعيين'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'hr.decision',
+            'view_id': self.env.ref('smart_hr.hr_decision_wizard_form').id,
+            'type': 'ir.actions.act_window',
+            'res_id': decission_id,
+            'target': 'new'
+            }
+
+
+
+
     @api.multi
     @api.onchange('type_appointment')
     def _onchange_type_appointment(self):
@@ -131,10 +170,11 @@ class HrDecisionAppoint(models.Model):
         res = {}
         if self.type_appointment and self.type_appointment.for_members is True:
             if self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_Members').id:
-                employee_ids = self.env['hr.employee'].search([('is_member', '=', True), ('employee_state', 'in', ['done'])])
+                employee_ids = self.env['hr.employee'].search([('is_member', '=', True), ('employee_state', 'in', ['done','employee'])])
             else:
                 employee_ids = self.env['hr.employee'].search([('is_member', '=', True), ('employee_state', 'in', ['done', 'employee'])])
-            job_ids = self.env['hr.job'].search([('name.members_job', '=', True), ('state', '=', 'unoccupied'), ('type_id.is_member', '=', True)])
+            job_ids = self.env['hr.job'].search([('name.members_job', '=', True), ('state', '=', 'unoccupied')])
+            print"job_ids",job_ids
             res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
             return res
         if self.type_appointment and self.type_appointment.for_members is False:
@@ -202,6 +242,15 @@ class HrDecisionAppoint(models.Model):
             self.state = 'waiting'
         elif self.type_appointment.audit and self.type_appointment.recrutment_manager:
             self.state = 'manager'
+        elif self.type_appointment.audit and self.type_appointment.recrutment_decider:
+            self.state = 'budget'
+        elif self.type_appointment.audit and self.type_appointment.personnel_hr:
+            self.state = 'hrm'
+        elif self.type_appointment.audit and self.type_appointment.ministry_civil:
+            self.state = 'civil'
+        elif self.type_appointment.audit and self.type_appointment.direct_manager:
+            self.state = 'direct'
+    
 
     @api.multi
     def button_refuse_audit(self):
@@ -226,8 +275,16 @@ class HrDecisionAppoint(models.Model):
     @api.multi
     def button_accept_enterview_manager(self):
         self.ensure_one()
-        if self.type_appointment.enterview_manager:
+        if self.type_appointment.enterview_manager and self.type_appointment.recrutment_manager :
             self.state = 'manager'
+        elif self.type_appointment.enterview_manager and self.type_appointment.recrutment_decider:
+            self.state = 'budget'
+        elif self.type_appointment.enterview_manager and self.type_appointment.personnel_hr:
+            self.state = 'hrm'
+        elif self.type_appointment.enterview_manager and self.type_appointment.ministry_civil:
+            self.state = 'civil'
+        elif self.type_appointment.enterview_manager and self.type_appointment.direct_manager:
+            self.state = 'direct'
 
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
@@ -247,8 +304,12 @@ class HrDecisionAppoint(models.Model):
         self.ensure_one()
         if self.type_appointment.recrutment_manager and self.type_appointment.recrutment_decider:
             self.state = 'budget'
-        if self.type_appointment.recrutment_manager and self.type_appointment.personnel_hr:
+        elif self.type_appointment.recrutment_manager and self.type_appointment.personnel_hr:
             self.state = 'hrm'
+        elif self.type_appointment.recrutment_manager and self.type_appointment.ministry_civil:
+            self.state = 'civil'
+        elif self.type_appointment.recrutment_manager and self.type_appointment.direct_manager:
+            self.state = 'direct'
 
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
@@ -275,7 +336,11 @@ class HrDecisionAppoint(models.Model):
         self.ensure_one()
         if self.type_appointment.recrutment_decider and self.type_appointment.personnel_hr:
             self.state = 'hrm'
-        if self.type_appointment.recrutment_decider:
+        elif self.type_appointment.recrutment_decider and self.type_appointment.ministry_civil:
+            self.state = 'civil'
+        elif self.type_appointment.recrutment_decider and self.type_appointment.direct_manager:
+            self.state = 'direct'
+        elif self.type_appointment.recrutment_decider:
             self.action_done()
 
         # Add to log

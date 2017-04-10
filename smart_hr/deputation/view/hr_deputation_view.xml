@@ -50,9 +50,10 @@
 							states="audit" icon="fa-check" class="oe_inline oe_stat_button"
 							groups="smart_hr.group_exelence_employee" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<button name="%(action_hr_deputation_refuse_wizard)d" string="رفض"
-							type="action" groups="smart_hr.group_exelence_employee" states="audit"
-							icon="fa-times" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="%(action_hr_deputation_refuse_wizard)d"
+							string="رفض" type="action" groups="smart_hr.group_exelence_employee"
+							states="audit" icon="fa-times" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_waiting" string="موافق" type="object"
 							states="waiting" icon="fa-check" class="oe_inline oe_stat_button"
@@ -72,6 +73,10 @@
 						<button name="action_order" string="إعتماد التقرير" type="object"
 							states="order" icon="fa-times" class="oe_inline oe_stat_button"
 							groups="smart_hr.group_deputation_department" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="open_decission_deputation" string="معاينة القرار"
+							groups="smart_hr.group_hrm" type="object" states="done" icon="fa-print"
+							class="oe_inline oe_stat_button" />
 
 						<field name="state" widget="statusbar"
 							statusbar_visible="draft,audit,waiting,order,humain,done,finish,refuse" />
@@ -95,7 +100,7 @@
 								<field name="type" options="{'horizontal': true}" class="oe_edit_only"
 									widget="radio"
 									attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
-								<field name="deputation_type" 
+								<field name="deputation_type"
 									attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
 								<field name="member_deputation"
 									attrs="{'invisible':[('state', 'not in', [ 'draft'])]}" />
@@ -153,7 +158,7 @@
 									<field name="category_id"
 										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 										attrs="{'invisible':['|',('type', '=','internal'),('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
-									<field name="country_ids"  
+									<field name="country_ids"
 										attrs="{'invisible':['|',('type', '=','internal'),('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
 								</group>
 								<group string="الجهة توفر">

@@ -43,6 +43,9 @@
 							states="waiting" type="object" groups="smart_hr.group_department_employee"
 							icon="fa-times-circle-o" class="oe_inline oe_stat_button" />
 
+						<button name="open_decission_direct" string="معاينة القرار"
+							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+
 						<field name="state" widget="statusbar" statusbar_visible="new_waiting,done,cancel" />
 					</header>
 					<sheet>
@@ -69,7 +72,7 @@
 								<field name="grade_id" />
 								<field name="degree_id" />
 								<field name="basic_salary" />
-								<field name="appoint_id"  invisible="1"/>
+								<field name="appoint_id" invisible="1" />
 							</group>
 
 
