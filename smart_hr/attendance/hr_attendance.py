@@ -78,12 +78,12 @@ class HrPlanPresence(models.Model):
     min_sup_hour = fields.Float(string=u'الحد الادنى للوقت الاضافي بدقائق')
     max_sup_hour = fields.Float(string=u'الحد الأقصى للوقت الاضافي بدقائق')
 
-    normal_days_start = fields.Float(string=u'وقت البداية')
-    normal_days_end = fields.Float(string=u'وقت النهاية')
-    weekend_start = fields.Float(string=u'وقت البداية')
-    weekend_end = fields.Float(string=u'وقت النهاية')
-    holidays_start = fields.Float(string=u'وقت البداية')
-    holidays_end = fields.Float(string=u'وقت النهاية')
+    normal_days_start = fields.Float(string=u'الإيام العادية من')
+    normal_days_end = fields.Float(string=u'إلى')
+    weekend_start = fields.Float(string=u'أيام الجمعة والسبت من')
+    weekend_end = fields.Float(string=u'إلى')
+    holidays_start = fields.Float(string=u'أيام العطل الرسمية من')
+    holidays_end = fields.Float(string=u'إلى')
 
 class HrAttendanceImport(models.Model):
     _name = 'hr.attendance.import'
