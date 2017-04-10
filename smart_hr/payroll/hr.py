@@ -22,6 +22,27 @@ class HrEmployee(models.Model):
                 rec.net_salary = salary_grid_id.net_salary
 
     @api.model
+    def get_employee_allowances(self, operation_date):
+        """
+        @param: operation_date: to bring the right salary grid of the date
+        @return: Array of dict of allowance and it's amount
+        """
+        res = []
+        if operation_date:
+            salary_grid_id, basic_salary = self.get_salary_grid_id(operation_date)
+            if salary_grid_id:
+                print 'salary_grid_id.allowance_ids', salary_grid_id.allowance_ids
+                # allowances from employee's salary grid
+                for allowance in salary_grid_id.allowance_ids:
+                    amount = allowance.get_value(self.id)
+                    res.append({'allowance_name': allowance.allowance_id.name, 'amount': amount})
+                # allowance from employee
+                for line in self.hr_employee_allowance_ids:
+                    if line.salary_grid_detail_id == salary_grid_id:
+                        res.append({'allowance_name': line.allowance_id.name, 'amount': allowance.amount})
+        return res
+
+    @api.model
     def get_salary_grid_id(self, operation_date):
         '''
         @return:  two values value1: salary grid detail, value2: basic salary
