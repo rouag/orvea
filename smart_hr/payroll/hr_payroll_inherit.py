@@ -441,13 +441,12 @@ class HrPayslip(models.Model):
         holidays_ids = self.env['hr.holidays'].search(domain)
         holiday_status_maternity = self.env.ref('smart_hr.data_hr_holiday_status_maternity')
         for holiday_id in holidays_ids:
+            holiday_status_id = holiday_id.holiday_status_id
             holiday_date_from = holiday_id.date_from
             date_from = date_from
             holiday_date_to = holiday_id.date_to
             date_to = date_to
-            days = days_between(holiday_id.date_from, date_from)-1
-            today = fields.Date.from_string(fields.Date.today())
-            months_from_holiday_start = relativedelta(today, fields.Date.from_string(holiday_id.date_from)).months
+            days = days_between(holiday_id.date_from, date_from) - 1
             # days in current month
             if days < 0 and holiday_id.date_to <= date_to:
                 duration_in_month = days_between(date_from, holiday_date_to)
@@ -458,7 +457,6 @@ class HrPayslip(models.Model):
             if days >= 0 and holiday_id.date_to > date_to:
                 duration_in_month = days_between(holiday_date_from, date_to) - days
             grid_id, basic_salary = holiday_id.employee_id.get_salary_grid_id(False)
-            holiday_status_id = holiday_id.holiday_status_id
             # get the entitlement type
             if not holiday_id.entitlement_type:
                 entitlement_type = self.env.ref('smart_hr.data_hr_holiday_entitlement_all')
@@ -501,7 +499,17 @@ class HrPayslip(models.Model):
             # case of  لا يصرف له راتب كامل
             if grid_id and holiday_status_id.salary_spending and holiday_status_id.percentages:
                 for rec in holiday_status_id.percentages:
-                    if entitlement_type == rec.entitlement_id.entitlment_category and rec.month_from <= months_from_holiday_start <= rec.month_to:
+                    today = fields.Date.from_string(fields.Date.today())
+                    if rec.entitlement_id.periode:
+                        get_from_date = today - relativedelta(years=rec.entitlement_id.periode)
+                        # get first token holiday with same type
+                        oldest_holiday_id = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
+                                                                            ('employee_id', '=', holiday_id.employee_id.id),
+                                                                            ('state', '=', 'done'),
+                                                                            ('date_from', '>=', get_from_date),
+                                                                            ], order='done_date asc', limit=1)
+                        months_from_holiday_start = relativedelta(today, fields.Date.from_string(oldest_holiday_id.date_from)).months
+                    if entitlement_type == rec.entitlement_id.entitlment_category and rec.month_from <= months_from_holiday_start <= rec.month_to and duration_in_month > 0:
                         amount = (duration_in_month * (basic_salary / 30.0) * (100 - rec.salary_proportion)) / 100.0
                         if holiday_status_maternity == holiday_status_id:
                             retirement_amount = basic_salary * grid_id.retirement / 100.0
