@@ -65,6 +65,43 @@ class HrEmployeeCommissioning(models.Model):
                               readonly=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', related='commissioning_job_id.grade_id',
                                readonly=1)
+    decission_id = fields.Many2one('hr.decision', string=u'القرارات')
+
+
+
+    @api.multi
+    def open_decission_commissioning(self):
+        decision_obj= self.env['hr.decision']
+        if self.decission_id:
+            decission_id = self.decission_id.id
+        else :
+            decision_type_id = 1
+            decision_date = fields.Date.today() # new date
+            if self.employee_id :
+                decision_type_id = self.env.ref('smart_hr.data_employee_commissioning').id
+            # create decission
+            decission_val={
+                'name': self.env['ir.sequence'].get('hr.commissioning.seq'),
+                'decision_type_id':decision_type_id,
+                'date':decision_date,
+                'employee_id' :self.employee_id.id }
+            decision = decision_obj.create(decission_val)
+            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'commissioning')
+            decission_id = decision.id
+            self.decission_id =  decission_id
+        return {
+            'name': _(u'قرار تكليف موظف'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'hr.decision',
+            'view_id': self.env.ref('smart_hr.hr_decision_wizard_form').id,
+            'type': 'ir.actions.act_window',
+            'res_id': decission_id,
+            'target': 'new'
+            }
+
+
+
 
     @api.multi
     @api.depends('date_from', 'duration')

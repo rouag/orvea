@@ -45,9 +45,14 @@
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" groups="smart_hr.group_hr_personnel_officer_commissioning"
 							states="pm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
-						<button name="%(hr_employee_assign_report)d" string="طباعة القرار"
-							type="action" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+							
+							
+							
+							<button name="open_decission_commissioning" string="معاينة القرار"
+							 type="object" states="done" icon="fa-print"
+							class="oe_inline oe_stat_button" />
+					 
+							
 						<field name="state" widget="statusbar" statusbar_visible="new,pm,accept,done,refused" />
 					</header>
 					<sheet>

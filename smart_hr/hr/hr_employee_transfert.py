@@ -712,7 +712,7 @@ class HrTransfertSortingLine(models.Model):
     new_job_id = fields.Many2one('hr.job', domain=[('state', '=', 'unoccupied')], string=u'الوظيفة المنقول إليها')
     is_conflected = fields.Boolean(compute='_compute_is_conflected')
     res_city = fields.Many2one('res.city', string=u'المدينة')
-    specific_group = fields.Selection([('same_specific', 'في نفس المجموعة النوعية'), ('other_specific', 'في مجموعة أخرى'), ], default='same_specific', string=u'نوع المجموعة')
+    specific_group = fields.Selection([('same_specific', 'في نفس المجموعة النوعية'), ('other_specific', 'في مجموعة أخرى'), ], string=u'نوع المجموعة')
     new_type_id = fields.Many2one('salary.grid.type', string=u'الصنف', readonly=1)
     new_degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة') 
     new_department_id = fields.Many2one('hr.department', related='new_job_id.department_id', string='مقر الوظيفة')
@@ -748,7 +748,7 @@ class HrTransfertSortingLine2(models.Model):
     _name = 'hr.transfert.sorting.line2'
     _inherit = 'hr.transfert.sorting.line'
 
-    specific_group = fields.Selection([('same_specific', 'في نفس المجموعة النوعية'), ('other_specific', 'في مجموعة أخرى'), ], default='same_specific', string=u'نوع المجموعة')
+    specific_group = fields.Selection([('same_specific', 'في نفس المجموعة النوعية'), ('other_specific', 'في مجموعة أخرى')],string=u'نوع المجموعة')
     hr_transfert_sorting_id2 = fields.Many2one('hr.transfert.sorting', string=u'إجراء الترتيب')
     accept_trasfert = fields.Boolean(string='قبول')
     cancel_trasfert = fields.Boolean(string='رفض')
@@ -760,7 +760,7 @@ class HrTransfertSortingLine3(models.Model):
     _name = 'hr.transfert.sorting.line3'
     _inherit = 'hr.transfert.sorting.line'
     
-    specific_group = fields.Selection([('same_specific', 'في نفس المجموعة النوعية'), ('other_specific', 'في مجموعة أخرى'), ], default='same_specific', string=u'نوع المجموعة')
+    specific_group = fields.Selection([('same_specific', 'في نفس المجموعة النوعية'), ('other_specific', 'في مجموعة أخرى'), ],  string=u'نوع المجموعة')
     hr_transfert_sorting_id3 = fields.Many2one('hr.transfert.sorting', string=u'إجراء الترتيب')
     accept_trasfert = fields.Boolean(string='قبول')
     cancel_trasfert = fields.Boolean(string='رفض')

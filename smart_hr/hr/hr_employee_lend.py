@@ -37,6 +37,7 @@ class HrEmployeeLend(models.Model):
     lend_salary = fields.Float(string=u'الراتب في الإعارة', readonly=1, states={'new': [('readonly', 0)]})
     pay_retirement = fields.Boolean(string=u'يتحمل  الموظف الحسميات التقاعدية كاملة', readonly=1, states={'new': [('readonly', 0)]})
     done_date = fields.Date(string='تاريخ التفعيل')
+    decission_id = fields.Many2one('hr.decision', string=u'القرارات')
 
     @api.multi
     @api.depends('date_from', 'duration')
@@ -87,7 +88,47 @@ class HrEmployeeLend(models.Model):
                     raise ValidationError(u"لايمكن طلب إعارة خلال فترة التجربة")
             # ‫التترقية‬ ‫سنة‬ ‫إستلكمال‬
             if self.employee_id.promotion_duration < 354:
-                        raise ValidationError(u"لايمكن طلب إعارة خلال أقل من سنة منذ أخر ترقية")
+                         raise ValidationError(u"لايمكن طلب إعارة خلال أقل من سنة منذ أخر ترقية")
+
+
+ 
+
+
+
+    @api.multi
+    def open_decission_employee_lend(self):
+        decision_obj = self.env['hr.decision']
+        if self.decission_id:
+            decission_id = self.decission_id.id
+        else :
+            decision_type_id = 1
+            decision_date = fields.Date.today() # new date
+            if self.employee_id :
+                decision_type_id = self.env.ref('smart_hr.data_employee_lend').id
+            # create decission
+            decission_val={
+                'name': self.env['ir.sequence'].get('hr.employee.lend.seq'),
+                'decision_type_id':decision_type_id,
+                'date':decision_date,
+                'employee_id' :self.employee_id.id }
+            decision = decision_obj.create(decission_val)
+            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'employee')
+            decission_id = decision.id
+            self.decission_id =  decission_id
+        return {
+            'name': _(u'قرار  إعارة'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'hr.decision',
+            'view_id': self.env.ref('smart_hr.hr_decision_wizard_form').id,
+            'type': 'ir.actions.act_window',
+            'res_id': decission_id,
+            'target': 'new'
+            }
+
+
+
+
 
     @api.multi
     def action_done(self):

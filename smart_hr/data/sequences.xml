@@ -136,7 +136,46 @@
 			<field eval="1" name="number_increment" />
 			<field name="padding">6</field>
 		</record>
-
+		
+		<record id="hr_deputation_seq" forcecreate="1" model="ir.sequence">
+			<field name="name">hr  deputation</field>
+			<field name="code">hr.deputation.seq</field>
+			<field eval="1" name="number_increment" />
+			<field name="padding">6</field>
+		</record>
+			
+		<record id="hr_employee_lend_seq" forcecreate="1" model="ir.sequence">
+			<field name="name">hr  employee lend</field>
+			<field name="code">hr.employee.lend.seq</field>
+			<field eval="1" name="number_increment" />
+			<field name="padding">6</field>
+		</record>
+		
+		
+		<record id="hr_hr_commissioning_seq" forcecreate="1" model="ir.sequence">
+			<field name="name">hr  commissioning</field>
+			<field name="code">hr.commissioning.seq</field>
+			<field eval="1" name="number_increment" />
+			<field name="padding">6</field>
+		</record>
+		
+		
+		<record id="hr_direct_appoint_seq" forcecreate="1" model="ir.sequence">
+			<field name="name">hr direct  appoint</field>
+			<field name="code">hr.direct.appoint.seq</field>
+			<field eval="1" name="number_increment" />
+			<field name="padding">6</field>
+		</record>
+		
+		
+		<record id="hr_decision_appoint_seq" forcecreate="1" model="ir.sequence">
+			<field name="name">hr decision appoint</field>
+			<field name="code">hr.decision.appoint.seq</field>
+			<field eval="1" name="number_increment" />
+			<field name="padding">6</field>
+		</record>
+		
+		hr.decision.appoint
 
 	</data>
 </openerp>

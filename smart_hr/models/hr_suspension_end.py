@@ -98,7 +98,7 @@ class hr_suspension_end(models.Model):
             decission_id = decision.id
             self.decission_id =  decission_id
         return {
-            'name': _(u'قرار تحسين الوضع'),
+            'name': _(u'قرار إنهاء كف اليد'),
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'hr.decision',
