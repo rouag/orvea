@@ -360,13 +360,13 @@ class HrPayslip(models.Model):
             lend_date_to = fields.Date.from_string(lend_id.date_to)
             date_to = fields.Date.from_string(date_to)
             duration_in_month = 0
-            res = {}
+            res = []
             if date_from >= lend_date_from and lend_date_to >= date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, date_from, date_to, True, True, True)
+                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, date_from, date_to, True, False, False)
             if lend_date_from >= date_from and lend_date_to <= date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_from, lend_date_to, True, True, True)
+                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_from, lend_date_to, True, False, False)
             if lend_date_from >= date_from and lend_date_to >= date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_from, date_to, True, True, True)
+                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_from, date_to, True, False, False)
 
             hr_setting = self.env['hr.setting'].search([], limit=1)
             employee_allowances = lend_id.employee_id.hr_employee_allowance_ids
@@ -408,10 +408,13 @@ class HrPayslip(models.Model):
                                     if allowance.amount >= rec.amount:
                                         allowance_amount += days * rec.amount / 30.0
                         allowance_amount *= -1
-
+            print 'res', res
+            print 'date_from, date_to', date_from, date_to
+            print 'lend_date_from, lend_date_to', lend_date_from, lend_date_to
+            print 'duration_in_month', duration_in_month
             # 1 الراتب
             if amount < 0:
-                vals = {'name': 'نسبة الراتب' + name,
+                vals = {'name': 'الإعارة نسبة الراتب' + name,
                         'employee_id': lend_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -432,7 +435,7 @@ class HrPayslip(models.Model):
                 line_ids.append(vals)
             # 3) حصة الحكومة من التقاعد
             if amount_retirement:
-                vals = {'name': 'حصة الحكومة من التقاعد' + name,
+                vals = {'name': 'حصة الحكومة من التقاعد: الإعارة' + name,
                         'employee_id': lend_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
