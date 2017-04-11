@@ -470,8 +470,7 @@
 							<page string="طلبات النقل" options="{'no_create': True}"
 								attrs="{'invisible':[('state', '!=', 'benefits')]}">
 								<br></br>
-								<field name="line_ids4"
-									attrs="{'invisible':[('state', '!=', 'benefits')]}" string=" طلبات النقل">
+								<field name="line_ids4"  string=" طلبات النقل">
 									<tree editable="bottom" colors="red:is_conflected==True;" create="false">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
