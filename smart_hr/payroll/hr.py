@@ -57,7 +57,6 @@ class HrEmployee(models.Model):
                   ('type_id', '=', self.type_id.id),
                   ('grade_id', '=', self.grade_id.id),
                   ('degree_id', '=', self.degree_id.id),
-                  ('is_old', '=', False)
                   ]
         if operation_date:
             # search the right salary grid detail for the given operation_date
@@ -67,6 +66,7 @@ class HrEmployee(models.Model):
             # doamin for  the newest salary grid detail
             if len(domain) == 6:
                 domain.pop(5)
+                domain.append(('is_old', '=', False))
             salary_grid_id = self.env['salary.grid.detail'].search(domain, order='date desc', limit=1)
         # retreive old salary increases to add them with basic_salary
         domain = [('salary_grid_detail_id', '=', salary_grid_id.id)]
