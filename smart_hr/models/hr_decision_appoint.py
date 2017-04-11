@@ -120,6 +120,7 @@ class HrDecisionAppoint(models.Model):
     is_enterview_manager = fields.Boolean(string=u'مقابلة شخصية',related="type_appointment.enterview_manager")
     defferential_is_paied = fields.Boolean(string='defferential is paied', default=False)
     done_date = fields.Date(string='تاريخ التفعيل')
+    is_recrutment_decider = fields.Boolean(string='recrutment_decider', default=False)
     transfer_id = fields.Many2one('hr.employee.transfert')
     promotion_id = fields.Many2one('hr.promotion.employee.demande')
     decission_id = fields.Many2one('hr.decision', string=u'القرارات')
@@ -232,6 +233,12 @@ class HrDecisionAppoint(models.Model):
         elif self.type_appointment.recrutment_decider:
             self.message_post(u"تم إرسال الطلب من قبل '" + u" إلى رئيس الهئية ")
             self.state = 'budget'
+        elif self.type_appointment.recrutment_decider:
+            self.message_post(u"تم إرسال الطلب من قبل '" + u" إلى رئيس الهئية ")
+            self.state = 'budget'
+        elif self.type_appointment.direct_manager:
+            self.message_post(u"تم إرسال الطلب من قبل '" + u" إلى رئيس الهئية ")
+            self.state = 'direct'
         #             elif self.type_appointment == self.env.ref('sm
 
     # control audit group_audit_appointment
@@ -244,13 +251,11 @@ class HrDecisionAppoint(models.Model):
             self.state = 'manager'
         elif self.type_appointment.audit and self.type_appointment.recrutment_decider:
             self.state = 'budget'
-        elif self.type_appointment.audit and self.type_appointment.personnel_hr:
-            self.state = 'hrm'
         elif self.type_appointment.audit and self.type_appointment.ministry_civil:
             self.state = 'civil'
         elif self.type_appointment.audit and self.type_appointment.direct_manager:
             self.state = 'direct'
-    
+
 
     @api.multi
     def button_refuse_audit(self):
@@ -264,6 +269,10 @@ class HrDecisionAppoint(models.Model):
         if self.type_appointment.ministry_civil and self.type_appointment.personnel_hr:
             self.option_contract = True
             self.state = 'hrm'
+        elif self.type_appointment.ministry_civil and self.type_appointment.direct_manager :
+            self.state = 'direct'
+        elif self.type_appointment.ministry_civil:
+            self.action_done()
 
     @api.multi
     def button_refuse_civil(self):
@@ -277,15 +286,15 @@ class HrDecisionAppoint(models.Model):
         self.ensure_one()
         if self.type_appointment.enterview_manager and self.type_appointment.recrutment_manager :
             self.state = 'manager'
-        elif self.type_appointment.enterview_manager and self.type_appointment.recrutment_decider:
+        elif self.type_appointment.enterview_manager and self.type_appointment.recrutment_decider :
             self.state = 'budget'
-        elif self.type_appointment.enterview_manager and self.type_appointment.personnel_hr:
+        elif self.type_appointment.enterview_manager and self.type_appointment.personnel_hr :
             self.state = 'hrm'
-        elif self.type_appointment.enterview_manager and self.type_appointment.ministry_civil:
+        elif self.type_appointment.enterview_manager and self.type_appointment.ministry_civil :
             self.state = 'civil'
-        elif self.type_appointment.enterview_manager and self.type_appointment.direct_manager:
+        elif self.type_appointment.enterview_manager and self.type_appointment.direct_manager :
             self.state = 'direct'
-
+       
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
 
@@ -306,10 +315,11 @@ class HrDecisionAppoint(models.Model):
             self.state = 'budget'
         elif self.type_appointment.recrutment_manager and self.type_appointment.personnel_hr:
             self.state = 'hrm'
-        elif self.type_appointment.recrutment_manager and self.type_appointment.ministry_civil:
+        elif self.type_appointment.recrutment_manager and self.type_appointment.ministry_civil :
             self.state = 'civil'
-        elif self.type_appointment.recrutment_manager and self.type_appointment.direct_manager:
+        elif self.type_appointment.recrutment_manager and self.type_appointment.direct_manager :
             self.state = 'direct'
+
 
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
@@ -336,13 +346,14 @@ class HrDecisionAppoint(models.Model):
         self.ensure_one()
         if self.type_appointment.recrutment_decider and self.type_appointment.personnel_hr:
             self.state = 'hrm'
-        elif self.type_appointment.recrutment_decider and self.type_appointment.ministry_civil:
+            self.is_recrutment_decider = True
+        elif self.type_appointment.recrutment_decider and self.type_appointment.ministry_civil :
             self.state = 'civil'
-        elif self.type_appointment.recrutment_decider and self.type_appointment.direct_manager:
+        elif self.type_appointment.recrutment_decider and self.type_appointment.direct_manager :
             self.state = 'direct'
         elif self.type_appointment.recrutment_decider:
             self.action_done()
-
+      
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت الموافقة من قبل '" + unicode(user.name) + u"'")
@@ -361,7 +372,7 @@ class HrDecisionAppoint(models.Model):
     def button_accept_personnel_hr(self):
         self.ensure_one()
 
-        if self.type_appointment.personnel_hr and self.type_appointment.recrutment_decider:
+        if self.type_appointment.personnel_hr and self.type_appointment.recrutment_decider and self.is_recrutment_decider == False :
             self.state = 'budget'
         elif self.type_appointment.personnel_hr and self.type_appointment.ministry_civil and not self.option_contract:
             self.state = 'civil'
@@ -656,7 +667,7 @@ class HrDecisionAppoint(models.Model):
                     raise ValidationError(u"هناك تداخل فى تاريخ المباشرة مع عطلة نهاية الاسبوع")
                 elif is_holiday == "holiday":
                     raise ValidationError(u"هناك تداخل فى تاريخ المباشرة مع يوم إجازة")        
-        
+
     @api.onchange('date_hiring_end')
     def _onchange_date_hiring_end(self):
         if self.date_hiring_end:

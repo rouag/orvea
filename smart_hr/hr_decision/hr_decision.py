@@ -70,7 +70,7 @@ class HrDecision(models.Model):
             self.text = self.replace_text(self.employee_id, self.date,self.decision_type_id.id,'holidays')
 
 
-        if self.decision_type_id :
+        if self.decision_type_id:
             object_type = 'appoint'
             self.text = self.replace_text(self.employee_id, self.date,self.decision_type_id.id,'appoint')
 
@@ -86,10 +86,10 @@ class HrDecision(models.Model):
 
     @api.multi
     def button_done(self):
-        self.name =self.env['ir.sequence'].get('hr.decision.seq')
+        self.name = self.env['ir.sequence'].get('hr.decision.seq')
         self.state = 'done'
 
-    def replace_text(self,employee_id,date,decision_type_id,object_type):
+    def replace_text(self, employee_id, date, decision_type_id , object_type ):
 
         decision_text =''
         decision_type_line = self.env['hr.decision.type'].search([('id', '=', decision_type_id)])

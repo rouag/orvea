@@ -622,8 +622,8 @@ class HrTransfertSorting(models.Model):
                                                       'res_id': rec.id,
                                                       'notif': True
                                                       })
-                if line.accept_trasfert == False :
-                        self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                        if line.accept_trasfert == False :
+                            self.env['base.notification'].create({'title': u'إشعار برفض طلب',
                                                       'message': u'لقد تمت رفض  الطلب من الجهة.',
                                                       'user_id': line.hr_employee_transfert_id.employee_id.user_id.id,
                                                       'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
