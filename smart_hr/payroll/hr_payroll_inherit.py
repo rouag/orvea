@@ -27,9 +27,11 @@ class HrPayslip(models.Model):
         #  حسم‬  الغياب‬ يكون‬ من‬  جميع البدلات . و  الراتب‬ الأساسي للموظفين‬ الرسميين‬ والمستخدمين
         abscence_ids = self.env['hr.employee.absence.days'].search([('request_id.date', '>=', self.date_from),
                                                                     ('request_id.date', '<=', self.date_to),
+                                                                    ('employee_id', '=', self.employee_id.id),
                                                                     ('request_id.state', '=', 'done')
                                                                     ])
         salary_grid, basic_salary = self.employee_id.get_salary_grid_id(False)
+        tot_number_request = 0
         for line in abscence_ids:
             amount = (basic_salary + allowance_total) / 30.0 * line.number_request
             vals = {'name': 'غياب بدون عذر',
@@ -40,6 +42,19 @@ class HrPayslip(models.Model):
                     'category': 'deduction',
                     'type': 'absence'}
             line_ids.append(vals)
+            tot_number_request += line.number_request
+        # فرق التقاعد: غياب بدون عذر
+        if tot_number_request:
+            retirement_amount = basic_salary * salary_grid.retirement / 100.0 / 30.0 * tot_number_request
+            if retirement_amount != 0:
+                vals = {'name': 'فرق التقاعد: غياب بدون عذر',
+                        'employee_id': self.employee_id.id,
+                        'number_of_days': tot_number_request,
+                        'number_of_hours': 0.0,
+                        'amount': retirement_amount * -1,
+                        'category': 'deduction',
+                        'type': 'absence'}
+                line_ids.append(vals)
 
         # حسم‬  التأخير يكون‬ من‬  الراتب‬ الأساسي فقط
         delays_ids = self.env['hr.employee.delay.hours'].search([('request_id.date', '>=', self.date_from),
