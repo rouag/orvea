@@ -457,6 +457,9 @@ class HrPayslip(models.Model):
             if days >= 0 and holiday_id.date_to > date_to:
                 duration_in_month = days_between(holiday_date_from, date_to) - days
             grid_id, basic_salary = holiday_id.employee_id.get_salary_grid_id(False)
+            days_in_current_period = days_between(self.date_from, self.date_to)
+            if duration_in_month == days_in_current_period:
+                duration_in_month = 30.0
             # get the entitlement type
             if not holiday_id.entitlement_type:
                 entitlement_type = self.env.ref('smart_hr.data_hr_holiday_entitlement_all')
