@@ -130,6 +130,38 @@ class HrDeputation(models.Model):
     external_deputation_balance_override = fields.Boolean(string=u"تجاوز رصيد الانتداب الخارجي")
     is_paied = fields.Boolean(string='is paied', default=False)
     payslip_id = fields.Many2one('hr.payslip')
+    decission_id  = fields.Many2one('hr.decision', string=u'القرارات')
+
+    @api.multi
+    def open_decission_deputation(self):
+        decision_obj= self.env['hr.decision']
+        if self.decission_id:
+            decission_id = self.decission_id.id
+        else :
+            decision_type_id = 1
+            decision_date = fields.Date.today() # new date
+            if self.deputation_type :
+                decision_type_id = self.env.ref('smart_hr.data_employee_deputation').id
+
+            decission_val={
+                'name': self.env['ir.sequence'].get('hr.deputation.seq'),
+                'decision_type_id':decision_type_id,
+                'date':decision_date,
+                'employee_id' :self.employee_id.id }
+            decision = decision_obj.create(decission_val)
+            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'employee')
+            decission_id = decision.id
+            self.decission_id =  decission_id
+        return {
+            'name': _(u'قرار  إنتداب'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'hr.decision',
+            'view_id': self.env.ref('smart_hr.hr_decision_wizard_form').id,
+            'type': 'ir.actions.act_window',
+            'res_id': decission_id,
+            'target': 'new'
+            }
 
 #     @api.onchange('category_id')
 #     def onchange_category_id(self):

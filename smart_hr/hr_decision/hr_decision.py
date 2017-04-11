@@ -66,17 +66,23 @@ class HrDecision(models.Model):
 
         if self.decision_type_id in [self.env.ref('smart_hr.data_hr_ending_service_death'),
                                              ]:
-            
-            
             object_type= 'holidays'
             self.text = self.replace_text(self.employee_id, self.date,self.decision_type_id.id,'holidays')
 
 
         if self.decision_type_id :
-            object_type= 'appoint'
+            object_type = 'appoint'
             self.text = self.replace_text(self.employee_id, self.date,self.decision_type_id.id,'appoint')
 
+        if self.decision_type_id in [self.env.ref('smart_hr.data_employee_commissioning'),
+                                            ]:
+            object_type = 'commissioning'
+            self.text = self.replace_text(self.employee_id, self.date, self.decision_type_id.id, 'commissioning')
 
+        if self.decision_type_id in [self.env.ref('smart_hr.data_employee_scholarship'),
+                                            ]:
+            object_type = 'scholarship'
+            self.text = self.replace_text(self.employee_id, self.date, self.decision_type_id.id, 'scholarship')
 
     @api.multi
     def button_done(self):
@@ -159,8 +165,48 @@ class HrDecision(models.Model):
                     date_termination = date_termination or ""
                     decision_text = decision_text.replace('TERMINATION', unicode(date_termination))
 
+            if object_type == 'commissioning' :
+                commissioning_line = self.env['hr.employee.commissioning'].search([('employee_id', '=', employee_id.id),('state', '=', 'done')], limit=1)
+                print"commissioning_line",commissioning_line
+                if commissioning_line :
+                    job_id = commissioning_line.commissioning_job_id.name.name or ""
+                    code = commissioning_line.commissioning_job_id.number or ""
+                    department_id = commissioning_line.commissioning_job_id.department_id.name or ""
+                    type_id = commissioning_line.type_id.name or ""
+                    grade_id = commissioning_line.grade_id.name or ""
+                    decision_text = decision_text.replace('job', unicode(job_id))
+                    decision_text = decision_text.replace('code', unicode(code))
+                    decision_text = decision_text.replace('grade', unicode(grade_id))
+            if object_type == 'scholarship' :
+                scholarship_line = self.env['hr.scholarship'].search([('employee_id', '=', employee_id.id),('state', '=', 'done')], limit=1)
+                print"commissioning_line",scholarship_line
+                if scholarship_line :
+                    diplom_id = scholarship_line.diplom_id.name or ""
+                    faculty_id = scholarship_line.faculty_id.name or ""
+                    country_id = scholarship_line.faculty_id.country_id.name or ""
+                    duration = scholarship_line.duration or ""
+                    if scholarship_line.date_from:
+                        date_from = self._get_hijri_date(scholarship_line.date_from, '-')
+                        date_from = str(date_from).split('-')
+                        date_from = date_from[2] + '-' + date_from[1] + '-' + date_from[0] or ""
+                    fromdate = date_from or ""
+                    if scholarship_line.date_to:
+                        date_to = self._get_hijri_date(scholarship_line.date_to, '-')
+                        date_to = str(date_to).split('-')
+                        date_to = date_to[2] + '-' + date_to[1] + '-' + date_to[0] or ""
+                    date_to = date_to or ""
+
+                    decision_text = decision_text.replace('DIPLOME', unicode(diplom_id))
+                    decision_text = decision_text.replace('FACULTY', unicode(faculty_id))
+                    decision_text = decision_text.replace('CONTRY', unicode(country_id))
+                    decision_text = decision_text.replace('DURATION', unicode(duration))
+                    decision_text = decision_text.replace('FROMDET', unicode(fromdate))
+                    decision_text = decision_text.replace('ENDDET', unicode(date_to))
+
+
+
             if object_type =='appoint':
-                appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
+                appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', employee_id.id),('state', '=', 'done')], limit=1)
                 if appoint_line :
                     emp_job_id = appoint_line.emp_job_id.name.name or ""
                     emp_number_job = appoint_line.emp_number_job or ""

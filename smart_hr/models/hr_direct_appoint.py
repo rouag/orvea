@@ -34,11 +34,50 @@ class HrDirectAppoint(models.Model):
                               ('waiting', u'في إنتظار المباشرة'),
                               ('done', u'مباشرة'),
                               ('cancel', u'ملغاة')], string='الحالة', readonly=1, default='new')
+   
+    decission_id = fields.Many2one('hr.decision', string=u'القرارات')
 
     type = fields.Selection([
         ('appoint' , u'تعيين'),
         ('transfer', u'نقل'),
-        ('promotion', u'ترقية')], string='نوع قرار المباشرة', required=1)
+        ('promotion', u'ترقية')], string='نوع قرار المباشرة', )
+
+
+
+    @api.multi
+    def open_decission_direct(self):
+        decision_obj= self.env['hr.decision']
+        if self.decission_id:
+            decission_id = self.decission_id.id
+        else :
+            decision_type_id = 1
+            decision_date = fields.Date.today() # new date
+            if self.employee_id:
+                decision_type_id = self.env.ref('smart_hr.data_employee_direct_appoint').id
+
+            # create decission
+            decission_val={
+                'name': self.env['ir.sequence'].get('hr.direct.appoint.seq'),
+                'decision_type_id':decision_type_id,
+                'date':decision_date,
+                'employee_id' :self.employee_id.id }
+            decision = decision_obj.create(decission_val)
+            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'appoint')
+            decission_id = decision.id
+            self.decission_id =  decission_id
+        return {
+            'name': _(u'قرار مباشرة التعيين'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'hr.decision',
+            'view_id': self.env.ref('smart_hr.hr_decision_wizard_form').id,
+            'type': 'ir.actions.act_window',
+            'res_id': decission_id,
+            'target': 'new'
+            }
+
+
+
 
     @api.multi
     def action_waiting(self):
@@ -105,7 +144,7 @@ class HrDirectAppoint(models.Model):
                                                                         ('type_appointment', '!=', type_appointment_transfer),
                                                                         ('type_appointment', 'not in', type_appointment_promotion),
                                                                         ('state_appoint', '=', 'new')], limit=1)
-                
+
             if appoint_line:
                 self.job_id = appoint_line.job_id.id
                 self.code = appoint_line.job_id.name.number
@@ -115,8 +154,8 @@ class HrDirectAppoint(models.Model):
                 self.grade_id = appoint_line.grade_id.id
                 self.department_id = appoint_line.department_id.id
                 self.appoint_id = appoint_line.id
-                
-                
+
+
 
     def send_appoint_group(self, group_id, title, msg):
         """
