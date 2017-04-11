@@ -494,16 +494,17 @@ class HrPayslip(models.Model):
                     line_ids.append(vals)
                 # فرق البدلات
                 amount = 0.0
-                for allowance in grid_id.allowance_ids:
-                    amount = allowance.get_value(holiday_id.employee_id.id) / 30.0 * duration_in_month
-                if duration_in_month > 0 and amount != 0:
-                    vals = {'name': 'فرق بدلات ' + holiday_id.holiday_status_id.name + name,
-                            'employee_id': holiday_id.employee_id.id,
-                            'number_of_days': duration_in_month,
-                            'number_of_hours': 0.0,
-                            'amount': amount * -1,
-                            'type': 'holiday'}
-                    line_ids.append(vals)
+                if duration_in_month > 0:
+                    for allowance in holiday_id.employee_id.get_employee_allowances(False):
+                        amount += allowance['amount'] / 30.0 * duration_in_month
+                    if amount :
+                        vals = {'name': 'فرق بدلات ' + holiday_id.holiday_status_id.name + name,
+                                'employee_id': holiday_id.employee_id.id,
+                                'number_of_days': duration_in_month,
+                                'number_of_hours': 0.0,
+                                'amount': amount * -1,
+                                'type': 'holiday'}
+                        line_ids.append(vals)
                 # فرق التقاعد
                 if holiday_status_id.deductible_duration_service:
                     retirement_amount = basic_salary * grid_id.retirement / 100.0 / 30.0 * duration_in_month
