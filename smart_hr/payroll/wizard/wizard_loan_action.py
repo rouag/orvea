@@ -26,12 +26,10 @@ class WizardLoanAction(models.TransientModel):
             date_start = loan_lines[0].date_start
             date_stop = loan_lines[0].date_stop
             # get period_id for specific month
-            print 'date_start, date_stop', date_start, date_stop
             period_id = self.env['hr.period'].search([('date_start', '>=', date_start),
                                                       ('date_stop', '<=', date_stop),
-                                                      ]
+                                                      ], limit=1
                                                      )
-            print 'period_id', period_id
             if period_id:
                 res.update({'period_id': period_id.id})
         else:
