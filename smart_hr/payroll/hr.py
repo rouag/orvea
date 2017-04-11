@@ -28,9 +28,8 @@ class HrEmployee(models.Model):
         @return: Array of dict of allowance and it's amount
         """
         res = []
-        if operation_date:
-            salary_grid_id, basic_salary = self.get_salary_grid_id(operation_date)
-            if salary_grid_id:
+        salary_grid_id, basic_salary = self.get_salary_grid_id(operation_date)
+        if salary_grid_id:
                 active_decision_appoint = self.env['hr.decision.appoint'].search([('employee_id', '=', self.id),
                                                                                   ('state_appoint', '=', 'active'), ('is_started', '=', True)
                                                                                   ], order="date_direct_action desc", limit=1)

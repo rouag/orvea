@@ -125,7 +125,6 @@ class HrDecisionAppoint(models.Model):
     promotion_id = fields.Many2one('hr.promotion.employee.demande')
     decission_id = fields.Many2one('hr.decision', string=u'القرارات')
 
-
     @api.multi
     def open_decission_appoint(self):
         decision_obj= self.env['hr.decision']
@@ -160,9 +159,6 @@ class HrDecisionAppoint(models.Model):
             'res_id': decission_id,
             'target': 'new'
             }
-
-
-
 
     @api.multi
     @api.onchange('type_appointment')

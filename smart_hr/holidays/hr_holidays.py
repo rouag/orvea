@@ -163,7 +163,7 @@ class HrHolidays(models.Model):
     decission_id = fields.Many2one('hr.decision', string=u'القرارات',)
     done_date = fields.Date(string='تاريخ التفعيل')
     display_button_extend = fields.Boolean(compute='_compute_display_button_extend')
-    
+
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
@@ -173,7 +173,7 @@ class HrHolidays(models.Model):
             if self.env.user.has_group('smart_hr.group_holidays_specialist'):
                 rec.is_holidays_specialist_user = True
 
-    @api.onchange('salary_number', 'duartion')
+    @api.onchange('salary_number', 'duration')
     def onchange_salary_number(self):
         if self.duration and self.salary_number:
             if self.duration < self.salary_number * 30:
