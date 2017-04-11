@@ -795,7 +795,7 @@ class HrPayslip(models.Model):
             if grid_id:
                 # فرق الأيام المخصومة من الشهر
                 date_from = date_from
-                date_to = termination.date
+                date_to = termination.date_termination
                 worked_days = days_between(date_from, date_to) - 1
                 unworked_days = 30.0 - worked_days
                 if unworked_days > 0:
