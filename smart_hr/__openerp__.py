@@ -286,7 +286,8 @@
         'hr_scholarship/wizards/view/hr_scholarship_extend_wizard.xml',
         'hr_scholarship/views/hr_scholarship_extension_report.xml',
         'hr_scholarship/views/report.xml',
-
+        'employee_durations/views/promotion_duration_view.xml',
+        'employee_durations/views/service_duration_view.xml',
         # 'hr_survey/views/website_templates.xml',
 
     ],
