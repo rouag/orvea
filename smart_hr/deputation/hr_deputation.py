@@ -476,7 +476,8 @@ class HrDeputationCategory(models.Model):
 
 class HrCountryCity(models.Model):
     _name = 'hr.country.city'
-
+    
+    name = fields.Char(string='المسمى', related='country_id.name')
     country_id = fields.Many2one('res.country', string=u'البلاد', domain="[('code_nat','!=',False)]")
     city_id = fields.Many2one('res.city', string=u'المدينة', domain="[('country_id','=',country_id)]")
     duputation_category_id = fields.Many2one('hr.deputation.category', string=u'الفئة')
