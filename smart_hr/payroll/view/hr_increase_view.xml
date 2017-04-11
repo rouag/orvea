@@ -40,7 +40,9 @@
 						<button name="%(action_increase_refuse_wizard)d" string="رفض"
 							type="action" states="pim2" groups="smart_hr.group_increase_manager"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
+							
+					<!-- 	<button name="open_decission_increase" string="معاينة القرار"
+							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" /> -->
 						<field name="state" widget="statusbar" statusbar_visible="draft,pim,hrm,pim2,done" />
 					</header>
 					<sheet>
@@ -48,15 +50,21 @@
 							<group>
 								<field name="name" invisible="1" />
 								<field name="date" />
-								<field name="number_decision" attrs="{'readonly': [('state', 'in', ['pim','hrm','pim2','done'])]}" />
-								<field name="date_decision" attrs="{'readonly': [('state', 'in', ['pim','hrm','pim2','done'])]}" />
+								<field name="number_decision"
+									attrs="{'readonly': [('state', 'in', ['pim','hrm','pim2','done'])]}" />
+								<field name="date_decision"
+									attrs="{'readonly': [('state', 'in', ['pim','hrm','pim2','done'])]}" />
 							</group>
 							<group />
 						</group>
 						<group col="4" string="فلترة">
-							<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]" attrs="{'readonly': [('state', 'in', ['pim','hrm','pim2','done'])]}" />
-							<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]" attrs="{'readonly': [('state', 'in', ['pim','hrm','pim2','done'])]}" />
-							<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]" attrs="{'readonly': [('state', 'in', ['pim','hrm','pim2','done'])]}" /> />
+							<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]"
+								attrs="{'readonly': [('state', 'in', ['pim','hrm','pim2','done'])]}" />
+							<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]"
+								attrs="{'readonly': [('state', 'in', ['pim','hrm','pim2','done'])]}" />
+							<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]"
+								attrs="{'readonly': [('state', 'in', ['pim','hrm','pim2','done'])]}" />
+							/>
 							<field name="salary_grid_type_id" />
 						</group>
 						<notebook>
@@ -81,15 +89,15 @@
 									<tree editable="bottom">
 										<field name="employee_id" />
 										<field name="increase_percent" />
-											<field name="department_level1_id" invisible="1" />
+										<field name="department_level1_id" invisible="1" />
 										<field name="department_level2_id" invisible="1" />
 										<field name="department_level3_id" invisible="1" />
 										<field name="salary_grid_type_id" invisible="1" />
-										
+
 									</tree>
 								</field>
 							</page>
-							
+
 						</notebook>
 						<group>
 							<field name="note" />

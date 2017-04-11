@@ -40,6 +40,39 @@ class hrHolidaysCancellation(models.Model):
     dm_is_current_user = fields.Boolean(string='dm_is_current_user', compute='_compute_dm_is_current_user')
     is_holidays_specialist = fields.Boolean(string='Is Current User exellencies', compute='_is_holidays_specialist')
     cancellation_date = fields.Date(string=u'تاريخ القطع')
+    decission_id = fields.Many2one('hr.decision', string=u'القرارات')
+
+    @api.multi
+    def open_decission_holidays_cancellation(self):
+        decision_obj= self.env['hr.decision']
+        if self.decission_id:
+            decission_id = self.decission_id.id
+        else :
+            decision_type_id = 1
+            decision_date = fields.Date.today() # new date
+            if self.type_improve and self.employee_id.type_id.id == self.env.ref('smart_hr.data_salary_grid_type3').id:
+                decision_type_id = self.env.ref('smart_hr.data_decision_type7').id
+            # create decission
+            decission_val={
+                'name': self.env['ir.sequence'].get('hr.improve.seq'),
+                'decision_type_id':decision_type_id,
+                'date':decision_date,
+                'employee_id' :self.employee_id.id }
+            decision = decision_obj.create(decission_val)
+            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'employee')
+            decission_id = decision.id
+            self.decission_id =  decission_id
+        return {
+            'name': _(u'قرار تمديد رصيد الاجازات'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'hr.decision',
+            'view_id': self.env.ref('smart_hr.hr_decision_wizard_form').id,
+            'type': 'ir.actions.act_window',
+            'res_id': decission_id,
+            'target': 'new'
+            }
+
 
     def _compute_dispay_draft_buttons(self):
         for rec in self:

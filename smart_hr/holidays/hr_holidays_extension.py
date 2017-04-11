@@ -14,7 +14,7 @@ class HrHolidaysExtension(models.Model):
 
     def _default_employee_id(self):
         return self.env['hr.employee'].search([('user_id','=',self.env.uid)]).id
-    
+
     name = fields.Char(string=u'المسمى')
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee',  string=u'الموظف', domain=[('employee_state','=','employee')], default=_default_employee_id)
@@ -34,8 +34,43 @@ class HrHolidaysExtension(models.Model):
     date_decision = fields.Date(string=u'تاريخ الخطاب', required=True)
     decision_file = fields.Binary(string=u'الخطاب', attachment=True, required=True)
     decision_file_name = fields.Char(string=u'file name')
-    
-    
+    decission_id = fields.Many2one('hr.decision', string=u'القرارات')
+
+    @api.multi
+    def open_decission_holidays_extension(self):
+        decision_obj= self.env['hr.decision']
+        if self.decission_id:
+            decission_id = self.decission_id.id
+        else :
+            decision_type_id = 1
+            decision_date = fields.Date.today() # new date
+            if self.type_improve and self.employee_id.type_id.id == self.env.ref('smart_hr.data_salary_grid_type3').id:
+                decision_type_id = self.env.ref('smart_hr.data_decision_type7').id
+            # create decission
+            decission_val={
+                'name': self.env['ir.sequence'].get('hr.improve.seq'),
+                'decision_type_id':decision_type_id,
+                'date':decision_date,
+                'employee_id' :self.employee_id.id }
+            decision = decision_obj.create(decission_val)
+            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'employee')
+            decission_id = decision.id
+            self.decission_id =  decission_id
+        return {
+            'name': _(u'قرار تمديد رصيد الاجازات'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'hr.decision',
+            'view_id': self.env.ref('smart_hr.hr_decision_wizard_form').id,
+            'type': 'ir.actions.act_window',
+            'res_id': decission_id,
+            'target': 'new'
+            }
+
+
+
+
+
     @api.depends('employee_id')
     def _employee_is_the_creator(self):
         for rec in self:
@@ -92,7 +127,7 @@ class HrHolidaysExtension(models.Model):
             raise ValidationError(u'لا يمكن تمديد  استحقاق هذه الاجازة')
     @api.one
     def button_send(self):
-       
+
         user = self.env['res.users'].browse(self._uid)
         for extension in self:
             extension.check_constrains()

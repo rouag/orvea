@@ -443,7 +443,7 @@ class HrHolidays(models.Model):
                 decision_type_id = self.env.ref('smart_hr.data_leave_escort').id
             elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_sport').id:
                 decision_type_id = self.env.ref('smart_hr.data_leave_sport').id
-            elif self.holiday_status_id.id == self.env.ref('smart_hr.data_leave_motherhood').id:
+            elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_maternity').id:
                 decision_type_id = self.env.ref('smart_hr.data_leave_motherhood').id
             else:
                 decision_type_id = self.env.ref('smart_hr.data_normal_leave').id

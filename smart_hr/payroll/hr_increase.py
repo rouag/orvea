@@ -41,8 +41,39 @@ class hrIncrease(models.Model):
     department_level2_id = fields.Many2one('hr.department', string='القسم', readonly=1, states={'draft': [('readonly', 0)]})
     department_level3_id = fields.Many2one('hr.department', string='الشعبة', readonly=1, states={'draft': [('readonly', 0)]})
     salary_grid_type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1, states={'draft': [('readonly', 0)]},)
+    decission_id = fields.Many2one('hr.decision', string=u'القرارات')
 
-
+#     @api.multi
+#     def open_decission_increase(self):
+#         decision_obj= self.env['hr.decision']
+#         if self.decission_id:
+#             decission_id = self.decission_id.id
+#         else :
+#             decision_type_id = 1
+#             decision_date = fields.Date.today() # new date
+#             if self.number_decision:
+#                 decision_type_id = self.env.ref('smart_hr.data_decision_type39').id
+# 
+#             # create decission
+#             decission_val={
+#                 'name': self.env['ir.sequence'].get('hr.increase.seq'),
+#                 'decision_type_id':decision_type_id,
+#                 'date':decision_date,
+#                 'employee_id' :' '}
+#             decision = decision_obj.create(decission_val)
+#             decision.text = decision.replace_text(self.employee_id, decision_date, decision_type_id,'employee')
+#             decission_id = decision.id
+#             self.decission_id = decission_id
+#         return {
+#             'name': _(u'قرار العلاوة'),
+#             'view_type': 'form',
+#             'view_mode': 'form',
+#             'res_model': 'hr.decision',
+#             'view_id': self.env.ref('smart_hr.hr_decision_wizard_form').id,
+#             'type': 'ir.actions.act_window',
+#             'res_id': decission_id,
+#             'target': 'new'
+#             }
 
     @api.model
     def create(self, vals):
@@ -59,7 +90,7 @@ class hrIncrease(models.Model):
             for line in rec.employee_deprivated_ids :
                 increase_ids = self.env['hr.employee.increase.percent'].search([('employee_id', '=', line.id)])
                 if increase_ids :
-                     raise UserError(u"يجب إنشاء حساب بنكي للإيداع  للموظف  %s " % line.display_name)
+                    raise UserError(u"يجب إنشاء حساب بنكي للإيداع  للموظف  %s " % line.display_name)
         self.state = 'pim'
 
     @api.one
