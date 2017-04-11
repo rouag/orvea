@@ -184,7 +184,16 @@
 				</form>
 			</field>
 		</record>
-
+		<record model="ir.ui.view" id="hr_employee_transfert_form_inherited">
+			<field name="model">hr.employee.transfert</field>
+			<field name="inherit_id" ref="smart_hr.view_hr_employee_transfert_form" />
+			<field name="groups_id" eval="[(6, 0, [ref('smart_hr.group_employee')])]" />
+			<field name="arch" type="xml">
+				<field name="employee_id" position="attributes">
+					<attribute name="readonly">True</attribute>
+				</field>
+			</field>
+		</record>
 		<record id="view_hr_employee_transfert_tree" model="ir.ui.view">
 			<field name="name">hr.employee.transfert.tree</field>
 			<field name="model">hr.employee.transfert</field>
