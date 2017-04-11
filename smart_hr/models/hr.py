@@ -391,7 +391,14 @@ class HrEmployee(models.Model):
     @api.model
     def update_promotion_days(self):
         today_date = fields.Date.from_string(fields.Date.today())
-        for emp in self.search([('employee_state', '=', 'employee')]):
+        next_call = self.env.ref('smart_hr.ir_cron_hr_employee_promotion_duration').nextcall
+        next_call_date = fields.Datetime.from_string(next_call)
+        last_update = self.env['hr.employee.promotion.duration'].search([('date_last_execution', '=', next_call_date)], limit=1)
+        if not last_update:
+            employee_ids = self.search([('employee_state', '=', 'employee')])
+        else:
+            employee_ids = self.search([('employee_state', '=', 'employee'), ('id', 'not in', last_update.employee_promotion_ids.ids)])
+        for emp in employee_ids:
             emp.promotion_duration += 1
             # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
             uncounted_absence_days = self.env['hr.attendance.summary'].search([('employee_id', '=', emp.id), ('date', '=', today_date - relativedelta(days=1))])
@@ -399,12 +406,19 @@ class HrEmployee(models.Model):
                 emp.promotion_duration -= uncounted_absence_days.absence
 
     @api.model
-    def update_service_duration(self):
+    def _update_service_duration(self):
         today_date = fields.Date.from_string(fields.Date.today())
-        for emp in self.search([('employee_state', '=', 'employee')]):
+        next_call = self.env.ref('smart_hr.ir_cron_hr_service_duration').nextcall
+        next_call_date = fields.Datetime.from_string(next_call)
+        last_update = self.env['hr.employee.service.duration'].search([('date_last_execution', '=', next_call_date)], limit=1)
+        if not last_update:
+            employee_ids = self.search([('employee_state', '=', 'employee')])
+        else:
+            employee_ids = self.search([('employee_state', '=', 'employee'), ('id', 'not in', last_update.employee_service_ids.ids)])
+        for emp in employee_ids:
             emp.service_duration += 1
-                # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
-            uncounted_absence_days = self.env['hr.attendance.summary'].search([('employee_id', '=', emp.id), ('date', '=', today_date - relativedelta(days=1))], limit=1)
+            # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
+            uncounted_absence_days = self.env['hr.attendance.summary'].search([('employee_id', '=', emp.id), ('date', '=', today_date - relativedelta(days=1))])
             if uncounted_absence_days:
                 emp.service_duration -= uncounted_absence_days.absence
 

@@ -48,9 +48,7 @@ class HrDecision(models.Model):
     def onchange_decision_type_id(self):
         type= False
         if self.decision_type_id in [self.env.ref('smart_hr.data_decision_type6'),
-                                    self.env.ref('smart_hr.data_decision_type7'),
                                     self.env.ref('smart_hr.data_decision_type8'),
-                                    self.env.ref('smart_hr.data_decision_type9'),
                                     self.env.ref('smart_hr.data_decision_type10')]:
             object_type = 'employee'
             self.text = self.replace_text(self.employee_id, self.date,self.decision_type_id.id,'employee')
@@ -83,6 +81,17 @@ class HrDecision(models.Model):
                                             ]:
             object_type = 'scholarship'
             self.text = self.replace_text(self.employee_id, self.date, self.decision_type_id.id, 'scholarship')
+
+        if self.decision_type_id in [self.env.ref('smart_hr.data_employee_trasfert'),
+                                            ]:
+            object_type = 'transfert'
+            self.text = self.replace_text(self.employee_id, self.date, self.decision_type_id.id, 'transfert')
+
+        if self.decision_type_id in [self.env.ref('smart_hr.data_decision_type7'),
+                                    self.env.ref('smart_hr.data_decision_type9'),
+                                            ]:
+            object_type = 'improve'
+            self.text = self.replace_text(self.employee_id, self.date, self.decision_type_id.id, 'improve')
 
     @api.multi
     def button_done(self):
@@ -223,6 +232,58 @@ class HrDecision(models.Model):
                     decision_text = decision_text.replace('grade', unicode(emp_grade_id))
                     decision_text = decision_text.replace('basicsalaire', unicode(emp_basic_salary))
                     decision_text = decision_text.replace('department', unicode(emp_department_id))
+
+            if object_type == 'improve':
+                improve_line = self.env['hr.improve.situation'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
+                print"termination_line",improve_line
+                if improve_line :
+                    new_job_id = improve_line.new_job_id.name.name or ""
+                    new_code = improve_line.new_job_id.number or ""
+                    new_department_id = improve_line.department_id1.name or ""
+                    new_grade_id = improve_line.grade_id1.name or ""
+                    new_degree_id = improve_line.degree_id1.name or ""
+                    job_id = improve_line.job_id.name.name or ""
+                    number = improve_line.job_id.number or ""
+                    code = improve_line.job_id.number or ""
+                    department_id = improve_line.department_id.name or ""
+                    grade_id = improve_line.grade_id.name or ""
+                    degree_id = improve_line.degree_id.name or ""
+                    #decision_text = decision_text.replace('TERMINATION', unicode(date_termination))
+                    decision_text = decision_text.replace('JOB', unicode(new_job_id))
+                    decision_text = decision_text.replace('CODE', unicode(new_code))
+                    decision_text = decision_text.replace('DEGREE', unicode(new_degree_id))
+                    decision_text = decision_text.replace('GRADE', unicode(new_grade_id))
+                    decision_text = decision_text.replace('DEPARTEMENT', unicode(new_department_id))
+                    decision_text = decision_text.replace('job', unicode(job_id))
+                    decision_text = decision_text.replace('code', unicode(code))
+                    decision_text = decision_text.replace('degree', unicode(degree_id))
+                    decision_text = decision_text.replace('grade', unicode(grade_id))
+                    decision_text = decision_text.replace('department', unicode(department_id))
+            if object_type == 'transfert':
+                transfert_line = self.env['hr.employee.transfert'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
+                print"transfert_line",transfert_line
+                if transfert_line :
+                    job_id = transfert_line.job_id.name.name or ""
+                    code = transfert_line.job_id.number or ""
+                    department_id = transfert_line.department_id.name or ""
+                    grade_id = transfert_line.grade_id.name or ""
+                    degree_id = transfert_line.degree_id.name or ""
+                    new_job_id = transfert_line.new_job_id.name.name or ""
+                    new_code = transfert_line.new_job_id.number or ""
+                    new_department_id = transfert_line.new_job_id.department_id.name or ""
+                    new_grade_id = transfert_line.new_job_id.grade_id.name or ""
+                    new_degree_id = transfert_line.new_degree_id.name or ""
+
+                    decision_text = decision_text.replace('JOB', unicode(job_id))
+                    decision_text = decision_text.replace('CODE', unicode(code))
+                    decision_text = decision_text.replace('DEGREE', unicode(degree_id))
+                    decision_text = decision_text.replace('GRADE', unicode(grade_id))
+                    decision_text = decision_text.replace('DEPARTEMENT', unicode(department_id))
+                    decision_text = decision_text.replace('job', unicode(new_job_id))
+                    decision_text = decision_text.replace('code', unicode(new_code))
+                    decision_text = decision_text.replace('degree', unicode(new_degree_id))
+                    decision_text = decision_text.replace('grade', unicode(new_grade_id))
+                    decision_text = decision_text.replace('department', unicode(new_department_id))
 
         return decision_text
 

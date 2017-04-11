@@ -84,7 +84,38 @@ class HrEmployeeTransfert(models.Model):
     job_allowance_ids = fields.One2many('hr.transfert.allowance', 'job_transfert_id', string=u'بدلات الوظيفة')
     transfert_allowance_ids = fields.One2many('hr.transfert.allowance', 'transfert_id', string=u'بدلات النقل')
     location_allowance_ids = fields.One2many('hr.transfert.allowance', 'location_transfert_id', string=u'بدلات المنطقة')
+    decission_id = fields.Many2one('hr.decision', string=u'القرارات')
 
+    @api.multi
+    def open_decission_transfert(self):
+        decision_obj= self.env['hr.decision']
+        if self.decission_id:
+            decission_id = self.decission_id.id
+        else :
+            decision_type_id = 1
+            decision_date = fields.Date.today() # new date
+            if self.employee_id :
+                decision_type_id = self.env.ref('smart_hr.data_employee_trasfert').id
+            # create decission
+            decission_val={
+                'name': self.env['ir.sequence'].get('hr.employee.transfert.seq'),
+                'decision_type_id':decision_type_id,
+                'date':decision_date,
+                'employee_id' :self.employee_id.id }
+            decision = decision_obj.create(decission_val)
+            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'trasfert')
+            decission_id = decision.id
+            self.decission_id =  decission_id
+        return {
+            'name': _(u'قرار نقل موظف '),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'hr.decision',
+            'view_id': self.env.ref('smart_hr.hr_decision_wizard_form').id,
+            'type': 'ir.actions.act_window',
+            'res_id': decission_id,
+            'target': 'new'
+            }
     @api.multi
     @api.onchange('transfert_nature')
     def onchange_transfert_nature(self):

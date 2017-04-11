@@ -12,9 +12,10 @@
     'depends': ['hr', 'hr_holidays', 'odoo_rtl', 'web_readonly_bypass', 'hr_payroll', 'hr_attendance', 'smart_base', 'survey', 'hr_appraisal', 'website'],
     'data': [
 
-
+        'hr_promotions/security/promotion_security.xml',
         'security/hr_security.xml',
         'security/ir_rule.xml',
+        'hr_promotions/security/ir_rule.xml',
         'security/ir.model.access.csv',
         'deputation/security/hr_security.xml',
         'payroll/security/payroll_security.xml',
@@ -285,7 +286,8 @@
         'hr_scholarship/wizards/view/hr_scholarship_extend_wizard.xml',
         'hr_scholarship/views/hr_scholarship_extension_report.xml',
         'hr_scholarship/views/report.xml',
-
+        'employee_durations/views/promotion_duration_view.xml',
+        'employee_durations/views/service_duration_view.xml',
         # 'hr_survey/views/website_templates.xml',
 
     ],
