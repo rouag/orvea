@@ -51,7 +51,7 @@ class HrPayslip(models.Model):
                         'employee_id': self.employee_id.id,
                         'number_of_days': tot_number_request,
                         'number_of_hours': 0.0,
-                        'amount': retirement_amount * -1,
+                        'amount': retirement_amount,
                         'category': 'deduction',
                         'type': 'absence'}
                 line_ids.append(vals)
