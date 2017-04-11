@@ -50,11 +50,11 @@ class hrHolidaysCancellation(models.Model):
         else :
             decision_type_id = 1
             decision_date = fields.Date.today() # new date
-            if self.type_improve and self.employee_id.type_id.id == self.env.ref('smart_hr.data_salary_grid_type3').id:
-                decision_type_id = self.env.ref('smart_hr.data_decision_type7').id
+            if self.employee_id:
+                decision_type_id = self.env.ref('smart_hr.data_decision_type45').id
             # create decission
             decission_val={
-                'name': self.env['ir.sequence'].get('hr.improve.seq'),
+                'name': self.env['ir.sequence'].get('hr.holidays.cancellation.seq'),
                 'decision_type_id':decision_type_id,
                 'date':decision_date,
                 'employee_id' :self.employee_id.id }
@@ -63,7 +63,7 @@ class hrHolidaysCancellation(models.Model):
             decission_id = decision.id
             self.decission_id =  decission_id
         return {
-            'name': _(u'قرار تمديد رصيد الاجازات'),
+            'name': _(u'قرارقطع الاجازات'),
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'hr.decision',
