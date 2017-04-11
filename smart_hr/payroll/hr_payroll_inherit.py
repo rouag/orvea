@@ -70,7 +70,7 @@ class HrPayslip(models.Model):
                     'employee_id': sanction.employee_id.id,
                     'rate': sanction.days_number,
                     'number_of_days': sanction.days_number,
-                    'amount': amount,
+                    'amount': amount * -1,
                     'category': 'deduction',
                     'type': 'sanction',
                     }

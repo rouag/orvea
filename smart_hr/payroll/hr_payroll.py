@@ -454,7 +454,6 @@ class HrPayslip(models.Model):
                 allowance_total += amount
                 sequence += 1
             # 3- التقاعد‬
-            # old : retirement_amount = (basic_salary * amount_multiplication + allowance_total - deduction_total) * salary_grid.retirement / 100.0
             retirement_amount = basic_salary * salary_grid.retirement / 100.0
             if retirement_amount:
                 retirement_val = {'name': 'التقاعد',
@@ -462,12 +461,12 @@ class HrPayslip(models.Model):
                                   'employee_id': employee.id,
                                   'rate': 0.0,
                                   'number_of_days': 30,
-                                  'amount': retirement_amount,
+                                  'amount': retirement_amount * -1,
                                   'category': 'deduction',
                                   'type': 'retirement',
                                   'sequence': sequence}
                 lines.append(retirement_val)
-                deduction_total += retirement_amount
+                deduction_total += retirement_amount * -1
                 sequence += 1
             # 4- المزايا المالية
             bonus_lines = bonus_line_obj.search([('employee_id', '=', employee.id), ('state', '=', 'progress'),
@@ -555,7 +554,7 @@ class HrPayslip(models.Model):
             # 5- الأثر المالي
             difference_lines = payslip.compute_differences()
             for difference in difference_lines:
-                difference_val = {'name': difference['name'] + ' :الأثر المالي',
+                difference_val = {'name': 'فرق: ' + difference['name'],
                                   'slip_id': payslip.id,
                                   'employee_id': employee.id,
                                   'rate': 0.0,
@@ -571,7 +570,7 @@ class HrPayslip(models.Model):
             # 6- الحسميات
             deduction_lines = payslip.compute_deductions(allowance_total)
             for deduction in deduction_lines:
-                deduction_val = {'name': deduction['name'] + ' :الحسميات',
+                deduction_val = {'name': ' :الحسميات ' + deduction['name'],
                                  'slip_id': payslip.id,
                                  'employee_id': employee.id,
                                  'rate': 0.0,
@@ -588,18 +587,18 @@ class HrPayslip(models.Model):
             # 7- القروض
             loans = loan_obj.get_loan_employee_month(self.date_from, self.date_to, employee.id)
             for loan in loans:
-                loan_val = {'name': loan['name'] + ' :القروض',
+                loan_val = {'name': ' :القروض ' + loan['name'],
                             'slip_id': payslip.id,
                             'employee_id': employee.id,
                             'rate': 0.0,
                             'number_of_days': 0.0,
-                            'amount': loan['amount'],
+                            'amount': loan['amount'] * -1,
                             'category': 'deduction',
                             'type': 'loan',
                             'sequence': sequence
                             }
                 lines.append(loan_val)
-                deduction_total += loan['amount']
+                deduction_total += loan['amount'] * -1
                 sequence += 1
             # 8- فرق الحسميات أكثر من ثلث الراتب
             # check if deduction_total is > than 1/3 of basic salary
@@ -609,13 +608,13 @@ class HrPayslip(models.Model):
                         'employee_id': employee.id,
                         'rate': 0.0,
                         'number_of_days': 0.0,
-                        'amount': deduction_total - basic_salary / 3,
+                        'amount': (deduction_total - basic_salary / 3) * -1,
                         'category': 'deduction',
                         'type': 'difference',
                         'sequence': sequence
                         }
                 lines.append(vals)
-                deduction_total -= basic_salary / 3
+                deduction_total += basic_salary / 3 * -1
                 sequence += 1
                 # save the rest for the next month
                 if month + 1 > 12:
@@ -635,15 +634,15 @@ class HrPayslip(models.Model):
                                  'employee_id': employee.id,
                                  'rate': 0.0,
                                  'number_of_days': 30,
-                                 'amount': insurance_amount,
+                                 'amount': insurance_amount * -1,
                                  'category': 'deduction',
                                  'type': 'insurance',
                                  'sequence': sequence}
                 lines.append(insurance_val)
-                deduction_total += insurance_amount
+                deduction_total += insurance_amount * -1
                 sequence += 1
             # 10- صافي الراتب
-            salary_net = basic_salary + allowance_total + difference_total - deduction_total
+            salary_net = basic_salary + allowance_total + difference_total + deduction_total
             salary_net_val = {'name': u'صافي الراتب',
                               'slip_id': payslip.id,
                               'employee_id': employee.id,
