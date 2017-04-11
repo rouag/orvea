@@ -12,9 +12,10 @@
     'depends': ['hr', 'hr_holidays', 'odoo_rtl', 'web_readonly_bypass', 'hr_payroll', 'hr_attendance', 'smart_base', 'survey', 'hr_appraisal', 'website'],
     'data': [
 
-
+        'hr_promotions/security/promotion_security.xml',
         'security/hr_security.xml',
         'security/ir_rule.xml',
+        'hr_promotions/security/ir_rule.xml',
         'security/ir.model.access.csv',
         'deputation/security/hr_security.xml',
         'payroll/security/payroll_security.xml',

@@ -14,7 +14,7 @@
 						<button name="button_promotion_type" string="إرسال" type="object"
 							states="promotion_type" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 							groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion,smart_hr.group_promotion_checker" />
-					
+
 						<button name="button_confirmed" string="إرسال" type="object"
 							states="draft" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 							groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion,smart_hr.group_promotion_checker" />
@@ -306,8 +306,8 @@
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" states="employee_confirmed" />
 
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
-							type="action"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" states="employee_confirmed" />
+							type="action" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							states="employee_confirmed" />
 						<field name="state" widget="statusbar" statusbar_visible="employee_confirmed,done,refuse" />
 					</header>
 					<sheet string="الترشيحات للترقية">
@@ -317,6 +317,11 @@
 							<field name="new_city_jobs" readonly="1" />
 						</group>
 					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"
+							groups="base.group_user" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
 				</form>
 
 			</field>
@@ -334,8 +339,7 @@
 
 
 		<menuitem id="menu_my_promotion_affecteds" action="action_hr_promotion_employee_affected"
-			parent="hr_root_workflows" name="الترشيحات للترقية"
-			sequence="30" />
+			parent="hr_root_workflows" name="الترشيحات للترقية" sequence="30" />
 
 
 

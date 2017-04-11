@@ -354,6 +354,7 @@ class HrPromotion(models.Model):
 class HrPromotionLigneEmployee(models.Model):
     _name = 'hr.promotion.employee'
     _order = 'id desc'
+    
     employee_id = fields.Many2one('hr.employee', string=u'الموظف')
     promotion_id = fields.Many2one('hr.promotion', string=u'الترقية ')
     demande_promotion_id = fields.Many2one('hr.promotion.employee.demande', string=u'طلب الترقية  ')
@@ -419,6 +420,8 @@ class HrPromotionLigneJobs(models.Model):
 
 class HrPromotionLigneEmployeeJob(models.Model):
     _name = 'hr.promotion.employee.job'
+    _inherit = ['mail.thread']
+
     _order = 'id desc'
 
     @api.model
@@ -469,7 +472,7 @@ class HrPromotionLigneEmployeeJob(models.Model):
     def button_refuse(self):
         if self.new_job_id:
             self.new_job_id.state = 'unoccupied'
-            self.state = "refuse"
+        self.state = "refuse"
 
     @api.onchange('employee_id')
     def change_employee_id(self):
@@ -521,13 +524,8 @@ class HrPromotionDemande(models.Model):
                                   domain=[('emp_state', 'not in', ['suspended','terminated']), ('employee_state', '=', 'employee')],
                                   default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended','terminated'])], limit=1),)
     name = fields.Char(string=u'رقم الطلب', )
-    description1 = fields.Text(string='رغبات الموظف', )
-    description2 = fields.Text(string='رغبات الموظف', )
-    description3 = fields.Text(string='رغبات الموظف', )
-    description4 = fields.Text(string='رغبات الموظف', )
-    description5 = fields.Text(string='رغبات الموظف', )
     city_fovorite = fields.Many2one('res.city', string=u'المدينة المفضلة')
-    hr_allowance_type_id = fields.Many2one('hr.allowance.type', string='أنواع البدلات(بدل طبيعة عمل )', )
+    hr_allowance_type_id = fields.Boolean(string='بدل طبيعة عمل', )
     old_job_id = fields.Many2one(related='employee_id.job_id', store=True, readonly=True, string=u'الوظيفة الحالية', )
     department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string='الادارة', )
     state = fields.Selection([('new', u'طلب'),
@@ -536,6 +534,7 @@ class HrPromotionDemande(models.Model):
                               ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
     done_date = fields.Date(string='تاريخ التفعيل')
     defferential_is_paied = fields.Boolean(string='defferential is paied', default=False)
+    desire_ids = fields.One2many('hr.employee.desire', 'desire_id', store=True, required=1, string=u'رغبات الموظف', readonly=1, states={'new': [('readonly', 0)]})
 
     @api.model
     def create(self, vals):
