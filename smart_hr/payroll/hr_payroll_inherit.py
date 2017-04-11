@@ -808,7 +808,7 @@ class HrPayslip(models.Model):
                             'type': 'termination'}
                     line_ids.append(vals)
             # سعودي
-            if termination.employee_id.country_id and termination.employee_id.country_id.code == 'SA':
+            if termination.employee_id.country_id and termination.employee_id.country_id.code_nat == 'SA':
                 if grid_id:
                     # 1) عدد الرواتب المستحق
                     if termination.termination_type_id.nb_salaire > 0:
@@ -824,17 +824,8 @@ class HrPayslip(models.Model):
             for rec in termination.employee_id.holidays_balance:
                 sum_days += rec.holidays_available_stock
             # 2) الإجازة
-            if not termination.termination_type_id.all_holidays and sum_days >= termination.termination_type_id.max_days:
-                if grid_id:
-                    amount = (basic_salary / 30.0) * termination.termination_type_id.max_days
-                    if amount != 0.0:
-                        vals = {'name': 'رصيد إجازة (طي القيد)' + name,
-                                'employee_id': termination.employee_id.id,
-                                'number_of_days': termination.termination_type_id.max_days,
-                                'number_of_hours': 0.0,
-                                'amount': amount,
-                                'type': 'termination'}
-                        line_ids.append(vals)
+            if sum_days >= termination.termination_type_id.max_days:
+                sum_days = termination.termination_type_id.max_days
             if termination.termination_type_id.all_holidays and sum_days > 0:
                 if grid_id:
                     amount = (basic_salary / 30.0) * sum_days
