@@ -19,7 +19,7 @@
 								<field name="degree_id"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 							</group>
-							<group>
+							<group col="3">
 								<group>
 									<field name="basic_salary" />
 									<field name="increase" />
@@ -40,6 +40,7 @@
 									<field name="new_insurance" nolabel="1" />
 									<field name="new_net_salary" nolabel="1" />
 								</group>
+								<group></group>
 							</group>
 						</group>
 						<notebook>

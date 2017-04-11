@@ -190,7 +190,7 @@
 										<field name="net_salary" />
 										<field name="is_old" invisible="1"/>
 										<button name="%(smart_hr.action_wizard_update_salary_grid)d"
-											type="action" string="إسناد المزايا" icon="fa-clipboard" />
+											type="action" string="تعديل السلم" icon="fa-clipboard" />
 										<field name="date" invisible="1" />
 									</tree>
 								</field>

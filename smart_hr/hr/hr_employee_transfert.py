@@ -39,7 +39,7 @@ class HrEmployeeTransfert(models.Model):
     decision_file_name = fields.Char(string=u'نسخة القرار')
     degree_id = fields.Many2one('salary.grid.degree',related='employee_id.degree_id', string=u'الدرجة', readonly=1)
     new_degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة', readonly=1)
-    governmental_entity = fields.Many2one('res.partner', string=u'الجهة الحكومية', domain=[('company_type', '=', 'governmental_entity')])
+    governmental_entity = fields.Many2one('res.partner', string=u'الجهة الحكومية', domain=[('company_type', '=', 'governmental_entity')], readonly=1, states={'new': [('readonly', 0)]})
     desire_ids = fields.One2many('hr.employee.desire',  'desire_id', store=True,required=1, string=u'رغبات النقل', readonly=1, states={'new': [('readonly', 0)]})
     refusing_date = fields.Date(string=u'تاريخ الرفض', readonly=1)
     # ‫المدنتية ‫الخدمة‬ ‫موافلقة‬

@@ -157,7 +157,7 @@
 									<field name="category_id"
 										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 										attrs="{'invisible':['|',('type', '=','internal'),('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
-									<field name="country_ids"
+									<field name="country_ids" domain="[('duputation_category_id', '=', category_id)]"
 										attrs="{'invisible':['|',('type', '=','internal'),('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
 								</group>
 								<group string="الجهة توفر">
@@ -281,6 +281,14 @@
 		<menuitem id="menu_hr_deputation_category" action="action_hr_deputation_category"
 			sequence="55" parent="hr_configuration_general_root" name="فئات الدول" />
 
-
+		<record id="view_tree_hr_country_city" model="ir.ui.view">
+			<field name="name">hr.country.city.tree</field>
+			<field name="model">hr.country.city</field>
+			<field name="arch" type="xml">
+				<tree string="البلاد" class="oe_tree_view">
+					<field name="country_id" />
+				</tree>
+			</field>
+		</record>
 	</data>
 </openerp>

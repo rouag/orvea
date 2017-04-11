@@ -56,7 +56,8 @@ class HrEmployee(models.Model):
                   ('grid_id.enabled', '=', True),
                   ('type_id', '=', self.type_id.id),
                   ('grade_id', '=', self.grade_id.id),
-                  ('degree_id', '=', self.degree_id.id)
+                  ('degree_id', '=', self.degree_id.id),
+                  ('is_old', '=', False)
                   ]
         if operation_date:
             # search the right salary grid detail for the given operation_date

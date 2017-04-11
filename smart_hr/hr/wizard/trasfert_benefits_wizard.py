@@ -147,52 +147,42 @@ class TransfertAppointAllowance(models.TransientModel):
         degree_obj = self.env['salary.grid.degree']
         salary_grid_obj = self.env['salary.grid.detail']
         # employee info
-        appoint_id = self.job_transfert_id
+        transfert_id = self.job_transfert_id
         if self.transfert_id:
-            appoint_id = self.transfert_id
+            transfert_id = self.transfert_id
         if self.location_transfert_id:
-            appoint_id = self.location_transfert_id
+            transfert_id = self.location_transfert_id
 
-        employee = appoint_id.employee_id
-        ttype = employee.job_id.type_id
-        grade = employee.job_id.grade_id
-        degree = employee.degree_id
+        employee = transfert_id.employee_id
+        ttype = transfert_id.type_id
+        grade = transfert_id.grade_id
+        degree = transfert_id.degree_id
         amount = 0.0
         # search the correct salary_grid for this employee
-        if employee:
-            if appoint_id.type_id:
-                type_id = appoint_id.type_id
-            else:
-                raise ValidationError(_(u' الرجاء ادخال الصنف  !'))
-            if appoint_id.degree_id:
-                degree_id = appoint_id.degree_id
-            else:
-                raise ValidationError(_(u' الرجاء ادخال الدرجة  !'))
-            grade_id = appoint_id.grade_id
-            salary_grids, basic_salary = self.get_salary_grid_id(employee, type_id, grade_id, degree_id, False)
-            if not salary_grids:
-                raise ValidationError(_(u'لا يوجد سلم رواتب للموظف. !'))
+        salary_grids, basic_salary = self.get_salary_grid_id(employee, ttype, grade, degree, False)
+        print ttype, grade, degree
+        print salary_grids
+        if not salary_grids:
+            raise ValidationError(_(u'لا يوجد سلم رواتب للموظف. !'))
         # compute
-            if self.compute_method == 'amount':
-                amount = self.amount
-            if self.compute_method == 'percentage':
-                amount = self.percentage * basic_salary / 100.0
-            if self.compute_method == 'job_location' and employee and employee.dep_city:
-                citys = allowance_city_obj.search([('allowance_id', '=', self.id), ('city_id', '=', employee.dep_city.id)])
-                if citys:
-                    amount = citys[0].percentage * basic_salary / 100.0
-            if self.compute_method == 'formula_1':
-                # get first degree for the grade
-                degrees = degree_obj.search([('grade_id', '=', grade.id)])
-                if degrees:
-                    salary_grids = salary_grid_obj.search([('type_id', '=', ttype.id), ('grade_id', '=', grade.id), ('degree_id', '=', degrees[0].id)])
-                    if salary_grids:
-                        amount = salary_grids[0].basic_salary * self.percentage / 100.0
-            if self.compute_method == 'formula_2':
-                amount = self.percentage * basic_salary / 100.0
-                if self.min_amount and amount < self.min_amount:
-                    amount = self.min_amount
-            self.amount = amount
-        else:
-            raise ValidationError(_(u'لا يوجد موظف. !'))
+        if self.compute_method == 'amount':
+            amount = self.amount
+        if self.compute_method == 'percentage':
+            amount = self.percentage * basic_salary / 100.0
+        if self.compute_method == 'job_location' and employee and employee.dep_city:
+            citys = allowance_city_obj.search([('allowance_id', '=', self.id), ('city_id', '=', employee.dep_city.id)])
+            if citys:
+                amount = citys[0].percentage * basic_salary / 100.0
+        if self.compute_method == 'formula_1':
+            # get first degree for the grade
+            degrees = degree_obj.search([('grade_id', '=', grade.id)])
+            if degrees:
+                salary_grids = salary_grid_obj.search([('type_id', '=', ttype.id), ('grade_id', '=', grade.id), ('degree_id', '=', degrees[0].id)])
+                if salary_grids:
+                    amount = salary_grids[0].basic_salary * self.percentage / 100.0
+        if self.compute_method == 'formula_2':
+            amount = self.percentage * basic_salary / 100.0
+            if self.min_amount and amount < self.min_amount:
+                amount = self.min_amount
+        self.amount = amount
 
