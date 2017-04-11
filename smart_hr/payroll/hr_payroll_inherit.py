@@ -27,9 +27,11 @@ class HrPayslip(models.Model):
         #  حسم‬  الغياب‬ يكون‬ من‬  جميع البدلات . و  الراتب‬ الأساسي للموظفين‬ الرسميين‬ والمستخدمين
         abscence_ids = self.env['hr.employee.absence.days'].search([('request_id.date', '>=', self.date_from),
                                                                     ('request_id.date', '<=', self.date_to),
+                                                                    ('employee_id', '=', self.employee_id.id),
                                                                     ('request_id.state', '=', 'done')
                                                                     ])
         salary_grid, basic_salary = self.employee_id.get_salary_grid_id(False)
+        tot_number_request = 0
         for line in abscence_ids:
             amount = (basic_salary + allowance_total) / 30.0 * line.number_request
             vals = {'name': 'غياب بدون عذر',
@@ -40,6 +42,19 @@ class HrPayslip(models.Model):
                     'category': 'deduction',
                     'type': 'absence'}
             line_ids.append(vals)
+            tot_number_request += line.number_request
+        # فرق التقاعد: غياب بدون عذر
+        if tot_number_request:
+            retirement_amount = basic_salary * salary_grid.retirement / 100.0 / 30.0 * tot_number_request
+            if retirement_amount != 0:
+                vals = {'name': 'فرق التقاعد: غياب بدون عذر',
+                        'employee_id': self.employee_id.id,
+                        'number_of_days': tot_number_request,
+                        'number_of_hours': 0.0,
+                        'amount': retirement_amount,
+                        'category': 'deduction',
+                        'type': 'absence'}
+                line_ids.append(vals)
 
         # حسم‬  التأخير يكون‬ من‬  الراتب‬ الأساسي فقط
         delays_ids = self.env['hr.employee.delay.hours'].search([('request_id.date', '>=', self.date_from),
@@ -70,7 +85,7 @@ class HrPayslip(models.Model):
                     'employee_id': sanction.employee_id.id,
                     'rate': sanction.days_number,
                     'number_of_days': sanction.days_number,
-                    'amount': amount,
+                    'amount': amount * -1,
                     'category': 'deduction',
                     'type': 'sanction',
                     }
@@ -345,13 +360,13 @@ class HrPayslip(models.Model):
             lend_date_to = fields.Date.from_string(lend_id.date_to)
             date_to = fields.Date.from_string(date_to)
             duration_in_month = 0
-            res = {}
+            res = []
             if date_from >= lend_date_from and lend_date_to >= date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, date_from, date_to, True, True, True)
+                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, date_from, date_to, True, False, False)
             if lend_date_from >= date_from and lend_date_to <= date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_from, lend_date_to, True, True, True)
+                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_from, lend_date_to, True, False, False)
             if lend_date_from >= date_from and lend_date_to >= date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_from, date_to, True, True, True)
+                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_from, date_to, True, False, False)
 
             hr_setting = self.env['hr.setting'].search([], limit=1)
             employee_allowances = lend_id.employee_id.hr_employee_allowance_ids
@@ -393,10 +408,13 @@ class HrPayslip(models.Model):
                                     if allowance.amount >= rec.amount:
                                         allowance_amount += days * rec.amount / 30.0
                         allowance_amount *= -1
-
+            print 'res', res
+            print 'date_from, date_to', date_from, date_to
+            print 'lend_date_from, lend_date_to', lend_date_from, lend_date_to
+            print 'duration_in_month', duration_in_month
             # 1 الراتب
             if amount < 0:
-                vals = {'name': 'نسبة الراتب' + name,
+                vals = {'name': 'الإعارة نسبة الراتب' + name,
                         'employee_id': lend_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -417,7 +435,7 @@ class HrPayslip(models.Model):
                 line_ids.append(vals)
             # 3) حصة الحكومة من التقاعد
             if amount_retirement:
-                vals = {'name': 'حصة الحكومة من التقاعد' + name,
+                vals = {'name': 'حصة الحكومة من التقاعد: الإعارة' + name,
                         'employee_id': lend_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -457,6 +475,9 @@ class HrPayslip(models.Model):
             if days >= 0 and holiday_id.date_to > date_to:
                 duration_in_month = days_between(holiday_date_from, date_to) - days
             grid_id, basic_salary = holiday_id.employee_id.get_salary_grid_id(False)
+            days_in_current_period = days_between(self.date_from, self.date_to)
+            if duration_in_month == days_in_current_period:
+                duration_in_month = 30.0
             # get the entitlement type
             if not holiday_id.entitlement_type:
                 entitlement_type = self.env.ref('smart_hr.data_hr_holiday_entitlement_all')
@@ -487,15 +508,16 @@ class HrPayslip(models.Model):
                             'type': 'holiday'}
                     line_ids.append(vals)
                 # فرق التقاعد
-                retirement_amount = basic_salary * grid_id.retirement / 100.0 / 30.0 * duration_in_month
-                if duration_in_month > 0 and retirement_amount != 0:
-                    vals = {'name': 'فرق التقاعد‬ ' + holiday_id.holiday_status_id.name + name,
-                            'employee_id': holiday_id.employee_id.id,
-                            'number_of_days': duration_in_month,
-                            'number_of_hours': 0.0,
-                            'amount': retirement_amount,
-                            'type': 'holiday'}
-                    line_ids.append(vals)
+                if holiday_status_id.deductible_duration_service:
+                    retirement_amount = basic_salary * grid_id.retirement / 100.0 / 30.0 * duration_in_month
+                    if duration_in_month > 0 and retirement_amount != 0:
+                        vals = {'name': 'فرق التقاعد‬ ' + holiday_id.holiday_status_id.name + name,
+                                'employee_id': holiday_id.employee_id.id,
+                                'number_of_days': duration_in_month,
+                                'number_of_hours': 0.0,
+                                'amount': retirement_amount,
+                                'type': 'holiday'}
+                        line_ids.append(vals)
             # case of  لا يصرف له راتب كامل
             if grid_id and holiday_status_id.salary_spending and holiday_status_id.percentages:
                 for rec in holiday_status_id.percentages:
@@ -540,15 +562,16 @@ class HrPayslip(models.Model):
                                     'type': 'holiday'}
                             line_ids.append(vals)
                         # فرق التقاعد
-                        retirement_amount = basic_salary * grid_id.retirement / 100.0 * (100 - rec.salary_proportion) / 100.0
-                        if duration_in_month > 0 and retirement_amount != 0:
-                            vals = {'name': 'فرق التقاعد‬ : ' + holiday_id.holiday_status_id.name + name,
-                                    'employee_id': holiday_id.employee_id.id,
-                                    'number_of_days': duration_in_month,
-                                    'number_of_hours': 0.0,
-                                    'amount': retirement_amount,
-                                    'type': 'holiday'}
-                            line_ids.append(vals)
+                        if holiday_status_id.deductible_duration_service:
+                            retirement_amount = basic_salary * grid_id.retirement / 100.0 * (100 - rec.salary_proportion) / 100.0
+                            if duration_in_month > 0 and retirement_amount != 0:
+                                vals = {'name': 'فرق التقاعد‬ : ' + holiday_id.holiday_status_id.name + name,
+                                        'employee_id': holiday_id.employee_id.id,
+                                        'number_of_days': duration_in_month,
+                                        'number_of_hours': 0.0,
+                                        'amount': retirement_amount,
+                                        'type': 'holiday'}
+                                line_ids.append(vals)
             # case of  نوع التعويض    مقابل ‫مادي‬ ‬   اجازة التعويض
             if grid_id:
                 if holiday_id.compensation_type and holiday_id.compensation_type == 'money':
@@ -775,7 +798,7 @@ class HrPayslip(models.Model):
             if grid_id:
                 # فرق الأيام المخصومة من الشهر
                 date_from = date_from
-                date_to = termination.date
+                date_to = termination.date_termination
                 worked_days = days_between(date_from, date_to) - 1
                 unworked_days = 30.0 - worked_days
                 if unworked_days > 0:
@@ -788,7 +811,7 @@ class HrPayslip(models.Model):
                             'type': 'termination'}
                     line_ids.append(vals)
             # سعودي
-            if termination.employee_id.country_id and termination.employee_id.country_id.code == 'SA':
+            if termination.employee_id.country_id and termination.employee_id.country_id.code_nat == 'SA':
                 if grid_id:
                     # 1) عدد الرواتب المستحق
                     if termination.termination_type_id.nb_salaire > 0:
@@ -804,17 +827,8 @@ class HrPayslip(models.Model):
             for rec in termination.employee_id.holidays_balance:
                 sum_days += rec.holidays_available_stock
             # 2) الإجازة
-            if not termination.termination_type_id.all_holidays and sum_days >= termination.termination_type_id.max_days:
-                if grid_id:
-                    amount = (basic_salary / 30.0) * termination.termination_type_id.max_days
-                    if amount != 0.0:
-                        vals = {'name': 'رصيد إجازة (طي القيد)' + name,
-                                'employee_id': termination.employee_id.id,
-                                'number_of_days': termination.termination_type_id.max_days,
-                                'number_of_hours': 0.0,
-                                'amount': amount,
-                                'type': 'termination'}
-                        line_ids.append(vals)
+            if sum_days >= termination.termination_type_id.max_days:
+                sum_days = termination.termination_type_id.max_days
             if termination.termination_type_id.all_holidays and sum_days > 0:
                 if grid_id:
                     amount = (basic_salary / 30.0) * sum_days

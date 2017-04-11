@@ -443,7 +443,7 @@ class HrHolidays(models.Model):
                 decision_type_id = self.env.ref('smart_hr.data_leave_escort').id
             elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_sport').id:
                 decision_type_id = self.env.ref('smart_hr.data_leave_sport').id
-            elif self.holiday_status_id.id == self.env.ref('smart_hr.data_leave_motherhood').id:
+            elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_maternity').id:
                 decision_type_id = self.env.ref('smart_hr.data_leave_motherhood').id
             else:
                 decision_type_id = self.env.ref('smart_hr.data_normal_leave').id
@@ -1148,8 +1148,9 @@ class HrHolidays(models.Model):
         """
         holidays_periode_obj = self.env['hr.holidays.periode']
         if holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id:
-            decision_appoint_id = self.env['hr.decision.appoint'].sudo().search([('employee_id.id', '=', self.employee_id.id), ('state_appoint', '=', 'active')], order='date_direct_action desc', limit=1)
-            if decision_appoint_id:
+            # get first decision_appoint of the employee
+            decision_appoint_id = self.env['hr.decision.appoint'].sudo().search([('employee_id.id', '=', self.employee_id.id), ('is_started', '=', True)], order='date_direct_action desc', limit=1)
+            if decision_appoint_id and decision_appoint_id.date_direct_action:
                 date_direct_action = fields.Date.from_string(decision_appoint_id.date_direct_action)
                 date_to = fields.Date.from_string(self.date_to)
                 diff = relativedelta(date_to, date_direct_action).years

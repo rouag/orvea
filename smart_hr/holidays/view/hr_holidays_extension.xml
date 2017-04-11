@@ -34,6 +34,9 @@
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" attrs="{'invisible':['|',('state','!=','audit')]}"
 							icon="fa-times" class="oe_inline oe_stat_button" groups="smart_hr.group_dm" />
+							
+						<button name="open_decission_holidays_extension" string="معاينة القرار"
+							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
 
 						<field name="state" widget="statusbar" statusbar_visible="draft,audit,done" />
 					</header>

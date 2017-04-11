@@ -61,11 +61,9 @@
 							groups="smart_hr.group_hr_personnel_officer_jobs" attrs="{'invisible':['|','|', 
 							('state', '!=', 'pm'), ('is_ended', '=', False), ('ready_tobe_done', '=', 
 							True)]}" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" /> -->
-
-						<button name="%(hr_employee_transfert_report)d" string="طباعة القرار"
-							groups="smart_hr.group_hr_personnel_officer_jobs" type="action"
-							states="done" icon="fa-print" class="oe_inline oe_stat_button" />
-
+<button name="open_decission_transfert" string="معاينة القرار"
+							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+						
 						<field name="state" widget="statusbar"
 							statusbar_visible="new,waiting,consult,pm,done,refused,cancelled" />
 					</header>
@@ -470,8 +468,7 @@
 							<page string="طلبات النقل" options="{'no_create': True}"
 								attrs="{'invisible':[('state', '!=', 'benefits')]}">
 								<br></br>
-								<field name="line_ids4"
-									attrs="{'invisible':[('state', '!=', 'benefits')]}" string=" طلبات النقل">
+								<field name="line_ids4"  string=" طلبات النقل">
 									<tree editable="bottom" colors="red:is_conflected==True;" create="false">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
