@@ -487,15 +487,16 @@ class HrPayslip(models.Model):
                             'type': 'holiday'}
                     line_ids.append(vals)
                 # فرق التقاعد
-                retirement_amount = basic_salary * grid_id.retirement / 100.0 / 30.0 * duration_in_month
-                if duration_in_month > 0 and retirement_amount != 0:
-                    vals = {'name': 'فرق التقاعد‬ ' + holiday_id.holiday_status_id.name + name,
-                            'employee_id': holiday_id.employee_id.id,
-                            'number_of_days': duration_in_month,
-                            'number_of_hours': 0.0,
-                            'amount': retirement_amount,
-                            'type': 'holiday'}
-                    line_ids.append(vals)
+                if holiday_status_id.deductible_duration_service:
+                    retirement_amount = basic_salary * grid_id.retirement / 100.0 / 30.0 * duration_in_month
+                    if duration_in_month > 0 and retirement_amount != 0:
+                        vals = {'name': 'فرق التقاعد‬ ' + holiday_id.holiday_status_id.name + name,
+                                'employee_id': holiday_id.employee_id.id,
+                                'number_of_days': duration_in_month,
+                                'number_of_hours': 0.0,
+                                'amount': retirement_amount,
+                                'type': 'holiday'}
+                        line_ids.append(vals)
             # case of  لا يصرف له راتب كامل
             if grid_id and holiday_status_id.salary_spending and holiday_status_id.percentages:
                 for rec in holiday_status_id.percentages:
@@ -540,15 +541,16 @@ class HrPayslip(models.Model):
                                     'type': 'holiday'}
                             line_ids.append(vals)
                         # فرق التقاعد
-                        retirement_amount = basic_salary * grid_id.retirement / 100.0 * (100 - rec.salary_proportion) / 100.0
-                        if duration_in_month > 0 and retirement_amount != 0:
-                            vals = {'name': 'فرق التقاعد‬ : ' + holiday_id.holiday_status_id.name + name,
-                                    'employee_id': holiday_id.employee_id.id,
-                                    'number_of_days': duration_in_month,
-                                    'number_of_hours': 0.0,
-                                    'amount': retirement_amount,
-                                    'type': 'holiday'}
-                            line_ids.append(vals)
+                        if holiday_status_id.deductible_duration_service:
+                            retirement_amount = basic_salary * grid_id.retirement / 100.0 * (100 - rec.salary_proportion) / 100.0
+                            if duration_in_month > 0 and retirement_amount != 0:
+                                vals = {'name': 'فرق التقاعد‬ : ' + holiday_id.holiday_status_id.name + name,
+                                        'employee_id': holiday_id.employee_id.id,
+                                        'number_of_days': duration_in_month,
+                                        'number_of_hours': 0.0,
+                                        'amount': retirement_amount,
+                                        'type': 'holiday'}
+                                line_ids.append(vals)
             # case of  نوع التعويض    مقابل ‫مادي‬ ‬   اجازة التعويض
             if grid_id:
                 if holiday_id.compensation_type and holiday_id.compensation_type == 'money':
