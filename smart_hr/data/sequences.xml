@@ -175,7 +175,13 @@
 			<field name="padding">6</field>
 		</record>
 		
-		hr.decision.appoint
+		<record id="hr_decision_transfert_seq" forcecreate="1" model="ir.sequence">
+			<field name="name">hr decision transfert</field>
+			<field name="code">hr.employee.transfert.seq</field>
+			<field eval="1" name="number_increment" />
+			<field name="padding">6</field>
+		</record>
+		
 
 	</data>
 </openerp>
