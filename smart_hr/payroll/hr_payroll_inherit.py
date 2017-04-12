@@ -129,21 +129,21 @@ class HrPayslip(models.Model):
             # TODO: review payslip.create_date
             # فروقات النقل
             # فروقات التعين
-            line_ids += self.get_difference_decision_appoint(create_date, self.date_to, self.employee_id, True)
+            line_ids += self.get_difference_decision_appoint(create_date, payslip_id.date_to, self.employee_id, True)
             # فروقات التكليف
-            line_ids += self.get_difference_assign(create_date, self.date_from, self.employee_id, True)
+            line_ids += self.get_difference_assign(create_date, payslip_id.date_to, self.employee_id, True)
             # فروقات الإبتعاث
-            line_ids += self.get_difference_scholarship(create_date, self.date_from, self.employee_id, True)
+            line_ids += self.get_difference_scholarship(create_date, payslip_id.date_to, self.employee_id, True)
             # فروقات الإعارة
-            line_ids += self.get_difference_lend(create_date, self.date_from, self.employee_id, True)
+            line_ids += self.get_difference_lend(create_date, payslip_id.date_to, self.employee_id, True)
             # فروقات الإجازة
-            line_ids += self.get_difference_holidays(create_date, self.date_from, self.employee_id, True)
+            line_ids += self.get_difference_holidays(create_date, payslip_id.date_to, self.employee_id, True)
             # فروقات كف اليد
-            line_ids += self.get_difference_suspension(create_date, self.date_from, self.employee_id, True)
+            line_ids += self.get_difference_suspension(create_date, payslip_id.date_to, self.employee_id, True)
             # فروقات طى القيد
-            line_ids += self.get_difference_termination(create_date, self.date_from, self.employee_id, True)
+            line_ids += self.get_difference_termination(create_date, payslip_id.date_to, self.employee_id, True)
             # فرق الحسميات أكثر من ثلث الراتب
-            line_ids += self.get_difference_one_third_salary(create_date, self.date_from, self.employee_id, True)
+            line_ids += self.get_difference_one_third_salary(create_date, payslip_id.date_to, self.employee_id, True)
         return line_ids
 
     @api.multi
@@ -408,10 +408,6 @@ class HrPayslip(models.Model):
                                     if allowance.amount >= rec.amount:
                                         allowance_amount += days * rec.amount / 30.0
                         allowance_amount *= -1
-            print 'res', res
-            print 'date_from, date_to', date_from, date_to
-            print 'lend_date_from, lend_date_to', lend_date_from, lend_date_to
-            print 'duration_in_month', duration_in_month
             # 1 الراتب
             if amount < 0:
                 vals = {'name': 'الإعارة نسبة الراتب' + name,
@@ -758,25 +754,24 @@ class HrPayslip(models.Model):
             line_ids.append(val)
             # 2- البدلات لا تحتسب في حال كان الموظف مكفوف اليد
             salary_grid, basic_salary = employee.get_salary_grid_id(date_start.strftime('%Y-%m-%d'))
-            if not suspension['return']:
-                for allowance in salary_grid.allowance_ids:
-                    allowance_amount = 0.0
-                    date_start = datetime.strptime(suspension['date_from'], '%Y-%m-%d')
-                    while date_start.strftime('%Y-%m-%d') <= suspension['date_to']:
-                        allowance_val = allowance.get_value(employee.id) / 30.0
-                        allowance_amount += allowance_val
-                        date_start = date_start + relativedelta(days=1)
-                    if _all_days_in_month(suspension['date_from'], suspension['date_to']):
-                        number_of_days = 30.0
-                        allowance_amount += (30.0 - suspension_number_of_days) * allowance_val
-                    val = {'name': 'فرق %s كف اليد' % allowance.allowance_id.name.encode('utf-8') + name,
-                           'employee_id': employee.id,
-                           'number_of_days': number_of_days,
-                           'number_of_hours': 0.0,
-                           'amount': allowance_amount * multiplication,
-                           'type': 'suspension'}
-                    line_ids.append(val)
-                    # TODO: add reward_ids and indemnity_ids
+            for allowance in salary_grid.allowance_ids:
+                allowance_amount = 0.0
+                date_start = datetime.strptime(suspension['date_from'], '%Y-%m-%d')
+                while date_start.strftime('%Y-%m-%d') <= suspension['date_to']:
+                    allowance_val = allowance.get_value(employee.id) / 30.0
+                    allowance_amount += allowance_val
+                    date_start = date_start + relativedelta(days=1)
+                if _all_days_in_month(suspension['date_from'], suspension['date_to']):
+                    number_of_days = 30.0
+                    allowance_amount += (30.0 - suspension_number_of_days) * allowance_val
+                val = {'name': 'فرق %s كف اليد' % allowance.allowance_id.name.encode('utf-8') + name,
+                       'employee_id': employee.id,
+                       'number_of_days': number_of_days,
+                       'number_of_hours': 0.0,
+                       'amount': allowance_amount * multiplication,
+                       'type': 'suspension'}
+                line_ids.append(val)
+                # TODO: add reward_ids and indemnity_ids
 
         return line_ids
 
