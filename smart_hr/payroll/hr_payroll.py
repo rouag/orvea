@@ -551,7 +551,7 @@ class HrPayslip(models.Model):
                                  'sequence': sequence
                                  }
                 lines.append(deduction_val)
-                deduction_total += difference['amount']
+                deduction_total += deduction['amount']
                 sequence += 1
 
             # 7- القروض
