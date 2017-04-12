@@ -64,7 +64,8 @@ class HrEmployee(models.Model):
         salary_grid_id = self.env['salary.grid.detail'].search(domain, order='date desc', limit=1)
         # case if not salary grid is new and correspending to operation_date
         if not salary_grid_id:
-            domain.pop(6)
+            if len(domain) == 7:
+                domain.pop(6)
         salary_grid_id = self.env['salary.grid.detail'].search(domain, order='date desc', limit=1)
         if not salary_grid_id:
             # doamin for  the newest salary grid detail
