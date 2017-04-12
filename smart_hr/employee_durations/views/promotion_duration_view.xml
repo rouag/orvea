@@ -67,7 +67,7 @@
 		</record>
 
 		<menuitem id="menu_hr_employee_promotion_duration" parent="hr_users_creation"
-			name="حساب مدة الترقية" sequence="15"
+			name="حساب مدة الترقية" sequence="11"
 			action="action_hr_employee_promotion_duration" />
 
 
