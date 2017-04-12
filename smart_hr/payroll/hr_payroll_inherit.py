@@ -553,7 +553,7 @@ class HrPayslip(models.Model):
                         # فرق البدلات
                         amount = 0.0
                         for allowance in grid_id.allowance_ids:
-                            amount = allowance.get_value(holiday_id.employee_id.id) * (100 - rec.salary_proportion) / 100.0
+                            amount = allowance.get_value(holiday_id.employee_id.id)
                         if duration_in_month > 0 and amount != 0:
                             vals = {'name': 'فرق بدلات : ' + holiday_id.holiday_status_id.name + name,
                                     'employee_id': holiday_id.employee_id.id,
