@@ -278,7 +278,6 @@ class ReportPayslipChangement(report_sxw.rml_parse):
         for rec in payslip_obj.browse(self.cr, self.uid, payslip__ids):
             if (rec.salary_net - rec.employee_id.net_salary) != 0:
                 line_ids = rec.line_ids.search([('category', 'in', ['changing_allowance', 'difference', 'deduction'])])
-                print '-----line_ids--------', line_ids
                 res.append({'employee_name': rec.employee_id.display_name,
                             'number': rec.employee_id.number,
                             'department_name': rec.employee_id.department_id.name,
@@ -287,7 +286,6 @@ class ReportPayslipChangement(report_sxw.rml_parse):
                             'diff': rec.salary_net - rec.employee_id.net_salary,
                             'payslip_lines': line_ids,
                             })
-        print res
         return res
 
     def _get_hijri_date(self, date, separator):

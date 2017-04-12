@@ -111,7 +111,6 @@ class HrDecision(models.Model):
             numero = self.name or ""  
             decision_text = decision_text.replace('NUMERO', unicode(numero))
             for key, values in args.items():
-                print"key",values
                 if key =="DATE":
                     date = values
                     if date:
@@ -148,8 +147,7 @@ class HrDecision(models.Model):
                 salary = salary_grid_id.net_salary  or ""
     
                 rel_text = decision_type_line.text
-    
-                print '-----employee-------',employee
+
                 decision_text = decision_text.replace('EMPLOYEE', unicode(employee))
                 decision_text = decision_text.replace('BIRTHDAY', unicode(birthday))
                 decision_text = decision_text.replace('DATE', unicode(dattz))
@@ -165,7 +163,6 @@ class HrDecision(models.Model):
     
                 if object_type == 'holidays' :
                     holidays_line = self.env['hr.holidays'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
-                    print"holidays_line",holidays_line
                     if holidays_line :
                         duration = holidays_line.duration or ""
                         if holidays_line.date_from:
@@ -183,7 +180,6 @@ class HrDecision(models.Model):
                         decision_text = decision_text.replace('ENDDET', unicode(date_to))
                 if object_type == 'termination' :
                     termination_line = self.env['hr.termination'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
-                    print"termination_line",termination_line
                     if termination_line :
     
                         if termination_line.date_termination:
@@ -195,7 +191,6 @@ class HrDecision(models.Model):
     
                 if object_type == 'commissioning' :
                     commissioning_line = self.env['hr.employee.commissioning'].search([('employee_id', '=', employee_id.id),('state', '=', 'done')], limit=1)
-                    print"commissioning_line",commissioning_line
                     if commissioning_line :
                         job_id = commissioning_line.commissioning_job_id.name.name or ""
                         code = commissioning_line.commissioning_job_id.number or ""
@@ -207,7 +202,6 @@ class HrDecision(models.Model):
                         decision_text = decision_text.replace('grade', unicode(grade_id))
                 if object_type == 'scholarship' :
                     scholarship_line = self.env['hr.scholarship'].search([('employee_id', '=', employee_id.id),('state', '=', 'done')], limit=1)
-                    print"commissioning_line",scholarship_line
                     if scholarship_line :
                         diplom_id = scholarship_line.diplom_id.name or ""
                         faculty_id = scholarship_line.faculty_id.name or ""
@@ -254,7 +248,6 @@ class HrDecision(models.Model):
     
                 if object_type == 'improve':
                     improve_line = self.env['hr.improve.situation'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
-                    print"termination_line",improve_line
                     if improve_line :
                         new_job_id = improve_line.new_job_id.name.name or ""
                         new_code = improve_line.new_job_id.number or ""
@@ -280,7 +273,6 @@ class HrDecision(models.Model):
                         decision_text = decision_text.replace('department', unicode(department_id))
                 if object_type == 'transfert':
                     transfert_line = self.env['hr.employee.transfert'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
-                    print"transfert_line",transfert_line
                     if transfert_line :
                         job_id = transfert_line.job_id.name.name or ""
                         code = transfert_line.job_id.number or ""

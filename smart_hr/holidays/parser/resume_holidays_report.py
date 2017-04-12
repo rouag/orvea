@@ -49,10 +49,7 @@ class ResumeHoldaysReport(report_sxw.rml_parse):
         holidays_obj = self.pool.get('hr.holidays')
         summary_ids = holidays_obj.search(self.cr, self.uid, domain)
         partie = len(summary_ids)
-        print"partioee",partie
         partie1 = partie/2
-        print"partiee",partie1
-        print"summary_ids",summary_ids
         if summary_ids:
             return holidays_obj.browse(self.cr, self.uid, summary_ids)
         else:
@@ -60,7 +57,6 @@ class ResumeHoldaysReport(report_sxw.rml_parse):
     def _get_partie1_employee(self, data):
         summary_ids = self._get_lines(data)
         partie = len(summary_ids)
-        print"summary_ids",summary_ids
         partie1 = partie/2
         for rec in summary_ids[partie1] :
             holidays_obj = self.pool.get('hr.holidays').browse(self.cr, self.uid, rec)

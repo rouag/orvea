@@ -46,7 +46,6 @@ class hrScholarShipDecisionnRepaortParse(report_sxw.rml_parse):
         convert georging date to hijri date
         :return hijri date as a string value
         '''
-        print '-----------date--------', date
         if date:
             date = fields.Date.from_string(date)
             hijri_date = HijriDate(date.year, date.month, date.day, gr=True)

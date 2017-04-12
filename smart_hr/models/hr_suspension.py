@@ -115,9 +115,7 @@ class hr_suspension(models.Model):
                 'employee_id': self.employee_id.id,
                 'suspension_id': self.id,
             }
-        print'vals',vals
         suspension_end_id = suspension_end_obj.create(vals)
-        print'suspension_end_id',suspension_end_id
         if suspension_end_id :
             value = {
                     'name': u'إنهاء كف اليد',

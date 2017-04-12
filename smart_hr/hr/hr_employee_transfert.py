@@ -242,7 +242,6 @@ class HrEmployeeTransfert(models.Model):
     def action_waiting(self):
         for rec in self :
             count_trasfert = self.env['hr.employee.transfert'].search_count([('employee_id', '=', rec.employee_id.id),('state', '=', 'new')])
-            print"count_trasfert",count_trasfert
             if count_trasfert > 1:
                 raise ValidationError(u"لا يمكن تعين عضو دون الدرجة المطلوبة")
         self.state = 'waiting'
@@ -557,12 +556,10 @@ class HrTransfertSorting(models.Model):
                     if int(line.degree_id.code) > int(line.new_degree_id.code):
                         line.hr_employee_transfert_id.state = 'consult'
                         line_ids.append(vals)
-                        print "line_ids", line_ids
                         result = line_ids
                     else:
                         line.hr_employee_transfert_id.state = 'pm'
                         line_ids1.append(vals)
-                        print "line_ids1", line_ids1
                         result1 = line_ids1
 
                 if not line.new_job_id:
@@ -585,7 +582,6 @@ class HrTransfertSorting(models.Model):
     def action_commissioning(self):
         for rec in self:
             line_ids = []
-            print '--rec.line_ids3---', rec.line_ids3
             for line in rec.line_ids3:
                 if line.hr_employee_transfert_id.state == 'consult':
                     raise ValidationError(u"يوجد طلبات في قائمة الانتظار.")
@@ -597,9 +593,7 @@ class HrTransfertSorting(models.Model):
                         'new_degree_id': line.new_degree_id.id,
                         'specific_group': line.specific_group, }
                 line_ids.append(vals)
-            print '----line_ids---', line_ids
             rec.line_ids4 = line_ids
-            print rec.line_ids4
             rec.state = 'commission_president'
  
 
