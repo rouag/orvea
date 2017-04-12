@@ -422,37 +422,7 @@ class HrPayslip(models.Model):
                                  }
                 lines.append(allowance_val)
                 allowance_total += line['amount']
-            for reward in salary_grid.reward_ids:
-                sequence += 1
-                amount = reward.get_value(employee.id)
-                reward_val = {'name': reward.reward_id.name,
-                              'slip_id': payslip.id,
-                              'employee_id': employee.id,
-                              'rate': 0.0,
-                              'number_of_days': 30,
-                              'amount': amount,
-                              'category': 'allowance',
-                              'type': 'reward',
-                              'sequence': sequence,
-                              }
-                lines.append(reward_val)
-                allowance_total += amount
             sequence += 1
-            for indemnity in salary_grid.indemnity_ids:
-                amount = indemnity.get_value(employee.id)
-                indemnity_val = {'name': indemnity.indemnity_id.name,
-                                 'slip_id': payslip.id,
-                                 'employee_id': employee.id,
-                                 'rate': 0.0,
-                                 'number_of_days': 30,
-                                 'amount': amount,
-                                 'category': 'allowance',
-                                 'type': 'indemnity',
-                                 'sequence': sequence,
-                                 }
-                lines.append(indemnity_val)
-                allowance_total += amount
-                sequence += 1
             # 3- التقاعد‬
             retirement_amount = basic_salary * salary_grid.retirement / 100.0
             if retirement_amount:
@@ -581,7 +551,7 @@ class HrPayslip(models.Model):
                                  'sequence': sequence
                                  }
                 lines.append(deduction_val)
-                deduction_total += difference['amount']
+                deduction_total += deduction['amount']
                 sequence += 1
 
             # 7- القروض

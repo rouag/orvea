@@ -69,7 +69,7 @@
 		</record>
 
 		<menuitem id="menu_hr_employee_service_duration" parent="hr_users_creation"
-			name="حساب مدة الخدمة" sequence="20"
+			name="حساب مدة الخدمة" sequence="12"
 			action="action_hr_employee_service_duration" />
 
 

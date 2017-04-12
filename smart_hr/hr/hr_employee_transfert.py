@@ -529,58 +529,55 @@ class HrTransfertSorting(models.Model):
 
     @api.multi
     def action_waiting(self):
-        for rec in self :
+        for rec in self:
             line_ids = []
             line_ids1 = []
             result = []
             result1 = []
-            for line in rec.line_ids2 :
-                if   line.new_job_id.id != 0  :
-#                 if line.is_conflected:
-#                     raise ValidationError(u"الرجاء حل الخلاف في الوظائف المختارة.")
+            for line in rec.line_ids2:
+                if line.new_job_id:
                     vals = {'hr_employee_transfert_id': line.hr_employee_transfert_id.id,
-                                  # 'hr_employee_transfert_id.state':'consult',
-                                    'new_job_id': line.new_job_id.id,
-                                    'new_type_id': line.new_type_id.id,
-                                    'res_city': line.res_city.id,
-                                    'new_degree_id': line.new_degree_id.id,
-                                    'specific_group': line.specific_group,
-                                   }
-                    line.hr_employee_transfert_id.ready_tobe_done =True
-                    line.hr_employee_transfert_id.new_job_id =line.new_job_id.id,
-                    line.hr_employee_transfert_id.new_type_id =line.new_type_id.id,
-                    line.hr_employee_transfert_id.new_degree_id =line.new_degree_id.id,
+                            'new_job_id': line.new_job_id.id,
+                            'new_type_id': line.new_type_id.id,
+                            'res_city': line.res_city.id,
+                            'new_degree_id': line.new_degree_id.id,
+                            'specific_group': line.specific_group,
+                            }
+                    line.hr_employee_transfert_id.ready_tobe_done = True
+                    line.hr_employee_transfert_id.new_job_id = line.new_job_id.id,
+                    line.hr_employee_transfert_id.new_type_id = line.new_type_id.id,
+                    line.hr_employee_transfert_id.new_degree_id = line.new_degree_id.id,
                     self.env['base.notification'].create({'title': u'إشعار  بخفض درجة',
-                                                   'message': u'لقد تم خفض درجة',
-                                                   'user_id': line.hr_employee_transfert_id.employee_id.user_id.id,
-                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-                                                   'notif': True,
-                                                     'res_id': self.id,
-                                                       })
+                                                          'message': u'لقد تم خفض درجة',
+                                                          'user_id': line.hr_employee_transfert_id.employee_id.user_id.id,
+                                                          'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                          'notif': True,
+                                                          'res_id': self.id,
+                                                          })
                     if int(line.degree_id.code) > int(line.new_degree_id.code):
-                        line.hr_employee_transfert_id.state ='consult'
+                        line.hr_employee_transfert_id.state = 'consult'
                         line_ids.append(vals)
-                        print"line_ids",line_ids
+                        print "line_ids", line_ids
                         result = line_ids
-                    else :
-                        line.hr_employee_transfert_id.state ='pm'
+                    else:
+                        line.hr_employee_transfert_id.state = 'pm'
                         line_ids1.append(vals)
-                        print"line_ids1",line_ids1
+                        print "line_ids1", line_ids1
                         result1 = line_ids1
 
-                if  line.new_job_id.id == 0 :
-                    line.hr_employee_transfert_id.state ='new'
+                if not line.new_job_id:
+                    line.hr_employee_transfert_id.state = 'new'
                     self.env['base.notification'].create({'title': u'إشعار  بعدم وجود وظيفة شاغرة',
-                                                   'message': u'إشعار  بعدم وجود وظيفة شاغرة',
-                                                   'user_id': line.hr_employee_transfert_id.employee_id.user_id.id,
-                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-                                                   'notif': True,
-                                                     'res_id': self.id,
-                                                     }) 
+                                                          'message': u'إشعار  بعدم وجود وظيفة شاغرة',
+                                                          'user_id': line.hr_employee_transfert_id.employee_id.user_id.id,
+                                                          'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                          'notif': True,
+                                                          'res_id': self.id,
+                                                          })
         if len(result) > 0:
             self.line_ids3 = result + result1
             self.state = 'waiting'
-        else :
+        else:
             self.line_ids4 = result1
             self.state = 'commission_president'
 
@@ -589,18 +586,20 @@ class HrTransfertSorting(models.Model):
         for rec in self:
             line_ids = []
             print '--rec.line_ids3---', rec.line_ids3
-            for line in rec.line_ids3 :
-                if line.hr_employee_transfert_id.state =='consult' :
+            for line in rec.line_ids3:
+                if line.hr_employee_transfert_id.state == 'consult':
                     raise ValidationError(u"يوجد طلبات في قائمة الانتظار.")
                 vals = {'hr_employee_transfert_id': line.hr_employee_transfert_id.id,
-                        'hr_employee_transfert_id.state':'pm',
+                        'hr_employee_transfert_id.state': 'pm',
                         'new_job_id': line.new_job_id.id,
                         'new_type_id': line.new_type_id.id,
                         'res_city': line.res_city.id,
                         'new_degree_id': line.new_degree_id.id,
                         'specific_group': line.specific_group, }
                 line_ids.append(vals)
+            print '----line_ids---', line_ids
             rec.line_ids4 = line_ids
+            print rec.line_ids4
             rec.state = 'commission_president'
  
 
@@ -803,6 +802,7 @@ class HrTransfertSortingLine4(models.Model):
     hr_transfert_sorting_id4 = fields.Many2one('hr.transfert.sorting', string=u'إجراء الترتيب')
     accept_trasfert = fields.Boolean(string='قبول')
     cancel_trasfert = fields.Boolean(string='رفض')
+    sorting_state = fields.Selection(related='hr_transfert_sorting_id4.state')
 
 
 class HrTransfertSortingLine5(models.Model):

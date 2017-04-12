@@ -384,32 +384,6 @@ class HrPayslip(models.Model):
                                  }
                 line_ids.append(allowance_val)
                 salary_net += amount
-            for reward in salary_grid.reward_ids:
-                amount = reward.get_value(employee.id) * salary_multiplication
-                reward_val = {'name': reward.reward_id.name,
-                              'employee_id': employee.id,
-                              'rate': 0.0,
-                              'number_of_days': 30.0 * salary_multiplication,
-                              'number_of_hours': 0.0,
-                              'amount': amount,
-                              'category': 'allowance',
-                              'type': 'reward',
-                              }
-                line_ids.append(reward_val)
-                salary_net += amount
-            for indemnity in salary_grid.indemnity_ids:
-                amount = indemnity.get_value(employee.id) * salary_multiplication
-                indemnity_val = {'name': indemnity.indemnity_id.name,
-                                 'employee_id': employee.id,
-                                 'rate': 0.0,
-                                 'number_of_days': 30.0 * salary_multiplication,
-                                 'number_of_hours': 0.0,
-                                 'amount': amount,
-                                 'category': 'allowance',
-                                 'type': 'indemnity',
-                                 }
-                line_ids.append(indemnity_val)
-                salary_net += amount
             # 3- التقاعد
             retirement_amount = basic_salary * salary_grid.retirement / 100.0 * salary_multiplication
             if retirement_amount:

@@ -61,9 +61,9 @@
 							groups="smart_hr.group_hr_personnel_officer_jobs" attrs="{'invisible':['|','|', 
 							('state', '!=', 'pm'), ('is_ended', '=', False), ('ready_tobe_done', '=', 
 							True)]}" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" /> -->
-<button name="open_decission_transfert" string="معاينة القرار"
+						<button name="open_decission_transfert" string="معاينة القرار"
 							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
-						
+
 						<field name="state" widget="statusbar"
 							statusbar_visible="new,waiting,consult,pm,done,refused,cancelled" />
 					</header>
@@ -329,7 +329,8 @@
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_issuing_decision" attrs="{'invisible':[('state','!=', 'benefits')]}"
 							string="إعتماد " type="object" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_done" attrs="{'invisible':[('state','!=', 'issuing_decision')]}"
+						<button name="action_done"
+							attrs="{'invisible':[('state','!=', 'issuing_decision')]}"
 							string="إعتماد " type="object" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 
@@ -342,7 +343,8 @@
 						<group>
 							<group>
 								<field name="name" />
-								<field name="decision_id" attrs="{'invisible':[('state', '!=', 'issuing_decision')]}"/>
+								<field name="decision_id"
+									attrs="{'invisible':[('state', '!=', 'issuing_decision')]}" />
 							</group>
 							<group string="موافقة الخدمة المدنية"
 								attrs="{'invisible':[('state', 'not in', ['commission_third'])]}">
@@ -435,10 +437,10 @@
 							</page>
 
 							<page string="طلبات النقل" options="{'no_create': True}"
-								attrs="{'invisible':[('state', 'not in', ['commission_president','done'])],'readonly':[('state', 'in', [ 'commission_president','done','refused'])]}">
+								attrs="{'invisible':[('state', 'not in', ['commission_president', 'benefits', 'issuing_decision', 'done'])],'readonly':[('state', 'in', [ 'commission_president','done','refused'])]}">
 								<br></br>
 								<field name="line_ids4" options="{'no_create': True}"
-									attrs="{'invisible':[('state', 'not in', ['commission_president','done'])]}"
+									attrs="{'invisible':[('state', 'not in', ['commission_president','benefits', 'issuing_decision','done'])]}"
 									string=" طلبات النقل">
 									<tree editable="bottom" colors="red:is_conflected==True;">
 										<field name="sequence" />
@@ -459,34 +461,11 @@
 											attrs="{'invisible':['|',('cancel_trasfert','!=',False),('state', 'in', [ 'done','refused'])], 'readonly':[('state', 'in', [ 'done','refused'])]}" />
 										<field name="cancel_trasfert"
 											attrs="{'invisible':['|',('accept_trasfert','!=',False),('state', 'in', [ 'done','refused'])],'readonly':[('state', 'in', [ 'done','refused'])]}" />
-
-										<field name="is_conflected" invisible="1" />
-									</tree>
-								</field>
-							</page>
-							<!-- إسناد المزايا -->
-							<page string="طلبات النقل" options="{'no_create': True}"
-								attrs="{'invisible':[('state', '!=', 'benefits')]}">
-								<br></br>
-								<field name="line_ids4"  string=" طلبات النقل">
-									<tree editable="bottom" colors="red:is_conflected==True;" create="false">
-										<field name="sequence" />
-										<field name="job_id" readonly="1" />
-										<field name="transfert_create_date" readonly="1" />
-										<field name="begin_work_date" readonly="1" />
-										<field name="recruiter_date" readonly="1" />
-										<field name="age" readonly="1" />
-										<field name="last_evaluation_result" readonly="1" />
-										<field name="new_job_id" readonly="1" />
-										<field name="specific_group" readonly="1" />
-										<field name="new_department_id" readonly="1" />
-										<field name="new_degree_id" readonly="1" />
-										<field name="new_type_id" readonly="1" />
-										<field name="res_city" readonly="1" />
-										<field name="state" readonly="1" />
 										<button name="%(smart_hr.action_wizard_transfert_benefits)d"
+											attrs="{'invisible':[('sorting_state','!=', 'benefits')]}"
 											type="action" string="إسناد المزايا" icon="fa-dollar" />
 										<field name="is_conflected" invisible="1" />
+										<field name="sorting_state" invisible="1" />
 									</tree>
 								</field>
 							</page>

@@ -34,13 +34,13 @@ class HrDirectAppoint(models.Model):
                               ('waiting', u'في إنتظار المباشرة'),
                               ('done', u'مباشرة'),
                               ('cancel', u'ملغاة')], string='الحالة', readonly=1, default='new')
-   
+
     decission_id = fields.Many2one('hr.decision', string=u'القرارات')
 
     type = fields.Selection([
         ('appoint' , u'تعيين'),
         ('transfer', u'نقل'),
-        ('promotion', u'ترقية')], string='نوع قرار المباشرة', )
+        ('promotion', u'ترقية')], string='نوع قرار المباشرة', required=1 )
 
 
 
@@ -88,7 +88,12 @@ class HrDirectAppoint(models.Model):
             if not self.employee_id.begin_work_date:
                 self.employee_id.begin_work_date = self.date_direct_action
         else:
-            raise ValidationError(u"لا يوجد تعيين غير مفعل للموظف!")
+            if self.type == 'transfer':
+                raise ValidationError(u"لا يوجد تعيين بنقل غير مفعل للموظف!")
+            elif self.type == 'promotion':
+                raise ValidationError(u"لا يوجد تعيين بترقية غير مفعل للموظف!")
+            else:
+                raise ValidationError(u"لا يوجد تعيين غير مفعل للموظف!")
         self.state = 'waiting'
 
     @api.multi
@@ -114,9 +119,7 @@ class HrDirectAppoint(models.Model):
         if self.type == 'transfer':
             self.appoint_id.transfer_id.done_date = self.date_direct_action
         if self.type == 'promotion':
-            promotion_id = self.env['hr.promotion.employee.demande'].search([('employee_id', '=', self.employee_id.id),('state', '=', 'done')])
-            if promotion_id:
-                promotion_id.done_date = self.date_direct_action
+            self.appoint_id.promotion_id.done_date = self.date_direct_action
         self.state = 'done'
 
     @api.onchange('employee_id','type')

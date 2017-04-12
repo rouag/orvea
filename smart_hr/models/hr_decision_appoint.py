@@ -122,7 +122,7 @@ class HrDecisionAppoint(models.Model):
     done_date = fields.Date(string='تاريخ التفعيل')
     is_recrutment_decider = fields.Boolean(string='recrutment_decider', default=False)
     transfer_id = fields.Many2one('hr.employee.transfert')
-    promotion_id = fields.Many2one('hr.promotion.employee.demande')
+    promotion_id = fields.Many2one('hr.promotion.employee.job')
     decission_id = fields.Many2one('hr.decision', string=u'القرارات')
 
     @api.multi
