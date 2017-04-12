@@ -42,7 +42,9 @@ class HrEmployee(models.Model):
                 # allowance from employee
                 for line in self.hr_employee_allowance_ids:
                     if line.salary_grid_detail_id == salary_grid_id:
-                        res.append({'allowance_name': line.allowance_id.name, 'amount': allowance.amount})
+                        res.append({'allowance_name': line.allowance_id.name,
+                                    'allowance_id': line.allowance_id.id,
+                                    'amount': allowance.amount})
         return res
 
     @api.model

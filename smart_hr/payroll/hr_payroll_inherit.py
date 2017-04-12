@@ -496,7 +496,9 @@ class HrPayslip(models.Model):
                 if duration_in_month > 0:
                     for allowance in holiday_id.employee_id.get_employee_allowances(False):
                         amount += allowance['amount'] / 30.0 * duration_in_month
-                    if amount :
+                        if holiday_status_id.transport_allowance and allowance['allowance_id'] == self.env.ref('smart_hr.hr_allowance_type_01').id:
+                            amount -= allowance['amount'] / 30.0 * duration_in_month
+                    if amount:
                         vals = {'name': 'فرق بدلات ' + holiday_id.holiday_status_id.name + name,
                                 'employee_id': holiday_id.employee_id.id,
                                 'number_of_days': duration_in_month,
@@ -548,8 +550,8 @@ class HrPayslip(models.Model):
                             line_ids.append(vals)
                         # فرق البدلات
                         amount = 0.0
-                        for allowance in grid_id.allowance_ids:
-                            amount = allowance.get_value(holiday_id.employee_id.id)
+                        if holiday_status_id.transport_allowance and allowance['allowance_id'] == self.env.ref('smart_hr.hr_allowance_type_01').id:
+                            amount -= allowance['amount'] / 30.0 * duration_in_month
                         if duration_in_month > 0 and amount != 0:
                             vals = {'name': 'فرق بدلات : ' + holiday_id.holiday_status_id.name + name,
                                     'employee_id': holiday_id.employee_id.id,
