@@ -460,7 +460,7 @@ class HrPayslip(models.Model):
             date_from = date_from
             holiday_date_to = holiday_id.date_to
             date_to = date_to
-            days = days_between(holiday_id.date_from, date_from) - 1
+            days = days_between(holiday_id.date_from, date_from) - 2
             # days in current month
             if days < 0 and holiday_id.date_to <= date_to:
                 duration_in_month = days_between(date_from, holiday_date_to)
