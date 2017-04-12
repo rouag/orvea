@@ -48,8 +48,6 @@ class WizardUpdateGrid(models.TransientModel):
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1, readonly=1)
 
     allowance_ids = fields.One2many('wiz.grid.detail.allowance', 'grid_detail_id', string='البدلات')
-    reward_ids = fields.One2many('wiz.grid.detail.reward', 'grid_detail_id', string='المكافآت‬')
-    indemnity_ids = fields.One2many('wiz.grid.detail.indemnity', 'grid_detail_id', string='التعويضات')
     # old values
     basic_salary = fields.Float(string='الراتب الأساسي', required=1, readonly=1)
     retirement = fields.Float(string='نسبة المحسوم للتقاعد', readonly=1)
@@ -89,17 +87,13 @@ class WizardUpdateGrid(models.TransientModel):
             rec.transport_allowance_amout = transport_allowance_amout
 
     @api.multi
-    @api.depends('allowance_ids', 'reward_ids', 'indemnity_ids', 'new_basic_salary', 'new_retirement', 'new_insurance')
+    @api.depends('allowance_ids', 'new_basic_salary', 'new_retirement', 'new_insurance')
     def _compute_new_net_salary(self):
         for rec in self:
             net_salary = rec.new_basic_salary
             for allowance in rec.allowance_ids:
                 amount = allowance.get_value(False)
                 net_salary += amount
-            for reward in rec.reward_ids:
-                net_salary += reward.get_value(False)
-            for indemnity in rec.indemnity_ids:
-                net_salary += indemnity.get_value(False)
             # deductions
             insurance = rec.new_basic_salary * rec.new_insurance / 100.0
             net_salary -= rec.new_retirement_amount
@@ -119,23 +113,7 @@ class WizardUpdateGrid(models.TransientModel):
                                       'compute_method': rec.compute_method,
                                       'amount': rec.amount
                                       })
-            reward_ids = []
-            for rec in salary_grid_line.reward_ids:
-                reward_ids.append({'grid_detail_id': self.id,
-                                   'allowance_id': rec.reward_id.id,
-                                   'compute_method': rec.compute_method,
-                                   'amount': rec.amount
-                                   })
-            indemnity_ids = []
-            for rec in salary_grid_line.indemnity_ids:
-                indemnity_ids.append({'grid_detail_id': self.id,
-                                      'allowance_id': rec.indemnity_id.id,
-                                      'compute_method': rec.compute_method,
-                                      'amount': rec.amount
-                                      })
             self.allowance_ids = allowance_ids
-            self.reward_ids = reward_ids
-            self.indemnity_ids = indemnity_ids
 
     @api.multi
     def action_salary_grid_line(self):
@@ -145,8 +123,6 @@ class WizardUpdateGrid(models.TransientModel):
         # make a copy of salary grid detail 
         old_salary_grid_line = salary_grid_line.copy()
         old_salary_grid_line.allowance_ids = salary_grid_line.allowance_ids.ids
-        old_salary_grid_line.reward_ids = salary_grid_line.reward_ids.ids
-        old_salary_grid_line.indemnity_ids = salary_grid_line.indemnity_ids.ids
         old_salary_grid_line.is_old = True
         # update salary_grid_line with new values
         salary_grid_line.basic_salary = self.new_basic_salary
@@ -165,23 +141,7 @@ class WizardUpdateGrid(models.TransientModel):
                                   'compute_method': rec.compute_method,
                                   'amount': rec.amount
                                   })
-        reward_ids = []
-        for rec in self.reward_ids:
-            reward_ids.append({'grid_detail_id': salary_grid_line.id,
-                               'allowance_id': rec.reward_id.id,
-                               'compute_method': rec.compute_method,
-                               'amount': rec.amount
-                               })
-        indemnity_ids = []
-        for rec in self.indemnity_ids:
-            indemnity_ids.append({'grid_detail_id': salary_grid_line.id,
-                                  'allowance_id': rec.indemnity_id.id,
-                                  'compute_method': rec.compute_method,
-                                  'amount': rec.amount
-                                  })
         salary_grid_line.allowance_ids = allowance_ids
-        salary_grid_line.reward_ids = reward_ids
-        salary_grid_line.indemnity_ids = indemnity_ids
         # change the grade name
         if self.new_grade_name:
             old_grade_name = self.grade_id.name

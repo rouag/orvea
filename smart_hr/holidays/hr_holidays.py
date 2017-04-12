@@ -178,6 +178,7 @@ class HrHolidays(models.Model):
         if self.duration and self.salary_number:
             if self.duration < self.salary_number * 30:
                 self.salary_number = self.duration // 30
+
     @api.multi
     def _compute_display_button_cancel(self):
         for rec in self:

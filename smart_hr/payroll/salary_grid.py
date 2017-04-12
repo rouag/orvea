@@ -51,7 +51,6 @@ class SalaryGridType(models.Model):
     allowance_ids = fields.Many2many('hr.allowance.type', string=u'البدلات')
     far_age = fields.Float(string=' السن الاقصى')
     code = fields.Char(string='الرمز')
-    reward_ids = fields.Many2many('hr.reward.type', string=u'المكافآت‬')
     retrait_monthly = fields.Integer(string='نسبة الحسم الشهري على التقاعد:')
     assurance_monthly = fields.Integer(string='نسبة التامين الشهري  من الراتب الاساسي:')
     salary_recent = fields.Float(string=' أخر راتب شهري')
@@ -101,8 +100,6 @@ class SalaryGridDetail(models.Model):
     insurance = fields.Float(string='نسبة  التأمين')
     net_salary = fields.Float(string='صافي الراتب', readonly=1, compute='_compute_net_salary', store=True)
     allowance_ids = fields.One2many('salary.grid.detail.allowance', 'grid_detail_id', string='البدلات')
-    reward_ids = fields.One2many('salary.grid.detail.reward', 'grid_detail_id', string='المكافآت‬')
-    indemnity_ids = fields.One2many('salary.grid.detail.indemnity', 'grid_detail_id', string='التعويضات')
     insurance_type = fields.Many2one('hr.insurance.type', string=u'نوع التأمين')
     increase = fields.Float(string='العلاوة')
     transport_allowance_amout = fields.Float(string='مبلغ بدل النقل', readonly=1, compute='_compute_transport_allowance_amout', store=True)
@@ -128,17 +125,13 @@ class SalaryGridDetail(models.Model):
             rec.transport_allowance_amout = transport_allowance_amout
 
     @api.multi
-    @api.depends('allowance_ids', 'reward_ids', 'indemnity_ids', 'basic_salary', 'retirement', 'insurance')
+    @api.depends('allowance_ids', 'basic_salary', 'retirement', 'insurance')
     def _compute_net_salary(self):
         for rec in self:
             net_salary = rec.basic_salary
             for allowance in rec.allowance_ids:
                 amount = allowance.get_value(False)
                 net_salary += amount
-            for reward in rec.reward_ids:
-                net_salary += reward.get_value(False)
-            for indemnity in rec.indemnity_ids:
-                net_salary += indemnity.get_value(False)
             # deductions
             insurance = rec.basic_salary * rec.insurance / 100.0
             net_salary -= rec.retirement_amount

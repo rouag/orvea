@@ -773,7 +773,6 @@ class HrPayslip(models.Model):
                        'amount': allowance_amount * multiplication,
                        'type': 'suspension'}
                 line_ids.append(val)
-                # TODO: add reward_ids and indemnity_ids
 
         return line_ids
 
