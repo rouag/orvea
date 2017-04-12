@@ -155,6 +155,12 @@
 			</field>
 			<field name="groups" eval="[(4, ref('smart_hr.group_dm'))]" />
 		</record>
-
+		
+		<record id="property_rule_holidays_extend_responsable_see_all" model="ir.rule">
+			<field name="name">Employee Holidays specialist</field>
+			<field name="model_id" ref="model_hr_holidays" />
+			<field name="domain_force">[(1,'=',1)]</field>
+			<field name="groups" eval="[(4,ref('smart_hr.group_holidays_extend_responsable'))]" />
+		</record>
 	</data>
 </openerp>
