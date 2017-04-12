@@ -26,8 +26,7 @@
 							type="action" attrs="{'invisible':[('display_audit_buttons','=', False)]}"
 							icon="fa-times" class="oe_inline oe_stat_button" />
 							
-							<button name="open_decission_holidays_cancellation" string="معاينة القرار"
-							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+							
 							
 						<field name="state" widget="statusbar" statusbar_visible="draft,audit,hrm,done,refuse" />
 					</header>
@@ -127,6 +126,9 @@
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" attrs="{'invisible':[('display_audit_buttons','=', False)]}"
 							icon="fa-times" class="oe_inline oe_stat_button" />
+							
+							<button name="open_decission_holidays_cancellation" string="معاينة القرار"
+							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
 						<field name="state" widget="statusbar" statusbar_visible="draft,audit,hrm,done,refuse" />
 					</header>
 					<sheet>

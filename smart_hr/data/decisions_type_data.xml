@@ -1757,6 +1757,52 @@
 									
 	 ]]></field>
 		</record>
+
+
+		<record id="data_decision_type45" model="hr.decision.type">
+			<field name="name"> قرار تقطع الاجازات</field>
+			
+			<field name="text"><![CDATA[
+				<p>قرار إداري رقم
+			 (NUMERO)و تاريخ  DATE</p>
+			<p style="text-align: center;"><strong>
+			 
+			 رقم الهوية
+			 CARTEID </strong></p>
+<p><strong>إن رئيس هيئة التحقيق و الإدعاء العام</strong></p>
+<p>بناء على صلاحيات الممنوحة له</p>
+
+<p style="text-align: center;"> <strong>يقرر ما يلي</strong></p>
+          
+            <p></p> 
+   <p></p> 
+    <p></p> 
+  <p style="text-align: left;"><strong>
+			 رئيس هيئة التحقيق و الإدعاء العام </strong></p>   ]]></field>
+		</record>
+
+		<record id="data_decision_type46" model="hr.decision.type">
+		<field name="name"> قرار تمديد رصيد الاجازات</field>
+			<field name="text"><![CDATA[
+				<p>قرار إداري رقم
+			 (NUMERO)و تاريخ  DATE</p>
+			<p style="text-align: center;"><strong>
+			 
+			 رقم الهوية
+			 CARTEID </strong></p>
+<p><strong>إن رئيس هيئة التحقيق و الإدعاء العام</strong></p>
+<p>بناء على صلاحيات الممنوحة له</p>
+
+<p style="text-align: center;"> <strong>يقرر ما يلي</strong></p>
+          
+            <p></p> 
+   <p></p> 
+    <p></p> 
+  <p style="text-align: left;"><strong>
+			 رئيس هيئة التحقيق و الإدعاء العام </strong></p>   ]]></field>
+		</record>
+
+
 	</data>
 </openerp>
 		
