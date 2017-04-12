@@ -65,7 +65,8 @@ class HrHolidays(models.Model):
     holiday_status_id = fields.Many2one('hr.holidays.status', string=u'نوع الأجازة', default=lambda self: self.env.ref('smart_hr.data_hr_holiday_status_normal'),)
     spend_advanced_salary = fields.Boolean(string=u'طلب صرف راتب مسبق', related='holiday_status_id.spend_advanced_salary')
     advanced_salary_periode = fields.Integer(string=u'مدة صرف راتب مسبق (باليوم)', related='holiday_status_id.advanced_salary_periode')
-    with_advanced_salary = fields.Boolean(string=u'مع صرف راتب مسبقاً', readonly=1, states={'draft': [('readonly', 0)]})
+    with_advanced_salary = fields.Boolean(string=u'مع صرف راتب مسبقاً')
+    salary_number = fields.Integer(string=u'عدد الرواتب')
     state = fields.Selection([
         ('draft', u'طلب'),
         ('dm', u'مدير المباشر'),
@@ -157,7 +158,6 @@ class HrHolidays(models.Model):
     can_be_cancelled = fields.Boolean(string=u'يمكن الغاؤها', related='holiday_status_id.can_be_cancelled')
     display_button_cancel = fields.Boolean(compute='_compute_display_button_cancel')
     display_button_cut = fields.Boolean(compute='_compute_display_button_cut')
-    salary_number = fields.Integer(string=u'عدد الرواتب')
     is_holidays_specialist_user = fields.Boolean(string='Is Current User holidays specialist', compute='_is_holidays_specialist_user')
     advanced_salary_is_paied = fields.Boolean('advanced_salary_is_paied', default=False)
     decission_id = fields.Many2one('hr.decision', string=u'القرارات',)
@@ -177,7 +177,7 @@ class HrHolidays(models.Model):
     def onchange_salary_number(self):
         if self.duration and self.salary_number:
             if self.duration < self.salary_number * 30:
-                raise ValidationError(u"لا يمكن طلب اكثر من" + str(self.duration//30) + u"رواتب مسبقة")
+                self.salary_number = self.duration // 30
 
     @api.multi
     def _compute_display_button_cancel(self):
