@@ -98,12 +98,30 @@ class HrDecision(models.Model):
         self.name = self.env['ir.sequence'].get('hr.decision.seq')
         self.state = 'done'
 
-    def replace_text(self, employee_id, date, decision_type_id , object_type ):
+    @api.multi
+    def button_refuse(self):
+        return True
+
+    def replace_text(self, employee_id, date, decision_type_id , object_type ,args={}):
 
         decision_text =''
         decision_type_line = self.env['hr.decision.type'].search([('id', '=', decision_type_id)])
         if decision_type_line.text:
             decision_text = decision_type_line.text
+            numero = self.name or ""  
+            decision_text = decision_text.replace('NUMERO', unicode(numero))
+            for key, values in args.items():
+                print"key",values
+                if key =="DATE":
+                    date = values
+                    if date:
+                        hijri_date = self._get_hijri_date(date, '-')
+                        date = str(hijri_date).split('-')
+                        date = date[2] + '-' + date[1] + '-' + date[0] or ""   
+                    decision_text = decision_text.replace(key, unicode(date))
+                else :
+                    decision_text = decision_text.replace(key, unicode(values))
+
             if employee_id :
                 if date:
                     hijri_date = self._get_hijri_date(date, '-')

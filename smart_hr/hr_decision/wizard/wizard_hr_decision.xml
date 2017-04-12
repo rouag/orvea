@@ -14,14 +14,14 @@
 						<button name="button_done" string="إعتماد" type="object" states="draft" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
 						
 							<button name="%(hr_decision_report)d" string="طباعة القرار"
-							type="action" icon="fa-print" 	attrs="{'invisible':[('state','!=','done')]}"
+							type="action" icon="fa-print" 
 							class="oe_inline oe_stat_button" />
 						
 						
 						<field name="state" widget="statusbar"
 							
 							
-							statusbar_visible="draft,done,cancel" />
+							statusbar_visible="draft,done" />
 					</header>
 					<sheet>
 						<group>
@@ -35,7 +35,15 @@
 							</group>
 						</group>
 						<field name="text" />
-					</sheet>
+							</sheet>
+						
+						<footer>
+						<button name="button_refuse" string="حفظ" type="object"
+							icon="fa-floppy-o" class="oe_inline oe_stat_button" />
+						أو
+						<button string="إغلاق" class="oe_link" special="cancel" />
+					</footer>
+				
 				</form>
 			</field>
 		</record>

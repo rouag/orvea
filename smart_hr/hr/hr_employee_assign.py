@@ -172,6 +172,8 @@ class HrEmployeeCommissioning(models.Model):
     def button_refuse(self):
         self.ensure_one()
         self.state = 'pm'
+    
+        
 
     @api.multi
     def action_done(self):
@@ -181,6 +183,14 @@ class HrEmployeeCommissioning(models.Model):
         self.commissioning_job_id.state = 'occupied'
         self.state = 'done'
         # create history_line
+    
+    @api.multi
+    def unlink(self):
+        # Validation
+        for rec in self:
+            if rec.state == 'done':
+                raise ValidationError(u'لا يمكن حذف التكليف فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrEmployeeCommissioning, self).unlink()
 
 
 # self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, False, False, "تكليف")

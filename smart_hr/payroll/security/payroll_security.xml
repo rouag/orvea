@@ -1,43 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data noupdate="0">
+	
+    <record model="ir.module.category" id="module_payrol_setting_employee">
+            <field name="name">الرواتب</field>
+        </record>
 
 		<record id="group_payroll_management" model="res.groups">
-			<field name="category_id" ref="base.module_category_human_resources" />
+			<field name="category_id" ref="module_payrol_setting_employee" />
 			<field name="name">إدارة الرواتب</field>
 		</record>
 
 		<record id="group_payroll_setting" model="res.groups">
-			<field name="category_id" ref="base.module_category_human_resources" />
+			<field name="category_id" ref="module_payrol_setting_employee" />
 			<field name="name">إعدادات الرواتب</field>
 		</record>
 
 		<record id="group_bonus_management" model="res.groups">
-			<field name="category_id" ref="base.module_category_human_resources" />
+			<field name="category_id" ref="module_payrol_setting_employee" />
 			<field name="name">إسناد المزايا المالية</field>
 		</record>
 		
 		<record id="group_difference_management" model="res.groups">
-			<field name="category_id" ref="base.module_category_human_resources" />
+			<field name="category_id" ref="module_payrol_setting_employee" />
 			<field name="name">إدارة الفروقات</field>
 		</record>
 		
 		<record id="group_loan_management" model="res.groups">
-			<field name="category_id" ref="base.module_category_human_resources" />
+			<field name="category_id" ref="module_payrol_setting_employee" />
 			<field name="name">إدارة القروض</field>
 		</record>
 		
 		<record id="group_increase_employee" model="res.groups">
-			<field name="category_id" ref="base.module_category_human_resources" />
+			<field name="category_id" ref="module_payrol_setting_employee" />
 			<field name="name">الموظف المختص-العلاوة</field>
 		</record>
 		<record id="group_allowance_employee" model="res.groups">
-			<field name="category_id" ref="base.module_category_human_resources" />
+			<field name="category_id" ref="module_payrol_setting_employee" />
 			<field name="name">الموظف المختص-البدلات</field>
 		</record>
 		
 		<record id="group_increase_manager" model="res.groups">
-			<field name="category_id" ref="base.module_category_human_resources" />
+			<field name="category_id" ref="module_payrol_setting_employee" />
 			<field name="name">صاحب صلاحية-العلاوة</field>
 			<field name="implied_ids" eval="[(4, ref('group_increase_employee'))]"></field>
 		</record>

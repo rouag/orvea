@@ -26,15 +26,14 @@
 							type="action" attrs="{'invisible':[('display_audit_buttons','=', False)]}"
 							icon="fa-times" class="oe_inline oe_stat_button" />
 							
+								<button name="open_decission_holidays_cancel" string="معاينة القرار"
+							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
 							
 							
 						<field name="state" widget="statusbar" statusbar_visible="draft,audit,hrm,done,refuse" />
 					</header>
 					<sheet>
-						<label for="name" class="oe_edit_only" />
-						<h1>
-							<field name="name" readonly="1" />
-						</h1>
+							<field name="name" attrs="{'invisible':[('state', 'not in', [ 'done'])],'readonly':[('state', 'in', ['done'])]}" />
 						<group>
 							<field name="date" readonly="1" />
 							<field name="employee_id" readonly="1" 

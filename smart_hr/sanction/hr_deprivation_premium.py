@@ -4,6 +4,9 @@ from openerp import models, fields, api
 from openerp.exceptions import ValidationError
 from openerp.tools import SUPERUSER_ID
 from umalqurra.hijri_date import HijriDate
+from openerp.addons.smart_base.util.umalqurra import *
+from umalqurra.hijri import Umalqurra
+
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 
@@ -24,13 +27,15 @@ class HrDeprivationPremium(models.Model):
     department_level2_id = fields.Many2one('hr.department', string='القسم', readonly=1, states={'draft': [('readonly', 0)]})
     department_level3_id = fields.Many2one('hr.department', string='الشعبة', readonly=1, states={'draft': [('readonly', 0)]})
     salary_grid_type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1, states={'draft': [('readonly', 0)]},)
+    decission_id = fields.Many2one('hr.decision', string=u'القرارات')
+    
     deprivation_ids = fields.One2many('hr.deprivation.premium.ligne', 'deprivation_id',
                                       string=u'قائمة المحرومين من العلاوة', 
                                       states={'draft': [('readonly', 0)]})
     state = fields.Selection([('draft', '  طلب'),
                               ('waiting', u'في إنتظار الاعتماد'),
                               ('order',u'إصدار قرار'),
-                              ('done', u'منتهي'),
+                              ('done', u'اعتمدت'),
                               ('refused', u'مرفوضة'),
                               ], string='الحالة', readonly=1, default='draft')
 
@@ -69,6 +74,38 @@ class HrDeprivationPremium(models.Model):
   
 
 
+    @api.multi
+    def button_deprivation_premium(self):
+        decision_obj= self.env['hr.decision']
+        if self.decission_id:
+            decission_id = self.decission_id.id
+        else :
+            decision_type_id = 1
+            decision_date = fields.Date.today() # new date
+            if self.order_date:
+                decision_type_id = self.env.ref('smart_hr.data_decision_deprivation_premium').id
+            # create decission
+            decission_val={
+                'name': self.name,
+                'decision_type_id':decision_type_id,
+                'date':decision_date,
+                'employee_id' :False}
+            decision = decision_obj.create(decission_val)
+            decision.text = decision.replace_text(False,decision_date,decision_type_id,'employee',args={'DATE':self.order_date})
+            decission_id = decision.id
+            self.decission_id =  decission_id
+        return {
+            'name': u'قرار حرمان من العلاوة',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'hr.decision',
+            'view_id': self.env.ref('smart_hr.hr_decision_wizard_form').id,
+            'type': 'ir.actions.act_window',
+            'res_id': decission_id,
+            'target': 'new'
+            }
+
+
 
 
 
@@ -101,11 +138,13 @@ class HrDeprivationPremium(models.Model):
             lines = []
             sanction = sanction_obj.create(sanction_val)
             for  temp in rec.deprivation_ids :
+                if temp.state_deprivation =='waiting' :
                     employee_val = {
                               'employee_id': temp.employee_id,
                               'state':'done',
                               }
                     lines.append(employee_val)
+                    temp.state_deprivation ='done'
             sanction.difference_ids = lines
             rec.state = 'done'
             
@@ -155,7 +194,7 @@ class HrdeprivationPremiumLigne(models.Model):
     def button_cancel(self):
         for rec in self:
             rec.is_cancel =True
-            rec.state = 'excluded'
+            rec.state_deprivation = 'excluded'
     
     @api.multi
     def button_confirm(self):

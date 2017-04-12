@@ -35,9 +35,12 @@
 							states="hrm" groups="smart_hr.group_hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" states="audit,hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="%(report_request_transfer_delay_hours)d"
-							string="طباعة القرار" groups="smart_hr.group_hrm" type="action"
-							states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+						
+						<button name="button_request_transfer_delay_hours" string="معاينة القرار"
+							groups="smart_hr.group_hrm" type="object" states="done" icon="fa-print"
+							class="oe_inline oe_stat_button" />
+						
+					
 						<field name="state" widget="statusbar" statusbar_visible="dm,audit,hrm,done,refuse" />
 					</header>
 					<sheet>
@@ -159,9 +162,12 @@
 							states="hrm" groups="smart_hr.group_hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" states="audit,hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="%(report_request_transfer_absence_days)d"
-							string="طباعة القرار" groups="smart_hr.group_hrm" type="action"
-							states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+					
+						<button name="button_request_transfer_absence" string="معاينة القرار"
+							groups="smart_hr.group_hrm" type="object" states="done" icon="fa-print"
+							class="oe_inline oe_stat_button" />
+					
+						
 						<field name="state" widget="statusbar" statusbar_visible="dm,audit,hrm,done,refuse" />
 					</header>
 					<sheet>

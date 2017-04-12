@@ -88,10 +88,15 @@ class HrEmployeeLend(models.Model):
                     raise ValidationError(u"لايمكن طلب إعارة خلال فترة التجربة")
             # ‫التترقية‬ ‫سنة‬ ‫إستلكمال‬
             if self.employee_id.promotion_duration < 354:
-                         raise ValidationError(u"لايمكن طلب إعارة خلال أقل من سنة منذ أخر ترقية")
+                raise ValidationError(u"لايمكن طلب إعارة خلال أقل من سنة منذ أخر ترقية")
 
 
- 
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state == 'done' :
+                raise ValidationError(u'لا يمكن حذف طلب  إعارة فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrEmployeeLend, self).unlink()
 
 
 

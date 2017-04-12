@@ -123,6 +123,13 @@
 			<field name="padding">6</field>
 		</record>
 		
+		<record id="hr_termination_sequence" forcecreate="1" model="ir.sequence">
+			<field name="name">hr termination</field>
+			<field name="code">hr.termination.sequence</field>
+			<field eval="1" name="number_increment" />
+			<field name="padding">6</field>
+		</record>
+		
 		<record id="hr_decisionn_seq" forcecreate="1" model="ir.sequence">
 			<field name="name">hr  decision</field>
 			<field name="code">hr.decision.seq</field>

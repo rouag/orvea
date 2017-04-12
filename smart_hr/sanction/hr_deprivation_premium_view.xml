@@ -1,7 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
 	<data>
+		<record model="ir.ui.view" id="hr_deprivation_premium_ligne_form">
+			<field name="name">hr.deprivation.premium.ligne.form</field>
+			<field name="model">hr.deprivation.premium.ligne</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="قرار حرمان من العلاوة">
+					<sheet>
+						<group>
+							<group>
+								<field name="employee_id" />
+								<field name="raison" />
 
+							</group>
+							<group>
+								<field name="state_deprivation" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
 		<!-- قرار حرمان من العلاوة -->
 
 		<record model="ir.ui.view" id="hr_deprivation_premium_tree">
@@ -41,8 +61,12 @@
 							type="action" states="order" groups="smart_hr.group_responsable_sanction"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-				<button name="%(report_hr_deprivation_premium_report)d" string="طباعة القرار"
-							type="action" states="order" icon="fa-print" class="oe_inline oe_stat_button" />
+						<button name="button_deprivation_premium" string="معاينة القرار"
+							type="object" states="order,done" icon="fa-print" class="oe_inline oe_stat_button" />
+
+
+
+
 						<field name="state" widget="statusbar"
 							statusbar_visible="draft,waiting,order,done,refused" />
 
@@ -50,22 +74,22 @@
 					<sheet>
 						<group>
 							<group>
-							
+
 								<field name="date_deprivation"
 									attrs="{'readonly':[('state', 'in', ['waiting','order','done','refused'])]}" />
 							</group>
 							<group>
 								<field name="years_id"
 									attrs="{'readonly':[('state', 'in', ['waiting','order','done','refused'])]}" />
-										<field name="name" readonly="1"
+								<field name="name" readonly="1"
 									attrs="{'invisible':[('state','not in',['order','done','refused'])]}" />
-								<field name="order_date"  readonly="1"
+								<field name="order_date" readonly="1"
 									attrs="{'invisible':[('state','not in',['order','done','refused'])]}" />
-							
+
 							</group>
 						</group>
-						
-							<group string="فلترة">
+
+						<group string="فلترة">
 							<group>
 								<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]" />
 								<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]" />
@@ -77,7 +101,8 @@
 						</group>
 						<group>
 							<notebook>
-								<page string="قائمة الموظفين" attrs="{'invisible':[('state','not in',['draft'])],}">
+								<page string="قائمة الموظفين"
+									attrs="{'invisible':[('state','not in',['draft'])],}">
 									<group>
 										<field name="employee_ids" nolabel="1" />
 									</group>
@@ -87,17 +112,21 @@
 								<page string="قائمة المحرومين من العلاوة"
 									attrs="{'invisible':[('state','not in', ['waiting','order','done','refused'])],'readonly':[('state', 'in', ['order','done','refused'])]}">
 									<group>
-										<field name="deprivation_ids"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" nolabel="1" attrs="{'invisible':[('state','not in', ['waiting','order','done','refused'])],'readonly':[('state', 'in', ['waiting','order','done','refused'])]}">
+										<field name="deprivation_ids"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+											nolabel="1"
+											attrs="{'invisible':[('state','not in', ['waiting','order','done','refused'])],'readonly':[('state', 'in', ['waiting','order','done','refused'])]}">
 											<tree editable="bottom">
 												<field name="employee_id" />
-												<field name="raison" attrs="{'readonly':[('state', 'in', ['waiting','order','done','refused'])]}"/>
+												<field name="raison"
+													attrs="{'readonly':[('state', 'in', ['waiting','order','done','refused'])]}" />
 												<field name="state_deprivation" />
-												
-												<field name="state" invisible="1"/>
+
+												<field name="state" invisible="1" />
 												<button
 													name="%(smart_hr.action_hr_deprivation_cancel_wizard_exclusion)d"
-													attrs="{'invisible':['|',('is_cancel','=',True),('state','in', ['done','refused'])]}" type="action"
-													string="إستبعاد" icon="STOCK_CANCEL"  />
+													attrs="{'invisible':['|',('is_cancel','=',True),('state','in', ['done','refused'])]}"
+													type="action" string="إستبعاد" icon="STOCK_CANCEL" />
 												<field name="is_cancel" invisible="1" />
 
 											</tree>

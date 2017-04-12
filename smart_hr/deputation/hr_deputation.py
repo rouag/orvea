@@ -179,7 +179,7 @@ class HrDeputation(models.Model):
 # #             print"category_search_ids",category_search_ids
 # #             res.update({'domain': {'country_ids': [('id', 'in', category_search_ids.country_id.id)]}})
 # #         return res
-          
+
 
     @api.onchange('member_deputation')
     def onchange_member_deputation(self):
@@ -354,6 +354,14 @@ class HrDeputation(models.Model):
     def action_refuse(self):
         for deputation in self:
             deputation.state = 'refuse'
+
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state == 'done' :
+                raise ValidationError(u'لا يمكن حذف الإنتداب فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrDeputation, self).unlink()
+
 
     @api.constrains('date_from', 'date_to')
     @api.onchange('date_from', 'date_to')

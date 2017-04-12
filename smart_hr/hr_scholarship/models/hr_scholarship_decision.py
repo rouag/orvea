@@ -76,6 +76,6 @@ class HrScholarshipDecision(models.Model):
     def unlink(self):
         # Validation
         for rec in self:
-            if rec.state != 'new':
+            if rec.state == 'done':
                 raise ValidationError(u'لا يمكن حذف ابتعاث فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(HrScholarshipDecision, self).unlink()

@@ -63,7 +63,7 @@ class hrHolidaysCancellation(models.Model):
             decission_id = decision.id
             self.decission_id =  decission_id
         return {
-            'name': _(u'قرارقطع الاجازات'),
+            'name': _(u'قرارقطع إجازة'),
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'hr.decision',
@@ -73,6 +73,36 @@ class hrHolidaysCancellation(models.Model):
             'target': 'new'
             }
 
+    @api.multi
+    def open_decission_holidays_cancel(self):
+        decision_obj= self.env['hr.decision']
+        if self.decission_id:
+            decission_id = self.decission_id.id
+        else :
+            decision_type_id = 1
+            decision_date = fields.Date.today() # new date
+            if self.employee_id:
+                decision_type_id = self.env.ref('smart_hr.data_decision_type44').id
+            # create decission
+            decission_val={
+                'name': self.env['ir.sequence'].get('hr.holidays.cancellation.seq'),
+                'decision_type_id':decision_type_id,
+                'date':decision_date,
+                'employee_id' :self.employee_id.id }
+            decision = decision_obj.create(decission_val)
+            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'employee')
+            decission_id = decision.id
+            self.decission_id =  decission_id
+        return {
+            'name': _(u'قرار إلغاء إجازة'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'hr.decision',
+            'view_id': self.env.ref('smart_hr.hr_decision_wizard_form').id,
+            'type': 'ir.actions.act_window',
+            'res_id': decission_id,
+            'target': 'new'
+            }
 
     def _compute_dispay_draft_buttons(self):
         for rec in self:

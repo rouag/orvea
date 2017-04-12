@@ -175,5 +175,5 @@ class HrDirectAppoint(models.Model):
     def unlink(self):
         for rec in self:
             if rec.state != 'new':
-                raise UserError(_(u'لا يمكن حذف قرار مباشرة التعين  إلا في حالة طلب !'))
-        return super(hrDirectAppoint, self).unlink()
+                raise UserError(u'لا يمكن حذف قرار مباشرة التعين  إلا في حالة طلب !')
+            return super(HrDirectAppoint, self).unlink()

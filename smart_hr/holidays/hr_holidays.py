@@ -50,7 +50,7 @@ class HrHolidays(models.Model):
                 return False
         return True
 
-    name = fields.Char(string=u'رقم القرار',)
+    name = fields.Char(string=u'رقم القرار')
     date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now)
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', domain=[('emp_state', 'not in', ['suspended','terminated']), ('employee_state', '=', 'employee')],
                                   default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended','terminated'])], limit=1),)

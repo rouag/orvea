@@ -66,6 +66,13 @@ class HrTransportDecision(models.Model):
         for deputation in self:
             deputation.state = 'cancel'
 
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state == 'done' :
+                raise ValidationError(u'لا يمكن حذف أوامر الإركاب فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrTransportDecision, self).unlink()
+
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
         if self.employee_id:

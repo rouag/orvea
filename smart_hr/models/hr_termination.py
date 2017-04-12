@@ -12,8 +12,7 @@ class HrTermination(models.Model):
     _inherit = ['ir.needaction_mixin', 'mail.thread']
     _description = u'طي القيد'
 
-    # name = fields.Char(string=u'مسمى طي القيد', required=1)
-    name = fields.Char(string=u'رقم القرار', )
+    name = fields.Char(string=u'رقم القرار')
     date = fields.Date(string=u'تاريخ', default=fields.Datetime.now())
     date_termination = fields.Date(string=u'تاريخ طي القيد  ', default=fields.Datetime.now())
     termination_date = fields.Date(string=u'تاريخ الإعتماد')
@@ -101,6 +100,15 @@ class HrTermination(models.Model):
         self.check_constraintes()
         self.state = 'hrm'
 
+    @api.model
+    def create(self, vals):
+        ret = super(HrTermination, self).create(vals)
+        # Sequence
+        vals = {}
+        vals['name'] = self.env['ir.sequence'].get('hr.termination.sequence')
+        ret.write(vals)
+        return ret
+
     @api.one
     def button_done(self):
         for ter in self:
@@ -108,8 +116,8 @@ class HrTermination(models.Model):
             ter.employee_id.emp_state = 'terminated'
             # Update Job
             #  ter.employee_id.job_id.write({'state': 'unoccupied', 'category': 'unooccupied_termination'})
-            #  ter.employee_id.job_id.employee = False
-            #   ter.employee_id.job_id = False
+            #ter.employee_id.job_id.employee = False
+           # ter.employee_id.job_id = False
             # Update State
             ter.done_date = fields.Date.today()
             ter.state = 'done'
@@ -185,7 +193,7 @@ class HrTermination(models.Model):
                 raise ValidationError(u'لا يوجد قرار من نوع %s  في النظام .' % self.termination_type_id.name)
             # create decission
             decission_val = {
-                'name': self.env['ir.sequence'].get('hr.termination.seq'),
+                'name': self.name,
                 'decision_type_id': decision_type_id,
                 'date': decision_date,
                 'employee_id': self.employee_id.id}

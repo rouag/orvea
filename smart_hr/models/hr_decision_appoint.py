@@ -695,6 +695,7 @@ class HrDecisionAppoint(models.Model):
         for rec in self:
             if rec.state != 'draft':
                 raise UserError(_(u'لا يمكن حذف قرار  التعين  إلا في حالة طلب !'))
+            
         return super(HrDecisionAppoint, self).unlink()
 
 

@@ -10,6 +10,7 @@ from umalqurra.hijri_date import HijriDate
 class hr_suspension(models.Model):
     _name = 'hr.suspension'
     _inherit = ['mail.thread', 'ir.needaction_mixin']
+    _order = 'id desc'
     _description = 'Suspension Decision'
 
     name = fields.Char(string=u' رقم إجراء كف اليد', )
@@ -141,7 +142,7 @@ class hr_suspension(models.Model):
                 decision_type_id = self.env.ref('smart_hr.data_decision_type29').id
             # create decission
             decission_val={
-                'name': self.env['ir.sequence'].get('hr.suspension.seq'),
+                'name': self.name,
                 'decision_type_id':decision_type_id,
                 'date':decision_date,
                 'employee_id' :self.employee_id.id }

@@ -41,8 +41,9 @@
 							type="action" states="pim2" groups="smart_hr.group_increase_manager"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 							
-					<!-- 	<button name="open_decission_increase" string="معاينة القرار"
-							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" /> -->
+					 	<button name="open_decission_increase" string="معاينة القرار"
+							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" /> 
+							
 						<field name="state" widget="statusbar" statusbar_visible="draft,pim,hrm,pim2,done" />
 					</header>
 					<sheet>

@@ -41,5 +41,12 @@ class HrEmployeeTask(models.Model):
     def action_done(self):
         self.ensure_one()
         self.state = "done"
+    
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state == 'done' :
+                raise ValidationError(u'لا يمكن حذف المهمة فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrEmployeeTask, self).unlink()
         # create history_line
 #         self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, False, False, "مهمة")

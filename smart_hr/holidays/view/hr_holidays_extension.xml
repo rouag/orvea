@@ -42,7 +42,7 @@
 					</header>
 					<sheet>
 						<h1>
-							<field name="name" readonly="1" />
+							<field name="name" attrs="{'invisible':[('state', 'not in', [ 'done'])],'readonly':[('state', 'in', ['done'])]}" />
 						</h1>
 						<group col="4">
 							<group>
