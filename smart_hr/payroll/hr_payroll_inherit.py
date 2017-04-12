@@ -604,11 +604,13 @@ class HrPayslip(models.Model):
         self.ensure_one()
         line_ids = []
         all_suspensions = []
+        # get  started and ended condemned suspension in current month
         domain = [('suspension_date', '>=', date_from),
                   ('suspension_date', '<=', date_to),
                   ('state', '=', 'done'),
                   ('suspension_end_id.release_date', '>=', date_from),
                   ('suspension_end_id.release_date', '<=', date_to),
+                  ('suspension_end_id.condemned', '=', True),
                   ('employee_id', '=', employee_id.id),
                   ('suspension_end_id.state', '=', 'done'),
                   ]
@@ -617,7 +619,6 @@ class HrPayslip(models.Model):
             domain.append(('done_date', '>=', date_from))
             domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
-        # get  started and ended suspension in current month
         suspension_ids = self.env['hr.suspension'].search(domain)
         for suspension in suspension_ids:
             date_from = suspension.suspension_date
