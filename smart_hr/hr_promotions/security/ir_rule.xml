@@ -24,5 +24,23 @@
 			(4, ref('smart_hr.group_hrm'))]" />
 		</record>
 
+		<record id="ir_rule_see_employee_own_promotions_job" model="ir.rule">
+			<field name="name">See Own Employees Promotions</field>
+			<field name="model_id" ref="model_hr_promotion_employee_job" />
+			<field name="domain_force">[('employee_id.user_id','=',user.id)]</field>
+			<field name="groups" eval="[(4, ref('smart_hr.group_employee'))]" />
+		</record>
+
+
+		<record id="ir_rule_see_all_promotions_job" model="ir.rule">
+			<field name="name">See all Promotions</field>
+			<field name="model_id" ref="model_hr_promotion_employee_job" />
+			<field name="domain_force">[(1,'=',1)]</field>
+			<field name="groups"
+				eval="[(4, ref('smart_hr.group_promotion_checker')),
+			(4, ref('smart_hr.group_promotion_specialiter')),
+			(4, ref('smart_hr.group_responsable_promotion')),
+			(4, ref('smart_hr.group_hrm'))]" />
+		</record>
 	</data>
 </openerp>
