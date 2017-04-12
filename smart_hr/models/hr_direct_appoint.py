@@ -88,7 +88,12 @@ class HrDirectAppoint(models.Model):
             if not self.employee_id.begin_work_date:
                 self.employee_id.begin_work_date = self.date_direct_action
         else:
-            raise ValidationError(u"لا يوجد تعيين غير مفعل للموظف!")
+            if self.type == 'transfer':
+                raise ValidationError(u"لا يوجد تعيين بنقل غير مفعل للموظف!")
+            elif self.type == 'promotion':
+                raise ValidationError(u"لا يوجد تعيين بترقية غير مفعل للموظف!")
+            else:
+                raise ValidationError(u"لا يوجد تعيين غير مفعل للموظف!")
         self.state = 'waiting'
 
     @api.multi
