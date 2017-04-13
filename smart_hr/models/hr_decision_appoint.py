@@ -560,14 +560,13 @@ class HrDecisionAppoint(models.Model):
                                                       'salary_grid_detail_id': grid_id.id,
                                                       'date': fields.Date.from_string(fields.Date.today())
                                                       })
-        for rec in self.location_allowance_ids:
-            self.env['hr.employee.allowance'].create({'employee_id': self.employee_id.id,
-                                                      'allowance_id': rec.allowance_id.id,
-                                                      'amount': rec.amount,
-                                                      'salary_grid_detail_id': grid_id.id,
-                                                      'date': fields.Date.from_string(fields.Date.today())
-                                                      })
+
         self.done_date = fields.Date.today()
+        if grade_id < new_grade_id :
+            today_date = fields.Date.from_string(fields.Date.today())
+            employee_lend = self.env['hr.employee.lend'].search([('employee_id', '=', self.employee_id.id),('insurance_entity.company_type','!=','inter_reg_org'),('state','=','done'),('date_to','<',today_date)],limit=1)
+            if employee_lend :
+                employee_lend.state = 'sectioned'
 
 
     def send_notification_refuse_to_group(self, group_id):

@@ -10,7 +10,7 @@ from datetime import date
 
 class HrSetting(models.Model):
     _name = 'hr.setting'
-    _description = u'‫إعدادات النقل، الإعارة والتكليف‬‬'
+    _description = u'‫إعدادات النقل والتكليف‬‬'
 
     name = fields.Char(string='name')
     # النقل

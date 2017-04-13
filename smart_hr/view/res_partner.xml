@@ -12,7 +12,6 @@
 					<field name="hospital_director" attrs="{'invisible': [('is_hospital','=', False)]}" />
 				</field>
 				<field name="website" position="after">
-					<field name="inter_reg_org" />
 					<field name="insurance" />
 				</field>
 				<page name="sales_purchases" position="attributes">
