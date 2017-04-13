@@ -15,9 +15,10 @@ class ResPartner(models.Model):
          ('company', u'شركة'),
          ('faculty', u'جامعة'),
          ('school', u'معهد'),
+         ('inter_reg_org',u'منظمة دولية أو اقليمية'),
          ])
     is_hospital = fields.Boolean(string='is hospital')
-    inter_reg_org = fields.Boolean(string=u'منظمة دولية أو اقليمية', default=False)
+   # inter_reg_org = fields.Boolean(string=u'منظمة دولية أو اقليمية', default=False)
     insurance = fields.Boolean(string=u'تابعة للتأمين', default=False)
     hospital_director = fields.Char(string=u'مدير المستشفى')
     code = fields.Char(string=u'الرمز')

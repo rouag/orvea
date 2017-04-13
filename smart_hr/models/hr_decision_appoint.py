@@ -563,6 +563,11 @@ class HrDecisionAppoint(models.Model):
                 holiday_balance.token_holidays_sum = 0
                 if holiday_balance.period_id:
                     holiday_balance.period_id.holiday_stock = 0
+        if grade_id < new_grade_id :
+            today_date = fields.Date.from_string(fields.Date.today())
+            employee_lend = self.env['hr.employee.lend'].search([('employee_id', '=', self.employee_id.id),('insurance_entity.company_type','!=','inter_reg_org'),('state','=','done'),('date_to','<',today_date)],limit=1)
+            if employee_lend :
+                employee_lend.state = 'sectioned'
 
     def send_notification_refuse_to_group(self, group_id):
         for recipient in group_id.users:
@@ -695,7 +700,6 @@ class HrDecisionAppoint(models.Model):
         for rec in self:
             if rec.state != 'draft':
                 raise UserError(_(u'لا يمكن حذف قرار  التعين  إلا في حالة طلب !'))
-            
         return super(HrDecisionAppoint, self).unlink()
 
 

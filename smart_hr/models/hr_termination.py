@@ -79,10 +79,12 @@ class HrTermination(models.Model):
 
     @api.multi
     def check_constraintes(self):
-        if self.termination_type_id.years > 0:
-            if self.employee_id.age < self.termination_type_id.years:
-                raise ValidationError(u" السن الادنى  هو %s سنة" % self.termination_type_id.years)
-
+        age_member = self.env.ref('smart_hr.data_hr_employee_configuration').age_member
+        age_nomember = self.env.ref('smart_hr.data_hr_employee_configuration').age_nomember
+        if (self.employee_id.is_member == True) and (self.employee_id.age < age_member):
+            raise ValidationError(u" السن الادنى  هو %s سنة" % age_member)
+        if (self.employee_id.is_member == False) and (self.employee_id.age < age_nomember) :
+            raise ValidationError(u" السن الادنى  هو %s سنة" % age_nomember)
         if self.termination_type_id.evaluation_condition:
             years_progress = self.termination_type_id.years_progress
             for year in range(1, years_progress):

@@ -131,7 +131,6 @@
 							<field name="code" />
 							<field name="nb_salaire" />
 							<field name="years_progress" />
-							<field name="years" />
 							<field name="max_days" />
 							<field name="nationality" />
 							<field name="contract" />
@@ -159,7 +158,6 @@
 					<field name="code" />
 					<field name="nb_salaire" />
 					<field name="years_progress" />
-					<field name="years" />
 					<field name="max_days" />
 					<field name="nationality" />
 					<field name="contract" />
