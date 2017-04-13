@@ -103,6 +103,7 @@ class HrPayslip(models.Model):
             payslip.overtime_line_ids = []
             payslip.deputation_ids = []
             payslip.transfert_ids = []
+            payslip.compute_date = fields.Date.today()
             # generate  lines
             employee = payslip.employee_id
             # search the newest salary_grid for this employee
