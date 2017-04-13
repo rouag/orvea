@@ -120,7 +120,7 @@ class WizardUpdateGrid(models.TransientModel):
         salary_grid_line = self._context.get('active_id', False)
         salary_grid_line_obj = self.env['salary.grid.detail']
         salary_grid_line = salary_grid_line_obj.search([('id', '=', salary_grid_line)], limit=1)
-        # make a copy of salary grid detail 
+        # make a copy of salary grid detail
         old_salary_grid_line = salary_grid_line.copy()
         old_salary_grid_line.allowance_ids = salary_grid_line.allowance_ids.ids
         old_salary_grid_line.is_old = True
@@ -132,7 +132,8 @@ class WizardUpdateGrid(models.TransientModel):
         salary_grid_line.insurance_type = self.new_insurance_type.id
         salary_grid_line.insurance = self.new_insurance
         salary_grid_line.net_salary = self.new_net_salary
-        salary_grid_line.date = fields.Date.today()
+        salary_grid_line.date = self.date
+        salary_grid_line.is_old = False
         # update allowance, increase, indemnity
         allowance_ids = []
         for rec in self.allowance_ids:

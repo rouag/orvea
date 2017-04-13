@@ -3,6 +3,7 @@
 from openerp import models, fields, api, _
 from datetime import date, datetime, timedelta
 import datetime as dt
+from openerp.addons.smart_base.util.time_util import days_between
 
 
 class SmartUtils(models.Model):
@@ -46,7 +47,10 @@ class SmartUtils(models.Model):
                     days += 1
                 if days < 0:
                     days = 0
-                mydict['days'] = days -1
+                # if days is correspending to a full month than we must return 30
+                if days == 29:
+                    days = 30.0
+                mydict['days'] = days
                 res.append(mydict)
             # case 2: different salary grid_ids for all periode
             if not mydict:

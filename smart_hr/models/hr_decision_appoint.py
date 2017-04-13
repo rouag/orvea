@@ -150,7 +150,7 @@ class HrDecisionAppoint(models.Model):
             decission_id = decision.id
             self.decission_id =  decission_id
         return {
-            'name': _(u'قرار مباشرة التعيين'),
+            'name': _(u'قرار التعيين'),
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'hr.decision',

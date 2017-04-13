@@ -48,7 +48,6 @@ class WizardLoanAction(models.TransientModel):
             if action == 'across':  # تجاوز شهر
                 # must delete this month add another month
                 loan_lines = loan_line_obj.search([('loan_id', '=', loan_id), ('date_start', '=', self.period_id.date_start), ('date_stop', '=', self.period_id.date_stop)])
-                print 'loan_lines', loan_lines
                 loan_lines.unlink()
                 # TODO: review +30
                 loan = loan_obj.search([('id', '=', loan_id)])

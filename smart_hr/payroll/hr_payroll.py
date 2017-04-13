@@ -232,6 +232,7 @@ class HrPayslip(models.Model):
     degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة')
     type_id = fields.Many2one('salary.grid.type', string=u'صنف الموظف')
     number_of_days = fields.Integer(string=u'عدد أيام العمل', readonly=1)
+    compute_date = fields.Date(string=u'تاريخ الإعداد')
 
     @api.one
     def action_verify(self):
@@ -381,10 +382,13 @@ class HrPayslip(models.Model):
             payslip.line_ids.unlink()
             # delete old difference_history
             payslip.difference_history_ids.unlink()
+            # change compute_date
+            payslip.compute_date = fields.Date.from_string(fields.Date.today())
             # generate  lines
             employee = payslip.employee_id
             # search the newest salary_grid for this employee
             salary_grid, basic_salary = employee.get_salary_grid_id(False)
+            print '---salary_grid---', salary_grid
             if not salary_grid:
                 return
             # compute
