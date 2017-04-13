@@ -61,6 +61,12 @@ class PromotionDuration(models.Model):
                     else:
                         duration = (release_date_to - date_direct_action).days
                     promotion_days -= suspension_end.sentence
+#                 i3ara ereste a faire monadhamet dowalia
+                lend_obj = self.env['hr.employee.lend']
+                lend_uncounted_days = lend_obj.search([('employee_id', '=', emp.id), ('state', '=', 'done'), ('date_from', '<=', today_date),
+                                                              ('date_from', '>', date_direct_action),('insurance_entity.company_type','!=','inter_reg_org')])
+                for lend in lend_uncounted_days:
+                    promotion_days -= lend.duration
                 emp.promotion_duration = promotion_days
             else:
                 emp.promotion_duration = 0

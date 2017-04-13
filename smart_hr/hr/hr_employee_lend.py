@@ -143,8 +143,9 @@ class HrEmployeeLend(models.Model):
         self.ensure_one()
         self.done_date = fields.Date.today()
         self.state = 'done'
-        # create history_line
-#         self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, False, False, "إعارة")
+        if self.insurance_entity.company_type!='inter_reg_org':
+            self.employee_id.promotion_duration -= self.duration
+            self.employee_id.service_duration -= self.duration
 
     @api.multi
     def button_extend(self):

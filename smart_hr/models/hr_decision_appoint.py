@@ -491,13 +491,35 @@ class HrDecisionAppoint(models.Model):
     @api.multi
     def action_done(self):
         self.ensure_one()
+        self.state = 'done'
+        # send notification to hr personnel
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تمت إحداث تعين جديد '" + unicode(user.name) + u"'")
+    
+    @api.multi
+    def action_activate(self):
+        self.env['hr.holidays']._init_balance(self.employee_id)
+        grade_id = int(self.emp_job_id.grade_id.code)
+        new_grade_id = int(self.grade_id.code)
+        #remettre compteur à 0 si sollam a changé ou martaba a changé ou kén 3odhw asb7a idéri
+        if self.job_id.type_id != self.emp_job_id.type_id or (grade_id != new_grade_id) or (self.job_id.name.members_job is False and self.emp_job_id.name.members_job is True):
+            self.employee_id.promotion_duration = 0
+            holiday_balance = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
+                                                                             ('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id),],limit=1)
+            if holiday_balance:
+                holiday_balance.holidays_available_stock = 0
+                holiday_balance.token_holidays_sum = 0
+                if holiday_balance.period_id:
+                    holiday_balance.period_id.holiday_stock = 0
         self.employee_id.write({'employee_state': 'employee',
                                 'job_id': self.job_id.id,
                                 'department_id': self.department_id.id,
                                 'degree_id': self.degree_id.id,
                                 'grade_id': self.grade_id.id,
                                 'royal_decree_number': self.royal_decree_number,
-                                'royal_decree_date': self.royal_decree_date
+                                'royal_decree_date': self.royal_decree_date,
+                                'is_started': True,
+                                 'state_appoint': 'active'
                                 })
         # check if the employee have allready a number 
         if not self.employee_id.number:
@@ -521,15 +543,12 @@ class HrDecisionAppoint(models.Model):
         else:
             self.employee_id.write({'basic_salary': 0.0})
         self.done_date = fields.Date.today()
-        self.state = 'done'
         # close last active appoint for the employee
         last_appoint = self.employee_id.decision_appoint_ids.search(
             [('state_appoint', '=', 'active'), ('is_started', '=', True)], limit=1)
         if last_appoint:
             last_appoint.write({'state_appoint': 'close', 'date_hiring_end': fields.Datetime.now()})
-        # send notification to hr personnel
-        user = self.env['res.users'].browse(self._uid)
-        self.message_post(u"تمت إحداث تعين جديد '" + unicode(user.name) + u"'")
+
         # update holidays balance for the employee
         self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date_hiring, "تعيين")
         # add allowance to the employee
@@ -541,33 +560,14 @@ class HrDecisionAppoint(models.Model):
                                                       'salary_grid_detail_id': grid_id.id,
                                                       'date': fields.Date.from_string(fields.Date.today())
                                                       })
-        for rec in self.location_allowance_ids:
-            self.env['hr.employee.allowance'].create({'employee_id': self.employee_id.id,
-                                                      'allowance_id': rec.allowance_id.id,
-                                                      'amount': rec.amount,
-                                                      'salary_grid_detail_id': grid_id.id,
-                                                      'date': fields.Date.from_string(fields.Date.today())
-                                                      })
+
         self.done_date = fields.Date.today()
-        self.state = 'done'
-        self.env['hr.holidays']._init_balance(self.employee_id)
-        grade_id = int(self.emp_job_id.grade_id.code)
-        new_grade_id = int(self.grade_id.code)
-        #remettre compteur à 0 si sollam a changé ou martaba a changé ou kén 3odhw asb7a idéri
-        if self.job_id.type_id != self.emp_job_id.type_id or (grade_id != new_grade_id) or (self.job_id.name.members_job is False and self.emp_job_id.name.members_job is True):
-            self.employee_id.promotion_duration = 0
-            holiday_balance = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
-                                                                             ('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id),],limit=1)
-            if holiday_balance:
-                holiday_balance.holidays_available_stock = 0
-                holiday_balance.token_holidays_sum = 0
-                if holiday_balance.period_id:
-                    holiday_balance.period_id.holiday_stock = 0
         if grade_id < new_grade_id :
             today_date = fields.Date.from_string(fields.Date.today())
             employee_lend = self.env['hr.employee.lend'].search([('employee_id', '=', self.employee_id.id),('insurance_entity.company_type','!=','inter_reg_org'),('state','=','done'),('date_to','<',today_date)],limit=1)
             if employee_lend :
                 employee_lend.state = 'sectioned'
+
 
     def send_notification_refuse_to_group(self, group_id):
         for recipient in group_id.users:
@@ -700,6 +700,7 @@ class HrDecisionAppoint(models.Model):
         for rec in self:
             if rec.state != 'draft':
                 raise UserError(_(u'لا يمكن حذف قرار  التعين  إلا في حالة طلب !'))
+            
         return super(HrDecisionAppoint, self).unlink()
 
 

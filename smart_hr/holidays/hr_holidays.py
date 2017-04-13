@@ -664,7 +664,8 @@ class HrHolidays(models.Model):
 
 #                    مدّة الاعارة todo
             lend_obj = self.env['hr.employee.lend']
-            lend_uncounted_days = lend_obj.search_count([('employee_id', '=', employee.id), ('state', '=', 'done'), ('date_from', '<=', d), ('date_to', '>=', d)])
+            lend_uncounted_days = lend_obj.search_count([('employee_id', '=', employee.id), ('state', '=', 'done'), ('date_from', '<=', d),
+                                                          ('date_to', '>=', d), ('insurance_entity.company_type','!=','inter_reg_org')])
             uncounted_days += lend_uncounted_days
 
             # مدّة غياب‬ ‫الموظف بدون‬ سند‬ ‫ن
