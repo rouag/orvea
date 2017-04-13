@@ -196,11 +196,11 @@ class HrPayslip(models.Model):
             res = {}
             amount_allowance = 0.0
             salary_rate_amount = 0.0
-            if date_from >= assign_date_from and assign_date_to >= date_to:
+            if date_from >= assign_date_from and assign_date_to > date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(assign_id.employee_id, date_from, date_to, True, True, True)
             if date_from >= assign_date_from and assign_date_to <= date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(assign_id.employee_id, date_from, assign_date_to, True, True, True)
-            if assign_date_from >= date_from and assign_date_to <= date_to:
+            if assign_date_from >= date_from and assign_date_to < date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(assign_id.employee_id, assign_date_from, assign_date_to, True, True, True)
             if assign_date_from >= date_from and assign_date_to >= date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(assign_id.employee_id, assign_date_from, date_to, True, True, True)
@@ -276,11 +276,11 @@ class HrPayslip(models.Model):
             duration_in_month = 0
             retirement_amount = 0.0
             res = {}
-            if date_from >= scholarship_date_from and scholarship_date_to >= date_to:
+            if date_from >= scholarship_date_from and scholarship_date_to > date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(scholarship_id.employee_id, date_from, date_to, True, True, True)
             if date_from >= scholarship_date_from and scholarship_date_to <= date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(scholarship_id.employee_id, date_from, scholarship_date_to, True, True, True)
-            if scholarship_date_from >= date_from and scholarship_date_to <= date_to:
+            if scholarship_date_from >= date_from and scholarship_date_to < date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(scholarship_id.employee_id, scholarship_date_from, scholarship_date_to, True, True, True)
             if scholarship_date_from >= date_from and scholarship_date_to >= date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(scholarship_id.employee_id, scholarship_date_from, date_to, True, True, True)
@@ -365,11 +365,11 @@ class HrPayslip(models.Model):
             date_to = fields.Date.from_string(date_to)
             duration_in_month = 0
             res = []
-            if date_from >= lend_date_from and lend_date_to >= date_to:
+            if date_from >= lend_date_from and lend_date_to > date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, date_from, date_to, True, False, False)
             if date_from >= lend_date_from and lend_date_to <= date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, date_from, lend_date_to, True, False, False)
-            if lend_date_from >= date_from and lend_date_to <= date_to:
+            if lend_date_from >= date_from and lend_date_to < date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_from, lend_date_to, True, False, False)
             if lend_date_from >= date_from and lend_date_to >= date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_from, date_to, True, False, False)
@@ -474,11 +474,11 @@ class HrPayslip(models.Model):
             date_to = fields.Date.from_string(str(date_to))
             duration_in_month = 0
             res = []
-            if date_from >= holiday_date_from and holiday_date_to >= date_to:
+            if date_from >= holiday_date_from and holiday_date_to > date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, date_from, date_to, True, True, True)
             if date_from >= holiday_date_from and holiday_date_to <= date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, date_from, holiday_date_to, True, True, True)
-            if holiday_date_from >= date_from and holiday_date_to <= date_to:
+            if holiday_date_from >= date_from and holiday_date_to < date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, holiday_date_from, holiday_date_to, True, True, True)
             if holiday_date_from >= date_from and holiday_date_to >= date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, holiday_date_from, date_to, True, True, True)
@@ -488,7 +488,6 @@ class HrPayslip(models.Model):
             retirement_amount2 = 0.0
             allowance_amount = 0.0
             allowance_amount2 = 0.0
-            compensation_amount = 0.0
             if len(res) == 1:
                 res = res[0]
                 grid_id = res['grid_id']
@@ -546,7 +545,7 @@ class HrPayslip(models.Model):
                 for rec in res:
                     grid_id = rec['grid_id']
                     basic_salary = rec['basic_salary']
-                    days = res['days']
+                    days = rec['days']
                     duration_in_month += days
                     # فرق الراتب الأساسي
                     if not holiday_status_id.salary_spending:
@@ -668,6 +667,8 @@ class HrPayslip(models.Model):
 
         date_start_month = str(self.period_id.date_start)
         date_end_month = str(self.period_id.date_stop)
+        date_from_param = date_from
+        date_to_param = date_to
 
         def _all_days_in_month(date_from, date_to):
             if date_start_month >= date_from and date_end_month <= date_to:
@@ -804,46 +805,74 @@ class HrPayslip(models.Model):
         for suspension in all_suspensions:
 
             employee = self.env['hr.employee'].browse(suspension['employee_id'])
-            suspension_number_of_days = suspension['number_of_days']
-            number_of_days = suspension_number_of_days
             # 1- الراتب الأساسي : احتساب نصف الراتب الأساسي
             # must browse interval date from, date to to get the correct basic_salary for each date
+            # overlaped days in current month
+            suspension_date_from = fields.Date.from_string(suspension['date_from'])
+            date_from = fields.Date.from_string(str(date_from_param))
+            suspension_date_to = fields.Date.from_string(suspension['date_to'])
+            date_to = fields.Date.from_string(str(date_to_param))
+            duration_in_month = 0
+            res = []
+            if date_from >= suspension_date_from and suspension_date_to > date_to:
+                print 'hello1'
+                res = self.env['hr.smart.utils'].compute_duration_difference(employee, date_from, date_to, True, True, True)
+            if date_from >= suspension_date_from and suspension_date_to <= date_to:
+                print 'hello2'
+                res = self.env['hr.smart.utils'].compute_duration_difference(employee, date_from, suspension_date_to, True, True, True)
+            if suspension_date_from >= date_from and suspension_date_to < date_to:
+                print 'hello3'
+                res = self.env['hr.smart.utils'].compute_duration_difference(employee, suspension_date_from, suspension_date_to, True, True, True)
+            if suspension_date_from >= date_from and suspension_date_to >= date_to:
+                print 'hello4'
+                res = self.env['hr.smart.utils'].compute_duration_difference(employee, suspension_date_from, date_to, True, True, True)
             amount = 0.0
+            retirement_amount = 0.0
+            allowance_amount = 0.0
             multiplication = -1.0
+            number_of_days = 0.0
             if suspension['return']:
                 multiplication = 1.0
-            date_start = datetime.strptime(suspension['date_from'], '%Y-%m-%d')
-            while date_start.strftime('%Y-%m-%d') <= suspension['date_to']:
-                salary_grid, basic_salary = employee.get_salary_grid_id(date_start.strftime('%Y-%m-%d'))
-                retirement_amount = basic_salary * salary_grid.retirement / 100.0
-                amount += (basic_salary - retirement_amount) / 30.0 / 2.0
-                date_start = date_start + relativedelta(days=1)
-            if _all_days_in_month(suspension['date_from'], suspension['date_to']):
-                number_of_days = 30.0
-                retirement_amount = basic_salary * salary_grid.retirement / 100.0
-                amount += (30.0 - suspension_number_of_days) * (basic_salary - retirement_amount) / 30.0 / 2.0
-            val = {'name': 'فرق الراتب الأساسي كف اليد' + name,
-                   'employee_id': employee.id,
-                   'number_of_days': number_of_days,
-                   'number_of_hours': 0.0,
-                   'amount': amount * multiplication,
-                   'type': 'suspension'}
-            line_ids.append(val)
-            # 2- البدلات لا تحتسب في حال كان الموظف مكفوف اليد
-            salary_grid, basic_salary = employee.get_salary_grid_id(date_start.strftime('%Y-%m-%d'))
-            for allowance in salary_grid.allowance_ids:
-                allowance_amount = 0.0
-                date_start = datetime.strptime(suspension['date_from'], '%Y-%m-%d')
-                while date_start.strftime('%Y-%m-%d') <= suspension['date_to']:
+            if len(res) == 1:
+                res = res[0]
+                grid_id = res['grid_id']
+                basic_salary = res['basic_salary']
+                duration_in_month = res['days']
+                # فرق الراتب الأساسي كف اليد
+                retirement_amount = basic_salary * grid_id.retirement / 100.0 / 30.0 * duration_in_month
+                amount = ((basic_salary / 30.0) * duration_in_month - retirement_amount) / 2.0
+                # 2- البدلات لا تحتسب في حال كان الموظف مكفوف اليد
+                for allowance in grid_id.allowance_ids:
                     allowance_val = allowance.get_value(employee.id) / 30.0
                     allowance_amount += allowance_val
-                    date_start = date_start + relativedelta(days=1)
-                if _all_days_in_month(suspension['date_from'], suspension['date_to']):
-                    number_of_days = 30.0
-                    allowance_amount += (30.0 - suspension_number_of_days) * allowance_val
-                val = {'name': 'فرق %s كف اليد' % allowance.allowance_id.name.encode('utf-8') + name,
+                allowance_amount *= duration_in_month
+            else:
+                for rec in res:
+                    grid_id = rec['grid_id']
+                    basic_salary = rec['basic_salary']
+                    days = rec['days']
+                    duration_in_month += days
+                    # فرق الراتب الأساسي كف اليد
+                    retirement_amount = basic_salary * grid_id.retirement / 100.0 / 30.0 * days
+                    amount += ((basic_salary / 30.0) * days - retirement_amount) / 2.0
+                    # 2- البدلات لا تحتسب في حال كان الموظف مكفوف اليد
+                    for allowance in grid_id.allowance_ids:
+                        allowance_val = allowance.get_value(employee.id) / 30.0
+                        allowance_amount += allowance_val * days
+            # فرق الراتب الأساسي كف اليد
+            if amount:
+                val = {'name': 'فرق الراتب الأساسي كف اليد' + name,
                        'employee_id': employee.id,
-                       'number_of_days': number_of_days,
+                       'number_of_days': duration_in_month,
+                       'number_of_hours': 0.0,
+                       'amount': amount * multiplication,
+                       'type': 'suspension'}
+                line_ids.append(val)
+            # 2- البدلات لا تحتسب في حال كان الموظف مكفوف اليد
+            if allowance_amount:
+                val = {'name': ' فرق البدلات كف اليد' + name,
+                       'employee_id': employee.id,
+                       'number_of_days': duration_in_month,
                        'number_of_hours': 0.0,
                        'amount': allowance_amount * multiplication,
                        'type': 'suspension'}
