@@ -38,7 +38,7 @@ class HrEmployee(models.Model):
                     # dont calculate transport allowance if the employee have a car
                     if not (active_decision_appoint.transport_car and allowance.allowance_id == self.env.ref('smart_hr.hr_allowance_type_01')):
                         amount = allowance.get_value(self.id)
-                        res.append({'allowance_name': allowance.allowance_id.name, 'amount': amount})
+                        res.append({'allowance_name': allowance.allowance_id.name,'allowance_id': allowance.allowance_id.id, 'amount': amount})
                 # allowance from employee
                 for line in self.hr_employee_allowance_ids:
                     if line.salary_grid_detail_id == salary_grid_id:

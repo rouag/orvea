@@ -469,9 +469,9 @@ class HrPayslip(models.Model):
                 entitlement_type = holiday_id.entitlement_type
             # overlaped days in current month
             holiday_date_from = fields.Date.from_string(holiday_id.date_from)
-            date_from = fields.Date.from_string(date_from)
-            holiday_date_to = fields.Date.from_string(holiday_id.date_to)
-            date_to = fields.Date.from_string(date_to)
+            date_from = fields.Date.from_string(str(date_from))
+            holiday_date_to = fields.Date.from_string(str(holiday_id.date_to))
+            date_to = fields.Date.from_string(str(date_to))
             duration_in_month = 0
             res = []
             if date_from >= holiday_date_from and holiday_date_to >= date_to:
