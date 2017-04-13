@@ -63,7 +63,7 @@ class serviceDuration(models.Model):
                     service_days -= suspension_end.sentence
 #                 i3ara ereste a faire monadhamet dowalia
                 lend_obj = self.env['hr.employee.lend']
-                lend_uncounted_days = lend_obj.search_count([('employee_id', '=', emp.id), ('state', '=', 'done'), ('date_from', '<=', today_date),
+                lend_uncounted_days = lend_obj.search([('employee_id', '=', emp.id), ('state', '=', 'done'), ('date_from', '<=', today_date),
                                                              ('insurance_entity.company_type','!=','inter_reg_org'), ('date_from', '>', date_direct_action)])
                 for lend in lend_uncounted_days:
                     service_days -= lend.duration
