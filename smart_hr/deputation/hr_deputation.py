@@ -494,7 +494,7 @@ class HrCountryCity(models.Model):
 class HrDeputationType(models.Model):
     _name = 'hr.deputation.type'
 
-    name = fields.Char(string='name')
+    name = fields.Char(string='المسمى')
     code = fields.Char(string='الرمز')
     external_balance = fields.Float(string='رصيد الإنتداب الخارجي الذي تستوجب قرار من الوزير')
 

@@ -4,6 +4,7 @@ from dateutil.relativedelta import relativedelta
 from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
+from pip._vendor.pkg_resources import require
 
 
 class HrEmployeeLend(models.Model):
@@ -19,7 +20,7 @@ class HrEmployeeLend(models.Model):
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1, readonly=1, states={'new': [('readonly', 0)]})
-    insurance_entity = fields.Many2one('res.partner', string=u'الجهة المعار إليها', domain=[('company_type', '=', 'governmental_entity')], required=1, readonly=1, states={'new': [('readonly', 0)]})
+    insurance_entity = fields.Many2one('res.partner', string=u'الجهة المعار إليها', domain=[('insurance', '=', True)], required=1, readonly=1, states={'new': [('readonly', 0)]})
     decision_number = fields.Char(string=u"رقم القرار", readonly=1, states={'new': [('readonly', 0)]})
     decision_date = fields.Date(string=u'تاريخ القرار', readonly=1, states={'new': [('readonly', 0)]})
     decision_file = fields.Binary(string=u'نسخة القرار', readonly=1, states={'new': [('readonly', 0)]}, attachment=True)
@@ -38,7 +39,9 @@ class HrEmployeeLend(models.Model):
     pay_retirement = fields.Boolean(string=u'يتحمل  الموظف الحسميات التقاعدية كاملة', readonly=1, states={'new': [('readonly', 0)]})
     done_date = fields.Date(string='تاريخ التفعيل')
     decission_id = fields.Many2one('hr.decision', string=u'القرارات')
-
+    employee_lend_type = fields.Many2one('hr.employee.lend.ligne', required=1, string=u'نوع الإعارة')
+    history_ids = fields.One2many('hr.employee.lend.history', 'lend_history_id', string=u'سجل الإجراءت', readonly=1, states={'new': [('readonly', 0)]})
+   
     @api.multi
     @api.depends('date_from', 'duration')
     def _compute_date_to(self):
@@ -63,22 +66,22 @@ class HrEmployeeLend(models.Model):
     def check_constrains(self):
         self.ensure_one()
         hr_config = self.env['hr.setting'].search([], limit=1)
-        if hr_config:
+        if self.employee_lend_type:
             # check duration
-            if self.duration > hr_config.lend_duration:
+            if self.duration > self.employee_lend_type.lend_duration:
                 raise ValidationError(u"لقد تم تجاوز الحد الأقصى للإعارة في المرة الواحدة.")
             # check maximum lends duration in employee's service
             old_lends = self.env['hr.employee.lend'].search([('state', '=', 'done'), ('employee_id', '=', self.employee_id.id)])
             sum_duration = self.duration
             for lend in old_lends:
                 sum_duration += lend.duration
-            if sum_duration > 0 and hr_config.max_lend_duration_sum <= sum_duration / 354:
+            if sum_duration > 0 and self.employee_lend_type.max_lend_duration_sum <= sum_duration / 354:
                 raise ValidationError(u"لقد تم تجاوز الحد الأقصى للإعارة.")
             # check duration bettween accepted lend and new one
             for lend in old_lends:
                 date_to = lend.date_to
                 diff = relativedelta(fields.Date.from_string(fields.Datetime.now()), fields.Date.from_string(date_to)).years
-                if diff >= hr_config.periode_between_lend:
+                if diff >= self.employee_lend_type.periode_between_lend:
                     raise ValidationError(u"لا يمكن طلب إعارة هذا الموظف قبل إنتهاء الفترة اللازمة بين طلب أخر.")
             # ‫check completion of essay periode‬
             recruitement_decision = self.employee_id.decision_appoint_ids.search([('is_started', '=', True), ('state_appoint', '=', 'active')], limit=1)
@@ -87,8 +90,8 @@ class HrEmployeeLend(models.Model):
                 if fields.Date.from_string(testing_date_to) >= fields.Date.from_string(fields.Datetime.now()):
                     raise ValidationError(u"لايمكن طلب إعارة خلال فترة التجربة")
             # ‫التترقية‬ ‫سنة‬ ‫إستلكمال‬
-            if self.employee_id.promotion_duration < 354:
-                raise ValidationError(u"لايمكن طلب إعارة خلال أقل من سنة منذ أخر ترقية")
+#             if self.employee_id.promotion_duration < 354:
+#                 raise ValidationError(u"لايمكن طلب إعارة خلال أقل من سنة منذ أخر ترقية")
 
 
     @api.multi
@@ -150,7 +153,7 @@ class HrEmployeeLend(models.Model):
         default_date_to = fields.Date.to_string(fields.Date.from_string(self.date_to))
         context.update({
             u'default_old_date_to': default_date_to,
-            u'default_new_date_to': default_date_to,
+          #  u'default_new_date_to': default_date_to,
 
         })
         context['hr_employee_lend_id'] = self.id
@@ -167,7 +170,24 @@ class HrEmployeeLend(models.Model):
     @api.multi
     def action_sectioned(self):
         self.ensure_one()
-        self.state = 'sectioned'
+        context = {}
+        default_date_to = fields.Date.to_string(fields.Date.from_string(self.date_to))
+        context.update({
+            u'default_old_date_to': default_date_to,
+          #  u'default_new_date_to': default_date_to,
+
+        })
+        context['hr_employee_lend_id'] = self.id
+        return {
+            'name': u'قطع إعارة',
+            'view_type': 'form',
+            "view_mode": 'form',
+            'res_model': 'hr.employee.lend.cancel',
+            'type': 'ir.actions.act_window',
+            'context': context,
+            'target': 'new',
+        } 
+
 
 
 class AllowanceLendAmount(models.Model):
@@ -177,7 +197,71 @@ class AllowanceLendAmount(models.Model):
     lend_id = fields.Many2one('hr.employee.lend')
     allowance_id = fields.Many2one('hr.allowance.type', string=u'البدل')
     amount = fields.Float(string=u'المبلغ')
+    
+class HrEmployeeLendLigne(models.Model):
+    _name = 'hr.employee.lend.ligne'
+    _description = u'أنواع  الإعارة'
 
+
+    # الإعارة
+    name = fields.Char(string=u'المسمى',required=1)
+    lend_duration = fields.Integer(string=u'مدة الإعارة (باليوم)', default=354)
+    one_max_lend_duration = fields.Integer(string=u'الحد الأقصى للتمديد في المرة (بالأيام)', default=354)
+    max_lend_duration_sum = fields.Integer(string=u'الحد الأقصى لمجموع الاعارات (باليوم)', default=354)
+    lend_number = fields.Integer(string=u'عدد مرات التمديد', default=3)
+    periode_between_lend = fields.Integer(string=u'المدة بين إعارتين (بالسنة)', default=3)
+    extend_lend_duration = fields.Integer(string=u'مدة تمديد الإعارة (باليوم)', default=354)
+    grade_ids = fields.Many2many('salary.grid.grade', string='المراتب')
+
+
+
+    @api.multi
+    def button_setting(self):
+        hr_setting = self.env['hr.employee.lend.ligne'].search([], limit=1)
+        if hr_setting:
+            value = {
+                'name': u'‫إعدادات  الإعارة ',
+                'view_type': 'form',
+                'view_mode': 'form',
+                'res_model': 'hr.employee.lend.ligne',
+                'view_id': False,
+                'type': 'ir.actions.act_window',
+                'res_id': hr_setting.id,
+            }
+            return value
+
+class HrEmployeeLendcancel(models.TransientModel):
+    _name = 'hr.employee.lend.cancel'
+    _description = u'قطع إعارة'
+    _rec_name = 'old_date_to'
+
+    old_date_to = fields.Date(string=u'تاريخ إنتهاء الإعارة ', readonly=1)
+    new_date_to = fields.Date(string=u'تاريخ قطع الإعارة ',default=fields.Datetime.now())
+    employee_lend_id = fields.Many2one('hr.employee.lend')
+    employee_lend_type = fields.Many2one('hr.employee.lend.ligne',related ='employee_lend_id.employee_lend_type', string=u'نوع الإعارة')
+    decision_number = fields.Char(string=u"رقم القرار" ,required=1)
+    decision_date = fields.Date(string=u'تاريخ القرار',required=1)
+    decision_file = fields.Binary(string=u'نسخة القرار')
+    decision_file_name = fields.Char(string=u'نسخة القرار')    
+
+    @api.multi
+    def action_confirm(self):
+        lend_line = self._context.get('active_id', False)
+        lend_line_obj = self.env['hr.employee.lend']
+        lend_id = lend_line_obj.search([('id', '=', lend_line)])
+        if self.new_date_to and lend_id  :
+            if self.old_date_to <= self.new_date_to:
+                raise ValidationError(u"تاريخ قطع الإعارة  يجب ان يكون أصغر من تاريخ إنتهاء الإعارة ")
+            lend_id.date_to = self.new_date_to
+            val = {
+                    'action':u'قطع إعارة',
+                    'lend_history_id': lend_id.id,
+                    'name': self.decision_number,
+                    'employee_id':lend_id.employee_id.id,
+                    'decision_date': self.decision_date,
+                    }
+            self.env['hr.employee.lend.history'].create(val)
+            lend_id.state ='sectioned'
 
 class HrEmployeeLendExtend(models.TransientModel):
     _name = 'hr.employee.lend.extend'
@@ -186,8 +270,15 @@ class HrEmployeeLendExtend(models.TransientModel):
 
     old_date_to = fields.Date(string=u'تاريخ إنتهاء الإعارة القديم', readonly=1)
     new_date_to = fields.Date(string=u'تاريخ إنتهاء الإعارة الجديد')
+    employee_lend_id = fields.Many2one('hr.employee.lend')
+    employee_lend_type = fields.Many2one('hr.employee.lend.ligne',related ='employee_lend_id.employee_lend_type', string=u'نوع الإعارة')
+    decision_number = fields.Char(string=u"رقم القرار" ,required=1)
+    decision_date = fields.Date(string=u'تاريخ القرار',required=1)
+    decision_file = fields.Binary(string=u'نسخة القرار')
+    decision_file_name = fields.Char(string=u'نسخة القرار')
 
-    @api.onchange('old_date_to', 'new_date_to')
+
+    @api.onchange('new_date_to')
     def onchange_dates(self):
         self.ensure_one()
         if self.old_date_to and self.new_date_to:
@@ -196,11 +287,32 @@ class HrEmployeeLendExtend(models.TransientModel):
 
     @api.multi
     def action_confirm(self):
-        if self.old_date_to and self.new_date_to:
+        lend_line = self._context.get('active_id', False)
+        lend_line_obj = self.env['hr.employee.lend']
+        lend_id = lend_line_obj.search([('id', '=', lend_line)])
+        if self.new_date_to and lend_id  :
+            if self.old_date_to >= self.new_date_to:
+                raise ValidationError(u"تاريخ إنتهاء الإعارة القديم يجب ان يكون أصغر من تاريخ إنتهاء الإعارة الجديد")
             days = (fields.Date.from_string(self.new_date_to) - fields.Date.from_string(self.old_date_to)).days
-            hr_config = self.env['hr.setting'].search([], limit=1)
-            if hr_config:
-                if days > hr_config.extend_lend_duration:
-                    raise ValidationError(u"." + str(hr_config.extend_lend_duration) + u" لايمكن تمديد الإعارة أكثر من ")
-                else:
-                    self.env['hr.employee.lend'].search([('id', '=', self._context['hr_employee_lend_id'])]).write({'date_to': self.new_date_to})
+            if days > lend_id.employee_lend_type.extend_lend_duration:
+                raise ValidationError(u"." + str(lend_id.employee_lend_type.extend_lend_duration) + u" لايمكن تمديد الإعارة أكثر من ")
+            else:
+                lend_id.date_to = self.new_date_to
+                val = {
+                    'action' :u'تمديد إعارة',
+                    'lend_history_id': lend_id.id,
+                    'name': self.decision_number,
+                    'employee_id':lend_id.employee_id.id,
+                    'decision_date': self.decision_date,
+                    }
+                self.env['hr.employee.lend.history'].create(val)
+
+class hrEmployeeLendHistory(models.Model):
+    _name = 'hr.employee.lend.history'
+
+    name = fields.Char(string='رقم القرار')
+    lend_history_id = fields.Many2one('hr.employee.lend', string=' الإعارة', ondelete='cascade')
+    employee_id = fields.Many2one('hr.employee', string=' الموظف')
+    action = fields.Char(string='الإجراء')
+    decision_date = fields.Date(string='تاريخ القرار')
+    
