@@ -388,7 +388,6 @@ class HrPayslip(models.Model):
             employee = payslip.employee_id
             # search the newest salary_grid for this employee
             salary_grid, basic_salary = employee.get_salary_grid_id(False)
-            print '---salary_grid---', salary_grid
             if not salary_grid:
                 return
             # compute
