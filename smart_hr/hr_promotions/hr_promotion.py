@@ -138,52 +138,68 @@ class HrPromotion(models.Model):
             if emp.job_id.grade_id:
                 # determiner si l'employer a une suspension
                 suspend = self.env['hr.suspension'].search(
-                    [('employee_id', '=', emp.id), ('suspension_date', '<', date.today()),
+                    [('state', '=', 'done'),('employee_id', '=', emp.id), ('suspension_date', '<', date.today()),
                      ('suspension_end_id.release_date', '>', date.today())])
                 # ‫استثانائية‬ ‫إجازة‬‫‬
                 holidays_status_exceptiona = self.env['hr.holidays'].search(
-                    [('employee_id', '=', emp.id), ('date_from', '<=', date.today()), ('date_to', '>=', date.today()),
+                    [('state', '=', 'done'),('employee_id', '=', emp.id), ('date_from', '<=', date.today()), ('date_to', '>=', date.today()),
                      ('holiday_status_id.id', '=', self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id)])
                 # ‫دراسية‬ ‫إجازة
                 holidays_status_study = self.env['hr.holidays'].search(
-                    [('employee_id', '=', emp.id), ('date_from', '<', date.today()), ('date_to', '<', date.today()),
+                    [('state', '=', 'done'),('employee_id', '=', emp.id), ('date_from', '<', date.today()), ('date_to', '<', date.today()),
                      ('holiday_status_id.id', '=', self.env.ref('smart_hr.data_hr_holiday_status_study').id),
                      ('duration', '>', 180)])
+#                 مبتعث
+                scholarship = self.env['hr.scholarship'].search(
+                    [('state', '=', 'done'),('employee_id', '=', emp.id), ('date_from', '<', date.today()), ('date_to', '<', date.today()),
+                     ('duration', '>', 180)])
+#                  ‫بدورة‬‫ ‫تدريبية‬  
+                training = self.env['hr.candidates'].search(
+                    [('state', '=', 'done'),('employee_id', '=', emp.id), ('date_from', '<', date.today()), ('date_to', '<', date.today()),
+                     ('number_of_days', '>', 180)])
+                sanctions = self.env['hr.sanction.ligne'].search(
+                    [('employee_id', '=', emp.id),('state', '=', 'done'), ('sanction_id.date_sanction_start', '>', datetime.now() + relativedelta(days=-354)),
+                     ('type_sanction.code', '=', '3')])
+                todayDate = date.today()
+                deprivation_premium = False
+                deprivation_premium_ids = self.env['hr.deprivation.premium.ligne'].search(
+                    [('employee_id', '=', emp.id),('state', '=', 'done')])
+                if deprivation_premium_ids:
+                    for dep in deprivation_premium_ids:
+                        dep_start_year = fields.Date.from_string(dep.deprivation_id.years_id.date_start).year
+                        dep_stop_year = fields.Date.from_string(dep.deprivation_id.years_id.date_stop).year
+                        if dep_start_year == todayDate.year -1 or dep_start_year == todayDate.year -1:
+                            deprivation_premium = True
+                            break
+                days = 0
+                if sanctions:
+                    for sanction in sanctions:
+                        days = days + sanction.days_number
+                bad_evaluation = False
+                employee_evaluation_id = self.env['hr.employee.evaluation.level'].search([('employee_id', '=', emp.id), ('year', '=', date.today().year - 1)], limit=1)
+                if employee_evaluation_id:
+                    if employee_evaluation_id.degree_id.id == self.env.ref('smart_hr.assessment_hr_bad').id:
+                        bad_evaluation = True
 
-                sanctions = self.env['hr.sanction'].search(
-                    [('state', '=', 'done'), ('date_sanction_start', '>', datetime.now() + relativedelta(days=-354))])
-                saanction_days = True
-                if not suspend and not holidays_status_exceptiona and not holidays_status_study:
+                if not suspend and not holidays_status_exceptiona and not holidays_status_study and not scholarship and not training and days < 15 and not deprivation_premium and not bad_evaluation:
                     if emp.promotion_duration / 354 > emp.job_id.grade_id.years_job:
-                        days = 0
-                        if emp.sanction_ids:
-                            for sanction in sanctions:
-                                if sanction.state == "done" and not sanction.type_sanction.code == "4":
-                                    for line in sanction.line_ids:
-                                        if line.state == 'done':
-                                            if line.employee_id.id == emp.id:
-                                                days = days + line.days_number
-                                    if sanction.type_sanction.code == "4":
-                                        saanction_days = False
-                            if days < 15 and saanction_days:
-                                employee_promotion.append(emp)
-                        else:
                             employee_promotion.append(emp)
 
         for emp_promotion in employee_promotion:
-            regle_point = self.env['hr.evaluation.point'].search([('grade_id', '=', emp_promotion.job_id.grade_id.id)])
+            regle_point = self.env['hr.evaluation.point'].search([('grade_id', '=', emp_promotion.grade_id.id)])
             demande_promotion_id = self.env['hr.promotion.employee.demande'].search(
                 [('employee_id', '=', emp_promotion.id)])
             point_seniority = 0
             education_point = 0
             trining_point = 0
             point_functionality = 0
-            years_supp = (emp_promotion.service_duration / 354) - emp_promotion.job_id.grade_id.years_job
+            years_supp = (emp_promotion.service_duration / 354) - emp_promotion.grade_id.years_job
             if years_supp > 0:
                 for year in xrange(1, years_supp):
                     for seniority in regle_point.seniority_ids:
                         if (year >= seniority.year_from) and (year <= seniority.year_to):
                             point_seniority = point_seniority + (seniority.point)
+                            point_seniority = point_seniority if point_seniority<regle_point.max_point_seniority else regle_point.max_point_seniority
             try:
                 education_level_job = emp_promotion.job_id.serie_id.hr_classment_job_ids[
                     0].level_education_id.nomber_year_education
@@ -197,33 +213,49 @@ class HrPromotion(models.Model):
                                 for education in regle_point.education_ids:
                                     if education.nature_education == 'after_secondry' and education.type_education == "in_speciality_job":
                                         education_point += education.year_point * (education_level_emp.nomber_year_education - education_level_job)
+                                        education_point = education_point if education_point<regle_point.max_point_education else regle_point.max_point_education,
                             else:
                                 for education in regle_point.education_ids:
                                     if education.nature_education == 'before_secondry' and education.type_education == "in_speciality_job":
                                         education_point += education.year_point * (education_level_emp.nomber_year_education - education_level_job)
-
+                                        education_point = education_point if education_point<regle_point.max_point_education else regle_point.max_point_education,
                         else:
                             if education_level_emp.level_education_id.secondary:
                                 for education in regle_point.education_ids:
                                     if education.nature_education == 'after_secondry' and education.type_education == "not_speciality_job":
                                         education_point += education.year_point * (education_level_emp.nomber_year_education - education_level_job)
-
+                                        education_point = education_point if education_point<regle_point.max_point_education else regle_point.max_point_education,
                             else:
                                 for education in regle_point.education_ids:
                                     if education.nature_education == 'before_secondry' and education.type_education == "not_speciality_job":
                                         education_point += education.year_point * (education_level_emp.nomber_year_education - education_level_job)
-
+                                        education_point = education_point if education_point<regle_point.max_point_education else regle_point.max_point_education,
             trainings = self.env['hr.candidates'].search(
                 [('employee_id', '=', emp_promotion.id), ('state', '=', 'done')])
             for training in trainings:
-                if training.number_of_days > 12 and training.experience == 'experience_directe':
+                if training.experience == 'experience_directe':
                     for trainig in regle_point.training_ids:
-                        if trainig.type_training == 'direct_experience':
+                        if trainig.type_training == 'direct_experience' and training.number_of_days>trainig.day_number:
                             trining_point = trining_point + trainig.point
-                elif training.number_of_days > 12 and training.experience == 'experience_in_directe':
+                            trining_point = trining_point if trining_point<regle_point.max_point_training else regle_point.max_point_training
+                elif training.experience == 'experience_in_directe' :
                     for trainig in regle_point.training_ids:
-                        if trainig.type_training == 'indirect_experience':
+                        if trainig.type_training == 'indirect_experience' and training.number_of_days>trainig.day_number:
                             trining_point = trining_point + trainig.point
+                            trining_point = trining_point if trining_point < regle_point.max_point_training else regle_point.max_point_training
+            employee_evaluation_id1 = self.env['hr.employee.evaluation.level'].search([('employee_id', '=', emp.id), ('year', '=', date.today().year - 1)], limit=1)
+            employee_evaluation_id2 = self.env['hr.employee.evaluation.level'].search([('employee_id', '=', emp.id), ('year', '=', date.today().year - 2)], limit=1)
+            for eval in employee_evaluation_id1:
+                for functionality in regle_point.functionality_ids:
+                    if eval.degree_id.id == functionality.degree_id.id:
+                        point_functionality += functionality.point
+                        point_functionality =  point_functionality if point_functionality<regle_point.max_point_functionality else regle_point.max_point_functionality
+            for eval in employee_evaluation_id2:
+                for functionality in regle_point.functionality_ids:
+                    if eval.degree_id.id == functionality.degree_id.id:
+                        point_functionality += functionality.point
+                        point_functionality =  point_functionality if point_functionality<regle_point.max_point_functionality else regle_point.max_point_functionality
+
             id_emp = self.env['hr.promotion.employee'].create({'employee_id': emp_promotion.id,
                                                                        'old_job_id': emp_promotion.job_id.id,
                                                                        'old_number_job': emp_promotion.job_id.number,
@@ -322,14 +354,17 @@ class HrPromotion(models.Model):
                                                                  'order_date': self.speech_date,
                                                                  'date_direct_action': emp.date_direct_action,
                                                                  'job_id': emp.new_job_id.id,
-                                                                 'degree_id': emp.emp_grade_id_new.id,
+                                                                 'grade_id': emp.emp_grade_id_new.id,
                                                                  'type_appointment': appoint_type,
                                                                  'order_picture': self.dicision_file,
                                                                  'depend_on_test_periode': True,
                                                                  'employee_id': emp.employee_id.id,
-                                                                 'degree_id': emp.new_job_id.grade_id.id,
-                                                                 'promotion_id':emp.id
+                                                                 'promotion_id':emp.id,
+                                                                 'degree_id': emp.employee_id.degree_id.id
                                                                  })
+                apoint._onchange_employee_id()
+                apoint._onchange_job_id()
+                apoint._onchange_degree_id()
                 apoint.action_done()
                 #             create history_line
                 self.env['hr.employee.history'].sudo().add_action_line(emp.employee_id, self.decision_number, self.date, "ترقية")
