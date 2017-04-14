@@ -20,12 +20,10 @@ class hrBonus(models.Model):
     date = fields.Date(string=' التاريخ ', required=1, readonly=1, states={'new': [('readonly', 0)]})
     period_from_id = fields.Many2one('hr.period', string='الفترة', required=1, readonly=1, states={'new': [('readonly', 0)]})
     period_to_id = fields.Many2one('hr.period', string='إلى', required=1, readonly=1, states={'new': [('readonly', 0)]})
-    type = fields.Selection([('allowance', 'بدل'), ('reward', 'مكافأة'), ('indemnity', 'تعويض'), ('increase', 'علاوة')], string='النوع', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    type = fields.Selection([('allowance', 'بدل'), ('reward', 'مكافأة'), ('indemnity', 'تعويض')], string='النوع', required=1, readonly=1, states={'new': [('readonly', 0)]})
     allowance_id = fields.Many2one('hr.allowance.type', string='البدل', readonly=1, states={'new': [('readonly', 0)]})
     reward_id = fields.Many2one('hr.reward.type', string='المكافأة', readonly=1, states={'new': [('readonly', 0)]})
     indemnity_id = fields.Many2one('hr.indemnity.type', string='التعويض', readonly=1, states={'new': [('readonly', 0)]})
-    increase_id = fields.Many2one('hr.increase.type', string='العلاوة', readonly=1, states={'new': [('readonly', 0)]})
-    
     compute_method = fields.Selection([('amount', 'مبلغ'),
                                        ('percentage', 'نسبة من الراتب الأساسي'),
                                        ('formula_1', 'نسبة‬ البدل‬ * راتب‬  الدرجة‬ الاولى‬  من‬ المرتبة‬  التي‬ يشغلها‬ الموظف‬'),
@@ -41,15 +39,13 @@ class hrBonus(models.Model):
                               ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
     line_ids = fields.One2many('hr.bonus.line', 'bonus_id', string='التفاصيل', readonly=1, states={'new': [('readonly', 0)]})
     history_ids = fields.One2many('hr.bonus.history', 'bonus_id', string='سجل التغييرات', readonly=1)
-    
     employee_ids = fields.Many2many('hr.employee', string='الموظفين', readonly=1, states={'new': [('readonly', 0)]})
     deccription = fields.Char(string='ملاحظات', )
-    
     department_level1_id = fields.Many2one('hr.department', string='الفرع', readonly=1, states={'new': [('readonly', 0)]})
     department_level2_id = fields.Many2one('hr.department', string='القسم', readonly=1, states={'new': [('readonly', 0)]})
     department_level3_id = fields.Many2one('hr.department', string='الشعبة', readonly=1, states={'new': [('readonly', 0)]})
     salary_grid_type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1, states={'new': [('readonly', 0)]},)
-  
+
     @api.onchange('department_level1_id', 'department_level2_id', 'department_level3_id', 'salary_grid_type_id')
     def onchange_department_level(self):
         dapartment_obj = self.env['hr.department']
@@ -104,31 +100,11 @@ class hrBonus(models.Model):
 
     @api.multi
     def action_done(self):
-        if self.type == 'increase':
-            for line in self.line_ids:
-                self.env['hr.employee.history'].sudo().add_action_line(line.employee_id, self.number_decision, self.date_decision, "علاوة")
         self.state = 'done'
 
     @api.one
     def button_refuse(self):
         self.state = 'cancel'
-
-    @api.multi
-    def import_employee_beneficiaries_ids(self):
-        self.ensure_one()
-        line_ids = self.line_ids
-        employee_ids = []
-        increase_ids = self.env['hr.employee.increase.percent'].search([('increase_id.date', '<=', datetime.now()),
-                                                                        ('increase_id.date', '>=', datetime.now().replace(day=1, month=1)),
-                                                                        ('increase_id.state', '=', 'done'),
-                                                                        ('increase_percent', '=', self.percentage)])
-        for emp in increase_ids:
-            self.env['hr.bonus.line'].create({'bonus_id': self.id,
-                                              'employee_id': emp.employee_id.id,
-                                              'compute_method': self.compute_method,
-                                              'period_from_id': self.period_from_id.id,
-                                              'period_to_id': self.period_to_id.id,
-                                              })
 
 
 class hrBonusCity(models.Model):
@@ -154,7 +130,6 @@ class hrBonusLine(models.Model):
     allowance_id = fields.Many2one('hr.allowance.type', string='البدل')
     reward_id = fields.Many2one('hr.reward.type', string='المكافأة')
     indemnity_id = fields.Many2one('hr.indemnity.type', string='التعويض')
-    increase_id = fields.Many2one('hr.increase.type', string='العلاوة')
     period_from_id = fields.Many2one('hr.period', string='الفترة', required=1, readonly=1, states={'new': [('readonly', 0)]})
     period_to_id = fields.Many2one('hr.period', string='إلى', required=1, readonly=1, states={'new': [('readonly', 0)]})
     amount = fields.Float(string='القيمة')

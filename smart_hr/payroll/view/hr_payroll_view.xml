@@ -301,6 +301,10 @@
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action"
 						states="verify" />
+					<button name="%(report_hr_error_employee_run_report)d" string="تقرير الموظفين المسثنين من المسير الجماعي"
+							type="action" icon="fa-print" 	
+							class="oe_inline oe_stat_button" />
+							
 						<field name="state" widget="statusbar" statusbar_visible="draft,verify,done" />
 					</header>
 					<sheet>
@@ -322,6 +326,8 @@
 								 <field name="name"  string="المسمى" />
 							</group>
 						</group>
+						
+							
 						<notebook>
 							<page  string="الموظفين" >
 								<group col="4" string="فلترة">
@@ -339,6 +345,14 @@
 										<field name="employee_id" />
 										<field name="salary_net"/>
 										<field name="state" />
+									</tree>
+								</field>
+							</page>
+							<page  string="التقارير">
+							<field name="error_ids" readonly='1'>
+									<tree create='0' edit='0'>
+										<field name="employee_id" />
+										<field name="type"/>
 									</tree>
 								</field>
 							</page>

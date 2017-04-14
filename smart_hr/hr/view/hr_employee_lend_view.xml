@@ -8,6 +8,7 @@
 			<field name="type">tree</field>
 			<field name="arch" type="xml">
 				<tree string="أنواع الإعارة">
+					<field name="name" />
 					<field name="lend_duration" />
 					<field name="one_max_lend_duration" />
 					<field name="lend_number" />

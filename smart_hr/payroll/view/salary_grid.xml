@@ -110,7 +110,7 @@
 						<notebook>
 							<page string="التفاصيل">
 								<field name="grid_ids" string=" سلّم الرواتب">
-									<tree edit="false">
+									<tree edit="false" delete="false">
 										<field name="type_id"
 											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 										<field name="grade_id"
@@ -122,15 +122,18 @@
 										<field name="retirement_amount" />
 										<field name="transport_allowance_amout" />
 										<field name="net_salary" />
-										<field name="is_old" invisible="1"/>
+										<field name="is_old" invisible="1" />
 										<button name="%(smart_hr.action_wizard_update_salary_grid)d"
 											type="action" string="تعديل السلم" icon="fa-clipboard" />
+										<button name="hide_line"
+											type="object" string="حذف" icon="fa-times"  confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
 										<field name="date" invisible="1" />
 									</tree>
 								</field>
 							</page>
 							<page string="القرارات">
-								<field name="attachments" widget="many2many_binary" string="إضافة قرار"/>
+								<field name="attachments" widget="many2many_binary"
+									string="إضافة قرار" />
 							</page>
 
 						</notebook>
@@ -200,7 +203,7 @@
 					<field name="transport_allowance_amout" />
 					<field name="net_salary" />
 					<field name="date" />
-					<field name="is_old" invisible="1"/>
+					<field name="is_old" invisible="1" />
 				</tree>
 			</field>
 		</record>
