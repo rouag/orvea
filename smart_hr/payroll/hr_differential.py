@@ -84,9 +84,9 @@ class HrDifferential(models.Model):
         for employee_id in self.employee_ids:
             # check  if there is a promotion demand for current employee
             if self.action_type == 'promotion':
-                record_id = self.env['hr.promotion.employee.demande'].search([('employee_id', '=', employee_id.id),
-                                                                              ('defferential_is_paied', '=', False),
-                                                                              ('state', '=', 'done')], limit=1)
+                record_id = self.env['hr.promotion.employee.job'].search([('employee_id', '=', employee_id.id),
+                                                                          ('defferential_is_paied', '=', False),
+                                                                          ('state', '=', 'done')], limit=1)
                 if record_id:
                     date_start = record_id.create_date
                     date_stop = record_id.done_date

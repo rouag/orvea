@@ -515,6 +515,7 @@ class HrPromotionLigneEmployeeJob(models.Model):
     ], string=u'حالة', )
     emplyoee_state = fields.Boolean(related= 'promotion_id.emplyoee_state')
     done_date = fields.Date(string='تاريخ التفعيل')
+    defferential_is_paied = fields.Boolean(string='defferential is paied', default=False)
 
     @api.multi
     def promotion_confirmed(self):
@@ -560,6 +561,7 @@ class HrPromotionLigneEmployeeJob(models.Model):
             self.new_job_id.state = 'reserved'
             self.occupied_promotion = False
 
+
 class HrPromotionType(models.Model):
     _name = 'hr.promotion.type'
 
@@ -588,7 +590,6 @@ class HrPromotionDemande(models.Model):
                               ('cancel', 'رفض'),
                               ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
     done_date = fields.Date(string='تاريخ التفعيل')
-    defferential_is_paied = fields.Boolean(string='defferential is paied', default=False)
     desire_ids = fields.One2many('hr.employee.desire', 'desire_id', store=True, required=1, string=u'رغبات الموظف', readonly=1, states={'new': [('readonly', 0)]})
 
     @api.model
