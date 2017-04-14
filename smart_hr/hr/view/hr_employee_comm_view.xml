@@ -1,6 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data>
+		<record id="view_hr_employee_comm_task_form" model="ir.ui.view">
+			<field name="name">hr.employee.task.comm.form</field>
+			<field name="model">hr.employee.task</field>
+			<field name="arch" type="xml">
+				<form string="المهام">
+
+					<sheet>
+						<group>
+							<group>
+								<field name="name" />
+								<field name="employee_id" invisible="1"/>
+								<field name="type_procedure" invisible="1"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+
+							</group>
+							<group>
+								<field name="governmental_entity" invisible="1"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+							</group>
+						</group>
+						<group col="6">
+							<field name="date_from" required="1" />
+							<field name="duration" />
+							<field name="date_to" />
+						</group>
+						<group>
+							<field name="description" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
 
 		<record model="ir.ui.view" id="view_hr_employee_commissioning_filter_inherit">
 			<field name="name">hr.employee.commissioning.search</field>
@@ -45,38 +77,39 @@
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" groups="smart_hr.group_hr_personnel_officer_commissioning"
 							states="pm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-							
-							
-							
-							<button name="open_decission_commissioning" string="معاينة القرار"
-							 type="object" states="done" icon="fa-print"
-							class="oe_inline oe_stat_button" />
-					 
-							
+
+
+
+						<button name="open_decission_commissioning" string="معاينة القرار"
+							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+
+
 						<field name="state" widget="statusbar" statusbar_visible="new,pm,accept,done,refused" />
 					</header>
 					<sheet>
 						<field name="current_city" invisible="1" />
 
 						<group>
-							<group  string="بيانات الطلب">
+							<group string="بيانات الطلب">
 								<field name="create_date" />
-								<field name="demand_owner_id"  attrs="{'readonly':[('state', 'in', ['done','refused'])]}" />
+								<field name="comm_type" options='{"no_open": True, "no_create": True}' />
+								<field name="demand_owner_id"
+									attrs="{'readonly':[('state', 'in', ['done','refused'])]}" />
 								<field name="employee_id" options='{"no_open": True, "no_create": True}' />
 								<field name="date_from" />
 								<field name="duration" />
 								<field name="date_to" />
 							</group>
-							<group  string="بيانات التكليف">
-								<field name="comm_type" options='{"no_open": True, "no_create": True}' />
+							<group string="بيانات التكليف">
+								<field name="commissioning_department_id" options='{"no_open": True, "no_create": True}'
+									attrs="{'invisible':[('comm_type', '=', %(data_hr_commissioning_type_02)d)], 'required':[('comm_type', '!=', %(data_hr_commissioning_type_02)d)]}" />
 								<field name="governmental_entity" options='{"no_open": True, "no_create": True}'
 									attrs="{'invisible':[('comm_type', '!=', %(data_hr_commissioning_type_02)d)], 'required':[('comm_type', '=', %(data_hr_commissioning_type_02)d)]}" />
-								<field name="commissioning_job_id" options='{"no_open": True, "no_create": True}' 	attrs="{'readonly':[('state', 'in', ['done','refused'])]}"  />
+								<field name="commissioning_job_id" options='{"no_open": True, "no_create": True}'
+									attrs="{'readonly':[('state', 'in', ['done','refused'])]}" />
 								<field name="type_id" options='{"no_open": True, "no_create": True}' />
 								<field name="grade_id" options='{"no_open": True, "no_create": True}' />
 								<field name="city" options='{"no_open": True, "no_create": True}' />
-								<field name="pay_retirement"
-									attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
 								<field name="allowance_transport_rate"
 									attrs="{'invisible':[('state', '=', 'new')],'readonly':[('state', '!=', 'pm')]}" />
 								<field name="salary_rate"
@@ -86,14 +119,14 @@
 							</group>
 						</group>
 
-						<separator string="المهام"/>
-						<field name="task_ids" 	attrs="{'readonly':[('state', 'in', ['done','refused'])]}" >
+						<separator string="المهام" />
+						<field name="task_ids" context="{'default_governmental_entity':governmental_entity,'default_duration':duration,'default_date_from':date_from,'default_type_procedure':'commission','default_employee_id':employee_id,'form_view_ref': 'view_hr_employee_comm_task_form'}"
+							attrs="{'readonly':[('state', 'in', ['done','refused'])]}">
 							<tree>
 								<field name="name" readonly="1" />
 								<field name="date_from" readonly="1" />
 								<field name="duration" readonly="1" />
 								<field name="date_to" readonly="1" />
-								<field name="governmental_entity" readonly="1" />
 								<field name="employee_id" invisible="1" />
 							</tree>
 						</field>
@@ -140,7 +173,8 @@
 					<sheet>
 						<group>
 							<field name="name" />
-							<field name="pay_retirement" />
+							<field name="assign_duration"/>
+							<field name="grade_ids" />
 						</group>
 					</sheet>
 				</form>
@@ -154,7 +188,6 @@
 			<field name="arch" type="xml">
 				<tree string="أنواع التكليف">
 					<field name="name" />
-					<field name="pay_retirement" />
 				</tree>
 			</field>
 		</record>
