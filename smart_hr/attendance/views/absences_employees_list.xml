@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<template id="absences_employees_list">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_hr.external_layout_hr">
+							<div class="page" style="direction:rtl;">
+								<p align="center">
+									بيان حسم ا يام الغياب و ساعات التاخير من الراتب لمرفق بالقرار
+									رقم
+									<span t-esc="o.decission_id.name" />
+									و تاريخ
+									<span t-esc="o.decission_id.date" />
+								</p>
+
+
+								<table class="table table-condensed">
+									<thead>
+										<tr>
+											<th class="text-center">الإسم</th>
+											<th class="text-center">رقم الملف</th>
+											<th class="text-center">المرتبة</th>
+											<th class="text-center">ساعات التاخير </th>
+											<th class="text-center">ايام الغياب</th>
+											<th class="text-center">فترة الغياب</th>
+											<th class="text-center">المقر الرئيسي</th>
+
+										</tr>
+									</thead>
+									<tbody>
+										<t t-foreach="o.employee_ids" t-as="line">
+											<tr>
+
+												<td>
+													<span t-field="line.employee_id.display_name" />
+												</td>
+												<td>
+													<span t-field="line.employee_id.number" />
+												</td>
+												<td>
+													<span t-field="line.employee_id.grade_id.name" />
+												</td>
+												<td>
+													-
+												</td>
+												<td>
+													<span t-field="line.number_request" />
+												</td>
+
+												<td>
+													-
+												</td>
+												<td>
+													<span t-field="line.employee_id.department_id.name" />
+												</td>
+
+											</tr>
+										</t>
+									</tbody>
+								</table>
+							</div>
+					</t>
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>

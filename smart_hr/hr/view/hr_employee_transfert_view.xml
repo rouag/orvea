@@ -8,7 +8,7 @@
 			<field name="type">search</field>
 			<field name="arch" type="xml">
 				<search string="طلب نقل موظف">
-					<field name="employee_id" string="الموظف"
+					<field name="employee_id" string="الموظف" 
 						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
 				</search>
 			</field>
@@ -82,7 +82,7 @@
 						<group>
 							<group>
 								<field name="transfert_nature" />
-								<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+								<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" readonly="1"
 								 	attrs="{'readonly':[('state', 'in', ['waiting','consult','pm','waiting','done', 'refused'])]}" 
 									 />
 
@@ -185,10 +185,10 @@
 		 <record model="ir.ui.view" id="hr_employee_transfert_form_inherited">
 			<field name="model">hr.employee.transfert</field>
 			<field name="inherit_id" ref="smart_hr.view_hr_employee_transfert_form" />
-			<field name="groups_id" eval="[(6, 0, [ref('smart_hr.group_employee')])]" />
+			<field name="groups_id" eval="[(6, 0, [ref('smart_hr.group_tranfert_employee_owner')])]" />
 			<field name="arch" type="xml">
 				<field name="employee_id" position="attributes">
-					<attribute name="readonly">True</attribute>
+					<attribute name="readonly">False</attribute>
 				</field>
 			</field>
 		</record> 

@@ -27,8 +27,6 @@ class HrRequestTransferDelayHours(models.Model):
     department_level2_id = fields.Many2one('hr.department', string='القسم', readonly=1, states={'dm': [('readonly', 0)]})
     department_level3_id = fields.Many2one('hr.department', string='الشعبة', readonly=1, states={'dm': [('readonly', 0)]})
     salary_grid_type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1, states={'dm': [('readonly', 0)]},)
-    num_decision = fields.Char(string=u'رقم القرار', readonly=1)
-    date_decision = fields.Date(string=u'تاريخ القرار', readonly=1)
     speech_source = fields.Char(string=u'مصدر الخطاب')
     num_speech = fields.Char(string=u'رقم الخطاب الصادر')
     date_speech = fields.Date(string=u'تاريخ الخطاب الصادر')
@@ -82,8 +80,6 @@ class HrRequestTransferDelayHours(models.Model):
         self.state = 'done'
         for employee in self.employee_ids:
             employee.employee_id.delay_hours_balance -= employee.number_request*7
-        self.num_decision = self.env['ir.sequence'].get('hr.decision.sequence')
-        self.date_decision = fields.Date.today()
 
     @api.multi
     def button_cancel(self):
@@ -169,8 +165,6 @@ class HrRequestTransferAbsence(models.Model):
     department_level2_id = fields.Many2one('hr.department', string='القسم', readonly=1, states={'dm': [('readonly', 0)]})
     department_level3_id = fields.Many2one('hr.department', string='الشعبة', readonly=1, states={'dm': [('readonly', 0)]})
     salary_grid_type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1, states={'dm': [('readonly', 0)]},)
-    num_decision = fields.Char(string=u'رقم القرار', readonly=1)
-    date_decision = fields.Date(string=u'تاريخ القرار', readonly=1)
     speech_source = fields.Char(string=u'مصدر الخطاب')
     num_speech = fields.Char(string=u'رقم الخطاب الصادر')
     date_speech = fields.Date(string=u'تاريخ الخطاب الصادر')
@@ -224,8 +218,6 @@ class HrRequestTransferAbsence(models.Model):
         self.state = 'done'
         for employee in self.employee_ids:
             employee.employee_id.absence_balance -= employee.number_request
-        self.num_decision = self.env['ir.sequence'].get('hr.decision.sequence')
-        self.date_decision = fields.Date.today()
 
     @api.multi
     def button_cancel(self):
