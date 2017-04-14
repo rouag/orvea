@@ -279,13 +279,14 @@
 							<group>
 								<field name="name" />
 								<field name="job_nature" />
-								<field name="members_job" />
+								<field name="type_ids" />
 							</group>
 							<group>
 								<field name="number" />
 								<field name="job_supervisory_name_id" />
 							</group>
 							<field name="job_description" />
+							<field name="for_members_name" invisible="1"></field>
 
 						</group>
 
@@ -300,7 +301,6 @@
 				<tree string="المسميات الوظيفية">
 					<field name="name" />
 					<field name="number" />
-					<field name="members_job" />
 				</tree>
 			</field>
 		</record>

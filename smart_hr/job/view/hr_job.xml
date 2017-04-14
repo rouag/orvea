@@ -173,7 +173,6 @@
 					<field name="name" string="مسمى الطلب" />
 					<field name="speech_number" />
 					<field name="speech_date" />
-					<field name="members_job" />
 					<field name="state" string="الحالة" />
 				</tree>
 			</field>
@@ -216,7 +215,6 @@
 								<field name="employee_id"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="name" />
-								<field name="members_job" />
 								<field name="speech_number"
 									attrs="{'invisible':[('state', 'not in', ['budget_external','hrm','done'])],'required':[('state','=','budget_external')], 'readonly':[('state', 'in', ['hrm','done'])]}" />
 								<field name="speech_date"
@@ -233,6 +231,9 @@
 									attrs="{'invisible':[('state', 'in', ['new','waiting','budget_external'])],'required':[('state','=','hrm')], 'readonly':[('state','!=', 'hrm')]}" />
 								<field name="fiscal_year" />
 							</group>
+						</group>
+						<group>
+						<field name="members_job"/>
 						</group>
 						<group col="6">
 							<field name="general_id" domain="[('group_type', '=', 'general')]"

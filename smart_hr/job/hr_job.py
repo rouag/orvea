@@ -134,10 +134,23 @@ class HrJobName(models.Model):
                                               readonlly=1)
 
     job_description = fields.Text(string=u'متطلبات الوظيفية')
-    members_job = fields.Boolean(string=u'وظيفية للاعضاء')
+    type_ids = fields.Many2many('salary.grid.type', string=u'الاصناف')
+    for_members_name = fields.Boolean(string='all type ids are for member', compute='_compute_for_members')
 
     _sql_constraints = [('number_uniq', 'unique(number)', 'رمز هذا المسمى موجود.')]
 
+    @api.multi
+    def _compute_for_members(self):
+        for rec in self:
+            if rec.type_ids:
+                for_member = True
+            else:
+                for_member = False
+            for type in rec.type_ids:
+                if type.is_member is False:
+                    for_member = False
+                    break
+            rec.for_members_name = for_member
 
 class HrJobReservation(models.Model):
     _name = 'hr.job.reservation'
@@ -327,14 +340,16 @@ class HrJobCreateLine(models.Model):
         if self.name:
             self.number = self.name.number
         if not self.name:
-            name_ids = [rec.id for rec in self.job_create_id.serie_id.job_name_ids]
             if self.job_create_id.members_job is True:
-                new_name_ids = self.env['hr.job.name'].search([('members_job', '=', True), ('id', 'in', name_ids)])
-                res['domain'] = {'name': [('id', 'in', new_name_ids.ids)]}
+                name_ids = self.job_create_id.serie_id.job_name_ids
+                new_name_ids = [rec.id for rec in name_ids if rec.for_members_name is True]
+                res['domain'] = {'name': [('id', 'in', new_name_ids)]}
+                return res
             else:
-                new_name_ids = self.env['hr.job.name'].search([('members_job', '=', False), ('id', 'in', name_ids)])
-                res['domain'] = {'name': [('id', 'in', new_name_ids.ids)]}
-            return res
+                name_ids = self.job_create_id.serie_id.job_name_ids
+                new_name_ids = [rec.id for rec in name_ids if rec.for_members_name is False]
+                res['domain'] = {'name': [('id', 'in', new_name_ids)]} 
+                return res
 
     @api.constrains('job_number', 'grade_id')
     def _check_grade_id_job_number(self):

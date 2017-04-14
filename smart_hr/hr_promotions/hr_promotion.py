@@ -43,7 +43,6 @@ class HrPromotion(models.Model):
                               ('done', u'اعتمدت'),
                               ('cancel', u'ملغاة'),
                               ], string=u'الحالة', default='promotion_type', )
-    members_promotion = fields.Boolean(string=u'ترقية للاعضاء')
     department_level1_id = fields.Many2one('hr.department', string='الفرع', readonly=1, states={'promotion_type': [('readonly', 0)]})
     department_level2_id = fields.Many2one('hr.department', string='القسم', readonly=1, states={'promotion_type': [('readonly', 0)]})
     department_level3_id = fields.Many2one('hr.department', string='الشعبة', readonly=1, states={'promotion_type': [('readonly', 0)]})

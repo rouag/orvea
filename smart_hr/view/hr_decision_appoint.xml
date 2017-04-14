@@ -41,7 +41,7 @@
 							<field name="direct_appoint_period" />
 							<field name="max_pension" />
 							<field name="max_pension_ratio" attrs="{'invisible':[('max_pension','=',False)]}" />
-							<field name="for_members" />
+							<field name="type_ids" />
 							<field name="hr_allowance_appoint_id">
 								<tree editable="botttom">
 									<field name="hr_allowance_type_id" />
