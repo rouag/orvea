@@ -34,6 +34,25 @@
 			<field name="paperformat_id" ref="report.paperformat_euro" />
 			<field name="download_filename">قرار_تحويل_ايام_غياب.pdf</field>
 		</record>
+
+		<report id="absences_employees_list" model="hr.request.transfer.absence"
+			string="بيان حسم ايام غياب" report_type="qweb-pdf"
+			name="smart_hr.absences_employees_list" file="smart_hr.absences_employees_list"
+			menu="False" />
+
+		<record id="absences_employees_list" model="ir.actions.report.xml">
+			<field name="paperformat_id" ref="report.paperformat_euro" />
+			<field name="download_filename">بيان_حسم_ايام_غياب.pdf</field>
+		</record>
+		<report id="delay_employees_list" model="hr.request.transfer.delay.hours"
+			string="بيان حسم ايام غياب" report_type="qweb-pdf"
+			name="smart_hr.delay_employees_list" file="smart_hr.delay_employees_list"
+			menu="False" />
+
+		<record id="delay_employees_list" model="ir.actions.report.xml">
+			<field name="paperformat_id" ref="report.paperformat_euro" />
+			<field name="download_filename">بيان_حسم_ساعات_التأخير.pdf</field>
+		</record>
 	</data>
 </openerp>
 		
