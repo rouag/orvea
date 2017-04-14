@@ -98,19 +98,19 @@
 														<span t-field="line.employee_id.basic_salary" />
 													</td>
 													<td colspan="2" class="text-center">
-														................
+													<span t-esc="line.allowance_total" />
 													</td>
 													<td colspan="2" class="text-center">
-													 ..........
+													<span t-esc="line.difference_deduction_total" />
 													</td>
 													<td>
-														........................
+														<span t-esc="line.salary_net" />
 													</td>
 												</tr>
 											 
-												<t t-set="total_allowances_type" t-value="total_allowances_type" />
-												<t t-set="total_deductions_type" t-value="total_deductions_type" />
-												<t t-set="total_salary_net_type" t-value="total_salary_net_type" />
+												<t t-set="total_allowances_type" t-value="total_allowances_type + line.allowance_total" />
+												<t t-set="total_deductions_type" t-value="total_deductions_type + line.difference_deduction_total" />
+												<t t-set="total_salary_net_type" t-value="total_salary_net_type+line.salary_net" />
 									
 											</t>
 										</tbody>

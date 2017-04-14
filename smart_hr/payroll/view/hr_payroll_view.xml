@@ -357,7 +357,7 @@
 									</tree>
 								</field>
 							</page>
-							<page  string="التقارير">
+							<page  string="أسماء الموظفين الذي لا تخرج اسمائهم فالمسير">
 							<field name="error_ids" readonly='1'>
 									<tree create='0' edit='0'>
 										<field name="employee_id" />
