@@ -415,6 +415,7 @@ class HrPayslip(models.Model):
             res_allowances = []
             retirement_amount = 0.0
             insurance_amount = 0.0
+            duration_in_month = 0.0
             if len(res) == 1:
                 res = res[0]
                 grid_id = res['grid_id']

@@ -563,7 +563,7 @@ class HrTransfertSorting(models.Model):
                         result1 = line_ids1
 
                 if not line.new_job_id:
-                    line.hr_employee_transfert_id.state = 'new'
+                    line.hr_employee_transfert_id.state = 'pm'
                     self.env['base.notification'].create({'title': u'إشعار  بعدم وجود وظيفة شاغرة',
                                                           'message': u'إشعار  بعدم وجود وظيفة شاغرة',
                                                           'user_id': line.hr_employee_transfert_id.employee_id.user_id.id,
