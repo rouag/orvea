@@ -114,6 +114,8 @@ class HrTermination(models.Model):
     @api.one
     def button_done(self):
         for ter in self:
+            if ter.employee_id.emp_state == 'suspended':
+                raise ValidationError(u'لا يمكن طي قيد الموظف وهو مكفوف إليد')
             # Update Employee State
             ter.employee_id.emp_state = 'terminated'
             # Update Job

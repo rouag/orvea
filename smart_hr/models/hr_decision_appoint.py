@@ -167,12 +167,16 @@ class HrDecisionAppoint(models.Model):
         res = {}
         if self.type_appointment:
             type_ids = self.type_appointment.type_ids.ids
+            job_ids=[]
             if self.type_appointment.id == self.env.ref('smart_hr.data_hr_new_agent_public').id: 
                 employee_ids = self.env['hr.employee'].search([('type_id', 'in', type_ids), ('employee_state', 'in', ['done'])])
             else:
                 employee_ids = self.env['hr.employee'].search([('type_id', 'in', type_ids), ('employee_state', 'in', ['done', 'employee'])])
-            job_ids = self.env['hr.job'].search([('name.type_ids', 'in', type_ids), ('state', '=', 'unoccupied')])
-            res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
+            for type in type_ids:
+                jobs = self.env['hr.job'].search([('name.type_ids', 'in', type), ('state', '=', 'unoccupied')])
+                for job in jobs:
+                    job_ids.append(job.id)
+            res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids)]}
             return res
 
     @api.multi
@@ -511,8 +515,7 @@ class HrDecisionAppoint(models.Model):
                                 'grade_id': self.grade_id.id,
                                 'royal_decree_number': self.royal_decree_number,
                                 'royal_decree_date': self.royal_decree_date,
-                                'is_started': True,
-                                'state_appoint': 'active'
+
                                 })
         # check if the employee have allready a number 
         if not self.employee_id.number:
@@ -555,12 +558,13 @@ class HrDecisionAppoint(models.Model):
                                                       })
 
         self.done_date = fields.Date.today()
-        if grade_id < new_grade_id :
+        if grade_id < new_grade_id:
             today_date = fields.Date.from_string(fields.Date.today())
             employee_lend = self.env['hr.employee.lend'].search([('employee_id', '=', self.employee_id.id),('insurance_entity.company_type','!=','inter_reg_org'),('state','=','done'),('date_to','<',today_date)],limit=1)
-            if employee_lend :
+            if employee_lend:
                 employee_lend.state = 'sectioned'
-
+        self.is_started = True
+        self.state_appoint = 'active'
 
     def send_notification_refuse_to_group(self, group_id):
         for recipient in group_id.users:

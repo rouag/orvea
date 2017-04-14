@@ -459,7 +459,6 @@ class HrPayslip(models.Model):
             domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         holidays_ids = self.env['hr.holidays'].search(domain)
-        holiday_status_maternity = self.env.ref('smart_hr.data_hr_holiday_status_maternity')
         for holiday_id in holidays_ids:
             holiday_status_id = holiday_id.holiday_status_id
             # get the entitlement type
@@ -493,8 +492,9 @@ class HrPayslip(models.Model):
                 grid_id = res['grid_id']
                 basic_salary = res['basic_salary']
                 duration_in_month = res['days']
-                # فرق الراتب الأساسي
+                # NOT SALRY SPENDING
                 if not holiday_status_id.salary_spending:
+                    # فرق الراتب الأساسي
                     basic_salary_amount = (duration_in_month * (basic_salary / 30.0))
                     # فرق البدلات
                     allowance_amount = 0.0
@@ -521,26 +521,20 @@ class HrPayslip(models.Model):
                             months_from_holiday_start = relativedelta(today, fields.Date.from_string(oldest_holiday_id.date_from)).months
                         if entitlement_type == rec.entitlement_id.entitlment_category and rec.month_from <= months_from_holiday_start <= rec.month_to and duration_in_month > 0:
                             basic_salary_amount = (duration_in_month * (basic_salary / 30.0) * (100 - rec.salary_proportion)) / 100.0
-                            if holiday_status_maternity == holiday_status_id:
+                            if holiday_status_id.min_amount:
                                 ret_amount = basic_salary * grid_id.retirement / 100.0
-                                basic_salary_amount = ((basic_salary - ret_amount) * (100 - rec.salary_proportion)) / 100.0
-                                diff = holiday_status_maternity.min_amount - (((basic_salary - ret_amount)) * (rec.salary_proportion)) / 100.0
+                                basic_salary_amount = ((basic_salary - ret_amount + retirement_amount) * (100 - rec.salary_proportion)) / 100.0
+                                diff = holiday_status_id.min_amount - (((basic_salary - ret_amount + retirement_amount)) * (rec.salary_proportion)) / 100.0
                                 if diff > 0:
                                     basic_salary_amount -= diff
                                 # amout depend of number of days
                                 basic_salary_amount = basic_salary_amount * duration_in_month / 30.0
                             # فرق البدلات
                             allowance_amount2 = 0.0
-                            if holiday_status_id.transport_allowance and allowance['allowance_id'] == self.env.ref('smart_hr.hr_allowance_type_01').id:
-                                allowance_amount2 -= allowance['amount'] / 30.0 * duration_in_month
-                                if duration_in_month > 0 and allowance_amount2 != 0:
-                                    vals = {'name': 'فرق بدلات : ' + holiday_id.holiday_status_id.name + name,
-                                            'employee_id': holiday_id.employee_id.id,
-                                            'number_of_days': duration_in_month,
-                                            'number_of_hours': 0.0,
-                                            'amount': allowance_amount2 * -1,
-                                            'type': 'holiday'}
-                                    line_ids.append(vals)
+                            for allowance in holiday_id.employee_id.get_employee_allowances(grid_id.date):
+                                if not holiday_status_id.transport_allowance and allowance['allowance_id'] == self.env.ref('smart_hr.hr_allowance_type_01').id:
+                                    allowance_amount2 += allowance['amount'] / 30.0 * duration_in_month
+
             else:
                 for rec in res:
                     grid_id = rec['grid_id']
@@ -575,22 +569,23 @@ class HrPayslip(models.Model):
                                 months_from_holiday_start = relativedelta(today, fields.Date.from_string(oldest_holiday_id.date_from)).months
                             if entitlement_type == rec.entitlement_id.entitlment_category and rec.month_from <= months_from_holiday_start <= rec.month_to and days > 0:
                                 basic_salary_amount2 += (days * (basic_salary / 30.0) * (100 - rec.salary_proportion)) / 100.0
-                                if holiday_status_maternity == holiday_status_id:
+                                if holiday_status_id.min_amount:
                                     ret_amount = basic_salary * grid_id.retirement / 100.0
-                                    basic_salary_amount2 += ((basic_salary - ret_amount) * (100 - rec.salary_proportion)) / 100.0
-                                    diff = holiday_status_maternity.min_amount - (((basic_salary - ret_amount)) * (rec.salary_proportion)) / 100.0
+                                    basic_salary_amount2 += ((basic_salary - ret_amount + retirement_amount) * (100 - rec.salary_proportion)) / 100.0
+                                    diff = holiday_status_id.min_amount - (((basic_salary - ret_amount + retirement_amount)) * (rec.salary_proportion)) / 100.0
                                     if diff > 0:
                                         basic_salary_amount2 -= diff
                                     # amout depend of number of days
                                     basic_salary_amount2 += basic_salary_amount2 * days / 30.0
                             # فرق البدلات
                             allowance_amount2 = 0.0
-                            if holiday_status_id.transport_allowance and allowance['allowance_id'] == self.env.ref('smart_hr.hr_allowance_type_01').id:
-                                allowance_amount2 -= allowance['amount'] / 30.0 * days
+                            for allowance in holiday_id.employee_id.get_employee_allowances(grid_id.date):
+                                if not holiday_status_id.transport_allowance and allowance['allowance_id'] == self.env.ref('smart_hr.hr_allowance_type_01').id:
+                                    allowance_amount2 += allowance['amount'] / 30.0 * days
                             # فرق التقاعد
                             if holiday_status_id.deductible_duration_service:
                                 retirement_amount2 += (basic_salary * grid_id.retirement / 100.0 * (100 - rec.salary_proportion) / 100.0) / 30.0 * days
-            # case of لا يصرف له الراتب
+            #
             if basic_salary_amount:
                 vals = {'name': holiday_id.holiday_status_id.name + name,
                         'employee_id': holiday_id.employee_id.id,
@@ -628,7 +623,7 @@ class HrPayslip(models.Model):
                 line_ids.append(vals)
             # فرق البدلات
             if allowance_amount2:
-                vals = {'name': 'فرق بدلات : ' + holiday_id.holiday_status_id.name + name,
+                vals = {'name': ' بدل النقل  ' + holiday_id.holiday_status_id.name + name,
                         'employee_id': holiday_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
