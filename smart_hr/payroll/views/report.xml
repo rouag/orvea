@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data>
-
-		<!-- <report id="hr_deduction_report" model="hr.deduction" report_type="qweb-pdf" 
+<!-- 
+		 <report id="hr_deduction_report" model="hr.deduction" report_type="qweb-pdf" 
 			string="الحسميات" name="smart_hr.report_hr_deduction" file="smart_hr.report_hr_deduction" 
-			/> <report id="hr_payslip_changement_report" model="hr.deduction" menu="False" 
+			/> 
+			 -->
+			<report id="hr_payslip_changement_report" model="hr.payslip.run" menu="False" 
 			report_type="qweb-pdf" string="الموظفين الذين طرأ تغيير في مسيرهم" name="smart_hr.report_hr_payslip_changement" 
-			file="smart_hr.report_hr_payslip_changement" paperformat="smart_base.paperformat_landscape"/> -->
+			file="smart_hr.report_hr_payslip_changement" paperformat="smart_base.paperformat_landscape"/>
 
 
 

@@ -20,7 +20,7 @@ class HrPayslipRun(models.Model):
     _inherit = 'hr.payslip.run'
 
     error_ids = fields.One2many('hr.payslip.run.error', 'payslip_run_id', string='تقرير الموظفين المسثنين من المسير الجماعي', readonly=1)
-
+   # type_ids = fields.One2many('salary.grid.type', 'typ_id', string='تقرير الموظفين المسثنين من المسير الجماعي', readonly=1)
 
     @api.multi
     def compute_sheet(self):
@@ -50,7 +50,7 @@ class HrPayslipRun(models.Model):
         self.error_ids = error_ids
         return True
 
-   
+
 
 
 class HrPayslipRunError(models.Model):
