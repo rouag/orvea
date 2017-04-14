@@ -170,6 +170,15 @@
         'hr_decision/wizard/wizard_hr_decision.xml',
         # الرواتب
         'payroll/menu.xml',
+
+        'payroll/views/report_hr_deduction.xml',
+        'payroll/views/report_payslip.xml',
+        'payroll/views/report_payslip_extension.xml',
+        'payroll/views/report_hr_error_employee.xml',
+        'payroll/views/report_hr_payslip_changement.xml',
+        'payroll/views/report_hr_error_employee_run.xml',
+        'payroll/views/report.xml',
+
         'payroll/data/salary_grid_type_data.xml',
         'payroll/wizard/wizard_bonus_employee.xml',
         'payroll/wizard/wizard_bonus_action.xml',
@@ -192,13 +201,8 @@
         'payroll/view/hr_increase_view.xml',
         'payroll/view/period_fiscalyear.xml',
         'payroll/view/hr_differential.xml',
-        'payroll/views/report_hr_deduction.xml',
-        'payroll/views/report_payslip.xml',
-        'payroll/views/report_payslip_extension.xml',
-        'payroll/views/report_hr_error_employee.xml',
-        'payroll/views/report_hr_payslip_changement.xml',
-        'payroll/views/report_hr_error_employee_run.xml',
-        'payroll/views/report.xml',
+
+
 
         # الحضور والإنصراف
         'attendance/security/attendance_security.xml',
