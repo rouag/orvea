@@ -211,7 +211,6 @@ class HrPayslip(models.Model):
         return period_id
     period_id = fields.Many2one('hr.period', string=u'الفترة', domain=[('is_open', '=', True)], readonly=1, required=1, states={'draft': [('readonly', 0)]}, default=get_default_period_id)
     days_off_line_ids = fields.One2many('hr.payslip.days_off', 'payslip_id', 'الإجازات والغيابات', readonly=True, states={'draft': [('readonly', False)]})
-    salary_net = fields.Float(string='صافي الراتب')
     difference_history_ids = fields.One2many('hr.payslip.difference.history', 'payslip_id', 'الفروقات المتخلدة')
     state = fields.Selection([('draft', 'مسودة'),
                               ('verify', 'في إنتظار الإعتماد'),
@@ -223,6 +222,9 @@ class HrPayslip(models.Model):
     type_id = fields.Many2one('salary.grid.type', string=u'صنف الموظف')
     number_of_days = fields.Integer(string=u'عدد أيام العمل', readonly=1)
     compute_date = fields.Date(string=u'تاريخ الإعداد')
+    salary_net = fields.Float(string='صافي الراتب')
+    allowance_total = fields.Float(string='مجموع البدلات')
+    difference_deduction_total = fields.Float(string='مجموع الحسميات والفروقات')
 
     @api.one
     def action_verify(self):
@@ -260,20 +262,6 @@ class HrPayslip(models.Model):
             result_employee_ids = list((set(employee_ids) - set(minus_employee_ids)))
             res['domain'] = {'employee_id': [('id', 'in', result_employee_ids)]}
             return res
-#         res = {}
-#         if self.type_appointment and self.type_appointment.for_members is True:
-#             employee_ids = self.env['hr.employee'].search(
-#                 [('is_member', '=', True), ('employee_state', 'in', ['done', 'employee'])])
-#             job_ids = self.env['hr.job'].search([('name.members_job', '=', True),('state','=', 'unoccupied'),('type_id.is_member','=',True)])
-#             print"job_ids",job_ids
-#             res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
-#             return res
-#         if self.type_appointment and self.type_appointment.for_members is False:
-#             employee_ids = self.env['hr.employee'].search(
-#                 [('is_member', '=', False), ('employee_state', 'in', ['done', 'employee'])])
-#             job_ids = self.env['hr.job'].search([('name.members_job', '=', False),('state','=', 'unoccupied')])
-#             res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
-#             return res
 
     @api.onchange('employee_id', 'date_from', 'date_to', 'period_id')
     def onchange_employee(self):
@@ -292,10 +280,6 @@ class HrPayslip(models.Model):
             worked_days_line_ids, leaves = rec.get_worked_day_lines_without_contract(rec.employee_id.id, rec.employee_id.calendar_id, rec.date_from, rec.date_to)
             rec.worked_days_line_ids = worked_days_line_ids
             rec.days_off_line_ids = leaves
-            number_of_days = 0
-            for rec in rec.days_off_line_ids:
-                number_of_days += rec['number_of_days']
-            rec.number_of_days = 30 - number_of_days
 
     def get_worked_day_lines_without_contract(self, employee_id, working_hours, date_from, date_to, compute_leave=True):
         """
@@ -363,11 +347,58 @@ class HrPayslip(models.Model):
             return []
         return list(set(self.pool.get('hr.payroll.structure')._get_parent_structure(cr, uid, structure_ids, context=context)))
 
+    def get_days_off_count(self, date_from, date_to):
+        res_count = 0.0
+        # holidays in current periode
+        domain = [('employee_id', '=', self.employee_id.id),
+                  ('state', '=', 'done')]
+        holidays_ids = self.env['hr.holidays'].search(domain)
+        for holiday_id in holidays_ids:
+            # overlaped days in current month
+            holiday_date_from = fields.Date.from_string(holiday_id.date_from)
+            date_from = fields.Date.from_string(str(date_from))
+            holiday_date_to = fields.Date.from_string(str(holiday_id.date_to))
+            date_to = fields.Date.from_string(str(date_to))
+            res = []
+            if date_from >= holiday_date_from and holiday_date_to > date_to:
+                res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, date_from, date_to, True, True, True)
+            if date_from >= holiday_date_from and holiday_date_to <= date_to:
+                res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, date_from, holiday_date_to, True, True, True)
+            if holiday_date_from >= date_from and holiday_date_to < date_to:
+                res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, holiday_date_from, holiday_date_to, True, True, True)
+            if holiday_date_from >= date_from and holiday_date_to >= date_to:
+                res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, holiday_date_from, date_to, True, True, True)
+            if len(res) == 1:
+                rec = res[0]
+                res_count = rec['days']
+            else:
+                for rec in res:
+                    res_count += rec['days']
+        # termination in current periode
+        domain = [('date', '>=', date_from),
+                  ('date', '<=', date_to),
+                  ('employee_id', '=', self.employee_id.id),
+                  ('state', '=', 'done')
+                  ]
+        termination_ids = self.env['hr.termination'].search(domain)
+        for termination in termination_ids:
+            # فرق الأيام المخصومة من الشهر
+            date_from = date_from
+            date_to = termination.date_termination
+            worked_days = days_between(date_from, date_to) - 1
+            unworked_days = 30.0 - worked_days
+            res_count += unworked_days
+        print '*----res_count---', res_count
+        return res_count
+
     @api.multi
     def compute_sheet(self):
         bonus_line_obj = self.env['hr.bonus.line']
         loan_obj = self.env['hr.loan']
         for payslip in self:
+            # calculate work days
+            number_of_days = 0
+            payslip.number_of_days = 30 - payslip.get_days_off_count(payslip.date_from, payslip.date_to)
             # delete old line
             payslip.line_ids.unlink()
             # delete old difference_history
@@ -376,11 +407,40 @@ class HrPayslip(models.Model):
             payslip.compute_date = fields.Date.from_string(fields.Date.today())
             # generate  lines
             employee = payslip.employee_id
-            # search the newest salary_grid for this employee
-            salary_grid, basic_salary = employee.get_salary_grid_id(False)
-            print '---salary_grid---', salary_grid
-            if not salary_grid:
+            # search the salary_grids for this employee
+            res = self.env['hr.smart.utils'].compute_duration_difference(employee, payslip.date_from, payslip.date_to, True, True, True)
+            if not res:
                 return
+            basic_salary = 0.0
+            res_allowances = []
+            retirement_amount = 0.0
+            insurance_amount = 0.0
+            if len(res) == 1:
+                res = res[0]
+                grid_id = res['grid_id']
+                duration_in_month = res['days']
+                # 1- الراتب الأساسي
+                basic_salary = res['basic_salary']
+                # 2- البدلات القارة
+                res_allowances = employee.get_employee_allowances(grid_id.date)
+                # 3- التقاعد‬
+                retirement_amount = basic_salary * grid_id.retirement / 100.0
+                # 9- التأمينات‬
+                insurance_amount = basic_salary * grid_id.insurance / 100.0
+            else:
+                for rec in res:
+                    grid_id = rec['grid_id']
+                    rec_basic_salary = rec['basic_salary']
+                    days = rec['days']
+                    duration_in_month += days
+                    # 1- الراتب الأساسي
+                    basic_salary += rec_basic_salary
+                    # 2- البدلات القارة
+                    res_allowances += employee.get_employee_allowances(grid_id.date)
+                    # 3- التقاعد‬
+                    retirement_amount += basic_salary / 30.0 * days * grid_id.retirement / 100.0
+                    # 9- التأمينات‬
+                    insurance_amount = basic_salary / 30.0 * days * grid_id.insurance / 100.0
             # compute
             lines = []
             sequence = 1
@@ -388,37 +448,37 @@ class HrPayslip(models.Model):
             deduction_total = 0.0
             difference_total = 0.0
             month = fields.Date.from_string(self.period_id.date_start).month
-            # 1- الراتب الأساسي
-            basic_salary_val = {'name': u'الراتب الأساسي',
-                                'slip_id': payslip.id,
-                                'employee_id': employee.id,
-                                'rate': 0.0,
-                                'number_of_days': 30,
-                                'amount': basic_salary,
-                                'category': 'basic_salary',
-                                'type': 'basic_salary',
-                                'sequence': sequence,
-                                }
-            lines.append(basic_salary_val)
+            if basic_salary:
+                # 1- الراتب الأساسي
+                basic_salary_val = {'name': u'الراتب الأساسي',
+                                    'slip_id': payslip.id,
+                                    'employee_id': employee.id,
+                                    'rate': 0.0,
+                                    'number_of_days': 30,
+                                    'amount': basic_salary,
+                                    'category': 'basic_salary',
+                                    'type': 'basic_salary',
+                                    'sequence': sequence,
+                                    }
+                lines.append(basic_salary_val)
             # 2- البدلات القارة
-            res = employee.get_employee_allowances(fields.Date.today())
-            for line in res:
-                sequence += 1
-                allowance_val = {'name': line['allowance_name'],
-                                 'slip_id': payslip.id,
-                                 'employee_id': employee.id,
-                                 'rate': 0.0,
-                                 'number_of_days': 30,
-                                 'amount': line['amount'],
-                                 'category': 'allowance',
-                                 'type': 'allowance',
-                                 'sequence': sequence,
-                                 }
-                lines.append(allowance_val)
-                allowance_total += line['amount']
+            if res_allowances:
+                for line in res_allowances:
+                    sequence += 1
+                    allowance_val = {'name': line['allowance_name'],
+                                     'slip_id': payslip.id,
+                                     'employee_id': employee.id,
+                                     'rate': 0.0,
+                                     'number_of_days': 30,
+                                     'amount': line['amount'],
+                                     'category': 'allowance',
+                                     'type': 'allowance',
+                                     'sequence': sequence,
+                                     }
+                    lines.append(allowance_val)
+                    allowance_total += line['amount']
             sequence += 1
             # 3- التقاعد‬
-            retirement_amount = basic_salary * salary_grid.retirement / 100.0
             if retirement_amount:
                 retirement_val = {'name': 'التقاعد',
                                   'slip_id': payslip.id,
@@ -591,7 +651,6 @@ class HrPayslip(models.Model):
                                                                   })
             # 9- التأمينات‬
             # old insurance_amount = (basic_salary * amount_multiplication + allowance_total) * salary_grid.insurance / 100.0
-            insurance_amount = basic_salary * salary_grid.insurance / 100.0
             if insurance_amount:
                 insurance_val = {'name': 'التأمين',
                                  'slip_id': payslip.id,
@@ -620,6 +679,9 @@ class HrPayslip(models.Model):
             lines.append(salary_net_val)
             payslip.salary_net = salary_net
             payslip.line_ids = lines
+            # update allowance_total deduction_total
+            payslip.allowance_total = allowance_total
+            payslip.difference_deduction_total = deduction_total + difference_total
 
     @api.one
     @api.constrains('employee_id', 'period_id')
