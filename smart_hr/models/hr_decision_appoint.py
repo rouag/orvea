@@ -511,8 +511,7 @@ class HrDecisionAppoint(models.Model):
                                 'grade_id': self.grade_id.id,
                                 'royal_decree_number': self.royal_decree_number,
                                 'royal_decree_date': self.royal_decree_date,
-                                'is_started': True,
-                                'state_appoint': 'active'
+
                                 })
         # check if the employee have allready a number 
         if not self.employee_id.number:
@@ -555,12 +554,13 @@ class HrDecisionAppoint(models.Model):
                                                       })
 
         self.done_date = fields.Date.today()
-        if grade_id < new_grade_id :
+        if grade_id < new_grade_id:
             today_date = fields.Date.from_string(fields.Date.today())
             employee_lend = self.env['hr.employee.lend'].search([('employee_id', '=', self.employee_id.id),('insurance_entity.company_type','!=','inter_reg_org'),('state','=','done'),('date_to','<',today_date)],limit=1)
-            if employee_lend :
+            if employee_lend:
                 employee_lend.state = 'sectioned'
-
+        self.is_started = True
+        self.state_appoint = 'active'
 
     def send_notification_refuse_to_group(self, group_id):
         for recipient in group_id.users:
