@@ -47,7 +47,7 @@ class WizardSanctionAction(models.TransientModel):
                     compt_dif = sanction_line.days_number - self.days_number
                     sanction_line.days_difference = sanction_line.days_difference - compt_dif
                     sanction_line.days_number = self.days_number
-                    
+
                 if sanction_line.days_number != self.days_number and sanction_line.deduction == True and sanction_line.days_difference == 0 :
                     compt_dif = sanction_line.days_number - self.days_number
                     sanction_line.days_difference = sanction_line.days_difference - compt_dif
@@ -57,10 +57,11 @@ class WizardSanctionAction(models.TransientModel):
                     sanction_line.days_difference  = sanction_line.days_number - self.days_number
                     sanction_line.days_number = self.days_number
                     sanction_line.deduction = False
-               
+
                 if sanction_line.amount != self.amount and sanction_line.deduction == True :
                     sanction_line.amount_difference = sanction_line.amount - self.amount
                     sanction_line.amount = self.amount
+                    sanction_line.deduction = False
             self.env['hr.sanction.history'].create(val)
 
         elif active_model == 'hr.sanction' and active_id:

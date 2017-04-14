@@ -73,24 +73,66 @@ class HrPayslip(models.Model):
             line_ids.append(vals)
 
         # عقوبة
-        sanction_line_ids = self.env['hr.sanction.ligne'].search([('sanction_id.date_sanction_start', '>=', self.date_from),
-                                                                  ('sanction_id.date_sanction_start', '<=', self.date_to),
+        sanction_line_ids = self.env['hr.sanction.ligne'].search([('deduction', '=', False),
                                                                   ('sanction_id.type_sanction.deduction', '=', True),
                                                                   ('sanction_id.state', '=', 'done')
                                                                   ])
 
+        res_sanction_line_ids = []
         for sanction in sanction_line_ids:
-            amount = (basic_salary + allowance_total) / 30.0 * sanction.days_number
-            vals = {'name':  sanction.type_sanction.name,
-                    'employee_id': sanction.employee_id.id,
-                    'rate': sanction.days_number,
-                    'number_of_days': sanction.days_number,
-                    'amount': amount * -1,
-                    'category': 'deduction',
-                    'type': 'sanction',
-                    }
-            line_ids.append(vals)
-
+            amount = 0.0
+            # عدد أيام
+            if sanction.days_number and not sanction.days_difference:
+                amount = (basic_salary + allowance_total) / 30.0 * sanction.days_number
+            # مبلغ
+            if sanction.amount and not sanction.amount_difference:
+                amount = sanction.amount
+            if amount:
+                vals = {'name': sanction.type_sanction.name,
+                        'employee_id': sanction.employee_id.id,
+                        'rate': sanction.days_number,
+                        'number_of_days': sanction.days_number,
+                        'amount': amount * -1,
+                        'category': 'deduction',
+                        'type': 'sanction',
+                        }
+                line_ids.append(vals)
+                res_sanction_line_ids.append(sanction.id)
+            # الفروقات بالأيام
+            if sanction.days_difference > 0:
+                multiplication = -1
+            if sanction.days_difference < 0:
+                multiplication = 1
+            if sanction.days_difference:
+                amount_difference = (basic_salary + allowance_total) / 30.0 * abs(sanction.days_difference)
+                vals = {'name': sanction.type_sanction.name,
+                        'employee_id': sanction.employee_id.id,
+                        'rate': sanction.days_number,
+                        'number_of_days': abs(sanction.days_difference),
+                        'amount': amount_difference * multiplication,
+                        'category': 'deduction',
+                        'type': 'sanction',
+                        }
+                line_ids.append(vals)
+                res_sanction_line_ids.append(sanction.id)
+            # الفروقات بالمبلغ
+            if sanction.amount_difference > 0:
+                multiplication = -1
+            if sanction.amount_difference < 0:
+                multiplication = 1
+            if sanction.amount_difference:
+                amount_difference = sanction.amount_difference
+                vals = {'name': sanction.type_sanction.name,
+                        'employee_id': sanction.employee_id.id,
+                        'rate': sanction.days_number,
+                        'number_of_days': sanction.days_number,
+                        'amount': amount_difference * multiplication,
+                        'category': 'deduction',
+                        'type': 'sanction',
+                        }
+                line_ids.append(vals)
+                res_sanction_line_ids.append(sanction.id)
+        self.sanction_line_ids = res_sanction_line_ids
         return line_ids
 
     @api.multi

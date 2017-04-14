@@ -31,10 +31,10 @@ class HrPayslipRun(models.Model):
     def compute_error(self):
         res = self.onchange_department_level()
         all_employees_ids = res['domain']['employee_ids'][0][2]
-        employee_not_include_ids = list(set(all_employees_ids)- set(self.employee_ids.ids))
+        employee_not_include_ids = list(set(all_employees_ids) - set(self.employee_ids.ids))
         error_ids = []
         for employee_id in employee_not_include_ids:
-            error_ids.append({'payslip_run_id':self.id,'employee_id':employee_id,'type':'not_include'})
+            error_ids.append({'payslip_run_id': self.id, 'employee_id': employee_id, 'type': 'not_include'})
         #self
         # موظفين:  تم إيقاف رتبهم
         employee_stop_lines = self.env['hr.payslip.stop.line'].search([('stop_period', '=', True), ('period_id', '=', self.period_id.id), ('payslip_id.state', '=', 'done')])

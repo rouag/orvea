@@ -225,6 +225,7 @@ class HrPayslip(models.Model):
     salary_net = fields.Float(string='صافي الراتب')
     allowance_total = fields.Float(string='مجموع البدلات')
     difference_deduction_total = fields.Float(string='مجموع الحسميات والفروقات')
+    sanction_line_ids = fields.Many2many('hr.sanction.ligne')
 
     @api.one
     def action_verify(self):
@@ -238,6 +239,9 @@ class HrPayslip(models.Model):
         date_start = fields.Date.from_string(self.period_id.date_start)
         date_stop = fields.Date.from_string(self.period_id.date_stop)
         self.env['hr.loan'].update_loan_date(date_start, date_stop, self.employee_id.id)
+        # update sanction lines
+        for rec in self.sanction_line_ids:
+            rec.deduction = True
 
     @api.one
     def button_refuse(self):
