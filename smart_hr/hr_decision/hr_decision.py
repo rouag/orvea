@@ -53,16 +53,32 @@ class HrDecision(models.Model):
             object_type = 'employee'
             self.text = self.replace_text(self.employee_id, self.date,self.decision_type_id.id,'employee')
 
-        if self.decision_type_id in [self.env.ref('smart_hr.data_normal_leave'),
-                                              self.env.ref('smart_hr.data_exceptionnel_leave'),
-                                              self.env.ref('smart_hr.data_leave_satisfactory'),
-                                              self.env.ref('smart_hr.data_leave_escort'),
-                                            self.env.ref('smart_hr.data_leave_sport'),
-                                              self.env.ref('smart_hr.data_leave_motherhood'),]:
+        if self.decision_type_id in [self.env.ref('smart_hr.data_hr_ending_service_death'),
+                                     self.env.ref('smart_hr.data_decision_type11'),
+                                     self.env.ref('smart_hr.data_decision_type14'),
+                                     self.env.ref('smart_hr.data_decision_type19'),
+                                     self.env.ref('smart_hr.data_decision_type17'),
+                                     self.env.ref('smart_hr.data_decision_type22'),
+                                     self.env.ref('smart_hr.data_decision_type24'),
+                                     self.env.ref('smart_hr.data_decision_type18'),
+                                     self.env.ref('smart_hr.data_decision_type23'),
+                                    self.env.ref('smart_hr.data_decision_type35'),
+                                    self.env.ref('smart_hr.data_decision_type15'),
+                                     ]:
+
+   
             object_type = 'termination'
             self.text = self.replace_text(self.employee_id, self.date,self.decision_type_id.id,'termination')
 
-        if self.decision_type_id in [self.env.ref('smart_hr.data_hr_ending_service_death'),
+        if self.decision_type_id in [self.env.ref('smart_hr.data_normal_leave'),
+                                    self.env.ref('smart_hr.data_decision_type45'),
+                                    self.env.ref('smart_hr.data_decision_type44'),
+                                    self.env.ref('smart_hr.data_exceptionnel_leave'),
+                                    self.env.ref('smart_hr.data_leave_satisfactory'),
+                                    self.env.ref('smart_hr.data_leave_escort'),
+                                    self.env.ref('smart_hr.data_leave_sport'),
+                                    self.env.ref('smart_hr.data_leave_motherhood')
+
                                              ]:
             object_type= 'holidays'
             self.text = self.replace_text(self.employee_id, self.date,self.decision_type_id.id,'holidays')

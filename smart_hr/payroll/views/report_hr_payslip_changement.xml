@@ -6,7 +6,7 @@
 				<t t-foreach="docs" t-as="o">
 					<t t-call="smart_base.landscape_layout">
 						<div class="page">
-							<t t-set="lines" t-value="get_lines(o.employee_ids, o.month)" />
+							<t t-set="lines" t-value="get_lines(o.slip_ids, o.period_id)" />
 							<div class="col-xs-12 text-center">
 								<h3>
 									<strong>
@@ -15,7 +15,7 @@
 								</h3>
 								<br></br>
 								<strong>لشهر: </strong>
-								<span t-esc='o.month.name' />
+									<span t-field="o.period_id.name" />
 								<span></span>
 								<br></br>
 								<br></br>

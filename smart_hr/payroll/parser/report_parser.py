@@ -97,12 +97,6 @@ class ReportPayslipExtension(report_sxw.rml_parse):
         super(ReportPayslipExtension, self).__init__(cr, uid, name, context=context)
         self.localcontext.update({
             'get_hijri_date': self._get_hijri_date,
-            'get_sum_allowances': self._get_sum_allowances,
-            'get_sum_deductions': self._get_sum_deductions,
-            'get_salary_net': self._get_salary_net,
-            'get_total_allowances': self._get_total_allowances,
-            'get_total_deductions': self._get_total_deductions,
-            'get_total_salary_net': self._get_total_salary_net,
             'get_all_types': self._get_all_types,
             'get_all_employees': self._get_all_employees,
 
@@ -122,60 +116,8 @@ class ReportPayslipExtension(report_sxw.rml_parse):
                 payslip.append(rec)
         return payslip
 
-
-    def _get_sum_allowances(self, line_ids):
-        sum = 0
-        for rec in line_ids:
-            if rec.category == 'allowance':
-                    sum += rec.amount
-        return sum
-
-    def _get_sum_deductions(self, line_ids):
-        sum = 0
-        for rec in line_ids:
-            if rec.category == 'deduction':
-                    sum += rec.amount
-        return sum
-
-    def _get_salary_net(self, line_ids):
-        sum = 0
-        for line in line_ids:
-            if line.category == 'salary_net':
-                sum += line.amount
-        return sum
-
-    def _get_total_allowances(self, type_id , slip_ids):
-        total = 0
-        for line in slip_ids :
-            if line.employee_id.type_id.id == type_id:
-                sum = 0
-                for rec in line.line_ids:
-                    if rec.category == 'allowance':
-                        sum += rec.amount
-                total = total + sum
-        return total
-
-    def _get_total_deductions(self, type_id, slip_ids):
-        total = 0
-        for line in slip_ids :
-            if line.employee_id.type_id.id == type_id:
-                sum = 0
-                for rec in line.line_ids:
-                    if rec.category == 'deduction':
-                        sum += rec.amount
-                total = total + sum
-        return total
-
-    def _get_total_salary_net(self, type_id, slip_ids):
-        total = 0
-        for line in slip_ids :
-            if line.employee_id.type_id.id == type_id:
-                sum = 0
-                for rec in line.line_ids:
-                    if rec.category == 'salary_net':
-                        sum += rec.amount
-                total = total + sum
-        return total
+ 
+ 
     def _get_hijri_date(self, date, separator):
         '''
         convert georging date to hijri date
@@ -194,67 +136,8 @@ class PayslipExtensionReport(osv.AbstractModel):
     _template = 'smart_hr.report_payslip_extension'
     _wrapped_report_class = ReportPayslipExtension
 
-class ReportHrErrorEmployee(report_sxw.rml_parse):
-
-    def __init__(self, cr, uid, name, context):
-        super(ReportHrErrorEmployee, self).__init__(cr, uid, name, context=context)
-        self.localcontext.update({
-            'get_hijri_date': self._get_hijri_date,
-            'get_all_employees': self._get_all_employees,
-            'get_error_employees':self._get_error_employees,
-            'get_termination_employees':self._get_termination_employees,
-
-        })
-
-    def _get_all_employees(self, month):
-
-        payslip_pbj = self.pool.get('hr.payslip')
-        search_ids = payslip_pbj.search(self.cr, self.uid, [('month', '=', month), ('salary_net', '=', 0.0)])
-        return payslip_pbj.browse(self.cr, self.uid, search_ids)
-
-    def _get_error_employees(self, month):
-        domain = []
-        employe_pbj = self.pool.get('hr.employee')
-        payslip_pbj = self.pool.get('hr.payslip')
-        search_empl_ids = employe_pbj.search(self.cr, self.uid, [('employee_state', '=', 'employee')])
-        search_ids = []
-        for rec in search_empl_ids:
-            temp = payslip_pbj.search(self.cr, self.uid, [('month', '=', month), ('employee_id', '=', rec)])
-            search_ids += temp
-        domain.append(search_ids)
-        payslip_pbj = payslip_pbj.browse(self.cr, self.uid, search_ids)
-        emp_ids = [rec.employee_id.id for rec in payslip_pbj]
-        emp_ids = set(emp_ids)
-        result = []
-        result = set(search_empl_ids) - emp_ids
-        return employe_pbj.browse(self.cr, self.uid, list(result))
 
 
-    def _get_termination_employees(self, month):
-        date_from = get_hijri_month_start(HijriDate, Umalqurra, month)
-        date_to = get_hijri_month_end(HijriDate, Umalqurra, month)
-        domain = []
-        termination_pbj = self.pool.get('hr.termination')
-        search_empl_ids = termination_pbj.search(self.cr, self.uid, [('date_termination', '>', date_from), ('date_termination', '<', date_to)])
-        return termination_pbj.browse(self.cr, self.uid, search_empl_ids)
-
-    def _get_hijri_date(self, date, separator):
-        '''
-        convert georging date to hijri date
-        :return hijri date as a string value
-        '''
-        if date:
-            date = fields.Date.from_string(date)
-            hijri_date = HijriDate(date.year, date.month, date.day, gr=True)
-            return str(int(hijri_date.day)).zfill(2) + separator + str(int(hijri_date.month)).zfill(2) + separator + str(int(hijri_date.year))
-        return None
-
-
-class HrErrorEmployeeReport(osv.AbstractModel):
-    _name = 'report.smart_hr.report_hr_error_employee'
-    _inherit = 'report.abstract_report'
-    _template = 'smart_hr.report_hr_error_employee'
-    _wrapped_report_class = ReportHrErrorEmployee
 
 
 class ReportPayslipChangement(report_sxw.rml_parse):

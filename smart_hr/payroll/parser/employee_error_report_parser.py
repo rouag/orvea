@@ -15,98 +15,8 @@ class ReportHrErrorEmployee(report_sxw.rml_parse):
         super(ReportHrErrorEmployee, self).__init__(cr, uid, name, context=context)
         self.localcontext.update({
             'get_hijri_date': self._get_hijri_date,
-            'get_all_employees': self._get_all_employees,
-            'get_error_employees':self._get_error_employees,
-            'get_termination_employees':self._get_termination_employees,
-            'get_payslip_stop_employees':self._get_payslip_stop_employees,
 
         })
-
-    def get_employee_ids(self,cr, uid, department_level1_id, department_level2_id, department_level3_id, salary_grid_type_id):
-        dapartment_obj = self.pool.get('hr.department')
-        employee_obj = self.pool.get('hr.employee')
-
-        employee_ids = []
-        dapartment_id = False
-        if department_level3_id:
-            dapartment_id = department_level3_id
-        elif department_level2_id:
-            dapartment_id = department_level2_id
-        elif department_level1_id:
-            dapartment_id = department_level1_id
-        if dapartment_id:
-            dapartment = dapartment_obj.browse(cr, uid, dapartment_id.id)
-            employee_ids += [x.id for x in dapartment.member_ids]
-            for child in dapartment.all_child_ids:
-                employee_ids += [x.id for x in child.member_ids]
-        result = {}
-        if not employee_ids:
-            # get all employee
-            employee_ids = employee_obj.search(cr,uid,[('employee_state', '=', 'employee')])
-        # filter by type
-        if salary_grid_type_id:
-            employee_ids = employee_obj.search(cr,uid,[('id', 'in', employee_ids), ('type_id', '=', salary_grid_type_id.id)])
-        return employee_ids
-
-
-    def _get_all_employees(self, month, department_level1_id, department_level2_id, department_level3_id, salary_grid_type_id):
-        employee_ids = self.get_employee_ids(self.cr, self.uid, department_level1_id, department_level2_id, department_level3_id, salary_grid_type_id)
-        payslip_pbj = self.pool.get('hr.payslip')
-        search_ids = payslip_pbj.search(self.cr, self.uid, [('period_id','=',month.id),('salary_net','=',0.0), ('employee_id.id','in',employee_ids)])
-        return payslip_pbj.browse(self.cr, self.uid, search_ids)
-
-    def _get_error_employees(self, month, department_level1_id, department_level2_id, department_level3_id, salary_grid_type_id):
-        domain = []
-        employe_pbj = self.pool.get('hr.employee')
-        payslip_pbj = self.pool.get('hr.payslip')
-        search_empl_ids = self.get_employee_ids(self.cr, self.uid,department_level1_id, department_level2_id, department_level3_id, salary_grid_type_id)
-        search_ids = []
-        for rec in search_empl_ids:
-            temp = payslip_pbj.search(self.cr, self.uid, [('period_id','=',month.id),('employee_id','=',rec)])
-            search_ids += temp
-        domain.append(search_ids)
-        payslip_pbj= payslip_pbj.browse(self.cr, self.uid, search_ids)
-        emp_ids = [rec.employee_id.id for rec in payslip_pbj]
-        emp_ids = set(emp_ids)
-        result=[]
-        result = set(search_empl_ids) - emp_ids
-        return employe_pbj.browse(self.cr, self.uid, list(result))
-     
-    def _get_payslip_stop_employees(self, month,department_level1_id, department_level2_id, department_level3_id, salary_grid_type_id):
-        payslip_stp_obj = self.pool.get('hr.payslip.stop.line')
-        employe_pbj = self.pool.get('hr.employee')
-        domain = []
-        search_empl_ids = self.get_employee_ids(self.cr, self.uid,department_level1_id, department_level2_id, department_level3_id, salary_grid_type_id)
-        search_ids = []
-        for rec in search_empl_ids:
-            temp = payslip_stp_obj.search(self.cr, self.uid, [( 'stop_period','=', True), ('period_id','=', month.id),('payslip_id.employee_id', '=',rec),('state','=','done')])
-            search_ids += temp
-        domain.append(search_ids)
-        payslip_stp_obj= payslip_stp_obj.browse(self.cr, self.uid, search_ids)
-        emp_ids = [rec.payslip_id.employee_id.id for rec in payslip_stp_obj]
-        emp_ids = set(emp_ids)
-        return employe_pbj.browse(self.cr, self.uid, list(emp_ids))
-        
-
-
-    def _get_termination_employees(self, month,department_level1_id, department_level2_id, department_level3_id, salary_grid_type_id):
-        employe_pbj = self.pool.get('hr.employee')
-        domain = []
-        termination_pbj = self.pool.get('hr.termination')
-        search_empl_ids = self.get_employee_ids(self.cr, self.uid,department_level1_id, department_level2_id, department_level3_id, salary_grid_type_id)
-        search_ids = []
-        for rec in search_empl_ids:
-            temp = termination_pbj.search(self.cr, self.uid, [('state','=','done'),('employee_id','=',rec),('date_termination', '>', month.date_start),('date_termination', '<', month.date_stop)])
-            search_ids += temp
-        domain.append(search_ids)
-        termination_pbj= termination_pbj.browse(self.cr, self.uid, search_ids)
-        emp_ids = [rec.employee_id.id for rec in termination_pbj]
-        emp_ids = set(emp_ids)
-        return employe_pbj.browse(self.cr, self.uid, list(emp_ids))
-        
-
-
-
     def _get_hijri_date(self, date, separator):
         '''
         convert georging date to hijri date
@@ -120,7 +30,7 @@ class ReportHrErrorEmployee(report_sxw.rml_parse):
 
 
 class HrErrorEmployeeReport(osv.AbstractModel):
-    _name = 'report.smart_hr.report_hr_error_employee'
+    _name = 'report.smart_hr.report_hr_error_employee_run'
     _inherit = 'report.abstract_report'
-    _template = 'smart_hr.report_hr_error_employee'
+    _template = 'smart_hr.report_hr_error_employee_run'
     _wrapped_report_class = ReportHrErrorEmployee

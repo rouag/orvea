@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_hr_error_employee_run">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.landscape_layout">
+						<div class="page">
+							<div class="col-xs-12 text-center">
+								<br></br>
+								<br></br>
+								<br></br>
+								<div class="col-xs-12 text-center">
+									<h3>
+										<strong>تقرير الموظفين المسثنين من المسير الجماعي :</strong>
+									</h3>
+								</div>
+
+								<div class="col-xs-12 text-center">
+									<br></br>
+									<strong>الموظفين الذين لم يدخلوا الاعداد</strong>
+									<table class="table table-condensed">
+										<thead>
+											<tr>
+												<th class="text-center">رقم الموظف </th>
+												<th class="text-center">الإسم</th>
+												<th class="text-center">مسمى الوظيفة </th>
+												<th class="text-center">رقم الوظيفة</th>
+												<th class="text-center">السبب</th>
+											</tr>
+										</thead>
+										<t t-foreach="o.error_ids" t-as="line">
+											<t t-if="line.type == 'not_include'">
+												<tr>
+													<td>
+														<span t-field="line.employee_id.number" />
+													</td>
+													<td>
+														<span t-field="line.employee_id.display_name" />
+													</td>
+													<td>
+														<span t-field="line.employee_id.job_id" />
+													</td>
+													<td>
+														<span t-field="line.employee_id.job_id.number" />
+													</td>
+													<td>
+													<span t-field="line.type" />
+													</td>
+												</tr>
+											</t>
+										</t>
+									</table>
+
+
+									<div class="col-xs-12 text-center">
+										<br></br>
+										<strong>موظفين: تم إيقاف رتبهم</strong>
+										<table class="table table-condensed">
+											<thead>
+												<tr>
+													<th class="text-center">رقم الموظف </th>
+													<th class="text-center">الإسم</th>
+													<th class="text-center">مسمى الوظيفة </th>
+													<th class="text-center">رقم الوظيفة</th>
+													<th class="text-center">السبب</th>
+												</tr>
+											</thead>
+											<t t-foreach="o.error_ids" t-as="line">
+												<t t-if="line.type == 'stop'">
+													<tr>
+														<td>
+															<span t-field="line.employee_id.number" />
+														</td>
+														<td>
+															<span t-field="line.employee_id.display_name" />
+														</td>
+														<td>
+															<span t-field="line.employee_id.job_id" />
+														</td>
+														<td>
+															<span t-field="line.employee_id.job_id.number" />
+														</td>
+														<td>
+														<span t-field="line.type" />
+														</td>
+													</tr>
+												</t>
+											</t>
+										</table>
+									</div>
+									<div class="col-xs-12 text-center">
+										<br></br>
+										<strong>موظفين: طي القيد</strong>
+										<table class="table table-condensed">
+											<thead>
+												<tr>
+													<th class="text-center">رقم الموظف </th>
+													<th class="text-center">الإسم</th>
+													<th class="text-center">مسمى الوظيفة </th>
+													<th class="text-center">رقم الوظيفة</th>
+													<th class="text-center">السبب</th>
+												</tr>
+											</thead>
+											<t t-foreach="o.error_ids" t-as="line">
+												<t t-if="line.type == 'termination'">
+													<tr>
+														<td>
+															<span t-field="line.employee_id.number" />
+														</td>
+														<td>
+															<span t-field="line.employee_id.display_name" />
+														</td>
+														<td>
+															<span t-field="line.employee_id.job_id" />
+														</td>
+														<td>
+															<span t-field="line.employee_id.job_id.number" />
+														</td>
+														<td>
+														<span t-field="line.type" />
+														</td>
+													</tr>
+												</t>
+											</t>
+										</table>
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</t>
+
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+							
