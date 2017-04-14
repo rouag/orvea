@@ -76,5 +76,6 @@ class HrEmployeeTransfertWizard(models.TransientModel):
                 transfert_line.specific_group = 'same_specific'
             if self.specific_group == 'other_specific':
                 transfert_line.specific_group = 'other_specific'
-
+            if self.specific_group == False :
+                transfert_line.specific_group = False
 
