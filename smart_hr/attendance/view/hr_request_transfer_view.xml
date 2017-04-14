@@ -18,7 +18,34 @@
 				</tree>
 			</field>
 		</record>
-
+		<record model="ir.ui.view" id="hr_employee_delay_hour_form">
+			<field name="name">hr.employee.delay.hour.form</field>
+			<field name="model">hr.employee.delay.hours</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string=" تحويل ساعات التأخير">
+					<group>
+						<field name="employee_id" />
+						<field name="number_request" />
+						<field name="balance" />
+					</group>
+				</form>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_employee_absence_days_form">
+			<field name="name">hr.employee.absence.days.form</field>
+			<field name="model">hr.employee.absence.days</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string=" ايام الغياب بدون عذر الموظفين">
+					<group>
+						<field name="employee_id" />
+						<field name="number_request" />
+						<field name="balance" />
+					</group>
+				</form>
+			</field>
+		</record>
 		<record model="ir.ui.view" id="hr_request_transfer_delay_hours_form">
 			<field name="name">hr.request.transfer.delay.hours.form</field>
 			<field name="model">hr.request.transfer.delay.hours</field>
@@ -35,12 +62,12 @@
 							states="hrm" groups="smart_hr.group_hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" states="audit,hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						
+
 						<button name="button_request_transfer_delay_hours" string="معاينة القرار"
 							groups="smart_hr.group_hrm" type="object" states="done" icon="fa-print"
 							class="oe_inline oe_stat_button" />
-						
-					
+
+
 						<field name="state" widget="statusbar" statusbar_visible="dm,audit,hrm,done,refuse" />
 					</header>
 					<sheet>
@@ -162,12 +189,12 @@
 							states="hrm" groups="smart_hr.group_hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" states="audit,hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-					
+
 						<button name="button_request_transfer_absence" string="معاينة القرار"
 							groups="smart_hr.group_hrm" type="object" states="done" icon="fa-print"
 							class="oe_inline oe_stat_button" />
-					
-						
+
+
 						<field name="state" widget="statusbar" statusbar_visible="dm,audit,hrm,done,refuse" />
 					</header>
 					<sheet>
