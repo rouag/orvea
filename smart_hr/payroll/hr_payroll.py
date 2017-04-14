@@ -407,7 +407,6 @@ class HrPayslip(models.Model):
             employee = payslip.employee_id
             # search the salary_grids for this employee
             res = self.env['hr.smart.utils'].compute_duration_difference(employee, payslip.date_from, payslip.date_to, True, True, True)
-            print '---res------', res
             if not res:
                 return
             basic_salary = 0.0

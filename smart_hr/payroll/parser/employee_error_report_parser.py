@@ -52,7 +52,7 @@ class ReportHrErrorEmployee(report_sxw.rml_parse):
     def _get_all_employees(self, month, department_level1_id, department_level2_id, department_level3_id, salary_grid_type_id):
         employee_ids = self.get_employee_ids(self.cr, self.uid, department_level1_id, department_level2_id, department_level3_id, salary_grid_type_id)
         payslip_pbj = self.pool.get('hr.payslip')
-        search_ids = payslip_pbj.search(self.cr, self.uid, [('period_id','=',month.id),('salary_net','=',0.0), ('employee_id.id','in',employee_ids)])
+        search_ids = payslip_pbj.search(self.cr, self.uid, [('period_id','=',month.id),('salary_net','=',0.0),('employee_id.id','in',employee_ids)])
         return payslip_pbj.browse(self.cr, self.uid, search_ids)
 
     def _get_error_employees(self, month, department_level1_id, department_level2_id, department_level3_id, salary_grid_type_id):
@@ -120,7 +120,7 @@ class ReportHrErrorEmployee(report_sxw.rml_parse):
 
 
 class HrErrorEmployeeReport(osv.AbstractModel):
-    _name = 'report.smart_hr.report_hr_error_employee'
+    _name = 'report.smart_hr.report_hr_error_employee_run'
     _inherit = 'report.abstract_report'
-    _template = 'smart_hr.report_hr_error_employee'
+    _template = 'smart_hr.report_hr_error_employee_run'
     _wrapped_report_class = ReportHrErrorEmployee

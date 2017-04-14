@@ -165,21 +165,13 @@ class HrDecisionAppoint(models.Model):
     def _onchange_type_appointment(self):
         # get list of employee depend on type_appointment
         res = {}
-        if self.type_appointment and self.type_appointment.for_members is True:
-            if self.type_appointment.id == self.env.ref('smart_hr.data_hr_recrute_Members').id:
-                employee_ids = self.env['hr.employee'].search([('is_member', '=', True), ('employee_state', 'in', ['done','employee'])])
+        if self.type_appointment:
+            type_ids = self.type_appointment.type_ids.ids
+            if self.type_appointment.id == self.env.ref('smart_hr.data_hr_new_agent_public').id: 
+                employee_ids = self.env['hr.employee'].search([('type_id', 'in', type_ids), ('employee_state', 'in', ['done'])])
             else:
-                employee_ids = self.env['hr.employee'].search([('is_member', '=', True), ('employee_state', 'in', ['done', 'employee'])])
-            job_ids = self.env['hr.job'].search([('name.members_job', '=', True), ('state', '=', 'unoccupied')])
-            print"job_ids",job_ids
-            res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
-            return res
-        if self.type_appointment and self.type_appointment.for_members is False:
-            if self.type_appointment.id == self.env.ref('smart_hr.data_hr_new_agent_public').id:
-                employee_ids = self.env['hr.employee'].search([('is_member', '=', False), ('employee_state', 'in', ['done'])])
-            else:
-                employee_ids = self.env['hr.employee'].search([('is_member', '=', False), ('employee_state', 'in', ['done', 'employee'])])
-            job_ids = self.env['hr.job'].search([('name.members_job', '=', False), ('state', '=', 'unoccupied')])
+                employee_ids = self.env['hr.employee'].search([('type_id', 'in', type_ids), ('employee_state', 'in', ['done', 'employee'])])
+            job_ids = self.env['hr.job'].search([('name.type_ids', 'in', type_ids), ('state', '=', 'unoccupied')])
             res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
             return res
 
@@ -502,7 +494,7 @@ class HrDecisionAppoint(models.Model):
         grade_id = int(self.emp_job_id.grade_id.code)
         new_grade_id = int(self.grade_id.code)
         #remettre compteur à 0 si sollam a changé ou martaba a changé ou kén 3odhw asb7a idéri
-        if self.job_id.type_id != self.emp_job_id.type_id or (grade_id != new_grade_id) or (self.job_id.name.members_job is False and self.emp_job_id.name.members_job is True):
+        if self.job_id.type_id != self.emp_job_id.type_id or (grade_id != new_grade_id):
             self.employee_id.promotion_duration = 0
             holiday_balance = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
                                                                              ('holiday_status_id', '=', self.env.ref('smart_hr.data_hr_holiday_status_normal').id),],limit=1)
@@ -722,11 +714,11 @@ class HrTypeAppoint(models.Model):
     recrutment_decider = fields.Boolean(string=u' موافقة رئيس الهيئة  ')
     ministry_civil = fields.Boolean(string=u' موافقة وزارة الخدمة المدنية')
     can_be_cancelled = fields.Boolean(string=u'يمكن الغاؤها')
-    for_members = fields.Boolean(string=u'للاعضاء')
     hr_allowance_appoint_id = fields.One2many('hr.allowance.appoint', 'appoint_type_id', string='البدلات')
     direct_appoint_period = fields.Float(string=u'فترة مهلة المباشرة')
     max_pension = fields.Boolean(string=u'الحد الأقصى لراتب نسبة التقاعد', default=False)
     max_pension_ratio = fields.Float(string=u'نسبة الحد (%)', default=40)
+    type_ids = fields.Many2many('salary.grid.type', string=u'الاصناف')
 
 
 class HrAllowanceAppoint(models.Model):
