@@ -197,6 +197,7 @@
         'payroll/views/report_payslip_extension.xml',
         'payroll/views/report_hr_error_employee.xml',
         'payroll/views/report_hr_payslip_changement.xml',
+        'payroll/views/report_hr_error_employee_run.xml',
         'payroll/views/report.xml',
 
         # الحضور والإنصراف

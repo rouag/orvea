@@ -106,8 +106,8 @@ class HrPayslipRun(models.Model):
             employee_ids = list((set(employee_ids) - set(stop_employee_ids))) 
         result.update({'domain': {'employee_ids': [('id', 'in', employee_ids)]}})
         return result
-           
-    
+
+ 
 
     @api.one
     def action_verify(self):
