@@ -368,7 +368,7 @@
 								<br></br>
 								<field name="line_ids" string=" طلبات النقل"
 									attrs="{'invisible':[('state', 'not in', ['new'])]}" options="{'no_create': True}">
-									<tree editable="bottom" colors="red:is_conflected==True;"
+									<tree  delete='0' editable="bottom" colors="red:is_conflected==True;"
 										create="false">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
@@ -387,7 +387,7 @@
 								<br></br>
 								<field name="line_ids2" string=" طلبات النقل" options="{'no_create': True}"
 									attrs="{'invisible':[('state', 'not in', ['draft','waiting'])],'readonly':[('state', 'in', [ 'draft'])]}">
-									<tree editable="bottom" colors="red:is_conflected==True;">
+									<tree  delete='0' editable="bottom" colors="red:is_conflected==True;">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
@@ -416,7 +416,7 @@
 								<field name="line_ids3" options="{'no_create': True}"
 									attrs="{'invisible':[('state', 'not in', ['waiting'])]}"
 									string=" طلبات النقل">
-									<tree editable="bottom" colors="red:is_conflected==True;">
+									<tree  delete='0' editable="bottom" colors="red:is_conflected==True;">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
@@ -442,7 +442,7 @@
 								<field name="line_ids4" options="{'no_create': True}"
 									attrs="{'invisible':[('state', 'not in', ['commission_president','benefits', 'issuing_decision','done'])], 'readonly':[('state', 'in', [ 'benefits'])]}"
 									string=" طلبات النقل">
-									<tree editable="bottom" colors="red:is_conflected==True;">
+									<tree  delete='0' editable="bottom" colors="red:is_conflected==True;">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
@@ -475,7 +475,7 @@
 								<field name="line_ids5" options="{'no_create': True}"
 									attrs="{'invisible':[('state', 'not in', ['commission_third'])],'readonly':[('state', 'in', [ 'done','refused'])]}"
 									string=" طلبات النقل">
-									<tree editable="bottom" colors="red:is_conflected==True;">
+									<tree  delete='0' editable="bottom" colors="red:is_conflected==True;">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />

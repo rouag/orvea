@@ -343,7 +343,8 @@ class HrJobCreateLine(models.Model):
             if self.job_create_id.members_job is True:
                 name_ids = self.job_create_id.serie_id.job_name_ids
                 new_name_ids = [rec.id for rec in name_ids if rec.for_members_name is True]
-                res['domain'] = {'name': [('id', 'in', new_name_ids)]}
+                type_ids = self.name.typr_ids.ids
+                res['domain'] = {'name': [('id', 'in', new_name_ids)], 'type_id': [('id', 'in', type_ids)]}
                 return res
             else:
                 name_ids = self.job_create_id.serie_id.job_name_ids
