@@ -561,12 +561,14 @@ class HrPayslip(models.Model):
                                                                                 ('date_from', '>=', get_from_date),
                                                                                 ], order='done_date asc', limit=1)
                             months_from_holiday_start = relativedelta(today, fields.Date.from_string(oldest_holiday_id.date_from)).months
+                            if months_from_holiday_start < 0  : months_from_holiday_start= 0.0
                         if entitlement_type == rec.entitlement_id.entitlment_category and rec.month_from <= months_from_holiday_start <= rec.month_to and duration_in_month > 0:
-                            basic_salary_amount = (duration_in_month * (basic_salary / 30.0) * (100 - rec.salary_proportion)) / 100.0
+                            ret_amount = basic_salary * grid_id.retirement / 100.0
+                            new_basic_salary = basic_salary - ret_amount + retirement_amount
+                            basic_salary_amount = (duration_in_month * (new_basic_salary / 30.0) * (100 - rec.salary_proportion)) / 100.0
                             if holiday_status_id.min_amount:
-                                ret_amount = basic_salary * grid_id.retirement / 100.0
-                                basic_salary_amount = ((basic_salary - ret_amount + retirement_amount) * (100 - rec.salary_proportion)) / 100.0
-                                diff = holiday_status_id.min_amount - (((basic_salary - ret_amount + retirement_amount)) * (rec.salary_proportion)) / 100.0
+                                basic_salary_amount = (new_basic_salary * (100 - rec.salary_proportion)) / 100.0
+                                diff = holiday_status_id.min_amount - (new_basic_salary * rec.salary_proportion) / 100.0
                                 if diff > 0:
                                     basic_salary_amount -= diff
                                 # amout depend of number of days
@@ -576,7 +578,6 @@ class HrPayslip(models.Model):
                             for allowance in holiday_id.employee_id.get_employee_allowances(grid_id.date):
                                 if not holiday_status_id.transport_allowance and allowance['allowance_id'] == self.env.ref('smart_hr.hr_allowance_type_01').id:
                                     allowance_amount2 += allowance['amount'] / 30.0 * duration_in_month
-
             else:
                 for rec in res:
                     grid_id = rec['grid_id']
@@ -610,11 +611,12 @@ class HrPayslip(models.Model):
                                                                                     ], order='done_date asc', limit=1)
                                 months_from_holiday_start = relativedelta(today, fields.Date.from_string(oldest_holiday_id.date_from)).months
                             if entitlement_type == rec.entitlement_id.entitlment_category and rec.month_from <= months_from_holiday_start <= rec.month_to and days > 0:
-                                basic_salary_amount2 += (days * (basic_salary / 30.0) * (100 - rec.salary_proportion)) / 100.0
+                                ret_amount = basic_salary * grid_id.retirement / 100.0
+                                new_basic_salary = basic_salary - ret_amount + retirement_amount
+                                basic_salary_amount2 += (days * (new_basic_salary / 30.0) * (100 - rec.salary_proportion)) / 100.0
                                 if holiday_status_id.min_amount:
-                                    ret_amount = basic_salary * grid_id.retirement / 100.0
-                                    basic_salary_amount2 += ((basic_salary - ret_amount + retirement_amount) * (100 - rec.salary_proportion)) / 100.0
-                                    diff = holiday_status_id.min_amount - (((basic_salary - ret_amount + retirement_amount)) * (rec.salary_proportion)) / 100.0
+                                    basic_salary_amount2 += (new_basic_salary * (100 - rec.salary_proportion)) / 100.0
+                                    diff = holiday_status_id.min_amount - (new_basic_salary * rec.salary_proportion) / 100.0
                                     if diff > 0:
                                         basic_salary_amount2 -= diff
                                     # amout depend of number of days

@@ -392,7 +392,6 @@ class HrPayslip(models.Model):
             worked_days = days_between(date_from, date_to) - 1
             unworked_days = 30.0 - worked_days
             res_count += unworked_days
-        print '*----res_count---', res_count
         return res_count
 
     @api.multi
