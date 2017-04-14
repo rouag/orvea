@@ -55,27 +55,9 @@ class SmartUtils(models.Model):
             # case 2: different salary grid_ids for all periode
             if not mydict:
                 grid_id, basic_salary = employee_id.get_salary_grid_id(date_from)
-                if grid_id:
-                    # minus normal days
-                    if not normal_day and date_from.weekday() not in [4, 5]:
-                        days -= 1
-                    # minus vendredi et samedi
-                    if not weekend and date_from.weekday() in [4, 5]:
-                        days -= 1
-                    # minus jours fiérie
-                    if not holidays:
-                        hol_domain = [('date_from', '<=', date_from),
-                                      ('date_to', '>=', date_from),
-                                      ('state', '=', 'done')
-                                      ]
-                        holiday_id = self.env['hr.public.holiday'].search(hol_domain, limit=1)
-                        if holiday_id:
-                            days -= 1
-                    mydict = {'date_from': date_from, 'date_to': date_from, 'days': days, 'grid_id': grid_id, 'basic_salary': basic_salary}
-                    days += 1
-                    # add one day
-                    date_from += dayDelta
+                date_start = date_from
                 while date_from <= date_to:
+                    days += 1
                     # minus normal days
                     if not normal_day and date_from.weekday() not in [4, 5]:
                         days -= 1
@@ -94,20 +76,20 @@ class SmartUtils(models.Model):
                     current_grid_id, basic_salary_temp = employee_id.get_salary_grid_id(date_from)
                     if grid_id and current_grid_id and grid_id != current_grid_id:
                         # append old value of my_dict
-                        res.append(mydict)
-                        days = 0
-                        grid_id = current_grid_id
-                        basic_salary = basic_salary_temp
-                        mydict = {'date_from': date_from, 'date_to': date_from, 'days': days, 'grid_id': grid_id, 'basic_salary': basic_salary}
-                    else:
-                        # update my_dict
-                        if days < 0:
+                        if days:
+                            mydict = {'date_from': date_start, 'date_to': date_from, 'days': days, 'grid_id': grid_id, 'basic_salary': basic_salary}
+                            res.append(mydict)
+                            date_start = date_from + dayDelta
+                            grid_id = current_grid_id
+                            basic_salary = basic_salary_temp
                             days = 0
-                        mydict['days'] = days
-                        mydict['date_to'] = date_from
+                    if grid_id and current_grid_id and grid_id == current_grid_id and date_from == date_to:
+                        # update laste dict
+                        if days:
+                            mydict = {'date_from': date_start, 'date_to': date_to, 'days': days, 'grid_id': current_grid_id, 'basic_salary': basic_salary_temp}
+                            res.append(mydict)
                     # add one day
                     date_from += dayDelta
-                    days += 1
         return res
 
     def compute_duration_deputation(self, date_from, date_to, deputation_id):

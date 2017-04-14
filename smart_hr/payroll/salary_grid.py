@@ -144,6 +144,17 @@ class SalaryGridDetail(models.Model):
         res.write({'date': res.grid_id.date})
         return res
 
+    @api.multi
+    def hide_line(self):
+        self.ensure_one()
+        count_mployee = self.env['hr.employee'].search_count([('type_id', '=', self.type_id.id),
+                                                              ('grade_id', '=', self.grade_id.id),
+                                                              ('degree_id', '=', self.degree_id.id)])
+        if count_mployee:
+            raise ValidationError(_(u'لا يمكن الحذف في حالة إرتباط السلم بموظف!'))
+        else:
+            self.is_old = True
+
 
 class SalaryGridDetailAllowance(models.Model):
     _name = 'salary.grid.detail.allowance'
