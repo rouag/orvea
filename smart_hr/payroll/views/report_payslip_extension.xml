@@ -1,51 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
 	<data>
-
-
 		<template id="report_payslip_extension">
 			<t t-call="report.html_container">
 				<t t-foreach="docs" t-as="o">
-
 					<t t-call="smart_base.landscape_layout">
-
- 
-
 						<div class="page">
-						
-
-							<div class="col-xs-12 left">
-
-								<br></br>
-								<strong>تاريخ الطباعة
-									:
-								</strong>
-								<span
-									t-esc="get_hijri_date(context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d 
-							%H:%M'), '-')" />
-								<br></br>
-
-
-							</div>
-							<br></br>
-							<br></br>
-							<br></br>
-
 
 							<div class="col-xs-12 text-center">
-								<br></br>
-								<strong>ملحق الرواتب
-									:
-								</strong>
-								<span t-field="o.period_id.name" />
-								<br></br>
-								<br></br>
+									<h3>
+										<strong>ملحق الرواتب :</strong>
+										<strong><span t-field="o.period_id.name" /></strong>
+									</h3>
+
 							</div>
-							<br></br>
-							<br></br>
+
+							<br/>	<br/>
+
+							<div class="col-xs-6">
+									<strong> الفرع :</strong> <span t-field="o.department_level1_id" />
+									<br/>
+									<strong> القسم :</strong> <span t-field="o.department_level2_id" />
+								</div>
+								<div class="col-xs-6">
+									<strong> الشعبة :</strong> <span t-field="o.department_level3_id" />
+									<br/>
+									<strong> الصنف :</strong> <span t-field="o.salary_grid_type_id" />
+									<br/><br/>
+								</div>
+
+
 							<div class="col-xs-12 text-center">
 
 								<t t-foreach="get_all_types()" t-as="type">
+									<t t-set="total_basic_salary_type" t-value="0" />
 									<t t-set="total_allowances_type" t-value="0" />
 									<t t-set="total_deductions_type" t-value="0" />
 									<t t-set="total_salary_net_type" t-value="0" />
@@ -65,8 +53,8 @@
 												<td class="text-center">رقم الوظيفة</td>
 												<td class="text-center">الدرجة </td>
 												<td class="text-center"> الراتب الاساسي</td>
-												<td colspan="2" class="text-center">إجمالي البدلات</td>
-												<td colspan="2" class="text-center">إجمالي الحسميات </td>
+												<td class="text-center">إجمالي البدلات</td>
+												<td class="text-center">إجمالي الحسميات </td>
 												<td class="text-center"> الصافي</td>
 											</tr>
 										</thead>
@@ -75,6 +63,7 @@
 											
 											<t t-set="total_allowances_type" t-value="0" />
 											<t t-foreach="get_all_employees(type.id,o.slip_ids)" t-as="line">
+													<t t-set="basic_salary" t-value="line.employee_id.get_salary_grid_id(False)[1]" />
 												<tr>
 													<td>
 														<span t-esc="line_index" />
@@ -83,7 +72,7 @@
 														<span t-field="line.employee_id.number" />
 													</td>
 													<td>
-														<span t-field="line.employee_id.name" />
+														<span t-field="line.employee_id.display_name" />
 													</td>
 													<td>
 														<span t-field="line.employee_id.job_id" />
@@ -95,34 +84,37 @@
 														<span t-field="line.employee_id.degree_id" />
 													</td>
 													<td>
-														<span t-field="line.employee_id.basic_salary" />
+														<span t-esc="basic_salary" />
 													</td>
-													<td colspan="2" class="text-center">
-													<span t-esc="line.allowance_total" />
+													<td>
+														<span t-esc="line.allowance_total" />
 													</td>
-													<td colspan="2" class="text-center">
-													<span t-esc="line.difference_deduction_total" />
+													<td>
+														<span t-esc="line.difference_deduction_total" />
 													</td>
 													<td>
 														<span t-esc="line.salary_net" />
 													</td>
 												</tr>
-											 
+												<t t-set="total_basic_salary_type" t-value="total_basic_salary_type+basic_salary" />
 												<t t-set="total_allowances_type" t-value="total_allowances_type + line.allowance_total" />
 												<t t-set="total_deductions_type" t-value="total_deductions_type + line.difference_deduction_total" />
 												<t t-set="total_salary_net_type" t-value="total_salary_net_type+line.salary_net" />
-									
+
 											</t>
 										</tbody>
 										<tr>
-											<td colspan="7" class="text-center"> المجموع</td>
-											<td colspan="2" class="text-center">
+											<td colspan="6" class="text-center"> المجموع</td>
+											<td>
+												<span t-esc="total_basic_salary_type" />
+											</td>
+											<td>
 												<span t-esc="total_allowances_type" />
 											</td>
-											<td colspan="2" class="text-center">
+											<td>
 												<span t-esc="total_deductions_type" />
 											</td>
-											<td colspan="1" class="text-center">
+											<td>
 												<span t-esc="total_salary_net_type" />
 											</td>
 										</tr>
