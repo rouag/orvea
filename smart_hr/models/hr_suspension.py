@@ -97,6 +97,8 @@ class hr_suspension(models.Model):
     def button_done(self):
         user = self.env['res.users'].browse(self._uid)
         for rec in self:
+            if rec.employee_id.emp_state == 'terminated':
+                raise ValidationError(u'لا يمكن كف يد الموظف وهو مطوي قيده')
             rec.employee_id.emp_state = 'suspended'
             rec.done_date = fields.Date.today()
             rec.state = 'done'
