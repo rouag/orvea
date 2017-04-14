@@ -437,10 +437,10 @@
 							</page>
 
 							<page string="طلبات النقل" options="{'no_create': True}"
-								attrs="{'invisible':[('state', 'not in', ['commission_president', 'benefits', 'issuing_decision', 'done'])],'readonly':[('state', 'in', [ 'commission_president','done','refused'])]}">
+								attrs="{'invisible':[('state', 'not in', ['commission_president', 'benefits', 'issuing_decision', 'done'])]}">
 								<br></br>
 								<field name="line_ids4" options="{'no_create': True}"
-									attrs="{'invisible':[('state', 'not in', ['commission_president','benefits', 'issuing_decision','done'])]}"
+									attrs="{'invisible':[('state', 'not in', ['commission_president','benefits', 'issuing_decision','done'])], 'readonly':[('state', 'in', [ 'benefits'])]}"
 									string=" طلبات النقل">
 									<tree editable="bottom" colors="red:is_conflected==True;">
 										<field name="sequence" />
