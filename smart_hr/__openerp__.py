@@ -96,7 +96,8 @@
         'hr/data/hr_department_type_data.xml',
         'hr/data/hr_data.xml',
         'hr/view/hr_employee_transfert_view.xml',
-       
+
+
         'hr/view/hr_setting.xml',
         'hr/view/hr_employee_lend_view.xml',
         'hr/view/hr_employee_comm_view.xml',
@@ -231,7 +232,8 @@
         'attendance/views/monthly_summary_report_all.xml',
         'attendance/views/request_transfer_delay_hours_report.xml',
         'attendance/views/request_transfer_absence_days_report.xml',
-
+        'attendance/views/absences_employees_list.xml',
+        'attendance/views/delay_employees_list.xml',
         
         # تصنيف الوظائف
         'job/view/hr_job_setting.xml',

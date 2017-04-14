@@ -38,3 +38,4 @@ todo
 /smart_utils/
 /smart_utilities/
 /utils/
+!/smart_hr/payroll/hr_payroll.py
