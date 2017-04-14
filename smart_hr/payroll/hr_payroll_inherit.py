@@ -815,16 +815,12 @@ class HrPayslip(models.Model):
             duration_in_month = 0
             res = []
             if date_from >= suspension_date_from and suspension_date_to > date_to:
-                print 'hello1'
                 res = self.env['hr.smart.utils'].compute_duration_difference(employee, date_from, date_to, True, True, True)
             if date_from >= suspension_date_from and suspension_date_to <= date_to:
-                print 'hello2'
                 res = self.env['hr.smart.utils'].compute_duration_difference(employee, date_from, suspension_date_to, True, True, True)
             if suspension_date_from >= date_from and suspension_date_to < date_to:
-                print 'hello3'
                 res = self.env['hr.smart.utils'].compute_duration_difference(employee, suspension_date_from, suspension_date_to, True, True, True)
             if suspension_date_from >= date_from and suspension_date_to >= date_to:
-                print 'hello4'
                 res = self.env['hr.smart.utils'].compute_duration_difference(employee, suspension_date_from, date_to, True, True, True)
             amount = 0.0
             retirement_amount = 0.0
@@ -929,9 +925,9 @@ class HrPayslip(models.Model):
             for rec in termination.employee_id.holidays_balance:
                 sum_days += rec.holidays_available_stock
             # 2) الإجازة
-            if sum_days >= termination.termination_type_id.max_days:
+            if sum_days >= termination.termination_type_id.max_days and not termination.termination_type_id.all_holidays:
                 sum_days = termination.termination_type_id.max_days
-            if termination.termination_type_id.all_holidays and sum_days > 0:
+            if sum_days > 0:
                 if grid_id:
                     amount = (basic_salary / 30.0) * sum_days
                     if amount != 0.0:
