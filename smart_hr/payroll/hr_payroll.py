@@ -278,10 +278,6 @@ class HrPayslip(models.Model):
             worked_days_line_ids, leaves = rec.get_worked_day_lines_without_contract(rec.employee_id.id, rec.employee_id.calendar_id, rec.date_from, rec.date_to)
             rec.worked_days_line_ids = worked_days_line_ids
             rec.days_off_line_ids = leaves
-            number_of_days = 0
-            for rec in rec.days_off_line_ids:
-                number_of_days += rec['number_of_days']
-            rec.number_of_days = 30 - number_of_days
 
     def get_worked_day_lines_without_contract(self, employee_id, working_hours, date_from, date_to, compute_leave=True):
         """
@@ -349,11 +345,58 @@ class HrPayslip(models.Model):
             return []
         return list(set(self.pool.get('hr.payroll.structure')._get_parent_structure(cr, uid, structure_ids, context=context)))
 
+    def get_days_off_count(self, date_from, date_to):
+        res_count = 0.0
+        # holidays in current periode
+        domain = [('employee_id', '=', self.employee_id.id),
+                  ('state', '=', 'done')]
+        holidays_ids = self.env['hr.holidays'].search(domain)
+        for holiday_id in holidays_ids:
+            # overlaped days in current month
+            holiday_date_from = fields.Date.from_string(holiday_id.date_from)
+            date_from = fields.Date.from_string(str(date_from))
+            holiday_date_to = fields.Date.from_string(str(holiday_id.date_to))
+            date_to = fields.Date.from_string(str(date_to))
+            res = []
+            if date_from >= holiday_date_from and holiday_date_to > date_to:
+                res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, date_from, date_to, True, True, True)
+            if date_from >= holiday_date_from and holiday_date_to <= date_to:
+                res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, date_from, holiday_date_to, True, True, True)
+            if holiday_date_from >= date_from and holiday_date_to < date_to:
+                res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, holiday_date_from, holiday_date_to, True, True, True)
+            if holiday_date_from >= date_from and holiday_date_to >= date_to:
+                res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, holiday_date_from, date_to, True, True, True)
+            if len(res) == 1:
+                rec = res[0]
+                res_count = rec['days']
+            else:
+                for rec in res:
+                    res_count += rec['days']
+        # termination in current periode
+        domain = [('date', '>=', date_from),
+                  ('date', '<=', date_to),
+                  ('employee_id', '=', self.employee_id.id),
+                  ('state', '=', 'done')
+                  ]
+        termination_ids = self.env['hr.termination'].search(domain)
+        for termination in termination_ids:
+            # فرق الأيام المخصومة من الشهر
+            date_from = date_from
+            date_to = termination.date_termination
+            worked_days = days_between(date_from, date_to) - 1
+            unworked_days = 30.0 - worked_days
+            res_count += unworked_days
+        print '*----res_count---', res_count
+        return res_count
+
     @api.multi
     def compute_sheet(self):
         bonus_line_obj = self.env['hr.bonus.line']
         loan_obj = self.env['hr.loan']
         for payslip in self:
+            # calculate work days
+            number_of_days = 0
+            payslip.number_of_days = 30 - payslip.get_days_off_count(payslip.date_from, payslip.date_to)
             # delete old line
             payslip.line_ids.unlink()
             # delete old difference_history
@@ -364,6 +407,7 @@ class HrPayslip(models.Model):
             employee = payslip.employee_id
             # search the salary_grids for this employee
             res = self.env['hr.smart.utils'].compute_duration_difference(employee, payslip.date_from, payslip.date_to, True, True, True)
+            print '---res------', res
             if not res:
                 return
             basic_salary = 0.0

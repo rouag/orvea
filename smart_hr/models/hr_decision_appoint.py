@@ -515,11 +515,12 @@ class HrDecisionAppoint(models.Model):
                                 'job_id': self.job_id.id,
                                 'department_id': self.department_id.id,
                                 'degree_id': self.degree_id.id,
+                                'type_id': self.type_id.id,
                                 'grade_id': self.grade_id.id,
                                 'royal_decree_number': self.royal_decree_number,
                                 'royal_decree_date': self.royal_decree_date,
                                 'is_started': True,
-                                 'state_appoint': 'active'
+                                'state_appoint': 'active'
                                 })
         # check if the employee have allready a number 
         if not self.employee_id.number:

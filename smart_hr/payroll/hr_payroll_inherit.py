@@ -366,13 +366,13 @@ class HrPayslip(models.Model):
             duration_in_month = 0
             res = []
             if date_from >= lend_date_from and lend_date_to > date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, date_from, date_to, True, False, False)
+                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, date_from, date_to, True, True, True)
             if date_from >= lend_date_from and lend_date_to <= date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, date_from, lend_date_to, True, False, False)
+                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, date_from, lend_date_to, True, True, True)
             if lend_date_from >= date_from and lend_date_to < date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_from, lend_date_to, True, False, False)
+                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_from, lend_date_to, True, True, True)
             if lend_date_from >= date_from and lend_date_to >= date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_from, date_to, True, False, False)
+                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_from, date_to, True, True, True)
 
             hr_setting = self.env['hr.setting'].search([], limit=1)
             employee_allowances = lend_id.employee_id.hr_employee_allowance_ids
