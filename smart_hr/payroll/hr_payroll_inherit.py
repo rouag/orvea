@@ -81,7 +81,7 @@ class HrPayslip(models.Model):
 
         for sanction in sanction_line_ids:
             amount = (basic_salary + allowance_total) / 30.0 * sanction.days_number
-            vals = {'name': u'عقوبة',
+            vals = {'name':  sanction.type_sanction.name,
                     'employee_id': sanction.employee_id.id,
                     'rate': sanction.days_number,
                     'number_of_days': sanction.days_number,

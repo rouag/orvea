@@ -7,36 +7,41 @@ from openerp.exceptions import UserError
 from datetime import date, datetime, timedelta
 
 
-class hrSanction(models.Model):
+class HrSanction(models.Model):
     _name = 'hr.sanction'
     _inherit = ['mail.thread']
     _order = 'id desc'
     _description = u'إجراء العقوبات'
 
-    name = fields.Char(string='رقم القرار',readonly=1, states={'draft': [('readonly', 0)]})
+    name = fields.Char(string='رقم القرار', readonly=1, states={'draft': [('readonly', 0)]})
     order_date = fields.Date(string='تاريخ العقوبة', default=fields.Datetime.now(), readonly=1)
     sanction_text = fields.Text(string=u'محتوى العقوبة', readonly=1, states={'draft': [('readonly', 0)]})
-    order_picture = fields.Binary(string='صورة القرار', required=1, readonly=1, states={'draft': [('readonly', 0)]}, attachment=True)
+    order_picture = fields.Binary(string='صورة القرار', required=1, readonly=1, states={'draft': [('readonly', 0)]},
+                                  attachment=True)
     order_picture_name = fields.Char(string='صورة القرار', readonly=1, states={'draft': [('readonly', 0)]})
-    type_sanction = fields.Many2one('hr.type.sanction', string=u' نوع العقوبة ', required=1, readonly=1, states={'draft': [('readonly', 0)]})
-    date_sanction_start = fields.Date(string='تاريخ بدأ العقوبة', readonly=1, states={'draft': [('readonly', 0)]})
+    type_sanction = fields.Many2one('hr.type.sanction', string=u' نوع العقوبة ', required=1, readonly=1,
+                                    states={'draft': [('readonly', 0)]})
+    date_sanction_start = fields.Date(string='تاريخ بدأ العقوبة', required=1, readonly=1,
+                                      states={'draft': [('readonly', 0)]})
     date_sanction_end = fields.Date(string='تاريخ الإلغاء', readonly=1, states={'draft': [('readonly', 0)]})
     note = fields.Text(string=u'الملاحظات', readonly=1, states={'draft': [('readonly', 0)]})
     number_sanction = fields.Char(string='رقم الخطاب  ')
     date_sanction = fields.Date(string='تاريخ الخطاب ')
     file_sanction = fields.Binary(string='صورة الخطاب ', attachment=True)
     file_sanction_name = fields.Char(string='صورة الخطاب ')
-    
+
     # update sanction
-    difference_ids = fields.One2many('hr.sanction.ligne', 'sanction_id', string=u'العقوبات', readonly=1, states={'draft': [('readonly', 0)]})
-    line_ids = fields.One2many('hr.sanction.ligne', 'sanction_id', string=u'العقوبات', readonly=1, states={'draft': [('readonly', 0)]})
+    difference_ids = fields.One2many('hr.sanction.ligne', 'sanction_id', string=u'العقوبات', readonly=1,
+                                     states={'draft': [('readonly', 0)]})
+    line_ids = fields.One2many('hr.sanction.ligne', 'sanction_id', string=u'العقوبات', readonly=1,
+                               states={'draft': [('readonly', 0)]})
     history_ids = fields.One2many('hr.sanction.history', 'sanction_id', string='سجل التغييرات', readonly=1)
     state = fields.Selection([('draft', '  طلب'),
-                             ('waiting', '  صاحب صلاحية العقوبات'),
-                             ('extern', 'جهة خارجية'),
-                             ('done', 'اعتمدت'),
-                             ('update', 'تعديل'),
-                             ('cancel', 'ملغاة')], string='الحالة', readonly=1, default='draft')
+                              ('waiting', '  صاحب صلاحية العقوبات'),
+                              ('extern', 'جهة خارجية'),
+                              ('done', 'اعتمدت'),
+                              ('update', 'تعديل'),
+                              ('cancel', 'ملغاة')], string='الحالة', readonly=1, default='draft')
 
     @api.multi
     def button_cancel_sanction(self):
@@ -94,13 +99,13 @@ class hrSanction(models.Model):
     def action_extern(self):
         self.ensure_one()
         for rec in self.line_ids:
-#             type = ''
-#             if rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_grade').id:
-#                 type = 'حرمان من علاوة'
-#             elif rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_separation').id:
-#                 type = 'الفصل'
-#             if type:
-#                 self.env['hr.employee.history'].sudo().add_action_line(rec.employee_id, self.type_sanction.id, self.date_sanction_start, type)
+            #             type = ''
+            #             if rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_grade').id:
+            #                 type = 'حرمان من علاوة'
+            #             elif rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_separation').id:
+            #                 type = 'الفصل'
+            #             if type:
+            #                 self.env['hr.employee.history'].sudo().add_action_line(rec.employee_id, self.type_sanction.id, self.date_sanction_start, type)
             rec.state = 'done'
         self.state = 'done'
 
@@ -114,17 +119,18 @@ class hrSanction(models.Model):
     @api.multi
     def unlink(self):
         for rec in self:
-            if rec.state != 'draft'  :
+            if rec.state != 'draft':
                 raise UserError(_(u'لا يمكن حذف العقوبة  إلا في حالة طلب !'))
-        return super(hrSanction, self).unlink()
-    
+        return super(HrSanction, self).unlink()
+
+
 class HrSanctionLigne(models.Model):
     _name = 'hr.sanction.ligne'
     _description = u' العقوبات'
 
     sanction_id = fields.Many2one('hr.sanction', string=' العقوبات', ondelete='cascade')
     employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف', required=1)
-    type_sanction = fields.Many2one('hr.type.sanction',related='sanction_id.type_sanction', string=u'العقوبة')
+    type_sanction = fields.Many2one('hr.type.sanction', related='sanction_id.type_sanction', string=u'العقوبة')
     mast = fields.Boolean(string='سارية', default=True)
     deduction = fields.Boolean(string=u'حسم', default=False)
     days_number = fields.Integer(string='عدد أيام ')
@@ -144,10 +150,11 @@ class HrSanctionLigne(models.Model):
             res = {}
             grade_min = int(self.sanction_id.type_sanction.min_grade_id.code)
             grade_max = int(self.sanction_id.type_sanction.max_grade_id.code)
-            employee_ids= self.env['hr.employee'].search([('grade_id.code','>=',grade_min),('grade_id.code','<=',grade_max)]).ids
+            employee_ids = self.env['hr.employee'].search(
+                [('grade_id.code', '>=', grade_min), ('grade_id.code', '<=', grade_max)]).ids
             res['domain'] = {'employee_id': [('id', 'in', employee_ids)]}
             return res
-          
+
 
 class HrTypeSanction(models.Model):
     _name = 'hr.type.sanction'
@@ -163,7 +170,7 @@ class HrTypeSanction(models.Model):
     sanction_decider = fields.Boolean(string=u' موافقة المقام السامي  ', default=False)
 
 
-class hrSanctionHistory(models.Model):
+class HrSanctionHistory(models.Model):
     _name = 'hr.sanction.history'
 
     name = fields.Char(string='رقم القرار')

@@ -543,7 +543,7 @@ class HrPayslip(models.Model):
             # 6- الحسميات
             deduction_lines = payslip.compute_deductions(allowance_total)
             for deduction in deduction_lines:
-                deduction_val = {'name': ' :الحسميات ' + deduction['name'],
+                deduction_val = {'name':  deduction['name'],
                                  'slip_id': payslip.id,
                                  'employee_id': employee.id,
                                  'rate': 0.0,
