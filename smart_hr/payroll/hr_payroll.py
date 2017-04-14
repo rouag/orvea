@@ -58,21 +58,14 @@ class HrPayslipRun(models.Model):
     @api.onchange('period_id')
     def onchange_period_id(self):
         if self.period_id:
-            res = {}
-            today = fields.Date.today()
-#             if today < self.period_id.date_stop:
-#                 raise UserError(u"لا يمكن انشاء مسير لشهر في المستقبل ")
             self.date_start = self.period_id.date_start
             self.date_end = self.period_id.date_stop
             self.name = u'مسير جماعي  شهر %s' % self.period_id.name
-            
-          
 
     @api.onchange('department_level1_id', 'department_level2_id', 'department_level3_id', 'salary_grid_type_id','period_id')
     def onchange_department_level(self):
         dapartment_obj = self.env['hr.department']
         employee_obj = self.env['hr.employee']
-      
         department_level1_id = self.department_level1_id and self.department_level1_id.id or False
         department_level2_id = self.department_level2_id and self.department_level2_id.id or False
         department_level3_id = self.department_level3_id and self.department_level3_id.id or False
@@ -96,7 +89,6 @@ class HrPayslipRun(models.Model):
         # filter by type
         if self.salary_grid_type_id:
             employee_ids = employee_obj.search([('id', 'in', employee_ids), ('type_id', '=', self.salary_grid_type_id.id)]).ids
-            
         if self.period_id:
             payslip_stp_obj = self.env['hr.payslip.stop.line']
             employee_search_ids = payslip_stp_obj.search([( 'stop_period','=', True), ('period_id','=', self.period_id.id),('state','=','done')])
@@ -106,8 +98,6 @@ class HrPayslipRun(models.Model):
             employee_ids = list((set(employee_ids) - set(stop_employee_ids))) 
         result.update({'domain': {'employee_ids': [('id', 'in', employee_ids)]}})
         return result
-           
-    
 
     @api.one
     def action_verify(self):
@@ -270,20 +260,6 @@ class HrPayslip(models.Model):
             result_employee_ids = list((set(employee_ids) - set(minus_employee_ids)))
             res['domain'] = {'employee_id': [('id', 'in', result_employee_ids)]}
             return res
-#         res = {}
-#         if self.type_appointment and self.type_appointment.for_members is True:
-#             employee_ids = self.env['hr.employee'].search(
-#                 [('is_member', '=', True), ('employee_state', 'in', ['done', 'employee'])])
-#             job_ids = self.env['hr.job'].search([('name.members_job', '=', True),('state','=', 'unoccupied'),('type_id.is_member','=',True)])
-#             print"job_ids",job_ids
-#             res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
-#             return res
-#         if self.type_appointment and self.type_appointment.for_members is False:
-#             employee_ids = self.env['hr.employee'].search(
-#                 [('is_member', '=', False), ('employee_state', 'in', ['done', 'employee'])])
-#             job_ids = self.env['hr.job'].search([('name.members_job', '=', False),('state','=', 'unoccupied')])
-#             res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
-#             return res
 
     @api.onchange('employee_id', 'date_from', 'date_to', 'period_id')
     def onchange_employee(self):
@@ -386,10 +362,40 @@ class HrPayslip(models.Model):
             payslip.compute_date = fields.Date.from_string(fields.Date.today())
             # generate  lines
             employee = payslip.employee_id
-            # search the newest salary_grid for this employee
-            salary_grid, basic_salary = employee.get_salary_grid_id(False)
-            if not salary_grid:
+            # search the salary_grids for this employee
+            res = self.env['hr.smart.utils'].compute_duration_difference(employee, payslip.date_from, payslip.date_to, True, True, True)
+            if not res:
                 return
+            basic_salary = 0.0
+            res_allowances = []
+            retirement_amount = 0.0
+            insurance_amount = 0.0
+            if len(res) == 1:
+                res = res[0]
+                grid_id = res['grid_id']
+                duration_in_month = res['days']
+                # 1- الراتب الأساسي
+                basic_salary = res['basic_salary']
+                # 2- البدلات القارة
+                res_allowances = employee.get_employee_allowances(grid_id.date)
+                # 3- التقاعد‬
+                retirement_amount = basic_salary * grid_id.retirement / 100.0
+                # 9- التأمينات‬
+                insurance_amount = basic_salary * grid_id.insurance / 100.0
+            else:
+                for rec in res:
+                    grid_id = rec['grid_id']
+                    rec_basic_salary = rec['basic_salary']
+                    days = rec['days']
+                    duration_in_month += days
+                    # 1- الراتب الأساسي
+                    basic_salary += rec_basic_salary
+                    # 2- البدلات القارة
+                    res_allowances += employee.get_employee_allowances(grid_id.date)
+                    # 3- التقاعد‬
+                    retirement_amount += basic_salary / 30.0 * days * grid_id.retirement / 100.0
+                    # 9- التأمينات‬
+                    insurance_amount = basic_salary / 30.0 * days * grid_id.insurance / 100.0
             # compute
             lines = []
             sequence = 1
@@ -397,37 +403,37 @@ class HrPayslip(models.Model):
             deduction_total = 0.0
             difference_total = 0.0
             month = fields.Date.from_string(self.period_id.date_start).month
-            # 1- الراتب الأساسي
-            basic_salary_val = {'name': u'الراتب الأساسي',
-                                'slip_id': payslip.id,
-                                'employee_id': employee.id,
-                                'rate': 0.0,
-                                'number_of_days': 30,
-                                'amount': basic_salary,
-                                'category': 'basic_salary',
-                                'type': 'basic_salary',
-                                'sequence': sequence,
-                                }
-            lines.append(basic_salary_val)
+            if basic_salary:
+                # 1- الراتب الأساسي
+                basic_salary_val = {'name': u'الراتب الأساسي',
+                                    'slip_id': payslip.id,
+                                    'employee_id': employee.id,
+                                    'rate': 0.0,
+                                    'number_of_days': 30,
+                                    'amount': basic_salary,
+                                    'category': 'basic_salary',
+                                    'type': 'basic_salary',
+                                    'sequence': sequence,
+                                    }
+                lines.append(basic_salary_val)
             # 2- البدلات القارة
-            res = employee.get_employee_allowances(fields.Date.today())
-            for line in res:
-                sequence += 1
-                allowance_val = {'name': line['allowance_name'],
-                                 'slip_id': payslip.id,
-                                 'employee_id': employee.id,
-                                 'rate': 0.0,
-                                 'number_of_days': 30,
-                                 'amount': line['amount'],
-                                 'category': 'allowance',
-                                 'type': 'allowance',
-                                 'sequence': sequence,
-                                 }
-                lines.append(allowance_val)
-                allowance_total += line['amount']
+            if res_allowances:
+                for line in res_allowances:
+                    sequence += 1
+                    allowance_val = {'name': line['allowance_name'],
+                                     'slip_id': payslip.id,
+                                     'employee_id': employee.id,
+                                     'rate': 0.0,
+                                     'number_of_days': 30,
+                                     'amount': line['amount'],
+                                     'category': 'allowance',
+                                     'type': 'allowance',
+                                     'sequence': sequence,
+                                     }
+                    lines.append(allowance_val)
+                    allowance_total += line['amount']
             sequence += 1
             # 3- التقاعد‬
-            retirement_amount = basic_salary * salary_grid.retirement / 100.0
             if retirement_amount:
                 retirement_val = {'name': 'التقاعد',
                                   'slip_id': payslip.id,
@@ -600,7 +606,6 @@ class HrPayslip(models.Model):
                                                                   })
             # 9- التأمينات‬
             # old insurance_amount = (basic_salary * amount_multiplication + allowance_total) * salary_grid.insurance / 100.0
-            insurance_amount = basic_salary * salary_grid.insurance / 100.0
             if insurance_amount:
                 insurance_val = {'name': 'التأمين',
                                  'slip_id': payslip.id,
