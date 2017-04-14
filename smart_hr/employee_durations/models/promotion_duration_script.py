@@ -61,6 +61,12 @@ class PromotionDuration(models.Model):
                     else:
                         duration = (release_date_to - date_direct_action).days
                     promotion_days -= suspension_end.sentence
+#                 i3ara ereste a faire monadhamet dowalia
+                lend_obj = self.env['hr.employee.lend']
+                lend_uncounted_days = lend_obj.search([('employee_id', '=', emp.id), ('state', '=', 'done'), ('date_from', '<=', today_date),
+                                                              ('date_from', '>', date_direct_action),('insurance_entity.company_type','!=','inter_reg_org')])
+                for lend in lend_uncounted_days:
+                    promotion_days -= lend.duration
                 emp.promotion_duration = promotion_days
             else:
                 emp.promotion_duration = 0
@@ -89,7 +95,7 @@ class EmployeesPromotionDuration(models.Model):
                     grade_id = int(decision_appoint.emp_job_id.grade_id.code)
                     new_grade_id = int(decision_appoint.grade_id.code)
                     if decision_appoint.date_direct_action:
-                        if decision_appoint.job_id.type_id != decision_appoint.emp_job_id.type_id or (grade_id != new_grade_id) or (decision_appoint.job_id.name.members_job is False and decision_appoint.emp_job_id.name.members_job is True):
+                        if decision_appoint.job_id.type_id != decision_appoint.emp_job_id.type_id or (grade_id != new_grade_id):
                             rec.date_last_promotion = decision_appoint.date_direct_action
                             break
                 if not rec.date_last_promotion and employee_decision_appoint:

@@ -41,7 +41,7 @@
 							<field name="direct_appoint_period" />
 							<field name="max_pension" />
 							<field name="max_pension_ratio" attrs="{'invisible':[('max_pension','=',False)]}" />
-							<field name="for_members" />
+							<field name="type_ids" />
 							<field name="hr_allowance_appoint_id">
 								<tree editable="botttom">
 									<field name="hr_allowance_type_id" />
@@ -185,7 +185,7 @@
 								<field name="state_appoint"
 									attrs="{'invisible':[('state', 'not in', [ 'done','refuse'])],'readonly':[('state', 'in', [ 'done','refuse'])]}" />
 								<field name="date_direct_action"
-									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct','civil', 'done','refuse'])],'readonly':[('state', 'in', [ 'waiting', 'done','refuse'])]}" />
+									attrs="{'invisible':[('state_appoint', '=', 'new')],'readonly':[('state', 'in', [ 'waiting', 'done','refuse'])]}" />
 								<field name="date_hiring_end"
 									attrs="{'invisible':[('type_appointment', '!=', %(data_hr_recrute_contrat)d)],
 									'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done','refuse'])]}" />

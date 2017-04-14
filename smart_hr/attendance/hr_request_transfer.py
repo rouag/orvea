@@ -104,7 +104,7 @@ class HrEmployeeDelayHours(models.Model):
     name = fields.Char(string='التسلسل', readonly=1)
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', domain=[('employee_state', '=', 'employee')], resquired=1)
     number_request = fields.Integer(string='عدد الايام المراد تحويلها', required=1)
-    balance = fields.Float(string='(الرصيد الحالي(ساعات', readonly=1, related='employee_id.delay_hours_balance')
+    balance = fields.Float(string='(الرصيد الحالي(ساعات', readonly=1)
     request_id = fields.Many2one('hr.request.transfer.delay.hours')
 
     @api.onchange('employee_id')
@@ -135,6 +135,9 @@ class HrEmployeeDelayHours(models.Model):
         if self.request_id.salary_grid_type_id:
             employee_ids = employee_obj.search([('id', 'in', employee_ids), ('type_id', '=', self.request_id.salary_grid_type_id.id)]).ids
         result.update({'domain': {'employee_id': [('id', 'in', employee_ids)]}})
+        if self.employee_id:
+            self.balance = self.employee_id.delay_hours_balance
+            
         return result
 
     @api.onchange('number_request')
@@ -204,10 +207,7 @@ class HrRequestTransferAbsence(models.Model):
             'res_id': decission_id,
             'target': 'new'
             }
-    
-    
-    
-    
+
     @api.multi
     def action_audit(self):
         self.name = self.env['ir.sequence'].get('seq.hr.request.transfer.absence')
@@ -246,7 +246,7 @@ class HrEmployeeAbsenceDays(models.Model):
     name = fields.Char(string='التسلسل', readonly=1)
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', domain=[('employee_state', '=', 'employee')], resquired=1)
     number_request = fields.Integer(string='عدد الايام المراد تحويلها', required=1)
-    balance = fields.Float(string='(الرصيد الحالي(ساعات', readonly=1, related='employee_id.absence_balance')
+    balance = fields.Float(string='(الرصيد الحالي (ساعات', readonly=1)
     request_id = fields.Many2one('hr.request.transfer.absence')
 
     @api.onchange('employee_id')
@@ -277,6 +277,8 @@ class HrEmployeeAbsenceDays(models.Model):
         if self.request_id.salary_grid_type_id:
             employee_ids = employee_obj.search([('id', 'in', employee_ids), ('type_id', '=', self.request_id.salary_grid_type_id.id)]).ids
         result.update({'domain': {'employee_id': [('id', 'in', employee_ids)]}})
+        if self.employee_id:
+            self.balance = self.employee_id.absence_balance
         return result
 
     @api.onchange('number_request')

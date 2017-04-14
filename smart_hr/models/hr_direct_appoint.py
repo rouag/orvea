@@ -18,14 +18,14 @@ class HrDirectAppoint(models.Model):
     number = fields.Char(string='الرقم الوظيفي', readonly=1)
     code = fields.Char(string=u'رمز الوظيفة ', readonly=1)
     country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
-    job_id = fields.Many2one('hr.job', string='الوظيفة', store=True, readonly=1)
-    number_job = fields.Char(string='رقم الوظيفة', store=True, readonly=1)
-    type_id = fields.Many2one('salary.grid.type', string='الصنف', store=True, readonly=1)
-    department_id = fields.Many2one('hr.department', string='الادارة', store=True, readonly=1)
-    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', store=True, readonly=1)
-    far_age = fields.Float(string=' السن الاقصى', store=True, readonly=1)
-    basic_salary = fields.Float(string='الراتب الأساسي', store=True, readonly=1)
-    degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', store=True, readonly=1)
+    job_id = fields.Many2one('hr.job', string='الوظيفة', readonly=1)
+    number_job = fields.Char(string='رقم الوظيفة', readonly=1)
+    type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1)
+    department_id = fields.Many2one('hr.department', string='الادارة', readonly=1)
+    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
+    far_age = fields.Float(string=' السن الاقصى', readonly=1)
+    basic_salary = fields.Float(string='الراتب الأساسي', readonly=1)
+    degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', readonly=1)
     date_direct_action = fields.Date(string='تاريخ المباشرة ', required=1)
     type_appointment = fields.Many2one('hr.type.appoint', string=u'نوع التعيين')
     appoint_id = fields.Many2one('hr.decision.appoint', string=u'تعيين الموظف')
@@ -109,8 +109,7 @@ class HrDirectAppoint(models.Model):
     @api.multi
     def button_direct_appoint(self):
         self.ensure_one()
-
-        self.appoint_id.write({'is_started': True, 'state_appoint': 'active'})
+        self.appoint_id.action_activate()
         title = u"' إشعار بمباشرة التعين'"
         msg = u"' إشعار بمباشرة التعين'" + unicode(self.employee_id.display_name) + u"'"
         group_id = self.env.ref('smart_hr.group_department_employee')
@@ -152,13 +151,13 @@ class HrDirectAppoint(models.Model):
                 self.job_id = appoint_line.job_id.id
                 self.code = appoint_line.job_id.name.number
                 self.number_job = appoint_line.job_id.number
-                self.type_id = appoint_line.type_id.id
+                self.type_id = appoint_line.job_id.type_id.id
                 self.far_age = appoint_line.type_id.far_age
-                self.grade_id = appoint_line.grade_id.id
                 self.department_id = appoint_line.department_id.id
                 self.appoint_id = appoint_line.id
-
-
+                self.grade_id = appoint_line.job_id.grade_id.id
+                self.degree_id = appoint_line.degree_id.id
+                self.basic_salary = appoint_line.basic_salary
 
     def send_appoint_group(self, group_id, title, msg):
         """
