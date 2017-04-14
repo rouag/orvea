@@ -41,7 +41,7 @@
 							type="action" icon="fa-times" class="oe_inline oe_stat_button" />
 
 
-
+<!-- 
 						<button name="action_done" string="إعتماد" type="object"
 							groups="smart_hr.group_hr_personnel_officer_jobs"
 							attrs="{'invisible':['|', ('state', '!=', 'pm'), ('new_job_id', '=', False)]}"
@@ -56,7 +56,7 @@
 							type="object" groups="smart_hr.group_hr_authority_board"
 							attrs="{'invisible':['|', ('state', '!=', 'done'), ('tobe_cancelled', '=', False)]}"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
+ -->
 						<!-- <button name="action_notif" string="تنبيه صاحب الطلب" type="object" 
 							groups="smart_hr.group_hr_personnel_officer_jobs" attrs="{'invisible':['|','|', 
 							('state', '!=', 'pm'), ('is_ended', '=', False), ('ready_tobe_done', '=', 
@@ -82,9 +82,9 @@
 						<group>
 							<group>
 								<field name="transfert_nature" />
-								<field name="employee_id"
-									attrs="{'readonly':[('state', 'in', ['waiting','consult','pm','waiting','done', 'refused'])]}"
-									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+								 	attrs="{'readonly':[('state', 'in', ['waiting','consult','pm','waiting','done', 'refused'])]}" 
+									 />
 
 								<field name="transfert_type" />
 								<field name="special_conditions"
@@ -182,7 +182,7 @@
 				</form>
 			</field>
 		</record>
-		<record model="ir.ui.view" id="hr_employee_transfert_form_inherited">
+		 <record model="ir.ui.view" id="hr_employee_transfert_form_inherited">
 			<field name="model">hr.employee.transfert</field>
 			<field name="inherit_id" ref="smart_hr.view_hr_employee_transfert_form" />
 			<field name="groups_id" eval="[(6, 0, [ref('smart_hr.group_employee')])]" />
@@ -191,7 +191,7 @@
 					<attribute name="readonly">True</attribute>
 				</field>
 			</field>
-		</record>
+		</record> 
 		<record id="view_hr_employee_transfert_tree" model="ir.ui.view">
 			<field name="name">hr.employee.transfert.tree</field>
 			<field name="model">hr.employee.transfert</field>
@@ -387,7 +387,7 @@
 								<br></br>
 								<field name="line_ids2" string=" طلبات النقل" options="{'no_create': True}"
 									attrs="{'invisible':[('state', 'not in', ['draft','waiting'])],'readonly':[('state', 'in', [ 'draft'])]}">
-									<tree  delete='0' editable="bottom" colors="red:is_conflected==True;">
+									<tree  delete='0' create="false"   editable="bottom" colors="red:is_conflected==True;">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
@@ -413,10 +413,10 @@
 							<page string="طلبات النقل" options="{'no_create': True}"
 								attrs="{'invisible':[('state', 'not in', ['waiting'])]}">
 								<br></br>
-								<field name="line_ids3" options="{'no_create': True}"
+								<field name="line_ids3"  create='0' options="{'no_create': True}"
 									attrs="{'invisible':[('state', 'not in', ['waiting'])]}"
 									string=" طلبات النقل">
-									<tree  delete='0' editable="bottom" colors="red:is_conflected==True;">
+									<tree  delete='0' editable="bottom" colors="red:is_conflected==True;" create="false">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
@@ -441,8 +441,8 @@
 								<br></br>
 								<field name="line_ids4" options="{'no_create': True}"
 									attrs="{'invisible':[('state', 'not in', ['commission_president','benefits', 'issuing_decision','done'])], 'readonly':[('state', 'in', [ 'benefits'])]}"
-									string=" طلبات النقل">
-									<tree  delete='0' editable="bottom" colors="red:is_conflected==True;">
+									string=" طلبات النقل"  create="false">
+									<tree  delete='0'   editable="bottom" colors="red:is_conflected==True;" create="false">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
@@ -472,10 +472,10 @@
 							<page string="طلبات النقل" options="{'no_create': True}"
 								attrs="{'invisible':[('state', 'not in', ['commission_third'])],'readonly':[('state', 'in', [ 'done','refused'])]}">
 								<br></br>
-								<field name="line_ids5" options="{'no_create': True}"
+								<field name="line_ids5" options="{'no_create': True}"  
 									attrs="{'invisible':[('state', 'not in', ['commission_third'])],'readonly':[('state', 'in', [ 'done','refused'])]}"
 									string=" طلبات النقل">
-									<tree  delete='0' editable="bottom" colors="red:is_conflected==True;">
+									<tree  delete='0' create="false" editable="bottom" colors="red:is_conflected==True;">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />

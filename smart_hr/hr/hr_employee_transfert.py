@@ -18,8 +18,8 @@ class HrEmployeeTransfert(models.Model):
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
     sequence = fields.Integer(string=u'رتبة الطلب')
-    employee_id = fields.Many2one('hr.employee', string=u'صاحب الطلب',  required=1,
-                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended','terminated'])], limit=1),)
+    employee_id = fields.Many2one('hr.employee', string=u'صاحب الطلب',  required=1,)
+                                 default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended','terminated'])], limit=1),)
     last_evaluation_result = fields.Many2one('hr.employee.evaluation.level', string=u'أخر تقييم إداء')
     job_id = fields.Many2one('hr.job', default=_get_default_employee_job, string=u'الوظيفة', readonly=1, required=1)
     specific_id = fields.Many2one('hr.groupe.job', related='job_id.specific_id', string=u'المجموعة النوعية', readonly=1, required=1)
@@ -103,7 +103,7 @@ class HrEmployeeTransfert(models.Model):
                 'date':decision_date,
                 'employee_id' :self.employee_id.id }
             decision = decision_obj.create(decission_val)
-            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'trasfert')
+            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'transfert')
             decission_id = decision.id
             self.decission_id =  decission_id
         return {
@@ -187,6 +187,15 @@ class HrEmployeeTransfert(models.Model):
             count_trasfert = self.env['hr.employee.transfert'].search_count([('employee_id', '=', rec.employee_id.id),('state','in',['new','waiting','pm','consult'])])
             if count_trasfert > 1:
                 raise ValidationError(u"لا  يمكن  تقديم طلب  نقل وهناك أخر قيد الدراسة او في مرحلة الإنتظار")
+    
+    
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'new' :
+                raise ValidationError(u'لا يمكن حذف طلب  إعارة فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrEmployeeTransfert, self).unlink()
+    
     
     @api.multi
     @api.constrains('transfert_nature', 'desire_ids')
@@ -574,9 +583,11 @@ class HrTransfertSorting(models.Model):
         if len(result) > 0:
             self.line_ids3 = result + result1
             self.state = 'waiting'
-        else:
+        elif len(result1):
             self.line_ids4 = result1
             self.state = 'commission_president'
+        else :
+            raise ValidationError(u"لايوجد طلبات حالياً.")
 
     @api.multi
     def action_commissioning(self):
@@ -593,8 +604,11 @@ class HrTransfertSorting(models.Model):
                         'new_degree_id': line.new_degree_id.id,
                         'specific_group': line.specific_group, }
                 line_ids.append(vals)
-            rec.line_ids4 = line_ids
-            rec.state = 'commission_president'
+            if len(line_ids) > 0: 
+                rec.line_ids4 = line_ids
+                rec.state = 'commission_president'
+            else :
+                raise ValidationError(u"لايوجد طلبات حالياًفي قائمة الانتظار.")
  
 
 
@@ -646,8 +660,8 @@ class HrTransfertSorting(models.Model):
                                                       'res_id': rec.id,
                                                       'notif': True
                                                       })
-                        if line.accept_trasfert == False :
-                            self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                    if line.accept_trasfert == False :
+                        self.env['base.notification'].create({'title': u'إشعار برفض طلب',
                                                       'message': u'لقد تمت رفض  الطلب من الجهة.',
                                                       'user_id': line.hr_employee_transfert_id.employee_id.user_id.id,
                                                       'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
@@ -656,6 +670,8 @@ class HrTransfertSorting(models.Model):
                                                       })
  
                         line.hr_employee_transfert_id.state ='refused'
+                if (line.accept_trasfert == False) and (line.cancel_trasfert == False) :
+                    raise ValidationError(u"يوجد طلبات نقل في إنتظار موافقة أو رفض من رئيس الجهة.")
 
             if len(result) > 0:
                 rec.line_ids5 = result
@@ -699,6 +715,8 @@ class HrTransfertSorting(models.Model):
                                                       })
                     #line.hr_employee_transfert_id.accept_trasfert = False
                     line.hr_employee_transfert_id.state ='refused'
+                if (line.accept_trasfert == False) and (line.cancel_trasfert == False) :
+                    raise ValidationError(u"يوجد طلبات نقل في إنتظار موافقة أو رفض من رئيس الجهة.")
             rec.line_ids4 = line_ids
             rec.state = 'benefits'
 
@@ -772,7 +790,7 @@ class HrTransfertSortingLine2(models.Model):
     _name = 'hr.transfert.sorting.line2'
     _inherit = 'hr.transfert.sorting.line'
 
-    specific_group = fields.Selection([('same_specific', 'في نفس المجموعة النوعية'), ('other_specific', 'في مجموعة أخرى')],string=u'نوع المجموعة')
+   # specific_group = fields.Selection([('same_specific', 'في نفس المجموعة النوعية'), ('other_specific', 'في مجموعة أخرى')],string=u'نوع المجموعة')
     hr_transfert_sorting_id2 = fields.Many2one('hr.transfert.sorting', string=u'إجراء الترتيب')
     accept_trasfert = fields.Boolean(string='قبول')
     cancel_trasfert = fields.Boolean(string='رفض')

@@ -97,7 +97,7 @@ class HrEmployeeLend(models.Model):
     @api.multi
     def unlink(self):
         for rec in self:
-            if rec.state == 'done' :
+            if rec.state != 'new' :
                 raise ValidationError(u'لا يمكن حذف طلب  إعارة فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(HrEmployeeLend, self).unlink()
 
