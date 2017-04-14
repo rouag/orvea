@@ -32,10 +32,10 @@ class HrEmployeeTask(models.Model):
     def _compute_date_to(self):
         self.ensure_one()
         if self.date_from and self.duration:
-            new_date_to = self.env['hr.smart.utils'].compute_date_to(self.date_from, self.duration)
+            new_date_to = self.env['hr.smart.utils'].compute_date_to(self.date_from, self.duration - 1)
             self.date_to = new_date_to
         elif self.date_from:
-                self.date_to = self.date_from
+            self.date_to = self.date_from
 
     @api.multi
     def action_done(self):

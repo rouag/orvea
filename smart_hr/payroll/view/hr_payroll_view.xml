@@ -305,6 +305,15 @@
 							type="action" icon="fa-print" 	
 							class="oe_inline oe_stat_button" />
 							
+								<button name="%(payslip_extension_report)d" string="ملحق الرواتب"
+							type="action" icon="fa-print" 	
+							class="oe_inline oe_stat_button" />
+								<button name="%(hr_payslip_changement_report)d" string="تقرير حصر الموظفين الذين طرأ تغيير في مسيرهم"
+							type="action" icon="fa-print" 	
+							class="oe_inline oe_stat_button" />
+							
+							
+							
 						<field name="state" widget="statusbar" statusbar_visible="draft,verify,done" />
 					</header>
 					<sheet>
@@ -348,7 +357,7 @@
 									</tree>
 								</field>
 							</page>
-							<page  string="التقارير">
+							<page  string="أسماء الموظفين الذي لا تخرج اسمائهم فالمسير">
 							<field name="error_ids" readonly='1'>
 									<tree create='0' edit='0'>
 										<field name="employee_id" />

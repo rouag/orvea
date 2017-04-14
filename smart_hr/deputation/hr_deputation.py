@@ -131,7 +131,7 @@ class HrDeputation(models.Model):
     is_paied = fields.Boolean(string='is paied', default=False)
     payslip_id = fields.Many2one('hr.payslip')
     decission_id  = fields.Many2one('hr.decision', string=u'القرارات')
-
+    
     @api.multi
     def open_decission_deputation(self):
         decision_obj= self.env['hr.decision']
