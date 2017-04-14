@@ -141,26 +141,29 @@ class HrEmployeeCommissioning(models.Model):
     @api.constrains('employee_id')
     def check_constrains(self):
         self.ensure_one()
-        hr_config = self.env['hr.setting'].search([], limit=1)
         hr_deputation_setting = self.env['hr.deputation.setting'].search([], limit=1)
-        if hr_config:
             # check if there is another commissiong for the employee
-            comm_count = self.env['hr.employee.commissioning'].search_count(
+        comm_count = self.env['hr.employee.commissioning'].search_count(
                 [('state', '=', 'done'), ('employee_id', '=', self.employee_id.id), ('date_to', '>=', self.date_from)])
-            if comm_count > 0:
-                raise ValidationError(u"لا يمكن إنشاء تكليف قبل إتمام مدة أخر تكليف للموظف.")
+        if comm_count > 0:
+            raise ValidationError(u"لا يمكن إنشاء تكليف قبل إتمام مدة أخر تكليف للموظف.")
             # check assignment periode
-            if self.duration <= 0:
-                raise ValidationError(u"الرجاء التثبت من المدة.")
-            if self.duration > self.comm_type.assign_duration:
-                raise ValidationError(u"لا يمكن تجاوز الحد الاقصى للتكليف.")
-            if hr_deputation_setting:
+        if self.duration <= 0:
+            raise ValidationError(u"الرجاء التثبت من المدة.")
+        if self.duration > self.comm_type.assign_duration:
+            raise ValidationError(u"لا يمكن تجاوز الحد الاقصى للتكليف.")
+        if hr_deputation_setting:
                 # check distance
-                deputation_distance = hr_deputation_setting.deputation_distance
-                if self.employee_id.promotion_duration/354 < 1:
-                    distance = self._get_distance(int(self.city.code), int(self.employee_id.dep_city.code))
-                    if distance >= deputation_distance:
-                        raise ValidationError(u"المسافة بين مقر التكليف ومقر الموظف أكبر من مسافة الانتدابات.")
+            deputation_distance = hr_deputation_setting.deputation_distance
+            if self.employee_id.promotion_duration/354 < 1:
+                distance = self._get_distance(int(self.city.code), int(self.employee_id.dep_city.code))
+                if distance >= deputation_distance:
+                    raise ValidationError(u"المسافة بين مقر التكليف ومقر الموظف أكبر من مسافة الانتدابات.")
+        today = date.today()
+        d = today - relativedelta(days=self.comm_type.refuse_duration)           
+        refused_ids = self.search_count([('state', '=', 'refused'), ('employee_id', '=', self.employee_id.id), ('date_from', '>=', d)])
+        if refused_ids:
+            raise ValidationError(u"بعد رفض طلب تكليف لا يسمح بتقديم طلب ثان الا بعد"+str(self.comm_type.refuse_duration)+u"يوم")
 
     @api.multi
     def action_new(self):
@@ -232,3 +235,4 @@ class HrEmployeeCommissioningType(models.Model):
     name = fields.Char(string=u'نوع التكليف')
     assign_duration = fields.Integer(string=u'مدة التكليف‬‬ (باليوم)', default=354)
     grade_ids = fields.Many2many('salary.grid.grade', string='المراتب')
+    refuse_duration = fields.Integer(string=u'المدة الازمة لتقديم طلب بعد الرفض', default=45)

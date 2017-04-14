@@ -167,12 +167,16 @@ class HrDecisionAppoint(models.Model):
         res = {}
         if self.type_appointment:
             type_ids = self.type_appointment.type_ids.ids
+            job_ids=[]
             if self.type_appointment.id == self.env.ref('smart_hr.data_hr_new_agent_public').id: 
                 employee_ids = self.env['hr.employee'].search([('type_id', 'in', type_ids), ('employee_state', 'in', ['done'])])
             else:
                 employee_ids = self.env['hr.employee'].search([('type_id', 'in', type_ids), ('employee_state', 'in', ['done', 'employee'])])
-            job_ids = self.env['hr.job'].search([('name.type_ids', 'in', type_ids), ('state', '=', 'unoccupied')])
-            res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids.ids)]}
+            for type in type_ids:
+                jobs = self.env['hr.job'].search([('name.type_ids', 'in', type), ('state', '=', 'unoccupied')])
+                for job in jobs:
+                    job_ids.append(job.id)
+            res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids)]}
             return res
 
     @api.multi
