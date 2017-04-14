@@ -339,7 +339,7 @@
 							
 						<notebook>
 							<page  string="الموظفين" >
-								<group col="4" string="فلترة">
+								<group col="4" string=" ">
 									<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]"/>
 									<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]"/>
 									<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]"/>
@@ -357,7 +357,8 @@
 									</tree>
 								</field>
 							</page>
-							<page  string="أسماء الموظفين الذي لا تخرج اسمائهم فالمسير">
+							<page  string="التقارير">
+								<separator string="الموظفين المسثنين من المسير الجماعي"/>
 							<field name="error_ids" readonly='1'>
 									<tree create='0' edit='0'>
 										<field name="employee_id" />
