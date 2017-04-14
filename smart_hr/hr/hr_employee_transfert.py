@@ -187,16 +187,16 @@ class HrEmployeeTransfert(models.Model):
             count_trasfert = self.env['hr.employee.transfert'].search_count([('employee_id', '=', rec.employee_id.id),('state','in',['new','waiting','pm','consult'])])
             if count_trasfert > 1:
                 raise ValidationError(u"لا  يمكن  تقديم طلب  نقل وهناك أخر قيد الدراسة او في مرحلة الإنتظار")
-    
-    
+
+
     @api.multi
     def unlink(self):
         for rec in self:
             if rec.state != 'new' :
-                raise ValidationError(u'لا يمكن حذف طلب  إعارة فى هذه المرحلة يرجى مراجعة مدير النظام')
+                raise ValidationError(u'لا يمكن حذف طلب  نقل فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(HrEmployeeTransfert, self).unlink()
-    
-    
+
+
     @api.multi
     @api.constrains('transfert_nature', 'desire_ids')
     def check_constrains(self):
@@ -716,7 +716,7 @@ class HrTransfertSorting(models.Model):
                     #line.hr_employee_transfert_id.accept_trasfert = False
                     line.hr_employee_transfert_id.state ='refused'
                 if (line.accept_trasfert == False) and (line.cancel_trasfert == False) :
-                    raise ValidationError(u"يوجد طلبات نقل في إنتظار موافقة أو رفض من رئيس الجهة.")
+                    raise ValidationError(u"يوجد طلبات نقل في إنتظار موافقة أو رفض من الخدمة المدنية.")
             rec.line_ids4 = line_ids
             rec.state = 'benefits'
 
