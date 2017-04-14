@@ -10,6 +10,21 @@
 				<search string="طلب نقل موظف">
 					<field name="employee_id" string="الموظف" 
 						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+					<field name="transfert_type" string="نوع النقل" />
+					<field name="state" string="الحالة" />
+					<field name="transfert_nature" string="طبيعة النقل" />
+				
+					<filter name="employee_id" string="الموظف"/>
+					<filter name="transfert_type" string="نوع النقل" />
+					<filter string="طلب" domain="[('state','=','new')]" />
+					<filter string="صاحب الصلاحية" domain="[('state','=','waiting')]" />
+					<filter string="صاحب الطلب" domain="[('state','=','consult')]" />
+					<filter string=" شؤون الموظفين" domain="[('state','=','hrm')]" />
+					<filter string="اعتمدت" domain="[('state','=','done')]" />
+					<filter string="ملغى" domain="[('state','=','cancelled')]" />
+					
+					
+					<filter name="transfert_nature" string="طبيعة النقل" />
 				</search>
 			</field>
 		</record>
@@ -41,22 +56,15 @@
 							type="action" icon="fa-times" class="oe_inline oe_stat_button" />
 
 
-<!-- 
-						<button name="action_done" string="إعتماد" type="object"
-							groups="smart_hr.group_hr_personnel_officer_jobs"
-							attrs="{'invisible':['|', ('state', '!=', 'pm'), ('new_job_id', '=', False)]}"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
-						<button name="action_tobe_cancelled_confirm" string="إلغاء"
-							type="object"
-							attrs="{'invisible':['|','|', ('state', '!=', 'done'), ('is_current_user', '=', False), ('tobe_cancelled', '=', True)]}"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-
-						<button name="action_cancelled" string="إعتماد الالغاء"
-							type="object" groups="smart_hr.group_hr_authority_board"
-							attrs="{'invisible':['|', ('state', '!=', 'done'), ('tobe_cancelled', '=', False)]}"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
- -->
+						<!-- <button name="action_done" string="إعتماد" type="object" groups="smart_hr.group_hr_personnel_officer_jobs" 
+							attrs="{'invisible':['|', ('state', '!=', 'pm'), ('new_job_id', '=', False)]}" 
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" /> <button name="action_tobe_cancelled_confirm" 
+							string="إلغاء" type="object" attrs="{'invisible':['|','|', ('state', '!=', 
+							'done'), ('is_current_user', '=', False), ('tobe_cancelled', '=', True)]}" 
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" /> <button name="action_cancelled" 
+							string="إعتماد الالغاء" type="object" groups="smart_hr.group_hr_authority_board" 
+							attrs="{'invisible':['|', ('state', '!=', 'done'), ('tobe_cancelled', '=', 
+							False)]}" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" /> -->
 						<!-- <button name="action_notif" string="تنبيه صاحب الطلب" type="object" 
 							groups="smart_hr.group_hr_personnel_officer_jobs" attrs="{'invisible':['|','|', 
 							('state', '!=', 'pm'), ('is_ended', '=', False), ('ready_tobe_done', '=', 
@@ -85,6 +93,9 @@
 								<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" readonly="1"
 								 	attrs="{'readonly':[('state', 'in', ['waiting','consult','pm','waiting','done', 'refused'])]}" 
 									 />
+								<field name="employee_id"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+									attrs="{'readonly':[('state', 'in', ['waiting','consult','pm','waiting','done', 'refused'])]}" />
 
 								<field name="transfert_type" />
 								<field name="special_conditions"
@@ -368,7 +379,7 @@
 								<br></br>
 								<field name="line_ids" string=" طلبات النقل"
 									attrs="{'invisible':[('state', 'not in', ['new'])]}" options="{'no_create': True}">
-									<tree  delete='0' editable="bottom" colors="red:is_conflected==True;"
+									<tree delete='0' editable="bottom" colors="red:is_conflected==True;"
 										create="false">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
@@ -387,7 +398,8 @@
 								<br></br>
 								<field name="line_ids2" string=" طلبات النقل" options="{'no_create': True}"
 									attrs="{'invisible':[('state', 'not in', ['draft','waiting'])],'readonly':[('state', 'in', [ 'draft'])]}">
-									<tree  delete='0' create="false"   editable="bottom" colors="red:is_conflected==True;">
+									<tree delete='0' create="false" editable="bottom"
+										colors="red:is_conflected==True;">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
@@ -413,10 +425,11 @@
 							<page string="طلبات النقل" options="{'no_create': True}"
 								attrs="{'invisible':[('state', 'not in', ['waiting'])]}">
 								<br></br>
-								<field name="line_ids3"  create='0' options="{'no_create': True}"
+								<field name="line_ids3" create='0' options="{'no_create': True}"
 									attrs="{'invisible':[('state', 'not in', ['waiting'])]}"
 									string=" طلبات النقل">
-									<tree  delete='0' editable="bottom" colors="red:is_conflected==True;" create="false">
+									<tree delete='0' editable="bottom" colors="red:is_conflected==True;"
+										create="false">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
@@ -441,8 +454,9 @@
 								<br></br>
 								<field name="line_ids4" options="{'no_create': True}"
 									attrs="{'invisible':[('state', 'not in', ['commission_president','benefits', 'issuing_decision','done'])], 'readonly':[('state', 'in', [ 'benefits'])]}"
-									string=" طلبات النقل"  create="false">
-									<tree  delete='0'   editable="bottom" colors="red:is_conflected==True;" create="false">
+									string=" طلبات النقل" create="false">
+									<tree delete='0' editable="bottom" colors="red:is_conflected==True;"
+										create="false">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
@@ -458,9 +472,9 @@
 										<field name="res_city" readonly="1" />
 										<field name="state" readonly="1" />
 										<field name="accept_trasfert"
-											attrs="{'invisible':['|',('cancel_trasfert','!=',False),('state', 'in', [ 'done','refused'])], 'readonly':[('state', 'in', [ 'done','refused'])]}" />
+											attrs="{'invisible':['|',('cancel_trasfert','!=',False),('state', 'in', [ 'benefits','done','refused'])], 'readonly':[('state', 'in', [ 'done','refused'])]}" />
 										<field name="cancel_trasfert"
-											attrs="{'invisible':['|',('accept_trasfert','!=',False),('state', 'in', [ 'done','refused'])],'readonly':[('state', 'in', [ 'done','refused'])]}" />
+											attrs="{'invisible':['|',('accept_trasfert','!=',False),('state', 'in', [ 'benefits','done','refused'])],'readonly':[('state', 'in', [ 'done','refused'])]}" />
 										<button name="%(smart_hr.action_wizard_transfert_benefits)d"
 											attrs="{'invisible':[('sorting_state','!=', 'benefits')]}"
 											type="action" string="إسناد المزايا" icon="fa-dollar" />
@@ -472,10 +486,11 @@
 							<page string="طلبات النقل" options="{'no_create': True}"
 								attrs="{'invisible':[('state', 'not in', ['commission_third'])],'readonly':[('state', 'in', [ 'done','refused'])]}">
 								<br></br>
-								<field name="line_ids5" options="{'no_create': True}"  
+								<field name="line_ids5" options="{'no_create': True}"
 									attrs="{'invisible':[('state', 'not in', ['commission_third'])],'readonly':[('state', 'in', [ 'done','refused'])]}"
 									string=" طلبات النقل">
-									<tree  delete='0' create="false" editable="bottom" colors="red:is_conflected==True;">
+									<tree delete='0' create="false" editable="bottom"
+										colors="red:is_conflected==True;">
 										<field name="sequence" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
