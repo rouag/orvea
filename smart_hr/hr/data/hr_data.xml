@@ -4,7 +4,7 @@
 
 		<!-- hr setting -->
 		<record id="data_hr_setting" model="hr.setting">
-			<field name="name">إعدادات النقل، الإعارة والتكليف</field>
+			<field name="name">إعدادات النقل</field>
 		</record>
 
 		<!-- hr setting -->

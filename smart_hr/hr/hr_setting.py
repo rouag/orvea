@@ -26,7 +26,6 @@ class HrSetting(models.Model):
     periode_between_lend = fields.Integer(string=u'المدة بين إعارتين (بالسنة)', default=3)
     extend_lend_duration = fields.Integer(string=u'مدة تمديد الإعارة (باليوم)', default=354)
     # والتكليف‬‬
-    assign_duration = fields.Integer(string=u'مدة التكليف‬‬ (باليوم)', default=354)
     # الرواتب
     allowance_job_nature = fields.Many2one('hr.allowance.type', string=u'بدل طبيعة العمل', default=lambda self: self.env.ref('smart_hr.hr_allowance_type_07'))
     allowance_proportion = fields.Float(string=u'نسبة بدل طبيعة العمل (%)', default=15)

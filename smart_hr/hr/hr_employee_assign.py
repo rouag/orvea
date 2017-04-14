@@ -57,7 +57,6 @@ class HrEmployeeCommissioning(models.Model):
     salary_rate = fields.Float(string=u'نسبة  الراتب التي توفرها الجهة ')
     give_allow = fields.Boolean(string=u'الجهة توفر بدلات، مكافأة أو تعويضات')
 
-    pay_retirement = fields.Boolean(string=u'يدفع له نسبة التقاعد', related="comm_type.pay_retirement", readonly=1)
     done_date = fields.Date(string='تاريخ التفعيل')
     commissioning_job_id = fields.Many2one('hr.job', string='الوظيفة المكلف عليها', required=1,
                                            domain=[('state', '=', 'unoccupied')])
@@ -66,12 +65,22 @@ class HrEmployeeCommissioning(models.Model):
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', related='commissioning_job_id.grade_id',
                                readonly=1)
     decission_id = fields.Many2one('hr.decision', string=u'القرارات')
+    commissioning_department_id = fields.Many2one('hr.department', string='الفرع')
 
-
+    @api.multi
+    @api.onchange('comm_type')
+    def _onchange_comm_type(self):
+        # get list of employee depend on comm_typet
+        res = {}
+        if self.comm_type:
+            grade_ids = self.comm_type.grade_ids.ids
+            employee_ids = self.env['hr.employee'].search([('grade_id', 'in', grade_ids)])
+            res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)]}
+            return res
 
     @api.multi
     def open_decission_commissioning(self):
-        decision_obj= self.env['hr.decision']
+        decision_obj = self.env['hr.decision']
         if self.decission_id:
             decission_id = self.decission_id.id
         else :
@@ -139,16 +148,16 @@ class HrEmployeeCommissioning(models.Model):
             comm_count = self.env['hr.employee.commissioning'].search_count(
                 [('state', '=', 'done'), ('employee_id', '=', self.employee_id.id), ('date_to', '>=', self.date_from)])
             if comm_count > 0:
-                raise ValidationError(u"لا يمكن إنشاء إعارة قبل إتمام مدة أخر إعارة للموظف.")
+                raise ValidationError(u"لا يمكن إنشاء تكليف قبل إتمام مدة أخر تكليف للموظف.")
             # check assignment periode
             if self.duration <= 0:
                 raise ValidationError(u"الرجاء التثبت من المدة.")
-            if self.duration > hr_config.assign_duration:
-                raise ValidationError(u"لا يمكن تجاوز الهاد الاقصى للتكليف.")
+            if self.duration > self.comm_type.assign_duration:
+                raise ValidationError(u"لا يمكن تجاوز الحد الاقصى للتكليف.")
             if hr_deputation_setting:
                 # check distance
                 deputation_distance = hr_deputation_setting.deputation_distance
-                if self.employee_id.promotion_duration < 1:
+                if self.employee_id.promotion_duration/354 < 1:
                     distance = self._get_distance(int(self.city.code), int(self.employee_id.dep_city.code))
                     if distance >= deputation_distance:
                         raise ValidationError(u"المسافة بين مقر التكليف ومقر الموظف أكبر من مسافة الانتدابات.")
@@ -192,13 +201,34 @@ class HrEmployeeCommissioning(models.Model):
                 raise ValidationError(u'لا يمكن حذف التكليف فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(HrEmployeeCommissioning, self).unlink()
 
-
-# self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, False, False, "تكليف")
-
+    @api.model
+    def control_commissioning_end(self):
+        today_date = fields.Date.today()
+        commissionings = self.env['hr.employee.commissioning'].search([('state', '=', 'done'), ('date_to', '=', today_date)])
+        for line in commissionings:
+            title = u"إشعار نهاية تكليف موظف'"
+            msg = u"' إشعار نهاية تكليف الموظف'" + unicode(line.employee_id.display_name) + u"'"
+            self.env['base.notification'].create({'title': title,
+                                                  'message': msg,
+                                                  'user_id': line.employee_id.user_id.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': self.id,
+                                                  'res_action': 'smart_hr.action_hr_employee_commissioning',
+                                                  'notif': True
+                                                  })
+            self.env['base.notification'].create({'title': title,
+                                                  'message': msg,
+                                                  'user_id': line.demand_owner_id.user_id.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': self.id,
+                                                  'res_action': 'smart_hr.action_hr_employee_commissioning',
+                                                  'notif': True
+                                                  })
 
 class HrEmployeeCommissioningType(models.Model):
     _name = 'hr.employee.commissioning.type'
     _description = u'نوع التكليف'
 
     name = fields.Char(string=u'نوع التكليف')
-    pay_retirement = fields.Boolean(string=u'يدفع له نسبة التقاعد')
+    assign_duration = fields.Integer(string=u'مدة التكليف‬‬ (باليوم)', default=354)
+    grade_ids = fields.Many2many('salary.grid.grade', string='المراتب')
