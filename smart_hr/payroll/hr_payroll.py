@@ -211,7 +211,6 @@ class HrPayslip(models.Model):
         return period_id
     period_id = fields.Many2one('hr.period', string=u'الفترة', domain=[('is_open', '=', True)], readonly=1, required=1, states={'draft': [('readonly', 0)]}, default=get_default_period_id)
     days_off_line_ids = fields.One2many('hr.payslip.days_off', 'payslip_id', 'الإجازات والغيابات', readonly=True, states={'draft': [('readonly', False)]})
-    salary_net = fields.Float(string='صافي الراتب')
     difference_history_ids = fields.One2many('hr.payslip.difference.history', 'payslip_id', 'الفروقات المتخلدة')
     state = fields.Selection([('draft', 'مسودة'),
                               ('verify', 'في إنتظار الإعتماد'),
@@ -223,6 +222,9 @@ class HrPayslip(models.Model):
     type_id = fields.Many2one('salary.grid.type', string=u'صنف الموظف')
     number_of_days = fields.Integer(string=u'عدد أيام العمل', readonly=1)
     compute_date = fields.Date(string=u'تاريخ الإعداد')
+    salary_net = fields.Float(string='صافي الراتب')
+    allowance_total = fields.Float(string='مجموع البدلات')
+    difference_deduction_total = fields.Float(string='مجموع الحسميات والفروقات')
 
     @api.one
     def action_verify(self):
@@ -677,6 +679,9 @@ class HrPayslip(models.Model):
             lines.append(salary_net_val)
             payslip.salary_net = salary_net
             payslip.line_ids = lines
+            # update allowance_total deduction_total
+            payslip.allowance_total = allowance_total
+            payslip.difference_deduction_total = deduction_total + difference_total
 
     @api.one
     @api.constrains('employee_id', 'period_id')
