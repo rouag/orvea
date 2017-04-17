@@ -112,9 +112,9 @@
 							</group>
 							<group>
 								<field name="date_from"
-									attrs="{'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
+									attrs="{'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish', 'refuse'])]}" />
 								<field name="date_to"
-									attrs="{'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
+									attrs="{'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish', 'refuse'])]}" />
 								<field name="duration" readonly="True"/>
 								<field name="calcul_wekeend" invisible="1"
 									attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
@@ -178,13 +178,13 @@
 								<br></br>
 								<group>
 									<field name="file_decision" filename="file_decision_name"
-										attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'required':[('state','=','draft')],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
+										attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'required':[('state','=','draft')],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish', 'refuse'])]}" />
 									<field name="file_order" filename="file_decision_name"
-										attrs="{'invisible':[('state', '=', 'draft'), ('ministre_report','=', False), ('external_deputation_balance_override','=', False)],'required':[('state','=','audit')],'readonly':[('state', 'in', ['waiting','done','order','humain','finish'])]}" />
+										attrs="{'invisible':[('state', '=', 'draft'), ('ministre_report','=', False), ('external_deputation_balance_override','=', False)],'required':[('state','=','audit')],'readonly':[('state', 'in', ['waiting','done','order','humain','finish', 'refuse'])]}" />
 									<field name="decision_number"
-										attrs="{'invisible':[('state', '=', 'draft'), ('ministre_report','=', False), ('external_deputation_balance_override','=', False)],'required':[('state','=','audit')],'readonly':[('state', 'in', ['waiting','done','order','humain','finish'])]}" />
+										attrs="{'invisible':[('state', '=', 'draft'), ('ministre_report','=', False), ('external_deputation_balance_override','=', False)],'required':[('state','=','audit')],'readonly':[('state', 'in', ['waiting','done','order','humain','finish', 'refuse'])]}" />
 									<field name="decision_date"
-										attrs="{'invisible':[('state', '=', 'draft'), ('ministre_report','=', False), ('external_deputation_balance_override','=', False)],'required':[('state','=','audit')],'readonly':[('state', 'in', ['waiting','done','order','humain','finish'])]}" />
+										attrs="{'invisible':[('state', '=', 'draft'), ('ministre_report','=', False), ('external_deputation_balance_override','=', False)],'required':[('state','=','audit')],'readonly':[('state', 'in', ['waiting','done','order','humain','finish', 'refuse'])]}" />
 									<field name="report_number"
 										attrs="{'invisible':[('state', 'not in', [ 'order','humain','finish'])],'required':[('state','=','order')],'readonly':[('state', 'in', ['humain','finish'])]}" />
 									<field name="report_date"

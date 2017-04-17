@@ -27,7 +27,7 @@ class hr_suspension(models.Model):
     letter_date = fields.Date(string=u'تاريخ الخطاب')
     suspension_date = fields.Date(string=u'تاريخ بدء الإيقاف')
     suspension_attachment = fields.Binary(string=u'الصورة الضوئية للخطاب', attachment=True)
-
+    suspension_attachment_name = fields.Char(string=u'file name')
     raison = fields.Text(string=u'سبب كف اليد')
     suspension_end_id = fields.Many2one('hr.suspension.end', string=u'قرار إنهاء كف اليد')
     state = fields.Selection([
