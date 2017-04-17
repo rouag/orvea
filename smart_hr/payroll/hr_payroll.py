@@ -122,6 +122,7 @@ class HrPayslipRun(models.Model):
     @api.multi
     def compute_sheet(self):
         payslip_obj = self.env['hr.payslip']
+        self.slip_ids.unlink()
         for employee in self.employee_ids:
             payslip_val = {'employee_id': employee.id,
                            'period_id': self.period_id.id,
@@ -615,7 +616,7 @@ class HrPayslip(models.Model):
             # 7- القروض
             loans = loan_obj.get_loan_employee_month(self.date_from, self.date_to, employee.id)
             for loan in loans:
-                loan_val = {'name': ' :القروض ' + loan['name'],
+                loan_val = {'name': loan['name'],
                             'slip_id': payslip.id,
                             'employee_id': employee.id,
                             'rate': 0.0,
@@ -691,6 +692,8 @@ class HrPayslip(models.Model):
     @api.constrains('employee_id', 'period_id')
     def _check_payroll(self):
         for rec in self:
+
+            print rec.employee_id.name
             payroll_count = rec.search_count([('employee_id', '=', rec.employee_id.id),
                                               ('period_id', '=', rec.period_id.id),
                                               ('is_special', '=', False)])

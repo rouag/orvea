@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<openerp>
+    <data>
+        <template id="assets_backend" name="islamic_datepicker_entreprise assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/islamic_datepicker_entreprise/static/src/css/islamice_date_widget.css"/>
+                <link rel="stylesheet" href="/islamic_datepicker_entreprise/static/lib/islamic_date_widget/flora.calendars.picker.css"/>
+                <script type="text/javascript" src="/islamic_datepicker_entreprise/static/lib/islamic_date_widget/jquery.calendars.js"/>
+                <script type="text/javascript" src="/islamic_datepicker_entreprise/static/lib/islamic_date_widget/jquery.calendars.plus.js"/>
+		        <link rel="stylesheet" href="/islamic_datepicker_entreprise/static/lib/islamic_date_widget/jquery.calendars.picker.css"/>
+		        <script type="text/javascript" src="/islamic_datepicker_entreprise/static/lib/islamic_date_widget/jquery.plugin.js"/>
+                <script type="text/javascript" src="/islamic_datepicker_entreprise/static/lib/islamic_date_widget/jquery.calendars.picker.js"/>
+		        <script type="text/javascript" src="/islamic_datepicker_entreprise/static/lib/islamic_date_widget/jquery.calendars.ummalqura.js"/>
+		        <script type="text/javascript" src="/islamic_datepicker_entreprise/static/lib/islamic_date_widget/jquery.calendars.ummalqura-ar.js"/>
+		        <script type="text/javascript" src="/islamic_datepicker_entreprise/static/src/js/islamic_date_widget.js"/>
+            </xpath>
+        </template>
+    </data>
+</openerp>

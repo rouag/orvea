@@ -30,8 +30,7 @@
 											<tr>
 												<th class="text-center">رقم الموظف </th>
 												<th class="text-center">الإسم</th>
-												<th class="text-center">مسمى الوظيفة </th>
-												<th class="text-center">رقم الوظيفة</th>
+												<th class="text-center"> الوظيفة </th>
 												<th class="text-center">السبب</th>
 											</tr>
 										</thead>
@@ -46,9 +45,6 @@
 													</td>
 													<td>
 														<span t-field="line.employee_id.job_id" />
-													</td>
-													<td>
-														<span t-field="line.employee_id.job_id.number" />
 													</td>
 													<td>
 													<span t-field="line.type" />
@@ -67,8 +63,7 @@
 												<tr>
 													<th class="text-center">رقم الموظف </th>
 													<th class="text-center">الإسم</th>
-													<th class="text-center">مسمى الوظيفة </th>
-													<th class="text-center">رقم الوظيفة</th>
+													<th class="text-center"> الوظيفة </th>
 												</tr>
 											</thead>
 											<t t-foreach="o.error_ids" t-as="line">
@@ -83,9 +78,6 @@
 														<td>
 															<span t-field="line.employee_id.job_id" />
 														</td>
-														<td>
-															<span t-field="line.employee_id.job_id.number" />
-														</td>
 													</tr>
 												</t>
 											</t>
@@ -99,8 +91,7 @@
 												<tr>
 													<th class="text-center">رقم الموظف </th>
 													<th class="text-center">الإسم</th>
-													<th class="text-center">مسمى الوظيفة </th>
-													<th class="text-center">رقم الوظيفة</th>
+													<th class="text-center">الوظيفة </th>
 												</tr>
 											</thead>
 											<t t-foreach="o.error_ids" t-as="line">
@@ -114,9 +105,6 @@
 														</td>
 														<td>
 															<span t-field="line.employee_id.job_id" />
-														</td>
-														<td>
-															<span t-field="line.employee_id.job_id.number" />
 														</td>
 													</tr>
 												</t>

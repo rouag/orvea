@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 from openerp.osv import osv
 from openerp.report import report_sxw
-from openerp import fields
 from umalqurra.hijri_date import HijriDate
-from openerp import models, api, fields, _
-from openerp.exceptions import ValidationError
-from openerp.addons.smart_base.util.time_util import days_between
+from openerp import fields
 from openerp.addons.smart_base.util.umalqurra import *
-from umalqurra.hijri import Umalqurra
+
 
 class ReportHrErrorEmployee(report_sxw.rml_parse):
 
@@ -17,6 +14,7 @@ class ReportHrErrorEmployee(report_sxw.rml_parse):
             'get_hijri_date': self._get_hijri_date,
 
         })
+
     def _get_hijri_date(self, date, separator):
         '''
         convert georging date to hijri date

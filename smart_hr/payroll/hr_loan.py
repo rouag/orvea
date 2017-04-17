@@ -144,7 +144,7 @@ class HrLoan(models.Model):
             # إذا تم تجاوز هذا الشهر  لا يؤخذ بعين الإعتبار لأنه تم حذفه وتعويضه بشهر أخر
             # إذا تم سداد كامل المبلغ يجب أن يؤخذ باقي المبلغ
             if loan.payment_full_amount:
-                res.append({'name': u'سداد كامل المبلغ  القرض رقم %s' % loan.name, 'amount': loan.residual_amount})
+                res.append({'name': u'سداد كامل مبلغ  القرض رقم %s' % loan.name, 'amount': loan.residual_amount})
             else:
                 # just add amount for current month
                 lines = loan.line_ids.search([('date_start', '=', date_from), ('date_stop', '=', date_to)])
