@@ -27,13 +27,17 @@ class MessierSalaires(report_sxw.rml_parse):
             'get_sum_deductions': self._get_sum_deductions,
             'get_basic_salary': self._get_basic_salary,
             'get_salary_net': self._get_salary_net,
+            'get_float': self._get_float,
 
 
         })
 
+    def _get_float(self, number):
+        return format(number, '.2f')
+
     def _get_basic_salary(self, employee_id):
         salary_grid_id, basic_salary = employee_id.get_salary_grid_id(False)
-        return basic_salary
+        return format(basic_salary, '.2f')
 
     def _get_allowances(self, line_ids):
         allowance_ids = []
@@ -54,21 +58,21 @@ class MessierSalaires(report_sxw.rml_parse):
         for line in line_ids:
             if line.category == 'allowance':
                 sum += line.amount
-        return sum
+        return format(sum, '.2f')
 
     def _get_sum_deductions(self, line_ids):
-        sum = 0
+        sum = 0.0
         for line in line_ids:
             if line.category == 'deduction':
                 sum += line.amount
-        return sum
+        return format(sum, '.2f')
     
     def _get_salary_net(self, line_ids):
         sum = 0
         for line in line_ids:
             if line.category == 'salary_net':
                 sum = line.amount
-        return sum
+        return format(sum, '.2f')
     
     
     

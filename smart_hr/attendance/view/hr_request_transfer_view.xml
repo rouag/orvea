@@ -103,7 +103,8 @@
 									attrs="{'invisible':[('state','not in',['hrm','done'])], 'required':[('state','=','hrm')], 'readonly':[('state','=','done')]}" />
 								<field name="date_speech"
 									attrs="{'invisible':[('state','not in',['hrm','done'])], 'required':[('state','=','hrm')], 'readonly':[('state','=','done')]}" />
-								<field name="speech_file"
+								<field name="speech_file_name" invisible="1" />
+								<field name="speech_file" filename="speech_file_name"
 									attrs="{'invisible':[('state','not in',['hrm','done'])], 'required':[('state','=','hrm')], 'readonly':[('state','=','done')]}" />
 							</group>
 						</group>
