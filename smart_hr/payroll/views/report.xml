@@ -6,11 +6,9 @@
 			string="الحسميات" name="smart_hr.report_hr_deduction" file="smart_hr.report_hr_deduction" 
 			/> 
 			 -->
-			<report id="hr_payslip_changement_report" model="hr.payslip.run" menu="False" 
+		<report id="hr_payslip_changement_report" model="hr.payslip.run" menu="False"
 			report_type="qweb-pdf" string="الموظفين الذين طرأ تغيير في مسيرهم" name="smart_hr.report_hr_payslip_changement" 
 			file="smart_hr.report_hr_payslip_changement" paperformat="smart_base.paperformat_landscape"/>
-
-
 
 		<report id="hr_messier_salaries_report" model="hr.payslip"
 			report_type="qweb-pdf" string="مسير الرواتب" name="smart_hr.report_hr_messier_salaries"

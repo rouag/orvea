@@ -952,10 +952,10 @@ class HrPayslip(models.Model):
                 if grid_id:
                     # 1) عدد الرواتب المستحق
                     if termination.termination_type_id.nb_salaire > 0:
-                        amount = basic_salary * (termination.termination_type_id.nb_salaire - 1)
+                        amount = basic_salary * termination.termination_type_id.nb_salaire
                         vals = {'name': termination.termination_type_id.name + " " + u'(عدد الرواتب)' + name,
                                 'employee_id': termination.employee_id.id,
-                                'number_of_days': (termination.termination_type_id.nb_salaire - 1) * 30.0,
+                                'number_of_days': termination.termination_type_id.nb_salaire * 30.0,
                                 'number_of_hours': 0.0,
                                 'amount': amount,
                                 'type': 'termination'}

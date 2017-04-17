@@ -390,7 +390,7 @@ class HrPayslip(models.Model):
             # فرق الأيام المخصومة من الشهر
             date_from = date_from
             date_to = termination.date_termination
-            worked_days = days_between(date_from, date_to) - 1
+            worked_days = days_between(str(date_from), str(date_to)) - 1
             unworked_days = 30.0 - worked_days
             res_count += unworked_days
         return res_count
@@ -583,7 +583,7 @@ class HrPayslip(models.Model):
             # 5- الأثر المالي
             difference_lines = payslip.compute_differences()
             for difference in difference_lines:
-                difference_val = {'name': 'فرق: ' + difference['name'],
+                difference_val = {'name': difference['name'],
                                   'slip_id': payslip.id,
                                   'employee_id': employee.id,
                                   'rate': 0.0,
@@ -599,7 +599,7 @@ class HrPayslip(models.Model):
             # 6- الحسميات
             deduction_lines = payslip.compute_deductions(allowance_total)
             for deduction in deduction_lines:
-                deduction_val = {'name': ' :الحسميات ' + deduction['name'],
+                deduction_val = {'name':  deduction['name'],
                                  'slip_id': payslip.id,
                                  'employee_id': employee.id,
                                  'rate': 0.0,

@@ -184,8 +184,6 @@
         'payroll/wizard/wizard_bonus_action.xml',
         'payroll/wizard/wizard_deducation_action.xml',
         'payroll/wizard/wizard_loan_action.xml',
-        'payroll/wizard/wizard_error_employee_view.xml',
-        'payroll/wizard/wizard_payslip_changement.xml',
         'payroll/wizard/hr_refuse_wizard_view.xml',
         'payroll/wizard/wizard_update_salary_grid_view.xml',
         'payroll/view/salary_grid.xml',
