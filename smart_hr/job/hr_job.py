@@ -38,7 +38,7 @@ class HrJob(models.Model):
     # حجز الوظيفة
     occupation_date_from = fields.Date(string=u'حجز الوظيفة من')
     occupation_date_to = fields.Date(string=u'حجز الوظيفة الى', )
-    is_occupied_compute = fields.Boolean(string='is occupied compute', compute='_compute_is_occupated')
+    is_occupied_compute = fields.Boolean(string='is occupied compute')
     # سلخ
     is_striped_to = fields.Boolean(string='is striped to', default=False)
     # تحوير‬
@@ -71,7 +71,12 @@ class HrJob(models.Model):
         self.occupation_date_to = False
         self.state = 'unoccupied'
         user = self.env['res.users'].browse(self._uid)
-        self.message_post(u"تمت رفع الحجز من قبل '" + unicode(user.name) + u"'")
+        self.message_post(u"تم رفع الحجز من قبل '" + unicode(user.name) + u"'")
+
+    @api.model
+    def cron_unreserve_jobs(self):
+        for job in self.search([('state', '=', 'reserved'), ('occupation_date_to', '<',date.today())]):
+            job.write({'occupation_date_from': False, 'occupation_date_to': False, 'state': 'unoccupied'})
 
     @api.multi
     def action_job_reserve(self):
@@ -88,26 +93,26 @@ class HrJob(models.Model):
             'target': 'new',
         }
 
-
-    @api.multi
-    def name_get(self):
-        result = []
-        for record in self:
-            name = '[%s] %s' % (record.number, record.name.name)
-            result.append((record.id, name))
-        return result
-
-    @api.model
-    def name_search(self, name='', args=None, operator='ilike', limit=100):
-        args = args or []
-        recs = self.browse()
-        if name:
-            domain = ['|', ('number', 'like', name), ('name.name', 'like', name)]
-
-            recs = self.search(domain + args, limit=limit)
-        if not recs:
-            recs = self.search([('name', operator, name)] + args, limit=limit)
-        return recs.name_get()
+# 
+#     @api.multi
+#     def name_get(self):
+#         result = []
+#         for record in self:
+#             name = '[%s] %s' % (record.number, record.name.name)
+#             result.append((record.id, name))
+#         return result
+# 
+#     @api.model
+#     def name_search(self, name='', args=None, operator='ilike', limit=100):
+#         args = args or []
+#         recs = self.browse()
+#         if name:
+#             domain = ['|', ('number', 'like', name), ('name.name', 'like', name)]
+# 
+#             recs = self.search(domain + args, limit=limit)
+#         if not recs:
+#             recs = self.search([('name', operator, name)] + args, limit=limit)
+#         return recs.name_get()
 
 
 class HrJobHistoryActions(models.Model):
@@ -117,7 +122,7 @@ class HrJobHistoryActions(models.Model):
     action = fields.Char(string=u' الاجراء')
     action_date = fields.Date(string=u'التاريخ')
     description = fields.Text(string=u'تفصيل الاجراء')
-    job_id = fields.Many2one(string=u'الوظيفة')
+    job_id = fields.Many2one('hr.job',string=u'الوظيفة')
 
 
 class HrJobName(models.Model):

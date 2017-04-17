@@ -121,5 +121,16 @@
 			<field name="args">()</field>
 		</record>
 	
+		<record id="ir_cron_unreserve_jobs" model="ir.cron">
+			<field name="name">Job unreserve</field>
+			<field name="interval_number">1</field>
+			<field name="interval_type">days</field>
+			<field name="numbercall">-1</field>
+			<field name="doall">0</field>
+			<field name="model">hr.job</field>
+			<field name="function">cron_unreserve_jobs</field>
+			<field name="args">()</field>
+		</record>
+		
 	</data>
 </openerp>

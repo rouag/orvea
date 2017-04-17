@@ -116,7 +116,7 @@
 											</td>
 											<td valign="top">
 												<t t-foreach="allowance_ids" t-as="line">
-													<span t-field="line.amount" />
+													<t t-esc="get_float(line.amount)" />
 													<br></br>
 												</t>
 											</td>
@@ -125,13 +125,13 @@
 
 											<td colspan="2" valign="top">
 												<t t-foreach="deduction_ids" t-as="ded">
-													<span t-field="ded.name" />
+													<t t-esc="ded.name" />
 													<br></br>
 												</t>
 											</td>
-											<td colspan="2" valign="top">
+											<td colspan="2" valign="top" >
 												<t t-foreach="deduction_ids" t-as="ded">
-													<span t-field="ded.amount" />
+													<t style="direction:ltr;" class="o_form_field  o_form_field_number" t-esc="get_float(ded.amount)" />
 													<br></br>
 												</t>
 											</td>
@@ -151,7 +151,7 @@
 										<tr>
 											<td colspan="7" class="text-right"> الصافي</td>
 											<td colspan="7" class="text-right">
-												<t t-esc="o.salary_net" />
+												<t t-esc="get_float(o.salary_net)" />
 											</td>
 
 										</tr>

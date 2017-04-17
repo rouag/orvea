@@ -31,6 +31,7 @@ class HrRequestTransferDelayHours(models.Model):
     num_speech = fields.Char(string=u'رقم الخطاب الصادر')
     date_speech = fields.Date(string=u'تاريخ الخطاب الصادر')
     speech_file = fields.Binary(string=u'الخطاب الصادر', attachment=True)
+    speech_file_name = fields.Char(string=u'file name')
     decission_id = fields.Many2one('hr.decision', string=u'القرارات')
 
     @api.multi

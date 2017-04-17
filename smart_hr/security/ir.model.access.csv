@@ -201,3 +201,11 @@ access_hr_employee_configuration_setting,access_hr_employee_configuration_settin
 access_hr_employee_hr_suspension_end,access_hr_employee_hr_suspension_end,model_hr_suspension_end,,1,0,0,0
 
 
+access_hr_type_improve_situation,access_hr_type_improve_situation,model_hr_type_improve_situation,,1,1,1,1
+access_hr_employee_deprivation,access_hr_employee_deprivation,model_hr_employee_deprivation,,1,1,1,1
+access_hr_job_history_actions,access_hr_job_history_actions,model_hr_job_history_actions,,1,1,1,1
+access_hr_deprivation_premium_ligne,access_hr_deprivation_premium_ligne,model_hr_deprivation_premium_ligne,,1,1,1,1
+access_hr_deputation_type,access_hr_deputation_type,model_hr_deputation_type,,1,1,1,1
+
+
+

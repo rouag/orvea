@@ -71,7 +71,8 @@
 									attrs="{'readonly':[('state','!=','draft')]}" />
 								<field name="letter_date" required="1"
 									attrs="{'readonly':[('state','!=','draft')]}" />
-								<field name="suspension_attachment" required="1" attrs="{'readonly':[('state','!=','draft')]}" />
+								<field name="suspension_attachment" filename="suspension_attachment_name" required="1" attrs="{'readonly':[('state','!=','draft')]}" />
+								<field name="suspension_attachment_name" invisible="1" />
 							</group>
 							<group string="معلومات القرار" attrs="{'invisible':[('state','not in',['make_decision','done'])]}">
 

@@ -596,21 +596,14 @@ class HrDecisionAppoint(models.Model):
         if self.employee_id.number:
             self.number = self.employee_id.number
         self.country_id = self.employee_id.country_id
-        appoint_line = self.env['hr.decision.appoint'].search(
-            [('employee_id', '=', self.employee_id.id), ('state', '=', 'done')], limit=1)
-        if appoint_line:
-            self.emp_job_id = appoint_line.job_id.id
-            self.emp_code = appoint_line.code
-            self.emp_number_job = appoint_line.job_id.name.number
-            self.emp_type_id = appoint_line.type_id.id
-            self.emp_far_age = appoint_line.far_age
-            self.emp_grade_id = appoint_line.grade_id.id
-            self.emp_degree_id = appoint_line.degree_id.id
-            self.emp_department_id = appoint_line.department_id.id
-            self.emp_date_direct_action = appoint_line.date_direct_action
-        if self.date_direct_action and self.employee_id:
-            if self.env['hr.holidays'].search_count([('state', '=', 'done'), ('date_from', '<=', self.date_direct_action), ('date_to', '>=', self.date_direct_action), ('employee_id', '=', self.employee_id.id)]) != 0:
-                raise ValidationError(u"هناك تداخل فى تاريخ المباشرة مع يوم إجازة")        
+        self.emp_job_id = self.employee_id.job_id.id
+        self.emp_code = self.employee_id.job_id.name.number
+        self.emp_number_job = self.employee_id.job_id.number
+        self.emp_type_id = self.employee_id.type_id.id
+        self.emp_far_age = self.employee_id.type_id.far_age
+        self.emp_grade_id = self.employee_id.grade_id.id
+        self.emp_degree_id = self.employee_id.degree_id.id
+        self.emp_department_id = self.employee_id.department_id.id
 
     @api.onchange('job_id')
     def _onchange_job_id(self):
