@@ -6,6 +6,7 @@ from dateutil.relativedelta import relativedelta
 from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
+from matplotlib.pyplot import grid
 
 
 class HrDecisionAppoint(models.Model):
@@ -491,13 +492,16 @@ class HrDecisionAppoint(models.Model):
         # send notification to hr personnel
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت إحداث تعين جديد '" + unicode(user.name) + u"'")
-    
+
     @api.multi
     def action_activate(self):
+        grid_id, basic_salary = self.employee_id.get_salary_grid_id(False)
+        if not grid_id:
+            raise ValidationError(u"يجب إنشاء سلم رواتب موافق لبيانات عمل الموظف!")
         self.env['hr.holidays']._init_balance(self.employee_id)
         grade_id = int(self.emp_job_id.grade_id.code)
         new_grade_id = int(self.grade_id.code)
-        #remettre compteur à 0 si sollam a changé ou martaba a changé ou kén 3odhw asb7a idéri
+        # remettre compteur à 0 si sollam a changé ou martaba a changé ou kén 3odhw asb7a idéri
         if self.job_id.type_id != self.emp_job_id.type_id or (grade_id != new_grade_id):
             self.employee_id.promotion_duration = 0
             holiday_balance = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
@@ -548,8 +552,14 @@ class HrDecisionAppoint(models.Model):
         # update holidays balance for the employee
         self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date_hiring, "تعيين")
         # add allowance to the employee
-        grid_id, basic_salary = self.employee_id.get_salary_grid_id(False)
         for rec in self.job_allowance_ids:
+            self.env['hr.employee.allowance'].create({'employee_id': self.employee_id.id,
+                                                      'allowance_id': rec.allowance_id.id,
+                                                      'amount': rec.amount,
+                                                      'salary_grid_detail_id': grid_id.id,
+                                                      'date': fields.Date.from_string(fields.Date.today())
+                                                      })
+        for rec in self.location_allowance_ids:
             self.env['hr.employee.allowance'].create({'employee_id': self.employee_id.id,
                                                       'allowance_id': rec.allowance_id.id,
                                                       'amount': rec.amount,
@@ -670,6 +680,7 @@ class HrDecisionAppoint(models.Model):
     def check_order_date(self):
         if self.order_date > datetime.today().strftime('%Y-%m-%d'):
             raise ValidationError(u"تاريخ الخطاب  يجب ان يكون أصغر من تاريخ اليوم")
+    
 
     @api.one
     @api.constrains('date_direct_action', 'date_hiring')
