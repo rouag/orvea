@@ -339,7 +339,7 @@ class HrEmployeeTransfert(models.Model):
                     'type_appointment': self.env.ref('smart_hr.data_hr_recrute_from_transfert').id,
                     'employee_id': rec.employee_id.id,
                     'job_id': rec.new_job_id.id,
-                    'degree_id': rec.degree_id.id,
+                    'degree_id': rec.new_degree_id.id,
                     'transfer_id': rec.id,
                     'name': rec.speech_number,
                     'order_date': rec.speech_date,}
@@ -351,7 +351,7 @@ class HrEmployeeTransfert(models.Model):
                     'type_appointment': self.env.ref('smart_hr.data_hr_recrute_from_transfert').id,
                     'employee_id': rec.employee_id.id,
                     'job_id': rec.new_job_id.id,
-                    'degree_id': rec.degree_id.id,
+                    'degree_id': rec.new_degree_id.id,
                     'transfer_id': rec.id,
                     'name': rec.speech_number,
                     'order_date': rec.speech_date,

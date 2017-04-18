@@ -8,13 +8,13 @@
 			<field name="type">search</field>
 			<field name="arch" type="xml">
 				<search string="طلب نقل موظف">
-					<field name="employee_id" string="الموظف" 
+					<field name="employee_id" string="الموظف"
 						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
 					<field name="transfert_type" string="نوع النقل" />
 					<field name="state" string="الحالة" />
 					<field name="transfert_nature" string="طبيعة النقل" />
-				
-					<filter name="employee_id" string="الموظف"/>
+
+					<filter name="employee_id" string="الموظف" />
 					<filter name="transfert_type" string="نوع النقل" />
 					<filter string="طلب" domain="[('state','=','new')]" />
 					<filter string="صاحب الصلاحية" domain="[('state','=','waiting')]" />
@@ -22,8 +22,8 @@
 					<filter string=" شؤون الموظفين" domain="[('state','=','hrm')]" />
 					<filter string="اعتمدت" domain="[('state','=','done')]" />
 					<filter string="ملغى" domain="[('state','=','cancelled')]" />
-					
-					
+
+
 					<filter name="transfert_nature" string="طبيعة النقل" />
 				</search>
 			</field>
@@ -90,13 +90,10 @@
 						<group>
 							<group>
 								<field name="transfert_nature" />
-								<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" readonly="1"
-								 	attrs="{'readonly':[('state', 'in', ['waiting','consult','pm','waiting','done', 'refused'])]}" 
-									 />
 								<field name="employee_id"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+									readonly="1"
 									attrs="{'readonly':[('state', 'in', ['waiting','consult','pm','waiting','done', 'refused'])]}" />
-
 								<field name="transfert_type" />
 								<field name="special_conditions"
 									attrs="{'invisible':[('transfert_type', '!=', 'member')]}" />
@@ -193,16 +190,17 @@
 				</form>
 			</field>
 		</record>
-		 <record model="ir.ui.view" id="hr_employee_transfert_form_inherited">
+		<record model="ir.ui.view" id="hr_employee_transfert_form_inherited">
 			<field name="model">hr.employee.transfert</field>
 			<field name="inherit_id" ref="smart_hr.view_hr_employee_transfert_form" />
-			<field name="groups_id" eval="[(6, 0, [ref('smart_hr.group_tranfert_employee_owner')])]" />
+			<field name="groups_id"
+				eval="[(6, 0, [ref('smart_hr.group_tranfert_employee_owner')])]" />
 			<field name="arch" type="xml">
 				<field name="employee_id" position="attributes">
 					<attribute name="readonly">False</attribute>
 				</field>
 			</field>
-		</record> 
+		</record>
 		<record id="view_hr_employee_transfert_tree" model="ir.ui.view">
 			<field name="name">hr.employee.transfert.tree</field>
 			<field name="model">hr.employee.transfert</field>
