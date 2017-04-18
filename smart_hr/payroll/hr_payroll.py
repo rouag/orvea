@@ -107,6 +107,7 @@ class HrPayslipRun(models.Model):
 
     @api.one
     def action_verify(self):
+        self.compute_sheet()
         self.state = 'verify'
         for slip in self.slip_ids:
             if slip.state == 'draft':

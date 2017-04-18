@@ -58,14 +58,37 @@ class HrEmployeeCommissioning(models.Model):
     give_allow = fields.Boolean(string=u'الجهة توفر بدلات، مكافأة أو تعويضات')
 
     done_date = fields.Date(string='تاريخ التفعيل')
-    commissioning_job_id = fields.Many2one('hr.job', string='الوظيفة المكلف عليها', required=1,
-                                           domain=[('state', '=', 'unoccupied')])
+    commissioning_job_id = fields.Many2one('hr.job', string='الوظيفة المكلف عليها', required=1)
     type_id = fields.Many2one('salary.grid.type', string='نوع السلم', related='commissioning_job_id.type_id',
                               readonly=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', related='commissioning_job_id.grade_id',
                                readonly=1)
     decission_id = fields.Many2one('hr.decision', string=u'القرارات')
     commissioning_department_id = fields.Many2one('hr.department', string='الفرع')
+
+    @api.onchange('commissioning_job_id')
+    def onchange_commissioning_job_id(self):
+        # get list of employee depend on comm_typet
+        if not self.commissioning_job_id:
+            res = {}
+            job_ids = []
+            if self.commissioning_department_id:
+                department_id = self.commissioning_department_id.id
+                unoccupied_job_ids = self.env['hr.job'].search([('state', '=', 'unoccupied'),('department_id', '=',department_id)])
+            else:
+                unoccupied_job_ids = self.env['hr.job'].search([('state', '=', 'unoccupied')])
+            for unoccupied_job_id in  unoccupied_job_ids.ids:
+                job_ids.append(unoccupied_job_id)
+            if self.date_from and self.date_to:
+                unoccupied_commissioning_job_ids = self.env['hr.employee.lend'].search([('state', '=', 'done'), ('date_from', '<=', self.date_from), ('date_to', '>=', self.date_to)])
+                for unoccupied_commissioning_job_id in  unoccupied_commissioning_job_ids:
+                    job_ids.append(unoccupied_commissioning_job_id.employee_id.job_id.id)
+            res['domain'] = {'commissioning_job_id': [('id', 'in', job_ids)]}
+            return res
+
+    @api.onchange('date_from', 'date_to', 'commissioning_department_id')
+    def _compute_date(self):
+            self.commissioning_job_id = False
 
     @api.multi
     @api.onchange('comm_type')
@@ -98,6 +121,7 @@ class HrEmployeeCommissioning(models.Model):
             decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'commissioning')
             decission_id = decision.id
             self.decission_id =  decission_id
+            
         return {
             'name': _(u'قرار تكليف موظف'),
             'view_type': 'form',
@@ -194,6 +218,7 @@ class HrEmployeeCommissioning(models.Model):
         self.employee_id.commissioning_job_id = self.commissioning_job_id
         self.commissioning_job_id.state = 'occupied'
         self.state = 'done'
+        self.employee_id.job_id.unoccupied_for_commissioning = True
         # create history_line
     
     @api.multi
@@ -227,6 +252,7 @@ class HrEmployeeCommissioning(models.Model):
                                                   'res_action': 'smart_hr.action_hr_employee_commissioning',
                                                   'notif': True
                                                   })
+            line.commissioning_job_id.state = 'unoccupied'
 
 class HrEmployeeCommissioningType(models.Model):
     _name = 'hr.employee.commissioning.type'

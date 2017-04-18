@@ -58,8 +58,9 @@
 							</group>
 							<group>
 								<group string="بيانات الأجازة">
-									<field name="holiday_status_id" attrs="{'readonly':[('state','!=','new')]}"
+									<field name="holiday_id" attrs="{'readonly':[('state','!=','new')]}"
 										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									<field name="holiday_status_id" />
 									<field name="date_from" />
 									<field name="date_to"
 										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
