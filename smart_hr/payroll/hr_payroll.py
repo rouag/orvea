@@ -288,7 +288,7 @@ class HrPayslip(models.Model):
             employee_id = rec.employee_id
             rec.date_from = rec.period_id.date_start
             rec.date_to = rec.period_id.date_stop
-            rec.name = _('راتب موظف %s لشهر %s') % (employee_id.name, rec.period_id.name)
+            rec.name = _('راتب موظف %s لشهر %s') % (employee_id.display_name, rec.period_id.name)
             rec.company_id = employee_id.company_id
             rec.grade_id = rec.employee_id.grade_id.id
             rec.degree_id = rec.employee_id.degree_id.id
@@ -405,7 +405,18 @@ class HrPayslip(models.Model):
             worked_days = days_between(str(date_from), str(date_to)) - 1
             unworked_days = 30.0 - worked_days
             res_count += unworked_days
-        return res_count
+        # مدّة غياب‬ ‫الموظف بدو‬عذر
+        attendance_summary_ids = self.env['hr.attendance.summary'].search([('employee_id', '=', self.employee_id.id),
+                                                                           ('date', '>=', date_from),
+                                                                           ('date', '<=', date_to)
+                                                                           ])
+        for attendance_summary in attendance_summary_ids:
+            res_count += attendance_summary.absence
+
+        res = (30 - res_count)
+        if res < 0:
+            res = 0
+        return res
 
     @api.multi
     def compute_sheet(self):
@@ -413,8 +424,7 @@ class HrPayslip(models.Model):
         loan_obj = self.env['hr.loan']
         for payslip in self:
             # calculate work days
-            number_of_days = 0
-            payslip.number_of_days = 30 - payslip.get_days_off_count(payslip.date_from, payslip.date_to)
+            payslip.number_of_days = payslip.get_days_off_count(payslip.date_from, payslip.date_to)
             # delete old line
             payslip.line_ids.unlink()
             # delete old difference_history
