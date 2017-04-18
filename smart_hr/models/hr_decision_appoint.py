@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from openerp.exceptions import UserError
 from openerp import models, fields, api, _
 from openerp.exceptions import Warning
@@ -172,10 +173,9 @@ class HrDecisionAppoint(models.Model):
                 employee_ids = self.env['hr.employee'].search([('type_id', 'in', type_ids), ('employee_state', 'in', ['done'])])
             else:
                 employee_ids = self.env['hr.employee'].search([('type_id', 'in', type_ids), ('employee_state', 'in', ['done', 'employee'])])
-            for type in type_ids:
-                jobs = self.env['hr.job'].search([('name.type_ids', 'in', type), ('state', '=', 'unoccupied')])
-                for job in jobs:
-                    job_ids.append(job.id)
+            jobs = self.env['hr.job'].search([('type_id', 'in', type_ids), ('state', '=', 'unoccupied')])
+            if jobs:
+                job_ids = jobs.ids
             res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids)]}
             return res
 
