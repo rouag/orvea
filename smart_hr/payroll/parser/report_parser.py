@@ -155,7 +155,6 @@ class ReportPayslipChangement(report_sxw.rml_parse):
         date_to = month.date_stop
         payslip_obj = self.pool.get('hr.payslip')
         employee_ids = [rec.employee_id.id for rec in slip_ids]
-        print "employee_ids", employee_ids
         payslip__ids = payslip_obj.search(self.cr, self.uid, [('date_from', '=', date_from),
                                                               ('date_to', '=', date_to),
                                                               ('state', '=', 'done'),
