@@ -66,16 +66,12 @@ class MessierSalaires(report_sxw.rml_parse):
             if line.category == 'deduction':
                 sum += line.amount
         return format(sum, '.2f')
-    
     def _get_salary_net(self, line_ids):
         sum = 0
         for line in line_ids:
             if line.category == 'salary_net':
                 sum = line.amount
         return format(sum, '.2f')
-    
-    
-    
     def _get_hijri_date(self, date, separator):
         '''
         convert georging date to hijri date

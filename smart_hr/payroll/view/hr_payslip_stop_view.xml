@@ -53,7 +53,7 @@
 										<field name="state" invisible="1" />
 										<field name="period_id" />
 										<field name="stop_period" />
-										<button name="action_cancel" string=" إلغاء إيقاف  راتب"  attrs="{'invisible':[('state', 'not in', ['done'])]}" 
+										<button name="action_cancel" string=" إلغاء إيقاف  راتب"  attrs="{'invisible':['|',('state', 'not in', ['done']), ('stop_period','=',False)]}" 
 										icon="STOCK_CANCEL"	type="object" />
 									</tree>
 								</field>
