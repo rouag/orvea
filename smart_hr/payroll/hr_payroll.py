@@ -654,24 +654,25 @@ class HrPayslip(models.Model):
             # 8- فرق الحسميات أكثر من ثلث الراتب
             # check if deduction_total is > than 1/3 of basic salary
             if deduction_total > basic_salary / 3:
+                third_amount = deduction_total - basic_salary / 3
                 vals = {'name': 'فرق الحسميات أكثر من ثلث الراتب',
                         'slip_id': payslip.id,
                         'employee_id': employee.id,
                         'rate': 0.0,
                         'number_of_days': 0.0,
-                        'amount': (deduction_total - basic_salary / 3) * -1,
+                        'amount': third_amount,
                         'category': 'deduction',
                         'type': 'difference',
                         'sequence': sequence
                         }
                 lines.append(vals)
-                deduction_total += basic_salary / 3 * -1
+                deduction_total += third_amount
                 sequence += 1
                 # save the rest for the next month
                 if month + 1 > 12:
                     month = 1
                 self.env['hr.payslip.difference.history'].create({'payslip_id': self.id,
-                                                                  'amount': deduction_total - basic_salary / 3,
+                                                                  'amount': third_amount,
                                                                   'employee_id': employee.id,
                                                                   'month': month,
                                                                   'done_date': fields.Date.today(),
