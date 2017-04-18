@@ -21,12 +21,12 @@
 							<div class="col-xs-12">
 								<table class="table  table-bordered">
 										<tr style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
-											<td colspan="10" class="text-center" >
+											<td colspan="12" class="text-center" >
 												<strong>معلومات الوظيفة</strong>
 											</td>
 										</tr>
 									<tr>
-										<td colspan="2">
+										<td colspan="3">
 
 											<strong>رقم الوظيفة</strong>
 										</td>
@@ -34,7 +34,7 @@
 
 											<span t-esc="o.job_id.number" />
 										</td>
-										<td colspan="2">
+										<td colspan="3">
 
 											<strong>مسمى الوظيفة</strong>
 										</td>
@@ -44,14 +44,14 @@
 										</td>
 									</tr>
 									<tr>
-										<td colspan="2">
+										<td colspan="3">
 
 											<strong>الفرع</strong>
 										</td>
 										<td colspan="3" class="text-center">
 
 										</td>
-										<td colspan="2">
+										<td colspan="3">
 
 											<strong>الإدارة</strong>
 										</td>
@@ -61,7 +61,7 @@
 										</td>
 									</tr>
 									<tr>
-										<td colspan="2">
+										<td colspan="3">
 
 											<strong>السلم الوظيفي</strong>
 										</td>
@@ -69,7 +69,7 @@
 
 											<span t-esc="o.job_id.type_id.name" />
 										</td>
-										<td colspan="2">
+										<td colspan="3">
 
 											<strong>المرتبة</strong>
 										</td>
@@ -80,13 +80,13 @@
 									</tr>
 
 									<tr>
-										<td colspan="2">
+										<td colspan="3">
 											<strong>رمز الوظيفة</strong>
 										</td>
 										<td colspan="3" class="text-center">
 											<span t-esc="o.job_id.name.number" />
 										</td>
-										<td colspan="2">
+										<td colspan="3">
 											<strong>المجموعة الوظيفية</strong>
 										</td>
 										<td colspan="3" class="text-center">
@@ -94,13 +94,13 @@
 										</td>
 									</tr>
 									<tr>
-										<td colspan="2">
+										<td colspan="3">
 											<strong>تاريخ الاستحداث</strong>
 										</td>
 										<td colspan="3" class="text-center">
 											<span t-esc="get_hijri_date(o.job_id.create_date, '-')" />
 										</td>
-										<td colspan="2">
+										<td colspan="3">
 											<strong>حالة الوظيفة</strong>
 										</td>
 										<td colspan="3" class="text-center">
@@ -109,7 +109,7 @@
 										</td>
 									</tr>
 										<tr style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
-											<td colspan="10" class="text-center">
+											<td colspan="12" class="text-center">
 
 												<strong>تاريخ الوظيفة</strong>
 											</td>
@@ -121,7 +121,7 @@
 										<td class="text-center">
 											<strong>رقمها</strong>
 										</td>
-										<td class="text-center">
+										<td class="text-center" colspan="2">
 											<strong>مسمى الوظيفة</strong>
 										</td>
 										<td class="text-center">
@@ -150,10 +150,10 @@
 										<td colspan="2" class="text-center">
 											<span t-esc="o.job_id.grade_id.name" />
 										</td>
-										<td class="text-center">
+										<td class="text-center" >
 											<span t-esc="o.job_id.number" />
 										</td>
-										<td class="text-center">
+										<td class="text-center" colspan="2">
 											<span t-esc="o.job_id.name.name" />
 										</td>
 										<td class="text-center">
@@ -167,10 +167,9 @@
 										<td class="text-center"></td>
 										<td class="text-center"></td>
 										<td class="text-center"></td>
-										<td class="text-center"></td>
 									</tr>
 										<tr style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
-											<td colspan="10" class="text-center">
+											<td colspan="12" class="text-center">
 
 												<strong>بيانات شاغلي الوظيفة</strong>
 											</td>
@@ -185,10 +184,10 @@
 										<td colspan="2" class="text-center">
 											<strong>مسمى الوظيفة</strong>
 										</td>
-										<td colspan="2" class="text-center">
+										<td colspan="3" class="text-center">
 											<strong>تاريخ شغلها</strong>
 										</td>
-										<td colspan="2" class="text-center">
+										<td colspan="3" class="text-center">
 											<strong>الاجراء</strong>
 										</td>
 									</tr>
@@ -204,17 +203,17 @@
 											<td colspan="2" class="text-center">
 												<span t-esc="line.emp_job_id.name.name" />
 											</td>
-											<td colspan="2" class="text-center">
+											<td colspan="3" class="text-center">
 												<span t-esc="get_hijri_date(line.date_direct_action, '-')" />
 											</td>
-											<td colspan="2" class="text-center">
+											<td colspan="3" class="text-center">
 												<span t-esc="line.type_appointment.name" />
 											</td>
 
 										</tr>
 									</t>
 										<tr style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
-											<td colspan="10" class="text-center">
+											<td colspan="12" class="text-center">
 
 												<strong>التحوير على الوظيفة</strong>
 											</td>
@@ -223,10 +222,10 @@
 										<td colspan="2" class="text-center">
 											<strong>المسمى الوظيفي الجديد</strong>
 										</td>
-										<td class="text-center">
+										<td class="text-center"  colspan="2">
 											<strong>الفرع الجديد</strong>
 										</td>
-										<td class="text-center">
+										<td class="text-center"  colspan="2">
 											<strong>الادارة الجديدة</strong>
 										</td>
 										<td class="text-center">
@@ -254,10 +253,10 @@
 											<td colspan="2" class="text-center">
 												<span t-esc="line.new_name.name" />
 											</td>
-											<td class="text-center">
+											<td class="text-center"  colspan="2">
 												<span></span>
 											</td>
-											<td class="text-center">
+											<td class="text-center"  colspan="2">
 												<span t-esc="line.department_id.name" />
 											</td>
 											<td class="text-center">
@@ -283,16 +282,16 @@
 										</tr>
 									</t>
 										<tr style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
-											<td colspan="10" class="text-center">
+											<td colspan="12" class="text-center">
 
 												<strong>الرفع على الوظيفة</strong>
 											</td>
 										</tr>
 									<tr>
-										<td colspan="2" class="text-center">
+										<td colspan="3" class="text-center">
 											<strong>المسمى الوظيفي </strong>
 										</td>
-										<td colspan="2" class="text-center">
+										<td colspan="3" class="text-center">
 											<strong>رقم القرار</strong>
 										</td>
 										<td colspan="2" class="text-center">
@@ -308,10 +307,10 @@
 									<t t-foreach="scale_up_ids" t-as="line">
 										<tr>
 
-											<td colspan="2" class="text-center">
+											<td colspan="3" class="text-center">
 												<span t-esc="line.job_id.name.name" />
 											</td>
-											<td colspan="2" class="text-center">
+											<td colspan="3" class="text-center">
 												<span t-esc="line.decision_number" />
 											</td>
 											<td colspan="2" class="text-center">
@@ -327,18 +326,18 @@
 										</tr>
 									</t>
 										<tr>
-										<td colspan="10" class="text-center"></td>
+										<td colspan="12" class="text-center"></td>
 									</tr>
 										<tr style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
-											<td colspan="10" class="text-center">
+											<td colspan="12" class="text-center">
 												<strong>الخفض على الوظيفة</strong>
 											</td>
 										</tr>
 									<tr>
-										<td colspan="2" class="text-center">
+										<td colspan="3" class="text-center">
 											<strong>المسمى الوظيفي </strong>
 										</td>
-										<td colspan="2" class="text-center">
+										<td colspan="3" class="text-center">
 											<strong>رقم القرار</strong>
 										</td>
 										<td colspan="2" class="text-center">
@@ -354,10 +353,10 @@
 									<t t-foreach="scale_down_ids" t-as="line">
 										<tr>
 
-											<td colspan="2" class="text-center">
+											<td colspan="3" class="text-center">
 												<span t-esc="line.job_id.name.name" />
 											</td>
-											<td colspan="2" class="text-center">
+											<td colspan="3" class="text-center">
 												<span t-esc="line.decision_number" />
 											</td>
 											<td colspan="2" class="text-center">
@@ -373,18 +372,18 @@
 										</tr>
 									</t>
 										<tr>
-										<td colspan="10" class="text-center"></td>
+										<td colspan="12" class="text-center"></td>
 									</tr>
 										<tr style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
-											<td colspan="10" class="text-center">
+											<td colspan="12" class="text-center">
 												<strong>النقل على الوظيفة</strong>
 											</td>
 										</tr>
 									<tr>
-										<td colspan="2" class="text-center">
+										<td colspan="3" class="text-center">
 											<strong>المسمى الوظيفي </strong>
 										</td>
-										<td colspan="2" class="text-center">
+										<td colspan="3" class="text-center">
 											<strong>نوع السلم</strong>
 										</td>
 										<td colspan="2" class="text-center">
@@ -400,10 +399,10 @@
 									<t t-foreach="move_dep_ids" t-as="line">
 										<tr>
 
-											<td colspan="2" class="text-center">
+											<td colspan="3" class="text-center">
 												<span t-esc="line.job_id.name.name" />
 											</td>
-											<td colspan="2" class="text-center">
+											<td colspan="3" class="text-center">
 												<span t-esc="line.type_id.name" />
 											</td>
 											<td colspan="2" class="text-center">
@@ -418,9 +417,6 @@
 
 										</tr>
 									</t>
-									<tr>
-										<td colspan="10"></td>
-									</tr>
 
 								</table>
 
