@@ -151,9 +151,10 @@ class SalaryGridDetail(models.Model):
                                                               ('grade_id', '=', self.grade_id.id),
                                                               ('degree_id', '=', self.degree_id.id)])
         if count_mployee:
-            raise ValidationError(_(u'لا يمكن الحذف في حالة إرتباط السلم بموظف!'))
+            raise ValidationError(_(u'هناك موظفين معينين على هذا السلم لا يمكن حذفه !'))
         else:
             self.is_old = True
+            self.grid_id.grid_ids = self.grid_id.grid_ids.ids
 
 
 class SalaryGridDetailAllowance(models.Model):
