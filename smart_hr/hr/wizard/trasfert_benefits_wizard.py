@@ -16,7 +16,43 @@ class TransfertBenefitsWizard(models.TransientModel):
         transfert_line = self._context.get('active_id', False)
         transfert_line_obj = self.env['hr.transfert.sorting.line4']
         transfert = transfert_line_obj.search([('id', '=', transfert_line)], limit=1)
+        location_allowance_ids = []
+        job_allowance_ids = []
+        transfert_allowance_ids = []
         if transfert:
+            # fill location_allowance_ids
+            if not transfert.hr_employee_transfert_id.location_allowance_ids:
+                for rec in transfert.new_department_id.dep_side.allowance_ids:
+                    location_allowance_ids.append({'location_decision_appoint_id': transfert.id,
+                                                   'allowance_id': rec.allowance_id.id,
+                                                   'compute_method': 'amount',
+                                                   'amount': 0.0})
+            else:
+                for rec in transfert.hr_employee_transfert_id.location_allowance_ids:
+                    location_allowance_ids.append({'location_decision_appoint_id': transfert.id,
+                                                   'allowance_id': rec.allowance_id.id,
+                                                   'compute_method': rec.compute_method,
+                                                   'amount': rec.amount})
+            # fill job_allowance_ids
+            if not transfert.hr_employee_transfert_id.job_allowance_ids:
+                for rec in transfert.new_job_id.serie_id.allowanse_ids:
+                    job_allowance_ids.append({'decision_appoint_id': transfert.id,
+                                              'allowance_id': rec.allowance_id.id,
+                                              'compute_method': 'amount',
+                                              'amount': 0.0})
+            else:
+                for rec in transfert.hr_employee_transfert_id.job_allowance_ids:
+                    job_allowance_ids.append({'job_transfert_id': transfert.id,
+                                              'allowance_id': rec.allowance_id.id,
+                                              'compute_method': rec.compute_method,
+                                              'amount': rec.amount})
+            # fill transfert_allowance_ids
+            if transfert.hr_employee_transfert_id.transfert_allowance_ids:
+                for rec in transfert.new_job_id.serie_id.allowanse_ids:
+                    transfert_allowance_ids.append({'transfert_id': transfert.id,
+                                                    'allowance_id': rec.allowance_id.id,
+                                                    'compute_method': rec.compute_method,
+                                                    'amount': rec.amount})
             res.update({'transfert_line_obj': transfert.id,
                         'job_id': transfert.new_job_id.id,
                         'specific_id': transfert.new_job_id.specific_id.id,
@@ -25,6 +61,9 @@ class TransfertBenefitsWizard(models.TransientModel):
                         'degree_id': transfert.new_degree_id.id,
                         'grade_id': transfert.new_job_id.grade_id.id,
                         'employee_id': transfert.hr_employee_transfert_id.employee_id.id,
+                        'location_allowance_ids': [(0, 0, elem) for elem in location_allowance_ids],
+                        'job_allowance_ids': [(0, 0, elem) for elem in job_allowance_ids],
+                        'transfert_allowance_ids': [(0, 0, elem) for elem in transfert_allowance_ids],
                         })
         return res
 
@@ -39,24 +78,6 @@ class TransfertBenefitsWizard(models.TransientModel):
     job_allowance_ids = fields.One2many('transfert.appoint.allowance', 'job_transfert_id', string=u'بدلات الوظيفة')
     transfert_allowance_ids = fields.One2many('transfert.appoint.allowance', 'transfert_id', string=u'بدلات النقل')
     location_allowance_ids = fields.One2many('transfert.appoint.allowance', 'location_transfert_id', string=u'بدلات المنطقة')
-
-    @api.onchange('job_id')
-    def onchange_job_id(self):
-        if self.job_id:
-            location_allowance_ids = []
-            for rec in self.department_id.dep_side.allowance_ids:
-                location_allowance_ids.append({'location_decision_appoint_id': self.id,
-                                               'allowance_id': rec.id,
-                                               'compute_method': 'amount',
-                                               'amount': 0.0})
-            self.location_allowance_ids = location_allowance_ids
-            job_allowance_ids = []
-            for rec in self.job_id.serie_id.allowanse_ids:
-                job_allowance_ids.append({'decision_appoint_id': self.id,
-                                          'allowance_id': rec.id,
-                                          'compute_method': 'amount',
-                                          'amount': 0.0})
-            self.job_allowance_ids = job_allowance_ids
 
     @api.multi
     def action_transfert(self):
@@ -81,14 +102,12 @@ class TransfertBenefitsWizard(models.TransientModel):
         self.transfert_line_obj.hr_employee_transfert_id.transfert_allowance_ids = transfert_allowance_ids
         location_allowance_ids = []
         for rec in self.location_allowance_ids:
-            print "--rec.amount----", rec.amount
             location_allowance_ids.append({'location_transfert_id': self.transfert_line_obj.hr_employee_transfert_id.id,
                                            'allowance_id': rec.allowance_id.id,
                                            'compute_method': rec.compute_method,
                                            'amount': rec.amount
                                            })
         self.transfert_line_obj.hr_employee_transfert_id.location_allowance_ids = location_allowance_ids
-        print '--self.transfert_line_obj.hr_employee_transfert_id.location_allowance_ids---', self.transfert_line_obj.hr_employee_transfert_id.location_allowance_ids
 
 
 class TransfertAppointAllowance(models.TransientModel):
