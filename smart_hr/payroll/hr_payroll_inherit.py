@@ -723,7 +723,6 @@ class HrPayslip(models.Model):
                   ('state', '=', 'done'),
                   ('suspension_end_id.release_date', '>=', date_from),
                   ('suspension_end_id.release_date', '<=', date_to),
-                  ('suspension_end_id.condemned', '=', True),
                   ('employee_id', '=', employee_id.id),
                   ('suspension_end_id.state', '=', 'done'),
                   ]
@@ -741,10 +740,15 @@ class HrPayslip(models.Model):
             if date_to > date_to:
                 date_to = date_to
             number_of_days = days_between(date_from, date_to)
-            if number_of_days > 0 and suspension.suspension_end_id.condemned:
-                all_suspensions.append({'employee_id': suspension.employee_id.id,
-                                        'date_from': date_from, 'date_to': date_to,
-                                        'number_of_days': number_of_days, 'return': False})
+            if number_of_days > 0 :
+                if suspension.suspension_end_id.condemned:
+                    all_suspensions.append({'employee_id': suspension.employee_id.id,
+                                            'date_from': date_from, 'date_to': date_to,
+                                            'number_of_days': number_of_days, 'return': False})
+                else:
+                    all_suspensions.append({'employee_id': suspension.employee_id.id,
+                                            'date_from': date_from, 'date_to': date_to,
+                                            'number_of_days': number_of_days, 'return': True})
 
         # get started suspension in this month and not ended in current month or dont have yet an end
         domain = [('suspension_date', '>=', date_from),

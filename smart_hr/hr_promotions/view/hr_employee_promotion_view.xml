@@ -48,7 +48,13 @@
 							</group>
 						</group>
 						<group col="2" string="رغبات الموظف">
-						<field name="desire_ids" />
+							<field name="desire_ids" nolabel="1" >
+								<tree editable="bottom">
+										<field name="sequence" widget="handle" readonly="1" />
+										<field name="name" />
+										<field name="desire_id" invisible="1" />
+								</tree>
+							</field>
 						</group>
 					</sheet>
 				</form>
