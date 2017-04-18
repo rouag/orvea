@@ -158,7 +158,18 @@ class HrDirectAppoint(models.Model):
                 self.grade_id = appoint_line.job_id.grade_id.id
                 self.degree_id = appoint_line.degree_id.id
                 self.basic_salary = appoint_line.basic_salary
-
+            else:
+                self.job_id = False
+                self.code = False
+                self.number_job = False
+                self.type_id = False
+                self.far_age = False
+                self.department_id = False
+                self.appoint_id = False
+                self.grade_id = False
+                self.degree_id = False
+                self.basic_salary = False
+                
     def send_appoint_group(self, group_id, title, msg):
         """
         @param group_id: res.groups

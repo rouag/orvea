@@ -93,26 +93,26 @@ class HrJob(models.Model):
             'target': 'new',
         }
 
-# 
-#     @api.multi
-#     def name_get(self):
-#         result = []
-#         for record in self:
-#             name = '[%s] %s' % (record.number, record.name.name)
-#             result.append((record.id, name))
-#         return result
-# 
-#     @api.model
-#     def name_search(self, name='', args=None, operator='ilike', limit=100):
-#         args = args or []
-#         recs = self.browse()
-#         if name:
-#             domain = ['|', ('number', 'like', name), ('name.name', 'like', name)]
-# 
-#             recs = self.search(domain + args, limit=limit)
-#         if not recs:
-#             recs = self.search([('name', operator, name)] + args, limit=limit)
-#         return recs.name_get()
+ 
+    @api.multi
+    def name_get(self):
+        result = []
+        for record in self:
+            name = '[%s] %s' % (record.number, record.name.name)
+            result.append((record.id, name))
+        return result
+ 
+    @api.model
+    def name_search(self, name='', args=None, operator='ilike', limit=100):
+        args = args or []
+        recs = self.browse()
+        if name:
+            domain = ['|', ('number', 'like', name), ('name.name', 'like', name)]
+ 
+            recs = self.search(domain + args, limit=limit)
+        if not recs:
+            recs = self.search([('name', operator, name)] + args, limit=limit)
+        return recs.name_get()
 
 
 class HrJobHistoryActions(models.Model):
@@ -214,7 +214,7 @@ class HrJobCreate(models.Model):
     grade_ids = fields.One2many('salary.grid.grade', 'job_create_id', string='المرتبة')
     draft_budget = fields.Binary(string=u'مشروع الميزانية', attachment=True)
     draft_budget_name = fields.Char(string=u'مشروع الميزانية مسمى ')
-    members_job = fields.Boolean(string=u'وظيفية للاعضاء')
+    type_id = fields.Many2one('salary.grid.type', string='الصنف')
 
     @api.onchange('serie_id')
     def onchange_serie_id(self):
@@ -345,16 +345,19 @@ class HrJobCreateLine(models.Model):
         if self.name:
             self.number = self.name.number
         if not self.name:
-            if self.job_create_id.members_job is True:
-                name_ids = self.job_create_id.serie_id.job_name_ids
-                new_name_ids = [rec.id for rec in name_ids if rec.for_members_name is True]
-                type_ids = self.name.typr_ids.ids
-                res['domain'] = {'name': [('id', 'in', new_name_ids)], 'type_id': [('id', 'in', type_ids)]}
+            if self.job_create_id.type_id:
+                type = self.job_create_id.type_id.id
+                name_ids = self.job_create_id.serie_id.job_name_ids.ids
+                new_name_ids = self.env['hr.job.name'].search([('type_ids', 'in', type), ('id', 'in', name_ids)])
+                new_names = []
+                if new_name_ids:
+                    new_names = new_name_ids.ids
+                res['domain'] = {'name': [('id', 'in', new_names)],'type_id': [('id', '=', type)]}
+                self.type_id = type
                 return res
             else:
-                name_ids = self.job_create_id.serie_id.job_name_ids
-                new_name_ids = [rec.id for rec in name_ids if rec.for_members_name is False]
-                res['domain'] = {'name': [('id', 'in', new_name_ids)]} 
+                name_ids = self.job_create_id.serie_id.job_name_ids.ids
+                res['domain'] = {'name': [('id', 'in', name_ids)]} 
                 return res
 
     @api.constrains('job_number', 'grade_id')
