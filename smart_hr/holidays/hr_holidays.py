@@ -250,7 +250,7 @@ class HrHolidays(models.Model):
                 if stock_line:
                     if entitlement_line:
                         if entitlement_line.periode:
-                            current_stock = stock_line.holidays_available_stock
+                            current_stock = stock_line.holidays_available_stock[0]
                         else:
                             current_stock = entitlement_line.holiday_stock_default
                 elif entitlement_line and entitlement_line.periode:
