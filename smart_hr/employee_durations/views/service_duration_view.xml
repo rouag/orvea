@@ -37,10 +37,10 @@
 								context="{'tree_view_ref': 'view_employee_tree_service_duration'}">
 
 								<tree editable="bottom">
-									<field name="display_name" string="الموظف" />
-									<field name="number" />
-									<field name="begin_work_date" />
-									<field name="service_duration" />
+									<field name="display_name" string="الموظف" readonly="True"/>
+									<field name="number" readonly="True"/>
+									<field name="begin_work_date" readonly="True"/>
+									<field name="service_duration" readonly="True"/>
 								</tree>
 							</field>
 						</group>

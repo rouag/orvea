@@ -250,7 +250,6 @@ class HrHolidays(models.Model):
                 if stock_line:
                     if entitlement_line:
                         if entitlement_line.periode:
-                            
                             current_stock = stock_line[0].holidays_available_stock
                         else:
                             current_stock = entitlement_line.holiday_stock_default
@@ -394,6 +393,10 @@ class HrHolidays(models.Model):
                 else:
                     current_stock = stock['current_stock']
                 holiday.current_holiday_stock = current_stock
+            if self.holiday_status_id:
+                self.holiday_status_id = False
+                self.date_from = fields.Date.today()
+                self.duration = 1
             return res
 
     @api.multi
