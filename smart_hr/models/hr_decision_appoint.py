@@ -408,17 +408,30 @@ class HrDecisionAppoint(models.Model):
     @api.model
     def control_test_years_employee(self):
         today_date = fields.Date.from_string(fields.Date.today())
-        appoints = self.env['hr.decision.appoint'].search([('state', '=', 'done'), ('is_started', '=', True), ('employee_id.age', '=', self.env.ref('smart_hr.data_hr_ending_service_type_normal').years),
-                                                           ('type_appointment.id', '=', self.env.ref(
-                                                               'smart_hr.data_hr_recrute_agent_utilisateur').id)])
-
-        group_id = self.env.ref('smart_hr.group_department_employee')
-        for line in appoints:
-            title = u"' إشعار بلوغ سن " + str(self.env.ref('smart_hr.data_hr_ending_service_type_normal').years) + u"'"
-            msg = u"' إشعار ببلوغ الموظف   '" + unicode(line.employee_id.display_name) + u"'" + u"عمر" + str(
-                self.env.ref('smart_hr.data_hr_ending_service_type_normal').years) + u"'"
-            self.send_test_periode_group(group_id, title, msg)
-
+        employees = []
+        hr_employee_configuration_id = self.env['hr.employee.configuration'].search([], limit=1)
+        if hr_employee_configuration_id:
+            age_member = hr_employee_configuration_id.age_member
+            age_nomember = hr_employee_configuration_id.age_nomember
+            for employee in self.env['hr.employee'].search([('employee_state', '=', 'employee')]):
+                if employee.is_member and employee.age == age_member:
+                    employees.append(employee)
+                if not employee.is_member and employee.age == age_nomember:
+                    employees.append(employee)
+            group_id = self.env.ref('smart_hr.group_department_employee')
+            for line in employees:
+                title = u" إشعار بلوغ سن التقاعد" 
+                msg = u"' إشعار ببلوغ الموظف   '" + unicode(line.display_name) + u"'" + u"عمر" + str(line.age) + u"'"
+                self.send_test_periode_group(group_id, title, msg)
+                for recipient in group_id.users:
+                    self.env['base.notification'].create({'title': title,
+                                                  'message': msg,
+                                                  'user_id': recipient.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': line.id,
+                                                  'res_action': 'smart_hr.action_hr_employee_form',
+                                                  'notif': True
+                                                  })
     def send_test_periode_group(self, group_id, title, msg):
         '''
         @param group_id: res.groups
