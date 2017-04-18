@@ -235,7 +235,7 @@ class HrEmployeeTransfert(models.Model):
 #             if self.employee_id.promotion_duration < 1:
 #                             raise ValidationError(u"لايمكن طلب نقل خلال أقل من سنة منذ أخر ترقية أو تعين")
 #             # check 3 years constrainte from last transfert
-            last_transfert_id = self.env['hr.employee.transfert'].search([('id', '!=', self.id)], order="create_date desc", limit=1)
+            last_transfert_id = self.env['hr.employee.transfert'].search([('id', '!=', self.id), ('state', '=', 'done')], order="create_date desc", limit=1)
             today = date.today()
             create_date = fields.Date.from_string(last_transfert_id.create_date)
             if create_date:
