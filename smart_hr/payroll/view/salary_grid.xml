@@ -109,7 +109,7 @@
 						</group>
 						<notebook>
 							<page string="التفاصيل">
-								<field name="grid_ids" string=" سلّم الرواتب">
+								<field name="grid_ids" string=" سلّم الرواتب" >
 									<tree edit="false" delete="false">
 										<field name="type_id"
 											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />

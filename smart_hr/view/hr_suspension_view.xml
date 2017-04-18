@@ -32,28 +32,27 @@
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" states="hrm" groups="smart_hr.group_hrm" icon="fa-times"
 							class="oe_inline oe_stat_button" />
-							
-							<button name="button_suspension_end" string=" انهاء كف اليد"
-							type="object" states="done" icon="fa-times"
-							class="oe_inline oe_stat_button" />
-							
-								<button name="button_suspension" string="معاينة القرار"
+
+						<button name="button_suspension_end" string=" انهاء كف اليد"
+							type="object" states="done" icon="fa-times" class="oe_inline oe_stat_button" />
+
+						<button name="button_suspension" string="معاينة القرار"
 							groups="smart_hr.group_hrm" type="object" states="done" icon="fa-print"
 							class="oe_inline oe_stat_button" />
-							
-				
-							
-							
+
+
+
+
 						<field name="state" widget="statusbar" statusbar_visible="draft,hrm,make_decision,done" />
 					</header>
 					<sheet>
-						<label for="name" class="oe_edit_only" />
-						<h1>
-							<field name="name" readonly="1" />
-						</h1>
+						<field name="name" readonly="1" invisible="1" />
 						<group>
 							<field name="date" readonly="1" />
-							<field name="employee_state" invisible="1" />
+							<field name="decision_number"
+								attrs="{'invisible':[('display_decision_info','=',False)]}" />
+							<field name="decision_date"
+								attrs="{'invisible':[('display_decision_info','=',False)]}" />
 						</group>
 						<group>
 							<group string="معلومات كف اليد">
@@ -71,15 +70,10 @@
 									attrs="{'readonly':[('state','!=','draft')]}" />
 								<field name="letter_date" required="1"
 									attrs="{'readonly':[('state','!=','draft')]}" />
-								<field name="suspension_attachment" filename="suspension_attachment_name" required="1" attrs="{'readonly':[('state','!=','draft')]}" />
+								<field name="display_decision_info" invisible="1" />
+								<field name="suspension_attachment" filename="suspension_attachment_name"
+									required="1" attrs="{'readonly':[('state','!=','draft')]}" />
 								<field name="suspension_attachment_name" invisible="1" />
-							</group>
-							<group string="معلومات القرار" attrs="{'invisible':[('state','not in',['make_decision','done'])]}">
-
-								<field name="decision_number"
-									attrs="{'invisible':[('state','not in',['make_decision','done'])]}" />
-								<field name="decision_date"
-									attrs="{'invisible':[('state','not in',['make_decision','done'])]}" />
 							</group>
 						</group>
 

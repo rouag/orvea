@@ -81,12 +81,14 @@ class TransfertBenefitsWizard(models.TransientModel):
         self.transfert_line_obj.hr_employee_transfert_id.transfert_allowance_ids = transfert_allowance_ids
         location_allowance_ids = []
         for rec in self.location_allowance_ids:
+            print "--rec.amount----", rec.amount
             location_allowance_ids.append({'location_transfert_id': self.transfert_line_obj.hr_employee_transfert_id.id,
                                            'allowance_id': rec.allowance_id.id,
                                            'compute_method': rec.compute_method,
                                            'amount': rec.amount
                                            })
         self.transfert_line_obj.hr_employee_transfert_id.location_allowance_ids = location_allowance_ids
+        print '--self.transfert_line_obj.hr_employee_transfert_id.location_allowance_ids---', self.transfert_line_obj.hr_employee_transfert_id.location_allowance_ids
 
 
 class TransfertAppointAllowance(models.TransientModel):

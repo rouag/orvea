@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from openerp.exceptions import UserError
 from openerp import models, fields, api, _
 from openerp.exceptions import Warning
@@ -172,10 +173,9 @@ class HrDecisionAppoint(models.Model):
                 employee_ids = self.env['hr.employee'].search([('type_id', 'in', type_ids), ('employee_state', 'in', ['done'])])
             else:
                 employee_ids = self.env['hr.employee'].search([('type_id', 'in', type_ids), ('employee_state', 'in', ['done', 'employee'])])
-            for type in type_ids:
-                jobs = self.env['hr.job'].search([('name.type_ids', 'in', type), ('state', '=', 'unoccupied')])
-                for job in jobs:
-                    job_ids.append(job.id)
+            jobs = self.env['hr.job'].search([('type_id', 'in', type_ids), ('state', '=', 'unoccupied')])
+            if jobs:
+                job_ids = jobs.ids
             res['domain'] = {'employee_id': [('id', 'in', employee_ids.ids)], 'job_id': [('id', 'in', job_ids)]}
             return res
 
@@ -408,17 +408,30 @@ class HrDecisionAppoint(models.Model):
     @api.model
     def control_test_years_employee(self):
         today_date = fields.Date.from_string(fields.Date.today())
-        appoints = self.env['hr.decision.appoint'].search([('state', '=', 'done'), ('is_started', '=', True), ('employee_id.age', '=', self.env.ref('smart_hr.data_hr_ending_service_type_normal').years),
-                                                           ('type_appointment.id', '=', self.env.ref(
-                                                               'smart_hr.data_hr_recrute_agent_utilisateur').id)])
-
-        group_id = self.env.ref('smart_hr.group_department_employee')
-        for line in appoints:
-            title = u"' إشعار بلوغ سن " + str(self.env.ref('smart_hr.data_hr_ending_service_type_normal').years) + u"'"
-            msg = u"' إشعار ببلوغ الموظف   '" + unicode(line.employee_id.display_name) + u"'" + u"عمر" + str(
-                self.env.ref('smart_hr.data_hr_ending_service_type_normal').years) + u"'"
-            self.send_test_periode_group(group_id, title, msg)
-
+        employees = []
+        hr_employee_configuration_id = self.env['hr.employee.configuration'].search([], limit=1)
+        if hr_employee_configuration_id:
+            age_member = hr_employee_configuration_id.age_member
+            age_nomember = hr_employee_configuration_id.age_nomember
+            for employee in self.env['hr.employee'].search([('employee_state', '=', 'employee')]):
+                if employee.is_member and employee.age == age_member:
+                    employees.append(employee)
+                if not employee.is_member and employee.age == age_nomember:
+                    employees.append(employee)
+            group_id = self.env.ref('smart_hr.group_department_employee')
+            for line in employees:
+                title = u" إشعار بلوغ سن التقاعد" 
+                msg = u"' إشعار ببلوغ الموظف   '" + unicode(line.display_name) + u"'" + u"عمر" + str(line.age) + u"'"
+                self.send_test_periode_group(group_id, title, msg)
+                for recipient in group_id.users:
+                    self.env['base.notification'].create({'title': title,
+                                                  'message': msg,
+                                                  'user_id': recipient.id,
+                                                  'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                                  'res_id': line.id,
+                                                  'res_action': 'smart_hr.action_hr_employee_form',
+                                                  'notif': True
+                                                  })
     def send_test_periode_group(self, group_id, title, msg):
         '''
         @param group_id: res.groups
@@ -491,13 +504,16 @@ class HrDecisionAppoint(models.Model):
         # send notification to hr personnel
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت إحداث تعين جديد '" + unicode(user.name) + u"'")
-    
+
     @api.multi
     def action_activate(self):
+        grid_id, basic_salary = self.employee_id.get_salary_grid_id(False)
+        if not grid_id:
+            raise ValidationError(u"يجب إنشاء سلم رواتب موافق لبيانات عمل الموظف!")
         self.env['hr.holidays']._init_balance(self.employee_id)
         grade_id = int(self.emp_job_id.grade_id.code)
         new_grade_id = int(self.grade_id.code)
-        #remettre compteur à 0 si sollam a changé ou martaba a changé ou kén 3odhw asb7a idéri
+        # remettre compteur à 0 si sollam a changé ou martaba a changé ou kén 3odhw asb7a idéri
         if self.job_id.type_id != self.emp_job_id.type_id or (grade_id != new_grade_id):
             self.employee_id.promotion_duration = 0
             holiday_balance = self.env['hr.employee.holidays.stock'].search([('employee_id', '=', self.employee_id.id),
@@ -548,8 +564,14 @@ class HrDecisionAppoint(models.Model):
         # update holidays balance for the employee
         self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date_hiring, "تعيين")
         # add allowance to the employee
-        grid_id, basic_salary = self.employee_id.get_salary_grid_id(False)
         for rec in self.job_allowance_ids:
+            self.env['hr.employee.allowance'].create({'employee_id': self.employee_id.id,
+                                                      'allowance_id': rec.allowance_id.id,
+                                                      'amount': rec.amount,
+                                                      'salary_grid_detail_id': grid_id.id,
+                                                      'date': fields.Date.from_string(fields.Date.today())
+                                                      })
+        for rec in self.location_allowance_ids:
             self.env['hr.employee.allowance'].create({'employee_id': self.employee_id.id,
                                                       'allowance_id': rec.allowance_id.id,
                                                       'amount': rec.amount,
@@ -670,6 +692,7 @@ class HrDecisionAppoint(models.Model):
     def check_order_date(self):
         if self.order_date > datetime.today().strftime('%Y-%m-%d'):
             raise ValidationError(u"تاريخ الخطاب  يجب ان يكون أصغر من تاريخ اليوم")
+    
 
     @api.one
     @api.constrains('date_direct_action', 'date_hiring')
