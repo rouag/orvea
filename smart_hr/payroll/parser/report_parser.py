@@ -66,16 +66,12 @@ class MessierSalaires(report_sxw.rml_parse):
             if line.category == 'deduction':
                 sum += line.amount
         return format(sum, '.2f')
-    
     def _get_salary_net(self, line_ids):
         sum = 0
         for line in line_ids:
             if line.category == 'salary_net':
                 sum = line.amount
         return format(sum, '.2f')
-    
-    
-    
     def _get_hijri_date(self, date, separator):
         '''
         convert georging date to hijri date
@@ -153,15 +149,16 @@ class ReportPayslipChangement(report_sxw.rml_parse):
             'get_lines': self._get_lines,
         })
 
-    def _get_lines(self, employee_ids, month):
+    def _get_lines(self, slip_ids, month):
         res = []
         date_from = month.date_start
         date_to = month.date_stop
         payslip_obj = self.pool.get('hr.payslip')
+        employee_ids = [rec.employee_id.id for rec in slip_ids]
         payslip__ids = payslip_obj.search(self.cr, self.uid, [('date_from', '=', date_from),
                                                               ('date_to', '=', date_to),
                                                               ('state', '=', 'done'),
-                                                              ('employee_id', 'in', employee_ids.ids)])
+                                                              ('employee_id', 'in', employee_ids)])
         for rec in payslip_obj.browse(self.cr, self.uid, payslip__ids):
             if (rec.salary_net - rec.employee_id.net_salary) != 0:
                 line_ids = rec.line_ids.search([('category', 'in', ['changing_allowance', 'difference', 'deduction'])])

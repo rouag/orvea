@@ -90,12 +90,18 @@ class HrPayslipRun(models.Model):
         if self.salary_grid_type_id:
             employee_ids = employee_obj.search([('id', 'in', employee_ids), ('type_id', '=', self.salary_grid_type_id.id)]).ids
         if self.period_id:
+            # موظفين:  تم إيقاف راتبهم
             payslip_stp_obj = self.env['hr.payslip.stop.line']
-            employee_search_ids = payslip_stp_obj.search([( 'stop_period','=', True), ('period_id','=', self.period_id.id),('state','=','done')])
-            stop_employee_ids=[]
+            employee_search_ids = payslip_stp_obj.search([('stop_period', '=', True), ('period_id', '=', self.period_id.id), ('state', '=', 'done')])
+            stop_employee_ids = []
             for line in employee_search_ids:
                 stop_employee_ids.append(line.payslip_id.employee_id.id)
-            employee_ids = list((set(employee_ids) - set(stop_employee_ids))) 
+            # موظفين:  طي القيد
+            employee_termination_lines = self.env['hr.termination'].search([('state', '=', 'done'),
+                                                                            ('date_termination', '>=', self.period_id.date_start),
+                                                                            ('date_termination', '<=', self.period_id.date_stop)])
+            employee_termination_ids = [line.employee_id.id for line in employee_termination_lines]
+            employee_ids = list((set(employee_ids) - set(stop_employee_ids) - set(employee_termination_ids)))
         result.update({'domain': {'employee_ids': [('id', 'in', employee_ids)]}})
         return result
 
@@ -260,9 +266,15 @@ class HrPayslip(models.Model):
             employee_ids = employee_ids.ids
             termination_ids = self.env['hr.termination'].search([('state', '=', 'done')], order='date_termination desc')
             minus_employee_ids = []
+            # موظفين:  طي القيد
             for termination_id in termination_ids:
                 if termination_id.date_termination and fields.Date.from_string(termination_id.date_termination) < fields.Date.from_string(self.date_from):
                     minus_employee_ids.append(termination_id.employee_id)
+            # موظفين:  تم إيقاف راتبهم
+            employee_stop_lines = self.env['hr.payslip.stop.line'].search(
+                [('stop_period', '=', True), ('period_id', '=', self.period_id.id), ('payslip_id.state', '=', 'done')])
+            employee_stop_ids = [line.payslip_id.employee_id for line in employee_stop_lines]
+            minus_employee_ids += employee_stop_ids
             minus_employee_ids = [rec.id for rec in minus_employee_ids]
             result_employee_ids = list((set(employee_ids) - set(minus_employee_ids)))
             res['domain'] = {'employee_id': [('id', 'in', result_employee_ids)]}
