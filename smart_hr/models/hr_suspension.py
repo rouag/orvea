@@ -37,11 +37,19 @@ class hr_suspension(models.Model):
         ('done', u'اعتمدت'),
         ('refuse', u'رفض'),
     ], string=u'الحالة', default='draft')
-    decision_number = fields.Char(string='رقم القرار', readonly=1)
-    decision_date = fields.Date(string='تاريخ القرار ', readonly=1)
     done_date = fields.Date(string='تاريخ التفعيل')
     decission_id  = fields.Many2one('hr.decision', string=u'القرارات',)
- 
+    decision_number = fields.Char(string='رقم القرار', readonly=1, related='decission_id.name')
+    decision_date = fields.Date(string='تاريخ القرار ', readonly=1, related='decission_id.date')
+    display_decision_info = fields.Boolean(compute='_compute_display_decision_info')
+
+    def _compute_display_decision_info(self):
+        for rec in self:
+            if rec.state in ['make_decision', 'done'] and rec.decission_id.state == 'done':
+                self.display_decision_info = True
+            else:
+                self.display_decision_info = False
+
     def num2hindi(self, string_number):
         if string_number:
             hindi_numbers = {'0': '٠', '1': '١', '2': '٢', '3': '٣', '4': '٤', '5': '٥', '6': '٦', '7': '٧', '8': '٨',
@@ -88,8 +96,6 @@ class hr_suspension(models.Model):
     def button_make_decision(self):
         user = self.env['res.users'].browse(self._uid)
         for rec in self:
-            self.decision_number = self.env['ir.sequence'].get('hr.decision.sequence')
-            self.decision_date = fields.Date.today()
             rec.state = 'make_decision'
             rec.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"'")
 

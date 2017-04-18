@@ -71,15 +71,16 @@
 									attrs="{'readonly':[('state','!=','draft')]}" />
 								<field name="letter_date" required="1"
 									attrs="{'readonly':[('state','!=','draft')]}" />
+								<field name="display_decision_info" invisible="1"/>
 								<field name="suspension_attachment" filename="suspension_attachment_name" required="1" attrs="{'readonly':[('state','!=','draft')]}" />
 								<field name="suspension_attachment_name" invisible="1" />
 							</group>
-							<group string="معلومات القرار" attrs="{'invisible':[('state','not in',['make_decision','done'])]}">
+							<group string="معلومات القرار" attrs="{'invisible':[('display_decision_info','=',False)]}">
 
 								<field name="decision_number"
-									attrs="{'invisible':[('state','not in',['make_decision','done'])]}" />
+									 attrs="{'invisible':[('display_decision_info','=',False)]}"/>
 								<field name="decision_date"
-									attrs="{'invisible':[('state','not in',['make_decision','done'])]}" />
+								 attrs="{'invisible':[('display_decision_info','=',False)]}" />
 							</group>
 						</group>
 
