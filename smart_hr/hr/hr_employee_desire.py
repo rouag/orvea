@@ -12,6 +12,6 @@ class HrEmployeeDesire(models.Model):
     _description = u'رغبات النقل'
     _order = 'sequence'
 
-    name = fields.Char(string=u'المسمى')
+    name = fields.Char(string=u'المسمى', required =1)
     sequence = fields.Integer(string=u'الرقم التسلسلي', default=1)
     desire_id = fields.Many2one('hr.employee.transfert',  string=u'الموظف')
