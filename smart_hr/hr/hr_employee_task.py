@@ -45,7 +45,7 @@ class HrEmployeeTask(models.Model):
     @api.multi
     def unlink(self):
         for rec in self:
-            if rec.state == 'done' :
+            if rec.state != 'new' :
                 raise ValidationError(u'لا يمكن حذف المهمة فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(HrEmployeeTask, self).unlink()
         # create history_line

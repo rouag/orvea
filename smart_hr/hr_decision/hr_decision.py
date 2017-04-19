@@ -117,6 +117,15 @@ class HrDecision(models.Model):
             object_type = 'improve'
             self.text = self.replace_text(self.employee_id, self.date, self.decision_type_id.id, 'improve')
 
+        if self.decision_type_id in [self.env.ref('smart_hr.data_employee_lend'),
+                          ]:
+            object_type = 'lend'
+            self.text = self.replace_text(self.employee_id, self.date, self.decision_type_id.id, 'lend')
+
+
+
+
+
     @api.multi
     def button_done(self):
         self.name = self.env['ir.sequence'].get('hr.decision.seq')
@@ -202,6 +211,13 @@ class HrDecision(models.Model):
                         decision_text = decision_text.replace('DURATION', unicode(duration))
                         decision_text = decision_text.replace('FROMDET', unicode(fromdate))
                         decision_text = decision_text.replace('ENDDET', unicode(date_to))
+                        
+                if object_type == 'lend' :
+                    lend_line = self.env['hr.employee.lend'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
+                    if lend_line :
+                        duration = lend_line.duration or ""
+                        decision_text = decision_text.replace('DURATION', unicode(duration))
+                
                 if object_type == 'termination' :
                     termination_line = self.env['hr.termination'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
                     if termination_line :

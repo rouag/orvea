@@ -175,7 +175,6 @@
 				<form string="تمديد إعارة">
 					<sheet>
 						<group>
-							<group>
 								<field name="decision_number" />
 								<field name="decision_date" />
 								<field name="decision_file" filename="decision_file_name" />
@@ -185,12 +184,10 @@
 								<field name="employee_lend_type" invisible="1" />
 
 								<field name="decision_file_name" invisible="1" />
-							</group>
 						</group>
 					</sheet>
 					<footer>
 						<button name="action_confirm" string="موافق" type="object" />
-						أو
 
 						<button string="إلغاء" class="oe_link" special="cancel" />
 					</footer>
@@ -209,7 +206,6 @@
 				<form string="قطع إعارة">
 					<sheet>
 						<group>
-							<group>
 								<field name="decision_number" />
 								<field name="decision_date" />
 								<field name="decision_file" filename="decision_file_name" />
@@ -218,12 +214,10 @@
 								<field name="employee_lend_type" invisible="1" />
 								<field name="employee_lend_id" invisible="1" />
 								<field name="decision_file_name" invisible="1" />
-							</group>
 						</group>
 					</sheet>
 					<footer>
 						<button name="action_confirm" string="موافق" type="object" />
-						أو
 
 						<button string="إلغاء" class="oe_link" special="cancel" />
 					</footer>
