@@ -573,7 +573,8 @@ class HrPayslip(models.Model):
                                                                                 ('date_from', '>=', get_from_date),
                                                                                 ], order='done_date asc', limit=1)
                             months_from_holiday_start = relativedelta(today, fields.Date.from_string(oldest_holiday_id.date_from)).months
-                            if months_from_holiday_start < 0  : months_from_holiday_start= 0.0
+                            if months_from_holiday_start < 0:
+                                months_from_holiday_start = 0.0
                         if entitlement_type == rec.entitlement_id.entitlment_category and rec.month_from <= months_from_holiday_start <= rec.month_to and duration_in_month > 0:
                             ret_amount = basic_salary * grid_id.retirement / 100.0
                             new_basic_salary = basic_salary - ret_amount + retirement_amount

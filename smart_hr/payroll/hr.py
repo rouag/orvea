@@ -65,11 +65,18 @@ class HrEmployee(models.Model):
         if not salary_grid_id and len(domain) == 2:
             domain.pop(1)
         salary_grid_id = self.env['hr.employee.payroll.changement'].search(domain, order='date desc', limit=1)
+        type_id = self.type_id
+        grade_id = self.grade_id
+        degree_id = self.degree_id
+        if salary_grid_id:
+            type_id = salary_grid_id.type_id
+            grade_id = salary_grid_id.grade_id
+            degree_id = salary_grid_id.degree_id
         salary_grid_detail_id = self.env['salary.grid.detail'].search([('grid_id.state', '=', 'done'),
                                                                       ('grid_id.enabled', '=', True),
-                                                                      ('type_id', '=', salary_grid_id.type_id.id),
-                                                                      ('grade_id', '=', salary_grid_id.grade_id.id),
-                                                                      ('degree_id', '=', salary_grid_id.degree_id.id)], limit=1)
+                                                                      ('type_id', '=', type_id.id),
+                                                                      ('grade_id', '=', grade_id.id),
+                                                                      ('degree_id', '=', degree_id.id)], limit=1)
         if salary_grid_detail_id:
             # retreive old salary increases to add them with basic_salary
             domain = [('salary_grid_detail_id', '=', salary_grid_detail_id.id)]
