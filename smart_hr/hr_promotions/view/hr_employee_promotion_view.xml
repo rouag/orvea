@@ -52,7 +52,7 @@
 								<tree editable="bottom">
 										<field name="sequence" widget="handle" readonly="1" />
 										<field name="name" />
-										<field name="desire_id" invisible="1" />
+										<field name="demande_promotion_id" invisible="1" />
 								</tree>
 							</field>
 						</group>
