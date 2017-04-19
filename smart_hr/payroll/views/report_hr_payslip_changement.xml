@@ -64,14 +64,14 @@
 										<td t-esc="line['employee_name']" />
 										<td t-esc="line['number']" />
 										<td t-esc="line['department_name']" />
-										<td t-esc="line['employee_net_salary']" />
-										<td t-esc="line['payslip_net_salary']" />
-										<td t-esc="line['diff']" />
+										<td t-esc="get_float(line['employee_net_salary'])" />
+										<td t-esc="get_float(line['payslip_net_salary'])" />
+										<td t-esc="get_float(line['diff'])" />
 										<td>
 											<t t-foreach="line['payslip_lines']" t-as="pline">
 												<t t-esc='pline.name' />
 												/
-												<t t-esc='pline.amount' />
+												<t t-esc='get_float(pline.amount)' />
 												<br></br>
 											</t>
 										</td>
@@ -81,9 +81,9 @@
 									</tr>
 									<tr>
 										<td colspan="3">المجموع</td>
-										<td t-esc="tot_emp_net_salary"/>
-										<td t-esc="tot_slip_net_salary"/>
-										<td t-esc="tot_diff"/>
+										<td t-esc="get_float(tot_emp_net_salary)"/>
+										<td t-esc="get_float(tot_slip_net_salary)"/>
+										<td t-esc="get_float(tot_diff)"/>
 										<td></td>
 									</tr>
 								</tbody>

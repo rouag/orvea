@@ -717,7 +717,7 @@ class HrPayslip(models.Model):
         self.ensure_one()
         line_ids = []
         all_suspensions = []
-        # get  started and ended condemned suspension in current month
+        # get  started and ended suspension in current month
         domain = [('suspension_date', '>=', date_from),
                   ('suspension_date', '<=', date_to),
                   ('state', '=', 'done'),
@@ -740,7 +740,7 @@ class HrPayslip(models.Model):
             if date_to > date_to:
                 date_to = date_to
             number_of_days = days_between(date_from, date_to)
-            if number_of_days > 0 :
+            if number_of_days > 0:
                 if suspension.suspension_end_id.condemned:
                     all_suspensions.append({'employee_id': suspension.employee_id.id,
                                             'date_from': date_from, 'date_to': date_to,
