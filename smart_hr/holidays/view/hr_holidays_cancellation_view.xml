@@ -33,9 +33,9 @@
 						<field name="state" widget="statusbar" statusbar_visible="draft,audit,hrm,done,refuse" />
 					</header>
 					<sheet>
-							<field name="name" attrs="{'invisible':[('state', 'not in', [ 'done'])],'readonly':[('state', 'in', ['done'])]}" />
+							<field name="name" attrs="{'invisible':[('state', 'in', ['draft','audit','hrm', 'done'])],'readonly':[('state', 'in', ['done'])]}" />
 						<group>
-							<field name="date" readonly="1" />
+							<field name="date" attrs="{'invisible':[('state', 'in', ['draft','audit','hrm', 'done'])],'readonly':[('state', 'in', ['done'])]}" />
 							<field name="employee_id" readonly="1" 
 								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 							<field name="holiday_id" readonly="1" />
@@ -133,10 +133,10 @@
 					<sheet>
 						<label for="name" class="oe_edit_only" />
 						<h1>
-							<field name="name" readonly="1" />
+							<field name="name"  attrs="{'invisible':[('state', 'in', [ 'draft','audit','hrm'])],'readonly':[('state', 'in', ['done'])]}" />
 						</h1>
 						<group>
-							<field name="date" readonly="1" />
+							<field name="date"  attrs="{'invisible':[('state', 'in', [ 'draft','audit','hrm'])],'readonly':[('state', 'in', ['done'])]}" />
 							<field name="cancellation_date" required="1" attrs="{'readonly':[('state','=', 'done')]}"/>
 							<field name="employee_id" readonly="1" 
 								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />

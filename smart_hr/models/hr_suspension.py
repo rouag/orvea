@@ -33,7 +33,7 @@ class hr_suspension(models.Model):
     state = fields.Selection([
         ('draft', u'طلب'),
         ('hrm', u'مدير شؤون الموظفين'),
-        ('make_decision' ,u'اصدار قرار'),
+
         ('done', u'اعتمدت'),
         ('refuse', u'رفض'),
     ], string=u'الحالة', default='draft')
@@ -92,12 +92,7 @@ class hr_suspension(models.Model):
             rec.state = 'hrm'
             rec.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"'")
 
-    @api.one
-    def button_make_decision(self):
-        user = self.env['res.users'].browse(self._uid)
-        for rec in self:
-            rec.state = 'make_decision'
-            rec.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"'")
+   
 
     @api.one
     def button_done(self):

@@ -202,7 +202,10 @@
 
 						<button name="action_done" string="موافقة" type="object"
 							groups="smart_hr.group_job_external_managment" states="hrm" />
-
+							
+								<!-- <button name="open_decission_create_job" string="معاينة القرار" groups="smart_hr.group_job_external_managment"
+							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+ -->
 						<field name="state" widget="statusbar"
 							statusbar_visible="new,waiting,budget_external,hrm,done,refused" />
 					</header>
