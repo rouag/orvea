@@ -27,10 +27,32 @@
 			<field name="view_id" ref="view_form_hr_refuse_wizard" />
 			<field name="target">new</field>
 		</record>
-		
-		
-		
-		<!-- Refuse appoint  Wizard -->
+		<record id="view_form_hr_refuse_waiting_wizard" model="ir.ui.view">
+			<field name="name">hr.refuse.wizard.waiting.form</field>
+			<field name="model">hr.refuse.wizard</field>
+			<field name="arch" type="xml">
+				<form string="سبب الرفض">
+					<separator string="سبب الرفض" />
+					<field name="message" required="1" />
+					<footer>
+						<button name="button_refuse_waiting" string="حفظ" type="object"
+							icon="fa-floppy-o" class="oe_inline oe_stat_button" />
+						أو
+						<button string="إلغاء" class="oe_link" special="cancel" />
+					</footer>
+				</form>
+			</field>
+		</record>
+		<record id="action_hr_refuse_waiting_wizard" model="ir.actions.act_window">
+			<field name="name">سبب الرفض</field>
+			<field name="res_model">hr.refuse.wizard</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="view_form_hr_refuse_waiting_wizard" />
+			<field name="target">new</field>
+		</record>
+
+		<!-- Refuse appoint Wizard -->
 		<record id="view_form_hr_refuse_appoint_wizard" model="ir.ui.view">
 			<field name="name">hr.refuse.appoint.wizard.form</field>
 			<field name="model">hr.refuse.appoint.wizard</field>
@@ -80,7 +102,7 @@
 			<field name="view_id" ref="view_form_hr_refuse_appoint1_wizard" />
 			<field name="target">new</field>
 		</record>
-			<!-- Refuse appoint 1 Wizard -->
+		<!-- Refuse appoint 1 Wizard -->
 		<record id="view_form_hr_refuse_appoint2_wizard" model="ir.ui.view">
 			<field name="name">hr.refuse.appoint2.wizard.form</field>
 			<field name="model">hr.refuse.appoint2.wizard</field>
@@ -105,7 +127,7 @@
 			<field name="view_id" ref="view_form_hr_refuse_appoint2_wizard" />
 			<field name="target">new</field>
 		</record>
-		
+
 		<record id="view_form_hr_refuse_appoint3_wizard" model="ir.ui.view">
 			<field name="name">hr.refuse.appoint3.wizard.form</field>
 			<field name="model">hr.refuse.appoint3.wizard</field>
@@ -130,8 +152,8 @@
 			<field name="view_id" ref="view_form_hr_refuse_appoint3_wizard" />
 			<field name="target">new</field>
 		</record>
-		
-		
+
+
 		<record id="view_form_hr_refuse_appoint4_wizard" model="ir.ui.view">
 			<field name="name">hr.refuse.appoint4.wizard.form</field>
 			<field name="model">hr.refuse.appoint4.wizard</field>
@@ -156,8 +178,8 @@
 			<field name="view_id" ref="view_form_hr_refuse_appoint4_wizard" />
 			<field name="target">new</field>
 		</record>
-		
-		
+
+
 		<record id="view_form_hr_refuse_appoint5_wizard" model="ir.ui.view">
 			<field name="name">hr.refuse.appoint5.wizard.form</field>
 			<field name="model">hr.refuse.appoint5.wizard</field>
@@ -182,8 +204,8 @@
 			<field name="view_id" ref="view_form_hr_refuse_appoint5_wizard" />
 			<field name="target">new</field>
 		</record>
-		
-		
+
+
 		<record id="view_form_hr_refuse_appoint6_wizard" model="ir.ui.view">
 			<field name="name">hr.refuse.appoint6.wizard.form</field>
 			<field name="model">hr.refuse.appoint6.wizard</field>
@@ -200,18 +222,18 @@
 				</form>
 			</field>
 		</record>
-		
-	<record id="action_hr_refuse_appoint6_wizard" model="ir.actions.act_window">
+
+		<record id="action_hr_refuse_appoint6_wizard" model="ir.actions.act_window">
 			<field name="name">سبب الرفض</field>
 			<field name="res_model">hr.refuse.appoint6.wizard</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="view_id" ref="view_form_hr_refuse_appoint6_wizard" />
 			<field name="target">new</field>
-			</record>
-			
-	
-		
+		</record>
+
+
+
 		<record id="view_form_hr_deputation_wizard" model="ir.ui.view">
 			<field name="name">hr.deputation.refuse.wizard.form</field>
 			<field name="model">hr.deputation.refuse.wizard</field>
@@ -228,8 +250,8 @@
 				</form>
 			</field>
 		</record>
-	
-			<record id="action_hr_deputation_refuse_wizard" model="ir.actions.act_window">
+
+		<record id="action_hr_deputation_refuse_wizard" model="ir.actions.act_window">
 			<field name="name">سبب الرفض</field>
 			<field name="res_model">hr.deputation.refuse.wizard</field>
 			<field name="view_type">form</field>
@@ -237,7 +259,7 @@
 			<field name="view_id" ref="view_form_hr_deputation_wizard" />
 			<field name="target">new</field>
 		</record>
-		
+
 
 	</data>
 </openerp>

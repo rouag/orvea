@@ -191,7 +191,7 @@
 						<button name="action_budget" string="موافقة" type="object"
 							groups="smart_hr.group_new_job_confirmation" states="waiting"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+						<button name="%(action_hr_refuse_waiting_wizard)d" string="رفض"
 							type="action" groups="smart_hr.group_new_job_confirmation"
 							states="waiting" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="action_hrm" string="موافقة" type="object"

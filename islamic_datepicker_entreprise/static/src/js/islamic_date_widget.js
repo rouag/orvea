@@ -48,7 +48,7 @@ odoo.define('islamic_datepicker_entreprise.ummalqura_date_widget', function(requ
                     var jd = $.calendars.instance('gregorian').toJD(year, month, day);
                     var date = $.calendars.instance('ummalqura').fromJD(jd);
 
-                    return (calendar1.formatDate('dd-mm-yyyy', date));
+                    return (calendar1.formatDate('yyyy-mm-dd', date));
                 }
                 if (text.indexOf('/') != -1) {
                     text_split = text.split('/');
@@ -67,7 +67,7 @@ odoo.define('islamic_datepicker_entreprise.ummalqura_date_widget', function(requ
 
                     var jd = calendar.toJD(year, month, day);
                     var date = calendar1.fromJD(jd);
-                    return (calendar1.formatDate('dd-mm-yyyy', date));
+                    return (calendar1.formatDate('yyyy-mm-dd', date));
                 }
                 return '';
 
@@ -212,7 +212,7 @@ odoo.define('islamic_datepicker_entreprise.ummalqura_date_widget', function(requ
             this.set_value(false);
             this.$input_hijri.calendarsPicker({
                 calendar: $.calendars.instance('ummalqura', 'ar'),
-                dateFormat: 'dd-mm-yyyy',
+                dateFormat: 'yyyy-mm-dd',
                 onSelect: convert_date_hijri,
                 isRTL: true,
             });
@@ -291,7 +291,7 @@ odoo.define('islamic_datepicker_entreprise.ummalqura_date_widget', function(requ
                     var jd = calendar.toJD(year, month, day);
                     var date = calendar1.fromJD(jd);
                 }
-                return (calendar1.formatDate('dd-mm-yyyy', date));
+                return (calendar1.formatDate('yyyy-mm-dd', date));
             }
             return '';
         },
@@ -539,7 +539,7 @@ odoo.define('islamic_datepicker_entreprise.ummalqura_date_widget', function(requ
                     var date = calendar1.fromJD(jd);
 
                 }
-                return (calendar1.formatDate('dd-mm-yyyy', date));
+                return (calendar1.formatDate('yyyy-mm-dd', date));
 
             }
             return '';

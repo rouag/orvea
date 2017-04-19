@@ -214,7 +214,7 @@ class HrJobCreate(models.Model):
     grade_ids = fields.One2many('salary.grid.grade', 'job_create_id', string='المرتبة')
     draft_budget = fields.Binary(string=u'مشروع الميزانية', attachment=True)
     draft_budget_name = fields.Char(string=u'مشروع الميزانية مسمى ')
-    type_id = fields.Many2one('salary.grid.type', string='الصنف')
+    type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1, states={'new': [('readonly', 0)]})
   #  decission_id = fields.Many2one('hr.decision', string=u'القرارات')
 
 #     @api.multi
@@ -349,6 +349,24 @@ class HrJobCreate(models.Model):
                                               'res_action': 'smart_hr.action_hr_job_create',
                                               'notif': True
                                               })
+    @api.multi
+    def button_refuse_waiting(self):
+        self.ensure_one()
+        self.state = 'new'
+        # Add to log
+        user = self.env['res.users'].browse(self._uid)
+        self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
+
+        # send notification for the employee
+        self.env['base.notification'].create({'title': u'إشعار برفض طلب',
+                                              'message': u'لقد تم إشعار رفض طلب إحداث وظائف',
+                                              'user_id': self.employee_id.user_id.id,
+                                              'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+                                              'res_id': self.id,
+                                              'res_action': 'smart_hr.action_hr_job_create',
+                                              'notif': True
+                                              })
+
 
     def check_workflow_state(self, state):
         '''

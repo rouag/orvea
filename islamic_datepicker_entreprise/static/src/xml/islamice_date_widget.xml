@@ -6,7 +6,7 @@
                 <t t-set="placeholder" t-value="widget.getParent().node and widget.getParent().node.attrs.placeholder"/>
 
                 <input t-att-id="widget.name" type="text" t-att-placeholder="placeholder" disabled="1"
-                       style="background-color: #FFFFFF !important; width:50%;float:left;"
+                       style="background-color: #FFFFFF !important; width:25%;float:left;"
                        class="oe_hijri oe_datepicker_second o_form_input" />
 
 
@@ -14,7 +14,7 @@
                        t-att-name="widget.name"
                        t-att-placeholder="placeholder"
                        class="oe_datepicker_master oe_simple_date"
-                       style="background-color: #FFFFFF !important; width:50%;float:left;"
+                       style="background-color: #FFFFFF !important; width:25%;float:left;"
                 />
                 <span class="fa fa-calendar o_datepicker_button o_form_input" style="display:none;"/>
 
@@ -22,7 +22,7 @@
         </t>
         <t t-if="widget.__parentedParent.field_manager and (widget.__parentedParent.field_manager.fields_view.arch.attrs.editable != 'top' and widget.__parentedParent.field_manager.fields_view.arch.attrs.editable != 'bottom')">
 
-             <span style="float: right;width: 50%; padding-left: 5px;">
+             <span style="float: right;width: 25%; padding-left: 5px;">
                 <div class="hijri">
                     <input t-att-id="widget.name" type="text" t-att-placeholder="placeholder"
                            style="background-color: #FFFFFF !important" class="oe_hijri oe_datepicker_second"/>
@@ -30,7 +30,7 @@
             </span>
 
 
-            <div class="o_datepicker input-group" style="float: right;width: 50%; padding-left: 5px;">
+            <div class="o_datepicker input-group" style="float: right;width: 25%; padding-left: 5px;">
                 <t t-set="placeholder" t-value="widget.getParent().node and widget.getParent().node.attrs.placeholder"/>
                 <input type="text"
                        t-att-name="widget.name"

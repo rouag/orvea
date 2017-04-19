@@ -63,7 +63,7 @@
 		defaultRenderer: {
 			picker: '<div class="calendars">' +
 			'<div class="calendars-nav">{link:prev}{link:today}{link:next}</div>{months}' +
-			'{popup:start}<div class="calendars-ctrl">{link:clear}{link:close}</div>{popup:end}' +
+			'{popup:start}<div class="calendars-ctrl">{link:close}</div>{popup:end}' +
 			'<div class="calendars-clear-fix"></div></div>',
 			monthRow: '<div class="calendars-month-row">{months}</div>',
 			month: '<div class="calendars-month"><div class="calendars-month-header">{monthHeader}</div>' +
@@ -459,21 +459,21 @@
 		regionalOptions: { // Available regional settings, indexed by language/country code
 			'': { // Default regional settings - English/US
 				renderer: {}, // this.defaultRenderer
-				prevText: '&lt;Prev',
+				prevText: '&lt;السابق',
 				prevStatus: 'Show the previous month',
 				prevJumpText: '&lt;&lt;',
 				prevJumpStatus: 'Show the previous year',
-				nextText: 'Next&gt;',
+				nextText: 'التالي&gt;',
 				nextStatus: 'Show the next month',
 				nextJumpText: '&gt;&gt;',
 				nextJumpStatus: 'Show the next year',
 				currentText: 'Current',
 				currentStatus: 'Show the current month',
-				todayText: 'Today',
+				todayText: 'اليوم',
 				todayStatus: 'Show today\'s month',
-				clearText: 'Clear',
+				clearText: ' ',/*clear*/
 				clearStatus: 'Clear all the dates',
-				closeText: 'Close',
+				closeText: 'إغلاق',
 				closeStatus: 'Close the datepicker',
 				yearStatus: 'Change the year',
 				earlierText: '&#160;&#160;▲',

@@ -32,10 +32,8 @@ class HrScholarship(models.Model):
     result = fields.Selection([
         ('suceed', u'نجح'),
         ('not_succeed', u' لم ينجح')], string=u'النتيجة', readonly=True)
-    num_speech = fields.Char(string=u'رقم القرار', required=1)
-    date_speech = fields.Date(string=u'تاريخ القرار', required=1)
-    speech_file = fields.Binary(string=u'القرار', required=1, attachment=True)
-    speech_file_name = fields.Char()
+    num_speech = fields.Char(string=u'رقم القرار', readonly=1, related='decission_id.name')
+    date_speech = fields.Date(string=u'تاريخ القرار', readonly=1, related='decission_id.date')
     diplom_type = fields.Selection([('high_diploma', u'دبلوم من الدراسات العليا'),
                                     ('licence_bac', u'الليسانس او الباكالوريوس'),
                                     ('average_diploma', u'دبلوم متوسط')],
@@ -59,6 +57,14 @@ class HrScholarship(models.Model):
     is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started', default=False)
     done_date = fields.Date(string='تاريخ التفعيل')
     decission_id = fields.Many2one('hr.decision', string=u'القرارات')
+    display_decision_info = fields.Boolean(compute='_compute_display_decision_info')
+
+    def _compute_display_decision_info(self):
+        for rec in self:
+            if rec.state == 'done' and rec.decission_id.state == 'done':
+                self.display_decision_info = True
+            else:
+                self.display_decision_info = False
 
     @api.multi
     def open_decission_scholarship(self):
@@ -97,11 +103,12 @@ class HrScholarship(models.Model):
         if self.date_from and self.date_to:
             self.duration = self.env['hr.smart.utils'].compute_duration(self.date_from, self.date_to)
 
-    @api.onchange('diplom_id')
-    def onchange_diplom_id(self):
+    @api.onchange('diplom_type')
+    def onchange_diplom_type(self):
         res = {}
-        if not self.diplom_id and self.diplom_type:
+        if self.diplom_type:
             res['domain'] = {'diplom_id': [('education_level_id.diplom_type', '=', self.diplom_type)]}
+            self.diplom_id = False
         return res
 
     @api.model

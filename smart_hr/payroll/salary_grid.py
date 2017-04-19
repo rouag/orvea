@@ -85,10 +85,6 @@ class SalaryGridDetail(models.Model):
     _description = u'تفاصيل سلم الرواتب'
     _rec_name = 'grid_id'
 
-    @api.multi
-    def get_default_date(self):
-        return self.grid_id.date
-
     grid_id = fields.Many2one('salary.grid', string='سلّم الرواتب', required=1, ondelete='cascade')
     date = fields.Date(string='التاريخ')
     type_id = fields.Many2one('salary.grid.type', string='نوع السلم', required=1)
@@ -141,11 +137,12 @@ class SalaryGridDetail(models.Model):
     @api.model
     def create(self, vals):
         res = super(SalaryGridDetail, self).create(vals)
-        res.write({'date': res.grid_id.date})
+        res.write({'date': fields.Date.today()})
         return res
 
     @api.multi
     def hide_line(self):
+        res = {}
         self.ensure_one()
         count_mployee = self.env['hr.employee'].search_count([('type_id', '=', self.type_id.id),
                                                               ('grade_id', '=', self.grade_id.id),
@@ -154,7 +151,7 @@ class SalaryGridDetail(models.Model):
             raise ValidationError(_(u'هناك موظفين معينين على هذا السلم لا يمكن حذفه !'))
         else:
             self.is_old = True
-            self.grid_id.grid_ids = self.grid_id.grid_ids.ids
+        return res
 
 
 class SalaryGridDetailAllowance(models.Model):
