@@ -59,6 +59,7 @@ class HrPayslip(models.Model):
         # حسم‬  التأخير يكون‬ من‬  الراتب‬ الأساسي فقط
         delays_ids = self.env['hr.employee.delay.hours'].search([('request_id.date', '>=', self.date_from),
                                                                  ('request_id.date', '<=', self.date_to),
+                                                                 ('employee_id', '=', self.employee_id.id),
                                                                  ('request_id.state', '=', 'done')
                                                                  ])
         for line in delays_ids:
@@ -75,6 +76,7 @@ class HrPayslip(models.Model):
         # عقوبة
         sanction_line_ids = self.env['hr.sanction.ligne'].search([('deduction', '=', False),
                                                                   ('sanction_id.type_sanction.deduction', '=', True),
+                                                                  ('employee_id', '=', self.employee_id.id),
                                                                   ('sanction_id.state', '=', 'done')
                                                                   ])
 

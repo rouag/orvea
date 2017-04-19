@@ -97,8 +97,8 @@ class HrEmployeeLend(models.Model):
                 if fields.Date.from_string(testing_date_to) >= fields.Date.from_string(fields.Datetime.now()):
                     raise ValidationError(u"لايمكن طلب إعارة خلال فترة التجربة")
                     # ‫التترقية‬ ‫سنة‬ ‫إستلكمال‬
-                #             if self.employee_id.promotion_duration < 354:
-                #                 raise ValidationError(u"لايمكن طلب إعارة خلال أقل من سنة منذ أخر ترقية")
+        if self.employee_id.promotion_duration < 354:
+             raise ValidationError(u"لايمكن طلب إعارة خلال أقل من سنة منذ أخر ترقية")
 
     @api.multi
     def unlink(self):
@@ -124,7 +124,7 @@ class HrEmployeeLend(models.Model):
                 'date': decision_date,
                 'employee_id': self.employee_id.id}
             decision = decision_obj.create(decission_val)
-            decision.text = decision.replace_text(self.employee_id, decision_date, decision_type_id, 'employee')
+            decision.text = decision.replace_text(self.employee_id, decision_date, decision_type_id, 'lend')
             decission_id = decision.id
             self.decission_id = decission_id
         return {
