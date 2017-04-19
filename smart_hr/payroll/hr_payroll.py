@@ -388,7 +388,7 @@ class HrPayslip(models.Model):
             if date_from >= holiday_date_from and holiday_date_to > date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, date_from, date_to, True, True, True)
             if date_from >= holiday_date_from and holiday_date_to <= date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, date_from, holiday_date_to, True, True, True)
+                res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, holiday_date_from, holiday_date_to, True, True, True)
             if holiday_date_from >= date_from and holiday_date_to < date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, holiday_date_from, holiday_date_to, True, True, True)
             if holiday_date_from >= date_from and holiday_date_to >= date_to:

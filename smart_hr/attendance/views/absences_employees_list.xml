@@ -8,7 +8,7 @@
 					<t t-call="smart_hr.external_layout_hr">
 							<div class="page" style="direction:rtl;">
 								<p align="center">
-									بيان حسم ا يام الغياب و ساعات التاخير من الراتب لمرفق بالقرار
+									بيان حسم ا يام الغياب  من الراتب لمرفق بالقرار
 									رقم
 									<span t-esc="o.decission_id.name" />
 									و تاريخ
@@ -20,11 +20,9 @@
 									<thead>
 										<tr>
 											<th class="text-center">الإسم</th>
-											<th class="text-center">رقم الملف</th>
+											<th class="text-center">الرقم الوظيفي</th>
 											<th class="text-center">المرتبة</th>
-											<th class="text-center">ساعات التاخير </th>
 											<th class="text-center">ايام الغياب</th>
-											<th class="text-center">فترة الغياب</th>
 											<th class="text-center">المقر الرئيسي</th>
 
 										</tr>
@@ -43,14 +41,7 @@
 													<span t-field="line.employee_id.grade_id.name" />
 												</td>
 												<td>
-													-
-												</td>
-												<td>
 													<span t-field="line.number_request" />
-												</td>
-
-												<td>
-													-
 												</td>
 												<td>
 													<span t-field="line.employee_id.department_id.name" />
