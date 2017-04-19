@@ -59,11 +59,10 @@
 						<button name="button_extend" string="تمديد الابتعاث"
 							attrs="{'invisible':[('state', 'not in', ['done'])]} " type="object"
 							icon="fa-check" class="oe_inline oe_stat_button" />
-							
-							<button name="open_decission_scholarship" string="معاينة القرار"
+
+						<button name="open_decission_scholarship" string="معاينة القرار"
 							attrs="{'invisible':['|',('is_extension','=',False),('state','not in',['done','finished'])]}"
-						 type="object" states="done" icon="fa-print"
-							class="oe_inline oe_stat_button" />
+							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
 
 
 					</header>
@@ -74,6 +73,11 @@
 						<group>
 							<group>
 								<field name="date" />
+								<field name="display_decision_info" invisible="1"/>
+								<field name="num_speech"
+									attrs="{'invisible':[('display_decision_info','=',False)]}" />
+								<field name="date_speech"
+									attrs="{'invisible':[('display_decision_info','=',False)]}" />
 								<field name="employee_id"
 									attrs="{'readonly':[('state','not in', ['draft', 'psm'])]}"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
@@ -112,16 +116,7 @@
 							</page>
 							<page string="المرفقات">
 								<group>
-									<group>
-										<field name="num_speech"
-											attrs="{'readonly':[('state','not in', ['draft', 'psm'])]}" />
-										<field name="date_speech"
-											attrs="{'readonly':[('state','not in', ['draft', 'psm'])]}" />
-										<field name="speech_file" filename="speech_file_name"
-											attrs="{'readonly':[('state','not in', ['draft', 'psm'])]}" />
-										<field name="speech_file_name" invisible="1"
-											attrs="{'readonly':[('state','not in', ['draft', 'psm'])]}" />
-									</group>
+
 									<group>
 										<field name="acceptance_certificate" filename="acceptance_certificate_name"
 											attrs="{'readonly':['|', ('is_extension','=',True), ('state','not in', ['draft', 'psm'])]}" />
@@ -130,6 +125,7 @@
 											attrs="{'readonly':['|', ('is_extension','=',True), ('state','not in', ['draft', 'psm'])]}" />
 										<field name="language_exam_file_name" invisible="1" />
 									</group>
+									<group></group>
 
 								</group>
 							</page>
@@ -163,7 +159,7 @@
 							<field name="note"
 								attrs="{'readonly':[('state','not in', ['draft', 'psm'])]}" />
 						</group>
-					
+
 
 					</sheet>
 					<div>
