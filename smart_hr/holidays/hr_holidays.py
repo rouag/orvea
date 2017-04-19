@@ -393,7 +393,7 @@ class HrHolidays(models.Model):
                 else:
                     current_stock = stock['current_stock']
                 holiday.current_holiday_stock = current_stock
-            if self.holiday_status_id:
+            if self.holiday_status_id and not self.is_extension:
                 self.holiday_status_id = False
                 self.date_from = fields.Date.today()
                 self.duration = 1
@@ -722,6 +722,7 @@ class HrHolidays(models.Model):
         default_date_from = fields.Date.to_string(fields.Date.from_string(self.date_to) + timedelta(days=1))
         context.update({
             u'default_is_extension': True,
+
             u'default_extended_holiday_id': self.id,
             u'default_date_from': default_date_from,
             u'readonly_by_pass': True,
