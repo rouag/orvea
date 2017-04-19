@@ -67,3 +67,5 @@ access_hr_payslip_stop_line,hr_payslip_stop_line,model_hr_payslip_stop_line,,1,1
 
 access_hr_period,hr_period,model_hr_period,,1,1,1,1
 access_hr_fiscalyear,hr.fiscalyear,model_hr_fiscalyear,,1,1,1,1
+
+access_hr_employee_payroll_changement,hr_employee_payroll_changement,model_hr_employee_payroll_changement,,1,1,1,1

@@ -44,7 +44,7 @@ class HrEmployee(models.Model):
                     if line.salary_grid_detail_id == salary_grid_id:
                         res.append({'allowance_name': line.allowance_id.name,
                                     'allowance_id': line.allowance_id.id,
-                                    'amount': allowance.amount})
+                                    'amount': line.amount})
         return res
 
     @api.model
@@ -52,39 +52,38 @@ class HrEmployee(models.Model):
         '''
         @return:  two values value1: salary grid detail, value2: basic salary
         '''
+        basic_salary = 0.0
         # search for  the newest salary grid detail
-        domain = [('grid_id.state', '=', 'done'),
-                  ('grid_id.enabled', '=', True),
-                  ('type_id', '=', self.type_id.id),
-                  ('grade_id', '=', self.grade_id.id),
-                  ('degree_id', '=', self.degree_id.id),
+        domain = [('employee_id', '=', self.id),
                   ]
         if operation_date:
             # search the right salary grid detail for the given operation_date
             domain.append(('date', '<=', operation_date))
-        salary_grid_id = self.env['salary.grid.detail'].search(domain, order='date desc', limit=1)
-#         # case if not salary grid is new and correspending to operation_date
-#         if not salary_grid_id and len(domain) == 7:
-#             domain.pop(6)
-#         salary_grid_id = self.env['salary.grid.detail'].search(domain, order='date desc', limit=1)
+        salary_grid_id = self.env['hr.employee.payroll.changement'].search(domain, order='date desc', limit=1)
 
         # doamin for  the newest salary grid detail
-        if not salary_grid_id and len(domain) == 6:
-            domain.pop(5)
-        salary_grid_id = self.env['salary.grid.detail'].search(domain, order='date desc', limit=1)
-        # retreive old salary increases to add them with basic_salary
-        domain = [('salary_grid_detail_id', '=', salary_grid_id.id)]
-        if operation_date:
-            domain.append(('date', '<=', operation_date))
-        salary_increase_ids = self.env['employee.increase'].search(domain)
-        sum_increases_amount = 0.0
-        for rec in salary_increase_ids:
-            sum_increases_amount += rec.amount
-        if self.basic_salary == 0:
-            basic_salary = salary_grid_id.basic_salary + sum_increases_amount
-        else:
-            basic_salary = self.basic_salary + sum_increases_amount
-        return salary_grid_id, basic_salary
+        if not salary_grid_id and len(domain) == 2:
+            domain.pop(1)
+        salary_grid_id = self.env['hr.employee.payroll.changement'].search(domain, order='date desc', limit=1)
+        salary_grid_detail_id = self.env['salary.grid.detail'].search([('grid_id.state', '=', 'done'),
+                                                                      ('grid_id.enabled', '=', True),
+                                                                      ('type_id', '=', salary_grid_id.type_id.id),
+                                                                      ('grade_id', '=', salary_grid_id.grade_id.id),
+                                                                      ('degree_id', '=', salary_grid_id.degree_id.id)], limit=1)
+        if salary_grid_detail_id:
+            # retreive old salary increases to add them with basic_salary
+            domain = [('salary_grid_detail_id', '=', salary_grid_detail_id.id)]
+            if operation_date:
+                domain.append(('date', '<=', operation_date))
+            salary_increase_ids = self.env['employee.increase'].search(domain)
+            sum_increases_amount = 0.0
+            for rec in salary_increase_ids:
+                sum_increases_amount += rec.amount
+            if self.basic_salary == 0:
+                basic_salary = salary_grid_detail_id.basic_salary + sum_increases_amount
+            else:
+                basic_salary = self.basic_salary + sum_increases_amount
+        return salary_grid_detail_id, basic_salary
 
 
 class HrEmployeeAllowance(models.Model):
@@ -95,6 +94,16 @@ class HrEmployeeAllowance(models.Model):
     amount = fields.Float(string='المبلغ')
     date = fields.Date(string='التاريخ')
     salary_grid_detail_id = fields.Many2one('salary.grid.detail', string='تفاصيل سلم الرواتب')
+
+
+class HrEmployeePayrollChangement(models.Model):
+    _name = 'hr.employee.payroll.changement'
+
+    employee_id = fields.Many2one('hr.employee', string='الموظف')
+    date = fields.Date(string='التاريخ')
+    degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
+    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
+    type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1)
 
 
 class EmployeeIncrease(models.Model):
