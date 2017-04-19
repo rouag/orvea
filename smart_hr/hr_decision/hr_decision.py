@@ -3,6 +3,7 @@
 
 from openerp import models, fields, api, _
 from openerp.addons.smart_base.util.umalqurra import *
+from openerp.exceptions import ValidationError
 from umalqurra.hijri_date import HijriDate
 
 
@@ -31,6 +32,13 @@ class HrDecision(models.Model):
     #     @api.onchange('date_speech')
     #     def onchange_date_speech(self):
     #         self.onchange_decision_type_id()
+
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'draft':
+                raise ValidationError(u'لا يمكن حذف القرار فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrDecision, self).unlink()
 
     def _get_hijri_date(self, date, separator):
         '''

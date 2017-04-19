@@ -422,6 +422,8 @@ class HrEmployeeTransfert(models.Model):
             return True
         else:
             return False
+        
+
 
 
 class HrTransfertAllowance(models.Model):
@@ -732,7 +734,13 @@ class HrTransfertSorting(models.Model):
                 line.hr_employee_transfert_id.speech_date = rec.decision_id.date
                 line.hr_employee_transfert_id.action_done()
             rec.state = 'done'
-
+            
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'new' :
+                raise ValidationError(u'لا يمكن حذف ترتيب طلبات النقل  فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrTransfertSorting, self).unlink()
 
 class HrTransfertSortingLine(models.Model):
     _name = 'hr.transfert.sorting.line'

@@ -439,6 +439,14 @@ class HrPromotionLigneEmployee(models.Model):
     @api.multi
     def employee_pause(self):
         self.emplyoee_state = True
+    
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'draft' :
+                raise ValidationError(u'لا يمكن حذف طلب  الترقية فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrPromotionLigneEmployee, self).unlink()
+
 
 
 class HrPromotionLigneJobs(models.Model):
@@ -560,7 +568,8 @@ class HrPromotionLigneEmployeeJob(models.Model):
                 return {'warning': warning,}
             self.new_job_id.state = 'reserved'
             self.occupied_promotion = False
-
+    
+  
 
 class HrPromotionType(models.Model):
     _name = 'hr.promotion.type'
@@ -611,3 +620,10 @@ class HrPromotionDemande(models.Model):
     def button_confirmed(self):
         for promo in self:
             self.state = 'waiting'
+            
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'new' :
+                raise ValidationError(u'لا يمكن حذف طلب  الترقية فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrPromotionDemande, self).unlink()
