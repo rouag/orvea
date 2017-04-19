@@ -508,11 +508,11 @@ class HrDecisionAppoint(models.Model):
     @api.multi
     def action_activate(self):
         # create payroll changement history for the employee
-        self.env['hr.employee.payroll.changement'].create({'employee_id': self.employee_id.id,
+        changement_id = self.env['hr.employee.payroll.changement'].create({'employee_id': self.employee_id.id,
                                                            'date': fields.Date.today(),
-                                                           'type_id': self.employee_id.type_id.id,
-                                                           'grade_id': self.employee_id.grade_id.id,
-                                                           'degree_id': self.employee_id.degree_id.id})
+                                                           'type_id': self.type_id.id,
+                                                           'grade_id': self.grade_id.id,
+                                                           'degree_id': self.degree_id.id})
         grid_id, basic_salary = self.employee_id.get_salary_grid_id(False)
         if not grid_id:
             raise ValidationError(u"يجب إنشاء سلم رواتب موافق لبيانات عمل الموظف!")

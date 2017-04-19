@@ -201,7 +201,9 @@ class HrPayslip(models.Model):
                   ('date_direct_action', '<=', date_to),
                   ('employee_id', '=', employee_id.id)]
         if for_last_month:
-            domain.append(('done_date', '>=', date_from))
+            # minus one day to date_from
+            new_date_from = str(fields.Date.from_string(date_from) - timedelta(days=1))
+            domain.append(('done_date', '>=', new_date_from))
             domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         last_decision_appoint_ids = self.env['hr.decision.appoint'].search(domain, order="date_direct_action desc")
@@ -225,7 +227,9 @@ class HrPayslip(models.Model):
         domain = [('employee_id', '=', employee_id.id),
                   ('state', '=', 'done')]
         if for_last_month:
-            domain.append(('done_date', '>=', date_from))
+            # minus one day to date_from
+            new_date_from = str(fields.Date.from_string(date_from) - timedelta(days=1))
+            domain.append(('done_date', '>=', new_date_from))
             domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         assign_ids = self.env['hr.employee.commissioning'].search(domain)
@@ -243,7 +247,7 @@ class HrPayslip(models.Model):
             if date_from >= assign_date_from and assign_date_to > date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(assign_id.employee_id, date_from, date_to, True, True, True)
             if date_from >= assign_date_from and assign_date_to <= date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(assign_id.employee_id, date_from, assign_date_to, True, True, True)
+                res = self.env['hr.smart.utils'].compute_duration_difference(assign_id.employee_id, assign_date_from, assign_date_to, True, True, True)
             if assign_date_from >= date_from and assign_date_to < date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(assign_id.employee_id, assign_date_from, assign_date_to, True, True, True)
             if assign_date_from >= date_from and assign_date_to >= date_to:
@@ -305,7 +309,9 @@ class HrPayslip(models.Model):
                   ('state', '=', 'done')
                   ]
         if for_last_month:
-            domain.append(('done_date', '>=', date_from))
+            # minus one day to date_from
+            new_date_from = str(fields.Date.from_string(date_from) - timedelta(days=1))
+            domain.append(('done_date', '>=', new_date_from))
             domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         scholarship_ids = self.env['hr.scholarship'].search(domain)
@@ -323,7 +329,7 @@ class HrPayslip(models.Model):
             if date_from >= scholarship_date_from and scholarship_date_to > date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(scholarship_id.employee_id, date_from, date_to, True, True, True)
             if date_from >= scholarship_date_from and scholarship_date_to <= date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(scholarship_id.employee_id, date_from, scholarship_date_to, True, True, True)
+                res = self.env['hr.smart.utils'].compute_duration_difference(scholarship_id.employee_id, scholarship_date_from, scholarship_date_to, True, True, True)
             if scholarship_date_from >= date_from and scholarship_date_to < date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(scholarship_id.employee_id, scholarship_date_from, scholarship_date_to, True, True, True)
             if scholarship_date_from >= date_from and scholarship_date_to >= date_to:
@@ -394,7 +400,9 @@ class HrPayslip(models.Model):
                   ('employee_id', '=', employee_id.id),
                   ]
         if for_last_month:
-            domain.append(('done_date', '>=', date_from))
+            # minus one day to date_from
+            new_date_from = str(fields.Date.from_string(date_from) - timedelta(days=1))
+            domain.append(('done_date', '>=', new_date_from))
             domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         lend_ids = self.env['hr.employee.lend'].search(domain)
@@ -412,7 +420,7 @@ class HrPayslip(models.Model):
             if date_from >= lend_date_from and lend_date_to > date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, date_from, date_to, True, True, True)
             if date_from >= lend_date_from and lend_date_to <= date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, date_from, lend_date_to, True, True, True)
+                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_from, lend_date_to, True, True, True)
             if lend_date_from >= date_from and lend_date_to < date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, lend_date_from, lend_date_to, True, True, True)
             if lend_date_from >= date_from and lend_date_to >= date_to:
@@ -499,7 +507,9 @@ class HrPayslip(models.Model):
         domain = [('employee_id', '=', employee_id.id),
                   ('state', '=', 'done')]
         if for_last_month:
-            domain.append(('done_date', '>=', date_from))
+            # minus one day to date_from
+            new_date_from = str(fields.Date.from_string(date_from) - timedelta(days=1))
+            domain.append(('done_date', '>=', new_date_from))
             domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         holidays_ids = self.env['hr.holidays'].search(domain)
@@ -520,7 +530,7 @@ class HrPayslip(models.Model):
             if date_from >= holiday_date_from and holiday_date_to > date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, date_from, date_to, True, True, True)
             if date_from >= holiday_date_from and holiday_date_to <= date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, date_from, holiday_date_to, True, True, True)
+                res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, holiday_date_from, holiday_date_to, True, True, True)
             if holiday_date_from >= date_from and holiday_date_to < date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, holiday_date_from, holiday_date_to, True, True, True)
             if holiday_date_from >= date_from and holiday_date_to >= date_to:
@@ -563,7 +573,8 @@ class HrPayslip(models.Model):
                                                                                 ('date_from', '>=', get_from_date),
                                                                                 ], order='done_date asc', limit=1)
                             months_from_holiday_start = relativedelta(today, fields.Date.from_string(oldest_holiday_id.date_from)).months
-                            if months_from_holiday_start < 0  : months_from_holiday_start= 0.0
+                            if months_from_holiday_start < 0:
+                                months_from_holiday_start = 0.0
                         if entitlement_type == rec.entitlement_id.entitlment_category and rec.month_from <= months_from_holiday_start <= rec.month_to and duration_in_month > 0:
                             ret_amount = basic_salary * grid_id.retirement / 100.0
                             new_basic_salary = basic_salary - ret_amount + retirement_amount
@@ -730,7 +741,9 @@ class HrPayslip(models.Model):
                   ]
         name = ''
         if for_last_month:
-            domain.append(('done_date', '>=', date_from))
+            # minus one day to date_from
+            new_date_from = str(fields.Date.from_string(date_from) - timedelta(days=1))
+            domain.append(('done_date', '>=', new_date_from))
             domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         suspension_ids = self.env['hr.suspension'].search(domain)
@@ -760,7 +773,9 @@ class HrPayslip(models.Model):
                   ('suspension_end_id', '=', False)
                   ]
         if for_last_month:
-            domain.append(('done_date', '>=', date_from))
+            # minus one day to date_from
+            new_date_from = str(fields.Date.from_string(date_from) - timedelta(days=1))
+            domain.append(('done_date', '>=', new_date_from))
             domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         suspension_ids = self.env['hr.suspension'].search(domain)
@@ -772,7 +787,9 @@ class HrPayslip(models.Model):
                   ('suspension_end_id.state', '=', 'done'),
                   ]
         if for_last_month:
-            domain.append(('done_date', '>=', date_from))
+            # minus one day to date_from
+            new_date_from = str(fields.Date.from_string(date_from) - timedelta(days=1))
+            domain.append(('done_date', '>=', new_date_from))
             domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         suspension_ids += self.env['hr.suspension'].search(domain)
@@ -791,7 +808,9 @@ class HrPayslip(models.Model):
                   ('suspension_end_id', '=', False)
                   ]
         if for_last_month:
-            domain.append(('done_date', '>=', date_from))
+            # minus one day to date_from
+            new_date_from = str(fields.Date.from_string(date_from) - timedelta(days=1))
+            domain.append(('done_date', '>=', new_date_from))
             domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         suspension_ids = self.env['hr.suspension'].search(domain)
@@ -802,7 +821,9 @@ class HrPayslip(models.Model):
                   ('suspension_end_id.state', '=', 'done'),
                   ]
         if for_last_month:
-            domain.append(('done_date', '>=', date_from))
+            # minus one day to date_from
+            new_date_from = str(fields.Date.from_string(date_from) - timedelta(days=1))
+            domain.append(('done_date', '>=', new_date_from))
             domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         suspension_ids += self.env['hr.suspension'].search(domain)
@@ -823,7 +844,9 @@ class HrPayslip(models.Model):
                   ('suspension_end_id.state', '=', 'done'),
                   ]
         if for_last_month:
-            domain.append(('done_date', '>=', date_from))
+            # minus one day to date_from
+            new_date_from = str(fields.Date.from_string(date_from) - timedelta(days=1))
+            domain.append(('done_date', '>=', new_date_from))
             domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         suspension_ids = self.env['hr.suspension'].search(domain)
@@ -842,6 +865,7 @@ class HrPayslip(models.Model):
                 date_from = suspension.suspension_date
                 date_to = suspension.suspension_end_id.release_date
                 number_of_days = days_between(date_from, date_to)
+                print '-----number_of_days---', number_of_days
                 if number_of_days > 0:
                     all_suspensions.append({'employee_id': suspension.employee_id.id,
                                             'date_from': date_from, 'date_to': date_to,
@@ -862,11 +886,12 @@ class HrPayslip(models.Model):
             if date_from >= suspension_date_from and suspension_date_to > date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(employee, date_from, date_to, True, True, True)
             if date_from >= suspension_date_from and suspension_date_to <= date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(employee, date_from, suspension_date_to, True, True, True)
+                res = self.env['hr.smart.utils'].compute_duration_difference(employee, suspension_date_from, suspension_date_to, True, True, True)
             if suspension_date_from >= date_from and suspension_date_to < date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(employee, suspension_date_from, suspension_date_to, True, True, True)
             if suspension_date_from >= date_from and suspension_date_to >= date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(employee, suspension_date_from, date_to, True, True, True)
+            print res
             amount = 0.0
             retirement_amount = 0.0
             allowance_amount = 0.0
@@ -932,7 +957,9 @@ class HrPayslip(models.Model):
                   ]
         name = ''
         if for_last_month:
-            domain.append(('done_date', '>=', date_from))
+            # minus one day to date_from
+            new_date_from = str(fields.Date.from_string(date_from) - timedelta(days=1))
+            domain.append(('done_date', '>=', new_date_from))
             domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         termination_ids = self.env['hr.termination'].search(domain)
@@ -994,7 +1021,9 @@ class HrPayslip(models.Model):
                   ]
         name = ''
         if for_last_month:
-            domain.append(('done_date', '>=', date_from))
+            # minus one day to date_from
+            new_date_from = str(fields.Date.from_string(date_from) - timedelta(days=1))
+            domain.append(('done_date', '>=', new_date_from))
             domain.append(('done_date', '<=', date_to))
             name = u' للشهر الفارط '
         difference_history_ids = self.env['hr.payslip.difference.history'].search(domain)

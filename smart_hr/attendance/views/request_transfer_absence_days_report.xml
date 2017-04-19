@@ -11,8 +11,8 @@
 								<div class="row">
 									<div class="col-md-12 text-center">
 										<b>
-											<p align="center" style="font-size:22px;">قرار حسم بسبب الغياب و التأخر عن
-												العمل فردي
+											<p align="center" style="font-size:22px;">قرار حسم بسبب الغياب 
+												 فردي
 											</p>
 
 											<p align="center" style="font-size:22px;">
@@ -91,7 +91,7 @@
 										<div class="col-md-12 text-center">
 											<b>
 												<p align="center" style="font-size:22px;">
-													(قرار حسم بسبب الغياب و التأخر عن العمل (جماعي
+													(قرار حسم بسبب الغياب (جماعي
 												</p>
 
 												<p align="center" style="font-size:22px;">
@@ -124,7 +124,7 @@
 											)
 											و تاريخ
 											<span t-esc="get_hijri_date(o.date_speech, '-')" />
-											المتضمن غياب و تأخر
+											المتضمن غياب 
 											الموضحة اسماؤهم بالبيان المرفق
 											عن العمل بدون عذر او مبرر نظامي
 											كل حسب
@@ -138,7 +138,7 @@
 										<p align="center" style="font-size:22px;">:يقرر ما يلى</p>
 										<p style="font-size:22px;">
 											١يحسم من راتب و بدلات الموضح اسماؤهم بالبيان المرفق مدد ا
-											لغياب و التاخير
+											لغياب 
 											المحددة امام اسم كل منهم و عددهم
 											<span t-esc="len(o.employee_ids.ids)" />
 											اشخاص
@@ -160,7 +160,7 @@
 
 								<div class="page" style="direction:rtl;">
 									<p align="center">
-										بيان حسم ا يام الغياب و ساعات التاخير من الراتب لمرفق بالقرار
+										بيان حسم ا يام الغياب من الراتب لمرفق بالقرار
 										رقم
 										<span t-esc="o.num_decision" />
 										و تاريخ
@@ -174,9 +174,7 @@
 												<th class="text-center">الإسم</th>
 												<th class="text-center">رقم الملف</th>
 												<th class="text-center">المرتبة</th>
-												<th class="text-center">ساعات التاخير </th>
 												<th class="text-center">ايام الغياب</th>
-												<th class="text-center">فترة الغياب</th>
 												<th class="text-center">المقر الرئيسي</th>
 
 											</tr>
@@ -195,14 +193,7 @@
 														<span t-field="line.employee_id.grade_id.name" />
 													</td>
 													<td>
-														-
-													</td>
-													<td>
 														<span t-field="line.number_request" />
-													</td>
-
-													<td>
-														-
 													</td>
 													<td>
 														<span t-field="line.employee_id.department_id.name" />

@@ -11,7 +11,7 @@
 								<div class="row">
 									<div class="col-md-12 text-center">
 										<b>
-											<p align="center" style="font-size:22px;">قرار حسم بسبب الغياب و التأخر عن العمل فردي</p>
+											<p align="center" style="font-size:22px;">قرار حسم بسبب  التأخر عن العمل فردي</p>
 
 											<p align="center" style="font-size:22px;">
 												قرار إداري رقم
@@ -43,7 +43,7 @@
 										)
 										و تاريخ
 										<span t-esc="get_hijri_date(o.date_speech, '-')" />
-										المتضمن تغيب
+										المتضمن تأخر
 										<span t-field="o.employee_ids[0].employee_id.type_id.name" />
 										ب
 										<span t-field="o.employee_ids[0].employee_id.department_id.name" />
@@ -88,7 +88,7 @@
 								<div class="row">
 									<div class="col-md-12 text-center">
 										<b>
-											<p align="center" style="font-size:22px;">(قرار حسم بسبب الغياب و التأخر عن العمل (جماعي</p>
+											<p align="center" style="font-size:22px;">(قرار حسم بسبب التأخر عن العمل (جماعي</p>
 
 											<p align="center" style="font-size:22px;">
 												قرار إداري رقم
@@ -128,8 +128,8 @@
 									</p>
 									<p align="center" style="font-size:22px;">:يقرر ما يلى</p>
 									<p style="font-size:22px;">
-										١يحسم من راتب و بدلات الموضح اسماؤهم بالبيان المرفق مدد ا
-										لغياب و التاخير
+										١يحسم من راتب و بدلات الموضح اسماؤهم بالبيان المرفق مدد 
+										  التاخير
 										المحددة امام اسم كل منهم و عددهم
 										<span t-esc="len(o.employee_ids.ids)" />
 										اشخاص
@@ -151,7 +151,7 @@
 
 							<div class="page" style="direction:rtl;">
 								<p align="center">
-									بيان حسم ا يام الغياب و ساعات التاخير من الراتب لمرفق بالقرار
+									بيان حسم  ساعات التاخير من الراتب لمرفق بالقرار
 									رقم
 									<span t-esc="o.num_decision" />
 									و تاريخ
@@ -166,8 +166,6 @@
 											<th class="text-center">رقم الملف</th>
 											<th class="text-center">المرتبة</th>
 											<th class="text-center">ساعات التاخير </th>
-											<th class="text-center">ايام الغياب</th>
-											<th class="text-center">فترة الغياب</th>
 											<th class="text-center">المقر الرئيسي</th>
 
 										</tr>
@@ -188,12 +186,7 @@
 												<td>
 													<span t-esc="line.number_request * 7" />
 												</td>
-												<td>
-													-
-												</td>
-												<td>
-													-
-												</td>
+										
 												<td>
 													<span t-field="line.employee_id.department_id.name" />
 												</td>

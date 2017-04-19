@@ -125,9 +125,10 @@ class HrDeprivationPremium(models.Model):
     def button_refuse(self):
         for deprivation in self:
             deprivation.state = 'refused'
+
             
     @api.multi
-    def action_order(self):
+    def action_waiting(self):
         for rec in self:
             sanction_obj = self.env['hr.sanction']
             sanction_val = {
@@ -147,11 +148,6 @@ class HrDeprivationPremium(models.Model):
                     temp.state_deprivation ='done'
             sanction.difference_ids = lines
             rec.state = 'done'
-            
-    @api.multi
-    def action_waiting(self):
-        for rec in self:
-            rec.state = 'order'
     
     @api.multi
     def unlink(self):

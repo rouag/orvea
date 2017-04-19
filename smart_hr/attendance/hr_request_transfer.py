@@ -55,7 +55,7 @@ class HrRequestTransferDelayHours(models.Model):
             decission_id = decision.id
             self.decission_id =  decission_id
         return {
-            'name': _(u'قرار  تحويل ساعات التأخير'),
+            'name': _(u'قرار حسم بسبب  التأخير'),
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'hr.decision',
@@ -193,7 +193,7 @@ class HrRequestTransferAbsence(models.Model):
             decission_id = decision.id
             self.decission_id =  decission_id
         return {
-            'name': _(u'قرار  تحويل ساعات التأخير'),
+            'name': _(u'قرار حسم بسبب الغياب عن العمل'),
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'hr.decision',

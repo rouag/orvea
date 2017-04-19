@@ -114,7 +114,7 @@ class HrDirectAppoint(models.Model):
         msg = u"' إشعار بمباشرة التعين'" + unicode(self.employee_id.display_name) + u"'"
         group_id = self.env.ref('smart_hr.group_department_employee')
         self.send_appoint_group(group_id, title, msg)
-        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, "", self.date, "مباشرة")
+        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.decission_id.name, self.decission_id.date, "مباشرة")
         if self.type == 'transfer':
             self.appoint_id.transfer_id.done_date = self.date_direct_action
         if self.type == 'promotion':

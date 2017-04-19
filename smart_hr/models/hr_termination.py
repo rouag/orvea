@@ -16,7 +16,7 @@ class HrTermination(models.Model):
     date = fields.Date(string=u'تاريخ', default=fields.Datetime.now())
     date_termination = fields.Date(string=u'تاريخ طي القيد  ', default=fields.Datetime.now())
     termination_date = fields.Date(string=u'تاريخ الإعتماد')
-    employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1)
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1, domain=[('emp_state', 'not in', ['suspended', 'terminated']), ('employee_state', '=', 'employee')])
     employee_state = fields.Selection([('new', u'جديد'),
                                        ('waiting', u'في إنتظار الموافقة'),
                                        ('update', u'إستكمال البيانات'),
@@ -54,6 +54,14 @@ class HrTermination(models.Model):
     ], string=u'الحالة', default='draft')
     done_date = fields.Date(string='تاريخ التفعيل')
 
+#     @api.onchange('termination_type_id')
+#     def _onchange_employee_id(self):
+#         res = {}
+#         if not self.employee_id:
+#             minus_employee_ids = self.env['hr.employee'].search([('emp_state', '=', 'employee')])
+#             res['domain'] = {'employee_id': [('id', 'not in', minus_employee_ids)]}
+#             return res
+
     @api.onchange('termination_type_id')
     def _onchange_termination_type_id(self):
         if self.employee_id.country_id.code == 'SA':
@@ -66,7 +74,7 @@ class HrTermination(models.Model):
     @api.multi
     def unlink(self):
         for rec in self:
-            if rec.state != 'draft' and self._uid != SUPERUSER_ID:
+            if rec.state != 'draft':
                 raise ValidationError(u'لا يمكن حذف طي القيد فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(HrTermination, self).unlink()
 
@@ -128,7 +136,6 @@ class HrTermination(models.Model):
             # Set the termination date with the date of the final approve
             ter.termination_date = fields.Date.today()
 
-            #  self.create_report_attachment()
 
     @api.one
     def button_refuse(self):
@@ -205,6 +212,8 @@ class HrTermination(models.Model):
             decision.text = decision.replace_text(self.employee_id, decision_date, decision_type_id, 'termination')
             decission_id = decision.id
             self.decission_id = decission_id
+        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.decission_id.name, self.decission_id.date, "طي قيد")
+
         return {
             'name': _(u'قرار طى القيد'),
             'view_type': 'form',

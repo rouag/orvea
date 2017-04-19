@@ -444,6 +444,15 @@ class HrEmployee(models.Model):
             if len(self.residance_id) != 10:
                 raise ValidationError(u"الرجاء التثبت من رقم الإقامة.")
 
+
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'new' :
+                raise ValidationError(u'لا يمكن حذف الموظف فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrEmployee, self).unlink()
+
+
     @api.one
     def action_send(self):
         self.employee_state = 'waiting'

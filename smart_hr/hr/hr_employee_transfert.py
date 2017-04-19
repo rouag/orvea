@@ -341,7 +341,7 @@ class HrEmployeeTransfert(models.Model):
                     'job_id': rec.new_job_id.id,
                     'degree_id': rec.new_degree_id.id,
                     'transfer_id': rec.id,
-                    'name': rec.speech_number,
+                    'name': self.env['ir.sequence'].get('hr.employee.transfert.seq'),
                     'order_date': rec.speech_date,}
             else:
 #                 if not rec.speech_number:
@@ -353,7 +353,7 @@ class HrEmployeeTransfert(models.Model):
                     'job_id': rec.new_job_id.id,
                     'degree_id': rec.new_degree_id.id,
                     'transfer_id': rec.id,
-                    'name': rec.speech_number,
+                    'name':self.env['ir.sequence'].get('hr.employee.transfert.seq'),
                     'order_date': rec.speech_date,
                 }
             recruiter_id = self.env['hr.decision.appoint'].create(vals)
@@ -494,7 +494,6 @@ class HrTransfertSorting(models.Model):
                               ('commission_president', u'رئيس الجهة'),
                               ('commission_third', u'الخدمة المدنية'),
                               ('benefits', u'إسناد المزايا'),
-                              ('issuing_decision', u'استصدار قرار'),
                               ('done', u'اعتمدت'),
                               ('refused', u'مرفوضة')
                               ], readonly=1, default='new', string=u'الحالة')
@@ -505,7 +504,7 @@ class HrTransfertSorting(models.Model):
         self.ensure_one()
         self.line_ids.unlink()
         line_ids = []
-        transfert_ids = self.env['hr.employee.transfert'].search([('state', '=', 'pm'), ('ready_tobe_done', '=', False)], order=("begin_work_date, create_date, recruiter_date, age desc"))
+        transfert_ids = self.env['hr.employee.transfert'].search([('state', '=', 'pm'), ('ready_tobe_done', '=', False)], order=("create_date, begin_work_date,recruiter_date, age desc"))
         if not transfert_ids:
             raise ValidationError(u"لايوجد طلبات حالياً.")
         sequence = 1
@@ -722,16 +721,12 @@ class HrTransfertSorting(models.Model):
             rec.line_ids4 = line_ids
             rec.state = 'benefits'
 
-    @api.multi
-    def action_issuing_decision(self):
-        self.state='issuing_decision'   
+  
 
     @api.multi
     def action_done(self):
         for rec in self:
             for line in rec.line_ids4:
-                line.hr_employee_transfert_id.speech_number = rec.decision_id.name
-                line.hr_employee_transfert_id.speech_date = rec.decision_id.date
                 line.hr_employee_transfert_id.action_done()
             rec.state = 'done'
             

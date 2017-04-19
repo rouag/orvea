@@ -336,24 +336,21 @@
 							attrs="{'invisible':[('state','!=', 'commission_third')]}"
 							string="إعتماد " type="object" groups="smart_hr.group_hr_commissioning_requests"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_issuing_decision" attrs="{'invisible':[('state','!=', 'benefits')]}"
-							string="إعتماد " type="object" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="action_done"
-							attrs="{'invisible':[('state','!=', 'issuing_decision')]}"
+					
+						<button name="action_done"   attrs="{'invisible':[('state','!=', 'benefits')]}"
 							string="إعتماد " type="object" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 
 
 
 						<field name="state" widget="statusbar"
-							statusbar_visible="new,draft,waiting,commission_president,commission_third,benefits,issuing_decision,done" />
+							statusbar_visible="new,draft,waiting,commission_president,commission_third,benefits,done" />
 					</header>
 					<sheet>
 						<group>
 							<group>
 								<field name="name" />
-								<field name="decision_id"
-									attrs="{'invisible':[('state', '!=', 'issuing_decision')]}" />
+							
 							</group>
 							<group string="موافقة الخدمة المدنية"
 								attrs="{'invisible':[('state', 'not in', ['commission_third'])]}">
@@ -448,10 +445,10 @@
 							</page>
 
 							<page string="طلبات النقل" options="{'no_create': True}"
-								attrs="{'invisible':[('state', 'not in', ['commission_president', 'benefits', 'issuing_decision', 'done'])]}">
+								attrs="{'invisible':[('state', 'not in', ['commission_president', 'benefits',  'done'])]}">
 								<br></br>
 								<field name="line_ids4" options="{'no_create': True}"
-									attrs="{'invisible':[('state', 'not in', ['commission_president','benefits', 'issuing_decision','done'])], 'readonly':[('state', 'in', [ 'benefits'])]}"
+									attrs="{'invisible':[('state', 'not in', ['commission_president','benefits', 'done'])], 'readonly':[('state', 'in', [ 'benefits'])]}"
 									string=" طلبات النقل" create="false">
 									<tree delete='0' editable="bottom" colors="red:is_conflected==True;"
 										create="false">

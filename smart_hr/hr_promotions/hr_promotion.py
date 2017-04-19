@@ -397,7 +397,7 @@ class HrPromotion(models.Model):
     @api.multi
     def unlink(self):
         for rec in self:
-            if rec.state not in ['draft', 'promotion_type'] and self._uid != SUPERUSER_ID:
+            if rec.state not in ['draft', 'promotion_type']:
                 raise ValidationError(u'لا يمكن حذف قرار الترقية في هذه المرحلة يرجى مراجعة مدير النظام')
         return super(HrPromotion, self).unlink()
 

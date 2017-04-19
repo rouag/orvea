@@ -73,7 +73,7 @@
 								<field name="grade_id" />
 							</group>
 							<h3 class="o_horizontal_separator">بدلات الوظيفة</h3>
-							<field name="job_allowance_ids" string="بدلات الوظيفة">
+							<field name="job_allowance_ids" nolabel="1">
 								<form string="البدلات">
 									<group>
 										<group>
@@ -106,7 +106,7 @@
 								</tree>
 							</field>
 							<h3 class="o_horizontal_separator">بدلات النقل</h3>
-							<field name="transfert_allowance_ids">
+							<field name="transfert_allowance_ids" nolabel="1">
 								<form string="البدلات">
 									<group>
 										<group>
@@ -140,7 +140,7 @@
 								</tree>
 							</field>
 							<h3 class="o_horizontal_separator">بدلات المنطقة</h3>
-							<field name="location_allowance_ids" string="بدلات المنطقة">
+							<field name="location_allowance_ids" nolabel="1">
 								<form string="البدلات">
 									<group>
 										<group>
