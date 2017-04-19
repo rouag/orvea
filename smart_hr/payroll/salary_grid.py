@@ -142,6 +142,7 @@ class SalaryGridDetail(models.Model):
 
     @api.multi
     def hide_line(self):
+        res = {}
         self.ensure_one()
         count_mployee = self.env['hr.employee'].search_count([('type_id', '=', self.type_id.id),
                                                               ('grade_id', '=', self.grade_id.id),
@@ -150,7 +151,7 @@ class SalaryGridDetail(models.Model):
             raise ValidationError(_(u'هناك موظفين معينين على هذا السلم لا يمكن حذفه !'))
         else:
             self.is_old = True
-            self.grid_id.grid_ids = self.grid_id.grid_ids.ids
+        return res
 
 
 class SalaryGridDetailAllowance(models.Model):
