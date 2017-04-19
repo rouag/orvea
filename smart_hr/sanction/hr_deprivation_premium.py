@@ -125,28 +125,7 @@ class HrDeprivationPremium(models.Model):
     def button_refuse(self):
         for deprivation in self:
             deprivation.state = 'refused'
-            
-    @api.multi
-    def action_order(self):
-        for rec in self:
-            sanction_obj = self.env['hr.sanction']
-            sanction_val = {
-                                    'name':rec.name,
-                                   'type_sanction':self.env.ref('smart_hr.data_hr_sanction_type_grade').id,
-                                    'state':'done',
-                           }
-            lines = []
-            sanction = sanction_obj.create(sanction_val)
-            for  temp in rec.deprivation_ids :
-                if temp.state_deprivation =='waiting' :
-                    employee_val = {
-                              'employee_id': temp.employee_id,
-                              'state':'done',
-                              }
-                    lines.append(employee_val)
-                    temp.state_deprivation ='done'
-            sanction.difference_ids = lines
-            rec.state = 'done'
+
             
     @api.multi
     def action_waiting(self):

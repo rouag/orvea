@@ -178,7 +178,7 @@ class HrDecision(models.Model):
                 degree_id = employee_id.degree_id.name or ""
                 salary_grid_id, basic_salary = employee_id.get_salary_grid_id(False)
                 salary = salary_grid_id.net_salary  or ""
-    
+
                 rel_text = decision_type_line.text
 
                 decision_text = decision_text.replace('EMPLOYEE', unicode(employee))
@@ -193,7 +193,7 @@ class HrDecision(models.Model):
                 decision_text = decision_text.replace('DEGREE', unicode(degree_id))
                 decision_text = decision_text.replace('GRADE', unicode(grade_id))
                 decision_text = decision_text.replace('DEPARTEMENT', unicode(department_id))
-    
+
                 if object_type == 'holidays' :
                     holidays_line = self.env['hr.holidays'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
                     if holidays_line :
@@ -211,24 +211,24 @@ class HrDecision(models.Model):
                         decision_text = decision_text.replace('DURATION', unicode(duration))
                         decision_text = decision_text.replace('FROMDET', unicode(fromdate))
                         decision_text = decision_text.replace('ENDDET', unicode(date_to))
-                        
+
                 if object_type == 'lend' :
                     lend_line = self.env['hr.employee.lend'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
                     if lend_line :
                         duration = lend_line.duration or ""
                         decision_text = decision_text.replace('DURATION', unicode(duration))
-                
+
                 if object_type == 'termination' :
                     termination_line = self.env['hr.termination'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
                     if termination_line :
-    
+
                         if termination_line.date_termination:
                             date_termination = self._get_hijri_date(termination_line.date_termination, '-')
                             date_termination = str(date_termination).split('-')
                             date_termination = date_termination[2] + '-' + date_termination[1] + '-' + date_termination[0] or ""
                         date_termination = date_termination or ""
                         decision_text = decision_text.replace('TERMINATION', unicode(date_termination))
-    
+
                 if object_type == 'commissioning' :
                     commissioning_line = self.env['hr.employee.commissioning'].search([('employee_id', '=', employee_id.id),('state', '=', 'done')], limit=1)
                     if commissioning_line :
