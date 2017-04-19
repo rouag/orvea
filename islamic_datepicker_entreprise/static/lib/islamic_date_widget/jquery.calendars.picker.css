@@ -8,6 +8,7 @@
     border-radius: 0.25em;
 	font-family: Arial,Helvetica,Sans-serif;
 	font-size: 90%;
+	 max-width: 280px !important;
 }
 .calendars-rtl {
 	direction: rtl;
@@ -43,13 +44,13 @@
 .calendars-nav, .calendars-ctrl {
 	float: left;
 	width: 100%;
-	background-color: #000;
+	background-color: #6983a8;
 	color: #fff;
 	font-size: 90%;
 	font-weight: bold;
 }
 .calendars-ctrl {
-	background-color: #600;
+	background-color: #6983a8;
 }
 .calendars-cmd {
 	width: 30%;
@@ -118,20 +119,27 @@ button.calendars-cmd {
 	clear: left;
 }
 .calendars-month {
-	float: left;
-	width: 15em;
-	border: 1px solid #444;
+	float: right;
+	width: 100% !important;
+	border: none;/*1px solid #444*/
 	text-align: center;
+
+	/*float: right;
+	border:none !important;
+	text-align: center;
+	    width: 100%;*/
+
 }
 .calendars-month-header, .calendars-month-header select, .calendars-month-header input {
 	height: 1.5em;
-	background-color: #444;
-	color: #fff;
+	background-color: #becadc;
+    color: #000;
 	font-weight: bold;
 }
 .calendars-month-header select, .calendars-month-header input {
 	height: 1.4em;
 	border: none;
+	padding: 0px !important;
 }
 .calendars-month-header input {
 	position: absolute;
@@ -154,8 +162,11 @@ button.calendars-cmd {
 	border: 1px solid #777;
 }
 .calendars-month th, .calendars-month th a {
-	background-color: #777;
-	color: #fff;
+	/*background-color: #777;
+	color: #fff;*/
+	background-color: #bbbdb8;
+    color: #000;
+    border: 1px solid #6983a8;
 }
 .calendars-month td {
 	background-color: #eee;
