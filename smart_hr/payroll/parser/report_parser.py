@@ -147,7 +147,11 @@ class ReportPayslipChangement(report_sxw.rml_parse):
         self.localcontext.update({
             'get_hijri_date': self._get_hijri_date,
             'get_lines': self._get_lines,
+            'get_float': self._get_float,
         })
+
+    def _get_float(self, number):
+        return format(number, '.2f')
 
     def _get_lines(self, slip_ids, month):
         res = []
