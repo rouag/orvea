@@ -151,7 +151,24 @@ class HrDeprivationPremium(models.Model):
     @api.multi
     def action_waiting(self):
         for rec in self:
-            rec.state = 'order'
+            sanction_obj = self.env['hr.sanction']
+            sanction_val = {
+                                    'name':rec.name,
+                                   'type_sanction':self.env.ref('smart_hr.data_hr_sanction_type_grade').id,
+                                    'state':'done',
+                           }
+            lines = []
+            sanction = sanction_obj.create(sanction_val)
+            for  temp in rec.deprivation_ids :
+                if temp.state_deprivation =='waiting' :
+                    employee_val = {
+                              'employee_id': temp.employee_id,
+                              'state':'done',
+                              }
+                    lines.append(employee_val)
+                    temp.state_deprivation ='done'
+            sanction.difference_ids = lines
+            rec.state = 'done'
     
     @api.multi
     def unlink(self):

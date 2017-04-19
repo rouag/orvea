@@ -54,21 +54,16 @@
 							type="action" states="waiting" groups="smart_hr.group_responsable_sanction"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-						<button name="action_order" string="موافق" type="object"
-							states="order" groups="smart_hr.group_responsable_sanction"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="%(action_hr_refuse_wizard)d" string="رفض"
-							type="action" states="order" groups="smart_hr.group_responsable_sanction"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						
 
 						<button name="button_deprivation_premium" string="معاينة القرار"
-							type="object" states="order,done" icon="fa-print" class="oe_inline oe_stat_button" />
+							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
 
 
 
 
 						<field name="state" widget="statusbar"
-							statusbar_visible="draft,waiting,order,done,refused" />
+							statusbar_visible="draft,waiting,done,refused" />
 
 					</header>
 					<sheet>
@@ -76,15 +71,15 @@
 							<group>
 
 								<field name="date_deprivation"
-									attrs="{'readonly':[('state', 'in', ['waiting','order','done','refused'])]}" />
+									attrs="{'readonly':[('state', 'in', ['waiting','done','refused'])]}" />
 							</group>
 							<group>
 								<field name="years_id"
-									attrs="{'readonly':[('state', 'in', ['waiting','order','done','refused'])]}" />
+									attrs="{'readonly':[('state', 'in', ['waiting','done','refused'])]}" />
 								<field name="name" readonly="1"
-									attrs="{'invisible':[('state','not in',['order','done','refused'])]}" />
+									attrs="{'invisible':[('state','not in',['done','refused'])]}" />
 								<field name="order_date" readonly="1"
-									attrs="{'invisible':[('state','not in',['order','done','refused'])]}" />
+									attrs="{'invisible':[('state','not in',['done','refused'])]}" />
 
 							</group>
 						</group>
@@ -110,16 +105,16 @@
 
 
 								<page string="قائمة المحرومين من العلاوة"
-									attrs="{'invisible':[('state','not in', ['waiting','order','done','refused'])],'readonly':[('state', 'in', ['order','done','refused'])]}">
+									attrs="{'invisible':[('state','not in', ['waiting','done','refused'])],'readonly':[('state', 'in', ['done','refused'])]}">
 									<group>
 										<field name="deprivation_ids"
 											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 											nolabel="1"
-											attrs="{'invisible':[('state','not in', ['waiting','order','done','refused'])],'readonly':[('state', 'in', ['waiting','order','done','refused'])]}">
+											attrs="{'invisible':[('state','not in', ['waiting','done','refused'])],'readonly':[('state', 'in', ['waiting','done','refused'])]}">
 											<tree editable="bottom">
 												<field name="employee_id" />
 												<field name="raison"
-													attrs="{'readonly':[('state', 'in', ['waiting','order','done','refused'])]}" />
+													attrs="{'readonly':[('state', 'in', ['waiting','done','refused'])]}" />
 												<field name="state_deprivation" />
 
 												<field name="state" invisible="1" />
