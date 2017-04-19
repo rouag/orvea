@@ -120,7 +120,13 @@ class hrIncrease(models.Model):
                                                       'employee_id': line.employee_id.id,
                                                   })
         self.state = 'done'
-
+   
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'draft' :
+                raise ValidationError(u'لا يمكن حذف العلاوةفى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(hrIncrease, self).unlink()
 
 class HrEmployeeDeprivation(models.Model):
     _name = 'hr.employee.deprivation'

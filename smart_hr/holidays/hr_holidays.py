@@ -184,7 +184,7 @@ class HrHolidays(models.Model):
         for rec in self:
             if not rec.can_be_cancelled or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is True or rec.is_finished is True \
             or (rec.is_current_user is False and rec.is_holidays_specialist_user is False) \
-            or self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_death') and self.entitlement_type == self.env.ref('smart_hr.data_hr_holiday_entitlement_types_husband_death'):
+            or rec.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_death') and rec.entitlement_type == self.env.ref('smart_hr.data_hr_holiday_entitlement_types_husband_death'):
                 rec.display_button_cancel = False
             else:
                 rec.display_button_cancel = True
@@ -194,7 +194,7 @@ class HrHolidays(models.Model):
         for rec in self:
             if not rec.can_be_cutted or rec.state != 'done' or rec.is_cancelled is True or rec.is_started is False or rec.is_finished is True \
             or rec.is_finished is True or (rec.is_current_user is False and rec.is_holidays_specialist_user is False) \
-            or self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_death') and self.entitlement_type == self.env.ref('smart_hr.data_hr_holiday_entitlement_types_husband_death'):
+            or rec.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_death') and rec.entitlement_type == self.env.ref('smart_hr.data_hr_holiday_entitlement_types_husband_death'):
                 rec.display_button_cut = False
             else:
                 rec.display_button_cut = True
@@ -204,7 +204,7 @@ class HrHolidays(models.Model):
         for rec in self:
             if rec.state != 'done' or rec.is_extensible == 0 or rec.is_started is False or (rec.is_current_user is False \
             and self.env.user.has_group('smart_hr.group_holidays_extend_responsable') is False) \
-            or self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_death') and self.entitlement_type == self.env.ref('smart_hr.data_hr_holiday_entitlement_types_husband_death'):
+            or rec.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_death') and rec.entitlement_type == self.env.ref('smart_hr.data_hr_holiday_entitlement_types_husband_death'):
                 rec.display_button_extend = False
             else:
                 rec.display_button_extend = True
