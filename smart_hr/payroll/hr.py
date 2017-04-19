@@ -65,6 +65,7 @@ class HrEmployee(models.Model):
         if not salary_grid_id and len(domain) == 2:
             domain.pop(1)
         salary_grid_id = self.env['hr.employee.payroll.changement'].search(domain, order='date desc', limit=1)
+        # default salary is from curent employee
         type_id = self.type_id
         grade_id = self.grade_id
         degree_id = self.degree_id
