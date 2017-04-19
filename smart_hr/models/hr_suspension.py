@@ -15,7 +15,7 @@ class hr_suspension(models.Model):
 
     name = fields.Char(string=u' رقم إجراء كف اليد', )
     date = fields.Date(string=u'التاريخ', default=fields.Datetime.now())
-    employee_id = fields.Many2one('hr.employee', string=u'الموظف', )
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف', domain=[('emp_state', 'not in', ['suspended', 'terminated']), ('employee_state', '=', 'employee')])
     employee_state = fields.Selection([('new', u'جديد'),
                                        ('waiting', u'في إنتظار الموافقة'),
                                        ('update', u'إستكمال البيانات'),
@@ -103,8 +103,6 @@ class hr_suspension(models.Model):
     def button_done(self):
         user = self.env['res.users'].browse(self._uid)
         for rec in self:
-            if rec.employee_id.emp_state == 'terminated':
-                raise ValidationError(u'لا يمكن كف يد الموظف وهو مطوي قيده')
             rec.employee_id.emp_state = 'suspended'
             rec.done_date = fields.Date.today()
             rec.state = 'done'
