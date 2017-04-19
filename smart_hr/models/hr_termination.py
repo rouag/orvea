@@ -16,7 +16,7 @@ class HrTermination(models.Model):
     date = fields.Date(string=u'تاريخ', default=fields.Datetime.now())
     date_termination = fields.Date(string=u'تاريخ طي القيد  ', default=fields.Datetime.now())
     termination_date = fields.Date(string=u'تاريخ الإعتماد')
-    employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1)
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1, domain=[('emp_state', 'not in', ['suspended', 'terminated']), ('employee_state', '=', 'employee')])
     employee_state = fields.Selection([('new', u'جديد'),
                                        ('waiting', u'في إنتظار الموافقة'),
                                        ('update', u'إستكمال البيانات'),
@@ -53,6 +53,14 @@ class HrTermination(models.Model):
         ('refuse', u'رفض'),
     ], string=u'الحالة', default='draft')
     done_date = fields.Date(string='تاريخ التفعيل')
+
+#     @api.onchange('termination_type_id')
+#     def _onchange_employee_id(self):
+#         res = {}
+#         if not self.employee_id:
+#             minus_employee_ids = self.env['hr.employee'].search([('emp_state', '=', 'employee')])
+#             res['domain'] = {'employee_id': [('id', 'not in', minus_employee_ids)]}
+#             return res
 
     @api.onchange('termination_type_id')
     def _onchange_termination_type_id(self):

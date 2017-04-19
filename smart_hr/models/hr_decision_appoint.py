@@ -508,7 +508,7 @@ class HrDecisionAppoint(models.Model):
     @api.multi
     def action_activate(self):
         # create payroll changement history for the employee
-        self.env['hr.employee.payroll.changement'].create({'employee_id': self.employee_id.id,
+        changement_id = self.env['hr.employee.payroll.changement'].create({'employee_id': self.employee_id.id,
                                                            'date': fields.Date.today(),
                                                            'type_id': self.type_id.id,
                                                            'grade_id': self.grade_id.id,
