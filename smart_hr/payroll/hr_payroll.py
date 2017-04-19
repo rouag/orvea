@@ -261,7 +261,7 @@ class HrPayslip(models.Model):
         # check the existance of difference and dedections for current month
         self.date_from = self.period_id.date_start
         self.date_to = self.period_id.date_stop
-        if not self.employee_id and self.period_id:
+        if self.period_id:
             res = {}
             employee_ids = self.env['hr.employee'].search([('employee_state', '=', 'employee')])
             employee_ids = employee_ids.ids
