@@ -128,7 +128,6 @@ class HrTermination(models.Model):
             # Set the termination date with the date of the final approve
             ter.termination_date = fields.Date.today()
 
-            #  self.create_report_attachment()
 
     @api.one
     def button_refuse(self):
@@ -205,6 +204,8 @@ class HrTermination(models.Model):
             decision.text = decision.replace_text(self.employee_id, decision_date, decision_type_id, 'termination')
             decission_id = decision.id
             self.decission_id = decission_id
+        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.decission_id.name, self.decission_id.date, "طي قيد")
+
         return {
             'name': _(u'قرار طى القيد'),
             'view_type': 'form',
