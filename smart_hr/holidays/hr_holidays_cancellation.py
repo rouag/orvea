@@ -154,7 +154,7 @@ class hrHolidaysCancellation(models.Model):
     @api.multi
     def unlink(self):
         for rec in self:
-            if rec.state != 'draft' and self._uid != SUPERUSER_ID:
+            if rec.state != 'draft':
                 raise ValidationError(u'لا يمكن حذف طلب إلغاء الإجازة فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(hrHolidaysCancellation, self).unlink()
 

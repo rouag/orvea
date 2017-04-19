@@ -190,7 +190,14 @@ class HrPayslipRun(models.Model):
         self.bank_file_name = bank_file_name
         fp.close()
         return True
-
+    
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'draft':
+                raise ValidationError(u'لا يمكن حذف مسير جماعي فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrPayslipRun, self).unlink()
+    
 
 class HrPayslipDifferenceHistory(models.Model):
     _name = 'hr.payslip.difference.history'

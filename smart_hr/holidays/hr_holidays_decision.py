@@ -32,6 +32,14 @@ class hrHolidaysDecision(models.Model):
     file_decision = fields.Binary(string='الخطاب', attachment=True)
     file_decision_name = fields.Char(string='اسم الخطاب')
 
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'new' :
+                raise ValidationError(u'لا يمكن حذف قرار المباشرة فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(hrHolidaysDecision, self).unlink()
+
+
     @api.onchange('date')
     @api.constrains('date')
     def _onchange_date(self):
