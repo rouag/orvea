@@ -85,10 +85,6 @@ class SalaryGridDetail(models.Model):
     _description = u'تفاصيل سلم الرواتب'
     _rec_name = 'grid_id'
 
-    @api.multi
-    def get_default_date(self):
-        return self.grid_id.date
-
     grid_id = fields.Many2one('salary.grid', string='سلّم الرواتب', required=1, ondelete='cascade')
     date = fields.Date(string='التاريخ')
     type_id = fields.Many2one('salary.grid.type', string='نوع السلم', required=1)
@@ -141,7 +137,7 @@ class SalaryGridDetail(models.Model):
     @api.model
     def create(self, vals):
         res = super(SalaryGridDetail, self).create(vals)
-        res.write({'date': res.grid_id.date})
+        res.write({'date': fields.Date.today()})
         return res
 
     @api.multi
