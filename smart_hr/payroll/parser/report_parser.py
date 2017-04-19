@@ -155,17 +155,9 @@ class ReportPayslipChangement(report_sxw.rml_parse):
 
     def _get_lines(self, slip_ids, month):
         res = []
-        date_from = month.date_start
-        date_to = month.date_stop
-        payslip_obj = self.pool.get('hr.payslip')
-        employee_ids = [rec.employee_id.id for rec in slip_ids]
-        payslip__ids = payslip_obj.search(self.cr, self.uid, [('date_from', '=', date_from),
-                                                              ('date_to', '=', date_to),
-                                                              ('state', '=', 'done'),
-                                                              ('employee_id', 'in', employee_ids)])
-        for rec in payslip_obj.browse(self.cr, self.uid, payslip__ids):
+        for rec in slip_ids:
             if (rec.salary_net - rec.employee_id.net_salary) != 0:
-                line_ids = rec.line_ids.search([('category', 'in', ['changing_allowance', 'difference', 'deduction'])])
+                line_ids = rec.line_ids.search([('slip_id', '=', rec.id), ('category', 'in', ['changing_allowance', 'difference', 'deduction'])])
                 res.append({'employee_name': rec.employee_id.display_name,
                             'number': rec.employee_id.number,
                             'department_name': rec.employee_id.department_id.name,
