@@ -439,6 +439,14 @@ class HrPromotionLigneEmployee(models.Model):
     @api.multi
     def employee_pause(self):
         self.emplyoee_state = True
+    
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'draft' :
+                raise ValidationError(u'لا يمكن حذف طلب  الترقية فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrPromotionLigneEmployee, self).unlink()
+
 
 
 class HrPromotionLigneJobs(models.Model):
@@ -560,7 +568,8 @@ class HrPromotionLigneEmployeeJob(models.Model):
                 return {'warning': warning,}
             self.new_job_id.state = 'reserved'
             self.occupied_promotion = False
-
+    
+  
 
 class HrPromotionType(models.Model):
     _name = 'hr.promotion.type'
@@ -584,13 +593,13 @@ class HrPromotionDemande(models.Model):
     city_fovorite = fields.Many2one('res.city', string=u'المدينة المفضلة')
     hr_allowance_type_id = fields.Boolean(string='بدل طبيعة عمل', )
     old_job_id = fields.Many2one(related='employee_id.job_id', store=True, readonly=True, string=u'الوظيفة الحالية', )
-    department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string='الادارة', )
+    department_id = fields.Many2one(related='employee_id.department_id',readonly=True, string='الادارة', )
     state = fields.Selection([('new', u'طلب'),
                               ('waiting', 'في إنتظار الإعتماد'),
                               ('cancel', 'رفض'),
                               ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
     done_date = fields.Date(string='تاريخ التفعيل')
-    desire_ids = fields.One2many('hr.employee.desire', 'desire_id', store=True, required=1, string=u'رغبات الموظف', readonly=1, states={'new': [('readonly', 0)]})
+    desire_ids = fields.One2many('hr.employee.promotion.desire', 'demande_promotion_id', required=1, string=u'رغبات الموظف', readonly=1, states={'new': [('readonly', 0)]})
 
     @api.model
     def create(self, vals):
@@ -611,3 +620,10 @@ class HrPromotionDemande(models.Model):
     def button_confirmed(self):
         for promo in self:
             self.state = 'waiting'
+            
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'new' :
+                raise ValidationError(u'لا يمكن حذف طلب  الترقية فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrPromotionDemande, self).unlink()

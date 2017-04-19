@@ -64,7 +64,7 @@ class HrEmployeeCommissioning(models.Model):
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', related='commissioning_job_id.grade_id',
                                readonly=1)
     decission_id = fields.Many2one('hr.decision', string=u'القرارات')
-    commissioning_department_id = fields.Many2one('hr.department', string='الفرع')
+    commissioning_department_id = fields.Many2one('hr.department', string='الفرع', readonly=1, states={'new': [('readonly', 0)]})
 
     @api.onchange('commissioning_job_id')
     def onchange_commissioning_job_id(self):
@@ -184,7 +184,7 @@ class HrEmployeeCommissioning(models.Model):
                 if distance >= deputation_distance:
                     raise ValidationError(u"المسافة بين مقر التكليف ومقر الموظف أكبر من مسافة الانتدابات.")
         today = date.today()
-        d = today - relativedelta(days=self.comm_type.refuse_duration)           
+        d = today - relativedelta(days=self.comm_type.refuse_duration)
         refused_ids = self.search_count([('state', '=', 'refused'), ('employee_id', '=', self.employee_id.id), ('date_from', '>=', d)])
         if refused_ids:
             raise ValidationError(u"بعد رفض طلب تكليف لا يسمح بتقديم طلب ثان الا بعد"+str(self.comm_type.refuse_duration)+u"يوم")

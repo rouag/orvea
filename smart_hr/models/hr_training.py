@@ -121,6 +121,12 @@ class HrTraining(models.Model):
     def action_cancel(self):
         self.state = 'cancel'
 
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'new' :
+                raise ValidationError(u'لا يمكن حذف التدريب فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrTraining, self).unlink()
 
 class HrTrainingType(models.Model):
     _name = 'hr.training.type'

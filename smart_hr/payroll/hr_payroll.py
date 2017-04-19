@@ -190,7 +190,14 @@ class HrPayslipRun(models.Model):
         self.bank_file_name = bank_file_name
         fp.close()
         return True
-
+    
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'draft':
+                raise ValidationError(u'لا يمكن حذف مسير جماعي فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrPayslipRun, self).unlink()
+    
 
 class HrPayslipDifferenceHistory(models.Model):
     _name = 'hr.payslip.difference.history'
@@ -261,7 +268,7 @@ class HrPayslip(models.Model):
         # check the existance of difference and dedections for current month
         self.date_from = self.period_id.date_start
         self.date_to = self.period_id.date_stop
-        if not self.employee_id and self.period_id:
+        if self.period_id:
             res = {}
             employee_ids = self.env['hr.employee'].search([('employee_state', '=', 'employee')])
             employee_ids = employee_ids.ids

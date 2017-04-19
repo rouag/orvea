@@ -71,14 +71,14 @@ class hr_suspension(models.Model):
         ret.write(vals)
         return ret
 
+
     @api.multi
     def unlink(self):
-        # Validation
         for rec in self:
-            if rec.state != 'draft' and self._uid != SUPERUSER_ID:
+            if rec.state != 'new' :
                 raise ValidationError(u'لا يمكن حذف قرار كف اليد فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(hr_suspension, self).unlink()
-
+  
     #     @api.constrains('employee_id')
     #     def check_employee_id(self):
     #         for rec in self:

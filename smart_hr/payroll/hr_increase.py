@@ -133,6 +133,9 @@ class HrEmployeeDeprivation(models.Model):
     department_level3_id = fields.Many2one('hr.department', related='increase_id.department_level3_id')
     salary_grid_type_id = fields.Many2one('salary.grid.type', related='increase_id.salary_grid_type_id')
 
+    _sql_constraints = [
+        ('unique_deprivation_emp', 'UNIQUE(increase_id,employee_id)', u"يجب الا يتكرر الاستثناء من العلاوة لنفس الموظف"),
+    ]
     @api.onchange('department_level1_id', 'department_level2_id', 'department_level3_id', 'salary_grid_type_id')
     def onchange_department_level(self):
         dapartment_obj = self.env['hr.department']
@@ -195,7 +198,10 @@ class hrEmployeeIncreasePercent(models.Model):
     department_level2_id = fields.Many2one('hr.department', related='increase_id.department_level2_id')
     department_level3_id = fields.Many2one('hr.department', related='increase_id.department_level3_id')
     salary_grid_type_id = fields.Many2one('salary.grid.type', related='increase_id.salary_grid_type_id')
-
+    
+    _sql_constraints = [
+        ('unique_deprivation_emp', 'UNIQUE(increase_id,employee_id)', u"يجب الا يتكرر استحقاق العلاوة لنفس الموظف"),
+    ]
     @api.onchange('department_level1_id', 'department_level2_id', 'department_level3_id', 'salary_grid_type_id')
     def onchange_department_level(self):
         dapartment_obj = self.env['hr.department']

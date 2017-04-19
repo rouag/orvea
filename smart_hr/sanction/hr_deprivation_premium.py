@@ -152,8 +152,13 @@ class HrDeprivationPremium(models.Model):
     def action_waiting(self):
         for rec in self:
             rec.state = 'order'
- 
-   
+    
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'new' :
+                raise ValidationError(u'لا يمكن حذف حرمان من العلاوة  فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrDeprivationPremium, self).unlink()   
 
 class HrdeprivationPremiumLigne(models.Model):
     _name = 'hr.deprivation.premium.ligne'
