@@ -216,6 +216,15 @@ class HrJobCreate(models.Model):
     draft_budget_name = fields.Char(string=u'مشروع الميزانية مسمى ')
     type_id = fields.Many2one('salary.grid.type', string='الصنف')
 
+
+
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'new' :
+                raise ValidationError(u'لا يمكن حذف إحداث وظائف فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrJobCreate, self).unlink()
+
     @api.onchange('serie_id')
     def onchange_serie_id(self):
         if self.serie_id:
@@ -421,6 +430,16 @@ class HrJobStripFrom(models.Model):
     speech_file_name = fields.Char(string=u'مسمى صورة الخطاب')
     out_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الصادر')
     in_speech_name = fields.Char(string=u'مسمى صورة الخطاب الوارد')
+
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'new' :
+                raise ValidationError(u'لا يمكن حذف سلخ وظائف من جهة فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrJobStripFrom, self).unlink()
+
+
+
 
     @api.onchange('serie_id')
     def onchange_serie_id(self):
@@ -642,6 +661,15 @@ class HrJobStripTo(models.Model):
     in_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الوارد')
 
     @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'new' :
+                raise ValidationError(u'لا يمكن حذف سلخ وظيفة فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrJobStripTo, self).unlink()
+
+
+
+    @api.multi
     def action_waiting(self):
         self.ensure_one()
         if not self.line_ids:
@@ -801,6 +829,14 @@ class HrJobCancel(models.Model):
     decision_file_name = fields.Char(string=u'مسمى نسخة القرار')
 
     @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'new' :
+                raise ValidationError(u'لا يمكن حذف إلغاء الوظائف فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrJobCancel, self).unlink()
+
+
+    @api.multi
     def action_waiting(self):
         self.ensure_one()
         if not self.job_cancel_ids:
@@ -909,6 +945,16 @@ class HrJobMoveDeparrtment(models.Model):
     decision_number = fields.Char(string=u'رقم القرار')
     decision_date = fields.Date(string=u'تاريخ القرار')
     decision_file = fields.Binary(string=u'نسخة القرار', attachment=True)
+
+
+
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'new' :
+                raise ValidationError(u'لا يمكن حذف نقل وظائف فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrJobMoveDeparrtment, self).unlink()
+
 
     @api.multi
     def action_waiting(self):
@@ -1299,6 +1345,13 @@ class HrJobMoveGrade(models.Model):
             return state in work_obj.state_ids
         else:
             return False
+        
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'new' :
+                raise ValidationError(u'لا يمكن حذف رفع أو خفض وظائف فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrJobMoveGrade, self).unlink()
 
 
 class HrJobMoveGradeLine(models.Model):
@@ -1530,7 +1583,12 @@ class HrJobMoveUpdate(models.Model):
                                                   'res_action': 'smart_hr.action_hr_job_update',
                                                   'notif': True
                                                   })
-
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'new' :
+                raise ValidationError(u'لا يمكن حذف تحوير‬ وظائف فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrJobMoveUpdate, self).unlink()
 
 class HrJobMoveUpdateLine(models.Model):
     _name = 'hr.job.update.line'

@@ -39,15 +39,14 @@ class hr_suspension_end(models.Model):
         vals['name'] = self.env['ir.sequence'].get('hr.suspension.end.seq')
         ret.write(vals)
         return ret
-
+    
     @api.multi
     def unlink(self):
-        # Validation
         for rec in self:
-            if rec.state != 'draft' and self._uid != SUPERUSER_ID:
-                raise ValidationError(u'لا يمكن حذف قرار إنهاء كف اليد فى هذه المرحلة يرجى مراجعة مدير النظام')
+            if rec.state != 'new' :
+                raise ValidationError(u'لا يمكن حذف  إجراء إنهاء كف اليد فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(hr_suspension_end, self).unlink()
-
+ 
     @api.one
     def button_hrm(self):
         for rec in self:

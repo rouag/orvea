@@ -37,6 +37,14 @@ class HrHolidaysExtension(models.Model):
     decission_id = fields.Many2one('hr.decision', string=u'القرارات')
 
     @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'draft' :
+                raise ValidationError(u'لا يمكن حذف قرار تمديد رصيد الاجازات فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrHolidaysExtension, self).unlink()
+
+
+    @api.multi
     def open_decission_holidays_extension(self):
         decision_obj= self.env['hr.decision']
         if self.decission_id:
