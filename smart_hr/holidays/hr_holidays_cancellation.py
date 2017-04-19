@@ -54,12 +54,12 @@ class hrHolidaysCancellation(models.Model):
                 decision_type_id = self.env.ref('smart_hr.data_decision_type45').id
             # create decission
             decission_val={
-                'name': self.env['ir.sequence'].get('hr.holidays.cancellation.seq'),
+                'name': self.name,
                 'decision_type_id':decision_type_id,
                 'date':decision_date,
                 'employee_id' :self.employee_id.id }
             decision = decision_obj.create(decission_val)
-            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'holidays')
+            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'holidays_cancellation')
             decission_id = decision.id
             self.decission_id =  decission_id
         return {
@@ -85,12 +85,12 @@ class hrHolidaysCancellation(models.Model):
                 decision_type_id = self.env.ref('smart_hr.data_decision_type44').id
             # create decission
             decission_val={
-                'name': self.env['ir.sequence'].get('hr.holidays.cancellation.seq'),
+                'name': self.name,
                 'decision_type_id':decision_type_id,
                 'date':decision_date,
                 'employee_id' :self.employee_id.id }
             decision = decision_obj.create(decission_val)
-            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'holidays')
+            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'holidays_cancellation')
             decission_id = decision.id
             self.decission_id =  decission_id
         return {

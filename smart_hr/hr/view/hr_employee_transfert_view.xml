@@ -13,17 +13,10 @@
 					<field name="transfert_type" string="نوع النقل" />
 					<field name="state" string="الحالة" />
 					<field name="transfert_nature" string="طبيعة النقل" />
-
+					
+					<filter string=" قائمة راغبي طلب النقل" domain="[('state','=','hrm')]" />
 					<filter name="employee_id" string="الموظف" />
 					<filter name="transfert_type" string="نوع النقل" />
-					<filter string="طلب" domain="[('state','=','new')]" />
-					<filter string="صاحب الصلاحية" domain="[('state','=','waiting')]" />
-					<filter string="صاحب الطلب" domain="[('state','=','consult')]" />
-					<filter string=" شؤون الموظفين" domain="[('state','=','hrm')]" />
-					<filter string="اعتمدت" domain="[('state','=','done')]" />
-					<filter string="ملغى" domain="[('state','=','cancelled')]" />
-
-
 					<filter name="transfert_nature" string="طبيعة النقل" />
 				</search>
 			</field>
@@ -336,8 +329,8 @@
 							attrs="{'invisible':[('state','!=', 'commission_third')]}"
 							string="إعتماد " type="object" groups="smart_hr.group_hr_commissioning_requests"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-					
-						<button name="action_done"   attrs="{'invisible':[('state','!=', 'benefits')]}"
+
+						<button name="action_done" attrs="{'invisible':[('state','!=', 'benefits')]}"
 							string="إعتماد " type="object" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 
@@ -350,7 +343,7 @@
 						<group>
 							<group>
 								<field name="name" />
-							
+
 							</group>
 							<group string="موافقة الخدمة المدنية"
 								attrs="{'invisible':[('state', 'not in', ['commission_third'])]}">

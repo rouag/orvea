@@ -189,6 +189,13 @@
 			<field name="padding">6</field>
 		</record>
 		
+		<record id="hr_decision_hr_job_create_seq" forcecreate="1" model="ir.sequence">
+			<field name="name">hr job create</field>
+			<field name="code">hr.job.create.seq</field>
+			<field eval="1" name="number_increment" />
+			<field name="padding">6</field>
+		</record>
+		
 
 	</data>
 </openerp>

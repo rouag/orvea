@@ -8,7 +8,7 @@ class hrHolidaysDecision(models.Model):
     _name = 'hr.holidays.decision'
     _inherit = ['mail.thread']
     _rec_name = 'employee_id'
-    
+
 
     employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', required=1)
     number = fields.Char(readonly=True, string=' الرقم الوظيفي')
