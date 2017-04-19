@@ -11,7 +11,7 @@
 		dayNamesMin: ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
 		dayNamesShort: ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'],
 		digits: $.calendars.substituteDigits(['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩']),
-		dateFormat: 'yyyy/mm/dd', // See format options on BaseCalendar.formatDate
+		dateFormat: 'dd/mm/yyyy', // See format options on BaseCalendar.formatDate
 		firstDay: 6, // The first day of the week, Sat = 0, Sun = 1, ...
 		isRTL: true // True if right-to-left language, false if left-to-right
 	};
