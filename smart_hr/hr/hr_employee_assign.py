@@ -66,23 +66,26 @@ class HrEmployeeCommissioning(models.Model):
     decission_id = fields.Many2one('hr.decision', string=u'القرارات')
     commissioning_department_id = fields.Many2one('hr.department', string='الفرع', readonly=1, states={'new': [('readonly', 0)]})
 
-    @api.onchange('commissioning_job_id')
+    @api.onchange('commissioning_job_id', 'commissioning_department_id', 'comm_type')
     def onchange_commissioning_job_id(self):
-        # get list of employee depend on comm_typet
         if not self.commissioning_job_id:
             res = {}
             job_ids = []
+            unoccupied_job_ids =[]
+            unoccupied_commissioning_job_ids = []
             if self.commissioning_department_id:
                 department_id = self.commissioning_department_id.id
                 unoccupied_job_ids = self.env['hr.job'].search([('state', '=', 'unoccupied'),('department_id', '=',department_id)])
+                if self.date_from and self.date_to:
+                    unoccupied_commissioning_job_ids = self.env['hr.employee.lend'].search([('state', '=', 'done'), ('date_from', '<=', self.date_from), ('date_to', '>=', self.date_to), ('employee_id.job_id.department_id', '=',department_id)])
             else:
                 unoccupied_job_ids = self.env['hr.job'].search([('state', '=', 'unoccupied')])
-            for unoccupied_job_id in  unoccupied_job_ids.ids:
+                if self.date_from and self.date_to:
+                    unoccupied_commissioning_job_ids = self.env['hr.employee.lend'].search([('state', '=', 'done'), ('date_from', '<=', self.date_from), ('date_to', '>=', self.date_to), ])
+            for unoccupied_job_id in unoccupied_job_ids.ids:
                 job_ids.append(unoccupied_job_id)
-            if self.date_from and self.date_to:
-                unoccupied_commissioning_job_ids = self.env['hr.employee.lend'].search([('state', '=', 'done'), ('date_from', '<=', self.date_from), ('date_to', '>=', self.date_to)])
-                for unoccupied_commissioning_job_id in  unoccupied_commissioning_job_ids:
-                    job_ids.append(unoccupied_commissioning_job_id.employee_id.job_id.id)
+            for unoccupied_commissioning_job_id in unoccupied_commissioning_job_ids:
+                job_ids.append(unoccupied_commissioning_job_id.employee_id.job_id.id)
             res['domain'] = {'commissioning_job_id': [('id', 'in', job_ids)]}
             return res
 
@@ -207,7 +210,7 @@ class HrEmployeeCommissioning(models.Model):
     @api.multi
     def button_refuse(self):
         self.ensure_one()
-        self.state = 'pm'
+        self.state = 'refused'
     
         
 
