@@ -64,7 +64,7 @@ class HrEmployeeCommissioning(models.Model):
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', related='commissioning_job_id.grade_id',
                                readonly=1)
     decission_id = fields.Many2one('hr.decision', string=u'القرارات')
-    commissioning_department_id = fields.Many2one('hr.department', string='الفرع')
+    commissioning_department_id = fields.Many2one('hr.department', string='الفرع', readonly=1, states={'new': [('readonly', 0)]})
 
     @api.onchange('commissioning_job_id')
     def onchange_commissioning_job_id(self):
