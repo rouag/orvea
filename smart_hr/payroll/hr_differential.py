@@ -105,7 +105,6 @@ class HrDifferential(models.Model):
                                                                     ('employee_id', '=', employee_id.id),
                                                                     ('defferential_is_paied', '=', False),
                                                                     ], order="date_direct_action desc", limit=1)
-                print  '----------------ta3yiin----',record_id
                 if record_id:
                     date_start = record_id.date_hiring
                     date_stop = record_id.date_direct_action
@@ -205,18 +204,15 @@ class HrDifferentialLine(models.Model):
                 period_id = self.env['hr.period'].search([('date_start', '=', date_start),
                                                           ('date_stop', '=', date_stop)])
 
+                d_start, d_stop = self.env['hr.smart.utils'].get_overlapped_periode(date_start, date_stop, rec.date_start, rec.date_stop)
 
-                number_of_days = (date_stop - ds.date()).days+1
-                print  '-----number_of_days0---', number_of_days
-                print  '-----number_of_days0---',number_of_days
-                if date_stop < rec.date_stop:
-                    number_of_days = (fields.Date.from_string(rec.date_stop) - date_start).days+1
+                number_of_days = (d_stop - d_start).days + 1
 
                 ds = ds + relativedelta(days=number_of_days)
                 # get difference of basic salary for all periode
                 basic_salary_amount, retirement_amount, allowance_amount = self.get_differences(number_of_days)
                 total_amount = basic_salary_amount + retirement_amount + allowance_amount
-                if total_amount > 0:
+                if total_amount != 0:
                     vals = {'difference_line_id': rec.id,
                             'period_id': period_id.id,
                             'number_of_days': number_of_days,
@@ -245,39 +241,34 @@ class HrDifferentialLine(models.Model):
         new_salary_grid_id, new_basic_salary = self.employee_id.get_salary_grid_id(self.date_stop)
         # get salary_grid_id before the acceptation of the promotion
         old_salary_grid_id, old_basic_salary = self.employee_id.get_salary_grid_id(self.date_start)
-
-        print  '----number_of_days,data start stop----',number_of_days,self.date_stop,self.date_start
-        print  '--new------',new_salary_grid_id, new_basic_salary
-        print  '--old------',old_salary_grid_id, old_basic_salary
-
-        basic_salary_amount = (new_basic_salary - old_basic_salary) * number_of_days
+        basic_salary_amount = (new_basic_salary - old_basic_salary) / 30.0 * number_of_days
         # calculate the difference of retirement
         new_retirement_amount = (new_basic_salary * new_salary_grid_id.retirement) / 100.0
         old_retirement_amount = (old_basic_salary * old_salary_grid_id.retirement) / 100.0
-        retirement_amount = (new_retirement_amount - old_retirement_amount) * number_of_days * -1.0
+        retirement_amount = (new_retirement_amount - old_retirement_amount) / 30.0 * number_of_days * -1.0
         # calculate the difference of allowances
         # step 1: job + aride zones allowances
-        new_hr_employee_allowance_ids = self.employee_id.hr_employee_allowance_ids.search([('salary_grid_detail_id', '=', new_salary_grid_id.id)])
-        old_hr_employee_allowance_ids = self.employee_id.hr_employee_allowance_ids.search([('salary_grid_detail_id', '=', old_salary_grid_id.id)])
+        new_hr_employee_allowance_ids = self.employee_id.get_employee_allowances(new_salary_grid_id.date)
+        old_hr_employee_allowance_ids = self.employee_id.get_employee_allowances(old_salary_grid_id.date)
         allowance_amount = 0.0
         for new_elt in new_hr_employee_allowance_ids:
             find = False
             for old_elt in old_hr_employee_allowance_ids:
-                if new_elt.allowance_id == old_elt.allowance_id:
+                if new_elt['allowance_id'] == old_elt['allowance_id']:
                     #  it's a old allowance
-                    amount = (new_elt.amount - old_elt.amount) * number_of_days
+                    amount = (new_elt['amount'] - old_elt['amount']) / 30.0 * number_of_days
                     allowance_amount += amount
                     line_allowance_ids.append({'line_id': self.id,
-                                               'allowance_id': new_elt.allowance_id.id,
+                                               'allowance_id': new_elt['allowance_id'],
                                                'amount': amount
                                                })
                     find = True
                     break
             if not find:
                 #  it's a new allowance
-                amount = (new_elt.amount) * number_of_days
+                amount = new_elt['amount'] / 30.0 * number_of_days
                 line_allowance_ids.append({'line_id': self.id,
-                                           'allowance_id': new_elt.allowance_id.id,
+                                           'allowance_id': new_elt['allowance_id'],
                                            'amount': amount
                                            })
                 allowance_amount += amount

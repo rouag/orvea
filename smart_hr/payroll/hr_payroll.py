@@ -777,8 +777,6 @@ class HrPayslip(models.Model):
     @api.constrains('employee_id', 'period_id')
     def _check_payroll(self):
         for rec in self:
-
-            print rec.employee_id.name
             payroll_count = rec.search_count([('employee_id', '=', rec.employee_id.id),
                                               ('period_id', '=', rec.period_id.id),
                                               ('is_special', '=', False)])

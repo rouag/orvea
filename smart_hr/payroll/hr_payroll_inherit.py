@@ -840,7 +840,6 @@ class HrPayslip(models.Model):
                 date_from = suspension.suspension_date
                 date_to = suspension.suspension_end_id.release_date
                 number_of_days = days_between(date_from, date_to)
-                print '-----number_of_days---', number_of_days
                 if number_of_days > 0:
                     all_suspensions.append({'employee_id': suspension.employee_id.id,
                                             'date_from': date_from, 'date_to': date_to,
