@@ -99,7 +99,7 @@
 						<group>
 							<group string="بيانات الطلب">
 
-								<field name="employee_lend_type" />
+								<field name="employee_lend_type" attrs="{'readonly':[('state', 'in', ['done', 'sectioned'])]}"  />
 								<field name="create_date" />
 								<field name="employee_id"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
