@@ -220,7 +220,6 @@ class HrDecision(models.Model):
                     holidays_line = self.env['hr.holidays.cancellation'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
                     if holidays_line :
                         duration = holidays_line.duration or ""
-                        type_holidays = holidays_line
                         if holidays_line.date_from:
                             date_from = self._get_hijri_date(holidays_line.date_from, '-')
                             date_from = str(date_from).split('-')
