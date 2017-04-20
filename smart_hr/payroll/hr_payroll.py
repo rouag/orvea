@@ -445,14 +445,8 @@ class HrPayslip(models.Model):
             holiday_date_to = fields.Date.from_string(str(holiday_id.date_to))
             date_to = fields.Date.from_string(str(date_to))
             res = []
-            if date_from >= holiday_date_from and holiday_date_to > date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, date_from, date_to, True, True, True)
-            if date_from >= holiday_date_from and holiday_date_to <= date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, holiday_date_from, holiday_date_to, True, True, True)
-            if holiday_date_from >= date_from and holiday_date_to < date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, holiday_date_from, holiday_date_to, True, True, True)
-            if holiday_date_from >= date_from and holiday_date_to >= date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, holiday_date_from, date_to, True, True, True)
+            date_start, date_stop = self.env['hr.smart.utils'].get_overlapped_periode(date_from, date_to, holiday_date_from, holiday_date_to)
+            res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, date_start, date_stop, True, True, True)
             if len(res) == 1:
                 rec = res[0]
                 res_count = rec['days']
