@@ -263,20 +263,24 @@ class HrPayslip(models.Model):
         self.state = 'cancel'
 
     @api.multi
-    @api.onchange('employee_id', 'period_id')
-    def _onchange_employee_id(self):
-        # check the existance of difference and dedections for current month
-        self.date_from = self.period_id.date_start
-        self.date_to = self.period_id.date_stop
+    @api.onchange('period_id')
+    def _onchange_period_id(self):
+        self.ensure_one()
         if self.period_id:
+            # check the existance of difference and dedections for current month
+            self.date_from = self.period_id.date_start
+            self.date_to = self.period_id.date_stop
             res = {}
             employee_ids = self.env['hr.employee'].search([('employee_state', '=', 'employee')])
             employee_ids = employee_ids.ids
             termination_ids = self.env['hr.termination'].search([('state', '=', 'done')], order='date_termination desc')
             minus_employee_ids = []
             # موظفين:  طي القيد
+            # add one month to date_from 
+            ds = datetime.strptime(self.date_from, '%Y-%m-%d')
+            date_from = str(ds + relativedelta(months=1))
             for termination_id in termination_ids:
-                if termination_id.date_termination and fields.Date.from_string(termination_id.date_termination) < fields.Date.from_string(self.date_from):
+                if termination_id.date_termination and fields.Date.from_string(termination_id.date_termination) < fields.Date.from_string(date_from):
                     minus_employee_ids.append(termination_id.employee_id)
             # موظفين:  تم إيقاف راتبهم
             employee_stop_lines = self.env['hr.payslip.stop.line'].search(
@@ -288,7 +292,7 @@ class HrPayslip(models.Model):
             res['domain'] = {'employee_id': [('id', 'in', result_employee_ids)]}
             return res
 
-    @api.onchange('employee_id', 'date_from', 'date_to', 'period_id')
+    @api.onchange('employee_id', 'date_from', 'date_to')
     def onchange_employee(self):
         for rec in self:
             if (not rec.employee_id) or (not rec.date_from) or (not rec.date_to):
