@@ -37,6 +37,13 @@ class SalaryGrid(models.Model):
     @api.multi
     def button_refuse(self):
         self.state = 'refused'
+    
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'draft' :
+                raise ValidationError(u'لا يمكن حذف سلّم الرواتب فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(SalaryGrid, self).unlink()
 
 
 class SalaryGridType(models.Model):

@@ -18,7 +18,7 @@ class HrEmployeeTransfert(models.Model):
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
     sequence = fields.Integer(string=u'رتبة الطلب')
-    employee_id = fields.Many2one('hr.employee', string=u'صاحب الطلب',  required=1,
+    employee_id = fields.Many2one('hr.employee', string=u'الموظف',  required=1,
                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended','terminated'])], limit=1),)
     last_evaluation_result = fields.Many2one('hr.employee.evaluation.level', string=u'أخر تقييم إداء')
     job_id = fields.Many2one('hr.job', default=_get_default_employee_job, string=u'الوظيفة', readonly=1, required=1)
@@ -62,7 +62,7 @@ class HrEmployeeTransfert(models.Model):
 
     transfert_type = fields.Selection([('employee', u'نقل موظفين'),
                                        ('member', u'نقل أعضاء'),
-                                       ], readonly=1, states={'new': [('readonly', 0)]}, default='employee', required=1, string=u'نوع النقل')
+                                       ],  required=1, string=u'نوع النقل')
     special_conditions = fields.Boolean(string=u'ضروف خاصة', default=False)
     special_justification_text = fields.Text(string=u'مبررات الظروف الخاصة', readonly=1, states={'new': [('readonly', 0)]})
 
@@ -171,6 +171,7 @@ class HrEmployeeTransfert(models.Model):
     @api.onchange('employee_id')
     def _onchange_employee_id(self):
         # get last evaluation result
+        res = {}
         if self.employee_id:
             previews_year = int(date.today().year) - 1
             last_evaluation_result = self.employee_id.evaluation_level_ids.search([('year', '=', int(previews_year))])
@@ -179,6 +180,14 @@ class HrEmployeeTransfert(models.Model):
             self.begin_work_date = self.employee_id.begin_work_date
             self.recruiter_date = self.employee_id.recruiter_date
             self.age = self.employee_id.age
+        if self.employee_id.type_id.is_member == True :
+            res['domain'] = {'transfert_periode_id': [('for_member', '=', True)]}
+            self.transfert_type = 'member'
+            return res
+        else :
+            res['domain'] = {'transfert_periode_id': [('for_member', '=', False)]}
+            self.transfert_type = 'employee'
+            return res
 
     @api.one
     @api.constrains('employee_id')
