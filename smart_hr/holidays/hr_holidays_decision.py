@@ -65,14 +65,18 @@ class hrHolidaysDecision(models.Model):
             self.department_id = self.employee_id.department_id.id
         self.holiday_id = False
 
-    @api.onchange('holiday_id')
-    def onchange_holiday_status_id(self):
+    @api.onchange('holiday_id', 'employee_id', 'date')
+    def onchange_holiday_id(self):
         if self.holiday_id:
             self.holiday_status_id = self.holiday_id.holiday_status_id.id
             self.date_from = self.holiday_id.date_from
             self.date_to = self.holiday_id.date_to
             self.duration = self.holiday_id.duration
         else:
+            self.holiday_status_id = False
+            self.date_from = False
+            self.date_to = False
+            self.duration = 0
             res = {}
             if self.employee_id:
                 holidays = self.env['hr.holidays'].search([('state', '=', 'done'), ('holiday_status_id.direct_decision', '=', True), ('date_to', '<=', self.date), ('employee_id', '=', self.employee_id.id)])
@@ -81,10 +85,10 @@ class hrHolidaysDecision(models.Model):
                     for direct_decision_id in direct_decision_ids:
                         holidays.remove(direct_decision_id.holiday_id)
                 res['domain'] = {'holiday_id': [('id', 'in', holidays.ids)]}
-            self.holiday_status_id = False
-            self.date_from = False
-            self.date_to = False
-            self.duration = 0
+            else:
+                res['domain'] = {'holiday_id': [('id', 'in', [])]}
+
+            return res
     @api.one
     def action_waiting(self):
         if not self.holiday_id:
