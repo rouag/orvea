@@ -342,7 +342,7 @@ class HrJobCreate(models.Model):
 
         # send notification for the employee
         self.env['base.notification'].create({'title': u'إشعار برفض طلب',
-                                              'message': u'لقد تم إشعار رفض طلب إحداث وظائف',
+                                              'message': u'لقد تم  رفض طلب إحداث وظائف',
                                               'user_id': self.employee_id.user_id.id,
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                               'res_id': self.id,
@@ -359,7 +359,7 @@ class HrJobCreate(models.Model):
 
         # send notification for the employee
         self.env['base.notification'].create({'title': u'إشعار برفض طلب',
-                                              'message': u'لقد تم إشعار رفض طلب إحداث وظائف',
+                                              'message': u'لقد تم  رفض طلب إحداث وظائف',
                                               'user_id': self.employee_id.user_id.id,
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                               'res_id': self.id,

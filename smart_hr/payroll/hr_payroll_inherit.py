@@ -886,7 +886,10 @@ class HrPayslip(models.Model):
             if date_from >= suspension_date_from and suspension_date_to > date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(employee, date_from, date_to, True, True, True)
             if date_from >= suspension_date_from and suspension_date_to <= date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(employee, date_from, suspension_date_to, True, True, True)
+                new_date_from = date_from
+                if for_last_month:
+                    new_date_from = suspension_date_from
+                res = self.env['hr.smart.utils'].compute_duration_difference(employee, new_date_from, suspension_date_to, True, True, True)
             if suspension_date_from >= date_from and suspension_date_to < date_to:
                 res = self.env['hr.smart.utils'].compute_duration_difference(employee, suspension_date_from, suspension_date_to, True, True, True)
             if suspension_date_from >= date_from and suspension_date_to >= date_to:
