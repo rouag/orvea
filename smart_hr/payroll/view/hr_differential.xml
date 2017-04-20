@@ -57,9 +57,11 @@
 							<page string="التفاصيل">
 								<group>
 									<field name="line_ids" nolabel="1">
-										<tree editable="bottom">
+										<tree>
 											<field name="employee_id"
 												options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+											<field name="date_start" />
+											<field name="date_stop" />
 											<field name="basic_salary_amount" />
 											<field name="retirement_amount" />
 											<field name="allowance_amount" />

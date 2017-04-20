@@ -15,6 +15,7 @@ class HrEmployee(models.Model):
     hr_employee_allowance_ids = fields.One2many('hr.employee.allowance', 'employee_id', readonly=1)
     to_be_clear_financial_dues = fields.Boolean(string='سيأخذ مستحقاته المالية فحلت طي قيده', defaul=False)
     clear_financial_dues = fields.Boolean(string='أخذ مستحقاته المالية فحلت طي قيده', defaul=False)
+    hr_changement_ids = fields.One2many('hr.employee.payroll.changement', 'employee_id')
 
     @api.multi
     def _compute_net_salary(self):
@@ -112,8 +113,8 @@ class HrEmployeePayrollChangement(models.Model):
     employee_id = fields.Many2one('hr.employee', string='الموظف')
     date = fields.Date(string='التاريخ')
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
-    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
-    type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1)
+    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة')
+    type_id = fields.Many2one('salary.grid.type', string='الصنف')
 
 
 class EmployeeIncrease(models.Model):
