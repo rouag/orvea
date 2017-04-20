@@ -15,4 +15,3 @@ from . import hr_special_payroll
 from . import hr_payslip_stop
 from . import hr_differential
 from . import hr_payroll_inherit
-from . import hr_payroll_run_inherit

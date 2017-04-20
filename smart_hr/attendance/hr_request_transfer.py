@@ -89,7 +89,13 @@ class HrRequestTransferDelayHours(models.Model):
     @api.multi
     def button_refuse(self):
         self.state = 'refuse'
-
+    
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'dm' :
+                raise ValidationError(u'لا يمكن حذفطلبات تحويل ساعات التأخير فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrRequestTransferDelayHours, self).unlink()
 
 class HrEmployeeDelayHours(models.Model):
 

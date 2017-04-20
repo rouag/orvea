@@ -33,6 +33,16 @@ class HrAuthorization(models.Model):
     current_autorization_stock = fields.Float(string=u'الرصيد الحالي', compute='_compute_current_autorization_stock')
     authorisation_ids = fields.One2many('hr.employee.authorization.history', 'autorisation_id', string=u'سجل الاستئذانات‬ ‫الشهرية‬', readonly=1)
 
+
+
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'new' :
+                raise ValidationError(u'لا يمكن حذف طلب الإستئذان فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrAuthorization, self).unlink()
+
+
     @api.one
     @api.constrains('hour_from', 'hour_to')
     def check_hours(self):

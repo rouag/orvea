@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, fields, api, _
-
+from openerp.exceptions import ValidationError
 
 class serviceDuration(models.Model):
     _name = 'hr.employee.service.duration'
@@ -15,6 +15,15 @@ class serviceDuration(models.Model):
                               ('done', u'اعتمدت'),
                               ('cancel', u'ملغاة'),
                               ], string=u'الحالة', default='draft')
+
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'draft':
+                raise ValidationError(u'لا يمكن حذف حساب مدة الترقية في هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(serviceDuration, self).unlink()
+
+
 
     @api.multi
     def action_done(self):
