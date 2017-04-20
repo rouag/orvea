@@ -11,7 +11,6 @@ from umalqurra.hijri_date import HijriDate
 from umalqurra.hijri import Umalqurra
 
 
-
 class HrLoan(models.Model):
     _name = 'hr.loan'
     _inherit = ['mail.thread']
@@ -38,7 +37,7 @@ class HrLoan(models.Model):
     loan_type_id = fields.Many2one('hr.loan.type', string='نوع القرض', required=1, readonly=1, states={'new': [('readonly', 0)]})
     date = fields.Date('تاريخ القرض', default=lambda *a: fields.Datetime.now(), readonly=1, states={'new': [('readonly', 0)]})
     date_from = fields.Date('تاريخ بداية الخصم', readonly=1, required=1, states={'new': [('readonly', 0)]})
-    date_to = fields.Date('تاريخ نهاية الخصم', readonly=1, states={'new': [('readonly', 0)]})
+    date_to = fields.Date('تاريخ نهاية الخصم', readonly=1)
     installment_number = fields.Integer(string='عدد الأقساط', required=1, readonly=1, states={'new': [('readonly', 0)]})
     amount = fields.Float(string='مبلغ القرض', required=1, readonly=1, states={'new': [('readonly', 0)]})
     monthly_amount = fields.Float(string='قيمة القسط', required=1, readonly=1, states={'new': [('readonly', 0)]})
@@ -105,6 +104,7 @@ class HrLoan(models.Model):
                     final_amount = diff
             self.installment_number = installment_number
             self.line_ids = months
+            self.date_to = date_stop
 
     @api.one
     def copy(self, default=None):
