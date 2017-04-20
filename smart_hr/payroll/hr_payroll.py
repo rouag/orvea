@@ -257,6 +257,9 @@ class HrPayslip(models.Model):
         # update sanction lines
         for rec in self.sanction_line_ids:
             rec.deduction = True
+        # close the financial folder of each employee who is terminated
+        for rec in self.env['hr.employee'].search([('to_be_clear_financial_dues', '=', True)]):
+            rec.clear_financial_dues = True
 
     @api.one
     def button_refuse(self):
@@ -273,15 +276,11 @@ class HrPayslip(models.Model):
             res = {}
             employee_ids = self.env['hr.employee'].search([('employee_state', '=', 'employee')])
             employee_ids = employee_ids.ids
-            termination_ids = self.env['hr.termination'].search([('state', '=', 'done')], order='date_termination desc')
-            minus_employee_ids = []
             # موظفين:  طي القيد
-            # add one month to date_from 
-            ds = datetime.strptime(self.date_from, '%Y-%m-%d')
-            date_from = str(ds + relativedelta(months=1))
-            for termination_id in termination_ids:
-                if termination_id.date_termination and fields.Date.from_string(termination_id.date_termination) < fields.Date.from_string(date_from):
-                    minus_employee_ids.append(termination_id.employee_id)
+            plus_terminated_emps = self.env['hr.employee'].search([('emp_state', '=', 'terminated'), ('clear_financial_dues', '=', False)])
+            if plus_terminated_emps:
+                employee_ids += plus_terminated_emps.ids
+            minus_employee_ids = []
             # موظفين:  تم إيقاف راتبهم
             employee_stop_lines = self.env['hr.payslip.stop.line'].search(
                 [('stop_period', '=', True), ('period_id', '=', self.period_id.id), ('payslip_id.state', '=', 'done')])
