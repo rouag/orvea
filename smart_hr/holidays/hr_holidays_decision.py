@@ -77,14 +77,14 @@ class hrHolidaysDecision(models.Model):
             self.date_from = False
             self.date_to = False
             self.duration = 0
-            res = {}
-            if self.employee_id:
-                holidays = self.env['hr.holidays'].search([('state', '=', 'done'), ('holiday_status_id.direct_decision', '=', True), ('date_to', '<=', self.date), ('employee_id', '=', self.employee_id.id)])
-                if holidays:
-                    direct_decision_ids = self.search([('holiday_id', 'in', holidays.ids)])
-                    for direct_decision_id in direct_decision_ids:
-                        holidays.remove(direct_decision_id.holiday_id)
-                res['domain'] = {'holiday_id': [('id', 'in', holidays.ids)]}
+        res = {}
+        if self.employee_id:
+            holidays = self.env['hr.holidays'].search([('state', '=', 'done'), ('holiday_status_id.direct_decision', '=', True), ('date_to', '<=', self.date), ('employee_id', '=', self.employee_id.id)])
+            if holidays:
+                direct_decision_ids = self.search([('holiday_id', 'in', holidays.ids)])
+                for direct_decision_id in direct_decision_ids:
+                    holidays.remove(direct_decision_id.holiday_id)
+                    res['domain'] = {'holiday_id': [('id', 'in', holidays.ids)]}
             else:
                 res['domain'] = {'holiday_id': [('id', 'in', [])]}
 
