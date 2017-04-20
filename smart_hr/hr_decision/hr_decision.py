@@ -215,11 +215,12 @@ class HrDecision(models.Model):
                         decision_text = decision_text.replace('DURATION', unicode(duration))
                         decision_text = decision_text.replace('FROMDET', unicode(fromdate))
                         decision_text = decision_text.replace('ENDDET', unicode(date_to))
-                
+
                 if object_type == 'holidays_cancellation' :
                     holidays_line = self.env['hr.holidays.cancellation'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
                     if holidays_line :
                         duration = holidays_line.duration or ""
+                        type_holidays = holidays_line
                         if holidays_line.date_from:
                             date_from = self._get_hijri_date(holidays_line.date_from, '-')
                             date_from = str(date_from).split('-')
@@ -233,7 +234,7 @@ class HrDecision(models.Model):
                         decision_text = decision_text.replace('DURATION', unicode(duration))
                         decision_text = decision_text.replace('FROMDET', unicode(fromdate))
                         decision_text = decision_text.replace('ENDDET', unicode(date_to)) 
-                        
+
 
 
 
