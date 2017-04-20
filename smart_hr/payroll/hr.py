@@ -87,7 +87,7 @@ class HrEmployee(models.Model):
             grid_domain.append(('date', '<=', operation_date))
         salary_grid_detail_id = self.env['salary.grid.detail'].search(grid_domain, order='date desc', limit=1)
         if not salary_grid_detail_id and len(grid_domain) == 6:
-            domain.pop(5)
+            grid_domain.pop(5)
         salary_grid_detail_id = self.env['salary.grid.detail'].search(grid_domain, order='date desc', limit=1)
 
         if salary_grid_detail_id:
