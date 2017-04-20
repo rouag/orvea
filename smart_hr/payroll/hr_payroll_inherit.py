@@ -953,9 +953,7 @@ class HrPayslip(models.Model):
     def get_difference_termination(self, date_from, date_to, employee_id, for_last_month):
         self.ensure_one()
         line_ids = []
-        domain = [('date', '>=', date_from),
-                  ('date', '<=', date_to),
-                  ('employee_id', '=', employee_id.id),
+        domain = [('employee_id', '=', employee_id.id),
                   ('state', '=', 'done')
                   ]
         name = ''
@@ -967,6 +965,8 @@ class HrPayslip(models.Model):
             name = u' للشهر الفارط '
         termination_ids = self.env['hr.termination'].search(domain)
         for termination in termination_ids:
+            # prepare the employee to be ready to close his financial folder
+            termination.employee_id.to_be_clear_financial_dues = True
             grid_id, basic_salary = termination.employee_id.get_salary_grid_id(termination.date)
             if grid_id:
                 # فرق الأيام المخصومة من الشهر
@@ -984,7 +984,7 @@ class HrPayslip(models.Model):
                             'type': 'termination'}
                     line_ids.append(vals)
             # سعودي
-            if termination.employee_id.country_id and termination.employee_id.country_id.code_nat == 'SA':
+            if not for_last_month and termination.employee_id.country_id and termination.employee_id.country_id.code_nat == 'SA':
                 if grid_id:
                     # 1) عدد الرواتب المستحق
                     if termination.termination_type_id.nb_salaire > 0:
@@ -1002,7 +1002,7 @@ class HrPayslip(models.Model):
             # 2) الإجازة
             if sum_days >= termination.termination_type_id.max_days and not termination.termination_type_id.all_holidays:
                 sum_days = termination.termination_type_id.max_days
-            if sum_days > 0:
+            if not for_last_month and sum_days > 0:
                 if grid_id:
                     amount = (basic_salary / 30.0) * sum_days
                     if amount != 0.0:

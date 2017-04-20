@@ -13,6 +13,8 @@ class HrEmployee(models.Model):
     basic_salary = fields.Float(string=u'الراتب الأساسي', default=0)
     net_salary = fields.Float(string=u'صافي الراتب', compute='_compute_net_salary')
     hr_employee_allowance_ids = fields.One2many('hr.employee.allowance', 'employee_id', readonly=1)
+    to_be_clear_financial_dues = fields.Boolean(string='سيأخذ مستحقاته المالية فحلت طي قيده', defaul=False)
+    clear_financial_dues = fields.Boolean(string='أخذ مستحقاته المالية فحلت طي قيده', defaul=False)
 
     @api.multi
     def _compute_net_salary(self):
