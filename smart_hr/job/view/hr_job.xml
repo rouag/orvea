@@ -308,7 +308,7 @@
 					<field name="employee_id" />
 					<field name="speech_number" />
 					<field name="speech_date" />
-					<field name="state" />
+				<field name="state" string="الحالة" />
 				</tree>
 			</field>
 		</record>

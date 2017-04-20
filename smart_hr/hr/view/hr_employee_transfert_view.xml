@@ -14,7 +14,7 @@
 					<field name="state" string="الحالة" />
 					<field name="transfert_nature" string="طبيعة النقل" />
 					
-					<filter string=" قائمة راغبي طلب النقل" domain="[('state','=','hrm')]" />
+					<filter string=" قائمة راغبي طلب النقل"  name="state"  domain="[('state','=','hrm')]" />
 					<filter name="employee_id" string="الموظف" />
 					<filter name="transfert_type" string="نوع النقل" />
 					<filter name="transfert_nature" string="طبيعة النقل" />

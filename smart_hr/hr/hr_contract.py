@@ -53,6 +53,15 @@ class HrContract(models.Model):
     ticket_travel = fields.Boolean(string='تذاكر السفر')
     ticket_famely = fields.Boolean(string='تذكرة سفر عائلية')
 
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'draft' :
+                raise ValidationError(u'لا يمكن حذف العقد فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrContract, self).unlink()
+
+
+
     @api.onchange('state')
     def _onchange_state(self):
         if self.state == 'open':

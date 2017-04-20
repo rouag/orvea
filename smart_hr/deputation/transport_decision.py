@@ -69,7 +69,7 @@ class HrTransportDecision(models.Model):
     @api.multi
     def unlink(self):
         for rec in self:
-            if rec.state == 'done' :
+            if rec.state != 'draft' :
                 raise ValidationError(u'لا يمكن حذف أوامر الإركاب فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(HrTransportDecision, self).unlink()
 
