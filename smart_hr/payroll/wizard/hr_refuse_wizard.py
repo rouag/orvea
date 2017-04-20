@@ -19,8 +19,12 @@ class PayrollRefuseWizard(models.TransientModel):
                 model_obj = self.env[cx.get('active_model')]
                 rec_id = model_obj.browse(cx.get('active_id'))
                 rec_id.message_post(u'سبب الرفض: ' + unicode(wiz.message))
-                if cx and cx['special_payslip_from_state'] == 'verify':
+                if cx and 'special_payslip_from_state' in cx and cx['special_payslip_from_state'] == 'verify':
                     return rec_id.button_refuse_verify()
-                if cx and cx['special_payslip_from_state'] == 'division_director':
+                if cx and 'special_payslip_from_state' in cx and cx['special_payslip_from_state'] == 'division_director':
                     return rec_id.button_refuse_division_director()
+                if cx and 'payslip_run_from_state' in cx and cx['payslip_run_from_state'] == 'verify':
+                    return rec_id.action_draft()
+                if cx and 'payslip_run_from_state' in cx and cx['payslip_run_from_state'] == 'finance':
+                    return rec_id.refuse_action_verify()
 
