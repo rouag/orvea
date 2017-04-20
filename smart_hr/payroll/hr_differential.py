@@ -155,7 +155,7 @@ class HrDifferential(models.Model):
 
 class HrDifferentialLine(models.Model):
     _name = 'hr.differential.line'
-
+    
     difference_id = fields.Many2one('hr.differential', string=' الفروقات', ondelete='cascade')
     employee_id = fields.Many2one('hr.employee', string='الموظف')
     date_start = fields.Date('تاريخ من')

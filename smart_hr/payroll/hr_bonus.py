@@ -76,7 +76,13 @@ class hrBonus(models.Model):
         result.update({'domain': {'employee_ids': [('id', 'in', list(set(employee_ids)))]}})
         return result
 
-
+   
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'new' :
+                raise ValidationError(u'لا يمكن حذف إسناد المزايا المالية فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(hrBonus, self).unlink()
 
     @api.onchange('period_from_id', 'period_to_id')
     def onchange_date(self):
@@ -146,8 +152,6 @@ class hrBonusLine(models.Model):
                               ('stop', 'إيقاف'),
                               ('expired', 'منتهي')
                               ], string='الحالة', readonly=1, default='progress')
-
-   
 
 
     @api.model

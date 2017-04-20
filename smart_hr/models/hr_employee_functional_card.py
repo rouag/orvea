@@ -61,6 +61,13 @@ class HrEmployeeFunctionnalCard(models.Model):
     hoveizeh_date = fields.Date(string=u'تاريخ إصدار الحفيظة ',related='employee_id.hoveizeh_date')
     hoveizeh_place = fields.Many2one('res.city', string=u'مكان إصدار الحفيظة',related='employee_id.hoveizeh_place')
     is_saudian = fields.Boolean(realated='employee_id.is_saudian')
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'draft' :
+                raise ValidationError(u'لا يمكن حذف بطاقة موظف فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(HrEmployeeFunctionnalCard, self).unlink()
+    
     def _compute_education_level(self):
         for card in self:
             employee_id = card.employee_id
