@@ -402,8 +402,6 @@ class HrEmployeeTransfert(models.Model):
                 recruiter_id.action_done()
                 rec.done_date = fields.Date.today()
 
-            # create history_line
-#             self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, False, False, "نقل")
             if rec.transfert_type == 'internal_transfert':
                 # send notification for the employee
                 self.env['base.notification'].create({'title': u'إشعار بموافقة طلب',

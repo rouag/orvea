@@ -99,13 +99,6 @@ class HrSanction(models.Model):
     def action_extern(self):
         self.ensure_one()
         for rec in self.line_ids:
-            #             type = ''
-            #             if rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_grade').id:
-            #                 type = 'حرمان من علاوة'
-            #             elif rec.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_separation').id:
-            #                 type = 'الفصل'
-            #             if type:
-            #                 self.env['hr.employee.history'].sudo().add_action_line(rec.employee_id, self.type_sanction.id, self.date_sanction_start, type)
             rec.state = 'done'
         self.state = 'done'
 

@@ -241,8 +241,6 @@ class hrHolidaysCancellation(models.Model):
                     if cancellation.holiday_id.open_period:
                         cancellation.holiday_id.open_period.holiday_stock += cuted_duration
                     cancellation.holiday_id.write({'state': 'cutoff'})
-#                     type = " قطع"+" " +holiday.holiday_status_id.name.encode('utf-8')
-#                     self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date, type)
                     if cancellation.holiday_id.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_study'):
                         study_followup = self.env['courses.followup'].search([('employee_id', '=', 'holiday.employee_id.id'),
                                                                               ('state', '=', 'progress'),
