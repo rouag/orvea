@@ -443,8 +443,7 @@ class HrPayslip(models.Model):
     def get_days_off_count(self, date_from, date_to):
         res_count = 0.0
         # holidays in current periode
-        domain = [('employee_id', '=', self.employee_id.id),
-                  ('state', '=', 'done')]
+        domain = [('employee_id', '=', self.employee_id.id), ('state', '=', 'done')]
         holidays_ids = self.env['hr.holidays'].search(domain)
         for holiday_id in holidays_ids:
             # overlaped days in current month
@@ -452,15 +451,15 @@ class HrPayslip(models.Model):
             date_from = fields.Date.from_string(str(date_from))
             holiday_date_to = fields.Date.from_string(str(holiday_id.date_to))
             date_to = fields.Date.from_string(str(date_to))
-            res = []
             date_start, date_stop = self.env['hr.smart.utils'].get_overlapped_periode(date_from, date_to, holiday_date_from, holiday_date_to)
-            res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, date_start, date_stop, True, True, True)
-            if len(res) == 1:
-                rec = res[0]
-                res_count = rec['days']
-            else:
-                for rec in res:
-                    res_count += rec['days']
+            if date_start and date_stop:
+                res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, date_start, date_stop, True, True, True)
+                if len(res) == 1:
+                    rec = res[0]
+                    res_count = rec['days']
+                else:
+                    for rec in res:
+                        res_count += rec['days']
         # termination in current periode
         domain = [('date', '>=', date_from),
                   ('date', '<=', date_to),
