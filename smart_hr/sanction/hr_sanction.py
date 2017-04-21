@@ -141,8 +141,8 @@ class HrSanctionLigne(models.Model):
     def onchange_employee_id(self):
         if not self.employee_id:
             res = {}
-            grade_min = int(self.sanction_id.type_sanction.min_grade_id.code)
-            grade_max = int(self.sanction_id.type_sanction.max_grade_id.code)
+            grade_min = self.sanction_id.type_sanction.min_grade_id.code
+            grade_max = self.sanction_id.type_sanction.max_grade_id.code
             employee_ids = self.env['hr.employee'].search(
                 [('grade_id.code', '>=', grade_min), ('grade_id.code', '<=', grade_max)]).ids
             res['domain'] = {'employee_id': [('id', 'in', employee_ids)]}

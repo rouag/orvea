@@ -340,7 +340,7 @@ class HrPayslip(models.Model):
             self.date_from = self.period_id.date_start
             self.date_to = self.period_id.date_stop
             res = {}
-            employee_ids = self.env['hr.employee'].search([('emp_state', '=', 'working'), ('employee_state', '=', 'employee')])
+            employee_ids = self.env['hr.employee'].search([('emp_state', 'in', ('working','suspended')), ('employee_state', '=', 'employee')])
             employee_ids = employee_ids.ids
             # موظفين:  طي القيد
             plus_terminated_emps = self.env['hr.employee'].search([('emp_state', '=', 'terminated'), ('clear_financial_dues', '=', False)])

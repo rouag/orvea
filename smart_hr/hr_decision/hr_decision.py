@@ -202,6 +202,8 @@ class HrDecision(models.Model):
                     holidays_line = self.env['hr.holidays'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
                     if holidays_line :
                         duration = holidays_line.duration or ""
+                        numero_holidays = holidays_line.num_decision or ""
+                        sport_participation_topic = holidays_line.sport_participation_topic or "" 
                         if holidays_line.date_from:
                             date_from = self._get_hijri_date(holidays_line.date_from, '-')
                             date_from = str(date_from).split('-')
@@ -212,6 +214,14 @@ class HrDecision(models.Model):
                             date_to = str(date_to).split('-')
                             date_to = date_to[2] + '-' + date_to[1] + '-' + date_to[0] or ""
                         date_to = date_to or ""
+                        if holidays_line.date_decision:
+                            date_decision = self._get_hijri_date(holidays_line.date_decision, '-')
+                            date_decision = str(date_decision).split('-')
+                            date_decision = date_decision[2] + '-' + date_decision[1] + '-' + date_decision[0] or ""
+                        date_decision = date_decision or ""
+                        decision_text = decision_text.replace('SPORT', unicode(sport_participation_topic))
+                        decision_text = decision_text.replace('NUMHOLIDAYS', unicode(numero_holidays))
+                        decision_text = decision_text.replace('date_decision', unicode(date_decision))
                         decision_text = decision_text.replace('DURATION', unicode(duration))
                         decision_text = decision_text.replace('FROMDET', unicode(fromdate))
                         decision_text = decision_text.replace('ENDDET', unicode(date_to))
@@ -342,6 +352,7 @@ class HrDecision(models.Model):
                         department_id = improve_line.department_id.name or ""
                         grade_id = improve_line.grade_id.name or ""
                         degree_id = improve_line.degree_id.name or ""
+                        
                         #decision_text = decision_text.replace('TERMINATION', unicode(date_termination))
                         decision_text = decision_text.replace('JOB', unicode(new_job_id))
                         decision_text = decision_text.replace('CODE', unicode(new_code))
@@ -358,24 +369,24 @@ class HrDecision(models.Model):
                     if transfert_line :
                         job_id = transfert_line.job_id.name.name or ""
                         code = transfert_line.job_id.number or ""
-                        department_id = transfert_line.department_id.name or ""
-                        grade_id = transfert_line.grade_id.name or ""
+                        department_id = transfert_line.new_job_id.department_id.name or ""
+                       # grade_id = transfert_line.grade_id.name or ""
                         degree_id = transfert_line.degree_id.name or ""
                         new_job_id = transfert_line.new_job_id.name.name or ""
                         new_code = transfert_line.new_job_id.number or ""
                         new_department_id = transfert_line.new_job_id.department_id.name or ""
-                        new_grade_id = transfert_line.new_job_id.grade_id.name or ""
+                      #  new_grade_id = transfert_line.new_job_id.grade_id.name or ""
                         new_degree_id = transfert_line.new_degree_id.name or ""
     
                         decision_text = decision_text.replace('JOB', unicode(job_id))
                         decision_text = decision_text.replace('CODE', unicode(code))
                         decision_text = decision_text.replace('DEGREE', unicode(degree_id))
-                        decision_text = decision_text.replace('GRADE', unicode(grade_id))
+                     #   decision_text = decision_text.replace('GRADE', unicode(grade_id))
                         decision_text = decision_text.replace('DEPARTEMENT', unicode(department_id))
                         decision_text = decision_text.replace('job', unicode(new_job_id))
                         decision_text = decision_text.replace('code', unicode(new_code))
                         decision_text = decision_text.replace('degree', unicode(new_degree_id))
-                        decision_text = decision_text.replace('grade', unicode(new_grade_id))
+                       # decision_text = decision_text.replace('grade', unicode(new_grade_id))
                         decision_text = decision_text.replace('department', unicode(new_department_id))
 
         return decision_text
