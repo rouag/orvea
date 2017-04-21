@@ -331,7 +331,7 @@ class HrPayslip(models.Model):
             self.date_from = self.period_id.date_start
             self.date_to = self.period_id.date_stop
             res = {}
-            employee_ids = self.env['hr.employee'].search([('employee_state', '=', 'employee')])
+            employee_ids = self.env['hr.employee'].search([('emp_state', '=', 'working'), ('employee_state', '=', 'employee')])
             employee_ids = employee_ids.ids
             # موظفين:  طي القيد
             plus_terminated_emps = self.env['hr.employee'].search([('emp_state', '=', 'terminated'), ('clear_financial_dues', '=', False)])
@@ -341,9 +341,8 @@ class HrPayslip(models.Model):
             # موظفين:  تم إيقاف راتبهم
             employee_stop_lines = self.env['hr.payslip.stop.line'].search(
                 [('stop_period', '=', True), ('period_id', '=', self.period_id.id), ('payslip_id.state', '=', 'done')])
-            employee_stop_ids = [line.payslip_id.employee_id for line in employee_stop_lines]
+            employee_stop_ids = [line.payslip_id.employee_id.id for line in employee_stop_lines]
             minus_employee_ids += employee_stop_ids
-            minus_employee_ids = [rec.id for rec in minus_employee_ids]
             result_employee_ids = list((set(employee_ids) - set(minus_employee_ids)))
             res['domain'] = {'employee_id': [('id', 'in', result_employee_ids)]}
             return res
@@ -445,14 +444,8 @@ class HrPayslip(models.Model):
             holiday_date_to = fields.Date.from_string(str(holiday_id.date_to))
             date_to = fields.Date.from_string(str(date_to))
             res = []
-            if date_from >= holiday_date_from and holiday_date_to > date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, date_from, date_to, True, True, True)
-            if date_from >= holiday_date_from and holiday_date_to <= date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, holiday_date_from, holiday_date_to, True, True, True)
-            if holiday_date_from >= date_from and holiday_date_to < date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, holiday_date_from, holiday_date_to, True, True, True)
-            if holiday_date_from >= date_from and holiday_date_to >= date_to:
-                res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, holiday_date_from, date_to, True, True, True)
+            date_start, date_stop = self.env['hr.smart.utils'].get_overlapped_periode(date_from, date_to, holiday_date_from, holiday_date_to)
+            res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, date_start, date_stop, True, True, True)
             if len(res) == 1:
                 rec = res[0]
                 res_count = rec['days']
@@ -783,8 +776,6 @@ class HrPayslip(models.Model):
     @api.constrains('employee_id', 'period_id')
     def _check_payroll(self):
         for rec in self:
-
-            print rec.employee_id.name
             payroll_count = rec.search_count([('employee_id', '=', rec.employee_id.id),
                                               ('period_id', '=', rec.period_id.id),
                                               ('is_special', '=', False)])

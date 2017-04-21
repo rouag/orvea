@@ -149,6 +149,7 @@ class hr_suspension(models.Model):
             decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'employee')
             decission_id = decision.id
             self.decission_id =  decission_id
+        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.decission_id.name, self.decission_id.date, "كف اليد")
         return {
             'name': _(u'قرار كف اليد'),
             'view_type': 'form',

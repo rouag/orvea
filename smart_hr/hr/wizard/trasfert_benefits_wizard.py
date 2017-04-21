@@ -37,7 +37,7 @@ class TransfertBenefitsWizard(models.TransientModel):
             if not transfert.hr_employee_transfert_id.job_allowance_ids:
                 for rec in transfert.new_job_id.serie_id.allowanse_ids:
                     job_allowance_ids.append({'decision_appoint_id': transfert.id,
-                                              'allowance_id': rec.allowance_id.id,
+                                              'allowance_id': rec.id,
                                               'compute_method': 'amount',
                                               'amount': 0.0})
             else:
@@ -50,7 +50,7 @@ class TransfertBenefitsWizard(models.TransientModel):
             if transfert.hr_employee_transfert_id.transfert_allowance_ids:
                 for rec in transfert.new_job_id.serie_id.allowanse_ids:
                     transfert_allowance_ids.append({'transfert_id': transfert.id,
-                                                    'allowance_id': rec.allowance_id.id,
+                                                    'allowance_id': rec.id,
                                                     'compute_method': rec.compute_method,
                                                     'amount': rec.amount})
             res.update({'transfert_line_obj': transfert.id,

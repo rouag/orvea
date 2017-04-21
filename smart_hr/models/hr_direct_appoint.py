@@ -62,9 +62,10 @@ class HrDirectAppoint(models.Model):
                 'date':decision_date,
                 'employee_id' :self.employee_id.id }
             decision = decision_obj.create(decission_val)
-            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'appoint')
+            decision.text = decision.replace_text(self.employee_id, decision_date, decision_type_id, 'appoint')
             decission_id = decision.id
-            self.decission_id =  decission_id
+            self.decission_id = decission_id
+        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.decission_id.name, self.decission_id.date, "مباشرة")
         return {
             'name': _(u'قرار مباشرة التعيين'),
             'view_type': 'form',
@@ -109,19 +110,30 @@ class HrDirectAppoint(models.Model):
     @api.multi
     def button_direct_appoint(self):
         self.ensure_one()
+        if self.date_direct_action < datetime.today().strftime('%Y-%m-%d'):
+            raise ValidationError(u"لا يمكن تفعيل التعيين ،  تاريخ المباشرة يجب أن يكون أكبر  أو مساوي لتاريخ اليوم ")
         self.appoint_id.action_activate()
         title = u"' إشعار بمباشرة التعين'"
         msg = u"' إشعار بمباشرة التعين'" + unicode(self.employee_id.display_name) + u"'"
         group_id = self.env.ref('smart_hr.group_department_employee')
         self.send_appoint_group(group_id, title, msg)
-        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.decission_id.name, self.decission_id.date, "مباشرة")
         if self.type == 'transfer':
             self.appoint_id.transfer_id.done_date = self.date_direct_action
         if self.type == 'promotion':
             self.appoint_id.promotion_id.done_date = self.date_direct_action
         self.state = 'done'
 
-    @api.onchange('employee_id','type')
+    @api.onchange('date_direct_action')
+    def _onchange_date_direct_action(self):
+        if self.date_direct_action and self.date_direct_action < datetime.today().strftime('%Y-%m-%d'):
+            warning = {
+                'title': _('تحذير!'),
+                'message': _(' تاريخ المباشرة يجب أن يكون أكبر  أو مساوي لتاريخ اليوم '),
+            }
+            self.date_direct_action = False
+            return {'warning': warning}
+
+    @api.onchange('employee_id', 'type')
     def _onchange_employee_id(self):
         if self.employee_id:
             self.number = self.employee_id.number

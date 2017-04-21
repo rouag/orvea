@@ -15,6 +15,7 @@ class HrEmployee(models.Model):
     hr_employee_allowance_ids = fields.One2many('hr.employee.allowance', 'employee_id', readonly=1)
     to_be_clear_financial_dues = fields.Boolean(string='سيأخذ مستحقاته المالية فحلت طي قيده', defaul=False)
     clear_financial_dues = fields.Boolean(string='أخذ مستحقاته المالية فحلت طي قيده', defaul=False)
+    hr_changement_ids = fields.One2many('hr.employee.payroll.changement', 'employee_id')
 
     @api.multi
     def _compute_net_salary(self):
@@ -75,11 +76,20 @@ class HrEmployee(models.Model):
             type_id = salary_grid_id.type_id
             grade_id = salary_grid_id.grade_id
             degree_id = salary_grid_id.degree_id
-        salary_grid_detail_id = self.env['salary.grid.detail'].search([('grid_id.state', '=', 'done'),
-                                                                      ('grid_id.enabled', '=', True),
-                                                                      ('type_id', '=', type_id.id),
-                                                                      ('grade_id', '=', grade_id.id),
-                                                                      ('degree_id', '=', degree_id.id)], limit=1)
+
+        # search grid
+        grid_domain= [('grid_id.state', '=', 'done'),
+                         ('grid_id.enabled', '=', True),
+                         ('type_id', '=', type_id.id),
+                         ('grade_id', '=', grade_id.id),
+                         ('degree_id', '=', degree_id.id)]
+        if operation_date:
+            grid_domain.append(('date', '<=', operation_date))
+        salary_grid_detail_id = self.env['salary.grid.detail'].search(grid_domain, order='date desc', limit=1)
+        if not salary_grid_detail_id and len(grid_domain) == 6:
+            grid_domain.pop(5)
+        salary_grid_detail_id = self.env['salary.grid.detail'].search(grid_domain, order='date desc', limit=1)
+
         if salary_grid_detail_id:
             # retreive old salary increases to add them with basic_salary
             domain = [('salary_grid_detail_id', '=', salary_grid_detail_id.id)]
@@ -112,8 +122,8 @@ class HrEmployeePayrollChangement(models.Model):
     employee_id = fields.Many2one('hr.employee', string='الموظف')
     date = fields.Date(string='التاريخ')
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', required=1)
-    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
-    type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1)
+    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة')
+    type_id = fields.Many2one('salary.grid.type', string='الصنف')
 
 
 class EmployeeIncrease(models.Model):

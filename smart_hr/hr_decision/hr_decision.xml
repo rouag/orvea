@@ -38,7 +38,7 @@
 					<header>
 						<button name="button_done" string="إعتماد" type="object" states="draft" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"/>
 						
-							<button name="%(hr_decision_report)d" string="طباعة القرار"
+							<button name="%(report_hr_decision_report)d" string="طباعة القرار"
 							type="action" icon="fa-print" 	attrs="{'invisible':[('state','!=','done')]}"
 							class="oe_inline oe_stat_button" />
 							

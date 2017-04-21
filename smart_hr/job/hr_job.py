@@ -1411,7 +1411,10 @@ class HrJobMoveGradeLine(models.Model):
                 if self._context['operation'] == 'scale_up':
                     if int(self.job_id.grade_id.code) < int(rec.code):
                         grade_ids.append(rec.id)
-            res['domain'] = {'new_grade_id': [('id', 'in', grade_ids)]}
+            type = self.job_id.type_id.id
+            name_ids = self.job_id.serie_id.job_name_ids.ids
+            new_job_name_ids = self.env['hr.job.name'].search([('type_ids', 'in', type), ('id', 'in', name_ids)])
+            res['domain'] = {'new_grade_id': [('id', 'in', grade_ids)], 'new_job_name': [('id', 'in', new_job_name_ids.ids)]}
             return res
 
         if not self.job_id:
