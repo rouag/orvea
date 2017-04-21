@@ -9,8 +9,8 @@ from openerp.addons.smart_base.util.time_util import days_between
 class SmartUtils(models.Model):
     _name = 'hr.smart.utils'
 
-    def get_overlapped_periode(self, date_from, date_to, periode_date_from, periode_date_to):
 
+    def get_overlapped_periode(self, date_from, date_to, operation_date_from, operation_date_to):
         """
         @return: overlapped peiode, date_fbegin, date_end
         """
@@ -20,7 +20,7 @@ class SmartUtils(models.Model):
             return set([d1 + timedelta(days=i) for i in range(delta.days + 1)])
 
         range1 = [date_from, date_to]
-        range2 = [periode_date_from, periode_date_to]
+        range2 = [operation_date_from, operation_date_to]
         listset = intersection_date_set(*range1) & intersection_date_set(*range2)
         if listset:
             listset = sorted(listset)
