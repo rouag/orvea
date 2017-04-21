@@ -83,7 +83,7 @@
 								<field name="employee_id"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="name" />
-								<field name="date" />
+								<field name="date" readonly="1"/>
 								<field name="loan_type_id" />
 								<field name="is_deputation_advance" invisible="1" />
 								<field name="deputation_id"
@@ -101,7 +101,7 @@
 								<field name="amount" />
 								<field name="monthly_amount" />
 								<field name="date_to" />
-								<field name="installment_number" />
+								<field name="installment_number" readonly="1"/>
 							</group>
 						</group>
 						<notebook>

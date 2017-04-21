@@ -45,7 +45,7 @@ class HrGrouupGeneral(models.Model):
 class HrTypeJobBooking(models.Model):
     _name = 'hr.type.job.booking'
     _description = u'أنواع حجز الوظائف '
-   
+
     name = fields.Char(string=u' المسمى  ', required=1,)
 
 
