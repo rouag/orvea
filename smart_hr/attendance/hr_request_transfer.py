@@ -109,6 +109,7 @@ class HrEmployeeDelayHours(models.Model):
     number_request = fields.Integer(string='عدد الايام المراد تحويلها', required=1)
     balance = fields.Float(string='الرصيد الحالي(ساعات)', readonly=1)
     request_id = fields.Many2one('hr.request.transfer.delay.hours')
+    deduction = fields.Boolean(string='is deducted', default=False)
 
     @api.onchange('employee_id')
     def onchange_employee_id(self):
@@ -247,6 +248,7 @@ class HrEmployeeAbsenceDays(models.Model):
     number_request = fields.Integer(string='عدد الايام المراد تحويلها', required=1)
     balance = fields.Float(string='الرصيد الحالي(ساعات)', readonly=1)
     request_id = fields.Many2one('hr.request.transfer.absence')
+    deduction = fields.Boolean(string='is deducted', default=False)
 
     @api.onchange('employee_id')
     def onchange_employee_id(self):

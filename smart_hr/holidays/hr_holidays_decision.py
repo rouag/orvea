@@ -43,52 +43,73 @@ class hrHolidaysDecision(models.Model):
     @api.onchange('date')
     @api.constrains('date')
     def _onchange_date(self):
-        if self.date:
-            is_holiday = self.env['hr.smart.utils'].check_holiday_weekend_days(self.date, self.employee_id)
-            if is_holiday:
-                if is_holiday == "official holiday":
-                    raise ValidationError(u"هناك تداخل فى تاريخ المباشرة مع اعياد و عطل رسمية")
-                elif is_holiday == "weekend":
-                    raise ValidationError(u"هناك تداخل فى تاريخ المباشرة مع عطلة نهاية الاسبوع")
-                elif is_holiday == "holiday":
-                    raise ValidationError(u"هناك تداخل فى تاريخ المباشرة مع يوم إجازة")
-
-    @api.onchange('date')
-    def onchange_date(self):
-        self.holiday_id = False
-
-    @api.onchange('employee_id')
-    def onchange_employee_id(self):
-        if self.employee_id:
-            self.number = self.employee_id.number
-            self.job_id = self.employee_id.job_id.id
-            self.department_id = self.employee_id.department_id.id
-        self.holiday_id = False
-
-    @api.onchange('holiday_id', 'employee_id', 'date')
-    def onchange_holiday_id(self):
-        if self.holiday_id:
-            self.holiday_status_id = self.holiday_id.holiday_status_id.id
-            self.date_from = self.holiday_id.date_from
-            self.date_to = self.holiday_id.date_to
-            self.duration = self.holiday_id.duration
-        else:
-            self.holiday_status_id = False
-            self.date_from = False
-            self.date_to = False
-            self.duration = 0
         res = {}
-        if self.employee_id:
+        warning = {}
+        self.holiday_status_id = False
+        self.date_from = False
+        self.date_to = False
+        self.duration = 0
+        if self.employee_id and self.date :
             holidays = self.env['hr.holidays'].search([('state', '=', 'done'), ('holiday_status_id.direct_decision', '=', True), ('date_to', '<=', self.date), ('employee_id', '=', self.employee_id.id)])
             if holidays:
                 direct_decision_ids = self.search([('holiday_id', 'in', holidays.ids)])
                 for direct_decision_id in direct_decision_ids:
                     holidays.remove(direct_decision_id.holiday_id)
-                    res['domain'] = {'holiday_id': [('id', 'in', holidays.ids)]}
-            else:
-                res['domain'] = {'holiday_id': [('id', 'in', [])]}
+                res['domain'] = {'holiday_id': [('id', 'in', holidays.ids)]}
+        else:
+            res['domain'] = {'holiday_id': [('id', 'in', [])]}
+        if self.date:
+            is_holiday = self.env['hr.smart.utils'].check_holiday_weekend_days(self.date, self.employee_id)
+            if is_holiday:
+                if is_holiday == "official holiday":
+                    warning = {
+                        'title': _('تحذير!'),
+                        'message': _('هناك تداخل فى تاريخ المباشرة مع اعياد و عطل رسمية!'),
+                }
+                elif is_holiday == "weekend":
+                    warning = {
+                        'title': _('تحذير!'),
+                        'message': _('هناك تداخل فى تاريخ المباشرة مع عطلة نهاية الاسبوع!'),
+                }
+                elif is_holiday == "holiday":
+                    warning = {
+                        'title': _('تحذير!'),
+                        'message': _('هناك تداخل فى تاريخ المباشرة مع يوم إجازة!'),
+                        }
+            res['warning'] = warning
+        return res
 
-            return res
+    @api.onchange('employee_id')
+    def onchange_employee_id(self):
+        res = {}
+        if self.employee_id:
+            self.number = self.employee_id.number
+            self.job_id = self.employee_id.job_id.id
+            self.department_id = self.employee_id.department_id.id
+        self.holiday_status_id = False
+        self.date_from = False
+        self.date_to = False
+        self.duration = 0
+        if self.employee_id and self.date :
+            holidays = self.env['hr.holidays'].search([('state', '=', 'done'), ('holiday_status_id.direct_decision', '=', True), ('date_to', '<=', self.date), ('employee_id', '=', self.employee_id.id)])
+            if holidays:
+                direct_decision_ids = self.search([('holiday_id', 'in', holidays.ids)])
+                for direct_decision_id in direct_decision_ids:
+                    holidays.remove(direct_decision_id.holiday_id)
+                res['domain'] = {'holiday_id': [('id', 'in', holidays.ids)]}
+        else:
+            res['domain'] = {'holiday_id': [('id', 'in', [])]}
+        return res
+
+    @api.onchange('holiday_id')
+    def onchange_holiday_id(self):
+        res = {}
+        if self.holiday_id:
+            self.holiday_status_id = self.holiday_id.holiday_status_id.id
+            self.date_from = self.holiday_id.date_from
+            self.date_to = self.holiday_id.date_to
+            self.duration = self.holiday_id.duration
+
     @api.one
     def action_waiting(self):
         if not self.holiday_id:
