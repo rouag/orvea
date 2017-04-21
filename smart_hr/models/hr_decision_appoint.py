@@ -143,7 +143,7 @@ class HrDecisionAppoint(models.Model):
 
             # create decission
             decission_val={
-                'name': self.env['ir.sequence'].get('hr.decision.appoint.seq'),
+               # 'name': self.env['ir.sequence'].get('hr.decision.appoint.seq'),
                 'decision_type_id':decision_type_id,
                 'date':decision_date,
                 'employee_id' :self.employee_id.id }

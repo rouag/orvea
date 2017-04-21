@@ -227,12 +227,12 @@ class HrScholarship(models.Model):
             [('employee_id', '=', self.employee_id.id), ('year', '=', date_from.year - 1)], limit=1)
         employee_evaluation_id2 = self.env['hr.employee.evaluation.level'].search(
             [('employee_id', '=', self.employee_id.id), ('year', '=', date_from.year - 2)], limit=1)
-        if employee_evaluation_id1 and employee_evaluation_id2:
-            if employee_evaluation_id1.degree_id.point_to < self.env.ref('smart_hr.assessment_hr_good').point_from or \
-                    employee_evaluation_id1.degree_id.point_to < self.env.ref('smart_hr.assessment_hr_good').point_from:
-                raise ValidationError(u"لم تتحصل على تقييم الأدائ الوظيفي‬ المطلوب.")
-        else:
-            raise ValidationError(u"لا يوجد تقييم وظيفي خاص بالموظف للسنتين الفارطتين")
+#         if employee_evaluation_id1 and employee_evaluation_id2:
+#             if employee_evaluation_id1.degree_id.point_to < self.env.ref('smart_hr.assessment_hr_good').point_from or \
+#                     employee_evaluation_id1.degree_id.point_to < self.env.ref('smart_hr.assessment_hr_good').point_from:
+#                 raise ValidationError(u"لم تتحصل على تقييم الأدائ الوظيفي‬ المطلوب.")
+#         else:
+#             raise ValidationError(u"لا يوجد تقييم وظيفي خاص بالموظف للسنتين الفارطتين")
 
     @api.multi
     def button_extend(self):
