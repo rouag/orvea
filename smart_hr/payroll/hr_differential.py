@@ -205,28 +205,27 @@ class HrDifferentialLine(models.Model):
                                                           ('date_stop', '=', date_stop)])
 
                 d_start, d_stop = self.env['hr.smart.utils'].get_overlapped_periode(date_start, date_stop, rec.date_start, rec.date_stop)
-
-                number_of_days = (d_stop - d_start).days + 1
-
-                ds = ds + relativedelta(days=number_of_days)
-                # get difference of basic salary for all periode
-                basic_salary_amount, retirement_amount, allowance_amount = self.get_differences(number_of_days)
-                total_amount = basic_salary_amount + retirement_amount + allowance_amount
-                if total_amount != 0:
-                    vals = {'difference_line_id': rec.id,
-                            'period_id': period_id.id,
-                            'number_of_days': number_of_days,
-                            'basic_salary_amount': basic_salary_amount,
-                            'retirement_amount': retirement_amount,
-                            'allowance_amount': allowance_amount,
-                            'total_amount': total_amount,
-                            }
-                    line_ids.append(vals)
-                # calculate total_amout, basic_salary_amount + retirement_amount + allowance_amount for this hr.differential.line
-                self.basic_salary_amount += basic_salary_amount
-                self.retirement_amount += retirement_amount
-                self.allowance_amount += allowance_amount
-                self.total_amount += total_amount
+                if d_start and d_stop:
+                    number_of_days = (d_stop - d_start).days + 1
+                    ds = ds + relativedelta(days=number_of_days)
+                    # get difference of basic salary for all periode
+                    basic_salary_amount, retirement_amount, allowance_amount = self.get_differences(number_of_days)
+                    total_amount = basic_salary_amount + retirement_amount + allowance_amount
+                    if total_amount != 0:
+                        vals = {'difference_line_id': rec.id,
+                                'period_id': period_id.id,
+                                'number_of_days': number_of_days,
+                                'basic_salary_amount': basic_salary_amount,
+                                'retirement_amount': retirement_amount,
+                                'allowance_amount': allowance_amount,
+                                'total_amount': total_amount,
+                                }
+                        line_ids.append(vals)
+                    # calculate total_amout, basic_salary_amount + retirement_amount + allowance_amount for this hr.differential.line
+                    self.basic_salary_amount += basic_salary_amount
+                    self.retirement_amount += retirement_amount
+                    self.allowance_amount += allowance_amount
+                    self.total_amount += total_amount
             rec.defferential_detail_ids = line_ids
 
     @api.multi
