@@ -598,7 +598,7 @@ class HrPromotionDemande(models.Model):
                               ('cancel', 'رفض'),
                               ('done', 'اعتمدت')], string='الحالة', readonly=1, default='new')
     done_date = fields.Date(string='تاريخ التفعيل')
-    desire_ids = fields.One2many('hr.employee.promotion.desire', 'demande_promotion_id', required=1, string=u'رغبات الموظف', readonly=1, states={'new': [('readonly', 0)]})
+    desire_ids = fields.One2many('hr.employee.promotion.desire', 'demande_promotion_id', string=u'رغبات الموظف', readonly=1, states={'new': [('readonly', 0)]})
 
     @api.model
     def create(self, vals):
