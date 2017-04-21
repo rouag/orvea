@@ -125,7 +125,8 @@ class HrDecisionAppoint(models.Model):
     transfer_id = fields.Many2one('hr.employee.transfert')
     promotion_id = fields.Many2one('hr.promotion.employee.job')
     decission_id = fields.Many2one('hr.decision', string=u'القرارات')
-
+    history_line_id = fields.Many2one('hr.employee.history')
+    
     @api.multi
     def open_decission_appoint(self):
         decision_obj= self.env['hr.decision']
@@ -147,10 +148,11 @@ class HrDecisionAppoint(models.Model):
                 'date':decision_date,
                 'employee_id' :self.employee_id.id }
             decision = decision_obj.create(decission_val)
-            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'appoint')
+            decision.text = decision.replace_text(self.employee_id, decision_date,decision_type_id, 'appoint')
             decission_id = decision.id
             self.decission_id =  decission_id
-        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.decission_id.name, self.decission_id.date, "تعيين")
+        self.history_line_id.num_decision = self.decission_id.name
+        self.history_line_id.date_decision = self.decission_id.date
 
         return {
             'name': _(u'قرار التعيين'),
@@ -506,7 +508,10 @@ class HrDecisionAppoint(models.Model):
         # send notification to hr personnel
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تمت إحداث تعين جديد '" + unicode(user.name) + u"'")
-
+        # update holidays balance for the employee
+        history_line_id = self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.decission_id.name, self.decission_id.date, "تعيين")
+        self.history_line_id = history_line_id
+        
     @api.multi
     def action_activate(self):
         # create payroll changement history for the employee
@@ -569,7 +574,7 @@ class HrDecisionAppoint(models.Model):
         if last_appoint:
             last_appoint.write({'state_appoint': 'close', 'date_hiring_end': fields.Datetime.now()})
 
-        # update holidays balance for the employee
+
         # add allowance to the employee
         for rec in self.job_allowance_ids:
             self.env['hr.employee.allowance'].create({'employee_id': self.employee_id.id,

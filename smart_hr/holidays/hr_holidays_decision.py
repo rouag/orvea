@@ -100,7 +100,7 @@ class hrHolidaysDecision(models.Model):
         else:
             res['domain'] = {'holiday_id': [('id', 'in', [])]}
         return res
-    
+
     @api.onchange('holiday_id')
     def onchange_holiday_id(self):
         res = {}

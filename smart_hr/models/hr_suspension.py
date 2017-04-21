@@ -42,6 +42,7 @@ class hr_suspension(models.Model):
     decision_number = fields.Char(string='رقم القرار', readonly=1, related='decission_id.name')
     decision_date = fields.Date(string='تاريخ القرار ', readonly=1, related='decission_id.date')
     display_decision_info = fields.Boolean(compute='_compute_display_decision_info')
+    history_line_id = fields.Many2one('hr.employee.history')
 
     def _compute_display_decision_info(self):
         for rec in self:
@@ -100,6 +101,8 @@ class hr_suspension(models.Model):
         for rec in self:
             rec.employee_id.emp_state = 'suspended'
             rec.done_date = fields.Date.today()
+            history_line_id = self.env['hr.employee.history'].sudo().add_action_line(rec.employee_id, rec.decission_id.name, rec.decission_id.date, "كف اليد")
+            rec.history_line_id = history_line_id
             rec.state = 'done'
             rec.message_post(u"تم الإعتماد من قبل '" + unicode(user.name) + u"'")
           #  rec.create_report_attachment()
@@ -149,7 +152,8 @@ class hr_suspension(models.Model):
             decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'employee')
             decission_id = decision.id
             self.decission_id =  decission_id
-        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.decission_id.name, self.decission_id.date, "كف اليد")
+        self.history_line_id.num_decision = self.decission_id.name
+        self.history_line_id.date_decision = self.decission_id.date
         return {
             'name': _(u'قرار كف اليد'),
             'view_type': 'form',
