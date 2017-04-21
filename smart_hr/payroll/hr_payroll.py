@@ -498,9 +498,6 @@ class HrPayslip(models.Model):
             # delete old line
             payslip.line_ids.unlink()
             payslip.difference_history_ids.unlink()
-            payslip.delays_ids.unlink()
-            payslip.abscence_ids.unlink()
-            payslip.sanction_line_ids.unlink()
             # change compute_date
             payslip.compute_date = fields.Date.from_string(fields.Date.today())
             # generate  lines
