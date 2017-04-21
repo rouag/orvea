@@ -297,7 +297,10 @@ class HrPayslip(models.Model):
     salary_net = fields.Float(string='صافي الراتب')
     allowance_total = fields.Float(string='مجموع البدلات')
     difference_deduction_total = fields.Float(string='مجموع الحسميات والفروقات')
+
     sanction_line_ids = fields.Many2many('hr.sanction.ligne')
+    abscence_ids = fields.Many2many('hr.employee.absence.days')
+    delays_ids = fields.Many2many('hr.employee.delay.hours')
 
     @api.one
     def action_verify(self):
@@ -313,6 +316,12 @@ class HrPayslip(models.Model):
         self.env['hr.loan'].update_loan_date(date_start, date_stop, self.employee_id.id)
         # update sanction lines
         for rec in self.sanction_line_ids:
+            rec.deduction = True
+        # update abscence_ids lines
+        for rec in self.abscence_ids:
+            rec.deduction = True
+        # update delays_ids lines
+        for rec in self.delays_ids:
             rec.deduction = True
         # close the financial folder of each employee who is terminated
         for rec in self.env['hr.employee'].search([('to_be_clear_financial_dues', '=', True)]):
@@ -488,47 +497,18 @@ class HrPayslip(models.Model):
             payslip.number_of_days = payslip.get_days_off_count(payslip.date_from, payslip.date_to)
             # delete old line
             payslip.line_ids.unlink()
-            # delete old difference_history
             payslip.difference_history_ids.unlink()
+            payslip.delays_ids.unlink()
+            payslip.abscence_ids.unlink()
+            payslip.sanction_line_ids.unlink()
             # change compute_date
             payslip.compute_date = fields.Date.from_string(fields.Date.today())
             # generate  lines
             employee = payslip.employee_id
             # search the salary_grids for this employee
-            res = self.env['hr.smart.utils'].compute_duration_difference(employee, payslip.date_from, payslip.date_to, True, True, True)
-            if not res:
+            grid_id, basic_salary = employee.get_salary_grid_id(False)
+            if not grid_id:
                 return
-            basic_salary = 0.0
-            res_allowances = []
-            retirement_amount = 0.0
-            insurance_amount = 0.0
-            duration_in_month = 0.0
-            if len(res) == 1:
-                res = res[0]
-                grid_id = res['grid_id']
-                duration_in_month = res['days']
-                # 1- الراتب الأساسي
-                basic_salary = res['basic_salary']
-                # 2- البدلات القارة
-                res_allowances = employee.get_employee_allowances(grid_id.date)
-                # 3- التقاعد‬
-                retirement_amount = basic_salary * grid_id.retirement / 100.0
-                # 9- التأمينات‬
-                insurance_amount = basic_salary * grid_id.insurance / 100.0
-            else:
-                for rec in res:
-                    grid_id = rec['grid_id']
-                    rec_basic_salary = rec['basic_salary']
-                    days = rec['days']
-                    duration_in_month += days
-                    # 1- الراتب الأساسي
-                    basic_salary += rec_basic_salary
-                    # 2- البدلات القارة
-                    res_allowances += employee.get_employee_allowances(grid_id.date)
-                    # 3- التقاعد‬
-                    retirement_amount += basic_salary / 30.0 * days * grid_id.retirement / 100.0
-                    # 9- التأمينات‬
-                    insurance_amount = basic_salary / 30.0 * days * grid_id.insurance / 100.0
             # compute
             lines = []
             sequence = 1
@@ -550,6 +530,7 @@ class HrPayslip(models.Model):
                                     }
                 lines.append(basic_salary_val)
             # 2- البدلات القارة
+            res_allowances = employee.get_employee_allowances(grid_id)
             if res_allowances:
                 for line in res_allowances:
                     sequence += 1
@@ -567,6 +548,7 @@ class HrPayslip(models.Model):
                     allowance_total += line['amount']
             sequence += 1
             # 3- التقاعد‬
+            retirement_amount = basic_salary * grid_id.retirement / 100.0
             if retirement_amount:
                 retirement_val = {'name': 'التقاعد',
                                   'slip_id': payslip.id,
@@ -682,7 +664,7 @@ class HrPayslip(models.Model):
             # 6- الحسميات
             deduction_lines = payslip.compute_deductions(allowance_total)
             for deduction in deduction_lines:
-                deduction_val = {'name':  deduction['name'],
+                deduction_val = {'name': deduction['name'],
                                  'slip_id': payslip.id,
                                  'employee_id': employee.id,
                                  'rate': 0.0,
@@ -740,6 +722,7 @@ class HrPayslip(models.Model):
                                                                   })
             # 9- التأمينات‬
             # old insurance_amount = (basic_salary * amount_multiplication + allowance_total) * salary_grid.insurance / 100.0
+            insurance_amount = basic_salary * grid_id.insurance / 100.0
             if insurance_amount:
                 insurance_val = {'name': 'التأمين',
                                  'slip_id': payslip.id,
