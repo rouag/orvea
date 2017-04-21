@@ -206,7 +206,7 @@ class HrTermination(models.Model):
                 raise ValidationError(u'لا يوجد قرار من نوع %s  في النظام .' % self.termination_type_id.name)
             # create decission
             decission_val = {
-                'name': self.name,
+              #  'name': self.name,
                 'decision_type_id': decision_type_id,
                 'date': decision_date,
                 'employee_id': self.employee_id.id}

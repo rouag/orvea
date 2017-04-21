@@ -116,7 +116,7 @@ class HrEmployeeCommissioning(models.Model):
                 decision_type_id = self.env.ref('smart_hr.data_employee_commissioning').id
             # create decission
             decission_val={
-                'name': self.env['ir.sequence'].get('hr.commissioning.seq'),
+              # 'name': self.env['ir.sequence'].get('hr.commissioning.seq'),
                 'decision_type_id':decision_type_id,
                 'date':decision_date,
                 'employee_id' :self.employee_id.id }

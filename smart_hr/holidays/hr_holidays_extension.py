@@ -56,7 +56,7 @@ class HrHolidaysExtension(models.Model):
                 decision_type_id = self.env.ref('smart_hr.data_decision_type45').id
             # create decission
             decission_val={
-                'name': self.name,
+               # 'name': self.name,
                 'decision_type_id':decision_type_id,
                 'date':decision_date,
                 'employee_id' :self.employee_id.id }

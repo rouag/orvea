@@ -86,7 +86,7 @@ class HrDeprivationPremium(models.Model):
                 decision_type_id = self.env.ref('smart_hr.data_decision_deprivation_premium').id
             # create decission
             decission_val={
-                'name': self.name,
+              #  'name': self.name,
                 'decision_type_id':decision_type_id,
                 'date':decision_date,
                 'employee_id' :False}

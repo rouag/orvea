@@ -60,7 +60,7 @@ class HrDirectAppoint(models.Model):
 
             # create decission
             decission_val={
-                'name': self.env['ir.sequence'].get('hr.direct.appoint.seq'),
+               # 'name': self.env['ir.sequence'].get('hr.direct.appoint.seq'),
                 'decision_type_id':decision_type_id,
                 'date':decision_date,
                 'employee_id' :self.employee_id.id }

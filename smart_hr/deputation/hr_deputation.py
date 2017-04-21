@@ -144,7 +144,7 @@ class HrDeputation(models.Model):
                 decision_type_id = self.env.ref('smart_hr.data_employee_deputation').id
 
             decission_val={
-                'name': self.env['ir.sequence'].get('hr.deputation.seq'),
+               # 'name': self.env['ir.sequence'].get('hr.deputation.seq'),
                 'decision_type_id':decision_type_id,
                 'date':decision_date,
                 'employee_id' :self.employee_id.id }

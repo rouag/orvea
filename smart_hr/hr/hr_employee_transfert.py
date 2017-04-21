@@ -60,9 +60,10 @@ class HrEmployeeTransfert(models.Model):
                                          ('external_transfert_in', u'نقل خارجي (إلى الهيئة)'),
                                          ], readonly=1, states={'new': [('readonly', 0)]}, default='internal_transfert', required=1, string=u'طبيعة النقل')
 
-    transfert_type = fields.Selection([('employee', u'نقل موظفين'),
-                                       ('member', u'نقل أعضاء'),
-                                       ],  required=1, string=u'نوع النقل')
+    transfert_type = fields.Selection([('employee', u' غير عضو'),
+                                       ('member', u' أعضاء'),
+                                       ('empty', u''),
+                                       ],  required=1, string=u'نقل ')
     special_conditions = fields.Boolean(string=u'ضروف خاصة', default=False)
     special_justification_text = fields.Text(string=u'مبررات الظروف الخاصة', readonly=1, states={'new': [('readonly', 0)]})
 
@@ -98,7 +99,7 @@ class HrEmployeeTransfert(models.Model):
                 decision_type_id = self.env.ref('smart_hr.data_employee_trasfert').id
             # create decission
             decission_val={
-                'name': self.env['ir.sequence'].get('hr.employee.transfert.seq'),
+               # 'name': self.env['ir.sequence'].get('hr.employee.transfert.seq'),
                 'decision_type_id':decision_type_id,
                 'date':decision_date,
                 'employee_id' :self.employee_id.id }
@@ -180,14 +181,16 @@ class HrEmployeeTransfert(models.Model):
             self.begin_work_date = self.employee_id.begin_work_date
             self.recruiter_date = self.employee_id.recruiter_date
             self.age = self.employee_id.age
-        if self.employee_id.type_id.is_member == True :
+        if self.employee_id.type_id.is_member == True and self.employee_id.type_id :
             res['domain'] = {'transfert_periode_id': [('for_member', '=', True)]}
             self.transfert_type = 'member'
             return res
-        else :
+        if self.employee_id.type_id.is_member == False and self.employee_id.type_id  :
             res['domain'] = {'transfert_periode_id': [('for_member', '=', False)]}
             self.transfert_type = 'employee'
             return res
+        else :
+            self.transfert_type = 'empty'
 
     @api.one
     @api.constrains('employee_id')

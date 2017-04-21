@@ -56,7 +56,7 @@ class hrIncrease(models.Model):
  
             # create decission
             decission_val={
-                'name': self.number_decision,
+              #  'name': self.number_decision,
                 'decision_type_id':decision_type_id,
                 'date':decision_date,
                 'employee_id' :False}
