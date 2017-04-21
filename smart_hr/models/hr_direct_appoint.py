@@ -40,8 +40,10 @@ class HrDirectAppoint(models.Model):
     type = fields.Selection([
         ('appoint' , u'تعيين'),
         ('transfer', u'نقل'),
-        ('promotion', u'ترقية')], string='نوع قرار المباشرة', required=1 )
+        ('promotion', u'ترقية'),
+        ('shcolarship', u'ابتعاث')], string='نوع قرار المباشرة', required=1 )
     history_line_id = fields.Many2one('hr.employee.history')
+    shcolarship_id = fields.Many2one('hr.scholarship', string=u'الابتعاث')
 
 
 
@@ -95,8 +97,10 @@ class HrDirectAppoint(models.Model):
                 raise ValidationError(u"لا يوجد تعيين بنقل غير مفعل للموظف!")
             elif self.type == 'promotion':
                 raise ValidationError(u"لا يوجد تعيين بترقية غير مفعل للموظف!")
-            else:
+            elif self.type == 'appoint':
                 raise ValidationError(u"لا يوجد تعيين غير مفعل للموظف!")
+        if not self.scholarship_id and self.type == 'shcolarship':
+            raise ValidationError(u"لا يوجد ابتعاث غير مباشر بعده للموظف!")
         self.state = 'waiting'
 
     @api.multi
@@ -113,16 +117,18 @@ class HrDirectAppoint(models.Model):
     def button_direct_appoint(self):
         self.ensure_one()
         if self.date_direct_action > datetime.today().strftime('%Y-%m-%d'):
-            raise ValidationError(u"لا يمكن تفعيل التعيين ،  تاريخ المباشرة يجب أن يكون أصغر  أو مساوي لتاريخ اليوم ")
+            raise ValidationError(u"لا يمكن  التفعيل  ،  تاريخ المباشرة يجب أن يكون أصغر  أو مساوي لتاريخ اليوم ")
         self.appoint_id.action_activate()
-        title = u"' إشعار بمباشرة التعين'"
-        msg = u"' إشعار بمباشرة التعين'" + unicode(self.employee_id.display_name) + u"'"
+        title = u" إشعار بمباشرة "
+        msg = u"' إشعار بمباشرة " + unicode(self.employee_id.display_name) + u"'"
         group_id = self.env.ref('smart_hr.group_department_employee')
         self.send_appoint_group(group_id, title, msg)
         if self.type == 'transfer':
             self.appoint_id.transfer_id.done_date = self.date_direct_action
-        if self.type == 'promotion':
+        elif self.type == 'promotion':
             self.appoint_id.promotion_id.done_date = self.date_direct_action
+        elif self.type == 'shcolarship':
+            self.shcolarship_id.restarted = True
         history_line_id = self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.decission_id.name, self.decission_id.date, "مباشرة")
         self.history_line_id = history_line_id
         self.state = 'done'
@@ -140,9 +146,11 @@ class HrDirectAppoint(models.Model):
 
     @api.onchange('employee_id', 'type')
     def _onchange_employee_id(self):
-        if self.employee_id:
+        if self.employee_id and self.date_direct_action:
             self.number = self.employee_id.number
             self.country_id = self.employee_id.country_id.id
+            shcolarship_id = False
+            appoint_line = False
             type_appointment_transfer = self.env.ref('smart_hr.data_hr_recrute_from_transfert').id
             type_appointment_promotion = [self.env.ref('smart_hr.data_hr_promotion_agent').id, self.env.ref('smart_hr.data_hr_promotion_member').id]
             if self.type == 'transfer':
@@ -157,12 +165,16 @@ class HrDirectAppoint(models.Model):
                                                                         ('state', '=', 'done'),
                                                                         ('type_appointment', '=', type_appointment),
                                                                         ('state_appoint', '=', 'new')], limit=1)
-            else:
+            elif self.type == 'appoint':
                 appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),
                                                                         ('state', '=', 'done'),
                                                                         ('type_appointment', '!=', type_appointment_transfer),
                                                                         ('type_appointment', 'not in', type_appointment_promotion),
                                                                         ('state_appoint', '=', 'new')], limit=1)
+            elif self.type == 'shcolarship':
+                shcolarship_id = self.env['hr.scholarship'].search([('employee_id', '=', self.employee_id.id),
+                                                                        ('state', '=', 'done'), ('date_to', '<', self.date_direct_action),
+                                                                        ('restarted', '=', False)], limit=1)
 
             if appoint_line:
                 self.job_id = appoint_line.job_id.id
@@ -175,6 +187,18 @@ class HrDirectAppoint(models.Model):
                 self.grade_id = appoint_line.job_id.grade_id.id
                 self.degree_id = appoint_line.degree_id.id
                 self.basic_salary = appoint_line.basic_salary
+            elif shcolarship_id:
+                self.shcolarship_id = shcolarship_id.id
+                self.job_id = self.employee_id.job_id.id
+                self.code = self.employee_id.job_id.name.number
+                self.number_job = self.employee_id.job_id.number
+                self.type_id = self.employee_id.job_id.type_id.id
+                self.far_age = self.employee_id.type_id.far_age
+                self.department_id = self.employee_id.department_id.id
+                self.grade_id = self.employee_id.grade_id.id
+                self.degree_id = self.employee_id.degree_id.id
+                salary_grid_id, basic_salary = self.employee_id.get_salary_grid_id(self.date_direct_action)
+                self.basic_salary = basic_salary
             else:
                 self.job_id = False
                 self.code = False
@@ -186,7 +210,7 @@ class HrDirectAppoint(models.Model):
                 self.grade_id = False
                 self.degree_id = False
                 self.basic_salary = False
-                
+
     def send_appoint_group(self, group_id, title, msg):
         """
         @param group_id: res.groups
