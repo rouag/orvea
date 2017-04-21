@@ -10,21 +10,23 @@ class SmartUtils(models.Model):
     _name = 'hr.smart.utils'
 
     def get_overlapped_periode(self, date_from, date_to, periode_date_from, periode_date_to):
+
         """
         @return: overlapped peiode, date_fbegin, date_end
         """
-        periode_date_from = fields.Date.from_string(str(periode_date_from))
-        periode_date_to = fields.Date.from_string(str(periode_date_to))
-        date_from = fields.Date.from_string(str(date_from))
-        date_to = fields.Date.from_string(str(date_to))
-        if date_from > periode_date_from and date_to < periode_date_to:
-            return date_from, date_to
-        elif date_from < periode_date_from and date_to < periode_date_to:
-            return periode_date_from, date_to
-        elif date_from > periode_date_from and date_to > periode_date_to:
-            return date_from, periode_date_to
-        elif date_from <= periode_date_from and date_to >= periode_date_to:
-            return periode_date_from, periode_date_to
+
+        def intersection_date_set(d1, d2):
+            delta = d2 - d1
+            return set([d1 + timedelta(days=i) for i in range(delta.days + 1)])
+
+        range1 = [date_from, date_to]
+        range2 = [periode_date_from, periode_date_to]
+        listset = intersection_date_set(*range1) & intersection_date_set(*range2)
+        if listset:
+            listset = sorted(listset)
+            return listset[0], listset[-1]
+        else:
+            False, False
 
     def compute_duration_difference(self, employee_id, date_from, date_to, normal_day, weekend, holidays):
         days = 0
