@@ -369,24 +369,24 @@ class HrDecision(models.Model):
                     if transfert_line :
                         job_id = transfert_line.job_id.name.name or ""
                         code = transfert_line.job_id.number or ""
-                        department_id = transfert_line.new_department_id.name or ""
-                        grade_id = transfert_line.grade_id.name or ""
+                        department_id = transfert_line.new_job_id.department_id.name or ""
+                       # grade_id = transfert_line.grade_id.name or ""
                         degree_id = transfert_line.degree_id.name or ""
                         new_job_id = transfert_line.new_job_id.name.name or ""
                         new_code = transfert_line.new_job_id.number or ""
                         new_department_id = transfert_line.new_job_id.department_id.name or ""
-                        new_grade_id = transfert_line.new_job_id.grade_id.name or ""
+                      #  new_grade_id = transfert_line.new_job_id.grade_id.name or ""
                         new_degree_id = transfert_line.new_degree_id.name or ""
     
                         decision_text = decision_text.replace('JOB', unicode(job_id))
                         decision_text = decision_text.replace('CODE', unicode(code))
                         decision_text = decision_text.replace('DEGREE', unicode(degree_id))
-                        decision_text = decision_text.replace('GRADE', unicode(grade_id))
+                     #   decision_text = decision_text.replace('GRADE', unicode(grade_id))
                         decision_text = decision_text.replace('DEPARTEMENT', unicode(department_id))
                         decision_text = decision_text.replace('job', unicode(new_job_id))
                         decision_text = decision_text.replace('code', unicode(new_code))
                         decision_text = decision_text.replace('degree', unicode(new_degree_id))
-                        decision_text = decision_text.replace('grade', unicode(new_grade_id))
+                       # decision_text = decision_text.replace('grade', unicode(new_grade_id))
                         decision_text = decision_text.replace('department', unicode(new_department_id))
 
         return decision_text
