@@ -48,5 +48,3 @@ class HrEmployeeTask(models.Model):
             if rec.state != 'new' :
                 raise ValidationError(u'لا يمكن حذف المهمة فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(HrEmployeeTask, self).unlink()
-        # create history_line
-#         self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, False, False, "مهمة")

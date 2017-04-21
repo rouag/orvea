@@ -150,6 +150,8 @@ class HrDecisionAppoint(models.Model):
             decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'appoint')
             decission_id = decision.id
             self.decission_id =  decission_id
+        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.decission_id.name, self.decission_id.date, "تعيين")
+
         return {
             'name': _(u'قرار التعيين'),
             'view_type': 'form',
@@ -568,7 +570,6 @@ class HrDecisionAppoint(models.Model):
             last_appoint.write({'state_appoint': 'close', 'date_hiring_end': fields.Datetime.now()})
 
         # update holidays balance for the employee
-        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.name, self.date_hiring, "تعيين")
         # add allowance to the employee
         for rec in self.job_allowance_ids:
             self.env['hr.employee.allowance'].create({'employee_id': self.employee_id.id,

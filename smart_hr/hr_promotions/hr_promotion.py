@@ -366,7 +366,6 @@ class HrPromotion(models.Model):
                 apoint._onchange_degree_id()
                 apoint.action_done()
                 #             create history_line
-                self.env['hr.employee.history'].sudo().add_action_line(emp.employee_id, self.decision_number, self.date, "ترقية")
                 self.env['base.notification'].create({'title': u'إشعار بالترقية',
                                                       'message': u'لقد تم ترقيتكم على وظيفة جديدة',
                                                       'user_id': emp.employee_id.user_id.id,
