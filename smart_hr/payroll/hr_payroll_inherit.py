@@ -25,8 +25,7 @@ class HrPayslip(models.Model):
 
         line_ids = []
         #  حسم‬  الغياب‬ يكون‬ من‬  جميع البدلات . و  الراتب‬ الأساسي للموظفين‬ الرسميين‬ والمستخدمين
-        abscence_ids = self.env['hr.employee.absence.days'].search([('request_id.date', '>=', self.date_from),
-                                                                    ('request_id.date', '<=', self.date_to),
+        abscence_ids = self.env['hr.employee.absence.days'].search([('deduction', '=', False),
                                                                     ('employee_id', '=', self.employee_id.id),
                                                                     ('request_id.state', '=', 'done')
                                                                     ])
@@ -43,6 +42,8 @@ class HrPayslip(models.Model):
                     'type': 'absence'}
             line_ids.append(vals)
             tot_number_request += line.number_request
+        if abscence_ids:
+            self.abscence_ids = abscence_ids.ids
         # فرق التقاعد: غياب بدون عذر
         if tot_number_request:
             retirement_amount = basic_salary * salary_grid.retirement / 100.0 / 30.0 * tot_number_request
@@ -57,8 +58,7 @@ class HrPayslip(models.Model):
                 line_ids.append(vals)
 
         # حسم‬  التأخير يكون‬ من‬  الراتب‬ الأساسي فقط
-        delays_ids = self.env['hr.employee.delay.hours'].search([('request_id.date', '>=', self.date_from),
-                                                                 ('request_id.date', '<=', self.date_to),
+        delays_ids = self.env['hr.employee.delay.hours'].search([('deduction', '=', False),
                                                                  ('employee_id', '=', self.employee_id.id),
                                                                  ('request_id.state', '=', 'done')
                                                                  ])
@@ -72,6 +72,8 @@ class HrPayslip(models.Model):
                     'category': 'deduction',
                     'type': 'retard_leave'}
             line_ids.append(vals)
+        if delays_ids:
+            self.delays_ids = delays_ids.ids
 
         # عقوبة
         sanction_line_ids = self.env['hr.sanction.ligne'].search([('deduction', '=', False),

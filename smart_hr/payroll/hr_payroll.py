@@ -297,7 +297,10 @@ class HrPayslip(models.Model):
     salary_net = fields.Float(string='صافي الراتب')
     allowance_total = fields.Float(string='مجموع البدلات')
     difference_deduction_total = fields.Float(string='مجموع الحسميات والفروقات')
+
     sanction_line_ids = fields.Many2many('hr.sanction.ligne')
+    abscence_ids = fields.Many2many('hr.employee.absence.days')
+    delays_ids = fields.Many2many('hr.employee.delay.hours')
 
     @api.one
     def action_verify(self):
@@ -313,6 +316,12 @@ class HrPayslip(models.Model):
         self.env['hr.loan'].update_loan_date(date_start, date_stop, self.employee_id.id)
         # update sanction lines
         for rec in self.sanction_line_ids:
+            rec.deduction = True
+        # update abscence_ids lines
+        for rec in self.abscence_ids:
+            rec.deduction = True
+        # update delays_ids lines
+        for rec in self.delays_ids:
             rec.deduction = True
         # close the financial folder of each employee who is terminated
         for rec in self.env['hr.employee'].search([('to_be_clear_financial_dues', '=', True)]):
@@ -488,8 +497,10 @@ class HrPayslip(models.Model):
             payslip.number_of_days = payslip.get_days_off_count(payslip.date_from, payslip.date_to)
             # delete old line
             payslip.line_ids.unlink()
-            # delete old difference_history
             payslip.difference_history_ids.unlink()
+            payslip.delays_ids.unlink()
+            payslip.abscence_ids.unlink()
+            payslip.sanction_line_ids.unlink()
             # change compute_date
             payslip.compute_date = fields.Date.from_string(fields.Date.today())
             # generate  lines
@@ -682,7 +693,7 @@ class HrPayslip(models.Model):
             # 6- الحسميات
             deduction_lines = payslip.compute_deductions(allowance_total)
             for deduction in deduction_lines:
-                deduction_val = {'name':  deduction['name'],
+                deduction_val = {'name': deduction['name'],
                                  'slip_id': payslip.id,
                                  'employee_id': employee.id,
                                  'rate': 0.0,
