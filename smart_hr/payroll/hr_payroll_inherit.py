@@ -530,7 +530,7 @@ class HrPayslip(models.Model):
                     # فرق البدلات
                     allowance_amount = 0.0
                     if duration_in_month > 0:
-                        for allowance in holiday_id.employee_id.get_employee_allowances(grid_id.date):
+                        for allowance in holiday_id.employee_id.get_employee_allowances(grid_id):
                             allowance_amount += allowance['amount'] / 30.0 * duration_in_month
                             if holiday_status_id.transport_allowance and allowance['allowance_id'] == self.env.ref('smart_hr.hr_allowance_type_01').id:
                                 allowance_amount -= allowance['amount'] / 30.0 * duration_in_month
@@ -565,7 +565,7 @@ class HrPayslip(models.Model):
                                 basic_salary_amount = basic_salary_amount * duration_in_month / 30.0
                             # فرق البدلات
                             allowance_amount2 = 0.0
-                            for allowance in holiday_id.employee_id.get_employee_allowances(grid_id.date):
+                            for allowance in holiday_id.employee_id.get_employee_allowances(grid_id):
                                 if not holiday_status_id.transport_allowance and allowance['allowance_id'] == self.env.ref('smart_hr.hr_allowance_type_01').id:
                                     allowance_amount2 += allowance['amount'] / 30.0 * duration_in_month
             else:
@@ -580,7 +580,7 @@ class HrPayslip(models.Model):
                         # فرق البدلات
                         allowance_amount = 0.0
                         if days > 0:
-                            for allowance in holiday_id.employee_id.get_employee_allowances(grid_id.date):
+                            for allowance in holiday_id.employee_id.get_employee_allowances(grid_id):
                                 allowance_amount += allowance['amount'] / 30.0 * days
                                 if holiday_status_id.transport_allowance and allowance['allowance_id'] == self.env.ref('smart_hr.hr_allowance_type_01').id:
                                     allowance_amount -= allowance['amount'] / 30.0 * days
@@ -613,7 +613,7 @@ class HrPayslip(models.Model):
                                     basic_salary_amount2 += basic_salary_amount2 * days / 30.0
                             # فرق البدلات
                             allowance_amount2 = 0.0
-                            for allowance in holiday_id.employee_id.get_employee_allowances(grid_id.date):
+                            for allowance in holiday_id.employee_id.get_employee_allowances(grid_id):
                                 if not holiday_status_id.transport_allowance and allowance['allowance_id'] == self.env.ref('smart_hr.hr_allowance_type_01').id:
                                     allowance_amount2 += allowance['amount'] / 30.0 * days
                             # فرق التقاعد

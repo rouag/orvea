@@ -181,8 +181,6 @@ class TransfertAppointAllowance(models.TransientModel):
         amount = 0.0
         # search the correct salary_grid for this employee
         salary_grids, basic_salary = self.get_salary_grid_id(employee, ttype, grade, degree, False)
-        print ttype, grade, degree
-        print salary_grids
         if not salary_grids:
             raise ValidationError(_(u'لا يوجد سلم رواتب للموظف. !'))
         # compute

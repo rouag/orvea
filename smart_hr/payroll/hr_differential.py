@@ -248,8 +248,8 @@ class HrDifferentialLine(models.Model):
         retirement_amount = (new_retirement_amount - old_retirement_amount) / 30.0 * number_of_days * -1.0
         # calculate the difference of allowances
         # step 1: job + aride zones allowances
-        new_hr_employee_allowance_ids = self.employee_id.get_employee_allowances(new_salary_grid_id.date)
-        old_hr_employee_allowance_ids = self.employee_id.get_employee_allowances(old_salary_grid_id.date)
+        new_hr_employee_allowance_ids = self.employee_id.get_employee_allowances(new_salary_grid_id)
+        old_hr_employee_allowance_ids = self.employee_id.get_employee_allowances(old_salary_grid_id)
         allowance_amount = 0.0
         for new_elt in new_hr_employee_allowance_ids:
             find = False
