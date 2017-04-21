@@ -331,7 +331,7 @@ class HrPayslip(models.Model):
             self.date_from = self.period_id.date_start
             self.date_to = self.period_id.date_stop
             res = {}
-            employee_ids = self.env['hr.employee'].search([('employee_state', '=', 'employee')])
+            employee_ids = self.env['hr.employee'].search([('emp_state', '=', 'working'), ('employee_state', '=', 'employee')])
             employee_ids = employee_ids.ids
             # موظفين:  طي القيد
             plus_terminated_emps = self.env['hr.employee'].search([('emp_state', '=', 'terminated'), ('clear_financial_dues', '=', False)])
@@ -341,9 +341,8 @@ class HrPayslip(models.Model):
             # موظفين:  تم إيقاف راتبهم
             employee_stop_lines = self.env['hr.payslip.stop.line'].search(
                 [('stop_period', '=', True), ('period_id', '=', self.period_id.id), ('payslip_id.state', '=', 'done')])
-            employee_stop_ids = [line.payslip_id.employee_id for line in employee_stop_lines]
+            employee_stop_ids = [line.payslip_id.employee_id.id for line in employee_stop_lines]
             minus_employee_ids += employee_stop_ids
-            minus_employee_ids = [rec.id for rec in minus_employee_ids]
             result_employee_ids = list((set(employee_ids) - set(minus_employee_ids)))
             res['domain'] = {'employee_id': [('id', 'in', result_employee_ids)]}
             return res
