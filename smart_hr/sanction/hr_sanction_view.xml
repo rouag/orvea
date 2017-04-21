@@ -165,12 +165,12 @@
 												<field name="days_number" />
 												<field name="amount" />
 												
-												<field name="mast" />
-												<field name="days_difference" />
-													<field name="amount_difference" />
+												<field name="mast" readonly="1" invisible="1"/>
+												<field name="days_difference" readonly="1" />
+												<field name="amount_difference" readonly="1"  />
 												
-												<field name="deduction" />
-													<field name="raison" />
+												<field name="deduction"  readonly="1" string="تم الحسم"/>
+												<field name="raison" />
 												<field name="state" />
 												<button
 													name="%(smart_hr.action_wizard_sanction_action_exclusion)d"

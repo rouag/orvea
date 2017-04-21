@@ -49,13 +49,15 @@ class WizardLoanAction(models.TransientModel):
                 # must delete this month add another month
                 loan_lines = loan_line_obj.search([('loan_id', '=', loan_id), ('date_start', '=', self.period_id.date_start), ('date_stop', '=', self.period_id.date_stop)])
                 loan_lines.unlink()
-                # TODO: review +30
+                um = HijriDate()
                 loan = loan_obj.search([('id', '=', loan_id)])
                 last_date_start = fields.Date.from_string(loan.line_ids[-1].date_start)
                 last_date_stop = fields.Date.from_string(loan.line_ids[-1].date_stop)
-                new_date_start = last_date_start + relativedelta(days=30)
-                new_date_stop = last_date_stop + relativedelta(days=30)
-                um = HijriDate()
+                temp_date_start = last_date_stop + relativedelta(days=1)
+                hijri_month = get_hijri_month_by_date(HijriDate, Umalqurra, temp_date_start)
+                hijri_year = get_hijri_year_by_date(HijriDate, Umalqurra, temp_date_start)
+                new_date_start = get_hijri_month_start_by_year(HijriDate, Umalqurra, hijri_year, hijri_month)
+                new_date_stop = get_hijri_month_end__by_year(HijriDate, Umalqurra, hijri_year, hijri_month)
                 dates = str(new_date_start).split('-')
                 um.set_date_from_gr(int(dates[0]), int(dates[1]), day)
                 new_line_val = {'loan_id': loan_id,

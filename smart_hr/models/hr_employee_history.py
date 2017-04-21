@@ -114,7 +114,7 @@ class HrEmployeeHistory(models.Model):
 
     @api.multi
     def add_action_line(self, employee_id, num_decision, date_decision, operation_type):
-        self.create({'employee_id': employee_id.id, 'date': fields.Datetime.now(),
+        line = self.create({'employee_id': employee_id.id, 'date': fields.Datetime.now(),
                      'num_decision': num_decision, 'date_decision': date_decision,
                      'type': operation_type, 'job_id': employee_id.job_id.name.name,
                      'grade_id': employee_id.job_id.grade_id.id,
@@ -122,3 +122,4 @@ class HrEmployeeHistory(models.Model):
                      'department_id': employee_id.department_id.id,
                      'dep_side': employee_id.user_id.company_id.name,
                      })
+        return line.id

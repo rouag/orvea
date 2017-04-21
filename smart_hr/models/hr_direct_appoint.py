@@ -41,6 +41,7 @@ class HrDirectAppoint(models.Model):
         ('appoint' , u'تعيين'),
         ('transfer', u'نقل'),
         ('promotion', u'ترقية')], string='نوع قرار المباشرة', required=1 )
+    history_line_id = fields.Many2one('hr.employee.history')
 
 
 
@@ -65,7 +66,8 @@ class HrDirectAppoint(models.Model):
             decision.text = decision.replace_text(self.employee_id, decision_date, decision_type_id, 'appoint')
             decission_id = decision.id
             self.decission_id = decission_id
-        self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.decission_id.name, self.decission_id.date, "مباشرة")
+        self.history_line_id.num_decision = self.decission_id.name
+        self.history_line_id.date_decision = self.decission_id.date
         return {
             'name': _(u'قرار مباشرة التعيين'),
             'view_type': 'form',
@@ -110,8 +112,8 @@ class HrDirectAppoint(models.Model):
     @api.multi
     def button_direct_appoint(self):
         self.ensure_one()
-        if self.date_direct_action < datetime.today().strftime('%Y-%m-%d'):
-            raise ValidationError(u"لا يمكن تفعيل التعيين ،  تاريخ المباشرة يجب أن يكون أكبر  أو مساوي لتاريخ اليوم ")
+        if self.date_direct_action > datetime.today().strftime('%Y-%m-%d'):
+            raise ValidationError(u"لا يمكن تفعيل التعيين ،  تاريخ المباشرة يجب أن يكون أصغر  أو مساوي لتاريخ اليوم ")
         self.appoint_id.action_activate()
         title = u"' إشعار بمباشرة التعين'"
         msg = u"' إشعار بمباشرة التعين'" + unicode(self.employee_id.display_name) + u"'"
@@ -121,7 +123,10 @@ class HrDirectAppoint(models.Model):
             self.appoint_id.transfer_id.done_date = self.date_direct_action
         if self.type == 'promotion':
             self.appoint_id.promotion_id.done_date = self.date_direct_action
+        history_line_id = self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.decission_id.name, self.decission_id.date, "مباشرة")
+        self.history_line_id = history_line_id
         self.state = 'done'
+
 
     @api.onchange('date_direct_action')
     def _onchange_date_direct_action(self):

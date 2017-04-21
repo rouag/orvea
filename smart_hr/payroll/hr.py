@@ -25,13 +25,12 @@ class HrEmployee(models.Model):
                 rec.net_salary = salary_grid_id.net_salary
 
     @api.model
-    def get_employee_allowances(self, operation_date):
+    def get_employee_allowances(self, salary_grid_id):
         """
         @param: operation_date: to bring the right salary grid of the date
         @return: Array of dict of allowance and it's amount
         """
         res = []
-        salary_grid_id, basic_salary = self.get_salary_grid_id(operation_date)
         if salary_grid_id:
                 active_decision_appoint = self.env['hr.decision.appoint'].search([('employee_id', '=', self.id),
                                                                                   ('state_appoint', '=', 'active'), ('is_started', '=', True)
@@ -62,20 +61,19 @@ class HrEmployee(models.Model):
         if operation_date:
             # search the right salary grid detail for the given operation_date
             domain.append(('date', '<=', operation_date))
-        salary_grid_id = self.env['hr.employee.payroll.changement'].search(domain, order='date desc', limit=1)
-
+        changement_line = self.env['hr.employee.payroll.changement'].search(domain, order='date desc', limit=1)
         # doamin for  the newest salary grid detail
-        if not salary_grid_id and len(domain) == 2:
+        if not changement_line and len(domain) == 2:
             domain.pop(1)
-        salary_grid_id = self.env['hr.employee.payroll.changement'].search(domain, order='date desc', limit=1)
+        changement_line = self.env['hr.employee.payroll.changement'].search(domain, order='date desc', limit=1)
         # default salary is from curent employee
         type_id = self.type_id
         grade_id = self.grade_id
         degree_id = self.degree_id
-        if salary_grid_id:
-            type_id = salary_grid_id.type_id
-            grade_id = salary_grid_id.grade_id
-            degree_id = salary_grid_id.degree_id
+        if changement_line:
+            type_id = changement_line.type_id
+            grade_id = changement_line.grade_id
+            degree_id = changement_line.degree_id
 
         # search grid
         grid_domain= [('grid_id.state', '=', 'done'),
@@ -89,7 +87,6 @@ class HrEmployee(models.Model):
         if not salary_grid_detail_id and len(grid_domain) == 6:
             grid_domain.pop(5)
         salary_grid_detail_id = self.env['salary.grid.detail'].search(grid_domain, order='date desc', limit=1)
-
         if salary_grid_detail_id:
             # retreive old salary increases to add them with basic_salary
             domain = [('salary_grid_detail_id', '=', salary_grid_detail_id.id)]
