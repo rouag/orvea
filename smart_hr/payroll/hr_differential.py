@@ -80,18 +80,27 @@ class HrDifferential(models.Model):
     def compute_differences(self):
         self.line_ids.unlink()
         line_ids = []
+        decision_appoint_obj = self.env['hr.decision.appoint']
         # تقسيم فترة الفرق الفترات شهرية
         for employee_id in self.employee_ids:
             # check  if there is a promotion demand for current employee
+            # الترقية
             if self.action_type == 'promotion':
                 record_id = self.env['hr.promotion.employee.job'].search([('employee_id', '=', employee_id.id),
                                                                           ('defferential_is_paied', '=', False),
                                                                           ('state', '=', 'done')], limit=1)
                 if record_id:
-                    date_start = record_id.create_date
-                    date_stop = record_id.done_date
+                    # must search the  linked appoint for this promotion
+                    appoint_promotion = decision_appoint_obj.search([('promotion_id', '=', record_id.id)], limit=1)
+                    if appoint_promotion:
+                        date_start = appoint_promotion.date_hiring
+                        date_stop = appoint_promotion.date_direct_action
+                    else:
+                        record_id = False
+
+            # التعيين
             if self.action_type == 'decision_appoint':
-                record_id = self.env['hr.decision.appoint'].search([('is_started', '=', True),
+                record_id = decision_appoint_obj.search([('is_started', '=', True),
                                                                     ('state_appoint', '=', 'active'),
                                                                     ('employee_id', '=', employee_id.id),
                                                                     ('defferential_is_paied', '=', False),
@@ -99,24 +108,36 @@ class HrDifferential(models.Model):
                 if record_id:
                     date_start = record_id.date_hiring
                     date_stop = record_id.date_direct_action
+            # النقل
             if self.action_type == 'transfert':
                 record_id = self.env['hr.employee.transfert'].search([('state', '=', 'done'),
                                                                       ('employee_id', '=', employee_id.id),
                                                                       ('defferential_is_paied', '=', False),
                                                                       ], limit=1)
                 if record_id:
-                    # TODO: review date_stop
-                    date_start = record_id.create_date
-                    date_stop = record_id.create_date
+                    # must search the  linked appoint for this transfert
+                    appoint_transfert = decision_appoint_obj.search([('transfer_id', '=', record_id.id)], limit=1)
+                    if appoint_transfert:
+                        date_start = appoint_transfert.date_hiring
+                        date_stop = appoint_transfert.date_direct_action
+                    else:
+                        record_id = False
+
+            # تحسين وضع
             if self.action_type == 'improve_condition':
                 record_id = self.env['hr.improve.situation'].search([('state', '=', 'done'),
                                                                      ('employee_id', '=', employee_id.id),
                                                                      ('defferential_is_paied', '=', False),
                                                                      ], limit=1)
                 if record_id:
-                    # TODO: review date_stop
-                    date_start = record_id.order_date
-                    date_stop = record_id.order_date
+                    # must search the  linked appoint for this improve_condition
+                    appoint_improve = decision_appoint_obj.search([('improve_id', '=', record_id.id)], limit=1)
+                    if appoint_improve:
+                        date_start = appoint_improve.date_hiring
+                        date_stop = appoint_improve.date_direct_action
+                    else:
+                        record_id = False
+
             if record_id and date_stop > date_start:
                 vals = {'difference_id': self.id,
                         'employee_id': employee_id.id,
@@ -155,7 +176,7 @@ class HrDifferential(models.Model):
 
 class HrDifferentialLine(models.Model):
     _name = 'hr.differential.line'
-
+    
     difference_id = fields.Many2one('hr.differential', string=' الفروقات', ondelete='cascade')
     employee_id = fields.Many2one('hr.employee', string='الموظف')
     date_start = fields.Date('تاريخ من')
@@ -182,14 +203,16 @@ class HrDifferentialLine(models.Model):
                 date_stop = get_hijri_month_end__by_year(HijriDate, Umalqurra, hijri_year, hijri_month)
                 period_id = self.env['hr.period'].search([('date_start', '=', date_start),
                                                           ('date_stop', '=', date_stop)])
-                number_of_days = (date_stop - date_start).days
-                if period_id.date_stop > rec.date_stop:
-                    number_of_days = (fields.Date.from_string(rec.date_stop) - date_start).days
-                ds = ds + relativedelta(months=1)
+
+                d_start, d_stop = self.env['hr.smart.utils'].get_overlapped_periode(date_start, date_stop, rec.date_start, rec.date_stop)
+
+                number_of_days = (d_stop - d_start).days + 1
+
+                ds = ds + relativedelta(days=number_of_days)
                 # get difference of basic salary for all periode
                 basic_salary_amount, retirement_amount, allowance_amount = self.get_differences(number_of_days)
                 total_amount = basic_salary_amount + retirement_amount + allowance_amount
-                if total_amount > 0:
+                if total_amount != 0:
                     vals = {'difference_line_id': rec.id,
                             'period_id': period_id.id,
                             'number_of_days': number_of_days,
@@ -218,34 +241,34 @@ class HrDifferentialLine(models.Model):
         new_salary_grid_id, new_basic_salary = self.employee_id.get_salary_grid_id(self.date_stop)
         # get salary_grid_id before the acceptation of the promotion
         old_salary_grid_id, old_basic_salary = self.employee_id.get_salary_grid_id(self.date_start)
-        basic_salary_amount = (new_basic_salary - old_basic_salary) * number_of_days
+        basic_salary_amount = (new_basic_salary - old_basic_salary) / 30.0 * number_of_days
         # calculate the difference of retirement
         new_retirement_amount = (new_basic_salary * new_salary_grid_id.retirement) / 100.0
         old_retirement_amount = (old_basic_salary * old_salary_grid_id.retirement) / 100.0
-        retirement_amount = (new_retirement_amount - old_retirement_amount) * number_of_days
+        retirement_amount = (new_retirement_amount - old_retirement_amount) / 30.0 * number_of_days * -1.0
         # calculate the difference of allowances
         # step 1: job + aride zones allowances
-        new_hr_employee_allowance_ids = self.employee_id.hr_employee_allowance_ids.search([('salary_grid_detail_id', '=', new_salary_grid_id.id)])
-        old_hr_employee_allowance_ids = self.employee_id.hr_employee_allowance_ids.search([('salary_grid_detail_id', '=', old_salary_grid_id.id)])
+        new_hr_employee_allowance_ids = self.employee_id.get_employee_allowances(new_salary_grid_id.date)
+        old_hr_employee_allowance_ids = self.employee_id.get_employee_allowances(old_salary_grid_id.date)
         allowance_amount = 0.0
         for new_elt in new_hr_employee_allowance_ids:
             find = False
             for old_elt in old_hr_employee_allowance_ids:
-                if new_elt.allowance_id == old_elt.allowance_id:
+                if new_elt['allowance_id'] == old_elt['allowance_id']:
                     #  it's a old allowance
-                    amount = (new_elt.amount - old_elt.amount) * number_of_days
+                    amount = (new_elt['amount'] - old_elt['amount']) / 30.0 * number_of_days
                     allowance_amount += amount
                     line_allowance_ids.append({'line_id': self.id,
-                                               'allowance_id': new_elt.allowance_id.id,
+                                               'allowance_id': new_elt['allowance_id'],
                                                'amount': amount
                                                })
                     find = True
                     break
             if not find:
                 #  it's a new allowance
-                amount = (new_elt.amount) * number_of_days
+                amount = new_elt['amount'] / 30.0 * number_of_days
                 line_allowance_ids.append({'line_id': self.id,
-                                           'allowance_id': new_elt.allowance_id.id,
+                                           'allowance_id': new_elt['allowance_id'],
                                            'amount': amount
                                            })
                 allowance_amount += amount

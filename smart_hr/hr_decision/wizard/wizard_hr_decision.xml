@@ -38,9 +38,9 @@
 							</sheet>
 						
 						<footer>
-						<button name="button_refuse" string="حفظ" type="object"
+						<button name="button_refuse" string="حفظ" type="object" states="draft"
 							icon="fa-floppy-o" class="oe_inline oe_stat_button" />
-						أو
+							
 						<button string="إغلاق" class="oe_link" special="cancel" />
 					</footer>
 				

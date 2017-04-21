@@ -14,7 +14,7 @@
 					<field name="state" string="الحالة" />
 					<field name="transfert_nature" string="طبيعة النقل" />
 					
-					<filter string=" قائمة راغبي طلب النقل" domain="[('state','=','hrm')]" />
+					<filter string=" قائمة راغبي طلب النقل"  name="state"  domain="[('state','=','hrm')]" />
 					<filter name="employee_id" string="الموظف" />
 					<filter name="transfert_type" string="نوع النقل" />
 					<filter name="transfert_nature" string="طبيعة النقل" />
@@ -87,7 +87,7 @@
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 									readonly="1"
 									attrs="{'readonly':[('state', 'in', ['waiting','consult','pm','waiting','done', 'refused'])]}" />
-								<field name="transfert_type" />
+								<field name="transfert_type" 	attrs="{'readonly':[('state', 'in', ['new','waiting','consult','pm','waiting','done', 'refused'])]}"  />
 								<field name="special_conditions"
 									attrs="{'invisible':[('transfert_type', '!=', 'member')]}" />
 								<field name="governmental_entity"

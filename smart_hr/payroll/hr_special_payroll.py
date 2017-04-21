@@ -443,6 +443,7 @@ class HrPayslipRun(models.Model):
     def special_compute_sheet(self):
         self.slip_ids.unlink()
         payslip_obj = self.env['hr.payslip']
+        self.compute_employee_ids()
         for employee in self.employee_ids:
             payslip_val = {'employee_id': employee.id,
                            'period_id': self.period_id.id,

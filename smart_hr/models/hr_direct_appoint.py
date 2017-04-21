@@ -109,6 +109,8 @@ class HrDirectAppoint(models.Model):
     @api.multi
     def button_direct_appoint(self):
         self.ensure_one()
+        if self.date_direct_action > datetime.today().strftime('%Y-%m-%d'):
+            raise ValidationError(u"لا يمكن تفعيل التعيين ،  تاريخ المباشرة يجب أن يكون أصغر  أو مساوي لتاريخ اليوم ")
         self.appoint_id.action_activate()
         title = u"' إشعار بمباشرة التعين'"
         msg = u"' إشعار بمباشرة التعين'" + unicode(self.employee_id.display_name) + u"'"
@@ -121,7 +123,17 @@ class HrDirectAppoint(models.Model):
             self.appoint_id.promotion_id.done_date = self.date_direct_action
         self.state = 'done'
 
-    @api.onchange('employee_id','type')
+    @api.onchange('date_direct_action')
+    def _onchange_date_direct_action(self):
+        if self.date_direct_action and self.date_direct_action < datetime.today().strftime('%Y-%m-%d'):
+            warning = {
+                'title': _('تحذير!'),
+                'message': _(' تاريخ المباشرة يجب أن يكون أكبر  أو مساوي لتاريخ اليوم '),
+            }
+            self.date_direct_action = False
+            return {'warning': warning}
+
+    @api.onchange('employee_id', 'type')
     def _onchange_employee_id(self):
         if self.employee_id:
             self.number = self.employee_id.number

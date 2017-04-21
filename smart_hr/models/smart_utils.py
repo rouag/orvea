@@ -9,6 +9,23 @@ from openerp.addons.smart_base.util.time_util import days_between
 class SmartUtils(models.Model):
     _name = 'hr.smart.utils'
 
+    def get_overlapped_periode(self, date_from, date_to, periode_date_from, periode_date_to):
+        """
+        @return: overlapped peiode, date_fbegin, date_end
+        """
+        periode_date_from = fields.Date.from_string(str(periode_date_from))
+        periode_date_to = fields.Date.from_string(str(periode_date_to))
+        date_from = fields.Date.from_string(str(date_from))
+        date_to = fields.Date.from_string(str(date_to))
+        if date_from > periode_date_from and date_to < periode_date_to:
+            return date_from, date_to
+        elif date_from < periode_date_from and date_to < periode_date_to:
+            return periode_date_from, date_to
+        elif date_from > periode_date_from and date_to > periode_date_to:
+            return date_from, periode_date_to
+        elif date_from <= periode_date_from and date_to >= periode_date_to:
+            return periode_date_from, periode_date_to
+
     def compute_duration_difference(self, employee_id, date_from, date_to, normal_day, weekend, holidays):
         days = 0
         dayDelta = timedelta(days=1)

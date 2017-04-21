@@ -29,6 +29,14 @@ class CoursesFollowUp(models.Model):
     courses_city =fields.Many2one('res.city',string=u'المدينة', related='holiday_id.courses_city', readonly=True)
     courses_country = fields.Many2one('res.country',string=u'الدولة', related='holiday_id.courses_country', readonly=True)
 
+
+    
+    @api.multi
+    def unlink(self):
+        for rec in self:
+            if rec.state != 'cancel' :
+                raise ValidationError(u'لا يمكن حذف الدورات الدراسيّة فى هذه المرحلة يرجى مراجعة مدير النظام')
+        return super(CoursesFollowUp, self).unlink()
     @api.one
     def action_succeeded(self):
         if fields.Date.from_string(self.date_to) > fields.Date.from_string(fields.Date.today()):
