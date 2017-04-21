@@ -314,6 +314,7 @@ class HrPayslip(models.Model):
         scholarship_ids = self.env['hr.scholarship'].search(domain)
         final_retirement_amount = 0.0
         allow_exception_amount = 0.0
+        print '--scholarship_ids---', scholarship_ids
         for scholarship_id in scholarship_ids:
             # overlaped days in current month
             scholarship_date_from = fields.Date.from_string(scholarship_id.date_from)
@@ -365,7 +366,7 @@ class HrPayslip(models.Model):
                 final_retirement_amount *= -1
             # 1) البدلات المستثناة
             if allow_exception_amount < 0:
-                vals = {'name': '' + allowance.name + name,
+                vals = {'name': allowance.name + name + ': ابتعاث ',
                         'employee_id': scholarship_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -374,7 +375,7 @@ class HrPayslip(models.Model):
                 line_ids.append(vals)
             # 2) نسبة الراتب بعد حسم التقاعد
             if final_retirement_amount < 0:
-                vals = {'name': u'نسبة الراتب بعد حسم التقاعد' + name,
+                vals = {'name': u'نسبة الراتب بعد حسم التقاعد: ابتعاث' + name,
                         'employee_id': scholarship_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,

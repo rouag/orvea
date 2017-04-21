@@ -12,7 +12,7 @@ class HrPromotion(models.Model):
     _name = 'hr.promotion'
     _order = 'id desc'
     _inherit = ['mail.thread', 'ir.needaction_mixin']
-    _description = 'Promotion Decision'
+    _description = 'محاضر الترقيات'
 
     name = fields.Char(string=u'رقم محضر الترقيات', )
     date = fields.Date(string=u'التاريخ ', default=fields.Datetime.now())
@@ -135,6 +135,7 @@ class HrPromotion(models.Model):
         employees = self.employee_ids
         for emp in employees:
             if emp.job_id.grade_id:
+                today = date.today()
                 # determiner si l'employer a une suspension
                 suspend = self.env['hr.suspension'].search(
                     [('state', '=', 'done'),('employee_id', '=', emp.id), ('suspension_date', '<', date.today()),
@@ -145,16 +146,16 @@ class HrPromotion(models.Model):
                      ('holiday_status_id.id', '=', self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id)])
                 # ‫دراسية‬ ‫إجازة
                 holidays_status_study = self.env['hr.holidays'].search(
-                    [('state', '=', 'done'),('employee_id', '=', emp.id), ('date_from', '<', date.today()), ('date_to', '<', date.today()),
+                    [('state', '=', 'done'),('employee_id', '=', emp.id), ('date_from', '<', date.today()), ('date_to', '>', date.today()),
                      ('holiday_status_id.id', '=', self.env.ref('smart_hr.data_hr_holiday_status_study').id),
                      ('duration', '>', 180)])
 #                 مبتعث
                 scholarship = self.env['hr.scholarship'].search(
-                    [('state', '=', 'done'),('employee_id', '=', emp.id), ('date_from', '<', date.today()), ('date_to', '<', date.today()),
+                    [('state', '=', 'done'),('employee_id', '=', emp.id), ('date_from', '<', today), ('date_to', '>', today),
                      ('duration', '>', 180)])
 #                  ‫بدورة‬‫ ‫تدريبية‬  
                 training = self.env['hr.candidates'].search(
-                    [('state', '=', 'done'),('employee_id', '=', emp.id), ('date_from', '<', date.today()), ('date_to', '<', date.today()),
+                    [('state', '=', 'done'),('employee_id', '=', emp.id), ('date_from', '<', date.today()), ('date_to', '>', date.today()),
                      ('number_of_days', '>', 180)])
                 sanctions = self.env['hr.sanction.ligne'].search(
                     [('employee_id', '=', emp.id),('state', '=', 'done'), ('sanction_id.date_sanction_start', '>', datetime.now() + relativedelta(days=-354)),
