@@ -948,7 +948,7 @@ class HrPayslip(models.Model):
                             'type': 'termination'}
                     line_ids.append(vals)
             # سعودي
-            if not for_last_month and termination.employee_id.country_id and termination.employee_id.country_id.code_nat == 'SA':
+            if termination.employee_id.country_id and termination.employee_id.country_id.code_nat == 'SA':
                 if grid_id:
                     # 1) عدد الرواتب المستحق
                     if termination.termination_type_id.nb_salaire > 0:
@@ -966,7 +966,7 @@ class HrPayslip(models.Model):
             # 2) الإجازة
             if sum_days >= termination.termination_type_id.max_days and not termination.termination_type_id.all_holidays:
                 sum_days = termination.termination_type_id.max_days
-            if not for_last_month and sum_days > 0:
+            if sum_days > 0:
                 if grid_id:
                     amount = (basic_salary / 30.0) * sum_days
                     if amount != 0.0:

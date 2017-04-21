@@ -727,6 +727,7 @@ class HrHolidays(models.Model):
             u'default_date_from': default_date_from,
             u'readonly_by_pass': True,
             u'default_holiday_status_id': self.holiday_status_id.id,
+            u'default_employee_id': self.employee_id.id,
             u'default_entitlement_type': self.entitlement_type.id,
             u'default_compensation_type': self.compensation_type,
             u'default_sold_overtime': self.sold_overtime,
@@ -817,6 +818,7 @@ class HrHolidays(models.Model):
         vals = {
                 'employee_id': self.employee_id.id,
                 'holiday_id': self.id,
+                'duration_holidays' :self.duration,
                 'note': '   ',
             }
         holiday_cancellation_id = holidays_cancellation_obj.create(vals)
