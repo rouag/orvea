@@ -23,10 +23,10 @@ class HrScholarshipextendWizard(models.TransientModel):
         for wiz in self:
             rec_id.write({'date_to': wiz.date_to,
                           'is_extension': True,
-                          'order_number': wiz.order_number,
-                          'order_date': wiz.order_date,
-                          'file_decision': wiz.file_decision
                           })
             self.env['hr.scholarship.history'].create({'name': u'تمديد',
-                                                       'scholarship_id': rec_id.id
+                                                        'scholarship_id': rec_id.id,
+                                                        'order_number': wiz.order_number,
+                                                        'order_date': wiz.order_date,
+                                                        'file_decision': wiz.file_decision
                                                        })

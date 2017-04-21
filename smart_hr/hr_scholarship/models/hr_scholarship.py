@@ -28,7 +28,7 @@ class HrScholarship(models.Model):
     note = fields.Text(string='ملاحظات')
     date_from = fields.Date(string=u'تاريخ البدء', required=1)
     date_to = fields.Date(string=u'تاريخ الإنتهاء', required=1)
-    duration = fields.Integer(string=u'عدد الأيام ', required=1, compute='_compute_duration')
+    duration = fields.Integer(string=u'عدد الأيام ', required=1, compute='_compute_duration', readonly=1)
     result = fields.Selection([
         ('suceed', u'نجح'),
         ('not_succeed', u' لم ينجح')], string=u'النتيجة', readonly=True)
@@ -49,15 +49,11 @@ class HrScholarship(models.Model):
     is_extension = fields.Boolean(string=u'ممددة', default=False)
     scholarship_history_ids = fields.One2many('hr.scholarship.history', 'scholarship_id', string=u'الإجراءت',
                                               readonly=1)
-    order_number = fields.Char(string=u'رقم الخطاب')
-    order_date = fields.Date(string=u'تاريخ الخطاب')
-    file_decision = fields.Binary(string=u'الخطاب', attachment=True)
-    file_decision_name = fields.Char(string=u'اسم الخطاب')
-    order_source = fields.Char(string=u'مصدر الخطاب')
     is_started = fields.Boolean(string=u'بدأت', compute='_compute_is_started', default=False)
     done_date = fields.Date(string='تاريخ التفعيل')
     decission_id = fields.Many2one('hr.decision', string=u'القرارات')
     display_decision_info = fields.Boolean(compute='_compute_display_decision_info')
+    restarted = fields.Boolean(string=u'الموظف باشر بعد الابتعاث ', default=False)
 
     def _compute_display_decision_info(self):
         for rec in self:
@@ -211,28 +207,6 @@ class HrScholarship(models.Model):
                 education_level_ids = self.env['hr.employee.job.education.level'].search(
                     [('employee_id', '=', self.employee_id.id),
                      ('level_education_id', '=', self.env.ref('smart_hr.certificate_after_secondary_education').id)])
-                #             if not education_level_ids:
-                #                 raise ValidationError(u"الرجاء مراجعة المؤهلات العلمية للموظف")
-                #             for level in education_level_ids:
-                #                 if (date_from - fields.Date.from_string(level.diploma_date)).days < needed_service_duration.service_duration:
-                #                     raise ValidationError(u"لم تمضي السنوات المطلوبة في الخدمة بعد الحصول على آخر دپلوم")
-                #
-                #             education_level_ids = self.env['hr.employee.job.education.level'].search([('employee_id', '=', self.employee_id.id),
-                #                                                                                       ('level_education_id', '=', self.env.ref('smart_hr.certificate_after_secondary_education').id)])
-                #         else:
-                #             raise ValidationError(u" الرجاء مراجعة إعداد مدة الخدمة اللازمة قبل الابتعاث")
-
-                #         constraint evaluation
-        employee_evaluation_id1 = self.env['hr.employee.evaluation.level'].search(
-            [('employee_id', '=', self.employee_id.id), ('year', '=', date_from.year - 1)], limit=1)
-        employee_evaluation_id2 = self.env['hr.employee.evaluation.level'].search(
-            [('employee_id', '=', self.employee_id.id), ('year', '=', date_from.year - 2)], limit=1)
-#         if employee_evaluation_id1 and employee_evaluation_id2:
-#             if employee_evaluation_id1.degree_id.point_to < self.env.ref('smart_hr.assessment_hr_good').point_from or \
-#                     employee_evaluation_id1.degree_id.point_to < self.env.ref('smart_hr.assessment_hr_good').point_from:
-#                 raise ValidationError(u"لم تتحصل على تقييم الأدائ الوظيفي‬ المطلوب.")
-#         else:
-#             raise ValidationError(u"لا يوجد تقييم وظيفي خاص بالموظف للسنتين الفارطتين")
 
     @api.multi
     def button_extend(self):
@@ -332,3 +306,40 @@ class HrScholarshipHistory(models.Model):
     date = fields.Date(string='تاريخ الإجراء', readonly=1, default=fields.Datetime.now())
     name = fields.Char(string='الإجراء', readonly=1)
     scholarship_id = fields.Many2one('hr.scholarship', string=u'الابتعاث')
+    order_number = fields.Char(string=u'رقم الخطاب', required=1)
+    order_date = fields.Date(string=u'تاريخ الخطاب', required=1)
+    file_decision = fields.Binary(string=u'الخطاب', attachment=True, required=1)
+    file_decision_name = fields.Char(string=u'اسم الخطاب')
+    decission_id = fields.Many2one('hr.decision', string=u'القرارات')
+    
+    @api.multi
+    def open_decission_scholarship(self):
+        decision_obj = self.env['hr.decision']
+        if self.decission_id:
+            decission_id = self.decission_id.id
+        else:
+            decision_type_id = 1
+            decision_date = fields.Date.today()  # new date
+            if self.scholarship_id.employee_id:
+                decision_type_id = self.env.ref('smart_hr.data_employee_scholarship').id
+            # create decission
+            decission_val = {
+               # 'name': self.env['ir.sequence'].get('hr.scholarship.seq'),
+                'decision_type_id': decision_type_id,
+                'date': decision_date,
+                'employee_id': self.scholarship_id.employee_id.id}
+            decision = decision_obj.create(decission_val)
+            decision.text = decision.replace_text(self.scholarship_id.employee_id, decision_date, decision_type_id, 'scholarship')
+            decission_id = decision.id
+            self.decission_id = decission_id
+        return {
+            'name': _(u'قرار الابتعاث'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'hr.decision',
+            'view_id': self.env.ref('smart_hr.hr_decision_wizard_form').id,
+            'type': 'ir.actions.act_window',
+            'res_id': decission_id,
+            'target': 'new'
+        }    
+    

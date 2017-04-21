@@ -246,7 +246,7 @@ class HrEmployeeAbsenceDays(models.Model):
     name = fields.Char(string='التسلسل', readonly=1)
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', domain=[('employee_state', '=', 'employee')], resquired=1)
     number_request = fields.Integer(string='عدد الايام المراد تحويلها', required=1)
-    balance = fields.Float(string='الرصيد الحالي(ساعات)', readonly=1)
+    balance = fields.Float(string='الرصيد الحالي(ايام)', readonly=1)
     request_id = fields.Many2one('hr.request.transfer.absence')
     deduction = fields.Boolean(string='is deducted', default=False)
 
