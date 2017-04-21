@@ -247,7 +247,8 @@ class HrPayslip(models.Model):
             amount_allowance = 0.0
             salary_rate_amount = 0.0
             date_start, date_stop = self.env['hr.smart.utils'].get_overlapped_periode(date_from, date_to, assign_date_from, assign_date_to)
-            res = self.env['hr.smart.utils'].compute_duration_difference(assign_id.employee_id, date_start, date_stop, True, True, True)
+            if date_start and date_stop:
+                res = self.env['hr.smart.utils'].compute_duration_difference(assign_id.employee_id, date_start, date_stop, True, True, True)
             if len(res) == 1:
                 res = res[0]
                 duration_in_month = res['days']
@@ -323,7 +324,8 @@ class HrPayslip(models.Model):
             retirement_amount = 0.0
             res = {}
             date_start, date_stop = self.env['hr.smart.utils'].get_overlapped_periode(date_from, date_to, scholarship_date_from, scholarship_date_to)
-            res = self.env['hr.smart.utils'].compute_duration_difference(scholarship_id.employee_id, date_start, date_stop, True, True, True)
+            if date_start and date_stop:
+                res = self.env['hr.smart.utils'].compute_duration_difference(scholarship_id.employee_id, date_start, date_stop, True, True, True)
             if len(res) == 1:
                 res = res[0]
                 duration_in_month = res['days']
@@ -408,7 +410,8 @@ class HrPayslip(models.Model):
             duration_in_month = 0
             res = []
             date_start, date_stop = self.env['hr.smart.utils'].get_overlapped_periode(date_from, date_to, lend_date_from, lend_date_to)
-            res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, date_start, date_stop, True, True, True)
+            if date_start and date_stop:
+                res = self.env['hr.smart.utils'].compute_duration_difference(lend_id.employee_id, date_start, date_stop, True, True, True)
             hr_setting = self.env['hr.setting'].search([], limit=1)
             employee_allowances = lend_id.employee_id.hr_employee_allowance_ids
             if len(res) == 1:
@@ -511,7 +514,8 @@ class HrPayslip(models.Model):
             duration_in_month = 0
             res = []
             date_start, date_stop = self.env['hr.smart.utils'].get_overlapped_periode(date_from, date_to, holiday_date_from, holiday_date_to)
-            res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, date_start, date_stop, True, True, True)
+            if date_start and date_stop:
+                res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, date_start, date_stop, True, True, True)
             basic_salary_amount = 0.0
             basic_salary_amount2 = 0.0
             retirement_amount = 0.0
@@ -860,7 +864,8 @@ class HrPayslip(models.Model):
             duration_in_month = 0
             res = []
             date_start, date_stop = self.env['hr.smart.utils'].get_overlapped_periode(date_from, date_to, suspension_date_from, suspension_date_to)
-            res = self.env['hr.smart.utils'].compute_duration_difference(employee_id, date_start, date_stop, True, True, True)
+            if date_start and date_stop:
+                res = self.env['hr.smart.utils'].compute_duration_difference(employee_id, date_start, date_stop, True, True, True)
             amount = 0.0
             retirement_amount = 0.0
             allowance_amount = 0.0

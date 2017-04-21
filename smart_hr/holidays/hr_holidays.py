@@ -465,7 +465,7 @@ class HrHolidays(models.Model):
 
             # create decission
             decission_val={
-                'name': self.env['ir.sequence'].get('hr.holidays.seq'),
+                'name': self.num_decision,
                 'decision_type_id':decision_type_id,
                 'date':decision_date,
                 'employee_id' :self.employee_id.id }
