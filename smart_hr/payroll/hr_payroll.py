@@ -697,7 +697,6 @@ class HrPayslip(models.Model):
                 sequence += 1
 
             # 7- القروض
-            print '---self.date_from--', self.date_from, self.date_to
             loans = loan_obj.get_loan_employee_month(self.date_from, self.date_to, employee.id)
             for loan in loans:
                 loan_val = {'name': loan['name'],
