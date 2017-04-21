@@ -25,7 +25,7 @@ class SmartUtils(models.Model):
             listset = sorted(listset)
             return listset[0], listset[-1]
         else:
-            False, False
+            return False, False
 
     def compute_duration_difference(self, employee_id, date_from, date_to, normal_day, weekend, holidays):
         days = 0
