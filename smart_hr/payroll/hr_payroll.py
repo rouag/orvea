@@ -340,7 +340,7 @@ class HrPayslip(models.Model):
             self.date_from = self.period_id.date_start
             self.date_to = self.period_id.date_stop
             res = {}
-            employee_ids = self.env['hr.employee'].search([('emp_state', '=', 'working'), ('employee_state', '=', 'employee')])
+            employee_ids = self.env['hr.employee'].search([('emp_state', 'in', ('working','suspended')), ('employee_state', '=', 'employee')])
             employee_ids = employee_ids.ids
             # موظفين:  طي القيد
             plus_terminated_emps = self.env['hr.employee'].search([('emp_state', '=', 'terminated'), ('clear_financial_dues', '=', False)])
@@ -497,9 +497,6 @@ class HrPayslip(models.Model):
             # delete old line
             payslip.line_ids.unlink()
             payslip.difference_history_ids.unlink()
-            payslip.delays_ids.unlink()
-            payslip.abscence_ids.unlink()
-            payslip.sanction_line_ids.unlink()
             # change compute_date
             payslip.compute_date = fields.Date.from_string(fields.Date.today())
             # generate  lines
