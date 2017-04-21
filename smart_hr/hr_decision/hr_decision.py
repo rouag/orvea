@@ -219,17 +219,30 @@ class HrDecision(models.Model):
                 if object_type == 'holidays_cancellation' :
                     holidays_line = self.env['hr.holidays.cancellation'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
                     if holidays_line :
+                        type_holidays = holidays_line.holiday_status_id.name or ""
+                        numero_holidays = holidays_line.holiday_id.num_decision or ""
+                        
                         duration = holidays_line.duration or ""
-                        if holidays_line.date_from:
+                        duration_holidays = holidays_line.duration_holidays or ""
+                        if holidays_line.holiday_id.date_from:
                             date_from = self._get_hijri_date(holidays_line.date_from, '-')
                             date_from = str(date_from).split('-')
                             date_from = date_from[2] + '-' + date_from[1] + '-' + date_from[0] or ""
                         fromdate = date_from or ""
-                        if holidays_line.date_to:
+                        if holidays_line.holiday_id.date_decision:
+                            date_decision = self._get_hijri_date(holidays_line.holiday_id.date_decision, '-')
+                            date_decision = str(date_decision).split('-')
+                            date_decision = date_decision[2] + '-' + date_decision[1] + '-' + date_decision[0] or ""
+                        date_decision = date_decision or ""
+                        if holidays_line.holiday_id.date_to:
                             date_to = self._get_hijri_date(holidays_line.date_to, '-')
                             date_to = str(date_to).split('-')
                             date_to = date_to[2] + '-' + date_to[1] + '-' + date_to[0] or ""
                         date_to = date_to or ""
+                        decision_text = decision_text.replace('duration', unicode(duration_holidays))
+                        decision_text = decision_text.replace('NUMHOLIDAYS', unicode(numero_holidays))
+                        decision_text = decision_text.replace('date_decision', unicode(date_decision))
+                        decision_text = decision_text.replace('TYPE', unicode(type_holidays))
                         decision_text = decision_text.replace('DURATION', unicode(duration))
                         decision_text = decision_text.replace('FROMDET', unicode(fromdate))
                         decision_text = decision_text.replace('ENDDET', unicode(date_to)) 

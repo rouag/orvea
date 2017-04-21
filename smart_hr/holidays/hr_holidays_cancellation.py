@@ -20,6 +20,7 @@ class hrHolidaysCancellation(models.Model):
     date_from = fields.Date(related='holiday_id.date_from')
     date_to = fields.Date(related='holiday_id.date_to')
     duration = fields.Integer(related='holiday_id.duration')
+    duration_holidays = fields.Integer(string='المدة')
     state = fields.Selection([
         ('draft', u'طلب'),
         ('audit', u'مراجعة'),

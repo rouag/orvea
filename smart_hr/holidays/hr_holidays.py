@@ -817,6 +817,7 @@ class HrHolidays(models.Model):
         vals = {
                 'employee_id': self.employee_id.id,
                 'holiday_id': self.id,
+                'duration_holidays' :self.duration,
                 'note': '   ',
             }
         holiday_cancellation_id = holidays_cancellation_obj.create(vals)
