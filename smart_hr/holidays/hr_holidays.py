@@ -336,18 +336,6 @@ class HrHolidays(models.Model):
             self.text_resolution = self.env.ref('smart_hr.data_leave_sport').text
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_maternity'):
             self.text_resolution = self.env.ref('smart_hr.data_leave_motherhood').text
-#         
-#         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_normal'):
-#             text =self.env.ref('smart_hr.data_normal_leave').text
-#             print"teeeeeext",text
-#             type ='holidays'
-#             employee_id = self.employee_id
-#             date = self.date
-#             self.text_resolution = self.env['hr.decision'].replace_text(employee_id, date,text,False)
-#             print"ssssssssssssssssssss", self.text_resolution
-#          #   self.text_resolution =  self.env['hr.decision'].replace_text(self.employee_id,self.medical_report_date, self.env.ref('smart_hr.data_normal_leave'), 'holidays').text
-#            # self.text_resolution = self.env.ref('smart_hr.data_normal_leave').text
-
         self.entitlement_type = False
         return res
 

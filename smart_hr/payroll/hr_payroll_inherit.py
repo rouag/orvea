@@ -314,7 +314,6 @@ class HrPayslip(models.Model):
         scholarship_ids = self.env['hr.scholarship'].search(domain)
         final_retirement_amount = 0.0
         allow_exception_amount = 0.0
-        print '--scholarship_ids---', scholarship_ids
         for scholarship_id in scholarship_ids:
             # overlaped days in current month
             scholarship_date_from = fields.Date.from_string(scholarship_id.date_from)

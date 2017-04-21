@@ -147,8 +147,6 @@ class HrLoan(models.Model):
                 res.append({'name': u'سداد كامل مبلغ  القرض رقم %s' % loan.name, 'amount': loan.residual_amount})
             else:
                 # just add amount for current month
-                for rec in loan.line_ids:
-                    print rec.date_start, rec.date_stop
                 lines = loan.line_ids.search([('loan_id', '=', loan.id), ('date_start', '=', date_from), ('date_stop', '=', date_to)])
                 if lines:
                     res.append({'name': u'قرض  رقم : %s' % loan.name, 'amount': lines[0].amount})
