@@ -45,7 +45,7 @@
 			<field name="download_filename">بيان_حسم_ايام_غياب.pdf</field>
 		</record>
 		<report id="delay_employees_list" model="hr.request.transfer.delay.hours"
-			string="بيان حسم ايام غياب" report_type="qweb-pdf"
+			string="بيان حسم ساعات التأخير" report_type="qweb-pdf"
 			name="smart_hr.delay_employees_list" file="smart_hr.delay_employees_list"
 			menu="False" />
 

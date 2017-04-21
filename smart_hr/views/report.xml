@@ -74,12 +74,14 @@
 		<!-- <field name="download_filename">${o.name}_قرار خارج دوام.pdf</field> -->
 		<!-- </record> -->
 
-
-
-		<report id="hr_decision_report" model="hr.decision"
-			name="smart_hr.report_hr_decision" report_type="qweb-pdf" string="طباعة"
-			file="smart_hr.report_hr_decision" menu="False" />
-
+		<record id="report_hr_decision_report" model="ir.actions.report.xml">
+			<field name="name">HR DECISION REPORT</field>
+			<field name="report_type">qweb-pdf</field>
+			<field name="model">hr.decision</field>
+			<field name="report_name">smart_hr.report_hr_decision</field>
+			<field name="report_file">smart_hr.report_hr_decision</field>
+			<field name="download_filename">${o.decision_type_id.name}.pdf</field>
+		</record>
 		<report id="hr_direct_appoint_report" model="hr.direct.appoint"
 			name="smart_hr.report_hr_direct_appoint" report_type="qweb-pdf"
 			string="قرار مباشرة التعين" file="smart_hr.report_hr_direct_appoint" />
@@ -100,7 +102,7 @@
 		<record id="report_hr_emp_card_report" model="ir.actions.report.xml">
 			<field name="paperformat_id" ref="smart_base.paperformat_landscape_card" />
 			<field name="download_filename">${o.employee_id.name}_بطاقة موظف.pdf</field>
-		</record> 
+		</record>
 
 		<report id="report_hr_employee_card" model="hr.employee"
 			string="بطاقة موظف" report_type="qweb-pdf" name="smart_hr.hr_employee_card_report"
@@ -110,7 +112,7 @@
 			<field name="download_filename">${o.employee_id.name}_بطاقة موظف.pdf</field>
 		</record>
 
-	
+
 
 
 		<report id="hr_employee_situation_order" model="hr.employee.situation.order"
