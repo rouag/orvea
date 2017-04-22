@@ -19,42 +19,10 @@
 								<div class="col-xs-6">
 									<strong> الشعبة :</strong> <span t-field="o.department_level3_id" />
 									<br/>
-									<strong> الصنف :</strong> <span t-field="o.salary_grid_type_id" />
+									<strong> الصنف :</strong> <span t-field="o.salary_grid_type_id.name" />
 								</div>
 
 								<div class="col-xs-12 text-center">
-									<br></br>
-									<strong>الموظفين الذين لم يدخلوا الاعداد</strong>
-									<table class="table table-condensed">
-										<thead>
-											<tr>
-												<th class="text-center">رقم الموظف </th>
-												<th class="text-center">الإسم</th>
-												<th class="text-center"> الوظيفة </th>
-												<th class="text-center">السبب</th>
-											</tr>
-										</thead>
-										<t t-foreach="o.error_ids" t-as="line">
-											<t t-if="line.type == 'not_include'">
-												<tr>
-													<td>
-														<span t-field="line.employee_id.number" />
-													</td>
-													<td>
-														<span t-field="line.employee_id.display_name" />
-													</td>
-													<td>
-														<span t-field="line.employee_id.job_id" />
-													</td>
-													<td>
-													<span t-field="line.type" />
-													</td>
-												</tr>
-											</t>
-										</t>
-									</table>
-
-
 									<div class="col-xs-12 text-center">
 										<br></br>
 										<strong>الموظفين الذين تم إيقاف راتبهم</strong>
@@ -85,7 +53,7 @@
 									</div>
 									<div class="col-xs-12 text-center">
 										<br></br>
-										<strong>الموظفين الذين طوي قيدهم</strong>
+										<strong>حالات أخرى</strong>
 										<table class="table table-condensed">
 											<thead>
 												<tr>
@@ -94,8 +62,8 @@
 													<th class="text-center">الوظيفة </th>
 												</tr>
 											</thead>
-											<t t-foreach="o.error_ids" t-as="line">
-												<t t-if="line.type == 'termination'">
+											<t t-foreach="o.slip_ids" t-as="line">
+												<t t-if="line.salary_net == 0.0">
 													<tr>
 														<td>
 															<span t-field="line.employee_id.number" />
