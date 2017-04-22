@@ -39,7 +39,9 @@ class HrPayslip(models.Model):
                     'number_of_hours': 0.0,
                     'amount': -1 * amount,
                     'category': 'deduction',
-                    'type': 'absence'}
+                    'type': 'absence',
+                    'model_name': 'hr.employee.absence.days',
+                    'object_id': line.id}
             line_ids.append(vals)
             tot_number_request += line.number_request
         if abscence_ids:
@@ -54,7 +56,11 @@ class HrPayslip(models.Model):
                         'number_of_hours': 0.0,
                         'amount': retirement_amount,
                         'category': 'deduction',
-                        'type': 'absence'}
+                        'type': 'absence',
+                        'model_name': 'hr.employee.absence.days',
+                        'object_id': line.id,
+                        'model_name': 'hr.employee.absence.days',
+                        'object_id': line.id}
                 line_ids.append(vals)
 
         # حسم‬  التأخير يكون‬ من‬  الراتب‬ الأساسي فقط
@@ -70,7 +76,9 @@ class HrPayslip(models.Model):
                     'number_of_hours': 0.0,
                     'amount': -1 * amount,
                     'category': 'deduction',
-                    'type': 'retard_leave'}
+                    'type': 'retard_leave',
+                    'model_name': 'hr.employee.delay.hours',
+                    'object_id': line.id}
             line_ids.append(vals)
         if delays_ids:
             self.delays_ids = delays_ids.ids
@@ -314,7 +322,6 @@ class HrPayslip(models.Model):
         scholarship_ids = self.env['hr.scholarship'].search(domain)
         final_retirement_amount = 0.0
         allow_exception_amount = 0.0
-        print '--scholarship_ids---', scholarship_ids
         for scholarship_id in scholarship_ids:
             # overlaped days in current month
             scholarship_date_from = fields.Date.from_string(scholarship_id.date_from)
@@ -502,6 +509,11 @@ class HrPayslip(models.Model):
         holidays_ids = self.env['hr.holidays'].search(domain)
         for holiday_id in holidays_ids:
             holiday_status_id = holiday_id.holiday_status_id
+            if holiday_status_id.min_amount:
+                # add constrainte to payslip: to check after net salary is calculated
+                self.env['hr.payroll.constrainte'].create({'payslip_id': self.id,
+                                                           'constrainte_name': 'min_amount',
+                                                           'amount': holiday_status_id.min_amount})
             # get the entitlement type
             if not holiday_id.entitlement_type:
                 entitlement_type = self.env.ref('smart_hr.data_hr_holiday_entitlement_all')
@@ -563,9 +575,6 @@ class HrPayslip(models.Model):
                             basic_salary_amount = (duration_in_month * (new_basic_salary / 30.0) * (100 - rec.salary_proportion)) / 100.0
                             if holiday_status_id.min_amount:
                                 basic_salary_amount = (new_basic_salary * (100 - rec.salary_proportion)) / 100.0
-                                diff = holiday_status_id.min_amount - (new_basic_salary * rec.salary_proportion) / 100.0
-                                if diff > 0:
-                                    basic_salary_amount -= diff
                                 # amout depend of number of days
                                 basic_salary_amount = basic_salary_amount * duration_in_month / 30.0
                             # فرق البدلات
