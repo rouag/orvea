@@ -921,8 +921,8 @@
 								<field name="job_name_code" />
 								<field name="department_id" />
 								<field name="new_job_name" />
-								<field name="new_grade_id" />
 								<field name="new_job_number" />
+								<field name="new_grade_id" />
 								<field name="new_department_id" />
 								<field name="notes"/>
 								<field name="type_id" invisible="1"/>
@@ -1058,8 +1058,8 @@
 								<field name="job_name_code" />
 								<field name="department_id" />
 								<field name="new_job_name" />
-								<field name="new_grade_id" />
 								<field name="new_job_number" />
+								<field name="new_grade_id" />
 								<field name="new_department_id" />
 								<field name="notes"/>
 								<field name="type_id" invisible="1"/>
