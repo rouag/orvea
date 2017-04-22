@@ -404,6 +404,34 @@ class HrJobCreateLine(models.Model):
             res['domain'] = {'grade_id': [('id', 'in', grade_ids)]}
             return res
 
+    @api.onchange('job_number')
+    def _onchange_job_number(self):
+        res = {}
+        warning={}
+        if self.job_number:
+            # check if there is already a job with new grade and same job number
+            jobs = self.env['hr.job'].search_count([('number', '=', self.job_number)])
+            if jobs:
+                self.job_number = ''
+                warning = {
+                    'title': _('تحذير!'),
+                    'message': _('يوجد وظيفة بنفس الرقم!'),
+                }
+            elif not self.job_number.isdigit():
+                self.job_number = ''
+                warning = {
+                    'title': _('تحذير!'),
+                    'message': _('رقم الوظيفة لا يقبل حروف او مسافات او حروف خاصة!'),
+                }
+            else:
+                number = self.job_number
+                grade = number[0:2]
+                grade_ids = [rec.id for rec in self.job_create_id.grade_ids if rec.code==grade]
+                res['domain'] = {'grade_id': [('id', 'in', grade_ids)]}
+        res['warning'] = warning
+        self.grade_id = False
+        return res
+
 
 class HrJobStripFrom(models.Model):
     _name = 'hr.job.strip.from'
@@ -1428,15 +1456,54 @@ class HrJobMoveGradeLine(models.Model):
             res['domain'] = {'job_id': [('id', 'in', job_ids)]}
             return res
 
-    @api.constrains('job_number', 'new_grade_id')
+    @api.constrains('new_job_number', 'new_grade_id')
     def _check_new_grade_id_job_number(self):
         if self.job_number and self.new_grade_id:
             # check if there is already a job with new grade and same job number
-            jobs = self.env['hr.job'].search([])
-            for job in jobs:
-                if job.grade_id == self.new_grade_id and job.number == self.job_number:
-                    raise ValidationError(u"يوجد وظيفة بنفس الرقم والمرتبة.")
+            jobs = self.env['hr.job'].search_count([('grade_id', '=', self.new_grade_id.id), ('number', '=', self.new_job_number)])
+            if jobs:
+                raise ValidationError(u"يوجد وظيفة بنفس الرقم والمرتبة.")
 
+    @api.onchange('new_job_number')
+    def _check_new_job_number(self):
+        res = {}
+        warning = {}
+
+        if self.new_job_number:
+            # check if there is already a job with new grade and same job number
+            jobs = self.env['hr.job'].search_count([('number', '=', self.new_job_number)])
+            if jobs:
+                self.new_job_number = ''
+                warning = {
+                    'title': _('تحذير!'),
+                    'message': _('يوجد وظيفة بنفس الرقم!'),
+                }
+            elif not self.new_job_number.isdigit():
+                self.new_job_number = ''
+                warning = {
+                    'title': _('تحذير!'),
+                    'message': _('رقم الوظيفة لا يقبل حروف او مسافات او حروف خاصة!'),
+                }
+            else:
+                number = self.new_job_number
+                grade = number[0:2]
+                grides= []
+                grade_ids=[]
+                for rec in self.env['salary.grid.grade'].search([]):
+                    if int(rec.code) >= int(self.job_id.serie_id.rank_from.code) and int(rec.code) <= int(self.job_id.serie_id.rank_to.code):
+                        grides.append(rec)
+            # get availble grades depend on move_type type رفع أو خفض
+                for rec in grides:
+                    if self._context['operation'] == 'scale_down':
+                        if int(self.job_id.grade_id.code) > int(rec.code) and rec.code==grade:
+                            grade_ids.append(rec.id)
+                    if self._context['operation'] == 'scale_up':
+                        if int(self.job_id.grade_id.code) < int(rec.code) and rec.code==grade:
+                            grade_ids.append(rec.id)
+                res['domain'] = {'new_grade_id': [('id', 'in', grade_ids)]}
+        self.new_grade_id = False
+        res['warning'] = warning
+        return res
 
 class HrJobMoveUpdate(models.Model):
     _name = 'hr.job.update'
