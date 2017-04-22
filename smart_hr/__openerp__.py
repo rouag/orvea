@@ -199,6 +199,7 @@
         'payroll/view/hr_increase_view.xml',
         'payroll/view/period_fiscalyear.xml',
         'payroll/view/hr_differential.xml',
+        'payroll/view/hr_payslip_difference_history_view.xml',
 
 
 
