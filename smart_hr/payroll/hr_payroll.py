@@ -355,24 +355,24 @@ class HrPayslip(models.Model):
             # rec.days_off_line_ids = leaves
 
             # check the existance of difference and dedections for current month
-            res = {}
-            employee_ids = self.env['hr.employee'].search(
-                [('emp_state', 'in', ('working', 'suspended')), ('employee_state', '=', 'employee')])
-            employee_ids = employee_ids.ids
-            # موظفين:  طي القيد
-            plus_terminated_emps = self.env['hr.employee'].search(
-                [('emp_state', '=', 'terminated'), ('clear_financial_dues', '=', False)])
-            if plus_terminated_emps:
-                employee_ids += plus_terminated_emps.ids
-            minus_employee_ids = []
-            # موظفين:  تم إيقاف راتبهم
-            employee_stop_lines = self.env['hr.payslip.stop.line'].search(
-                [('stop_period', '=', True), ('period_id', '=', self.period_id.id), ('payslip_id.state', '=', 'done')])
-            employee_stop_ids = [line.payslip_id.employee_id.id for line in employee_stop_lines]
-            minus_employee_ids += employee_stop_ids
-            result_employee_ids = list((set(employee_ids) - set(minus_employee_ids)))
-            res['domain'] = {'employee_id': [('id', 'in', result_employee_ids)]}
-            return res
+        res = {}
+        employee_ids = self.env['hr.employee'].search(
+            [('emp_state', 'in', ('working', 'suspended')), ('employee_state', '=', 'employee')])
+        employee_ids = employee_ids.ids
+        # موظفين:  طي القيد
+        plus_terminated_emps = self.env['hr.employee'].search(
+            [('emp_state', '=', 'terminated'), ('clear_financial_dues', '=', False)])
+        if plus_terminated_emps:
+            employee_ids += plus_terminated_emps.ids
+        minus_employee_ids = []
+        # موظفين:  تم إيقاف راتبهم
+        employee_stop_lines = self.env['hr.payslip.stop.line'].search(
+            [('stop_period', '=', True), ('period_id', '=', self.period_id.id), ('payslip_id.state', '=', 'done')])
+        employee_stop_ids = [line.payslip_id.employee_id.id for line in employee_stop_lines]
+        minus_employee_ids += employee_stop_ids
+        result_employee_ids = list((set(employee_ids) - set(minus_employee_ids)))
+        res['domain'] = {'employee_id': [('id', 'in', result_employee_ids)]}
+        return res
 
     def get_worked_day_lines_without_contract(self, employee_id, working_hours, date_from, date_to, compute_leave=True):
         """

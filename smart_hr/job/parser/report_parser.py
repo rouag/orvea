@@ -126,7 +126,7 @@ class JobDescriptionReport(report_sxw.rml_parse):
             'format_time': self._format_time,
             'get_current_date': self._get_current_date,
             'get_job': self._get_job,
-            'get_job_create_date': self._get_job_create_date,
+            'get_job_creation_date': self._get_job_creation_date,
             'get_employee_job_decision': self._get_employee_job_decision,
             'get_employee_job_decision_history': self._get_employee_job_decision_history,
             'get_employee_last_training': self._get_employee_last_training,
@@ -175,8 +175,8 @@ class JobDescriptionReport(report_sxw.rml_parse):
                 return hr_decision_appoint
         return False
 
-    def _get_job_create_date(self, job):
-        return fields.Datetime.from_string(job.create_date).strftime("%Y-%m-%d")
+    def _get_job_creation_date(self, job):
+        return fields.Datetime.from_string(job.creation_date).strftime("%Y-%m-%d")
 
     def _get_job(self, data):
         job_id = data['job_id'][0]
@@ -210,7 +210,7 @@ class JobMoveDepReport(report_sxw.rml_parse):
             'format_time': self._format_time,
             'get_current_date': self._get_current_date,
             'get_job': self._get_job,
-            'get_job_create_date': self._get_job_create_date,
+            'get_job_creation_date': self._get_job_creation_date,
             'get_move_line': self._get_move_line,
             'get_hijri_date': self._get_hijri_date,
         })
@@ -236,8 +236,8 @@ class JobMoveDepReport(report_sxw.rml_parse):
             return line_id
         return False
 
-    def _get_job_create_date(self, job):
-        return fields.Datetime.from_string(job.create_date).strftime("%Y-%m-%d")
+    def _get_job_creation_date(self, job):
+        return fields.Datetime.from_string(job.creation_date).strftime("%Y-%m-%d")
 
     def _get_job(self, data):
         job_id = data['job_id'][0]
@@ -271,7 +271,7 @@ class JobUpdateModelReport(report_sxw.rml_parse):
             'format_time': self._format_time,
             'get_current_date': self._get_current_date,
             'get_job': self._get_job,
-            'get_job_create_date': self._get_job_create_date,
+            'get_job_creation_date': self._get_job_creation_date,
             'get_same_activity_depart_job': self._get_same_activity_depart_job,
             'get_move_line': self._get_move_line,
             'get_hijri_date': self._get_hijri_date,
@@ -306,8 +306,8 @@ class JobUpdateModelReport(report_sxw.rml_parse):
             job_objs = self.pool.get('hr.job').browse(self.cr, self.uid, job_ids)
             return job_objs
 
-    def _get_job_create_date(self, job):
-        return fields.Datetime.from_string(job.create_date).strftime("%Y-%m-%d")
+    def _get_job_creation_date(self, job):
+        return fields.Datetime.from_string(job.creation_date).strftime("%Y-%m-%d")
 
     def _get_job(self, data):
         job_id = data['job_id'][0]
@@ -341,7 +341,7 @@ class JobScaleDownModelReport(report_sxw.rml_parse):
             'format_time': self._format_time,
             'get_current_date': self._get_current_date,
             'get_job': self._get_job,
-            'get_job_create_date': self._get_job_create_date,
+            'get_job_creation_date': self._get_job_creation_date,
             'get_same_activity_depart_job': self._get_same_activity_depart_job,
             'get_move_line': self._get_move_line,
             'get_hijri_date': self._get_hijri_date,
@@ -374,8 +374,8 @@ class JobScaleDownModelReport(report_sxw.rml_parse):
             job_objs = self.pool.get('hr.job').browse(self.cr, self.uid, job_ids)
             return job_objs
 
-    def _get_job_create_date(self, job):
-        return fields.Datetime.from_string(job.create_date).strftime("%Y-%m-%d")
+    def _get_job_creation_date(self, job):
+        return fields.Datetime.from_string(job.creation_date).strftime("%Y-%m-%d")
 
     def _get_job(self, data):
         job_id = data['job_id'][0]
