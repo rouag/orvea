@@ -254,7 +254,7 @@ class HrPayslipRun(models.Model):
             if rec.state != 'draft':
                 raise ValidationError(u'لا يمكن حذف مسير جماعي فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(HrPayslipRun, self).unlink()
-    
+
 
 class HrPayslipDifferenceHistory(models.Model):
     _name = 'hr.payslip.difference.history'
@@ -297,6 +297,7 @@ class HrPayslip(models.Model):
     salary_net = fields.Float(string='صافي الراتب')
     allowance_total = fields.Float(string='مجموع البدلات')
     difference_deduction_total = fields.Float(string='مجموع الحسميات والفروقات')
+    contraintes_ids = fields.One2many('hr.payroll.constrainte', 'payslip_id')
 
     sanction_line_ids = fields.Many2many('hr.sanction.ligne')
     abscence_ids = fields.Many2many('hr.employee.absence.days')
@@ -488,6 +489,7 @@ class HrPayslip(models.Model):
             payslip.number_of_days = payslip.get_days_off_count(payslip.date_from, payslip.date_to)
             # delete old line
             payslip.line_ids.unlink()
+            payslip.contraintes_ids.unlink()
             payslip.difference_history_ids.unlink()
             # change compute_date
             payslip.compute_date = fields.Date.from_string(fields.Date.today())
@@ -724,6 +726,8 @@ class HrPayslip(models.Model):
                 lines.append(insurance_val)
                 deduction_total += insurance_amount * -1
                 sequence += 1
+            diff_line_sequence = sequence
+            sequence += 1
             # 10- صافي الراتب
             salary_net = basic_salary + allowance_total + difference_total + deduction_total
             salary_net_val = {'name': u'صافي الراتب',
@@ -739,6 +743,39 @@ class HrPayslip(models.Model):
             lines.append(salary_net_val)
             payslip.salary_net = salary_net
             payslip.line_ids = lines
+            # get salary_net line
+            salary_net_line = self.env['hr.payslip.line'].search([('slip_id', '=', self.id),
+                                                                 ('type', '=', 'salary_net')])
+            # check constraintes
+            for constrainte_line in self.contraintes_ids:
+                # case 1: check min_amount
+                constrainte_name = constrainte_line.constrainte_name
+                constrainte_amount = constrainte_line.amount
+                if constrainte_name == 'min_amount' and salary_net_line.amount < constrainte_amount:
+                    #  ترحيل حسميات الغياب والتأخير إلى الأشهر اللاحقة
+                    line_to_remove = self.env['hr.payslip.line'].search([('slip_id', '=', self.id),
+                                                                         ('type', 'in', ('retard_leave', 'absence'))])
+                    # update calculated net_salary
+                    salary_net_line.amount = salary_net_line.amount + line_to_remove.amount
+                    # remove deduction line from payslip
+                    self.line_ids = [(3, line_to_remove.id)]
+                    #  check if net salary is still less than min amount
+                    if constrainte_name == 'min_amount' and salary_net_line.amount < constrainte_amount:
+                        diff_amount = constrainte_amount - float(salary_net_line.amount)
+                        diff_amount_line = self.env['hr.payslip.line'].create({'name': u' فرق الراتب ليصل إلى ' + str(constrainte_amount),
+                                                                               'slip_id': payslip.id,
+                                                                               'employee_id': employee.id,
+                                                                               'rate': 0.0,
+                                                                               'number_of_days': 30,
+                                                                               'amount': diff_amount,
+                                                                               'category': 'difference',
+                                                                               'type': 'difference',
+                                                                               'sequence': diff_line_sequence,
+                                                                               })
+                        payslip.line_ids = [(4, diff_amount_line.id)]
+                        salary_net_line.amount = salary_net_line.amount + diff_amount
+                        # add deduction line from payslip
+
             # update allowance_total deduction_total
             payslip.allowance_total = allowance_total
             payslip.difference_deduction_total = deduction_total + difference_total
@@ -752,6 +789,15 @@ class HrPayslip(models.Model):
                                               ('is_special', '=', False)])
             if payroll_count > 1:
                 raise ValidationError(u"لا يمكن إنشاء مسيرين لنفس الموظف في نفس الشهر")
+
+
+class HrPayrollConstrainte(models.Model):
+    _name = 'hr.payroll.constrainte'
+
+    payslip_id = fields.Many2one('hr.payslip', string=u'الموظف')
+    constrainte_name = fields.Selection([('min_amount', u'المبلغ الادنى'),
+                                         ], string='الشروط', readonly=1)
+    amount = fields.Float(string=u'المبلغ')
 
 
 class HrPayslipWorkedDays(models.Model):
@@ -798,6 +844,8 @@ class HrPayslipLine(models.Model):
                              ('salary_net', 'صافي الراتب'),
                              ('sanction', 'عقوبة')
                              ], string='النوع', select=1, readonly=1)
+    model_name = fields.Char('model name')
+    object_id = fields.Integer('Object name')
 
 
 class HrPayslipDaysOff(models.Model):
