@@ -23,11 +23,11 @@
 			<field name="arch" type="xml">
 				<form string="الفروقات">
 					<header>
-						<button string="إحتسب" name="compute_differences" type="object"
+						<button string="إحتسب" name="compute_differences" type="object" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 							states="new" class="oe_highlight" />
-						<button name="action_waiting" string="إرسال للإعتماد" type="object"
+						<button name="action_waiting" string="إرسال للإعتماد" type="object" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 							states="new" groups="smart_hr.group_difference_management" />
-						<button name="action_done" string="إعتماد" type="object"
+						<button name="action_done" string="إعتماد" type="object" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 							states="waiting" groups="smart_hr.group_difference_management" />
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" states="waiting" groups="smart_hr.group_difference_management" />
@@ -46,13 +46,12 @@
 						</group>
 						<notebook>
 							<page string="الموظفين">
-								<group col="4" string="فلترة">
+								<group col="4" string=" ">
 									<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]" />
 									<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]" />
 									<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]" />
 									<field name="salary_grid_type_id" />
 								</group>
-								<field name="employee_ids" />
 							</page>
 							<page string="التفاصيل">
 								<group>

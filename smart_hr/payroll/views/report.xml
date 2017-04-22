@@ -10,12 +10,12 @@
 			report_type="qweb-pdf" string="الموظفين الذين طرأ تغيير في مسيرهم" name="smart_hr.report_hr_payslip_changement" 
 			file="smart_hr.report_hr_payslip_changement" paperformat="smart_base.paperformat_landscape"/>
 
-		<report id="hr_messier_salaries_report" model="hr.payslip"
+		<report id="hr_messier_salaries_report" model="hr.payslip" menu="False"
 			report_type="qweb-pdf" string="مسير الرواتب" name="smart_hr.report_hr_messier_salaries"
 			attachment_use="False" file="smart_hr.report_hr_messier_salaries"
 			paperformat="smart_base.paperformat_landscape" />
 
-		<report id="payslip_extension_report" model="hr.payslip.run"
+		<report id="payslip_extension_report" model="hr.payslip.run" menu="False"
 			report_type="qweb-pdf" string="ملحق الرواتب" name="smart_hr.report_payslip_extension"
 			attachment_use="False" file="smart_hr.report_payslip_extension"
 			paperformat="smart_base.paperformat_landscape" />
