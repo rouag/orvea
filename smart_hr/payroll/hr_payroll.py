@@ -149,7 +149,7 @@ class HrPayslipRun(models.Model):
         for slip in self.slip_ids:
             slip.action_cancel()
 
-    @api.one
+    @api.multi
     def compute_sheet(self):
         payslip_obj = self.env['hr.payslip']
         self.slip_ids.unlink()
@@ -751,21 +751,21 @@ class HrPayslip(models.Model):
             payslip.salary_net = salary_net
             payslip.line_ids = lines
             # get salary_net line
-            salary_net_line = self.env['hr.payslip.line'].search([('slip_id', '=', self.id),
+            salary_net_line = self.env['hr.payslip.line'].search([('slip_id', '=', payslip.id),
                                                                  ('type', '=', 'salary_net')])
             # check constraintes
-            for constrainte_line in self.contraintes_ids:
+            for constrainte_line in payslip.contraintes_ids:
                 # case 1: check min_amount
                 constrainte_name = constrainte_line.constrainte_name
                 constrainte_amount = constrainte_line.amount
                 if constrainte_name == 'min_amount' and salary_net_line.amount < constrainte_amount:
                     #  ترحيل حسميات الغياب والتأخير إلى الأشهر اللاحقة
-                    line_to_remove = self.env['hr.payslip.line'].search([('slip_id', '=', self.id),
+                    line_to_remove = self.env['hr.payslip.line'].search([('slip_id', '=', payslip.id),
                                                                          ('type', 'in', ('retard_leave', 'absence'))])
                     # update calculated net_salary
                     salary_net_line.amount = salary_net_line.amount + line_to_remove.amount
                     # remove deduction line from payslip
-                    self.line_ids = [(3, line_to_remove.id)]
+                    payslip.line_ids = [(3, line_to_remove.id)]
                     #  check if net salary is still less than min amount
                     if constrainte_name == 'min_amount' and salary_net_line.amount < constrainte_amount:
                         diff_amount = constrainte_amount - float(salary_net_line.amount)
