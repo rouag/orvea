@@ -513,6 +513,7 @@
 									<field name="maximum" />
 									<field name="postponement_period" />
 									<field name="min_duration_cut_hoiday" />
+									<field name="deductible_maternity_holiday"/>
 								</group>
 								<group string="الأثر المالي">
 									<field name="salary_spending" />
