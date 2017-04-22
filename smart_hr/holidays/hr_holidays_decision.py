@@ -86,6 +86,7 @@ class hrHolidaysDecision(models.Model):
             self.number = self.employee_id.number
             self.job_id = self.employee_id.job_id.id
             self.department_id = self.employee_id.department_id.id
+        self.holiday_id = False
         self.holiday_status_id = False
         self.date_from = False
         self.date_to = False
