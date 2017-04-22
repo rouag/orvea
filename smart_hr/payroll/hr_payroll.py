@@ -149,22 +149,28 @@ class HrPayslipRun(models.Model):
         for slip in self.slip_ids:
             slip.action_cancel()
 
-    @api.multi
+    @api.one
     def compute_sheet(self):
         payslip_obj = self.env['hr.payslip']
         self.slip_ids.unlink()
         self.count_slip_ids = 0
         self.compute_employee_ids()
+        slip_ids=[]
         for employee in self.employee_ids:
             payslip_val = {'employee_id': employee.id,
                            'period_id': self.period_id.id,
                            'name': _('راتب موظف %s لشهر %s') % (employee.display_name, self.period_id.name),
                            'payslip_run_id': self.id,
                            'date_from': self.date_start,
+                           'date_to': self.date_end,
+                           'grade_id': employee.grade_id.id,
+                           'degree_id': employee.degree_id.id,
+                           'type_id': employee.type_id.id
                            }
-            payslip = payslip_obj.create(payslip_val)
-            payslip.onchange_employee()
-            payslip.compute_sheet()
+            slip_ids.append(payslip_val)
+
+        self.slip_ids = slip_ids
+        self.slip_ids.compute_sheet()
         self.count_slip_ids = len(self.slip_ids)
 
     @api.multi
@@ -334,10 +340,11 @@ class HrPayslip(models.Model):
     @api.onchange('employee_id', 'period_id')
     def onchange_employee(self):
         if self.employee_id and self.period_id:
+            print '--------onchange_employee-------'
             self.date_from = self.period_id.date_start
             self.date_to = self.period_id.date_stop
             self.name = _('راتب موظف %s لشهر %s') % (self.employee_id.display_name, self.period_id.name)
-            self.company_id = self.employee_id.company_id
+            #self.company_id = self.employee_id.company_id
             self.grade_id = self.employee_id.grade_id.id
             self.degree_id = self.employee_id.degree_id.id
             self.type_id = self.employee_id.type_id.id
@@ -503,7 +510,7 @@ class HrPayslip(models.Model):
             allowance_total = 0.0
             deduction_total = 0.0
             difference_total = 0.0
-            month = fields.Date.from_string(self.period_id.date_start).month
+            month = fields.Date.from_string(payslip.period_id.date_start).month
             if basic_salary:
                 # 1- الراتب الأساسي
                 basic_salary_val = {'name': u'الراتب الأساسي',
@@ -667,7 +674,7 @@ class HrPayslip(models.Model):
                 sequence += 1
 
             # 7- القروض
-            loans = loan_obj.get_loan_employee_month(self.date_from, self.date_to, employee.id)
+            loans = loan_obj.get_loan_employee_month(payslip.date_from, payslip.date_to, employee.id)
             for loan in loans:
                 loan_val = {'name': loan['name'],
                             'slip_id': payslip.id,
@@ -702,7 +709,7 @@ class HrPayslip(models.Model):
                 # save the rest for the next month
                 if month + 1 > 12:
                     month = 1
-                self.env['hr.payslip.difference.history'].create({'payslip_id': self.id,
+                self.env['hr.payslip.difference.history'].create({'payslip_id': payslip.id,
                                                                   'amount': third_amount,
                                                                   'employee_id': employee.id,
                                                                   'month': month,
