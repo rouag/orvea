@@ -695,7 +695,7 @@ class HrPayslip(models.Model):
                 sequence += 1
             # 8- فرق الحسميات أكثر من ثلث الراتب
             # check if deduction_total is > than 1/3 of basic salary
-            if (deduction_total * -1) > basic_salary / 3 and not self.contraintes_ids:
+            if (deduction_total * -1) > basic_salary / 3 and not payslip.contraintes_ids:
                 third_amount = deduction_total - basic_salary / 3
                 vals = {'name': 'فرق الحسميات أكثر من ثلث الراتب',
                         'slip_id': payslip.id,
