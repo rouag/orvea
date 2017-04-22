@@ -168,8 +168,8 @@ class HrPayslip(models.Model):
         line_ids += self.get_difference_suspension(self.date_from, self.date_to, self.employee_id, False)
         # فروقات طى القيد
         line_ids += self.get_difference_termination(self.date_from, self.date_to, self.employee_id, False)
-        # فرق الحسميات أكثر من ثلث الراتب
-        line_ids += self.get_difference_one_third_salary(self.date_from, self.date_to, self.employee_id, False)
+        # فرق الحسميات المتخلدة
+        line_ids += self.get_difference_one_third_salary(self.date_from, self.date_to, self.employee_id)
 
         # case 2: احتساب الأثر المالي  لشهر الفارط من تاريخ إعداد مسير الشهر الفرط إلى تاريخ بداية هذا الشهر
         # get last payslip for current employee
@@ -196,8 +196,6 @@ class HrPayslip(models.Model):
             line_ids += self.get_difference_suspension(compute_date, payslip_id.date_to, self.employee_id, True)
             # فروقات طى القيد
             line_ids += self.get_difference_termination(compute_date, payslip_id.date_to, self.employee_id, True)
-            # فرق الحسميات أكثر من ثلث الراتب
-            line_ids += self.get_difference_one_third_salary(compute_date, payslip_id.date_to, self.employee_id, True)
         return line_ids
 
     @api.multi
@@ -1000,23 +998,21 @@ class HrPayslip(models.Model):
         return line_ids
 
     @api.multi
-    def get_difference_one_third_salary(self, date_from, date_to, employee_id, for_last_month):
+    def get_difference_one_third_salary(self, date_from, date_to, employee_id):
         self.ensure_one()
         line_ids = []
-        domain = [('month', '=', fields.Date.from_string(date_from).month),
-                  ('employee_id', '=', employee_id.id),
+        domain = [('payslip_id.employee_id', '=', employee_id.id),
+                  ('period_id', '=', self.period_id.id),
                   ]
-        name = ''
-        if for_last_month:
-            # minus one day to date_from
-            new_date_from = str(fields.Date.from_string(date_from) - timedelta(days=1))
-            domain.append(('done_date', '>=', new_date_from))
-            domain.append(('done_date', '<=', date_to))
-            name = u' للشهر الفارط '
         difference_history_ids = self.env['hr.payslip.difference.history'].search(domain)
         for difference_history in difference_history_ids:
-            vals = {'name': 'فرق الحسميات أكثر من ثلث الراتب' + name,
-                    'employee_id': difference_history.employee_id.id,
+            name = ''
+            if difference_history.name == 'third_salary':
+                name = 'فرق حسميات أكثر من ثلث الراتب'
+            elif difference_history.name == 'negative_salary':
+                name = 'المبلغ المؤجل (سبب راتب سالب)'
+            vals = {'name': name,
+                    'employee_id': difference_history.payslip_id.employee_id.id,
                     'number_of_days': 0.0,
                     'number_of_hours': 0.0,
                     'amount': difference_history.amount,

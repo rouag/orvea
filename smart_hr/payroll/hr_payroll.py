@@ -253,7 +253,7 @@ class HrPayslipRun(models.Model):
         self.bank_file_name = bank_file_name
         fp.close()
         return True
-    
+
     @api.multi
     def unlink(self):
         for rec in self:
@@ -266,11 +266,12 @@ class HrPayslipDifferenceHistory(models.Model):
     _name = 'hr.payslip.difference.history'
     _description = 'الفروقات المتخلدة'
 
-    payslip_id = fields.Many2one('hr.payslip', 'Pay Slip', required=1, ondelete='cascade', select=1)
-    employee_id = fields.Many2one('hr.employee', string=u'الموظف')
-    month = fields.Integer(string=u'الشهر')
+    payslip_id = fields.Many2one('hr.payslip', string=u'المسير', required=1, ondelete='cascade', select=1)
+    period_id = fields.Many2one('hr.period', string=u'الشهر')
     amount = fields.Float(string=u'المبلغ المتخلد')
-    done_date = fields.Date(string='تاريخ التفعيل')
+    name = fields.Selection([('third_salary', u'فرق حسميات أكثر من ثلث الراتب'),
+                             ('negative_salary', u'المبلغ المؤجل (سبب راتب سالب)'),
+                             ], 'الفرق المتخلدة', select=1, readonly=1, copy=False)
 
 
 class HrPayslip(models.Model):
@@ -341,7 +342,6 @@ class HrPayslip(models.Model):
     @api.onchange('employee_id', 'period_id')
     def onchange_employee(self):
         if self.employee_id and self.period_id:
-            print '--------onchange_employee-------'
             self.date_from = self.period_id.date_start
             self.date_to = self.period_id.date_stop
             self.name = _('راتب موظف %s لشهر %s') % (self.employee_id.display_name, self.period_id.name)
@@ -512,7 +512,7 @@ class HrPayslip(models.Model):
             allowance_total = 0.0
             deduction_total = 0.0
             difference_total = 0.0
-            month = fields.Date.from_string(payslip.period_id.date_start).month
+            next_periode_id = self.env['hr.period'].search([('id', '>', payslip.period_id.id)], order='id asc', limit=1)
             if basic_salary:
                 # 1- الراتب الأساسي
                 basic_salary_val = {'name': u'الراتب الأساسي',
@@ -693,7 +693,7 @@ class HrPayslip(models.Model):
                 sequence += 1
             # 8- فرق الحسميات أكثر من ثلث الراتب
             # check if deduction_total is > than 1/3 of basic salary
-            if deduction_total > basic_salary / 3:
+            if (deduction_total * -1) > basic_salary / 3 and not self.contraintes_ids:
                 third_amount = deduction_total - basic_salary / 3
                 vals = {'name': 'فرق الحسميات أكثر من ثلث الراتب',
                         'slip_id': payslip.id,
@@ -708,15 +708,14 @@ class HrPayslip(models.Model):
                 lines.append(vals)
                 deduction_total += third_amount
                 sequence += 1
-                # save the rest for the next month
-                if month + 1 > 12:
-                    month = 1
-                self.env['hr.payslip.difference.history'].create({'payslip_id': payslip.id,
-                                                                  'amount': third_amount,
-                                                                  'employee_id': employee.id,
-                                                                  'month': month,
-                                                                  'done_date': fields.Date.today(),
-                                                                  })
+                if next_periode_id:
+                    self.env['hr.payslip.difference.history'].create({'payslip_id': payslip.id,
+                                                                      'amount': third_amount,
+                                                                      'period_id': next_periode_id.id,
+                                                                      'name': 'third_salary'
+                                                                      })
+                else:
+                    raise ValidationError(u".يوجد فروقات متخلدة، يجب إعداد الفترة القادمة")
             # 9- التأمينات‬
             # old insurance_amount = (basic_salary * amount_multiplication + allowance_total) * salary_grid.insurance / 100.0
             insurance_amount = basic_salary * grid_id.insurance / 100.0
@@ -781,8 +780,30 @@ class HrPayslip(models.Model):
                                                                                })
                         payslip.line_ids = [(4, diff_amount_line.id)]
                         salary_net_line.amount = salary_net_line.amount + diff_amount
-                        # add deduction line from payslip
-
+            # case net_salary is negative
+            if salary_net_line.amount < 0:
+                if next_periode_id:
+                    next_month_amount = salary_net_line.amount
+                    hist_line = self.env['hr.payslip.difference.history'].create({'payslip_id': payslip.id,
+                                                                                  'amount': next_month_amount,
+                                                                                  'period_id': next_periode_id.id,
+                                                                                  'name': 'negative_salary'
+                                                                                  })
+                    if hist_line:
+                        diff_amount_line = self.env['hr.payslip.line'].create({'name': 'المبلغ المراحل (سبب راتب سالب)',
+                                                                               'slip_id': payslip.id,
+                                                                               'employee_id': employee.id,
+                                                                               'rate': 0.0,
+                                                                               'number_of_days': 30,
+                                                                               'amount': salary_net_line.amount,
+                                                                               'category': 'difference',
+                                                                               'type': 'difference',
+                                                                               'sequence': diff_line_sequence,
+                                                                               })
+                        salary_net_line.amount = 0.0
+                else:
+                    raise ValidationError(u".يوجد فروقات متخلدة، يجب إعداد الفترة القادمة")
+            payslip.salary_net = salary_net_line.amount
             # update allowance_total deduction_total
             payslip.allowance_total = allowance_total
             payslip.difference_deduction_total = deduction_total + difference_total
