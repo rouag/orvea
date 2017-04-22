@@ -127,7 +127,17 @@
 			<field name="show_in_apoint" eval="False" />
 		</record>
 		
-		
+			<record id="data_hr_improve_situation_type" model="hr.type.appoint">
+			<field name="name">تحسين وضع</field>
+			<field name="audit" eval="True" />
+			<field name="recrutment_manager" eval="True" />
+			<field name="enterview_manager" eval="False" />
+			<field name="personnel_hr" eval="True" />
+			<field name="direct_manager" eval="True" />
+			<field name="recrutment_decider" eval="False" />
+			<field name="for_members" eval="False" />
+			<field name="show_in_apoint" eval="False" />
+		</record>
 		
 		<record id="data_hr_allowance_appoint" model="hr.allowance.appoint">
 			<field name="hr_allowance_type_id" ref="smart_hr.hr_allowance_type_06" />

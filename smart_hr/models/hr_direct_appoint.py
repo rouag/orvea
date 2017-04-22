@@ -41,7 +41,8 @@ class HrDirectAppoint(models.Model):
         ('appoint' , u'تعيين'),
         ('transfer', u'نقل'),
         ('promotion', u'ترقية'),
-        ('shcolarship', u'ابتعاث')], string='نوع قرار المباشرة', required=1 )
+        ('shcolarship', u'ابتعاث'),
+        ('improve_situation', u'تحسين وضع')], string='نوع قرار المباشرة', required=1 )
     history_line_id = fields.Many2one('hr.employee.history')
     shcolarship_id = fields.Many2one('hr.scholarship', string=u'الابتعاث')
 
@@ -99,7 +100,9 @@ class HrDirectAppoint(models.Model):
                 raise ValidationError(u"لا يوجد تعيين بترقية غير مفعل للموظف!")
             elif self.type == 'appoint':
                 raise ValidationError(u"لا يوجد تعيين غير مفعل للموظف!")
-        if not self.scholarship_id and self.type == 'shcolarship':
+            elif self.type == 'improve_situation':
+                raise ValidationError(u"لا يوجد تعيين بتحسين وضع غير مفعل للموظف!")
+        if not self.shcolarship_id and self.type == 'shcolarship':
             raise ValidationError(u"لا يوجد ابتعاث غير مباشر بعده للموظف!")
         self.state = 'waiting'
 
@@ -127,6 +130,9 @@ class HrDirectAppoint(models.Model):
             self.appoint_id.transfer_id.done_date = self.date_direct_action
         elif self.type == 'promotion':
             self.appoint_id.promotion_id.done_date = self.date_direct_action
+        elif self.type == 'improve_situation':
+            self.appoint_id.improve_id.done_date = self.date_direct_action
+            self.appoint_id.improve_id.state_active = 'active'
         elif self.type == 'shcolarship':
             self.shcolarship_id.restarted = True
         history_line_id = self.env['hr.employee.history'].sudo().add_action_line(self.employee_id, self.decission_id.name, self.decission_id.date, "مباشرة")
@@ -153,6 +159,7 @@ class HrDirectAppoint(models.Model):
             appoint_line = False
             type_appointment_transfer = self.env.ref('smart_hr.data_hr_recrute_from_transfert').id
             type_appointment_promotion = [self.env.ref('smart_hr.data_hr_promotion_agent').id, self.env.ref('smart_hr.data_hr_promotion_member').id]
+            type_appointment_improve_situation = self.env.ref('smart_hr.data_hr_improve_situation_type').id
             if self.type == 'transfer':
                 type_appointment = type_appointment_transfer
                 appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),
@@ -168,13 +175,19 @@ class HrDirectAppoint(models.Model):
             elif self.type == 'appoint':
                 appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),
                                                                         ('state', '=', 'done'),
-                                                                        ('type_appointment', '!=', type_appointment_transfer),
+                                                                        ('type_appointment', 'not in', [type_appointment_transfer, type_appointment_improve_situation]),
                                                                         ('type_appointment', 'not in', type_appointment_promotion),
+                                                                        ('state_appoint', '=', 'new')], limit=1)
+            elif self.type == 'improve_situation':
+                appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', self.employee_id.id),
+                                                                        ('state', '=', 'done'),
+                                                                        ('type_appointment', '=', type_appointment_improve_situation),
                                                                         ('state_appoint', '=', 'new')], limit=1)
             elif self.type == 'shcolarship':
                 shcolarship_id = self.env['hr.scholarship'].search([('employee_id', '=', self.employee_id.id),
                                                                         ('state', '=', 'done'), ('date_to', '<', self.date_direct_action),
                                                                         ('restarted', '=', False)], limit=1)
+            
 
             if appoint_line:
                 self.job_id = appoint_line.job_id.id
