@@ -365,7 +365,7 @@ class HrPayslip(models.Model):
                 final_retirement_amount *= -1
             # 1) البدلات المستثناة
             if allow_exception_amount < 0:
-                vals = {'name': '' + allowance.name + name,
+                vals = {'name': allowance.name + name + ': ابتعاث ',
                         'employee_id': scholarship_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -374,7 +374,7 @@ class HrPayslip(models.Model):
                 line_ids.append(vals)
             # 2) نسبة الراتب بعد حسم التقاعد
             if final_retirement_amount < 0:
-                vals = {'name': u'نسبة الراتب بعد حسم التقاعد' + name,
+                vals = {'name': u'نسبة الراتب بعد حسم التقاعد: ابتعاث' + name,
                         'employee_id': scholarship_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -547,13 +547,16 @@ class HrPayslip(models.Model):
                         today = fields.Date.from_string(fields.Date.today())
                         if rec.entitlement_id.periode:
                             get_from_date = today - relativedelta(years=rec.entitlement_id.periode)
+                            get_to_date = today
                             # get first token holiday with same type
-                            oldest_holiday_id = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
+                            newest_holiday_id = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
                                                                                 ('employee_id', '=', holiday_id.employee_id.id),
                                                                                 ('state', '=', 'done'),
-                                                                                ('date_from', '>=', get_from_date),
-                                                                                ], order='done_date asc', limit=1)
-                            months_from_holiday_start = relativedelta(today, fields.Date.from_string(oldest_holiday_id.date_from)).months
+                                                                                ], order='done_date desc', limit=1)
+                            if newest_holiday_id:
+                                get_to_date = fields.Date.from_string(newest_holiday_id.date_to)
+                                get_from_date = get_to_date - relativedelta(years=rec.entitlement_id.periode)
+                            months_from_holiday_start = relativedelta(get_to_date, get_from_date).months
                             if months_from_holiday_start < 0:
                                 months_from_holiday_start = 0.0
                         if entitlement_type == rec.entitlement_id.entitlment_category and rec.month_from <= months_from_holiday_start <= rec.month_to and duration_in_month > 0:

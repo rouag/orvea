@@ -331,19 +331,29 @@ class HrPayslip(models.Model):
     def button_refuse(self):
         self.state = 'cancel'
 
-    @api.multi
-    @api.onchange('period_id')
-    def _onchange_period_id(self):
-        self.ensure_one()
-        if self.period_id:
-            # check the existance of difference and dedections for current month
+    @api.onchange('employee_id', 'period_id')
+    def onchange_employee(self):
+        if self.employee_id and self.period_id:
             self.date_from = self.period_id.date_start
             self.date_to = self.period_id.date_stop
+            self.name = _('راتب موظف %s لشهر %s') % (self.employee_id.display_name, self.period_id.name)
+            self.company_id = self.employee_id.company_id
+            self.grade_id = self.employee_id.grade_id.id
+            self.degree_id = self.employee_id.degree_id.id
+            self.type_id = self.employee_id.type_id.id
+            # computation worked_days_line_ids, leaves
+            # worked_days_line_ids, leaves = rec.get_worked_day_lines_without_contract(rec.employee_id.id, rec.employee_id.calendar_id, rec.date_from, rec.date_to)
+            # rec.worked_days_line_ids = worked_days_line_ids
+            # rec.days_off_line_ids = leaves
+
+            # check the existance of difference and dedections for current month
             res = {}
-            employee_ids = self.env['hr.employee'].search([('emp_state', 'in', ('working','suspended')), ('employee_state', '=', 'employee')])
+            employee_ids = self.env['hr.employee'].search(
+                [('emp_state', 'in', ('working', 'suspended')), ('employee_state', '=', 'employee')])
             employee_ids = employee_ids.ids
             # موظفين:  طي القيد
-            plus_terminated_emps = self.env['hr.employee'].search([('emp_state', '=', 'terminated'), ('clear_financial_dues', '=', False)])
+            plus_terminated_emps = self.env['hr.employee'].search(
+                [('emp_state', '=', 'terminated'), ('clear_financial_dues', '=', False)])
             if plus_terminated_emps:
                 employee_ids += plus_terminated_emps.ids
             minus_employee_ids = []
@@ -355,24 +365,6 @@ class HrPayslip(models.Model):
             result_employee_ids = list((set(employee_ids) - set(minus_employee_ids)))
             res['domain'] = {'employee_id': [('id', 'in', result_employee_ids)]}
             return res
-
-    @api.onchange('employee_id', 'date_from', 'date_to')
-    def onchange_employee(self):
-        for rec in self:
-            if (not rec.employee_id) or (not rec.date_from) or (not rec.date_to):
-                return
-            employee_id = rec.employee_id
-            rec.date_from = rec.period_id.date_start
-            rec.date_to = rec.period_id.date_stop
-            rec.name = _('راتب موظف %s لشهر %s') % (employee_id.display_name, rec.period_id.name)
-            rec.company_id = employee_id.company_id
-            rec.grade_id = rec.employee_id.grade_id.id
-            rec.degree_id = rec.employee_id.degree_id.id
-            rec.type_id = rec.employee_id.type_id.id
-            # computation of أيام العمل
-            worked_days_line_ids, leaves = rec.get_worked_day_lines_without_contract(rec.employee_id.id, rec.employee_id.calendar_id, rec.date_from, rec.date_to)
-            rec.worked_days_line_ids = worked_days_line_ids
-            rec.days_off_line_ids = leaves
 
     def get_worked_day_lines_without_contract(self, employee_id, working_hours, date_from, date_to, compute_leave=True):
         """

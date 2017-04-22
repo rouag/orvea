@@ -126,12 +126,19 @@ class HrDecision(models.Model):
             self.text = self.replace_text(self.employee_id, self.date, self.decision_type_id.id, 'lend')
 
 
-
+    @api.model
+    def create(self, vals):
+        ret = super(HrDecision, self).create(vals)
+        # Sequence
+        vals = {}
+        vals['name'] = self.env['ir.sequence'].get('hr.decision.seq')
+        ret.write(vals)
+        return ret
 
 
     @api.multi
     def button_done(self):
-        self.name = self.env['ir.sequence'].get('hr.decision.seq')
+        #self.name = self.env['ir.sequence'].get('hr.decision.seq')
         self.state = 'done'
 
     @api.multi
@@ -270,12 +277,13 @@ class HrDecision(models.Model):
                 if object_type == 'termination' :
                     termination_line = self.env['hr.termination'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
                     if termination_line :
-
+                        department_id = termination_line.job_id.department_id.name or ""
                         if termination_line.date_termination:
                             date_termination = self._get_hijri_date(termination_line.date_termination, '-')
                             date_termination = str(date_termination).split('-')
                             date_termination = date_termination[2] + '-' + date_termination[1] + '-' + date_termination[0] or ""
                         date_termination = date_termination or ""
+                        decision_text = decision_text.replace('DEPARTEMENT', unicode(department_id))
                         decision_text = decision_text.replace('TERMINATION', unicode(date_termination))
 
                 if object_type == 'commissioning' :
@@ -316,23 +324,21 @@ class HrDecision(models.Model):
                         decision_text = decision_text.replace('DURATION', unicode(duration))
                         decision_text = decision_text.replace('FROMDET', unicode(fromdate))
                         decision_text = decision_text.replace('ENDDET', unicode(date_to))
-    
-    
-    
+
                 if object_type =='appoint':
                     appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', employee_id.id),('state', '=', 'done')], limit=1)
                     if appoint_line :
-                        emp_job_id = appoint_line.emp_job_id.name.name or ""
-                        emp_number_job = appoint_line.emp_number_job or ""
-                        emp_code = appoint_line.emp_code or ""
-                        emp_department_id = appoint_line.emp_department_id.name or ""
-                        emp_type_id = appoint_line.emp_type_id.name or ""
-                        emp_grade_id = appoint_line.emp_grade_id.name or ""
-                        emp_degree_id = appoint_line.emp_degree_id.name or ""
-                        emp_basic_salary = appoint_line.emp_basic_salary   or ""
+                        emp_job_id = appoint_line.job_id.name.name or ""
+                        number_job = appoint_line.job_id.number or ""
+                        emp_code = appoint_line.code or ""
+                        emp_department_id = appoint_line.department_id.name or ""
+                        emp_type_id = appoint_line.type_id.name or ""
+                        emp_grade_id = appoint_line.grade_id.name or ""
+                        emp_degree_id = appoint_line.degree_id.name or ""
+                        emp_basic_salary = appoint_line.basic_salary   or ""
                         decision_text = decision_text.replace('job', unicode(emp_job_id))
                         decision_text = decision_text.replace('code', unicode(emp_code))
-                        decision_text = decision_text.replace('numero', unicode(emp_number_job))
+                        decision_text = decision_text.replace('numero', unicode(number_job))
                         decision_text = decision_text.replace('degree', unicode(emp_degree_id))
                         decision_text = decision_text.replace('grade', unicode(emp_grade_id))
                         decision_text = decision_text.replace('basicsalaire', unicode(emp_basic_salary))
