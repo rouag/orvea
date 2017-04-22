@@ -637,13 +637,13 @@ class JobCareerModelReport(report_sxw.rml_parse):
         return []
 
     def _get_scale_up_ids(self, job_id):
-        scale_up_ids = self.pool.get('hr.job.move.grade.line').search(self.cr, self.uid, [('job_id', '=', job_id.id), ('job_move_grade_id.state', '=', 'scale_up')])
+        scale_up_ids = self.pool.get('hr.job.move.grade.line').search(self.cr, self.uid, [('job_id', '=', job_id.id), ('job_move_grade_id.move_type', '=', 'scale_up')])
         if scale_up_ids:
             return self.pool.get('hr.job.move.grade.line').browse(self.cr, self.uid, scale_up_ids)
         return []
 
     def _get_scale_down_ids(self, job_id):
-        scale_down_ids = self.pool.get('hr.job.move.grade.line').search(self.cr, self.uid, [('job_id', '=', job_id.id), ('job_move_grade_id.state', '=', 'scale_down')])
+        scale_down_ids = self.pool.get('hr.job.move.grade.line').search(self.cr, self.uid, [('job_id', '=', job_id.id), ('job_move_grade_id.move_type', '=', 'scale_down')])
         if scale_down_ids:
             return self.pool.get('hr.job.move.grade.line').browse(self.cr, self.uid, scale_down_ids)
         return []
