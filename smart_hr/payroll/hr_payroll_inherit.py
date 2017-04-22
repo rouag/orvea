@@ -583,7 +583,7 @@ class HrPayslip(models.Model):
                             cumulation_days = self.env['hr.smart.utils'].get_overlapped_days(get_from_date, get_to_date, ranges)
                             cumulation_days += duration_in_month
                             months_from_holiday_start = cumulation_days / 30.0
-                        if entitlement_type == rec.entitlement_id.entitlment_category and rec.month_from <= months_from_holiday_start <= rec.month_to and duration_in_month > 0:
+                        if entitlement_type == rec.entitlement_id.entitlment_category and rec.month_from <= months_from_holiday_start < rec.month_to and duration_in_month > 0:
                             ret_amount = basic_salary * grid_id.retirement / 100.0
                             new_basic_salary = basic_salary - ret_amount + retirement_amount
                             basic_salary_amount = (duration_in_month * (new_basic_salary / 30.0) * (100 - rec.salary_proportion)) / 100.0
