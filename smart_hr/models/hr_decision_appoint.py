@@ -126,7 +126,8 @@ class HrDecisionAppoint(models.Model):
     promotion_id = fields.Many2one('hr.promotion.employee.job')
     decission_id = fields.Many2one('hr.decision', string=u'القرارات')
     history_line_id = fields.Many2one('hr.employee.history')
-    
+    improve_id = fields.Many2one('hr.improve.situation')
+
     @api.multi
     def open_decission_appoint(self):
         decision_obj= self.env['hr.decision']

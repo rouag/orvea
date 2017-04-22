@@ -39,15 +39,14 @@ class HrDifferential(models.Model):
                                     ('tranfert', 'نقل'),
                                     ('improve_condition', 'تحسين وضع')
                                     ], string=' نوع الإجراء', readonly=1, required=1, default='promotion', states={'new': [('readonly', 0)]})
-    line_ids = fields.One2many('hr.differential.line', 'difference_id', string='الفروقات', readonly=1, states={'new': [('readonly', 0)]})
+    line_ids = fields.One2many('hr.differential.line', 'difference_id', string='الفروقات', readonly=1)
     department_level1_id = fields.Many2one('hr.department', string='الفرع', readonly=1, states={'new': [('readonly', 0)]})
     department_level2_id = fields.Many2one('hr.department', string='القسم', readonly=1, states={'new': [('readonly', 0)]})
     department_level3_id = fields.Many2one('hr.department', string='الشعبة', readonly=1, states={'new': [('readonly', 0)]})
     salary_grid_type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1, states={'new': [('readonly', 0)]},)
-    employee_ids = fields.Many2many('hr.employee', string='الموظفين', readonly=1, states={'new': [('readonly', 0)]})
+    employee_ids = fields.Many2many('hr.employee', string='الموظفين', readonly=1)
 
-    @api.onchange('department_level1_id', 'department_level2_id', 'department_level3_id', 'salary_grid_type_id')
-    def onchange_department_level(self):
+    def compute_employee_ids(self):
         dapartment_obj = self.env['hr.department']
         employee_obj = self.env['hr.employee']
         department_level1_id = self.department_level1_id and self.department_level1_id.id or False
@@ -66,19 +65,33 @@ class HrDifferential(models.Model):
             employee_ids += [x.id for x in dapartment.member_ids]
             for child in dapartment.all_child_ids:
                 employee_ids += [x.id for x in child.member_ids]
-        result = {}
         if not employee_ids:
             # get all employee
             employee_ids = employee_obj.search([('employee_state', '=', 'employee')]).ids
         # filter by type
         if self.salary_grid_type_id:
-            employee_ids = employee_obj.search([('id', 'in', employee_ids), ('type_id', '=', self.salary_grid_type_id.id)]).ids
-        result.update({'domain': {'employee_ids': [('id', 'in', list(set(employee_ids)))]}})
-        return result
+            employee_ids = employee_obj.search([('id', 'in', employee_ids), ('type_id', 'in', self.salary_grid_type_id.ids)]).ids
+        # get only employee have promotion or decision_appoint or transfert or improve_condition
+        domain = [('defferential_is_paied', '=', False), ('employee_id', 'in', employee_ids)]
+        promotions = self.env['hr.promotion.employee.job'].search(domain + [('state', '=', 'done')])
+        decision_appoints = self.env['hr.decision.appoint'].search(domain + [('is_started', '=', True), ('state_appoint', '=', 'active')])
+        transferts = self.env['hr.employee.transfert'].search(domain + [('state', '=', 'done')])
+        improve_conditions = self.env['hr.improve.situation'].search(domain + [('state', '=', 'done')])
+        employee_operation_ids = set()
+        for promotion in promotions:
+            employee_operation_ids.add(promotion.employee_id.id)
+        for decision_appoint in decision_appoints:
+            employee_operation_ids.add(decision_appoint.employee_id.id)
+        for transfert in transferts:
+            employee_operation_ids.add(transfert.employee_id.id)
+        for improve_condition in improve_conditions:
+            employee_operation_ids.add(improve_condition.employee_id.id)
+        self.employee_ids = list(employee_operation_ids)
 
     @api.multi
     def compute_differences(self):
         self.line_ids.unlink()
+        self.compute_employee_ids()
         line_ids = []
         decision_appoint_obj = self.env['hr.decision.appoint']
         # تقسيم فترة الفرق الفترات شهرية
@@ -203,8 +216,7 @@ class HrDifferentialLine(models.Model):
                 date_stop = get_hijri_month_end__by_year(HijriDate, Umalqurra, hijri_year, hijri_month)
                 period_id = self.env['hr.period'].search([('date_start', '=', date_start),
                                                           ('date_stop', '=', date_stop)])
-
-                d_start, d_stop = self.env['hr.smart.utils'].get_overlapped_periode(date_start, date_stop, rec.date_start, rec.date_stop)
+                d_start, d_stop = self.env['hr.smart.utils'].get_overlapped_periode(date_start, date_stop, fields.Date.from_string(str(rec.date_start)), fields.Date.from_string(str(rec.date_stop)))
                 if d_start and d_stop:
                     number_of_days = (d_stop - d_start).days + 1
                     ds = ds + relativedelta(days=number_of_days)

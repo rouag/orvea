@@ -39,7 +39,9 @@ class HrPayslip(models.Model):
                     'number_of_hours': 0.0,
                     'amount': -1 * amount,
                     'category': 'deduction',
-                    'type': 'absence'}
+                    'type': 'absence',
+                    'model_name': 'hr.employee.absence.days',
+                    'object_id': line.id}
             line_ids.append(vals)
             tot_number_request += line.number_request
         if abscence_ids:
@@ -54,7 +56,11 @@ class HrPayslip(models.Model):
                         'number_of_hours': 0.0,
                         'amount': retirement_amount,
                         'category': 'deduction',
-                        'type': 'absence'}
+                        'type': 'absence',
+                        'model_name': 'hr.employee.absence.days',
+                        'object_id': line.id,
+                        'model_name': 'hr.employee.absence.days',
+                        'object_id': line.id}
                 line_ids.append(vals)
 
         # حسم‬  التأخير يكون‬ من‬  الراتب‬ الأساسي فقط
@@ -70,7 +76,9 @@ class HrPayslip(models.Model):
                     'number_of_hours': 0.0,
                     'amount': -1 * amount,
                     'category': 'deduction',
-                    'type': 'retard_leave'}
+                    'type': 'retard_leave',
+                    'model_name': 'hr.employee.delay.hours',
+                    'object_id': line.id}
             line_ids.append(vals)
         if delays_ids:
             self.delays_ids = delays_ids.ids
@@ -160,8 +168,8 @@ class HrPayslip(models.Model):
         line_ids += self.get_difference_suspension(self.date_from, self.date_to, self.employee_id, False)
         # فروقات طى القيد
         line_ids += self.get_difference_termination(self.date_from, self.date_to, self.employee_id, False)
-        # فرق الحسميات أكثر من ثلث الراتب
-        line_ids += self.get_difference_one_third_salary(self.date_from, self.date_to, self.employee_id, False)
+        # فرق الحسميات المتخلدة
+        line_ids += self.get_difference_one_third_salary(self.date_from, self.date_to, self.employee_id)
 
         # case 2: احتساب الأثر المالي  لشهر الفارط من تاريخ إعداد مسير الشهر الفرط إلى تاريخ بداية هذا الشهر
         # get last payslip for current employee
@@ -188,8 +196,6 @@ class HrPayslip(models.Model):
             line_ids += self.get_difference_suspension(compute_date, payslip_id.date_to, self.employee_id, True)
             # فروقات طى القيد
             line_ids += self.get_difference_termination(compute_date, payslip_id.date_to, self.employee_id, True)
-            # فرق الحسميات أكثر من ثلث الراتب
-            line_ids += self.get_difference_one_third_salary(compute_date, payslip_id.date_to, self.employee_id, True)
         return line_ids
 
     @api.multi
@@ -314,7 +320,6 @@ class HrPayslip(models.Model):
         scholarship_ids = self.env['hr.scholarship'].search(domain)
         final_retirement_amount = 0.0
         allow_exception_amount = 0.0
-        print '--scholarship_ids---', scholarship_ids
         for scholarship_id in scholarship_ids:
             # overlaped days in current month
             scholarship_date_from = fields.Date.from_string(scholarship_id.date_from)
@@ -502,6 +507,11 @@ class HrPayslip(models.Model):
         holidays_ids = self.env['hr.holidays'].search(domain)
         for holiday_id in holidays_ids:
             holiday_status_id = holiday_id.holiday_status_id
+            if holiday_status_id.min_amount:
+                # add constrainte to payslip: to check after net salary is calculated
+                self.env['hr.payroll.constrainte'].create({'payslip_id': self.id,
+                                                           'constrainte_name': 'min_amount',
+                                                           'amount': holiday_status_id.min_amount})
             # get the entitlement type
             if not holiday_id.entitlement_type:
                 entitlement_type = self.env.ref('smart_hr.data_hr_holiday_entitlement_all')
@@ -523,6 +533,7 @@ class HrPayslip(models.Model):
             retirement_amount2 = 0.0
             allowance_amount = 0.0
             allowance_amount2 = 0.0
+            cumulation_days = 0.0
             if len(res) == 1:
                 res = res[0]
                 grid_id = res['grid_id']
@@ -557,18 +568,27 @@ class HrPayslip(models.Model):
                             if newest_holiday_id:
                                 get_to_date = fields.Date.from_string(newest_holiday_id.date_to)
                                 get_from_date = get_to_date - relativedelta(years=rec.entitlement_id.periode)
-                            months_from_holiday_start = relativedelta(get_to_date, get_from_date).months
-                            if months_from_holiday_start < 0:
-                                months_from_holiday_start = 0.0
+                            # get token holidays started in  get_from_date and before start of month
+                            start_month = fields.Date.from_string(self.date_from)
+                            ranges = []
+                            before_holidays = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
+                                                                              ('employee_id', '=', holiday_id.employee_id.id),
+                                                                              ('state', '=', 'done'),
+                                                                              ('date_from', '>=', get_from_date),
+                                                                              ('date_from', '<', start_month),
+                                                                              ])
+                            for b_hol in before_holidays:
+                                range_p = [fields.Date.from_string(b_hol.date_from), start_month]
+                                ranges.append(range_p)
+                            cumulation_days = self.env['hr.smart.utils'].get_overlapped_days(get_from_date, get_to_date, ranges)
+                            cumulation_days += duration_in_month
+                            months_from_holiday_start = cumulation_days / 30.0
                         if entitlement_type == rec.entitlement_id.entitlment_category and rec.month_from <= months_from_holiday_start <= rec.month_to and duration_in_month > 0:
                             ret_amount = basic_salary * grid_id.retirement / 100.0
                             new_basic_salary = basic_salary - ret_amount + retirement_amount
                             basic_salary_amount = (duration_in_month * (new_basic_salary / 30.0) * (100 - rec.salary_proportion)) / 100.0
                             if holiday_status_id.min_amount:
                                 basic_salary_amount = (new_basic_salary * (100 - rec.salary_proportion)) / 100.0
-                                diff = holiday_status_id.min_amount - (new_basic_salary * rec.salary_proportion) / 100.0
-                                if diff > 0:
-                                    basic_salary_amount -= diff
                                 # amout depend of number of days
                                 basic_salary_amount = basic_salary_amount * duration_in_month / 30.0
                             # فرق البدلات
@@ -597,24 +617,44 @@ class HrPayslip(models.Model):
                         retirement_amount += basic_salary * grid_id.retirement / 100.0 / 30.0 * days
                     # case of  لا يصرف له راتب كامل
                     if grid_id and holiday_status_id.salary_spending and holiday_status_id.percentages:
-                        for rec in holiday_status_id.percentages:
+                        for per in holiday_status_id.percentages:
                             today = fields.Date.from_string(fields.Date.today())
-                            if rec.entitlement_id.periode:
-                                get_from_date = today - relativedelta(years=rec.entitlement_id.periode)
-                                # get first token holiday with same type
-                                oldest_holiday_id = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
-                                                                                    ('employee_id', '=', holiday_id.employee_id.id),
-                                                                                    ('state', '=', 'done'),
-                                                                                    ('date_from', '>=', get_from_date),
-                                                                                    ], order='done_date asc', limit=1)
-                                months_from_holiday_start = relativedelta(today, fields.Date.from_string(oldest_holiday_id.date_from)).months
-                            if entitlement_type == rec.entitlement_id.entitlment_category and rec.month_from <= months_from_holiday_start <= rec.month_to and days > 0:
+                            if per.entitlement_id.periode:
+                                # the above code must be entred one only for one time
+                                if not months_from_holiday_start:
+                                    get_from_date = today - relativedelta(years=per.entitlement_id.periode)
+                                    get_to_date = today
+                                    # get first token holiday with same type
+                                    newest_holiday_id = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
+                                                                                        ('employee_id', '=', holiday_id.employee_id.id),
+                                                                                        ('state', '=', 'done'),
+                                                                                        ], order='done_date desc', limit=1)
+                                    if newest_holiday_id:
+                                        get_to_date = fields.Date.from_string(newest_holiday_id.date_to)
+                                        get_from_date = get_to_date - relativedelta(years=per.entitlement_id.periode)
+                                    # get token holidays started in  get_from_date and before start of month
+                                    start_month = fields.Date.from_string(self.date_from)
+                                    ranges = []
+                                    before_holidays = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
+                                                                                      ('employee_id', '=', holiday_id.employee_id.id),
+                                                                                      ('state', '=', 'done'),
+                                                                                      ('date_from', '>=', get_from_date),
+                                                                                      ('date_from', '<', start_month),
+                                                                                      ])
+                                    for b_hol in before_holidays:
+                                        if fields.Date.from_string(b_hol.date_to) < start_month:
+                                            range_p = [b_hol.date_from, b_hol.date_to]
+                                            ranges.append(range_p)
+                                    cumulation_days = self.env['hr.smart.utils'].get_overlapped_days(get_from_date, get_to_date, ranges)
+                                    cumulation_days += duration_in_month
+                                    months_from_holiday_start = cumulation_days / 30.0
+                            if entitlement_type == per.entitlement_id.entitlment_category and per.month_from <= months_from_holiday_start <= per.month_to and days > 0:
                                 ret_amount = basic_salary * grid_id.retirement / 100.0
                                 new_basic_salary = basic_salary - ret_amount + retirement_amount
-                                basic_salary_amount2 += (days * (new_basic_salary / 30.0) * (100 - rec.salary_proportion)) / 100.0
+                                basic_salary_amount2 += (days * (new_basic_salary / 30.0) * (100 - per.salary_proportion)) / 100.0
                                 if holiday_status_id.min_amount:
-                                    basic_salary_amount2 += (new_basic_salary * (100 - rec.salary_proportion)) / 100.0
-                                    diff = holiday_status_id.min_amount - (new_basic_salary * rec.salary_proportion) / 100.0
+                                    basic_salary_amount2 += (new_basic_salary * (100 - per.salary_proportion)) / 100.0
+                                    diff = holiday_status_id.min_amount - (new_basic_salary * per.salary_proportion) / 100.0
                                     if diff > 0:
                                         basic_salary_amount2 -= diff
                                     # amout depend of number of days
@@ -626,7 +666,7 @@ class HrPayslip(models.Model):
                                     allowance_amount2 += allowance['amount'] / 30.0 * days
                             # فرق التقاعد
                             if holiday_status_id.deductible_duration_service:
-                                retirement_amount2 += (basic_salary * grid_id.retirement / 100.0 * (100 - rec.salary_proportion) / 100.0) / 30.0 * days
+                                retirement_amount2 += (basic_salary * grid_id.retirement / 100.0 * (100 - per.salary_proportion) / 100.0) / 30.0 * days
             #
             if basic_salary_amount:
                 vals = {'name': holiday_id.holiday_status_id.name + name,
@@ -991,23 +1031,21 @@ class HrPayslip(models.Model):
         return line_ids
 
     @api.multi
-    def get_difference_one_third_salary(self, date_from, date_to, employee_id, for_last_month):
+    def get_difference_one_third_salary(self, date_from, date_to, employee_id):
         self.ensure_one()
         line_ids = []
-        domain = [('month', '=', fields.Date.from_string(date_from).month),
-                  ('employee_id', '=', employee_id.id),
+        domain = [('payslip_id.employee_id', '=', employee_id.id),
+                  ('period_id', '=', self.period_id.id),
                   ]
-        name = ''
-        if for_last_month:
-            # minus one day to date_from
-            new_date_from = str(fields.Date.from_string(date_from) - timedelta(days=1))
-            domain.append(('done_date', '>=', new_date_from))
-            domain.append(('done_date', '<=', date_to))
-            name = u' للشهر الفارط '
         difference_history_ids = self.env['hr.payslip.difference.history'].search(domain)
         for difference_history in difference_history_ids:
-            vals = {'name': 'فرق الحسميات أكثر من ثلث الراتب' + name,
-                    'employee_id': difference_history.employee_id.id,
+            name = ''
+            if difference_history.name == 'third_salary':
+                name = 'فرق حسميات أكثر من ثلث الراتب'
+            elif difference_history.name == 'negative_salary':
+                name = 'المبلغ المؤجل (سبب راتب سالب)'
+            vals = {'name': name,
+                    'employee_id': difference_history.payslip_id.employee_id.id,
                     'number_of_days': 0.0,
                     'number_of_hours': 0.0,
                     'amount': difference_history.amount,

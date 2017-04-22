@@ -62,16 +62,19 @@
 				<xpath expr="/form" position='replace'>
 					<form string="Payslip">
 						<header>
-							<button string="إحتسب" name="compute_sheet" type="object"
+							<button string="إحتسب" name="compute_sheet" type="object" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 								states="draft" class="oe_highlight" />
-							<button name="action_verify" string="إرسال للإعتماد" type="object"
+
+							<button name="action_verify" string="ترحيل" type="object" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 								states="draft" />
-							<button name="action_done" string="إعتماد" type="object"
-								states="verify" />
-							
-							 <button name="%(action_hr_refuse_wizard)d" string="رفض"
-							type="action"
-								states="verify" />
+
+							<button name="action_done" string="صرف الراتب" type="object"  confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" states="verify" />
+
+							<button name="%(hr_messier_salaries_report)d" string="طباعة المسير"
+									type="action" icon="fa-print" class="oe_inline oe_stat_button" />
+
+							<button name="%(action_hr_refuse_wizard)d" string="رفض" type="action" states="verify" />
+
 							<field name="state" widget="statusbar" statusbar_visible="draft,verify,done" />
 						</header>
 						<sheet>
@@ -297,17 +300,23 @@
 					<header>
 						<button string="إحتسب" name="compute_sheet" type="object" states="draft" class="oe_highlight" />
 						
-						<button name="action_verify" string="ترحيل" type="object" states="draft"  />
+						<button name="action_verify" string="ترحيل" type="object" states="draft" class="oe_highlight"
+								confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"  />
+
+						<button name="action_finance" string="إرسال" type="object" states="verify"  class="oe_highlight"
+								confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" groups="smart_hr.group_finance_department"/>
+
 						<button name="%(action_payroll_refuse_wizard)d" string="رفض"
 							context="{'payslip_run_from_state':'verify'}" type="action" states="verify" groups="smart_hr.group_finance_department"/>
-						
-						<button name="action_finance" string="إرسال" type="object" states="verify"   groups="smart_hr.group_finance_department"/>
 
-						<button name="action_banking" string="إعداد الملف البنكي" type="object" states="finance"  class="oe_highlight" groups="smart_hr.group_finance_department"/>
+						<button name="action_banking" string="إعداد الملف البنكي" type="object" states="finance"  class="oe_highlight"
+								groups="smart_hr.group_finance_department"/>
+
 						<button name="%(action_payroll_refuse_wizard)d" string="رفض"
 								context="{'payslip_run_from_state':'finance'}" type="action" states="finance" groups="smart_hr.group_finance_department"/>
 						
-						<button name="action_done" string="صرف الرواتب" type="object" states="banking" groups="smart_hr.group_finance_department"/>
+						<button name="action_done" string="صرف الرواتب" type="object" class="oe_highlight" states="banking" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+								 groups="smart_hr.group_finance_department"/>
 						
 						<button name="%(report_hr_error_employee_run_report)d" string="تقرير الموظفين المسثنين من المسير الجماعي"
 							type="action" icon="fa-print" class="oe_inline oe_stat_button" attrs="{'invisible':[('count_slip_ids','=', 0)]}"/>
@@ -325,7 +334,7 @@
 						  	<group>
 								<field name="period_id" />
 								<field name="bank_file" readonly="1" filename="bank_file_name"
-									attrs="{'invisible':[('state','!=','done')]}" />
+									attrs="{'invisible':[('state','not in',('done','banking'))]}" />
 								<field name="bank_file_name" invisible="1"  />
 								<label for="date_start" string="الفترة"  invisible="1"/>
 								<div invisible="1">
@@ -349,12 +358,11 @@
 									<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]"/>
 									<field name="salary_grid_type_id" widget="many2many_tags"/>
 								</group>
-								<field name="employee_ids" invisible="1"/>
 								<field name="count_slip_ids" invisible="1"/>
 							</page>
 							<page  string="المسيّرات الإفرادية">
-								<field name="slip_ids" readonly='1'>
-									<tree create='0' edit='0'>
+								<field name="slip_ids" readonly='1' context="{'form_view_ref' : 'smart_hr.view_hr_payslip_form'}">
+									<tree create='0' edit='0' colors="red:salary_net==0.0;">
 										<field name="number" string="التسلسل" />
 										<field name="employee_id" />
 										<field name="salary_net"/>

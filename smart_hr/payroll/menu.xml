@@ -9,6 +9,8 @@
 
 		<menuitem id="hr_bonus_root" parent="hr_payroll_root" name="المزايا المالية" sequence="10" />
 		
+		<menuitem id="hr_rest_deduction_root" parent="hr_payroll_root" name="الحسميات المتخلدة" sequence="15" />
+		
 		<menuitem id="hr_loan_root" parent="hr_payroll_root" name="القروض" sequence="20" />
 
 		<menuitem id="hr_difference_root" parent="hr_payroll_root" name="الفروقات" sequence="22" />

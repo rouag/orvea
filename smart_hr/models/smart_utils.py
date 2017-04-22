@@ -27,6 +27,24 @@ class SmartUtils(models.Model):
         else:
             return False, False
 
+    def get_overlapped_days(self, date_from, date_to, ranges):
+        """
+        @param: ranges array of arrays. each one have date_from, date_to
+        @return: overlapped days bettwen periode and other periodes
+        """
+
+        def intersection_date_set(d1, d2):
+            delta = d2 - d1
+            return set([d1 + timedelta(days=i) for i in range(delta.days + 1)])
+
+        days = 0
+        range1 = [date_from, date_to]
+        for range2 in ranges:
+            listset = intersection_date_set(*range1) & intersection_date_set(*range2)
+            if listset:
+                days += len(listset)
+        return days
+
     def compute_duration_difference(self, employee_id, date_from, date_to, normal_day, weekend, holidays):
         days = 0
         dayDelta = timedelta(days=1)

@@ -56,6 +56,9 @@ class HrJob(models.Model):
                                  ],
                                 string=u'مصدر الحالة')
     branch_id = fields.Many2one('hr.department', string=u'الفرع', related='department_id.branch_id')
+    upgrade_date = fields.Date(string=u'تاريخ الرفع')
+    downgrade_date = fields.Date(string=u'تاريخ الخفض')
+    creation_date = fields.Datetime(string=u'تاريخ الانشاء')
 
     @api.multi
     @api.depends('occupation_date_to')
@@ -215,7 +218,6 @@ class HrJobCreate(models.Model):
     draft_budget = fields.Binary(string=u'مشروع الميزانية', attachment=True)
     draft_budget_name = fields.Char(string=u'مشروع الميزانية مسمى ')
     type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1, states={'new': [('readonly', 0)]})
- 
 
     @api.multi
     def unlink(self):
@@ -286,8 +288,8 @@ class HrJobCreate(models.Model):
                        'specific_id': self.specific_id.id,
                        'serie_id': self.serie_id.id,
                        'activity_type': line.activity_type.id,
-                       'creation_source': 'creation'
-
+                       'creation_source': 'creation',
+                       'creation_date': line.create_date,
                        }
             job_id = self.env['hr.job'].create(job_val)
             description = u" إحداث الوظيفة من قبل " + " " + unicode(user.name) + u"'"
@@ -403,6 +405,34 @@ class HrJobCreateLine(models.Model):
             grade_ids = [rec.id for rec in self.job_create_id.grade_ids]
             res['domain'] = {'grade_id': [('id', 'in', grade_ids)]}
             return res
+
+    @api.onchange('job_number')
+    def _onchange_job_number(self):
+        res = {}
+        warning={}
+        if self.job_number:
+            # check if there is already a job with new grade and same job number
+            jobs = self.env['hr.job'].search_count([('number', '=', self.job_number)])
+            if jobs:
+                self.job_number = ''
+                warning = {
+                    'title': _('تحذير!'),
+                    'message': _('يوجد وظيفة بنفس الرقم!'),
+                }
+            elif not self.job_number.isdigit():
+                self.job_number = ''
+                warning = {
+                    'title': _('تحذير!'),
+                    'message': _('رقم الوظيفة لا يقبل حروف او مسافات او حروف خاصة!'),
+                }
+            else:
+                number = self.job_number
+                grade = number[0:2]
+                grade_ids = [rec.id for rec in self.job_create_id.grade_ids if rec.code==grade]
+                res['domain'] = {'grade_id': [('id', 'in', grade_ids)]}
+        res['warning'] = warning
+        self.grade_id = False
+        return res
 
 
 class HrJobStripFrom(models.Model):
@@ -552,7 +582,8 @@ class HrJobStripFrom(models.Model):
                        'general_id': self.general_id.id,
                        'specific_id': self.specific_id.id,
                        'serie_id': self.serie_id.id,
-                       'creation_source': 'striped_from'
+                       'creation_source': 'striped_from',
+                       'creation_date': line.create_date
                        }
             job_id = self.env['hr.job'].create(job_val)
             description = u" إحداث الوظيفة بسلخ من قبل " + " " + unicode(user.name) + u"'"
@@ -1244,8 +1275,10 @@ class HrJobMoveGrade(models.Model):
         for job in self.job_movement_ids:
             if self.move_type == "scale_up":
                 move_type = "رفع"
+                job.job_id.upgrade_date = date.today()
             else:
                 move_type = "خفض"
+                job.job_id.downgrade_date = date.today()
             description = move_type + u" الوظيفة من المرتبة " + unicode(job.grade_id.name) +u" الى المرتبة " +unicode(job.new_grade_id.name) + '.\n'
             if job.new_job_name:
                 description += " تغيير المسمى من " + unicode(job.job_id.name.name) + u"  الى " + unicode(job.new_job_name.name)+ ".\n"
@@ -1260,6 +1293,7 @@ class HrJobMoveGrade(models.Model):
                 'job_id': job.job_id.id}
             self.env['hr.job.history.actions'].create(job_history_vals)
             job.job_id.state = 'cancel'
+            
             new_job_description = u"إحداث ب"+move_type + u" الوظيفة من المرتبة " + unicode(job.grade_id.name) +u" الى المرتبة " +unicode(job.new_grade_id.name) + '.\n'
             new_job_vals = {
             'grade_id' : job.new_grade_id.id,
@@ -1272,8 +1306,8 @@ class HrJobMoveGrade(models.Model):
             'general_id': job.job_id.general_id.id,
             'specific_id': job.job_id.specific_id.id,
             'activity_type': job.job_id.activity_type.id,
-            'creation_source': self.move_type,
             'type_id' : job.job_id.type_id.id,
+            'creation_date': job.job_id.creation_date,
             }
             new_job = self.env['hr.job'].create(new_job_vals)
             new_job_history_vals = {
@@ -1377,17 +1411,18 @@ class HrJobMoveGradeLine(models.Model):
     _rec_name = 'job_id'
 
     job_move_grade_id = fields.Many2one('hr.job.move.grade', string='الوظيفة', required=1, ondelete="cascade")
-    job_id = fields.Many2one('hr.job', string='الوظيفة', required=1)
-    job_number = fields.Char(string='رقم الوظيفة', readonly=1)
-    job_name_code = fields.Char(related="job_id.name.number", string='الرمز', readonly=1)
+    job_id = fields.Many2one('hr.job', string='اسم الوظيفة القديم', required=1)
+    job_number = fields.Char(string='رقم المرتبة القديم', readonly=1)
+    job_name_code = fields.Char(related="job_id.name.number", string='رقم المرتبة القديم', readonly=1)
     type_id = fields.Many2one('salary.grid.type', string='نوع السلم', readonly=1, required=1)
-    grade_id = fields.Many2one('salary.grid.grade', string='المرتبة الحالية', readonly=1, required=1)
+    grade_id = fields.Many2one('salary.grid.grade', string=' المرتبة القديمة', readonly=1, required=1)
     new_grade_id = fields.Many2one('salary.grid.grade', string=' المرتبة الجديدة', required=1)
     department_id = fields.Many2one('hr.department', string='الإدارة', readonly=1, required=1)
-    new_job_number = fields.Char(string='رقم الوظيفة الجديد', required=1)
+    new_job_number = fields.Char(string='رقم المرتبة الجديد', required=1)
     new_department_id = fields.Many2one('hr.department', string=' الإدارة الجديدة', required=1)
-    new_job_name = fields.Many2one('hr.job.name', string='المسمى الجديد', required=1)
-
+    new_job_name = fields.Many2one('hr.job.name', string='اسم الوظيفة الجديد', required=1)
+    notes = fields.Text(string=u'ملاحظات')
+    
     @api.onchange('job_id')
     def _onchange_job_id(self):
         if self.job_id:
@@ -1412,8 +1447,7 @@ class HrJobMoveGradeLine(models.Model):
                     if int(self.job_id.grade_id.code) < int(rec.code):
                         grade_ids.append(rec.id)
             type = self.job_id.type_id.id
-            name_ids = self.job_id.serie_id.job_name_ids.ids
-            new_job_name_ids = self.env['hr.job.name'].search([('type_ids', 'in', type), ('id', 'in', name_ids)])
+            new_job_name_ids = self.env['hr.job.name'].search([('type_ids', 'in', type)])
             res['domain'] = {'new_grade_id': [('id', 'in', grade_ids)], 'new_job_name': [('id', 'in', new_job_name_ids.ids)]}
             return res
 
@@ -1429,15 +1463,79 @@ class HrJobMoveGradeLine(models.Model):
             res['domain'] = {'job_id': [('id', 'in', job_ids)]}
             return res
 
-    @api.constrains('job_number', 'new_grade_id')
+    @api.constrains('new_job_number', 'new_grade_id')
     def _check_new_grade_id_job_number(self):
         if self.job_number and self.new_grade_id:
             # check if there is already a job with new grade and same job number
-            jobs = self.env['hr.job'].search([])
-            for job in jobs:
-                if job.grade_id == self.new_grade_id and job.number == self.job_number:
-                    raise ValidationError(u"يوجد وظيفة بنفس الرقم والمرتبة.")
+            jobs = self.env['hr.job'].search_count([('grade_id', '=', self.new_grade_id.id), ('number', '=', self.new_job_number)])
+            if jobs:
+                raise ValidationError(u"يوجد وظيفة بنفس الرقم والمرتبة.")
+            
+#     @api.onchange('new_job_number')
+#     def onchange_new_job_number(self):
+#         res = {}
+#         warning = {}
+# 
+#         if self.new_job_number:
+#             # check if there is already a job with new grade and same job number
+#             jobs = self.env['hr.job'].search_count([('number', '=', self.new_job_number)])
+#             if jobs:
+#                 self.new_job_number = ''
+#                 warning = {
+#                     'title': _('تحذير!'),
+#                     'message': _('يوجد وظيفة بنفس الرقم!'),
+#                 }
+#             elif not self.new_job_number.isdigit():
+#                 self.new_job_number = ''
+#                 warning = {
+#                     'title': _('تحذير!'),
+#                     'message': _('رقم الوظيفة لا يقبل حروف او مسافات او حروف خاصة!'),
+#                 }
+#         self.new_grade_id = False
+#         res['warning'] = warning
+#         return res
 
+    @api.onchange('new_grade_id', 'new_job_number')
+    def onchange_new_grade_id(self):
+        print "aaaaaaaaaaaaaaaaaaa"
+        res = {}
+        warning = {}
+        if self.new_job_number:
+            number = self.new_job_number
+            grade = number[0:2]
+            grides= []
+            grade_ids=[]
+            for rec in self.env['salary.grid.grade'].search([]):
+                if int(rec.code) >= int(self.job_id.serie_id.rank_from.code) and int(rec.code) <= int(self.job_id.serie_id.rank_to.code):
+                    grides.append(rec)
+        # get availble grades depend on move_type type رفع أو خفض
+            for rec in grides:
+                if self._context['operation'] == 'scale_down':
+                    if int(self.job_id.grade_id.code) > int(rec.code) and rec.code==grade:
+                        grade_ids.append(rec.id)
+                if self._context['operation'] == 'scale_up':
+                    if int(self.job_id.grade_id.code) < int(rec.code) and rec.code==grade:
+                        grade_ids.append(rec.id)
+            res['domain'] = {'new_grade_id': [('id', 'in', grade_ids)]}
+            # check if there is already a job with new grade and same job number
+            jobs = self.env['hr.job'].search_count([('number', '=', self.new_job_number)])
+            self.new_grade_id = False
+            if jobs:
+                self.new_job_number = ''
+                self.new_grade_id = False
+                warning = {
+                    'title': _('تحذير!'),
+                    'message': _('يوجد وظيفة بنفس الرقم!'),
+                }
+            elif not self.new_job_number.isdigit():
+                self.new_job_number = ''
+                self.new_grade_id = False
+                warning = {
+                    'title': _('تحذير!'),
+                    'message': _('رقم الوظيفة لا يقبل حروف او مسافات او حروف خاصة!'),
+                }
+        res['warning'] = warning
+        return res
 
 class HrJobMoveUpdate(models.Model):
     _name = 'hr.job.update'
@@ -1610,6 +1708,7 @@ class HrJobMoveUpdate(models.Model):
                 raise ValidationError(u'لا يمكن حذف تحوير‬ وظائف فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(HrJobMoveUpdate, self).unlink()
 
+
 class HrJobMoveUpdateLine(models.Model):
     _name = 'hr.job.update.line'
     _description = u'تحوير‬ وظيفة'
@@ -1628,6 +1727,7 @@ class HrJobMoveUpdateLine(models.Model):
     department_id = fields.Many2one('hr.department', related='job_id.department_id', string=u'الإدارة', readonly=1,
                                     required=1)
     new_job_number = fields.Char(string=u'رقم الوظيفة الجديد', required=1)
+
 
     @api.onchange('job_id')
     def onchange_job_id(self):
@@ -1650,9 +1750,24 @@ class HrJobMoveUpdateLine(models.Model):
             self.job_number = self.job_id.number
             domain['new_name'] = [('id', '!=', self.job_id.name.id)]
             domain['new_type_id'] = [('id', '!=', self.job_id.type_id.id)]
+            if self.new_type_id:
+                new_job_name_ids = self.env['hr.job.name'].search([('type_ids', 'in', self.new_type_id.id)])
+                domain['new_name'] = [('id', '!=', self.job_id.name.id), ('id', 'in', new_job_name_ids.ids)]
+            self.new_type_id = False
+            self.new_name = False
             res['domain'] = domain
-            
             return res
+
+    @api.onchange('new_type_id')
+    def onchange_new_type_id(self):
+        res = {}
+        domain = {}
+        if self.job_id and self.new_type_id:
+            new_job_name_ids = self.env['hr.job.name'].search([('type_ids', 'in', self.new_type_id.id)])
+            domain['new_name'] = [('id', '!=', self.job_id.name.id), ('id', 'in', new_job_name_ids.ids)]
+            res['domain'] = domain
+            self.new_name = False
+        return res
 
 
 class HrJobTypeActivity(models.Model):

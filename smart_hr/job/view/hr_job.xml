@@ -56,8 +56,11 @@
 								<field name="general_id" />
 								<field name="specific_id" />
 								<field name="serie_id" />
-								<field name="create_date" />
+								<field name="creation_date" />
 								<field name="write_date" />
+								<field name="upgrade_date" />
+								<field name="downgrade_date" />
+
 							</group>
 							<group>
 								<field name="number" />
@@ -202,7 +205,7 @@
 
 						<button name="action_done" string="موافقة" type="object"
 							groups="smart_hr.group_job_external_managment" states="hrm" />
-							
+
 
 						<field name="state" widget="statusbar"
 							statusbar_visible="new,waiting,budget_external,hrm,done,refused" />
@@ -234,10 +237,10 @@
 							</group>
 						</group>
 						<group>
-						<group>
-						<field name="type_id" />
-						</group>
-						<group/>
+							<group>
+								<field name="type_id" />
+							</group>
+							<group />
 						</group>
 						<group col="6">
 							<field name="general_id" domain="[('group_type', '=', 'general')]"
@@ -260,7 +263,7 @@
 									string="المسمى الوظيفي" />
 								<field name="job_number" />
 								<field name="number" readonly="1" />
-								<field name='job_create_id' invisible="1"/>
+								<field name='job_create_id' invisible="1" />
 								<field name="type_id"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="department_id"
@@ -306,7 +309,7 @@
 					<field name="employee_id" />
 					<field name="speech_number" />
 					<field name="speech_date" />
-				<field name="state" string="الحالة" />
+					<field name="state" string="الحالة" />
 				</tree>
 			</field>
 		</record>
@@ -671,8 +674,8 @@
 								<field name="old_name" />
 								<field name="old_type_id" />
 								<field name="new_job_number" />
-								<field name="new_name" />
 								<field name="new_type_id" />
+								<field name="new_name" />
 							</tree>
 						</field>
 					</sheet>
@@ -914,16 +917,15 @@
 							<tree editable="bottom">
 								<field name="job_id"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-								<field name="job_number" invisible="1" />
-
-								<field name="job_name_code" />
-								<field name="type_id" />
-								<field name="department_id" />
 								<field name="grade_id" />
+								<field name="job_name_code" />
+								<field name="department_id" />
 								<field name="new_job_name" />
+								<field name="new_grade_id" />
 								<field name="new_job_number" />
 								<field name="new_department_id" />
-								<field name="new_grade_id" />
+								<field name="notes"/>
+								<field name="type_id" invisible="1"/>
 							</tree>
 						</field>
 					</sheet>
@@ -1052,14 +1054,15 @@
 							<tree editable="bottom">
 								<field name="job_id"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-								<field name="job_name_code" />
-								<field name="type_id" />
-								<field name="department_id" />
 								<field name="grade_id" />
+								<field name="job_name_code" />
+								<field name="department_id" />
 								<field name="new_job_name" />
+								<field name="new_grade_id" />
 								<field name="new_job_number" />
 								<field name="new_department_id" />
-								<field name="new_grade_id" />
+								<field name="notes"/>
+								<field name="type_id" invisible="1"/>
 							</tree>
 						</field>
 					</sheet>
