@@ -70,7 +70,7 @@
 										<td>
 											<t t-foreach="line['payslip_lines']" t-as="pline">
 												<t t-esc='pline.name' />
-												/
+												 :
 												<t t-esc='get_float(pline.amount)' />
 												<br></br>
 											</t>

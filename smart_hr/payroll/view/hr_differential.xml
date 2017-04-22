@@ -23,7 +23,7 @@
 			<field name="arch" type="xml">
 				<form string="الفروقات">
 					<header>
-						<button string="إحتسب" name="compute_differences" type="object" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+						<button string="إحتسب" name="compute_differences" type="object"
 							states="new" class="oe_highlight" />
 						<button name="action_waiting" string="إرسال للإعتماد" type="object" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 							states="new" groups="smart_hr.group_difference_management" />

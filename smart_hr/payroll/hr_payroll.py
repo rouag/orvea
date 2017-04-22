@@ -105,8 +105,8 @@ class HrPayslipRun(models.Model):
             employee_ids = employee_obj.search([('id', 'in', employee_ids), ('type_id', 'in', self.salary_grid_type_id.ids)]).ids
         # minus uncounted employees
         self.compute_error()
-        employee_ids = list((set(employee_ids) - set(self.error_ids.ids)))
-        self.employee_ids = employee_ids
+        employee_error_ids = [line.employee_id.id for line in self.error_ids]
+        self.employee_ids = list((set(employee_ids) - set(employee_error_ids)))
 
     @api.one
     def action_verify(self):
@@ -150,7 +150,6 @@ class HrPayslipRun(models.Model):
 
     @api.multi
     def compute_sheet(self):
-        payslip_obj = self.env['hr.payslip']
         self.slip_ids.unlink()
         self.count_slip_ids = 0
         self.compute_employee_ids()
@@ -696,7 +695,7 @@ class HrPayslip(models.Model):
             # 8- فرق الحسميات أكثر من ثلث الراتب
             # check if deduction_total is > than 1/3 of basic salary
             if (deduction_total * -1) > basic_salary / 3 and not payslip.contraintes_ids:
-                third_amount = deduction_total - basic_salary / 3
+                third_amount = (deduction_total* -1) - basic_salary / 3
                 vals = {'name': 'فرق الحسميات أكثر من ثلث الراتب',
                         'slip_id': payslip.id,
                         'employee_id': employee.id,

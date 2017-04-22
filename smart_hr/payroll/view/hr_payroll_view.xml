@@ -62,7 +62,7 @@
 				<xpath expr="/form" position='replace'>
 					<form string="Payslip">
 						<header>
-							<button string="إحتسب" name="compute_sheet" type="object" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							<button string="إحتسب" name="compute_sheet" type="object"
 								states="draft" class="oe_highlight" />
 
 							<button name="action_verify" string="ترحيل" type="object" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
