@@ -12,8 +12,8 @@ class hrHolidaysCancellation(models.Model):
     _inherit = ['mail.thread', 'ir.needaction_mixin']
     _order = 'id desc'
 
-    name = fields.Char(string=u'رقم القرار', )
-    date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now())
+    name = fields.Char(string=u'رقم القرار', related='decission_id.name')
+    date = fields.Date(string=u'تاريخ الطلب', related='decission_id.date' )
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', domain=[('employee_state', '=', 'employee')], required=1)
     holiday_id = fields.Many2one('hr.holidays', string=u'الإجازة')
     holiday_status_id = fields.Many2one(related='holiday_id.holiday_status_id')
@@ -21,6 +21,7 @@ class hrHolidaysCancellation(models.Model):
     date_to = fields.Date(related='holiday_id.date_to')
     duration = fields.Integer(related='holiday_id.duration')
     duration_holidays = fields.Integer(string='المدة')
+    date_holidays_to = fields.Date(string=u'تاريخ ' )
     state = fields.Selection([
         ('draft', u'طلب'),
         ('audit', u'مراجعة'),

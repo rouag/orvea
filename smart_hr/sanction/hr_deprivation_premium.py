@@ -16,8 +16,8 @@ class HrDeprivationPremium(models.Model):
     _order = 'id desc'
     _description = u'قرار حرمان من العلاوة'
 
-    name = fields.Char(string='رقم القرار',)
-    order_date = fields.Date(string='تاريخ القرار', default=fields.Datetime.now())
+    name = fields.Char(string='رقم القرار',readonly=1, related='decission_id.name')
+    order_date = fields.Date(string='تاريخ القرار',readonly=1, related='decission_id.date')
     deprivation_file = fields.Binary(string='ملف القرار', states={'draft': [('readonly', 0)]})
     date_deprivation = fields.Date(string='التاريخ' , default=fields.Datetime.now(), states={'draft': [('readonly', 0)]})
     deprivation_file_name = fields.Char(string='ملف القرار')

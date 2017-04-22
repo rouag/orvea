@@ -311,16 +311,16 @@
 												<span t-esc="line.job_id.name.name" />
 											</td>
 											<td colspan="3" class="text-center">
-												<span t-esc="line.decision_number" />
+												<span t-esc="line.job_move_grade_id.decision_number" />
 											</td>
 											<td colspan="2" class="text-center">
-												<span t-esc="get_hijri_date(line.decision_date, '-')" />
+												<span t-esc="get_hijri_date(line.job_move_grade_id.decision_date, '-')" />
 											</td>
 											<td colspan="2" class="text-center">
 												<span t-esc="line.job_id.grade_id.name" />
 											</td>
 											<td colspan="2" class="text-center">
-												<span t-esc="line.job_id.new_grade_id.name" />
+												<span t-esc="line.new_grade_id.name" />
 											</td>
 
 										</tr>
@@ -357,16 +357,16 @@
 												<span t-esc="line.job_id.name.name" />
 											</td>
 											<td colspan="3" class="text-center">
-												<span t-esc="line.decision_number" />
+												<span t-esc="line.job_move_grade_id.decision_number" />
 											</td>
 											<td colspan="2" class="text-center">
-												<span t-esc="get_hijri_date(line.decision_date, '-')" />
+												<span t-esc="get_hijri_date(line.job_move_grade_id.decision_date, '-')" />
 											</td>
 											<td colspan="2" class="text-center">
 												<span t-esc="line.job_id.grade_id.name" />
 											</td>
 											<td colspan="2" class="text-center">
-												<span t-esc="line.job_id.new_grade_id.name" />
+												<span t-esc="line.new_grade_id.name" />
 											</td>
 
 										</tr>

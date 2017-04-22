@@ -12,8 +12,8 @@ class HrTermination(models.Model):
     _inherit = ['ir.needaction_mixin', 'mail.thread']
     _description = u'طي القيد'
 
-    name = fields.Char(string=u'رقم القرار')
-    date = fields.Date(string=u'تاريخ', default=fields.Datetime.now())
+    name = fields.Char(string=u'رقم القرار', readonly=1, related='decission_id.name')
+    date = fields.Date(string=u'تاريخ',readonly=1, related='decission_id.date')
     date_termination = fields.Date(string=u'تاريخ طي القيد  ', default=fields.Datetime.now())
     termination_date = fields.Date(string=u'تاريخ الإعتماد')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1, domain=[('emp_state', 'not in', ['suspended', 'terminated']), ('employee_state', '=', 'employee')])
@@ -111,14 +111,14 @@ class HrTermination(models.Model):
         self.check_constraintes()
         self.state = 'hrm'
 
-    @api.model
-    def create(self, vals):
-        ret = super(HrTermination, self).create(vals)
-        # Sequence
-        vals = {}
-        vals['name'] = self.env['ir.sequence'].get('hr.termination.sequence')
-        ret.write(vals)
-        return ret
+#     @api.model
+#     def create(self, vals):
+#         ret = super(HrTermination, self).create(vals)
+#         # Sequence
+#         vals = {}
+#         vals['name'] = self.env['ir.sequence'].get('hr.termination.sequence')
+#         ret.write(vals)
+#         return ret
 
     @api.one
     def button_done(self):
