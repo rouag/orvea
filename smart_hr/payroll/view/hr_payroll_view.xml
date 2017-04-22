@@ -354,7 +354,7 @@
 							</page>
 							<page  string="المسيّرات الإفرادية">
 								<field name="slip_ids" readonly='1'>
-									<tree create='0' edit='0'>
+									<tree create='0' edit='0' colors="red:salary_net==0.0;">
 										<field name="number" string="التسلسل" />
 										<field name="employee_id" />
 										<field name="salary_net"/>

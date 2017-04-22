@@ -512,7 +512,7 @@ class HrPayslip(models.Model):
             allowance_total = 0.0
             deduction_total = 0.0
             difference_total = 0.0
-            next_periode_id = self.env['hr.period'].search([('id', '>', self.period_id.id)], order='id asc', limit=1)
+            next_periode_id = self.env['hr.period'].search([('id', '>', payslip.period_id.id)], order='id asc', limit=1)
             if basic_salary:
                 # 1- الراتب الأساسي
                 basic_salary_val = {'name': u'الراتب الأساسي',
@@ -803,6 +803,7 @@ class HrPayslip(models.Model):
                         salary_net_line.amount = 0.0
                 else:
                     raise ValidationError(u".يوجد فروقات متخلدة، يجب إعداد الفترة القادمة")
+            payslip.salary_net = salary_net_line.amount
             # update allowance_total deduction_total
             payslip.allowance_total = allowance_total
             payslip.difference_deduction_total = deduction_total + difference_total
