@@ -1412,8 +1412,7 @@ class HrJobMoveGradeLine(models.Model):
                     if int(self.job_id.grade_id.code) < int(rec.code):
                         grade_ids.append(rec.id)
             type = self.job_id.type_id.id
-            name_ids = self.job_id.serie_id.job_name_ids.ids
-            new_job_name_ids = self.env['hr.job.name'].search([('type_ids', 'in', type), ('id', 'in', name_ids)])
+            new_job_name_ids = self.env['hr.job.name'].search([('type_ids', 'in', type)])
             res['domain'] = {'new_grade_id': [('id', 'in', grade_ids)], 'new_job_name': [('id', 'in', new_job_name_ids.ids)]}
             return res
 
@@ -1610,6 +1609,7 @@ class HrJobMoveUpdate(models.Model):
                 raise ValidationError(u'لا يمكن حذف تحوير‬ وظائف فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(HrJobMoveUpdate, self).unlink()
 
+
 class HrJobMoveUpdateLine(models.Model):
     _name = 'hr.job.update.line'
     _description = u'تحوير‬ وظيفة'
@@ -1628,6 +1628,7 @@ class HrJobMoveUpdateLine(models.Model):
     department_id = fields.Many2one('hr.department', related='job_id.department_id', string=u'الإدارة', readonly=1,
                                     required=1)
     new_job_number = fields.Char(string=u'رقم الوظيفة الجديد', required=1)
+
 
     @api.onchange('job_id')
     def onchange_job_id(self):
@@ -1650,9 +1651,24 @@ class HrJobMoveUpdateLine(models.Model):
             self.job_number = self.job_id.number
             domain['new_name'] = [('id', '!=', self.job_id.name.id)]
             domain['new_type_id'] = [('id', '!=', self.job_id.type_id.id)]
+            if self.new_type_id:
+                new_job_name_ids = self.env['hr.job.name'].search([('type_ids', 'in', self.new_type_id.id)])
+                domain['new_name'] = [('id', '!=', self.job_id.name.id), ('id', 'in', new_job_name_ids.ids)]
+            self.new_type_id = False
+            self.new_name = False
             res['domain'] = domain
-            
             return res
+
+    @api.onchange('new_type_id')
+    def onchange_new_type_id(self):
+        res = {}
+        domain = {}
+        if self.job_id and self.new_type_id:
+            new_job_name_ids = self.env['hr.job.name'].search([('type_ids', 'in', self.new_type_id.id)])
+            domain['new_name'] = [('id', '!=', self.job_id.name.id), ('id', 'in', new_job_name_ids.ids)]
+            res['domain'] = domain
+            self.new_name = False
+        return res
 
 
 class HrJobTypeActivity(models.Model):
