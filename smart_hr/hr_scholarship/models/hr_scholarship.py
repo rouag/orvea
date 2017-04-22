@@ -207,28 +207,6 @@ class HrScholarship(models.Model):
                 education_level_ids = self.env['hr.employee.job.education.level'].search(
                     [('employee_id', '=', self.employee_id.id),
                      ('level_education_id', '=', self.env.ref('smart_hr.certificate_after_secondary_education').id)])
-                #             if not education_level_ids:
-                #                 raise ValidationError(u"الرجاء مراجعة المؤهلات العلمية للموظف")
-                #             for level in education_level_ids:
-                #                 if (date_from - fields.Date.from_string(level.diploma_date)).days < needed_service_duration.service_duration:
-                #                     raise ValidationError(u"لم تمضي السنوات المطلوبة في الخدمة بعد الحصول على آخر دپلوم")
-                #
-                #             education_level_ids = self.env['hr.employee.job.education.level'].search([('employee_id', '=', self.employee_id.id),
-                #                                                                                       ('level_education_id', '=', self.env.ref('smart_hr.certificate_after_secondary_education').id)])
-                #         else:
-                #             raise ValidationError(u" الرجاء مراجعة إعداد مدة الخدمة اللازمة قبل الابتعاث")
-
-                #         constraint evaluation
-#         employee_evaluation_id1 = self.env['hr.employee.evaluation.level'].search(
-#             [('employee_id', '=', self.employee_id.id), ('year', '=', date_from.year - 1)], limit=1)
-#         employee_evaluation_id2 = self.env['hr.employee.evaluation.level'].search(
-#             [('employee_id', '=', self.employee_id.id), ('year', '=', date_from.year - 2)], limit=1)
-#         if employee_evaluation_id1 and employee_evaluation_id2:
-#             if employee_evaluation_id1.degree_id.point_to < self.env.ref('smart_hr.assessment_hr_good').point_from or \
-#                     employee_evaluation_id1.degree_id.point_to < self.env.ref('smart_hr.assessment_hr_good').point_from:
-#                 raise ValidationError(u"لم تتحصل على تقييم الأدائ الوظيفي‬ المطلوب.")
-#         else:
-#             raise ValidationError(u"لا يوجد تقييم وظيفي خاص بالموظف للسنتين الفارطتين")
 
     @api.multi
     def button_extend(self):
@@ -346,7 +324,7 @@ class HrScholarshipHistory(models.Model):
                 decision_type_id = self.env.ref('smart_hr.data_employee_scholarship').id
             # create decission
             decission_val = {
-                'name': self.env['ir.sequence'].get('hr.scholarship.seq'),
+               # 'name': self.env['ir.sequence'].get('hr.scholarship.seq'),
                 'decision_type_id': decision_type_id,
                 'date': decision_date,
                 'employee_id': self.scholarship_id.employee_id.id}

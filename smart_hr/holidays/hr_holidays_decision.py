@@ -86,6 +86,7 @@ class hrHolidaysDecision(models.Model):
             self.number = self.employee_id.number
             self.job_id = self.employee_id.job_id.id
             self.department_id = self.employee_id.department_id.id
+        self.holiday_id = False
         self.holiday_status_id = False
         self.date_from = False
         self.date_to = False
@@ -97,6 +98,8 @@ class hrHolidaysDecision(models.Model):
                 for direct_decision_id in direct_decision_ids:
                     holidays.remove(direct_decision_id.holiday_id)
                 res['domain'] = {'holiday_id': [('id', 'in', holidays.ids)]}
+            else:
+                res['domain'] = {'holiday_id': [('id', 'in', [])]}
         else:
             res['domain'] = {'holiday_id': [('id', 'in', [])]}
         return res

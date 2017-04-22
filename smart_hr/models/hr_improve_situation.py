@@ -50,8 +50,8 @@ class HrImproveSituatim(models.Model):
     is_same_type = fields.Boolean(string='نفس الصنف',related="type_improve.is_same_type")
     defferential_is_paied = fields.Boolean(string='defferential is paied', default=False)
     decission_id  = fields.Many2one('hr.decision', string=u'القرارات',)
-
-
+    state_active = fields.Selection([('active', 'مفعل'), ('not_active','غير مفعل ')], string=u'حالة تحسين الوضع')
+    done_date = fields.Date(string='تاريخ التفعيل', default=fields.Datetime.now())
 
     @api.multi
     def open_decission_improve(self):
@@ -69,7 +69,7 @@ class HrImproveSituatim(models.Model):
                 decision_type_id = self.env.ref('smart_hr.data_decision_type7').id
             # create decission
             decission_val={
-                'name': self.env['ir.sequence'].get('hr.improve.seq'),
+              #  'name': self.env['ir.sequence'].get('hr.improve.seq'),
                 'decision_type_id':decision_type_id,
                 'date':decision_date,
                 'employee_id' :self.employee_id.id }
@@ -87,8 +87,6 @@ class HrImproveSituatim(models.Model):
             'res_id': decission_id,
             'target': 'new'
             }
-
-
 
 
     @api.onchange('type_id1')
@@ -114,22 +112,25 @@ class HrImproveSituatim(models.Model):
     @api.multi
     def action_done(self):
         self.ensure_one()
-        self.env['hr.decision.appoint'].create({'employee_id': self.employee_id.id,
+        appoint_id = self.env['hr.decision.appoint'].create({'employee_id': self.employee_id.id,
                                                 'job_id': self.new_job_id.id,
-                                                'number_job': self.new_job_id.number,
-                                                'code': self.new_job_id.name.number,
-                                                'grade_id': self.new_job_id.grade_id.id,
-                                                'department_id': self.new_job_id.department_id.id,
                                                 'degree_id': self.degree_id1.id,
                                                 'date_hiring': self.order_date,
                                                 'order_date': fields.Datetime.now(),
                                                 'state': 'draft',
                                                 'type_appointment': self.type_improve.type_appointment.id,
                                                 'name': self.order_number,
+                                                'improve_id': self.id,
                                                   })
+        if appoint_id:
+            appoint_id._onchange_employee_id()
+            appoint_id._onchange_job_id()
+            appoint_id._onchange_degree_id()
+            appoint_id.action_done()
+
         self.state = 'done'
         user = self.env['res.users'].browse(self._uid)
-        self.message_post(u"تمت إحداث تحسين الوضع جديد '" + unicode(user.name) + u"'")
+        self.message_post(u"تم إحداث تحسين وضع جديد '" + unicode(user.name) + u"'")
 
     @api.one
     def button_refuse(self):
