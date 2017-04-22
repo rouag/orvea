@@ -457,7 +457,7 @@ class HrPayslip(models.Model):
                 res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, date_start, date_stop, True, True, True)
                 if len(res) == 1:
                     rec = res[0]
-                    res_count = rec['days']
+                    res_count += rec['days']
                 else:
                     for rec in res:
                         res_count += rec['days']
@@ -619,7 +619,7 @@ class HrPayslip(models.Model):
                                       'sequence': sequence
                                       }
                     lines.append(difference_val)
-                    difference_total += diff_retirement_amount
+                    difference_total += diff_basic_salary_amount
                     sequence += 1
                 if diff_retirement_amount != 0:
                     difference_val = {'name': 'فرق التقاعد : '+difference_name,
@@ -702,7 +702,7 @@ class HrPayslip(models.Model):
             # 8- فرق الحسميات أكثر من ثلث الراتب
             # check if deduction_total is > than 1/3 of basic salary
             if (deduction_total * -1) > basic_salary / 3 and not payslip.contraintes_ids:
-                third_amount = (deduction_total* -1) - basic_salary / 3
+                third_amount = (deduction_total * -1) - basic_salary / 3
                 vals = {'name': 'فرق الحسميات أكثر من ثلث الراتب',
                         'slip_id': payslip.id,
                         'employee_id': employee.id,
@@ -770,9 +770,9 @@ class HrPayslip(models.Model):
                     line_to_remove = self.env['hr.payslip.line'].search([('slip_id', '=', payslip.id),
                                                                          ('type', 'in', ('retard_leave', 'absence'))])
                     # update calculated net_salary
-                    salary_net_line.amount = salary_net_line.amount + line_to_remove.amount
+                    salary_net_line.amount = salary_net_line.amount - line_to_remove.amount
                     # remove deduction line from payslip
-                    payslip.line_ids = [(3, line_to_remove.id)]
+                    line_to_remove.unlink()
                     #  check if net salary is still less than min amount
                     if constrainte_name == 'min_amount' and salary_net_line.amount < constrainte_amount:
                         diff_amount = constrainte_amount - float(salary_net_line.amount)
@@ -788,6 +788,9 @@ class HrPayslip(models.Model):
                                                                                })
                         payslip.line_ids = [(4, diff_amount_line.id)]
                         salary_net_line.amount = salary_net_line.amount + diff_amount
+                        # remove delays_ids  and abscence_ids
+                        payslip.delays_ids = False
+                        payslip.abscence_ids = False
             # case net_salary is negative
             if salary_net_line.amount < 0:
                 if next_periode_id:
@@ -798,7 +801,7 @@ class HrPayslip(models.Model):
                                                                                   'name': 'negative_salary'
                                                                                   })
                     if hist_line:
-                        diff_amount_line = self.env['hr.payslip.line'].create({'name': 'المبلغ المراحل (سبب راتب سالب)',
+                        diff_amount_line = self.env['hr.payslip.line'].create({'name': 'المبلغ المرحل (سبب راتب سالب)',
                                                                                'slip_id': payslip.id,
                                                                                'employee_id': employee.id,
                                                                                'rate': 0.0,
