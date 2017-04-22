@@ -71,10 +71,10 @@ class HrScholarship(models.Model):
             decision_type_id = 1
             decision_date = fields.Date.today()  # new date
             if self.employee_id:
-                decision_type_id = self.env.ref('smart_hr.data_employee_scholarship').id
+                decision_type_id = self.env.ref('smart_hr.data_employee_scholarship_general').id
             # create decission
             decission_val = {
-                'name': self.env['ir.sequence'].get('hr.scholarship.seq'),
+               # 'name': self.env['ir.sequence'].get('hr.scholarship.seq'),
                 'decision_type_id': decision_type_id,
                 'date': decision_date,
                 'employee_id': self.employee_id.id}
@@ -333,7 +333,7 @@ class HrScholarshipHistory(models.Model):
             decission_id = decision.id
             self.decission_id = decission_id
         return {
-            'name': _(u'قرار الابتعاث'),
+            'name': _(u'قرار تمديد ابتعاث'),
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'hr.decision',

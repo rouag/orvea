@@ -50,8 +50,8 @@ class HrHolidays(models.Model):
                 return False
         return True
 
-    name = fields.Char(string=u'رقم القرار')
-    date = fields.Date(string=u'تاريخ الطلب', default=fields.Datetime.now)
+    name = fields.Char(string=u'رقم القرار' ,readonly=1, related='decission_id.name')
+    date = fields.Date(string=u'تاريخ الطلب', readonly=1, related='decission_id.date')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', domain=[('emp_state', 'not in', ['suspended','terminated']), ('employee_state', '=', 'employee')],
                                   default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended','terminated'])], limit=1),)
     raison = fields.Selection([('other', u'سبب أخر'), ('husband', u'مرافقة الزوج'),
@@ -163,7 +163,7 @@ class HrHolidays(models.Model):
     decission_id = fields.Many2one('hr.decision', string=u'القرارات',)
     done_date = fields.Date(string='تاريخ التفعيل')
     display_button_extend = fields.Boolean(compute='_compute_display_button_extend')
-
+    date_holidays_to = fields.Date(string=u'تاريخ ')
     _constraints = [
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
     ]
@@ -819,6 +819,7 @@ class HrHolidays(models.Model):
                 'employee_id': self.employee_id.id,
                 'holiday_id': self.id,
                 'duration_holidays' :self.duration,
+                'date_holidays_to':self.date_to,
                 'note': '   ',
             }
         holiday_cancellation_id = holidays_cancellation_obj.create(vals)

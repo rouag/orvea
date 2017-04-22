@@ -14,7 +14,7 @@
 					<field name="state" string="الحالة" />
 					<field name="transfert_nature" string="طبيعة النقل" />
 					
-					<filter string=" قائمة راغبي طلب النقل"  name="state"  domain="[('state','=','hrm')]" />
+					<filter string=" قائمة راغبي طلب النقل"  name="state"  domain="[('state','in',['new','waiting','consult','pm'])]" />
 					<filter name="employee_id" string="الموظف" />
 					<filter name="transfert_type" string="نوع النقل" />
 					<filter name="transfert_nature" string="طبيعة النقل" />
@@ -77,6 +77,8 @@
 						<field name="begin_work_date" invisible="1" />
 						<field name="recruiter_date" invisible="1" />
 						<field name="age" invisible="1" />
+						<field name="degree_last" invisible="1" />
+						
 						<group>
 							<field name="create_date" />
 						</group>
