@@ -110,7 +110,6 @@ class HrPayslipRun(models.Model):
 
     @api.one
     def action_verify(self):
-        self.compute_sheet()
         self.state = 'verify'
         for slip in self.slip_ids:
             if slip.state == 'draft':
@@ -120,7 +119,7 @@ class HrPayslipRun(models.Model):
     def refuse_action_verify(self):
         self.state = 'verify'
         for slip in self.slip_ids:
-                slip.action_verify()
+            slip.action_verify()
 
     @api.one
     def action_draft(self):
@@ -135,13 +134,13 @@ class HrPayslipRun(models.Model):
     @api.one
     def action_banking(self):
         self.state = 'banking'
+        self.generate_file()
 
     @api.one
     def action_done(self):
         self.state = 'done'
         for slip in self.slip_ids:
             slip.action_done()
-        self.generate_file()
 
     @api.one
     def button_refuse(self):
@@ -215,7 +214,10 @@ class HrPayslipRun(models.Model):
         month = str(int(current_date.month)).zfill(2)
         day = str(int(current_date.day)).zfill(2)
         send_date = year + month + day
-        value_date = send_date  # TODO: the ValueDate
+        today = fields.Date.from_string(fields.Date.today())
+        value_date_g = today + relativedelta(days=14)
+        hijri_date = HijriDate(value_date_g.year, value_date_g.month, value_date_g.day, gr=True)
+        value_date = str(int(hijri_date.year)).zfill(4) + str(int(hijri_date.month)).zfill(2) + str(int(hijri_date.day)).zfill(2)
         total_amount = str(self.amount_total).replace('.', '').replace(',', '').zfill(15)
         total_employees = str(len(self.slip_ids)).zfill(8)
         account_number = str(self.env.user.company_id.vat or '').zfill(13)
@@ -291,9 +293,9 @@ class HrPayslip(models.Model):
     period_id = fields.Many2one('hr.period', string=u'الفترة', domain=[('is_open', '=', True)], readonly=1, required=1, states={'draft': [('readonly', 0)]}, default=get_default_period_id)
     days_off_line_ids = fields.One2many('hr.payslip.days_off', 'payslip_id', 'الإجازات والغيابات', readonly=True, states={'draft': [('readonly', False)]})
     difference_history_ids = fields.One2many('hr.payslip.difference.history', 'payslip_id', 'الفروقات المتخلدة')
-    state = fields.Selection([('draft', 'مسودة'),
-                              ('verify', 'في إنتظار الإعتماد'),
-                              ('done', 'تم'),
+    state = fields.Selection([('draft', 'إعداد'),
+                              ('verify', 'مرحل'),
+                              ('done', 'تم صرف الراتب'),
                               ('cancel', 'ملغى'),
                               ], 'الحالة', select=1, readonly=1, copy=False)
     grade_id = fields.Many2one('salary.grid.grade', string=u'المرتبة')
@@ -345,7 +347,7 @@ class HrPayslip(models.Model):
             self.date_from = self.period_id.date_start
             self.date_to = self.period_id.date_stop
             self.name = _('راتب موظف %s لشهر %s') % (self.employee_id.display_name, self.period_id.name)
-            #self.company_id = self.employee_id.company_id
+            # self.company_id = self.employee_id.company_id
             self.grade_id = self.employee_id.grade_id.id
             self.degree_id = self.employee_id.degree_id.id
             self.type_id = self.employee_id.type_id.id
@@ -505,7 +507,7 @@ class HrPayslip(models.Model):
             # search the salary_grids for this employee
             grid_id, basic_salary = employee.get_salary_grid_id(False)
             if not grid_id:
-                return
+                continue
             # compute
             lines = []
             sequence = 1
