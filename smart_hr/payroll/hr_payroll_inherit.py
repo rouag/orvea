@@ -951,7 +951,9 @@ class HrPayslip(models.Model):
                        'number_of_days': duration_in_month,
                        'number_of_hours': 0.0,
                        'amount': amount * multiplication,
-                       'type': 'suspension'}
+                       'type': 'suspension',
+                       'deducted_from_working_days': not for_last_month and not suspension['return'],
+                       }
                 line_ids.append(val)
             # 2- البدلات لا تحتسب في حال كان الموظف مكفوف اليد
             if allowance_amount:
@@ -1002,7 +1004,9 @@ class HrPayslip(models.Model):
                        'number_of_days': duration_in_month,
                        'number_of_hours': 0.0,
                        'amount': basic_salary_amount * -1.0,
-                       'type': 'termination'}
+                       'type': 'termination',
+                       'deducted_from_working_days': not for_last_month,
+                       }
                 line_ids.append(val)
             if retirement_amount:
                 val = {'name': termination.termination_type_id.name + " " + u'(فرق التقاعد )' + name,
