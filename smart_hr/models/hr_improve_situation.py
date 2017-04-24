@@ -116,6 +116,7 @@ class HrImproveSituatim(models.Model):
                                                 'job_id': self.new_job_id.id,
                                                 'degree_id': self.degree_id1.id,
                                                 'date_hiring': self.order_date,
+                                                'type_id' :self.type_id1.id,
                                                 'order_date': fields.Datetime.now(),
                                                 'state': 'draft',
                                                 'type_appointment': self.type_improve.type_appointment.id,

@@ -30,9 +30,9 @@
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" states="hrm" groups="smart_hr.group_hrm" icon="fa-times"
 							class="oe_inline oe_stat_button" />
-
-						<button name="button_suspension_end" string=" انهاء كف اليد"
-							type="object" states="done" icon="fa-times" class="oe_inline oe_stat_button" />
+						<field name="diplay_button_end" invisible="1"></field>
+						<button name="button_suspension_end" string=" انهاء كف اليد" attrs="{'invisible':[('diplay_button_end','=',False)]}" 
+							type="object"  icon="fa-times" class="oe_inline oe_stat_button" />
 
 						<button name="button_suspension" string="معاينة القرار"
 							groups="smart_hr.group_hrm" type="object" states="done" icon="fa-print"
