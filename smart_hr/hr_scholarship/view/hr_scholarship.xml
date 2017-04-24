@@ -83,8 +83,8 @@
 							icon="fa-check" class="oe_inline oe_stat_button" />
 
 						<button name="open_decission_scholarship" string="معاينة القرار"
-							attrs="{'invisible':['|',('is_extension','=',False),('state','not in',['done','finished'])]}"
-							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+							attrs="{'invisible':[('state','not in',['done','finished','cancel','cutoff'])]}"
+							type="object" icon="fa-print" class="oe_inline oe_stat_button" />
 
 
 					</header>
