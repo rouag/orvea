@@ -721,7 +721,7 @@ class HrDecisionAppoint(models.Model):
     def check_order_date(self):
         if self.order_date > datetime.today().strftime('%Y-%m-%d'):
             raise ValidationError(u"تاريخ الخطاب  يجب ان يكون أصغر من تاريخ اليوم")
-    
+
 
     @api.one
     @api.constrains('date_direct_action', 'date_hiring')
