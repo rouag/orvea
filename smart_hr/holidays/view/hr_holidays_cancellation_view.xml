@@ -44,7 +44,7 @@
 							<field name="date_to" readonly="1" />
 							<field name="duration" readonly="1" />
 								<field name="duration_holidays" readonly="1" />
-								<field name="date_holidays_to" readonly="1" />
+						
 							
 						</group>
 						<group>

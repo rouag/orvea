@@ -89,10 +89,13 @@ class HrDecision(models.Model):
             object_type= 'holidays'
             self.text = self.replace_text(self.employee_id, self.date,self.decision_type_id.id,'holidays')
 
-        if self.decision_type_id in [self.env.ref('smart_hr.data_decision_type45'),
-                                                self.env.ref('smart_hr.data_decision_type44'),
+        if self.decision_type_id in [ self.env.ref('smart_hr.data_decision_type44'),
                                             ]:
             object_type = 'holidays_cancellation'
+            self.text = self.replace_text(self.employee_id, self.date, self.decision_type_id.id, 'holidays_cancellation')
+        if self.decision_type_id in [self.env.ref('smart_hr.data_decision_type45'),
+                                            ]:
+            object_type = 'holidays_cut'
             self.text = self.replace_text(self.employee_id, self.date, self.decision_type_id.id, 'holidays_cancellation')
 
         if self.decision_type_id:
@@ -234,7 +237,7 @@ class HrDecision(models.Model):
                         decision_text = decision_text.replace('FROMDET', unicode(fromdate))
                         decision_text = decision_text.replace('ENDDET', unicode(date_to))
 
-                if object_type == 'holidays_cancellation' :
+                if object_type == 'holidays_cut' :
                     holidays_line = self.env['hr.holidays.cancellation'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
                     if holidays_line :
                         type_holidays = holidays_line.holiday_status_id.name or ""
@@ -265,6 +268,32 @@ class HrDecision(models.Model):
                         decision_text = decision_text.replace('FROMDET', unicode(fromdate))
                         decision_text = decision_text.replace('ENDDET', unicode(date_holidays_to)) 
 
+                if object_type == 'holidays_cancellation' :
+                    holidays_line = self.env['hr.holidays.cancellation'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
+                    if holidays_line :
+                        type_holidays = holidays_line.holiday_status_id.name or ""
+                        numero_holidays = holidays_line.holiday_id.num_decision or ""
+                        duration = holidays_line.duration or ""
+                        duration_holidays = holidays_line.duration_holidays or ""
+                        if holidays_line.holiday_id.date_from:
+                            date_from = self._get_hijri_date(holidays_line.holiday_id.date_from, '-')
+                            date_from = str(date_from).split('-')
+                            date_from = date_from[2] + '-' + date_from[1] + '-' + date_from[0] or ""
+                            fromdate = date_from or ""
+                        if holidays_line.holiday_id.date_decision:
+                            date_decision = self._get_hijri_date(holidays_line.holiday_id.date_decision, '-')
+                            date_decision = str(date_decision).split('-')
+                            date_decision = date_decision[2] + '-' + date_decision[1] + '-' + date_decision[0] or ""
+                            date_decision = date_decision or ""
+                       
+                        decision_text = decision_text.replace('duration', unicode(duration_holidays))
+                        decision_text = decision_text.replace('NUMHOLIDAYS', unicode(numero_holidays))
+                        decision_text = decision_text.replace('date_decision', unicode(date_decision))
+                        decision_text = decision_text.replace('TYPE', unicode(type_holidays))
+                        decision_text = decision_text.replace('DURATION', unicode(duration))
+                        decision_text = decision_text.replace('FROMDET', unicode(fromdate))
+
+
 
 
 
@@ -273,6 +302,12 @@ class HrDecision(models.Model):
                     lend_line = self.env['hr.employee.lend'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
                     if lend_line :
                         duration = lend_line.duration or ""
+                        decision_text = decision_text.replace('DURATION', unicode(duration))
+
+                if object_type == 'suspension' :
+                    lend_line = self.env['hr.suspension.end'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
+                    if lend_line :
+                        duration = lend_line.sentence or ""
                         decision_text = decision_text.replace('DURATION', unicode(duration))
 
                 if object_type == 'termination' :
