@@ -283,7 +283,7 @@ class HrPayslip(models.Model):
 
             # 1 الراتب
             if salary_rate_amount < 0:
-                vals = {'name': ' فرق الراتب التي توفره الجهة : تكليف' + name,
+                vals = {'name': 'تكليف : فرق الراتب الذي توفره الجهة' + name,
                         'employee_id': assign_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -291,7 +291,7 @@ class HrPayslip(models.Model):
                         'type': 'commissioning'}
                 line_ids.append(vals)
             if amount_allowance < 0:
-                vals = {'name': 'فرق بدل النقل الذي توفره الجهة : تكليف' + name,
+                vals = {'name': 'تكليف : فرق بدل النقل الذي توفره الجهة' + name,
                         'employee_id': assign_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -368,7 +368,7 @@ class HrPayslip(models.Model):
                 final_retirement_amount *= -1
             # 1) البدلات المستثناة
             if allow_exception_amount < 0:
-                vals = {'name': allowance.name + name + ': ابتعاث ',
+                vals = {'name': u': ابتعاث ' + allowance.name + name  ,
                         'employee_id': scholarship_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -377,7 +377,7 @@ class HrPayslip(models.Model):
                 line_ids.append(vals)
             # 2) نسبة الراتب بعد حسم التقاعد
             if final_retirement_amount < 0:
-                vals = {'name': u'نسبة الراتب بعد حسم التقاعد: ابتعاث' + name,
+                vals = {'name': u'ابتعاث :  نسبة الراتب بعد حسم التقاعد' + name,
                         'employee_id': scholarship_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -457,7 +457,7 @@ class HrPayslip(models.Model):
                         allowance_amount *= -1
             # 1 الراتب
             if amount < 0:
-                vals = {'name': 'الإعارة نسبة الراتب' + name,
+                vals = {'name': 'إعارة : فرق الراتب الذي توفره الجهة ' + name,
                         'employee_id': lend_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -468,7 +468,7 @@ class HrPayslip(models.Model):
 
             # 2 -البدلات
             if allowance_amount < 0:
-                vals = {'name': 'فرق البدلات التي تتحملها الجهة: إعارة' + name,
+                vals = {'name': 'إعارة : فرق البدلات التي تتحملها الجهة ' + name,
                         'employee_id': lend_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -478,7 +478,7 @@ class HrPayslip(models.Model):
                 line_ids.append(vals)
             # 3) حصة الحكومة من التقاعد
             if amount_retirement:
-                vals = {'name': 'حصة الحكومة من التقاعد: الإعارة' + name,
+                vals = {'name': 'إعارة : حصة الحكومة من التقاعد ' + name,
                         'employee_id': lend_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
