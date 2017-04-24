@@ -358,19 +358,19 @@ class HrDecision(models.Model):
                         code = improve_line.job_id.number or ""
                         department_id = improve_line.department_id.name or ""
                         grade_id = improve_line.grade_id.name or ""
-                        degree_id = improve_line.degree_id.name or ""
+                        degree_id = improve_line.employee_id.degree_id.name or ""
                         
                         #decision_text = decision_text.replace('TERMINATION', unicode(date_termination))
-                        decision_text = decision_text.replace('JOB', unicode(new_job_id))
-                        decision_text = decision_text.replace('CODE', unicode(new_code))
-                        decision_text = decision_text.replace('DEGREE', unicode(new_degree_id))
-                        decision_text = decision_text.replace('GRADE', unicode(new_grade_id))
-                        decision_text = decision_text.replace('DEPARTEMENT', unicode(new_department_id))
-                        decision_text = decision_text.replace('job', unicode(job_id))
-                        decision_text = decision_text.replace('code', unicode(code))
-                        decision_text = decision_text.replace('degree', unicode(degree_id))
-                        decision_text = decision_text.replace('grade', unicode(grade_id))
-                        decision_text = decision_text.replace('department', unicode(department_id))
+                       # decision_text = decision_text.replace('JOB', unicode(new_job_id))
+                     #   decision_text = decision_text.replace('CODE', unicode(new_code))
+                      #  decision_text = decision_text.replace('DEGREE', unicode(new_degree_id))
+                      #  decision_text = decision_text.replace('GRADE', unicode(new_grade_id))
+                     #   decision_text = decision_text.replace('DEPARTEMENT', unicode(new_department_id))
+                        decision_text = decision_text.replace('job', unicode(new_job_id))
+                        decision_text = decision_text.replace('code', unicode(new_code))
+                        decision_text = decision_text.replace('degree', unicode(new_degree_id))
+                        decision_text = decision_text.replace('grade', unicode(new_grade_id))
+                        decision_text = decision_text.replace('department', unicode(new_department_id))
                 if object_type == 'transfert':
                     transfert_line = self.env['hr.employee.transfert'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
                     if transfert_line :
