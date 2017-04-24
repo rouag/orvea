@@ -767,12 +767,15 @@ class HrPayslip(models.Model):
                 constrainte_amount = constrainte_line.amount
                 if constrainte_name == 'min_amount' and salary_net_line.amount < constrainte_amount:
                     #  ترحيل حسميات الغياب والتأخير إلى الأشهر اللاحقة
-                    line_to_remove = self.env['hr.payslip.line'].search([('slip_id', '=', payslip.id),
+                    lines_to_remove = self.env['hr.payslip.line'].search([('slip_id', '=', payslip.id),
                                                                          ('type', 'in', ('retard_leave', 'absence'))])
                     # update calculated net_salary
-                    salary_net_line.amount = salary_net_line.amount - line_to_remove.amount
+                    line_amount_deduction = 0.0
+                    for line in lines_to_remove:
+                        line_amount_deduction += line.amount
+                    salary_net_line.amount = salary_net_line.amount - line_amount_deduction
                     # remove deduction line from payslip
-                    line_to_remove.unlink()
+                    lines_to_remove.unlink()
                     #  check if net salary is still less than min amount
                     if constrainte_name == 'min_amount' and salary_net_line.amount < constrainte_amount:
                         diff_amount = constrainte_amount - float(salary_net_line.amount)
