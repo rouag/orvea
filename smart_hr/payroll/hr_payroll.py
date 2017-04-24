@@ -414,8 +414,10 @@ class HrPayslip(models.Model):
         for line in self.line_ids:
             if line.deducted_from_working_days:
                 res_count += line.number_of_days
-        res = (30 - res_count)
-        return res
+        working_days = 30 - res_count
+        if working_days < 0:
+            working_days = 0.0
+        return working_days
 
     @api.multi
     def compute_sheet(self):
@@ -518,6 +520,7 @@ class HrPayslip(models.Model):
                                                                         ('employee_id', '=', employee.id)])
 
             for difference in difference_lines:
+                sequence += 1
                 action_type = difference.difference_id.action_type
                 if action_type == 'promotion':
                     difference_name = 'ترقية'
@@ -579,6 +582,7 @@ class HrPayslip(models.Model):
             # 5- الأثر المالي
             difference_lines = payslip.compute_differences()
             for difference in difference_lines:
+                sequence += 1
                 difference_val = {'name': difference['name'],
                                   'slip_id': payslip.id,
                                   'employee_id': employee.id,
@@ -593,7 +597,6 @@ class HrPayslip(models.Model):
                                   }
                 lines.append(difference_val)
                 difference_total += difference['amount']
-                sequence += 1
             # 6- الحسميات
             deduction_lines = payslip.compute_deductions(allowance_total)
             for deduction in deduction_lines:
