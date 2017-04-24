@@ -1214,7 +1214,8 @@ class HrJobMoveGrade(models.Model):
                                   ])
     out_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الصادر')
     in_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الوارد')
-
+    decision_file_name = fields.Char(string=u'مسمى القرار')
+    
     @api.multi
     def action_waiting(self):
         self.ensure_one()

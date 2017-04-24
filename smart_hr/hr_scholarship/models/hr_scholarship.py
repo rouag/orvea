@@ -213,8 +213,7 @@ class HrScholarship(models.Model):
 
         context = self._context.copy()
         context.update({
-            u'default_is_extension': self.diplom_id.id,
-            u'default_date_from': self.date_from,
+            u'default_date_from': self.date_to,
             u'default_date_to': self.date_to,
         })
         return {
@@ -240,6 +239,16 @@ class HrScholarship(models.Model):
 
         if self.date_from > self.date_to:
             raise ValidationError(u"تاريخ من يجب ان يكون أصغر من تاريخ الى")
+        domain = [
+                ('date_from', '<=', self.date_to),
+                ('date_to', '>=', self.date_from),
+                ('employee_id', '=', self.employee_id.id),
+                ('id', '!=', self.id),
+                ('state', 'not in', ['cancel']),
+            ]
+        nb_scholaship = self.search_count(domain)
+        if nb_scholaship:
+            raise ValidationError(u"هناك تداخل في التواريخ مع ابتعاث آخر")
 
     @api.multi
     def unlink(self):

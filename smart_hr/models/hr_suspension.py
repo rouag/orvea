@@ -43,6 +43,17 @@ class hr_suspension(models.Model):
     decision_date = fields.Date(string='تاريخ القرار ', readonly=1, related='decission_id.date')
     display_decision_info = fields.Boolean(compute='_compute_display_decision_info')
     history_line_id = fields.Many2one('hr.employee.history')
+    is_end = fields.Boolean(u'تم انهاؤه')
+    diplay_button_end = fields.Boolean(compute='_compute_display_button_end')
+
+    @api.multi
+    def _compute_display_button_end(self):
+        for rec in self:
+            suspension_end_progress = self.env['hr.suspension.end'].search([('state', 'in',['draft','hrm']),('suspension_id', '=', rec.id)])
+            if not rec.state == 'done' or (rec.state == 'done' and rec.is_end is True) or (rec.is_end is False and suspension_end_progress):
+                rec.diplay_button_end = False
+            else:
+                rec.diplay_button_end = True
 
     def _compute_display_decision_info(self):
         for rec in self:
