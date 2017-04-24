@@ -649,6 +649,11 @@ class HrDecisionAppoint(models.Model):
             self.grade_id = self.job_id.grade_id.id
             self.department_id = self.job_id.department_id.id
             location_allowance_ids = []
+            self.degree_id= False
+            self.basic_salary = 0
+            self.transport_allow = 0
+            self.retirement = 0
+            self.net_salary =0
             for rec in self.department_id.dep_side.allowance_ids:
                 location_allowance_ids.append({'location_decision_appoint_id': self.id,
                                                'allowance_id': rec.id,
@@ -665,20 +670,31 @@ class HrDecisionAppoint(models.Model):
 
     @api.onchange('degree_id')
     def _onchange_degree_id(self):
+        res = {}
+        warning = {}
         if self.degree_id:
             salary_grid_line = self.env['salary.grid.detail'].search([('type_id', '=', self.type_id.id),
                                                                       ('grade_id', '=', self.grade_id.id),
                                                                       ('degree_id', '=', self.degree_id.id)
                                                                       ])
             if not salary_grid_line:
-                raise ValidationError(u"يجب تحديد سلم الرواتب المناسب لصنف و المرتبة و الدرجة")
+                self.basic_salary = 0
+                self.transport_allow = 0
+                self.retirement = 0
+                self.net_salary =0
+                warning = {
+                    'title': _('تحذير!'),
+                    'message': _('يجب تحديد سلم الرواتب المناسب لصنف و المرتبة و الدرجة!'),
+                }
+                res['warning']= warning
+                return res
             salary_grid_line = salary_grid_line[0]
             if salary_grid_line and not self.type_appointment.max_pension:
                 self.basic_salary = salary_grid_line.basic_salary
                 self.transport_allow = salary_grid_line.transport_allowance_amout
                 self.retirement = self.basic_salary * salary_grid_line.retirement / 100.0
                 self.net_salary = salary_grid_line.net_salary
-
+                
     @api.onchange('date_direct_action')
     @api.constrains('date_direct_action')
     def _onchange_date_direct_action(self):
