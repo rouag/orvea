@@ -467,7 +467,7 @@
 											attrs="{'invisible':['|',('accept_trasfert','!=',False),('state', 'in', [ 'benefits','done','refused'])],'readonly':[('state', 'in', [ 'done','refused'])]}" />
 										<button name="%(smart_hr.action_wizard_transfert_benefits)d"
 											attrs="{'invisible':[('sorting_state','!=', 'benefits')]}"
-											type="action" string="إسناد المزايا" icon="fa-dollar" />
+											type="action" string="إسناد البدلات" icon="fa-dollar" />
 										<field name="is_conflected" invisible="1" />
 										<field name="sorting_state" invisible="1" />
 									</tree>

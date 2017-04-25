@@ -40,6 +40,7 @@ class HrPromotion(models.Model):
                               ('manager', u'صاحب صلاحية التعين'),
                               ('minister', u'وزارة الخدمة المدنية'),
                               ('hrm', u'شؤون الموظفين'),
+                              ('benefits', u'إسناد البدلات'),
                               ('done', u'اعتمدت'),
                               ('cancel', u'ملغاة'),
                               ], string=u'الحالة', default='promotion_type', )
@@ -331,6 +332,10 @@ class HrPromotion(models.Model):
         for promo in self:
             self.state = 'hrm'
 
+    @api.multi
+    def button_benefits(self):
+        self.state = 'benefits'
+
     @api.one
     @api.constrains('speech_date')
     def check_order_chek_date(self):
@@ -360,12 +365,41 @@ class HrPromotion(models.Model):
                                                                  'depend_on_test_periode': True,
                                                                  'employee_id': emp.employee_id.id,
                                                                  'promotion_id':emp.id,
-                                                                 'degree_id': emp.employee_id.degree_id.id
-                                                                 })
-                apoint._onchange_employee_id()
-                apoint._onchange_job_id()
-                apoint._onchange_degree_id()
-                apoint.action_done()
+                                                                 'degree_id': emp.new_degree_id.id, })
+                if apoint:
+                    apoint._onchange_employee_id()
+                    apoint._onchange_job_id_outside()
+                    apoint._onchange_degree_id_outside()
+                   # copy allowances from promotion to the decision_appoint
+                    # الوظيفةبدلات
+                    job_allowance_ids = []
+                    for allowance in emp.job_allowance_ids:
+                        job_allowance_ids.append({'job_decision_appoint_id': apoint.id,
+                                                  'allowance_id': allowance.allowance_id.id,
+                                                  'compute_method': allowance.compute_method,
+                                                  'amount': allowance.amount
+                                                  })
+                    apoint.job_allowance_ids = job_allowance_ids
+                    # بدلات التعين
+                    promotion_allowance_ids = []
+                    for allowance in emp.promotion_allowance_ids:
+                        promotion_allowance_ids.append({'decision_decision_appoint_id': apoint.id,
+                                                  'allowance_id': allowance.allowance_id.id,
+                                                  'compute_method': allowance.compute_method,
+                                                  'amount': allowance.amount
+                                                  })
+                    apoint.decision_apoint_allowance_ids = promotion_allowance_ids
+                    # بدلات المنطقة
+                    location_allowance_ids = []
+                    for allowance in emp.location_allowance_ids:
+                        location_allowance_ids.append({'location_decision_appoint_id': apoint.id,
+                                                       'allowance_id': allowance.allowance_id.id,
+                                                       'compute_method': allowance.compute_method,
+                                                       'amount': allowance.amount
+                                                       })
+                    apoint.location_allowance_ids = location_allowance_ids
+                    # change state of the decision to done
+                    apoint.action_done()
                 #             create history_line
                 self.env['base.notification'].create({'title': u'إشعار بالترقية',
                                                       'message': u'لقد تم ترقيتكم على وظيفة جديدة',
@@ -376,8 +410,8 @@ class HrPromotion(models.Model):
                                                       'res_id': self.id,
                                                       'res_action': 'smart_hr.action_hr_decision_appoint', })
                 emp.employee_id.job_id.write({'state': 'unoccupied', 'category': 'unoccupied_promotion' ,'employee': False})
-                for job in self.job_promotion_line_ids:
-                    job.new_job_id.occupied_promotion = False
+            for job in self.job_promotion_line_ids:
+                job.new_job_id.occupied_promotion = False
 
     @api.one
     def button_refuse(self):
@@ -524,7 +558,11 @@ class HrPromotionLigneEmployeeJob(models.Model):
     emplyoee_state = fields.Boolean(related= 'promotion_id.emplyoee_state')
     done_date = fields.Date(string='تاريخ التفعيل')
     defferential_is_paied = fields.Boolean(string='defferential is paied', default=False)
-
+    job_allowance_ids = fields.One2many('hr.promotion.allowance', 'job_promotion_id', string=u'بدلات الوظيفة')
+    promotion_allowance_ids = fields.One2many('hr.promotion.allowance', 'promotion_id', string=u'بدلات النقل')
+    location_allowance_ids = fields.One2many('hr.promotion.allowance', 'location_promotion_id', string=u'بدلات المنطقة')
+    new_degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة') 
+    promotion_id_state = fields.Selection(related='promotion_id.state')
     @api.multi
     def promotion_confirmed(self):
         if self.new_job_id:
@@ -627,3 +665,21 @@ class HrPromotionDemande(models.Model):
             if rec.state != 'new' :
                 raise ValidationError(u'لا يمكن حذف طلب  الترقية فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(HrPromotionDemande, self).unlink()
+    
+class HrPromotionAllowance(models.Model):
+    _name = 'hr.promotion.allowance'
+    _description = u'those allowances will be transmitted to the decision appointment'
+    _description = u'بدلات'
+    job_promotion_id = fields.Many2one('hr.promotion.employee.job', string='الترقية', ondelete='cascade')
+    location_promotion_id = fields.Many2one('hr.promotion.employee.job', string='الترقية', ondelete='cascade')
+    promotion_id = fields.Many2one('hr.promotion.employee.job', string='الترقية', ondelete='cascade')
+    allowance_id = fields.Many2one('hr.allowance.type', string='البدل', required=1)
+    compute_method = fields.Selection([('amount', 'مبلغ'),
+                                       ('percentage', 'نسبة من الراتب الأساسي'),
+                                       ('formula_1', 'نسبة‬ البدل‬ * راتب‬  الدرجة‬ الاولى‬  من‬ المرتبة‬  التي‬ يشغلها‬ الموظف‬'),
+                                       ('formula_2', 'نسبة‬ البدل‬ * راتب‬  الدرجة‬ التي ‬ يشغلها‬ الموظف‬'),
+                                       ('job_location', 'تحتسب  حسب مكان العمل')], required=1, string='طريقة الإحتساب')
+    amount = fields.Float(string='المبلغ')
+    min_amount = fields.Float(string='الحد الأدنى')
+    percentage = fields.Float(string='النسبة')
+    line_ids = fields.One2many('salary.grid.detail.allowance.city', 'allowance_id', string='النسب حسب المدينة')    

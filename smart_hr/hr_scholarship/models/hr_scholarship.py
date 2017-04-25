@@ -37,7 +37,7 @@ class HrScholarship(models.Model):
     diplom_type = fields.Selection([('high_diploma', u'دبلوم من الدراسات العليا'),
                                     ('licence_bac', u'الليسانس او الباكالوريوس'),
                                     ('average_diploma', u'دبلوم متوسط')],
-                                   string='نوع الابتعاث', )
+                                   string='نوع الدراسة ', )
     acceptance_certificate = fields.Binary(string=u'مرفق القبول من الجامعة او المعهد', required=1, attachment=True)
     acceptance_certificate_name = fields.Char()
     language_exam = fields.Binary(string=u'مرفق اجتياز امتحان في لغة الدراسة', required=1, attachment=True)

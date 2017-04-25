@@ -113,20 +113,20 @@ class HrImproveSituatim(models.Model):
     def action_done(self):
         self.ensure_one()
         appoint_id = self.env['hr.decision.appoint'].create({'employee_id': self.employee_id.id,
-                                                'job_id': self.new_job_id.id,
-                                                'degree_id': self.degree_id1.id,
-                                                'date_hiring': self.order_date,
-                                                'type_id' :self.type_id1.id,
-                                                'order_date': fields.Datetime.now(),
-                                                'state': 'draft',
-                                                'type_appointment': self.type_improve.type_appointment.id,
-                                                'name': self.order_number,
-                                                'improve_id': self.id,
-                                                  })
+                                                             'job_id': self.new_job_id.id,
+                                                             'degree_id': self.degree_id1.id,
+                                                             'date_hiring': self.order_date,
+                                                             'type_id': self.type_id1.id,
+                                                             'order_date': fields.Datetime.now(),
+                                                             'state': 'draft',
+                                                             'type_appointment': self.type_improve.type_appointment.id,
+                                                             'name': self.order_number,
+                                                             'improve_id': self.id,
+                                                             })
         if appoint_id:
             appoint_id._onchange_employee_id()
-            appoint_id._onchange_job_id()
-            appoint_id._onchange_degree_id()
+            appoint_id._onchange_job_id_improve_situation()
+            appoint_id._onchange_degree_id_outside()
             appoint_id.action_done()
 
         self.state = 'done'
