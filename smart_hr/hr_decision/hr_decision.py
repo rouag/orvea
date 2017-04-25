@@ -142,8 +142,17 @@ class HrDecision(models.Model):
 
     @api.multi
     def button_done(self):
-        #self.name = self.env['ir.sequence'].get('hr.decision.seq')
         self.state = 'done'
+        return {
+            'name': self.decision_type_id.name,
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'hr.decision',
+            'view_id': self.env.ref('smart_hr.hr_decision_wizard_form').id,
+            'type': 'ir.actions.act_window',
+            'res_id': self.id,
+            'target': 'new'
+        }
 
     @api.multi
     def button_refuse(self):
