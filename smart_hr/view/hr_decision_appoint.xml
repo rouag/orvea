@@ -327,7 +327,7 @@
 
 							<page string="البدلات" readonly="1">
 								<h3 class="o_horizontal_separator">بدلات الوظيفة</h3>
-								<field name="job_allowance_ids" string="بدلات الوظيفة">
+								<field name="job_allowance_ids" string="بدلات الوظيفة"  attrs="{'readonly':[('state', '=', 'done')]}" >>
 									<tree create="false">
 										<field name="allowance_id" readonly="1" />
 										<field name="compute_method" />
@@ -335,7 +335,7 @@
 									</tree>
 								</field>
 								<h3 class="o_horizontal_separator">بدلات التعين</h3>
-								<field name="decision_apoint_allowance_ids">
+								<field name="decision_apoint_allowance_ids" attrs="{'readonly':[('state', '=', 'done')]}" >
 									<tree>
 										<field name="allowance_id"
 											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
@@ -344,7 +344,7 @@
 									</tree>
 								</field>
 								<h3 class="o_horizontal_separator">بدلات المنطقة</h3>
-								<field name="location_allowance_ids" string="بدلات المنطقة">
+								<field name="location_allowance_ids" string="بدلات المنطقة"  attrs="{'readonly':[('state', '=', 'done')]}" >>
 									<tree create="false">
 										<field name="allowance_id" readonly="1" />
 										<field name="compute_method" />

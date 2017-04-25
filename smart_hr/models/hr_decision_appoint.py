@@ -742,8 +742,53 @@ class HrDecisionAppoint(models.Model):
         for rec in self:
             if rec.state != 'draft':
                 raise UserError(_(u'لا يمكن حذف قرار  التعين  إلا في حالة طلب !'))
-            
         return super(HrDecisionAppoint, self).unlink()
+
+    def _onchange_job_id_outside(self):
+            self.number_job = self.job_id.number
+            self.code = self.job_id.name.number
+            self.type_id = self.job_id.type_id.id
+            self.far_age = self.job_id.type_id.far_age
+            self.grade_id = self.job_id.grade_id.id
+            self.department_id = self.job_id.department_id.id
+            location_allowance_ids = []
+            
+    def _onchange_job_id_improve_situation(self):
+            self.number_job = self.job_id.number
+            self.code = self.job_id.name.number
+            self.type_id = self.job_id.type_id.id
+            self.far_age = self.job_id.type_id.far_age
+            self.grade_id = self.job_id.grade_id.id
+            self.department_id = self.job_id.department_id.id
+            location_allowance_ids = []
+            for rec in self.department_id.dep_side.allowance_ids:
+                location_allowance_ids.append({'location_decision_appoint_id': self.id,
+                                               'allowance_id': rec.id,
+                                               'compute_method': 'amount',
+                                               'amount': 0.0})
+            self.location_allowance_ids = location_allowance_ids
+            job_allowance_ids = []
+            for rec in self.job_id.serie_id.allowanse_ids:
+                job_allowance_ids.append({'decision_appoint_id': self.id,
+                                          'allowance_id': rec.id,
+                                          'compute_method': 'amount',
+                                          'amount': 0.0})
+            self.job_allowance_ids = job_allowance_ids
+
+    def _onchange_degree_id_outside(self):
+        if self.degree_id:
+            salary_grid_line = self.env['salary.grid.detail'].search([('type_id', '=', self.type_id.id),
+                                                                      ('grade_id', '=', self.grade_id.id),
+                                                                      ('degree_id', '=', self.degree_id.id)
+                                                                      ])
+            if not salary_grid_line:
+                raise ValidationError(u"يجب تحديد سلم الرواتب المناسب لصنف و المرتبة و الدرجة")
+            salary_grid_line = salary_grid_line[0]
+            if salary_grid_line and not self.type_appointment.max_pension:
+                self.basic_salary = salary_grid_line.basic_salary
+                self.transport_allow = salary_grid_line.transport_allowance_amout
+                self.retirement = self.basic_salary * salary_grid_line.retirement / 100.0
+                self.net_salary = salary_grid_line.net_salary
 
 
 class HrTypeAppoint(models.Model):

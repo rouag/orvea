@@ -1,0 +1,15 @@
+{
+  "name": "toolbar",
+  "homepage": "https://github.com/paulkinzett/toolbar",
+  "version": "1.0.1",
+  "_release": "1.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.0.1",
+    "commit": "ba25da141166eb653ed087379f5a5aef83fe1382"
+  },
+  "_source": "https://github.com/paulkinzett/toolbar.git",
+  "_target": "^1.0.1",
+  "_originalSource": "https://github.com/paulkinzett/toolbar.git",
+  "_direct": true
+}

@@ -1,0 +1,29 @@
+{
+  "name": "pixeden-stroke-7-icon",
+  "version": "1.2.3",
+  "main": "pe-icon-7-stroke/dist/pe-icon-7-stroke.css",
+  "authors": [
+    "pixeden.com"
+  ],
+  "keywords": [
+    "pixeden",
+    "icon",
+    "font",
+    "thin",
+    "vector",
+    "retina",
+    "stroke",
+    "pixeden",
+    "ios7",
+    "pack",
+    "svg"
+  ],
+  "homepage": "http://www.pixeden.com/icon-fonts/stroke-7-icon-font-set",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

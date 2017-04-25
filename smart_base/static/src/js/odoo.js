@@ -39,7 +39,6 @@ FieldBinaryFile.include({
         if (size === false) {
             this.do_warn(_t("File Upload"), _t("There was a problem while uploading your file"));
             // TODO: use openerp web crashmanager
-            console.warn("Error while uploading file : ", name);
         } else {
             this.filename = name;//ADDED
             this.on_file_uploaded_and_valid.apply(this, arguments);

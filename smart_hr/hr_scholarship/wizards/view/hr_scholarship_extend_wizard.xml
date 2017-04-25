@@ -12,6 +12,7 @@
 						<group>
 							<field name="date_from" />
 							<field name="date_to" />
+							<field name="duration" />
 							<field name="order_number" />
 							<field name="order_date" />
 							<field name="file_decision" filename="file_decision_name" />

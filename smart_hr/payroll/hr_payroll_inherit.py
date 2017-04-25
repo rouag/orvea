@@ -152,25 +152,6 @@ class HrPayslip(models.Model):
         # احتساب الأثر المالي
         line_ids = []
         # case 1: احتساب الأثر المالي لهذا الشهر
-        # فروقات النقل
-        # يتم احتساب الأثار المالي للنقل في نفس حالة التعين
-        # فروقات التعين
-        line_ids += self.get_difference_decision_appoint(self.date_from, self.date_to, self.employee_id, False)
-        # فروقات التكليف
-        line_ids += self.get_difference_assign(self.date_from, self.date_to, self.employee_id, False)
-        # فروقات الإبتعاث
-        line_ids += self.get_difference_scholarship(self.date_from, self.date_to, self.employee_id, False)
-        # فروقات الإعارة
-        line_ids += self.get_difference_lend(self.date_from, self.date_to, self.employee_id, False)
-        # فروقات الإجازة
-        line_ids += self.get_difference_holidays(self.date_from, self.date_to, self.employee_id, False)
-        # فروقات كف اليد
-        line_ids += self.get_difference_suspension(self.date_from, self.date_to, self.employee_id, False)
-        # فروقات طى القيد
-        line_ids += self.get_difference_termination(self.date_from, self.date_to, self.employee_id, False)
-        # فرق الحسميات المتخلدة
-        line_ids += self.get_difference_one_third_salary(self.date_from, self.date_to, self.employee_id)
-
         # case 2: احتساب الأثر المالي  لشهر الفارط من تاريخ إعداد مسير الشهر الفرط إلى تاريخ بداية هذا الشهر
         # get last payslip for current employee
         payslip_id = self.env['hr.payslip'].search([('employee_id', '=', self.employee_id.id),
@@ -180,22 +161,38 @@ class HrPayslip(models.Model):
         if payslip_id:
             # add one day to compute_date of last payslip
             compute_date = str(fields.Date.from_string(payslip_id.compute_date) + timedelta(days=1))
-            # TODO: review payslip.create_date
-            # فروقات النقل
-            # فروقات التعين
+        # فروقات النقل
+        # يتم احتساب الأثار المالي للنقل في نفس حالة التعين
+        # فروقات التعين
+        line_ids += self.get_difference_decision_appoint(self.date_from, self.date_to, self.employee_id, False)
+        if payslip_id:
             line_ids += self.get_difference_decision_appoint(compute_date, payslip_id.date_to, self.employee_id, True)
-            # فروقات التكليف
+        # فروقات التكليف
+        line_ids += self.get_difference_assign(self.date_from, self.date_to, self.employee_id, False)
+        if payslip_id:
             line_ids += self.get_difference_assign(compute_date, payslip_id.date_to, self.employee_id, True)
-            # فروقات الإبتعاث
+        # فروقات الإبتعاث
+        line_ids += self.get_difference_scholarship(self.date_from, self.date_to, self.employee_id, False)
+        if payslip_id:
             line_ids += self.get_difference_scholarship(compute_date, payslip_id.date_to, self.employee_id, True)
-            # فروقات الإعارة
+        # فروقات الإعارة
+        line_ids += self.get_difference_lend(self.date_from, self.date_to, self.employee_id, False)
+        if payslip_id:
             line_ids += self.get_difference_lend(compute_date, payslip_id.date_to, self.employee_id, True)
-            # فروقات الإجازة
+        # فروقات الإجازة
+        line_ids += self.get_difference_holidays(self.date_from, self.date_to, self.employee_id, False)
+        if payslip_id:
             line_ids += self.get_difference_holidays(compute_date, payslip_id.date_to, self.employee_id, True)
-            # فروقات كف اليد
+        # فروقات كف اليد
+        line_ids += self.get_difference_suspension(self.date_from, self.date_to, self.employee_id, False)
+        if payslip_id:
             line_ids += self.get_difference_suspension(compute_date, payslip_id.date_to, self.employee_id, True)
-            # فروقات طى القيد
+        # فروقات طى القيد
+        line_ids += self.get_difference_termination(self.date_from, self.date_to, self.employee_id, False)
+        if payslip_id:
             line_ids += self.get_difference_termination(compute_date, payslip_id.date_to, self.employee_id, True)
+        # فرق الحسميات المتخلدة
+        line_ids += self.get_difference_one_third_salary(self.date_from, self.date_to, self.employee_id)
         return line_ids
 
     @api.multi
@@ -286,7 +283,7 @@ class HrPayslip(models.Model):
 
             # 1 الراتب
             if salary_rate_amount < 0:
-                vals = {'name': ' فرق الراتب التي توفرها الجهة: تكليف' + name,
+                vals = {'name': 'تكليف : فرق الراتب الذي توفره الجهة' + name,
                         'employee_id': assign_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -294,7 +291,7 @@ class HrPayslip(models.Model):
                         'type': 'commissioning'}
                 line_ids.append(vals)
             if amount_allowance < 0:
-                vals = {'name': 'فرق بدل النقل الذي توفره الجهة: تكليف' + name,
+                vals = {'name': 'تكليف : فرق بدل النقل الذي توفره الجهة' + name,
                         'employee_id': assign_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -371,7 +368,7 @@ class HrPayslip(models.Model):
                 final_retirement_amount *= -1
             # 1) البدلات المستثناة
             if allow_exception_amount < 0:
-                vals = {'name': allowance.name + name + ': ابتعاث ',
+                vals = {'name': u': ابتعاث ' + allowance.name + name  ,
                         'employee_id': scholarship_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -380,7 +377,7 @@ class HrPayslip(models.Model):
                 line_ids.append(vals)
             # 2) نسبة الراتب بعد حسم التقاعد
             if final_retirement_amount < 0:
-                vals = {'name': u'نسبة الراتب بعد حسم التقاعد: ابتعاث' + name,
+                vals = {'name': u'ابتعاث :  نسبة الراتب بعد حسم التقاعد' + name,
                         'employee_id': scholarship_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -460,7 +457,7 @@ class HrPayslip(models.Model):
                         allowance_amount *= -1
             # 1 الراتب
             if amount < 0:
-                vals = {'name': 'الإعارة نسبة الراتب' + name,
+                vals = {'name': 'إعارة : فرق الراتب الذي توفره الجهة ' + name,
                         'employee_id': lend_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -471,7 +468,7 @@ class HrPayslip(models.Model):
 
             # 2 -البدلات
             if allowance_amount < 0:
-                vals = {'name': 'فرق البدلات التي تتحملها الجهة: إعارة' + name,
+                vals = {'name': 'إعارة : فرق البدلات التي تتحملها الجهة ' + name,
                         'employee_id': lend_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -481,7 +478,7 @@ class HrPayslip(models.Model):
                 line_ids.append(vals)
             # 3) حصة الحكومة من التقاعد
             if amount_retirement:
-                vals = {'name': 'حصة الحكومة من التقاعد: الإعارة' + name,
+                vals = {'name': 'إعارة : حصة الحكومة من التقاعد ' + name,
                         'employee_id': lend_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -705,7 +702,7 @@ class HrPayslip(models.Model):
                 line_ids.append(vals)
             # فرق البدلات
             if allowance_amount2:
-                vals = {'name': ' بدل النقل  ' + holiday_id.holiday_status_id.name + name,
+                vals = {'name': ' حسم بدل النقل  ' + holiday_id.holiday_status_id.name + name,
                         'employee_id': holiday_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,

@@ -10,6 +10,7 @@ class HrScholarshipextendWizard(models.TransientModel):
 
     date_from = fields.Date(string=u'تاريخ من', required=1, readonly=1)
     date_to = fields.Date(string=u'تاريخ إلى', required=1)
+    duration = fields.Integer(string=u'عدد الأيام ', required=1, compute='_compute_duration', readonly=1)
     order_number = fields.Char(string=u'رقم الخطاب', required=1)
     order_date = fields.Date(string=u'تاريخ الخطاب', required=1)
     file_decision = fields.Binary(string=u'الخطاب', attachment=True, required=1)
@@ -28,5 +29,13 @@ class HrScholarshipextendWizard(models.TransientModel):
                                                         'scholarship_id': rec_id.id,
                                                         'order_number': wiz.order_number,
                                                         'order_date': wiz.order_date,
-                                                        'file_decision': wiz.file_decision
+                                                        'file_decision': wiz.file_decision,
+                                                        'date_from': wiz.date_from,
+                                                        'duration': wiz.duration,
+                                                        'date_to':wiz.date_to
                                                        })
+    @api.one
+    @api.depends('date_from', 'date_to')
+    def _compute_duration(self):
+        if self.date_from and self.date_to:
+            self.duration = self.env['hr.smart.utils'].compute_duration(self.date_from, self.date_to)

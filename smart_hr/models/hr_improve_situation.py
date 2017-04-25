@@ -37,7 +37,7 @@ class HrImproveSituatim(models.Model):
     type_improve = fields.Many2one('hr.type.improve.situation', string='نوع التحسين', required=1,
                                    states={'new': [('readonly', 0)]})
     order_picture1 = fields.Binary(string='صورة القرار')
-    new_job_id = fields.Many2one('hr.job', string='الوظيفة', required=1,Domain=[('state','=','unoccupied')])
+    new_job_id = fields.Many2one('hr.job', string='الوظيفة', required=1,domain=[('state','=','unoccupied')])
     number_job1 = fields.Char(string='رقم الوظيفة')
     order_date1 = fields.Date(string='تاريخ القرار')
     date_hiring1 = fields.Date(string='تاريخ التعيين')
@@ -113,20 +113,20 @@ class HrImproveSituatim(models.Model):
     def action_done(self):
         self.ensure_one()
         appoint_id = self.env['hr.decision.appoint'].create({'employee_id': self.employee_id.id,
-                                                'job_id': self.new_job_id.id,
-                                                'degree_id': self.degree_id1.id,
-                                                'date_hiring': self.order_date,
-                                                'type_id' :self.type_id1.id,
-                                                'order_date': fields.Datetime.now(),
-                                                'state': 'draft',
-                                                'type_appointment': self.type_improve.type_appointment.id,
-                                                'name': self.order_number,
-                                                'improve_id': self.id,
-                                                  })
+                                                             'job_id': self.new_job_id.id,
+                                                             'degree_id': self.degree_id1.id,
+                                                             'date_hiring': self.order_date,
+                                                             'type_id': self.type_id1.id,
+                                                             'order_date': fields.Datetime.now(),
+                                                             'state': 'draft',
+                                                             'type_appointment': self.type_improve.type_appointment.id,
+                                                             'name': self.order_number,
+                                                             'improve_id': self.id,
+                                                             })
         if appoint_id:
             appoint_id._onchange_employee_id()
-            appoint_id._onchange_job_id()
-            appoint_id._onchange_degree_id()
+            appoint_id._onchange_job_id_improve_situation()
+            appoint_id._onchange_degree_id_outside()
             appoint_id.action_done()
 
         self.state = 'done'

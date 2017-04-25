@@ -1,0 +1,25 @@
+/*******************************************************************************************************
+********************************************************************************************************
+                          CSS Manpower : Fonts 	GESSTwoLight
+
+*********************************************************************************************************
+*********************************************************************************************************/
+@font-face {
+    font-family: 'GESSTwoLight';
+    src: url('gesstwolight_2.eot');
+    src: url('gesstwolight_2.eot') format('embedded-opentype'),
+         url('gesstwolight_2.woff2') format('woff2'),
+         url('gesstwolight_2.woff') format('woff'),
+         url('gesstwolight_2.ttf') format('truetype'),
+         url('gesstwolight_2.svg#GESSTwoLight') format('svg');
+}
+
+/*--------------------------------------------------------
+          
+--------------------------------------------------------*/
+.breadcrumb li, .breadcrumb li a,
+.servicesList .item p, #lastNews .nav-tabs > li > a, 
+.block-head h2, #giftsAmana h3, #statistic h3, #lastNews .shortDesc, 
+#searchServices h4, #lastMedia h5, section .desc, #jumbotron p{
+	font-family: 'GESSTwoLight', Arial, sans-serif;font-weight:normal;font-style:normal;
+}
