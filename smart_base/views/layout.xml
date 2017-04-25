@@ -115,12 +115,9 @@
 
 		<template id="layout_header_speech">
 			<div class="header">
-				<div class="col-xs-9">
-					<img t-if="company.report_header_speech"
-						t-att-src="'data:image/png;base64,%s' % company.report_header_speech"
+				<div class="row">
+					<img t-if="company.report_header_speech" t-att-src="'data:image/png;base64,%s' % company.report_header_speech"
 						width="100%" />
-				</div>
-				<div class="col-xs-3">
 				</div>
 			</div>
 		</template>
