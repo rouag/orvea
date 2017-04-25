@@ -37,7 +37,7 @@ class HrScholarship(models.Model):
     diplom_type = fields.Selection([('high_diploma', u'دبلوم من الدراسات العليا'),
                                     ('licence_bac', u'الليسانس او الباكالوريوس'),
                                     ('average_diploma', u'دبلوم متوسط')],
-                                   string='نوع الدراسة ', )
+                                   string='نوع الدراسة ', required=1)
     acceptance_certificate = fields.Binary(string=u'مرفق القبول من الجامعة او المعهد', required=1, attachment=True)
     acceptance_certificate_name = fields.Char()
     language_exam = fields.Binary(string=u'مرفق اجتياز امتحان في لغة الدراسة', required=1, attachment=True)
@@ -315,12 +315,15 @@ class HrScholarshipHistory(models.Model):
     date = fields.Date(string='تاريخ الإجراء', readonly=1, default=fields.Datetime.now())
     name = fields.Char(string='الإجراء', readonly=1)
     scholarship_id = fields.Many2one('hr.scholarship', string=u'الابتعاث')
-    order_number = fields.Char(string=u'رقم الخطاب', required=1)
-    order_date = fields.Date(string=u'تاريخ الخطاب', required=1)
-    file_decision = fields.Binary(string=u'الخطاب', attachment=True, required=1)
+    order_number = fields.Char(string=u'رقم الخطاب')
+    order_date = fields.Date(string=u'تاريخ الخطاب')
+    file_decision = fields.Binary(string=u'الخطاب', attachment=True)
     file_decision_name = fields.Char(string=u'اسم الخطاب')
     decission_id = fields.Many2one('hr.decision', string=u'القرارات')
-    
+    date_from = fields.Date(string=u'تاريخ البدء')
+    duration = fields.Integer(string=u'عدد الأيام ')
+    date_to = fields.Date(string=u'')
+
     @api.multi
     def open_decission_scholarship(self):
         decision_obj = self.env['hr.decision']
@@ -338,7 +341,7 @@ class HrScholarshipHistory(models.Model):
                 'date': decision_date,
                 'employee_id': self.scholarship_id.employee_id.id}
             decision = decision_obj.create(decission_val)
-            decision.text = decision.replace_text(self.scholarship_id.employee_id, decision_date, decision_type_id, 'scholarship')
+            decision.text = decision.replace_text(self.scholarship_id.employee_id, decision_date, decision_type_id, 'scholarship_extension')
             decission_id = decision.id
             self.decission_id = decission_id
         return {
