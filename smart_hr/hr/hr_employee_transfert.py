@@ -177,9 +177,10 @@ class HrEmployeeTransfert(models.Model):
         res = {}
         if self.employee_id:
             previews_year = int(date.today().year) - 1
-            last_evaluation_result = self.employee_id.evaluation_level_ids.search([('year', '=', int(previews_year))])
-            if last_evaluation_result:
-                self.last_evaluation_result = last_evaluation_result
+            if self.employee_id.evaluation_level_ids:
+                last_evaluation_result = self.employee_id.evaluation_level_ids.search([('year', '=', int(previews_year))],limit=1)
+                if last_evaluation_result:
+                    self.last_evaluation_result = last_evaluation_result
             self.begin_work_date = self.employee_id.begin_work_date
             self.recruiter_date = self.employee_id.recruiter_date
             self.age = self.employee_id.age
@@ -769,7 +770,7 @@ class HrTransfertSortingLine(models.Model):
     transfert_create_date = fields.Datetime(string=u'تاريخ الطلب', related="hr_employee_transfert_id.create_date", readonly=1)
     last_evaluation_result = fields.Many2one('hr.employee.evaluation.level', related="hr_employee_transfert_id.last_evaluation_result", string=u'أخر تقييم إداء')
     new_job_id = fields.Many2one('hr.job', domain=[('state', '=', 'unoccupied')], string=u'الوظيفة المنقول إليها')
-    is_conflected = fields.Boolean(compute='_compute_is_conflected')
+    is_conflected = fields.Boolean(string="متضاربة", compute='_compute_is_conflected')
     res_city = fields.Many2one('res.city', string=u'المدينة')
     specific_group = fields.Selection([('same_specific', 'في نفس المجموعة النوعية'), ('other_specific', 'في مجموعة أخرى'), ], string=u'نوع المجموعة')
     new_type_id = fields.Many2one('salary.grid.type', string=u'الصنف', readonly=1)

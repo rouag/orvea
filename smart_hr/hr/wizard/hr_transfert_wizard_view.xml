@@ -52,7 +52,7 @@
 			<field name="target">new</field>
 		</record>
 
-		<!-- إسناد المزايا -->
+		<!-- إسناد البدلات -->
 		<record id="view_wizard_transfert_benefits" model="ir.ui.view">
 			<field name="name">transfert.benefits.wizard.form</field>
 			<field name="model">transfert.benefits.wizard</field>
@@ -184,7 +184,7 @@
 			</field>
 		</record>
 		<record id="action_wizard_transfert_benefits" model="ir.actions.act_window">
-			<field name="name">إسناد المزايا</field>
+			<field name="name">إسناد البدلات</field>
 			<field name="res_model">transfert.benefits.wizard</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
