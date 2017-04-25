@@ -24,7 +24,7 @@ class TransfertBenefitsWizard(models.TransientModel):
             if not transfert.hr_employee_transfert_id.location_allowance_ids:
                 for rec in transfert.new_department_id.dep_side.allowance_ids:
                     location_allowance_ids.append({'location_decision_appoint_id': transfert.id,
-                                                   'allowance_id': rec.allowance_id.id,
+                                                   'allowance_id': rec.id,
                                                    'compute_method': 'amount',
                                                    'amount': 0.0})
             else:
