@@ -1128,7 +1128,7 @@
 		<!--أنواع الاجازات -->
 		<record id="data_normal_leave" model="hr.decision.type">
 			<field name="name"> قرار إجازة عادية</field>
-			<field name="text"><![CDATA[
+			<field name="text"><![CDATA[ <div style="font-size: 22px;">
 			<p>قرار إداري رقم
 			 (NUMERO)و تاريخ  DATE</p>
 			<p style="text-align: center;"><strong>
@@ -1139,7 +1139,7 @@
 									<p> و إشارة إلى طلب الإجازة المرفق و استنادا إلى المادة
 										رقم (الثانية) من لائحة الاجازات
 									</p>
-									<p align="center" style="font-size:22px;">:يقرر ما يلى</p>
+									<p align="center">يقرر ما يلى :</p>
 									
 									<p>
 										1) الموافقة على تمتع الموظف /
@@ -1163,22 +1163,22 @@
 									..................................
 								</p>
 								<p>
-									<p />
 									صورة مع التحية لسعادة مدير عام شؤون الموظفين برئاسة الهيئة
 									<p />
+									<p>
 									الاصل مع الاساس لملف المذكور(
 									
 									)
-									<p />
+									<p/><p>
 									للإفادة عن تاريخ عودته
-									<p />
+									<p/><p>
 									ص/للارشيف
-									<p />
+									<p/><p>
 									صورة للاتصالات الادارية لتسديد القيد رقم.....و تاريخ ../../..ه
 
 
 								</p>
-									
+								</div>
 
             ]]></field>
 		</record>
@@ -1648,27 +1648,21 @@ SPORT
 									يوم اعتبارا من
 								FROMDET
 									و حتى
-								ENDDET	و اشارة الى خطاب
+								ENDDET
+									و اشارة الى خطاب
 									رقم
-									(......
+									ORDERN
 
 									و تاريخ
-									(.........
-									)
-									المتضمن الموافقة على تمديد فترة ابتعاثه لمدة
+									ORDERD
+									 المتضمن الموافقة على تمديد فترة ابتعاثه لمدة
+									DURATION
 									يوم و استنادا الى لائحة الابتعاث و لموافقتنا على ذلك
 								</p>
 								<p align="center" style="font-size:12px;">:يقرر ما يلى</p>
 
 								<p style="font-size:12px;">
-									١) تمديد ابتعاث /
-									DIPLOME	لنيل
-								FACULTY	من
-									CONTRY..ب
-									لمده
-									 DURATION يوم اعتبارا من
-								FROMDET 	و حتى
-								ENDDET
+									١) تمديد ابتعاث /EMPLOYEE   لنيل DIPLOME   منFACULTY ب CONTRY لمده DURATION يوم اعتبارا من FROMDET و حتى ENDDET
 								</p>
 								<p style="font-size:12px;">٢) على الجهات المختصة اعتماد و تنفيذ موجبه</p>
 							</div>

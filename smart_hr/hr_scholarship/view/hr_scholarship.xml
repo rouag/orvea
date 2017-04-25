@@ -16,8 +16,8 @@
 							<field name="date" />
 							<field name="order_number" />
 							<field name="order_date" />
-							<field name='file_decision' filename="file_decision_name"/>
-							<field name="file_decision_name" invisible="1"/>
+							<field name='file_decision' filename="file_decision_name" />
+							<field name="file_decision_name" invisible="1" />
 
 						</group>
 					</sheet>
@@ -156,6 +156,8 @@
 									<tree editable="bottom">
 										<field name="name" />
 										<field name="date" />
+										<field name="date_from" />
+										<field name="duration" />
 										<field name="order_number" />
 										<field name="order_date" />
 										<button name="open_decission_scholarship" string="معاينة القرار"

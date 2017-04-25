@@ -373,8 +373,8 @@ class HrEmployeeTransfert(models.Model):
             recruiter_id = self.env['hr.decision.appoint'].create(vals)
             if recruiter_id:
                 recruiter_id._onchange_employee_id()
-                recruiter_id._onchange_job_id()
-                recruiter_id._onchange_degree_id()
+                recruiter_id._onchange_job_id_outside()
+                recruiter_id._onchange_degree_id_outside()
                 # copy allowances from transfert to the decision_appoint
                 # بدلات الوظيفة
                 job_allowance_ids = []
@@ -505,7 +505,7 @@ class HrTransfertSorting(models.Model):
                               ('waiting', u'إعتماد الموظفين'),
                               ('commission_president', u'رئيس الجهة'),
                               ('commission_third', u'الخدمة المدنية'),
-                              ('benefits', u'إسناد المزايا'),
+                              ('benefits', u'إسناد البدلات'),
                               ('done', u'اعتمدت'),
                               ('refused', u'مرفوضة')
                               ], readonly=1, default='new', string=u'الحالة')

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<!-- إسناد البدلات -->
+		<record id="view_wizard_promotion_benefits" model="ir.ui.view">
+			<field name="name">promotion.benefits.wizard.form</field>
+			<field name="model">promotion.benefits.wizard</field>
+			<field name="arch" type="xml">
+				<form>
+					<sheet>
+						<group>
+							<group>
+								<field name="employee_id" />
+								<field name="job_id" />
+								<field name="specific_id" />
+
+							</group>
+							<group>
+								<field name="type_id" />
+								<field name="department_id" />
+								<field name="degree_id" />
+								<field name="grade_id" />
+							</group>
+							<h3 class="o_horizontal_separator">بدلات الوظيفة</h3>
+							<field name="job_allowance_ids" nolabel="1">
+								<form string="البدلات">
+									<group>
+										<group>
+											<field name="allowance_id"
+												options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+										</group>
+										<group>
+											<field name="compute_method" />
+											<field name="amount"
+												attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}" />
+											<field name="percentage"
+												attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}" />
+											<field name="min_amount" />
+											<field name="line_ids"
+												attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+												<tree editable="buttom">
+													<field name="city_id"
+														options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+													<field name="percentage" />
+												</tree>
+											</field>
+
+										</group>
+									</group>
+								</form>
+								<tree create="false">
+									<field name="allowance_id" readonly="1" />
+									<field name="compute_method" />
+									<field name="amount" />
+								</tree>
+							</field>
+							<h3 class="o_horizontal_separator">بدلات الترقية</h3>
+							<field name="promotion_allowance_ids" nolabel="1">
+								<form string="البدلات">
+									<group>
+										<group>
+											<field name="allowance_id"
+												options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+										</group>
+										<group>
+											<field name="compute_method" />
+											<field name="amount"
+												attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}" />
+											<field name="percentage"
+												attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}" />
+											<field name="min_amount" />
+											<field name="line_ids"
+												attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+												<tree editable="buttom">
+													<field name="city_id"
+														options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+													<field name="percentage" />
+												</tree>
+											</field>
+
+										</group>
+									</group>
+								</form>
+								<tree>
+									<field name="allowance_id"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									<field name="compute_method" />
+									<field name="amount" />
+								</tree>
+							</field>
+							<h3 class="o_horizontal_separator">بدلات المنطقة</h3>
+							<field name="location_allowance_ids" nolabel="1">
+								<form string="البدلات">
+									<group>
+										<group>
+											<field name="allowance_id"
+												options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+										</group>
+										<group>
+											<field name="compute_method" />
+											<field name="amount"
+												attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}" />
+											<field name="percentage"
+												attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}" />
+											<field name="min_amount" />
+											<field name="line_ids"
+												attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+												<tree editable="buttom">
+													<field name="city_id"
+														options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+													<field name="percentage" />
+												</tree>
+											</field>
+
+										</group>
+									</group>
+								</form>
+								<tree create="false">
+									<field name="allowance_id" readonly="1" />
+									<field name="compute_method" />
+									<field name="amount" />
+								</tree>
+							</field>
+						</group>
+						<footer>
+							<button icon="fa-cogs" string="تأكيد" name="action_promotion"
+								type="object" class="oe_highlight" />
+							أو
+							<button string="إلغاء" class="oe_link" special="cancel" />
+						</footer>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="action_wizard_promotion_benefits" model="ir.actions.act_window">
+			<field name="name">إسناد البدلات</field>
+			<field name="res_model">promotion.benefits.wizard</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="view_wizard_promotion_benefits" />
+			<field name="target">new</field>
+		</record>
+
+
+
+	</data>
+</openerp>

@@ -405,8 +405,8 @@ class HrPayslip(models.Model):
                         res_count += rec['days']
         #  غياب‬ بدون ‬عذر
         attendance_summary_ids = self.env['hr.attendance.summary'].search([('employee_id', '=', self.employee_id.id),
-                                                                           ('date', '>=', date_from),
-                                                                           ('date', '<=', date_to)
+                                                                           ('date', '>=', self.date_from),
+                                                                           ('date', '<=', self.date_to)
                                                                            ])
         for attendance_summary in attendance_summary_ids:
             res_count += attendance_summary.absence

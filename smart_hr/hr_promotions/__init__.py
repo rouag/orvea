@@ -3,3 +3,4 @@
 
 import hr_employee_promotion_desire
 import hr_promotion
+import wizard

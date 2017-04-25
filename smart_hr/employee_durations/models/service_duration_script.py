@@ -44,10 +44,11 @@ class serviceDuration(models.Model):
                                                                           ('date_from', '>', date_direct_action), ('holiday_status_id.deductible_duration_service', '=', True)])
                 for holiday in uncounted_holidays_days:
                     holiday_date_to = fields.Date.from_string(holiday.date_to)
+                    holiday_date_from = fields.Date.from_string(holiday.date_from)
                     if holiday_date_to <= today_date:
                         service_days -= holiday.duration
                     else:
-                        duration = (today_date - holiday.date_from).days
+                        duration = (today_date - holiday_date_from).days
                         service_days -= duration
 #                 مدة الابتعاث
                 uncounted_scholaship_days = self.env['hr.scholarship'].search([('employee_id', '=', emp.id), ('state', '=', 'finished'), ('result', '=', 'not_succeed'),
