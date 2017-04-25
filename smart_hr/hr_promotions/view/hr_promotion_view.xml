@@ -38,16 +38,19 @@
 						<button name="button_transfer_hrm" string="موافقة" type="object"
 							groups="smart_hr.group_third_party_promotion" states="minister"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="button_done" string="إعتماد " type="object"
+						<button name="button_benefits" string="إعتماد " type="object"
 							groups="smart_hr.group_promotion_specialiter,smart_hr.group_hrm"
 							states="hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="button_done" string="إعتماد " type="object"
+							groups="smart_hr.group_promotion_specialiter,smart_hr.group_hrm"
+							states="benefits" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion,smart_hr.group_promotion_checker"
 							type="action"
 							attrs="{'invisible': ['|',('state', '=', 'draft'),('state', '=', 'done')]}"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<field name="state" widget="statusbar"
-							statusbar_visible="promotion_type,draft,job_promotion,manager,minister,hrm,done" />
+							statusbar_visible="promotion_type,draft,job_promotion,manager,minister,hrm,benefits,done" />
 					</header>
 					<sheet>
 						<group>
@@ -59,10 +62,13 @@
 								attrs="{'invisible': [('state', '!=', 'manager')],'required' :[('state','=','manager')],'readonly' :[('emplyoee_state','=',True)]}" />
 						</group>
 						<group col="4">
-							<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]" states='promotion_type'/>
-							<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]" states='promotion_type'/>
-							<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]" states='promotion_type'/>
-							<field name="salary_grid_type_id" states='promotion_type'/>
+							<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]"
+								states='promotion_type' />
+							<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]"
+								states='promotion_type' />
+							<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]"
+								states='promotion_type' />
+							<field name="salary_grid_type_id" states='promotion_type' />
 						</group>
 						<group>
 							<group string="بيانات الخطاب"
@@ -124,7 +130,7 @@
 								</field>
 							</page>
 							<page string="قائمة الترشيحات"
-								attrs="{'invisible': [('state', '!=', 'manager'),('state', '!=', 'minister'),('state', '!=', 'hrm'),('state', '!=', 'done')],}">
+								attrs="{'invisible': [('state', 'not in', ['manager','benefits','minister','hrm','done'])]}">
 								<field name="employee_job_promotion_line_ids" options="{'no_open': True}">
 									<tree create="false" editable="bottom" delete="0">
 										<field name="employee_id" options='{"no_open": True, "no_create": True}'
@@ -148,10 +154,15 @@
 										<field name="new_department" invisible="1" />
 										<field name="new_city_jobs" readonly="1" />
 										<field name="emp_grade_id_new" readonly="1" />
+										<field name="new_degree_id" />
 										<field name="state" readonly="1" />
 										<field name="promotion_supp" readonly="1"
 											attrs="{'invisible': [('state', '!=', 'hrm'),('state', '!=', 'done')],}" />
 										<field name="date_direct_action" readonly="1" />
+										<field name="promotion_id_state" invisible="1"/>
+										<button name="%(smart_hr.action_wizard_promotion_benefits)d"
+											attrs="{'invisible':[('promotion_id_state','not in', ['benefits', 'done'])]}"
+											type="action" string="إسناد البدلات" icon="fa-dollar" />
 									</tree>
 
 
@@ -305,10 +316,13 @@
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 							states="employee_confirmed" />
-						<button name="promotion_cancel" string="الغاء" type="object" attrs="{'invisible': [('done_date', '!=', False)]}"
-							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" states="done" groups="smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion,smart_hr.group_promotion_checker" />
-							
-						<field name="state" widget="statusbar" statusbar_visible="employee_confirmed,done,refuse,cancel" />
+						<button name="promotion_cancel" string="الغاء" type="object"
+							attrs="{'invisible': [('done_date', '!=', False)]}" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							states="done"
+							groups="smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion,smart_hr.group_promotion_checker" />
+
+						<field name="state" widget="statusbar"
+							statusbar_visible="employee_confirmed,done,refuse,cancel" />
 					</header>
 					<sheet string="الترشيحات للترقية">
 						<group>

@@ -1648,27 +1648,21 @@ SPORT
 									يوم اعتبارا من
 								FROMDET
 									و حتى
-								ENDDET	و اشارة الى خطاب
+								ENDDET
+									و اشارة الى خطاب
 									رقم
-									(......
+									ORDERN
 
 									و تاريخ
-									(.........
-									)
-									المتضمن الموافقة على تمديد فترة ابتعاثه لمدة
+									ORDERD
+									 المتضمن الموافقة على تمديد فترة ابتعاثه لمدة
+									DURATION
 									يوم و استنادا الى لائحة الابتعاث و لموافقتنا على ذلك
 								</p>
 								<p align="center" style="font-size:12px;">:يقرر ما يلى</p>
 
 								<p style="font-size:12px;">
-									١) تمديد ابتعاث /
-									DIPLOME	لنيل
-								FACULTY	من
-									CONTRY..ب
-									لمده
-									 DURATION يوم اعتبارا من
-								FROMDET 	و حتى
-								ENDDET
+									١) تمديد ابتعاث /EMPLOYEE   لنيل DIPLOME   منFACULTY ب CONTRY لمده DURATION يوم اعتبارا من FROMDET و حتى ENDDET
 								</p>
 								<p style="font-size:12px;">٢) على الجهات المختصة اعتماد و تنفيذ موجبه</p>
 							</div>
