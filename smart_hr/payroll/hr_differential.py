@@ -160,7 +160,7 @@ class HrDifferential(models.Model):
                         'object_id': record_id.id,
                         }
                 line_ids.append(vals)
-            self.line_ids = line_ids
+        self.line_ids = line_ids
         # generate periodes for each line
         for rec in self.line_ids:
             rec.generate_periodes()
