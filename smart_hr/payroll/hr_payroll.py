@@ -105,8 +105,8 @@ class HrPayslipRun(models.Model):
             employee_ids = employee_obj.search([('id', 'in', employee_ids), ('type_id', 'in', self.salary_grid_type_id.ids)]).ids
         # minus uncounted employees
         self.compute_error()
-        employee_ids = list((set(employee_ids) - set(self.error_ids.ids)))
-        self.employee_ids = employee_ids
+        employee_error_ids = [line.employee_id.id for line in self.error_ids]
+        self.employee_ids = list((set(employee_ids) - set(employee_error_ids)))
 
     @api.one
     def action_verify(self):
@@ -150,7 +150,6 @@ class HrPayslipRun(models.Model):
 
     @api.multi
     def compute_sheet(self):
-        payslip_obj = self.env['hr.payslip']
         self.slip_ids.unlink()
         self.count_slip_ids = 0
         self.compute_employee_ids()
@@ -351,11 +350,6 @@ class HrPayslip(models.Model):
             self.grade_id = self.employee_id.grade_id.id
             self.degree_id = self.employee_id.degree_id.id
             self.type_id = self.employee_id.type_id.id
-            # computation worked_days_line_ids, leaves
-            # worked_days_line_ids, leaves = rec.get_worked_day_lines_without_contract(rec.employee_id.id, rec.employee_id.calendar_id, rec.date_from, rec.date_to)
-            # rec.worked_days_line_ids = worked_days_line_ids
-            # rec.days_off_line_ids = leaves
-
             # check the existance of difference and dedections for current month
         res = {}
         employee_ids = self.env['hr.employee'].search(
@@ -376,126 +370,60 @@ class HrPayslip(models.Model):
         res['domain'] = {'employee_id': [('id', 'in', result_employee_ids)]}
         return res
 
-    def get_worked_day_lines_without_contract(self, employee_id, working_hours, date_from, date_to, compute_leave=True):
-        """
-
- احتساب عدد الأيام المدفوعة الأجر
-احتساب عدد أيام الإجازات
-        :param employee_id:
-        :param working_hours: وردية الموظف
-        :param date_from:
-        :param date_to:
-        """
-        def employee_was_on_leave(employee_id, datetime_day, context=None):
-            res = False
-            day = datetime_day.strftime("%Y-%m-%d")
-            # TODO: get correct state
-            holiday_ids = self.env['hr.holidays'].search([('state', 'in', ('validate', 'done')),
-                                                          ('employee_id', '=', employee_id),
-                                                          ('type', '=', 'remove'),
-                                                          ('date_from', '<=', day),
-                                                          ('date_to', '>=', day)])
-            if holiday_ids:
-                res = holiday_ids[0].holiday_status_id.name
-            return res
-
-        leaves = {}
-        attendances = {'name': _(u"عدد أيام العمل المدفوعة الأجر 100%"),
-                       'sequence': 1,
-                       'code': 'WORK100',
-                       'number_of_days': 0.0,
-                       'number_of_hours': 0.0,
-                       'contract_id': False}
-        day_from = datetime.strptime(date_from, "%Y-%m-%d")
-        day_to = datetime.strptime(date_to, "%Y-%m-%d")
-        nb_of_days = (day_to - day_from).days + 1
-        for day in range(0, nb_of_days):
-            working_hours_on_day = self.env['resource.calendar'].working_hours_on_day(working_hours, day_from + timedelta(days=day))
-            if working_hours_on_day:
-                # the employee had to work
-                leave_type = employee_was_on_leave(employee_id, day_from + timedelta(days=day))
-                if leave_type and compute_leave:
-                    # if he was on leave, fill the leaves dict
-                    if leave_type in leaves:
-                        leaves[leave_type]['number_of_days'] += 1.0
-                        leaves[leave_type]['number_of_hours'] += working_hours_on_day
-                    else:
-                        leaves[leave_type] = {
-                            'name': leave_type,
-                            'sequence': 5,
-                            'code': leave_type,
-                            'number_of_days': 1.0,
-                            'number_of_hours': working_hours_on_day,
-                            'contract_id': False,
-                            'type': 'holiday',
-                        }
-                else:
-                    # add the input vals to tmp (increment if existing)
-                    attendances['number_of_days'] += 1.0
-                    attendances['number_of_hours'] += working_hours_on_day
-        leaves = [value for key, value in leaves.items()]
-        return [attendances], leaves
-
     def get_all_structures_for_payslip(self, cr, uid, structure_id, context):
         structure_ids = [structure_id]
         if not structure_ids:
             return []
         return list(set(self.pool.get('hr.payroll.structure')._get_parent_structure(cr, uid, structure_ids, context=context)))
 
-    def get_days_off_count(self, date_from, date_to):
+    def get_days_off_count(self):
+        """        
+                            احتساب أيام العمل
+                    - يتم حذف عدد الأيام في كل سطر  فيه deducted_from_working_days  : ( كف اليد ، طي القيد)
+                    - يتم حذف عدد أيام الإجازات : هناك اجازات لا تظهر في المسير  لذلك لا يمكن إستعمال deducted_from_working_days
+                     يتم حذف أيام الغياب بدون عذر : من خلال الربط مع الحضور والإنصراف
+        """
         res_count = 0.0
+        # الإجازات
         # holidays in current periode
         domain = [('employee_id', '=', self.employee_id.id), ('state', '=', 'done')]
         holidays_ids = self.env['hr.holidays'].search(domain)
         for holiday_id in holidays_ids:
             # overlaped days in current month
             holiday_date_from = fields.Date.from_string(holiday_id.date_from)
-            date_from = fields.Date.from_string(str(date_from))
+            date_from = fields.Date.from_string(str(self.date_from))
             holiday_date_to = fields.Date.from_string(str(holiday_id.date_to))
-            date_to = fields.Date.from_string(str(date_to))
+            date_to = fields.Date.from_string(str(self.date_to))
             date_start, date_stop = self.env['hr.smart.utils'].get_overlapped_periode(date_from, date_to, holiday_date_from, holiday_date_to)
             if date_start and date_stop:
                 res = self.env['hr.smart.utils'].compute_duration_difference(holiday_id.employee_id, date_start, date_stop, True, True, True)
                 if len(res) == 1:
                     rec = res[0]
-                    res_count = rec['days']
+                    res_count += rec['days']
                 else:
                     for rec in res:
                         res_count += rec['days']
-        # termination in current periode
-        domain = [('date', '>=', date_from),
-                  ('date', '<=', date_to),
-                  ('employee_id', '=', self.employee_id.id),
-                  ('state', '=', 'done')
-                  ]
-        termination_ids = self.env['hr.termination'].search(domain)
-        for termination in termination_ids:
-            # فرق الأيام المخصومة من الشهر
-            date_from = date_from
-            date_to = termination.date_termination
-            worked_days = days_between(str(date_from), str(date_to)) - 1
-            unworked_days = 30.0 - worked_days
-            res_count += unworked_days
-        # مدّة غياب‬ ‫الموظف بدو‬عذر
+        #  غياب‬ بدون ‬عذر
         attendance_summary_ids = self.env['hr.attendance.summary'].search([('employee_id', '=', self.employee_id.id),
                                                                            ('date', '>=', date_from),
                                                                            ('date', '<=', date_to)
                                                                            ])
         for attendance_summary in attendance_summary_ids:
             res_count += attendance_summary.absence
-
-        res = (30 - res_count)
-        if res < 0:
-            res = 0
-        return res
+        # deducted_from_working_days : ( كف اليد ، طي القيد)
+        for line in self.line_ids:
+            if line.deducted_from_working_days:
+                res_count += line.number_of_days
+        working_days = 30 - res_count
+        if working_days < 0:
+            working_days = 0.0
+        return working_days
 
     @api.multi
     def compute_sheet(self):
         bonus_line_obj = self.env['hr.bonus.line']
         loan_obj = self.env['hr.loan']
         for payslip in self:
-            # calculate work days
-            payslip.number_of_days = payslip.get_days_off_count(payslip.date_from, payslip.date_to)
             # delete old line
             payslip.line_ids.unlink()
             payslip.contraintes_ids.unlink()
@@ -515,19 +443,18 @@ class HrPayslip(models.Model):
             deduction_total = 0.0
             difference_total = 0.0
             next_periode_id = self.env['hr.period'].search([('id', '>', payslip.period_id.id)], order='id asc', limit=1)
-            if basic_salary:
-                # 1- الراتب الأساسي
-                basic_salary_val = {'name': u'الراتب الأساسي',
-                                    'slip_id': payslip.id,
-                                    'employee_id': employee.id,
-                                    'rate': 0.0,
-                                    'number_of_days': 30,
-                                    'amount': basic_salary,
-                                    'category': 'basic_salary',
-                                    'type': 'basic_salary',
-                                    'sequence': sequence,
-                                    }
-                lines.append(basic_salary_val)
+            # 1- الراتب الأساسي
+            basic_salary_val = {'name': u'الراتب الأساسي',
+                                'slip_id': payslip.id,
+                                'employee_id': employee.id,
+                                'rate': 0.0,
+                                'number_of_days': 30,
+                                'amount': basic_salary,
+                                'category': 'basic_salary',
+                                'type': 'basic_salary',
+                                'sequence': sequence,
+                                }
+            lines.append(basic_salary_val)
             # 2- البدلات القارة
             res_allowances = employee.get_employee_allowances(grid_id)
             if res_allowances:
@@ -591,62 +518,71 @@ class HrPayslip(models.Model):
             difference_lines = self.env['hr.differential.line'].search([('difference_id.state', '=', 'done'),
                                                                         ('difference_id.period_id', '=', payslip.period_id.id),
                                                                         ('employee_id', '=', employee.id)])
-            diff_basic_salary_amount = 0.0
-            diff_retirement_amount = 0.0
-            diff_allowance_amount = 0.0
-            diff_number_of_days = 0.0
+
             for difference in difference_lines:
-                diff_basic_salary_amount += difference.basic_salary_amount
-                diff_retirement_amount += difference.retirement_amount
-                diff_allowance_amount += difference.allowance_amount
+                sequence += 1
+                action_type = difference.difference_id.action_type
+                if action_type == 'promotion':
+                    difference_name = 'ترقية'
+                elif action_type == 'decision_appoint':
+                    difference_name = 'تعيين'
+                elif action_type == 'tranfert':
+                    difference_name = 'نقل'
+                elif action_type == 'improve_condition':
+                    difference_name = 'تحسين وضع'
+                diff_number_of_days = 0.0
+                diff_basic_salary_amount = difference.basic_salary_amount
+                diff_retirement_amount = difference.retirement_amount
+                diff_allowance_amount = difference.allowance_amount
                 for rec in difference.defferential_detail_ids:
                     diff_number_of_days += rec.number_of_days
-            if diff_basic_salary_amount != 0:
-                difference_val = {'name': 'فرق: الراتب الأساسي',
-                                  'slip_id': payslip.id,
-                                  'employee_id': employee.id,
-                                  'rate': 0.0,
-                                  'number_of_days': diff_number_of_days,
-                                  'amount': diff_basic_salary_amount,
-                                  'category': 'difference',
-                                  'type': 'difference',
-                                  'sequence': sequence
-                                  }
-                lines.append(difference_val)
-                difference_total += diff_retirement_amount
-                sequence += 1
-            if diff_retirement_amount != 0:
-                difference_val = {'name': 'فرق: التقاعد',
-                                  'slip_id': payslip.id,
-                                  'employee_id': employee.id,
-                                  'rate': 0.0,
-                                  'number_of_days': diff_number_of_days,
-                                  'amount': diff_retirement_amount,
-                                  'category': 'difference',
-                                  'type': 'difference',
-                                  'sequence': sequence
-                                  }
-                lines.append(difference_val)
-                difference_total += diff_retirement_amount
-                sequence += 1
-            if diff_allowance_amount != 0:
-                difference_val = {'name': 'فرق: البدلات',
-                                  'slip_id': payslip.id,
-                                  'employee_id': employee.id,
-                                  'rate': 0.0,
-                                  'number_of_days': diff_number_of_days,
-                                  'amount': diff_allowance_amount,
-                                  'category': 'difference',
-                                  'type': 'difference',
-                                  'sequence': sequence
-                                  }
-                lines.append(difference_val)
-                difference_total += diff_allowance_amount
-                sequence += 1
+                if diff_basic_salary_amount != 0:
+                    difference_val = {'name': 'فرق الراتب الأساسي : '+difference_name,
+                                      'slip_id': payslip.id,
+                                      'employee_id': employee.id,
+                                      'rate': 0.0,
+                                      'number_of_days': diff_number_of_days,
+                                      'amount': diff_basic_salary_amount,
+                                      'category': 'difference',
+                                      'type': 'difference',
+                                      'sequence': sequence
+                                      }
+                    lines.append(difference_val)
+                    difference_total += diff_basic_salary_amount
+                    sequence += 1
+                if diff_retirement_amount != 0:
+                    difference_val = {'name': 'فرق التقاعد : '+difference_name,
+                                      'slip_id': payslip.id,
+                                      'employee_id': employee.id,
+                                      'rate': 0.0,
+                                      'number_of_days': diff_number_of_days,
+                                      'amount': diff_retirement_amount,
+                                      'category': 'difference',
+                                      'type': 'difference',
+                                      'sequence': sequence
+                                      }
+                    lines.append(difference_val)
+                    difference_total += diff_retirement_amount
+                    sequence += 1
+                if diff_allowance_amount != 0:
+                    difference_val = {'name': 'فرق البدلات : '+difference_name,
+                                      'slip_id': payslip.id,
+                                      'employee_id': employee.id,
+                                      'rate': 0.0,
+                                      'number_of_days': diff_number_of_days,
+                                      'amount': diff_allowance_amount,
+                                      'category': 'difference',
+                                      'type': 'difference',
+                                      'sequence': sequence
+                                      }
+                    lines.append(difference_val)
+                    difference_total += diff_allowance_amount
+                    sequence += 1
 
             # 5- الأثر المالي
             difference_lines = payslip.compute_differences()
             for difference in difference_lines:
+                sequence += 1
                 difference_val = {'name': difference['name'],
                                   'slip_id': payslip.id,
                                   'employee_id': employee.id,
@@ -655,11 +591,12 @@ class HrPayslip(models.Model):
                                   'amount': difference['amount'],
                                   'category': 'difference',
                                   'type': 'difference',
-                                  'sequence': sequence
+                                  'deducted_from_working_days': difference.get('deducted_from_working_days', False),
+                                  'sequence': sequence,
+
                                   }
                 lines.append(difference_val)
                 difference_total += difference['amount']
-                sequence += 1
             # 6- الحسميات
             deduction_lines = payslip.compute_deductions(allowance_total)
             for deduction in deduction_lines:
@@ -696,7 +633,7 @@ class HrPayslip(models.Model):
             # 8- فرق الحسميات أكثر من ثلث الراتب
             # check if deduction_total is > than 1/3 of basic salary
             if (deduction_total * -1) > basic_salary / 3 and not payslip.contraintes_ids:
-                third_amount = deduction_total - basic_salary / 3
+                third_amount = (deduction_total * -1) - basic_salary / 3
                 vals = {'name': 'فرق الحسميات أكثر من ثلث الراتب',
                         'slip_id': payslip.id,
                         'employee_id': employee.id,
@@ -761,12 +698,15 @@ class HrPayslip(models.Model):
                 constrainte_amount = constrainte_line.amount
                 if constrainte_name == 'min_amount' and salary_net_line.amount < constrainte_amount:
                     #  ترحيل حسميات الغياب والتأخير إلى الأشهر اللاحقة
-                    line_to_remove = self.env['hr.payslip.line'].search([('slip_id', '=', payslip.id),
+                    lines_to_remove = self.env['hr.payslip.line'].search([('slip_id', '=', payslip.id),
                                                                          ('type', 'in', ('retard_leave', 'absence'))])
                     # update calculated net_salary
-                    salary_net_line.amount = salary_net_line.amount + line_to_remove.amount
+                    line_amount_deduction = 0.0
+                    for line in lines_to_remove:
+                        line_amount_deduction += line.amount
+                    salary_net_line.amount = salary_net_line.amount - line_amount_deduction
                     # remove deduction line from payslip
-                    payslip.line_ids = [(3, line_to_remove.id)]
+                    lines_to_remove.unlink()
                     #  check if net salary is still less than min amount
                     if constrainte_name == 'min_amount' and salary_net_line.amount < constrainte_amount:
                         diff_amount = constrainte_amount - float(salary_net_line.amount)
@@ -782,6 +722,9 @@ class HrPayslip(models.Model):
                                                                                })
                         payslip.line_ids = [(4, diff_amount_line.id)]
                         salary_net_line.amount = salary_net_line.amount + diff_amount
+                        # remove delays_ids  and abscence_ids
+                        payslip.delays_ids = False
+                        payslip.abscence_ids = False
             # case net_salary is negative
             if salary_net_line.amount < 0:
                 if next_periode_id:
@@ -792,7 +735,7 @@ class HrPayslip(models.Model):
                                                                                   'name': 'negative_salary'
                                                                                   })
                     if hist_line:
-                        diff_amount_line = self.env['hr.payslip.line'].create({'name': 'المبلغ المراحل (سبب راتب سالب)',
+                        diff_amount_line = self.env['hr.payslip.line'].create({'name': 'المبلغ المرحل (سبب راتب سالب)',
                                                                                'slip_id': payslip.id,
                                                                                'employee_id': employee.id,
                                                                                'rate': 0.0,
@@ -809,6 +752,8 @@ class HrPayslip(models.Model):
             # update allowance_total deduction_total
             payslip.allowance_total = allowance_total
             payslip.difference_deduction_total = deduction_total + difference_total
+            # calculate work days
+            payslip.number_of_days = payslip.get_days_off_count()
 
     @api.one
     @api.constrains('employee_id', 'period_id')
@@ -847,7 +792,7 @@ class HrPayslipLine(models.Model):
     category_id = fields.Many2one('hr.salary.rule.category', 'Category', required=False)
     number_of_days = fields.Float(string='عدد الأيام')
     number_of_hours = fields.Float(string='عدد الساعات')
-
+    deducted_from_working_days = fields.Boolean(string='تخصم  من أيام العمل')
     # added
     category = fields.Selection([('basic_salary', 'الراتب الأساسي'),
                                  ('allowance', 'البدلات'),

@@ -101,7 +101,7 @@ class hrHolidaysDecision(models.Model):
                 direct_decision_ids = self.search([('holiday_id', 'in', holidays.ids)])
                 for direct_decision_id in direct_decision_ids:
                     holidays_ids.remove(direct_decision_id.holiday_id.id)
-                res['domain'] = {'holiday_id': [('id', 'in', holidays.ids)]}
+                res['domain'] = {'holiday_id': [('id', 'in', holidays_ids)]}
             else:
                 res['domain'] = {'holiday_id': [('id', 'in', [])]}
         else:

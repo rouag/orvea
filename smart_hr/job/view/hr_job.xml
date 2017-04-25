@@ -893,8 +893,8 @@
 								<field name="decision_number"
 									attrs="{'invisible':[('state', 'in', ['new','waiting'])], 'readonly':[('state','!=', 'hrm1')]}" />
 								<field name="decision_date"
-									attrs="{'invisible':[('state', 'in', ['new','waiting'])], 'readonly':[('state','!=', 'hrm1')]}" />
-								<field name="decision_file"
+									attrs="{'invisible':[('state',  'not in', ['hrm1', 'budget_external', 'hrm2', 'done'])], 'readonly':[('state','!=', 'hrm1')]}" />
+								<field name="decision_file" filename="decision_file_name"
 									attrs="{'invisible':[('state', 'in', ['new','waiting'])], 'readonly':[('state','!=', 'hrm1')]}" />
 
 								<field name="out_speech_number"
@@ -921,8 +921,8 @@
 								<field name="job_name_code" />
 								<field name="department_id" />
 								<field name="new_job_name" />
-								<field name="new_grade_id" />
 								<field name="new_job_number" />
+								<field name="new_grade_id" />
 								<field name="new_department_id" />
 								<field name="notes"/>
 								<field name="type_id" invisible="1"/>
@@ -936,6 +936,7 @@
 					</div>
 					<field name="in_speech_file_name" invisible="1" />
 					<field name="out_speech_file_name" invisible="1" />
+					<field name="decision_file_name"  invisible="1" />
 				</form>
 			</field>
 		</record>
@@ -1058,8 +1059,8 @@
 								<field name="job_name_code" />
 								<field name="department_id" />
 								<field name="new_job_name" />
-								<field name="new_grade_id" />
 								<field name="new_job_number" />
+								<field name="new_grade_id" />
 								<field name="new_department_id" />
 								<field name="notes"/>
 								<field name="type_id" invisible="1"/>

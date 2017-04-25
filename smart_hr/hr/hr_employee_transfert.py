@@ -33,12 +33,14 @@ class HrEmployeeTransfert(models.Model):
     attachments = fields.Many2many('ir.attachment',string=u"المرفقات")
     same_group = fields.Boolean(compute='_compute_same_specific_group', default=False)
     ready_tobe_done = fields.Boolean(default=False)
-    decision_number = fields.Char(string=u"رقم القرار")
-    decision_date = fields.Date(string=u'تاريخ القرار')
+    decision_number = fields.Char(string=u"رقم القرار",readonly=1, related='decission_id.name')
+    decision_date = fields.Date(string=u'تاريخ القرار',readonly=1, related='decission_id.date')
     decision_file = fields.Binary(string=u'نسخة القرار', attachment=True)
     decision_file_name = fields.Char(string=u'نسخة القرار')
     degree_id = fields.Many2one('salary.grid.degree',related='employee_id.degree_id', string=u'الدرجة', readonly=1)
     new_degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة', readonly=1)
+    degree_last = fields.Many2one('salary.grid.degree', string=u'الدرجة', readonly=1)
+    
     governmental_entity = fields.Many2one('res.partner', string=u'الجهة الحكومية', domain=[('company_type', '=', 'governmental_entity')], readonly=1, states={'new': [('readonly', 0)]})
     desire_ids = fields.One2many('hr.employee.desire',  'desire_id', store=True,required=1, string=u'رغبات النقل', readonly=1, states={'new': [('readonly', 0)]})
     refusing_date = fields.Date(string=u'تاريخ الرفض', readonly=1)
@@ -662,6 +664,8 @@ class HrTransfertSorting(models.Model):
                     if line.accept_trasfert == True :
                         line.hr_employee_transfert_id.state ='done'
                         line.hr_employee_transfert_id.employee_id.job_id = line.new_job_id.id
+                        line.hr_employee_transfert_id.degree_last = line.degree_id.id 
+                        line.hr_employee_transfert_id.employee_id.degree_id = line.new_degree_id.id
                         line.hr_employee_transfert_id.new_job_id.state='occupied'
                         #line_ids1.append(vals)
                         self.env['base.notification'].create({'title': u'إشعار بموافقة طلب',

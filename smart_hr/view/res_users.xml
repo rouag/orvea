@@ -14,7 +14,7 @@
 			<field name="arch" type="xml">
 				<form string="انشاء مستخدم">
 					<header name="main">
-						<button name="button_done" string="انشاء مستخدم" type="object"
+						<button name="button_done" string="انشاء مستخدم" type="object" attrs="{'invisible': [('state','!=', 'draft')]}"
 							icon="fa-paper-plane" class="oe_inline oe_stat_button"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<field name="state" widget="statusbar"

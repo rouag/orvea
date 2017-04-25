@@ -164,7 +164,7 @@
         'sanction/hr_sanction_view.xml',
         'sanction/views/hr_deprivation_premium_report.xml',
         'sanction/views/report.xml',
-        'sanction/hr_deprivation_premium_view.xml',
+       # 'sanction/hr_deprivation_premium_view.xml',
         # القرارات
         'hr_decision/hr_decision.xml',
         'hr_decision/hr_decision_setting.xml',

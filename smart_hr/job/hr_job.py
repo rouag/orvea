@@ -1214,7 +1214,8 @@ class HrJobMoveGrade(models.Model):
                                   ])
     out_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الصادر')
     in_speech_file_name = fields.Char(string=u'مسمى صورة الخطاب الوارد')
-
+    decision_file_name = fields.Char(string=u'مسمى القرار')
+    
     @api.multi
     def action_waiting(self):
         self.ensure_one()
@@ -1412,13 +1413,13 @@ class HrJobMoveGradeLine(models.Model):
 
     job_move_grade_id = fields.Many2one('hr.job.move.grade', string='الوظيفة', required=1, ondelete="cascade")
     job_id = fields.Many2one('hr.job', string='اسم الوظيفة القديم', required=1)
-    job_number = fields.Char(string='رقم المرتبة القديم', readonly=1)
-    job_name_code = fields.Char(related="job_id.name.number", string='رقم المرتبة القديم', readonly=1)
+    job_number = fields.Char(string='رقم الوظيفة القديم', readonly=1)
+    job_name_code = fields.Char(related="job_id.name.number", string='رقم الوظيفة القديم', readonly=1)
     type_id = fields.Many2one('salary.grid.type', string='نوع السلم', readonly=1, required=1)
     grade_id = fields.Many2one('salary.grid.grade', string=' المرتبة القديمة', readonly=1, required=1)
     new_grade_id = fields.Many2one('salary.grid.grade', string=' المرتبة الجديدة', required=1)
     department_id = fields.Many2one('hr.department', string='الإدارة', readonly=1, required=1)
-    new_job_number = fields.Char(string='رقم المرتبة الجديد', required=1)
+    new_job_number = fields.Char(string='رقم الوظيفة الجديد', required=1)
     new_department_id = fields.Many2one('hr.department', string=' الإدارة الجديدة', required=1)
     new_job_name = fields.Many2one('hr.job.name', string='اسم الوظيفة الجديد', required=1)
     notes = fields.Text(string=u'ملاحظات')
@@ -1497,7 +1498,6 @@ class HrJobMoveGradeLine(models.Model):
 
     @api.onchange('new_grade_id', 'new_job_number')
     def onchange_new_grade_id(self):
-        print "aaaaaaaaaaaaaaaaaaa"
         res = {}
         warning = {}
         if self.new_job_number:
@@ -1519,7 +1519,7 @@ class HrJobMoveGradeLine(models.Model):
             res['domain'] = {'new_grade_id': [('id', 'in', grade_ids)]}
             # check if there is already a job with new grade and same job number
             jobs = self.env['hr.job'].search_count([('number', '=', self.new_job_number)])
-            self.new_grade_id = False
+            #self.new_grade_id = False
             if jobs:
                 self.new_job_number = ''
                 self.new_grade_id = False

@@ -13,10 +13,10 @@ class HrSanction(models.Model):
     _order = 'id desc'
     _description = u'إجراء العقوبات'
 
-    name = fields.Char(string='رقم القرار', readonly=1, states={'draft': [('readonly', 0)]})
-    order_date = fields.Date(string='تاريخ العقوبة', default=fields.Datetime.now(), readonly=1)
+    name = fields.Char(string='رقم القرار' ,readonly=1, related='decission_id.name')
+    order_date = fields.Date(string='تاريخ القرار', readonly=1,related='decission_id.date' )
     sanction_text = fields.Text(string=u'محتوى العقوبة', readonly=1, states={'draft': [('readonly', 0)]})
-    order_picture = fields.Binary(string='صورة القرار', required=1, readonly=1, states={'draft': [('readonly', 0)]},
+    order_picture = fields.Binary(string='صورة القرار', readonly=1, states={'draft': [('readonly', 0)]},
                                   attachment=True)
     order_picture_name = fields.Char(string='صورة القرار', readonly=1, states={'draft': [('readonly', 0)]})
     type_sanction = fields.Many2one('hr.type.sanction', string=u' نوع العقوبة ', required=1, readonly=1,
@@ -29,7 +29,7 @@ class HrSanction(models.Model):
     date_sanction = fields.Date(string='تاريخ الخطاب ')
     file_sanction = fields.Binary(string='صورة الخطاب ', attachment=True)
     file_sanction_name = fields.Char(string='صورة الخطاب ')
-
+    decission_id = fields.Many2one('hr.decision', string=u'القرارات')
     # update sanction
     difference_ids = fields.One2many('hr.sanction.ligne', 'sanction_id', string=u'العقوبات', readonly=1,
                                      states={'draft': [('readonly', 0)]})
@@ -42,6 +42,45 @@ class HrSanction(models.Model):
                               ('done', 'اعتمدت'),
                               ('update', 'تعديل'),
                               ('cancel', 'ملغاة')], string='الحالة', readonly=1, default='draft')
+
+
+
+    @api.multi
+    def button_deprivation_premium_sanction(self):
+        decision_obj= self.env['hr.decision']
+        if self.decission_id:
+            decission_id = self.decission_id.id
+        else :
+            decision_type_id = 1
+            decision_date = fields.Date.today() # new date
+            if self.type_sanction:
+                decision_type_id = self.env.ref('smart_hr.data_decision_deprivation_premium').id
+            # create decission
+            decission_val={
+              #  'name': self.name,
+                'decision_type_id':decision_type_id,
+                'date':decision_date,
+                'employee_id' :False}
+            decision = decision_obj.create(decission_val)
+            decision.text = decision.replace_text(False,decision_date,decision_type_id,'employee',args={'DATE':decision_date})
+            decission_id = decision.id
+            self.decission_id =  decission_id
+        return {
+            'name': u'قرار حرمان من العلاوة',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'hr.decision',
+            'view_id': self.env.ref('smart_hr.hr_decision_wizard_form').id,
+            'type': 'ir.actions.act_window',
+            'res_id': decission_id,
+            'target': 'new'
+            }
+
+
+   
+
+
+
 
     @api.multi
     def button_cancel_sanction(self):
@@ -107,6 +146,10 @@ class HrSanction(models.Model):
         self.state = 'cancel'
         self.date_sanction_end = fields.Date.from_string(fields.Date.today())
         for line in self.line_ids:
+            if line.deduction == True :
+                raise ValidationError(u"لا يمكن إلغاء  العقوبة بعد تطبيق حسم على موظف")
+            if self.date_sanction_end > self.date_sanction_start :
+                raise ValidationError(u"لا يمكن إلغاء  العقوبة بعد تبدأ العقوبة")
             line.state = 'cancel'
 
     @api.multi
@@ -136,7 +179,7 @@ class HrSanctionLigne(models.Model):
                               ('excluded', 'مستبعد'),
                               ('done', 'تم العقوبة'),
                               ('cancel', 'ملغى')], string='الحالة', readonly=1, default='waiting')
-
+ 
     @api.onchange('employee_id')
     def onchange_employee_id(self):
         if not self.employee_id:

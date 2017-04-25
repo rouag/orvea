@@ -71,10 +71,10 @@ class HrScholarship(models.Model):
             decision_type_id = 1
             decision_date = fields.Date.today()  # new date
             if self.employee_id:
-                decision_type_id = self.env.ref('smart_hr.data_employee_scholarship').id
+                decision_type_id = self.env.ref('smart_hr.data_employee_scholarship_general').id
             # create decission
             decission_val = {
-                'name': self.env['ir.sequence'].get('hr.scholarship.seq'),
+               # 'name': self.env['ir.sequence'].get('hr.scholarship.seq'),
                 'decision_type_id': decision_type_id,
                 'date': decision_date,
                 'employee_id': self.employee_id.id}
@@ -213,8 +213,7 @@ class HrScholarship(models.Model):
 
         context = self._context.copy()
         context.update({
-            u'default_is_extension': self.diplom_id.id,
-            u'default_date_from': self.date_from,
+            u'default_date_from': self.date_to,
             u'default_date_to': self.date_to,
         })
         return {
@@ -240,6 +239,16 @@ class HrScholarship(models.Model):
 
         if self.date_from > self.date_to:
             raise ValidationError(u"تاريخ من يجب ان يكون أصغر من تاريخ الى")
+        domain = [
+                ('date_from', '<=', self.date_to),
+                ('date_to', '>=', self.date_from),
+                ('employee_id', '=', self.employee_id.id),
+                ('id', '!=', self.id),
+                ('state', 'not in', ['cancel']),
+            ]
+        nb_scholaship = self.search_count(domain)
+        if nb_scholaship:
+            raise ValidationError(u"هناك تداخل في التواريخ مع ابتعاث آخر")
 
     @api.multi
     def unlink(self):
@@ -333,7 +342,7 @@ class HrScholarshipHistory(models.Model):
             decission_id = decision.id
             self.decission_id = decission_id
         return {
-            'name': _(u'قرار الابتعاث'),
+            'name': _(u'قرار تمديد ابتعاث'),
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'hr.decision',
