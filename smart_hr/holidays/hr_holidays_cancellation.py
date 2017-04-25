@@ -84,7 +84,7 @@ class hrHolidaysCancellation(models.Model):
             date_to = fields.Date.from_string(self.date_to)
             cancellation_date = fields.Date.from_string(self.cancellation_date)
             if cancellation_date < date_from or cancellation_date>date_to - relativedelta(days=1):
-                raise ValidationError(u'تاريخ القطع يجب ان يكون بين اول يوم في الاجارة و اليوم قيل الاخير منها')
+                raise ValidationError(u'تاريخ القطع يجب ان يكون بين اول يوم في الاجارة و اليوم قبل الاخير منها')
 
 
     @api.multi

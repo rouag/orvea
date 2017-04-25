@@ -48,9 +48,9 @@ class promotionBenefitsWizard(models.TransientModel):
                                               'amount': rec.amount})
             # fill promotion_allowance_ids
             if promotion.promotion_allowance_ids:
-                for rec in promotion.new_department.serie_id.allowanse_ids:
+                for rec in promotion.promotion_allowance_ids:
                     promotion_allowance_ids.append({'promotion_id': promotion.id,
-                                                    'allowance_id': rec.id,
+                                                    'allowance_id': rec.allowance_id.id,
                                                     'compute_method': rec.compute_method,
                                                     'amount': rec.amount})
             res.update({'promotion_line_obj': promotion.id,
@@ -94,7 +94,7 @@ class promotionBenefitsWizard(models.TransientModel):
         self.promotion_line_obj.job_allowance_ids = job_allowance_ids
         promotion_allowance_ids = []
         for rec in self.promotion_allowance_ids:
-            job_allowance_ids.append({'promotion_id': self.promotion_line_obj.id,
+            promotion_allowance_ids.append({'promotion_id': self.promotion_line_obj.id,
                                       'allowance_id': rec.allowance_id.id,
                                       'compute_method': rec.compute_method,
                                       'amount': rec.amount
