@@ -92,8 +92,8 @@
 							</group>
 						</group>
 						<group string="المترشحين" attrs="{'invisible': [('state', '=', 'new')]}">
-							<field name="line_ids" string="المترشحين" nolabel="1"
-								attrs="{'readonly' :[('state','!=','candidat')]}">
+							<field name="line_ids" string="المترشحين" nolabel="1" context="{'default_training_id':active_id}"
+							attrs="{'readonly' :[('state','!=','candidat')]}">
 								<tree string="بيانات الموظف">
 									<field name="employee_id"
 										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
@@ -161,6 +161,7 @@
 								options='{"no_open": True, "no_create": True}' />
 							<field name="department_id" readonly="1"
 								options='{"no_open": True, "no_create": True}' />
+								<field name="training_id" invisible="1"/>
 							<field name="state" invisible="1" />
 						</group>
 					</sheet>

@@ -561,7 +561,7 @@ class HrPromotionLigneEmployeeJob(models.Model):
     job_allowance_ids = fields.One2many('hr.promotion.allowance', 'job_promotion_id', string=u'بدلات الوظيفة')
     promotion_allowance_ids = fields.One2many('hr.promotion.allowance', 'promotion_id', string=u'بدلات النقل')
     location_allowance_ids = fields.One2many('hr.promotion.allowance', 'location_promotion_id', string=u'بدلات المنطقة')
-    new_degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة') 
+    new_degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة', required=1) 
     promotion_id_state = fields.Selection(related='promotion_id.state')
     @api.multi
     def promotion_confirmed(self):

@@ -54,7 +54,7 @@
 									<field name="amount" />
 								</tree>
 							</field>
-							<h3 class="o_horizontal_separator">بدلات النقل</h3>
+							<h3 class="o_horizontal_separator">بدلات الترقية</h3>
 							<field name="promotion_allowance_ids" nolabel="1">
 								<form string="البدلات">
 									<group>
