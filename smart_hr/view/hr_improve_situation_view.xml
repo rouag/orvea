@@ -100,7 +100,7 @@
 							<group string="تحسين الوضع">
 								<field name="type_improve"  attrs="{'readonly':[('state','in', ['waiting','done'])]}"  />
 								<field name="type_id1" attrs="{'readonly':['|',('is_same_type','=',True) ,('state','in', ['waiting','done'])]}"  />
-								<field name="new_job_id" domain="[('state','=','unoccupied')]"  attrs="{'readonly':[('state','in', ['waiting','done'])]}"  />
+								<field name="new_job_id" attrs="{'readonly':[('state','in', ['waiting','done'])]}"  />
 								<field name="department_id1" />
 								<field name="grade_id1" />
 								<field name="degree_id1" attrs="{'readonly':[('state','in', ['waiting','done'])]}"  />

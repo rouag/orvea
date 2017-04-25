@@ -37,7 +37,7 @@ class HrImproveSituatim(models.Model):
     type_improve = fields.Many2one('hr.type.improve.situation', string='نوع التحسين', required=1,
                                    states={'new': [('readonly', 0)]})
     order_picture1 = fields.Binary(string='صورة القرار')
-    new_job_id = fields.Many2one('hr.job', string='الوظيفة', required=1,Domain=[('state','=','unoccupied')])
+    new_job_id = fields.Many2one('hr.job', string='الوظيفة', required=1,domain=[('state','=','unoccupied')])
     number_job1 = fields.Char(string='رقم الوظيفة')
     order_date1 = fields.Date(string='تاريخ القرار')
     date_hiring1 = fields.Date(string='تاريخ التعيين')
