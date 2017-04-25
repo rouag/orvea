@@ -1,0 +1,8 @@
+[
+  { "text" : "Folder 1", "children" : true },
+  { "text" : "Folder 2", "children" : true },
+  { "text" : "Folder 3", "state" : {"selected" : true }, "children" : true },
+  { "text" : "Folder 4", "children" : true },
+  { "text" : "Folder 5", "children" : true },
+  { "text" : "Folder 6", "children" : false }
+]

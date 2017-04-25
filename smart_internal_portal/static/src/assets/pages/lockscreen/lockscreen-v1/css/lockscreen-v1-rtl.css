@@ -1,0 +1,186 @@
+/*-- Userlist --*/
+/*-- Map --*/
+/*-- Icons --*/
+/*-- Buttons --*/
+/*-- Images --*/
+/*-- Tabs --*/
+/*-- Calendar --*/
+/*-- Cards --*/
+/*-- Dropdown --*/
+/*-- Badges --*/
+/*-- Carousel --*/
+/*-- Tooltip & Popover --*/
+/*-- Mansonry --*/
+/*-- Rating --*/
+/*-- Lightbox --*/
+/*-- Pricing Table --*/
+/*-- Bottom Spacing None --*/
+/*-- Timeline --*/
+/*-- Blockquote --*/
+/*-- Navbar --*/
+/*-- Form layout --*/
+/*-- Form Wizard --*/
+/*-- eCommerce Dashboard --*/
+/*-- Morris chart --*/
+/*-- Border Radius --*/
+/*-- border-radius --*/
+/*-- Box Shadow --*/
+/*-- Animation --*/
+/*-- Transform Rotate --*/
+/*-- Filter --*/
+/*-- All Keyframes --*/
+/*-- Transform --*/
+/*-- Transition --*/
+/*-- Background-RGB --*/
+/*-- Color-RGB --*/
+/*-- Border Radius --*/
+/*-- badges-tags --*/
+/* START LOCKSCREEN V1 ROUND CSS */
+.rounded-admin .lockscreen_input {
+  border-radius: 25px; }
+
+/* END LOCKSCREEN V1 ROUND CSS */
+.lockscreen-background {
+  background-image: url("../image/img_1570x1046.png");
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: cover;
+  height: 100%;
+  opacity: 0.8;
+  color: #FFFFFF;
+  overflow: auto;
+  position: fixed;
+  width: 100%; }
+  .lockscreen-background:before {
+    background: rgba(0, 0, 0, 0.35);
+    position: fixed;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+    content: ""; }
+
+.lockscreen-page {
+  display: table;
+  height: 100%;
+  margin: 0 auto;
+  min-width: 450px;
+  position: relative; }
+
+.lockscreen_input {
+  margin-bottom: 25px;
+  border: 1px solid #FFFFFF;
+  border-radius: 3px;
+  display: table;
+  width: 100%; }
+  .lockscreen_input input {
+    border: none;
+    padding: 10px 15px;
+    font-size: 15px;
+    width: 100%;
+    text-align: left; }
+  .lockscreen_input label {
+    position: absolute;
+    font-size: 14px;
+    display: block;
+    margin-top: 3px;
+    color: #f84343;
+    font-weight: 700; }
+  .lockscreen_input .lockscreen-right-icon {
+    background: transparent;
+    color: #FFFFFF;
+    border-right: 0;
+    padding: 10px 15px;
+    font-size: 15px;
+    width: 1%;
+    display: table-cell; }
+
+.main-lockscreen-contain {
+  display: table-cell;
+  vertical-align: middle; }
+
+.lockscreen-circul {
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  border-radius: 50%;
+  margin: auto;
+  width: 90px;
+  height: 90px;
+  background: #42423e;
+  position: relative;
+  bottom: -40px;
+  box-shadow: 0 0 20px #81807d inset;
+  border-left: 1px solid #81807d;
+  border-right: 1px solid #81807d;
+  border-bottom: 4px solid #989795; }
+  .lockscreen-circul img {
+    border-radius: 45px; }
+
+.lockscreen-icon-circul {
+  font-size: 40px;
+  margin: auto;
+  line-height: 85px; }
+
+.lockscreen-form {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 45px 50px 50px 50px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); }
+  .lockscreen-form h4 {
+    color: #FFFFFF;
+    margin-bottom: 15px; }
+
+.btn-lockscreen {
+  width: 100%; }
+
+.lockscreen-form-border {
+  background: transparent;
+  color: #FFFFFF; }
+  .lockscreen-form-border:focus {
+    color: #FFFFFF;
+    background-color: transparent;
+    border-color: #FFFFFF; }
+
+.lockscreen-icon {
+  margin-top: 20px; }
+  .lockscreen-icon a {
+    border: 1px solid #FFFFFF;
+    -webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    -ms-border-radius: 20px;
+    border-radius: 20px;
+    display: inline-block;
+    font-size: 16px;
+    height: 35px;
+    line-height: 35px;
+    margin-left: 3px;
+    width: 35px; }
+    .lockscreen-icon a:hover {
+      border: 1px solid #FFFFFF; }
+  .lockscreen-icon i {
+    color: #FFFFFF; }
+
+/*---- START RESPONSIVE ----*/
+@media (max-width: 1199px) {
+  .lockscreen {
+    background-position: left center; } }
+
+@media (max-width: 767px) {
+  .lockscreen-form {
+    margin-bottom: 50px; } }
+
+@media (max-width: 479px) {
+  .lockscreen-page {
+    max-width: 480px;
+    min-width: 94%; }
+  .lockscreen-icon-circul {
+    font-size: 26px;
+    line-height: 60px; }
+  .lockscreen-circul {
+    width: 60px;
+    height: 60px;
+    bottom: -20px; }
+  .lockscreen-form {
+    padding: 30px 20px 20px;
+    margin: auto 15px 0; }
+    .lockscreen-form h4 {
+      font-size: 20px; } }

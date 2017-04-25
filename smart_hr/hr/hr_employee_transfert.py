@@ -694,7 +694,7 @@ class HrTransfertSorting(models.Model):
                 rec.state = 'commission_third'
             else:
                 rec.state = 'benefits'
-
+    print '---------qsdqsd-----------------'
 
     @api.multi
     def action_commission_third(self):

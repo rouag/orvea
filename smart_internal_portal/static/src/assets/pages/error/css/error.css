@@ -1,0 +1,156 @@
+/*-- Userlist --*/
+/*-- Map --*/
+/*-- Icons --*/
+/*-- Buttons --*/
+/*-- Images --*/
+/*-- Tabs --*/
+/*-- Calendar --*/
+/*-- Cards --*/
+/*-- Dropdown --*/
+/*-- Badges --*/
+/*-- Carousel --*/
+/*-- Tooltip & Popover --*/
+/*-- Mansonry --*/
+/*-- Rating --*/
+/*-- Lightbox --*/
+/*-- Pricing Table --*/
+/*-- Bottom Spacing None --*/
+/*-- Timeline --*/
+/*-- Blockquote --*/
+/*-- Navbar --*/
+/*-- Form layout --*/
+/*-- Form Wizard --*/
+/*-- eCommerce Dashboard --*/
+/*-- Morris chart --*/
+/*-- Border Radius --*/
+/*-- border-radius --*/
+/*-- Box Shadow --*/
+/*-- Animation --*/
+/*-- Transform Rotate --*/
+/*-- Filter --*/
+/*-- All Keyframes --*/
+/*-- Transform --*/
+/*-- Transition --*/
+/*-- Background-RGB --*/
+/*-- Color-RGB --*/
+/*----------------------------------------------
+
+START ERROR
+
+------------------------------------------------*/
+.contain-error {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background: url("../../../..//smart_internal_portal/static/src/assets/pages/error/image/img_1570x1046.png") no-repeat;
+  background-size: cover;
+  overflow: auto; }
+  .contain-error:before {
+    background: rgba(0, 0, 0, 0.4);
+    content: "";
+    height: 100%;
+    width: 100%;
+    position: fixed; }
+  .contain-error .main-contain-error {
+    display: table;
+    height: 100%;
+    margin: 0 auto; }
+    .contain-error .main-contain-error .main-contain-inner-error {
+      display: table-cell;
+      vertical-align: middle; }
+      .contain-error .main-contain-error .main-contain-inner-error .error-des {
+        background: rgba(0, 0, 0, 0.1);
+        padding: 50px;
+        position: relative;
+        box-shadow: 0 0 8px #666; }
+        .contain-error .main-contain-error .main-contain-inner-error .error-des .error-image {
+          width: 75%;
+          margin: auto; }
+        .contain-error .main-contain-error .main-contain-inner-error .error-des h1 {
+          font-size: 34px;
+          letter-spacing: 4px;
+          padding: 10px 0 0;
+          text-transform: uppercase;
+          color: #FFFFFF; }
+        .contain-error .main-contain-error .main-contain-inner-error .error-des p {
+          color: #FFFFFF;
+          font-size: 16px;
+          letter-spacing: 2px;
+          padding: 0;
+          text-transform: uppercase; }
+        .contain-error .main-contain-error .main-contain-inner-error .error-des .search-error {
+          margin: 30px auto 0;
+          overflow: hidden;
+          width: 65%; }
+          .contain-error .main-contain-error .main-contain-inner-error .error-des .search-error .input-notify {
+            border: 1px solid #088079;
+            line-height: 17px;
+            margin-left: 10px;
+            padding: 8px;
+            width: 78%;
+            text-align: right; }
+
+.wrapper .btn-primary {
+  background: #088079;
+  border: solid 1px #088079; }
+  .wrapper .btn-primary.active {
+    background: #088079;
+    border: solid 1px #088079; }
+    .wrapper .btn-primary.active.focus, .wrapper .btn-primary.active:focus, .wrapper .btn-primary.active:hover {
+      background: #088079;
+      border: solid 1px #088079; }
+  .wrapper .btn-primary:active.focus, .wrapper .btn-primary:active:focus {
+    background: #088079;
+    border: solid 1px #088079; }
+  .wrapper .btn-primary:hover, .wrapper .btn-primary:focus, .wrapper .btn-primary:active {
+    background: #088079;
+    border: solid 1px #088079; }
+
+.search-error .btn.flat-buttons {
+  line-height: 17px; }
+
+/*----------------------------------------------
+
+END ERROR
+
+------------------------------------------------*/
+/*---- START ERROR RESPONSIVE ----*/
+@media (max-width: 991px) {
+  .contain-error .main-contain-error {
+    width: 80%; }
+    .contain-error .main-contain-error .main-contain-inner-error .error-des {
+      padding: 40px; }
+      .contain-error .main-contain-error .main-contain-inner-error .error-des .search-error {
+        width: 84%; } }
+
+@media (max-width: 767px) {
+  .contain-error .main-contain-error {
+    width: 90%; }
+    .contain-error .main-contain-error .main-contain-inner-error .error-des {
+      margin: 30px 0;
+      padding: 30px 15px; }
+      .contain-error .main-contain-error .main-contain-inner-error .error-des h1 {
+        font-size: 23px;
+        line-height: 30px; }
+      .contain-error .main-contain-error .main-contain-inner-error .error-des p {
+        font-size: 12px;
+        line-height: 19px; }
+      .contain-error .main-contain-error .main-contain-inner-error .error-des .search-error {
+        margin: 15px auto 0;
+        width: 100%; }
+        .contain-error .main-contain-error .main-contain-inner-error .error-des .search-error .input-notify {
+          width: 72%; } }
+
+@media (max-width: 479px) {
+  .contain-error .main-contain-error .main-contain-inner-error .error-des {
+    padding: 15px; }
+    .contain-error .main-contain-error .main-contain-inner-error .error-des h1 {
+      padding-bottom: 8px; }
+    .contain-error .main-contain-error .main-contain-inner-error .error-des .search-error {
+      text-align: center; }
+      .contain-error .main-contain-error .main-contain-inner-error .error-des .search-error .input-notify {
+        width: 100%; }
+      .contain-error .main-contain-error .main-contain-inner-error .error-des .search-error button {
+        margin: 15px 0px 0px 0px; } }
+
+/*---- END ERROR RESPONSIVE ----*/

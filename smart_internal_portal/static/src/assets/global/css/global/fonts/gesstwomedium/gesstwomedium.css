@@ -1,0 +1,26 @@
+/*******************************************************************************************************
+********************************************************************************************************
+                          CSS Manpower : Fonts 	GESSTwoLight
+
+*********************************************************************************************************
+*********************************************************************************************************/
+@font-face {
+    font-family: 'GE SS Two Medium';
+    src: url('GE_SS_Two_Medium_1.eot');
+    src: url('GE_SS_Two_Medium_1.eot') format('embedded-opentype'),
+         url('GE_SS_Two_Medium_1.woff') format('woff'),
+         url('GE_SS_Two_Medium_1.ttf') format('truetype'),
+         url('GE_SS_Two_Medium_1.svg#GE_SS_Two_Medium_1') format('svg');
+}
+
+body {font-family: 'GE SS Two Medium', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-weight:normal;font-style:normal;} 
+
+/*--------------------------------------------------------
+          
+--------------------------------------------------------*/
+
+#footer h3, .coordinate li, .newsletter .form-control,
+.lastTweets h5, .lastTweets p,
+.keywords li a,
+.copyright, .footerLinks li a,
+#navbar .nav-tabs li a{font-family: 'GE SS Two Medium', 'Helvetica Neue', Helvetica, Arial, sans-serif;font-weight:normal;font-style:normal;} 

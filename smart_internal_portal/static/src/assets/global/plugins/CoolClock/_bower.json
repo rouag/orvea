@@ -1,0 +1,15 @@
+{
+  "name": "CoolClock",
+  "homepage": "https://github.com/simonbaird/CoolClock",
+  "version": "2.1.4",
+  "_release": "2.1.4",
+  "_resolution": {
+    "type": "version",
+    "tag": "2.1.4",
+    "commit": "57c156b853258156ccde25b0bb53c8aa2c336ea8"
+  },
+  "_source": "https://github.com/simonbaird/CoolClock.git",
+  "_target": "^2.1.4",
+  "_originalSource": "https://github.com/simonbaird/CoolClock.git",
+  "_direct": true
+}

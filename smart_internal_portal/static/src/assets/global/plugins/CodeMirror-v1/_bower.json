@@ -1,0 +1,14 @@
+{
+  "name": "CodeMirror-v1",
+  "homepage": "https://github.com/codemirror/CodeMirror-v1",
+  "_release": "224772e4d6",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "224772e4d603e952da6386bd298d431ea071a94c"
+  },
+  "_source": "https://github.com/codemirror/CodeMirror-v1.git",
+  "_target": "*",
+  "_originalSource": "https://github.com/codemirror/CodeMirror-v1.git",
+  "_direct": true
+}
