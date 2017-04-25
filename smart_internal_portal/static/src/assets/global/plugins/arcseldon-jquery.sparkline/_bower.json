@@ -1,0 +1,24 @@
+{
+  "name": "arcseldon-jquery.sparkline",
+  "main": "dist/jquery.sparkline.js",
+  "ignore": [
+    "Changelog.txt",
+    "Gruntfile.js",
+    "package.json",
+    ".gitignore",
+    "bower.json",
+    "package.json",
+    "src"
+  ],
+  "homepage": "https://github.com/arcseldon/jquery.sparkline",
+  "_release": "fd40351cdd",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "fd40351cdd409dd616df83319913246830454b1d"
+  },
+  "_source": "https://github.com/arcseldon/jquery.sparkline.git",
+  "_target": "*",
+  "_originalSource": "https://github.com/arcseldon/jquery.sparkline.git",
+  "_direct": true
+}

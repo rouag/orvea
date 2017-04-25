@@ -1,0 +1,101 @@
+/*-- Userlist --*/
+/*-- Map --*/
+/*-- Icons --*/
+/*-- Buttons --*/
+/*-- Images --*/
+/*-- Tabs --*/
+/*-- Calendar --*/
+/*-- Cards --*/
+/*-- Dropdown --*/
+/*-- Badges --*/
+/*-- Carousel --*/
+/*-- Tooltip & Popover --*/
+/*-- Mansonry --*/
+/*-- Rating --*/
+/*-- Lightbox --*/
+/*-- Pricing Table --*/
+/*-- Bottom Spacing None --*/
+/*-- Timeline --*/
+/*-- Blockquote --*/
+/*-- Navbar --*/
+/*-- Form layout --*/
+/*-- Form Wizard --*/
+/*-- eCommerce Dashboard --*/
+/*-- Morris chart --*/
+/*-- Border Radius --*/
+/*-- border-radius --*/
+/*-- Box Shadow --*/
+/*-- Animation --*/
+/*-- Transform Rotate --*/
+/*-- Filter --*/
+/*-- All Keyframes --*/
+/*-- Transform --*/
+/*-- Transition --*/
+/*-- Background-RGB --*/
+/*-- Color-RGB --*/
+.checkbox-squared {
+  position: relative; }
+  .checkbox-squared input {
+    margin-right: 10px;
+    float: left;
+    vertical-align: middle; }
+  .checkbox-squared input[type="checkbox"] {
+    visibility: hidden; }
+  .checkbox-squared label {
+    cursor: pointer;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 0;
+    left: 0;
+    background: #FFFFFF;
+    border: 1px solid #CCCCCC;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    -ms-border-radius: 0;
+    border-radius: 0; }
+    .checkbox-squared label:after {
+      opacity: 0;
+      content: '';
+      position: absolute;
+      width: 12px;
+      height: 8px;
+      background: transparent;
+      top: 3px;
+      left: 3px;
+      border: 3px solid;
+      border-top: none;
+      border-right: none;
+      -webkit-transform: rotate(45deg);
+      -moz-transform: rotate(45deg);
+      -ms-transform: rotate(45deg);
+      -o-transform: rotate(45deg);
+      transform: rotate(45deg); }
+  .checkbox-squared input[type=checkbox]:checked + label:after {
+    opacity: 1;
+    border-color: #088079; }
+
+.btn-primary {
+  background: #088079;
+  border: solid 1px #088079; }
+  .btn-primary.active {
+    background: #088079;
+    border: solid 1px #088079; }
+    .btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover {
+      background: #088079;
+      border: solid 1px #088079; }
+  .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover {
+    background: #088079;
+    border: solid 1px #088079; }
+  .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+    background: #088079;
+    border: solid 1px #088079; }
+
+.wrapper .btn-primary {
+  position: relative; }
+
+.icon-hover i:hover {
+  color: #088079; }
+
+.goto-forgot a:hover {
+  color: #088079; }
