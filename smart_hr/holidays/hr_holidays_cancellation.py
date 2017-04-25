@@ -5,6 +5,7 @@ from openerp.exceptions import ValidationError
 from openerp.tools import SUPERUSER_ID
 from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 from datetime import date, datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
 class hrHolidaysCancellation(models.Model):
     _name = 'hr.holidays.cancellation'
@@ -74,6 +75,17 @@ class hrHolidaysCancellation(models.Model):
             'res_id': decission_id,
             'target': 'new'
             }
+
+    @api.onchange('cancellation_date')
+    @api.constrains('cancellation_date')
+    def onchange_cancellation_date(self):
+        if self.cancellation_date:
+            date_from = fields.Date.from_string(self.date_from)
+            date_to = fields.Date.from_string(self.date_to)
+            cancellation_date = fields.Date.from_string(self.cancellation_date)
+            if cancellation_date < date_from or cancellation_date>date_to - relativedelta(days=1):
+                raise ValidationError(u'تاريخ القطع يجب ان يكون بين اول يوم في الاجارة و اليوم قيل الاخير منها')
+
 
     @api.multi
     def open_decission_holidays_cancel(self):
