@@ -39,21 +39,16 @@ var BaseNotification = Notification.extend({
             },
             'click .link2showed': function() {
                 var self = this;
-                console.log(self);
-                console.log(self.eid);
                 self.destroy(true);
                 self.rpc("/notification/validate", {
                 	notif_id: self.eid,
                 	
                 }).then(function(r) {
-                	
-                	console.log('ok');
                 });
                
             },
 
             'click .link2recall': function() {
-            	console.log('ok55555555555');
             	var self = this;
                 this.rpc("/notification/snooze",{notif_id :this.eid }) 
                 this.destroy(true);

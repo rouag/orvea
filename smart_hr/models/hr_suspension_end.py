@@ -81,12 +81,13 @@ class hr_suspension_end(models.Model):
         else :
             decision_type_id = 1
             decision_date = fields.Date.today() # new date
-            if self.suspension_id and self.employee_id.type_id.id == self.env.ref('smart_hr.data_salary_grid_type').id:
+            if self.suspension_id.id and self.employee_id.type_id.id != self.env.ref('smart_hr.data_salary_grid_type').id and self.condemned == False:
                 decision_type_id = self.env.ref('smart_hr.data_decision_type28').id
-            if self.suspension_id and self.employee_id.type_id.id == self.env.ref('smart_hr.data_salary_grid_type7').id:
+            if self.suspension_id.id and self.employee_id.type_id.id != self.env.ref('smart_hr.data_salary_grid_type').id and self.condemned == True:
+                decision_type_id = self.env.ref('smart_hr.data_decision_type27').id
+            if self.suspension_id.id and self.employee_id.type_id.id == self.env.ref('smart_hr.data_salary_grid_type7').id:
                 decision_type_id = self.env.ref('smart_hr.data_decision_type30').id
-            if self.suspension_id :
-                decision_type_id = self.env.ref('smart_hr.data_decision_type28').id
+         
             # create decission
             decission_val={
                 #'name': self.name,
@@ -94,7 +95,7 @@ class hr_suspension_end(models.Model):
                 'date':decision_date,
                 'employee_id' :self.employee_id.id }
             decision = decision_obj.create(decission_val)
-            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'employee')
+            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'suspension')
             decission_id = decision.id
             self.decission_id =  decission_id
         return {

@@ -53,7 +53,7 @@ class HrSanction(models.Model):
         else :
             decision_type_id = 1
             decision_date = fields.Date.today() # new date
-            if self.type_sanction == self.env.ref('smart_hr.data_hr_sanction_type_grade').id:
+            if self.type_sanction:
                 decision_type_id = self.env.ref('smart_hr.data_decision_deprivation_premium').id
             # create decission
             decission_val={
@@ -146,6 +146,10 @@ class HrSanction(models.Model):
         self.state = 'cancel'
         self.date_sanction_end = fields.Date.from_string(fields.Date.today())
         for line in self.line_ids:
+            if line.deduction == True :
+                raise ValidationError(u"لا يمكن إلغاء  العقوبة بعد تطبيق حسم على موظف")
+            if self.date_sanction_end > self.date_sanction_start :
+                raise ValidationError(u"لا يمكن إلغاء  العقوبة بعد تبدأ العقوبة")
             line.state = 'cancel'
 
     @api.multi
@@ -175,17 +179,17 @@ class HrSanctionLigne(models.Model):
                               ('excluded', 'مستبعد'),
                               ('done', 'تم العقوبة'),
                               ('cancel', 'ملغى')], string='الحالة', readonly=1, default='waiting')
-
-#     @api.onchange('employee_id')
-#     def onchange_employee_id(self):
-#         if not self.employee_id:
-#             res = {}
-#             grade_min = self.sanction_id.type_sanction.min_grade_id.code
-#             grade_max = self.sanction_id.type_sanction.max_grade_id.code
-#             employee_ids = self.env['hr.employee'].search(
-#                 [('grade_id.code', '>=', grade_min), ('grade_id.code', '<=', grade_max)]).ids
-#             res['domain'] = {'employee_id': [('id', 'in', employee_ids)]}
-#             return res
+ 
+    @api.onchange('employee_id')
+    def onchange_employee_id(self):
+        if not self.employee_id:
+            res = {}
+            grade_min = self.sanction_id.type_sanction.min_grade_id.code
+            grade_max = self.sanction_id.type_sanction.max_grade_id.code
+            employee_ids = self.env['hr.employee'].search(
+                [('grade_id.code', '>=', grade_min), ('grade_id.code', '<=', grade_max)]).ids
+            res['domain'] = {'employee_id': [('id', 'in', employee_ids)]}
+            return res
 
 
 class HrTypeSanction(models.Model):
