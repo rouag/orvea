@@ -32,7 +32,10 @@ class TransfertBenefitsWizard(models.TransientModel):
                     location_allowance_ids.append({'location_decision_appoint_id': transfert.id,
                                                    'allowance_id': rec.allowance_id.id,
                                                    'compute_method': rec.compute_method,
-                                                   'amount': rec.amount})
+                                                   'amount': rec.amount,
+                                                   'min_amount': rec.min_amount,
+                                                   'percentage': rec.percentage,
+                                                   })
             # fill job_allowance_ids
             if not transfert.hr_employee_transfert_id.job_allowance_ids:
                 for rec in transfert.new_job_id.serie_id.allowanse_ids:
@@ -45,14 +48,20 @@ class TransfertBenefitsWizard(models.TransientModel):
                     job_allowance_ids.append({'job_transfert_id': transfert.id,
                                               'allowance_id': rec.allowance_id.id,
                                               'compute_method': rec.compute_method,
-                                              'amount': rec.amount})
+                                              'amount': rec.amount,
+                                              'min_amount': rec.min_amount,
+                                            'percentage': rec.percentage,
+                                            })
             # fill transfert_allowance_ids
             if transfert.hr_employee_transfert_id.transfert_allowance_ids:
                 for rec in transfert.hr_employee_transfert_id.transfert_allowance_ids:
                     transfert_allowance_ids.append({'transfert_id': transfert.id,
                                                     'allowance_id': rec.allowance_id.id,
                                                     'compute_method': rec.compute_method,
-                                                    'amount': rec.amount})
+                                                    'amount': rec.amount,
+                                                   'min_amount': rec.min_amount,
+                                                   'percentage': rec.percentage,                                                    
+                                                    })
             res.update({'transfert_line_obj': transfert.id,
                         'job_id': transfert.new_job_id.id,
                         'specific_id': transfert.new_job_id.specific_id.id,
@@ -89,24 +98,27 @@ class TransfertBenefitsWizard(models.TransientModel):
             job_allowance_ids.append({'job_transfert_id': self.transfert_line_obj.hr_employee_transfert_id.id,
                                       'allowance_id': rec.allowance_id.id,
                                       'compute_method': rec.compute_method,
-                                      'amount': rec.amount
-                                      })
+                                      'amount': rec.amount,
+                                      'min_amount': rec.min_amount,
+                                      'percentage': rec.percentage,})
         self.transfert_line_obj.hr_employee_transfert_id.job_allowance_ids = job_allowance_ids
         transfert_allowance_ids = []
         for rec in self.transfert_allowance_ids:
             transfert_allowance_ids.append({'transfert_id': self.transfert_line_obj.hr_employee_transfert_id.id,
                                       'allowance_id': rec.allowance_id.id,
                                       'compute_method': rec.compute_method,
-                                      'amount': rec.amount
-                                      })
+                                      'amount': rec.amount,
+                                        'min_amount': rec.min_amount,
+                                        'percentage': rec.percentage,})
         self.transfert_line_obj.hr_employee_transfert_id.transfert_allowance_ids = transfert_allowance_ids
         location_allowance_ids = []
         for rec in self.location_allowance_ids:
             location_allowance_ids.append({'location_transfert_id': self.transfert_line_obj.hr_employee_transfert_id.id,
                                            'allowance_id': rec.allowance_id.id,
                                            'compute_method': rec.compute_method,
-                                           'amount': rec.amount
-                                           })
+                                           'amount': rec.amount,
+                                            'min_amount': rec.min_amount,
+                                            'percentage': rec.percentage,})
         self.transfert_line_obj.hr_employee_transfert_id.location_allowance_ids = location_allowance_ids
 
 

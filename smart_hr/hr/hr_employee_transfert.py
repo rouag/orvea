@@ -383,16 +383,20 @@ class HrEmployeeTransfert(models.Model):
                     job_allowance_ids.append({'job_decision_appoint_id': recruiter_id.id,
                                               'allowance_id': allowance.allowance_id.id,
                                               'compute_method': allowance.compute_method,
-                                              'amount': allowance.amount
+                                              'amount': allowance.amount,
+                                              'min_amount': allowance.min_amount,
+                                              'percentage': allowance.percentage,
                                               })
                 recruiter_id.job_allowance_ids = job_allowance_ids
                 # بدلات التعين
                 transfert_allowance_ids = []
                 for allowance in rec.transfert_allowance_ids:
-                    job_allowance_ids.append({'decision_decision_appoint_id': recruiter_id.id,
+                    transfert_allowance_ids.append({'decision_decision_appoint_id': recruiter_id.id,
                                               'allowance_id': allowance.allowance_id.id,
                                               'compute_method': allowance.compute_method,
-                                              'amount': allowance.amount
+                                              'amount': allowance.amount,
+                                              'min_amount': allowance.min_amount,
+                                              'percentage': allowance.percentage,
                                               })
                 recruiter_id.decision_apoint_allowance_ids = transfert_allowance_ids
                 # بدلات المنطقة
@@ -401,8 +405,9 @@ class HrEmployeeTransfert(models.Model):
                     location_allowance_ids.append({'location_decision_appoint_id': recruiter_id.id,
                                                    'allowance_id': allowance.allowance_id.id,
                                                    'compute_method': allowance.compute_method,
-                                                   'amount': allowance.amount
-                                                   })
+                                                   'amount': allowance.amount,
+                                                   'min_amount': allowance.min_amount,
+                                                   'percentage': allowance.percentage,                                                   })
                 recruiter_id.location_allowance_ids = location_allowance_ids
                 # change state of the decision to done
                 recruiter_id.action_done()
