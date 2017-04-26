@@ -101,7 +101,8 @@
 																	<h6>مهمة جديدة</h6>
 																	<p>تم اضافة مهمة.</p>
 																	<div class="meta-tag text-nowrap">
-																		<time datetime="2016-12-10T20:27:48+07:00" class="text-muted">5
+																		<time datetime="2016-12-10T20:27:48+07:00" class="text-muted">
+																			5
 																			دق
 																		</time>
 																	</div>
@@ -122,7 +123,8 @@
 																	<p>نص تجريبي نص تجريبي ...d typesetting industry.
 																	</p>
 																	<div class="meta-tag text-nowrap">
-																		<time datetime="2016-12-10T20:27:48+07:00" class="text-muted">5
+																		<time datetime="2016-12-10T20:27:48+07:00" class="text-muted">
+																			5
 																			دق
 																		</time>
 																	</div>
@@ -143,7 +145,8 @@
 																	<p>نص تجريبي نص تجريبي ...d typesetting industry.
 																	</p>
 																	<div class="meta-tag text-nowrap">
-																		<time datetime="2016-12-10T20:27:48+07:00" class="text-muted">5
+																		<time datetime="2016-12-10T20:27:48+07:00" class="text-muted">
+																			5
 																			دق
 																		</time>
 																	</div>
@@ -164,7 +167,8 @@
 																	<p>نص تجريبي نص تجريبي ...d typesetting industry.
 																	</p>
 																	<div class="meta-tag text-nowrap">
-																		<time datetime="2016-12-10T20:27:48+07:00" class="text-muted">5
+																		<time datetime="2016-12-10T20:27:48+07:00" class="text-muted">
+																			5
 																			دق
 																		</time>
 																	</div>
@@ -190,7 +194,8 @@
 																	<p>نص تجريبي نص تجريبي ...d typesetting industry.
 																	</p>
 																	<div class="meta-tag text-nowrap">
-																		<time datetime="2016-12-10T20:27:48+07:00" class="text-muted">2
+																		<time datetime="2016-12-10T20:27:48+07:00" class="text-muted">
+																			2
 																			دق
 																		</time>
 																	</div>
@@ -211,7 +216,8 @@
 																	<p>نص تجريبي نص تجريبي ...d typesetting industry.
 																	</p>
 																	<div class="meta-tag text-nowrap">
-																		<time datetime="2016-12-10T20:27:48+07:00" class="text-muted">5
+																		<time datetime="2016-12-10T20:27:48+07:00" class="text-muted">
+																			5
 																			دق
 																		</time>
 																	</div>
@@ -232,7 +238,8 @@
 																	<p>نص تجريبي نص تجريبي ...d typesetting industry.
 																	</p>
 																	<div class="meta-tag text-nowrap">
-																		<time datetime="2016-12-10T20:27:48+07:00" class="text-muted">15
+																		<time datetime="2016-12-10T20:27:48+07:00" class="text-muted">
+																			15
 																			دق
 																		</time>
 																	</div>
@@ -253,7 +260,8 @@
 																	<p>نص تجريبي نص تجريبي ...d typesetting industry.
 																	</p>
 																	<div class="meta-tag text-nowrap">
-																		<time datetime="2016-12-10T20:27:48+07:00" class="text-muted">5
+																		<time datetime="2016-12-10T20:27:48+07:00" class="text-muted">
+																			5
 																			دق
 																		</time>
 																	</div>
@@ -378,10 +386,9 @@
 									<a href="javascript:void(0);" class="user-header dropdown-toggle"
 										data-toggle="dropdown" data-animation="slideOutUp"
 										aria-haspopup="true" aria-expanded="false">
-										<img
-											src="/smart_internal_portal/static/src/assets/global/image/user.png"
-											alt="Profile image" />
-										<h5>د. عبدالله محمد المحيذيف</h5>
+										<span itemprop="image" t-field="employee.image"
+																	t-field-options='{"widget": "image"}' />
+										<h5><t t-esc="employee.display_name" /></h5>
 										<div class="colored-progress-bar">
 											<progress class="progress progress-md progress-success"
 												value="88" max="100"></progress>
@@ -389,11 +396,14 @@
 									</a>
 									<div class="dropdown-menu drop-profile">
 										<div class="userProfile">
-											<img
-												src="/smart_internal_portal/static/src/assets/global/image/user.png"
-												alt="Profile image" />
-											<h5>د. عبدالله محمد المحيذيف</h5>
-											<p>abdallah@bipp.sa</p>
+											<span itemprop="image" t-field="employee.image"
+												t-field-options='{"widget": "image"}' />
+											<h5>
+												<t t-esc="employee.display_name" />
+											</h5>
+											<p>
+												<t t-esc="employee.work_email" />
+											</p>
 										</div>
 										<div class="dropdown-divider"></div>
 										<a class="btn left-spacing link-btn flat-buttons" href="javascript:void(0);"
@@ -401,7 +411,7 @@
 										<a class="btn left-second-spacing link-btn flat-buttons"
 											href="javascript:void(0);" role="button">Link 2</a>
 										<a class="btn btn-primary float-xs-right right-spacing flat-buttons"
-											href="javascript:void(0);" role="button">Logout</a>
+											href="/web/session/logout" role="button">Logout</a>
 									</div>
 								</div>
 							</div>
@@ -409,8 +419,100 @@
 					</div>
 				</div>
 			</header>
+			<!-- END HEADER -->
 		</template>
 
+		<!-- START Sidebar -->
+		<template id="website_sidebar" name="Sidebar">
+			<!-- START NAVIGATION -->
+			<aside id="sidebar">
+				<div class="sidebar-search">
+					<input id="live-search-box" type="search" class="form-control input-sm"
+						placeholder="Search..." />
+					<a href="javascript:void(0)">
+						<i class="search-close icon_search"></i>
+					</a>
+				</div>
+				<div class="sidebar-menu">
+					<ul class="nav site-menu live-search-list" id="site-menu"
+						data-plugin="custom-scroll" data-suppress-scroll-x="true"
+						data-height="100%">
+						<li class="menu-title">
+							<ul class="main-menu">
+								<li class="sub-item">
+									<a href="/portal" class="flat-buttons">
+										<span>الرئيسية</span>
+									</a>
+								</li>
+								<li class="sub-item">
+									<a href="javascript:void(0)" class="flat-buttons">
+										<span>لوحة المؤشرات</span>
+									</a>
+								</li>
+								<li class="sub-item">
+									<a href="javascript:void(0)" class="flat-buttons">
+										<span>أمن المعلومات</span>
+									</a>
+								</li>
+								<li class="sub-item">
+									<a href="javascript:void(0)" class="flat-buttons">
+										<span>البيانات الشخطية</span>
+										<span class="float-xs-right">
+											<i class="icon_plus"></i>
+										</span>
+									</a>
+									<ul class="sub-menu">
+										<li>
+											<a href="userlist.html" class="flat-buttons">بياناتي الشخصية</a>
+										</li>
+										<li>
+											<a href="invoice.html" class="flat-buttons">تعديل بياناتي</a>
+										</li>
+										<li>
+											<a href="blank.html" class="flat-buttons">طلب بطاقة موظف</a>
+										</li>
+									</ul>
+								</li>
+								<li class="sub-item">
+									<a href="javascript:void(0)" class="flat-buttons">
+										<span>متابعة معاملاتي</span>
+									</a>
+								</li>
+								<li class="sub-item">
+									<a href="javascript:void(0)" class="flat-buttons">
+										<span>الاستعلامات</span>
+									</a>
+								</li>
+								<li class="sub-item">
+									<a href="javascript:void(0)" class="flat-buttons">
+										<span>الهيكل التنظيمي</span>
+									</a>
+								</li>
+								<li class="sub-item">
+									<a href="javascript:void(0)" class="flat-buttons">
+										<span>التحويلات الداخلية</span>
+									</a>
+								</li>
+								<li class="sub-item">
+									<a href="javascript:void(0)" class="flat-buttons">
+										<span>ركن التفاعل</span>
+									</a>
+								</li>
+								<li class="sub-item">
+									<a href="javascript:void(0)" class="flat-buttons">
+										<span>الدعم الفني</span>
+									</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+				<div class="sidebar-extra">
+					<a href="javascript:void(0);">دعم البوابة : </a>
+				</div>
+			</aside>
+			<!-- END NAVIGATION -->
+		</template>
 
 	</data>
 </openerp>

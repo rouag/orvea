@@ -159,21 +159,41 @@
 
     /*---- Donut-color ----*/
 	if($('#donut-color').length){
-		var donut = Morris.Donut({
-			element: 'donut-color',
-			data: [
-				{value: 40, label: 'الحضور'},
-				{value: 35, label: 'الغياب'},
-				{value: 25, label: 'التأخير'},
-			],
-			backgroundColor: '#ccc',
-			labelColor: '#333',
-			colors: ['#00cc00', '#ff3333', '#fe9800'],
-			resize: true,
-			formatter: function (x) {
-				return x + "%"
-			}
-		});
+		jQuery.ajax({
+	        type: "POST",
+	        url: '/portal/json/attendances',
+	        dataType: 'json',
+	        async: true,
+	        data: JSON.stringify({}),
+	        contentType: "application/json; charset=utf-8",
+	        success: function ( data ) {
+	        	var parsed_data = JSON.parse(data['result']);
+	        	var tot_presence = parsed_data.tot_presence
+	    		var tot_abscence = parsed_data.tot_abscence
+	    		var tot_delay = parsed_data.tot_delay
+	        	var donut = Morris.Donut({
+	    			element: 'donut-color',
+	    			data: [
+	    				{value: tot_presence, label: 'الحضور'},
+	    				{value: tot_abscence, label: 'الغياب'},
+	    				{value: tot_delay, label: 'التأخير'},
+	    			],
+	    			backgroundColor: '#ccc',
+	    			labelColor: '#333',
+	    			colors: ['#00cc00', '#ff3333', '#fe9800'],
+	    			resize: true,
+	    			formatter: function (x) {
+	    				return x + "%"
+	    			}
+	    		});
+	        },
+	        failure: function( data ){
+	        	
+	           console.log( JSON.stringify( data ) );
+	        }
+	        
+		})
+		
 	}
 
     var resizeEnd;

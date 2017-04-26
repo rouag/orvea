@@ -46,7 +46,7 @@
 										</div>
 									</div>
 									<div class="login_v2_forget_text">
-										<a href="javascript:void(0);">نسيت كلمة المرور؟</a><!-- forgot_password_v2.html -->
+										<a href="/web/reset_password">نسيت كلمة المرور؟</a><!-- forgot_password_v2.html -->
 									</div>
 									<button type="submit"
 										class="btn flat-buttons btn-primary btn-block text-xs-center">دخول</button>

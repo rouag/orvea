@@ -89,115 +89,20 @@
 							<div class="search_close icon_close"></div>
 						</div>
 					</div>
-					<!-- END HEADER -->
 					<!-- START CONTENT -->
 					<section id="main" class="container-fluid">
 						<div class="row">
-							<!-- START NAVIGATION -->
-							<aside id="sidebar">
-								<div class="sidebar-search">
-									<input id="live-search-box" type="search" class="form-control input-sm"
-										placeholder="Search..." />
-									<a href="javascript:void(0)">
-										<i class="search-close icon_search"></i>
-									</a>
-								</div>
-								<div class="sidebar-menu">
-									<ul class="nav site-menu live-search-list" id="site-menu"
-										data-plugin="custom-scroll" data-suppress-scroll-x="true"
-										data-height="100%">
-										<li class="menu-title">
-											<ul class="main-menu">
-												<li class="sub-item">
-													<a href="javascript:void(0)" class="flat-buttons">
-														<span>الرئيسية</span>
-													</a>
-												</li>
-												<li class="sub-item">
-													<a href="javascript:void(0)" class="flat-buttons">
-														<span>لوحة المؤشرات</span>
-													</a>
-												</li>
-												<li class="sub-item">
-													<a href="javascript:void(0)" class="flat-buttons">
-														<span>أمن المعلومات</span>
-													</a>
-												</li>
-												<li class="sub-item">
-													<a href="javascript:void(0)" class="flat-buttons">
-														<span>البيانات الشخطية</span>
-														<span class="float-xs-right">
-															<i class="icon_plus"></i>
-														</span>
-													</a>
-													<ul class="sub-menu">
-														<li>
-															<a href="userlist.html" class="flat-buttons">بياناتي الشخصية</a>
-														</li>
-														<li>
-															<a href="invoice.html" class="flat-buttons">تعديل بياناتي</a>
-														</li>
-														<li>
-															<a href="blank.html" class="flat-buttons">طلب بطاقة موظف</a>
-														</li>
-													</ul>
-												</li>
-												<li class="sub-item">
-													<a href="javascript:void(0)" class="flat-buttons">
-														<span>متابعة معاملاتي</span>
-													</a>
-												</li>
-												<li class="sub-item">
-													<a href="javascript:void(0)" class="flat-buttons">
-														<span>الاستعلامات</span>
-													</a>
-												</li>
-												<li class="sub-item">
-													<a href="javascript:void(0)" class="flat-buttons">
-														<span>الهيكل التنظيمي</span>
-													</a>
-												</li>
-												<li class="sub-item">
-													<a href="javascript:void(0)" class="flat-buttons">
-														<span>التحويلات الداخلية</span>
-													</a>
-												</li>
-												<li class="sub-item">
-													<a href="javascript:void(0)" class="flat-buttons">
-														<span>ركن التفاعل</span>
-													</a>
-												</li>
-												<li class="sub-item">
-													<a href="javascript:void(0)" class="flat-buttons">
-														<span>الدعم الفني</span>
-													</a>
-												</li>
-											</ul>
-										</li>
-									</ul>
-								</div>
-								<div class="sidebar-extra">
-									<a href="javascript:void(0);">دعم البوابة : </a>
-									<!-- <a href="javascript:void(0);" class="flat-buttons"><i class="icon_lock-open_alt"></i></a> 
-										<a href="javascript:void(0);" class="flat-buttons"><i class="icon_key_alt"></i></a> 
-										<a href="javascript:void(0);" class="flat-buttons"><i class="icon_lock_alt"></i></a> -->
-								</div>
-							</aside>
-							<!-- END NAVIGATION -->
+							<t t-call="smart_internal_portal.website_sidebar" />
 							<!-- START RIGHT CONTENT -->
 							<section id="content-wrapper" class="form-elements">
 								<!-- START PAGE TITLE -->
 								<div class="site-content-title">
 									<!-- START BREADCRUMB -->
 									<ol class="breadcrumb float-xs-left">
-										<li class="breadcrumb-item">
+										<li class="breadcrumb-item active">
 											<span class="fs1" aria-hidden="true" data-icon=""></span>
 											<a href="javascript:void(0);">الرئيسية</a>
 										</li>
-										<li class="breadcrumb-item">
-											<a href="javascript:void(0);">صفحة</a>
-										</li>
-										<li class="breadcrumb-item active">صفحة 1</li>
 									</ol>
 									<!-- END BREADCRUMB -->
 								</div>
@@ -217,8 +122,11 @@
 																<i class="display-icon icon_printer"></i>
 															</div>
 															<span class="title">رصيد اجازاتي</span>
-															<h4 class="text-danger">28 يوم</h4>
-															<span class="search_ad">تفاصيل</span>
+															<h4 class="text-danger">
+																<t t-esc="smart_button['normal_holidays_solde']" />
+																يوم
+															</h4>
+															<span class="search_ad bg-danger">تفاصيل</span>
 															<span>كل الاجازات</span>
 
 														</div>
@@ -232,8 +140,11 @@
 																<i class="display-icon icon_document"></i>
 															</div>
 															<span class="title">طلباتي</span>
-															<h4 class="text-success">12 طلب</h4>
-															<span class="search_ad bg-danger">تفاصيل</span>
+															<h4 class="text-success">
+																<t t-esc="smart_button['requests']" />
+																طلب
+															</h4>
+															<span class="search_ad bg-success">تفاصيل</span>
 															<span>كل الطلبات</span>
 
 														</div>
@@ -248,8 +159,11 @@
 																<i class="display-icon icon_contacts"></i>
 															</div>
 															<span class="title">مهامي</span>
-															<h4 class="text-primary">19 مهمة</h4>
-															<span class="search_ad bg-success">تفاصيل</span>
+															<h4 class="text-primary">
+																<t t-esc="smart_button['missions']" />
+																مهمة
+															</h4>
+															<span class="search_ad" style="background-color: #0275d8;">تفاصيل</span>
 															<span>المنتهية 11</span>
 															<span>المتبقية 8</span>
 														</div>
@@ -262,10 +176,13 @@
 																<i class="product-hover icon_mail"></i>
 																<i class="display-icon icon_mail"></i>
 															</div>
-															<span class="title">بدلاتي</span>
-															<h4 class="text-info">2850 ريال</h4>
-															<span class="search_ad">تفاصيل</span>
-															<span>كل البدلات</span>
+															<span class="title">صافي الراتب</span>
+															<h4 class="text-info">
+																<t t-esc="smart_button['net_salary']" />
+																ريال
+															</h4>
+															<span class="search_ad" style="background-color: #5bc0de;">تفاصيل</span>
+															<span>كل المعلومات</span>
 
 														</div>
 													</div>
@@ -296,97 +213,55 @@
 													</div>
 												</div>
 												<div class="dashboard-box" style="height:290px;">
-
-
-
-
 													<div id="owl-full" class="owl-carousel owl-theme data_widgets_block">
 														<div class="testimonial-box testimonial-background warning-bg">
 															<div class="testimonial-center-image">
-																<img
-																	src="/smart_internal_portal/static/src/assets/global/image/img_400x400.png"
-																	alt="image" />
+																<span itemprop="image" t-field="employee.image"
+																	t-field-options='{"widget": "image"}' />
 															</div>
 
 
 															<div class="testimonial-content">
 																<div class="testimonial-name">
-																	<h6 class="color1">د. عبدالله محمد المحيذيف</h6>
-																	<span class="color2">مدير تقنية المعلومات</span>
-																</div>
-																<div class="testimonial-name">
-																	<h6 class="color2">
-																		المرتبة:
-																		<span class="color1">الرابعة عشر</span>
+																	<h6 class="color1">
+																		<t t-esc="employee.display_name" />
 																	</h6>
 																	<span class="color2">
-																		الرئيس المباشر:
-																		<span class="color1">رافع محمد رافع الشهري</span>
+																		<t t-esc="employee.job_id.name.name" />
 																	</span>
 																</div>
-															</div>
-														</div>
-														<div class="testimonial-box testimonial-background warning-bg">
-															<div class="testimonial-center-image">
-																<img
-																	src="/smart_internal_portal/static/src/assets/global/image/img_400x400.png"
-																	alt="image" />
-															</div>
-
-
-
-
-															<div class="testimonial-content">
-																<div class="testimonial-name">
-																	<h6 class="color1">د. عبدالله محمد المحيذيف</h6>
-																	<span class="color2">مدير تقنية المعلومات</span>
-																</div>
 																<div class="testimonial-name">
 																	<h6 class="color2">
 																		المرتبة:
-																		<span class="color1">الرابعة عشر</span>
+																		<span class="color1">
+																			<t t-esc="employee.grade_id.name" />
+																		</span>
 																	</h6>
 																	<span class="color2">
-																		الرئيس المباشر:
-																		<span class="color1">رافع محمد رافع الشهري</span>
+																		الدرجة:
+																		<span class="color1">
+																			<t t-esc="employee.degree_id.name" />
+																		</span>
 																	</span>
 																</div>
-															</div>
-														</div>
-														<div class="testimonial-box testimonial-background warning-bg">
-															<div class="testimonial-center-image">
-																<img
-																	src="/smart_internal_portal/static/src/assets/global/image/img_400x400.png"
-																	alt="image" />
-															</div>
-
-
-
-
-															<div class="testimonial-content">
-																<div class="testimonial-name">
-																	<h6 class="color1">د. عبدالله محمد المحيذيف</h6>
-																	<span class="color2">مدير تقنية المعلومات</span>
-																</div>
 																<div class="testimonial-name">
 																	<h6 class="color2">
-																		المرتبة:
-																		<span class="color1">الرابعة عشر</span>
+																		الرئيس المباشر:
+																		<span class="color1">
+																			<t t-esc="employee.parent_id.display_name" />
+																		</span>
 																	</h6>
 																	<span class="color2">
-																		الرئيس المباشر:
-																		<span class="color1">رافع محمد رافع الشهري</span>
+																		الفرع:
+																		<span class="color1">
+																			<t t-esc="employee.branch_id.name" />
+																		</span>
 																	</span>
 																</div>
 															</div>
 														</div>
 													</div>
-
-
-
-
 												</div>
-
 											</div>
 										</div>
 
@@ -414,80 +289,18 @@
 														<div class="basic_table table-responsive">
 															<table id="flowup" class="table table-striped">
 																<tbody>
-																	<tr>
-																		<td>طلب اجازة عادية</td>
-																		<td class="date">12/02/1438</td>
+																	<tr t-foreach="actions" t-as="action">
+																		<td>
+																			<t t-esc="action['name']" />
+																		</td>
+																		<td class="date">
+																			<t t-esc="action['date']" />
+																		</td>
 																		<td>
 																			<div class="striped-progress-bar">
 																				<progress
 																					class="progress progress-striped progress-success"
 																					value="90" max="100"></progress>
-																			</div>
-																		</td>
-																	</tr>
-																	<tr>
-																		<td>طلب انتداب</td>
-																		<td class="date">04/05/1438</td>
-																		<td>
-																			<div class="striped-progress-bar">
-																				<progress
-																					class="progress progress-striped progress-warning"
-																					value="25" max="100"></progress>
-																			</div>
-																		</td>
-																	</tr>
-																	<tr>
-																		<td>طلب صرف بدلات</td>
-																		<td class="date">04/10/1438</td>
-																		<td>
-																			<div class="striped-progress-bar">
-																				<progress
-																					class="progress progress-striped progress-success"
-																					value="100" max="100"></progress>
-																			</div>
-																		</td>
-																	</tr>
-																	<tr>
-																		<td>طلب اجازة عادية</td>
-																		<td class="date">12/02/1438</td>
-																		<td>
-																			<div class="striped-progress-bar">
-																				<progress
-																					class="progress progress-striped progress-success"
-																					value="90" max="100"></progress>
-																			</div>
-																		</td>
-																	</tr>
-																	<tr>
-																		<td>طلب انتداب</td>
-																		<td class="date">04/05/1438</td>
-																		<td>
-																			<div class="striped-progress-bar">
-																				<progress
-																					class="progress progress-striped progress-warning"
-																					value="25" max="100"></progress>
-																			</div>
-																		</td>
-																	</tr>
-																	<tr>
-																		<td>طلب صرف بدلات</td>
-																		<td class="date">04/10/1438</td>
-																		<td>
-																			<div class="striped-progress-bar">
-																				<progress
-																					class="progress progress-striped progress-success"
-																					value="100" max="100"></progress>
-																			</div>
-																		</td>
-																	</tr>
-																	<tr>
-																		<td>طلب صرف بدلات</td>
-																		<td class="date">04/10/1438</td>
-																		<td>
-																			<div class="striped-progress-bar">
-																				<progress
-																					class="progress progress-striped progress-success"
-																					value="100" max="100"></progress>
 																			</div>
 																		</td>
 																	</tr>
@@ -540,70 +353,24 @@
 												<div class="dashboard-box" style="height:350px;">
 
 													<ul class="list-inline">
-														<li>
-															<img
-																src="/smart_internal_portal/static/src/assets/global/image/emp_2.png"
-																alt="" class="img-responsive" />
-															<span class="status green">مداوم</span>
-															<span class="name">محمد الزهراني</span>
-															<span class="post">قسم الارشيف</span>
-														</li>
-														<li>
-															<img
-																src="/smart_internal_portal/static/src/assets/global/image/emp_1.png"
-																alt="" class="img-responsive" />
-															<span class="status red">غائب</span>
-															<span class="name">محمد الزهراني</span>
-															<span class="post">قسم الارشيف</span>
-														</li>
-														<li>
-															<img
-																src="/smart_internal_portal/static/src/assets/global/image/emp_2.png"
-																alt="" class="img-responsive" />
-															<span class="status grey">مجاز</span>
-															<span class="name">محمد الزهراني</span>
-															<span class="post">قسم الارشيف</span>
-														</li>
-														<li>
-															<img
-																src="/smart_internal_portal/static/src/assets/global/image/emp_1.png"
-																alt="" class="img-responsive" />
-															<span class="status green">مداوم</span>
-															<span class="name">محمد الزهراني</span>
-															<span class="post">قسم الارشيف</span>
-														</li>
-														<li>
-															<img
-																src="/smart_internal_portal/static/src/assets/global/image/emp_2.png"
-																alt="" class="img-responsive" />
-															<span class="status green">مداوم</span>
-															<span class="name">محمد الزهراني</span>
-															<span class="post">قسم الارشيف</span>
-														</li>
-														<li>
-															<img
-																src="/smart_internal_portal/static/src/assets/global/image/emp_1.png"
-																alt="" class="img-responsive" />
-															<span class="status green">مداوم</span>
-															<span class="name">محمد الزهراني</span>
-															<span class="post">قسم الارشيف</span>
-														</li>
-														<li>
-															<img
-																src="/smart_internal_portal/static/src/assets/global/image/emp_2.png"
-																alt="" class="img-responsive" />
-															<span class="status green">مداوم</span>
-															<span class="name">محمد الزهراني</span>
-															<span class="post">قسم الارشيف</span>
-														</li>
-														<li>
-															<img
-																src="/smart_internal_portal/static/src/assets/global/image/emp_1.png"
-																alt="" class="img-responsive" />
-															<span class="status green">مداوم</span>
-															<span class="name">محمد الزهراني</span>
-															<span class="post">قسم الارشيف</span>
-														</li>
+														<t t-foreach="dep_employee_ids" t-as="employee">
+															<li>
+																<span itemprop="image" class="img-responsive"
+																	t-field="employee.image" t-field-options='{"widget": "image"}' />
+																<t t-if="employee.state == 'absent'">
+																	<span class="status red">غير مداوم</span>
+																</t>
+																<t t-if="employee.state == 'present'">
+																	<span class="status green">مداوم</span>
+																</t>
+																<span class="name">
+																	<t t-esc="employee.display_name" />
+																</span>
+																<span class="post">
+																	<t t-esc="employee.department_id.name" />
+																</span>
+															</li>
+														</t>
 													</ul>
 
 												</div>
