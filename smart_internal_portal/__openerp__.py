@@ -12,6 +12,7 @@ Internal portal
                 ],
     'data': [
         'views/assets.xml',
+        'views/website_template.xml',
         'views/login.xml',
         'views/index.xml',
     ],
