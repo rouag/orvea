@@ -20,404 +20,7 @@
 					</div>
 				</div>
 				<div class="wrapper">
-					<!-- START HEADER -->
-					<header id="header">
-						<div class="row">
-							<div class="col-sm-3 col-xl-2 header-left">
-								<div class="logo float-xs-left">
-									<a href="javascript:void(0);">
-										<img src="/smart_internal_portal/static/src/assets/global/image/web-logo.png"
-											alt="logo" />
-									</a>
-								</div>
-								<button class="left-menu-toggle flat-buttons float-xs-right">
-									<i class="icon_menu toggle-icon"></i>
-								</button>
-								<button class="right-menu-toggle flat-buttons float-xs-right">
-									<i class="arrow_carrot-left toggle-icon"></i>
-								</button>
-							</div>
-
-							<div class="col-sm-3 col-xl-3 header-title">
-								<h1>البوابة الداخلية</h1>
-							</div>
-
-							<div class="col-sm-3 col-xl-3 header-news">
-								<div class="pull-right">
-									<h3>الأخبار</h3>
-									<a href="javascript:void(0);" id="nt-prev" title="">
-										<i class="zmdi zmdi-caret-right zmdi-hc-fw"></i>
-									</a>
-									<a href="javascript:void(0);" id="nt-next" title="">
-										<i class="zmdi zmdi-caret-left zmdi-hc-fw"></i>
-									</a>
-								</div>
-								<ul id="news" class="list-unstyled">
-									<li>معالي رئيس الهيئة يفتتح اجتماع اعضاء دوائر التفتيش في فروع
-										الهيئة ودورة المهارات الاساسية لأعمال التفتيش...
-									</li>
-									<li>معالي رئيس الهيئة يفتتح اجتماع اعضاء دوائر التفتيش في فروع
-										الهيئة ودورة المهارات الاساسية لأعمال التفتيش...
-									</li>
-									<li>معالي رئيس الهيئة يفتتح اجتماع اعضاء دوائر التفتيش في فروع
-										الهيئة ودورة المهارات الاساسية لأعمال التفتيش...
-									</li>
-								</ul>
-							</div>
-
-							<div class="col-sm-3 col-xl-3 header-right">
-								<div class="header-inner-right">
-									<div class="float-default widget">
-										<div class="right-icon">
-											<a href="javascript:void(0);">
-												<i class="icon_grid-2x2"></i>
-											</a>
-										</div>
-									</div>
-									<div class="float-default searchbox">
-										<div class="right-icon">
-											<a href="javascript:void(0)">
-												<i class="icon_search"></i>
-											</a>
-										</div>
-									</div>
-									<div class="float-default mail">
-										<div class="right-icon">
-											<a href="javascript:void(0)" data-toggle="dropdown"
-												data-open="true" aria-expanded="true">
-												<i class="icon_mail_alt"></i>
-												<span class="mail-no">10</span>
-											</a>
-											<div class="dropdown-menu messagetoggle" role="menu">
-												<div class="nav-tab-horizontal">
-													<ul class="nav nav-tabs" role="tablist">
-														<li class="nav-item">
-															<a class="nav-link flat-buttons active" data-toggle="tab"
-																href="#messages" role="tab">الصادر</a>
-														</li>
-														<li class="nav-item">
-															<a class="nav-link flat-buttons" data-toggle="tab"
-																href="#resendmessage" role="tab">الوارد</a>
-														</li>
-													</ul>
-												</div>
-												<div class="tab-content">
-													<div class="tab-pane active" id="messages" role="tabpanel"
-														data-plugin="custom-scroll" data-height="320">
-														<ul class="userMessagedrop">
-															<li>
-																<a href="javascript:void(0);">
-																	<div class="media">
-																		<div class="media-left float-xs-left">
-																			<span class="label label-primary">
-																				<i class="icon_plus"></i>
-																			</span>
-																		</div>
-																		<div class="media-body">
-																			<h6>مهمة جديدة</h6>
-																			<p>تم اضافة مهمة.</p>
-																			<div class="meta-tag text-nowrap">
-																				<time datetime="2016-12-10T20:27:48+07:00"
-																					class="text-muted">5 دق
-																				</time>
-																			</div>
-																		</div>
-																	</div>
-																</a>
-															</li>
-															<li>
-																<a href="javascript:void(0);">
-																	<div class="media">
-																		<div class="media-left float-xs-left">
-																			<span class="label label-success">
-																				<i class="icon_lock"></i>
-																			</span>
-																		</div>
-																		<div class="media-body">
-																			<h6>Successfully</h6>
-																			<p>نص تجريبي نص تجريبي ...d typesetting industry.
-																			</p>
-																			<div class="meta-tag text-nowrap">
-																				<time datetime="2016-12-10T20:27:48+07:00"
-																					class="text-muted">5 دق
-																				</time>
-																			</div>
-																		</div>
-																	</div>
-																</a>
-															</li>
-															<li>
-																<a href="javascript:void(0);">
-																	<div class="media">
-																		<div class="media-left float-xs-left">
-																			<span class="label label-danger">
-																				<i class="icon_info_alt"></i>
-																			</span>
-																		</div>
-																		<div class="media-body">
-																			<h6>Warnind</h6>
-																			<p>نص تجريبي نص تجريبي ...d typesetting industry.
-																			</p>
-																			<div class="meta-tag text-nowrap">
-																				<time datetime="2016-12-10T20:27:48+07:00"
-																					class="text-muted">5 دق
-																				</time>
-																			</div>
-																		</div>
-																	</div>
-																</a>
-															</li>
-															<li>
-																<a href="javascript:void(0);">
-																	<div class="media">
-																		<div class="media-left float-xs-left">
-																			<span class="label label-info">
-																				<i class="icon_plus"></i>
-																			</span>
-																		</div>
-																		<div class="media-body">
-																			<h6>Add new friend</h6>
-																			<p>نص تجريبي نص تجريبي ...d typesetting industry.
-																			</p>
-																			<div class="meta-tag text-nowrap">
-																				<time datetime="2016-12-10T20:27:48+07:00"
-																					class="text-muted">5 دق
-																				</time>
-																			</div>
-																		</div>
-																	</div>
-																</a>
-															</li>
-														</ul>
-													</div>
-													<div class="tab-pane" id="resendmessage" role="tabpanel"
-														data-plugin="custom-scroll" data-height="320">
-														<ul class="userMessagedrop">
-															<li>
-																<a href="javascript:void(0);">
-																	<div class="media">
-																		<div class="media-left float-xs-left">
-																			<span class="label label-primary">
-																				<i class="icon_profile"></i>
-																			</span>
-																		</div>
-																		<div class="media-body">
-																			<h6>5 new members joi...</h6>
-																			<p>نص تجريبي نص تجريبي ...d typesetting industry.
-																			</p>
-																			<div class="meta-tag text-nowrap">
-																				<time datetime="2016-12-10T20:27:48+07:00"
-																					class="text-muted">2 دق
-																				</time>
-																			</div>
-																		</div>
-																	</div>
-																</a>
-															</li>
-															<li>
-																<a href="javascript:void(0);">
-																	<div class="media">
-																		<div class="media-left float-xs-left">
-																			<span class="label label-success">
-																				<i class="icon_key"></i>
-																			</span>
-																		</div>
-																		<div class="media-body">
-																			<h6>You changed...</h6>
-																			<p>نص تجريبي نص تجريبي ...d typesetting industry.
-																			</p>
-																			<div class="meta-tag text-nowrap">
-																				<time datetime="2016-12-10T20:27:48+07:00"
-																					class="text-muted">5 دق
-																				</time>
-																			</div>
-																		</div>
-																	</div>
-																</a>
-															</li>
-															<li>
-																<a href="javascript:void(0);">
-																	<div class="media">
-																		<div class="media-left float-xs-left">
-																			<span class="label label-danger">
-																				<i class="icon_close"></i>
-																			</span>
-																		</div>
-																		<div class="media-body">
-																			<h6>5 members removed</h6>
-																			<p>نص تجريبي نص تجريبي ...d typesetting industry.
-																			</p>
-																			<div class="meta-tag text-nowrap">
-																				<time datetime="2016-12-10T20:27:48+07:00"
-																					class="text-muted">15 دق
-																				</time>
-																			</div>
-																		</div>
-																	</div>
-																</a>
-															</li>
-															<li>
-																<a href="javascript:void(0);">
-																	<div class="media">
-																		<div class="media-left float-xs-left">
-																			<span class="label label-info">
-																				<i class="icon_plus"></i>
-																			</span>
-																		</div>
-																		<div class="media-body">
-																			<h6>Update available</h6>
-																			<p>نص تجريبي نص تجريبي ...d typesetting industry.
-																			</p>
-																			<div class="meta-tag text-nowrap">
-																				<time datetime="2016-12-10T20:27:48+07:00"
-																					class="text-muted">5 دق
-																				</time>
-																			</div>
-																		</div>
-																	</div>
-																</a>
-															</li>
-														</ul>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="float-default chat">
-										<div class="right-icon">
-											<a href="javascript:void(0)" data-toggle="dropdown"
-												data-open="true" data-animation="slideOutUp" aria-expanded="false">
-												<i class="icon_chat_alt"></i>
-												<span class="mail-no">8</span>
-											</a>
-											<ul class="dropdown-menu userChat">
-												<li>
-													<a href="javascript:void(0);">
-														<div class="media">
-															<div class="media-left float-xs-left">
-																<img src="/smart_internal_portal/static/src/assets/global/image/img_400x400.png"
-																	alt="message" />
-															</div>
-															<div class="media-body float-xs-left">
-																<h5>سامي الشهري</h5>
-																<p>نص تجريبي نص تجريبي ...</p>
-																<div class="meta-tag text-nowrap">
-																	<time datetime="2016-12-10T20:27:48+07:00" class="text-muted">
-																		5
-																		دق
-																	</time>
-																</div>
-																<div class="status online"></div>
-															</div>
-														</div>
-													</a>
-												</li>
-												<li>
-													<a href="javascript:void(0);">
-														<div class="media">
-															<div class="media-left float-xs-left">
-																<img src="/smart_internal_portal/static/src/assets/global/image/img_400x400.png"
-																	alt="message" />
-															</div>
-															<div class="media-body float-xs-left">
-																<h5>سامي الشهري</h5>
-																<p>نص تجريبي نص تجريبي ...</p>
-																<div class="meta-tag text-nowrap">
-																	<time datetime="2016-12-10T20:27:48+07:00" class="text-muted">
-																		2
-																		hours
-																	</time>
-																</div>
-																<div class="status offline"></div>
-															</div>
-														</div>
-													</a>
-												</li>
-												<li>
-													<a href="javascript:void(0);">
-														<div class="media">
-															<div class="media-left float-xs-left">
-																<img src="/smart_internal_portal/static/src/assets/global/image/img_400x400.png"
-																	alt="message" />
-															</div>
-															<div class="media-body float-xs-left">
-																<h5>سامي الشهري</h5>
-																<p>نص تجريبي نص تجريبي ...</p>
-																<div class="meta-tag text-nowrap">
-																	<time datetime="2016-12-10T20:27:48+07:00" class="text-muted">
-																		20
-																		Oct
-																	</time>
-																</div>
-																<div class="status offline"></div>
-															</div>
-														</div>
-													</a>
-												</li>
-												<li>
-													<a href="javascript:void(0);">
-														<div class="media">
-															<div class="media-left float-xs-left">
-																<img src="/smart_internal_portal/static/src/assets/global/image/img_400x400.png"
-																	alt="message" />
-															</div>
-															<div class="media-body float-xs-left">
-																<h5>سامي الشهري</h5>
-																<p>نص تجريبي نص تجريبي ...</p>
-																<div class="meta-tag text-nowrap">
-																	<time datetime="2016-12-10T20:27:48+07:00" class="text-muted">
-																		20
-																		Oct
-																	</time>
-																</div>
-																<div class="status online"></div>
-															</div>
-														</div>
-													</a>
-												</li>
-											</ul>
-										</div>
-									</div>
-									<div class="float-default chat">
-										<div class="right-icon">
-											<a href="javascript:void(0);" data-plugin="fullscreen">
-												<i class="arrow_expand"></i>
-											</a>
-										</div>
-									</div>
-									<div class="user-dropdown">
-										<div class="btn-group">
-											<a href="javascript:void(0);" class="user-header dropdown-toggle"
-												data-toggle="dropdown" data-animation="slideOutUp"
-												aria-haspopup="true" aria-expanded="false">
-												<img src="/smart_internal_portal/static/src/assets/global/image/user.png" alt="Profile image" />
-												<h5>د. عبدالله محمد المحيذيف</h5>
-												<div class="colored-progress-bar">
-													<progress class="progress progress-md progress-success"
-														value="88" max="100"></progress>
-												</div>
-											</a>
-											<div class="dropdown-menu drop-profile">
-												<div class="userProfile">
-													<img src="/smart_internal_portal/static/src/assets/global/image/user.png" alt="Profile image" />
-													<h5>د. عبدالله محمد المحيذيف</h5>
-													<p>abdallah@bipp.sa</p>
-												</div>
-												<div class="dropdown-divider"></div>
-												<a class="btn left-spacing link-btn flat-buttons" href="javascript:void(0);"
-													role="button">Link</a>
-												<a class="btn left-second-spacing link-btn flat-buttons"
-													href="javascript:void(0);" role="button">Link 2</a>
-												<a
-													class="btn btn-primary float-xs-right right-spacing flat-buttons"
-													href="javascript:void(0);" role="button">Logout</a>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</header>
+					<t t-call="smart_internal_portal.website_header" />
 					<div class="search-overlay">
 						<div class="float-default search">
 							<div class="search_bg"></div>
@@ -432,7 +35,8 @@
 								<div class="search-result">
 									<div class="search-item">
 										<div class="search-image float-xs-left">
-											<img src="/smart_internal_portal/static/src/assets/global/image/img_640x450.png"
+											<img
+												src="/smart_internal_portal/static/src/assets/global/image/img_640x450.png"
 												alt="search-image" />
 										</div>
 										<div class="search-info float-xs-right">
@@ -464,7 +68,8 @@
 									<div class="divider15"></div>
 									<div class="search-item">
 										<div class="search-image float-xs-left">
-											<img src="/smart_internal_portal/static/src/assets/global/image/img_640x450.png"
+											<img
+												src="/smart_internal_portal/static/src/assets/global/image/img_640x450.png"
 												alt="search-image" />
 										</div>
 										<div class="search-info float-xs-right">
@@ -698,7 +303,8 @@
 													<div id="owl-full" class="owl-carousel owl-theme data_widgets_block">
 														<div class="testimonial-box testimonial-background warning-bg">
 															<div class="testimonial-center-image">
-																<img src="/smart_internal_portal/static/src/assets/global/image/img_400x400.png"
+																<img
+																	src="/smart_internal_portal/static/src/assets/global/image/img_400x400.png"
 																	alt="image" />
 															</div>
 
@@ -722,7 +328,8 @@
 														</div>
 														<div class="testimonial-box testimonial-background warning-bg">
 															<div class="testimonial-center-image">
-																<img src="/smart_internal_portal/static/src/assets/global/image/img_400x400.png"
+																<img
+																	src="/smart_internal_portal/static/src/assets/global/image/img_400x400.png"
 																	alt="image" />
 															</div>
 
@@ -748,7 +355,8 @@
 														</div>
 														<div class="testimonial-box testimonial-background warning-bg">
 															<div class="testimonial-center-image">
-																<img src="/smart_internal_portal/static/src/assets/global/image/img_400x400.png"
+																<img
+																	src="/smart_internal_portal/static/src/assets/global/image/img_400x400.png"
 																	alt="image" />
 															</div>
 
@@ -933,56 +541,64 @@
 
 													<ul class="list-inline">
 														<li>
-															<img src="/smart_internal_portal/static/src/assets/global/image/emp_2.png"
+															<img
+																src="/smart_internal_portal/static/src/assets/global/image/emp_2.png"
 																alt="" class="img-responsive" />
 															<span class="status green">مداوم</span>
 															<span class="name">محمد الزهراني</span>
 															<span class="post">قسم الارشيف</span>
 														</li>
 														<li>
-															<img src="/smart_internal_portal/static/src/assets/global/image/emp_1.png"
+															<img
+																src="/smart_internal_portal/static/src/assets/global/image/emp_1.png"
 																alt="" class="img-responsive" />
 															<span class="status red">غائب</span>
 															<span class="name">محمد الزهراني</span>
 															<span class="post">قسم الارشيف</span>
 														</li>
 														<li>
-															<img src="/smart_internal_portal/static/src/assets/global/image/emp_2.png"
+															<img
+																src="/smart_internal_portal/static/src/assets/global/image/emp_2.png"
 																alt="" class="img-responsive" />
 															<span class="status grey">مجاز</span>
 															<span class="name">محمد الزهراني</span>
 															<span class="post">قسم الارشيف</span>
 														</li>
 														<li>
-															<img src="/smart_internal_portal/static/src/assets/global/image/emp_1.png"
+															<img
+																src="/smart_internal_portal/static/src/assets/global/image/emp_1.png"
 																alt="" class="img-responsive" />
 															<span class="status green">مداوم</span>
 															<span class="name">محمد الزهراني</span>
 															<span class="post">قسم الارشيف</span>
 														</li>
 														<li>
-															<img src="/smart_internal_portal/static/src/assets/global/image/emp_2.png"
+															<img
+																src="/smart_internal_portal/static/src/assets/global/image/emp_2.png"
 																alt="" class="img-responsive" />
 															<span class="status green">مداوم</span>
 															<span class="name">محمد الزهراني</span>
 															<span class="post">قسم الارشيف</span>
 														</li>
 														<li>
-															<img src="/smart_internal_portal/static/src/assets/global/image/emp_1.png"
+															<img
+																src="/smart_internal_portal/static/src/assets/global/image/emp_1.png"
 																alt="" class="img-responsive" />
 															<span class="status green">مداوم</span>
 															<span class="name">محمد الزهراني</span>
 															<span class="post">قسم الارشيف</span>
 														</li>
 														<li>
-															<img src="/smart_internal_portal/static/src/assets/global/image/emp_2.png"
+															<img
+																src="/smart_internal_portal/static/src/assets/global/image/emp_2.png"
 																alt="" class="img-responsive" />
 															<span class="status green">مداوم</span>
 															<span class="name">محمد الزهراني</span>
 															<span class="post">قسم الارشيف</span>
 														</li>
 														<li>
-															<img src="/smart_internal_portal/static/src/assets/global/image/emp_1.png"
+															<img
+																src="/smart_internal_portal/static/src/assets/global/image/emp_1.png"
 																alt="" class="img-responsive" />
 															<span class="status green">مداوم</span>
 															<span class="name">محمد الزهراني</span>
@@ -1044,27 +660,33 @@
 
 													<div id="owl-full2" class="owl-carousel owl-theme">
 														<div class="item">
-															<img src="/smart_internal_portal/static/src/assets/global/image/img_1.png"
+															<img
+																src="/smart_internal_portal/static/src/assets/global/image/img_1.png"
 																alt="Owl Image" />
 														</div>
 														<div class="item">
-															<img src="/smart_internal_portal/static/src/assets/global/image/img_1.png"
+															<img
+																src="/smart_internal_portal/static/src/assets/global/image/img_1.png"
 																alt="Owl Image" />
 														</div>
 														<div class="item">
-															<img src="/smart_internal_portal/static/src/assets/global/image/img_1.png"
+															<img
+																src="/smart_internal_portal/static/src/assets/global/image/img_1.png"
 																alt="Owl Image" />
 														</div>
 														<div class="item">
-															<img src="/smart_internal_portal/static/src/assets/global/image/img_1.png"
+															<img
+																src="/smart_internal_portal/static/src/assets/global/image/img_1.png"
 																alt="Owl Image" />
 														</div>
 														<div class="item">
-															<img src="/smart_internal_portal/static/src/assets/global/image/img_1.png"
+															<img
+																src="/smart_internal_portal/static/src/assets/global/image/img_1.png"
 																alt="Owl Image" />
 														</div>
 														<div class="item">
-															<img src="/smart_internal_portal/static/src/assets/global/image/img_1.png"
+															<img
+																src="/smart_internal_portal/static/src/assets/global/image/img_1.png"
 																alt="Owl Image" />
 														</div>
 													</div>
@@ -1090,11 +712,14 @@
 						<div
 							class="float-xs-left icon-right site-setting-animation how-it-works">
 							<div id="site_setting_icon" class="animation">
-								<img src="/smart_internal_portal/static/src/assets/global/image/site-setting-icon.png"
+								<img
+									src="/smart_internal_portal/static/src/assets/global/image/site-setting-icon.png"
 									alt="" class="icon1" />
-								<img src="/smart_internal_portal/static/src/assets/global/image/site-setting-icon.png"
+								<img
+									src="/smart_internal_portal/static/src/assets/global/image/site-setting-icon.png"
 									alt="" class="icon2" />
-								<img src="/smart_internal_portal/static/src/assets/global/image/site-setting-icon.png"
+								<img
+									src="/smart_internal_portal/static/src/assets/global/image/site-setting-icon.png"
 									alt="" class="icon3" />
 							</div>
 						</div>
@@ -1280,7 +905,8 @@
 					src="/smart_internal_portal/static/src/assets/global/plugins/progressbar.js/dist/progressbar.min.js"></script>
 				<script type="text/javascript"
 					src="/smart_internal_portal/static/src/assets/global/plugins/CoolClock/coolclock.js"></script>
-				<script type="text/javascript" src="/smart_internal_portal/static/src/assets/global/plugins/d3/d3.min.js"></script>
+				<script type="text/javascript"
+					src="/smart_internal_portal/static/src/assets/global/plugins/d3/d3.min.js"></script>
 				<script type="text/javascript"
 					src="/smart_internal_portal/static/src/assets/global/plugins/rickshaw/rickshaw.min.js"></script>
 				<script type="text/javascript"
@@ -1292,7 +918,8 @@
 				<!-- END PAGE PLUGINS -->
 
 				<!-- START GLOBAL JAVASCRIPT -->
-				<script type="text/javascript" src="/smart_internal_portal/static/src/assets/global/js/site.js"></script>
+				<script type="text/javascript"
+					src="/smart_internal_portal/static/src/assets/global/js/site.js"></script>
 				<script type="text/javascript"
 					src="/smart_internal_portal/static/src/assets/global/js/site-settings.min.js"></script>
 				<!-- END GLOBAL JAVASCRIPT -->
@@ -1300,7 +927,8 @@
 				<!-- START PAGE JAVASCRIPT -->
 				<script type="text/javascript"
 					src="/smart_internal_portal/static/src/assets/global/js/global/dashboard_v1.js"></script>
-				<script type="text/javascript" src="/smart_internal_portal/static/src/assets/global/js/global/carousel.js"></script>
+				<script type="text/javascript"
+					src="/smart_internal_portal/static/src/assets/global/js/global/carousel.js"></script>
 				<!-- END PAGE JAVASCRIPT -->
 
 				<!-- START THEME LAYOUT JAVASCRIPT -->
