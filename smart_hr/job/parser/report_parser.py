@@ -617,6 +617,7 @@ class JobCareerModelReport(report_sxw.rml_parse):
             'get_scale_up_ids': self._get_scale_up_ids,
             'get_move_dep_ids': self._get_move_dep_ids,
             'get_hijri_date': self._get_hijri_date,
+            'get_job_mouvements_ids': self._get_job_mouvements_ids,
         })
 
     def _get_hijri_date(self, date, separator):
@@ -651,6 +652,7 @@ class JobCareerModelReport(report_sxw.rml_parse):
     def _get_job_update_ids(self, job_id):
         job_update_ids = self.pool.get('hr.job.update.line').search(self.cr, self.uid, [('job_id', '=', job_id.id)])
         if job_update_ids:
+            res = self.pool.get('hr.job.update.line').browse(self.cr, self.uid, job_update_ids)
             return self.pool.get('hr.job.update.line').browse(self.cr, self.uid, job_update_ids)
         return []
 
@@ -659,6 +661,61 @@ class JobCareerModelReport(report_sxw.rml_parse):
         if recuitments_ids:
             return self.pool.get('hr.decision.appoint').browse(self.cr, self.uid, recuitments_ids)
         return []
+
+    def _get_job_mouvements_ids(self, job_id):
+        job_mouvements_ids = {}
+        i = 0
+        scale_up_ids = self.pool.get('hr.job.move.grade.line').search(self.cr, self.uid, [('job_id', '=', job_id.id), ('job_move_grade_id.move_type', '=', 'scale_up')])
+        for movement_id in scale_up_ids:
+            movement = self.pool.get('hr.job.move.grade.line').browse(self.cr, self.uid, movement_id)
+            job_mouvements_ids[i]={'grade_id': movement.grade_id.name,
+                                   'number': movement.grade_id.code,
+                                   'job_id': movement.job_id.name.name,
+                                   'branch_id': movement.job_id.branch_id.name,
+                                   'department_id': movement.department_id.name,
+                                   'movment_date': movement.job_move_grade_id.create_date,
+                                   'movment': 'رفع',
+                                   'new_grade': movement.new_grade_id.name,
+                                   'new_number': movement.new_grade_id.code,
+                                   'new_job': movement.new_job_name.name,
+                                   }
+            i = i + 1
+        scale_down_ids = self.pool.get('hr.job.move.grade.line').search(self.cr, self.uid, [('job_id', '=', job_id.id), ('job_move_grade_id.move_type', '=', 'scale_down')])
+        for movement_id in scale_down_ids:
+            movement = self.pool.get('hr.job.move.grade.line').browse(self.cr, self.uid, movement_id)
+            job_mouvements_ids[i]={'grade_id': movement.grade_id.name,
+                                   'number': movement.grade_id.code,
+                                   'job_id': movement.job_id.name.name,
+                                   'branch_id': movement.job_id.branch_id.name,
+                                   'department_id': movement.department_id.name,
+                                   'movment_date': movement.job_move_grade_id.create_date,
+                                   'movment': 'خفض',
+                                   'new_grade': movement.new_grade_id.name,
+                                   'new_number': movement.new_grade_id.code,
+                                   'new_job': movement.new_job_name.name
+                                   }
+            i = i + 1
+        job_update_ids = self.pool.get('hr.job.update.line').search(self.cr, self.uid, [('job_id', '=', job_id.id)])
+        for movement_id in job_update_ids:
+            movement = self.pool.get('hr.job.update.line').browse(self.cr, self.uid, movement_id)
+            job_mouvements_ids[i]={'grade_id': movement.grade_id.name,
+                                   'number': movement.grade_id.code,
+                                   'job_id': movement.old_name.name,
+                                   'branch_id': movement.job_id.branch_id.name,
+                                   'department_id': movement.job_id.department_id.name,
+                                   'movment_date': movement.job_update_id.create_date,
+                                   'movment': ' تحوير',
+                                   'new_grade': movement.grade_id.name,
+                                   'new_number': movement.grade_id.code,
+                                   'new_job': movement.new_name.name
+                                   }
+            i = i + 1
+        x=job_mouvements_ids[1]['grade_id']
+        job_mouvements_ids_list=[]
+        for j in range(len(job_mouvements_ids)):
+            job_mouvements_ids_list.append(job_mouvements_ids[j])
+        return job_mouvements_ids_list
+
 
     def _get_company(self):
         return self.pool.get('res.users').browse(self.cr, self.uid, [self.uid])[0].company_id

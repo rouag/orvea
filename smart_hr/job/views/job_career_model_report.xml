@@ -7,7 +7,7 @@
 					<t t-call="smart_base.landscape_layout">
 						<div class="page">
 							<div class=" text-center">
-								<h3 style="color:#395870;"> 
+								<h3 style="color:#395870;">
 									الحياة الوظيفية
 									<br />
 								</h3>
@@ -17,14 +17,15 @@
 							<t t-set="scale_down_ids" t-value="get_scale_down_ids(o.job_id)" />
 							<t t-set="scale_up_ids" t-value="get_scale_up_ids(o.job_id)" />
 							<t t-set="move_dep_ids" t-value="get_move_dep_ids(o.job_id)" />
-
+							<t t-set="job_mouvements_ids" t-value="get_job_mouvements_ids(o.job_id)" />
 							<div class="col-xs-12">
 								<table class="table  table-bordered">
-										<tr style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
-											<td colspan="12" class="text-center" >
-												<strong>معلومات الوظيفة</strong>
-											</td>
-										</tr>
+									<tr
+										style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
+										<td colspan="12" class="text-center">
+											<strong>معلومات الوظيفة</strong>
+										</td>
+									</tr>
 									<tr>
 										<td colspan="3">
 
@@ -108,12 +109,13 @@
 												t-esc="dict(o.job_id.fields_get(allfields=['state'])['state']['selection'])[o.job_id.state]" />
 										</td>
 									</tr>
-										<tr style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
-											<td colspan="12" class="text-center">
+									<tr
+										style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
+										<td colspan="12" class="text-center">
 
-												<strong>تاريخ الوظيفة</strong>
-											</td>
-										</tr>
+											<strong>تاريخ الوظيفة</strong>
+										</td>
+									</tr>
 									<tr>
 										<td colspan="2" class="text-center">
 											<strong>المرتبة</strong>
@@ -146,34 +148,49 @@
 											<strong>مسمى الوظيفة الجديد</strong>
 										</td>
 									</tr>
-									<tr>
-										<td colspan="2" class="text-center">
-											<span t-esc="o.job_id.grade_id.name" />
-										</td>
-										<td class="text-center" >
-											<span t-esc="o.job_id.number" />
-										</td>
-										<td class="text-center" colspan="2">
-											<span t-esc="o.job_id.name.name" />
-										</td>
-										<td class="text-center">
-											<span t-esc="o.job_id.branch_id.name" />
-										</td>
-										<td class="text-center">
-											<span t-esc="o.job_id.department_id.name" />
-										</td>
-										<td class="text-center"></td>
-										<td class="text-center"></td>
-										<td class="text-center"></td>
-										<td class="text-center"></td>
-										<td class="text-center"></td>
-									</tr>
-										<tr style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
-											<td colspan="12" class="text-center">
+									<t t-foreach="job_mouvements_ids" t-as="line">
 
-												<strong>بيانات شاغلي الوظيفة</strong>
+										<tr>
+											<td colspan="2" class="text-center">
+												<span t-esc="line['grade_id']" />
+											</td>
+											<td class="text-center">
+												<span t-esc="line['number']" />
+											</td>
+											<td class="text-center" colspan="2">
+												<span t-esc="line['job_id']" />
+											</td>
+											<td class="text-center">
+												<span t-esc="line['branch_id']" />
+											</td>
+											<td class="text-center">
+												<span t-esc="line['department_id']" />
+											</td>
+											<td class="text-center">
+												<span t-esc="line['movment_date']" />
+											</td>
+											<td class="text-center">
+												<span t-esc="line['movment']" />
+											</td>
+											<td class="text-center">
+												<span t-esc="line['new_grade']" />
+											</td>
+											<td class="text-center">
+												<span t-esc="line['new_number']" />
+											</td>
+											<td class="text-center">
+												<span t-esc="line['new_job']" />
 											</td>
 										</tr>
+
+									</t>
+									<tr
+										style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
+										<td colspan="12" class="text-center">
+
+											<strong>بيانات شاغلي الوظيفة</strong>
+										</td>
+									</tr>
 									<tr>
 										<td colspan="2" class="text-center">
 											<strong>رقم الموظف</strong>
@@ -212,20 +229,21 @@
 
 										</tr>
 									</t>
-										<tr style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
-											<td colspan="12" class="text-center">
+									<tr
+										style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
+										<td colspan="12" class="text-center">
 
-												<strong>التحوير على الوظيفة</strong>
-											</td>
-										</tr>
+											<strong>التحوير على الوظيفة</strong>
+										</td>
+									</tr>
 									<tr>
 										<td colspan="2" class="text-center">
 											<strong>المسمى الوظيفي الجديد</strong>
 										</td>
-										<td class="text-center"  colspan="2">
+										<td class="text-center" colspan="2">
 											<strong>الفرع الجديد</strong>
 										</td>
-										<td class="text-center"  colspan="2">
+										<td class="text-center" colspan="2">
 											<strong>الادارة الجديدة</strong>
 										</td>
 										<td class="text-center">
@@ -253,10 +271,10 @@
 											<td colspan="2" class="text-center">
 												<span t-esc="line.new_name.name" />
 											</td>
-											<td class="text-center"  colspan="2">
+											<td class="text-center" colspan="2">
 												<span></span>
 											</td>
-											<td class="text-center"  colspan="2">
+											<td class="text-center" colspan="2">
 												<span t-esc="line.department_id.name" />
 											</td>
 											<td class="text-center">
@@ -281,12 +299,13 @@
 
 										</tr>
 									</t>
-										<tr style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
-											<td colspan="12" class="text-center">
+									<tr
+										style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
+										<td colspan="12" class="text-center">
 
-												<strong>الرفع على الوظيفة</strong>
-											</td>
-										</tr>
+											<strong>الرفع على الوظيفة</strong>
+										</td>
+									</tr>
 									<tr>
 										<td colspan="3" class="text-center">
 											<strong>المسمى الوظيفي </strong>
@@ -314,7 +333,8 @@
 												<span t-esc="line.job_move_grade_id.decision_number" />
 											</td>
 											<td colspan="2" class="text-center">
-												<span t-esc="get_hijri_date(line.job_move_grade_id.decision_date, '-')" />
+												<span
+													t-esc="get_hijri_date(line.job_move_grade_id.decision_date, '-')" />
 											</td>
 											<td colspan="2" class="text-center">
 												<span t-esc="line.job_id.grade_id.name" />
@@ -325,14 +345,15 @@
 
 										</tr>
 									</t>
-										<tr>
+									<tr>
 										<td colspan="12" class="text-center"></td>
 									</tr>
-										<tr style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
-											<td colspan="12" class="text-center">
-												<strong>الخفض على الوظيفة</strong>
-											</td>
-										</tr>
+									<tr
+										style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
+										<td colspan="12" class="text-center">
+											<strong>الخفض على الوظيفة</strong>
+										</td>
+									</tr>
 									<tr>
 										<td colspan="3" class="text-center">
 											<strong>المسمى الوظيفي </strong>
@@ -360,7 +381,8 @@
 												<span t-esc="line.job_move_grade_id.decision_number" />
 											</td>
 											<td colspan="2" class="text-center">
-												<span t-esc="get_hijri_date(line.job_move_grade_id.decision_date, '-')" />
+												<span
+													t-esc="get_hijri_date(line.job_move_grade_id.decision_date, '-')" />
 											</td>
 											<td colspan="2" class="text-center">
 												<span t-esc="line.job_id.grade_id.name" />
@@ -371,14 +393,15 @@
 
 										</tr>
 									</t>
-										<tr>
+									<tr>
 										<td colspan="12" class="text-center"></td>
 									</tr>
-										<tr style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
-											<td colspan="12" class="text-center">
-												<strong>النقل على الوظيفة</strong>
-											</td>
-										</tr>
+									<tr
+										style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
+										<td colspan="12" class="text-center">
+											<strong>النقل على الوظيفة</strong>
+										</td>
+									</tr>
 									<tr>
 										<td colspan="3" class="text-center">
 											<strong>المسمى الوظيفي </strong>
