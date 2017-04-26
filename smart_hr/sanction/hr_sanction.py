@@ -53,8 +53,11 @@ class HrSanction(models.Model):
         else :
             decision_type_id = 1
             decision_date = fields.Date.today() # new date
-            if self.type_sanction:
+            if self.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_grade').id:
                 decision_type_id = self.env.ref('smart_hr.data_decision_deprivation_premium').id
+            if self.type_sanction.id != self.env.ref('smart_hr.data_hr_sanction_type_grade').id :
+                decision_type_id = self.env.ref('smart_hr.data_decision_sanction').id
+
             # create decission
             decission_val={
               #  'name': self.name,
@@ -101,22 +104,22 @@ class HrSanction(models.Model):
     @api.multi
     def action_draft(self):
         for rec in self:
-            # previous_code = str(int(rec.type_sanction.code) - 1)
-            # current_code = rec.type_sanction.code
-            # employee_ids = []
-            # if int(current_code) >= 1:
-            #     sanction_ligne_ids = rec.env['hr.sanction.ligne'].search(['&', ('state', '=', 'done'),
-            #                                                               '|', ('type_sanction.code', '=', previous_code),
-            #                                                               ('type_sanction.code', '=', current_code),
-            #                                                               ])
-            #     employee_ids = [line.employee_id for line in sanction_ligne_ids]
-            # # add employee tht dosent have any sanction yet
-            # if int(current_code) == 1:
-            #     employee_ids += rec.env['hr.employee'].search([('sanction_ids', '=', False)])
-            # # add employee tht dosent have any sanction yet
-            # for line in rec.line_ids:
-            #     if line.employee_id not in employee_ids:
-            #         raise ValidationError(u"لا يمكن تنفيذ هذه العقوبة للموظف  : "+ unicode(line.employee_id.display_name) +u" \n"+ u"-لخلل في تسلسل العقوبات.")
+#             previous_code = str(int(rec.type_sanction.code) - 1)
+#             current_code = rec.type_sanction.code
+#             employee_ids = []
+#             if int(current_code) >= 1:
+#                 sanction_ligne_ids = rec.env['hr.sanction.ligne'].search(['&', ('state', '=', 'done'),
+#                                                                            '|', ('type_sanction.code', '=', previous_code),
+#                                                                            ('type_sanction.code', '=', current_code),
+#                                                                            ])
+#                 employee_ids = [line.employee_id for line in sanction_ligne_ids]
+#              # add employee tht dosent have any sanction yet
+#             if int(current_code) == 1:
+#                 employee_ids += rec.env['hr.employee'].search([('sanction_ids', '=', False)])
+#              # add employee tht dosent have any sanction yet
+#             for line in rec.line_ids:
+#                 if line.employee_id not in employee_ids:
+#                      raise ValidationError(u"لا يمكن تنفيذ هذه العقوبة للموظف  : "+ unicode(line.employee_id.display_name) +u" \n"+ u"-لخلل في تسلسل العقوبات.")
             rec.state = 'waiting'
 
     @api.multi

@@ -76,7 +76,7 @@ class hrIncrease(models.Model):
         if self.salary_grid_type_id:
             employee_ids = employee_obj.search([('id', 'in', employee_ids), ('type_id', '=', self.salary_grid_type_id.id)]).ids
         result = list(set(employee_ids))
-        print'result',result
+       
         liste_employee_ids = set()
         sanctions = self.env['hr.sanction.ligne'].search([('state', '=', 'done'), ('sanction_id.type_sanction', '=', self.env.ref('smart_hr.data_hr_sanction_type_grade').id)])
         print'sanctions',sanctions
@@ -139,6 +139,8 @@ class hrIncrease(models.Model):
             self.decission_id = decission_id
         self.number_decision = self.decission_id.name
         self.date_decision = self.decission_id.date
+        for line in self.employee_increase_ids :
+            line.history_line_id.write({'num_decision': self.number_decision, 'date_decision': self.date_decision})
         return {
             'name': _(u'قرار العلاوة'),
             'view_type': 'form',
@@ -195,12 +197,7 @@ class hrIncrease(models.Model):
         for rec in self :
             for line in rec.employee_increase_ids:
                 new_basic_salary = 0.0
-#                 employee_increase_obj = self.env['employee.increase']
-#                 self.env['employee.increase'].create({'name': rec.date,
-#                                                       'amount': line.increase_percent,
-#                                                       'date': self.date,
-#                                                       'employee_id': line.employee_id.id,
-#                                                   })
+
                 degree_obj = self.env['salary.grid.degree']
                 new_degree_code = int(line.degree_id.code) + 1
                 if new_degree_code < 10:
@@ -212,7 +209,7 @@ class hrIncrease(models.Model):
                     line.new_degree_id = new_degree_id
                 else :
                     line.new_degree_id = line.degree_id.id
-                grid_domain= [('grid_id.state', '=', 'done'),
+                grid_domain= [('grid_id.state', '=','done'),
                          ('grid_id.enabled', '=', True),
                          ('type_id', '=', line.type_id.id),
                          ('grade_id', '=', line.grade_id.id),
@@ -221,6 +218,16 @@ class hrIncrease(models.Model):
                 if salary_grid_detail_id:
                     new_basic_salary = salary_grid_detail_id.basic_salary
                 line.new_basic_salary = new_basic_salary
+                history_line_id = self.env['hr.employee.history'].sudo().add_action_line(line.employee_id, rec.decission_id.name, rec.decission_id.date, "العلاوة")
+                line.history_line_id = history_line_id
+                line.employee_id.degree_id = line.new_degree_id
+               # line.employee_id.is_increase = True
+                changement_id = self.env['hr.employee.payroll.changement'].create({'employee_id': line.employee_id.id,
+                                                           'date': self.periode_increase.period_id.date_start,
+                                                           'type_id': line.type_id.id,
+                                                           'grade_id': line.grade_id.id,
+                                                           'degree_id': line.new_degree_id.id})
+
         self.state = 'done'
    
     @api.multi
@@ -304,18 +311,20 @@ class hrEmployeeIncreasePercent(models.Model):
     new_degree_id =fields.Many2one('salary.grid.degree', string = 'الدرجة الجديدة')
     basic_salary = fields.Float(string=u'الراتب الحالي', )
     type_id = fields.Many2one('salary.grid.type', string='نوع الموظف' ,related = 'employee_id.type_id')
+    periode_increase = fields.Many2one('hr.periode.increase', string=u'فترة العلاوة',related = 'increase_id.periode_increase')
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', related = 'employee_id.grade_id')
     new_basic_salary = fields.Float(string=u'الراتب الجديد', )
     state = fields.Selection(related='increase_id.state' ,string=u'الحالة')
     increase = fields.Float(string=u'الراتب الحالي', )
+    is_increase = fields.Boolean(string='العلاوة',default=False)
     increase_percent = fields.Float(string=u'العلاوة', compute='increase_percent_count')
     department_level1_id = fields.Many2one('hr.department', related='increase_id.department_level1_id')
     department_level2_id = fields.Many2one('hr.department', related='increase_id.department_level2_id')
     department_level3_id = fields.Many2one('hr.department', related='increase_id.department_level3_id')
     salary_grid_type_id = fields.Many2one('salary.grid.type', related='increase_id.salary_grid_type_id')
-
+    history_line_id = fields.Many2one('hr.employee.history')
     _sql_constraints = [
-        ('unique_deprivation_emp', 'UNIQUE(increase_id,employee_id)', u"يجب الا يتكرر استحقاق العلاوة لنفس الموظف"),
+        ('unique_deprivation_emp', 'UNIQUE(increase_id,periode_increase,employee_id)', u"يجب الا يتكرر استحقاق العلاوة لنفس الموظف"),
     ]
     @api.onchange('department_level1_id', 'department_level2_id', 'department_level3_id', 'salary_grid_type_id')
     def onchange_department_level(self):

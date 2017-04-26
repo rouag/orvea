@@ -96,7 +96,18 @@
 							type="action" states="pim2" groups="smart_hr.group_increase_manager"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="open_decission_increase" string="معاينة القرار"
+						
+						
+						
+						
 							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+							
+									
+							<button name="%(report_report_hr_increase_employee)d" string="قائمة المشمولين بالعقوبة"
+							type="action" states="done" />
+							
+							
+							
 						<field name="state" widget="statusbar" statusbar_visible="draft,pim,hrm,pim2,done" />
 					</header>
 					<sheet>
@@ -129,8 +140,8 @@
 								<field name="employee_deprivated_ids" nolabel="1"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 									domain="[('employee_id.type_id','!=',%(data_salary_grid_type6)d)]"
-									attrs="{'readonly':[('state','not in',['draft','pim'])]}">
-									<tree editable="bottom">
+									attrs="{'readonly':[('state','not in',['draft','pim'])]}" create="false">
+									<tree editable="bottom" create="false">
 										<field name="employee_id" />
 										<field name="reason" />
 
@@ -141,26 +152,27 @@
 
 							<page string="الموظفين المستحقين للعلاوة">
 								<field name="employee_increase_ids" nolabel="1"
-									domain="[('employee_id.type_id','!=',%(data_salary_grid_type6)d)]">
-									<tree editable="bottom">
+									domain="[('employee_id.type_id','!=',%(data_salary_grid_type6)d)]"  create="false">
+									<tree editable="bottom" create="false">
 										<field name="employee_id" />
 
 										<field name="type_id" />
 										<field name="grade_id" />
 										<field name="degree_id" />
+											<field name="new_degree_id"  attrs="{'invisible':[('state','=', 'draft')]}"/>
 										<field name="basic_salary" />
-										<field name="new_degree_id"  attrs="{'invisible':[('state','=', 'draft')]}"/>
+									
 										<field name="new_basic_salary" attrs="{'invisible':[('state','=', 'draft')]}"/>
 										<field name="increase_percent" attrs="{'invisible':[('state','=', 'draft')]}"/>
-										
+											<field name="periode_increase" invisible="1" />
 									<field name="state" invisible="1" />
 									</tree>
 								</field>
 							</page>
 							<page string="الموظفين لديهم أخطاء" attrs="{'invisible':[('state', 'not in', ['draft'])]}" >
 								<field name="employee_errors_ids" nolabel="1"
-									attrs="{'invisible':[('state', 'not in', ['draft'])]}" >
-									<tree editable="bottom">
+									attrs="{'invisible':[('state', 'not in', ['draft'])]}" create="false">
+									<tree editable="bottom" create="false">
 										<field name="employee_id" />
 										<field name="type_id" />
 										<field name="grade_id" />

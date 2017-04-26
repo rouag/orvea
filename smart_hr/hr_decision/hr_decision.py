@@ -110,7 +110,15 @@ class HrDecision(models.Model):
         if self.decision_type_id == self.env.ref('smart_hr.data_employee_scholarship_general'):
             object_type = 'scholarship'
             self.text = self.replace_text(self.employee_id, self.date, self.decision_type_id.id, 'scholarship')
-       
+      
+        if self.decision_type_id in [self.env.ref('smart_hr.data_decision_type28'),
+                                     self.env.ref('smart_hr.data_decision_type27'),
+                                     self.env.ref('smart_hr.data_decision_type_suspension_end_member'),
+                                     self.env.ref('smart_hr.data_decision_type30'),
+                                            ]:
+            object_type = 'suspension'
+            self.text = self.replace_text(self.employee_id, self.date, self.decision_type_id.id, 'suspension')
+            
         if self.decision_type_id == self.env.ref('smart_hr.data_employee_scholarship'):
             object_type = 'scholarship_extension'
             self.text = self.replace_text(self.employee_id, self.date, self.decision_type_id.id, 'scholarship_extension')
@@ -146,6 +154,7 @@ class HrDecision(models.Model):
         self.state = 'done'
         return {
             'name': self.decision_type_id.name,
+            'text':self.decision_type_id.text,
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'hr.decision',
@@ -317,8 +326,8 @@ class HrDecision(models.Model):
                 if object_type == 'suspension' :
                     lend_line = self.env['hr.suspension.end'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
                     if lend_line :
-                        duration = lend_line.sentence or ""
-                        decision_text = decision_text.replace('DURATION', unicode(duration))
+                        sentence = lend_line.sentence or ""
+                        decision_text = decision_text.replace('SENTENCE', unicode(sentence))
 
                 if object_type == 'termination' :
                     termination_line = self.env['hr.termination'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
@@ -434,6 +443,8 @@ class HrDecision(models.Model):
                         department_id = improve_line.department_id.name or ""
                         grade_id = improve_line.grade_id.name or ""
                         degree_id = improve_line.employee_id.degree_id.name or ""
+                        salary_grid_id, basic_salary = improve_line.employee_id.get_salary_grid_id(False)
+                        salary = salary_grid_id.net_salary  or ""
                         
                         #decision_text = decision_text.replace('TERMINATION', unicode(date_termination))
                        # decision_text = decision_text.replace('JOB', unicode(new_job_id))
@@ -446,6 +457,7 @@ class HrDecision(models.Model):
                         decision_text = decision_text.replace('degree', unicode(new_degree_id))
                         decision_text = decision_text.replace('grade', unicode(new_grade_id))
                         decision_text = decision_text.replace('department', unicode(new_department_id))
+                        decision_text = decision_text.replace('basicsalaire', unicode(salary))
                 if object_type == 'transfert':
                     transfert_line = self.env['hr.employee.transfert'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
                     if transfert_line :
