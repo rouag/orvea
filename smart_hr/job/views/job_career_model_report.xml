@@ -167,7 +167,8 @@
 												<span t-esc="line['department_id']" />
 											</td>
 											<td class="text-center">
-												<span t-esc="line['movment_date']" />
+												<span t-esc="get_hijri_date(line['movment_date'], '-')" />
+
 											</td>
 											<td class="text-center">
 												<span t-esc="line['movment']" />
@@ -287,7 +288,7 @@
 												<span t-esc="line.department_id.name" />
 											</td>
 											<td class="text-center">
-												<span t-esc="line.job_update_id.create_date" />
+												<span t-esc="get_hijri_date(line.job_update_id.create_date, '-')" />
 											</td>
 											<td class="text-center">
 												<span t-esc="line.job_update_id.decision_number" />
