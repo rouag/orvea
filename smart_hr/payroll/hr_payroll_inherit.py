@@ -29,7 +29,7 @@ class HrPayslip(models.Model):
                                                                     ('employee_id', '=', self.employee_id.id),
                                                                     ('request_id.state', '=', 'done')
                                                                     ])
-        salary_grid, basic_salary = self.employee_id.get_salary_grid_id(False)
+        salary_grid, basic_salary = self.employee_id.get_salary_grid_id(self.date_from)
         tot_number_request = 0
         for line in abscence_ids:
             amount = (basic_salary + allowance_total) / 30.0 * line.number_request
@@ -145,6 +145,33 @@ class HrPayslip(models.Model):
                 line_ids.append(vals)
                 res_sanction_line_ids.append(sanction.id)
         self.sanction_line_ids = res_sanction_line_ids
+        # فرق الحسميات المتخلدة
+        line_ids += self.get_difference_one_third_salary(self.date_from, self.date_to, self.employee_id)
+
+        return line_ids
+
+    @api.multi
+    def get_difference_one_third_salary(self, date_from, date_to, employee_id):
+        self.ensure_one()
+        line_ids = []
+        domain = [('payslip_id.employee_id', '=', employee_id.id),
+                  ('period_id', '=', self.period_id.id),
+                  ]
+        difference_history_ids = self.env['hr.payslip.difference.history'].search(domain)
+        for difference_history in difference_history_ids:
+            name = ''
+            if difference_history.name == 'third_salary':
+                name = 'فرق حسميات أكثر من ثلث الراتب مرحلة من الشهر الفارط'
+            elif difference_history.name == 'negative_salary':
+                name = 'المبلغ المؤجل (سبب راتب سالب)'
+            vals = {'name': name,
+                    'employee_id': difference_history.payslip_id.employee_id.id,
+                    'number_of_days': 0.0,
+                    'number_of_hours': 0.0,
+                    'amount': difference_history.amount * -1.0,
+                    'category': 'deduction',
+                    'type': 'one_third_salary'}
+            line_ids.append(vals)
         return line_ids
 
     @api.multi
@@ -191,8 +218,6 @@ class HrPayslip(models.Model):
         line_ids += self.get_difference_termination(self.date_from, self.date_to, self.employee_id, False)
         if payslip_id:
             line_ids += self.get_difference_termination(compute_date, payslip_id.date_to, self.employee_id, True)
-        # فرق الحسميات المتخلدة
-        line_ids += self.get_difference_one_third_salary(self.date_from, self.date_to, self.employee_id)
         return line_ids
 
     @api.multi
@@ -494,7 +519,7 @@ class HrPayslip(models.Model):
         line_ids = []
         name = ''
         domain = [('employee_id', '=', employee_id.id),
-                  ('state', '=', 'done')]
+                  ('state', 'in', ('done', 'cutoff'))]
         if for_last_month:
             # minus one day to date_from
             new_date_from = str(fields.Date.from_string(date_from) - timedelta(days=1))
@@ -560,7 +585,7 @@ class HrPayslip(models.Model):
                             # get first token holiday with same type
                             newest_holiday_id = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
                                                                                 ('employee_id', '=', holiday_id.employee_id.id),
-                                                                                ('state', '=', 'done'),
+                                                                                ('state', 'in', ('done', 'cutoff')),
                                                                                 ], order='done_date desc', limit=1)
                             if newest_holiday_id:
                                 get_to_date = fields.Date.from_string(newest_holiday_id.date_to)
@@ -570,7 +595,7 @@ class HrPayslip(models.Model):
                             ranges = []
                             before_holidays = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
                                                                               ('employee_id', '=', holiday_id.employee_id.id),
-                                                                              ('state', '=', 'done'),
+                                                                              ('state', 'in', ('done', 'cutoff')),
                                                                               ('date_from', '>=', get_from_date),
                                                                               ('date_from', '<', start_month),
                                                                               ])
@@ -624,7 +649,7 @@ class HrPayslip(models.Model):
                                     # get first token holiday with same type
                                     newest_holiday_id = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
                                                                                         ('employee_id', '=', holiday_id.employee_id.id),
-                                                                                        ('state', '=', 'done'),
+                                                                                        ('state', 'in', ('done', 'cutoff')),
                                                                                         ], order='done_date desc', limit=1)
                                     if newest_holiday_id:
                                         get_to_date = fields.Date.from_string(newest_holiday_id.date_to)
@@ -634,7 +659,7 @@ class HrPayslip(models.Model):
                                     ranges = []
                                     before_holidays = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
                                                                                       ('employee_id', '=', holiday_id.employee_id.id),
-                                                                                      ('state', '=', 'done'),
+                                                                                      ('state', 'in', ('done', 'cutoff')),
                                                                                       ('date_from', '>=', get_from_date),
                                                                                       ('date_from', '<', start_month),
                                                                                       ])
@@ -719,7 +744,7 @@ class HrPayslip(models.Model):
                         'type': 'holiday'}
                 line_ids.append(vals)
             # case of  نوع التعويض    مقابل ‫مادي‬ ‬   اجازة التعويض
-            grid_id, basic_salary = employee_id.get_salary_grid_id(False)
+            grid_id, basic_salary = employee_id.get_salary_grid_id(self.date_from)
             if grid_id:
                 if holiday_id.compensation_type and holiday_id.compensation_type == 'money':
                     amount = (holiday_id.token_compensation_stock * (basic_salary / 30.0))
@@ -1056,25 +1081,3 @@ class HrPayslip(models.Model):
                             line_ids.append(vals)
         return line_ids
 
-    @api.multi
-    def get_difference_one_third_salary(self, date_from, date_to, employee_id):
-        self.ensure_one()
-        line_ids = []
-        domain = [('payslip_id.employee_id', '=', employee_id.id),
-                  ('period_id', '=', self.period_id.id),
-                  ]
-        difference_history_ids = self.env['hr.payslip.difference.history'].search(domain)
-        for difference_history in difference_history_ids:
-            name = ''
-            if difference_history.name == 'third_salary':
-                name = 'فرق حسميات أكثر من ثلث الراتب'
-            elif difference_history.name == 'negative_salary':
-                name = 'المبلغ المؤجل (سبب راتب سالب)'
-            vals = {'name': name,
-                    'employee_id': difference_history.payslip_id.employee_id.id,
-                    'number_of_days': 0.0,
-                    'number_of_hours': 0.0,
-                    'amount': difference_history.amount,
-                    'type': 'one_third_salary'}
-            line_ids.append(vals)
-        return line_ids

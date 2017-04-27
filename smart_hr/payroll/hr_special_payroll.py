@@ -351,7 +351,7 @@ class HrPayslip(models.Model):
         if not salary_grid:
             return
 
-        holidays_id = self.env['hr.holidays'].search([('state', '=', 'done'),
+        holidays_id = self.env['hr.holidays'].search([('state', 'in', ('done', 'cutoff')),
                                                       ('employee_id', '=', self.employee_id.id),
                                                       ('with_advanced_salary', '=', True),
                                                       ('advanced_salary_is_paied', '=', False)], limit=1)

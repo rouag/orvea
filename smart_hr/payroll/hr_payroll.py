@@ -387,7 +387,7 @@ class HrPayslip(models.Model):
         res_count = 0.0
         # الإجازات
         # holidays in current periode
-        domain = [('employee_id', '=', self.employee_id.id), ('state', '=', 'done')]
+        domain = [('employee_id', '=', self.employee_id.id), ('state', 'in', ('done', 'cutoff'))]
         holidays_ids = self.env['hr.holidays'].search(domain)
         for holiday_id in holidays_ids:
             # overlaped days in current month
@@ -665,7 +665,7 @@ class HrPayslip(models.Model):
                         'rate': 0.0,
                         'number_of_days': 0.0,
                         'amount': third_amount,
-                        'category': 'deduction',
+                        'category': 'difference',
                         'type': 'difference',
                         'sequence': sequence
                         }
@@ -847,7 +847,8 @@ class HrPayslipLine(models.Model):
                              ('retirement', 'التقاعد'),
                              ('insurance', 'التأمين'),
                              ('salary_net', 'صافي الراتب'),
-                             ('sanction', 'عقوبة')
+                             ('sanction', 'عقوبة'),
+                             ('one_third_salary', 'ثلث الراتب'),
                              ], string='النوع', select=1, readonly=1)
     model_name = fields.Char('model name')
     object_id = fields.Integer('Object name')
