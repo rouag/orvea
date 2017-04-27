@@ -152,7 +152,7 @@ class HrSanction(models.Model):
             if line.deduction == True :
                 raise ValidationError(u"لا يمكن إلغاء  العقوبة بعد تطبيق حسم على موظف")
             if self.date_sanction_end > self.date_sanction_start :
-                raise ValidationError(u"لا يمكن إلغاء  العقوبة بعد تبدأ العقوبة")
+                raise ValidationError(u"لا يمكن إلغاء  العقوبة بعد نفاذها")
             line.state = 'cancel'
 
     @api.multi
@@ -169,7 +169,10 @@ class HrSanctionLigne(models.Model):
 
     sanction_id = fields.Many2one('hr.sanction', string=' العقوبات', ondelete='cascade')
     employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف', required=1)
+    name = fields.Char(related='sanction_id.name', string=u'رقم القرار')
+    order_date = fields.Date(related='sanction_id.order_date', string=u'تاريخ القرار')
     type_sanction = fields.Many2one('hr.type.sanction', related='sanction_id.type_sanction', string=u'العقوبة')
+    date_sanction = fields.Date(related='sanction_id.date_sanction_start', string=u'العقوبة')
     mast = fields.Boolean(string='سارية', default=True)
     deduction = fields.Boolean(string=u'حسم', default=False)
     days_number = fields.Integer(string='عدد أيام ')

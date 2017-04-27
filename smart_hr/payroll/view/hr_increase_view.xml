@@ -76,36 +76,53 @@
 							type="object" groups="smart_hr.group_increase_employee" />
 
 						<button name="action_update_increase_line" string="تحديث اللائحة "
-							attrs="{'invisible':['|',('is_increase_line', '=', False), ('state','!=', 'draft')]}"
-							type="object" states="draft" groups="smart_hr.group_increase_employee" />
+							attrs="{'invisible':['|',('is_increase_line', '=', False), ('state','!=','draft')]}"
+							type="object"  groups="smart_hr.group_increase_employee" />
+							<button name="action_update_increase__update_pim_line" string="تحديث اللائحة "
+							attrs="{'invisible':[('state','!=','pim')]}"
+							type="object" groups="smart_hr.group_increase_employee" />
+							
+							<button name="action_update_increase__update_pim2_line" string="تحديث اللائحة "
+							attrs="{'invisible':[('state','!=','pim2')]}"
+							type="object"  groups="smart_hr.group_increase_employee" />
+
 
 
 
 						<button name="action_pim" string="إرسال للإعتماد" type="object"
 							states="draft" groups="smart_hr.group_increase_employee" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+					
 						<button name="action_hrm" string="إعتماد" type="object"
 							states="pim" groups="smart_hr.group_increase_manager" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" states="pim" groups="smart_hr.group_increase_manager"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							
 						<button name="action_pim2" string="إعتماد" type="object"
 							states="hrm" groups="smart_hr.group_hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+					
+					
+						<button name="%(view_form_increase_refuse_hrm_wizard)d" string="رفض"
+							type="action" states="hrm" groups="smart_hr.group_hrm"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+					
+						
+							
 						<button name="action_done" string="إعتماد" type="object"
 							states="pim2" groups="smart_hr.group_increase_manager" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="%(action_increase_refuse_wizard)d" string="رفض"
-							type="action" states="pim2" groups="smart_hr.group_increase_manager"
+					
+						<button name="%(action_increase_refuse_pim2_wizard)d" string="رفض"
+							type="action" states="pim2" groups="smart_hr.group_hrm"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="open_decission_increase" string="معاينة القرار"
-						
-						
-						
-						
+								<button name="open_decission_increase" string="معاينة  قرار العلاوة"
 							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
-							
-									
-							<button name="%(report_report_hr_increase_employee)d" string="قائمة المشمولين بالعقوبة"
+									<button name="open_decission_deprivation_increase" string="معاينة  قرار المستثنين من العلاوة"
+							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+							<button name="%(report_report_hr_increase_employee)d" string="قائمة المشمولين بالعلاوة"
 							type="action" states="done" />
 							
+								<button name="%(report_report_hr_increase_deprivation_employee)d" string="قائمة المستثنين من العلاوة"
+							type="action" states="done" />
 							
 							
 						<field name="state" widget="statusbar" statusbar_visible="draft,pim,hrm,pim2,done" />
@@ -141,8 +158,10 @@
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 									domain="[('employee_id.type_id','!=',%(data_salary_grid_type6)d)]"
 									attrs="{'readonly':[('state','not in',['draft','pim'])]}" create="false">
-									<tree editable="bottom" create="false">
+									<tree editable="bottom" create="false"  delete ="false">
 										<field name="employee_id" />
+										<field name="name" />
+										<field name="order_date" />
 										<field name="reason" />
 
 									</tree>
@@ -153,7 +172,7 @@
 							<page string="الموظفين المستحقين للعلاوة">
 								<field name="employee_increase_ids" nolabel="1"
 									domain="[('employee_id.type_id','!=',%(data_salary_grid_type6)d)]"  create="false">
-									<tree editable="bottom" create="false">
+									<tree editable="bottom" create="false" delete ="false">
 										<field name="employee_id" />
 
 										<field name="type_id" />
@@ -169,10 +188,10 @@
 									</tree>
 								</field>
 							</page>
-							<page string="الموظفين لديهم أخطاء" attrs="{'invisible':[('state', 'not in', ['draft'])]}" >
+							<page string="الموظفين لديهم أخطاء" attrs="{'invisible':[('state', 'not in', ['draft','pim'])]}" >
 								<field name="employee_errors_ids" nolabel="1"
-									attrs="{'invisible':[('state', 'not in', ['draft'])]}" create="false">
-									<tree editable="bottom" create="false">
+									attrs="{'invisible':[('state', 'not in', ['draft','pim'])]}" create="false">
+									<tree editable="bottom" create="false"  delete ="false">
 										<field name="employee_id" />
 										<field name="type_id" />
 										<field name="grade_id" />
