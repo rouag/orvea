@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from openerp import models, api, fields, _
-from openerp.exceptions import ValidationError
 from dateutil.relativedelta import relativedelta
-from umalqurra.hijri_date import HijriDate
 from openerp.exceptions import UserError
 from datetime import datetime
 from openerp.addons.smart_base.util.umalqurra import *
@@ -16,9 +14,6 @@ class HrLoan(models.Model):
     _inherit = ['mail.thread']
     _description = u'القرض'
     _order = 'id desc'
-
-    # TODO: refaire les actions apres la modification des lifges par month
-    # TODO: il faut ajouter l annee par exemple pour un loan sur deux annees
 
     @api.one
     @api.depends('line_ids.date', 'amount', 'state')
@@ -153,20 +148,28 @@ class HrLoan(models.Model):
         return res
 
     @api.multi
-    def update_loan_date(self, date_from, date_to, employee_id):
+    def update_loan_date(self, date_from, date_to, employee_id, across_loan):
         # search all loan for this employee
         loans = self.search([('employee_id', '=', employee_id), ('state', '=', 'progress')])
         for loan in loans:
-            # إذا تم سداد كامل المبلغ يجب أن يتم تعديل التاريخ في كل الأشهر
-            if loan.payment_full_amount:
-                loan.line_ids.write({'date': datetime.now().date(), 'state': 'done'})
-            # else just update date for current month
+            if not across_loan:
+                # إذا تم سداد كامل المبلغ يجب أن يتم تعديل التاريخ في كل الأشهر
+                if loan.payment_full_amount:
+                    loan.line_ids.write({'date': datetime.now().date(), 'state': 'done'})
+                # else just update date for current month
+                else:
+                    lines = loan.line_ids.search([('date_start', '=', date_from), ('date_stop', '=', date_to)])
+                    lines.write({'date': datetime.now().date(), 'state': 'done'})
+                # if residual_amount = 0 make this loan as done
+                if loan.residual_amount == 0.0:
+                    loan.state = 'done'
+            # يتم تجاوز الشهر
             else:
-                lines = loan.line_ids.search([('date_start', '=', date_from), ('date_stop', '=', date_to)])
-                lines.write({'date': datetime.now().date(), 'state': 'done'})
-            # if residual_amount = 0 make this loan as done
-            if loan.residual_amount == 0.0:
-                loan.state = 'done'
+                wizard_loan_obj = self.env['wizard.loan.action']
+                ctx = {'active_id': loan.id, 'action': 'across'}
+                wizard_val = {'reason': u'تجاوز تلقائي من النظام بسب  فرق الحسميات أكثر من ثلث الراتب'}
+                wizard_loan = wizard_loan_obj.with_context(ctx).create(wizard_val)
+                wizard_loan.with_context(ctx).action_across_month()
 
 
 class HrLoanLine(models.Model):
