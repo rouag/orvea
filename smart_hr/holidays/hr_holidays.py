@@ -50,8 +50,8 @@ class HrHolidays(models.Model):
                 return False
         return True
 
-    name = fields.Char(string=u'رقم القرار' ,readonly=1, related='decission_id.name')
-    date = fields.Date(string=u'تاريخ الطلب', readonly=1, related='decission_id.date')
+    name = fields.Char(string=u'رقم القرار' ,readonly=1,)
+    date = fields.Date(string=u'تاريخ الطلب', readonly=1,)
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', domain=[('emp_state', 'not in', ['suspended','terminated']), ('employee_state', '=', 'employee')],
                                   default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended','terminated'])], limit=1),)
     raison = fields.Selection([('other', u'سبب أخر'), ('husband', u'مرافقة الزوج'),

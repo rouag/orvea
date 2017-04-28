@@ -23,10 +23,10 @@ class hrHolidaysDecision(models.Model):
                              ], string='الحالة', readonly=1, default='new')
 
     holiday_id = fields.Many2one('hr.holidays', string=u'الإجازة',required=1)
-    holiday_status_id = fields.Many2one('hr.holidays.status', string=u'نوع الأجازة',readonly=1)
-    date_from = fields.Date(string=u'تاريخ البدء ', readonly=True)
-    date_to = fields.Date(string=u'تاريخ الإنتهاء', readonly=True)
-    duration = fields.Integer(string=u'مدتها' , readonly=True)
+    holiday_status_id = fields.Many2one('hr.holidays.status', string=u'نوع الأجازة', readonly=1)
+    date_from = fields.Date(string=u'تاريخ البدء ' ,readonly=1)
+    date_to = fields.Date(string=u'تاريخ الإنتهاء', readonly=1)
+    duration = fields.Integer(string=u'مدتها' , readonly=1)
     name = fields.Char(string='رقم الخطاب', required=1)
     order_date = fields.Date(string='تاريخ الخطاب', required=1) 
     file_decision = fields.Binary(string='الخطاب', attachment=True)
@@ -39,9 +39,19 @@ class hrHolidaysDecision(models.Model):
                 raise ValidationError(u'لا يمكن حذف قرار المباشرة فى هذه المرحلة يرجى مراجعة مدير النظام')
         return super(hrHolidaysDecision, self).unlink()
 
-
-    @api.onchange('date')
     @api.constrains('date')
+    def constrains_date(self):
+        if self.date:
+            is_holiday = self.env['hr.smart.utils'].check_holiday_weekend_days(self.date, self.employee_id)
+            if is_holiday:
+                if is_holiday == "official holiday":
+                    raise ValidationError(u'هناك تداخل فى تاريخ المباشرة مع اعياد و عطل رسمية')
+                elif is_holiday == "weekend":
+                    raise ValidationError(u'هناك تداخل فى تاريخ المباشرة مع عطلة نهاية الاسبوع!')
+                elif is_holiday == "holiday":
+                    raise ValidationError(u'هناك تداخل فى تاريخ المباشرة مع يوم إجازة!')
+            
+    @api.onchange('date')
     def _onchange_date(self):
         res = {}
         warning = {}
@@ -60,25 +70,7 @@ class hrHolidaysDecision(models.Model):
                 res['domain'] = {'holiday_id': [('id', 'in', holidays_ids)]}
         else:
             res['domain'] = {'holiday_id': [('id', 'in', [])]}
-        if self.date:
-            is_holiday = self.env['hr.smart.utils'].check_holiday_weekend_days(self.date, self.employee_id)
-            if is_holiday:
-                if is_holiday == "official holiday":
-                    warning = {
-                        'title': _('تحذير!'),
-                        'message': _('هناك تداخل فى تاريخ المباشرة مع اعياد و عطل رسمية!'),
-                }
-                elif is_holiday == "weekend":
-                    warning = {
-                        'title': _('تحذير!'),
-                        'message': _('هناك تداخل فى تاريخ المباشرة مع عطلة نهاية الاسبوع!'),
-                }
-                elif is_holiday == "holiday":
-                    warning = {
-                        'title': _('تحذير!'),
-                        'message': _('هناك تداخل فى تاريخ المباشرة مع يوم إجازة!'),
-                        }
-            res['warning'] = warning
+ 
         return res
 
     @api.onchange('employee_id')
