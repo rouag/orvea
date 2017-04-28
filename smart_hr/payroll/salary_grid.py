@@ -143,8 +143,9 @@ class SalaryGridDetail(models.Model):
 
     @api.model
     def create(self, vals):
+        if not vals.get('date', False):
+            vals.update({'date': fields.Date.today()})
         res = super(SalaryGridDetail, self).create(vals)
-        res.write({'date': fields.Date.today()})
         return res
 
     @api.multi

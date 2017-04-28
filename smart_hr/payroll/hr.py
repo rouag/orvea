@@ -65,7 +65,7 @@ class HrEmployee(models.Model):
         # doamin for  the newest salary grid detail
         if not changement_line and len(domain) == 2:
             domain.pop(1)
-        changement_line = self.env['hr.employee.payroll.changement'].search(domain, order='date desc', limit=1)
+            changement_line = self.env['hr.employee.payroll.changement'].search(domain, order='date desc', limit=1)
         # default salary is from curent employee
         type_id = self.type_id
         grade_id = self.grade_id
@@ -76,11 +76,11 @@ class HrEmployee(models.Model):
             degree_id = changement_line.degree_id
 
         # search grid
-        grid_domain= [('grid_id.state', '=', 'done'),
-                         ('grid_id.enabled', '=', True),
-                         ('type_id', '=', type_id.id),
-                         ('grade_id', '=', grade_id.id),
-                         ('degree_id', '=', degree_id.id)]
+        grid_domain = [('grid_id.state', '=', 'done'),
+                       ('grid_id.enabled', '=', True),
+                       ('type_id', '=', type_id.id),
+                       ('grade_id', '=', grade_id.id),
+                       ('degree_id', '=', degree_id.id)]
         if operation_date:
             grid_domain.append(('date', '<=', operation_date))
         salary_grid_detail_id = self.env['salary.grid.detail'].search(grid_domain, order='date desc', limit=1)

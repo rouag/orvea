@@ -87,9 +87,7 @@ class hr_suspension_end(models.Model):
             if self.employee_id.type_id.id != self.env.ref('smart_hr.data_salary_grid_type').id and self.condemned == True:
                 decision_type_id = self.env.ref('smart_hr.data_decision_type27').id
             if self.employee_id.type_id.id == self.env.ref('smart_hr.data_salary_grid_type7').id and self.condemned == True :
-                print"ggggggggggggggggggggg"
                 decision_type_id = self.env.ref('smart_hr.data_decision_type_suspension_end_member').id
-                print"aaaaaaaaaaaaaaaaaa"
             if self.employee_id.type_id.id == self.env.ref('smart_hr.data_salary_grid_type7').id and self.condemned == False :
                 decision_type_id = self.env.ref('smart_hr.data_decision_type30').id
 #             if self.employee_id.type_id.id != self.env.ref('smart_hr.data_salary_grid_type7').id or self.employee_id.type_id.id != self.env.ref('smart_hr.data_salary_grid_type').id:

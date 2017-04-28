@@ -63,10 +63,10 @@
 								<group string="بيانات الأجازة">
 									<field name="holiday_id" attrs="{'readonly':[('state','!=','new')]}"
 										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-									<field name="holiday_status_id" />
-									<field name="date_from" />
-									<field name="date_to"/>
-									<field name="duration" />
+									<field name="holiday_status_id" readonly="1"/>
+									<field name="date_from" readonly="1"/>
+									<field name="date_to" readonly="1"/>
+									<field name="duration" readonly="1"/>
 								</group>
 							
 							</group>
@@ -98,6 +98,7 @@
 			<field name="res_model">hr.holidays.decision</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
 		</record>
 
 		<menuitem id="menu_hr_holidays_decision" parent="menu_hr_holiday_root"
