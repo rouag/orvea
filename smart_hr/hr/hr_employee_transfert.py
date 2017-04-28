@@ -84,11 +84,12 @@ class HrEmployeeTransfert(models.Model):
     payslip_id = fields.Many2one('hr.payslip')
     done_date = fields.Date(string='تاريخ التفعيل')
 
+
+    decission_id = fields.Many2one('hr.decision', string=u'القرارات')
     job_allowance_ids = fields.One2many('hr.transfert.allowance', 'job_transfert_id', string=u'بدلات الوظيفة')
     transfert_allowance_ids = fields.One2many('hr.transfert.allowance', 'transfert_id', string=u'بدلات النقل')
     location_allowance_ids = fields.One2many('hr.transfert.allowance', 'location_transfert_id', string=u'بدلات المنطقة')
-    decission_id = fields.Many2one('hr.decision', string=u'القرارات')
-
+    
     @api.multi
     def open_decission_transfert(self):
         decision_obj= self.env['hr.decision']
@@ -378,40 +379,62 @@ class HrEmployeeTransfert(models.Model):
                 recruiter_id._onchange_degree_id_outside()
                 # copy allowances from transfert to the decision_appoint
                 # بدلات الوظيفة
-                job_allowance_ids = []
-                for allowance in rec.job_allowance_ids:
-                    job_allowance_ids.append({'job_decision_appoint_id': recruiter_id.id,
-                                              'allowance_id': allowance.allowance_id.id,
-                                              'compute_method': allowance.compute_method,
-                                              'amount': allowance.amount,
-                                              'min_amount': allowance.min_amount,
-                                              'percentage': allowance.percentage,
-                                              })
-                recruiter_id.job_allowance_ids = job_allowance_ids
-                # بدلات التعين
-                transfert_allowance_ids = []
-                for allowance in rec.transfert_allowance_ids:
-                    transfert_allowance_ids.append({'decision_decision_appoint_id': recruiter_id.id,
-                                              'allowance_id': allowance.allowance_id.id,
-                                              'compute_method': allowance.compute_method,
-                                              'amount': allowance.amount,
-                                              'min_amount': allowance.min_amount,
-                                              'percentage': allowance.percentage,
-                                              })
-                recruiter_id.decision_apoint_allowance_ids = transfert_allowance_ids
+            for allowance in rec.job_allowance_ids:
+                job_allowance_ids_vals = {'job_decision_appoint_id': recruiter_id.id,
+                                          'allowance_id': allowance.allowance_id.id,
+                                          'compute_method': allowance.compute_method,
+                                          'amount': allowance.amount,
+                                          'min_amount': allowance.min_amount,
+                                          'percentage': allowance.percentage,
+                                          }
+                line_ids_vals = []
+                decision_appoint_allowance = self.env['decision.appoint.allowance'].create(job_allowance_ids_vals)
+                if decision_appoint_allowance:
+                    for line in allowance.line_ids:
+                        line_ids_vals.append({'allowance_id': decision_appoint_allowance.id,
+                                              'city_id': line.city_id.id,
+                                              'percentage': line.percentage
+                                                  })
+                    decision_appoint_allowance.line_ids = line_ids_vals
+            # بدلات التعين
+            for allowance in rec.transfert_allowance_ids:
+                transfert_allowance_ids_vals = {'decision_decision_appoint_id': recruiter_id.id,
+                                                'allowance_id': allowance.allowance_id.id,
+                                                'compute_method': allowance.compute_method,
+                                                'amount': allowance.amount,
+                                                'min_amount': allowance.min_amount,
+                                                'percentage': allowance.percentage,
+                                                }
+                decision_appoint_allowance_tarnsfert = self.env['decision.appoint.allowance'].create(transfert_allowance_ids_vals)
+                line_ids_vals = []
+                if decision_appoint_allowance_tarnsfert:
+                    for line in allowance.line_ids:
+                        line_ids_vals.append({'allowance_id': decision_appoint_allowance_tarnsfert.id,
+                                                  'city_id': line.city_id.id,
+                                                  'percentage': line.percentage
+                                })
+                    decision_appoint_allowance_tarnsfert.line_ids = line_ids_vals
+
                 # بدلات المنطقة
-                location_allowance_ids = []
-                for allowance in rec.location_allowance_ids:
-                    location_allowance_ids.append({'location_decision_appoint_id': recruiter_id.id,
+            for allowance in rec.location_allowance_ids:
+                location_allowance_ids_vals = {'location_decision_appoint_id': recruiter_id.id,
                                                    'allowance_id': allowance.allowance_id.id,
                                                    'compute_method': allowance.compute_method,
                                                    'amount': allowance.amount,
                                                    'min_amount': allowance.min_amount,
-                                                   'percentage': allowance.percentage,                                                   })
-                recruiter_id.location_allowance_ids = location_allowance_ids
-                # change state of the decision to done
-                recruiter_id.action_done()
-                rec.done_date = fields.Date.today()
+                                                   'percentage': allowance.percentage,}
+                decision_appoint_allowance_location = self.env['decision.appoint.allowance'].create(location_allowance_ids_vals)
+                line_ids_vals = []
+                if decision_appoint_allowance_location:
+                    for line in allowance.line_ids:
+                        line_ids_vals.append({'allowance_id': decision_appoint_allowance_location.id,
+                                                  'city_id': line.city_id.id,
+                                                  'percentage': line.percentage
+                                })
+                    decision_appoint_allowance_location.line_ids = line_ids_vals 
+                               # change state of the decision to done
+            recruiter_id.action_done()
+            rec.done_date = fields.Date.today()
 
             if rec.transfert_type == 'internal_transfert':
                 # send notification for the employee
@@ -441,27 +464,8 @@ class HrEmployeeTransfert(models.Model):
         else:
             return False
         
+    
 
-
-
-class HrTransfertAllowance(models.Model):
-    _name = 'hr.transfert.allowance'
-    _description = u'those allowances will be transmitted to the decision appointment'
-    _description = u'بدلات'
-
-    job_transfert_id = fields.Many2one('hr.employee.transfert', string='النقل', ondelete='cascade')
-    transfert_id = fields.Many2one('hr.employee.transfert', string='النقل', ondelete='cascade')
-    location_transfert_id = fields.Many2one('hr.employee.transfert', string='النقل', ondelete='cascade')
-    allowance_id = fields.Many2one('hr.allowance.type', string='البدل', required=1)
-    compute_method = fields.Selection([('amount', 'مبلغ'),
-                                       ('percentage', 'نسبة من الراتب الأساسي'),
-                                       ('formula_1', 'نسبة‬ البدل‬ * راتب‬  الدرجة‬ الاولى‬  من‬ المرتبة‬  التي‬ يشغلها‬ الموظف‬'),
-                                       ('formula_2', 'نسبة‬ البدل‬ * راتب‬  الدرجة‬ التي ‬ يشغلها‬ الموظف‬'),
-                                       ('job_location', 'تحتسب  حسب مكان العمل')], required=1, string='طريقة الإحتساب')
-    amount = fields.Float(string='المبلغ')
-    min_amount = fields.Float(string='الحد الأدنى')
-    percentage = fields.Float(string='النسبة')
-    line_ids = fields.One2many('salary.grid.detail.allowance.city', 'allowance_id', string='النسب حسب المدينة')
 
 
 class HrEmployeeTransfertPeriode(models.Model):
@@ -699,7 +703,6 @@ class HrTransfertSorting(models.Model):
                 rec.state = 'commission_third'
             else:
                 rec.state = 'benefits'
-    print '---------qsdqsd-----------------'
 
     @api.multi
     def action_commission_third(self):
@@ -747,7 +750,58 @@ class HrTransfertSorting(models.Model):
     def action_done(self):
         for rec in self:
             for line in rec.line_ids4:
-                line.hr_employee_transfert_id.action_done()
+                for allowance in line.location_allowance_ids:
+                        location_allowance_ids_vals = {'location_transfert_id': line.hr_employee_transfert_id.id,
+                                                       'allowance_id': allowance.allowance_id.id,
+                                                       'compute_method': allowance.compute_method,
+                                                       'amount': allowance.amount,
+                                                       'min_amount': allowance.min_amount,
+                                                       'percentage': allowance.percentage,
+                                                       }
+                        line_ids_vals = []
+                        location_allowance = self.env['hr.transfert.allowance'].create(location_allowance_ids_vals)
+                        if location_allowance:
+                            for line_id in allowance.line_ids:
+                                line_ids_vals.append({'transfert_allowance_id': location_allowance.id,
+                                                      'city_id': line_id.city_id.id,
+                                                      'percentage': line_id.percentage
+                                                          })
+                            location_allowance.line_ids = line_ids_vals
+            
+                for allowance in line.job_allowance_ids:
+                    job_allowance_ids_vals = {'job_transfert_id': line.hr_employee_transfert_id.id,
+                                              'allowance_id': allowance.allowance_id.id,
+                                              'compute_method': allowance.compute_method,
+                                              'amount': allowance.amount,
+                                              'min_amount': allowance.min_amount,
+                                              'percentage': allowance.percentage,
+                                              }
+                    job_allowance = self.env['hr.transfert.allowance'].create(job_allowance_ids_vals)
+                    if job_allowance:
+                        for line_id in allowance.line_ids:
+                            line_ids_vals = {'transfert_allowance_id': job_allowance.id,
+                                                  'city_id': line_id.city_id.id,
+                                                  'percentage': line_id.percentage
+                                                      }
+                            self.env['transfert.allowance.city'].create(line_ids_vals)
+                for allowance in line.transfert_allowance_ids:
+                    trasfert_allowance_ids_vals = {'transfert_id': line.hr_employee_transfert_id.id,
+                                              'allowance_id': allowance.allowance_id.id,
+                                              'compute_method': allowance.compute_method,
+                                              'amount': allowance.amount,
+                                              'min_amount': allowance.min_amount,
+                                              'percentage': allowance.percentage,
+                                              }
+                    line_ids_vals = []
+                    transfert__allowance = self.env['hr.transfert.allowance'].create(trasfert_allowance_ids_vals)
+                    if transfert__allowance:
+                        for line_id in allowance.line_ids:
+                            line_ids_vals.append({'transfert_allowance_id': transfert__allowance.id,
+                                                  'city_id': line_id.city_id.id,
+                                                  'percentage': line_id.percentage
+                                                      })
+                        transfert__allowance.line_ids = line_ids_vals
+            line.hr_employee_transfert_id.action_done()
             rec.state = 'done'
             
     @api.multi
@@ -776,14 +830,22 @@ class HrTransfertSortingLine(models.Model):
     last_evaluation_result = fields.Many2one('hr.employee.evaluation.level', related="hr_employee_transfert_id.last_evaluation_result", string=u'أخر تقييم إداء')
     new_job_id = fields.Many2one('hr.job', domain=[('state', '=', 'unoccupied')], string=u'الوظيفة المنقول إليها')
     is_conflected = fields.Boolean(string="متضاربة", compute='_compute_is_conflected')
-    res_city = fields.Many2one('res.city', string=u'المدينة')
+    res_city = fields.Many2one('res.city', string=u'المدينة', related='new_job_id.department_id.dep_city')
     specific_group = fields.Selection([('same_specific', 'في نفس المجموعة النوعية'), ('other_specific', 'في مجموعة أخرى'), ], string=u'نوع المجموعة')
     new_type_id = fields.Many2one('salary.grid.type', string=u'الصنف', readonly=1)
     new_degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة') 
     new_department_id = fields.Many2one('hr.department', related='new_job_id.department_id', string='مقر الوظيفة')
     degree_id = fields.Many2one('salary.grid.degree',related='hr_employee_transfert_id.employee_id.degree_id', string=u'الدرجة', readonly=1)
    # desire_ids = fields.One2many(related='hr_employee_transfert_id.desire_ids', string=u'رغبات النقل',)
-
+    employee_id = fields.Many2one('hr.employee', related='hr_employee_transfert_id.employee_id')
+    specific_id = fields.Many2one('hr.groupe.job', related='new_job_id.specific_id', string=u'المجموعة النوعية')
+    new_grade_id = fields.Many2one('salary.grid.grade', related='new_job_id.grade_id')
+    
+    job_allowance_ids = fields.One2many('hr.transfert.line.allowance', 'job_transfert_line_id', string=u'بدلات الوظيفة')
+    transfert_allowance_ids = fields.One2many('hr.transfert.line.allowance', 'transfert_line_id', string=u'بدلات النقل')
+    location_allowance_ids = fields.One2many('hr.transfert.line.allowance', 'location_transfert_line_id', string=u'بدلات المنطقة')
+    
+    
     @api.multi
     def _compute_is_conflected(self):
         for rec in self:
@@ -806,9 +868,7 @@ class HrTransfertSortingLine(models.Model):
         hr_transfert_ids = [rec.id for rec in hr_transferts]
         res['domain'] = {'hr_employee_transfert_id': [('id', 'in', hr_transfert_ids)]}
         return res
-
-
-
+    
 class HrTransfertSortingLine2(models.Model):
     _name = 'hr.transfert.sorting.line2'
     _inherit = 'hr.transfert.sorting.line'
@@ -817,8 +877,6 @@ class HrTransfertSortingLine2(models.Model):
     hr_transfert_sorting_id2 = fields.Many2one('hr.transfert.sorting', string=u'إجراء الترتيب')
     accept_trasfert = fields.Boolean(string='قبول')
     cancel_trasfert = fields.Boolean(string='رفض')
-   # desire_ids = fields.One2many('hr.employee.desire',  'desire_id', store=True,  string=u'رغبات النقل', readonly=1,
-                              #    related='hr_employee_transfert_id.desire_ids')
 
 
 class HrTransfertSortingLine3(models.Model):
@@ -840,6 +898,54 @@ class HrTransfertSortingLine4(models.Model):
     sorting_state = fields.Selection(related='hr_transfert_sorting_id4.state')
 
 
+    @api.multi
+    def action_transfert(self):
+        return True
+
+    @api.multi
+    def action_wizard_transfert_benefits_line4(self):
+        if not self.location_allowance_ids:
+            for rec in self.new_job_id.department_id.dep_side.allowance_ids:
+                location_allowance_vals = {'location_transfert_line_id': self.id,
+                                                   'allowance_id': rec.id,
+                                                   'compute_method': 'amount',
+                                                   'amount': 0.0}
+                location_allowance =  self.env['hr.transfert.line.allowance'].create(location_allowance_vals)
+                line_ids_vals = []
+                if location_allowance:
+                    for line in location_allowance.line_ids:
+                        line_ids_vals.append({'allowance_id': location_allowance.id,
+                                              'city_id': line.city_id.id,
+                                              'percentage': line.percentage
+                                                  })
+                    location_allowance.line_ids = line_ids_vals
+        if not self.job_allowance_ids:
+            for rec in self.new_job_id.serie_id.allowanse_ids:
+                job_allowance_vals = {'job_transfert_line_id': self.id,
+                                                   'allowance_id': rec.id,
+                                                   'compute_method': 'amount',
+                                                   'amount': 0.0}
+                job_allowance =  self.env['hr.transfert.line.allowance'].create(job_allowance_vals)
+                line_ids_vals = []
+                if job_allowance:
+                    for line in job_allowance.line_ids:
+                        line_ids_vals.append({'allowance_id': job_allowance.id,
+                                              'city_id': line.city_id.id,
+                                              'percentage': line.percentage
+                                                  })
+                    job_allowance.line_ids = line_ids_vals        
+        return {
+            'name': 'إسناد البدلات',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'hr.transfert.sorting.line4',
+            'view_id': self.env.ref('smart_hr.view_wizard_transfert_benefits_line4').id,
+            'type': 'ir.actions.act_window',
+            'res_id': self.id,
+            'target': 'new'
+            }
+        
+        
 class HrTransfertSortingLine5(models.Model):
     _name = 'hr.transfert.sorting.line5'
     _inherit = 'hr.transfert.sorting.line'
@@ -875,3 +981,215 @@ class HrTransfertCancel(models.Model):
         for rec in self.line_ids:
             rec.hr_employee_transfert_id.write({'new_job_id': rec.new_job_id.id, 'ready_tobe_done': True})
         self.state = 'done'
+
+
+class HrTransferlinetAllowance(models.Model):
+    _name = 'hr.transfert.line.allowance'
+    _description = u'those allowances will be transmitted to the decision appointment'
+    _description = u'بدلات'
+    
+    job_transfert_line_id = fields.Many2one('hr.transfert.sorting.line', string='النقل', ondelete='cascade')
+    transfert_line_id = fields.Many2one('hr.transfert.sorting.line', string='النقل', ondelete='cascade')
+    location_transfert_line_id = fields.Many2one('hr.transfert.sorting.line', string='النقل', ondelete='cascade')
+    
+    allowance_id = fields.Many2one('hr.allowance.type', string='البدل', required=1)
+    compute_method = fields.Selection([('amount', 'مبلغ'),
+                                       ('percentage', 'نسبة من الراتب الأساسي'),
+                                       ('formula_1', 'نسبة‬ البدل‬ * راتب‬  الدرجة‬ الاولى‬  من‬ المرتبة‬  التي‬ يشغلها‬ الموظف‬'),
+                                       ('formula_2', 'نسبة‬ البدل‬ * راتب‬  الدرجة‬ التي ‬ يشغلها‬ الموظف‬'),
+                                       ('job_location', 'تحتسب  حسب مكان العمل')], required=1, string='طريقة الإحتساب')
+    amount = fields.Float(string='المبلغ')
+    min_amount = fields.Float(string='الحد الأدنى')
+    percentage = fields.Float(string='النسبة')
+    line_ids = fields.One2many('transfert.line.allowance.city', 'transfert_allowance_id', string='النسب حسب المدينة')
+    
+    
+    def get_salary_grid_id(self, employee_id, type_id, grade_id, degree_id, operation_date):
+        '''
+        @return:  two values value1: salary grid detail, value2: basic salary
+        '''
+        # search for  the newest salary grid detail
+        domain = [('grid_id.state', '=', 'done'),
+                  ('grid_id.enabled', '=', True),
+                  ('type_id', '=', type_id.id),
+                  ('grade_id', '=', grade_id.id),
+                  ('degree_id', '=', degree_id.id)
+                  ]
+        if operation_date:
+            # search the right salary grid detail for the given operation_date
+            domain.append(('date', '<=', operation_date))
+        salary_grid_id = self.env['salary.grid.detail'].search(domain, order='date desc', limit=1)
+        if not salary_grid_id:
+            # doamin for  the newest salary grid detail
+            if len(domain) == 6:
+                domain.pop(5)
+            salary_grid_id = self.env['salary.grid.detail'].search(domain, order='date desc', limit=1)
+        # retreive old salary increases to add them with basic_salary
+        domain = [('salary_grid_detail_id', '=', salary_grid_id.id)]
+        if operation_date:
+            domain.append(('date', '<=', operation_date))
+        salary_increase_ids = self.env['employee.increase'].search(domain)
+        sum_increases_amount = 0.0
+        for rec in salary_increase_ids:
+            sum_increases_amount += rec.amount
+        if employee_id.basic_salary == 0:
+            basic_salary = salary_grid_id.basic_salary + sum_increases_amount
+        else:
+            basic_salary = employee_id.basic_salary + sum_increases_amount
+        return salary_grid_id, basic_salary
+
+    @api.onchange('compute_method', 'amount', 'percentage','line_ids')
+    def onchange_get_value(self):
+        allowance_city_obj = self.env['transfert.line.allowance.city']
+        degree_obj = self.env['salary.grid.degree']
+        salary_grid_obj = self.env['salary.grid.detail']
+        # employee info
+        transfert_line = self.job_transfert_line_id
+        if self.transfert_line_id:
+            transfert_line = self.transfert_line_id
+        if self.location_transfert_line_id:
+            transfert_line = self.location_transfert_line_id
+
+        employee = transfert_line.employee_id
+        ttype = transfert_line.new_job_id.type_id
+        grade = transfert_line.new_job_id.grade_id
+        degree = transfert_line.new_degree_id
+        amount = 0.0
+        # search the correct salary_grid for this employee
+        salary_grids, basic_salary = self.get_salary_grid_id(employee, ttype, grade, degree, False)
+        if not salary_grids:
+            raise ValidationError(_(u'لا يوجد سلم رواتب للموظف. !'))
+    # compute
+        if self.compute_method == 'amount':
+            amount = self.amount
+        if self.compute_method == 'percentage':
+            amount = self.percentage * basic_salary / 100.0
+        city = transfert_line.new_job_id.department_id.dep_city
+        if self.compute_method == 'job_location' and employee and city:
+            citys = self.line_ids.search([('city_id', '=', city.id)])
+            if citys:
+                amount = citys[0].percentage * basic_salary / 100.0
+        if self.compute_method == 'formula_1':
+        # get first degree for the grade
+            degrees = degree_obj.search([('grade_id', '=', grade.id)])
+            if degrees:
+                salary_grids = salary_grid_obj.search([('type_id', '=', ttype.id), ('grade_id', '=', grade.id), ('degree_id', '=', degrees[0].id)])
+                if salary_grids:
+                    amount = salary_grids[0].basic_salary * self.percentage / 100.0
+        if self.compute_method == 'formula_2':
+            amount = self.percentage * basic_salary / 100.0
+            if self.min_amount and amount < self.min_amount:
+                amount = self.min_amount
+        self.amount = amount
+
+class HrTransfertLineAllowanceCity(models.Model):
+    _name = 'transfert.line.allowance.city'
+
+    transfert_allowance_id = fields.Many2one('hr.transfert.line.allowance', string='البدل')
+    city_id = fields.Many2one('res.city', string='المدينة', required=1)
+    percentage = fields.Float(string='النسبة', required=1)        
+    
+class HrTransfertAllowance(models.Model):
+    _name = 'hr.transfert.allowance'
+    _description = u'those allowances will be transmitted to the decision appointment'
+    _description = u'بدلات'
+    
+    job_transfert_id = fields.Many2one('hr.employee.transfert', string='النقل', ondelete='cascade')
+    transfert_id = fields.Many2one('hr.employee.transfert', string='النقل', ondelete='cascade')
+    location_transfert_id = fields.Many2one('hr.employee.transfert', string='النقل', ondelete='cascade')
+    allowance_id = fields.Many2one('hr.allowance.type', string='البدل', required=1)
+    compute_method = fields.Selection([('amount', 'مبلغ'),
+                                       ('percentage', 'نسبة من الراتب الأساسي'),
+                                       ('formula_1', 'نسبة‬ البدل‬ * راتب‬  الدرجة‬ الاولى‬  من‬ المرتبة‬  التي‬ يشغلها‬ الموظف‬'),
+                                       ('formula_2', 'نسبة‬ البدل‬ * راتب‬  الدرجة‬ التي ‬ يشغلها‬ الموظف‬'),
+                                       ('job_location', 'تحتسب  حسب مكان العمل')], required=1, string='طريقة الإحتساب')
+    amount = fields.Float(string='المبلغ')
+    min_amount = fields.Float(string='الحد الأدنى')
+    percentage = fields.Float(string='النسبة')
+    line_ids = fields.One2many('transfert.allowance.city', 'transfert_allowance_id', string='النسب حسب المدينة')
+
+    def get_salary_grid_id(self, employee_id, type_id, grade_id, degree_id, operation_date):
+        '''
+        @return:  two values value1: salary grid detail, value2: basic salary
+        '''
+        # search for  the newest salary grid detail
+        domain = [('grid_id.state', '=', 'done'),
+                  ('grid_id.enabled', '=', True),
+                  ('type_id', '=', type_id.id),
+                  ('grade_id', '=', grade_id.id),
+                  ('degree_id', '=', degree_id.id)
+                  ]
+        if operation_date:
+            # search the right salary grid detail for the given operation_date
+            domain.append(('date', '<=', operation_date))
+        salary_grid_id = self.env['salary.grid.detail'].search(domain, order='date desc', limit=1)
+        if not salary_grid_id:
+            # doamin for  the newest salary grid detail
+            if len(domain) == 6:
+                domain.pop(5)
+            salary_grid_id = self.env['salary.grid.detail'].search(domain, order='date desc', limit=1)
+        # retreive old salary increases to add them with basic_salary
+        domain = [('salary_grid_detail_id', '=', salary_grid_id.id)]
+        if operation_date:
+            domain.append(('date', '<=', operation_date))
+        salary_increase_ids = self.env['employee.increase'].search(domain)
+        sum_increases_amount = 0.0
+        for rec in salary_increase_ids:
+            sum_increases_amount += rec.amount
+        if employee_id.basic_salary == 0:
+            basic_salary = salary_grid_id.basic_salary + sum_increases_amount
+        else:
+            basic_salary = employee_id.basic_salary + sum_increases_amount
+        return salary_grid_id, basic_salary
+
+    @api.onchange('compute_method', 'amount', 'percentage', 'line_ids')
+    def onchange_get_value(self):
+        allowance_city_obj = self.env['transfert.allowance.city']
+        degree_obj = self.env['salary.grid.degree']
+        salary_grid_obj = self.env['salary.grid.detail']
+        # employee info
+        transfert_line = self.job_transfert_id
+        if self.transfert_id:
+            transfert_line = self.transfert_id
+        if self.location_transfert_id:
+            transfert_line = self.location_transfert_id
+
+        employee = transfert_line.employee_id
+        ttype = transfert_line.new_job_id.type_id
+        grade = transfert_line.new_job_id.grade_id
+        degree = transfert_line.new_degree_id
+        amount = 0.0
+        # search the correct salary_grid for this employee
+        salary_grids, basic_salary = self.get_salary_grid_id(employee, ttype, grade, degree, False)
+        if not salary_grids:
+            raise ValidationError(_(u'لا يوجد سلم رواتب للموظف. !'))
+    # compute
+        if self.compute_method == 'amount':
+            amount = self.amount
+        if self.compute_method == 'percentage':
+            amount = self.percentage * basic_salary / 100.0
+        city = transfert_line.new_job_id.department_id.dep_city
+        if self.compute_method == 'job_location' and employee and city:
+            citys = self.line_ids.search([('city_id', '=', city.id)])
+            if citys:
+                amount = citys[0].percentage * basic_salary / 100.0
+        if self.compute_method == 'formula_1':
+        # get first degree for the grade
+            degrees = degree_obj.search([('grade_id', '=', grade.id)])
+            if degrees:
+                salary_grids = salary_grid_obj.search([('type_id', '=', ttype.id), ('grade_id', '=', grade.id), ('degree_id', '=', degrees[0].id)])
+                if salary_grids:
+                    amount = salary_grids[0].basic_salary * self.percentage / 100.0
+        if self.compute_method == 'formula_2':
+            amount = self.percentage * basic_salary / 100.0
+            if self.min_amount and amount < self.min_amount:
+                amount = self.min_amount
+        self.amount = amount
+
+
+class HrTransfertAllowanceCity(models.Model):
+    _name = 'transfert.allowance.city'
+
+    transfert_allowance_id = fields.Many2one('hr.transfert.allowance', string='البدل')
+    city_id = fields.Many2one('res.city', string='المدينة', required=1)
+    percentage = fields.Float(string='النسبة', required=1)  

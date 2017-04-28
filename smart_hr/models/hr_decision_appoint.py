@@ -839,7 +839,7 @@ class DecisionAppointAllowance(models.Model):
     amount = fields.Float(string='المبلغ')
     min_amount = fields.Float(string='الحد الأدنى')
     percentage = fields.Float(string='النسبة')
-    line_ids = fields.One2many('salary.grid.detail.allowance.city', 'allowance_id', string='النسب حسب المدينة')
+    line_ids = fields.One2many('salary.grid.detail.allowance.city.appoint', 'allowance_id', string='النسب حسب المدينة')
 
 
     def get_salary_grid_id(self, employee_id, type_id, grade_id, degree_id, operation_date):
@@ -878,7 +878,7 @@ class DecisionAppointAllowance(models.Model):
 
     @api.onchange('compute_method', 'amount', 'percentage')
     def onchange_get_value(self):
-        allowance_city_obj = self.env['salary.grid.detail.allowance.city']
+        allowance_city_obj = self.env['salary.grid.detail.allowance.city.appoint']
         degree_obj = self.env['salary.grid.degree']
         salary_grid_obj = self.env['salary.grid.detail']
         # employee info
@@ -931,3 +931,10 @@ class DecisionAppointAllowance(models.Model):
         else:
             raise ValidationError(_(u'لا يوجد موظف. !'))
 
+
+class SalaryGridDetailAllowanceCityAppoint(models.Model):
+    _name = 'salary.grid.detail.allowance.city.appoint'
+
+    allowance_id = fields.Many2one('decision.appoint.allowance', string='البدل', ondelete='cascade')
+    city_id = fields.Many2one('res.city', string='المدينة', required=1)
+    percentage = fields.Float(string='النسبة', required=1)

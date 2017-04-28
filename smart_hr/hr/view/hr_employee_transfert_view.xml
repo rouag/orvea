@@ -13,8 +13,9 @@
 					<field name="transfert_type" string="نوع النقل" />
 					<field name="state" string="الحالة" />
 					<field name="transfert_nature" string="طبيعة النقل" />
-					
-					<filter string=" قائمة راغبي طلب النقل"  name="state"  domain="[('state','in',['new','waiting','consult','pm'])]" />
+
+					<filter string=" قائمة راغبي طلب النقل" name="state"
+						domain="[('state','in',['new','waiting','consult','pm'])]" />
 					<filter name="employee_id" string="الموظف" />
 					<filter name="transfert_type" string="نوع النقل" />
 					<filter name="transfert_nature" string="طبيعة النقل" />
@@ -62,8 +63,9 @@
 							groups="smart_hr.group_hr_personnel_officer_jobs" attrs="{'invisible':['|','|', 
 							('state', '!=', 'pm'), ('is_ended', '=', False), ('ready_tobe_done', '=', 
 							True)]}" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" /> -->
-						<button name="open_decission_transfert" string="معاينة القرار" groups="smart_hr.group_hr_personnel_officer_jobs"
-							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+						<button name="open_decission_transfert" string="معاينة القرار"
+							groups="smart_hr.group_hr_personnel_officer_jobs" type="object"
+							states="done" icon="fa-print" class="oe_inline oe_stat_button" />
 
 						<field name="state" widget="statusbar"
 							statusbar_visible="new,waiting,consult,pm,done,refused,cancelled" />
@@ -78,7 +80,7 @@
 						<field name="recruiter_date" invisible="1" />
 						<field name="age" invisible="1" />
 						<field name="degree_last" invisible="1" />
-						
+
 						<group>
 							<field name="create_date" />
 						</group>
@@ -89,7 +91,8 @@
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 									readonly="1"
 									attrs="{'readonly':[('state', 'in', ['waiting','consult','pm','waiting','done', 'refused'])]}" />
-								<field name="transfert_type" 	attrs="{'readonly':[('state', 'in', ['new','waiting','consult','pm','waiting','done', 'refused'])]}"  />
+								<field name="transfert_type"
+									attrs="{'readonly':[('state', 'in', ['new','waiting','consult','pm','waiting','done', 'refused'])]}" />
 								<field name="special_conditions"
 									attrs="{'invisible':[('transfert_type', '!=', 'member')]}" />
 								<field name="governmental_entity"
@@ -222,6 +225,166 @@
 		<menuitem action="action_hr_employee_transfert" id="hr_menu_employee_transfert"
 			parent="hr_root_workflows" name="طلبات النقل" sequence="80" />
 
+		<record model="ir.ui.view" id="hr_transfert_sorting_line4_form">
+			<field name="name">hr.transfert.sorting.line4.form</field>
+			<field name="model">hr.transfert.sorting.line4</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="طلبات النقل">
+					<sheet>
+						<group col="4">
+							<field name="sequence" />
+							<field name="job_id" readonly="1" />
+							<field name="transfert_create_date" readonly="1" />
+							<field name="begin_work_date" readonly="1" />
+							<field name="recruiter_date" readonly="1" />
+							<field name="age" readonly="1" />
+							<field name="last_evaluation_result" readonly="1" />
+							<field name="new_job_id" readonly="1" />
+							<field name="specific_group" readonly="1" />
+							<field name="new_department_id" readonly="1" />
+							<field name="new_degree_id" readonly="1" />
+							<field name="new_type_id" readonly="1" />
+							<field name="res_city" readonly="1" />
+							<field name="state" readonly="1" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="view_wizard_transfert_benefits_line4" model="ir.ui.view">
+			<field name="name">hr.transfert.sorting.line4.form.wizard</field>
+			<field name="model">hr.transfert.sorting.line4</field>
+			<field name="arch" type="xml">
+				<form>
+					<sheet>
+						<group>
+							<group>
+								<field name="employee_id" readonly="1" />
+								<field name="new_job_id" readonly="1" />
+								<field name="specific_id" readonly="1" />
+							</group>
+							<group>
+								<field name="new_type_id" readonly="1" />
+								<field name="new_department_id" readonly="1" />
+								<field name="new_degree_id" readonly="1" />
+								<field name="new_grade_id" readonly="1" />
+							</group>
+						</group>
+
+						<h3 class="o_horizontal_separator">بدلات الوظيفة</h3>
+						<field name="job_allowance_ids" nolabel="1">
+							<form string="البدلات">
+								<group>
+									<group>
+										<field name="allowance_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									</group>
+									<group>
+										<field name="compute_method" />
+										<field name="amount"
+											attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}" />
+										<field name="percentage"
+											attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}" />
+										<field name="min_amount" />
+										<field name="line_ids"
+											attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+											<tree editable="buttom">
+												<field name="city_id"
+													options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+												<field name="percentage" />
+											</tree>
+										</field>
+
+									</group>
+								</group>
+							</form>
+							<tree create="false">
+								<field name="allowance_id" readonly="1" />
+								<field name="compute_method" />
+								<field name="amount" />
+							</tree>
+						</field>
+						<h3 class="o_horizontal_separator">بدلات النقل</h3>
+						<field name="transfert_allowance_ids" nolabel="1">
+							<form string="البدلات">
+								<group>
+									<group>
+										<field name="allowance_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									</group>
+									<group>
+										<field name="compute_method" />
+										<field name="amount"
+											attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}" />
+										<field name="percentage"
+											attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}" />
+										<field name="min_amount" />
+										<field name="line_ids"
+											attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+											<tree editable="buttom">
+												<field name="city_id"
+													options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+												<field name="percentage" />
+											</tree>
+										</field>
+
+									</group>
+								</group>
+							</form>
+							<tree>
+								<field name="allowance_id"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="compute_method" />
+								<field name="amount" />
+							</tree>
+						</field>
+						<h3 class="o_horizontal_separator">بدلات المنطقة</h3>
+						<field name="location_allowance_ids" nolabel="1">
+							<form string="البدلات">
+								<group>
+									<group>
+										<field name="allowance_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									</group>
+									<group>
+										<field name="compute_method" />
+										<field name="amount"
+											attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}" />
+										<field name="percentage"
+											attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}" />
+										<field name="min_amount" />
+										<field name="line_ids"
+											attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+											<tree editable="buttom">
+												<field name="city_id"
+													options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+												<field name="percentage" />
+											</tree>
+										</field>
+
+									</group>
+								</group>
+							</form>
+							<tree create="false">
+								<field name="allowance_id" readonly="1" />
+								<field name="compute_method" />
+								<field name="amount" />
+							</tree>
+						</field>
+						<footer>
+							<button icon="fa-cogs" string="تأكيد" name="action_transfert"
+								type="object" class="oe_highlight" />
+							أو
+							<button string="إلغاء" class="oe_link" special="cancel" />
+						</footer>
+					</sheet>
+
+				</form>
+			</field>
+		</record>
+
+
 		<!-- فترات النقل -->
 		<record id="view_hr_employee_transfert_periode_form" model="ir.ui.view">
 			<field name="name">hr.employee.transfert.periode.form</field>
@@ -299,6 +462,100 @@
 				</form>
 			</field>
 		</record>
+
+		<record model="ir.ui.view" id="hr_transfert_sorting_line2_form">
+			<field name="name">hr.transfert.sorting.line2.form</field>
+			<field name="model">hr.transfert.sorting.line2</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="طلبات النقل">
+					<sheet>
+						<group col="4">
+							<field name="sequence" readonly="1" />
+							<field name="employee_id" readonly="1" />
+							<field name="job_id" readonly="1" />
+							<field name="transfert_create_date" readonly="1" />
+							<field name="begin_work_date" readonly="1" />
+							<field name="recruiter_date" readonly="1" />
+							<field name="age" readonly="1" />
+
+							<field name="last_evaluation_result" readonly="1" />
+							<field name="new_job_id" readonly="1" />
+							<field name="specific_group" readonly="1" />
+							<field name="new_department_id" readonly="1" />
+							<field name="new_degree_id" readonly="1" />
+							<field name="new_type_id" readonly="1" />
+							<field name="res_city" readonly="1" />
+							<field name="state" readonly="1" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_transfert_sorting_line3_form">
+			<field name="name">hr.transfert.sorting.line3.form</field>
+			<field name="model">hr.transfert.sorting.line3</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="طلبات النقل">
+					<sheet>
+						<group col="4">
+							<field name="sequence" readonly="1" />
+							<field name="employee_id" readonly="1" />
+							<field name="job_id" readonly="1" />
+							<field name="transfert_create_date" readonly="1" />
+							<field name="begin_work_date" readonly="1" />
+							<field name="recruiter_date" readonly="1" />
+							<field name="age" readonly="1" />
+							<field name="last_evaluation_result" readonly="1" />
+							<field name="new_job_id" readonly="1" />
+							<field name="specific_group" readonly="1" />
+							<field name="new_department_id" readonly="1" />
+							<field name="new_degree_id" readonly="1" />
+							<field name="new_type_id" readonly="1" />
+							<field name="res_city" readonly="1" />
+							<field name="state" readonly="1" />
+							<field name="is_conflected" invisible="1" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_transfert_sorting_line5_form">
+			<field name="name">hr.transfert.sorting.line5.form</field>
+			<field name="model">hr.transfert.sorting.line5</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="طلبات النقل">
+					<sheet>
+						<group col="4">
+							<field name="sequence" readonly="1" />
+							<field name="employee_id" readonly="1" />
+							<field name="job_id" readonly="1" />
+							<field name="transfert_create_date" readonly="1" />
+							<field name="begin_work_date" readonly="1" />
+							<field name="recruiter_date" readonly="1" />
+							<field name="age" readonly="1" />
+							<field name="last_evaluation_result" readonly="1" />
+							<field name="new_job_id" readonly="1" />
+							<field name="specific_group" readonly="1" />
+							<field name="new_department_id" readonly="1" />
+							<field name="new_degree_id" readonly="1" />
+							<field name="new_type_id" readonly="1" />
+							<field name="res_city" readonly="1" />
+							<field name="state" readonly="1" />
+							<field name="accept_trasfert"
+								attrs="{'invisible':[('cancel_trasfert','!=',False)]}" readonly="1" />
+							<field name="cancel_trasfert"
+								attrs="{'invisible':[('accept_trasfert','!=',False)]}" readonly="1" />
+							<field name="is_conflected" invisible="1" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
 
 		<record id="view_hr_transfert_sorting_form" model="ir.ui.view">
 			<field name="name">hr.transfert.sorting.form</field>
@@ -391,6 +648,7 @@
 									<tree delete='0' create="false" editable="bottom"
 										colors="red:is_conflected==True;">
 										<field name="sequence" />
+										<field name="employee_id" readonly="1" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
 										<field name="begin_work_date" readonly="1" />
@@ -421,6 +679,7 @@
 									<tree delete='0' editable="bottom" colors="red:is_conflected==True;"
 										create="false">
 										<field name="sequence" />
+										<field name="employee_id" readonly="1" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
 										<field name="begin_work_date" readonly="1" />
@@ -448,6 +707,7 @@
 									<tree delete='0' editable="bottom" colors="red:is_conflected==True;"
 										create="false">
 										<field name="sequence" />
+										<field name="employee_id" readonly="1" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
 										<field name="begin_work_date" readonly="1" />
@@ -465,9 +725,9 @@
 											attrs="{'invisible':['|',('cancel_trasfert','!=',False),('state', 'in', [ 'benefits','done','refused'])], 'readonly':[('state', 'in', [ 'done','refused'])]}" />
 										<field name="cancel_trasfert"
 											attrs="{'invisible':['|',('accept_trasfert','!=',False),('state', 'in', [ 'benefits','done','refused'])],'readonly':[('state', 'in', [ 'done','refused'])]}" />
-										<button name="%(smart_hr.action_wizard_transfert_benefits)d"
+										<button name="action_wizard_transfert_benefits_line4"
 											attrs="{'invisible':[('sorting_state','!=', 'benefits')]}"
-											type="action" string="إسناد البدلات" icon="fa-dollar" />
+											type="object" string="إسناد البدلات" icon="fa-dollar" />
 										<field name="is_conflected" invisible="1" />
 										<field name="sorting_state" invisible="1" />
 									</tree>
@@ -482,6 +742,7 @@
 									<tree delete='0' create="false" editable="bottom"
 										colors="red:is_conflected==True;">
 										<field name="sequence" />
+										<field name="employee_id" readonly="1" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
 										<field name="begin_work_date" readonly="1" />
@@ -536,6 +797,10 @@
 		<menuitem name="ترتيب طلبات النقل" id="hr_transfert_sorting_menu"
 			groups="smart_hr.group_hr_personnel_officer_commissioning" parent="hr_root_workflows"
 			sequence="85" action="action_hr_employee_transfert_sorting" />
+
+
+
+
 
 	</data>
 </openerp>

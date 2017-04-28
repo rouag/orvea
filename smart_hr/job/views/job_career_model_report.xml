@@ -50,6 +50,7 @@
 											<strong>الفرع</strong>
 										</td>
 										<td colspan="3" class="text-center">
+											<span t-esc="o.branch_id" />
 
 										</td>
 										<td colspan="3">

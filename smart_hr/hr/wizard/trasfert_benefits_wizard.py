@@ -35,6 +35,7 @@ class TransfertBenefitsWizard(models.TransientModel):
                                                    'amount': rec.amount,
                                                    'min_amount': rec.min_amount,
                                                    'percentage': rec.percentage,
+                                                   'line_ids': [(6, 0, rec.line_ids.ids)],
                                                    })
             # fill job_allowance_ids
             if not transfert.hr_employee_transfert_id.job_allowance_ids:
@@ -50,8 +51,9 @@ class TransfertBenefitsWizard(models.TransientModel):
                                               'compute_method': rec.compute_method,
                                               'amount': rec.amount,
                                               'min_amount': rec.min_amount,
-                                            'percentage': rec.percentage,
-                                            })
+                                              'percentage': rec.percentage,
+                                            'line_ids': [(6, 0, rec.line_ids.ids)],
+                                              })
             # fill transfert_allowance_ids
             if transfert.hr_employee_transfert_id.transfert_allowance_ids:
                 for rec in transfert.hr_employee_transfert_id.transfert_allowance_ids:
@@ -59,8 +61,9 @@ class TransfertBenefitsWizard(models.TransientModel):
                                                     'allowance_id': rec.allowance_id.id,
                                                     'compute_method': rec.compute_method,
                                                     'amount': rec.amount,
-                                                   'min_amount': rec.min_amount,
-                                                   'percentage': rec.percentage,                                                    
+                                                    'min_amount': rec.min_amount,
+                                                    'percentage': rec.percentage,
+                                                   'line_ids': [(6, 0, rec.line_ids.ids)],
                                                     })
             res.update({'transfert_line_obj': transfert.id,
                         'job_id': transfert.new_job_id.id,
@@ -100,16 +103,18 @@ class TransfertBenefitsWizard(models.TransientModel):
                                       'compute_method': rec.compute_method,
                                       'amount': rec.amount,
                                       'min_amount': rec.min_amount,
-                                      'percentage': rec.percentage,})
+                                      'percentage': rec.percentage,
+                                      })
         self.transfert_line_obj.hr_employee_transfert_id.job_allowance_ids = job_allowance_ids
         transfert_allowance_ids = []
         for rec in self.transfert_allowance_ids:
             transfert_allowance_ids.append({'transfert_id': self.transfert_line_obj.hr_employee_transfert_id.id,
-                                      'allowance_id': rec.allowance_id.id,
-                                      'compute_method': rec.compute_method,
-                                      'amount': rec.amount,
-                                        'min_amount': rec.min_amount,
-                                        'percentage': rec.percentage,})
+                                            'allowance_id': rec.allowance_id.id,
+                                            'compute_method': rec.compute_method,
+                                            'amount': rec.amount,
+                                            'min_amount': rec.min_amount,
+                                            'percentage': rec.percentage,
+                                            })
         self.transfert_line_obj.hr_employee_transfert_id.transfert_allowance_ids = transfert_allowance_ids
         location_allowance_ids = []
         for rec in self.location_allowance_ids:
@@ -117,8 +122,9 @@ class TransfertBenefitsWizard(models.TransientModel):
                                            'allowance_id': rec.allowance_id.id,
                                            'compute_method': rec.compute_method,
                                            'amount': rec.amount,
-                                            'min_amount': rec.min_amount,
-                                            'percentage': rec.percentage,})
+                                           'min_amount': rec.min_amount,
+                                           'percentage': rec.percentage,
+                                           })
         self.transfert_line_obj.hr_employee_transfert_id.location_allowance_ids = location_allowance_ids
 
 
@@ -138,7 +144,7 @@ class TransfertAppointAllowance(models.TransientModel):
     amount = fields.Float(string='المبلغ')
     min_amount = fields.Float(string='الحد الأدنى')
     percentage = fields.Float(string='النسبة')
-    line_ids = fields.One2many('salary.grid.detail.allowance.city', 'allowance_id', string='النسب حسب المدينة')
+    line_ids = fields.One2many('ransfert.allowance.city.old', 'transfert_allowance_id', string='النسب حسب المدينة')
 
     def get_salary_grid_id(self, employee_id, type_id, grade_id, degree_id, operation_date):
         '''
@@ -176,7 +182,7 @@ class TransfertAppointAllowance(models.TransientModel):
 
     @api.onchange('compute_method', 'amount', 'percentage')
     def onchange_get_value(self):
-        allowance_city_obj = self.env['salary.grid.detail.allowance.city']
+        allowance_city_obj = self.env['ransfert.allowance.city.old']
         degree_obj = self.env['salary.grid.degree']
         salary_grid_obj = self.env['salary.grid.detail']
         # employee info
@@ -201,7 +207,7 @@ class TransfertAppointAllowance(models.TransientModel):
         if self.compute_method == 'percentage':
             amount = self.percentage * basic_salary / 100.0
         if self.compute_method == 'job_location' and employee and employee.dep_city:
-            citys = allowance_city_obj.search([('allowance_id', '=', self.id), ('city_id', '=', employee.dep_city.id)])
+            citys = allowance_city_obj.search([('transfert_allowance_id', '=', self.id), ('city_id', '=', employee.dep_city.id)])
             if citys:
                 amount = citys[0].percentage * basic_salary / 100.0
         if self.compute_method == 'formula_1':
@@ -216,4 +222,11 @@ class TransfertAppointAllowance(models.TransientModel):
             if self.min_amount and amount < self.min_amount:
                 amount = self.min_amount
         self.amount = amount
+        
+class TransfertAllowanceCity(models.TransientModel):
+    _name = 'ransfert.allowance.city.old'
+
+    transfert_allowance_id = fields.Many2one('transfert.appoint.allowance', string='البدل')
+    city_id = fields.Many2one('res.city', string='المدينة', required=1)
+    percentage = fields.Float(string='النسبة', required=1)
 
