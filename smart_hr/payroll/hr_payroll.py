@@ -2,11 +2,7 @@
 
 
 from openerp import models, fields, api, tools, _
-import openerp.addons.decimal_precision as dp
-from datetime import datetime
-from datetime import timedelta
 from dateutil.relativedelta import relativedelta
-from openerp.addons.smart_base.util.time_util import days_between
 from openerp.addons.smart_base.util.umalqurra import *
 from umalqurra.hijri_date import HijriDate
 from umalqurra.hijri import Umalqurra
@@ -307,7 +303,7 @@ class HrPayslip(models.Model):
     across_loan = fields.Float(string='تجاوز  قروض هذا الشهر')
     difference_deduction_total = fields.Float(string='مجموع الحسميات والفروقات')
     contraintes_ids = fields.One2many('hr.payroll.constrainte', 'payslip_id')
-
+    operation_ids = fields.One2many('hr.payroll.operation', 'payslip_id')
     sanction_line_ids = fields.Many2many('hr.sanction.ligne')
     abscence_ids = fields.Many2many('hr.employee.absence.days')
     delays_ids = fields.Many2many('hr.employee.delay.hours')
@@ -429,6 +425,7 @@ class HrPayslip(models.Model):
             payslip.line_ids.unlink()
             payslip.contraintes_ids.unlink()
             payslip.difference_history_ids.unlink()
+            payslip.operation_ids.unlink()
             # change compute_date
             payslip.compute_date = fields.Date.from_string(fields.Date.today())
             # generate  lines
@@ -795,6 +792,10 @@ class HrPayslip(models.Model):
             if payroll_count > 1:
                 raise ValidationError(u"لا يمكن إنشاء مسيرين لنفس الموظف في نفس الشهر")
 
+    def get_operations(self, res_model):
+        operation_ids = self.operation_ids.search([('payslip_id', '=', self.id), ('res_model', '=', res_model)])
+        return [operation.res_id for operation in operation_ids]
+
 
 class HrPayrollConstrainte(models.Model):
     _name = 'hr.payroll.constrainte'
@@ -803,6 +804,14 @@ class HrPayrollConstrainte(models.Model):
     constrainte_name = fields.Selection([('min_amount', u'المبلغ الادنى'),
                                          ], string='الشروط', readonly=1)
     amount = fields.Float(string=u'المبلغ')
+
+
+class HrPayrollOperation(models.Model):
+    _name = 'hr.payroll.operation'
+
+    payslip_id = fields.Many2one('hr.payslip', string='Payslip')
+    res_model = fields.Char(string='Model')
+    res_id = fields.Integer(string='Model ID')
 
 
 class HrPayslipWorkedDays(models.Model):

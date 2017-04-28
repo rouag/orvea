@@ -41,6 +41,7 @@ class HrPayslip(models.Model):
     speech_date = fields.Date(string=u'تاريخ الخطاب', readonly=1, states={'draft': [('readonly', 0)]})
     speech_file = fields.Binary(string=u'صورة الخطاب', attachment=True, readonly=1, required=1, states={'draft': [('readonly', 0)]})
     speech_file_name = fields.Char(string='speech_file_name')
+    period_ids = fields.Many2many('hr.period', string=u'الفترات', readonly=1, states={'draft': [('readonly', 0)]})
 
     @api.multi
     def action_special_new(self):
