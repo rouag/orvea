@@ -1165,7 +1165,7 @@
 		<!--أنواع الاجازات -->
 		<record id="data_normal_leave" model="hr.decision.type">
 			<field name="name"> قرار إجازة عادية</field>
-			<field name="text"><![CDATA[ <div style="font-size: 22px;">
+			<field name="text"><![CDATA[ 
 			<p>قرار إداري رقم
 			 (NUMERO)و تاريخ  DATE</p>
 			<p style="text-align: center;"><strong>
@@ -2050,7 +2050,7 @@ SPORT
 									</p>
 
 									<p>٢. يبلغ هذا القرار لمن يلزم لإنفاذه</p>
-								</div>
+						
 
 
 
@@ -2196,7 +2196,7 @@ SPORT
 		<!--أنواع الاجازات -->
 		<record id="data_data_hr_holiday_status_legal_absent" model="hr.decision.type">
 			<field name="name"> قرار غياب بعذر</field>
-			<field name="text"><![CDATA[ <div style="font-size: 22px;">
+			<field name="text"><![CDATA[ 
 			<p>قرار إداري رقم
 			 (NUMERO)و تاريخ  DATE</p>
 			<p style="text-align: center;"><strong>
@@ -2217,7 +2217,7 @@ SPORT
 								</p>
 										
 									<p>3) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-								</div>
+						
 								<p></p>
 								<p></p>
 								
@@ -2242,14 +2242,14 @@ SPORT
 
 
 								</p>
-								</div>
+						
 
             ]]></field>
 		</record>
 
 		<record id="data_data_hr_holiday_status_compelling" model="hr.decision.type">
 			<field name="name"> قرار إجازة اضطرارية</field>
-			<field name="text"><![CDATA[ <div style="font-size: 22px;">
+			<field name="text"><![CDATA[ 
 			<p>قرار إداري رقم
 			 (NUMERO)و تاريخ  DATE</p>
 			<p style="text-align: center;"><strong>
@@ -2270,7 +2270,7 @@ SPORT
 								</p>
 										
 									<p>3) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-								</div>
+						
 								<p></p>
 								<p></p>
 								
@@ -2295,14 +2295,14 @@ SPORT
 
 
 								</p>
-								</div>
+						
 
             ]]></field>
 		</record>
 		<record id="data_data_hr_holiday_status_exceptional_accompaniment"
 			model="hr.decision.type">
 			<field name="name"> قرار إجازة استثنائية للمرافقة</field>
-			<field name="text"><![CDATA[ <div style="font-size: 22px;">
+			<field name="text"><![CDATA[ 
 			<p>قرار إداري رقم
 			 (NUMERO)و تاريخ  DATE</p>
 			<p style="text-align: center;"><strong>
@@ -2323,7 +2323,7 @@ SPORT
 								</p>
 										
 									<p>3) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-								</div>
+						
 								<p></p>
 								<p></p>
 								
@@ -2348,13 +2348,13 @@ SPORT
 
 
 								</p>
-								</div>
+						
 
             ]]></field>
 		</record>
 		<record id="data_data_hr_holiday_status_adoption" model="hr.decision.type">
 			<field name="name"> قرار إجازة حضانة</field>
-			<field name="text"><![CDATA[ <div style="font-size: 22px;">
+			<field name="text"><![CDATA[ 
 			<p>قرار إداري رقم
 			 (NUMERO)و تاريخ  DATE</p>
 			<p style="text-align: center;"><strong>
@@ -2375,7 +2375,7 @@ SPORT
 								</p>
 										
 									<p>3) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-								</div>
+						
 								<p></p>
 								<p></p>
 								
@@ -2400,13 +2400,13 @@ SPORT
 
 
 								</p>
-								</div>
+						
 
             ]]></field>
 		</record>
 		<record id="data_data_hr_holiday_child_birth_dad" model="hr.decision.type">
 			<field name="name"> قرار إجازة المولود</field>
-			<field name="text"><![CDATA[ <div style="font-size: 22px;">
+			<field name="text"><![CDATA[ 
 			<p>قرار إداري رقم
 			 (NUMERO)و تاريخ  DATE</p>
 			<p style="text-align: center;"><strong>
@@ -2427,7 +2427,7 @@ SPORT
 								</p>
 										
 									<p>3) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-								</div>
+						
 								<p></p>
 								<p></p>
 								
@@ -2452,13 +2452,13 @@ SPORT
 
 
 								</p>
-								</div>
+						
 
             ]]></field>
 		</record>
 		<record id="data_data_hr_holiday_status_rescue" model="hr.decision.type">
 			<field name="name"> قرار إجازة اغاثة</field>
-			<field name="text"><![CDATA[ <div style="font-size: 22px;">
+			<field name="text"><![CDATA[ 
 			<p>قرار إداري رقم
 			 (NUMERO)و تاريخ  DATE</p>
 			<p style="text-align: center;"><strong>
@@ -2479,7 +2479,7 @@ SPORT
 								</p>
 										
 									<p>3) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-								</div>
+						
 								<p></p>
 								<p></p>
 								
@@ -2504,13 +2504,13 @@ SPORT
 
 
 								</p>
-								</div>
+						
 
             ]]></field>
 		</record>
 		<record id="data_data_hr_holiday_death" model="hr.decision.type">
 			<field name="name"> قرار إجازة وفاة</field>
-			<field name="text"><![CDATA[ <div style="font-size: 22px;">
+			<field name="text"><![CDATA[ 
 			<p>قرار إداري رقم
 			 (NUMERO)و تاريخ  DATE</p>
 			<p style="text-align: center;"><strong>
@@ -2531,7 +2531,7 @@ SPORT
 								</p>
 										
 									<p>3) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-								</div>
+						
 								<p></p>
 								<p></p>
 								
@@ -2556,13 +2556,13 @@ SPORT
 
 
 								</p>
-								</div>
+						
 
             ]]></field>
 		</record>
-		<record id="data_data_data_hr_holiday_dialysis" model="hr.decision.type">
+		<record id="data_data_hr_holiday_dialysis" model="hr.decision.type">
 			<field name="name"> قرار إجازة غسيل كلى</field>
-			<field name="text"><![CDATA[ <div style="font-size: 22px;">
+			<field name="text"><![CDATA[ 
 			<p>قرار إداري رقم
 			 (NUMERO)و تاريخ  DATE</p>
 			<p style="text-align: center;"><strong>
@@ -2583,7 +2583,7 @@ SPORT
 								</p>
 										
 									<p>3) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-								</div>
+						
 								<p></p>
 								<p></p>
 								
@@ -2608,13 +2608,13 @@ SPORT
 
 
 								</p>
-								</div>
+						
 
             ]]></field>
 		</record>
 		<record id="data_data_hr_holiday_literaty" model="hr.decision.type">
 			<field name="name"> قرار إجازة أدبيّة</field>
-			<field name="text"><![CDATA[ <div style="font-size: 22px;">
+			<field name="text"><![CDATA[ 
 			<p>قرار إداري رقم
 			 (NUMERO)و تاريخ  DATE</p>
 			<p style="text-align: center;"><strong>
@@ -2635,7 +2635,7 @@ SPORT
 								</p>
 										
 									<p>3) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-								</div>
+						
 								<p></p>
 								<p></p>
 								
@@ -2660,13 +2660,13 @@ SPORT
 
 
 								</p>
-								</div>
+						
 
             ]]></field>
 		</record>
 		<record id="data_data_hr_holiday_exam" model="hr.decision.type">
 			<field name="name"> قرار إجازة إمتحان</field>
-			<field name="text"><![CDATA[ <div style="font-size: 22px;">
+			<field name="text"><![CDATA[ 
 			<p>قرار إداري رقم
 			 (NUMERO)و تاريخ  DATE</p>
 			<p style="text-align: center;"><strong>
@@ -2687,7 +2687,7 @@ SPORT
 								</p>
 										
 									<p>3) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-								</div>
+						
 								<p></p>
 								<p></p>
 								
@@ -2712,13 +2712,13 @@ SPORT
 
 
 								</p>
-								</div>
+						
 
             ]]></field>
 		</record>
 		<record id="data_data_hr_holiday_status_contractor" model="hr.decision.type">
 			<field name="name"> قرار إجازة ا‫لمتعاقدون‬</field>
-			<field name="text"><![CDATA[ <div style="font-size: 22px;">
+			<field name="text"><![CDATA[ 
 			<p>قرار إداري رقم
 			 (NUMERO)و تاريخ  DATE</p>
 			<p style="text-align: center;"><strong>
@@ -2739,7 +2739,7 @@ SPORT
 								</p>
 										
 									<p>3) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-								</div>
+						
 								<p></p>
 								<p></p>
 								
@@ -2764,13 +2764,13 @@ SPORT
 
 
 								</p>
-								</div>
+						
 
             ]]></field>
 		</record>
 		<record id="data_data_hr_holiday_compensation" model="hr.decision.type">
 			<field name="name"> قرار اجازة التعويض</field>
-			<field name="text"><![CDATA[ <div style="font-size: 22px;">
+			<field name="text"><![CDATA[ 
 			<p>قرار إداري رقم
 			 (NUMERO)و تاريخ  DATE</p>
 			<p style="text-align: center;"><strong>
@@ -2791,7 +2791,7 @@ SPORT
 								</p>
 										
 									<p>3) يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
-								</div>
+						
 								<p></p>
 								<p></p>
 								
@@ -2816,7 +2816,7 @@ SPORT
 
 
 								</p>
-								</div>
+						
 
             ]]></field>
 

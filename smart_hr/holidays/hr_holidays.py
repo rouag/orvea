@@ -464,7 +464,7 @@ class HrHolidays(models.Model):
             if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_death').id:
                 decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_death').id
             if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_dialysis').id:
-                decision_type_id = self.env.ref('smart_hr.data_normal_leave').id
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_dialysis').id
             if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_literaty').id:
                 decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_literaty').id
             if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_exam').id:
