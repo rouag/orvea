@@ -788,7 +788,7 @@ class HrHolidays(models.Model):
 
             # الابتعاث
             schol_obj = self.env['hr.scholarship']
-            scholarship_uncounted_days = schol_obj.search_count([('employee_id', '=', employee.id), ('state', '=', 'done'), ('date_from', '<=', d), ('date_to', '>=', d)])
+            scholarship_uncounted_days = schol_obj.search_count([('employee_id', '=', employee.id), ('state', 'in', ['done','finished']), ('date_from', '<=', d), ('date_to', '>=', d)])
             uncounted_days += scholarship_uncounted_days
 
             init_solde = (employee_solde / (periode * 12)) / 30.0

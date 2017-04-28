@@ -185,7 +185,7 @@ class HrDirectAppoint(models.Model):
                                                                         ('state_appoint', '=', 'new')], limit=1)
             elif self.type == 'shcolarship':
                 shcolarship_id = self.env['hr.scholarship'].search([('employee_id', '=', self.employee_id.id),
-                                                                        ('state', '=', 'done'), ('date_to', '<', self.date_direct_action),
+                                                                        ('state', 'in', ['done','finished']), ('date_to', '<', self.date_direct_action),
                                                                         ('restarted', '=', False)], limit=1)
             
 
