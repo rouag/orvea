@@ -4,7 +4,6 @@ from openerp import models, api, fields, _
 from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
-from zope.interface.common.interfaces import IOverflowWarning
 
 
 class HrScholarship(models.Model):
