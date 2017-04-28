@@ -14,6 +14,108 @@ from openerp.exceptions import UserError
 from openerp.exceptions import ValidationError
 
 
+class HrPayslipRun(models.Model):
+    _name = 'hr.payslip.run'
+    _inherit = ['hr.payslip.run', 'mail.thread']
+
+    special_state = fields.Selection([('new', 'جديد'),
+                                      ('verify', 'المراجعة'),
+                                      ('division_director', 'مدير الشعبة'),
+                                      ('hrm', 'مدير الشؤون الموظفين'),
+                                      ('done', 'منتهية'),
+                                      ], 'الحالة', default='new', select=1, readonly=1, copy=False)
+    is_special = fields.Boolean(string='مسير خاص')
+    speech_number = fields.Char(string=u'رقم الخطاب', readonly=1, states={'draft': [('readonly', 0)]})
+    speech_date = fields.Date(string=u'تاريخ الخطاب', readonly=1, states={'draft': [('readonly', 0)]})
+    speech_file = fields.Binary(string=u'صورة الخطاب', attachment=True, readonly=1, states={'draft': [('readonly', 0)]})
+    payslip_type = fields.Selection([('deputation', 'إنتداب'),
+                                     ('overtime', 'خارج الدوام'),
+                                     ('transfert', 'نقل'),
+                                     ('holidays', 'اجازات مسبوقة الدفع')], 'نوع المسير', select=1, readonly=1, states={'draft': [('readonly', 0)]})
+    period_ids = fields.Many2many('hr.period', string=u'الفترات', readonly=1, states={'draft': [('readonly', 0)]})
+
+    @api.multi
+    def special_compute_sheet(self):
+        self.slip_ids.unlink()
+        self.compute_employee_ids(False)
+        slip_ids = []
+        for employee in self.employee_ids:
+            payslip_val = {'employee_id': employee.id,
+                           'period_id': self.period_id.id,
+                           'name': _('راتب موظف %s لشهر %s') % (employee.display_name, self.period_id.name),
+                           'payslip_run_id': self.id,
+                           'date_from': self.date_start,
+                           'date_to': self.date_end,
+                           'grade_id': employee.grade_id.id,
+                           'degree_id': employee.degree_id.id,
+                           'type_id': employee.type_id.id,
+                           'is_special': self.is_special,
+                           'speech_number': self.speech_number,
+                           'speech_date': self.speech_date,
+                           'speech_file': self.speech_file,
+                           'payslip_type': self.payslip_type,
+                           'period_ids': [(6, 0, [x.id for x in self.period_ids])]
+                           }
+            slip_ids.append(payslip_val)
+        self.slip_ids = slip_ids
+        self.slip_ids.special_compute_sheet()
+
+    @api.multi
+    def action_special_new(self):
+        self.ensure_one()
+        self.state = 'draft'
+        self.special_state = 'new'
+        for slip in self.slip_ids:
+            slip.action_special_new()
+
+    @api.multi
+    def action_special_verify(self):
+        self.ensure_one()
+        for slip in self.slip_ids:
+            slip.action_special_verify()
+        self.state = 'verify'
+        self.special_state = 'verify'
+
+    @api.multi
+    def action_special_division_director(self):
+        self.ensure_one()
+        self.special_state = 'division_director'
+        for slip in self.slip_ids:
+            slip.action_special_division_director()
+
+    @api.multi
+    def action_special_hrm(self):
+        self.ensure_one()
+        self.special_state = 'hrm'
+        for slip in self.slip_ids:
+            slip.action_special_hrm()
+
+    @api.multi
+    def action_special_done(self):
+        self.ensure_one()
+        self.state = 'done'
+        self.special_state = 'done'
+        for slip in self.slip_ids:
+            slip.action_special_done()
+        self.generate_file()
+
+    @api.multi
+    def button_refuse_division_director(self):
+        self.ensure_one()
+        self.state = 'verify'
+        self.special_state = 'verify'
+        for slip in self.slip_ids:
+            slip.button_refuse_division_director()
+
+    @api.multi
+    def button_refuse_verify(self):
+        self.ensure_one()
+        self.state = 'draft'
+        self.special_state = 'new'
+        for slip in self.slip_ids:
+            slip.button_refuse_verify()
+
+
 class HrPayslip(models.Model):
     _name = "hr.payslip"
     _inherit = ['hr.payslip', 'mail.thread']
@@ -24,7 +126,11 @@ class HrPayslip(models.Model):
     owner_employee_id = fields.Many2one('hr.employee', string='صاحب الطلب',
                                         default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid)],
                                                                                             limit=1), required=1, readonly=1)
-    payslip_type_ids = fields.Many2many('hr.special.payslip.type', string=u'نوع المسير', readonly=1, states={'draft': [('readonly', 0)]})
+    payslip_type = fields.Selection([('deputation', 'إنتداب'),
+                                     ('overtime', 'خارج الدوام'),
+                                     ('transfert', 'نقل'),
+                                     ('holidays', 'اجازات مسبوقة الدفع')
+                                     ], string=u'نوع المسير', select=1, readonly=1, states={'draft': [('readonly', 0)]})
     special_state = fields.Selection([('new', 'جديد'),
                                       ('verify', 'المراجعة'),
                                       ('division_director', 'مدير الشعبة'),
@@ -52,7 +158,6 @@ class HrPayslip(models.Model):
     @api.multi
     def action_special_verify(self):
         self.ensure_one()
-        self.special_compute_sheet()
         self.number = self.env['ir.sequence'].get('seq.hr.payslip')
         self.state = 'verify'
         self.special_state = 'verify'
@@ -110,45 +215,45 @@ class HrPayslip(models.Model):
             # search the newest salary_grid for this employee
             salary_grid, basic_salary = employee.get_salary_grid_id(False)
             if not salary_grid:
-                return
+                continue
             # compute
             lines = []
             line_ids = []
             salary_net = 0.0
 
             # فروقات اجازات مسبوقة الدفع
-            if self.env.ref('smart_hr.special_payslip_type_holidays') in self.payslip_type_ids:
-                holidays_line_ids, salary_net_holidays = self.get_special_difference_holidays()
+            if payslip.payslip_type == 'holidays':
+                holidays_line_ids, salary_net_holidays = payslip.get_special_difference_holidays()
                 line_ids += holidays_line_ids
                 salary_net += salary_net_holidays
             # فروقات خارج الدوام
-            if self.env.ref('smart_hr.special_payslip_type_overtime') in self.payslip_type_ids:
-                overtime_line_ids, salary_net_overtime = self.get_special_difference_overtime()
+            if payslip.payslip_type == 'overtime':
+                overtime_line_ids, salary_net_overtime = payslip.get_special_difference_overtime()
                 line_ids += overtime_line_ids
                 salary_net += salary_net_overtime
 
             # فروقات الأنتداب
-            if self.env.ref('smart_hr.special_payslip_type_allowance') in self.payslip_type_ids:
-                deputation_line_ids, salary_net_deputation = self.get_special_difference_deputation()
+            if payslip.payslip_type == 'deputation':
+                deputation_line_ids, salary_net_deputation = payslip.get_special_difference_deputation()
                 line_ids += deputation_line_ids
                 salary_net += salary_net_deputation
             # فروقات النقل
-            if self.env.ref('smart_hr.special_payslip_type_tranfert') in self.payslip_type_ids:
-                tranfert_line_ids, salary_net_tranfert = self.get_special_difference_transfert()
+            if payslip.payslip_type == 'tranfert':
+                tranfert_line_ids, salary_net_tranfert = payslip.get_special_difference_transfert()
                 line_ids += tranfert_line_ids
                 salary_net += salary_net_tranfert
 
             sequence = 1
-            for line_id in line_ids:
-                vals = {'name': line_id['name'],
+            for line in line_ids:
+                vals = {'name': line['name'],
                         'slip_id': payslip.id,
                         'employee_id': employee.id,
                         'rate': 0.0,
-                        'amount': line_id['amount'],
-                        'category': 'difference',
-                        'number_of_days': line_id['number_of_days'],
-                        'number_of_hours': line_id['number_of_hours'],
-                        'type': 'allowance',
+                        'amount': line['amount'],
+                        'number_of_days': line['number_of_days'],
+                        'number_of_hours': line['number_of_hours'],
+                        'category': line.get('category', False) or 'difference',
+                        'type': line['type'],
                         'sequence': sequence
                         }
                 lines.append(vals)
@@ -351,7 +456,6 @@ class HrPayslip(models.Model):
         salary_grid, basic_salary = employee.get_salary_grid_id(False)
         if not salary_grid:
             return
-
         holidays_id = self.env['hr.holidays'].search([('state', 'in', ('done', 'cutoff')),
                                                       ('employee_id', '=', self.employee_id.id),
                                                       ('with_advanced_salary', '=', True),
@@ -359,7 +463,9 @@ class HrPayslip(models.Model):
         if holidays_id:
             self.holiday_id = holidays_id.id
             salary_multiplication = holidays_id.salary_number
+            # --------------
             # 1- الراتب الأساسي
+            # --------------
             amount = basic_salary * salary_multiplication
             basic_salary_val = {'name': u'الراتب الأساسي',
                                 'employee_id': employee.id,
@@ -372,10 +478,12 @@ class HrPayslip(models.Model):
                                 }
             line_ids.append(basic_salary_val)
             salary_net += amount
+            # --------------
             # 2- البدلات القارة
-            for allowance in salary_grid.allowance_ids:
-                amount = allowance.get_value(employee.id) * salary_multiplication
-                allowance_val = {'name': allowance.allowance_id.name,
+            # --------------
+            for allowance in employee.get_employee_allowances(salary_grid):
+                amount = allowance['amount'] * salary_multiplication
+                allowance_val = {'name': allowance['allowance_name'],
                                  'employee_id': employee.id,
                                  'rate': 0.0,
                                  'number_of_days': 30.0 * salary_multiplication,
@@ -386,8 +494,10 @@ class HrPayslip(models.Model):
                                  }
                 line_ids.append(allowance_val)
                 salary_net += amount
+            # --------------
             # 3- التقاعد
-            retirement_amount = basic_salary * salary_grid.retirement / 100.0 * salary_multiplication
+            # --------------
+            retirement_amount = -1.0 * basic_salary * salary_grid.retirement / 100.0 * salary_multiplication
             if retirement_amount:
                 retirement_val = {'name': 'التقاعد',
                                   'employee_id': employee.id,
@@ -400,8 +510,10 @@ class HrPayslip(models.Model):
                                   }
                 line_ids.append(retirement_val)
                 salary_net += retirement_amount
+            # --------------
             # 4- التأمينات
-            insurance_amount = basic_salary * salary_grid.insurance / 100.0 * salary_multiplication
+            # --------------
+            insurance_amount = -1.0 * basic_salary * salary_grid.insurance / 100.0 * salary_multiplication
             if insurance_amount:
                 insurance_val = {'name': 'التأمين',
                                  'employee_id': employee.id,
@@ -414,107 +526,17 @@ class HrPayslip(models.Model):
                                  }
                 line_ids.append(insurance_val)
                 salary_net += insurance_amount
-
+            # --------------
+            # 5- صافي الراتب
+            # --------------
+            salary_net_val = {'name': u'صافي الراتب',
+                              'employee_id': employee.id,
+                              'rate': 0.0,
+                              'number_of_days': 30.0 * salary_multiplication,
+                              'number_of_hours': 0.0,
+                              'amount': salary_net,
+                              'category': 'salary_net',
+                              'type': 'salary_net',
+                              }
+            line_ids.append(salary_net_val)
         return line_ids, salary_net
-
-
-class HrSpecialPayslipType(models.Model):
-    _name = 'hr.special.payslip.type'
-    name = fields.Char(string='نوع المسير')
-
-
-class HrPayslipRun(models.Model):
-    _name = 'hr.payslip.run'
-    _inherit = ['hr.payslip.run', 'mail.thread']
-
-    special_state = fields.Selection([('new', 'جديد'),
-                                      ('verify', 'المراجعة'),
-                                      ('division_director', 'مدير الشعبة'),
-                                      ('hrm', 'مدير الشؤون الموظفين'),
-                                      ('done', 'منتهية'),
-                                      ], 'الحالة', default='new', select=1, readonly=1, copy=False)
-    is_special = fields.Boolean(string='مسير خاص')
-    speech_number = fields.Char(string=u'رقم الخطاب', readonly=1, states={'draft': [('readonly', 0)]})
-    speech_date = fields.Date(string=u'تاريخ الخطاب', readonly=1, states={'draft': [('readonly', 0)]})
-    speech_file = fields.Binary(string=u'صورة الخطاب', attachment=True, readonly=1, states={'draft': [('readonly', 0)]})
-    payslip_type_ids = fields.Many2many('hr.special.payslip.type', string=u'نوع المسير', readonly=1,
-                                        states={'draft': [('readonly', 0)]})
-
-    @api.multi
-    def special_compute_sheet(self):
-        self.slip_ids.unlink()
-        payslip_obj = self.env['hr.payslip']
-        self.compute_employee_ids()
-        for employee in self.employee_ids:
-            payslip_val = {'employee_id': employee.id,
-                           'period_id': self.period_id.id,
-                           'name': _('راتب موظف %s لشهر %s') % (employee.display_name, self.period_id.name),
-                           'payslip_run_id': self.id,
-                           'date_from': self.date_start,
-                           'date_to': self.date_end,
-                           'is_special': self.is_special,
-                           'speech_number': self.speech_number,
-                           'speech_date': self.speech_date,
-                           'speech_file': self.speech_file,
-                           'payslip_type_ids': [(6, 0, [payslip_type.id for payslip_type in self.payslip_type_ids])]
-                           }
-            payslip = payslip_obj.create(payslip_val)
-            payslip.onchange_employee()
-            payslip.special_compute_sheet()
-
-    @api.multi
-    def action_special_new(self):
-        self.ensure_one()
-        self.state = 'draft'
-        self.special_state = 'new'
-        for slip in self.slip_ids:
-            slip.action_special_new()
-
-    @api.multi
-    def action_special_verify(self):
-        self.ensure_one()
-        self.special_compute_sheet()
-        self.number = self.env['ir.sequence'].get('seq.hr.payslip')
-        for slip in self.slip_ids:
-            slip.action_special_verify()
-        self.state = 'verify'
-        self.special_state = 'verify'
-
-    @api.multi
-    def action_special_division_director(self):
-        self.ensure_one()
-        self.special_state = 'division_director'
-        for slip in self.slip_ids:
-            slip.action_special_division_director()
-
-    @api.multi
-    def action_special_hrm(self):
-        self.ensure_one()
-        self.special_state = 'hrm'
-        for slip in self.slip_ids:
-            slip.action_special_hrm()
-
-    @api.multi
-    def action_special_done(self):
-        self.ensure_one()
-        self.state = 'done'
-        self.special_state = 'done'
-        for slip in self.slip_ids:
-            slip.action_special_done()
-        self.generate_file()
-
-    @api.multi
-    def button_refuse_division_director(self):
-        self.ensure_one()
-        self.state = 'verify'
-        self.special_state = 'verify'
-        for slip in self.slip_ids:
-            slip.button_refuse_division_director()
-
-    @api.multi
-    def button_refuse_verify(self):
-        self.ensure_one()
-        self.state = 'draft'
-        self.special_state = 'new'
-        for slip in self.slip_ids:
-            slip.button_refuse_verify()
