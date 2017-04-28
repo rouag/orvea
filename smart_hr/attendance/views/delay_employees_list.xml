@@ -2,7 +2,7 @@
 <openerp>
 	<data>
 
-		<template id="delay_employees_list">
+		<template id="report_delay_employees_list">
 			<t t-call="report.html_container">
 				<t t-foreach="docs" t-as="o">
 					<t t-call="smart_hr.external_layout_hr">

@@ -65,7 +65,7 @@
 							groups="smart_hr.group_hrm" type="object" states="done" icon="fa-print"
 							class="oe_inline oe_stat_button" />
 
-						<button name="%(delay_employees_list)d" string="طباعة البيان"
+						<button name="%(delay_employees_list_report)d" string="طباعة البيان"
 							groups="smart_hr.group_hrm" type="action" states="done" icon="fa-print"
 							class="oe_inline oe_stat_button" />
 
@@ -190,7 +190,7 @@
 							groups="smart_hr.group_hrm" type="object" states="done" icon="fa-print"
 							class="oe_inline oe_stat_button" />
 							
-						<button name="%(absences_employees_list)d" string="طباعة البيان"
+						<button name="%(absences_employees_list_report)d" string="طباعة البيان"
 							groups="smart_hr.group_hrm" type="action" states="done" icon="fa-print"
 							class="oe_inline oe_stat_button" />
 						<field name="state" widget="statusbar" statusbar_visible="dm,audit,hrm,done,refuse" />
