@@ -1721,7 +1721,6 @@ class HrHolidaysStatus(models.Model):
         if self.pension_percent < 0 or self.pension_percent > 100:
             raise ValidationError(u"نسبة راتب التقاعد خاطئة ")
 
-
 class HrHolidaysStatusEntitlement(models.Model):
     _name = 'hr.holidays.status.entitlement'
     _description = u'أنواع الاستحقاقات'

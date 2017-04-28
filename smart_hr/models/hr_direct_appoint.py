@@ -121,7 +121,8 @@ class HrDirectAppoint(models.Model):
         self.ensure_one()
         if self.date_direct_action > datetime.today().strftime('%Y-%m-%d'):
             raise ValidationError(u"لا يمكن  التفعيل  ،  تاريخ المباشرة يجب أن يكون أصغر  أو مساوي لتاريخ اليوم ")
-        self.appoint_id.action_activate()
+        if self.appoint_id:
+            self.appoint_id.action_activate()
         title = u" إشعار بمباشرة "
         msg = u"' إشعار بمباشرة " + unicode(self.employee_id.display_name) + u"'"
         group_id = self.env.ref('smart_hr.group_department_employee')
