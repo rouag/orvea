@@ -9,7 +9,6 @@ class hrHolidaysDecision(models.Model):
     _inherit = ['mail.thread']
     _rec_name = 'employee_id'
 
-
     employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', required=1)
     number = fields.Char(readonly=True, string=' الرقم الوظيفي')
     job_id = fields.Many2one('hr.job', readonly=True, string=' الوظيفة')
@@ -31,6 +30,83 @@ class hrHolidaysDecision(models.Model):
     order_date = fields.Date(string='تاريخ الخطاب', required=1) 
     file_decision = fields.Binary(string='الخطاب', attachment=True)
     file_decision_name = fields.Char(string='اسم الخطاب')
+    decission_id = fields.Many2one('hr.decision', string=u'القرارات')
+
+    @api.multi
+    def open_decission_holidays_direct(self):
+        decision_obj= self.env['hr.decision']
+        if self.decission_id:
+            decission_id = self.decission_id.id
+        else:
+            decision_type_id = 1
+            decision_date = fields.Date.today() #
+            if self.holiday_id.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_normal').id:
+                decision_type_id = self.env.ref('smart_hr.data_hr_holiday_status_normal_direct').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id:
+                decision_type_id = self.env.ref('smart_hr.data_exceptionnel_leave_direct').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_illness').id:
+                decision_type_id = self.env.ref('smart_hr.data_leave_satisfactory_direct').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional').id:
+                decision_type_id = self.env.ref('smart_hr.data_leave_escort_direct').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_sport').id:
+                decision_type_id = self.env.ref('smart_hr.data_leave_sport_direct').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_study').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_status_study_direct').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_legal_absent').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_status_legal_absent_direct').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_compelling').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_status_compelling_direct').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional_accompaniment').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_status_exceptional_accompaniment_direct').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_adoption').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_status_adoption_direct').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_child_birth_dad').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_child_birth_dad_direct').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_rescue').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_status_rescue_direct').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_death').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_death_direct').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_dialysis').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_dialysis_direct').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_literaty').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_literaty_direct').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_exam').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_exam_direct').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_contractor').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_status_contractor_direct').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_maternity').id:
+                decision_type_id = self.env.ref('smart_hr.data_leave_motherhood_direct').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_childbirth').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_status_childbirth_direct').id
+
+            # create decission
+            decission_val={
+                #'name': self.num_decision,
+                'decision_type_id':decision_type_id,
+                'date':decision_date,
+                'employee_id' :self.employee_id.id }
+            decision = decision_obj.create(decission_val)
+            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'holidays_direct')
+            decission_id = decision.id
+            self.decission_id =  decission_id
+        return {
+            'name': _(u'قرار إجازة'),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'hr.decision',
+            'view_id': self.env.ref('smart_hr.hr_decision_wizard_form').id,
+            'type': 'ir.actions.act_window',
+            'res_id': decission_id,
+            'target': 'new'
+            }
+
+
+
+
+
+
+
+
 
     @api.multi
     def unlink(self):

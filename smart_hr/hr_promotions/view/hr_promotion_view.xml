@@ -320,7 +320,9 @@
 							attrs="{'invisible': [('done_date', '!=', False)]}" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 							states="done"
 							groups="smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion,smart_hr.group_promotion_checker" />
-
+<button name="open_decission_promotion_employee" string="معاينة القرار"
+							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+							
 						<field name="state" widget="statusbar"
 							statusbar_visible="employee_confirmed,done,refuse,cancel" />
 					</header>

@@ -228,7 +228,7 @@ class HrDecision(models.Model):
                 decision_text = decision_text.replace('DEPARTEMENT', unicode(department_id))
 
                 if object_type == 'holidays' :
-                    
+
                     holidays_line = self.env['hr.holidays'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
                     if holidays_line :
                         duration = holidays_line.duration or ""
@@ -255,6 +255,43 @@ class HrDecision(models.Model):
                         decision_text = decision_text.replace('DURATION', unicode(duration))
                         decision_text = decision_text.replace('FROMDET', unicode(fromdate))
                         decision_text = decision_text.replace('ENDDET', unicode(date_to))
+
+                if object_type == 'holidays_direct':
+
+                    holidays_line = self.env['hr.holidays.decision'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
+                    if holidays_line :
+                        duration = holidays_line.duration or ""
+                        numero_holidays = holidays_line.name or ""
+
+                        if holidays_line.date_from:
+                            date_from = self._get_hijri_date(holidays_line.date_from, '-')
+                            date_from = str(date_from).split('-')
+                            date_from = date_from[2] + '-' + date_from[1] + '-' + date_from[0] or ""
+                        fromdate = date_from or ""
+                        if holidays_line.date_to:
+                            date_to = self._get_hijri_date(holidays_line.date_to, '-')
+                            date_to = str(date_to).split('-')
+                            date_to = date_to[2] + '-' + date_to[1] + '-' + date_to[0] or ""
+                        date_to = date_to or ""
+                        if holidays_line.date:
+                            date_decision = self._get_hijri_date(holidays_line.date, '-')
+                            date_decision = str(date_decision).split('-')
+                            date_decision = date_decision[2] + '-' + date_decision[1] + '-' + date_decision[0] or ""
+                        date_decision = date_decision or ""
+
+                        if holidays_line.order_date:
+                            order_date = self._get_hijri_date(holidays_line.order_date, '-')
+                            order_date = str(order_date).split('-')
+                            order_date = order_date[2] + '-' + order_date[1] + '-' + order_date[0] or ""
+                        order_date = order_date or ""
+
+                        decision_text = decision_text.replace('date_decision', unicode(date_decision))
+                        decision_text = decision_text.replace('DURATION', unicode(duration))
+                        decision_text = decision_text.replace('FROMDET', unicode(fromdate))
+                        decision_text = decision_text.replace('ENDDET', unicode(date_to))
+                        decision_text = decision_text.replace('ORDERDAT', unicode(order_date))
+                        decision_text = decision_text.replace('numeroholidays', unicode(numero_holidays))
+
 
                 if object_type == 'holidays_cut' :
                     holidays_line = self.env['hr.holidays.cancellation'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
@@ -311,11 +348,6 @@ class HrDecision(models.Model):
                         decision_text = decision_text.replace('TYPE', unicode(type_holidays))
                         decision_text = decision_text.replace('DURATION', unicode(duration))
                         decision_text = decision_text.replace('FROMDET', unicode(fromdate))
-
-
-
-
-
 
                 if object_type == 'lend' :
                     lend_line = self.env['hr.employee.lend'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)

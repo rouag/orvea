@@ -436,6 +436,7 @@ class HrHolidays(models.Model):
             decission_id = self.decission_id.id
         else:
             decision_type_id = 1
+            
             decision_date = fields.Date.today() # new date
             if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_normal').id:
                 decision_type_id = self.env.ref('smart_hr.data_normal_leave').id
@@ -448,7 +449,7 @@ class HrHolidays(models.Model):
             if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_sport').id:
                 decision_type_id = self.env.ref('smart_hr.data_leave_sport').id
             if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_study').id:
-                decision_type_id = self.env.ref('smart_hr.data_leave_motherhood').id
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_status_study').id
             if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_legal_absent').id:
                 decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_status_legal_absent').id
             if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_compelling').id:
@@ -471,8 +472,14 @@ class HrHolidays(models.Model):
                 decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_exam').id
             if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_contractor').id:
                 decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_status_contractor').id
-            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_compensation').id:
-                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_compensation').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_maternity').id:
+                decision_type_id = self.env.ref('smart_hr.data_leave_motherhood').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_childbirth').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_status_childbirth').id
+                
+                
+
+ 
 
 
             # create decission

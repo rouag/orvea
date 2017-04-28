@@ -130,7 +130,7 @@ class hrIncrease(models.Model):
                 if new_degree_code < 10:
                     new_degree_code = '0' + str(new_degree_code)
                 new_degree_code = str(new_degree_code)
-                new_degree_id = degree_obj.search([('code', '=', new_degree_code),('grade_id','=',line.grade_id.id)], limit=1)
+                new_degree_id = degree_obj.search([('code', '=', new_degree_code)], limit=1)
                 print'new_degree_idnew_degree_id',new_degree_id
                 if new_degree_id:
                     line.new_degree_id = new_degree_id.id
@@ -257,7 +257,7 @@ class hrIncrease(models.Model):
                 if new_degree_code < 10:
                     new_degree_code = '0' + str(new_degree_code)
                 new_degree_code = str(new_degree_code)
-                new_degree_id = degree_obj.search([('code', '=', new_degree_code),('grade_id','=',line.grade_id.id)], limit=1)
+                new_degree_id = degree_obj.search([('code', '=', new_degree_code)], limit=1)
                 print'new_degree_idnew_degree_id',new_degree_id
                 if new_degree_id:
                     line.new_degree_id = new_degree_id.id
@@ -303,7 +303,7 @@ class hrIncrease(models.Model):
                 if new_degree_code < 10:
                     new_degree_code = '0' + str(new_degree_code)
                 new_degree_code = str(new_degree_code)
-                new_degree_id = degree_obj.search([('code', '=', new_degree_code),('grade_id','=',line.grade_id.id)], limit=1)
+                new_degree_id = degree_obj.search([('code', '=', new_degree_code)], limit=1)
                 print'new_degree_idnew_degree_id',new_degree_id
                 if new_degree_id:
                     line.new_degree_id = new_degree_id.id
@@ -335,7 +335,7 @@ class hrIncrease(models.Model):
                 if new_degree_code < 10:
                     new_degree_code = '0' + str(new_degree_code)
                 new_degree_code = str(new_degree_code)
-                new_degree_id = degree_obj.search([('code', '=', new_degree_code),('grade_id','=',line.grade_id.id)], limit=1)
+                new_degree_id = degree_obj.search([('code', '=', new_degree_code)], limit=1)
                 print'new_degree_idnew_degree_id',new_degree_id
                 if new_degree_id:
                     line.new_degree_id = new_degree_id.id
@@ -426,17 +426,14 @@ class hrEmployeeIncreasePercent(models.Model):
     salary_grid_type_id = fields.Many2one('salary.grid.type', related='increase_id.salary_grid_type_id')
     history_line_id = fields.Many2one('hr.employee.history')
     _sql_constraints = [
-        ('unique_deprivation_emp', 'UNIQUE(increase_id,periode_increase,employee_id)', u"يجب الا يتكرر استحقاق العلاوة لنفس الموظف"),
+        ('unique_deprivation_emp', 'UNIQUE(periode_increase,employee_id)', u"يجب الا يتكرر استحقاق العلاوة لنفس الموظف"),
     ]
   
     @api.multi
     def increase_percent_count(self):
         for rec in self:
             increase_count = rec.new_basic_salary -rec.basic_salary
-            if increase_count < 0.0 :
-                rec.increase_percent = 0.00
-            else :
-                rec.increase_percent = increase_count
+            rec.increase_percent = increase_count
             
 class hrEmployeeIncreaseError(models.Model):
     _name = 'hr.employee.increase.error'

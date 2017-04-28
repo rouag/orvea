@@ -30,7 +30,10 @@
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" states="waiting" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 							groups="smart_hr.group_hrm" />
-
+	<button name="open_decission_holidays_direct" string="معاينة القرار"
+							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+							
+							
 						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done,cancel" />
 					</header>
 					<sheet>
