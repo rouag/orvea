@@ -20,7 +20,7 @@ class HrLoan(models.Model):
     def _compute_residual_amount(self):
         residual_amount = self.amount
         for line in self.line_ids:
-            if line.state=="done":
+            if line.state == "done":
                 residual_amount -= line.amount
         self.residual_amount = residual_amount
 
@@ -136,15 +136,10 @@ class HrLoan(models.Model):
         loans = self.search([('employee_id', '=', employee_id), ('state', '=', 'progress')])
         res = []
         for loan in loans:
-            # إذا تم تجاوز هذا الشهر  لا يؤخذ بعين الإعتبار لأنه تم حذفه وتعويضه بشهر أخر
-            # إذا تم سداد كامل المبلغ يجب أن يؤخذ باقي المبلغ
-            if loan.payment_full_amount:
-                res.append({'name': u'سداد كامل مبلغ  القرض رقم %s' % loan.name, 'amount': loan.residual_amount})
-            else:
-                # just add amount for current month
-                lines = loan.line_ids.search([('loan_id', '=', loan.id), ('date_start', '=', date_from), ('date_stop', '=', date_to)])
-                if lines:
-                    res.append({'name': u'قرض  رقم : %s' % loan.name, 'amount': lines[0].amount})
+            # just add amount for current month
+            lines = loan.line_ids.search([('loan_id', '=', loan.id), ('date_start', '=', date_from), ('date_stop', '=', date_to)])
+            if lines:
+                res.append({'name': u'قرض  رقم : %s' % loan.name, 'amount': lines[0].amount})
         return res
 
     @api.multi
@@ -153,13 +148,8 @@ class HrLoan(models.Model):
         loans = self.search([('employee_id', '=', employee_id), ('state', '=', 'progress')])
         for loan in loans:
             if not across_loan:
-                # إذا تم سداد كامل المبلغ يجب أن يتم تعديل التاريخ في كل الأشهر
-                if loan.payment_full_amount:
-                    loan.line_ids.write({'date': datetime.now().date(), 'state': 'done'})
-                # else just update date for current month
-                else:
-                    lines = loan.line_ids.search([('date_start', '=', date_from), ('date_stop', '=', date_to)])
-                    lines.write({'date': datetime.now().date(), 'state': 'done'})
+                lines = loan.line_ids.search([('date_start', '=', date_from), ('date_stop', '=', date_to)])
+                lines.write({'date': datetime.now().date(), 'state': 'done'})
                 # if residual_amount = 0 make this loan as done
                 if loan.residual_amount == 0.0:
                     loan.state = 'done'
