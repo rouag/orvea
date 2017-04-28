@@ -415,7 +415,7 @@ class HrPayslip(models.Model):
             # generate  lines
             employee = payslip.employee_id
             # search the salary_grids for this employee
-            grid_id, basic_salary = employee.get_salary_grid_id(payslip.date_from)
+            grid_id, basic_salary = employee.get_salary_grid_id(False)
             if not grid_id:
                 continue
             # compute
