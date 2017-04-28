@@ -198,15 +198,20 @@ class HrScholarship(models.Model):
             if self.employee_id.service_duration < needed_service_duration.service_duration:
                 raise ValidationError(u"ليس لديك السنوات المطلوبة في الخدمة")
             education_level_ids = []
-            if self.diplom_type == 'hight':
-                education_level_ids = self.env['hr.employee.job.education.level'].search(
-                    [('employee_id', '=', self.employee_id.id),
-                     ('level_education_id', 'in', [self.env.ref('smart_hr.certificate_baccalaureate').id,
-                                                   self.env.ref('smart_hr.certificate_licence').id])])
-            if self.diplom_type == 'middle':
-                education_level_ids = self.env['hr.employee.job.education.level'].search(
-                    [('employee_id', '=', self.employee_id.id),
-                     ('level_education_id', '=', self.env.ref('smart_hr.certificate_after_secondary_education').id)])
+#         في الابتعاث يجب ان يكون الشخص المبتعث لايقل مؤهله التعليمي عن الثانوي
+        if self.employee_id:
+            if self.employee_id.education_level_ids:
+                education_level_ids = self.employee_id.education_level_ids
+                secondary_education_exit = False
+                for level in education_level_ids:
+                    if level.level_education_id.id == self.env.ref('smart_hr.secondary_education').id or level.level_education_id.secondary is True:
+                        secondary_education_exit = True
+                        break
+                if not secondary_education_exit:
+                    raise ValidationError(u"يجب ان لا يقل المؤهل التعليمي للمبتعث عن الثانوي")
+            else:
+                raise ValidationError(u"الرجاء ا دخال المستويات التعليمية للموظف")
+
 
     @api.multi
     def button_extend(self):
