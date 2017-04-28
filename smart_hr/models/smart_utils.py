@@ -45,7 +45,7 @@ class SmartUtils(models.Model):
                 days += len(listset)
         return days
 
-    def compute_duration_difference(self, employee_id, date_from, date_to, normal_day, weekend, holidays):
+    def compute_duration_difference(self, employee_id, date_from, date_to, normal_day, weekend, holidays, take_30=True):
         days = 0
         dayDelta = timedelta(days=1)
         res = []
@@ -84,7 +84,7 @@ class SmartUtils(models.Model):
                 if days < 0:
                     days = 0
                 # if days is correspending to a full month than we must return 30
-                if days == 29:
+                if take_30 and days == 29:
                     days = 30.0
                 mydict['days'] = days
                 res.append(mydict)
