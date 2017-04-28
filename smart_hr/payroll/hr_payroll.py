@@ -16,17 +16,11 @@ class HrPayslipRun(models.Model):
     _name = 'hr.payslip.run'
     _inherit = ['hr.payslip.run', 'mail.thread']
 
-    error_ids = fields.One2many('hr.payslip.run.error', 'payslip_run_id', string='تقرير الموظفين المسثنين من المسير الجماعي', readonly=1)
-    count_slip_ids = fields.Integer(string='count slip ids')
-
     @api.multi
     def get_default_period_id(self):
         month = get_current_month_hijri(HijriDate)
         date = get_hijri_month_start(HijriDate, Umalqurra, int(month))
-        period_id = self.env['hr.period'].search([('date_start', '<=', date),
-                                                       ('date_stop', '>=', date),
-                                                       ]
-                                                      )
+        period_id = self.env['hr.period'].search([('date_start', '<=', date),('date_stop', '>=', date)])
         return period_id
 
     @api.one
@@ -49,12 +43,22 @@ class HrPayslipRun(models.Model):
                               ], 'الحالة', select=1, readonly=1, copy=False)
 
     amount_total = fields.Float(string='الإجمالي', store=True, readonly=True, compute='_amount_all')
+    error_ids = fields.One2many('hr.payslip.run.error', 'payslip_run_id', string='تقرير الموظفين المسثنين من المسير الجماعي', readonly=1)
+    count_slip_ids = fields.Integer(string='count slip ids')
+
+    slip_no_zero_ids = fields.One2many('hr.payslip', 'payslip_run_id', string='Payslips', domain=[('salary_net', '!=', 0.0)],
+                                       readonly=True, states={'draft': [('readonly', False)]})
+
+    slip_zero_ids = fields.One2many('hr.payslip', 'payslip_run_id', string='Payslips With Zero Net', domain=[('salary_net', '=', False)],
+                                    readonly=True, states={'draft': [('readonly', False)]})
+    # fields used to generate bank file
     bank_file = fields.Binary(string='الملف البنكي', attachment=True)
     bank_file_name = fields.Char(string='مسمى الملف البنكي')
+    # fields used for filter
     department_level1_id = fields.Many2one('hr.department', string='الفرع', readonly=1, states={'draft': [('readonly', 0)]})
     department_level2_id = fields.Many2one('hr.department', string='القسم', readonly=1, states={'draft': [('readonly', 0)]})
     department_level3_id = fields.Many2one('hr.department', string='الشعبة', readonly=1, states={'draft': [('readonly', 0)]})
-    salary_grid_type_id = fields.Many2many('salary.grid.type', string='الأصناف', readonly=1, states={'draft': [('readonly', 0)]},)
+    salary_grid_type_id = fields.Many2many('salary.grid.type', string='الأصناف', readonly=1, states={'draft': [('readonly', 0)]})
 
     @api.onchange('period_id')
     def onchange_period_id(self):
@@ -201,7 +205,7 @@ class HrPayslipRun(models.Model):
         filler = ''.rjust(65, ' ')
         file_dec = ''
         file_dec += u'%s%s%s%s%s%s%s%s%s%s\n' % (header_key, calendar_type, send_date, value_date, total_amount, total_employees, account_number, file_parameter, file_sequence, filler)
-        for playslip in self.slip_ids:
+        for playslip in self.slip_no_zero_ids:
             employee = playslip.employee_id
             # add line for each playslip
             employee_number = employee.number.ljust(12, ' ')
@@ -698,7 +702,7 @@ class HrPayslip(models.Model):
             # --------------
             # - الضابط الوحيد هو إن كان الموظف لديه إجازة ويجب أن لا يقل ما يصرف له عن مبلغ محدد في إعدادات نوع الإجازة
             # get salary_net line
-            salary_net_line = self.env['hr.payslip.line'].search([('slip_id', '=', payslip.id),('type', '=', 'salary_net')])
+            salary_net_line = self.env['hr.payslip.line'].search([('slip_id', '=', payslip.id), ('type', '=', 'salary_net')])
             for constrainte_line in payslip.contraintes_ids:
                 # case 1: check min_amount
                 constrainte_name = constrainte_line.constrainte_name

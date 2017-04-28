@@ -62,7 +62,7 @@
 											
 											
 											<t t-set="total_allowances_type" t-value="0" />
-											<t t-foreach="get_all_employees(type.id,o.slip_ids)" t-as="line">
+											<t t-foreach="get_all_employees(type.id,o.slip_no_zero_ids)" t-as="line">
 													<t t-set="basic_salary" t-value="line.employee_id.get_salary_grid_id(False)[1]" />
 												<tr>
 													<td>
