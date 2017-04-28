@@ -111,7 +111,7 @@ class HrHolidays(models.Model):
     # decision
     need_decision = fields.Boolean('status_id need decision', related='holiday_status_id.need_decision')
     num_decision = fields.Char(string=u'رقم القرار',related='decission_id.name')
-    date_decision = fields.Date(string=u'تاريخ القرار',related='decission_id.date')
+    date_decision = fields.Date(string=u'تاريخ القرار')
     childbirth_date = fields.Date(string=u'تاريخ ولادة الطفل')
     birth_certificate = fields.Binary(string=u'شهادة الميلاد', attachment=True)
     extension_period = fields.Integer(string=u'مدة التمديد', default=0)
