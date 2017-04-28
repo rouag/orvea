@@ -192,14 +192,13 @@ class HrScholarship(models.Model):
         self.ensure_one()
         #         constraint service_duration and education level
         date_from = fields.Date.from_string(self.date_from)
-        needed_service_duration = self.env['hr.scholarship.service.duration'].search(
-            [('scholarship_type', '=', self.scholarship_type.id), ('diplom_type', '=', self.diplom_type)], limit=1)
-        if needed_service_duration:
-            if self.employee_id.service_duration < needed_service_duration.service_duration:
-                raise ValidationError(u"ليس لديك السنوات المطلوبة في الخدمة")
-            education_level_ids = []
-#         في الابتعاث يجب ان يكون الشخص المبتعث لايقل مؤهله التعليمي عن الثانوي
         if self.employee_id:
+            needed_service_duration = self.env['hr.scholarship.service.duration'].search(
+                [('scholarship_type', '=', self.scholarship_type.id), ('diplom_type', '=', self.diplom_type)], limit=1)
+            if needed_service_duration:
+                if self.employee_id.service_duration < needed_service_duration.service_duration:
+                    raise ValidationError(u"ليس لديك السنوات المطلوبة في الخدمة")
+#         في الابتعاث يجب ان يكون الشخص المبتعث لايقل مؤهله التعليمي عن الثانوي
             if self.employee_id.education_level_ids:
                 education_level_ids = self.employee_id.education_level_ids
                 secondary_education_exit = False
@@ -211,7 +210,15 @@ class HrScholarship(models.Model):
                     raise ValidationError(u"يجب ان لا يقل المؤهل التعليمي للمبتعث عن الثانوي")
             else:
                 raise ValidationError(u"الرجاء ا دخال المستويات التعليمية للموظف")
-
+            domain = [
+                ('date_from', '<=', self.date_to),
+                ('date_to', '>=', self.date_from),
+                ('employee_id', '=', self.employee_id.id),
+                ('state', '=', 'done'),
+            ]
+            in_holiday = self.env['hr.holidays'].search(domain)
+            if in_holiday:
+                raise ValidationError(u"هناك تداخل في التاريخ مع إجازة")
 
     @api.multi
     def button_extend(self):

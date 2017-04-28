@@ -1491,7 +1491,16 @@ class HrHolidays(models.Model):
             if not level_fount:
                 raise ValidationError(u"لم تتحصل على المستوى الدراسي المطلوب.")
             
-        # Constraintes for service years required
+        domain = [
+                ('date_from', '<=', self.date_to),
+                ('date_to', '>=', self.date_from),
+                ('employee_id', '=', self.employee_id.id),
+                ('state', '=', 'done'),
+            ]
+        in_scholarship = self.env['hr.scholarship'].search(domain)
+        if in_scholarship:
+                raise ValidationError(u"هناك تداخل في التاريخ مع ابتعاث")
+                    # Constraintes for service years required
         if self.holiday_status_id.service_years_required * 354 > self.employee_id.service_duration:
                 raise ValidationError(u" ليس لديك" + str(self.holiday_status_id.service_years_required) + u"سنوات خدمة  ")
             
