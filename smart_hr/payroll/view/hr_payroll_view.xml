@@ -361,7 +361,17 @@
 								<field name="count_slip_ids" invisible="1"/>
 							</page>
 							<page  string="المسيّرات الإفرادية">
-								<field name="slip_ids" readonly='1' context="{'form_view_ref' : 'smart_hr.view_hr_payslip_form'}">
+								<field name="slip_no_zero_ids" readonly='1' context="{'form_view_ref' : 'smart_hr.view_hr_payslip_form'}">
+									<tree>
+										<field name="number" string="التسلسل" />
+										<field name="employee_id" />
+										<field name="salary_net"/>
+										<field name="state" />
+									</tree>
+								</field>
+							</page>
+							<page  string="مسيّرات راتبهم مساوي لصفر" attrs="{'invisible':[('state','!=', 'draft')]}">
+								<field name="slip_zero_ids" readonly='1' context="{'form_view_ref' : 'smart_hr.view_hr_payslip_form'}">
 									<tree create='0' edit='0' colors="red:salary_net==0.0;">
 										<field name="number" string="التسلسل" />
 										<field name="employee_id" />

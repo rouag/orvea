@@ -66,12 +66,14 @@ class MessierSalaires(report_sxw.rml_parse):
             if line.category == 'deduction':
                 sum += line.amount
         return format(sum, '.2f')
+
     def _get_salary_net(self, line_ids):
         sum = 0
         for line in line_ids:
             if line.category == 'salary_net':
                 sum = line.amount
         return format(sum, '.2f')
+
     def _get_hijri_date(self, date, separator):
         '''
         convert georging date to hijri date
@@ -99,9 +101,6 @@ class ReportPayslipExtension(report_sxw.rml_parse):
             'get_hijri_date': self._get_hijri_date,
             'get_all_types': self._get_all_types,
             'get_all_employees': self._get_all_employees,
-
-
-
         })
 
     def _get_all_types(self):
@@ -109,15 +108,13 @@ class ReportPayslipExtension(report_sxw.rml_parse):
         search_ids = type_pbj.search(self.cr, self.uid, [])
         return type_pbj.browse(self.cr, self.uid, search_ids)
 
-    def _get_all_employees(self, type_id, slip_ids):
-        payslip = []
-        for rec in slip_ids:
-            if rec.employee_id.type_id.id == type_id:
-                payslip.append(rec)
-        return payslip
+    def _get_all_employees(self, type_id, slip_no_zero_ids):
+        payslips = []
+        for payslip in slip_no_zero_ids:
+            if payslip.employee_id.type_id.id == type_id:
+                payslips.append(payslip)
+        return payslips
 
- 
- 
     def _get_hijri_date(self, date, separator):
         '''
         convert georging date to hijri date
@@ -135,9 +132,6 @@ class PayslipExtensionReport(osv.AbstractModel):
     _inherit = 'report.abstract_report'
     _template = 'smart_hr.report_payslip_extension'
     _wrapped_report_class = ReportPayslipExtension
-
-
-
 
 
 class ReportPayslipChangement(report_sxw.rml_parse):

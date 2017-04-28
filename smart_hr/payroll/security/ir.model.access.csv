@@ -61,7 +61,7 @@ access_transfert_appoint_allowance,transfert_appoint_allowance,model_transfert_a
 
 access_hr_transfert_allowance,hr_transfert_allowance,model_hr_transfert_allowance,,1,1,1,1
 
-access_hr_special_payslip_type,hr_special_payslip_type,model_hr_special_payslip_type,,1,1,1,1
+
 access_hr_payslip_stop_run,hr_payslip_stop_run,model_hr_payslip_stop_run,,1,1,1,1
 access_hr_payslip_stop_line,hr_payslip_stop_line,model_hr_payslip_stop_line,,1,1,1,1
 

@@ -32,7 +32,3 @@ class HrErrorEmployeeReport(osv.AbstractModel):
     _inherit = 'report.abstract_report'
     _template = 'smart_hr.report_hr_error_employee_run'
     _wrapped_report_class = ReportHrErrorEmployee
-
-
-
-    

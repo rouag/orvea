@@ -79,12 +79,10 @@ class hrIncrease(models.Model):
             employee_ids = employee_obj.search([('id', 'in', employee_ids), ('type_id', '=', self.salary_grid_type_id.id)]).ids
         result = list(set(employee_ids))
         years_id = self.env['hr.fiscalyear'].search([('date_stop', '<', self.periode_increase.period_id.date_start)] ,order='date_stop desc',limit=1) 
-        print"years_id", years_id
         if not years_id :
             raise UserError(u"لا يمكن إدراج قائمة المسثنين من العلاوة لعدم وجود سنة فارطة")
         sanctions = self.env['hr.sanction.ligne'].search([('state', '=', 'done'),('date_sanction','>',years_id.date_start),('date_sanction','<',years_id.date_stop), ('sanction_id.type_sanction', '=', self.env.ref('smart_hr.data_hr_sanction_type_grade').id)])
         liste_employee_ids = set()
-        print'sanctions',sanctions
         for rec in sanctions:
             liste_employee_ids.add(rec.employee_id.id)
         result_sanction = list(liste_employee_ids)
@@ -103,7 +101,6 @@ class hrIncrease(models.Model):
         self.employee_errors_ids = result_employee_error
         for rec in   result_sanction  :
             result_inter.append({'employee_id': rec})
-            print'result_inter',result_inter
         self.employee_deprivated_ids = result_inter
         self.is_increase_line =True
 
@@ -131,7 +128,6 @@ class hrIncrease(models.Model):
                     new_degree_code = '0' + str(new_degree_code)
                 new_degree_code = str(new_degree_code)
                 new_degree_id = degree_obj.search([('code', '=', new_degree_code),('grade_id','=',line.grade_id.id)], limit=1)
-                print'new_degree_idnew_degree_id',new_degree_id
                 if new_degree_id:
                     line.new_degree_id = new_degree_id.id
                 else :
@@ -258,7 +254,6 @@ class hrIncrease(models.Model):
                     new_degree_code = '0' + str(new_degree_code)
                 new_degree_code = str(new_degree_code)
                 new_degree_id = degree_obj.search([('code', '=', new_degree_code),('grade_id','=',line.grade_id.id)], limit=1)
-                print'new_degree_idnew_degree_id',new_degree_id
                 if new_degree_id:
                     line.new_degree_id = new_degree_id.id
                 else :
@@ -304,7 +299,6 @@ class hrIncrease(models.Model):
                     new_degree_code = '0' + str(new_degree_code)
                 new_degree_code = str(new_degree_code)
                 new_degree_id = degree_obj.search([('code', '=', new_degree_code),('grade_id','=',line.grade_id.id)], limit=1)
-                print'new_degree_idnew_degree_id',new_degree_id
                 if new_degree_id:
                     line.new_degree_id = new_degree_id.id
                 else :
@@ -336,7 +330,6 @@ class hrIncrease(models.Model):
                     new_degree_code = '0' + str(new_degree_code)
                 new_degree_code = str(new_degree_code)
                 new_degree_id = degree_obj.search([('code', '=', new_degree_code),('grade_id','=',line.grade_id.id)], limit=1)
-                print'new_degree_idnew_degree_id',new_degree_id
                 if new_degree_id:
                     line.new_degree_id = new_degree_id.id
                 else :

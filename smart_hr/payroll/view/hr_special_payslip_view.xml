@@ -65,11 +65,10 @@
 						</group>
 						<group>
 							<group col="2">
-								<field name="payslip_type_ids" widget="many2many_tags"  required="1"
-									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-								<field name="employee_id" string="الموظف" />
+								<field name="payslip_type"   required="1" />
 								<field name="period_ids" widget="many2many_tags"
-									   attrs="{'invisible':[('payslip_type_ids','in', [%(special_payslip_type_holidays)d])]}"  />
+									   attrs="{'invisible':[('payslip_type','!=', 'holidays')],'required':[('payslip_type','=', 'holidays')]}"  />
+								<field name="employee_id" string="الموظف" />
 								<field name="number" string="التسلسل" readonly="1" />
 							</group>
 							<group col="2">
@@ -288,8 +287,9 @@
 						<group>
 							<group>
 								<field name="period_id" />
-								<field name="payslip_type_ids" widget="many2many_tags" required="1"
-									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="payslip_type" required="1"/>
+								<field name="period_ids" widget="many2many_tags"
+									   attrs="{'invisible':[('payslip_type','!=', 'holidays')],'required':[('payslip_type','=', 'holidays')]}"  />
 								<field name="bank_file" readonly="1" filename="bank_file_name"
 									attrs="{'invisible':[('state','!=','done')]}" />
 								<field name="bank_file_name" invisible="1" />
@@ -316,7 +316,6 @@
 									<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]" />
 									<field name="salary_grid_type_id" widget="many2many_tags"/>
 								</group>
-								<field name="employee_ids" />
 							</page>
 							<page string="المسيّرات الإفرادية">
 								<field name="slip_ids" readonly='1'>

@@ -51,6 +51,37 @@
 											</t>
 										</table>
 									</div>
+
+									<div class="col-xs-12 text-center">
+										<br></br>
+										<strong>الموظفين الذين لديهم إجازة مسبقة الدفع</strong>
+										<table class="table table-condensed">
+											<thead>
+												<tr>
+													<th class="text-center">رقم الموظف </th>
+													<th class="text-center">الإسم</th>
+													<th class="text-center"> الوظيفة </th>
+												</tr>
+											</thead>
+											<t t-foreach="o.error_ids" t-as="line">
+												<t t-if="line.type == 'prepaid_holiday'">
+													<tr>
+														<td>
+															<span t-field="line.employee_id.number" />
+														</td>
+														<td>
+															<span t-field="line.employee_id.display_name" />
+														</td>
+														<td>
+															<span t-field="line.employee_id.job_id" />
+														</td>
+													</tr>
+												</t>
+											</t>
+										</table>
+									</div>
+
+
 									<div class="col-xs-12 text-center">
 										<br></br>
 										<strong>حالات أخرى : راتبهم مساوي لصفر </strong>
