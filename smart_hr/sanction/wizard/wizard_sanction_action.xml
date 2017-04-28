@@ -28,13 +28,36 @@
 				</form>
 			</field>
 		</record>
-
+		
+		<record id="view_wizard_sanction_update_action" model="ir.ui.view">
+			<field name="name">wizard.sanction.action.form</field>
+			<field name="model">wizard.sanction.action</field>
+			<field name="arch" type="xml">
+				<form>
+					<sheet>
+						<group>
+							<field name="name" string="رقم قرار الاستبعاد"/>
+							<field name="order_date"  string="تاريخ قرار الاستبعاد"/>
+						</group>
+						<group>
+							<field name="reason" string="السبب" placeholder="السبب ..." />
+						</group>
+						<footer>
+							<button icon="fa-cogs" string="تأكيد" name="action_exclusion"
+								type="object" class="oe_highlight" />
+							أو
+							<button string="إلغاء" class="oe_link" special="cancel" />
+						</footer>
+					</sheet>
+				</form>
+			</field>
+		</record>
 		<record id="action_wizard_sanction_action_exclusion" model="ir.actions.act_window">
 			<field name="name">إستبعاد موظف</field>
 			<field name="res_model">wizard.sanction.action</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
-			<field name="view_id" ref="view_wizard_sanction_action" />
+			<field name="view_id" ref="view_wizard_sanction_update_action" />
 			<field name="target">new</field>
 		</record>
 

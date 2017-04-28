@@ -110,7 +110,6 @@
 		this._year = year;
 		this._month = month;
 		this._day = day;
-		console.log('--------year,month,day---------',year,month,day)
 		if (this._calendar._validateLevel === 0 &&
 				!this._calendar.isValid(this._year, this._month, this._day)) {
 			throw ($.calendars.local.invalidDate || $.calendars.regionalOptions[''].invalidDate).

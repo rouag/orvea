@@ -34,9 +34,7 @@ odoo.define('islamic_datepicker_entreprise.ummalqura_date_widget', function(requ
         convert_gregorian_hijri: function(text) {
         // console.log(arguments.callee.name);
             if (text) {
-             console.log('--------text1-----',text);
                 text = moment(text, date_format)._i;
-
                 if (text.indexOf('-') != -1) {
                     text_split = text.split('-');
                     year = parseInt(this.parseArabic(text_split[2]));
@@ -52,9 +50,6 @@ odoo.define('islamic_datepicker_entreprise.ummalqura_date_widget', function(requ
                 }
                 if (text.indexOf('/') != -1) {
                     text_split = text.split('/');
-
-                    console.log('--------text_splittext_split-----',text_split);
-
                   //  year = this.parseArabic(text_split[2]);
                     year_text=  text_split[2].substring(0, 4);
                     year =parseInt(this.parseArabic(year_text));
@@ -62,9 +57,6 @@ odoo.define('islamic_datepicker_entreprise.ummalqura_date_widget', function(requ
                     day = parseInt(this.parseArabic(text_split[0]));
                     calendar = $.calendars.instance('gregorian');
                     calendar1 = $.calendars.instance('ummalqura');
-
-                    console.log('--------fun year,month,day-----',year,month,day);
-
                     var jd = calendar.toJD(year, month, day);
                     var date = calendar1.fromJD(jd);
                     return (calendar1.formatDate('yyyy-mm-dd', date));
@@ -82,10 +74,10 @@ odoo.define('islamic_datepicker_entreprise.ummalqura_date_widget', function(requ
                     model: this.dataset.model,
                     id: record.get('id')
                 });
-                return moment(res, date_format)._i + "&nbsp; &nbsp; &nbsp;" + this.convert_gregorian_hijri(column.format(record.toForm().data, {
+                return this.convert_gregorian_hijri(column.format(record.toForm().data, {
                     model: this.dataset.model,
                     id: record.get('id')
-                }));
+                })) + " / " + moment(res, date_format)._i   ;
             } else if (column.type === 'reference') {
                 value = record.get(column.id);
                 var ref_match;
@@ -199,9 +191,7 @@ odoo.define('islamic_datepicker_entreprise.ummalqura_date_widget', function(requ
             //
             //            this.$input = this.$el.find('input.oe_simple_date');
             this.$input = this.$('input.o_datepicker_input');
-
             this.$input_hijri = this.$el.find('input.oe_hijri');
-            console.log('----------------------',this.$input_hijri);
             this.set_readonly(false);
 
             this.$input = this.$('input.oe_datepicker_master');
@@ -547,6 +537,7 @@ odoo.define('islamic_datepicker_entreprise.ummalqura_date_widget', function(requ
         render_value: function() {
         // console.log(arguments.callee.name);
             var date_readonly = this.get('value') ? this.get('value') : '';
+
             date_readonly = openerp.web.format_value(this.get('value'), this, '');
             //date_readonly=moment(date_readonly).format(date_format);
             date_readonly = moment(date_readonly, date_format)._i;

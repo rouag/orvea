@@ -41,6 +41,7 @@ class HrPayslip(models.Model):
     speech_date = fields.Date(string=u'تاريخ الخطاب', readonly=1, states={'draft': [('readonly', 0)]})
     speech_file = fields.Binary(string=u'صورة الخطاب', attachment=True, readonly=1, required=1, states={'draft': [('readonly', 0)]})
     speech_file_name = fields.Char(string='speech_file_name')
+    period_ids = fields.Many2many('hr.period', string=u'الفترات', readonly=1, states={'draft': [('readonly', 0)]})
 
     @api.multi
     def action_special_new(self):
@@ -351,7 +352,7 @@ class HrPayslip(models.Model):
         if not salary_grid:
             return
 
-        holidays_id = self.env['hr.holidays'].search([('state', '=', 'done'),
+        holidays_id = self.env['hr.holidays'].search([('state', 'in', ('done', 'cutoff')),
                                                       ('employee_id', '=', self.employee_id.id),
                                                       ('with_advanced_salary', '=', True),
                                                       ('advanced_salary_is_paied', '=', False)], limit=1)

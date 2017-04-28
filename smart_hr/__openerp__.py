@@ -177,6 +177,8 @@
         'payroll/views/report_payslip_extension.xml',
         'payroll/views/report_hr_payslip_changement.xml',
         'payroll/views/report_hr_error_employee_run.xml',
+        'payroll/views/report_hr_increase_employee.xml',
+        'payroll/views/report_hr_deprivation_increase_employee.xml',
         'payroll/views/report.xml',
 
         'payroll/data/salary_grid_type_data.xml',
@@ -231,8 +233,7 @@
         'attendance/views/request_transfer_delay_hours_report.xml',
         'attendance/views/request_transfer_absence_days_report.xml',
         'attendance/views/absences_employees_list.xml',
-        'attendance/views/delay_employees_list.xml',
-        
+       'attendance/views/delay_employees_list.xml',
         # تصنيف الوظائف
         'job/view/hr_job_setting.xml',
         'job/view/hr_skils_job.xml',

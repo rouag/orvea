@@ -29,6 +29,10 @@
 					<field name="employee_id" />
 					<field name="type_sanction" invisible="1" />
 					<field name="state_sanction" invisible="1" />
+						<field name="name" invisible="1" />
+							<field name="order_date" invisible="1" />
+								<field name="raison" invisible="1" />
+							
 					<field name="days_number" />
 					<field name="amount" />
 					<field name="mast" />
@@ -198,6 +202,10 @@
 													type="action" string="تعديل" icon="fa-refresh" 
 													attrs="{'invisible':[('state_sanction','!=','done')]}"
 													context="{'action':'update'}" />
+													
+													
+														<field name="name" invisible="1"/>
+					<field name="order_date"  invisible="1"/>
 											</tree>
 										</field>
 									</group>

@@ -24,7 +24,18 @@
 			menu="False" report_type="qweb-pdf" string="تقرير الاخطاء بالموظف"
 			name="smart_hr.report_hr_error_employee_run" attachment_use="False"
 			file="smart_hr.report_hr_error_employee_run" paperformat="smart_base.paperformat_landscape" />
-
+			
+<report id="report_report_hr_increase_employee" model="hr.increase"
+			menu="False" report_type="qweb-pdf" string=" قائمة الموظفين المشمولين بالعلاوة"
+			name="smart_hr.report_hr_increase_employee" attachment_use="False"
+			file="smart_hr.report_hr_increase_employee" paperformat="smart_base.paperformat_landscape" />
+			
+			
+						
+<report id="report_report_hr_increase_deprivation_employee" model="hr.increase"
+			menu="False" report_type="qweb-pdf" string=" المستثنين من العلاوة"
+			name="smart_hr.report_hr_deprivation_increase_employee" attachment_use="False"
+			file="smart_hr.report_hr_deprivation_increase_employee" paperformat="smart_base.paperformat_landscape" />
 
 	</data>
 </openerp>

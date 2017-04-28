@@ -29,7 +29,7 @@ class HrPayslip(models.Model):
                                                                     ('employee_id', '=', self.employee_id.id),
                                                                     ('request_id.state', '=', 'done')
                                                                     ])
-        salary_grid, basic_salary = self.employee_id.get_salary_grid_id(False)
+        salary_grid, basic_salary = self.employee_id.get_salary_grid_id(self.date_from)
         tot_number_request = 0
         for line in abscence_ids:
             amount = (basic_salary + allowance_total) / 30.0 * line.number_request
@@ -145,6 +145,33 @@ class HrPayslip(models.Model):
                 line_ids.append(vals)
                 res_sanction_line_ids.append(sanction.id)
         self.sanction_line_ids = res_sanction_line_ids
+        # فرق الحسميات المتخلدة
+        line_ids += self.get_difference_one_third_salary(self.date_from, self.date_to, self.employee_id)
+
+        return line_ids
+
+    @api.multi
+    def get_difference_one_third_salary(self, date_from, date_to, employee_id):
+        self.ensure_one()
+        line_ids = []
+        domain = [('payslip_id.employee_id', '=', employee_id.id),
+                  ('period_id', '=', self.period_id.id),
+                  ]
+        difference_history_ids = self.env['hr.payslip.difference.history'].search(domain)
+        for difference_history in difference_history_ids:
+            name = ''
+            if difference_history.name == 'third_salary':
+                name = 'فرق حسميات أكثر من ثلث الراتب مرحلة من الشهر الفارط'
+            elif difference_history.name == 'negative_salary':
+                name = 'المبلغ المؤجل (سبب راتب سالب)'
+            vals = {'name': name,
+                    'employee_id': difference_history.payslip_id.employee_id.id,
+                    'number_of_days': 0.0,
+                    'number_of_hours': 0.0,
+                    'amount': difference_history.amount * -1.0,
+                    'category': 'deduction',
+                    'type': 'one_third_salary'}
+            line_ids.append(vals)
         return line_ids
 
     @api.multi
@@ -154,45 +181,44 @@ class HrPayslip(models.Model):
         # case 1: احتساب الأثر المالي لهذا الشهر
         # case 2: احتساب الأثر المالي  لشهر الفارط من تاريخ إعداد مسير الشهر الفرط إلى تاريخ بداية هذا الشهر
         # get last payslip for current employee
-        payslip_id = self.env['hr.payslip'].search([('employee_id', '=', self.employee_id.id),
-                                                    ('is_special', '=', False),
-                                                    ('date_from', '<', self.date_from),
-                                                    ('state', '=', 'done')], limit=1, order='date_from desc')
-        if payslip_id:
+        last_payslip = self.env['hr.payslip'].search([('employee_id', '=', self.employee_id.id),
+                                                      ('is_special', '=', False),
+                                                      ('date_from', '<', self.date_from),
+                                                      ('state', '=', 'done')], limit=1, order='date_from desc')
+        if last_payslip:
             # add one day to compute_date of last payslip
-            compute_date = str(fields.Date.from_string(payslip_id.compute_date) + timedelta(days=1))
+            compute_date = str(fields.Date.from_string(last_payslip.compute_date) + timedelta(days=1))
         # فروقات النقل
         # يتم احتساب الأثار المالي للنقل في نفس حالة التعين
         # فروقات التعين
         line_ids += self.get_difference_decision_appoint(self.date_from, self.date_to, self.employee_id, False)
-        if payslip_id:
-            line_ids += self.get_difference_decision_appoint(compute_date, payslip_id.date_to, self.employee_id, True)
+        if last_payslip:
+            line_ids += self.get_difference_decision_appoint(compute_date, last_payslip.date_to, self.employee_id, True)
         # فروقات التكليف
         line_ids += self.get_difference_assign(self.date_from, self.date_to, self.employee_id, False)
-        if payslip_id:
-            line_ids += self.get_difference_assign(compute_date, payslip_id.date_to, self.employee_id, True)
+        if last_payslip:
+            line_ids += self.get_difference_assign(compute_date, last_payslip.date_to, self.employee_id, True)
         # فروقات الإبتعاث
         line_ids += self.get_difference_scholarship(self.date_from, self.date_to, self.employee_id, False)
-        if payslip_id:
-            line_ids += self.get_difference_scholarship(compute_date, payslip_id.date_to, self.employee_id, True)
+        if last_payslip:
+            line_ids += self.get_difference_scholarship(compute_date, last_payslip.date_to, self.employee_id, True)
         # فروقات الإعارة
         line_ids += self.get_difference_lend(self.date_from, self.date_to, self.employee_id, False)
-        if payslip_id:
-            line_ids += self.get_difference_lend(compute_date, payslip_id.date_to, self.employee_id, True)
+        if last_payslip:
+            line_ids += self.get_difference_lend(compute_date, last_payslip.date_to, self.employee_id, True)
         # فروقات الإجازة
         line_ids += self.get_difference_holidays(self.date_from, self.date_to, self.employee_id, False)
-        if payslip_id:
-            line_ids += self.get_difference_holidays(compute_date, payslip_id.date_to, self.employee_id, True)
+        if last_payslip:
+            line_ids += self.get_difference_holidays(compute_date, last_payslip.date_to, self.employee_id, True)
         # فروقات كف اليد
-        line_ids += self.get_difference_suspension(self.date_from, self.date_to, self.employee_id, False)
-        if payslip_id:
-            line_ids += self.get_difference_suspension(compute_date, payslip_id.date_to, self.employee_id, True)
+        line_ids += self.get_difference_suspension(self.date_from, self.date_to, self.employee_id, last_payslip, False)
+        if last_payslip:
+            # تحتسب من يوم تاريخ ترحيل الراتب السابق وليس تاريخ الراتب  زائد يوم
+            line_ids += self.get_difference_suspension(last_payslip.compute_date, last_payslip.date_to, self.employee_id, last_payslip, True)
         # فروقات طى القيد
         line_ids += self.get_difference_termination(self.date_from, self.date_to, self.employee_id, False)
-        if payslip_id:
-            line_ids += self.get_difference_termination(compute_date, payslip_id.date_to, self.employee_id, True)
-        # فرق الحسميات المتخلدة
-        line_ids += self.get_difference_one_third_salary(self.date_from, self.date_to, self.employee_id)
+        if last_payslip:
+            line_ids += self.get_difference_termination(compute_date, last_payslip.date_to, self.employee_id, True)
         return line_ids
 
     @api.multi
@@ -283,7 +309,7 @@ class HrPayslip(models.Model):
 
             # 1 الراتب
             if salary_rate_amount < 0:
-                vals = {'name': 'تكليف : فرق الراتب الذي توفره الجهة' + name,
+                vals = {'name': u'تكليف : فرق الراتب الذي توفره الجهة' + name,
                         'employee_id': assign_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -291,7 +317,7 @@ class HrPayslip(models.Model):
                         'type': 'commissioning'}
                 line_ids.append(vals)
             if amount_allowance < 0:
-                vals = {'name': 'تكليف : فرق بدل النقل الذي توفره الجهة' + name,
+                vals = {'name': u'تكليف : فرق بدل النقل الذي توفره الجهة' + name,
                         'employee_id': assign_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -457,7 +483,7 @@ class HrPayslip(models.Model):
                         allowance_amount *= -1
             # 1 الراتب
             if amount < 0:
-                vals = {'name': 'إعارة : فرق الراتب الذي توفره الجهة ' + name,
+                vals = {'name': u'إعارة : فرق الراتب الذي توفره الجهة ' + name,
                         'employee_id': lend_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -468,7 +494,7 @@ class HrPayslip(models.Model):
 
             # 2 -البدلات
             if allowance_amount < 0:
-                vals = {'name': 'إعارة : فرق البدلات التي تتحملها الجهة ' + name,
+                vals = {'name': u'إعارة : فرق البدلات التي تتحملها الجهة ' + name,
                         'employee_id': lend_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -478,7 +504,7 @@ class HrPayslip(models.Model):
                 line_ids.append(vals)
             # 3) حصة الحكومة من التقاعد
             if amount_retirement:
-                vals = {'name': 'إعارة : حصة الحكومة من التقاعد ' + name,
+                vals = {'name': u'إعارة : حصة الحكومة من التقاعد ' + name,
                         'employee_id': lend_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -494,7 +520,7 @@ class HrPayslip(models.Model):
         line_ids = []
         name = ''
         domain = [('employee_id', '=', employee_id.id),
-                  ('state', '=', 'done')]
+                  ('state', 'in', ('done', 'cutoff'))]
         if for_last_month:
             # minus one day to date_from
             new_date_from = str(fields.Date.from_string(date_from) - timedelta(days=1))
@@ -560,7 +586,7 @@ class HrPayslip(models.Model):
                             # get first token holiday with same type
                             newest_holiday_id = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
                                                                                 ('employee_id', '=', holiday_id.employee_id.id),
-                                                                                ('state', '=', 'done'),
+                                                                                ('state', 'in', ('done', 'cutoff')),
                                                                                 ], order='done_date desc', limit=1)
                             if newest_holiday_id:
                                 get_to_date = fields.Date.from_string(newest_holiday_id.date_to)
@@ -570,7 +596,7 @@ class HrPayslip(models.Model):
                             ranges = []
                             before_holidays = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
                                                                               ('employee_id', '=', holiday_id.employee_id.id),
-                                                                              ('state', '=', 'done'),
+                                                                              ('state', 'in', ('done', 'cutoff')),
                                                                               ('date_from', '>=', get_from_date),
                                                                               ('date_from', '<', start_month),
                                                                               ])
@@ -624,7 +650,7 @@ class HrPayslip(models.Model):
                                     # get first token holiday with same type
                                     newest_holiday_id = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
                                                                                         ('employee_id', '=', holiday_id.employee_id.id),
-                                                                                        ('state', '=', 'done'),
+                                                                                        ('state', 'in', ('done', 'cutoff')),
                                                                                         ], order='done_date desc', limit=1)
                                     if newest_holiday_id:
                                         get_to_date = fields.Date.from_string(newest_holiday_id.date_to)
@@ -634,7 +660,7 @@ class HrPayslip(models.Model):
                                     ranges = []
                                     before_holidays = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
                                                                                       ('employee_id', '=', holiday_id.employee_id.id),
-                                                                                      ('state', '=', 'done'),
+                                                                                      ('state', 'in', ('done', 'cutoff')),
                                                                                       ('date_from', '>=', get_from_date),
                                                                                       ('date_from', '<', start_month),
                                                                                       ])
@@ -675,7 +701,7 @@ class HrPayslip(models.Model):
                 line_ids.append(vals)
 
             if allowance_amount:
-                vals = {'name': 'فرق بدلات ' + holiday_id.holiday_status_id.name + name,
+                vals = {'name': u'فرق بدلات ' + holiday_id.holiday_status_id.name + name,
                         'employee_id': holiday_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -684,7 +710,7 @@ class HrPayslip(models.Model):
                 line_ids.append(vals)
             # فرق التقاعد
             if retirement_amount != 0:
-                vals = {'name': 'فرق التقاعد‬ ' + holiday_id.holiday_status_id.name + name,
+                vals = {'name': u'فرق التقاعد‬ ' + holiday_id.holiday_status_id.name + name,
                         'employee_id': holiday_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -702,7 +728,7 @@ class HrPayslip(models.Model):
                 line_ids.append(vals)
             # فرق البدلات
             if allowance_amount2:
-                vals = {'name': ' حسم بدل النقل  ' + holiday_id.holiday_status_id.name + name,
+                vals = {'name': u' حسم بدل النقل  ' + holiday_id.holiday_status_id.name + name,
                         'employee_id': holiday_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -711,7 +737,7 @@ class HrPayslip(models.Model):
                 line_ids.append(vals)
             # فرق التقاعد
             if retirement_amount2:
-                vals = {'name': 'فرق التقاعد‬ : ' + holiday_id.holiday_status_id.name + name,
+                vals = {'name': u'فرق التقاعد‬ : ' + holiday_id.holiday_status_id.name + name,
                         'employee_id': holiday_id.employee_id.id,
                         'number_of_days': duration_in_month,
                         'number_of_hours': 0.0,
@@ -719,7 +745,7 @@ class HrPayslip(models.Model):
                         'type': 'holiday'}
                 line_ids.append(vals)
             # case of  نوع التعويض    مقابل ‫مادي‬ ‬   اجازة التعويض
-            grid_id, basic_salary = employee_id.get_salary_grid_id(False)
+            grid_id, basic_salary = employee_id.get_salary_grid_id(self.date_from)
             if grid_id:
                 if holiday_id.compensation_type and holiday_id.compensation_type == 'money':
                     amount = (holiday_id.token_compensation_stock * (basic_salary / 30.0))
@@ -734,25 +760,26 @@ class HrPayslip(models.Model):
         return line_ids
 
     @api.multi
-    def get_difference_suspension(self, date_from, date_to, employee_id, for_last_month):
+    def get_difference_suspension(self, date_from, date_to, employee_id, last_payslip, for_last_month):
         # # إذا كان كف اليد على كامل الشهر الحالي فيجب احتساب الفرق على أساس  30 يوم   وإلا فيحتسب على عدد أيام الكف.
         # إذا كان عدد أيام الشهر أصغر من 30 يتم احتساب قيمة أيام فرق  مساوي إلى قيمة أخر يوم في الشهر.
         # مثلا شهر فيه 28 يوم يكون  قيمة يوم 29 و-30 مساوي لقيمة يوم 28.
 
-        date_start_month = str(self.period_id.date_start)
-        date_end_month = str(self.period_id.date_stop)
+        self.ensure_one()
+        suspension_obj = self.env['hr.suspension']
+        # get all operations(hr.suspension) in latest month
+        domain_last_month = []
+        name = ''
+        if for_last_month:
+            # for_last_month remove  operations added in the old payslip
+            operations_ids = last_payslip.get_operations('hr.suspension')
+            operations_end_ids = last_payslip.get_operations('hr.suspension.end')
+            domain_last_month = [('id', 'not in', operations_ids)]
+            name = u' للشهر الفارط '
         date_from_param = date_from
         date_to_param = date_to
-
-        def _all_days_in_month(date_from, date_to):
-            if date_start_month >= date_from and date_end_month <= date_to:
-                return True
-            return False
-
-        self.ensure_one()
         line_ids = []
         all_suspensions = []
-
         # -------------
         # get  started and ended suspension in current month
         # -------------
@@ -765,29 +792,25 @@ class HrPayslip(models.Model):
                   ('employee_id', '=', employee_id.id),
                   ('suspension_end_id.state', '=', 'done'),
                   ]
-        name = ''
-        if for_last_month:
-            # minus one day to date_from
-            # new_date_from = str(fields.Date.from_string(date_from) - timedelta(days=1))
-            domain.append(('done_date', '>=', date_from))
-            domain.append(('done_date', '<=', date_to))
-            name = u' للشهر الفارط '
-        suspension_ids = self.env['hr.suspension'].search(domain)
+        domain += domain_last_month
+        suspension_ids = suspension_obj.search(domain)
         for suspension in suspension_ids:
-            date_from = suspension.suspension_date
-            date_to = suspension.suspension_end_id.release_date
-            if date_from < date_from:
-                date_from = date_from
-            if date_to > date_to:
-                date_to = date_to
-            number_of_days = days_between(date_from, date_to)
-            if number_of_days > 0:
+            date_from_s = suspension.suspension_date
+            date_to_s = suspension.suspension_end_id.release_date
+            # if date_from < date_from:
+            #     date_from = date_from
+            # if date_to > date_to:
+            #     date_to = date_to
+            number_of_days = days_between(date_from_s, date_to_s)
+            if number_of_days > 1:
                 all_suspensions.append({'employee_id': suspension.employee_id.id,
-                                        'date_from': date_from, 'date_to': date_to,
+                                        'res_id': suspension.id, 'sup_end_res_id': suspension.suspension_end_id.id,
+                                        'date_from': date_from_s, 'date_to': date_to_s,
                                         'number_of_days': number_of_days, 'return': False})
                 if not suspension.suspension_end_id.condemned:
                     all_suspensions.append({'employee_id': suspension.employee_id.id,
-                                            'date_from': date_from, 'date_to': date_to,
+                                            'res_id': suspension.id, 'sup_end_res_id': suspension.suspension_end_id.id,
+                                            'date_from': date_from_s, 'date_to': date_to_s,
                                             'number_of_days': number_of_days, 'return': True})
         # -------------
         # get started suspension in this month and not ended in current month or dont have yet an end
@@ -798,13 +821,8 @@ class HrPayslip(models.Model):
                   ('employee_id', '=', employee_id.id),
                   ('suspension_end_id', '=', False)
                   ]
-        if for_last_month:
-            # minus one day to date_from
-            # new_date_from = str(fields.Date.from_string(date_from) - timedelta(days=1))
-            domain.append(('done_date', '>=', date_from))
-            domain.append(('done_date', '<=', date_to))
-            name = u' للشهر الفارط '
-        suspension_ids = self.env['hr.suspension'].search(domain)
+        domain += domain_last_month
+        suspension_ids = suspension_obj.search(domain)
         domain = [('suspension_date', '>=', date_from),
                   ('suspension_date', '<=', date_to),
                   ('state', '=', 'done'),
@@ -812,21 +830,15 @@ class HrPayslip(models.Model):
                   ('suspension_end_id.release_date', '>', date_to),
                   ('suspension_end_id.state', '=', 'done'),
                   ]
-        if for_last_month:
-            # minus one day to date_from
-            # new_date_from = str(fields.Date.from_string(date_from) - timedelta(days=1))
-            domain.append(('done_date', '>=', date_from))
-            domain.append(('done_date', '<=', date_to))
-            name = u' للشهر الفارط '
-        suspension_ids += self.env['hr.suspension'].search(domain)
-
+        domain += domain_last_month
+        suspension_ids += suspension_obj.search(domain)
         for suspension in suspension_ids:
-            date_from = suspension.suspension_date
-            date_to = date_to
-            number_of_days = days_between(date_from, date_to)
-            if number_of_days > 0:
-                all_suspensions.append({'employee_id': suspension.employee_id.id,
-                                        'date_from': date_from, 'date_to': date_to,
+            date_from_s = suspension.suspension_date
+            date_to_s = date_to
+            number_of_days = days_between(date_from_s, date_to_s)
+            if number_of_days > 1:
+                all_suspensions.append({'employee_id': suspension.employee_id.id, 'res_id': suspension.id,
+                                        'date_from': date_from_s, 'date_to': date_to_s,
                                         'number_of_days': number_of_days, 'return': False})
         # -------------
         # get started suspension before this month and not yet ended
@@ -837,37 +849,27 @@ class HrPayslip(models.Model):
                   ('employee_id', '=', employee_id.id),
                   ('suspension_end_id', '=', False)
                   ]
-        if for_last_month:
-            # minus one day to date_from
-            # new_date_from = str(fields.Date.from_string(date_from) - timedelta(days=1))
-            domain.append(('done_date', '>=', date_from))
-            domain.append(('done_date', '<=', date_to))
-            name = u' للشهر الفارط '
-        suspension_ids = self.env['hr.suspension'].search(domain)
+        domain += domain_last_month
+        suspension_ids = suspension_obj.search(domain)
         domain = [('suspension_date', '<', date_from),
                   ('state', '=', 'done'),
                   ('employee_id', '=', employee_id.id),
                   ('suspension_end_id.release_date', '>', date_to),
                   ('suspension_end_id.state', '=', 'done'),
                   ]
-        if for_last_month:
-            # minus one day to date_from
-            # new_date_from = str(fields.Date.from_string(date_from) - timedelta(days=1))
-            domain.append(('done_date', '>=', date_from))
-            domain.append(('done_date', '<=', date_to))
-            name = u' للشهر الفارط '
-        suspension_ids += self.env['hr.suspension'].search(domain)
+        domain += domain_last_month
+        suspension_ids += suspension_obj.search(domain)
         for suspension in suspension_ids:
-            date_from = date_from
-            date_to = date_to
-            number_of_days = days_between(date_from, date_to)
-            if number_of_days > 0:
-                all_suspensions.append({'employee_id': suspension.employee_id.id,
-                                        'date_from': date_from, 'date_to': date_to,
+            date_from_s = date_from
+            date_to_s = date_to
+            number_of_days = days_between(date_from_s, date_to_s)
+            if number_of_days > 1:
+                all_suspensions.append({'employee_id': suspension.employee_id.id, 'res_id': suspension.id,
+                                        'date_from': date_from_s, 'date_to': date_to_s,
                                         'number_of_days': number_of_days, 'return': False})
-        # -------------
+        # -----------------
         # get started suspension before this month and ended in current month
-        # -------------
+        # -----------------
 
         domain = [('suspension_date', '<', date_from),
                   ('state', '=', 'done'),
@@ -876,37 +878,72 @@ class HrPayslip(models.Model):
                   ('suspension_end_id.release_date', '<=', date_to),
                   ('suspension_end_id.state', '=', 'done'),
                   ]
-        if for_last_month:
-            # minus one day to date_from
-            # new_date_from = str(fields.Date.from_string(date_from) - timedelta(days=1))
-            domain.append(('done_date', '>=', date_from))
-            domain.append(('done_date', '<=', date_to))
-            name = u' للشهر الفارط '
-
-        suspension_ids = self.env['hr.suspension'].search(domain)
+        domain += domain_last_month
+        suspension_ids = suspension_obj.search(domain)
         for suspension in suspension_ids:
-            date_from = date_from
-            date_to = suspension.suspension_end_id.release_date
-            number_of_days = days_between(date_from, date_to)
-            if number_of_days > 0:
+            date_from_s = date_from
+            date_to_s = suspension.suspension_end_id.release_date
+            number_of_days = days_between(date_from_s, date_to_s)
+            if number_of_days > 1:
                 all_suspensions.append({'employee_id': suspension.employee_id.id,
-                                        'date_from': date_from, 'date_to': date_to,
+                                        'res_id': suspension.id, 'sup_end_res_id': suspension.suspension_end_id.id,
+                                        'date_from': date_from_s, 'date_to': date_to_s,
                                         'number_of_days': number_of_days, 'return': False})
             # case 1: not condemned:
             if not suspension.suspension_end_id.condemned:
-                date_from = suspension.suspension_date
-                date_to = suspension.suspension_end_id.release_date
-                number_of_days = days_between(date_from, date_to)
-                if number_of_days > 0:
+                date_from_s = suspension.suspension_date
+                date_to_s = suspension.suspension_end_id.release_date
+                number_of_days = days_between(date_from_s, date_to_s)
+                if number_of_days > 1:
                     all_suspensions.append({'employee_id': suspension.employee_id.id,
-                                            'date_from': date_from, 'date_to': date_to,
+                                            'res_id': suspension.id, 'res_id': suspension.id,'sup_end_res_id': suspension.suspension_end_id.id,
+                                            'date_from': date_from_s, 'date_to': date_to_s,
                                             'number_of_days': number_of_days, 'return': True})
+
+        # -------------
+        # get suspensions added in latest month (started in month or before)
+        # and ended in this month , and the suspension end is created after compute payslip
+        # c-a-d  : this suspension exist in operation_ids but the suspension end dont exist
+        # this cas only for for_last_month.
+        # -------------
+        if for_last_month:
+            domain = [('id', 'in', operations_ids),
+                      # ('suspension_end_id.release_date', '>=', date_from),
+                      # ('suspension_end_id.release_date', '<=', date_to),
+                      # ('suspension_end_id.state', '=', 'done'),
+                      # ('suspension_end_id.state', '=', 'done'),
+                      ('suspension_end_id.id', 'not in', operations_end_ids),
+
+                      ]
+            suspension_ids = suspension_obj.search(domain)
+            for suspension in suspension_ids:
+                # 1 - إرجاع من تاريخ نهاية الكف  إلى نهاية الشهر (لأنه تم  حسمها الشهر الفارط و هي خارجة عن مدة الكف) فترجع
+                # لا يحتسب تاريخ إطلاق السراح ، يحتسب في عملية إرجاع مدة الكف
+                date_from_s = suspension.suspension_end_id.release_date
+                date_from_s = str(fields.Date.from_string(date_from_s) + timedelta(days=1))
+                date_to_s = date_to
+                number_of_days = days_between(date_from_s, date_to)
+                if number_of_days > 1:
+                    all_suspensions.append({'employee_id': suspension.employee_id.id,# 'res_id': suspension.id, dont add it again
+                                            'date_from': date_from_s, 'date_to': date_to_s,
+                                            'number_of_days': number_of_days, 'return': True})
+                # 2 - إرجاع فترة الكف
+                if not suspension.suspension_end_id.condemned:
+                    date_from_s = suspension.suspension_date
+                    date_to_s = suspension.suspension_end_id.release_date
+                    number_of_days = days_between(date_from_s, date_to_s)
+                    if number_of_days > 1:
+                        all_suspensions.append(
+                            {'employee_id': suspension.employee_id.id,# 'res_id': suspension.id, dont add it again
+                             'date_from': date_from_s, 'date_to': date_to_s,
+                             'number_of_days': number_of_days, 'return': True})
+
         # -------------
         # احتساب الفروقات
         # -------------
-
+        new_operation_ids = []
+        new_operation_end_ids = []
         for suspension in all_suspensions:
-
             employee = self.env['hr.employee'].browse(suspension['employee_id'])
             # 1- الراتب الأساسي : احتساب نصف الراتب الأساسي
             # must browse interval date from, date to to get the correct basic_salary for each date
@@ -924,14 +961,14 @@ class HrPayslip(models.Model):
                     res = self.env['hr.smart.utils'].compute_duration_difference(employee_id, date_start, date_stop, True, True, True)
             # إذا فيه إرجاع لازم يتم إرجاع كامل الفترة
             else:
-                res = self.env['hr.smart.utils'].compute_duration_difference(employee_id, suspension_date_from, suspension_date_to, True,True, True)
+                res = self.env['hr.smart.utils'].compute_duration_difference(employee_id, suspension_date_from, suspension_date_to, True,True, True,False)
             amount = 0.0
             allowance_amount = 0.0
             multiplication = -1.0
-            operation_name = 'حسم '
+            operation_name = u'حسم '
             if suspension['return']:
                 multiplication = 1.0
-                operation_name = 'إرجاع '
+                operation_name = u'إرجاع '
             for rec in res:
                 grid_id = rec['grid_id']
                 basic_salary = rec['basic_salary']
@@ -943,7 +980,7 @@ class HrPayslip(models.Model):
                     allowance_amount += allowance['amount'] / 30.0 * days
             # فرق الراتب الأساسي كف اليد
             if amount:
-                val = {'name': operation_name+'فرق الراتب الأساسي كف اليد' + name,
+                val = {'name': u'%s فرق الراتب الأساسي كف اليد %s'%(operation_name,name),
                        'employee_id': employee.id,
                        'number_of_days': duration_in_month,
                        'number_of_hours': 0.0,
@@ -954,13 +991,19 @@ class HrPayslip(models.Model):
                 line_ids.append(val)
             # 2- البدلات لا تحتسب في حال كان الموظف مكفوف اليد
             if allowance_amount:
-                val = {'name': operation_name+' فرق البدلات كف اليد' + name,
+                val = {'name': operation_name+u' فرق البدلات كف اليد' + name,
                        'employee_id': employee.id,
                        'number_of_days': duration_in_month,
                        'number_of_hours': 0.0,
                        'amount': allowance_amount * multiplication,
                        'type': 'suspension'}
                 line_ids.append(val)
+            if (amount or allowance_amount) and suspension.get('res_id', False) and suspension['res_id'] not in new_operation_ids:
+                self.operation_ids.create({'res_model': 'hr.suspension', 'res_id': suspension['res_id'], 'payslip_id': self.id})
+                new_operation_ids.append(suspension['res_id'])
+            if (amount or allowance_amount) and suspension.get('sup_end_res_id', False) and suspension['sup_end_res_id'] not in new_operation_end_ids:
+                self.operation_ids.create({'res_model': 'hr.suspension.end', 'res_id': suspension['sup_end_res_id'], 'payslip_id': self.id})
+                new_operation_end_ids.append(suspension['sup_end_res_id'])
 
         return line_ids
 
@@ -1056,25 +1099,3 @@ class HrPayslip(models.Model):
                             line_ids.append(vals)
         return line_ids
 
-    @api.multi
-    def get_difference_one_third_salary(self, date_from, date_to, employee_id):
-        self.ensure_one()
-        line_ids = []
-        domain = [('payslip_id.employee_id', '=', employee_id.id),
-                  ('period_id', '=', self.period_id.id),
-                  ]
-        difference_history_ids = self.env['hr.payslip.difference.history'].search(domain)
-        for difference_history in difference_history_ids:
-            name = ''
-            if difference_history.name == 'third_salary':
-                name = 'فرق حسميات أكثر من ثلث الراتب'
-            elif difference_history.name == 'negative_salary':
-                name = 'المبلغ المؤجل (سبب راتب سالب)'
-            vals = {'name': name,
-                    'employee_id': difference_history.payslip_id.employee_id.id,
-                    'number_of_days': 0.0,
-                    'number_of_hours': 0.0,
-                    'amount': difference_history.amount,
-                    'type': 'one_third_salary'}
-            line_ids.append(vals)
-        return line_ids

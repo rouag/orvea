@@ -889,9 +889,9 @@ class DecisionAppointAllowance(models.Model):
             appoint_id = self.location_decision_appoint_id
 
         employee = appoint_id.employee_id
-        ttype = employee.job_id.type_id
-        grade = employee.job_id.grade_id
-        degree = employee.degree_id
+        ttype = appoint_id.job_id.type_id
+        grade = appoint_id.grade_id
+        degree = appoint_id.degree_id
         amount = 0.0
         # search the correct salary_grid for this employee
         if employee:
@@ -913,7 +913,7 @@ class DecisionAppointAllowance(models.Model):
             if self.compute_method == 'percentage':
                 amount = self.percentage * basic_salary / 100.0
             if self.compute_method == 'job_location' and employee and employee.dep_city:
-                citys = allowance_city_obj.search([('allowance_id', '=', self.id), ('city_id', '=', employee.dep_city.id)])
+                citys = self.line_ids.search([('city_id', '=', employee.dep_city.id)])
                 if citys:
                     amount = citys[0].percentage * basic_salary / 100.0
             if self.compute_method == 'formula_1':
