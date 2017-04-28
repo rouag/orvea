@@ -55,6 +55,62 @@
 			<field name="target">new</field>
 		</record>
 		
+		
+		<!-- Refuse increase hrm Wizard -->
+			<record id="view_form_increase_refuse_hrm_wizard" model="ir.ui.view">
+			<field name="name">hr.refuse.increase.hrm.wizard.form</field>
+			<field name="model">hr.refuse.increase.hrm.wizard</field>
+			<field name="arch" type="xml">
+				<form string="سبب الرفض">
+					<separator string="سبب الرفض" />
+					<field name="message" required="1" />
+					<footer>
+						<button name="button_refuse" string="حفظ" type="object"
+							icon="fa-floppy-o" class="oe_inline oe_stat_button" />
+						أو
+						<button string="إلغاء" class="oe_link" special="cancel" />
+					</footer>
+				</form>
+			</field>
+		</record>
+		<record id="action_increase_refuse_hrm_wizard" model="ir.actions.act_window">
+			<field name="name">سبب الرفض</field>
+			<field name="res_model">hr.refuse.increase.hrm.wizard</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="view_form_increase_refuse_hrm_wizard" />
+			<field name="target">new</field>
+		</record>
+				
+		<!-- Refuse increase pim2 Wizard -->
+			<record id="view_form_increase_refuse_pim2_wizard" model="ir.ui.view">
+			<field name="name">hr.refuse.increase.pim2.wizard.form</field>
+			<field name="model">hr.refuse.increase.pim2.wizard</field>
+			<field name="arch" type="xml">
+				<form string="سبب الرفض">
+					<separator string="سبب الرفض" />
+					<field name="message" required="1" />
+					<footer>
+						<button name="button_refuse" string="حفظ" type="object"
+							icon="fa-floppy-o" class="oe_inline oe_stat_button" />
+						أو
+						<button string="إلغاء" class="oe_link" special="cancel" />
+					</footer>
+				</form>
+			</field>
+		</record>
+		<record id="action_increase_refuse_pim2_wizard" model="ir.actions.act_window">
+			<field name="name">سبب الرفض</field>
+			<field name="res_model">hr.refuse.increase.pim2.wizard</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="view_form_increase_refuse_pim2_wizard" />
+			<field name="target">new</field>
+		</record>
+		
+		
+		action_increase_refuse_hrm_wizard
+		
 		<!-- Refuse holidays1 Wizard -->
 			<record id="view_form_holidays1_refuse_wizard" model="ir.ui.view">
 			<field name="name">hr.refuse.holidays1.wizard.form</field>

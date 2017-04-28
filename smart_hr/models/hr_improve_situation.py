@@ -121,7 +121,7 @@ class HrImproveSituatim(models.Model):
                                                              'state': 'draft',
                                                              'type_appointment': self.type_improve.type_appointment.id,
                                                              'name': self.order_number,
-                                                             'improve_id': self.id,
+                                                             'improve_id': self.id, 
                                                              })
         if appoint_id:
             appoint_id._onchange_employee_id()

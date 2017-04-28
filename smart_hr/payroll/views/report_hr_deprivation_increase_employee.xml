@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_hr_deprivation_increase_employee">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_hr.external_layout_hr">
+						<div class="page" style="direction:rtl;">
+							<br></br>
+							<div class="text-center">
+								<p>
+									رقم القرار :
+									<span t-esc="o.number_decision" />
+								</p>
+								<p>
+									 تاريخ القرار :
+									 <span t-esc="o.date_decision" />
+								</p>
+								<b align="left">قائمة الموظفين المستثنين من العلاوة
+
+								</b>
+							</div>
+							<br></br>
+							<table class="table table-condensed">
+								<thead>
+									<tr>
+										<th class="text-center">الإسم</th>
+										<th class="text-center">الرقم الوظيفي</th>
+										<th class="text-center">الوظيفة</th>
+										<th class="text-center">المرتبة</th>
+										<th class="text-center">الدرجة</th>
+										<th class="text-center">سبب الإستثناء</th>
+									</tr>
+								</thead>
+								<tbody>
+									<t t-foreach="o.employee_deprivated_ids" t-as="line">
+										<tr>
+											<td>
+												<span t-field="line.employee_id.display_name" />
+											</td>
+											<td>
+											<span t-field="line.employee_id.number" />
+											</td>
+											<td>
+												<span t-field="line.employee_id.job_id.name" />
+											</td>
+											
+											<td>
+												<span t-field="line.employee_id.grade_id.name" />
+											</td>
+											<td>
+												<span t-field="line.employee_id.degree_id.name" />
+											</td>
+											<td>
+												<span t-field="line.reason" />
+											</td>
+										</tr>
+									</t>
+								</tbody>
+							</table>
+
+
+						</div>
+					</t>
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+								
+							
+								
