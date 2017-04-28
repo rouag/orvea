@@ -56,7 +56,6 @@
 									 'required':[('state','=','hrm')],
 									   'readonly':[('state','=','done')]  }" />
 								<field name="sentence" attrs="{'invisible':[('condemned','=',False)]}" />
-
 							</group>
 						</group>
 					</sheet>

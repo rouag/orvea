@@ -5,6 +5,7 @@ from openerp.exceptions import UserError
 from openerp.addons.smart_base.util.umalqurra import *
 from umalqurra.hijri_date import HijriDate
 from umalqurra.hijri import Umalqurra
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 
@@ -76,6 +77,9 @@ class WizardLoanAction(models.TransientModel):
                 'action': action,
             }
             if action == 'full_amount':
-                self.env['hr.loan'].browse(loan_id).payment_full_amount = True
+                loan = self.env['hr.loan'].browse(loan_id)
+                loan.write({'state': 'done', 'payment_full_amount': True})
+                # make all line payed
+                loan.line_ids.write({'state': 'done'})
             self.env['hr.loan.history'].create(val)
         return {'type': 'ir.actions.act_window_close'}

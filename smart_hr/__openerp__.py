@@ -262,7 +262,6 @@
         'hr_appraisal/view/hr_evaluation_point_view.xml',
 
         # promotion
-        'hr_promotions/wizard/hr_promotion_benefits_wizard_view.xml',
         'hr_promotions/view/hr_promotion_view.xml',
         'hr_promotions/view/hr_employee_promotion_view.xml',
 

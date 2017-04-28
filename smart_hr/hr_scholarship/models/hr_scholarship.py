@@ -3,6 +3,7 @@
 from openerp import models, api, fields, _
 from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
 
 class HrScholarship(models.Model):
@@ -106,7 +107,21 @@ class HrScholarship(models.Model):
             res['domain'] = {'diplom_id': [('education_level_id.diplom_type', '=', self.diplom_type)]}
             self.diplom_id = False
         return res
-
+    
+    @api.constrains('date_from', 'date_to')
+    @api.onchange('date_from', 'date_to')
+    def onchange_dates(self):
+        res = {}
+        if self.date_from:
+            if fields.Date.from_string(self.date_from).weekday() in [4, 5] and not self.is_extension:
+                raise ValidationError(u"هناك تداخل في تاريخ البدء مع عطلة نهاية الاسبوع  ")
+            if self.env['hr.smart.utils'].public_holiday_intersection(self.date_from):
+                raise ValidationError(u"هناك تداخل في تاريخ البدء مع  عطلة او عيد  ")
+        if self.date_to:
+            if fields.Date.from_string(self.date_to).weekday() in [4, 5]:
+                raise ValidationError(u"هناك تداخل في تاريخ الإنتهاء مع عطلة نهاية الاسبوع")
+            if self.env['hr.smart.utils'].public_holiday_intersection(self.date_to):
+                raise ValidationError(u"هناك تداخل في تاريخ البدء مع  عطلة او عيد  ")
     @api.model
     def create(self, vals):
         res = super(HrScholarship, self).create(vals)
@@ -192,29 +207,43 @@ class HrScholarship(models.Model):
         self.ensure_one()
         #         constraint service_duration and education level
         date_from = fields.Date.from_string(self.date_from)
-        needed_service_duration = self.env['hr.scholarship.service.duration'].search(
-            [('scholarship_type', '=', self.scholarship_type.id), ('diplom_type', '=', self.diplom_type)], limit=1)
-        if needed_service_duration:
-            if self.employee_id.service_duration < needed_service_duration.service_duration:
-                raise ValidationError(u"ليس لديك السنوات المطلوبة في الخدمة")
-            education_level_ids = []
-            if self.diplom_type == 'hight':
-                education_level_ids = self.env['hr.employee.job.education.level'].search(
-                    [('employee_id', '=', self.employee_id.id),
-                     ('level_education_id', 'in', [self.env.ref('smart_hr.certificate_baccalaureate').id,
-                                                   self.env.ref('smart_hr.certificate_licence').id])])
-            if self.diplom_type == 'middle':
-                education_level_ids = self.env['hr.employee.job.education.level'].search(
-                    [('employee_id', '=', self.employee_id.id),
-                     ('level_education_id', '=', self.env.ref('smart_hr.certificate_after_secondary_education').id)])
+        if self.employee_id:
+            needed_service_duration = self.env['hr.scholarship.service.duration'].search(
+                [('scholarship_type', '=', self.scholarship_type.id), ('diplom_type', '=', self.diplom_type)], limit=1)
+            if needed_service_duration:
+                if self.employee_id.service_duration < needed_service_duration.service_duration:
+                    raise ValidationError(u"ليس لديك السنوات المطلوبة في الخدمة")
+#         في الابتعاث يجب ان يكون الشخص المبتعث لايقل مؤهله التعليمي عن الثانوي
+            if self.employee_id.education_level_ids:
+                education_level_ids = self.employee_id.education_level_ids
+                secondary_education_exit = False
+                for level in education_level_ids:
+                    if level.level_education_id.id == self.env.ref('smart_hr.secondary_education').id or level.level_education_id.secondary is True:
+                        secondary_education_exit = True
+                        break
+                if not secondary_education_exit:
+                    raise ValidationError(u"يجب ان لا يقل المؤهل التعليمي للمبتعث عن الثانوي")
+            else:
+                raise ValidationError(u"الرجاء ا دخال المستويات التعليمية للموظف")
+            domain = [
+                ('date_from', '<=', self.date_to),
+                ('date_to', '>=', self.date_from),
+                ('employee_id', '=', self.employee_id.id),
+                ('state', '=', 'done'),
+            ]
+            in_holiday = self.env['hr.holidays'].search(domain)
+            if in_holiday:
+                raise ValidationError(u"هناك تداخل في التاريخ مع إجازة")
 
+        
     @api.multi
     def button_extend(self):
 
         context = self._context.copy()
         context.update({
-            u'default_date_from': self.date_to,
+            u'default_date_from': fields.Date.to_string(fields.Date.from_string(self.date_to) + timedelta(days=1)),
             u'default_date_to': self.date_to,
+            u'is_extension': True
         })
         return {
             'type': 'ir.actions.act_window',

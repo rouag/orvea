@@ -386,7 +386,7 @@
 								<page string="مستويات التعليم">
 									<field name="education_level_ids">
 										<tree>
-											<field name="name" />
+											<field name="level_education_id" />
 											<field name="diploma_id" />
 											<field name="qualification_id" />
 											<field name="specialization_ids" widget="many2many_tags" />

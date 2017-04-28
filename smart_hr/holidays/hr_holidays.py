@@ -50,8 +50,8 @@ class HrHolidays(models.Model):
                 return False
         return True
 
-    name = fields.Char(string=u'رقم القرار' ,readonly=1, related='decission_id.name')
-    date = fields.Date(string=u'تاريخ الطلب', readonly=1, related='decission_id.date')
+    name = fields.Char(string=u'رقم القرار' ,readonly=1)
+    date = fields.Date(string=u'تاريخ الطلب', readonly=1)
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', domain=[('emp_state', 'not in', ['suspended','terminated']), ('employee_state', '=', 'employee')],
                                   default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended','terminated'])], limit=1),)
     raison = fields.Selection([('other', u'سبب أخر'), ('husband', u'مرافقة الزوج'),
@@ -110,8 +110,8 @@ class HrHolidays(models.Model):
     is_extensible = fields.Integer(string=u'يمكن تمديدها', related='holiday_status_id.extension_number')
     # decision
     need_decision = fields.Boolean('status_id need decision', related='holiday_status_id.need_decision')
-    num_decision = fields.Char(string=u'رقم القرار')
-    date_decision = fields.Date(string=u'تاريخ القرار')
+    num_decision = fields.Char(string=u'رقم القرار',related='decission_id.name')
+    date_decision = fields.Date(string=u'تاريخ القرار',related='decission_id.date')
     childbirth_date = fields.Date(string=u'تاريخ ولادة الطفل')
     birth_certificate = fields.Binary(string=u'شهادة الميلاد', attachment=True)
     extension_period = fields.Integer(string=u'مدة التمديد', default=0)
@@ -493,7 +493,7 @@ class HrHolidays(models.Model):
             decission_id = decision.id
             self.decission_id =  decission_id
         return {
-            'name': _(u'قرار إجازة'),
+         #   'name': _(u'قرار إجازة'),
             'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'hr.decision',
@@ -795,7 +795,7 @@ class HrHolidays(models.Model):
 
             # الابتعاث
             schol_obj = self.env['hr.scholarship']
-            scholarship_uncounted_days = schol_obj.search_count([('employee_id', '=', employee.id), ('state', '=', 'done'), ('date_from', '<=', d), ('date_to', '>=', d)])
+            scholarship_uncounted_days = schol_obj.search_count([('employee_id', '=', employee.id), ('state', 'in', ['done','finished']), ('date_from', '<=', d), ('date_to', '>=', d)])
             uncounted_days += scholarship_uncounted_days
 
             init_solde = (employee_solde / (periode * 12)) / 30.0
@@ -1498,7 +1498,16 @@ class HrHolidays(models.Model):
             if not level_fount:
                 raise ValidationError(u"لم تتحصل على المستوى الدراسي المطلوب.")
             
-        # Constraintes for service years required
+        domain = [
+                ('date_from', '<=', self.date_to),
+                ('date_to', '>=', self.date_from),
+                ('employee_id', '=', self.employee_id.id),
+                ('state', '=', 'done'),
+            ]
+        in_scholarship = self.env['hr.scholarship'].search(domain)
+        if in_scholarship:
+                raise ValidationError(u"هناك تداخل في التاريخ مع ابتعاث")
+                    # Constraintes for service years required
         if self.holiday_status_id.service_years_required * 354 > self.employee_id.service_duration:
                 raise ValidationError(u" ليس لديك" + str(self.holiday_status_id.service_years_required) + u"سنوات خدمة  ")
             
@@ -1718,7 +1727,6 @@ class HrHolidaysStatus(models.Model):
     def check_pension_percent(self):
         if self.pension_percent < 0 or self.pension_percent > 100:
             raise ValidationError(u"نسبة راتب التقاعد خاطئة ")
-
 
 class HrHolidaysStatusEntitlement(models.Model):
     _name = 'hr.holidays.status.entitlement'

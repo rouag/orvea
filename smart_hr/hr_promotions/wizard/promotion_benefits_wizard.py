@@ -32,7 +32,12 @@ class promotionBenefitsWizard(models.TransientModel):
                     location_allowance_ids.append({'location_decision_appoint_id': promotion.id,
                                                    'allowance_id': rec.allowance_id.id,
                                                    'compute_method': rec.compute_method,
-                                                   'amount': rec.amount})
+                                                   'amount': rec.amount,
+                                                    'min_amount': rec.min_amount,
+                                                    'percentage': rec.percentage,
+                                                    'line_ids': [(6, 0, rec.line_ids.ids)],
+
+                                                    })
             # fill job_allowance_ids
             if not promotion.job_allowance_ids:
                 for rec in promotion.new_job_id.serie_id.allowanse_ids:
@@ -45,14 +50,24 @@ class promotionBenefitsWizard(models.TransientModel):
                     job_allowance_ids.append({'job_promotion_id': promotion.id,
                                               'allowance_id': rec.allowance_id.id,
                                               'compute_method': rec.compute_method,
-                                              'amount': rec.amount})
+                                              'amount': rec.amount,
+                                               'min_amount': rec.min_amount,
+                                               'percentage': rec.percentage,
+                                               'line_ids': [(6, 0, rec.line_ids.ids)],
+
+                                                    })
             # fill promotion_allowance_ids
             if promotion.promotion_allowance_ids:
                 for rec in promotion.promotion_allowance_ids:
                     promotion_allowance_ids.append({'promotion_id': promotion.id,
                                                     'allowance_id': rec.allowance_id.id,
                                                     'compute_method': rec.compute_method,
-                                                    'amount': rec.amount})
+                                                    'amount': rec.amount,
+                                                    'min_amount': rec.min_amount,
+                                                    'percentage': rec.percentage,
+                                                    'line_ids': [(6, 0, rec.line_ids.ids)],
+
+                                                    })
             res.update({'promotion_line_obj': promotion.id,
                         'job_id': promotion.new_job_id.id,
                         'specific_id': promotion.new_job_id.specific_id.id,
@@ -78,7 +93,7 @@ class promotionBenefitsWizard(models.TransientModel):
     job_allowance_ids = fields.One2many('promotion.appoint.allowance', 'job_promotion_id', string=u'بدلات الوظيفة')
     promotion_allowance_ids = fields.One2many('promotion.appoint.allowance', 'promotion_id', string=u'بدلات الترقية')
     location_allowance_ids = fields.One2many('promotion.appoint.allowance', 'location_promotion_id', string=u'بدلات المنطقة')
-    
+
     @api.multi
     def action_promotion(self):
         self.promotion_line_obj.location_allowance_ids.unlink()
@@ -89,24 +104,33 @@ class promotionBenefitsWizard(models.TransientModel):
             job_allowance_ids.append({'job_promotion_id': self.promotion_line_obj.id,
                                       'allowance_id': rec.allowance_id.id,
                                       'compute_method': rec.compute_method,
-                                      'amount': rec.amount
-                                      })
+                                      'amount': rec.amount,
+                                       'min_amount': rec.min_amount,
+                                        'percentage': rec.percentage,
+                                       'line_ids': [(6, 0, rec.line_ids.ids)],
+})
         self.promotion_line_obj.job_allowance_ids = job_allowance_ids
         promotion_allowance_ids = []
         for rec in self.promotion_allowance_ids:
             promotion_allowance_ids.append({'promotion_id': self.promotion_line_obj.id,
                                       'allowance_id': rec.allowance_id.id,
                                       'compute_method': rec.compute_method,
-                                      'amount': rec.amount
-                                      })
+                                      'amount': rec.amount,
+                                      'min_amount': rec.min_amount,
+                                        'percentage': rec.percentage,
+                                      'line_ids': [(6, 0, rec.line_ids.ids)],
+})
         self.promotion_line_obj.promotion_allowance_ids = promotion_allowance_ids
         location_allowance_ids = []
         for rec in self.location_allowance_ids:
             location_allowance_ids.append({'location_promotion_id': self.promotion_line_obj.id,
                                            'allowance_id': rec.allowance_id.id,
                                            'compute_method': rec.compute_method,
-                                           'amount': rec.amount
-                                           })
+                                           'amount': rec.amount,
+                                            'min_amount': rec.min_amount,
+                                            'percentage': rec.percentage,
+                                          'line_ids': [(6, 0, rec.line_ids.ids)],
+})
         self.promotion_line_obj.location_allowance_ids = location_allowance_ids
 
 
@@ -126,7 +150,7 @@ class promotionAppointAllowance(models.TransientModel):
     amount = fields.Float(string='المبلغ')
     min_amount = fields.Float(string='الحد الأدنى')
     percentage = fields.Float(string='النسبة')
-    line_ids = fields.One2many('salary.grid.detail.allowance.city', 'allowance_id', string='النسب حسب المدينة')
+    line_ids = fields.One2many('salary.grid.promotion.allowance.city', 'promotion_allowance_id', string='النسب حسب المدينة')
 
     def get_salary_grid_id(self, employee_id, type_id, grade_id, degree_id, operation_date):
         '''
@@ -164,7 +188,7 @@ class promotionAppointAllowance(models.TransientModel):
 
     @api.onchange('compute_method', 'amount', 'percentage')
     def onchange_get_value(self):
-        allowance_city_obj = self.env['salary.grid.detail.allowance.city']
+        allowance_city_obj = self.env['salary.grid.promotion.allowance.city']
         degree_obj = self.env['salary.grid.degree']
         salary_grid_obj = self.env['salary.grid.detail']
         # employee info
@@ -189,7 +213,7 @@ class promotionAppointAllowance(models.TransientModel):
         if self.compute_method == 'percentage':
             amount = self.percentage * basic_salary / 100.0
         if self.compute_method == 'job_location' and employee and employee.dep_city:
-            citys = allowance_city_obj.search([('allowance_id', '=', self.id), ('city_id', '=', employee.dep_city.id)])
+            citys = allowance_city_obj.search([('promotion_allowance_id', '=', self.id), ('city_id', '=', employee.dep_city.id)])
             if citys:
                 amount = citys[0].percentage * basic_salary / 100.0
         if self.compute_method == 'formula_1':
@@ -205,3 +229,9 @@ class promotionAppointAllowance(models.TransientModel):
                 amount = self.min_amount
         self.amount = amount
 
+class PromotionAllowanceCity(models.TransientModel):
+    _name = 'salary.grid.promotion.allowance.city'
+
+    promotion_allowance_id = fields.Many2one('promotion.appoint.allowance', string='البدل', ondelete='cascade')
+    city_id = fields.Many2one('res.city', string='المدينة', required=1)
+    percentage = fields.Float(string='النسبة', required=1)

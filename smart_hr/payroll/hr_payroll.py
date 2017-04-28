@@ -12,32 +12,15 @@ from openerp.exceptions import UserError
 from openerp.exceptions import ValidationError
 
 
-class HrPayslipRunError(models.Model):
-    _name = 'hr.payslip.run.error'
-
-    payslip_run_id = fields.Many2one('hr.payslip.run', string='المسير', ondelete='cascade')
-    employee_id = fields.Many2one('hr.employee', string='الموظف')
-    type = fields.Selection([('not_include', u'لم يدخل الاعداد'),
-                             ('termination', u'طي القيد'),
-                             ('stop', u'تم إيقاف راتبه'),
-                             ], required=1, string='السبب')
-
-
 class HrPayslipRun(models.Model):
     _name = 'hr.payslip.run'
     _inherit = ['hr.payslip.run', 'mail.thread']
-
-    error_ids = fields.One2many('hr.payslip.run.error', 'payslip_run_id', string='تقرير الموظفين المسثنين من المسير الجماعي', readonly=1)
-    count_slip_ids = fields.Integer(string='count slip ids')
 
     @api.multi
     def get_default_period_id(self):
         month = get_current_month_hijri(HijriDate)
         date = get_hijri_month_start(HijriDate, Umalqurra, int(month))
-        period_id = self.env['hr.period'].search([('date_start', '<=', date),
-                                                       ('date_stop', '>=', date),
-                                                       ]
-                                                      )
+        period_id = self.env['hr.period'].search([('date_start', '<=', date),('date_stop', '>=', date)])
         return period_id
 
     @api.one
@@ -60,12 +43,22 @@ class HrPayslipRun(models.Model):
                               ], 'الحالة', select=1, readonly=1, copy=False)
 
     amount_total = fields.Float(string='الإجمالي', store=True, readonly=True, compute='_amount_all')
+    error_ids = fields.One2many('hr.payslip.run.error', 'payslip_run_id', string='تقرير الموظفين المسثنين من المسير الجماعي', readonly=1)
+    count_slip_ids = fields.Integer(string='count slip ids')
+
+    slip_no_zero_ids = fields.One2many('hr.payslip', 'payslip_run_id', string='Payslips', domain=[('salary_net', '!=', 0.0)],
+                                       readonly=True, states={'draft': [('readonly', False)]})
+
+    slip_zero_ids = fields.One2many('hr.payslip', 'payslip_run_id', string='Payslips With Zero Net', domain=[('salary_net', '=', False)],
+                                    readonly=True, states={'draft': [('readonly', False)]})
+    # fields used to generate bank file
     bank_file = fields.Binary(string='الملف البنكي', attachment=True)
     bank_file_name = fields.Char(string='مسمى الملف البنكي')
+    # fields used for filter
     department_level1_id = fields.Many2one('hr.department', string='الفرع', readonly=1, states={'draft': [('readonly', 0)]})
     department_level2_id = fields.Many2one('hr.department', string='القسم', readonly=1, states={'draft': [('readonly', 0)]})
     department_level3_id = fields.Many2one('hr.department', string='الشعبة', readonly=1, states={'draft': [('readonly', 0)]})
-    salary_grid_type_id = fields.Many2many('salary.grid.type', string='الأصناف', readonly=1, states={'draft': [('readonly', 0)]},)
+    salary_grid_type_id = fields.Many2many('salary.grid.type', string='الأصناف', readonly=1, states={'draft': [('readonly', 0)]})
 
     @api.onchange('period_id')
     def onchange_period_id(self):
@@ -74,13 +67,14 @@ class HrPayslipRun(models.Model):
             self.date_end = self.period_id.date_stop
             self.name = u'مسير جماعي  شهر %s' % self.period_id.name
 
-    def compute_employee_ids(self):
+    def compute_employee_ids(self, with_error=True):
         dapartment_obj = self.env['hr.department']
         employee_obj = self.env['hr.employee']
         department_level1_id = self.department_level1_id and self.department_level1_id.id or False
         department_level2_id = self.department_level2_id and self.department_level2_id.id or False
         department_level3_id = self.department_level3_id and self.department_level3_id.id or False
         employee_ids = []
+        employee_error_ids = []
         dapartment_id = False
         if department_level3_id:
             dapartment_id = department_level3_id
@@ -100,8 +94,9 @@ class HrPayslipRun(models.Model):
         if self.salary_grid_type_id:
             employee_ids = employee_obj.search([('id', 'in', employee_ids), ('type_id', 'in', self.salary_grid_type_id.ids)]).ids
         # minus uncounted employees
-        self.compute_error()
-        employee_error_ids = [line.employee_id.id for line in self.error_ids]
+        if with_error:
+            self.compute_error()
+            employee_error_ids = [line.employee_id.id for line in self.error_ids]
         self.employee_ids = list((set(employee_ids) - set(employee_error_ids)))
 
     @api.one
@@ -149,7 +144,7 @@ class HrPayslipRun(models.Model):
         self.slip_ids.unlink()
         self.count_slip_ids = 0
         self.compute_employee_ids()
-        slip_ids=[]
+        slip_ids = []
         for employee in self.employee_ids:
             payslip_val = {'employee_id': employee.id,
                            'period_id': self.period_id.id,
@@ -169,16 +164,13 @@ class HrPayslipRun(models.Model):
 
     @api.multi
     def compute_error(self):
-
         self.error_ids.unlink()
-#         res = self.onchange_department_level()
-#         all_employees_ids = res['domain']['employee_ids'][0][2]
-#         employee_not_include_ids = list(set(all_employees_ids) - set(self.employee_ids.ids))
         error_ids = []
-
-        #  لم يدخلوا الإعداد موظفين:
-#         for employee_id in employee_not_include_ids:
-#             error_ids.append({'payslip_run_id': self.id, 'employee_id': employee_id, 'type': 'not_include'})
+        #  موظفين صرفت لهم إجازة مدفوعة الأجر :
+        special_payslips = self.env['hr.payslip'].search([('state', '=', 'done'), ('payslip_type', '=', 'holidays'),('salary_net', '!=', 0.0),
+                                                          ('period_ids', 'in', [self.period_id.id])])
+        for payslip in special_payslips:
+            error_ids.append({'payslip_run_id': self.id, 'employee_id': payslip.employee_id.id, 'type': 'prepaid_holiday'})
 
         # موظفين:  تم إيقاف راتبهم
         employee_stop_lines = self.env['hr.payslip.stop.line'].search(
@@ -186,14 +178,6 @@ class HrPayslipRun(models.Model):
         employee_stop_ids = [line.payslip_id.employee_id.id for line in employee_stop_lines]
         for employee_id in employee_stop_ids:
             error_ids.append({'payslip_run_id': self.id, 'employee_id': employee_id, 'type': 'stop'})
-
-        # موظفين:  طي القيد
-#         employee_termination_lines = self.env['hr.termination'].search(
-#             [('id', 'in', all_employees_ids), ('state', '=', 'done'), ('date_termination', '>=', self.period_id.date_start),
-#              ('date_termination', '<=', self.period_id.date_stop)])
-#         employee_termination_ids = [line.employee_id.id for line in employee_termination_lines]
-#         for employee_id in employee_termination_ids:
-#             error_ids.append({'payslip_run_id': self.id, 'employee_id':employee_id, 'type':'termination'})
 
         self.error_ids = error_ids
         return True
@@ -221,7 +205,7 @@ class HrPayslipRun(models.Model):
         filler = ''.rjust(65, ' ')
         file_dec = ''
         file_dec += u'%s%s%s%s%s%s%s%s%s%s\n' % (header_key, calendar_type, send_date, value_date, total_amount, total_employees, account_number, file_parameter, file_sequence, filler)
-        for playslip in self.slip_ids:
+        for playslip in self.slip_no_zero_ids:
             employee = playslip.employee_id
             # add line for each playslip
             employee_number = employee.number.ljust(12, ' ')
@@ -234,7 +218,7 @@ class HrPayslipRun(models.Model):
             employee_account_number = employee_bank.acc_number.ljust(24, ' ')
             employee_name = '*****'.ljust(50, ' ')
             employee_amount = str(playslip.salary_net).replace('.', '').replace(',', '').zfill(15)
-            civilian_id = employee.identification_id.zfill(15)
+            civilian_id = employee.identification_id and employee.identification_id.zfill(15) or ''.zfill(15)
             employee_id_type = '0'
             process_flag = ' '
             block_amount = ' '
@@ -431,7 +415,7 @@ class HrPayslip(models.Model):
             # generate  lines
             employee = payslip.employee_id
             # search the salary_grids for this employee
-            grid_id, basic_salary = employee.get_salary_grid_id(self.date_from)
+            grid_id, basic_salary = employee.get_salary_grid_id(payslip.date_from)
             if not grid_id:
                 continue
             # compute
@@ -718,7 +702,7 @@ class HrPayslip(models.Model):
             # --------------
             # - الضابط الوحيد هو إن كان الموظف لديه إجازة ويجب أن لا يقل ما يصرف له عن مبلغ محدد في إعدادات نوع الإجازة
             # get salary_net line
-            salary_net_line = self.env['hr.payslip.line'].search([('slip_id', '=', payslip.id),('type', '=', 'salary_net')])
+            salary_net_line = self.env['hr.payslip.line'].search([('slip_id', '=', payslip.id), ('type', '=', 'salary_net')])
             for constrainte_line in payslip.contraintes_ids:
                 # case 1: check min_amount
                 constrainte_name = constrainte_line.constrainte_name
@@ -795,6 +779,16 @@ class HrPayslip(models.Model):
     def get_operations(self, res_model):
         operation_ids = self.operation_ids.search([('payslip_id', '=', self.id), ('res_model', '=', res_model)])
         return [operation.res_id for operation in operation_ids]
+
+
+class HrPayslipRunError(models.Model):
+    _name = 'hr.payslip.run.error'
+
+    payslip_run_id = fields.Many2one('hr.payslip.run', string='المسير', ondelete='cascade')
+    employee_id = fields.Many2one('hr.employee', string='الموظف')
+    type = fields.Selection([('prepaid_holiday', u'إجازة مسبوقة الدفع'),
+                             ('stop', u'تم إيقاف راتبه'),
+                             ], required=1, string='السبب')
 
 
 class HrPayrollConstrainte(models.Model):
