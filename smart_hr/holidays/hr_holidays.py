@@ -439,18 +439,40 @@ class HrHolidays(models.Model):
             decision_date = fields.Date.today() # new date
             if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_normal').id:
                 decision_type_id = self.env.ref('smart_hr.data_normal_leave').id
-            elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id:
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional').id:
                 decision_type_id = self.env.ref('smart_hr.data_exceptionnel_leave').id
-            elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_illness').id:
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_illness').id:
                 decision_type_id = self.env.ref('smart_hr.data_leave_satisfactory').id
-            elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional').id:
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional').id:
                 decision_type_id = self.env.ref('smart_hr.data_leave_escort').id
-            elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_sport').id:
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_sport').id:
                 decision_type_id = self.env.ref('smart_hr.data_leave_sport').id
-            elif self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_maternity').id:
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_study').id:
                 decision_type_id = self.env.ref('smart_hr.data_leave_motherhood').id
-            else:
-                decision_type_id = self.env.ref('smart_hr.data_normal_leave').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_legal_absent').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_status_legal_absent').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_compelling').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_status_compelling').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_exceptional_accompaniment').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_status_exceptional_accompaniment').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_adoption').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_status_adoption').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_child_birth_dad').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_child_birth_dad').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_rescue').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_status_rescue').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_death').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_death').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_dialysis').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_dialysis').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_literaty').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_literaty').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_exam').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_exam').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_contractor').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_status_contractor').id
+            if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_compensation').id:
+                decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_compensation').id
 
 
             # create decission
@@ -766,7 +788,7 @@ class HrHolidays(models.Model):
 
             # الابتعاث
             schol_obj = self.env['hr.scholarship']
-            scholarship_uncounted_days = schol_obj.search_count([('employee_id', '=', employee.id), ('state', '=', 'done'), ('date_from', '<=', d), ('date_to', '>=', d)])
+            scholarship_uncounted_days = schol_obj.search_count([('employee_id', '=', employee.id), ('state', 'in', ['done','finished']), ('date_from', '<=', d), ('date_to', '>=', d)])
             uncounted_days += scholarship_uncounted_days
 
             init_solde = (employee_solde / (periode * 12)) / 30.0
@@ -1469,7 +1491,16 @@ class HrHolidays(models.Model):
             if not level_fount:
                 raise ValidationError(u"لم تتحصل على المستوى الدراسي المطلوب.")
             
-        # Constraintes for service years required
+        domain = [
+                ('date_from', '<=', self.date_to),
+                ('date_to', '>=', self.date_from),
+                ('employee_id', '=', self.employee_id.id),
+                ('state', '=', 'done'),
+            ]
+        in_scholarship = self.env['hr.scholarship'].search(domain)
+        if in_scholarship:
+                raise ValidationError(u"هناك تداخل في التاريخ مع ابتعاث")
+                    # Constraintes for service years required
         if self.holiday_status_id.service_years_required * 354 > self.employee_id.service_duration:
                 raise ValidationError(u" ليس لديك" + str(self.holiday_status_id.service_years_required) + u"سنوات خدمة  ")
             

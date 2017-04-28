@@ -47,9 +47,16 @@ class hr_suspension(models.Model):
     diplay_button_end = fields.Boolean(compute='_compute_display_button_end')
 
     @api.multi
+    @api.depends('suspension_end_id.state')
+    def _compute_is_end(self):
+        for rec in self:
+            if rec.suspension_end_id and rec.suspension_end_id.state == 'done':
+                rec.is_end = True
+
+    @api.multi
     def _compute_display_button_end(self):
         for rec in self:
-            suspension_end_progress = self.env['hr.suspension.end'].search([('state', 'in',['draft','hrm']),('suspension_id', '=', rec.id)])
+            suspension_end_progress = self.env['hr.suspension.end'].search([('state', 'in', ['draft','hrm']),('suspension_id', '=', rec.id)])
             if not rec.state == 'done' or (rec.state == 'done' and rec.is_end is True) or (rec.is_end is False and suspension_end_progress):
                 rec.diplay_button_end = False
             else:
