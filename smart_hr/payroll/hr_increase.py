@@ -388,7 +388,7 @@ class HrEmployeeDeprivation(models.Model):
     _sql_constraints = [
         ('unique_deprivation_emp', 'UNIQUE(increase_id,employee_id)', u"يجب الا يتكرر الاستثناء من العلاوة لنفس الموظف"),
     ]
-   
+
 
     @api.multi
     @api.depends('employee_id')
