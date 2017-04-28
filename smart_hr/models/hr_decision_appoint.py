@@ -876,7 +876,7 @@ class DecisionAppointAllowance(models.Model):
             basic_salary = employee_id.basic_salary + sum_increases_amount
         return salary_grid_id, basic_salary
 
-    @api.onchange('compute_method', 'amount', 'percentage')
+    @api.onchange('compute_method', 'amount', 'percentage','line_ids', 'min_amount')
     def onchange_get_value(self):
         allowance_city_obj = self.env['salary.grid.detail.allowance.city.appoint']
         degree_obj = self.env['salary.grid.degree']
@@ -918,15 +918,19 @@ class DecisionAppointAllowance(models.Model):
                     amount = citys[0].percentage * basic_salary / 100.0
             if self.compute_method == 'formula_1':
             # get first degree for the grade
-                degrees = degree_obj.search([('grade_id', '=', grade.id)])
-                if degrees:
-                    salary_grids = salary_grid_obj.search([('type_id', '=', ttype.id), ('grade_id', '=', grade.id), ('degree_id', '=', degrees[0].id)])
+                first_degree_id = self.env['salary.grid.degree'].search([('code', '=', '01')], limit=1)
+                if first_degree_id:
+                    salary_grids = salary_grid_obj.search([('type_id', '=', employee.type_id.id), ('grade_id', '=', employee.grade_id.id),
+                                                            ('degree_id', '=', first_degree_id.id),('grid_id.state', '=', 'done'), ('grid_id.enabled', '=', True)])
                     if salary_grids:
                         amount = salary_grids[0].basic_salary * self.percentage / 100.0
+                    else:
+                        raise ValidationError(_(u'لا يوجد سلم رواتب للدرجة‬ الاولى‬  من‬ المرتبة‬  التي‬ يشغلها‬ الموظف. !'))
             if self.compute_method == 'formula_2':
-                amount = self.percentage * basic_salary / 100.0
-                if self.min_amount and amount < self.min_amount:
-                    amount = self.min_amount
+                salary_grids_old, basic_salary_old = self.get_salary_grid_id(employee, employee.type_id, employee.grade_id, employee.degree_id, False)
+                amount = self.percentage * basic_salary_old / 100.0
+            if self.min_amount and amount < self.min_amount:
+                amount = self.min_amount
             self.amount = amount
         else:
             raise ValidationError(_(u'لا يوجد موظف. !'))
