@@ -36,9 +36,9 @@
 						<button name="action_waiting" string="ارسال" states="new"
 							type="object" groups="smart_hr.group_department_employee" icon="fa-times-circle-o"
 							class="oe_inline oe_stat_button" />
-						<button name="button_direct_appoint" string="تفعيل"
-							states="waiting" type="object" groups="smart_hr.group_department_employee"
-							icon="fa-times-circle-o" class="oe_inline oe_stat_button" />
+						<button name="button_direct_appoint" string="تفعيل" states="waiting"
+							type="object" groups="smart_hr.group_department_employee" icon="fa-times-circle-o"
+							class="oe_inline oe_stat_button" />
 						<button name="button_cancel_appoint" string="إلغاء المباشرة"
 							states="waiting" type="object" groups="smart_hr.group_department_employee"
 							icon="fa-times-circle-o" class="oe_inline oe_stat_button" />
@@ -53,7 +53,8 @@
 							<field name="date" />
 						</group>
 						<group col="4">
-							<field name="date_direct_action" attrs="{'readonly': [('state','not in', ('new','waiting'))]}" />
+							<field name="date_direct_action"
+								attrs="{'readonly': [('state','not in', ('new','waiting'))]}" />
 							<field name="type" attrs="{'readonly': [('state','!=', 'new')]}" />
 
 						</group>
@@ -73,6 +74,8 @@
 								<field name="degree_id" />
 								<field name="basic_salary" />
 								<field name="appoint_id" invisible="1" />
+								<field name="shcolarship_id" invisible="1" />
+
 							</group>
 
 

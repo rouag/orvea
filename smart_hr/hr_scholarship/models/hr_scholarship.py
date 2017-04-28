@@ -3,6 +3,7 @@
 from openerp import models, api, fields, _
 from openerp.exceptions import ValidationError
 from datetime import date, datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
 
 class HrScholarship(models.Model):
@@ -106,7 +107,21 @@ class HrScholarship(models.Model):
             res['domain'] = {'diplom_id': [('education_level_id.diplom_type', '=', self.diplom_type)]}
             self.diplom_id = False
         return res
-
+    
+    @api.constrains('date_from', 'date_to')
+    @api.onchange('date_from', 'date_to')
+    def onchange_dates(self):
+        res = {}
+        if self.date_from:
+            if fields.Date.from_string(self.date_from).weekday() in [4, 5] and not self.is_extension:
+                raise ValidationError(u"هناك تداخل في تاريخ البدء مع عطلة نهاية الاسبوع  ")
+            if self.env['hr.smart.utils'].public_holiday_intersection(self.date_from):
+                raise ValidationError(u"هناك تداخل في تاريخ البدء مع  عطلة او عيد  ")
+        if self.date_to:
+            if fields.Date.from_string(self.date_to).weekday() in [4, 5]:
+                raise ValidationError(u"هناك تداخل في تاريخ الإنتهاء مع عطلة نهاية الاسبوع")
+            if self.env['hr.smart.utils'].public_holiday_intersection(self.date_to):
+                raise ValidationError(u"هناك تداخل في تاريخ البدء مع  عطلة او عيد  ")
     @api.model
     def create(self, vals):
         res = super(HrScholarship, self).create(vals)
@@ -220,13 +235,15 @@ class HrScholarship(models.Model):
             if in_holiday:
                 raise ValidationError(u"هناك تداخل في التاريخ مع إجازة")
 
+        
     @api.multi
     def button_extend(self):
 
         context = self._context.copy()
         context.update({
-            u'default_date_from': self.date_to,
+            u'default_date_from': fields.Date.to_string(fields.Date.from_string(self.date_to) + timedelta(days=1)),
             u'default_date_to': self.date_to,
+            u'is_extension': True
         })
         return {
             'type': 'ir.actions.act_window',
