@@ -198,6 +198,7 @@
         'payroll/view/hr_deduction.xml',
         'payroll/view/hr_bonus_view.xml',
         'payroll/view/hr_loan_view.xml',
+        'payroll/view/hr_payroll_settlement.xml',
         'payroll/view/hr_increase_view.xml',
         'payroll/view/period_fiscalyear.xml',
         'payroll/view/hr_differential.xml',

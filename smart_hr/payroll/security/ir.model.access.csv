@@ -15,6 +15,9 @@ access_hr_bonus_city_manager,name_hr_bonus_city_manager,model_hr_bonus_city,grou
 access_hr_bonus_history_all,name_hr_bonus_history_all,model_hr_bonus_history,,1,0,0,0
 access_hr_bonus_history_manager,name_hr_bonus_history_manager,model_hr_bonus_history,group_bonus_management,1,1,1,0
 ,,,,,,,
+access_hr_payroll_settlement_all,name_hr_payroll_settlement_all,model_hr_payroll_settlement,,1,0,0,0
+access_hr_payroll_settlement_manager,name_hr_payroll_settlement_manager,model_hr_payroll_settlement,group_settlement_management,1,1,1,0
+,,,,,,,
 access_hr_loan_all,name_hr_loan_all,model_hr_loan,,1,0,0,0
 access_hr_loan_manager,name_hr_loan_manager,model_hr_loan,group_loan_management,1,1,1,0
 access_hr_loan_line_all,name_hr_loan_line_all,model_hr_loan_line,,1,0,0,0

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<!-- التسويات -->
+
+		<record id="view_search_hr_payroll_settlement" model="ir.ui.view">
+			<field name="name">hr.payroll.settlement.search</field>
+			<field name="model">hr.payroll.settlement</field>
+			<field name="arch" type="xml">
+				<search string="التسويات">
+					<field name="employee_id" />
+					<field name="period_id" />
+					<field name="amount" />
+					<field name="days" />
+					<field name="number_decision" />
+					<field name="date_decision" />
+					<field name="state" />
+					<separator />
+					<group expand="0" string="تجميع حسب">
+						<filter name="employee_id" string="الموظف"
+							context="{'group_by':'employee_id'}" />
+						<filter name="period_id" string="الفترة"
+							context="{'group_by':'period_id'}" />
+						<filter name="state" string="الحالة" context="{'group_by':'state'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_payroll_settlement_tree">
+			<field name="name">hr.payroll.settlement.tree</field>
+			<field name="model">hr.payroll.settlement</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="التسويات">
+					<field name="employee_id" />
+					<field name="period_id" />
+					<field name="amount" />
+					<field name="days" />
+					<field name="number_decision" />
+					<field name="date_decision" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_payroll_settlement_form">
+			<field name="name">hr.payroll.settlement.form</field>
+			<field name="model">hr.payroll.settlement</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="التسويات">
+					<header>
+						<button name="action_done" string="إعتماد" type="object" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							states="new" groups="smart_hr.group_settlement_management" />
+						<button name="action_cancel" string="إلغاء" type="object" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							states="new" groups="smart_hr.group_settlement_management" />
+						<field name="state" widget="statusbar" statusbar_visible="new,done,cancel" />
+					</header>
+					<sheet>
+						<group>
+							<group>
+								<field name="date" />
+								<field name="employee_id" options="{'no_create_edit': 1,'no_create': 1, 'no_quick_create': 1}" />
+								<field name="type" />
+								<field name="compute_method" />
+								<field name="allowance_id" attrs="{'invisible':[('compute_method','!=','amount_allowance')], 'required': [('compute_method','=','amount_allowance')]}" />
+								<field name="amount" attrs="{'invisible':[('compute_method','in',('days_delay','days_absence'))], 'required': [('compute_method','not in',('days_delay','days_absence'))]}" />
+								<field name="days"  attrs="{'invisible':[('compute_method','not in',('days_delay','days_absence'))], 'required': [('compute_method','in',('days_delay','days_absence'))]}"/>
+							</group>
+							<group>
+								<field name="period_id" />
+								<field name="number_decision" />
+								<field name="date_decision" />
+							</group>
+						</group>
+						<field name="note" placeholder="ملاحظات ..." />
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"
+							groups="base.group_user" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_payroll_settlement">
+			<field name="name">التسويات</field>
+			<field name="res_model">hr.payroll.settlement</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="hr_payroll_settlement_menu" name="التسويات" sequence="5"
+			groups="group_settlement_management" parent="hr_payroll_settlement_root" action="action_hr_payroll_settlement" />
+
+	</data>
+</openerp>
+			

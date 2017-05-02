@@ -30,7 +30,12 @@
 			<field name="category_id" ref="module_payrol_setting_employee" />
 			<field name="name">إدارة القروض</field>
 		</record>
-		
+
+		<record id="group_settlement_management" model="res.groups">
+			<field name="category_id" ref="module_payrol_setting_employee" />
+			<field name="name">إدارة التسويات</field>
+		</record>
+
 		<record id="group_finance_department" model="res.groups">
 			<field name="category_id" ref="module_payrol_setting_employee" />
 			<field name="name">قسم المالية</field>
