@@ -109,7 +109,7 @@
 			file="smart_hr.hr_employee_card_report" menu="False" />
 		<record id="report_hr_employee_card" model="ir.actions.report.xml">
 			<field name="paperformat_id" ref="smart_base.paperformat_landscape_card" />
-			<field name="download_filename">${o.employee_id.name}_بطاقة موظف.pdf</field>
+			<field name="download_filename">${o.display_name}_بطاقة موظف.pdf</field>
 		</record>
 
 

@@ -710,7 +710,6 @@ class JobCareerModelReport(report_sxw.rml_parse):
                                    'new_job': movement.new_name.name
                                    }
             i = i + 1
-        x=job_mouvements_ids[1]['grade_id']
         job_mouvements_ids_list=[]
         for j in range(len(job_mouvements_ids)):
             job_mouvements_ids_list.append(job_mouvements_ids[j])

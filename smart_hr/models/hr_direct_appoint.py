@@ -26,7 +26,7 @@ class HrDirectAppoint(models.Model):
     far_age = fields.Float(string=' السن الاقصى', readonly=1)
     basic_salary = fields.Float(string='الراتب الأساسي', readonly=1)
     degree_id = fields.Many2one('salary.grid.degree', string='الدرجة', readonly=1)
-    date_direct_action = fields.Date(string='تاريخ المباشرة ', required=1)
+    date_direct_action = fields.Date(string='تاريخ المباشرة ', required=1, default=fields.Datetime.now())
     type_appointment = fields.Many2one('hr.type.appoint', string=u'نوع التعيين')
     appoint_id = fields.Many2one('hr.decision.appoint', string=u'تعيين الموظف')
     date = fields.Date(string=u'التاريخ ', default=fields.Datetime.now(), readonly=1)
@@ -140,7 +140,6 @@ class HrDirectAppoint(models.Model):
         self.history_line_id = history_line_id
         self.state = 'done'
 
-
     @api.onchange('date_direct_action')
     def _onchange_date_direct_action(self):
         if self.date_direct_action and self.date_direct_action < datetime.today().strftime('%Y-%m-%d'):
@@ -184,25 +183,32 @@ class HrDirectAppoint(models.Model):
                                                                         ('state', '=', 'done'),
                                                                         ('type_appointment', '=', type_appointment_improve_situation),
                                                                         ('state_appoint', '=', 'new')], limit=1)
+            if self.type in ['transfer', 'promotion', 'appoint', 'improve_situation']:
+                if appoint_line:
+                    self.job_id = appoint_line.job_id.id
+                    self.code = appoint_line.job_id.name.number
+                    self.number_job = appoint_line.job_id.number
+                    self.type_id = appoint_line.job_id.type_id.id
+                    self.far_age = appoint_line.type_id.far_age
+                    self.department_id = appoint_line.department_id.id
+                    self.appoint_id = appoint_line.id
+                    self.grade_id = appoint_line.job_id.grade_id.id
+                    self.degree_id = appoint_line.degree_id.id
+                    self.basic_salary = appoint_line.basic_salary
+                else:
+                    self.job_id = False
+                    self.code = False
+                    self.number_job = False
+                    self.type_id = False
+                    self.far_age = False
+                    self.department_id = False
+                    self.appoint_id = False
+                    self.grade_id = False
+                    self.degree_id = False
+                    self.basic_salary = False
             elif self.type == 'shcolarship':
-                shcolarship_id = self.env['hr.scholarship'].search([('employee_id', '=', self.employee_id.id),
-                                                                        ('state', 'in', ['done','finished']), ('date_to', '<', self.date_direct_action),
-                                                                        ('restarted', '=', False)], limit=1)
-            
-
-            if appoint_line:
-                self.job_id = appoint_line.job_id.id
-                self.code = appoint_line.job_id.name.number
-                self.number_job = appoint_line.job_id.number
-                self.type_id = appoint_line.job_id.type_id.id
-                self.far_age = appoint_line.type_id.far_age
-                self.department_id = appoint_line.department_id.id
-                self.appoint_id = appoint_line.id
-                self.grade_id = appoint_line.job_id.grade_id.id
-                self.degree_id = appoint_line.degree_id.id
-                self.basic_salary = appoint_line.basic_salary
-            elif shcolarship_id:
-                self.shcolarship_id = shcolarship_id.id
+                shcolarship_id = self.env['hr.scholarship'].search([('employee_id', '=', self.employee_id.id), ('state', 'in', ['done', 'finished']),
+                                                                    ('date_to', '<', self.date_direct_action), ('restarted', '=', False)], limit=1)
                 self.job_id = self.employee_id.job_id.id
                 self.code = self.employee_id.job_id.name.number
                 self.number_job = self.employee_id.job_id.number
@@ -213,18 +219,11 @@ class HrDirectAppoint(models.Model):
                 self.degree_id = self.employee_id.degree_id.id
                 salary_grid_id, basic_salary = self.employee_id.get_salary_grid_id(self.date_direct_action)
                 self.basic_salary = basic_salary
-            else:
-                self.job_id = False
-                self.code = False
-                self.number_job = False
-                self.type_id = False
-                self.far_age = False
-                self.department_id = False
-                self.appoint_id = False
-                self.grade_id = False
-                self.degree_id = False
-                self.basic_salary = False
+                if shcolarship_id:
+                    self.shcolarship_id = shcolarship_id.id
 
+
+   
     def send_appoint_group(self, group_id, title, msg):
         """
         @param group_id: res.groups
