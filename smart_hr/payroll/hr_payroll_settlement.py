@@ -11,7 +11,7 @@ class HrPayrollSettlement(models.Model):
     _description = u'التسوية'
     _rec_name = 'employee_id'
 
-    date = fields.Date(string='تاريخ التسوية', readonly=1)
+    date = fields.Date(string='تاريخ التسوية', readonly=1, default=fields.Datetime.now())
     period_id = fields.Many2one('hr.period', string=u'مخصص لفترة', required=1, readonly=1, states={'new': [('readonly', 0)]})
     number_decision = fields.Char(string='رقم القرار', readonly=1, states={'new': [('readonly', 0)]})
     date_decision = fields.Date(string=' تاريخ القرار', readonly=1, states={'new': [('readonly', 0)]})

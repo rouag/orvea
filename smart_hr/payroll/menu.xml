@@ -11,11 +11,7 @@
 
 		<menuitem id="hr_loan_root" parent="hr_payroll_root" name="القروض" sequence="20" />
 
-		<menuitem id="hr_difference_root" parent="hr_payroll_root" name="الفروقات" sequence="22" />
-		
 		<menuitem id="hr_payslip_stop_root_menu" parent="hr_payroll_root" name="ايقاف راتب" sequence="34" />
-
-		<menuitem id="hr_rest_deduction_root" parent="hr_payroll_root" name="الحسميات المتخلدة" sequence="37" />
 
 		<menuitem id="hr_bonus_root" parent="hr_payroll_root" name="المزايا المالية" sequence="40" />
 
