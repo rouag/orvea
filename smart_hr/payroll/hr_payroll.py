@@ -68,6 +68,7 @@ class HrPayslipRun(models.Model):
             self.name = u'مسير جماعي  شهر %s' % self.period_id.name
 
     def compute_employee_ids(self, with_error=True):
+        self.employee_ids = False
         dapartment_obj = self.env['hr.department']
         employee_obj = self.env['hr.employee']
         department_level1_id = self.department_level1_id and self.department_level1_id.id or False
@@ -178,7 +179,11 @@ class HrPayslipRun(models.Model):
         employee_stop_ids = [line.payslip_id.employee_id.id for line in employee_stop_lines]
         for employee_id in employee_stop_ids:
             error_ids.append({'payslip_run_id': self.id, 'employee_id': employee_id, 'type': 'stop'})
-
+        # الموظفين الذين تم إعداد مسير إفرادي لهم
+        employee_payslip_lines = self.env['hr.payslip'].search([('period_id', '=', self.period_id.id), ('is_special', '=', False)])
+        employee_have_payslip_ids = [payslip.employee_id.id for payslip in employee_payslip_lines]
+        for employee_id in employee_have_payslip_ids:
+            error_ids.append({'payslip_run_id': self.id, 'employee_id': employee_id, 'type': 'have_payslip'})
         self.error_ids = error_ids
         return True
 
@@ -788,6 +793,7 @@ class HrPayslipRunError(models.Model):
     employee_id = fields.Many2one('hr.employee', string='الموظف')
     type = fields.Selection([('prepaid_holiday', u'إجازة مسبوقة الدفع'),
                              ('stop', u'تم إيقاف راتبه'),
+                             ('have_payslip', u'تم إنشاء مسير لهم'),
                              ], required=1, string='السبب')
 
 

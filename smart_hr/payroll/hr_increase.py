@@ -330,7 +330,6 @@ class hrIncrease(models.Model):
                     new_degree_code = '0' + str(new_degree_code)
                 new_degree_code = str(new_degree_code)
                 new_degree_id = degree_obj.search([('code', '=', new_degree_code)], limit=1)
-                print'new_degree_idnew_degree_id',new_degree_id
                 if new_degree_id:
                     line.new_degree_id = new_degree_id.id
                 else :
