@@ -372,7 +372,8 @@ class HrPayslip(models.Model):
         res_count = 0.0
         # الإجازات
         # holidays in current periode
-        domain = [('employee_id', '=', self.employee_id.id), ('state', 'in', ('done', 'cutoff'))]
+        domain = [('employee_id', '=', self.employee_id.id), ('holiday_status_id.deductible_duration_service', '=', True),
+                  ('state', 'in', ('done', 'cutoff'))]
         holidays_ids = self.env['hr.holidays'].search(domain)
         for holiday_id in holidays_ids:
             # overlaped days in current month
