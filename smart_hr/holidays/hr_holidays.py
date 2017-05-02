@@ -116,6 +116,7 @@ class HrHolidays(models.Model):
     birth_certificate = fields.Binary(string=u'شهادة الميلاد', attachment=True)
     extension_period = fields.Integer(string=u'مدة التمديد', default=0)
     external_authoritie = fields.Many2one('res.partner', string=u'الجهة الخارجية', domain="[('company_type', '=', 'governmental_entity')]")
+    need_external_authoritie = fields.Boolean( related='holiday_status_id.external_decision')
     entitlement_type = fields.Many2one('hr.holidays.entitlement.config', string=u'خاصيّة الإجازة')
     sold_overtime = fields.Float(string=u' رصيد خارج الدوام')
     sold_attendance = fields.Float(string=u'رصيد الحضور و الإنصراف')
