@@ -28,9 +28,10 @@
 						name="cancel" />
 					<filter domain="[('state','=','cutoff')]" string="الحالة:مقطوعة"
 						name="cutoff" />
-					<separator/>
-					<filter domain="[('holiday_status_id.deductible_normal_leave','=','True')]" string="الإجازات المؤثرة في رصيد الإجازات العادية"
-						name="deductibe_normal_leave" />
+					<separator />
+					<filter
+						domain="[('holiday_status_id.deductible_normal_leave','=','True')]"
+						string="الإجازات المؤثرة في رصيد الإجازات العادية" name="deductibe_normal_leave" />
 					<field name="employee_id" string="الموظف"
 						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
 					<field name="department_id" />
@@ -114,8 +115,8 @@
 						<button name="button_accept_hrm" string="موافق" type="object"
 							states="hrm" groups="smart_hr.group_hrm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						<button name="%(action_holidays6_refuse_wizard)d" string="رفض" type="action"
-							states="hrm" groups="smart_hr.group_hrm" icon="fa-check"
+						<button name="%(action_holidays6_refuse_wizard)d" string="رفض"
+							type="action" states="hrm" groups="smart_hr.group_hrm" icon="fa-check"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="button_accept_external_audit" string="موافق"
@@ -157,15 +158,15 @@
 							string="قطع الاجازة" type="object"
 							attrs="{'invisible':[('display_button_cut','=',False)]}" icon="fa-times-circle-o"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-							
-							<button name="open_decission" string="معاينة القرار"
+
+						<button name="open_decission" string="معاينة القرار"
 							groups="smart_hr.group_hrm" type="object" states="done" icon="fa-print"
 							class="oe_inline oe_stat_button" />
 						<field name="state" widget="statusbar"
 							statusbar_visible="draft,dm,audit,hrm,external_audit,revision,revision_response,done,cancel,cutoff,refuse" />
 					</header>
 					<sheet>
-					
+
 						<field name="spend_advanced_salary" invisible="1" />
 						<field name="advanced_salary_periode" invisible="1" />
 						<field name="hide_with_advanced_salary" invisible="1" />
@@ -176,15 +177,21 @@
 						</div>
 						<group>
 							<field name="date" readonly="1" />
-							<field name="external_authoritie"
-								attrs="{'invisible':[('state','!=','external_audit')], 'required':[('state','=','external_audit')]}"
-								/>
+						</group>
+
+						<group col="4"
+							attrs="{'invisible':['|',('state','not in',['done','cancel','cutoff'])]}">
+							<field name="num_decision" groups="smart_hr.group_holidays_checker"
+								readonly="1" />
+							<field name="date_decision" groups="smart_hr.group_holidays_checker"
+								readonly="1" />
 						</group>
 						<group>
 							<group>
 								<field name="extended_holiday_id" attrs="{'invisible': [('is_extension','=',False)]}"
 									readonly="True" />
-								<field name="employee_id" required="1" attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)]}"/>
+								<field name="employee_id" required="1"
+									attrs="{'readonly':['|',('state','not in',['draft']),('is_extension','=',True)]}" />
 								<field name="with_advanced_salary"
 									attrs="{'invisible': [('hide_with_advanced_salary','=',True)], 'readonly':[('state','not in',['draft','dm','audit','hrm'])]}" />
 								<field name="salary_number"
@@ -234,6 +241,14 @@
 								attrs="{'readonly':['|',('state','!=','draft'),('entitlement_type','=',%(data_hr_holiday_entitlement_types_husband_death)d)],'invisible':[('compensation_type','=','money')]}" />
 							<field name="date_to" readonly="1"
 								attrs="{'invisible':[('compensation_type','=','money')]}" />
+						</group>
+						<group>
+							<group>
+							<field name='need_external_authoritie' invisible="1" />
+								<field name="external_authoritie" 
+									attrs="{'readonly':[('state','!=','external_audit')], 'invisible':['|',('need_external_authoritie', '=', False),('state','not in',['external_audit','revision','revision_response','done','cancel','cutoff'])], 'required':[('state','=','external_audit')]}" />
+							</group>
+							<group />
 						</group>
 						<group>
 							<field name="display_compute_as_deputation" invisible="1" />
@@ -327,7 +342,6 @@
 							</group>
 						</group>
 
-
 						<group
 							attrs="{'invisible':[('holiday_status_id','not in', [%(data_hr_holiday_death)d])], 'readonly':[('is_extension','!=', True)]}">
 							<group>
@@ -357,18 +371,6 @@
 							<group />
 						</group>
 
-
-
-
-
-
-						<group col="4"
-							attrs="{'invisible':['|',('state','not in',['done','cancel','cutoff'])]}">
-							<field name="num_decision" groups="smart_hr.group_holidays_checker"
-								readonly="1" />
-							<field name="date_decision" groups="smart_hr.group_holidays_checker"
-								readonly="1" />
-						</group>
 						<group>
 							<group
 								attrs="{'invisible':[('state','not in',['external_audit','revision', 'revision_response','done'])]}">
@@ -402,8 +404,8 @@
 						<group>
 							<field name="notes" string="ملاحظات"
 								attrs="{'readonly':[('state','!=','draft')]}" />
-								
-									
+
+
 						</group>
 
 
@@ -513,7 +515,7 @@
 									<field name="maximum" />
 									<field name="postponement_period" />
 									<field name="min_duration_cut_hoiday" />
-									<field name="deductible_maternity_holiday"/>
+									<field name="deductible_maternity_holiday" />
 								</group>
 								<group string="الأثر المالي">
 									<field name="salary_spending" />

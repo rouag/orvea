@@ -116,6 +116,7 @@ class HrHolidays(models.Model):
     birth_certificate = fields.Binary(string=u'شهادة الميلاد', attachment=True)
     extension_period = fields.Integer(string=u'مدة التمديد', default=0)
     external_authoritie = fields.Many2one('res.partner', string=u'الجهة الخارجية', domain="[('company_type', '=', 'governmental_entity')]")
+    need_external_authoritie = fields.Boolean( related='holiday_status_id.external_decision')
     entitlement_type = fields.Many2one('hr.holidays.entitlement.config', string=u'خاصيّة الإجازة')
     sold_overtime = fields.Float(string=u' رصيد خارج الدوام')
     sold_attendance = fields.Float(string=u'رصيد الحضور و الإنصراف')
@@ -332,13 +333,13 @@ class HrHolidays(models.Model):
                     res['domain'] = {'entitlement_type': [('id', 'in', domain_male)]}
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional'):
             res['domain'] = {'entitlement_type': [('code', '=', 'accompaniment_exceptional')]}
-        
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_sport'):
             res['domain'] = {'entitlement_type': [('code', '=', 'sport')]}
             self.text_resolution = self.env.ref('smart_hr.data_leave_sport').text
         if self.holiday_status_id == self.env.ref('smart_hr.data_hr_holiday_status_maternity'):
             self.text_resolution = self.env.ref('smart_hr.data_leave_motherhood').text
-        self.entitlement_type = False
+        if not self.is_extension:
+            self.entitlement_type = False
         return res
 
     @api.onchange('entitlement_type','holiday_status_id')
@@ -824,12 +825,10 @@ class HrHolidays(models.Model):
         default_date_from = fields.Date.to_string(fields.Date.from_string(self.date_to) + timedelta(days=1))
         context.update({
             u'default_is_extension': True,
-
+            u'default_employee_id': self.employee_id.id,
             u'default_extended_holiday_id': self.id,
             u'default_date_from': default_date_from,
-            u'readonly_by_pass': True,
             u'default_holiday_status_id': self.holiday_status_id.id,
-            u'default_employee_id': self.employee_id.id,
             u'default_entitlement_type': self.entitlement_type.id,
             u'default_compensation_type': self.compensation_type,
             u'default_sold_overtime': self.sold_overtime,
@@ -849,8 +848,7 @@ class HrHolidays(models.Model):
             u'default_death_person': self.death_person,
             u'default_prove_exam_duration': self.prove_exam_duration,
             u'default_raison': self.raison,
-
-        })
+            u'readonly_by_pass': True,})
         return {
             'name': 'تمديد الإجازة',
             'view_type': 'form',
@@ -1013,6 +1011,8 @@ class HrHolidays(models.Model):
             if prev_min_holidays_duration + self.duration > self.holiday_status_id.maximum_minimum and self.duration < self.holiday_status_id.minimum:
                 raise ValidationError(u"ليس لديك الرصيد الكافي للتمتع ب‬اجازة مدتها اقل من‬ " + str(self.holiday_status_id.maximum_minimum) + u" أيام")
 #         compute  duration and date_to
+        if self.duration <= 0:
+            raise ValidationError(u"الرجاء مراجعة مدة الاجازة" )
 
     @api.onchange('duration', 'date_from')
     def onchange_duration(self):
@@ -1592,6 +1592,8 @@ class HrHolidays(models.Model):
         if stock['not_need_stock'] is False: 
             if stock['current_stock'] == 0 or stock['current_stock'] < self.duration:  
                 raise ValidationError(u"ليس لديك الرصيد الكافي")
+        if self.duration <= 0:
+            raise ValidationError(u"الرجاء مراجعة مدة الاجازة" )
         
     @api.multi
     def write(self, vals):
