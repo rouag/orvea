@@ -372,7 +372,8 @@ class HrPayslip(models.Model):
         res_count = 0.0
         # الإجازات
         # holidays in current periode
-        domain = [('employee_id', '=', self.employee_id.id), ('state', 'in', ('done', 'cutoff'))]
+        domain = [('employee_id', '=', self.employee_id.id), ('holiday_status_id.deductible_duration_service', '=', True),
+                  ('state', 'in', ('done', 'cutoff'))]
         holidays_ids = self.env['hr.holidays'].search(domain)
         for holiday_id in holidays_ids:
             # overlaped days in current month
@@ -409,6 +410,7 @@ class HrPayslip(models.Model):
     def compute_sheet(self):
         bonus_line_obj = self.env['hr.bonus.line']
         loan_obj = self.env['hr.loan']
+        settlement_obj = self.env['hr.payroll.settlement']
         for payslip in self:
             # delete old line
             payslip.line_ids.unlink()
@@ -597,6 +599,25 @@ class HrPayslip(models.Model):
                     deducted_from_working_days += difference['number_of_days']
                 lines.append(difference_val)
                 difference_total += difference['amount']
+
+            # --------------
+            # 5- التسوية
+            # --------------
+            settlement_lines = settlement_obj.get_settlement_by_period(payslip.period_id.id, payslip.employee_id.id, allowance_total)
+            for settlement in settlement_lines:
+                sequence += 1
+                settlement_val = {'name': settlement['name'],
+                                  'slip_id': payslip.id,
+                                  'employee_id': employee.id,
+                                  'rate': 0.0,
+                                  'number_of_days': settlement['number_of_days'],
+                                  'amount': settlement['amount'],
+                                  'category': settlement['category'],
+                                  'type':  settlement['type'],
+                                  'sequence': sequence,
+                                  }
+                lines.append(settlement_val)
+                difference_total += settlement_val['amount']
 
             #  ، أن كان إذا كان مجموع ما  سيتقاضاه الموظف أقل من ثلث الراتب الأساسي فلا يتم الحسم عليه (حسميات وقروض)
             salary_net_before_deduction += basic_salary - retirement_amount + allowance_total + difference_total
@@ -852,6 +873,7 @@ class HrPayslipLine(models.Model):
                              ('retard_leave', 'تأخير وخروج'),
                              ('absence', 'غياب'),
                              ('holiday', 'إجازة'),
+                             ('settlement', 'تسوية'),
                              ('loan', 'قروض'),
                              ('retirement', 'التقاعد'),
                              ('insurance', 'التأمين'),

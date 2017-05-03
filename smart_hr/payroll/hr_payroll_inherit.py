@@ -58,8 +58,6 @@ class HrPayslip(models.Model):
                         'category': 'deduction',
                         'type': 'absence',
                         'model_name': 'hr.employee.absence.days',
-                        'object_id': line.id,
-                        'model_name': 'hr.employee.absence.days',
                         'object_id': line.id}
                 line_ids.append(vals)
 

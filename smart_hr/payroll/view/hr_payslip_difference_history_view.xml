@@ -62,7 +62,7 @@
 		</record>
 
 		<menuitem id="hr_payslip_difference_history_menu" name="الحسميات المتخلدة"
-			sequence="15" groups="group_bonus_management" parent="hr_rest_deduction_root"
+			sequence="50" groups="group_bonus_management" parent="hr_payroll_settlement_root"
 			action="action_hr_payslip_difference_history" />
 
 	</data>

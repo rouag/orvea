@@ -30,6 +30,8 @@
 						<button string="إحتسب" name="special_compute_sheet" type="object"
 							groups="smart_hr.group_allowance_employee" class="oe_highlight"
 							attrs="{'invisible':[('special_state','!=','new')]}" />
+						<button name="%(hr_messier_salaries_report)d" string="طباعة المسير"
+									type="action" icon="fa-print" class="oe_inline oe_stat_button" />
 						<button name="action_special_verify" string=" إرسال للمراجعة" type="object"
 							groups="smart_hr.group_allowance_employee" attrs="{'invisible':[('special_state','!=','new')]}" />
 						<button name="action_special_division_director" string="موافق"
