@@ -25,12 +25,15 @@ class HrLoan(models.Model):
         self.residual_amount = residual_amount
 
     name = fields.Char(string='رقم القرض', required=1, readonly=1, states={'new': [('readonly', 0)]})
-    employee_id = fields.Many2one('hr.employee', string='الموظف', required=1, readonly=1, states={'new': [('readonly', 0)]})
+    employee_id = fields.Many2one('hr.employee', string='الموظف', required=1, readonly=1,
+                                  states={'new': [('readonly', 0)]})
     number = fields.Char(related='employee_id.number', store=True, readonly=True, string=' رقم الوظيفة')
     job_id = fields.Many2one(related='employee_id.job_id', store=True, readonly=True, string=' الوظيفة')
     department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string=' الادارة')
-    loan_type_id = fields.Many2one('hr.loan.type', string='نوع القرض', required=1, readonly=1, states={'new': [('readonly', 0)]})
-    date = fields.Date('تاريخ القرض', default=lambda *a: fields.Datetime.now(), readonly=1, states={'new': [('readonly', 0)]})
+    loan_type_id = fields.Many2one('hr.loan.type', string='نوع القرض', required=1, readonly=1,
+                                   states={'new': [('readonly', 0)]})
+    date = fields.Date('تاريخ القرض', default=lambda *a: fields.Datetime.now(), readonly=1,
+                       states={'new': [('readonly', 0)]})
     date_from = fields.Date('تاريخ بداية الخصم', readonly=1, required=1, states={'new': [('readonly', 0)]})
     date_to = fields.Date('تاريخ نهاية الخصم', readonly=1)
     installment_number = fields.Integer(string='عدد الأقساط', required=1, readonly=1, states={'new': [('readonly', 0)]})
@@ -56,8 +59,9 @@ class HrLoan(models.Model):
     @api.constrains('amount')
     @api.onchange('amount')
     def _onchange_amount(self):
-        if self. amount and self.loan_type_id.is_deputation_advance and self.deputation_id:
-            deputation_amount, transport_amount, deputation_allowance = self.deputation_id.get_deputation_allowance_amount(self.department_id.duration)
+        if self.amount and self.loan_type_id.is_deputation_advance and self.deputation_id:
+            deputation_amount, transport_amount, deputation_allowance = self.deputation_id.get_deputation_allowance_amount(
+                self.department_id.duration)
             if self.amount > deputation_amount:
                 warning = {
                     'title': _('تحذير!'),
@@ -67,6 +71,16 @@ class HrLoan(models.Model):
 
     @api.onchange('date_from', 'amount', 'monthly_amount')
     def _onchange_date(self):
+        # لا يمكن أن يكون القسط  أكبر من ثلث الراتب
+        grid_id, basic_salary = self.employee_id.get_salary_grid_id(False)
+        if not grid_id:
+            return
+        if self.monthly_amount > basic_salary / 3.0:
+            warning = {'title': _('تحذير!'), 'message': _(
+                u'لا يمكن أن يكون القسط (%s) أكبر من ثلث الراتب (%s)' % (self.monthly_amount, basic_salary / 3.0))}
+            self.monthly_amount = False
+            return {'warning': warning}
+
         if self.date_from and self.amount and self.monthly_amount:
             # get lines
             dt = fields.Date.from_string(self.date_from)
@@ -137,7 +151,8 @@ class HrLoan(models.Model):
         res = []
         for loan in loans:
             # just add amount for current month
-            lines = loan.line_ids.search([('loan_id', '=', loan.id), ('date_start', '=', date_from), ('date_stop', '=', date_to)])
+            lines = loan.line_ids.search(
+                [('loan_id', '=', loan.id), ('date_start', '=', date_from), ('date_stop', '=', date_to)])
             if lines:
                 res.append({'name': u'قرض  رقم : %s' % loan.name, 'amount': lines[0].amount})
         return res
@@ -168,7 +183,8 @@ class HrLoanLine(models.Model):
     loan_id = fields.Many2one('hr.loan', string='القرض', ondelete='cascade')
     employee_id = fields.Many2one(related='loan_id.employee_id', store=True, readonly=True, string='الموظف')
     job_id = fields.Many2one(related='loan_id.employee_id.job_id', store=True, readonly=True, string=' الوظيفة')
-    department_id = fields.Many2one(related='loan_id.employee_id.department_id', store=True, readonly=True, string=' الادارة')
+    department_id = fields.Many2one(related='loan_id.employee_id.department_id', store=True, readonly=True,
+                                    string=' الادارة')
     amount = fields.Float(string='قيمة القسط', required=1)
     date = fields.Date('تاريخ الحسم', required=False)
     date_start = fields.Date('بداية الفترة', required=True)
@@ -197,7 +213,7 @@ class HrLoanType(models.Model):
     name = fields.Char(string=' الوصف', required=1)
     code = fields.Char(string='الرمز', required=1)
     is_deputation_advance = fields.Boolean(string='سلفة عن بدل انتداب')
-    
+
     @api.multi
     def name_get(self):
         result = []
