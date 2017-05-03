@@ -15,7 +15,7 @@ from umalqurra.hijri import Umalqurra
 class HrHolidays(models.Model):
     _inherit = 'hr.holidays'
     _description = 'hr holidays Request'
-    _order = 'id desc'
+    _order = 'name desc'
 
     @api.model
     def read_group(self, domain, fields, groupby, offset=0, limit=None, orderby=False, lazy=True):
@@ -110,7 +110,7 @@ class HrHolidays(models.Model):
     is_extensible = fields.Integer(string=u'يمكن تمديدها', related='holiday_status_id.extension_number')
     # decision
     need_decision = fields.Boolean('status_id need decision', related='holiday_status_id.need_decision')
-    num_decision = fields.Char(string=u'رقم القرار',related='decission_id.name')
+    num_decision = fields.Char(string=u'رقم القرار',related='decission_id.name', store=True)
     date_decision = fields.Date(string=u'تاريخ القرار')
     childbirth_date = fields.Date(string=u'تاريخ ولادة الطفل')
     birth_certificate = fields.Binary(string=u'شهادة الميلاد', attachment=True)

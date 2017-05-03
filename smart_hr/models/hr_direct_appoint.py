@@ -11,7 +11,7 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FO
 
 class HrDirectAppoint(models.Model):
     _name = 'hr.direct.appoint'
-    _order = 'id desc'
+    _order = 'date desc'
     _rec_name = 'employee_id'
 
     employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', required=1)

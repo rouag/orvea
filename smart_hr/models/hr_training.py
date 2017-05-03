@@ -27,7 +27,7 @@ class HrTraining(models.Model):
     date = fields.Date(string=' تاريخ القرار', required=1, states={'new': [('readonly', 0)]})
     date_from = fields.Date(string='تاريخ من', required=1, states={'new': [('readonly', 0)]})
     date_to = fields.Date(string=' إلى', required=1, states={'new': [('readonly', 0)]})
-    number_of_days = fields.Float(string=' المدة', readonly=1, compute='_compute_duration')
+    number_of_days = fields.Float(string=' المدة', readonly=1, compute='_compute_duration', store=True)
     experience = fields.Selection([('experience_directe', 'الخبرات‬  المباشرة'),
                                    ('experience_in_directe', 'الخبرات الغير المباشرة'),
                                    ], string=' نوع الخبرة المكتسبة', required=1, states={'new': [('readonly', 0)]})

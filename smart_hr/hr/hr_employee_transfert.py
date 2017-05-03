@@ -11,17 +11,18 @@ class HrEmployeeTransfert(models.Model):
     _inherit = ['mail.thread']
     _description = u'طلب نقل موظف'
     _rec_name = 'employee_id'
+    _order = 'create_date desc'
 
     @api.multi
     def _get_default_employee_job(self):
-        return self.env['hr.employee'].search([('user_id', '=', self._uid)], limit=1).job_id
+        return self.env['hr.employee'].search([('id', '=', self.employee_id.id)], limit=1).job_id
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
     sequence = fields.Integer(string=u'رتبة الطلب')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف',  required=1,
                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended','terminated'])], limit=1),)
     last_evaluation_result = fields.Many2one('hr.employee.evaluation.level', string=u'أخر تقييم إداء')
-    job_id = fields.Many2one('hr.job', default=_get_default_employee_job, string=u'الوظيفة', readonly=1, required=1)
+    job_id = fields.Many2one('hr.job', string=u'الوظيفة', readonly=1, required=1)
     specific_id = fields.Many2one('hr.groupe.job', related='job_id.specific_id', string=u'المجموعة النوعية', readonly=1, required=1)
     occupied_date = fields.Date(related='job_id.occupied_date', string=u'تاريخ شغلها')
     type_id = fields.Many2one('salary.grid.type', related='employee_id.type_id', string=u'الصنف', readonly=1, required=1)
@@ -185,6 +186,7 @@ class HrEmployeeTransfert(models.Model):
             self.begin_work_date = self.employee_id.begin_work_date
             self.recruiter_date = self.employee_id.recruiter_date
             self.age = self.employee_id.age
+            self.job_id = self.employee_id.job_id.id
         if self.employee_id.type_id.is_member == True and self.employee_id.type_id :
             res['domain'] = {'transfert_periode_id': [('for_member', '=', True)]}
             self.transfert_type = 'member'
@@ -495,6 +497,7 @@ class HrTransfertSorting(models.Model):
     _name = 'hr.transfert.sorting'
     _inherit = ['mail.thread']
     _description = u'‫ترتيب طلبات النقل مع الوظائف المناسبة‬‬'
+    _order = 'create_date desc'
 
     name = fields.Char(string=u'المسمى', required=1, readonly=1, states={'new': [('readonly', 0)]})
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
@@ -703,7 +706,10 @@ class HrTransfertSorting(models.Model):
                 rec.state = 'commission_third'
             else:
                 rec.state = 'benefits'
-
+            for transfert in rec.line_ids4:
+                if  transfert.cancel_trasfert is True:
+                    rec.line_ids4 = [(3, transfert.id)]
+                    
     @api.multi
     def action_commission_third(self):
         for rec in self :
@@ -801,7 +807,7 @@ class HrTransfertSorting(models.Model):
                                                   'percentage': line_id.percentage
                                                       })
                         transfert__allowance.line_ids = line_ids_vals
-            line.hr_employee_transfert_id.action_done()
+                line.hr_employee_transfert_id.action_done()
             rec.state = 'done'
             
     @api.multi

@@ -181,6 +181,7 @@ class HrPromotion(models.Model):
                         if dep_start_year == todayDate.year - 1 or dep_start_year == todayDate.year - 1:
                             deprivation_premium = True
                             break
+                employee_state = emp.emp_state
                 days = 0
                 if sanctions:
                     for sanction in sanctions:
@@ -192,7 +193,7 @@ class HrPromotion(models.Model):
                     if employee_evaluation_id.degree_id.id == self.env.ref('smart_hr.assessment_hr_bad').id:
                         bad_evaluation = True
 
-                if not suspend and not holidays_status_exceptiona and not holidays_status_study and not scholarship and not training and days < 15 and not deprivation_premium and not bad_evaluation:
+                if employee_state != 'terminated' and not suspend and not holidays_status_exceptiona and not holidays_status_study and not scholarship and not training and days < 15 and not deprivation_premium and not bad_evaluation:
                     if emp.promotion_duration / 354 > emp.job_id.grade_id.years_job:
                         employee_promotion.append(emp)
 
@@ -577,7 +578,7 @@ class HrPromotionLigneEmployeeJob(models.Model):
     demande_promotion_id = fields.Many2one('hr.promotion.employee.demande', string=u'طلب الترقية  ')
     city_fovorite = fields.Many2one(related='demande_promotion_id.city_fovorite', string=u'المدينة المفضلة')
     employee_job_ids = fields.One2many('hr.job', 'promotion_employee_id', string=' قائمة الوظائف', )
-    new_job_id = fields.Many2one('hr.job', string=u'الوظيفة المرقى عليها', )
+    new_job_id = fields.Many2one('hr.job', string=u'الوظيفة المرقى عليها', domain=[('occupied_promotion', '=', True)])
     new_number_job = fields.Char(string='رقم الوظيفة', related='new_job_id.number')
     new_department = fields.Many2one(related='new_job_id.department_id', string='الادارة', )
     emp_grade_id_new = fields.Many2one(string='المرتبة ', related='new_job_id.grade_id')
@@ -624,7 +625,7 @@ class HrPromotionLigneEmployeeJob(models.Model):
             decision = decision_obj.create(decission_val)
             decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'employee')
             decission_id = decision.id
-            self.decission_id =  decission_id
+            self.decission_id = decission_id
         return {
             'name': _(u'قرار '),
             'view_type': 'form',
@@ -635,10 +636,6 @@ class HrPromotionLigneEmployeeJob(models.Model):
             'res_id': decission_id,
             'target': 'new'
             }
-
-
-    
-    
 
     @api.multi
     def promotion_confirmed(self):
@@ -667,11 +664,6 @@ class HrPromotionLigneEmployeeJob(models.Model):
     @api.onchange('new_job_id')
     def onchange_new_job_id(self):
         res = {}
-
-        if not self.new_job_id:
-            job_ids = self.env['hr.job'].search([('grade_id.code', '=', int(self.emp_grade_id_old.code) + 1)]).ids
-            res['domain'] = {'new_job_id': [('id', 'in', job_ids)]}
-            return res
         if self.new_job_id:
             if int(self.new_job_id.grade_id.code) <= int(self.emp_grade_id_old.code):
                 self.new_job_id = False
@@ -685,13 +677,56 @@ class HrPromotionLigneEmployeeJob(models.Model):
             self.occupied_promotion = False
             self.new_type_id = self.new_job_id.type_id.id
             self.specific_id = self.new_job_id.specific_id.id
-        new_degree_id = self.env['salary.grid.degree'].search([('code', '=', '01')])
-        self.new_degree_id = new_degree_id
+        new_degree_id = self.env['salary.grid.degree'].search([('code', '=', '01')], limit=1)
+        self.new_degree_id = new_degree_id.id
 
     @api.multi
     def action_benefits_done(self):
         return True
 
+    @api.multi
+    def action_form_transfert_benefits(self):
+        if not self.location_allowance_ids:
+            for rec in self.new_job_id.department_id.dep_side.allowance_ids:
+                location_allowance_vals = {'location_promotion_id': self.id,
+                                                   'allowance_id': rec.id,
+                                                   'compute_method': 'amount',
+                                                   'amount': 0.0}
+                location_allowance =  self.env['hr.promotion.allowance'].create(location_allowance_vals)
+                line_ids_vals = []
+                if location_allowance:
+                    for line in location_allowance.line_ids:
+                        line_ids_vals.append({'promotion_allowance_id': location_allowance.id,
+                                              'city_id': line.city_id.id,
+                                              'percentage': line.percentage
+                                                  })
+                    location_allowance.line_ids = line_ids_vals
+        if not self.job_allowance_ids:
+            for rec in self.new_job_id.serie_id.allowanse_ids:
+                job_allowance_vals = {'job_promotion_id': self.id,
+                                                   'allowance_id': rec.id,
+                                                   'compute_method': 'amount',
+                                                   'amount': 0.0}
+                job_allowance =  self.env['hr.promotion.allowance'].create(job_allowance_vals)
+                line_ids_vals = []
+                if job_allowance:
+                    for line in job_allowance.line_ids:
+                        line_ids_vals.append({'promotion_allowance_id': job_allowance.id,
+                                              'city_id': line.city_id.id,
+                                              'percentage': line.percentage
+                                                  })
+                    job_allowance.line_ids = line_ids_vals
+        return {
+            'name': 'إسناد البدلات',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'hr.promotion.employee.job',
+            'view_id': self.env.ref('smart_hr.view_promotion_benefits').id,
+            'type': 'ir.actions.act_window',
+            'res_id': self.id,
+            'target': 'new'
+            }
+        
 class HrPromotionType(models.Model):
     _name = 'hr.promotion.type'
 
@@ -767,4 +802,95 @@ class HrPromotionAllowance(models.Model):
     amount = fields.Float(string='المبلغ')
     min_amount = fields.Float(string='الحد الأدنى')
     percentage = fields.Float(string='النسبة')
-    line_ids = fields.One2many('salary.grid.detail.allowance.city', 'allowance_id', string='النسب حسب المدينة')
+    line_ids = fields.One2many('promotion.allowance.city', 'promotion_allowance_id', string='النسب حسب المدينة')    
+
+
+    def get_salary_grid_id(self, employee_id, type_id, grade_id, degree_id, operation_date):
+        '''
+        @return:  two values value1: salary grid detail, value2: basic salary
+        '''
+        # search for  the newest salary grid detail
+        domain = [('grid_id.state', '=', 'done'),
+                  ('grid_id.enabled', '=', True),
+                  ('type_id', '=', type_id.id),
+                  ('grade_id', '=', grade_id.id),
+                  ('degree_id', '=', degree_id.id)
+                  ]
+        if operation_date:
+            # search the right salary grid detail for the given operation_date
+            domain.append(('date', '<=', operation_date))
+        salary_grid_id = self.env['salary.grid.detail'].search(domain, order='date desc', limit=1)
+        if not salary_grid_id:
+            # doamin for  the newest salary grid detail
+            if len(domain) == 6:
+                domain.pop(5)
+            salary_grid_id = self.env['salary.grid.detail'].search(domain, order='date desc', limit=1)
+        # retreive old salary increases to add them with basic_salary
+        domain = [('salary_grid_detail_id', '=', salary_grid_id.id)]
+        if operation_date:
+            domain.append(('date', '<=', operation_date))
+        salary_increase_ids = self.env['employee.increase'].search(domain)
+        sum_increases_amount = 0.0
+        for rec in salary_increase_ids:
+            sum_increases_amount += rec.amount
+        if employee_id.basic_salary == 0:
+            basic_salary = salary_grid_id.basic_salary + sum_increases_amount
+        else:
+            basic_salary = employee_id.basic_salary + sum_increases_amount
+        return salary_grid_id, basic_salary
+
+    @api.onchange('compute_method', 'amount', 'percentage', 'line_ids', 'min_amount')
+    def onchange_get_value(self):
+        allowance_city_obj = self.env['promotion.allowance.city']
+        degree_obj = self.env['salary.grid.degree']
+        salary_grid_obj = self.env['salary.grid.detail']
+        # employee info
+        prmotion_id = self.job_promotion_id
+        if self.promotion_id:
+            prmotion_id = self.promotion_id
+        if self.location_promotion_id:
+            prmotion_id = self.location_promotion_id
+
+        employee = prmotion_id.employee_id
+        ttype = prmotion_id.new_job_id.type_id
+        grade = prmotion_id.new_job_id.grade_id
+        degree = prmotion_id.new_degree_id
+        amount = 0.0
+        # search the correct salary_grid for this employee
+        salary_grids, basic_salary = self.get_salary_grid_id(employee, ttype, grade, degree, False)
+        if not salary_grids:
+            raise ValidationError(_(u'لا يوجد سلم رواتب للموظف. !'))
+    # compute
+        if self.compute_method == 'amount':
+            amount = self.amount
+        if self.compute_method == 'percentage':
+            amount = self.percentage * basic_salary / 100.0
+        city = prmotion_id.new_job_id.department_id.dep_city
+        if self.compute_method == 'job_location' and employee and city:
+            citys = self.line_ids.search([('city_id', '=', city.id)])
+            if citys:
+                amount = citys[0].percentage * basic_salary / 100.0
+        if self.compute_method == 'formula_1':
+            # get first degree for the grade
+            first_degree_id = self.env['salary.grid.degree'].search([('code', '=', '01')], limit=1)
+            if first_degree_id:
+                salary_grids = salary_grid_obj.search([('type_id', '=', employee.type_id.id), ('grade_id', '=', employee.grade_id.id),
+                                                        ('degree_id', '=', first_degree_id.id),('grid_id.state', '=', 'done'), ('grid_id.enabled', '=', True)])
+                if salary_grids:
+                    amount = salary_grids[0].basic_salary * self.percentage / 100.0
+                else:
+                    raise ValidationError(_(u'لا يوجد سلم رواتب للدرجة‬ الاولى‬  من‬ المرتبة‬  التي‬ يشغلها‬ الموظف. !'))
+        if self.compute_method == 'formula_2':
+            salary_grids_old, basic_salary_old = self.get_salary_grid_id(employee, employee.type_id, employee.grade_id, employee.degree_id, False)
+            amount = self.percentage * basic_salary_old / 100.0
+            if self.min_amount and amount < self.min_amount:
+                amount = self.min_amount
+        self.amount = amount
+    
+    
+class HrTransfertAllowanceCity(models.Model):
+    _name = 'promotion.allowance.city'
+
+    promotion_allowance_id = fields.Many2one('hr.promotion.allowance', string='البدل')
+    city_id = fields.Many2one('res.city', string='المدينة', required=1)
+    percentage = fields.Float(string='النسبة', required=1)
