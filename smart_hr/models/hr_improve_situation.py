@@ -14,6 +14,7 @@ class HrImproveSituatim(models.Model):
     _inherit = ['mail.thread']
     _description = u'تحسين وضع'
     _rec_name = 'employee_id'
+    _order = 'order_date desc'
 
     employee_id = fields.Many2one('hr.employee', string=' إسم الموظف', required=1, )
     number = fields.Char(string='الرقم الموظف', readonly=1)

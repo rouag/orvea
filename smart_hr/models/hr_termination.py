@@ -8,11 +8,11 @@ from datetime import date, datetime, timedelta
 
 class HrTermination(models.Model):
     _name = 'hr.termination'
-    _order = 'id desc'
     _inherit = ['ir.needaction_mixin', 'mail.thread']
     _description = u'طي القيد'
+    _order = 'termination_date desc'
 
-    name = fields.Char(string=u'رقم القرار', readonly=1, related='decission_id.name')
+    name = fields.Char(string=u'رقم القرار', readonly=1, related='decission_id.name', store=True)
     date = fields.Date(string=u'تاريخ',readonly=1, related='decission_id.date')
     date_termination = fields.Date(string=u'تاريخ طي القيد  ', default=fields.Datetime.now())
     termination_date = fields.Date(string=u'تاريخ الإعتماد')

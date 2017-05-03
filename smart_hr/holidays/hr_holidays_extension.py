@@ -10,7 +10,7 @@ class HrHolidaysExtension(models.Model):
     _name = 'hr.holidays.extension'
     _description = 'Holidays Extension'
     _inherit = ['mail.thread', 'ir.needaction_mixin']
-    _order = 'id desc'
+    _order = 'num_decision desc'
 
     def _default_employee_id(self):
         return self.env['hr.employee'].search([('user_id','=',self.env.uid)]).id

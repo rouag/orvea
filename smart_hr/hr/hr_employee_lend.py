@@ -15,7 +15,7 @@ class HrEmployeeLend(models.Model):
             if rec.basic_salary:
                 return rec.basic_salary
 
-    create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
+    create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now, readonly=1)
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1, readonly=1,
                                   states={'new': [('readonly', 0)]})
     insurance_entity = fields.Many2one('res.partner', string=u'الجهة المعار إليها', domain=[('insurance', '=', True)],
@@ -23,7 +23,7 @@ class HrEmployeeLend(models.Model):
     decision_number = fields.Char(string=u"رقم القرار", readonly=1, states={'new': [('readonly', 0)]})
     decision_date = fields.Date(string=u'تاريخ القرار', readonly=1, states={'new': [('readonly', 0)]})
     decision_file = fields.Binary(string=u'نسخة القرار', readonly=1, states={'new': [('readonly', 0)]}, attachment=True)
-    date_from = fields.Date(string=u'التاريخ من ', default=fields.Datetime.now(), readonly=1,
+    date_from = fields.Date(string=u'التاريخ من ', default=fields.Datetime.now, readonly=1,
                             states={'new': [('readonly', 0)]})
     date_to = fields.Date(string=u'التاريخ الى', compute='_compute_date_to', store=True)
     duration = fields.Integer(string=u'الأيام', required=1, readonly=1, states={'new': [('readonly', 0)]})
@@ -235,7 +235,7 @@ class HrEmployeeLendcancel(models.TransientModel):
     _rec_name = 'old_date_to'
 
     old_date_to = fields.Date(string=u'تاريخ إنتهاء الإعارة ', readonly=1)
-    new_date_to = fields.Date(string=u'تاريخ قطع الإعارة ', default=fields.Datetime.now())
+    new_date_to = fields.Date(string=u'تاريخ قطع الإعارة ', default=fields.Datetime.now)
     employee_lend_id = fields.Many2one('hr.employee.lend')
     employee_lend_type = fields.Many2one('hr.employee.lend.ligne', related='employee_lend_id.employee_lend_type',
                                          string=u'نوع الإعارة')

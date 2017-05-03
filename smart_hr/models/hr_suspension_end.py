@@ -10,8 +10,9 @@ class hr_suspension_end(models.Model):
     _name = 'hr.suspension.end'
     _inherit = ['ir.needaction_mixin', 'mail.thread']
     _description = 'Suspension Ending'
+    _order = 'name desc'
 
-    name = fields.Char(string=u'رقم  إجراء إنهاء كف اليد',readonly=1, related='decission_id.name')
+    name = fields.Char(string=u'رقم  إجراء إنهاء كف اليد',readonly=1, related='decission_id.name', store=True)
     date = fields.Date(string=u'التاريخ',readonly=1, related='decission_id.date')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف',  domain=[('emp_state', '=', 'suspended')])
     letter_sender = fields.Char(string=u'جهة الخطاب', )

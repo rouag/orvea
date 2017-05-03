@@ -364,15 +364,13 @@ class HrDeputation(models.Model):
         if self.employee_id:
             self.number = self.employee_id.number
             self.country_id = self.employee_id.country_id
-            appoint_line = self.env['hr.decision.appoint'].search(
-                [('employee_id', '=', self.employee_id.id), ('state', '=', 'done')], limit=1)
-            if appoint_line:
-                self.job_id = appoint_line.job_id.id
-                self.code = appoint_line.job_id.name.number
-                self.number_job = appoint_line.number
-                self.type_id = appoint_line.type_id.id
-                self.grade_id = appoint_line.grade_id.id
-                self.department_id = appoint_line.department_id.id
+            self.job_id = self.employee_id.job_id.id
+            self.code = self.employee_id.job_id.name.number
+            self.number_job = self.employee_id.job_id.number
+            self.type_id = self.employee_id.type_id.id
+            self.grade_id = self.employee_id.grade_id.id
+            self.department_id = self.employee_id.department_id.id
+            self.degree_id = self.employee_id.degree_id.id
 
     @api.one
     @api.constrains('date_from', 'date_to')
