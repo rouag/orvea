@@ -2,6 +2,7 @@
 
 from openerp import models, fields, api, _
 from openerp.exceptions import ValidationError
+from umalqurra.hijri_date import HijriDate
 
 class PromotionDuration(models.Model):
     _name = 'hr.employee.promotion.duration'
@@ -16,7 +17,16 @@ class PromotionDuration(models.Model):
                               ('cancel', u'ملغاة'),
                               ], string=u'الحالة', default='draft')
 
-
+    @api.model
+    def create(self, vals):
+        res = super(PromotionDuration, self).create(vals)
+        # Sequence
+        vals = {}
+        vals['name'] = self.env['ir.sequence'].get('hr.employee.promotion.duration.seq')
+        res.write(vals)
+        return res
+    
+    
     @api.multi
     def unlink(self):
         for rec in self:
@@ -80,15 +90,12 @@ class PromotionDuration(models.Model):
             else:
                 emp.promotion_duration = 0
         self.state = 'done'
-        self.date_last_execution = fields.Date.today()
-        self.name = self.date_last_execution
+
 
     @api.multi
     def action_cancel(self):
         self.state = 'cancel'
         self.date_last_execution = fields.Date.today()
-        self.name = str(self.date_last_execution)
-
 
 class EmployeesPromotionDuration(models.Model):
     _inherit = 'hr.employee'

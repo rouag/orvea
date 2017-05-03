@@ -23,7 +23,14 @@ class serviceDuration(models.Model):
                 raise ValidationError(u'لا يمكن حذف حساب مدة الترقية في هذه المرحلة يرجى مراجعة مدير النظام')
         return super(serviceDuration, self).unlink()
 
-
+    @api.model
+    def create(self, vals):
+        res = super(serviceDuration, self).create(vals)
+        # Sequence
+        vals = {}
+        vals['name'] = self.env['ir.sequence'].get('hr.employee.service.duration.seq')
+        res.write(vals)
+        return res
 
     @api.multi
     def action_done(self):
@@ -82,11 +89,9 @@ class serviceDuration(models.Model):
                 emp.service_duration = 0
         self.state = 'done'
         self.date_last_execution = fields.Date.today()
-        self.name = self.date_last_execution
 
     @api.multi
     def action_cancel(self):
         self.state = 'cancel'
         self.date_last_execution = fields.Date.today()
-        self.name = self.date_last_execution
 

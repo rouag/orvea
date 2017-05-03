@@ -52,7 +52,7 @@
 			<field name="model">hr.employee.promotion.duration</field>
 			<field name="arch" type="xml">
 				<tree string="حساب مدة الترقية">
-					<field name="name" />
+					<field name="name" invisible="1"/>
 					<field name="date_last_execution" />
 					<field name="state" />
 				</tree>

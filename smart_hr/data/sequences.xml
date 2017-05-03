@@ -122,80 +122,98 @@
 			<field eval="1" name="number_increment" />
 			<field name="padding">6</field>
 		</record>
-		
+
 		<record id="hr_termination_sequence" forcecreate="1" model="ir.sequence">
 			<field name="name">hr termination</field>
 			<field name="code">hr.termination.sequence</field>
 			<field eval="1" name="number_increment" />
 			<field name="padding">6</field>
 		</record>
-		
+
 		<record id="hr_decision_seq" forcecreate="1" model="ir.sequence">
-			<field name="name">hr  decision</field>
+			<field name="name">hr decision</field>
 			<field name="code">hr.decision.seq</field>
 			<field eval="1" name="number_increment" />
 			<field name="padding">6</field>
 		</record>
-		
+
 		<record id="hr_improve_seq" forcecreate="1" model="ir.sequence">
-			<field name="name">hr  improve</field>
+			<field name="name">hr improve</field>
 			<field name="code">hr.improve.seq</field>
 			<field eval="1" name="number_increment" />
 			<field name="padding">6</field>
 		</record>
-		
+
 		<record id="hr_deputation_seq" forcecreate="1" model="ir.sequence">
-			<field name="name">hr  deputation</field>
+			<field name="name">hr deputation</field>
 			<field name="code">hr.deputation.seq</field>
 			<field eval="1" name="number_increment" />
 			<field name="padding">6</field>
 		</record>
-			
+
 		<record id="hr_employee_lend_seq" forcecreate="1" model="ir.sequence">
-			<field name="name">hr  employee lend</field>
+			<field name="name">hr employee lend</field>
 			<field name="code">hr.employee.lend.seq</field>
 			<field eval="1" name="number_increment" />
 			<field name="padding">6</field>
 		</record>
-		
-		
+
+
 		<record id="hr_hr_commissioning_seq" forcecreate="1" model="ir.sequence">
-			<field name="name">hr  commissioning</field>
+			<field name="name">hr commissioning</field>
 			<field name="code">hr.commissioning.seq</field>
 			<field eval="1" name="number_increment" />
 			<field name="padding">6</field>
 		</record>
-		
-		
+
+
 		<record id="hr_direct_appoint_seq" forcecreate="1" model="ir.sequence">
-			<field name="name">hr direct  appoint</field>
+			<field name="name">hr direct appoint</field>
 			<field name="code">hr.direct.appoint.seq</field>
 			<field eval="1" name="number_increment" />
 			<field name="padding">6</field>
 		</record>
-		
-		
+
+
 		<record id="hr_decision_appoint_seq" forcecreate="1" model="ir.sequence">
 			<field name="name">hr decision appoint</field>
 			<field name="code">hr.decision.appoint.seq</field>
 			<field eval="1" name="number_increment" />
 			<field name="padding">6</field>
 		</record>
-		
-		<record id="hr_decision_transfert_seq" forcecreate="1" model="ir.sequence">
+
+		<record id="hr_decision_transfert_seq" forcecreate="1"
+			model="ir.sequence">
 			<field name="name">hr decision transfert</field>
 			<field name="code">hr.employee.transfert.seq</field>
 			<field eval="1" name="number_increment" />
 			<field name="padding">6</field>
 		</record>
-		
-		<record id="hr_decision_hr_job_create_seq" forcecreate="1" model="ir.sequence">
+
+		<record id="hr_decision_hr_job_create_seq" forcecreate="1"
+			model="ir.sequence">
 			<field name="name">hr job create</field>
 			<field name="code">hr.job.create.seq</field>
 			<field eval="1" name="number_increment" />
+			<field name="padding">5</field>
+		</record>
+
+		<record id="hr_employee_promotion_duration_seq" forcecreate="1"
+			model="ir.sequence">
+			<field name="name">hr employee promotion duration</field>
+			<field name="code">hr.employee.promotion.duration.seq</field>
+			<field eval="1" name="number_increment" />
 			<field name="padding">6</field>
 		</record>
-		
+
+		<record id="hr_employee_service_duration_seq" forcecreate="1"
+			model="ir.sequence">
+			<field name="name">hr employee service duration</field>
+			<field name="code">hr.employee.service.duration.seq</field>
+			<field eval="1" name="number_increment" />
+			<field name="padding">5</field>
+		</record>
+
 
 	</data>
 </openerp>

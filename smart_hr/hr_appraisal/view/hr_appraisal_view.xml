@@ -20,16 +20,33 @@
 			<field name="model">hr.appraisal</field>
 			<field name="inherit_id" ref="hr_appraisal.view_hr_appraisal_form" />
 			<field name="arch" type="xml">
+
+
+				<field name="employee_id" position="replace">
+					<group>
+						<group>
+							<field name="employee_id" attrs="{'readonly':[('state', '!=', 'new')]}" />
+						</group>
+						<group />
+					</group>
+				</field>
+
+				<label for="employee_id" position="before">
+					<group>
+						<field name="create_date" string="تاريخ الإنشاء" readonly="1" />
+					</group>
+				</label>
+				<label for="employee_id" position="replace" />
+				<field name="date_final_interview" position="replace" />
+				<field name="mail_template_id" position="replace" />
+
 				<field name="date_close" position="after">
-					<field name="create_date" string="تاريخ الإنشاء" readonly="1" />
+					<field name="date_final_interview"
+						attrs="{'readonly':[('state', 'in', ['done','cancel'])]}" />
 					<field name="adopted" string="إعتماد" />
+					<field name="mail_template_id" attrs="{'readonly':[('state', '!=', 'new')]}"
+						groups="base.group_no_one" />
 				</field>
-
-				<field name="mail_template_id" position="attributes">
-					<attribute name='readonly'>1</attribute>
-				</field>
-
-
 				<field name="manager_appraisal" position="before">
 					<field name="parent_emplyee" attrs="{'readonly':[('state', '!=', 'new')]}" />
 					<field name="parent_emplyee_id" nolabel="1"
@@ -52,9 +69,6 @@
 			<field name="model">survey.survey</field>
 			<field name="inherit_id" ref="survey.survey_form" />
 			<field name="arch" type="xml">
-
-
-
 				<button name="action_test_survey" position="attributes">
 					<attribute name='invisible'>1</attribute>
 				</button>
@@ -68,13 +82,9 @@
 			<field name="model">hr.appraisal</field>
 			<field name="inherit_id" ref="hr_appraisal.view_hr_appraisal_tree" />
 			<field name="arch" type="xml">
-
-
 				<field name="count_completed_survey" position="after">
 					<field name="note_final" string="نتيجة التقييم" readonly="1" />
 					<field name="adopted" string="إعتماد" readonly="1" />
-
-
 				</field>
 			</field>
 		</record>
@@ -85,14 +95,8 @@
 			<field name="inherit_id" ref="survey.survey_response_line_tree" />
 			<field name="arch" type="xml">
 				<field name="quizz_mark" position="before">
-
 					<field name="quizz_mark" />
 				</field>
-
-
-
-
-
 			</field>
 		</record>
 
@@ -103,15 +107,9 @@
 			<field name="model">survey.user_input</field>
 			<field name="inherit_id" ref="survey.survey_user_input_tree" />
 			<field name="arch" type="xml">
-
 				<xpath expr="/tree/field[@name='quizz_score']" position="after">
 					<field name="quizz_score" string="نتيجة التقييم" />
 				</xpath>
-
-
-
-
-
 			</field>
 		</record>
 
@@ -126,11 +124,6 @@
 				<xpath expr="/tree/field[@name='quizz_mark']" position="after">
 					<field name="quizz_mark" string="نتيجة التقييم" />
 				</xpath>
-
-
-
-
-
 			</field>
 		</record>
 
@@ -158,13 +151,6 @@
 						</tree>
 					</field>
 				</xpath>
-
-
-
-
-
-
-
 			</field>
 		</record>
 
