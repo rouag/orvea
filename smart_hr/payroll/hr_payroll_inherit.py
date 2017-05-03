@@ -176,6 +176,9 @@ class HrPayslip(models.Model):
     def compute_differences(self):
         # احتساب الأثر المالي
         line_ids = []
+        decision_appoint = False
+        compute_date_from = False
+        compute_date_to = False
         # case 1: احتساب الأثر المالي لهذا الشهر
         # case 2: احتساب الأثر المالي  لشهر الفارط من تاريخ إعداد مسير الشهر الفرط إلى تاريخ بداية هذا الشهر
         # get last payslip for current employee
@@ -185,38 +188,131 @@ class HrPayslip(models.Model):
                                                       ('state', '=', 'done')], limit=1, order='date_from desc')
         if last_payslip:
             # add one day to compute_date of last payslip
-            compute_date = str(fields.Date.from_string(last_payslip.compute_date) + timedelta(days=1))
-        # فروقات النقل
-        # يتم احتساب الأثار المالي للنقل في نفس حالة التعين
+            compute_date_from = str(fields.Date.from_string(last_payslip.compute_date) + timedelta(days=1))
+            compute_date_to = last_payslip.date_to
+        # إذا لم يكن للموظف مسير في الشهر الفارط ، ربما يكون قد عين ( تعيين جديد)
+        #  بعد إعداد الرواتب للشهر الفارط لذلك يجب احتساب فرق أيام الشهر الفارط
+        # بداية من تاريخ تفعيل التعيين
+        else:
+            type_appointment_id = self.env.ref('smart_hr.data_hr_new_agent_public').id
+            decision_appoint = self.env['hr.decision.appoint'].search([('is_started', '=', True),
+                                                                       ('type_appointment', '=', type_appointment_id),
+                                                                       ('state_appoint', '=', 'active'),
+                                                                       ('date_direct_action', '!=', False),
+                                                                       ('employee_id', '=', self.employee_id.id),
+                                                                       ], order="date_direct_action desc", limit=1)
+            if decision_appoint:
+                compute_date_from = decision_appoint.date_direct_action
+                compute_date_to = str(fields.Date.from_string(self.date_from) - timedelta(days=1))
+
+        # فروقات  تعيين موظف جديد  :
+        #  ربما يكون الموظف قد عين ( تعيين جديد) بعد إعداد الرواتب للشهر الفارط لذلك يجب
+        #   اعطائه مسير الشهر الفارط خلال هذا الشهر ( أساسي ، بدلات، تقاعد) بداية من تاريخ مباشرته  العمل
+        if decision_appoint:
+            line_ids += self.get_difference_new_employee(compute_date_from, compute_date_to)
+        # فروقات النقل : يتم احتساب الأثار المالي للنقل في نفس حالة التعين
         # فروقات التعين
         line_ids += self.get_difference_decision_appoint(self.date_from, self.date_to, self.employee_id, False)
-        if last_payslip:
-            line_ids += self.get_difference_decision_appoint(compute_date, last_payslip.date_to, self.employee_id, True)
+        if compute_date_from and compute_date_to:
+            line_ids += self.get_difference_decision_appoint(compute_date_from, compute_date_to, self.employee_id, True)
         # فروقات التكليف
         line_ids += self.get_difference_assign(self.date_from, self.date_to, self.employee_id, False)
-        if last_payslip:
-            line_ids += self.get_difference_assign(compute_date, last_payslip.date_to, self.employee_id, True)
+        if compute_date_from and compute_date_to:
+            line_ids += self.get_difference_assign(compute_date_from, compute_date_to, self.employee_id, True)
         # فروقات الإبتعاث
         line_ids += self.get_difference_scholarship(self.date_from, self.date_to, self.employee_id, False)
-        if last_payslip:
-            line_ids += self.get_difference_scholarship(compute_date, last_payslip.date_to, self.employee_id, True)
+        if compute_date_from and compute_date_to:
+            line_ids += self.get_difference_scholarship(compute_date_from, compute_date_to, self.employee_id, True)
         # فروقات الإعارة
         line_ids += self.get_difference_lend(self.date_from, self.date_to, self.employee_id, False)
-        if last_payslip:
-            line_ids += self.get_difference_lend(compute_date, last_payslip.date_to, self.employee_id, True)
+        if compute_date_from and compute_date_to:
+            line_ids += self.get_difference_lend(compute_date_from, compute_date_to, self.employee_id, True)
         # فروقات الإجازة
         line_ids += self.get_difference_holidays(self.date_from, self.date_to, self.employee_id, False)
-        if last_payslip:
-            line_ids += self.get_difference_holidays(compute_date, last_payslip.date_to, self.employee_id, True)
+        if compute_date_from and compute_date_to:
+            line_ids += self.get_difference_holidays(compute_date_from, compute_date_to, self.employee_id, True)
         # فروقات كف اليد
         line_ids += self.get_difference_suspension(self.date_from, self.date_to, self.employee_id, last_payslip, False)
-        if last_payslip:
+        if compute_date_from and compute_date_to:
             # تحتسب من يوم تاريخ ترحيل الراتب السابق وليس تاريخ الراتب  زائد يوم
-            line_ids += self.get_difference_suspension(last_payslip.compute_date, last_payslip.date_to, self.employee_id, last_payslip, True)
+            compute_date_from_suspension = compute_date_from
+            if last_payslip:
+                compute_date_from_suspension = last_payslip.compute_date
+            line_ids += self.get_difference_suspension(compute_date_from_suspension, compute_date_to, self.employee_id, last_payslip, True)
         # فروقات طى القيد
         line_ids += self.get_difference_termination(self.date_from, self.date_to, self.employee_id, False)
-        if last_payslip:
-            line_ids += self.get_difference_termination(compute_date, last_payslip.date_to, self.employee_id, True)
+        if compute_date_from and compute_date_to:
+            line_ids += self.get_difference_termination(compute_date_from, compute_date_to, self.employee_id, True)
+        return line_ids
+
+    @api.multi
+    def get_difference_new_employee(self, date_from, date_to):
+        self.ensure_one()
+        line_ids = []
+        employee = self.employee_id
+        salary_grid, basic_salary = employee.get_salary_grid_id(date_from)
+        if not salary_grid:
+            return
+        number_of_days = days_between(date_from, date_to)
+        # --------------
+        # 1- الراتب الأساسي
+        # --------------
+        amount = basic_salary / 30.0 * number_of_days
+        basic_salary_val = {'name': u'فرق الراتب الأساسي للشهر الفارط',
+                            'employee_id': employee.id,
+                            'rate': 0.0,
+                            'number_of_days': number_of_days,
+                            'number_of_hours': 0.0,
+                            'amount': amount,
+                            'category': 'basic_salary',
+                            'type': 'basic_salary',
+                            }
+        line_ids.append(basic_salary_val)
+        # --------------
+        # 2- البدلات القارة
+        # --------------
+        for allowance in employee.get_employee_allowances(salary_grid):
+            amount = allowance['amount'] / 30.0 * number_of_days
+            allowance_val = {'name': u'فرق ' + allowance['allowance_name'] + u' للشهر الفارط ',
+                             'employee_id': employee.id,
+                             'rate': 0.0,
+                             'number_of_days': number_of_days,
+                             'number_of_hours': 0.0,
+                             'amount': amount,
+                             'category': 'allowance',
+                             'type': 'allowance',
+                             }
+            line_ids.append(allowance_val)
+        # --------------
+        # 3- التقاعد
+        # --------------
+        retirement_amount = -1.0 * basic_salary * salary_grid.retirement / 100.0 / 30.0 * number_of_days
+        if retirement_amount:
+            retirement_val = {'name': u'فرق التقاعد للشهر الفارط',
+                              'employee_id': employee.id,
+                              'rate': 0.0,
+                              'number_of_days': number_of_days,
+                              'number_of_hours': 0.0,
+                              'amount': retirement_amount,
+                              'category': 'deduction',
+                              'type': 'retirement'
+                              }
+            line_ids.append(retirement_val)
+        # --------------
+        # 4- التأمينات
+        # --------------
+        insurance_amount = -1.0 * basic_salary * salary_grid.insurance / 100.0 / 30.0 * number_of_days
+        if insurance_amount:
+            insurance_val = {'name': u'فرق التأمين للشهر الفارط',
+                             'employee_id': employee.id,
+                             'rate': 0.0,
+                             'number_of_days': number_of_days,
+                             'number_of_hours': 0.0,
+                             'amount': insurance_amount,
+                             'category': 'deduction',
+                             'type': 'insurance'
+                             }
+            line_ids.append(insurance_val)
         return line_ids
 
     @api.multi

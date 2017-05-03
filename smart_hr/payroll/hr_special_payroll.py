@@ -378,7 +378,7 @@ class HrPayslip(models.Model):
             self.transport_decision_ids = transport_decision_ids.ids
         for transfert_decision in transport_decision_ids:
             vals = {
-                    'name': 'فرق أمر اركاب',
+                    'name': u'فرق أمر اركاب',
                     'employee_id': transfert_decision.employee_id.id,
                     'number_of_days': 0.0,
                     'number_of_hours': 0.0,
@@ -436,7 +436,7 @@ class HrPayslip(models.Model):
             self.transport_decision_ids = transport_decision_ids.ids
         for transfert_decision in transport_decision_ids:
             vals = {
-                    'name': 'فرق أمر اركاب',
+                    'name': u'فرق أمر اركاب',
                     'employee_id': transfert_decision.employee_id.id,
                     'number_of_days': 0.0,
                     'number_of_hours': 0.0,
@@ -499,7 +499,7 @@ class HrPayslip(models.Model):
             # --------------
             retirement_amount = -1.0 * basic_salary * salary_grid.retirement / 100.0 * salary_multiplication
             if retirement_amount:
-                retirement_val = {'name': 'التقاعد',
+                retirement_val = {'name': u'التقاعد',
                                   'employee_id': employee.id,
                                   'rate': 0.0,
                                   'number_of_days': 30.0 * salary_multiplication,
@@ -515,7 +515,7 @@ class HrPayslip(models.Model):
             # --------------
             insurance_amount = -1.0 * basic_salary * salary_grid.insurance / 100.0 * salary_multiplication
             if insurance_amount:
-                insurance_val = {'name': 'التأمين',
+                insurance_val = {'name': u'التأمين',
                                  'employee_id': employee.id,
                                  'rate': 0.0,
                                  'number_of_days': 30.0 * salary_multiplication,
