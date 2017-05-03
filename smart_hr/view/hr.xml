@@ -456,7 +456,7 @@
 											context="{'default_employee_id':active_id}">
 											<tree delete="false">
 												<field name="acc_number" />
-												<field name="bank_name" string="البنك" />
+												<field name="bank_id" string="البنك" />
 												<field name="currency_id" />
 												<field name="account_opening_date" />
 												<field name="is_deposit" />

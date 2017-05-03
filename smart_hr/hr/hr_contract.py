@@ -13,7 +13,8 @@ class HrContract(models.Model):
     _inherit = 'hr.contract'
 
     employee_id = fields.Many2one('hr.employee', string=' الموظف ', required=1)
-    country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
+    country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True,
+        context="{'compute_name': '_get_natinality'}",string="الجنسية")
     identification_id = fields.Char(related='employee_id.identification_id', store=True, readonly=True,
                                     string=u'رقم الهوية')
     identification_date = fields.Date(related='employee_id.identification_date', store=True, readonly=True,
@@ -25,7 +26,7 @@ class HrContract(models.Model):
     department_id = fields.Many2one(related='employee_id.department_id', store=True, readonly=True, string='الادارة', )
     job_id = fields.Many2one('hr.job', string='المسمى الوظيفي', store=True, readonly=1)
 
-    assurance = fields.Char(string='التامين')
+    assurance = fields.Char(string='التامين',readonly=True)
     type_job_id = fields.Many2one('salary.grid.type', string='الصنف', store=True, readonly=1)
     # type_id=fields.Many2one('salary.grid.type',string='الصنف',store=True,  readonly=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', store=True, readonly=1)
@@ -52,6 +53,8 @@ class HrContract(models.Model):
     renewable = fields.Boolean(string='قابل للتجديد')
     ticket_travel = fields.Boolean(string='تذاكر السفر')
     ticket_famely = fields.Boolean(string='تذكرة سفر عائلية')
+    is_saudian = fields.Boolean(string='is saudian', compute='_compute_is_saudian')
+    
 
     @api.multi
     def unlink(self):
@@ -70,20 +73,40 @@ class HrContract(models.Model):
     @api.onchange('employee_id')
     def _onchange_employe(self):
         if self.employee_id:
-            employee_line = self.env['hr.decision.appoint'].search(
-                [('employee_id', '=', self.employee_id.id), ('is_started', '=', True)], limit=1)
-            res = self.employee_id.get_salary_grid_id(False)
+            employee_line = self.env['hr.employee'].search(
+                [('id', '=', self.employee_id.id)], limit=1)
             if employee_line:
                 self.job_id = employee_line.job_id.id
                 self.type_job_id = employee_line.type_id.id
                 self.grade_id = employee_line.grade_id.id
                 self.degree_id = employee_line.degree_id.id
-                self.transport_allow = employee_line.transport_allow
-                self.retirement = employee_line.retirement
-                self.net_salary = employee_line.net_salary
-            if res:
-                self.basic_salary = res[1]
-
+                basic_salary = 0.0
+                grid_domain= [('grid_id.state', '=','done'),
+                         ('grid_id.enabled', '=', True),
+                         ('type_id', '=', employee_line.type_id.id),
+                         ('grade_id', '=', employee_line.grade_id.id),
+                         ('degree_id', '=', employee_line.degree_id.id)]
+                salary_grid_detail_id = self.env['salary.grid.detail'].search(grid_domain, order='date desc', limit=1)
+                if salary_grid_detail_id:
+                    basic_salary = salary_grid_detail_id.basic_salary
+                    insurance = salary_grid_detail_id.insurance
+                    net_salary = salary_grid_detail_id.net_salary
+                    transport_allowance_amout = salary_grid_detail_id.transport_allowance_amout
+                    retirement_amount = salary_grid_detail_id.retirement_amount
+                    self.basic_salary = basic_salary
+                    self.assurance = insurance
+                    self.net_salary = net_salary
+                    self.transport_allowance_amout = transport_allowance_amout
+                    self.retirement = retirement_amount
+                
+                
+                
+    @api.multi
+    @api.depends('country_id')
+    def _compute_is_saudian(self):
+        for rec in self:
+            if rec.country_id:
+                rec.is_saudian = (rec.country_id.code_nat == 'SA')
     @api.model
     def control_contract_employee(self):
         today_date = fields.Date.from_string(fields.Date.today())

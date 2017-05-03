@@ -570,6 +570,12 @@ msgid "Street"
 msgstr "شارع"
 
 #. module: base
+#: model:ir.ui.view,arch_db:base.view_partner_form
+msgid "Internal note..."
+msgstr "ملاحظات داخلية"
+
+
+#. module: base
 #: model:ir.ui.view,arch_db:base.view_company_form
 #: model:ir.ui.view,arch_db:base.view_partner_address_form
 #: model:ir.ui.view,arch_db:base.view_partner_form
