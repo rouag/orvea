@@ -13,8 +13,7 @@ class HrContract(models.Model):
     _inherit = 'hr.contract'
 
     employee_id = fields.Many2one('hr.employee', string=' الموظف ', required=1)
-    country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True,
-        context="{'compute_name': '_get_natinality'}",string="الجنسية")
+    country_id = fields.Char(readonly=True,string="الجنسية")
     identification_id = fields.Char(related='employee_id.identification_id', store=True, readonly=True,
                                     string=u'رقم الهوية')
     identification_date = fields.Date(related='employee_id.identification_date', store=True, readonly=True,
@@ -53,7 +52,7 @@ class HrContract(models.Model):
     renewable = fields.Boolean(string='قابل للتجديد')
     ticket_travel = fields.Boolean(string='تذاكر السفر')
     ticket_famely = fields.Boolean(string='تذكرة سفر عائلية')
-    is_saudian = fields.Boolean(string='is saudian', compute='_compute_is_saudian')
+   # is_saudian = fields.Boolean(string='is saudian', compute='_compute_is_saudian')
     
 
     @api.multi
@@ -79,6 +78,7 @@ class HrContract(models.Model):
                 self.job_id = employee_line.job_id.id
                 self.type_job_id = employee_line.type_id.id
                 self.grade_id = employee_line.grade_id.id
+                self.country_id = employee_line.country_id.national
                 self.degree_id = employee_line.degree_id.id
                 basic_salary = 0.0
                 grid_domain= [('grid_id.state', '=','done'),

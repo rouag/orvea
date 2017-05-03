@@ -32,7 +32,6 @@
 					<field name="identification_id" />
 					<field name="identification_date" />
 					<field name="identification_place" />
-					<field name="is_saudian" invisible="1"/>
 					
 					<field name="passport_id" string="رقم الحفيظة" 
 					/>
