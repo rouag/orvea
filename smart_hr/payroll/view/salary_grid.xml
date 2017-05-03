@@ -12,7 +12,7 @@
 			<field name="name">salary.grid.detail.form</field>
 			<field name="model">salary.grid.detail</field>
 			<field name="arch" type="xml">
-				<form>
+				<form create="0" edit="0" delete="0" duplicate="0">
 					<sheet>
 						<group>
 							<group>
@@ -189,14 +189,12 @@
 			<field name="name">salary.grid.detail.tree</field>
 			<field name="model">salary.grid.detail</field>
 			<field name="arch" type="xml">
-				<tree string="تفاصيل سلالم الرواتب">
+				<tree string="تفاصيل سلالم الرواتب" create="0" delete="0" edit="0" duplicate="0"
+				colors="grey:is_old==True;">
 					<field name="grid_id" />
-					<field name="type_id"
-						options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-					<field name="grade_id"
-						options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-					<field name="degree_id"
-						options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+					<field name="type_id" />
+					<field name="grade_id" />
+					<field name="degree_id" />
 					<field name="basic_salary" />
 					<field name="increase" />
 					<field name="retirement_amount" />
@@ -321,8 +319,6 @@
 								<field name="sequence" widget="handle" />
 								<field name="name" />
 								<field name="code" />
-								<field name="grade_id"
-									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 							</group>
 						</group>
 					</sheet>
@@ -337,8 +333,6 @@
 				<tree string="الدرجات">
 					<field name="name" />
 					<field name="code" />
-					<field name="grade_id"
-						options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 				</tree>
 			</field>
 		</record>

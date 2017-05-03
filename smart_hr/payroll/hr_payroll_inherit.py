@@ -176,6 +176,9 @@ class HrPayslip(models.Model):
     def compute_differences(self):
         # احتساب الأثر المالي
         line_ids = []
+        decision_appoint = False
+        compute_date_from = False
+        compute_date_to = False
         # case 1: احتساب الأثر المالي لهذا الشهر
         # case 2: احتساب الأثر المالي  لشهر الفارط من تاريخ إعداد مسير الشهر الفرط إلى تاريخ بداية هذا الشهر
         # get last payslip for current employee
@@ -185,38 +188,131 @@ class HrPayslip(models.Model):
                                                       ('state', '=', 'done')], limit=1, order='date_from desc')
         if last_payslip:
             # add one day to compute_date of last payslip
-            compute_date = str(fields.Date.from_string(last_payslip.compute_date) + timedelta(days=1))
-        # فروقات النقل
-        # يتم احتساب الأثار المالي للنقل في نفس حالة التعين
+            compute_date_from = str(fields.Date.from_string(last_payslip.compute_date) + timedelta(days=1))
+            compute_date_to = last_payslip.date_to
+        # إذا لم يكن للموظف مسير في الشهر الفارط ، ربما يكون قد عين ( تعيين جديد)
+        #  بعد إعداد الرواتب للشهر الفارط لذلك يجب احتساب فرق أيام الشهر الفارط
+        # بداية من تاريخ تفعيل التعيين
+        else:
+            type_appointment_id = self.env.ref('smart_hr.data_hr_new_agent_public').id
+            decision_appoint = self.env['hr.decision.appoint'].search([('is_started', '=', True),
+                                                                       ('type_appointment', '=', type_appointment_id),
+                                                                       ('state_appoint', '=', 'active'),
+                                                                       ('date_direct_action', '!=', False),
+                                                                       ('employee_id', '=', self.employee_id.id),
+                                                                       ], order="date_direct_action desc", limit=1)
+            if decision_appoint:
+                compute_date_from = decision_appoint.date_direct_action
+                compute_date_to = str(fields.Date.from_string(self.date_from) - timedelta(days=1))
+
+        # فروقات  تعيين موظف جديد  :
+        #  ربما يكون الموظف قد عين ( تعيين جديد) بعد إعداد الرواتب للشهر الفارط لذلك يجب
+        #   اعطائه مسير الشهر الفارط خلال هذا الشهر ( أساسي ، بدلات، تقاعد) بداية من تاريخ مباشرته  العمل
+        if decision_appoint:
+            line_ids += self.get_difference_new_employee(compute_date_from, compute_date_to)
+        # فروقات النقل : يتم احتساب الأثار المالي للنقل في نفس حالة التعين
         # فروقات التعين
         line_ids += self.get_difference_decision_appoint(self.date_from, self.date_to, self.employee_id, False)
-        if last_payslip:
-            line_ids += self.get_difference_decision_appoint(compute_date, last_payslip.date_to, self.employee_id, True)
+        if compute_date_from and compute_date_to:
+            line_ids += self.get_difference_decision_appoint(compute_date_from, compute_date_to, self.employee_id, True)
         # فروقات التكليف
         line_ids += self.get_difference_assign(self.date_from, self.date_to, self.employee_id, False)
-        if last_payslip:
-            line_ids += self.get_difference_assign(compute_date, last_payslip.date_to, self.employee_id, True)
+        if compute_date_from and compute_date_to:
+            line_ids += self.get_difference_assign(compute_date_from, compute_date_to, self.employee_id, True)
         # فروقات الإبتعاث
         line_ids += self.get_difference_scholarship(self.date_from, self.date_to, self.employee_id, False)
-        if last_payslip:
-            line_ids += self.get_difference_scholarship(compute_date, last_payslip.date_to, self.employee_id, True)
+        if compute_date_from and compute_date_to:
+            line_ids += self.get_difference_scholarship(compute_date_from, compute_date_to, self.employee_id, True)
         # فروقات الإعارة
         line_ids += self.get_difference_lend(self.date_from, self.date_to, self.employee_id, False)
-        if last_payslip:
-            line_ids += self.get_difference_lend(compute_date, last_payslip.date_to, self.employee_id, True)
+        if compute_date_from and compute_date_to:
+            line_ids += self.get_difference_lend(compute_date_from, compute_date_to, self.employee_id, True)
         # فروقات الإجازة
         line_ids += self.get_difference_holidays(self.date_from, self.date_to, self.employee_id, False)
-        if last_payslip:
-            line_ids += self.get_difference_holidays(compute_date, last_payslip.date_to, self.employee_id, True)
+        if compute_date_from and compute_date_to:
+            line_ids += self.get_difference_holidays(compute_date_from, compute_date_to, self.employee_id, True)
         # فروقات كف اليد
         line_ids += self.get_difference_suspension(self.date_from, self.date_to, self.employee_id, last_payslip, False)
-        if last_payslip:
+        if compute_date_from and compute_date_to:
             # تحتسب من يوم تاريخ ترحيل الراتب السابق وليس تاريخ الراتب  زائد يوم
-            line_ids += self.get_difference_suspension(last_payslip.compute_date, last_payslip.date_to, self.employee_id, last_payslip, True)
+            compute_date_from_suspension = compute_date_from
+            if last_payslip:
+                compute_date_from_suspension = last_payslip.compute_date
+            line_ids += self.get_difference_suspension(compute_date_from_suspension, compute_date_to, self.employee_id, last_payslip, True)
         # فروقات طى القيد
         line_ids += self.get_difference_termination(self.date_from, self.date_to, self.employee_id, False)
-        if last_payslip:
-            line_ids += self.get_difference_termination(compute_date, last_payslip.date_to, self.employee_id, True)
+        if compute_date_from and compute_date_to:
+            line_ids += self.get_difference_termination(compute_date_from, compute_date_to, self.employee_id, True)
+        return line_ids
+
+    @api.multi
+    def get_difference_new_employee(self, date_from, date_to):
+        self.ensure_one()
+        line_ids = []
+        employee = self.employee_id
+        salary_grid, basic_salary = employee.get_salary_grid_id(date_from)
+        if not salary_grid:
+            return
+        number_of_days = days_between(date_from, date_to)
+        # --------------
+        # 1- الراتب الأساسي
+        # --------------
+        amount = basic_salary / 30.0 * number_of_days
+        basic_salary_val = {'name': u'فرق الراتب الأساسي للشهر الفارط',
+                            'employee_id': employee.id,
+                            'rate': 0.0,
+                            'number_of_days': number_of_days,
+                            'number_of_hours': 0.0,
+                            'amount': amount,
+                            'category': 'basic_salary',
+                            'type': 'basic_salary',
+                            }
+        line_ids.append(basic_salary_val)
+        # --------------
+        # 2- البدلات القارة
+        # --------------
+        for allowance in employee.get_employee_allowances(salary_grid):
+            amount = allowance['amount'] / 30.0 * number_of_days
+            allowance_val = {'name': u'فرق ' + allowance['allowance_name'] + u' للشهر الفارط ',
+                             'employee_id': employee.id,
+                             'rate': 0.0,
+                             'number_of_days': number_of_days,
+                             'number_of_hours': 0.0,
+                             'amount': amount,
+                             'category': 'allowance',
+                             'type': 'allowance',
+                             }
+            line_ids.append(allowance_val)
+        # --------------
+        # 3- التقاعد
+        # --------------
+        retirement_amount = -1.0 * basic_salary * salary_grid.retirement / 100.0 / 30.0 * number_of_days
+        if retirement_amount:
+            retirement_val = {'name': u'فرق التقاعد للشهر الفارط',
+                              'employee_id': employee.id,
+                              'rate': 0.0,
+                              'number_of_days': number_of_days,
+                              'number_of_hours': 0.0,
+                              'amount': retirement_amount,
+                              'category': 'deduction',
+                              'type': 'retirement'
+                              }
+            line_ids.append(retirement_val)
+        # --------------
+        # 4- التأمينات
+        # --------------
+        insurance_amount = -1.0 * basic_salary * salary_grid.insurance / 100.0 / 30.0 * number_of_days
+        if insurance_amount:
+            insurance_val = {'name': u'فرق التأمين للشهر الفارط',
+                             'employee_id': employee.id,
+                             'rate': 0.0,
+                             'number_of_days': number_of_days,
+                             'number_of_hours': 0.0,
+                             'amount': insurance_amount,
+                             'category': 'deduction',
+                             'type': 'insurance'
+                             }
+            line_ids.append(insurance_val)
         return line_ids
 
     @api.multi
@@ -577,46 +673,47 @@ class HrPayslip(models.Model):
                 # case of  لا يصرف له راتب كامل
                 if grid_id and holiday_status_id.salary_spending and holiday_status_id.percentages:
                     for rec in holiday_status_id.percentages:
-                        today = fields.Date.from_string(fields.Date.today())
-                        if rec.entitlement_id.periode:
-                            get_from_date = today - relativedelta(years=rec.entitlement_id.periode)
-                            get_to_date = today
-                            # get first token holiday with same type
-                            newest_holiday_id = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
-                                                                                ('employee_id', '=', holiday_id.employee_id.id),
-                                                                                ('state', 'in', ('done', 'cutoff')),
-                                                                                ], order='done_date desc', limit=1)
-                            if newest_holiday_id:
-                                get_to_date = fields.Date.from_string(newest_holiday_id.date_to)
-                                get_from_date = get_to_date - relativedelta(years=rec.entitlement_id.periode)
-                            # get token holidays started in  get_from_date and before start of month
-                            start_month = fields.Date.from_string(self.date_from)
-                            ranges = []
-                            before_holidays = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
-                                                                              ('employee_id', '=', holiday_id.employee_id.id),
-                                                                              ('state', 'in', ('done', 'cutoff')),
-                                                                              ('date_from', '>=', get_from_date),
-                                                                              ('date_from', '<', start_month),
-                                                                              ])
-                            for b_hol in before_holidays:
-                                range_p = [fields.Date.from_string(b_hol.date_from), start_month]
-                                ranges.append(range_p)
-                            cumulation_days = self.env['hr.smart.utils'].get_overlapped_days(get_from_date, get_to_date, ranges)
-                            cumulation_days += duration_in_month
-                            months_from_holiday_start = cumulation_days / 30.0
-                        if entitlement_type == rec.entitlement_id.entitlment_category and rec.month_from <= months_from_holiday_start < rec.month_to and duration_in_month > 0:
-                            ret_amount = basic_salary * grid_id.retirement / 100.0
-                            new_basic_salary = basic_salary - ret_amount + retirement_amount
-                            basic_salary_amount = (duration_in_month * (new_basic_salary / 30.0) * (100 - rec.salary_proportion)) / 100.0
-                            if holiday_status_id.min_amount:
-                                basic_salary_amount = (new_basic_salary * (100 - rec.salary_proportion)) / 100.0
-                                # amout depend of number of days
-                                basic_salary_amount = basic_salary_amount * duration_in_month / 30.0
-                            # فرق البدلات
-                            allowance_amount2 = 0.0
-                            for allowance in holiday_id.employee_id.get_employee_allowances(grid_id):
-                                if not holiday_status_id.transport_allowance and allowance['allowance_id'] == self.env.ref('smart_hr.hr_allowance_type_01').id:
-                                    allowance_amount2 += allowance['amount'] / 30.0 * duration_in_month
+                        if entitlement_type == rec.entitlement_id.entitlment_category:
+                            today = fields.Date.from_string(fields.Date.today())
+                            if rec.entitlement_id.periode:
+                                get_from_date = today - relativedelta(years=rec.entitlement_id.periode)
+                                get_to_date = today
+                                # get first token holiday with same type
+                                newest_holiday_id = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
+                                                                                    ('employee_id', '=', holiday_id.employee_id.id),
+                                                                                    ('state', 'in', ('done', 'cutoff')),
+                                                                                    ], order='date_from', limit=1)
+                                if newest_holiday_id:
+                                    get_to_date = fields.Date.from_string(newest_holiday_id.date_to)
+                                    get_from_date = get_to_date - relativedelta(years=rec.entitlement_id.periode)
+                                # get token holidays started in  get_from_date and before start of month
+                                start_month = fields.Date.from_string(self.date_from)
+                                ranges = []
+                                before_holidays = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
+                                                                                  ('employee_id', '=', holiday_id.employee_id.id),
+                                                                                  ('state', 'in', ('done', 'cutoff')),
+                                                                                  ('date_from', '>=', get_from_date),
+                                                                                  ('date_from', '<', start_month),
+                                                                                  ])
+                                for b_hol in before_holidays:
+                                    range_p = [fields.Date.from_string(b_hol.date_from), start_month]
+                                    ranges.append(range_p)
+                                cumulation_days = self.env['hr.smart.utils'].get_overlapped_days(get_from_date, get_to_date, ranges)
+                                cumulation_days += duration_in_month
+                                months_from_holiday_start = cumulation_days / 30.0
+                            if rec.month_from <= months_from_holiday_start < rec.month_to and duration_in_month > 0:
+                                ret_amount = basic_salary * grid_id.retirement / 100.0
+                                new_basic_salary = basic_salary - ret_amount + retirement_amount
+                                basic_salary_amount = (duration_in_month * (new_basic_salary / 30.0) * (100 - rec.salary_proportion)) / 100.0
+                                if holiday_status_id.min_amount:
+                                    basic_salary_amount = (new_basic_salary * (100 - rec.salary_proportion)) / 100.0
+                                    # amout depend of number of days
+                                    basic_salary_amount = basic_salary_amount * duration_in_month / 30.0
+                                # فرق البدلات
+                                allowance_amount2 = 0.0
+                                for allowance in holiday_id.employee_id.get_employee_allowances(grid_id):
+                                    if not holiday_status_id.transport_allowance and allowance['allowance_id'] == self.env.ref('smart_hr.hr_allowance_type_01').id:
+                                        allowance_amount2 += allowance['amount'] / 30.0 * duration_in_month
             else:
                 for rec in res:
                     grid_id = rec['grid_id']
@@ -639,55 +736,56 @@ class HrPayslip(models.Model):
                     # case of  لا يصرف له راتب كامل
                     if grid_id and holiday_status_id.salary_spending and holiday_status_id.percentages:
                         for per in holiday_status_id.percentages:
-                            today = fields.Date.from_string(fields.Date.today())
-                            if per.entitlement_id.periode:
-                                # the above code must be entred one only for one time
-                                if not months_from_holiday_start:
-                                    get_from_date = today - relativedelta(years=per.entitlement_id.periode)
-                                    get_to_date = today
-                                    # get first token holiday with same type
-                                    newest_holiday_id = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
-                                                                                        ('employee_id', '=', holiday_id.employee_id.id),
-                                                                                        ('state', 'in', ('done', 'cutoff')),
-                                                                                        ], order='done_date desc', limit=1)
-                                    if newest_holiday_id:
-                                        get_to_date = fields.Date.from_string(newest_holiday_id.date_to)
-                                        get_from_date = get_to_date - relativedelta(years=per.entitlement_id.periode)
-                                    # get token holidays started in  get_from_date and before start of month
-                                    start_month = fields.Date.from_string(self.date_from)
-                                    ranges = []
-                                    before_holidays = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
-                                                                                      ('employee_id', '=', holiday_id.employee_id.id),
-                                                                                      ('state', 'in', ('done', 'cutoff')),
-                                                                                      ('date_from', '>=', get_from_date),
-                                                                                      ('date_from', '<', start_month),
-                                                                                      ])
-                                    for b_hol in before_holidays:
-                                        if fields.Date.from_string(b_hol.date_to) < start_month:
-                                            range_p = [b_hol.date_from, b_hol.date_to]
-                                            ranges.append(range_p)
-                                    cumulation_days = self.env['hr.smart.utils'].get_overlapped_days(get_from_date, get_to_date, ranges)
-                                    cumulation_days += duration_in_month
-                                    months_from_holiday_start = cumulation_days / 30.0
-                            if entitlement_type == per.entitlement_id.entitlment_category and per.month_from <= months_from_holiday_start <= per.month_to and days > 0:
-                                ret_amount = basic_salary * grid_id.retirement / 100.0
-                                new_basic_salary = basic_salary - ret_amount + retirement_amount
-                                basic_salary_amount2 += (days * (new_basic_salary / 30.0) * (100 - per.salary_proportion)) / 100.0
-                                if holiday_status_id.min_amount:
-                                    basic_salary_amount2 += (new_basic_salary * (100 - per.salary_proportion)) / 100.0
-                                    diff = holiday_status_id.min_amount - (new_basic_salary * per.salary_proportion) / 100.0
-                                    if diff > 0:
-                                        basic_salary_amount2 -= diff
-                                    # amout depend of number of days
-                                    basic_salary_amount2 += basic_salary_amount2 * days / 30.0
-                            # فرق البدلات
-                            allowance_amount2 = 0.0
-                            for allowance in holiday_id.employee_id.get_employee_allowances(grid_id):
-                                if not holiday_status_id.transport_allowance and allowance['allowance_id'] == self.env.ref('smart_hr.hr_allowance_type_01').id:
-                                    allowance_amount2 += allowance['amount'] / 30.0 * days
-                            # فرق التقاعد
-                            if holiday_status_id.deductible_duration_service:
-                                retirement_amount2 += (basic_salary * grid_id.retirement / 100.0 * (100 - per.salary_proportion) / 100.0) / 30.0 * days
+                            if entitlement_type == per.entitlement_id.entitlment_category:
+                                today = fields.Date.from_string(fields.Date.today())
+                                if per.entitlement_id.periode:
+                                    # the above code must be entred one only for one time
+                                    if not months_from_holiday_start:
+                                        get_from_date = today - relativedelta(years=per.entitlement_id.periode)
+                                        get_to_date = today
+                                        # get first token holiday with same type
+                                        newest_holiday_id = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
+                                                                                            ('employee_id', '=', holiday_id.employee_id.id),
+                                                                                            ('state', 'in', ('done', 'cutoff')),
+                                                                                            ], order='date_from', limit=1)
+                                        if newest_holiday_id:
+                                            get_to_date = fields.Date.from_string(newest_holiday_id.date_to)
+                                            get_from_date = get_to_date - relativedelta(years=per.entitlement_id.periode)
+                                        # get token holidays started in  get_from_date and before start of month
+                                        start_month = fields.Date.from_string(self.date_from)
+                                        ranges = []
+                                        before_holidays = self.env['hr.holidays'].search([('holiday_status_id', '=', holiday_status_id.id),
+                                                                                          ('employee_id', '=', holiday_id.employee_id.id),
+                                                                                          ('state', 'in', ('done', 'cutoff')),
+                                                                                          ('date_from', '>=', get_from_date),
+                                                                                          ('date_from', '<', start_month),
+                                                                                          ])
+                                        for b_hol in before_holidays:
+                                            if fields.Date.from_string(b_hol.date_to) < start_month:
+                                                range_p = [b_hol.date_from, b_hol.date_to]
+                                                ranges.append(range_p)
+                                        cumulation_days = self.env['hr.smart.utils'].get_overlapped_days(get_from_date, get_to_date, ranges)
+                                        cumulation_days += duration_in_month
+                                        months_from_holiday_start = cumulation_days / 30.0
+                                if entitlement_type == per.entitlement_id.entitlment_category and per.month_from <= months_from_holiday_start <= per.month_to and days > 0:
+                                    ret_amount = basic_salary * grid_id.retirement / 100.0
+                                    new_basic_salary = basic_salary - ret_amount + retirement_amount
+                                    basic_salary_amount2 += (days * (new_basic_salary / 30.0) * (100 - per.salary_proportion)) / 100.0
+                                    if holiday_status_id.min_amount:
+                                        basic_salary_amount2 += (new_basic_salary * (100 - per.salary_proportion)) / 100.0
+                                        diff = holiday_status_id.min_amount - (new_basic_salary * per.salary_proportion) / 100.0
+                                        if diff > 0:
+                                            basic_salary_amount2 -= diff
+                                        # amout depend of number of days
+                                        basic_salary_amount2 += basic_salary_amount2 * days / 30.0
+                                # فرق البدلات
+                                allowance_amount2 = 0.0
+                                for allowance in holiday_id.employee_id.get_employee_allowances(grid_id):
+                                    if not holiday_status_id.transport_allowance and allowance['allowance_id'] == self.env.ref('smart_hr.hr_allowance_type_01').id:
+                                        allowance_amount2 += allowance['amount'] / 30.0 * days
+                                # فرق التقاعد
+                                if holiday_status_id.deductible_duration_service:
+                                    retirement_amount2 += (basic_salary * grid_id.retirement / 100.0 * (100 - per.salary_proportion) / 100.0) / 30.0 * days
             #
             if basic_salary_amount:
                 vals = {'name': holiday_id.holiday_status_id.name + name,

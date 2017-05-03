@@ -131,12 +131,13 @@ class hrHolidaysDecision(models.Model):
     def _onchange_date(self):
         res = {}
         warning = {}
+        self.holiday_id = False
         self.holiday_status_id = False
         self.date_from = False
         self.date_to = False
         self.duration = 0
         if self.employee_id and self.date :
-            holidays = self.env['hr.holidays'].search([('state', '=', 'done'), ('holiday_status_id.direct_decision', '=', True), ('date_to', '<=', self.date), ('employee_id', '=', self.employee_id.id)])
+            holidays = self.env['hr.holidays'].search([('state', 'in', ['done','cutoff']), ('holiday_status_id.direct_decision', '=', True), ('date_to', '<=', self.date), ('employee_id', '=', self.employee_id.id)])
             holidays_ids = []
             if holidays:
                 holidays_ids = holidays.ids
@@ -162,7 +163,7 @@ class hrHolidaysDecision(models.Model):
         self.date_to = False
         self.duration = 0
         if self.employee_id and self.date :
-            holidays = self.env['hr.holidays'].search([('state', '=', 'done'), ('holiday_status_id.direct_decision', '=', True), ('date_to', '<=', self.date), ('employee_id', '=', self.employee_id.id)])
+            holidays = self.env['hr.holidays'].search([('state', 'in', ['done','cutoff']), ('holiday_status_id.direct_decision', '=', True), ('date_to', '<=', self.date), ('employee_id', '=', self.employee_id.id)])
             holidays_ids = []
             if holidays:
                 holidays_ids = holidays.ids

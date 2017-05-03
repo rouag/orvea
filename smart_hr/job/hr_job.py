@@ -440,6 +440,7 @@ class HrJobStripFrom(models.Model):
     _inherit = ['mail.thread']
     _rec_name = 'employee_id'
     _description = u'سلخ وظائف من جهة'
+    _order = 'create_date desc'
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', required=1, readonly=1,
@@ -670,6 +671,7 @@ class HrJobStripTo(models.Model):
     _inherit = ['mail.thread']
     _description = u' سلخ وظيفة إلى جهة'
     _rec_name = 'employee_id'
+    _order = 'create_date desc'
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', required=1, readonly=1,
@@ -854,6 +856,7 @@ class HrJobCancel(models.Model):
     _inherit = ['mail.thread']
     _description = u' إلغاء الوظائف'
     _rec_name = 'speech_number'
+    _order = 'create_date desc'
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', required=1, readonly=1,
@@ -966,6 +969,8 @@ class HrJobMoveDeparrtment(models.Model):
     _inherit = ['mail.thread']
     _description = u'نقل وظائف'
     _rec_name = 'employee_id'
+    _order = 'create_date desc'
+    
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', required=1, readonly=1,
                                   domain=[('emp_state', 'not in', ['suspended', 'terminated']), ('employee_state', '=', 'employee')],
@@ -1183,6 +1188,7 @@ class HrJobMoveGrade(models.Model):
     _inherit = ['mail.thread']
     _description = u'رفع أو خفض وظائف'
     _rec_name = 'decision_number'
+    _order = 'create_date desc'
 
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now())
     employee_id = fields.Many2one('hr.employee', string='صاحب الطلب', required=1, readonly=1,
@@ -1275,18 +1281,19 @@ class HrJobMoveGrade(models.Model):
         self.state = 'done'
         for job in self.job_movement_ids:
             if self.move_type == "scale_up":
-                move_type = "رفع"
+                move_type = u"رفع"
                 job.job_id.upgrade_date = date.today()
             else:
-                move_type = "خفض"
+                move_type = u"خفض"
                 job.job_id.downgrade_date = date.today()
-            description = move_type + u" الوظيفة من المرتبة " + unicode(job.grade_id.name) +u" الى المرتبة " +unicode(job.new_grade_id.name) + '.\n'
+            description = ""
+            description += move_type + u" الوظيفة من المرتبة " + unicode(job.grade_id.name) +u" الى المرتبة " +unicode(job.new_grade_id.name) + '.\n'
             if job.new_job_name:
-                description += " تغيير المسمى من " + unicode(job.job_id.name.name) + u"  الى " + unicode(job.new_job_name.name)+ ".\n"
+                description += u" تغيير المسمى من " + unicode(job.job_id.name.name) + u"  الى " + unicode(job.new_job_name.name)+ ".\n"
             if job.new_job_number:
-                description += " تغيير رقم الوظيفة من " +unicode(job.job_id.number) +u" الى " + unicode(job.new_job_number)+ ".\n"
+                description += u" تغيير رقم الوظيفة من " +unicode(job.job_id.number) +u" الى " + unicode(job.new_job_number)+ ".\n"
             if job.new_department_id:
-                description += "  تغيير الادارة من " +unicode(job.job_id.department_id.name) + u" الى " +unicode(job.new_department_id.name)+ ".\n"
+                description += u" تغيير الادارة من " +unicode(job.job_id.department_id.name) + u" الى " +unicode(job.new_department_id.name)+ ".\n"
             job_history_vals = {
                 'action': move_type,
                 'action_date': date.today(),
