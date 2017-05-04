@@ -154,8 +154,13 @@ class HrDeprivationPremium(models.Model):
         for rec in self:
             if rec.state != 'new' :
                 raise ValidationError(u'لا يمكن حذف حرمان من العلاوة  فى هذه المرحلة يرجى مراجعة مدير النظام')
-        return super(HrDeprivationPremium, self).unlink()   
+        return super(HrDeprivationPremium, self).unlink()
+    
+    
 
+        
+        
+        
 class HrdeprivationPremiumLigne(models.Model):
     _name = 'hr.deprivation.premium.ligne'
     _description = u' قائمة المحرومين من العلاوة'

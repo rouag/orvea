@@ -13,10 +13,6 @@ class HrEmployeeTransfert(models.Model):
     _rec_name = 'employee_id'
     _order = 'create_date desc'
 
-    @api.multi
-    def _get_default_employee_job(self):
-        return self.env['hr.employee'].search([('id', '=', self.employee_id.id)], limit=1).job_id
-
     create_date = fields.Datetime(string=u'تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
     sequence = fields.Integer(string=u'رتبة الطلب')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف',  required=1,
@@ -465,9 +461,6 @@ class HrEmployeeTransfert(models.Model):
             return True
         else:
             return False
-        
-    
-
 
 
 class HrEmployeeTransfertPeriode(models.Model):
@@ -511,8 +504,7 @@ class HrTransfertSorting(models.Model):
     line_ids4 = fields.One2many('hr.transfert.sorting.line4', 'hr_transfert_sorting_id4', string=u'طلبات النقل',)
     line_ids5 = fields.One2many('hr.transfert.sorting.line5', 'hr_transfert_sorting_id5', string=u'طلبات النقل',)
     is_ended = fields.Boolean(string=u'انتهت',default = False)
-    is_commission_third = fields.Boolean(string=u'الخدمة المدنية',default = False)
-
+    is_commission_third = fields.Boolean(string=u'الخدمة المدنية', default = False)
     state = fields.Selection([('new', u'ترتيب الطلبات'),
                                ('draft', u'إسناد الوظائف'),
                               ('waiting', u'إعتماد الموظفين'),
@@ -543,8 +535,6 @@ class HrTransfertSorting(models.Model):
         self.line_ids = line_ids
         self.is_ended = True
 
-
-
     @api.multi
     def action_draft(self):
         for rec in self:
@@ -555,7 +545,7 @@ class HrTransfertSorting(models.Model):
                 if line.hr_employee_transfert_id:
                     vals = {'hr_employee_transfert_id': line.hr_employee_transfert_id.id,
                             'hr_employee_transfert_id.state':'pm',
-                            'state': line.state ,
+                            'state': line.state,
                             }
                     line_ids.append(vals)
             rec.line_ids2 = line_ids
@@ -635,14 +625,13 @@ class HrTransfertSorting(models.Model):
                 rec.state = 'commission_president'
             else :
                 raise ValidationError(u"لايوجد طلبات حالياًفي قائمة الانتظار.")
- 
 
 
     @api.multi
     def button_refuse(self):
         self.ensure_one()
         self.state = 'refused'
-    
+
     @api.multi
     def action_commission_president(self):
         for rec in self :
