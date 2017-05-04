@@ -11,12 +11,16 @@
 					<field name="is_hospital" invisible="1" />
 					<field name="hospital_director" attrs="{'invisible': [('is_hospital','=', False)]}" />
 				</field>
+				<field name="state_id" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</field>
 				<field name="website" position="after">
 					<field name="insurance" />
 				</field>
 				<page name="sales_purchases" position="attributes">
 					<attribute name="invisible">1</attribute>
 				</page>
+				
 			</field>
 		</record>
 		

@@ -24,6 +24,9 @@
 			name="smart_hr.report_hr_holidays_decision" report_type="qweb-pdf"
 			string="طباعة قرار مباشرة" file="smart_hr.report_hr_holidays_decision" />
 			
+			
+			<delete id="hr_holidays.hr_holidays_summary_employee_value" model="ir.values"/>
+			<delete id="hr_holidays.report_holidayssummary" model="ir.actions.report.xml"/>
 	</data>
 </openerp>
 		
