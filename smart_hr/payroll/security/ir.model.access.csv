@@ -74,3 +74,6 @@ access_hr_fiscalyear,hr.fiscalyear,model_hr_fiscalyear,,1,1,1,1
 access_hr_employee_payroll_changement,hr_employee_payroll_changement,model_hr_employee_payroll_changement,,1,1,1,1
 
 access_hr_payroll_constrainte,hr_payroll_constrainte,model_hr_payroll_constrainte,,1,1,1,1
+
+access_salary_grid_degree_employee,name_access_salary_grid_degree_employee,model_salary_grid_degree,group_employee,1,0,0,0
+
