@@ -162,6 +162,13 @@ class HrSanction(models.Model):
                 raise UserError(_(u'لا يمكن حذف العقوبة  إلا في حالة طلب !'))
         return super(HrSanction, self).unlink()
 
+    @api.onchange('type_sanction')
+    def onchange_type_sanction(self):
+        if self.type_sanction:
+            for line in self.line_ids:
+                line.type_sanction = self.type_sanction
+
+
 
 class HrSanctionLigne(models.Model):
     _name = 'hr.sanction.ligne'
@@ -171,7 +178,7 @@ class HrSanctionLigne(models.Model):
     employee_id = fields.Many2one('hr.employee', string=u' إسم الموظف', required=1)
     name = fields.Char(related='sanction_id.name', string=u'رقم القرار')
     order_date = fields.Date(related='sanction_id.order_date', string=u'تاريخ القرار')
-    type_sanction = fields.Many2one('hr.type.sanction', related='sanction_id.type_sanction', string=u'العقوبة')
+    type_sanction = fields.Many2one('hr.type.sanction', string=u'العقوبة')
     date_sanction = fields.Date(related='sanction_id.date_sanction_start', string=u'العقوبة')
     mast = fields.Boolean(string='سارية', default=True)
     deduction = fields.Boolean(string=u'حسم', default=False)
@@ -196,7 +203,19 @@ class HrSanctionLigne(models.Model):
                 [('grade_id.code', '>=', grade_min), ('grade_id.code', '<=', grade_max)]).ids
             res['domain'] = {'employee_id': [('id', 'in', employee_ids)]}
             return res
+        if self.sanction_id.type_sanction:
+            self.type_sanction = self.sanction_id.type_sanction
 
+    @api.constrains('date_sanction', 'employee_id')
+    def check_unique_employee_date(self):
+        fiscalyear = self.env['hr.fiscalyear'].search([('date_start', '<=', self.date_sanction), ('date_stop', '>=', self.date_sanction)], limit=1)
+        sanctions = self.search([('state', '=', 'done'), ('employee_id', '=', self.employee_id.id), ('type_sanction', '=', self.env.ref('smart_hr.data_hr_sanction_type_grade').id), ('id', '!=', self.id)])
+        if fiscalyear:
+            for sanction in sanctions:
+                if sanction.date_sanction >= fiscalyear.date_start and sanction.date_sanction <= fiscalyear.date_stop:
+                    raise ValidationError(u'.لا يمكن حرمان موظف من علاوة أكثر من مرة في نفس السنة' + u"  " + u'الموظف:' + self.employee_id.display_name)
+        else:
+            raise ValidationError(u'الرجاء اعداد سنة تتضمن تاريخ بدء العقوبة')
 
 class HrTypeSanction(models.Model):
     _name = 'hr.type.sanction'

@@ -54,6 +54,7 @@
 			<field name="paperformat_id" ref="report.paperformat_euro" />
 			<field name="download_filename">بيان_حسم_ساعات_التأخير.pdf</field>
 		</record>
+			<delete id="hr_attendance.hr_attendance_error_values" model="ir.values"/>
 	</data>
 </openerp>
 		

@@ -65,6 +65,7 @@
 						<notebook>
 
 							<page string="البيانات الشخصية" attrs="{'invisible':[('state','=', 'draft')]}">
+								<br></br>
 								<group>
 									<field name="birthday" />
 									<field name="emp_age" />
@@ -82,6 +83,7 @@
 								</group>
 							</page>
 							<page attrs="{'invisible':[('state','=', 'draft')]}" string="بيانات العمل">
+								<br></br>
 								<group>
 
 									<field name="employee_state" />
@@ -92,7 +94,7 @@
 								</group>
 							</page>
 							<page string="الحياة الوظيفية" attrs="{'invisible':[('state','=', 'draft')]}">
-
+								<br></br>
 								<group>
 									<field name="history_ids" context="{'list_type':'_get_dep_name_employee_form'}">
 										<tree string="سجل الاجراءات">
@@ -111,7 +113,7 @@
 								</group>
 							</page>
 							<page string="التدريب" attrs="{'invisible':[('state','=', 'draft')]}">
-
+								<br></br>
 								<group>
 									<field name="training_ids">
 										<tree>

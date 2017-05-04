@@ -6,31 +6,49 @@
 		<record id="data_decision_type" model="hr.decision.type">
 			<field name="name"> قرارتعين موظف</field>
 			<field name="text"><![CDATA[
-			<p>قرار إداري رقم
-			 (NUMERO)و تاريخ  DATE</p>
+			<p>إدارة الموارد البشرية
+			</p>
 			<p style="text-align: center;"><strong>
 			 
-			 رقم الهوية
+			الهوية الوطنية
 			 CARTEID </strong></p>
+			<p style="text-align: center;">قرار إداري رقم
+			 (NUMERO)و تاريخ  DATE</p>
+			
 <p><strong>إن رئيس هيئة التحقيق و الإدعاء العام</strong></p>
 <p>بناء على صلاحيات الممنوحة له</p>
-<p>و اشارة إلى خطاب    مدير إدارة  توثيق السجلات الموظفين و الوظائف المكلف بوزارة الخدمة المدنية رقم</p>
+<p>
+و اشارة إلى خطاب    مدير إدارة  توثيق السجلات الموظفين و الوظائف المكلف بوزارة الخدمة المدنية رقم
+.</p>
 
-<p> (NUMERO) وتاريخ DATE   المتضمن  ترشيح الموضح إسمه و بياناته أدناه للعمل بالهيئة</p>
+<p> (NUMERO) وتاريخ DATE   المتضمن  ترشيح الموضح إسمه و بياناته أدناه للعمل بالهيئة
+.</p>
 
 <p>و استناد إلى مقتضيات نظام الخدمة المدنية  و لائحة التنفيذية و لموافقتنا على ذلك.</p>
 
 <p style="text-align: center;"> <strong>يقرر ما يلي</strong></p>
-<p>أولا  :يعين/ EMPLOYEE  على  وظيفة  (job) رقمها(numero)  و رمزها  (code) بالمرتبة (grade) بالدرجةdegree براتب شهري قدره(basicsalaire) ريال بهيئة التحقيق و الإدعاء العام مقر الوظيفة 
-   DEPARTEMENT</p>
+<p>أولا  :يعين/ EMPLOYEE , على  وظيفة  (job) رقمها(numero)   رمزها  (code) بالمرتبة (grade) بالدرجةdegree براتب شهري قدره(basicsalaire) ريال بهيئة التحقيق و الإدعاء العام مقر الوظيفة 
+   DEPARTEMENT
+   .</p>
 
 
-<p>ثانيا :يعتبر تعينه من مباشرة للعمل</p>  
-<p>ثالثا:  يصرف له راتب شهر وفقا للمادة (.........................................) من لائحة الحقوق و المزايا المالية.</p>
-<p>رابعا : يعتبر تحت التجربة لمدة سنتين وفقا للمادة (.........................................) من لائحة أعضاء الهيئةو العاملين فيها.</p>
-<p>خامسا: يصرف له بدل طبيعة عامل بواقع (.........................................) من أول مربوط المرتبة</p>
-<p>سادسا: عدم تمكينه من المباشرة إلا بعد التاكد من تعديل مهنته.</p>
-<p> سابعا:وبلغ هذا القرار لمن يلزم لإنفاذه</p>
+<p>
+ثانيا :يعتبر تعينه من مباشرته  للعمل
+.</p>  
+<p>
+ثالثا:  يصرف له راتب شهر وفقا للمادة (٤٥) من لائحة الحقوق و المزايا المالية
+.</p>
+<p>رابعا : يعتبر تحت التجربة لمدة سنتين وفقا للمادة (٢٦) من لائحة أعضاء الهيئةو العاملين فيها
+.</p>
+<p>خامسا: يصرف له بدل طبيعة عامل بواقع (.........................................) من أول مربوط المرتبة
+.</p>
+<p>
+سادسا: عدم تمكينه من المباشرة إلا بعد التاكد من تعديل مهنته
+.</p>
+<p>
+ سابعا:وبلغ هذا القرار لمن يلزم لإنفاذه
+ .</p>
+      
       <p></p> 
    <p></p> 
     <p></p> 
@@ -41,25 +59,36 @@
 		<record id="data_decision_type1" model="hr.decision.type">
 			<field name="name"> قرار تعين موظفة</field>
 			<field name="text"><![CDATA[
-			<p>قرار إداري رقم
+			<p>إدارة الموارد البشرية
+			</p>
+			<p style="text-align: center;">قرار إداري رقم
 			 (NUMERO)و تاريخ  DATE</p>
 			<p style="text-align: center;"><strong>
-			 
-			 رقم الهوية
+			رقم الهوية الوطنية
 			 CARTEID </strong></p>
+			
+			
 <p><strong>إن رئيس هيئة التحقيق و الإدعاء العام</strong></p>
 <p>بناء على صلاحيات الممنوحة له</p>
-<p>و اشارة إلى خطاب  مديرة مكتب  الخدمة المدنية النسوي بالمنطقة(.........................................)  رقم(.........................................) وتاريخ(.........................................) المتضمن  موافقة ترشيح الموضح إسمها  أدناه للعمل بالهيئة</p>
+<p>و اشارة إلى خطاب  مديرة مكتب  الخدمة المدنية النسوي بالمنطقة...................................... رقم.......................................وتاريخ....................................... المتضمن  موافقة على ترشيح الموضح إسمها  أدناه للعمل بالهيئة.</p>
 <p>و استناد إلى مقتضيات نظام الخدمة المدنية  و لائحة التنفيذية و لموافقتنا على ذلك.</p>
 
 
 <p style="text-align: center;"> <strong>يقرر ما يلي</strong></p>
-<p>أولا  :تعين/ EMPLOYEE  على  وظيفة  (job) رقمها(code)  بالمرتبة (grade) بالدرجةdegree براتب شهري قدره(basicsalaire) ريال بهيئة التحقيق و الإدعاء العام مقر الوظيفة المقر الرئيس)</p>
-<p>ثانيا :يعتبر تعينها من  تاريخ مباشرتها العمل</p>
-  <p>رابعا : يعتبر تحت التجربة لمدة سنة     </p> 
-  <p>خامسا: يصرف لها بدل طبيعة عامل بواقع (.........................................) من أول مربوط المرتبة</p>     
+<p>
+أولا  :تعين/ EMPLOYEE  على  وظيفة  (job) رقمها(code)  بالمرتبة (grade) بالدرجةdegree براتب شهري قدره(basicsalaire) ريال بهيئة التحقيق و الإدعاء العام مقر الوظيفة المقر الرئيس)</p>
+<p>
+ثانيا :يعتبر تعينها من  تاريخ مباشرتها العمل
+.</p>
+  <p>رابعا : تعتبر تحت التجربة لمدة سنة     
+  .</p> 
+  <p>
+  خامسا: يصرف لها بدل طبيعة عامل بواقع (.........................................) من أول مربوط المرتبة 
+ .</p>   
   <p>سادسا: عدم تمكينها من المباشرة إلى بعد التأكد من تعديل مهنتها.</p>  
-  <p> سابعا:وبلغ هذا القرار لمن يلزم لإنفاذه</p>
+  <p>
+   سابعا:وبلغ هذا القرار لمن يلزم لإنفاذه
+   .</p>
   <p></p> 
    <p></p> 
     <p></p> 
@@ -72,18 +101,29 @@
 		<record id="data_decision_type2" model="hr.decision.type">
 			<field name="name"> قرارتعين مباشرة على بند الأجور</field>
 			<field name="text"><![CDATA[
+			<p>إدارة الموارد البشرية
+			</p>
+			<p>-شوون الموظفين/ التوظيف
+			</p>
 			
-			
-			
-			<p>قرار إداري رقم
-			 (NUMERO)و تاريخ  DATE</p>
 			<p style="text-align: center;"><strong>
-			 
-			 رقم الهوية
+			 	رقم الهوية الوطنية
 			 CARTEID </strong></p>
-			 
-		<p>الاسم: EMPLOYEE </p>	
+			 	<p>الاسم: EMPLOYEE </p>	
 		<p>تاريخ الميلاد:BIRTHDAY
+			 
+			  <p style="text-align: center;">
+			(........) رقم التامين الاجتماعي
+			 
+			 </p>
+			 <p style="text-align: center;">
+			-رقم إشتراك الجهة في المؤسسة العامة للتامينات الاجتماعية الرقم(.............)
+			 </p>
+			 <p>قرار إداري رقم
+			 (NUMERO)و تاريخ  DATE</p>
+			 
+			 
+	
 
 		</p> 
 			 
@@ -110,16 +150,21 @@
 		<record id="data_decision_type3" model="hr.decision.type">
 			<field name="name"> قرارإلغاء قرار تعين</field>
 			<field name="text"><![CDATA[
-			<p>قرار إداري رقم
+			<p>إدارة الموارد البشرية</p>
+			<p style="text-align: center;">
+			قرار إداري رقم
 			 (NUMERO)و تاريخ  DATE</p>
+		
 			<p style="text-align: center;"><strong>
-			 
-			 رقم الهوية
+			 رقم الهوية الوطنية
 			 CARTEID </strong></p>
+			
+			
+			 
 <p><strong>إن رئيس هيئة التحقيق و الإدعاء العام</strong></p>
 <p>بناء على صلاحيات الممنوحة له</p>
 <p>إشارة إلى القرار الإداري رقم(.........................................) و تاريخ DATE  بتعين الموظف / EMPLOYEE على وظيفة (JOB) رقمها(CODE) بالمرتبة (GRADE) بالدرجةDEGREE رقمها (.........................................) بفرع الهيئة بمنطقة (.........................................)</p>
-<p>و اشارة إلى خطاب مدير الشؤون الإدارية و المالية بفرع الهيئة بالمنظقة رقم(.........................................) وتاريخ(.........................................)  بشأن عدم مباشرة  المذكور مهام وظفته حتى تاريخه .</p>
+<p>و اشارة إلى خطاب مدير الشؤون الإدارية و المالية بفرع الهيئة بالمنظقة رقم القرار(.........................................) وتاريخه(.........................................)  بشأن عدم مباشرة  المذكور مهام وظيفته حتى تاريخه .</p>
 <p>و استناد إلى ما ورد  بالمادة (٨) من لائحة  التعين في الوظائف  العامة و لموافقتنا على ذلك.</p>
 
 <p style="text-align: center;"> <strong>يقرر ما يلي</strong></p>
@@ -136,16 +181,24 @@
 		<record id="data_decision_type4" model="hr.decision.type">
 			<field name="name">قرارإلغاء قرار تعين على بند الأجور</field>
 			<field name="text"><![CDATA[
-				<p>قرار إداري رقم
-			 (NUMERO)و تاريخ  DATE</p>
+						<p> إدارة الموارد البشرية/التوظيف</p>
+				
 			<p style="text-align: center;"><strong>
 			 
 			 رقم الهوية
 			 CARTEID </strong></p>
 			 <p>الاسم: EMPLOYEE </p>	
 		<p>تاريخ الميلاد:BIRTHDAY
-
 		</p> 
+			 	<p style="text-align: center;">
+			(........) رقم التامين الاجتماعي
+			 </p>
+			 <p style="text-align: center;">
+			-رقم إشتراك الجهة في المؤسسة العامة للتامينات الاجتماعية الرقم(.............)
+			 </p>
+			 <p>قرار إداري رقم
+			 (NUMERO)و تاريخ  DATE</p>
+			 
 <p><strong>إن رئيس هيئة التحقيق و الإدعاء العام</strong></p>
 <p>بناء على صلاحيات الممنوحة له</p>
 <p> و إشارة إلى القرار الإداري رقم(..................) و تاريخ DATE  القاضي بتعين المواطن / EMPLOYEE على وظيفة (JOB)  فئة (GRADE) بالدرجةDEGREE رقمها (..................) بالمقرالرئيس </p>
@@ -164,17 +217,19 @@
 			 رئيس هيئة التحقيق و الإدعاء العام </strong></p>   ]]></field>
 		</record>
 		<record id="data_decision_type5" model="hr.decision.type">
-			<field name="name"> قرارتعين موظف وفي قيده وظيفة مستخدم</field>
+			<field name="name"> قرارتعين موظف وطي قيده وظيفة مستخدم</field>
 			<field name="text"><![CDATA[
-			<p>قرار إداري رقم
-			 (NUMERO)و تاريخ  DATE</p>
+				<p>إدارة الموارد البشرية</p>
 			<p style="text-align: center;"><strong>
-			 
-			 رقم الهوية
+			 رقم الهوية الوطنية
 			 CARTEID </strong></p>
+			 <p style="text-align: center;">
+			 <p>قرار إداري رقم
+			 (NUMERO)و تاريخ  DATE</p>
 <p><strong>إن رئيس هيئة التحقيق و الإدعاء العام</strong></p>
 <p>بناء على صلاحيات الممنوحة له</p>
-<p>و اشارة إلى خطاب  وزير الخدمة المدنية رقم(..................) وتاريخ(..................) المتضمن ترشيح الموضح إسمه و بياناته أدناه للعمل بالهيئة</p>
+<p>و اشارة إلى خطاب  وزير الخدمة المدنية رقم(..................) وتاريخ(..................) المتضمن ترشيح الموضح إسمه و بياناته أدناه للعمل بالهيئة
+.</p>
 <p>و استناد إلى مقتضيات نظام الخدمة المدنية  و لائحة التنفيذية و لموافقتنا على ذلك.</p>
 
 
@@ -182,10 +237,17 @@
 <p>أولا  :يعين/ EMPLOYEE  على  وظيفة  (JOB) رقمها(NUMBER) رمزها (CODE) بالمرتبة (GRADE) بالدرجةDEGREE براتب شهري قدره(BASICSALAIRE) ريال بهيئة التحقيق و الإدعاء العام مقر الوظيفة (المقر الرئيس)</p>
 <p>ثانيا :يعتبر تعينه من مباشرة للعمل</p>
 <p>ثالثا : يطوى قيده من وظيفته السابقة بمسمى  (job)رقم  (code)والدرجة(degree)بالمرتبة (grade) و راتبه (basicsalaire) ريال مقرها (..................) إعتبارا من مباشرته العمل</p>
-<p>رابعا: لا  يصرف له راتب شهر وفقا للمادة (..................) من لائحة الحقوق و المزايا المالية.</p>
-<p>خامسا:يعوض عن رصيده من الاجازات العادية وفقا للمادة رقم (..................) من لائحة الاجازات.</p>
-<p>سادسا: عدم تمكينه من المباشرة إلى بعد التأكد من تعديل مهنته.</p>
-<p> سابعا:وبلغ هذا القرار لمن يلزم لإنفاذه</p>
+<p>
+رابعا: لا  يصرف له راتب شهر وفقا للمادة (٤٥) من لائحة الحقوق و المزايا المالية
+.</p>
+<p>خامسا:يعوض عن رصيده من الاجازات العادية وفقا للمادة رقم (٥/ب) من لائحة الاجازات
+.</p>
+<p>سادسا: عدم تمكينه من المباشرة إلى بعد التأكد من تعديل مهنته
+.</p>
+<p> 
+
+سابعا:وبلغ هذا القرار لمن يلزم لإنفاذه
+.</p>
 
             <p></p> 
    <p></p> 
@@ -194,14 +256,15 @@
 			 رئيس هيئة التحقيق و الإدعاء العام </strong></p>   ]]></field>
 		</record>
 		<record id="data_decision_type6" model="hr.decision.type">
-			<field name="name"> قرارتعين موظف وفي قيده وظيفة عامل</field>
+			<field name="name"> قرارتعين موظف وطي قيده وظيفة عامل</field>
 			<field name="text"><![CDATA[
-			<p>قرار إداري رقم
-			 (NUMERO)و تاريخ  DATE</p>
-			<p style="text-align: center;"><strong>
-			 
-			 رقم الهوية
+						<p>إدارة الموارد البشرية</p>
+		<p style="text-align: center;"><strong>
+			 رقم الهوية الوطنية
 			 CARTEID </strong></p>
+			 <p style="text-align: center;">
+			 <p>قرار إداري رقم
+			 (NUMERO)و تاريخ  DATE</p>
 <p><strong>إن رئيس هيئة التحقيق و الإدعاء العام</strong></p>
 <p>بناء على صلاحيات الممنوحة له</p>
 <p>و اشارة إلى خطاب  وزير الخدمة المدنية رقم(..................) وتاريخ(..................) المتضمن ترشيح الموضح إسمه و بياناته أدناه للعمل بالهيئة</p>
@@ -210,16 +273,19 @@
 
 <p style="text-align: center;"> <strong>يقرر ما يلي</strong></p>
 <p>أولا  :يعين/ EMPLOYEE  على  وظيفة  (JOB) رقمها(CODE) رمزها (NUMBER) بالمرتبة (GRADE) بالدرجةDEGREE براتب شهري قدره(BASICSALAIRE) ريال بهيئة التحقيق و الإدعاء العام مقر الوظيفة (المقر الرئيس)</p>
-<p>ثانيا :يعتبر تعينه من مباشرة للعمل</p>
+<p>ثانيا:: لا يصرف له راتب شهر وفقا للمادة (٤٥) من لائحة الحقوق و المزايا المالية</p>
+<p>ثالثا : يعتبر تحت التجربة لمدة سنة</p>
 <p>رابعا : يطوى قيده من وظيفتة السابقة(job)رقمها (code) بالدرجة(degree)و راتبها (basicsalaire) ريال مقرها (..................) إعتبارا من تاريخ مباشرته للعمل.</p>
 
-<p>خامسا:يعوض عن رصيده من اجازاته العادية وفقا للمادة رقم (..................) من نظام العمل. </p>
-<p>    سادسا:  يصرف لها مكافأة نهاية الخدمة وفقا للمادتين (..................) من نظام العمل</p>
+<p>خامسا:يعوض عن رصيده من اجازاته العادية وفقا للمادة رقم (١١١) من نظام العمل. </p>
+<p>    سادسا:  يصرف لها مكافأة نهاية الخدمة وفقا للمادتين (٢ و ٨٤) من نظام العمل</p>
 <p> سابعا: عدم تمكينه من المباشرة إلى بعد التأكد من تعديل مهنته.
 
 </p>
 <p>ثامنا:وبلغ هذا القرار لمن يلزم لإنفاذه</p>
-
+ <p></p> 
+  <p style="text-align: left;"><strong>
+			 رئيس هيئة التحقيق و الإدعاء العام </strong></p> 
             ]]></field>
 		</record>
 		<record id="data_decision_type7" model="hr.decision.type">
@@ -255,16 +321,18 @@
 		<record id="data_decision_type8" model="hr.decision.type">
 			<field name="name"> قرارتعين مستخدم وفي قيده وظيفة عامل</field>
 			<field name="text"><![CDATA[
+					<p> إدارة الموارد البشرية/التوظيف</p>
 			<p>قرار إداري رقم
 			 (NUMERO)و تاريخ  DATE</p>
 			<p style="text-align: center;"><strong>
 			 
 			 رقم الهوية
 			 CARTEID </strong></p>
-<p><strong>إن رئيس هيئة التحقيق و الإدعاء العام</strong></p>
+<p><strong>إن مدير عام الشؤون الإدارية والمالية</strong></p>
 <p>بناء على صلاحيات الممنوحة له</p>
-<p>و اشارة إلى خطاب  وزير الخدمة المدنية رقم(..................) وتاريخ(..................) المتضمن ترشيح الموضح إسمه و بياناته أدناه للعمل بالهيئة</p>
-<p>و استناد إلى مقتضيات نظام الخدمة المدنية  و لائحة التنفيذية و لموافقتنا على ذلك.</p>
+<p>و اشارة إلى خطاب رئيسفرع الهيئة بمنطقة (.......) رقم (.......) و تاريخ (.......) المتضمن طلب تعين العامل على بند الأجور  فئة() الموضح-
+ إسمه أدناه على وظيفة مستخدم ولتوفر المؤهلات المطلوبة  لديه ولتأييد رئيسه </p>
+<p> و إستنادا إلى لائحة المستخدمين ولموافقة معالي  رئيس  الهيئة على ذلك.</p>
 
 
 <p style="text-align: center;"> <strong>يقرر ما يلي</strong></p>
@@ -288,20 +356,30 @@
 		<record id="data_decision_type9" model="hr.decision.type">
 			<field name="name"> قرارتحسين وضع  و مباشرة على بند الأجور</field>
 			<field name="text"><![CDATA[
-			<p>قرار إداري رقم
-			 (NUMERO)و تاريخ  DATE</p>
-			<p style="text-align: center;"><strong>
+				<p> إدارة الموارد البشرية/التوظيف</p>
+				<p style="text-align: center;"><strong>
 			 
 			 رقم الهوية
 			 CARTEID </strong></p>
+			 	<p style="text-align: center;">
+			(........) رقم التامين الاجتماعي
+			 
+			 </p>
+			 <p style="text-align: center;">
+			-رقم إشتراك الجهة في المؤسسة العامة للتامينات الاجتماعية الرقم(.............)
+			 </p>
+			 <p>قرار إداري رقم
+			 (NUMERO)و تاريخ  DATE</p>
+			 <p>الاسم: EMPLOYEE </p>	
+		<p>تاريخ الميلاد:BIRTHDAY</p>
 <p><strong>إن رئيس هيئة التحقيق و الإدعاء العام</strong></p>
 <p>بناء على صلاحيات الممنوحة له</p>
-<p>و اشارة إلى خطاب  وزير الخدمة المدنية رقم(..................) وتاريخ(..................) المتضمن ترشيح الموضح إسمه و بياناته أدناه للعمل بالهيئة</p>
-<p>و استناد إلى مقتضيات نظام الخدمة المدنية  و لائحة التنفيذية و لموافقتنا على ذلك.</p>
+<p>و اشارة إلى خطاب رئيسفرع الهيئة بمنطقة (.......) رقم (.......) و تاريخ (.......) المتضمن طلب تحسين الوضع الوظيفي للموضح إسمه و هويته أعلاه  على(.....)ولتوفر الشروط  لديه و عملا بأحكام نظام العمل</p>
+<p> و إستنادا إلى لائحة المعينين على بند الأجور  ولموافقة معالي  رئيس  الهيئة على ذلك.</p>
 
 
 <p style="text-align: center;"> <strong>يقرر ما يلي</strong></p>
-<p>أولا  :يعين/ EMPLOYEE  على  وظيفة (job)رقمها (code) بالدرجة(degree)و راتبها (basicsalaire) ريال بهيئة التحقيق و الإدعاء العام مقر الوظيفة (المقر الرئيس)</p>
+<p>أولا :يعين/ EMPLOYEE على وظيفةعامل بند أجور  (job) رقمها(code) بفرع الهيئة بمنطقة (......)   بمسمى (......) degree بأجر شهري قدره(basicsalaire) ريا</p>
 <p>ثانيا :يعتبر تعينه من مباشرة للعمل</p>
           <p>ثانيا : يطوى قيده من وظيفة عامل بند أجور (JOB) رقمها(CODE) رمزها (NUMBER) بالمرتبة (GRADE) بالدرجةDEGREE براتب شهري قدره(BASICSALAIRE) ريال مقرها (..................) إعتبارا من تاريخ مباشرته للعمل. </p>
           <p>رابعا : يوبلغ هذا القرار لمن يلزم لإنفاذه</p>
@@ -315,6 +393,7 @@
 		<record id="data_decision_type10" model="hr.decision.type">
 			<field name="name">قرار إنهاء خدمة لبلوغ سن النظامي للتقاعد</field>
 			<field name="text"><![CDATA[
+				<p> إدارة الموارد البشرية</p>
 			<p>قرار إداري رقم
 			 (NUMERO)و تاريخ  DATE</p>
 			<p style="text-align: center;"><strong>
@@ -3063,8 +3142,8 @@ ORDERDAT
             ]]></field>
 
 		</record>
-		
-	
+
+
 		<record id="data_exceptionnel_leave_direct" model="hr.decision.type">
 			<field name="name"> قرار مباشرة عودة بعد قرار إجازة استثنائية</field>
 			<field name="text"><![CDATA[ 
@@ -3125,7 +3204,7 @@ ORDERDAT
 			   ]]></field>
 
 		</record>
-		
+
 		<record id="data_leave_satisfactory_direct" model="hr.decision.type">
 			<field name="name"> قرار مباشرة عودة بعد إجازة مرضية</field>
 			<field name="text"><![CDATA[ 
@@ -3186,7 +3265,7 @@ ORDERDAT
 			   ]]></field>
 
 		</record>
-		
+
 		<record id="data_leave_escort_direct" model="hr.decision.type">
 			<field name="name"> قرار مباشرة عودة بعد إجازة مرافقة</field>
 			<field name="text"><![CDATA[ 
@@ -3247,7 +3326,7 @@ ORDERDAT
 			   ]]></field>
 
 		</record>
-		
+
 		<record id="data_leave_sport_direct" model="hr.decision.type">
 			<field name="name"> قرار مباشرة عودة بعد إجازة رياضية</field>
 			<field name="text"><![CDATA[ 
@@ -3308,7 +3387,7 @@ ORDERDAT
 			   ]]></field>
 
 		</record>
-		
+
 		<record id="data_data_hr_holiday_status_study_direct" model="hr.decision.type">
 			<field name="name"> قرار مباشرة عودة بعد إجازة دراسية</field>
 			<field name="text"><![CDATA[ 
@@ -3369,8 +3448,9 @@ ORDERDAT
 			   ]]></field>
 
 		</record>
-		
-		<record id="data_data_hr_holiday_status_legal_absent_direct" model="hr.decision.type">
+
+		<record id="data_data_hr_holiday_status_legal_absent_direct"
+			model="hr.decision.type">
 			<field name="name"> قرار مباشرة عودة بعد إجازة غياب بعذر</field>
 			<field name="text"><![CDATA[ 
 				<p>
@@ -3430,8 +3510,9 @@ ORDERDAT
 			   ]]></field>
 
 		</record>
-		
-		<record id="data_data_hr_holiday_status_compelling_direct" model="hr.decision.type">
+
+		<record id="data_data_hr_holiday_status_compelling_direct"
+			model="hr.decision.type">
 			<field name="name"> قرار مباشرة عودة بعد إجازة اضطرارية</field>
 			<field name="text"><![CDATA[ 
 				<p>
@@ -3491,9 +3572,11 @@ ORDERDAT
 			   ]]></field>
 
 		</record>
-		
-		<record id="data_data_hr_holiday_status_exceptional_accompaniment_direct" model="hr.decision.type">
-			<field name="name"> قرار مباشرة عودة بعد إجازة استثنائية للمرافقة</field>
+
+		<record id="data_data_hr_holiday_status_exceptional_accompaniment_direct"
+			model="hr.decision.type">
+			<field name="name"> قرار مباشرة عودة بعد إجازة استثنائية للمرافقة
+			</field>
 			<field name="text"><![CDATA[ 
 				<p>
 			شؤون الموظفين/الرواتب و الإجازات
@@ -3552,7 +3635,7 @@ ORDERDAT
 			   ]]></field>
 
 		</record>
-		
+
 		<record id="data_data_hr_holiday_status_adoption_direct" model="hr.decision.type">
 			<field name="name"> قرار مباشرة عودة بعد إجازة حضانة</field>
 			<field name="text"><![CDATA[ 
@@ -3613,7 +3696,7 @@ ORDERDAT
 			   ]]></field>
 
 		</record>
-		
+
 		<record id="data_data_hr_holiday_child_birth_dad_direct" model="hr.decision.type">
 			<field name="name"> قرار مباشرة عودة بعد إجازة المولود</field>
 			<field name="text"><![CDATA[ 
@@ -3674,7 +3757,7 @@ ORDERDAT
 			   ]]></field>
 
 		</record>
-		
+
 		<record id="data_data_hr_holiday_status_rescue_direct" model="hr.decision.type">
 			<field name="name"> قرار مباشرة عودة بعد إجازة اغاثة</field>
 			<field name="text"><![CDATA[ 
@@ -3735,7 +3818,7 @@ ORDERDAT
 			   ]]></field>
 
 		</record>
-		
+
 		<record id="data_data_hr_holiday_death_direct" model="hr.decision.type">
 			<field name="name"> قرار مباشرة عودة بعد إجازة وفاة</field>
 			<field name="text"><![CDATA[ 
@@ -3796,7 +3879,7 @@ ORDERDAT
 			   ]]></field>
 
 		</record>
-		
+
 		<record id="data_data_hr_holiday_dialysis_direct" model="hr.decision.type">
 			<field name="name"> قرار مباشرة عودة بعد إجازة غسيل كلى</field>
 			<field name="text"><![CDATA[ 
@@ -3857,9 +3940,9 @@ ORDERDAT
 			   ]]></field>
 
 		</record>
-		
+
 		<record id="data_data_hr_holiday_literaty_direct" model="hr.decision.type">
-			<field name="name"> قرار مباشرة عودة بعد  إجازة أدبيّة</field>
+			<field name="name"> قرار مباشرة عودة بعد إجازة أدبيّة</field>
 			<field name="text"><![CDATA[ 
 				<p>
 			شؤون الموظفين/الرواتب و الإجازات
@@ -3978,9 +4061,10 @@ ORDERDAT
 			   ]]></field>
 
 		</record>
-		
-		<record id="data_data_hr_holiday_status_contractor_direct" model="hr.decision.type">
-			<field name="name"> قرار مباشرة عودة بعد  إجازة ا‫لمتعاقدون
+
+		<record id="data_data_hr_holiday_status_contractor_direct"
+			model="hr.decision.type">
+			<field name="name"> قرار مباشرة عودة بعد إجازة ا‫لمتعاقدون
 			</field>
 			<field name="text"><![CDATA[ 
 				<p>
@@ -4040,7 +4124,7 @@ ORDERDAT
 			   ]]></field>
 
 		</record>
-		
+
 		<record id="data_leave_motherhood_direct" model="hr.decision.type">
 			<field name="name"> قرار مباشرة عودة بعد إجازة الأمومة</field>
 			<field name="text"><![CDATA[ 
@@ -4102,8 +4186,9 @@ ORDERDAT
 			   ]]></field>
 
 		</record>
-		
-		<record id="data_data_hr_holiday_status_childbirth_direct" model="hr.decision.type">
+
+		<record id="data_data_hr_holiday_status_childbirth_direct"
+			model="hr.decision.type">
 			<field name="name"> قرار مباشرة عودة بعد إجازة وضع</field>
 			<field name="text"><![CDATA[ 
 				<p>
@@ -4163,9 +4248,9 @@ ORDERDAT
 			   ]]></field>
 
 		</record>
-		
-		
-		
+
+
+
 	</data>
 </openerp>
 		

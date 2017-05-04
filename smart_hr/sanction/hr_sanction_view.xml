@@ -29,10 +29,10 @@
 					<field name="employee_id" />
 					<field name="type_sanction" invisible="1" />
 					<field name="state_sanction" invisible="1" />
-						<field name="name" invisible="1" />
-							<field name="order_date" invisible="1" />
-								<field name="raison" invisible="1" />
-							
+					<field name="name" invisible="1" />
+					<field name="order_date" invisible="1" />
+					<field name="raison" invisible="1" />
+
 					<field name="days_number" />
 					<field name="amount" />
 					<field name="mast" />
@@ -54,8 +54,10 @@
 							<field name="name" />
 							<field name="code" />
 							<field name="deduction" />
-							<field name="min_grade_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-							<field name="max_grade_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+							<field name="min_grade_id"
+								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+							<field name="max_grade_id"
+								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 						</group>
 						<group string="المخطط‬‫ الانسيابي‬">
 							<field name="sanction_manager" />
@@ -108,8 +110,7 @@
 							states="waiting" groups="smart_hr.group_responsable_sanction"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
-							type="action"
-							states="waiting" groups="smart_hr.group_responsable_sanction"
+							type="action" states="waiting" groups="smart_hr.group_responsable_sanction"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_extern" string="موافق" type="object"
@@ -117,15 +118,14 @@
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 
-	<button name="%(action_hr_refuse_wizard)d" string="رفض"
-							type="action"
-							states="extern" groups="smart_hr.group_responsable_sanction"
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" states="extern" groups="smart_hr.group_responsable_sanction"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
 						<button name="action_update" string="موافق" type="object"
 							states="update" groups="smart_hr.group_third_party_sanction"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-							
+
 
 						<button name="action_cancel" context="{'operation': 'cancel'}"
 							string="إلغاء" type="object" states="done"
@@ -134,12 +134,12 @@
 
 
 
-						<button name="button_deprivation_premium_sanction" string="معاينة القرار"  
+						<button name="button_deprivation_premium_sanction" string="معاينة القرار"
 							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
-							
-							<button name="%(report_hr_deprivation_premium_report)d" string="قائمة المشمولين بالعقوبة"
-							type="action" states="done" />
-							
+
+						<button name="%(report_hr_deprivation_premium_report)d"
+							string="قائمة المشمولين بالعقوبة" type="action" states="done" />
+
 
 
 						<field name="state" widget="statusbar" statusbar_visible="draft,waiting,extern,done" />
@@ -148,16 +148,19 @@
 					<sheet>
 						<group>
 							<group>
-							<field name="type_sanction"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+								<field name="type_sanction"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 								<field name="date_sanction_start" />
 								<field name="date_sanction_end"
 									attrs="{'invisible':[('state', 'not in', ['cancel'])] ,'readonly':[('state', 'in', ['cancel'])]}" />
-								
+
 							</group>
 							<group>
-							<field name="name" attrs="{'invisible':[('state', 'not in', ['done','cancel'])]}" />
-								<field name="order_date" attrs="{'invisible':[('state', 'not in', ['done','cancel'])]}"  />
-								<!-- <field name="order_picture" filename="order_picture_name" /> -->	
+								<field name="name"
+									attrs="{'invisible':[('state', 'not in', ['done','cancel'])]}" />
+								<field name="order_date"
+									attrs="{'invisible':[('state', 'not in', ['done','cancel'])]}" />
+								<!-- <field name="order_picture" filename="order_picture_name" /> -->
 							</group>
 							<group>
 								<field name="number_sanction"
@@ -170,7 +173,7 @@
 								<field name="order_picture_name" invisible="1" />
 								<field name="file_sanction_name" invisible="1" />
 								<field name="decission_id" invisible="1" />
-								
+
 							</group>
 						</group>
 
@@ -180,32 +183,35 @@
 									<group>
 										<field name="line_ids" nolabel="1">
 											<tree editable="bottom">
-												<field name="employee_id"   options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+												<field name="employee_id"
+													options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 												<field name="type_sanction" invisible="1" />
 												<field name="state_sanction" invisible="1" />
-												<field name="days_number" />
-												<field name="amount" />
-												
-												<field name="mast" readonly="1" invisible="1"/>
+												<field name="days_number"
+													attrs="{'readonly':[('type_sanction','=', %(data_hr_sanction_type_grade)d,)]}" />
+												<field name="amount"
+													attrs="{'readonly':[('type_sanction','=', %(data_hr_sanction_type_grade)d,)]}" />
+
+												<field name="mast" readonly="1" invisible="1" />
 												<field name="days_difference" readonly="1" />
-												<field name="amount_difference" readonly="1"  />
-												
-												<field name="deduction"  readonly="1" string="تم الحسم"/>
+												<field name="amount_difference" readonly="1" />
+
+												<field name="deduction" readonly="1" string="تم الحسم" />
 												<field name="raison" />
 												<field name="state" />
 												<button
 													name="%(smart_hr.action_wizard_sanction_action_exclusion)d"
 													type="action" string="إستبعاد" icon="STOCK_CANCEL"
-													attrs="{'invisible':[('state_sanction','!=','done')]}" 
+													attrs="{'invisible':[('state_sanction','!=','done')]}"
 													context="{'action':'exclusion'}" />
 												<button name="%(smart_hr.action_wizard_sanction_action_update)d"
-													type="action" string="تعديل" icon="fa-refresh" 
+													type="action" string="تعديل" icon="fa-refresh"
 													attrs="{'invisible':[('state_sanction','!=','done')]}"
 													context="{'action':'update'}" />
-													
-													
-														<field name="name" invisible="1"/>
-					<field name="order_date"  invisible="1"/>
+
+
+												<field name="name" invisible="1" />
+												<field name="order_date" invisible="1" />
 											</tree>
 										</field>
 									</group>
@@ -230,7 +236,7 @@
 						</group>
 						<field name="sanction_text" />
 					</sheet>
-<div>
+					<div>
 						<field name="message_ids" widget="mail_thread" readonly="1" />
 					</div>
 				</form>
