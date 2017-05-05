@@ -1,19 +1,11 @@
 # -*- coding: utf-8 -*-
 
 
-from openerp import models, fields, api, tools, _
-import openerp.addons.decimal_precision as dp
-from datetime import datetime
+from openerp import models, fields, api
 from datetime import timedelta
 from dateutil.relativedelta import relativedelta
 from openerp.addons.smart_base.util.time_util import days_between
 from openerp.addons.smart_base.util.umalqurra import *
-from umalqurra.hijri_date import HijriDate
-from umalqurra.hijri import Umalqurra
-from tempfile import TemporaryFile
-import base64
-from openerp.exceptions import UserError
-from openerp.exceptions import ValidationError
 
 
 class HrPayslip(models.Model):
@@ -25,40 +17,38 @@ class HrPayslip(models.Model):
 
         line_ids = []
         #  حسم‬  الغياب‬ يكون‬ من‬  جميع البدلات . و  الراتب‬ الأساسي للموظفين‬ الرسميين‬ والمستخدمين
-        abscence_ids = self.env['hr.employee.absence.days'].search([('deduction', '=', False),
-                                                                    ('employee_id', '=', self.employee_id.id),
-                                                                    ('request_id.state', '=', 'done')
-                                                                    ])
-        salary_grid, basic_salary = self.employee_id.get_salary_grid_id(self.date_from)
-        tot_number_request = 0
+        abscence_ids = self.env['hr.employee.absence.detail'].search([('is_paied', '=', False),
+                                                                      ('absence_days_id.employee_id', '=', self.employee_id.id),
+                                                                      ('absence_days_id.request_id.state', '=', 'done')
+                                                                      ])
+
+        number_of_days = 0
+        amount_basic_salary = 0.0
+        retirement_amount = 0.0
         for line in abscence_ids:
-            amount = (basic_salary + allowance_total) / 30.0 * line.number_request
-            vals = {'name': 'غياب بدون عذر',
-                    'employee_id': line.employee_id.id,
-                    'number_of_days': line.number_request,
-                    'number_of_hours': 0.0,
-                    'amount': -1 * amount,
-                    'category': 'deduction',
-                    'type': 'absence',
-                    'model_name': 'hr.employee.absence.days',
-                    'object_id': line.id}
-            line_ids.append(vals)
-            tot_number_request += line.number_request
+            salary_grid, basic_salary = self.employee_id.get_salary_grid_id(line.date)
+            amount_basic_salary += (basic_salary + allowance_total) / 30.0
+            retirement_amount += basic_salary * salary_grid.retirement / 100.0 / 30.0
+            number_of_days += 1
+
         if abscence_ids:
             self.abscence_ids = abscence_ids.ids
-        # فرق التقاعد: غياب بدون عذر
-        if tot_number_request:
-            retirement_amount = basic_salary * salary_grid.retirement / 100.0 / 30.0 * tot_number_request
+            vals = {'name': 'غياب بدون عذر',
+                    'employee_id': self.employee_id.id,
+                    'number_of_days': number_of_days,
+                    'number_of_hours': 0.0,
+                    'amount': -1 * amount_basic_salary,
+                    'category': 'deduction',
+                    'type': 'absence'}
+            line_ids.append(vals)
             if retirement_amount != 0:
                 vals = {'name': 'فرق التقاعد: غياب بدون عذر',
                         'employee_id': self.employee_id.id,
-                        'number_of_days': tot_number_request,
+                        'number_of_days': number_of_days,
                         'number_of_hours': 0.0,
                         'amount': retirement_amount,
                         'category': 'deduction',
-                        'type': 'absence',
-                        'model_name': 'hr.employee.absence.days',
-                        'object_id': line.id}
+                        'type': 'absence'}
                 line_ids.append(vals)
 
         # حسم‬  التأخير يكون‬ من‬  الراتب‬ الأساسي فقط
@@ -992,7 +982,7 @@ class HrPayslip(models.Model):
                 number_of_days = days_between(date_from_s, date_to_s)
                 if number_of_days > 1:
                     all_suspensions.append({'employee_id': suspension.employee_id.id,
-                                            'res_id': suspension.id, 'res_id': suspension.id,'sup_end_res_id': suspension.suspension_end_id.id,
+                                            'res_id': suspension.id, 'res_id': suspension.id, 'sup_end_res_id': suspension.suspension_end_id.id,
                                             'date_from': date_from_s, 'date_to': date_to_s,
                                             'number_of_days': number_of_days, 'return': True})
 
@@ -1020,7 +1010,7 @@ class HrPayslip(models.Model):
                 date_to_s = date_to
                 number_of_days = days_between(date_from_s, date_to)
                 if number_of_days > 1:
-                    all_suspensions.append({'employee_id': suspension.employee_id.id,# 'res_id': suspension.id, dont add it again
+                    all_suspensions.append({'employee_id': suspension.employee_id.id,  # 'res_id': suspension.id, dont add it again
                                             'date_from': date_from_s, 'date_to': date_to_s,
                                             'number_of_days': number_of_days, 'return': True})
                 # 2 - إرجاع فترة الكف
@@ -1030,7 +1020,7 @@ class HrPayslip(models.Model):
                     number_of_days = days_between(date_from_s, date_to_s)
                     if number_of_days > 1:
                         all_suspensions.append(
-                            {'employee_id': suspension.employee_id.id,# 'res_id': suspension.id, dont add it again
+                            {'employee_id': suspension.employee_id.id,  # 'res_id': suspension.id, dont add it again
                              'date_from': date_from_s, 'date_to': date_to_s,
                              'number_of_days': number_of_days, 'return': True})
 
@@ -1057,7 +1047,7 @@ class HrPayslip(models.Model):
                     res = self.env['hr.smart.utils'].compute_duration_difference(employee_id, date_start, date_stop, True, True, True)
             # إذا فيه إرجاع لازم يتم إرجاع كامل الفترة
             else:
-                res = self.env['hr.smart.utils'].compute_duration_difference(employee_id, suspension_date_from, suspension_date_to, True,True, True,False)
+                res = self.env['hr.smart.utils'].compute_duration_difference(employee_id, suspension_date_from, suspension_date_to, True, True, True, False)
             amount = 0.0
             allowance_amount = 0.0
             multiplication = -1.0
@@ -1076,7 +1066,7 @@ class HrPayslip(models.Model):
                     allowance_amount += allowance['amount'] / 30.0 * days
             # فرق الراتب الأساسي كف اليد
             if amount:
-                val = {'name': u'%s فرق الراتب الأساسي كف اليد %s'%(operation_name,name),
+                val = {'name': u'%s فرق الراتب الأساسي كف اليد %s' % (operation_name,name),
                        'employee_id': employee.id,
                        'number_of_days': duration_in_month,
                        'number_of_hours': 0.0,
@@ -1186,7 +1176,7 @@ class HrPayslip(models.Model):
                     if grid_id:
                         amount = (basic_salary / 30.0) * sum_days
                         if amount != 0.0:
-                            vals = {'name': termination.termination_type_id.name + " " + u'رصيد إجازة'  + name,
+                            vals = {'name': termination.termination_type_id.name + " " + u'رصيد إجازة' + name,
                                     'employee_id': termination.employee_id.id,
                                     'number_of_days': sum_days,
                                     'number_of_hours': 0.0,
@@ -1194,4 +1184,3 @@ class HrPayslip(models.Model):
                                     'type': 'termination'}
                             line_ids.append(vals)
         return line_ids
-

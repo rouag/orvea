@@ -112,7 +112,7 @@ class HrEmployeeDelayHours(models.Model):
 
     name = fields.Char(string='التسلسل', readonly=1)
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', domain=[('employee_state', '=', 'employee')],
-                                  resquired=1)
+                                  required=1)
     number_request = fields.Integer(string='عدد الايام المراد تحويلها', required=1)
     balance = fields.Float(string='الرصيد الحالي(ساعات)', readonly=1)
     request_id = fields.Many2one('hr.request.transfer.delay.hours')
@@ -177,14 +177,6 @@ class HrRequestTransferAbsence(models.Model):
                               ('done', u'اعتماد'),
                               ('refuse', u'رفض'),
                               ], string='الحالة', readonly=1, default='dm')
-    department_level1_id = fields.Many2one('hr.department', string='الفرع', readonly=1,
-                                           states={'dm': [('readonly', 0)]})
-    department_level2_id = fields.Many2one('hr.department', string='القسم', readonly=1,
-                                           states={'dm': [('readonly', 0)]})
-    department_level3_id = fields.Many2one('hr.department', string='الشعبة', readonly=1,
-                                           states={'dm': [('readonly', 0)]})
-    salary_grid_type_id = fields.Many2one('salary.grid.type', string='الصنف', readonly=1,
-                                          states={'dm': [('readonly', 0)]}, )
     speech_source = fields.Char(string=u'مصدر الخطاب')
     num_speech = fields.Char(string=u'رقم الخطاب الصادر')
     date_speech = fields.Date(string=u'تاريخ الخطاب الصادر')
@@ -262,53 +254,16 @@ class HrEmployeeAbsenceDays(models.Model):
 
     name = fields.Char(string='التسلسل', readonly=1)
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', domain=[('employee_state', '=', 'employee')],
-                                  resquired=1)
+                                  required=1)
     number_request = fields.Integer(string='عدد الايام التي تم تحويلها', compute="_get_number_request", readonly=1)
     balance = fields.Float(string='الرصيد الحالي(ايام)', readonly=1)
     request_id = fields.Many2one('hr.request.transfer.absence')
     line_ids = fields.One2many('hr.employee.absence.detail', 'absence_days_id', string='أيام الغياب')
-    deduction = fields.Boolean(string='is deducted', default=False)
 
     @api.onchange('employee_id')
     def onchange_employee_id(self):
-        dapartment_obj = self.env['hr.department']
-        employee_obj = self.env['hr.employee']
-        department_level1_id = self.request_id.department_level1_id and self.request_id.department_level1_id.id or False
-        department_level2_id = self.request_id.department_level2_id and self.request_id.department_level2_id.id or False
-        department_level3_id = self.request_id.department_level3_id and self.request_id.department_level3_id.id or False
-        employee_ids = []
-        dapartment_id = False
-        if department_level3_id:
-            dapartment_id = department_level3_id
-        elif department_level2_id:
-            dapartment_id = department_level2_id
-        elif department_level1_id:
-            dapartment_id = department_level1_id
-        if dapartment_id:
-            dapartment = dapartment_obj.browse(dapartment_id)
-            employee_ids += [x.id for x in dapartment.member_ids]
-            for child in dapartment.all_child_ids:
-                employee_ids += [x.id for x in child.member_ids]
-        result = {}
-        if not employee_ids:
-            # get all employee
-            employee_ids = employee_obj.search([('employee_state', '=', 'employee')]).ids
-        # filter by type
-        if self.request_id.salary_grid_type_id:
-            employee_ids = employee_obj.search(
-                [('id', 'in', employee_ids), ('type_id', '=', self.request_id.salary_grid_type_id.id)]).ids
-        result.update({'domain': {'employee_id': [('id', 'in', employee_ids)]}})
         if self.employee_id:
             self.balance = self.employee_id.absence_balance
-            # get all days
-            lines = []
-            attendances = self.env['hr.attendance.summary'].search([('employee_id', '=', self.employee_id.id),
-                                                                    ('deduction', '=', False)])
-            for attendance in attendances:
-                lines.append({'date': attendance.date, 'attendance_summary_id': attendance.id,'absence_days_id': self.id })
-
-            self.line_ids = lines
-        return result
 
     @api.multi
     def action_deduction_all(self):
@@ -318,7 +273,23 @@ class HrEmployeeAbsenceDays(models.Model):
     @api.multi
     def action_open_line(self):
         self.ensure_one()
-        print  '-------self.id',self.id
+        if not self.line_ids:
+            lines = []
+            attendances = self.env['hr.attendance.summary'].search([('employee_id', '=', self.employee_id.id), ('deduction', '=', False)])
+            for attendance in attendances:
+                lines.append({'date': attendance.date, 'attendance_summary_id': attendance.id})
+            self.line_ids = lines
+        return {
+            'name': _(u'ايام الغياب بدون عذر '),
+            'view_type': 'form',
+            'view_mode': 'form',
+            'res_model': 'hr.employee.absence.days',
+            'view_id': self.env.ref('smart_hr.hr_employee_absence_days_form').id,
+            'type': 'ir.actions.act_window',
+            'res_id': self.id,
+            'target': 'new',
+            'context':  {'readonly_by_pass': True}
+            }
 
 
 class HrEmployeeAbsenceDetail(models.Model):
@@ -327,7 +298,8 @@ class HrEmployeeAbsenceDetail(models.Model):
     absence_days_id = fields.Many2one('hr.employee.absence.days')
     attendance_summary_id = fields.Many2one('hr.attendance.summary')
     date = fields.Char(string='التاريخ')
-    deduction = fields.Boolean(string='تم الحسم')
+    deduction = fields.Boolean(string='حسم')
+    is_paied = fields.Boolean(string='تم الحسم في الرواتب')
 
     @api.multi
     def action_deduction(self):
@@ -340,8 +312,3 @@ class HrEmployeeAbsenceDetail(models.Model):
         for rec in self:
             rec.deduction = False
             rec.attendance_summary_id.deduction = False
-
-
-
-
-

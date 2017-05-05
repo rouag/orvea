@@ -294,7 +294,7 @@ class HrPayslip(models.Model):
     contraintes_ids = fields.One2many('hr.payroll.constrainte', 'payslip_id')
     operation_ids = fields.One2many('hr.payroll.operation', 'payslip_id')
     sanction_line_ids = fields.Many2many('hr.sanction.ligne')
-    abscence_ids = fields.Many2many('hr.employee.absence.days')
+    abscence_ids = fields.Many2many('hr.employee.absence.detail')
     delays_ids = fields.Many2many('hr.employee.delay.hours')
 
     @api.one
@@ -314,7 +314,7 @@ class HrPayslip(models.Model):
             rec.deduction = True
         # update abscence_ids lines
         for rec in self.abscence_ids:
-            rec.deduction = True
+            rec.is_paied = True
         # update delays_ids lines
         for rec in self.delays_ids:
             rec.deduction = True
