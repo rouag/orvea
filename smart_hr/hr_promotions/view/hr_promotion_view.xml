@@ -15,7 +15,7 @@
 							type="action" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 							states="employee_confirmed" />
 						<button name="promotion_cancel" string="الغاء" type="object"
-							attrs="{'invisible': [('done_date', '!=', False)]}" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							attrs="{'invisible': ['|', ('state', '!=' 'done'), ('done_date', '!=', False)]}" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
 							states="done"
 							groups="smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion,smart_hr.group_promotion_checker" />
 
