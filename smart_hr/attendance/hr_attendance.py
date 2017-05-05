@@ -156,7 +156,11 @@ class HrAttendanceImport(models.Model):
         return time_from, time_to, late, time_from_max, time_to_min
 
     @api.multi
-    def close_day(self,date):
+    def close_day_file(self):
+        self.close_day(self.date)
+
+    @api.multi
+    def close_day(self, date):
         u"""
             غلق اليوم يتم هنا تجميع التأخيرات والغيابات الغير مبرره والخروج المبكر والساعات الإضافية ليوم معين
           ثم يتم إنشاء نماذج لكل عنصر منها وتبقى في إنتظار الإعتماد  .لا  يحتسب تأخير أو خروج مبكر أو غياب
