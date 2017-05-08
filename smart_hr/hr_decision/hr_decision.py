@@ -168,11 +168,7 @@ class HrDecision(models.Model):
     def button_refuse(self):
         return True
 
-<<<<<<< HEAD
-    def replace_text(self, employee_id, date, decision_type_id , object_type ,args={}):
-=======
     def replace_text(self, employee_id, date, decision_type_id , object_type ,model_id= False,args={}):
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
 
         decision_text =''
         decision_type_line = self.env['hr.decision.type'].search([('id', '=', decision_type_id)])
@@ -233,11 +229,7 @@ class HrDecision(models.Model):
 
                 if object_type == 'holidays' :
 
-<<<<<<< HEAD
-                    holidays_line = self.env['hr.holidays'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)
-=======
                     holidays_line = self.env['hr.holidays'].search([('id', '=',model_id)], limit=1)
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                     if holidays_line :
                         duration = holidays_line.duration or ""
                         numero_holidays = holidays_line.num_decision or ""

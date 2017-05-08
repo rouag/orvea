@@ -146,11 +146,7 @@ class HrHolidaysExtension(models.Model):
                                                       'message': u'الرجاء مراجعة طلب اتمديد',
                                                       'user_id': self.employee_id.parent_id.user_id.id,
                                                       'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-<<<<<<< HEAD
-                                                      'notif': True,
-=======
                                                         'type':'hr_holidays_extension_type',
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                       'res_id': self.id,
                                                       'res_action':' smart_hr.action_hr_holidays_extension_form',
                                                   })
@@ -161,11 +157,7 @@ class HrHolidaysExtension(models.Model):
                                                   'message': u'الرجاء مراجعة طلب اتمديد',
                                                   'user_id': self.employee_id.user_id.id,
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-<<<<<<< HEAD
-                                                  'notif': True,
-=======
                                                   'type':'hr_holidays_extension_type',
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                   'res_id': self.id,
                                                   'res_action':' smart_hr.action_hr_holidays_extension_form',
                                                   })
@@ -192,11 +184,7 @@ class HrHolidaysExtension(models.Model):
                                                   'message': u' '+self.employee_id.name +u'لقد تم الرفض من قبل ',
                                                   'user_id': self.employee_id.user_id.id,
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-<<<<<<< HEAD
-                                                  'notif': True,
-=======
                                                   'type':'hr_holidays_extension_type',
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                   'res_id': self.id,
                                                   'res_action':' smart_hr.action_hr_holidays_extension_form',
 

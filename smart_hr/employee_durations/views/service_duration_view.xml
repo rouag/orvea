@@ -72,14 +72,10 @@
 			name="حساب مدة الخدمة" sequence="12"
 			action="action_hr_employee_service_duration" />
 
-<<<<<<< HEAD
-
-=======
 	<menuitem name="إدارة الاشعارات" id="notification_setting_setting_menu"
 			parent="hr_users_creation" sequence="16"
 			action="smart_base.ir_actions_server_notification_setting" />
 			
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
 
 
 	</data>

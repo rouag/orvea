@@ -69,11 +69,7 @@ class HrAuthorization(models.Model):
                                               'message': u"لقد تم تقديم  طلب إستئذان من طرف الموظف"+unicode(self.employee_id.user_id.id),
                                               'user_id': self.employee_id.parent_id.user_id.id,
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-<<<<<<< HEAD
-                                              'notif': True,
-=======
                                                   'type': 'hr_employee_authorization_type',
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                               'res_id': self.id,
                                              'res_action': 'smart_hr.action_hr_authorization_form'})
         self.state = 'waiting'
@@ -87,11 +83,7 @@ class HrAuthorization(models.Model):
                                               'message': u'لقد تم قبول الإستئذان',
                                               'user_id': self.employee_id.user_id.id,
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-<<<<<<< HEAD
-                                              'notif': True,
-=======
                                               'type': 'hr_employee_authorization_type',
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                               'res_id': self.id,
                                              'res_action': 'smart_hr.action_hr_authorization_form'})
         
@@ -102,11 +94,7 @@ class HrAuthorization(models.Model):
                                               'message': u'لقد تم رفض الإستئذان',
                                               'user_id': self.employee_id.user_id.id,
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
-<<<<<<< HEAD
-                                              'notif': True,
-=======
                                             'type': 'hr_employee_authorization_type',
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                               'res_id': self.id,
                                              'res_action': 'smart_hr.action_hr_authorization_form'})
 

@@ -63,11 +63,7 @@ class HrDecisionAppoint(models.Model):
     state_appoint = fields.Selection([
         ('active', u'مفعل'),
         ('close', u'مغلق'),
-<<<<<<< HEAD
-        ('refuse', u'مرفوض'),
-=======
         ('refuse', u'ملغى'),
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
         ('new', u'في الاجراء'),
     ], string=u' حالةالتعيين ', default='new', )
     state = fields.Selection([
@@ -158,13 +154,8 @@ class HrDecisionAppoint(models.Model):
             decision.text = decision.replace_text(self.employee_id, decision_date, decision_type_id, 'appoint')
             decission_id = decision.id
             self.decission_id = decission_id
-<<<<<<< HEAD
-        self.history_line_id.num_decision = self.decission_id.name
-        self.history_line_id.date_decision = self.decission_id.date
-=======
             self.history_line_id.num_decision = self.decission_id.name
             self.history_line_id.date_decision = self.decission_id.date
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
 
         return {
             'name': _(u'قرار التعيين'),
@@ -419,11 +410,7 @@ class HrDecisionAppoint(models.Model):
             title = u"' إشعار نهاية مدة التجربة'"
             msg = u"' إشعار نهاية مدة التجربة'" + unicode(line.employee_id.name) + u"'"
             group_id = self.env.ref('smart_hr.group_department_employee')
-<<<<<<< HEAD
-            self.send_test_periode_group(group_id, title, msg)
-=======
             self.send_test_periode_employee_group(group_id, title, msg)
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
 
     @api.model
     def control_test_years_employee(self):
@@ -451,11 +438,7 @@ class HrDecisionAppoint(models.Model):
                                                               DEFAULT_SERVER_DATETIME_FORMAT),
                                                           'res_id': line.id,
                                                           'res_action': 'smart_hr.action_hr_employee_form',
-<<<<<<< HEAD
-                                                          'notif': True
-=======
                                                           'type': 'hr_cron_test_years_employee_type',
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                           })
 
     def send_test_periode_group(self, group_id, title, msg):
@@ -469,9 +452,6 @@ class HrDecisionAppoint(models.Model):
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                   'res_id': self.id,
                                                   'res_action': 'smart_hr.action_hr_decision_appoint',
-<<<<<<< HEAD
-                                                  'notif': True
-=======
                                                    'type': 'hr_employee_appoint_type',
                                                   })
             
@@ -488,7 +468,6 @@ class HrDecisionAppoint(models.Model):
                                                   'res_id': self.id,
                                                   'res_action': 'smart_hr.action_hr_decision_appoint',
                                                    'type': 'hr_cron_test_periode_employee_type',
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                   })
 
         #     @api.model
@@ -656,11 +635,7 @@ class HrDecisionAppoint(models.Model):
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                   'res_id': self.id,
                                                   'res_action': 'smart_hr.action_hr_decision_appoint',
-<<<<<<< HEAD
-                                                  'notif': True
-=======
                                                    'type': 'hr_employee_appoint_type',
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                   })
 
     def send_notification_to_group(self, group_id):
@@ -674,11 +649,7 @@ class HrDecisionAppoint(models.Model):
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                   'res_id': self.id,
                                                   'res_action': 'smart_hr.action_hr_decision_appoint',
-<<<<<<< HEAD
-                                                  'notif': True
-=======
                                                    'type': 'hr_employee_appoint_type',
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                   })
 
     @api.onchange('employee_id')

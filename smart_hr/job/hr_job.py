@@ -318,11 +318,7 @@ class HrJobCreate(models.Model):
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                               'res_id': self.id,
                                               'res_action': 'smart_hr.action_hr_job_create',
-<<<<<<< HEAD
-                                              'notif': True
-=======
                                               'type': 'hr_employee_job_create_type',
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                               })
     @api.multi
     def button_refuse_waiting(self):
@@ -339,11 +335,7 @@ class HrJobCreate(models.Model):
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                               'res_id': self.id,
                                               'res_action': 'smart_hr.action_hr_job_create',
-<<<<<<< HEAD
-                                              'notif': True
-=======
                                               'type': 'hr_employee_job_create_type',
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                               })
 
 
@@ -621,11 +613,7 @@ class HrJobStripFrom(models.Model):
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                               'res_id': self.id,
                                               'res_action': 'smart_hr.action_hr_job_strip_from',
-<<<<<<< HEAD
-=======
                                                'type': 'hr_employee_hr_job_strip_type',
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
-                                              'notif': True
                                               })
 
     def check_workflow_state(self, state):
@@ -827,11 +815,7 @@ class HrJobStripTo(models.Model):
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                               'res_id': self.id,
                                               'res_action': 'smart_hr.action_hr_job_strip_to',
-<<<<<<< HEAD
-                                              'notif': True
-=======
                                             'type': 'hr_employee_hr_job_strip_type',
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                               })
 
     def check_workflow_state(self, state):
@@ -944,12 +928,8 @@ class HrJobCancel(models.Model):
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                               'res_model': 'hr.job.cancel',
                                               'res_id': self.id,
-<<<<<<< HEAD
-                                              'res_action': 'smart_hr.action_hr_job_cancel'})
-=======
                                               'res_action': 'smart_hr.action_hr_job_cancel',
                                               'type': 'hr_employee_hr_job_cancel_type'})
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
         # Add to log
         user = self.env['res.users'].browse(self._uid)
         self.message_post(u"تم رفض الطلب من قبل '" + unicode(user.name) + u"'")
@@ -960,11 +940,7 @@ class HrJobCancel(models.Model):
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                               'res_id': self.id,
                                               'res_action': 'smart_hr.action_hr_job_cancel',
-<<<<<<< HEAD
-                                              'notif': True
-=======
                                             'type': 'hr_employee_hr_job_cancel_type'
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                               })
 
 
@@ -1126,11 +1102,7 @@ class HrJobMoveDeparrtment(models.Model):
                                                           DEFAULT_SERVER_DATETIME_FORMAT),
                                                       'res_id': self.id,
                                                       'res_action': 'smart_hr.action_hr_job_move_department',
-<<<<<<< HEAD
-                                                      'notif': True
-=======
                                                       'type': 'hr_employee_hr_job_move_type',
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                       })
 
     @api.multi
@@ -1175,11 +1147,7 @@ class HrJobMoveDeparrtment(models.Model):
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                   'res_id': self.id,
                                                   'res_action': 'smart_hr.action_hr_job_move_department',
-<<<<<<< HEAD
-                                                  'notif': True
-=======
                                                   'type': 'hr_employee_hr_job_move_type',
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                   })
 
 
@@ -1377,11 +1345,7 @@ class HrJobMoveGrade(models.Model):
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                   'res_id': self.id,
                                                   'res_action': action_name,
-<<<<<<< HEAD
-                                                  'notif': True
-=======
                                                   'type': 'hr_employee_hr_job_scal_down_grade_type',
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                   })
         if self.state == 'budget_external':
             group_id = self.env.ref('smart_hr.group_hr_personnel_officer_jobs')
@@ -1399,11 +1363,7 @@ class HrJobMoveGrade(models.Model):
                                                           DEFAULT_SERVER_DATETIME_FORMAT),
                                                       'res_id': self.id,
                                                       'res_action': action_name,
-<<<<<<< HEAD
-                                                      'notif': True
-=======
                                                        'type': 'hr_employee_hr_job_scal_down_grade_type',
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                       })
         self.state = 'refused'
 
@@ -1432,11 +1392,7 @@ class HrJobMoveGrade(models.Model):
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                   'res_id': self.id,
                                                   'res_action': action_name,
-<<<<<<< HEAD
-                                                  'notif': True
-=======
                                                   'type': 'hr_employee_hr_job_scal_down_grade_type',
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                   })
 
     def check_workflow_state(self, state):
@@ -1680,11 +1636,7 @@ class HrJobMoveUpdate(models.Model):
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                   'res_id': self.id,
                                                   'res_action': 'smart_hr.action_hr_job_update',
-<<<<<<< HEAD
-                                                  'notif': True
-=======
                                                   'type': 'hr_employee_job_update_type',
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                   })
         if self.state == 'budget_external':
             group_id = self.env.ref('smart_hr.group_hr_personnel_officer_jobs')
@@ -1699,12 +1651,8 @@ class HrJobMoveUpdate(models.Model):
                                                           DEFAULT_SERVER_DATETIME_FORMAT),
                                                       'res_id': self.id,
                                                       'res_action': 'smart_hr.action_hr_job_update',
-<<<<<<< HEAD
-                                                      'notif': True
-=======
                                                        'type': 'hr_employee_job_update_type',
                                                       
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                       })
         self.state = 'refused'
 
@@ -1760,11 +1708,7 @@ class HrJobMoveUpdate(models.Model):
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                   'res_id': self.id,
                                                   'res_action': 'smart_hr.action_hr_job_update',
-<<<<<<< HEAD
-                                                  'notif': True
-=======
                                                    'type': 'hr_employee_job_update_type',
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                   })
     @api.multi
     def unlink(self):

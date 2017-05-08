@@ -18,22 +18,12 @@ class BaseNotification(models.Model):
                 vals['notif'] = notification_setting_line.notif
                 vals['email'] = notification_setting_line.email
                 vals['sms'] = notification_setting_line.sms
-<<<<<<< HEAD
-                vals['interval_between_notif'] = notification_setting_line.interval_between_notif
-        return super(BaseNotification, self).create(vals)
-    
-    @api.multi
-    def resend_notif(self):
-        self.to_read = True
-    
-=======
         return super(BaseNotification, self).create(vals)
 
     @api.multi
     def resend_notif(self):
         self.to_read = True
 
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
     def _template_notif(self):
         models_data = self.env['ir.model.data']
         template_id = models_data.get_object_reference('smart_base', 'notification_template_warning')[1]
@@ -46,10 +36,6 @@ class BaseNotification(models.Model):
     to_read = fields.Boolean(string='للتنبيه', default=True)
     res_id = fields.Integer(string='Res ID')
     res_action = fields.Char(string='action name (module_name.action_name)')
-<<<<<<< HEAD
-    interval_between_notif = fields.Integer('المدة')
-=======
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
     first_notif = fields.Boolean(string='أول تنبيه', default=True)
     notif = fields.Boolean('إشعار')
     sms = fields.Boolean('رسائل الجوال')
@@ -57,13 +43,6 @@ class BaseNotification(models.Model):
     template_id = fields.Many2one('mail.template', string='القالب')
     date_moins_que = fields.Date( method=True, string="date moins que")
     date_plus_que = fields.Date( method=True, string="date plus que")
-<<<<<<< HEAD
-    type = fields.Selection([
-        ('refuse_leave', 'رفض إجازة'),
-        ('accept_refuse', 'موافقة على إجازة'),
-        ('posting', 'تعين'),
-    ], 'النوع', default='refuse_leave')
-=======
     
     type = fields.Selection([
         ('refuse_leave', 'رفض إجازة'),
@@ -91,4 +70,3 @@ class BaseNotification(models.Model):
         ('hr_cron_commissioning_end_type', ' إشعار نهاية تكليف موظف'),
         ('posting', 'تعين'),
         ] , '  نوع الاجراء ')
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f

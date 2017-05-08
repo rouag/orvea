@@ -9,8 +9,6 @@
 				<search string="التعين">
 					<field name="employee_id" string="الموظف"
 						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
-<<<<<<< HEAD
-=======
 				<field name="type_appointment" />
 					<field name="state_appoint" />
 					<field name="is_started" />
@@ -23,8 +21,6 @@
 							context="{'group_by':'is_started'}" />
 					</group>
 				
-				
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
 				</search>
 			</field>
 		</record>
@@ -169,15 +165,9 @@
 						<button name="%(action_hr_refuse_appoint6_wizard)d" string="رفض"
 							type="action" states="civil" groups="smart_hr.group_ministry_civil"
 							icon="fa-times" class="oe_inline oe_stat_button" />
-
-<<<<<<< HEAD
-						<button name="open_decission_appoint" string="معاينة القرار"
-							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
-=======
 						<button name="open_decission_appoint" string="معاينة القرار" 
 						attrs="{'invisible':['|',('state', 'not in', ['done']),('state_appoint','not in',['new','active','close'])]}"
 							type="object"  icon="fa-print" class="oe_inline oe_stat_button" />
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
 
 						<!-- <button name="button_refuse_personnel_hr" string="رفض" type="object" 
 							states="hrm" groups="smart_hr.group_personnel_hr" icon="fa-times" class="oe_inline 

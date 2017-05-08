@@ -110,12 +110,6 @@
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 						<button name="open_decission_increase" string="معاينة  قرار العلاوة"
 							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
-<<<<<<< HEAD
-						<button name="open_decission_deprivation_increase" string="معاينة  قرار المستثنين من العلاوة"
-							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
-=======
-						
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
 						<button name="%(report_report_hr_increase_employee)d"
 							string="قائمة المشمولين بالعلاوة" type="action" states="done" />
 

@@ -268,11 +268,7 @@ class HrDeputation(models.Model):
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                   'res_id': self.id,
                                                   'res_action': 'smart_hr.action_hr_deputation',
-<<<<<<< HEAD
-                                                  'notif': True
-=======
                                                    'type': 'hr_employee_deputation_type',
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                   })
 
     def send_refuse_dep_group(self, group_id, title, msg):
@@ -286,11 +282,7 @@ class HrDeputation(models.Model):
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                   'res_id': self.id,
                                                   'res_action': 'smart_hr.action_hr_deputation',
-<<<<<<< HEAD
-                                                  'notif': True
-=======
                                                   'type': 'hr_employee_deputation_type',
->>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                   })
 
     @api.multi
