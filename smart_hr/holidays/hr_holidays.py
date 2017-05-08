@@ -166,7 +166,11 @@ class HrHolidays(models.Model):
     display_button_extend = fields.Boolean(compute='_compute_display_button_extend')
     date_holidays_to = fields.Date(string=u'تاريخ ')
     _constraints = [
+<<<<<<< HEAD
         (_check_date, 'You can not have 2 leaves that overlaps on same day!', ['date_from', 'date_to']),
+=======
+        (_check_date, 'لا يمكنك الحصول على عطلتين تتداخلان في نفس اليوم!', ['date_from', 'date_to']),
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
     ]
 
     def _is_holidays_specialist_user(self):
@@ -485,7 +489,11 @@ class HrHolidays(models.Model):
                 'date':decision_date,
                 'employee_id' :self.employee_id.id }
             decision = decision_obj.create(decission_val)
+<<<<<<< HEAD
             decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'holidays')
+=======
+            decision.text = decision.replace_text(self.employee_id,decision_date,decision_type_id,'holidays',self.id)
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
             decission_id = decision.id
             self.decission_id =  decission_id
         return {
@@ -528,7 +536,11 @@ class HrHolidays(models.Model):
                                               'message': u'لقد تم قبول الإجازة',
                                               'user_id': self.employee_id.user_id.id,
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+<<<<<<< HEAD
                                               'notif': True,
+=======
+                                              'type':'hr_holidays_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                               'res_id': self.id,
                                              'res_action': 'smart_hr.action_hr_holidays_form'})
         self.num_decision = self.env['ir.sequence'].get('hr.decision.sequence')
@@ -597,7 +609,11 @@ class HrHolidays(models.Model):
                                               'message': u'لقد تم قبول الإجازة',
                                               'user_id': self.employee_id.user_id.id,
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+<<<<<<< HEAD
                                               'notif': True,
+=======
+                                             'type':'hr_holidays_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                               'res_id': self.id,
                                              'res_action': 'smart_hr.action_hr_holidays_form'})
         self.num_decision = self.env['ir.sequence'].get('hr.decision.sequence')
@@ -714,7 +730,11 @@ class HrHolidays(models.Model):
                                               'message': u'لقد تم قبول الإجازة',
                                               'user_id': self.employee_id.user_id.id,
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+<<<<<<< HEAD
                                               'notif': True,
+=======
+                                              'type':'hr_holidays_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                               'res_id': self.id,
                                              'res_action': 'smart_hr.action_hr_holidays_form'})
         self.num_decision = self.env['ir.sequence'].get('hr.decision.sequence')
@@ -1110,7 +1130,11 @@ class HrHolidays(models.Model):
                                               'message': u"لقد تم تقديم  طلب اجازة من طرف الموظف" + unicode(self.employee_id.user_id.id),
                                               'user_id': self.employee_id.parent_id.user_id.id,
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+<<<<<<< HEAD
                                               'notif': True,
+=======
+                                              'type':'hr_holidays_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                               'res_id': self.id,
                                              'res_action': 'smart_hr.action_hr_holidays_form'})
             self.state = 'dm'
@@ -1134,7 +1158,11 @@ class HrHolidays(models.Model):
                                               'message': u'لقد تم قبول الإجازة من طرف المدير المباشر',
                                               'user_id': self.employee_id.user_id.id,
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+<<<<<<< HEAD
                                               'notif': True,
+=======
+                                             'type':'hr_holidays_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                               'res_id': self.id,
                                              'res_action': 'smart_hr.action_hr_holidays_form'})
         
@@ -1170,7 +1198,11 @@ class HrHolidays(models.Model):
                                               'message': u'لقد تم رفض الإجازة من طرف المدير المباشر',
                                               'user_id': self.employee_id.user_id.id,
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+<<<<<<< HEAD
                                               'notif': True,
+=======
+                                             'type':'hr_holidays_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                               'res_id': self.id,
                                              'res_action': 'smart_hr.action_hr_holidays_form'})
         self.state = 'refuse'
@@ -1182,7 +1214,11 @@ class HrHolidays(models.Model):
                                               'message': u'لقد تم قبول الإجازة من طرف مدقق الاجازات',
                                               'user_id': self.employee_id.user_id.id,
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+<<<<<<< HEAD
                                               'notif': True,
+=======
+                                              'type':'hr_holidays_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                               'res_id': self.id,
                                              'res_action': 'smart_hr.action_hr_holidays_form'})
  
@@ -1200,7 +1236,11 @@ class HrHolidays(models.Model):
                                               'message': u'لقد تم رفض الإجازة من طرف مدقق الاجازات',
                                               'user_id': self.employee_id.user_id.id,
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+<<<<<<< HEAD
                                               'notif': True,
+=======
+                                              'type':'hr_holidays_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                               'res_id': self.id,
                                              'res_action': 'smart_hr.action_hr_holidays_form'})
         if self.holiday_status_id.direct_director_decision:
@@ -1221,7 +1261,13 @@ class HrHolidays(models.Model):
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                               'res_id': self.id,
                                               'res_action': 'smart_hr.action_hr_holidays_form',
+<<<<<<< HEAD
                                               'notif': True})
+=======
+                                             'type':'hr_holidays_type',
+                                              
+                                              })
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
         if self.holiday_status_id.external_decision and not self.employee_id.external_decision:
             raise ValidationError(u"الموظف يحتاج إلى موافقة جهة خارجية.")
         if self.holiday_status_id.external_decision and self.employee_id.external_decision:
@@ -1237,7 +1283,12 @@ class HrHolidays(models.Model):
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                               'res_id': self.id,
                                               'res_action': 'smart_hr.action_hr_holidays_form',
+<<<<<<< HEAD
                                               'notif': True})
+=======
+                                              'type':'hr_holidays_type',
+                                              })
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
 
 
     @api.multi
@@ -1371,7 +1422,11 @@ class HrHolidays(models.Model):
                                               'message': u'لقد تم قبول الإجازة من طرف مدقق الاجازات',
                                               'user_id': self.employee_id.user_id.id,
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+<<<<<<< HEAD
                                               'notif': True,
+=======
+                                              'type':'hr_holidays_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                               'res_id': self.id,
                                               'res_action': 'smart_hr.action_hr_holidays_form'})
         # check illness holiday periode
@@ -1385,7 +1440,11 @@ class HrHolidays(models.Model):
                                               'message': u'لقد تم رفض الإجازة من طرف مدقق الاجازات',
                                               'user_id': self.employee_id.user_id.id,
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+<<<<<<< HEAD
                                              'notif': True,
+=======
+                                            'type':'hr_holidays_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                               'res_id': self.id,
                                              'res_action': 'smart_hr.action_hr_holidays_form'})
 

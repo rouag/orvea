@@ -306,7 +306,11 @@ class HrEmployeeTransfert(models.Model):
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                               'res_id': self.id,
                                               'res_action': 'smart_hr.action_hr_employee_transfert',
+<<<<<<< HEAD
                                               'notif': True
+=======
+                                                'type': 'hr_employee_transfert_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                               })
 
     @api.multi
@@ -338,7 +342,11 @@ class HrEmployeeTransfert(models.Model):
                                               'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                               'res_id': self.id,
                                               'res_action': 'smart_hr.action_hr_employee_transfert',
+<<<<<<< HEAD
                                               'notif': True
+=======
+                                               'type': 'hr_employee_transfert_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                               })
         self.refusing_date = datetime.now()
         self.state = 'refused'
@@ -448,7 +456,11 @@ class HrEmployeeTransfert(models.Model):
                                                       'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                       'res_id': rec.id,
                                                       'res_action': 'smart_hr.action_hr_employee_transfert',
+<<<<<<< HEAD
                                                       'notif': True
+=======
+                                                     'type': 'hr_employee_transfert_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                       })
             if rec.transfert_nature == 'external_transfert_out':
                 # send notification for the employee
@@ -458,7 +470,11 @@ class HrEmployeeTransfert(models.Model):
                                                       'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                       'res_id': rec.id,
                                                       'res_action': 'smart_hr.action_hr_employee_transfert',
+<<<<<<< HEAD
                                                       'notif': True
+=======
+                                                        'type': 'hr_employee_transfert_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                       })
 
     def check_judicial_precedent(self, employee_id):
@@ -582,7 +598,11 @@ class HrTransfertSorting(models.Model):
                                                           'message': u'لقد تم خفض درجة',
                                                           'user_id': line.hr_employee_transfert_id.employee_id.user_id.id,
                                                           'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+<<<<<<< HEAD
                                                           'notif': True,
+=======
+                                                            'type': 'hr_employee_transfert_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                           'res_id': self.id,
                                                           })
                     if int(line.degree_id.code) > int(line.new_degree_id.code):
@@ -600,7 +620,11 @@ class HrTransfertSorting(models.Model):
                                                           'message': u'إشعار  بعدم وجود وظيفة شاغرة',
                                                           'user_id': line.hr_employee_transfert_id.employee_id.user_id.id,
                                                           'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
+<<<<<<< HEAD
                                                           'notif': True,
+=======
+                                                            'type': 'hr_employee_transfert_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                           'res_id': self.id,
                                                           })
         if len(result) > 0:
@@ -665,7 +689,11 @@ class HrTransfertSorting(models.Model):
                                                       'user_id': line.hr_employee_transfert_id.employee_id.user_id.id,
                                                       'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                       'res_id': rec.id,
+<<<<<<< HEAD
                                                       'notif': True
+=======
+                                                      'type': 'hr_employee_transfert_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                       })
 
                         line.hr_employee_transfert_id.state ='refused'
@@ -682,7 +710,11 @@ class HrTransfertSorting(models.Model):
                                                       'user_id': line.hr_employee_transfert_id.employee_id.user_id.id,
                                                       'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                       'res_id': rec.id,
+<<<<<<< HEAD
                                                       'notif': True
+=======
+                                                        'type': 'hr_employee_transfert_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                       })
                     if line.accept_trasfert == False :
                         self.env['base.notification'].create({'title': u'إشعار برفض طلب',
@@ -690,7 +722,11 @@ class HrTransfertSorting(models.Model):
                                                       'user_id': line.hr_employee_transfert_id.employee_id.user_id.id,
                                                       'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                       'res_id': rec.id,
+<<<<<<< HEAD
                                                       'notif': True
+=======
+                                                       'type': 'hr_employee_transfert_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                       })
  
                         line.hr_employee_transfert_id.state ='refused'
@@ -725,7 +761,11 @@ class HrTransfertSorting(models.Model):
                                                       'user_id': line.hr_employee_transfert_id.employee_id.user_id.id,
                                                       'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                       'res_id': rec.id,
+<<<<<<< HEAD
                                                       'notif': True
+=======
+                                                      'type': 'hr_employee_transfert_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                       })
                    # line.hr_employee_transfert_id.accept_trasfert = True
                    # line_ids.append(vals)
@@ -737,7 +777,11 @@ class HrTransfertSorting(models.Model):
                                                       'user_id': line.hr_employee_transfert_id.employee_id.user_id.id,
                                                       'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                       'res_id': rec.id,
+<<<<<<< HEAD
                                                       'notif': True
+=======
+                                                       'type': 'hr_employee_transfert_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                       })
                     #line.hr_employee_transfert_id.accept_trasfert = False
                     line.hr_employee_transfert_id.state ='refused'

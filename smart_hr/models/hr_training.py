@@ -95,7 +95,11 @@ class HrTraining(models.Model):
                                                       'user_id': line.employee_id.user_id.id,
                                                       'show_date': datetime.now().strftime(
                                                           DEFAULT_SERVER_DATETIME_FORMAT),
+<<<<<<< HEAD
                                                       'notif': True,
+=======
+                                                        'type': 'hr_employee_training_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                       'res_id': self.id,
                                                       'res_action': 'smart_hr.action_hr_training', })
                 list_done.append(line.id)
@@ -106,7 +110,11 @@ class HrTraining(models.Model):
                                                       'user_id': line.employee_id.user_id.id,
                                                       'show_date': datetime.now().strftime(
                                                           DEFAULT_SERVER_DATETIME_FORMAT),
+<<<<<<< HEAD
                                                       'notif': True,
+=======
+                                                      'type': 'hr_employee_training_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                       'res_id': self.id,
                                                       'res_action': 'smart_hr.action_hr_training', })
                 line.training_id = False

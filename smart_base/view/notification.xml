@@ -20,7 +20,10 @@
 								<field name="show_date"  />
 								<field name="user_id" />
 								<field name="type"/>
+<<<<<<< HEAD
 								<field name="interval_between_notif"/>
+=======
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
 							</group>
 							<group>
 								<field name="to_read" invisible="1" />

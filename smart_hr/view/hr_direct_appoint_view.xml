@@ -9,6 +9,17 @@
 				<search string="مباشرة التعين">
 					<field name="employee_id" string="الموظف"
 						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+<<<<<<< HEAD
+=======
+						<group expand="0" string="Group By">
+						<filter name="group_type_type" string="نوع قرار مباشرة"
+							context="{'group_by':'type'}" />
+						<filter name="group_state" string="الحالة"
+							context="{'group_by':'state'}" />
+							
+					</group>
+				
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
 				</search>
 			</field>
 		</record>
@@ -21,6 +32,10 @@
 					<field name="employee_id" />
 					<field name="number" />
 					<field name="job_id" />
+<<<<<<< HEAD
+=======
+						<field name="type" />
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
 					<field name="date_direct_action" />
 					<field name="state" />
 				</tree>
@@ -85,14 +100,22 @@
 			</field>
 		</record>
 		<record model="ir.actions.act_window" id="action_hr_direct_appoint">
+<<<<<<< HEAD
 			<field name="name"> قرارات المباشرة</field>
+=======
+			<field name="name"> قرار المباشرة</field>
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
 			<field name="res_model">hr.direct.appoint</field>
 			<field name="view_type">form</field>
 			<field name="view_mode">tree,form</field>
 			<field name="context">{'readonly_by_pass': True}	</field>
 		</record>
 
+<<<<<<< HEAD
 		<menuitem id="hr_direct_appoint_menu_sou" name=" قرارات المباشرة"
+=======
+		<menuitem id="hr_direct_appoint_menu_sou" name=" قرار المباشرة"
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
 			sequence="10" parent="hr_root_workflows" action="action_hr_direct_appoint" />
 
 	</data>

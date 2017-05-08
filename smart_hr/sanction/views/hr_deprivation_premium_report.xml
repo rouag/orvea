@@ -14,7 +14,12 @@
 									بتاريخ :
 									<span t-esc="get_hijri_date(o.order_date, '-')" />
 								</p>
+<<<<<<< HEAD
 								<b align="left">قائمة الموظفين المشمولين بالعقوبة:
+=======
+								<b align="left">
+									قائمة الموظفين المشمولين بالعقوبة:
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
 									<span t-esc="o.type_sanction.name" />
 								</b>
 							</div>
@@ -31,6 +36,7 @@
 								<tbody>
 									<t t-foreach="o.line_ids" t-as="line">
 										<tr>
+<<<<<<< HEAD
 											<td>
 												<span t-field="line.employee_id.display_name" />
 											</td>
@@ -45,6 +51,26 @@
 											</td>
 										</tr>
 									</t>
+=======
+											<t t-if="line.state=='done'">
+
+												<td>
+													<span t-field="line.employee_id.display_name" />
+												</td>
+												<td>
+													<span t-field="line.employee_id.job_id.name" />
+												</td>
+												<td>
+													<span t-field="line.employee_id.number" />
+												</td>
+												<td>
+													<span t-field="line.employee_id.grade_id.name" />
+												</td>
+											</t>
+										</tr>
+									</t>
+
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
 								</tbody>
 							</table>
 

@@ -156,7 +156,11 @@ class HrAttendanceImport(models.Model):
         return time_from, time_to, late, time_from_max, time_to_min
 
     @api.multi
-    def close_day(self,date):
+    def close_day_file(self):
+        self.close_day(self.date)
+
+    @api.multi
+    def close_day(self, date):
         u"""
             غلق اليوم يتم هنا تجميع التأخيرات والغيابات الغير مبرره والخروج المبكر والساعات الإضافية ليوم معين
           ثم يتم إنشاء نماذج لكل عنصر منها وتبقى في إنتظار الإعتماد  .لا  يحتسب تأخير أو خروج مبكر أو غياب
@@ -790,12 +794,12 @@ class HrAttendanceSummary(models.Model):
     _description = u'الخلاصة اليومية للغيابات والتأخير'
     _rec_name = 'employee_id'
 
-    employee_id = fields.Many2one('hr.employee', string='الموظف', required=1, readonly=1)
+    employee_id = fields.Many2one('hr.employee', string='الموظف', required=1)
     number = fields.Char(string='رقم الموظف', readonly=1)
     department_id = fields.Many2one('hr.department', string='الادارة', readonly=1)
     job_id = fields.Many2one('hr.job', string='الوظيفة', readonly=1)
     grade_id = fields.Many2one('salary.grid.grade', string='المرتبة', readonly=1)
-    date = fields.Date(string='التاريخ', required=1, readonly=1)
+    date = fields.Date(string='التاريخ', required=1)
     hour_start = fields.Float(string='الدخول')
     hour_stop = fields.Float(string='الخروج')
     retard = fields.Float(string='تأخير')
@@ -804,6 +808,7 @@ class HrAttendanceSummary(models.Model):
     authorization = fields.Float(string='إستئذان')
     holidays = fields.Float(string='إجازة')
     absence = fields.Float(string='غياب')
+    deduction = fields.Boolean(string='تم الحسم')
 
 
 class HrMonthlySummary(models.Model):
