@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="hr_promotion_employee_affected_form_view">
+			<field name="name">hr.promotion.employee.job.form</field>
+			<field name="model">hr.promotion.employee.job</field>
+			<field name="type">form</field>
+			<field name="sequence" eval="1" />
+			<field name="arch" type="xml">
+				<form create="0" delete='0' duplicate='0'>
+					<header>
+						<button name="promotion_confirmed" string="موافقة" type="object"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" states="employee_confirmed" />
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							states="employee_confirmed" />
+						<button name="promotion_cancel" string="الغاء" type="object"
+							attrs="{'invisible': ['|', ('state', '!=' 'done'), ('done_date', '!=', False)]}" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							states="done"
+							groups="smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion,smart_hr.group_promotion_checker" />
+
+						<button name="open_decission_promotion_employee" string="معاينة القرار"
+							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+
+						<field name="state" widget="statusbar"
+							statusbar_visible="employee_confirmed,done,refuse,cancel" />
+					</header>
+					<sheet string="الترشيحات للترقية">
+						<group>
+							<field name="done_date" states="done" />
+						</group>
+						<group>
+							<group>
+								<field name="employee_id" readonly="1" />
+								<field name="old_job_id" readonly="1" />
+								<field name="emp_grade_id_old" readonly="1" string="المرتبة" />
+								<field name="emp_department_old_id" readonly="1" />
+								<field name="new_job_id" readonly="1" />
+								<field name="emp_grade_id_new" readonly="1" />
+								<field name="new_city_jobs" readonly="1" />
+							</group>
+							<group>
+								<field name="point_seniority" readonly="1" />
+								<field name="point_education" readonly="1" />
+								<field name="point_training" readonly="1" />
+								<field name="point_functionality" readonly="1" />
+								<field name="sum_point" readonly="1" />
+							</group>
+						</group>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"
+							groups="base.group_user" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+				</form>
+
+			</field>
+		</record>
+
+		<record id="view_promotion_benefits" model="ir.ui.view">
+			<field name="name">hr.promotion.employee.job.benefits.form</field>
+			<field name="model">hr.promotion.employee.job</field>
+			<field name="sequence" eval="10" />
+			<field name="arch" type="xml">
+				<form>
+					<sheet>
+						<group>
+							<group>
+								<field name="employee_id" readonly="1" />
+								<field name="new_job_id" readonly="1" />
+								<field name="specific_id" readonly="1" />
+							</group>
+							<group>
+								<field name="new_type_id" readonly="1" />
+								<field name="new_department" readonly="1" />
+								<field name="new_degree_id" readonly="1" />
+								<field name="emp_grade_id_new" readonly="1" />
+							</group>
+						</group>
+
+						<h3 class="o_horizontal_separator">بدلات الوظيفة</h3>
+						<field name="job_allowance_ids" nolabel="1">
+							<form string="البدلات">
+								<group>
+									<group>
+										<field name="allowance_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									</group>
+									<group>
+										<field name="compute_method" />
+										<field name="amount"
+											attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}" />
+										<field name="percentage"
+											attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}" />
+										<field name="min_amount" />
+										<field name="line_ids"
+											attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+											<tree editable="buttom">
+												<field name="city_id"
+													options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+												<field name="percentage" />
+											</tree>
+										</field>
+
+									</group>
+								</group>
+							</form>
+							<tree create="false">
+								<field name="allowance_id" readonly="1" />
+								<field name="compute_method" />
+								<field name="amount" />
+							</tree>
+						</field>
+						<h3 class="o_horizontal_separator">بدلات النقل</h3>
+						<field name="promotion_allowance_ids" nolabel="1">
+							<form string="البدلات">
+								<group>
+									<group>
+										<field name="allowance_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									</group>
+									<group>
+										<field name="compute_method" />
+										<field name="amount"
+											attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}" />
+										<field name="percentage"
+											attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}" />
+										<field name="min_amount" />
+										<field name="line_ids"
+											attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+											<tree editable="buttom">
+												<field name="city_id"
+													options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+												<field name="percentage" />
+											</tree>
+										</field>
+
+									</group>
+								</group>
+							</form>
+							<tree>
+								<field name="allowance_id"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="compute_method" />
+								<field name="amount" />
+							</tree>
+						</field>
+						<h3 class="o_horizontal_separator">بدلات المنطقة</h3>
+						<field name="location_allowance_ids" nolabel="1">
+							<form string="البدلات">
+								<group>
+									<group>
+										<field name="allowance_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									</group>
+									<group>
+										<field name="compute_method" />
+										<field name="amount"
+											attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}" />
+										<field name="percentage"
+											attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}" />
+										<field name="min_amount" />
+										<field name="line_ids"
+											attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+											<tree editable="buttom">
+												<field name="city_id"
+													options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+												<field name="percentage" />
+											</tree>
+										</field>
+
+									</group>
+								</group>
+							</form>
+							<tree create="false">
+								<field name="allowance_id" readonly="1" />
+								<field name="compute_method" />
+								<field name="amount" />
+							</tree>
+						</field>
+						<footer>
+							<button icon="fa-cogs" string="تأكيد" name="action_benefits_done"
+								type="object" class="oe_highlight" />
+							أو
+							<button string="إلغاء" class="oe_link" special="cancel" />
+						</footer>
+					</sheet>
+
+				</form>
+			</field>
+		</record>
+		<!-- Promotion Decision -->
+		<record id="view_form_hr_promotions" model="ir.ui.view">
+			<field name="name">hr.promotion.form</field>
+			<field name="model">hr.promotion</field>
+			<field name="arch" type="xml">
+				<form string="محضر ترقية ">
+
+					<header>
+						<field name="emplyoee_state" invisible="1" />
+						<button name="button_promotion_type" string="إرسال" type="object"
+							states="promotion_type" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion,smart_hr.group_promotion_checker" />
+
+						<button name="button_confirmed" string="إرسال" type="object"
+							states="draft" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion,smart_hr.group_promotion_checker" />
+
+						<button name="button_job_promotion" string="إرسال" type="object"
+							states="job_promotion" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							groups="smart_hr.group_responsable_promotion" />
+
+						<button name="button_transfer_employee" string=" إرسال للموظفين "
+							groups="smart_hr.group_responsable_promotion" type="object"
+							attrs="{'invisible': ['|',('emplyoee_state', '=', True ),('state', '!=', 'manager' )]}"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+
+
+						<button name="button_transfer_minister" string="إرسال "
+							groups="smart_hr.group_responsable_promotion" type="object"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							attrs="{'invisible': ['|',('emplyoee_state', '=', False ),('state', '!=','manager' )]}" />
+
+						<button name="button_transfer_hrm" string="موافقة" type="object"
+							groups="smart_hr.group_third_party_promotion" states="minister"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="button_benefits" string="إعتماد " type="object"
+							groups="smart_hr.group_promotion_specialiter,smart_hr.group_hrm"
+							states="hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="button_done" string="إعتماد " type="object"
+							groups="smart_hr.group_promotion_specialiter,smart_hr.group_hrm"
+							states="benefits" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion,smart_hr.group_promotion_checker"
+							type="action"
+							attrs="{'invisible': ['|',('state', '=', 'draft'),('state', '=', 'done')]}"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<field name="state" widget="statusbar"
+							statusbar_visible="promotion_type,draft,job_promotion,manager,minister,hrm,benefits,done" />
+					</header>
+					<sheet>
+						<group>
+							<field name="date" readonly="1" attrs="{'invisible': [('state', 'not in',['draft','promotion_type'])]}"  />
+							<field name="employee_ids" invisible="1" />
+							<field name="name" readonly="1"
+								attrs="{'invisible': [('state', 'in',['draft','promotion_type'] )]}" />
+							<field name="date_reponse_employee"
+								attrs="{'invisible': [('state', '!=', 'manager')],'required' :[('state','=','manager')],'readonly' :[('emplyoee_state','=',True)]}" />
+						</group>
+						<group col="4">
+							<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]"
+							attrs="{'invisible': [('state', 'not in',['draft','promotion_type'])] ,'readonly' :[('state','in',['draft','promotion_type'])]}" />
+							<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]"
+							attrs="{'invisible': [('state', 'not in',['draft','promotion_type'])] ,'readonly' :[('state','in',['draft','promotion_type'])]}" />
+							<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]"
+								attrs="{'invisible': [('state', 'not in',['draft','promotion_type'])],'readonly' :[('state','in',['draft','promotion_type'])]}" />
+							<field name="salary_grid_type_id" attrs="{'invisible': [('state', 'not in',['draft','promotion_type'] )] ,'readonly' :[('state','in',['draft','promotion_type'])]}" />
+						</group>
+						<group>
+							<group string="بيانات الخطاب"
+								attrs="{'invisible':[('state','!=','minister'),('state','!=','hrm'),('state', '!=', 'done')]}">
+								<field name="speech_number"
+									attrs="{'invisible':[('state','!=','minister'),('state','!=','hrm'),('state', '!=', 'done')],'required' :[('state','=','minister')],'readonly' :[('state','!=','minister')]}" />
+								<field name="speech_date"
+									attrs="{'invisible':[('state','!=','minister'),('state','!=','hrm'),('state', '!=', 'done')],'required' :[('state','=','minister')],'readonly' :[('state','!=','minister')]}" />
+								<field name="speech_file"
+									attrs="{'invisible':[('state','!=','minister'),('state','!=','hrm'),('state', '!=', 'done')],'required' :[('state','=','minister')],'readonly' :[('state','!=','minister')]}"
+									filename="data_name_speech" />
+								<field name="data_name_speech" invisible='1' />
+							</group>
+
+
+						</group>
+						<group>
+
+						</group>
+						<notebook>
+							<page string="قائمة الموظفين المؤهلين للترقية"
+								attrs="{'invisible': [('state', '!=', 'draft'),('state', '!=', 'confirmed')]}">
+								<field name="employee_promotion_line_ids" options="{'no_open': True}">
+									<tree editable="bottom" create="0">
+										<field name="employee_id" readonly="1" style="width:30%;" />
+										<field name="identification_id" readonly="1" />
+										<field name="begin_work_date" readonly="1" />
+										<field name="demande_promotion_id" readonly="1" />
+										<field name="old_job_id" readonly="1" />
+										<field name="decision_appoint_date" readonly="1" />
+										<field name="emp_department_old_id" readonly="1" />
+										<field name="emp_grade_id_old" readonly="1" />
+										<field name="point_seniority" readonly="1" />
+										<field name="point_education" readonly="1" />
+										<field name="point_training" readonly="1" />
+										<field name="point_functionality" readonly="1" />
+										<field name="sum_point" readonly="1" />
+										<field name="state" invisible="1" />
+									</tree>
+								</field>
+							</page>
+
+							<page string="قائمة الوظائف الشاغرة"
+								attrs="{'invisible': [('state', '!=', 'job_promotion')],'readonly' :[('state','!=','job_promotion')]}">
+								<field name="job_promotion_line_ids" options="{'no_open': True}">
+									<tree editable="buttom" create="0" delete="0">
+										<field name="new_job_id" domain="[('state','=','unoccupied')]"
+											readonly="1" options='{"no_open": True, "no_create": True}' />
+										<field name="emp_grade_id_new" />
+										<field name="job_state" readonly="1" />
+										<button string="حجز" name="job_reserved" icon="fa-check-square"
+											class="oe_inline oe_stat_button" type="object"
+											attrs="{'readonly': [('job_state', '=', True)]}" />
+										<button string="فك حجز" name="job_in_reserved" icon="fa-times-circle"
+											class="oe_inline oe_stat_button" type="object"
+											attrs="{'readonly': [('job_state', '!=', True)]}" />
+
+									</tree>
+								</field>
+							</page>
+							<page string="قائمة الترشيحات"
+								attrs="{'invisible': [('state', 'not in', ['manager','benefits','minister','hrm','done'])]}">
+								<field name="employee_job_promotion_line_ids" options="{'no_open': True}"
+									context="{'form_view_ref':'smart_hr.hr_promotion_employee_affected_form_view'}">
+									<tree create="false" editable="bottom" delete="0">
+										<field name="employee_id" options='{"no_open": True, "no_create": True}'
+											readonly="1" style="width:40%;" />
+										<field name="employee_job_ids" invisible="1" />
+										<field name="demande_promotion_id" readonly="1"
+											options='{"no_open": True, "no_create": True}' />
+										<field name="city_fovorite" readonly="1"
+											options='{"no_open": True, "no_create": True}' />
+										<field name="old_job_id" readonly="1" />
+										<field name="emp_department_old_id" readonly="1" />
+										<field name="emp_grade_id_old" readonly="1" />
+										<field name="point_seniority" readonly="1" />
+										<field name="point_education" readonly="1" />
+										<field name="point_training" readonly="1" />
+										<field name="point_functionality" readonly="1" />
+										<field name="sum_point" readonly="1" />
+										<field name="emplyoee_state" invisible="1" />
+										<field name="new_job_id" options='{"no_open": True, "no_create": True}'
+											attrs="{'readonly': [('emplyoee_state', '=', True)]}" domain="[('occupied_promotion','=',True)]" />
+										<field name="new_department" invisible="1" />
+										<field name="new_city_jobs" readonly="1" />
+										<field name="emp_grade_id_new" readonly="1" />
+										<field name="new_degree_id"
+											attrs="{'readonly': [('emplyoee_state', '=', True)], 'required': [('promotion_id_state', '=', 'manager'),('new_job_id', '!=', False)]}" />
+										<field name="state" readonly="1" />
+										<field name="promotion_supp" readonly="1"
+											attrs="{'invisible': [('state', '!=', 'hrm'),('state', '!=', 'done')],}" />
+										<field name="date_direct_action" readonly="1" />
+										<field name="promotion_id_state" invisible="1" />
+										<button name="action_form_transfert_benefits"
+											attrs="{'invisible':[('promotion_id_state','not in', ['benefits', 'done'])]}"
+											type="object" string="إسناد البدلات" icon="fa-dollar" />
+									</tree>
+
+
+								</field>
+							</page>
+						</notebook>
+
+						<div class="oe_chatter">
+							<field name="message_follower_ids" widget="mail_followers"
+								groups="base.group_user" />
+							<field name="message_ids" widget="mail_thread" />
+						</div>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="view_tree_hr_promotions" model="ir.ui.view">
+			<field name="name">hr.promotion.tree</field>
+			<field name="model">hr.promotion</field>
+			<field name="arch" type="xml">
+				<tree string="محضر الترقية" class="oe_tree_view">
+					<field name="name" />
+					<field name="date" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+		<record id="view_search_hr_promotion" model="ir.ui.view">
+			<field name="name">hr.promotion.search</field>
+			<field name="model">hr.promotion</field>
+			<field name="arch" type="xml">
+				<search string="محضر الترقية">
+					<field name="name" />
+					<field name="date" />
+				</search>
+			</field>
+		</record>
+		<record id="action_hr_promotions" model="ir.actions.act_window">
+			<field name="name">محضر الترقية</field>
+			<field name="res_model">hr.promotion</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_promotion_job_form_view">
+			<field name="name">hr.promotion.job.form</field>
+			<field name="model">hr.promotion.job</field>
+			<field name="type">form</field>
+			<field name="sequence" eval="1" />
+			<field name="arch" type="xml">
+				<form create="0" delete='0' duplicate='0'>
+					<group>
+						<field name="new_job_id" readonly="1" />
+						<field name="new_number_job" readonly="1" />
+						<field name="department" readonly="1" />
+						<field name="emp_grade_id_new" readonly="1" />
+						<field name="job_state" readonly="1" />
+					</group>
+				</form>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_promotion_employee_form_view">
+			<field name="name">hr.promotion.employee.form</field>
+			<field name="model">hr.promotion.employee</field>
+			<field name="type">form</field>
+			<field name="sequence" eval="1" />
+			<field name="arch" type="xml">
+				<form create="0" delete='0' duplicate='0'>
+					<group>
+						<field name="employee_id" readonly="1" />
+						<field name="old_job_id" readonly="1" />
+						<field name="old_number_job" readonly="1" />
+						<field name="emp_department_old_id" readonly="1" />
+						<field name="emp_grade_id_old" readonly="1" />
+						<field name="identification_id" readonly="1" />
+						<field name="begin_work_date" readonly="1" />
+						<field name="decision_appoint_date" readonly="1" />
+					</group>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window.view" id="action_hr_promotions_tree">
+			<field eval="1" name="sequence" />
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="view_tree_hr_promotions" />
+			<field name="act_window_id" ref="action_hr_promotions" />
+		</record>
+
+		<record model="ir.actions.act_window.view" id="action_hr_promotions_form_view">
+			<field eval="2" name="sequence" />
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="view_form_hr_promotions" />
+			<field name="act_window_id" ref="action_hr_promotions" />
+		</record>
+		<menuitem id="menu_hr_promotions" action="action_hr_promotions"
+			parent="hr_root_workflows" name="محاضر الترقية" sequence="25"
+			groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion,smart_hr.group_promotion_checker" />
+		<!-- <menuitem id="menu_hr_promotion" parent="hr_root_promotion" name="قرارات 
+			الترقيات" sequence="1"/> -->
+
+
+		<record id="promotion_type_form" model="ir.ui.view">
+			<field name="name">hr.promotion.type.form</field>
+			<field name="model">hr.promotion.type</field>
+			<field name="arch" type="xml">
+				<form string="أنواع الترقية">
+					<sheet>
+						<group>
+							<group string="أنواع الترقية">
+								<field name="name" required='1' />
+								<field name="code" required='1' />
+							</group>
+
+
+						</group>
+
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="promotion_type_tree" model="ir.ui.view">
+			<field name="name">hr.promotion.type.tree</field>
+			<field name="model">hr.promotion.type</field>
+			<field name="arch" type="xml">
+				<tree string="أنواع الترقية">
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_promotion_type">
+			<field name="name">أنواع الترقية</field>
+			<field name="res_model">hr.promotion.type</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+
+		<record model="ir.ui.view" id="hr_promotion_employee_affected_tree_view">
+			<field name="name">hr.promotion.employee.job.tree</field>
+			<field name="model">hr.promotion.employee.job</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="الترشيحات للترقية" create="0" delete='0'
+					duplicate='0'>
+
+					<field name="employee_id" readonly="1" />
+					<field name="demande_promotion_id" readonly="1"
+						options='{"no_open": True, "no_create": True}' />
+					<field name="city_fovorite" readonly="1"
+						options='{"no_open": True, "no_create": True}' />
+					<field name="old_job_id" readonly="1" />
+					<field name="emp_department_old_id" readonly="1" />
+					<field name="emp_grade_id_old" readonly="1" />
+					<field name="point_seniority" readonly="1" />
+					<field name="point_education" readonly="1" />
+					<field name="point_training" readonly="1" />
+					<field name="point_functionality" readonly="1" />
+					<field name="sum_point" readonly="1" />
+					<field name="new_job_id" readonly="1" />
+					<field name="new_city_jobs" readonly="1" />
+					<field name="emp_grade_id_new" readonly="1" />
+					<field name="new_degree_id" readonly="1" />
+					<field name="promotion_supp" readonly="1" />
+					<field name="state" readonly="1" />
+					<field name="date_direct_action" readonly="1" />
+
+				</tree>
+			</field>
+		</record>
+
+
+		<record model="ir.actions.act_window" id="action_hr_promotion_employee_affected">
+			<field name="name">الترشيحات للترقية</field>
+			<field name="res_model">hr.promotion.employee.job</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<record id="action_hr_promotion_employee_affected_tree" model="ir.actions.act_window.view">
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="hr_promotion_employee_affected_tree_view" />
+			<field name="act_window_id" ref="action_hr_promotion_employee_affected" />
+		</record>
+
+		<record id="action_hr_promotion_employee_affected_form" model="ir.actions.act_window.view">
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="hr_promotion_employee_affected_form_view" />
+			<field name="act_window_id" ref="action_hr_promotion_employee_affected" />
+		</record>
+		<menuitem id="menu_my_promotion_affecteds" action="action_hr_promotion_employee_affected"
+			parent="hr_root_workflows" name="الترشيحات للترقية" sequence="30" />
+
+
+
+	</data>
+</openerp>

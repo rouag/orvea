@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<!-- Report Actions -->
+
+
+
+		<report id="salary_grid_report" model="salary.grid"
+			report_type="qweb-pdf" string="طباعة" name="smart_hr.report_salary_grid"
+			file="smart_hr.report_salary_grid" />
+
+		<report id="employee_medical_exam_report" model="employee.medical.exam"
+			string="الفحص الطبي" report_type="qweb-pdf"
+			name="smart_hr.medical_examination_report_template" attachment_use="False"
+			file="smart_hr.medical_examination_report_template" />
+
+		<report id="order_enquiry_report" model="hr.employee" string="طلب إستفسار"
+			report_type="qweb-pdf" name="smart_hr.order_enquiry_report_template"
+			attachment_use="False" file="smart_hr.order_enquiry_report_template" />
+
+
+
+		<report id="report_hr_holidays_hospital_transfer_form_report"
+			model="hr.holidays" string="نموذج تحويل مستوصف" report_type="qweb-pdf"
+			name="smart_hr.hr_leave_hospital_transfer_form_report" file="smart_hr.hr_leave_hospital_transfer_form_report"
+			attachment_use="False" menu="False" />
+
+		<report id="report_hr_assessment_probation_report" model="hr.assessment.probation"
+			string="تقرير تقييم فترة التجربة" report_type="qweb-pdf"
+			name="smart_hr.hr_assessment_probation_report" file="smart_hr.hr_assessment_probation_report"
+			attachment_use="False" menu="False" />
+
+		<report id="report_hr_assessment_users_report" model="hr.assessment.users"
+			string="تقرير تقييم الاداء الوظيفى للمستخدمين والمعينين على بند الاجور والوظائف المؤقته"
+			report_type="qweb-pdf" name="smart_hr.hr_assessment_users_report"
+			file="smart_hr.hr_assessment_users_report" attachment_use="False"
+			menu="False" />
+
+		<report id="report_hr_assessment_specialized_report" model="hr.assessment.specialized"
+			string="تقرير تقييم الوظائف التخصصية" report_type="qweb-pdf"
+			name="smart_hr.hr_assessment_specialized_report" file="smart_hr.hr_assessment_specialized_report"
+			attachment_use="False" menu="False" />
+
+		<report id="report_hr_assessment_veterinary_medicine_report"
+			model="hr.assessment.veterinary.medicine" string="تقرير تقييم وظائف الطب البيطري"
+			report_type="qweb-pdf" name="smart_hr.hr_assessment_veterinary_medicine_report"
+			file="smart_hr.hr_assessment_veterinary_medicine_report"
+			attachment_use="False" menu="False" />
+
+		<report id="report_hr_assessment_executive_report" model="hr.assessment.executive"
+			string="تقرير تقييم الوظائف التنفيذية (الفنية و الحرفية)"
+			report_type="qweb-pdf" name="smart_hr.hr_assessment_executive_report"
+			file="smart_hr.hr_assessment_executive_report" attachment_use="False"
+			menu="False" />
+
+		<report id="report_hr_assessment_executive_admin_report" model="hr.assessment.executive.admin"
+			string="الوظائف التنفيذية (الإدارية)" report_type="qweb-pdf"
+			name="smart_hr.hr_assessment_executive_admin_report" file="smart_hr.hr_assessment_executive_admin_report"
+			attachment_use="False" menu="False" />
+
+		<!-- Update Reports Paper Format -->
+
+
+
+		<record id="report_hr_holidays_hospital_transfer_form_report"
+			model="ir.actions.report.xml">
+			<field name="paperformat_id" ref="report.paperformat_euro" />
+			<field name="download_filename">${o.name}_نموذج تحويل مستوصف.pdf</field>
+		</record>
+
+		<!-- <record id="report_hr_overtime_report" model="ir.actions.report.xml"> -->
+		<!-- <field name="paperformat_id" ref="report.paperformat_euro" /> -->
+		<!-- <field name="download_filename">${o.name}_قرار خارج دوام.pdf</field> -->
+		<!-- </record> -->
+
+		<record id="report_hr_decision_report" model="ir.actions.report.xml">
+			<field name="name">HR DECISION REPORT</field>
+			<field name="report_type">qweb-pdf</field>
+			<field name="model">hr.decision</field>
+			<field name="report_name">smart_hr.report_hr_decision</field>
+			<field name="report_file">smart_hr.report_hr_decision</field>
+			<field name="download_filename">${o.decision_type_id.name}.pdf</field>
+		</record>
+		<report id="hr_direct_appoint_report" model="hr.direct.appoint"
+			name="smart_hr.report_hr_direct_appoint" report_type="qweb-pdf"
+			string="قرار مباشرة التعين" file="smart_hr.report_hr_direct_appoint" />
+
+
+		<report id="report_hr_employee_functionnal_card_report" model="hr.employee.functionnal.card"
+			string="بطاقة وظيفية" report_type="qweb-pdf"
+			name="smart_hr.hr_employee_functionnal_card_report" file="smart_hr.hr_employee_functionnal_card_report"
+			menu="False" />
+		<record id="report_hr_employee_functionnal_card_report" model="ir.actions.report.xml">
+			<field name="paperformat_id" ref="smart_base.paperformat_landscape" />
+			<field name="download_filename">${o.employee_id.name}_بطاقة وظيفية.pdf</field>
+		</record>
+
+		<report id="report_hr_emp_card_report" model="hr.employee.functionnal.card"
+			string="بطاقة موظف" report_type="qweb-pdf" name="smart_hr.hr_emp_card_report"
+			file="smart_hr.hr_emp_card_report" menu="False" />
+		<record id="report_hr_emp_card_report" model="ir.actions.report.xml">
+			<field name="paperformat_id" ref="smart_base.paperformat_landscape_card" />
+			<field name="download_filename">${o.employee_id.name}_بطاقة موظف.pdf</field>
+		</record>
+
+		<report id="report_hr_employee_card" model="hr.employee"
+			string="بطاقة موظف" report_type="qweb-pdf" name="smart_hr.hr_employee_card_report"
+			file="smart_hr.hr_employee_card_report" menu="False" />
+		<record id="report_hr_employee_card" model="ir.actions.report.xml">
+			<field name="paperformat_id" ref="smart_base.paperformat_landscape_card" />
+			<field name="download_filename">${o.display_name}_بطاقة موظف.pdf</field>
+		</record>
+
+
+
+
+		<report id="hr_employee_situation_order" model="hr.employee.situation.order"
+			name="smart_hr.report_hr_employee_situation_order" report_type="qweb-pdf"
+			string="طباعة طلب إفادة عن حالة موظف  " file="smart_hr.report_hr_employee_situation_order" />
+
+
+	</data>
+</openerp>
+		

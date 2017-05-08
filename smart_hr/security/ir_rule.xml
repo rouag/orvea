@@ -1,0 +1,166 @@
+<?xml version="1.0"?>
+<openerp>
+	<data>
+		<!-- record rules -->
+		<record id="hr_holidays.property_rule_holidays_employee_write"
+			model="ir.rule">
+			<field name="name">Employee Holidays Create, Write, Unlink</field>
+			<field name="model_id" ref="model_hr_holidays" />
+			<field name="domain_force">[(1,'=',1)]
+			</field>
+			<field name="perm_read" eval="False" />
+			<field name="groups" eval="[(4,ref('base.group_user'))]" />
+		</record>
+
+		<record id="property_rule_holidays_dm_checker" model="ir.rule">
+			<field name="name">Employee Holidays Create, Write,read</field>
+			<field name="model_id" ref="model_hr_holidays" />
+			<field name="domain_force">[(1,'=',1)]</field>
+			<field name="groups"
+				eval="[(4,ref('smart_hr.group_holidays_checker')),(4,ref('smart_hr.group_dm')),(4,ref('smart_hr.group_director_division_salaries_vacations'))]" />
+		</record>
+
+		<record id="employee_hr_candidates" model="ir.rule">
+			<field name="name">ترشيحاتي</field>
+			<field name="model_id" ref="model_hr_candidates" />
+			<field name="domain_force">[('employee_id.user_id','=',user.id)]</field>
+			<field name="groups" eval="[(4,ref('smart_hr.group_employee'))]" />
+		</record>
+
+		<record id="dm_hr_candidates" model="ir.rule">
+			<field name="name">طلبات الترشيحات للمدير المباشر </field>
+			<field name="model_id" ref="model_hr_candidates" />
+			<field name="domain_force">['|',('employee_id.parent_id.user_id','=',user.id),('employee_id.user_id','=',user.id)]
+			</field>
+			<field name="groups" eval="[(4,ref('smart_hr.group_dm'))]" />
+		</record>
+
+		<record id="hrm_hr_candidates" model="ir.rule">
+			<field name="name">كل الترشيحات </field>
+			<field name="model_id" ref="model_hr_candidates" />
+			<field name="domain_force">[(1,'=',1)]</field>
+			<field name="groups" eval="[(4,ref('smart_hr.group_hrm'))]" />
+		</record>
+
+		<record id="ir_rule_see_employee_holidays_request" model="ir.rule">
+			<field name="name">See Own Employees holidays</field>
+			<field name="model_id" ref="model_hr_holidays" />
+			<field name="domain_force">[('employee_id.parent_id.id', 'in',
+				user.employee_ids.ids)]
+			</field>
+			<field name="groups" eval="[(4, ref('group_dm'))]" />
+		</record>
+
+		<record id="ir_rule_functionnel_card_no_edit_state_done" model="ir.rule">
+			<field name="name">functionnel card no edit state done</field>
+			<field name="model_id" ref="model_hr_employee_functionnal_card" />
+			<field name="domain_force">[('state', '!=', 'done')]</field>
+		</record>
+
+		<record id="ir_rule_functionnel_card_not_state_done" model="ir.rule">
+			<field name="name">functionnel card no edit state done</field>
+			<field name="model_id" ref="model_hr_employee_functionnal_card" />
+			<field name="domain_force">[('state', '=', 'done')]</field>
+			<field name="perm_write" eval="False" />
+		</record>
+		<record id="employee_hr_employee_transfert_s" model="ir.rule">
+			<field name="name">طلب نقل موظف</field>
+			<field name="model_id" ref="model_hr_employee_transfert" />
+			<field name="domain_force">[('employee_id.user_id','=',user.id)]</field>
+			<field name="groups" eval="[(4,ref('smart_hr.group_employee'))]" />
+		</record>
+
+		<record id="ir_rule_see_employee_own_loans" model="ir.rule">
+			<field name="name">See Own Employees loans</field>
+			<field name="model_id" ref="model_hr_loan" />
+			<field name="domain_force">[('employee_id.id', 'in',
+				user.employee_ids.ids)]
+			</field>
+			<field name="groups" eval="[(4, ref('smart_hr.group_employee'))]" />
+		</record>
+
+		<record id="ir_rule_see_employee_own_attendaces" model="ir.rule">
+			<field name="name">See Own Employees attendaces</field>
+			<field name="model_id" ref="model_hr_attendance" />
+			<field name="domain_force">[('employee_id.id', 'in',
+				user.employee_ids.ids)]
+			</field>
+			<field name="groups" eval="[(4, ref('smart_hr.group_employee'))]" />
+		</record>
+		<record id="ir_rule_see_employee_own_contracts" model="ir.rule">
+			<field name="name">See Own Employees contracts</field>
+			<field name="model_id" ref="model_hr_contract" />
+			<field name="domain_force">[('employee_id.id', 'in',
+				user.employee_ids.ids)]
+			</field>
+			<field name="groups" eval="[(4, ref('smart_hr.group_employee'))]" />
+		</record>
+		<record id="ir_rule_see_employee_own_payslip" model="ir.rule">
+			<field name="name">See Own Employees payslip</field>
+			<field name="model_id" ref="model_hr_payslip" />
+			<field name="domain_force">[('employee_id.id', 'in',
+				user.employee_ids.ids)]
+			</field>
+			<field name="groups" eval="[(4, ref('smart_hr.group_employee'))]" />
+		</record>
+
+		<record id="ir_rule_see_employee_own_courses_followup" model="ir.rule">
+			<field name="name">See Own Employees courses_followup</field>
+			<field name="model_id" ref="model_courses_followup" />
+			<field name="domain_force">[('employee_id.id', 'in',
+				user.employee_ids.ids)]
+			</field>
+			<field name="groups" eval="[(4, ref('smart_hr.group_employee'))]" />
+		</record>
+		<record id="ir_rule_see_employee_own_holidays_extension" model="ir.rule">
+			<field name="name">See Own Employees hr holidays extension</field>
+			<field name="model_id" ref="model_hr_holidays_extension" />
+			<field name="domain_force">[('employee_id.id', 'in',
+				user.employee_ids.ids)]
+			</field>
+			<field name="groups" eval="[(4, ref('smart_hr.group_employee'))]" />
+		</record>
+
+		<record id="property_rule_holidays_specialist_see_all" model="ir.rule">
+			<field name="name">Employee Holidays specialist</field>
+			<field name="model_id" ref="model_hr_holidays" />
+			<field name="domain_force">[(1,'=',1)]</field>
+			<field name="groups" eval="[(4,ref('smart_hr.group_holidays_specialist'))]" />
+		</record>
+
+		<record id="ir_rule_see_employee_own_holidays cancellations"
+			model="ir.rule">
+			<field name="name">See Own Employees holidays cancellations</field>
+			<field name="model_id" ref="model_hr_holidays_cancellation" />
+			<field name="domain_force">[('employee_id.id', 'in', user.employee_ids.ids)]
+			</field>
+			<field name="groups" eval="[(4, ref('smart_hr.group_employee'))]" />
+
+		</record>
+
+		<record id="ir_rule_see_employee_all_holidays cancellations_specialist"
+			model="ir.rule">
+			<field name="name">See all Employees holidays cancellations</field>
+			<field name="model_id" ref="model_hr_holidays_cancellation" />
+			<field name="domain_force">[(1,'=',1)]
+			</field>
+			<field name="groups" eval="[(4, ref('smart_hr.group_holidays_specialist'))]" />
+		</record>
+
+		<record id="ir_rule_see_employee_own_holidays cancellations_dm"
+			model="ir.rule">
+			<field name="name">See all Employees holidays cancellations dm</field>
+			<field name="model_id" ref="model_hr_holidays_cancellation" />
+			<field name="domain_force">['|',('employee_id.parent_id.user_id','=',user.id),('employee_id.user_id','=',user.id)]
+			</field>
+			<field name="groups" eval="[(4, ref('smart_hr.group_dm'))]" />
+		</record>
+		
+		<record id="property_rule_holidays_extend_responsable_see_all" model="ir.rule">
+			<field name="name">Employee Holidays specialist</field>
+			<field name="model_id" ref="model_hr_holidays" />
+			<field name="domain_force">[(1,'=',1)]</field>
+			<field name="groups" eval="[(4,ref('smart_hr.group_holidays_extend_responsable'))]" />
+		</record>
+	</data>
+</openerp>

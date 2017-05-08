@@ -1,0 +1,1141 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#	* smart_base
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 9.0e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-01-23 11:47+0000\n"
+"PO-Revision-Date: 2017-01-23 11:47+0000\n"
+"Last-Translator: <>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: base
+#: model:res.country,name:base.ax
+msgid "Åland Islands"
+msgstr "جزر آلاند"
+
+#. module: base
+#: model:res.country,name:base.dj
+msgid "Djibouti"
+msgstr "جيبوتي"
+
+#. module: base
+#: model:res.country,name:base.dm
+msgid "Dominica"
+msgstr "دومينيكا"
+
+#. module: base
+#: model:res.country,name:base.do
+msgid "Dominican Republic"
+msgstr "جمهورية الدومنيكان"
+
+#. module: base
+#: model:res.country,name:base.tp
+msgid "East Timor"
+msgstr "تيمور الشرقية"
+
+#. module: base
+#: model:res.country,name:base.ec
+msgid "Ecuador"
+msgstr "الإكوادور"
+
+#. module: base
+#: model:res.country,name:base.eg
+msgid "Egypt"
+msgstr "مصر"
+
+#. module: base
+#: model:res.country,name:base.sv
+msgid "El Salvador"
+msgstr "السلفادور"
+
+#. module: base
+#: model:res.country,name:base.gq
+msgid "Equatorial Guinea"
+msgstr "غينيا الإستوائية"
+
+#. module: base
+#: model:res.country,name:base.er
+msgid "Eritrea"
+msgstr "إريتريا"
+
+#. module: base
+#: model:res.country,name:base.ee
+msgid "Estonia"
+msgstr "استونيا"
+
+#. module: base
+#: model:res.country,name:base.et
+msgid "Ethiopia"
+msgstr "أثيوبيا"
+
+#. module: base
+#: model:res.country,name:base.fk
+msgid "Falkland Islands"
+msgstr "جزر فوكلاند"
+
+#. module: base
+#: model:res.country,name:base.fo
+msgid "Faroe Islands"
+msgstr "جزر فارو"
+
+#. module: base
+#: model:res.country,name:base.fj
+msgid "Fiji"
+msgstr "فيجي"
+
+#. module: base
+#: model:res.country,name:base.fi
+msgid "Finland"
+msgstr "فنلندا"
+
+#. module: base
+#: model:res.country,name:base.gf
+msgid "French Guyana"
+msgstr "غيانا الفرنسية"
+
+#. module: base
+#: model:res.country,name:base.tf
+msgid "French Southern Territories"
+msgstr "المناطق الجنوبية لفرنسا"
+
+#. module: base
+#: model:res.country,name:base.ga
+msgid "Gabon"
+msgstr "الغابون"
+
+#. module: base
+#: model:res.country,name:base.gm
+msgid "Gambia"
+msgstr "غامبيا"
+
+
+#. module: base
+#: model:res.country,name:base.ge
+msgid "Georgia"
+msgstr "جورجيا"
+
+#. module: base
+#: model:res.country,name:base.de
+msgid "Germany"
+msgstr "ألمانيا"
+
+#. module: base
+#: model:res.country,name:base.gh
+msgid "Ghana"
+msgstr "غانا"
+
+#. module: base
+#: model:res.country,name:base.gi
+msgid "Gibraltar"
+msgstr "جبل طارق"
+
+#. module: base
+#: model:res.country,name:base.gr
+msgid "Greece"
+msgstr "اليونان"
+
+
+#. module: base
+#: model:res.country,name:base.gl
+msgid "Greenland"
+msgstr "الأرض الخضراء"
+
+#. module: base
+#: model:res.country,name:base.gd
+msgid "Grenada"
+msgstr "غرينادا"
+
+#. module: base
+#: model:res.country,name:base.gu
+msgid "Guam (USA)"
+msgstr "غوام (الولايات المتحدة الأمريكية)"
+
+#. module: base
+#: model:res.country,name:base.gt
+msgid "Guatemala"
+msgstr "غواتيمالا"
+
+#. module: base
+#: model:res.country,name:base.gn
+msgid "Guinea"
+msgstr "غينيا"
+
+#. module: base
+#: model:res.country,name:base.gw
+msgid "Guinea Bissau"
+msgstr "غينيا بيساو"
+
+#. module: base
+#: model:res.country,name:base.gy
+msgid "Guyana"
+msgstr "غيانا"
+
+#. module: base
+#: model:res.country,name:base.ht
+msgid "Haiti"
+msgstr "هايتي"
+
+#. module: base
+#: model:res.country,name:base.va
+msgid "Holy See (Vatican City State)"
+msgstr "الكرسي الرسولي (دولة الفاتيكان)"
+
+#. module: base
+#: model:res.country,name:base.hn
+msgid "Honduras"
+msgstr "هندوراس"
+
+#. module: base
+#: model:res.country,name:base.hk
+msgid "Hong Kong"
+msgstr "هونغ كونغ"
+
+#. module: base
+#: model:res.country,name:base.hu
+msgid "Hungary"
+msgstr "هنغاريا"
+
+#. module: base
+#: model:res.country,name:base.is
+msgid "Iceland"
+msgstr "أيسلندا"
+
+
+#. module: base
+#: model:res.country,name:base.in
+msgid "India"
+msgstr "الهند"
+
+#. module: base
+#: model:res.country,name:base.id
+msgid "Indonesia"
+msgstr "أندونيسيا"
+
+#. module: base
+#: model:res.country,name:base.ir
+msgid "Iran"
+msgstr "إيران"
+
+#. module: base
+#: model:res.country,name:base.iq
+msgid "Iraq"
+msgstr "العراق"
+
+#. module: base
+#: model:res.country,name:base.ie
+msgid "Ireland"
+msgstr "أيرلندا"
+
+#. module: base
+#: model:res.country,name:base.il
+msgid "Israel"
+msgstr "فلسطين"
+
+#. module: base
+#: model:res.country,name:base.it
+msgid "Italy"
+msgstr "إيطاليا"
+
+#. module: base
+#: model:res.country,name:base.ci
+msgid "Ivory Coast (Cote D'Ivoire)"
+msgstr "ساحل العاج"
+
+#. module: base
+#: model:res.country,name:base.jm
+msgid "Jamaica"
+msgstr "جامايكا"
+
+#. module: base
+#: model:res.country,name:base.jp
+msgid "Japan"
+msgstr "اليابان"
+
+#. module: base
+#: model:res.country,name:base.jo
+msgid "Jordan"
+msgstr "الأردن"
+
+#. module: base
+#: model:res.country,name:base.kz
+msgid "Kazakhstan"
+msgstr "كازاخستان"
+
+#. module: base
+#: model:res.country,name:base.ke
+msgid "Kenya"
+msgstr "كينيا"
+
+#. module: base
+#: model:res.country,name:base.ki
+msgid "Kiribati"
+msgstr "كيريباس"
+
+#. module: base
+#: model:res.country,name:base.kw
+msgid "Kuwait"
+msgstr "الكويت"
+
+#. module: base
+#: model:res.country,name:base.kg
+msgid "Kyrgyz Republic (Kyrgyzstan)"
+msgstr "جمهورية قيرغيزستان"
+
+#. module: base
+#: model:res.country,name:base.la
+msgid "Laos"
+msgstr "لاوس"
+
+#. module: base
+#: model:res.country,name:base.lv
+msgid "Latvia"
+msgstr "لاتفيا"
+
+#. module: base
+#: model:res.country,name:base.lb
+msgid "Lebanon"
+msgstr "لبنان"
+
+#. module: base
+#: model:res.country,name:base.ls
+msgid "Lesotho"
+msgstr "ليسوتو"
+
+#. module: base
+#: model:res.country,name:base.lr
+msgid "Liberia"
+msgstr "ليبيريا"
+
+#. module: base
+#: model:res.country,name:base.ly
+msgid "Libya"
+msgstr "ليبيا"
+
+#. module: base
+#: model:res.country,name:base.lt
+msgid "Lithuania"
+msgstr "ليتوانيا"
+
+#. module: base
+#: model:res.country,name:base.lu
+msgid "Luxembourg"
+msgstr "لوكسمبورغ"
+
+#. module: base
+#: model:res.country,name:base.mo
+msgid "Macau"
+msgstr "ماكاو"
+
+#. module: base
+#: model:res.country,name:base.mg
+msgid "Madagascar"
+msgstr "مدغشقر"
+
+#. module: base
+#: model:res.country,name:base.mw
+msgid "Malawi"
+msgstr "ملاوي"
+
+#. module: base
+#: model:res.country,name:base.my
+msgid "Malaysia"
+msgstr "ماليزيا"
+
+#. module: base
+#: model:res.country,name:base.mv
+msgid "Maldives"
+msgstr "جزر المالديف"
+
+#. module: base
+#: model:res.country,name:base.ml
+msgid "Mali"
+msgstr "مالي"
+
+
+#. module: base
+#: model:res.country,name:base.mt
+msgid "Malta"
+msgstr "مالطا"
+
+#. module: base
+#: model:res.country,name:base.mh
+msgid "Marshall Islands"
+msgstr "جزر مارشال"
+
+#. module: base
+#: model:res.country,name:base.mr
+msgid "Mauritania"
+msgstr "موريتانيا"
+
+#. module: base
+#: model:res.country,name:base.mu
+msgid "Mauritius"
+msgstr "موريشيوس"
+
+#. module: base
+#: model:res.country,name:base.yt
+msgid "Mayotte"
+msgstr "مايوت"
+
+#. module: base
+#: model:res.country,name:base.mx
+msgid "Mexico"
+msgstr "المكسيك"
+
+#. module: base
+#: model:res.country,name:base.fm
+msgid "Micronesia"
+msgstr "ميكرونيزيا"
+
+
+#. module: base
+#: model:res.country,name:base.md
+msgid "Moldavia"
+msgstr "مولدافيا"
+
+#. module: base
+#: model:res.country,name:base.mc
+msgid "Monaco"
+msgstr "موناكو"
+
+#. module: base
+#: model:res.country,name:base.mn
+msgid "Mongolia"
+msgstr "منغوليا"
+
+
+#. module: base
+#: model:res.country,name:base.me
+msgid "Montenegro"
+msgstr "الجبل الأسود"
+
+#. module: base
+#: model:res.country,name:base.ms
+msgid "Montserrat"
+msgstr "مونتسيرات"
+
+#. module: base
+#: model:res.country,name:base.ma
+msgid "Morocco"
+msgstr "المغرب"
+
+#. module: base
+#: model:res.country,name:base.mz
+msgid "Mozambique"
+msgstr "موزمبيق"
+
+#. module: base
+#: model:res.country,name:base.mm
+msgid "Myanmar"
+msgstr "ميانمار"
+
+#. module: base
+#: model:res.country,name:base.na
+msgid "Nناميبياamibia"
+msgstr ""
+
+#. module: base
+#: model:res.country,name:base.nr
+msgid "Nauru"
+msgstr "ناورو"
+
+#. module: base
+#: model:res.country,name:base.np
+msgid "Nepal"
+msgstr "نيبال"
+
+#. module: base
+#: model:res.country,name:base.nl
+msgid "Netherlands"
+msgstr "هولندا"
+
+#. module: base
+#: model:res.country,name:base.an
+msgid "Netherlands Antilles"
+msgstr "جزر الأنتيل الهولندية"
+
+#. module: base
+#: model:res.country,name:base.nt
+msgid "Neutral Zone"
+msgstr "المنطقة المحايدة"
+
+#. module: base
+#: model:res.country,name:base.nz
+msgid "New Zealand"
+msgstr "نيوزيلاندا"
+
+#. module: base
+#: model:res.country,name:base.ni
+msgid "Nicaragua"
+msgstr "نيكاراغوا"
+
+#. module: base
+#: model:res.country,name:base.ne
+msgid "Niger"
+msgstr "النيجر"
+
+#. module: base
+#: model:res.country,name:base.ng
+msgid "Nigeria"
+msgstr "نيجيريا"
+
+#. module: base
+#: model:res.country,name:base.nu
+msgid "Niue"
+msgstr "نيوي"
+
+
+#. module: base
+#: model:res.country,name:base.nf
+msgid "Norfolk Island"
+msgstr "جزيرة نورفولك"
+
+#. module: base
+#: model:res.country,name:base.kp
+msgid "North Korea"
+msgstr "كوريا الشمالية"
+
+#. module: base
+#: model:res.country,name:base.mp
+msgid "Northern Mariana Islands"
+msgstr "جزر مريانا الشمالية"
+
+#. module: base
+#: model:res.country,name:base.no
+msgid "Norway"
+msgstr "النرويج"
+
+#. module: base
+#: model:res.country,name:base.om
+msgid "Oman"
+msgstr "سلطنة عمان"
+
+#. module: base
+#: model:res.country,name:base.pk
+msgid "Pakistan"
+msgstr "باكستان"
+
+#. module: base
+#: model:res.country,name:base.pw
+msgid "Palau"
+msgstr "بالاو"
+
+#. module: base
+#: model:res.country,name:base.ps
+msgid "Palestinian Territory, Occupied"
+msgstr " الأراضي الفلسطينية المحتلة"
+
+#. module: base
+#: model:res.country,name:base.pa
+msgid "Panama"
+msgstr "بنما"
+
+#. module: base
+#: model:res.country,name:base.pg
+msgid "Papua New Guinea"
+msgstr "بابوا غينيا الجديدة"
+
+#. module: base
+#: model:res.country,name:base.py
+msgid "Paraguay"
+msgstr "باراغواي"
+
+#. module: base
+#: model:res.country,name:base.pe
+msgid "Peru"
+msgstr "بيرو"
+
+#. module: base
+#: model:res.country,name:base.ph
+msgid "Philippines"
+msgstr "الفلبين"
+
+#. module: base
+#: model:res.country,name:base.pl
+msgid "Poland"
+msgstr "بولندا"
+
+#. module: base
+#: model:res.country,name:base.pt
+msgid "Portugal"
+msgstr "البرتغال"
+
+
+#. module: base
+#: model:res.country,name:base.pr
+msgid "Puerto Rico"
+msgstr "بورتوريكو"
+
+#. module: base
+#: model:res.country,name:base.qa
+msgid "Qatar"
+msgstr "قطر"
+
+#. module: base
+#: model:res.country,name:base.ro
+msgid "Romania"
+msgstr "رومانيا"
+
+#. module: base
+#: model:res.country,name:base.ru
+msgid "Russian Federation"
+msgstr "الفيدرالية الروسية"
+
+#. module: base
+#: model:res.country,name:base.rw
+msgid "Rwanda"
+msgstr "رواندا"
+
+#. module: base
+#: model:res.country,name:base.sh
+msgid "Saint Helena"
+msgstr "سانت هيلانة"
+
+#. module: base
+#: model:res.country,name:base.lc
+msgid "Saint Lucia"
+msgstr "سانت لوسيا"
+
+#. module: base
+#: model:res.country,name:base.pm
+msgid "Saint Pierre and Miquelon"
+msgstr "سان بيار وميكلون"
+
+#. module: base
+#: model:res.country,name:base.ws
+msgid "Samoa"
+msgstr "ساموا"
+
+#. module: base
+#: model:res.country,name:base.sm
+msgid "San Marino"
+msgstr "سان مارينو"
+
+
+#. module: base
+#: model:res.country,name:base.sa
+msgid "Saudi Arabia"
+msgstr "المملكة العربية السعودية"
+
+#. module: base
+#: model:res.country,name:base.sn
+msgid "Senegal"
+msgstr "السنغال"
+
+
+#. module: base
+#: model:res.country,name:base.rs
+msgid "Serbia"
+msgstr "صربيا"
+
+#. module: base
+#: model:res.country,name:base.sc
+msgid "Seychelles"
+msgstr "سيشيل"
+
+#. module: base
+#: model:res.country,name:base.sl
+msgid "Sierra Leone"
+msgstr "سيرا ليون"
+
+#. module: base
+#: model:res.country,name:base.sg
+msgid "Singapore"
+msgstr "سنغافورة"
+
+#. module: base
+#: model:res.country,name:base.sk
+msgid "Slovakia"
+msgstr "سلوفاكيا"
+
+#. module: base
+#: model:res.country,name:base.si
+msgid "Slovenia"
+msgstr "سلوفينيا"
+
+#. module: base
+#: model:res.country,name:base.sb
+msgid "Solomon Islands"
+msgstr "جزر سليمان"
+
+#. module: base
+#: model:res.country,name:base.so
+msgid "Somalia"
+msgstr "الصومال"
+
+#. module: base
+#: model:res.country,name:base.za
+msgid "South Africa"
+msgstr "جنوب أفريقيا"
+
+#. module: base
+#: model:res.country,name:base.gs
+msgid "South Georgia and the South Sandwich Islands"
+msgstr "جزر جورجيا الجنوبية وساندويتش الجنوبية"
+
+#. module: base
+#: model:res.country,name:base.kr
+msgid "South Korea"
+msgstr "كوريا الجنوبية"
+
+#. module: base
+#: model:res.country,name:base.ss
+msgid "South Sudan"
+msgstr "جنوب السودان"
+
+#. module: base
+#: model:res.country,name:base.es
+msgid "Spain"
+msgstr "إسبانيا"
+
+#. module: base
+#: model:res.country,name:base.lk
+msgid "Sri Lanka"
+msgstr "سيريلانكا"
+
+#. module: base
+#: model:res.country,name:base.sd
+msgid "Sudan"
+msgstr "سودان"
+
+#. module: base
+#: model:res.country,name:base.sr
+msgid "Suriname"
+msgstr "سورينام"
+
+#. module: base
+#: model:res.country,name:base.sj
+msgid "Svalbard and Jan Mayen Islands"
+msgstr "جزر سفالبارد وجان ماين"
+
+#. module: base
+#: model:res.country,name:base.sz
+msgid "Swaziland"
+msgstr "سوازيلاند"
+
+#. module: base
+#: model:res.country,name:base.se
+msgid "Sweden"
+msgstr "السويد"
+
+#. module: base
+#: model:res.country,name:base.ch
+msgid "Switzerland"
+msgstr "سويسرا"
+
+#. module: base
+#: model:res.country,name:base.sy
+msgid "Syria"
+msgstr "سوريا"
+
+#. module: base
+#: model:res.country,name:base.tw
+msgid "Taiwan"
+msgstr "تايوان"
+
+#. module: base
+#: model:res.country,name:base.tj
+msgid "Tajikistan"
+msgstr "طاجيكستان"
+
+#. module: base
+#: model:res.country,name:base.tz
+msgid "Tanzania"
+msgstr "تنزانيا"
+
+#. module: base
+#: model:res.country,name:base.th
+msgid "Thailand"
+msgstr "تايلاند"
+
+#. module: base
+#: model:res.country,name:base.tg
+msgid "Togo"
+msgstr "توغو"
+
+#. module: base
+#: model:res.country,name:base.tk
+msgid "Tokelau"
+msgstr "توكيلاو"
+
+#. module: base
+#: model:res.country,name:base.to
+msgid "Tonga"
+msgstr "تونغا"
+
+#. module: base
+#: model:res.country,name:base.tt
+msgid "Trinidad and Tobago"
+msgstr "ترينداد وتوباغو"
+
+#. module: base
+#: model:res.country,name:base.tn
+msgid "Tunisia"
+msgstr "تونس"
+
+#. module: base
+#: model:res.country,name:base.tr
+msgid "Turkey"
+msgstr "تركيا"
+
+#. module: base
+#: model:res.country,name:base.tm
+msgid "Turkmenistan"
+msgstr "تركمانستان"
+
+#. module: base
+#: model:res.country,name:base.tc
+msgid "Turks and Caicos Islands"
+msgstr "جزر تركس وكايكوس"
+
+#. module: base
+#: model:res.country,name:base.tv
+msgid "Tuvalu"
+msgstr "توفالو"
+
+#. module: base
+#: model:res.country,name:base.ug
+msgid "Uganda"
+msgstr "أوغندا"
+
+#. module: base
+#: model:res.country,name:base.ua
+msgid "Ukraine"
+msgstr "أوكرانيا"
+
+#. module: base
+#: model:res.country,name:base.ae
+msgid "United Arab Emirates"
+msgstr "الإمارات العربية المتحدة"
+
+#. module: base
+#: model:res.country,name:base.uk
+msgid "United Kingdom"
+msgstr "المملكة المتحدة"
+
+#. module: base
+#: model:res.country,name:base.us
+msgid "United States"
+msgstr "الولايات المتحدة"
+
+#. module: base
+#: model:res.country,name:base.uy
+msgid "Uruguay"
+msgstr "أوروغواي"
+
+#. module: base
+#: model:res.country,name:base.uz
+msgid "Uzbekistan"
+msgstr "أوزبكستان"
+
+#. module: base
+#: model:res.country,name:base.vu
+msgid "Vanuatu"
+msgstr "فانواتو"
+
+#. module: base
+#: model:res.country,name:base.ve
+msgid "Venezuela"
+msgstr "فنزويلا"
+
+#. module: base
+#: model:res.country,name:base.vn
+msgid "Vietnam"
+msgstr "فيتنام"
+
+#. module: base
+#: model:res.country,name:base.vg
+msgid "Virgin Islands (British)"
+msgstr "جزر العذراء (البريطانية)"
+
+#. module: base
+#: model:res.country,name:base.vi
+msgid "Virgin Islands (USA)"
+msgstr "جزر العذراء (الولايات المتحدة الأمريكية)"
+
+#. module: base
+#: model:res.country,name:base.eh
+msgid "Western Sahara"
+msgstr "الصحراء الغربية"
+
+#. module: base
+#: model:res.country,name:base.yu
+msgid "Yugoslavia"
+msgstr "يوغوسلافيا"
+
+#. module: base
+#: model:res.country,name:base.zr
+msgid "Zaire"
+msgstr "زائير"
+
+#. module: base
+#: model:res.country,name:base.zm
+msgid "Zambia"
+msgstr "زامبيا"
+
+#. module: base
+#: model:res.country,name:base.zw
+msgid "Zimbabwe"
+msgstr "زيمبابوي"
+
+#. module: base
+#: model:res.country,name:base.ax
+msgid "Åland Islands"
+msgstr "جزر آلاند"
+
+#. module: base
+#: model:res.country,name:base.ad
+msgid "Andorra, Principality of"
+msgstr "أندورا، إمارة ل"
+
+#. module: base
+#: model:res.country,name:base.bq
+msgid "Bonaire, Sint Eustatius and Saba"
+msgstr "بونير، سينت أوستاتيوس وسابا"
+
+#. module: base
+#: model:res.country,name:base.cw
+msgid "Curaçao"
+msgstr "كوراساو"
+
+#. module: base
+#: model:res.country,name:base.gp
+msgid "Guadeloupe (French)"
+msgstr "جوادلوب (الفرنسية)"
+
+#. module: base
+#: model:res.country,name:base.gg
+msgid "Guernsey"
+msgstr "غيرنسي"
+
+#. module: base
+#: model:res.country,name:base.hm
+msgid "Heard and McDonald Islands"
+msgstr "سمعت وجزر ماكدونالد"
+
+#. module: base
+#: model:res.country,name:base.im
+msgid "Isle of Man"
+msgstr "جزيرة آيل أوف مان"
+
+#. module: base
+#: model:res.country,name:base.je
+msgid "Jersey"
+msgstr "جيرسي"
+
+#. module: base
+#: model:res.country,name:base.li
+msgid "Liechtenstein"
+msgstr "ليختنشتاين"
+
+
+#. module: base
+#: model:res.country,name:base.mk
+msgid "Macedonia, the former Yugoslav Republic of"
+msgstr "مقدونيا، الجمهورية اليوغوسلافية السابقة"
+
+#. module: base
+#: model:res.country,name:base.mq
+msgid "Martinique (French)"
+msgstr "مارتينيك (الفرنسية)"
+
+#. module: base
+#: model:res.country,name:base.na
+msgid "Namibia"
+msgstr "ناميبيا"
+
+#. module: base
+#: model:res.country,name:base.nc
+msgid "New Caledonia (French)"
+msgstr "كاليدونيا الجديدة (الفرنسية)"
+
+
+#. module: base
+#: model:res.country,name:base.pn
+msgid "Pitcairn Island"
+msgstr "جزيرة بيتكيرن"
+
+
+#. module: base
+#: model:res.country,name:base.pf
+msgid "Polynesia (French)"
+msgstr "بولينيزيا (الفرنسية)"
+
+#. module: base
+#: model:res.country,name:base.re
+msgid "Reunion (French)"
+msgstr "ريونيون (الفرنسية)"
+
+
+#. module: base
+#: model:res.country,name:base.bl
+msgid "Saint Barthélémy"
+msgstr "سانت بارتيليمي"
+
+#. module: base
+#: model:res.country,name:base.kn
+msgid "Saint Kitts & Nevis Anguilla"
+msgstr "سانت كيتس ونيفيس أنغيلا"
+
+
+#. module: base
+#: model:res.country,name:base.mf
+msgid "Saint Martin (French part)"
+msgstr "سانت مارتن (الجزء الفرنسي)"
+
+#. module: base
+#: model:res.country,name:base.st
+msgid "Saint Tome (Sao Tome) and Principe"
+msgstr "سان تومي (سان تومي) وبرينسيبي"
+
+#. module: base
+#: model:res.country,name:base.vc
+msgid "Saint Vincent & Grenadines"
+msgstr "سانت فنسنت وجزر غرينادين"
+
+#. module: base
+#: model:res.country,name:base.sx
+msgid "Sint Maarten (Dutch part)"
+msgstr "سانت مارتن (الجزء الهولندي)"
+
+#. module: base
+#: model:res.country,name:base.um
+msgid "USA Minor Outlying Islands"
+msgstr "الولايات المتحدة الأمريكية الجزر الصغيرة النائية"
+
+
+#. module: base
+#: model:res.country,name:base.wf
+msgid "Wallis and Futuna Islands"
+msgstr "واليس وفوتونا"
+
+
+#. module: mail
+#: code:addons/mail/models/mail_thread.py:324
+#, python-format
+msgid "Click here to add new %s"
+msgstr "انقر هنا لإضافة %s جديد"
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/xml/chatter.xml:75
+#, python-format
+msgid "Log a note. Followers will not be notified."
+msgstr "سجل ملاحظة. لن يتم إشعارالمتابعين."
+
+#. module: mail
+#: model:ir.model.fields,field_description:mail.field_mail_compose_message_is_log
+msgid "Log an Internal Note"
+msgstr "سجّل ملاحظة الداخلية"
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/xml/chatter.xml:75
+#, python-format
+msgid "Log an internal note"
+msgstr "سجّل ملاحظة الداخلية"
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/xml/chatter.xml:12
+#, python-format
+msgid ""
+"Log an internal note which will not be sent to followers, but which can be read\n"
+"                    by users accessing this document."
+msgstr "سجل ملاحظة داخلية لن يتم إرسالها إلى المتابعين، ولكن يمكن قراءته من قبل مستخدمي هذه الوثيقة."
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/js/chat_manager.js:54
+#: code:addons/mail/static/src/js/window_manager.js:124
+#: code:addons/mail/static/src/xml/chatter.xml:67
+#: code:addons/mail/static/src/xml/client_action.xml:127
+#: code:addons/mail/static/src/xml/systray.xml:16
+#, python-format
+msgid "New message"
+msgstr "رسالة جديدة"
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/xml/composer.xml:7
+#, python-format
+msgid "Write something..."
+msgstr "أكتب شيئا..."
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/views/list_view_editable.js:121
+#, python-format
+msgid "The line has been modified, your changes will be discarded. Are you sure you want to discard the changes ?"
+msgstr "لقد تم تعديل الخط، وسيتم تجاهل التغييرات. هل أنت متأكد أنك تريد تجاهل التغييرات؟"
+
+
+#. module: base
+#: model:ir.actions.act_window,name:base.action_res_bank_form
+#: model:ir.model.fields,field_description:base.field_res_partner_bank_ids
+#: model:ir.model.fields,field_description:base.field_res_users_bank_ids
+#: model:ir.ui.menu,name:base.menu_action_res_bank_form
+#: model:ir.ui.view,arch_db:base.view_res_bank_tree
+msgid "Banks"
+msgstr "البنوك"
+
+
+#. module: base
+#: sql_constraint:res.users:0
+msgid "You can not have two users with the same login !"
+msgstr "لا يمكن انشاء اثنين من المستخدمين  بنفس البريد الإلكتروني"
+
+
+#. module: base
+#: code:addons/model.py:137
+#, python-format
+msgid ""
+"The operation cannot be completed, probably due to the following:\n"
+"- deletion: you may be trying to delete a record while other records still reference it\n"
+"- creation/update: a mandatory field is not correctly set"
+msgstr "لا يمكن أن تكتمل العملية، وربما يرجع ذلك إلى ما يلي:\n"
+"-  الحذف : قد يكون محاولة لحذف سجل أثناء سجلات أخرى لا يزال مرجع له\n"
+"- إنشاء / تحديث: لم يتم تعيين حقل إلزامي بشكل صحيح\n"
+
+#. module: base
+#: code:addons/model.py:152
+#, python-format
+msgid ""
+"\n"
+"\n"
+"[object with reference: %s - %s]"
+msgstr "\n\n[الكائن: %s - %s]"
+
+
+#. module: mail
+#. openerp-web
+#: code:addons/mail/static/src/xml/thread.xml:48
+#, python-format
+msgid "Note by"
+msgstr "تعديل من قبل"
+
+#. module: base
+#: code:addons/base/ir/ir_fields.py:144
+#, python-format
+msgid "true"
+msgstr "صحيح"
+
+
+#. module: base
+#: code:addons/base/ir/ir_fields.py:144
+#, python-format
+msgid "false"
+msgstr "خطأ"
+
+
+#. module: base
+#: selection:ir.mail_server,smtp_encryption:0
+msgid "None"
+msgstr "لا شيء"

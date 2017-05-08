@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<!-- الحسميات المتخلدة -->
+
+		<record model="ir.ui.view" id="hr_payslip_difference_history_tree">
+			<field name="name">hr.payslip.difference.history.tree</field>
+			<field name="model">hr.payslip.difference.history</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="الحسميات المتخلدة" create='0' edit='0' duplicate='0'
+					delete='0'>
+					<field name="period_id" />
+					<field name="name" />
+					<field name="payslip_id" />
+					<field name="amount" />
+				</tree>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_payslip_difference_history_form">
+			<field name="name">hr.payslip.difference.history.tree</field>
+			<field name="model">hr.payslip.difference.history</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="الحسميات المتخلدة" create='0' edit='0' duplicate='0'
+					delete='0'>
+					<sheet>
+						<group>
+							<field name="period_id" />
+							<field name="name" />
+							<field name="payslip_id" />
+							<field name="amount" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="hr_payslip_difference_history_search" model="ir.ui.view">
+			<field name="name">hr.payslip.difference.history.search</field>
+			<field name="model">hr.payslip.difference.history</field>
+			<field name="arch" type="xml">
+				<search string="الحسميات المتخلدة">
+					<field name="period_id" />
+					<field name="name" />
+					<group expand="0" string="تجميع حسب">
+						<filter name="payslip_id" string="المسير"
+							context="{'group_by':'payslip_id'}" />
+						<filter name="period_id" string="الفترة" context="{'group_by':'period_id'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_payslip_difference_history">
+			<field name="name">الحسميات المتخلدة</field>
+			<field name="res_model">hr.payslip.difference.history</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="hr_payslip_difference_history_tree" />
+			<field name="search_view_id" ref="hr_payslip_difference_history_search" />
+		</record>
+
+		<menuitem id="hr_payslip_difference_history_menu" name="الحسميات المتخلدة"
+			sequence="50" groups="group_bonus_management" parent="hr_payroll_settlement_root"
+			action="action_hr_payslip_difference_history" />
+
+	</data>
+</openerp>
+			

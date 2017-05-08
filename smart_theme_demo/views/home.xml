@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+	   <!--Layout  -->
+	   
+	 
+		
+		  
+		 <template id="webclient_home">
+		    &lt;!DOCTYPE html&gt;
+		    <html>
+		        <head>
+		            <meta charset="utf-8"/>
+		            <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+		            <meta name="viewport" content="width=device-width, initial-scale=1"/>
+		           <title>your company</title>
+		
+		            <link rel="shortcut icon" href="/smart_theme/static/src/img/favicons/faviconDemo.ico" type="image/x-icon"/>
+					<link rel="apple-touch-icon-precomposed" href="/smart_theme/static/src/img/favicons/apple-touch-icon-precomposed.png" />
+					<link rel="stylesheet" href="/smart_theme/static/src/repository/bootstrap/css/bootstrap.css"/>
+					<link rel="stylesheet" href="/smart_theme/static/src/repository/bootstrap/css/bootstrap-theme.css"/>
+					<link rel="stylesheet" href="/smart_theme/static/src/css/main.css"/>
+					<script src="/smart_theme/static/src/repository/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+	
+<!-- 		            <t t-call-assets="web.assets_common"/> -->
+		            
+		            <script type="text/javascript">
+		                odoo.define('web.csrf', function (require) {
+		                    var token = "<t t-esc="request.csrf_token(None)"/>";
+		                    require('web.core').csrf_token = token;
+		                    require('qweb').default_dict.csrf_token = token;
+		                });
+		                odoo.db_info = <t t-raw="db_info"/>;
+		            </script>
+<!-- 		            <t t-call-assets="web.assets_backend"/> -->
+		
+		            <![CDATA[
+		                <!--[if lt IE 10]>
+		                    <body class="ie9">
+		                <![endif]-->
+		            ]]>
+		
+		
+<!-- 		 <script type="text/javascript"> -->
+<!--                 $(function() { -->
+<!--                     <t t-if="init"> -->
+<!--                         <t t-raw="init"/> -->
+<!--                     </t> -->
+<!--                     <t t-if="not init"> -->
+<!--                         odoo.define('web.web_client', function (require) { -->
+<!--                             var WebClient = require('web.WebClient'); -->
+<!--                             var web_client = new WebClient(); -->
+<!--                             web_client.setElement($(document.body)); -->
+<!--                             web_client.start(); -->
+<!--                             return web_client; -->
+<!--                         }); -->
+<!--                     </t> -->
+<!--                 }); -->
+<!--             </script> -->
+            
+		        
+		        </head>
+		         
+		         
+		         <body class="utility-page">
+	<!--[if lt IE 9]>
+	<![endif]-->
+	<!--[if lt IE 9]>
+		<p class="browserupgrade">
+			هذا المتصفح قديم, الرجاء ترقية المتصفح الخاص بك من <a href="http://windows.microsoft.com/ar-sa/internet-explorer/internet-explorer-help" target="_blank" title="">هنا</a>.
+		</p>
+		<div class="container-fluid hidden">
+	<![endif]-->
+	<!--[if !IE]-->
+		<div class="container-fluid">
+	<!--<![endif]-->
+
+			<div id="navbar" class="row">
+				<div id="brandHolder" class="col-xs-12 col-sm-6">
+					<a href="/home" class="navbar-brand" title="">
+						<img src="/smart_theme/static/src/img/logo/logo_demo.png" class="img-responsive" alt="" />
+						<!-- <img src="img/logo/logo_v.jpg" class="img-responsive visible-sm" alt="" /> -->
+					</a>
+					<h1>الانظمة الداخلية</h1>
+				</div>
+				<div  id="navHelper" class="col-xs-12 col-sm-6">
+					<ul class="list-inline text-left">
+						<li id="connexion" class="dropdown">
+							<a class="dropdown-toggle clearfix" href="javascript:void(0);">
+								<!--  <img src="/smart_theme/static/src/assets/img/users/user.png" class="img-responsive" alt="" />-->
+							 <span itemprop="image" class="test"   t-field="user.image" t-field-options='{"widget": "image"}'/>			   
+							</a>
+						 
+							<ul class="dropdown-menu">
+								<li class="head">
+									<a href="/web/session/logout"><i class="icon16-logout"></i> الخروج</a>
+									<h2> <span t-esc="user.name"/> </h2>
+									
+									<h4><span class="status success"></span> مداوم</h4>
+								</li>
+							</ul>
+						</li>
+						<li><a href="javascript:void(0);" title=""><i class="glyphicon glyphicon-calendar"></i></a></li>
+						<li><a href="javascript:void(0);" title=""><i class="glyphicon glyphicon-envelope"></i></a></li>
+						<li><a href="javascript:void(0);" title=""><i class="glyphicon glyphicon-folder-open"></i></a></li>
+						<li><a href="javascript:void(0);" title=""><i class="glyphicon glyphicon-question-sign"></i></a></li>
+						<li><a href="javascript:void(0);" title=""><i class="glyphicon glyphicon-comment"></i> <span class="badge">03</span></a></li>
+					</ul>
+				</div>
+			</div>
+			
+			<div id="mainContent" class="row">
+				<div class="col-sm-12 col-lg-10 col-lg-offset-1">
+					<div id="home">
+						<ul class="list-inline">
+							<li class="animate-in" data-anim-type="fade-in-left-large" data-anim-delay="200"><a t-attf-href="/web#menu_id={{hr_root}}" title=""><span><i class="icon90-group"></i></span><h2>نظام الموارد البشرية</h2></a></li>
+							<li class="animate-in" data-anim-type="fade-in-down-large" data-anim-delay="200"><a href="javascript:void(0);" title=""><span><i class="icon90-map"></i></span><h2>نظام الإتصالات الإدارية</h2></a></li>
+							<li class="animate-in" data-anim-type="fade-in-right-large" data-anim-delay="200"><a href="javascript:void(0);" title=""><span><i class="icon90-plan"></i></span><h2>نظام الميزانية</h2></a></li>
+							<li class="animate-in" data-anim-type="fade-in-left-large" data-anim-delay="400"><a href="javascript:void(0);" title=""><span><i class="icon90-password"></i></span><h2>نظام الصلاحيات</h2></a></li>
+							<li class="animate-in" data-anim-type="fade-in-up-large" data-anim-delay="400"><a href="javascript:void(0);" title=""><span><i class="icon90-file"></i></span><h2>نظام الأرشفة</h2></a></li>
+							<li class="animate-in" data-anim-type="fade-in-right-large" data-anim-delay="400"><a href="javascript:void(0);" title=""><span><i class="icon90-money"></i></span><h2>نظام المالية</h2></a></li>
+							<li class="animate-in" data-anim-type="fade-in-left-large" data-anim-delay="500"><a href="javascript:void(0);" title=""><span><i class="icon90-megaphone"></i></span><h2>نظام البلاغات</h2></a></li>
+							<li class="animate-in" data-anim-type="fade-in-up-large" data-anim-delay="500"><a href="javascript:void(0);" title=""><span><i class="icon90-warehouse"></i></span><h2>نظام المستودعات</h2></a></li>
+							<li class="animate-in" data-anim-type="fade-in-right-large" data-anim-delay="500"><a href="javascript:void(0);" title=""><span><i class="icon90-business"></i></span><h2>نظام الإستثمارات</h2></a></li>
+						</ul>
+					</div>
+				</div>
+			</div><!-- /#mainContent -->
+
+		</div><!-- /.container-fluid	-->
+
+	<script type="text/javascript" src="/smart_theme/static/src/repository/js/vendor/jquery-2.2.3.min.js"></script>
+	<script type="text/javascript" src="/smart_theme/static/src/repository/js/vendor/jquery.mousewheel-3.0.6.pack.js"></script>
+	<script type="text/javascript" src="/smart_theme/static/src/repository/bootstrap/js/bootstrap.js"></script>
+	
+    <!-- Owl stylesheet -->
+    <link rel="stylesheet" href="/smart_theme/static/src/repository/js/vendor/owlCarousel2/owl.carousel.css" />
+	<script src="/smart_theme/static/src/repository/js/vendor/owlCarousel2/owl.carousel.js"></script>
+
+    <!-- perfectscrollbar -->
+	<link rel="stylesheet" href="/smart_theme/static/src/repository/js/vendor/perfectscrollbar/perfect-scrollbar.css" type="text/css" media="screen" />
+					<script src="/smart_theme/static/src/repository/js/vendor/perfectscrollbar/perfect-scrollbar.jquery.js"></script>
+
+    <!-- animations -->
+	<link rel="stylesheet" href="/smart_theme/static/src/repository/js/vendor/animations/css/animations.css" type="text/css" media="screen" />
+	<script src="/smart_theme/static/src/repository/js/vendor/animations/js/smoothscroll.min.js" type="text/javascript"></script>
+	<script src="/smart_theme/static/src/repository/js/vendor/animations/js/appear.min.js" type="text/javascript"></script>
+	<script src="/smart_theme/static/src/repository/js/vendor/animations/js/animations.min.js" type="text/javascript"></script>
+
+	<link rel="stylesheet" href="/smart_theme/static/src/repository/js/vendor/canvasbg/canvasbg.css" type="text/css" media="screen" />
+	<script src="/smart_theme/static/src/repository/js/vendor/canvasbg/canvasbg.js"></script>
+
+    <!-- select2 -->
+	<link rel="stylesheet" href="/smart_theme/static/src/repository/js/vendor/select2/select2.css" type="text/css" media="screen" />
+	<script src="/smart_theme/static/src/repository/js/vendor/select2/select2.js"></script>
+    <script src="/smart_theme/static/src/repository/js/vendor/select2/select2_locale_ar.js"></script>
+	
+	<!--
+	<script type="text/javascript" src="/smart_theme/static/src/repository/js/vendor/bootstrap-rating.js"></script>-->
+
+	<script src="/smart_theme/static/src/js/checkform.js"></script>
+	<script src="/smart_theme/static/src/js/plugins.js"></script>
+	<script src="/smart_theme/static/src/js/main.js?rev=1952016153250"></script>
+
+	 
+</body>
+
+		    </html>
+		</template>
+
+        
+    </data>
+</openerp>

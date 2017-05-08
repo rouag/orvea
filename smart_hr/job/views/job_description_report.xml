@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_job_description">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.landscape_layout">
+						<div class="page">
+							<div class="oe_structure" />
+
+							<t t-set="job" t-value="get_job(data['form'])" />
+							<t t-set="decision_appoint" t-value="get_employee_job_decision(job)" />
+							<t t-set="decision_appoint_history" t-value="get_employee_job_decision_history(job)" />
+							<t t-set="employee_last_training" t-value="get_employee_last_training(job)" />
+							<div class="col-xs-12 text-center">
+								<h3 style="color:#395870;">
+									<strong>
+										تقرير وصف أعمال وظيفة
+									</strong>
+								</h3>
+							</div>
+
+
+							<table class="table table-condensed">
+
+								<tr style="height: 50px;">
+									<td width="5%">
+										<strong>13</strong>
+									</td>
+									<td width="95%" colspan="4"></td>
+								</tr>
+								<tr>
+									<td width="5%">
+										<strong>14</strong>
+									</td>
+									<td width="95%" colspan="4" class="text-center">
+										<strong>مبررات طلب التحوير</strong>
+									</td>
+								</tr>
+								<tr>
+									<td width="5%">
+										<strong>15</strong>
+									</td>
+									<td width="23.75%">
+										<strong>هل سبق تحوير الوظيفة:</strong>
+									</td>
+									<td width="23.75%">
+										<div class="col-md-12 text-center">
+											<strong>نعم</strong>
+
+											<t t-if="job.update_date">
+												<span class="glyphicon glyphicon-ok"
+													style="width:20px;height:20px;	border:1px solid #000;padding-right: 2px;margin-left:15px;"></span>
+											</t>
+											<t t-if="not job.update_date">
+												<span
+													style="width:15px;height:15px;	border:1px solid #000;padding-right: 20px;margin-left:15px;"></span>
+											</t>
+											<strong>لا</strong>
+											<t t-if="not job.update_date">
+												<span class="glyphicon glyphicon-ok"
+													style="width:20px;height:20px;	border:1px solid #000;padding-right: 2px;margin-left:15px;"></span>
+											</t>
+											<t t-if="job.update_date">
+												<span
+													style="width:15px;height:15px;	border:1px solid #000;padding-right: 20px;margin-left:15px;"></span>
+											</t>
+										</div>
+									</td>
+									<td width="23.75%">
+										<strong>تاريخ التحوير:</strong>
+									</td>
+									<td width="23.75%">
+										<t t-if="job.update_date">
+											<span t-esc="get_hijri_date(job.update_date, '-')" />
+										</t>
+										<t t-if="not job.update_date">
+											<span>-</span>
+										</t>
+									</td>
+								</tr>
+								<tr>
+									<td width="5%">
+										<strong>16</strong>
+									</td>
+									<td width="23.75%">
+										<strong>تاريخ إحداث الوظيفة:</strong>
+									</td>
+									<td width="23.75%">
+										<span t-esc="get_hijri_date(get_job_create_date(job), '-')" />
+									</td>
+									<td width="23.75%">
+										<strong>تاريخ شغورها:</strong>
+									</td>
+									<td width="23.75%">
+										<span t-esc="get_hijri_date(job.occupied_date, '-')" />
+									</td>
+								</tr>
+								<tr>
+									<td width="5%">
+										<strong>17</strong>
+									</td>
+									<td width="95%" colspan="4" class="text-center">
+										<strong>معلومات عن شاغر الوظيفة في
+											حالة كونها مشغولة
+										</strong>
+									</td>
+								</tr>
+								<tr>
+									<td width="5%">
+										<strong>18</strong>
+									</td>
+									<td width="23.75%">
+										<strong>الإسم:</strong>
+									</td>
+									<td width="23.75%">
+										<span t-esc="job.employee.name" />
+									</td>
+									<td width="23.75%">
+										<strong>السجل المدني</strong>
+									</td>
+									<td width="23.75%">
+										<span t-esc="job.employee.identification_id" />
+									</td>
+								</tr>
+								<tr>
+									<td width="5%">
+										<strong>19</strong>
+									</td>
+									<td width="23.75%">
+										<strong>المؤهل العلمي:</strong>
+									</td>
+									<td width="71.25%" colspan="3">
+										<t t-if="decision_appoint">
+											<spant t-esc="decision_appoint.employee_id.education_level_id.name" />
+										</t>
+									</td>
+
+								</tr>
+								<tr>
+									<td width="5%" rowspan="2">
+										<strong>20</strong>
+									</td>
+
+									<td width="23.75%">
+										<strong>أخر برنامج تم الحصول عليه:</strong>
+									</td>
+									<td width="71.25%" colspan="3">
+										<t t-if="employee_last_training">
+											<span t-esc="employee_last_training.name" />
+										</t>
+									</td>
+
+								</tr>
+								<tr>
+									<td width="23.75%">
+										<strong>نوعه:</strong>
+									</td>
+									<td width="23.75%">
+										<t t-if="employee_last_training">
+											<span t-esc="employee_last_training.name" />
+										</t>
+									</td>
+									<td width="23.75%">
+										<strong>مدته:</strong>
+									</td>
+									<td width="23.75%">
+										<t t-if="employee_last_training">
+											<span t-esc="employee_last_training.number_of_days" />
+										</t>
+									</td>
+
+								</tr>
+								<tr>
+									<td width="5%">
+										<strong>21</strong>
+									</td>
+									<td width="23.75%">
+										<strong>مصدرها:</strong>
+									</td>
+									<td width="71.25%" colspan="3">
+										<t t-if="employee_last_training">
+											<span t-esc="employee_last_training.department" />
+										</t>
+									</td>
+
+								</tr>
+								<tr>
+									<td width="5%">
+										<strong>22</strong>
+									</td>
+									<td width="95%" colspan="4" class="text-center">
+										<strong>الخبرات العلمية خلال
+											السنتين الأخيرتين
+										</strong>
+									</td>
+								</tr>
+								<tr>
+									<t t-if="decision_appoint_history">
+										<td width="5%" t-att-rowspan="len(decision_appoint_history)+1">
+											<strong>23</strong>
+										</td>
+									</t>
+									<t t-if="not decision_appoint_history">
+										<td width="5%">
+											<strong>23</strong>
+										</td>
+									</t>
+									<td width="23.75%">
+										<strong>المسمى الوظيفي الذي كان يشغلها</strong>
+									</td>
+									<td width="23.75%">
+										<strong>مرتبتها</strong>
+									</td>
+									<td width="23.75%">
+										<strong>من تاريخ</strong>
+									</td>
+									<td width="23.75%">
+										<strong>حتى تاريخ</strong>
+									</td>
+								</tr>
+								<tr t-foreach="decision_appoint_history" t-as="line">
+									<td width="23.75%">
+										<span t-esc="line.job_id.name.name" />
+									</td>
+									<td width="23.75%">
+										<span t-esc="line.job_id.grade_id.name" />
+									</td>
+									<td width="23.75%">
+										<span t-esc="get_hijri_date(line.date_hiring, '-')" />
+									</td>
+									<td width="23.75%">
+										<span t-esc="get_hijri_date(line.date_hiring_end, '-')" />
+									</td>
+								</tr>
+								<tr>
+									<td width="5%" rowspan="4">
+										<strong>23</strong>
+									</td>
+									<td width="95%" colspan="4" class="text-center">
+										<strong>مصادقة المسؤلين في الجهة
+											بهيئة التحقيق والإدعاء العام
+										</strong>
+									</td>
+								</tr>
+								<tr>
+									<td width="23.75%">
+										<strong>المشرف العام على إدارة الموارد البشرية</strong>
+									</td>
+									<td width="71.25%" colspan="2"></td>
+									<td width="23.75%">
+										<strong>التوقيع:</strong>
+									</td>
+								</tr>
+								<tr>
+									<td width="23.75%">
+										<strong>مساعد الرئيس للتطوير والتقنية</strong>
+									</td>
+									<td width="47.5%" colspan="2"></td>
+									<td width="23.75%">
+										<strong>التوقيع:</strong>
+									</td>
+								</tr>
+								<tr>
+									<td width="23.75%">
+										<strong>مدير عام الشؤون الإدارية والمالية المكلف</strong>
+									</td>
+									<td width="47.5%" colspan="2"></td>
+									<td width="23.75%">
+										<strong>التوقيع:</strong>
+									</td>
+								</tr>
+								<tr>
+									<td width="5%">
+										<strong>25</strong>
+									</td>
+									<td width="95%" colspan="4" class="text-center">
+										<div class="col-md-12">
+											<strong>تدقيق النموذج</strong>
+											<span
+												style="width:15px;height:15px;	border:1px solid #000;padding-right: 20px;margin-left:15px;"></span>
+											<strong>مكتمل</strong>
+											<span
+												style="width:15px;height:15px;	border:1px solid #000;padding-right: 20px;margin-left:15px;"></span>
+											<strong>غير مكتمل</strong>
+											<span
+												style="width:15px;height:15px;	border:1px solid #000;padding-right: 20px;margin-left:15px;"></span>
+											<strong>ملاحظات:</strong>
+											<span></span>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td width="5%">
+										<strong>26</strong>
+									</td>
+									<td width="95%" colspan="4">
+										<div class="row">
+											<div class="col-xs-12">
+												<div class="col-xs-6">
+													<strong>مطابقة الوظيفة مع سجلات وزارة الخدمة:</strong>
+												</div>
+												<div class="col-xs-6">
+													<strong>إسم المختص:</strong>
+												</div>
+											</div>
+										</div>
+										<br></br>
+										<div class="row">
+											<div class="col-xs-12">
+												<div class="col-xs-6">
+													<span
+														style="width:15px;height:15px;	border:1px solid #000;padding-right: 20px;margin-left:15px;"></span>
+													<strong>مطابقه</strong>
+													<span
+														style="width:15px;height:15px;	border:1px solid #000;padding-right: 20px;margin-left:15px;"></span>
+													<strong>غير مطابقه</strong>
+												</div>
+												<div class="col-xs-6">
+													<strong>توقيعه:</strong>
+													<span></span>
+												</div>
+											</div>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</t>
+
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+								

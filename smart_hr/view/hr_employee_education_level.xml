@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+
+		<record id="view_form_hr_employee_education_job_level" model="ir.ui.view">
+			<field name="name">hr.employee.education.level.job.form</field>
+			<field name="model">hr.employee.job.education.level</field>
+			<field name="arch" type="xml">
+				<form string="المستوى التعليمي">
+					<sheet>
+						<group col="4">
+							<field name="level_education_id" required="1" />
+							<field name="job_specialite" required="1" />
+							<field name="diploma_id" />
+							<field name="qualification_id" />
+							<field name="specialization_ids" widget="many2many_tags" />
+							<field name="diploma_date" />
+							<field name="governmental_entity" />
+							<field name="while_serving" />
+						</group>
+
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_tree_hr_employee__job_education_level" model="ir.ui.view">
+			<field name="name">hr.employee.education.level.job.tree</field>
+			<field name="model">hr.employee.job.education.level</field>
+			<field name="arch" type="xml">
+				<tree string="المستوى التعليمي" class="oe_tree_view">
+					<field name="level_education_id" />
+					<field name="diploma_id" />
+					<field name="qualification_id" />
+
+					<field name="specialization_ids" />
+					<field name="diploma_date" />
+					<field name="job_specialite" />
+
+					<field name="governmental_entity" />
+					<field name="university_entity" />
+					<field name="while_serving" />
+
+				</tree>
+			</field>
+		</record>
+
+
+		<record id="view_form_hr_employee_education_level" model="ir.ui.view">
+			<field name="name">hr.employee.education.level.form</field>
+			<field name="model">hr.employee.education.level</field>
+			<field name="arch" type="xml">
+				<form string="المستوى التعليمي">
+					<sheet>
+
+						<group col="4">
+							<field name="sequence" required="1" />
+							<field name="code" required="1" />
+							<field name="name" required="1" />
+							<field name="diplom_type" />
+						</group>
+						<group col="10">
+
+
+							<field name="nomber_year_education" />
+							<field name="secondary" />
+							<field name="not_secondary" />
+
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="view_tree_hr_employee_education_level" model="ir.ui.view">
+			<field name="name">hr.employee.education.level.tree</field>
+			<field name="model">hr.employee.education.level</field>
+			<field name="arch" type="xml">
+				<tree string="المستوى التعليمي" class="oe_tree_view">
+					<field name="sequence" />
+					<field name="name" />
+					<field name="nomber_year_education" />
+				</tree>
+			</field>
+		</record>
+		<record id="action_hr_employee_education_level" model="ir.actions.act_window">
+			<field name="name">المستوى التعليمي</field>
+			<field name="res_model">hr.employee.education.level</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+		<record id="view_form_hr_employee_diploma" model="ir.ui.view">
+			<field name="name">hr.employee.diploma.form</field>
+			<field name="model">hr.employee.diploma</field>
+			<field name="arch" type="xml">
+				<form string="الشهادة العلمية">
+					<sheet>
+						<group>
+							<group>
+								<field name="code" required="1" />
+								<field name="education_level_id" />
+							</group>
+							<group>
+								<field name="name" required="1" />
+								<field name="specialization_ids" required="1" widget="many2many_tags" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="view_tree_hr_employee_diploma" model="ir.ui.view">
+			<field name="name">hr.employee.diploma.tree</field>
+			<field name="model">hr.employee.diploma</field>
+			<field name="arch" type="xml">
+				<tree string="الشهادة العلمية" class="oe_tree_view">
+					<field name="name" />
+					<field name="specialization_ids" widget="many2many_tags" />
+				</tree>
+			</field>
+		</record>
+		<record id="action_hr_employee_diploma" model="ir.actions.act_window">
+			<field name="name">الشهادة العلمية</field>
+			<field name="res_model">hr.employee.diploma</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+
+		<record id="view_form_hr_employee_specialization" model="ir.ui.view">
+			<field name="name">hr.employee.specialization.form</field>
+			<field name="model">hr.employee.specialization</field>
+			<field name="arch" type="xml">
+				<form string="التخصص">
+					<sheet>
+						<group>
+							<field name="name" required="1" />
+							<field name="code" required="1" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="view_tree_hr_employee_specialization" model="ir.ui.view">
+			<field name="name">hr.employee.specialization.tree</field>
+			<field name="model">hr.employee.specialization</field>
+			<field name="arch" type="xml">
+				<tree string="التخصص" class="oe_tree_view">
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+		<record id="action_hr_employee_specialization" model="ir.actions.act_window">
+			<field name="name">التخصص</field>
+			<field name="res_model">hr.employee.specialization</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+
+		<record id="view_form_hr_qualification_estimate" model="ir.ui.view">
+			<field name="name">hr.qualification.estimate.form</field>
+			<field name="model">hr.qualification.estimate</field>
+			<field name="arch" type="xml">
+				<form string="تقدير المؤهل العلمي">
+					<sheet>
+						<group>
+							<field name="name" required="1" />
+							<field name="code" required="1" />
+
+						</group>
+
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="view_tree_hr_qualification_estimate" model="ir.ui.view">
+			<field name="name">hr.qualification.estimate.tree</field>
+			<field name="model">hr.qualification.estimate</field>
+			<field name="arch" type="xml">
+				<tree string="تقدير المؤهل العلمي" class="oe_tree_view">
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+		<record id="action_hr_qualification_estimate" model="ir.actions.act_window">
+			<field name="name">تقدير المؤهل العلمي</field>
+			<field name="res_model">hr.qualification.estimate</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+
+		<record id="view_form_hr_employee_configuration" model="ir.ui.view">
+			<field name="name">hr.employee.configuration.form</field>
+			<field name="model">hr.employee.configuration</field>
+			<field name="arch" type="xml">
+				<form string="إعدادات الموظف" create='0' delete='0' duplicate='0'>
+					<sheet>
+						<group>
+							<field name="number" required="1" />
+							<field name="period" required="1" />
+							<field name="age_member" required="1" />
+							<field name="age_nomember" required="1" />
+							<field name="recruitment_legal_age" required="1" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+
+
+		<record id="action_hr_employee_configuration" model="ir.actions.server">
+			<field name="sequence" eval="5" />
+			<field name="state">code</field>
+			<field name="type">ir.actions.server</field>
+			<field name="model_id" ref="model_hr_employee_configuration" />
+			<field name="code">action=pool.get('hr.employee.configuration').button_setting(cr,uid,None,)
+			</field>
+			<field name="condition">True</field>
+			<field name="name">‫إعدادات الموظف‬‬</field>
+		</record>
+
+		<menuitem id="menu_hr_employee_education_level" action="action_hr_employee_education_level"
+			sequence="5" parent="hr_root_employee_configuration" />
+
+		<menuitem id="menu_hr_employee_diploma" action="action_hr_employee_diploma"
+			sequence="7" parent="hr_root_employee_configuration" />
+
+		<menuitem id="menu_hr_employee_specialization" action="action_hr_employee_specialization"
+			sequence="6" parent="hr_root_employee_configuration" />
+
+		<menuitem id="menu_hr_qualification_estimate" action="action_hr_qualification_estimate"
+			sequence="8" parent="hr_root_employee_configuration" />
+
+		<menuitem id="menu_hr_employee_configuration" action="action_hr_employee_configuration"
+			sequence="37" parent="hr_root_employee_configuration" name="إعدادات الموظف " />
+	</data>
+</openerp>

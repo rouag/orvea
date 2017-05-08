@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+
+	
+		<record id="ir_cron_employee_delay_absence_cron" model="ir.cron">
+			<field name="name">delay hours and absence days  balance Updater</field>
+			<field name="interval_number">1</field>
+			<field name="interval_type">days</field>
+			<field name="numbercall">-1</field>
+			<field name="doall">0</field>
+			<field name="model">hr.employee</field>
+			<field name="function">update_employee_delay_absence_balance</field>
+			<field name="args">()</field>
+		</record>
+
+		
+		
+	</data>
+</openerp>

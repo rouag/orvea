@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="view_hr_decision_appoint">
+			<field name="name">hr.decision.appoint</field>
+			<field name="model">hr.decision.appoint</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="التعين">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				<field name="type_appointment" />
+					<field name="state_appoint" />
+					<field name="is_started" />
+				<group expand="0" string="Group By">
+						<filter name="group_type_appointment" string="نوع التعيين"
+							context="{'group_by':'type_appointment'}" />
+						<filter name="group_state_appoint" string="حالةالتعيين"
+							context="{'group_by':'state_appoint'}" />
+							<filter name="group_is_started" string="مباشر"
+							context="{'group_by':'is_started'}" />
+					</group>
+				
+				
+				</search>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_type_appoint_tree">
+			<field name="name">hr.type.appoint.tree</field>
+			<field name="model">hr.type.appoint</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="أنواع التعين">
+					<field name="name" />
+					<field name="date_test" string="فترة التجربة بالشهر" />
+					<field name="code" />
+				</tree>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_type_appoint_form">
+			<field name="name">hr.type.appoint.form</field>
+			<field name="model">hr.type.appoint</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string=" أنواع التعين">
+					<sheet>
+						<group>
+							<field name="name" />
+							<field name="date_test" string="فترة التجربة بالشهر" />
+							<field name="code" />
+							<field name="show_in_apoint" />
+							<field name="is_contract" />
+
+							<field name="direct_appoint_period" />
+							<field name="max_pension" />
+							<field name="max_pension_ratio" attrs="{'invisible':[('max_pension','=',False)]}" />
+							<field name="type_ids" />
+							<field name="hr_allowance_appoint_id">
+								<tree editable="botttom">
+									<field name="hr_allowance_type_id" />
+									<field name="salary_number" />
+								</tree>
+							</field>
+						</group>
+						<group string="المخطط‬‫ الانسيابي‬">
+							<field name="audit" />
+							<field name="enterview_manager" />
+							<field name="recrutment_manager" />
+							<field name="personnel_hr" />
+							<field name="recrutment_decider" />
+							<field name="ministry_civil" />
+							<field name="direct_manager" />
+
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_type_appoint">
+			<field name="name"> أنواع التعين</field>
+			<field name="res_model">hr.type.appoint</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<menuitem id="hr_type_appoint_menu_sou" name=" أنواع التعين"
+			sequence="5" parent="hr_root_workflows_setting" action="action_hr_type_appoint" />
+		<!-- التعيين -->
+		<record model="ir.ui.view" id="hr_decision_appoint_tree">
+			<field name="name">hr.decision.appoint.tree</field>
+			<field name="model">hr.decision.appoint</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="التعيين">
+					<field name="name" />
+					<field name="order_date" />
+					<field name="date_hiring" />
+					<field name="employee_id" />
+					<field name="type_appointment" />
+					<field name="state_appoint" />
+					<field name="is_started" />
+					<field name="date_direct_action" />
+				</tree>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_decision_appoint_form">
+			<field name="name">hr.decision.appoint.form</field>
+			<field name="model">hr.decision.appoint</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="التعيين">
+					<header>
+						<button name="send_appoint_request" string="إرسال " type="object"
+							groups="smart_hr.group_manager_appointment" states="draft"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="button_accept_audit" string="موافق" type="object"
+							attrs="{'invisible':['|',('type_appointment', '=', %(data_hr_recrute_Members)d), ('state','!=', 'audit')]}"
+							groups="smart_hr.group_audit_appointment" icon="fa-check"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="%(action_hr_refuse_appoint_wizard)d" string="رفض"
+							type="action"
+							attrs="{'invisible':['|',('type_appointment', '=', %(data_hr_recrute_Members)d), ('state','!=', 'audit')]}"
+							groups="smart_hr.group_audit_appointment" icon="fa-times"
+							class="oe_inline oe_stat_button" />
+
+						<!-- button accept for لجنة تعين الأعضاء -->
+						<button name="button_accept_audit" string="موافق" type="object"
+							attrs="{'invisible':['|',('type_appointment', '!=', %(data_hr_recrute_Members)d), ('state','!=', 'audit')]}"
+							groups="smart_hr.group_committee_members_recruiter" icon="fa-check"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="%(action_hr_refuse_appoint1_wizard)d" string="رفض"
+							type="action"
+							attrs="{'invisible':['|',('type_appointment', '!=', %(data_hr_recrute_Members)d), ('state','!=', 'audit')]}"
+							groups="smart_hr.group_committee_members_recruiter" icon="fa-times"
+							class="oe_inline oe_stat_button" />
+						<button name="button_accept_enterview_manager" string="موافق"
+							type="object" states="waiting" groups="smart_hr.group_enterview_manager"
+							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="%(action_hr_refuse_appoint2_wizard)d" string="رفض"
+							type="action" states="waiting" groups="smart_hr.group_enterview_manager"
+							icon="fa-times" class="oe_inline oe_stat_button" />
+						<button name="button_accept_recrutment_manager" string="موافق"
+							type="object" states="manager" groups="smart_hr.group_recrutment_manager"
+							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="%(action_hr_refuse_appoint3_wizard)d" string="رفض"
+							type="action" states="manager" groups="smart_hr.group_recrutment_manager"
+							icon="fa-times" class="oe_inline oe_stat_button" />
+						<button name="button_accept_recrutment_decider" string="موافق"
+							type="object" states="budget" groups="smart_hr.group_recrutment_decider"
+							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="%(action_hr_refuse_appoint4_wizard)d" string="رفض"
+							type="action" states="budget" groups="smart_hr.group_recrutment_decider"
+							icon="fa-times" class="oe_inline oe_stat_button" />
+						<button name="button_accept_direct" string="موافق" type="object"
+							states="direct" groups="smart_hr.group_dm" icon="fa-check"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="%(action_hr_refuse_appoint5_wizard)d" string="رفض"
+							type="action" states="direct" groups="smart_hr.group_dm" icon="fa-times"
+							class="oe_inline oe_stat_button" />
+						<button name="button_accept_personnel_hr" string="موافق"
+							type="object" states="hrm" groups="smart_hr.group_personnel_hr"
+							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="button_accept_civil" string="موافق" type="object"
+							states="civil" groups="smart_hr.group_ministry_civil" icon="fa-check"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="%(action_hr_refuse_appoint6_wizard)d" string="رفض"
+							type="action" states="civil" groups="smart_hr.group_ministry_civil"
+							icon="fa-times" class="oe_inline oe_stat_button" />
+
+						<button name="open_decission_appoint" string="معاينة القرار" 
+						attrs="{'invisible':['|',('state', 'not in', ['done']),('state_appoint','not in',['new','active','close'])]}"
+							type="object"  icon="fa-print" class="oe_inline oe_stat_button" />
+
+						<!-- <button name="button_refuse_personnel_hr" string="رفض" type="object" 
+							states="hrm" groups="smart_hr.group_personnel_hr" icon="fa-times" class="oe_inline 
+							oe_stat_button" /> -->
+						<field name="state" widget="statusbar"
+							statusbar_visible="draft,audit,waiting,manager,budget,hrm,civil,direct,done,refuse" />
+					</header>
+					<sheet>
+						<group>
+							<field name="max_pension" invisible="1" />
+							<field name="date_hiring" readonly="1"
+								attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','civil','direct', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'done'])]}" />
+						</group>
+						<group>
+							<group>
+								<field name="type_appointment"
+									options="{'no_open': True,'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+									domain="[('show_in_apoint', '=', True)]"
+									attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','civil','direct', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','civil','direct', 'done','refuse'])]}" />
+								<field name="transport_alocation"
+									attrs="{'invisible':['|',('transport_car','!=',False),('state', 'not in', ['draft','audit','waiting','hrm','manager','direct','civil','budget', 'done']) ],'readonly':[('state', 'in', [ 'audit','waiting',  'budget','hrm','direct', 'civil','done','refuse'])]}" />
+								<field name="transport_car"
+									attrs="{'invisible':[ '|',('transport_alocation','!=',False),('state', 'not in', ['draft','waiting', 'hrm','manager','civil','direct', 'budget', 'done'])],'readonly':[('state', 'in', [ 'audit','waiting',  'budget','hrm','direct', 'civil','done','refuse'])]}" />
+								<field name="depend_on_test_periode" />
+							</group>
+							<group>
+								<field name="state_appoint"
+									attrs="{'invisible':[('state', 'not in', [ 'done','refuse'])],'readonly':[('state', 'in', [ 'done','refuse'])]}" />
+								<field name="date_direct_action"
+									attrs="{'invisible':[('state_appoint', '=', 'new')],'readonly':[('state', 'in', [ 'waiting', 'done','refuse'])]}" />
+								<field name="date_hiring_end"
+									attrs="{'invisible':[('type_appointment', '!=', %(data_hr_recrute_contrat)d)],
+									'readonly':[('state', 'in', [ 'waiting', 'hrm', 'budget', 'done','refuse'])]}" />
+								<field name="testing_date_from"
+									attrs="{'invisible':[('depend_on_test_periode', '=', False)],'readonly':[('state', '!=', 'draft')]}" />
+								<field name="testing_date_to"
+									attrs="{'invisible':[('depend_on_test_periode', '=', False)],'readonly':[('state', '!=', 'draft')]}" />
+
+
+								<field name="first_appoint" invisible="1" />
+
+
+
+
+							</group>
+						</group>
+						<notebook>
+							<page name="public" string="بيانات المترشح">
+								<br></br>
+								<group>
+									<group>
+										<field name="employee_id"
+											options="{'no_open': True,'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+											attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])],'readonly':['|',('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse']), ('type_appointment','=',False)]}" />
+
+
+										<field name="contract_id" domain="[('employee_id', '=', employee_id)]"
+											attrs="{'invisible':[('is_contract', '=', False)],'readonly':['|',('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse']), ('type_appointment','=',False)]}" />
+
+
+
+										<field name="number" />
+										<field name="country_id" />
+										<field name="emp_job_id" />
+										<field name="emp_code" />
+										<field name="emp_department_id" />
+										<field name="date_medical_examination"
+											attrs="{'invisible':['|',('state', 'not in', ['draft','waiting', 'manager','hrm', 'budget', 'done'])],'required':[('type_appointment', '=', %(data_hr_new_agent_public)d)],'readonly':[('state', 'in', [ 'audit','waiting','manager', 'budget','hrm','direct','civil', 'done','refuse'])]}" />
+										<field name="medical_examination_file" filename="medical_examination_name"
+											attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'done'])],
+											'required':[('type_appointment', '=', %(data_hr_new_agent_public)d)],'readonly':[('state', 'in', [ 'waiting','manager',  'hrm', 'budget','direct','civil', 'done'])]}" />
+
+										<field name="order_enquiry_file" filename="order_enquiry_file_name"
+											attrs="{'invisible':['|',('state', 'not in', ['draft','waiting', 'manager','hrm', 'budget', 'civil','done']),('type_appointment', '!=', %(data_hr_new_agent_public)d)],'readonly':[('state', 'in', [ 'waiting','manager',  'hrm', 'budget', 'civil','done'])]}" />
+										<field name="file_salar_recent" filename="file_salar_recent_name"
+											attrs="{'invisible':['|',('state', 'not in', ['draft','waiting','manager', 'hrm', 'budget','civil', 'done']),('type_appointment', '!=', %(data_hr_new_agent_public)d)],'readonly':[('state', 'in', [ 'waiting','manager',  'hrm', 'budget', 'civil','done'])]}" />
+										<field name="file_engagement" widget="many2many_binary"
+											filename="file_engagement_name"
+											attrs="{'invisible':['|',('state', 'not in', ['draft','waiting', 'manager','hrm', 'budget','civil', 'done']),('type_appointment', '!=', %(data_hr_new_agent_public)d)],'readonly':[('state', 'in', [ 'waiting', 'manager', 'hrm', 'budget', 'civil','done'])]}" />
+
+										<field name="file_salar_recent_name" invisible="1" />
+										<field name="is_contract" invisible="1" />
+										<field name="order_enquiry_file_name" invisible="1" />
+										<field name="medical_examination_name" invisible="1" />
+
+									</group>
+									<group>
+										<field name="option_contract" invisible="1" />
+									</group>
+								</group>
+
+								<group>
+									<field name="description" placeholder="ملاحظات ..."
+										colspan="4"
+										attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'manager', 'budget', 'done'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'manager', 'budget','civil', 'done'])]}" />
+								</group>
+							</page>
+
+							<page name="public" string="بيانات الوظيفة الجديدة">
+								<br></br>
+								<group>
+									<group>
+										<field name="job_id" domain="[('state','=','unoccupied')]"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+											attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'manager', 'hrm', 'budget', 'done','refuse'])],'readonly':[('state', 'in', [ 'waiting', 'manager', 'hrm', 'budget','civil', 'done','refuse'])]}" />
+										<field name="code" />
+										<field name="type_id" />
+										<field name="department_id" />
+									</group>
+									<group>
+										<field name="grade_id" />
+										<field name="degree_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+
+											attrs="{'invisible':[('state', 'not in', ['draft','waiting', 'hrm', 'manager', 'budget', 'done','refuse'])],'readonly':[('state', 'in', [ 'waiting', 'hrm', 'manager', 'budget','civil', 'done','refuse'])]}" />
+										<field name="far_age" />
+										<field name="max_pension_ratio"
+											attrs="{'invisible':[('max_pension', '=', False)]}" />
+										<field name="pension_ratio"
+											attrs="{'invisible':[('max_pension', '=', False)]}" />
+										<field name="basic_salary" />
+										<field name="retirement" />
+										<field name="transport_allow"
+											attrs="{'invisible':[('transport_car', '=', True)]}" />
+									</group>
+								</group>
+							</page>
+							<page name="public" string="المرفقات">
+								<br></br>
+								<group>
+									<group>
+										<field name="name"
+											attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct','civil', 'done','refuse'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])]}" />
+										<field name="order_date"
+											attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])]}" />
+										<field name="order_picture" filename="order_picture_name"
+											attrs="{'invisible':[('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct','civil', 'done','refuse'])],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])]}" />
+										<field name="order_picture_name" invisible="1" />
+
+
+										<field name="royal_decree_number"
+											attrs="{'invisible':['|',('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse']),('type_appointment', '!=', %(data_hr_recrute_Members)d)],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])]}" />
+										<field name="royal_decree_date"
+											attrs="{'invisible':['|',('state', 'not in', ['draft','audit','waiting','manager',  'budget','hrm','direct','civil', 'done','refuse']),('type_appointment', '!=', %(data_hr_recrute_Members)d)],'readonly':[('state', 'in', [ 'audit','waiting','manager',  'budget','hrm','direct', 'civil','done','refuse'])]}" />
+									</group>
+									<group>
+
+									</group>
+								</group>
+							</page>
+
+							<page name="مترشح" string="بيانات تقييم المقابلة"
+								attrs="{'invisible':[ '|',('is_enterview_manager','!=',True),('state', 'not in',['waiting','hrm','manager', 'direct', 'budget','civil', 'done','refuse'])]}">
+								<br></br>
+								<group>
+									<group>
+										<field name="passing_score"
+											attrs="{'invisible':[('state', 'not in',['waiting','hrm','manager','direct', 'budget','civil', 'done','refuse'])],'readonly':[('state', 'in', ['hrm','direct', 'budget','civil', 'done','refuse'])]}" />
+										<field name="score"
+											attrs="{'invisible':[('state', 'not in',['waiting','hrm','manager','direct', 'budget','civil', 'done','refuse'])],'readonly':[('state', 'in', [ 'hrm','direct', 'budget','civil', 'done','refuse'])]}" />
+										<field name="note_interview"
+											attrs="{'invisible':[('state', 'not in',['waiting','hrm','manager','direct', 'budget','civil', 'done','refuse'])],'readonly':[('state', 'in', [ 'hrm','direct', 'budget','civil', 'done','refuse'])]}" />
+
+										<field name="is_enterview_manager" invisible="1" />
+									</group>
+								</group>
+							</page>
+
+
+							<page string="البدلات" readonly="1">
+								<h3 class="o_horizontal_separator">بدلات الوظيفة</h3>
+								<field name="job_allowance_ids" string="بدلات الوظيفة"  attrs="{'readonly':[('state', '=', 'done')]}" >>
+									<tree create="false">
+										<field name="allowance_id" readonly="1" />
+										<field name="compute_method" />
+										<field name="amount" />
+									</tree>
+								</field>
+								<h3 class="o_horizontal_separator">بدلات التعين</h3>
+								<field name="decision_apoint_allowance_ids" attrs="{'readonly':[('state', '=', 'done')]}" >
+									<tree>
+										<field name="allowance_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+										<field name="compute_method" />
+										<field name="amount" />
+									</tree>
+								</field>
+								<h3 class="o_horizontal_separator">بدلات المنطقة</h3>
+								<field name="location_allowance_ids" string="بدلات المنطقة"  attrs="{'readonly':[('state', '=', 'done')]}" >>
+									<tree create="false">
+										<field name="allowance_id" readonly="1" />
+										<field name="compute_method" />
+										<field name="amount" />
+									</tree>
+								</field>
+							</page>
+						</notebook>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"
+							groups="base.group_user" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+
+
+				</form>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_decision_appoint_allowance_form">
+			<field name="name">decision.appoint.allowance.form</field>
+			<field name="model">decision.appoint.allowance</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="البدلات">
+					<group>
+						<group>
+							<field name="allowance_id"
+								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+						</group>
+						<group>
+							<field name="compute_method" />
+							<field name="amount"
+								attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}" />
+							<field name="percentage"
+								attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}" />
+							<field name="min_amount" />
+							<field name="line_ids"
+								attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+								<tree editable="buttom">
+									<field name="city_id"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									<field name="percentage" />
+								</tree>
+							</field>
+
+						</group>
+					</group>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_decision_appoint">
+			<field name="name">التعيين</field>
+			<field name="res_model">hr.decision.appoint</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+		<menuitem id="hr_decision_appoint_menu" name="التعيين"
+			groups="smart_hr.group_manager_appointment" sequence="5"
+			parent="hr_root_workflows" action="action_hr_decision_appoint" />
+
+
+		<record id="view_tree_hr_allowance_appoint" model="ir.ui.view">
+			<field name="name">hr.allowance.appoint.tree</field>
+			<field name="model">hr.allowance.appoint</field>
+			<field name="arch" type="xml">
+				<tree string="بدل التعين">
+					<field name="hr_allowance_type_id" />
+					<field name="salary_number" />
+					<field name="appoint_type_id" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="action_view_tree_hr_allowance_appoint" model="ir.actions.act_window">
+			<field name="name">بدل التعين</field>
+			<field name="res_model">hr.allowance.appoint</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+
+	</data>
+</openerp>

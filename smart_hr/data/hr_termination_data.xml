@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+
+		<!-- Termination Types -->
+
+		<record id="data_hr_ending_service_early" model="hr.termination.type">
+			<field name="name"> تقاعد مبكر
+			</field>
+			
+			<field name="code" eval="1" />
+
+		</record>
+		<record id="data_hr_ending_service_type_normal" model="hr.termination.type">
+			<field name="name">تقاعد طبيعي
+			</field>
+			<field name="code" eval="2" />
+		</record>
+		<record id="data_hr_ending_service_type_healthy" model="hr.termination.type">
+			<field name="name"> تقاعد لعجز صحي
+			</field>
+			<field name="code" eval="3" />
+		</record>
+		<record id="data_hr_ending_service_demision" model="hr.termination.type">
+			<field name="name"> إستقالة
+			</field>
+			<field name="code" eval="4" />
+		</record>
+		<record id="data_hr_ending_service_absence" model="hr.termination.type">
+			<field name="name"> فصل لعقوبة الغياب
+			</field>
+			<field name="code" eval="5" />
+		</record>
+		<record id="data_hr_ending_service_job" model="hr.termination.type">
+			<field name="name"> فصل لعقوبة إلغاء وظيفة
+			</field>
+			<field name="code" eval="6" />
+		</record>
+		<record id="data_hr_ending_service_death" model="hr.termination.type">
+			<field name="name"> الوفاة
+			</field>
+			<field name="code" eval="7" />
+		</record>
+		<record id="data_hr_ending_period_experience" model="hr.termination.type">
+			<field name="name"> عدم صلاحيته أثناء فترة التجربة
+			</field>
+			<field name="code" eval="8" />
+		</record>
+		<record id="data_hr_ending_estimite_less" model="hr.termination.type">
+			<field name="name">  ‫‫نتيجة ‬ ‫تقدير‬ الكفاية
+‬
+			</field>
+			<field name="code" eval="9" />
+		</record>
+		
+		<record id="data_hr_ending_reason_todbeah" model="hr.termination.type">
+			<field name="name"> أسباب تأدبيّية
+			</field>
+			<field name="code" eval="10" />
+		</record>
+		
+	</data>
+</openerp>

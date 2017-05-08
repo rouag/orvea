@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+
+		<!-- Refuse Wizard -->
+		<record id="view_form_hr_refuse_training_wizard" model="ir.ui.view">
+			<field name="name">hr.refuse.tarining.wizard.form</field>
+			<field name="model">hr.refuse.tarining.wizard</field>
+			<field name="arch" type="xml">
+				<form string="سبب الرفض">
+					<separator string="سبب الرفض" />
+					<field name="message" required="1" />
+					<footer>
+						<button name="button_refuse" string="حفظ" type="object"
+							icon="fa-floppy-o" class="oe_inline oe_stat_button" />
+						أو
+						<button string="إلغاء" class="oe_link" special="cancel" />
+					</footer>
+				</form>
+			</field>
+		</record>
+		<record id="action_hr_refuse_training_wizard" model="ir.actions.act_window">
+			<field name="name">سبب الرفض</field>
+			<field name="res_model">hr.refuse.tarining.wizard</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="view_form_hr_refuse_training_wizard" />
+			<field name="target">new</field>
+		</record>
+		
+		
+		
+
+	</data>
+</openerp>

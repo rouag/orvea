@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="view_hr_employee_suspension_end_filter">
+			<field name="name">hr.suspension.end.search</field>
+			<field name="model">hr.suspension.end</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="إنهاء كف اليد">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
+		<!-- Suspension Decision -->
+		<record id="view_form_hr_suspension" model="ir.ui.view">
+			<field name="name">hr.suspension.form</field>
+			<field name="model">hr.suspension</field>
+			<field name="arch" type="xml">
+				<form string=" كف اليد">
+					<header>
+						<button name="button_hrm" string="إرسال طلب" type="object"
+							states="draft" groups="smart_hr.group_hr" icon="fa-paper-plane"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="button_done" string="موافقة" type="object"
+							states="hrm" groups="smart_hr.group_hrm" icon="fa-check"
+							class="oe_inline oe_stat_button" />
+
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" states="hrm" groups="smart_hr.group_hrm" icon="fa-times"
+							class="oe_inline oe_stat_button" />
+						<field name="diplay_button_end" invisible="1"></field>
+						<button name="button_suspension_end" string=" انهاء كف اليد"
+							attrs="{'invisible':[('diplay_button_end','=',False)]}" type="object"
+							icon="fa-times" class="oe_inline oe_stat_button" />
+
+						<button name="button_suspension" string="معاينة القرار"
+							groups="smart_hr.group_hrm" type="object" states="done" icon="fa-print"
+							class="oe_inline oe_stat_button" />
+
+
+
+
+						<field name="state" widget="statusbar" statusbar_visible="draft,hrm,done" />
+					</header>
+					<sheet>
+						<field name="name" readonly="1" invisible="1" />
+						<group>
+							<field name="date" readonly="1" />
+							<field name="decision_number"
+								attrs="{'invisible':[('display_decision_info','=',False)]}" />
+							<field name="decision_date"
+								attrs="{'invisible':[('display_decision_info','=',False)]}" />
+						</group>
+						<group>
+							<group string="معلومات كف اليد">
+								<field name="employee_id" required="1"
+									attrs="{'readonly':[('state','in',['hrm','done','refuse'])]}" />
+								<field name="suspension_date" required="1"
+									attrs="{'readonly':[('state','!=','draft')]}" />
+								<field name="raison"
+									attrs="{'readonly':[('state','in',['hrm','done','refuse'])]}" />
+							</group>
+							<group string="معلومات الخطاب">
+								<field name="letter_sender" required="1"
+									attrs="{'readonly':[('state','!=','draft')]}" />
+								<field name="letter_number" required="1"
+									attrs="{'readonly':[('state','!=','draft')]}" />
+								<field name="letter_date" required="1"
+									attrs="{'readonly':[('state','!=','draft')]}" />
+								<field name="display_decision_info" invisible="1" />
+								<field name="suspension_attachment" filename="suspension_attachment_name"
+									required="1" attrs="{'readonly':[('state','!=','draft')]}" />
+								<field name="suspension_attachment_name" invisible="1" />
+								<field name="suspension_end_id" invisible="1" />
+								<field name="is_end" invisible="1" />
+
+							</group>
+						</group>
+
+
+					</sheet>
+					<div>
+						<field name="message_ids" widget="mail_thread" readonly="1" />
+					</div>
+				</form>
+			</field>
+		</record>
+		<record id="view_tree_hr_suspension" model="ir.ui.view">
+			<field name="name">hr.suspension.tree</field>
+			<field name="model">hr.suspension</field>
+			<field name="arch" type="xml">
+				<tree string=" كف اليد" class="oe_tree_view">
+					<field name="name" />
+					<field name="suspension_date" />
+					<field name="employee_id" />
+					<field name="state" />
+					<field name="is_end" invisible="1" />
+
+				</tree>
+			</field>
+		</record>
+		<record id="view_search_hr_suspension" model="ir.ui.view">
+			<field name="name">hr.suspension.search</field>
+			<field name="model">hr.suspension</field>
+			<field name="arch" type="xml">
+				<search string=" كف اليد">
+					<field name="name" />
+					<field name="suspension_date" />
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+					<field name="state" />
+					<separator />
+					<filter string="طلب" domain="[('state','=','draft')]" />
+					<filter string="مدير شؤون الموظفين" domain="[('state','=','hrm')]" />
+					<filter string="اعتمدت" domain="[('state','=','done')]" />
+					<filter string="رفض" domain="[('state','=','refuse')]" />
+				</search>
+			</field>
+		</record>
+		<record id="action_hr_suspension" model="ir.actions.act_window">
+			<field name="name"> كف اليد</field>
+			<field name="res_model">hr.suspension</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('is_end', '=', False)]</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+		<menuitem id="menu_hr_suspension" action="action_hr_suspension"
+			parent="hr_root_workflows" sequence="110" name=" كف اليد" />
+
+	</data>
+</openerp>

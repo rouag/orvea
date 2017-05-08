@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_hr_employee_situation_order">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.external_layout_extend">
+						<br></br>
+						<br></br>
+						<br></br>
+						<br></br>
+						<br></br>
+						<div style="border: 1px solid black;">
+
+							<div class="page">
+								<div class="oe_structure" />
+								<p align="right">
+									ادارة الموارد البشرية
+								</p>
+								<br></br>
+								<p style="font-size:22px;" align="center">
+									<b> طلب إفادة عن حالة موظف عن فترة سابقة
+									</b>
+								</p>
+								<br />
+								<br />
+								<p align="center" style="font-size:22px;">
+									<b>
+										سعادة مدير
+										<span t-field="o.hospital_name" />
+									</b>
+								</p>
+								<p style="font-size:22px;">
+									السلام عليكم ورحمة الله وبركاته :
+								</p>
+								<p style="font-size:22px;">
+									أفاد الموظف بالهيئة
+									<span t-field="o.employee_id.display_name" />
+									
+									انه راجعكم يوم
+		<span t-esc="get_hijri_date(o.date_hospitalisation , '-')" />
+									نأمل الافادة عن حالة المذكور الصحية و
+									في حال استحقاقه اجازة
+									مرضية
+									يعتمد نموذج رقم (٢) بلائحة تقارير منح
+									الاجازات المرضية
+									على
+									ان يكون معتمد من مدير المركز و الدكتور
+									المعالج و مصادق عليه
+									بختم
+									المركز و مشتملا على الرقم و التاريخ
+									حتى
+									نتمكن من اكمال الاجراء ات
+									اللازمة و في حال لم يكن متضمنا ما اشير
+									اليه اعلاه لا يعتد به
+								</p>
+
+								<p style="font-size:22px;" align='center'>
+
+									<b>و لكم تحياتنا..</b>
+								</p>
+								<br></br>
+								<p style="font-size:22px;">
+									حرر في:
+									<span t-esc="get_hijri_date(o.date , '-')" />
+								<br></br>
+								<br></br>
+								<br></br>
+
+								<p style="font-size:22px;" align='center'>
+
+									المشرف العام على ادارة الموارد
+									البشرية
+									<br></br>
+									<br></br>
+									<br></br>
+								</p>
+								</p>
+								<p style="font-size:22px;" align='left'>
+									<span t-esc="user.name" />
+								</p>
+							</div>
+						</div>
+					</t>
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						
+						

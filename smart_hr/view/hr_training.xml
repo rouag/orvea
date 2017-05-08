@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<!-- الدورات التدربية -->
+		<record id="view_search_hr_training" model="ir.ui.view">
+			<field name="name">hr.training.search</field>
+			<field name="model">hr.training</field>
+			<field name="arch" type="xml">
+				<search string="الدورات التدربية">
+					<field name="number" />
+					<field name="date" />
+					<separator />
+					<group expand="0" string="Group By">
+						<filter string="تاريخ من" name="date_from" />
+						<filter string="إلى" name="date_to" />
+					</group>
+				</search>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_training_tree">
+			<field name="name">hr.training.tree</field>
+			<field name="model">hr.training</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="الدورات التدربية">
+					<field name="name" />
+					<field name="number" />
+					<field name="date" />
+					<field name="compute_weekends" />
+					<field name="date_from" />
+					<field name="date_to" />
+					<field name="number_of_days" />
+					<field name="department" />
+					<field name="place" />
+					<field name="number_place" />
+					<field name="number_participant" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_training_form">
+			<field name="name">hr.training.form</field>
+			<field name="model">hr.training</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="الدورات التدربية">
+					<header>
+						<field name="state" widget="statusbar"
+							statusbar_visible="new,candidat,review,done,refused,cancel" />
+						<button name="action_candidat" string="فتح الترشحات" type="object"
+							states="new" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_review" string="إنهاء الترشحات" type="object"
+							states="candidat" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_done" string="إعتماد" type="object"
+							states="review" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action"
+							attrs="{'invisible': ['|','|','|',('state', '=', 'done'),('state', '=', 'refused'),('state', '=', 'cancel')]}"
+
+
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_cancel" string="إلغاء" type="object"
+							states="review" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+					</header>
+					<sheet>
+						<group>
+							<group>
+								<field name="name" attrs="{'readonly' :[('state','!=','new')]}" />
+								<field name="compute_weekends" />
+
+								<field name="date_from" class="oe_inline"
+									attrs="{'readonly':[('state', 'in', ['candidat','review','done','refused','cancel'])]}" />
+								<field name="date_to" class="oe_inline"
+									attrs="{'readonly' :[('state','!=','new')]}" />
+								<field name="number_of_days" class="oe_inline" />
+								يوم
+								<field name="place" attrs="{'readonly' :[('state','!=','new')]}" />
+							</group>
+
+							<group>
+								<field name="number" attrs="{'readonly' :[('state','!=','new')]}" />
+								<field name="date" attrs="{'readonly' :[('state','!=','new')]}" />
+								<field name="department" attrs="{'readonly' :[('state','!=','new')]}" />
+								<field name="number_place" attrs="{'readonly' :[('state','!=','new')]}" />
+								<field name="number_participant" attrs="{'readonly' :[('state','!=','new')]}" />
+								<field name="experience" attrs="{'readonly' :[('state','!=','new')]}" />
+							</group>
+						</group>
+						<group string="المترشحين" attrs="{'invisible': [('state', '=', 'new')]}">
+							<field name="line_ids" string="المترشحين" nolabel="1" context="{'default_training_id':active_id}"
+							attrs="{'readonly' :[('state','!=','candidat')]}">
+								<tree string="بيانات الموظف">
+									<field name="employee_id"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									<field name="number" />
+									<field name="job_id"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									<field name="department_id"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									<field name="state" />
+									<button name="%(action_hr_refuse_training_wizard)d"
+										string="رفض" type="action" class="oe_highlight btn"
+										attrs="{'readonly' :[('state','!=','waiting')]}" />
+								</tree>
+							</field>
+						</group>
+					</sheet>
+					
+<div>
+						<field name="message_ids" widget="mail_thread" readonly="1" />
+					</div>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_training">
+			<field name="name">الدورات التدربية</field>
+			<field name="res_model">hr.training</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<menuitem id="hr_training_menu_2" name="الدورات التدربية"
+			sequence="5" parent="hr_root_training" action="action_hr_training" />
+		<!-- الترشيحات -->
+
+		<record model="ir.ui.view" id="hr_candidates_tree">
+			<field name="name">hr.candidates.tree</field>
+			<field name="model">hr.candidates</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="الترشيحات">
+					<field name="employee_id" />
+					<field name="number" />
+					<field name="job_id" />
+					<field name="department_id" />
+				</tree>
+			</field>
+		</record>
+
+
+		<record model="ir.ui.view" id="hr_candidates_form">
+			<field name="name">hr.candidates.form</field>
+			<field name="model">hr.candidates</field>
+			<field name="priority" eval="15" />
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="الترشيحات">
+
+					<sheet>
+
+						<group string="بيانات الموظف" attrs="{'readonly' :[('state','!=','new')]}">
+
+							<field name="employee_id" options='{"no_open": True, "no_create": True}' />
+							<field name="number" readonly="1"
+								options='{"no_open": True, "no_create": True}' />
+							<field name="job_id" readonly="1"
+								options='{"no_open": True, "no_create": True}' />
+							<field name="department_id" readonly="1"
+								options='{"no_open": True, "no_create": True}' />
+								<field name="training_id" invisible="1"/>
+							<field name="state" invisible="1" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+
+
+
+
+		<!-- الترشيحات -->
+		<record id="view_search_hr_candidates" model="ir.ui.view">
+			<field name="name">hr.candidates.search</field>
+			<field name="model">hr.candidates</field>
+			<field name="arch" type="xml">
+				<search string="الترشيحات">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_candidates_tree">
+			<field name="name">hr.candidates.tree</field>
+			<field name="model">hr.candidates</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="الترشيحات">
+					<field name="employee_id" />
+					<field name="number" />
+					<field name="job_id" />
+					<field name="department_id" />
+					<field name="training_id" />
+					<field name="date_from" />
+					<field name="date_to" />
+					<field name="department" />
+					<field name="state" />
+					<field name="cause" />
+				</tree>
+			</field>
+		</record>
+
+
+		<record model="ir.ui.view" id="hr_my_condidature_form">
+			<field name="name">hr.candidates.form</field>
+			<field name="model">hr.candidates</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="الترشيحات">
+					<header>
+						<button name="action_waiting" string=" ارسال " type="object"
+							states="new" />
+						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
+					</header>
+					<sheet>
+
+						<group string="بيانات الموظف" attrs="{'readonly' :[('state','!=','new')]}">
+							<field name="employee_id" readonly="1"
+								options='{"no_open": True, "no_create": True}' />
+							<field name="number" readonly="1" />
+							<field name="job_id" readonly="1"
+								options='{"no_open": True, "no_create": True}' />
+							<field name="department_id" readonly="1"
+								options='{"no_open": True, "no_create": True}' />
+						</group>
+						<group string="الدورات التدربية" attrs="{'readonly' :[('state','!=','new')]}">
+							<field name="training_id" domain="[('state','=','candidat')]"
+								options='{"no_open": True, "no_create": True}' attrs="{'readonly' :[('state','!=','new')]}" />
+							<field name="date_from" readonly="1" />
+							<field name="date_to" readonly="1" />
+							<field name="department" readonly="1" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_my_candidates">
+			<field name="name">الترشيحات</field>
+			<field name="res_model">hr.candidates</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('employee_id.user_id', '=', uid)]</field>
+		</record>
+
+
+		<record model="ir.actions.act_window.view" id="action_hr_my_candidates_form_view">
+			<field name="sequence" eval="2" />
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="hr_my_condidature_form" />
+			<field name="act_window_id" ref="action_hr_my_candidates" />
+		</record>
+
+		<record model="ir.actions.act_window.view" id="action_hr_my_candidates_tree_view">
+			<field name="sequence" eval="1" />
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="hr_candidates_tree" />
+			<field name="act_window_id" ref="action_hr_my_candidates" />
+		</record>
+		<menuitem id="hr_training_my_candidate_" name="الترشح للدورات التدريبية"
+			sequence="16" parent="hr_root_training" action="action_hr_my_candidates" />
+
+
+
+
+	</data>
+</openerp>

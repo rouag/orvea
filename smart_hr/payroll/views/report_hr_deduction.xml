@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_hr_deduction">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.external_layout_extend">
+						<div class="page">
+
+							<div class="col-xs-12 text-center">
+								<h3>
+									<strong>
+										<span t-field="o.name" />
+									</strong>
+								</h3>
+								<br></br>
+								<strong>التاريخ :</strong>
+								<span t-field="o.date" />
+								<br></br>
+								<br></br>
+							</div>
+
+							<div class="col-xs-4">
+								<strong>رقم القرار :</strong>
+								<span t-field="o.number_decision" />
+							</div>
+
+							<div class="col-xs-4">
+								<strong>تاريخ القرار :</strong>
+								<span t-field="o.date_decision" />
+								<br></br>
+								<br></br>
+							</div>
+
+							<table class="table  table-bordered">
+								<thead>
+									<tr>
+										<th>الموظف</th>
+										<th>رقم.و</th>
+										<th>نوع الحسم</th>
+										<th>عدد أيام الحسم</th>
+									</tr>
+								</thead>
+								<tr t-foreach="o.line_ids" t-as="l">
+									<td>
+										<span t-field="l.employee_id" />
+									</td>
+
+									<td>
+										<span t-field="l.employee_id.number" />
+									</td>
+									<td>
+										<span t-field="l.deduction_type_id" />
+									</td>
+									<td>
+										<span t-field="l.amount" />
+									</td>
+								</tr>
+							</table>
+
+						</div>
+					</t>
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+							

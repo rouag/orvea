@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<record model="ir.ui.view" id="view_hr_employee_medical_exam_appoint">
+			<field name="name">employee.medical.exam.search</field>
+			<field name="model">employee.medical.exam</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="الفحص الطبي">
+					<field name="employee" string="الموظف"
+						filter_domain="['|','|',('employee.number','ilike',self),('employee.identification_id','ilike',self),('employee.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
+		<!--أنواع الفحص الطبي -->
+
+		<record id="medical_category_form" model="ir.ui.view">
+			<field name="name">medical.category.form</field>
+			<field name="model">medical.category</field>
+			<field name="arch" type="xml">
+				<form string="الفحص الطبي ">
+					<sheet>
+						<group>
+							<group>
+								<field name="name" />
+								<field name="code" />
+							</group>
+							<group>
+								<field name="name_en" />
+								<field name="position" />
+							</group>
+						</group>
+
+						<field name="exams" string=" أنواع الفحص الطبي">
+							<tree editable="bottom">
+								<field name="code" />
+								<field name="name" />
+								<field name="name_en" />
+							</tree>
+						</field>
+
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="medical_category_tree" model="ir.ui.view">
+			<field name="name">medical.category.tree</field>
+			<field name="model">medical.category</field>
+			<field name="arch" type="xml">
+				<tree string="الفحص الطبي">
+					<field name="name" />
+					<field name="code" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_medical_category">
+			<field name="name">الفحص الطبي</field>
+			<field name="res_model">medical.category</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<!-- config menu -->
+		<menuitem id="hr_configuration_examination" name="الفحص الطبي"
+			sequence="10" parent="hr_root_employee_configuration" action="action_medical_category" />
+
+
+
+		<!-- الفحص الطبي للموظف -->
+
+
+		<record id="employee_medical_exam_form" model="ir.ui.view">
+			<field name="name">employee.medical.exam.form</field>
+			<field name="model">employee.medical.exam</field>
+			<field name="arch" type="xml">
+				<form string="الفحص الطبي ">
+					<sheet>
+						<group col="6">
+							<field name="employee"
+								domain="['|',('state','=','employee'),('state','=','done'), ('job_id','!=',False)]"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+							<field name="hospital" domain="[('company_type','=','hospital')]" />
+							<field name="exam_date" />
+
+						</group>
+
+						<field name="exams_results" string="اﻷختبارات">
+							<tree editable="bottom">
+								<field name="exam" />
+								<field name="exam_en" />
+								<field name="result" />
+							</tree>
+						</field>
+
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="employee_medical_exam_tree" model="ir.ui.view">
+			<field name="name">employee.medical.exam.tree</field>
+			<field name="model">employee.medical.exam</field>
+			<field name="arch" type="xml">
+				<tree string="الفحص الطبي">
+					<field name="sequence" />
+					<field name="employee" />
+					<field name="exam_date" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_employee_medical_exam">
+			<field name="name">الفحص الطبي</field>
+			<field name="res_model">employee.medical.exam</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<menuitem id="medical_examination" name="الفحص الطبي" groups="smart_hr.group_hrm"
+			sequence="5" parent="hr_root_employees" action="action_employee_medical_exam" />
+
+
+
+
+
+	</data>
+</openerp>

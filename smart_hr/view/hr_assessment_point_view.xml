@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+<!-- 		<menuitem id="menu_hr_assessment_point" parent="menu_hr_assessment_root" -->
+<!-- 			name="الإعدادات" sequence="100" /> -->
+
+		<!-- Job Performance Points -->
+		<record id="view_search_hr_assessment_point_job" model="ir.ui.view">
+			<field name="name">hr.assessment.point.job.search</field>
+			<field name="model">hr.assessment.point.job</field>
+			<field name="arch" type="xml">
+				<search string="نقاط الأداء الوظيفي">
+					<field name="eval_type" />
+					<field name="eval_name" />
+					<field name="point_from" />
+					<field name="point_to" />
+					<field name="score" />
+				</search>
+			</field>
+		</record>
+		<record id="view_tree_hr_assessment_point_job" model="ir.ui.view">
+			<field name="name">hr.assessment.point.job.tree</field>
+			<field name="model">hr.assessment.point.job</field>
+			<field name="arch" type="xml">
+				<tree string="نقاط الأداء الوظيفي" class="oe_tree_view">
+					<field name="eval_type" />
+					<field name="eval_name" />
+					<field name="point_from" />
+					<field name="point_to" />
+					<field name="score" />
+				</tree>
+			</field>
+		</record>
+		<record id="view_form_hr_assessment_point_job" model="ir.ui.view">
+			<field name="name">hr.assessment.point.job.form</field>
+			<field name="model">hr.assessment.point.job</field>
+			<field name="arch" type="xml">
+				<form string="نقاط الأداء الوظيفي">
+					<sheet>
+						<group>
+							<group>
+								<field name="eval_type" required="1" />
+								<field name="eval_name" required="1" />
+							</group>
+							<group>
+								<field name="point_from" required="1" />
+								<field name="point_to" required="1" />
+								<field name="score" required="1" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="action_hr_assessment_point_job" model="ir.actions.act_window">
+			<field name="name">نقاط الأداء الوظيفي</field>
+			<field name="res_model">hr.assessment.point.job</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+<!-- 		<menuitem id="menu_hr_assessment_point_job" action="action_hr_assessment_point_job" -->
+<!-- 			parent="menu_hr_assessment_point" name="نقاط الأداء الوظيفي" /> -->
+
+		<!-- Education Qualification Points -->
+		<record id="view_search_hr_assessment_point_education" model="ir.ui.view">
+			<field name="name">hr.assessment.point.education.search</field>
+			<field name="model">hr.assessment.point.education</field>
+			<field name="arch" type="xml">
+				<search string="نقاط المؤهلات الدراسى">
+					<field name="name" />
+					<field name="year_point" />
+					<field name="year_no" />
+					<field name="total" />
+				</search>
+			</field>
+		</record>
+		<record id="view_tree_hr_assessment_point_education" model="ir.ui.view">
+			<field name="name">hr.assessment.point.education.tree</field>
+			<field name="model">hr.assessment.point.education</field>
+			<field name="arch" type="xml">
+				<tree string="نقاط المؤهلات الدراسى" class="oe_tree_view">
+					<field name="name" />
+					<field name="year_point" />
+					<field name="year_no" />
+					<field name="total" />
+				</tree>
+			</field>
+		</record>
+		<record id="view_form_hr_assessment_point_education" model="ir.ui.view">
+			<field name="name">hr.assessment.point.education.form</field>
+			<field name="model">hr.assessment.point.education</field>
+			<field name="arch" type="xml">
+				<form string="نقاط المؤهلات الدراسى">
+					<sheet>
+						<group>
+							<field name="name" required="1" />
+							<field name="year_point" required="1" />
+							<field name="year_no" required="1" />
+							<field name="total" required="1" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="action_hr_assessment_point_education" model="ir.actions.act_window">
+			<field name="name">نقاط المؤهلات الدراسى</field>
+			<field name="res_model">hr.assessment.point.education</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+<!-- 		<menuitem id="menu_hr_assessment_point_education" action="action_hr_assessment_point_education" -->
+<!-- 			parent="menu_hr_assessment_point" name="نقاط المؤهلات الدراسى" /> -->
+
+		<!-- Training Performance Points -->
+		<record id="view_search_hr_assessment_point_training" model="ir.ui.view">
+			<field name="name">hr.assessment.point.training.search</field>
+			<field name="model">hr.assessment.point.training</field>
+			<field name="arch" type="xml">
+				<search string="نقاط أداء التدريب">
+					<field name="type_no" />
+					<field name="number" />
+					<field name="direct_score" />
+					<field name="indirect_score" />
+				</search>
+			</field>
+		</record>
+		<record id="view_tree_hr_assessment_point_training" model="ir.ui.view">
+			<field name="name">hr.assessment.point.training.tree</field>
+			<field name="model">hr.assessment.point.training</field>
+			<field name="arch" type="xml">
+				<tree string="نقاط أداء التدريب" class="oe_tree_view">
+					<field name="type_no" />
+					<field name="number" />
+					<field name="direct_score" />
+					<field name="indirect_score" />
+				</tree>
+			</field>
+		</record>
+		<record id="view_form_hr_assessment_point_training" model="ir.ui.view">
+			<field name="name">hr.assessment.point.training.form</field>
+			<field name="model">hr.assessment.point.training</field>
+			<field name="arch" type="xml">
+				<form string="نقاط أداء التدريب">
+					<sheet>
+						<group>
+							<group>
+								<field name="type_no" required="1" />
+								<field name="number" required="1" />
+							</group>
+							<group>
+								<field name="direct_score" required="1" />
+								<field name="indirect_score" required="1" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="action_hr_assessment_point_training" model="ir.actions.act_window">
+			<field name="name">نقاط أداء التدريب</field>
+			<field name="res_model">hr.assessment.point.training</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+<!-- 		<menuitem id="menu_hr_assessment_point_training" action="action_hr_assessment_point_training" -->
+<!-- 			parent="menu_hr_assessment_point" name="نقاط أداء التدريب" /> -->
+
+		<!-- Seniority Points -->
+		<record id="view_search_hr_assessment_point_seniority" model="ir.ui.view">
+			<field name="name">hr.assessment.point.seniority.search</field>
+			<field name="model">hr.assessment.point.seniority</field>
+			<field name="arch" type="xml">
+				<search string="نقاط الأقدمية">
+					<field name="year" />
+					<field name="month" />
+					<field name="score" />
+				</search>
+			</field>
+		</record>
+		<record id="view_tree_hr_assessment_point_seniority" model="ir.ui.view">
+			<field name="name">hr.assessment.point.seniority.tree</field>
+			<field name="model">hr.assessment.point.seniority</field>
+			<field name="arch" type="xml">
+				<tree string="نقاط الأقدمية" class="oe_tree_view">
+					<field name="year" />
+					<field name="month" />
+					<field name="score" />
+				</tree>
+			</field>
+		</record>
+		<record id="view_form_hr_assessment_point_seniority" model="ir.ui.view">
+			<field name="name">hr.assessment.point.seniority.form</field>
+			<field name="model">hr.assessment.point.seniority</field>
+			<field name="arch" type="xml">
+				<form string="نقاط الأقدمية">
+					<sheet>
+						<group>
+							<field name="year" required="1" />
+							<field name="month" required="1" />
+							<field name="score" required="1" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="action_hr_assessment_point_seniority" model="ir.actions.act_window">
+			<field name="name">نقاط الأقدمية</field>
+			<field name="res_model">hr.assessment.point.seniority</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+<!-- 		<menuitem id="menu_hr_assessment_point_seniority" action="action_hr_assessment_point_seniority" -->
+<!-- 			parent="menu_hr_assessment_point" name="نقاط الأقدمية" /> -->
+
+
+
+
+		<!-- إعدادات نتائج تقييم موظف -->
+
+
+		<record id="view_form_hr_assessment_result_config" model="ir.ui.view">
+			<field name="name">hr.assessment.result.config.form</field>
+			<field name="model">hr.assessment.result.config</field>
+			<field name="arch" type="xml">
+				<form string="إعدادات نتائج تقييم موظف">
+					<sheet>
+							<group>
+								<field name="name" required="1" />
+							</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="view_tree_hr_assessment_result_config" model="ir.ui.view">
+			<field name="name">hr.assessment.result.config.tree</field>
+			<field name="model">hr.assessment.result.config</field>
+			<field name="arch" type="xml">
+				<tree string="إعدادات نتائج تقييم موظف" class="oe_tree_view">
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+		<record id="action_hr_assessment_result_config" model="ir.actions.act_window">
+			<field name="name">إعدادات نتائج تقييم موظف</field>
+			<field name="res_model">hr.assessment.result.config</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+<!-- 		<menuitem id="menu_hr_assessment_result_config" action="action_hr_assessment_result_config" -->
+<!-- 			parent="menu_hr_assessment_point" /> -->
+	</data>
+</openerp>

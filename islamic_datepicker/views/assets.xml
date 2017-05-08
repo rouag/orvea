@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- vim:fdn=3:
+-->
+<openerp>
+  <data>
+    <template id="assets_backend" name="islamic_datepicker assets" inherit_id="web.assets_backend">
+      <xpath expr="." position="inside">
+        <link rel="stylesheet" href="/islamic_datepicker/static/src/css/web_hijri_date.css"></link>
+        <link rel="stylesheet" href="/islamic_datepicker/static/src/css/flora.calendars.picker.css"></link>
+                <link rel="stylesheet" href="/islamic_datepicker/static/lib/bootstrap-timepicker/css/bootstrap-timepicker.css"></link>
+                <!--<link rel="stylesheet" href="/islamic_datepicker/static/lib/bootstrap-timepicker/css/timepicker.less"></link>-->
+
+        <script type="text/javascript" src="/islamic_datepicker/static/lib/jQuery_calendars/jquery.calendars.js"></script>
+        <script type="text/javascript" src="/islamic_datepicker/static/lib/jQuery_calendars/jquery.calendars.plus.js"></script>
+                <script type="text/javascript" src="/islamic_datepicker/static/lib/jQuery_calendars/jquery.plugin.js"></script>
+
+                <!--<script type="text/javascript" src="/islamic_datepicker/static/lib/jQuery_calendars/jquery.datepick-ar.js"></script>-->
+        <script type="text/javascript" src="/islamic_datepicker/static/lib/jQuery_calendars/jquery.calendars.picker.js"></script>
+
+        <script type="text/javascript"  src="/islamic_datepicker/static/lib/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
+        <script type="text/javascript"
+                src="/islamic_datepicker/static/lib/jQuery_calendars/jquery.calendars.ummalqura.js"></script>
+        <script type="text/javascript"
+                src="/islamic_datepicker/static/lib/jQuery_calendars/jquery.calendars.ummalqura-ar.js"></script>
+        <script type="text/javascript"
+                src="/islamic_datepicker/static/lib/jQuery_calendars/jquery.calendars.picker-ar.js"></script>
+        <script type="text/javascript" src="/islamic_datepicker/static/src/js/web_hijri_date.js"></script>
+        <script type="text/javascript" src="/islamic_datepicker/static/src/js/web_hijri_date_tree.js"></script>
+        <script type="text/javascript" src="/islamic_datepicker/static/src/js/web_hijri_date_kanban.js"></script>
+
+      </xpath>
+    </template>
+  </data>
+</openerp>

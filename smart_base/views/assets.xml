@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="assets_backend" name="notification assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+<!--             <link rel="stylesheet" href="/calendar/static/src/less/calendar.less"/> -->
+            <script type="text/javascript" src="/smart_base/static/src/js/notification.js"></script>
+             <script type="text/javascript" src="/smart_base/static/src/js/odoo.js"></script>
+             <link rel="stylesheet" href="/smart_base/static/src/css/notification.css"></link>
+        </xpath>
+    </template>
+</odoo>

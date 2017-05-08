@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<template id="hr_employee_functionnal_card_report">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.landscape_layout">
+						<div class="page">
+							<br />
+							<br />
+
+							<div class=" text-center">
+								<h3>
+									<strong>
+										بطاقة وظيفية
+									</strong>
+									<br />
+									<br />
+								</h3>
+							</div>
+							<div class="col-md-12">
+								<div class="col-md-4"></div>
+								<div class="col-md-4"></div>
+								<div class="col-md-4 pull-left">
+									<table class="table table-bordered">
+										<tr style=" background-color:#9CB071; height:10%;">
+											<td colspan="4">
+												<div class="col-xs-12">
+													<b>
+														<div class="col-xs-4">
+															<b>اسم الموظف:</b>
+															<span t-field="o.emp_name" />
+														</div>
+														<div class="col-xs-4">
+															<b>السن:</b>
+															<span t-field="o.emp_age" />
+															سنة
+														</div>
+
+														<div class="col-xs-4">
+															<b>مكان العمل:</b>
+															<span t-field="o.department_name_report" />
+														</div>
+													</b>
+												</div>
+											</td>
+										</tr>
+
+										<tr>
+											<td>
+												رقم الوظيفة
+											</td>
+											<td>
+												<span t-field="o.number" />
+											</td>
+											<td>
+												الحالة
+											</td>
+											<td>
+												<span t-field="o.employee_state" />
+											</td>
+										</tr>
+										<tr>
+											<td>
+												الراتب الأخير
+											</td>
+											<td>
+												<span t-field="o.last_salary" />
+											</td>
+											<td>
+												الدرجة
+											</td>
+											<td>
+												<span t-field="o.degree_id" />
+											</td>
+										</tr>
+										<tr>
+											<td>
+												مكان الميلاد
+											</td>
+											<td>
+												<span t-field="o.birthday_location" />
+											</td>
+											<td>
+												تاريخ الميلاد
+											</td>
+											<td>
+												<span t-esc="get_hijri_date(o.birthday, '-')" />
+											</td>
+										</tr>
+										<tr t-if="o.employee_id.is_saudian == True">
+
+											<td>
+												رقم الحفيظة
+											</td>
+											<td>
+												<span t-field="o.hoveizeh_id" />
+											</td>
+											<td>
+												تاريخ إصدار الحفيظة
+											</td>
+											<td>
+												<span t-esc="get_hijri_date(o.hoveizeh_date, '-')" />
+											</td>
+										</tr>
+										<tr t-if="o.employee_id.is_saudian == False">
+
+											<td>
+												رقم جواز السفر
+											</td>
+											<td>
+												<span t-field="o.passport_id" />
+											</td>
+											<td>
+												تاريخ إصدار جواز السفر
+											</td>
+											<td>
+												<span t-esc="get_hijri_date(o.passport_date, '-')" />
+											</td>
+										</tr>
+										<tr>
+											<td t-if="o.employee_id.is_saudian == True">
+												مكان إصدار
+												الحفيظة
+											</td>
+											<td t-if="o.employee_id.is_saudian == True">
+												<span t-field="o.hoveizeh_place" />
+											</td>
+											<td t-if="o.employee_id.is_saudian == False">
+												مكان إصدار
+												جواز السفر
+											</td>
+											<td t-if="o.employee_id.is_saudian == False">
+												<span t-field="o.passport_place" />
+											</td>
+											<td>
+												رقم الهوية
+											</td>
+											<td>
+												<span t-field="o.identification_id" />
+											</td>
+
+										</tr>
+										<tr>
+											<td>
+												تاريخ بداية الخدمة
+											</td>
+											<td>
+												<span t-esc="get_hijri_date(o.begin_work_date, '-')" />
+											</td>
+											<td>
+												تاريخ الالتحاق بالهيئة
+											</td>
+											<td>
+												<span t-esc="get_hijri_date(o.recruiter_date, '-')" />
+											</td>
+										</tr>
+										<tr>
+											<td>
+												المؤهل عند الالتحاق بالخدمة
+											</td>
+											<td>
+												<span t-field="o.education_level" />
+											</td>
+											<td>
+												التخصص
+											</td>
+											<td>
+												<t t-foreach="o.specialization_ids" t-as="line">
+													<span t-field="line.name" />
+												</t>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+
+							<br />
+							<br />
+							<br />
+							<div class="col-xs-8 text-center"
+								style=" background-color:#9CB071; height: 25px; width:100%">
+								<b>الحياة الوظيفية</b>
+							</div>
+							<table class="table table-condensed">
+								<tr>
+									<th>
+										المسمى الوظيفي
+									</th>
+									<th>
+										المرتبة
+									</th>
+									<th>
+										رقم الوظيفة
+									</th>
+									<th>
+										الجهة
+									</th>
+									<th>
+										الفرع
+									</th>
+									<th>
+										الاجرا ء
+									</th>
+									<th>
+										التاريخ
+									</th>
+									<th>
+										رقم القرار
+									</th>
+									<th>
+										تاريخ القرار
+									</th>
+								</tr>
+								<tr t-foreach="o.history_ids" t-as="line">
+									<td>
+										<span t-esc="line.job_id" />
+									</td>
+									<td>
+										<span t-esc="line.grade_id.name" />
+									</td>
+									<td>
+										<span t-esc="line.number" />
+									</td>
+									<td>
+										<span t-esc="line.dep_side" />
+
+									</td>
+									<td>
+										<span t-esc="line.department_id.name" />
+									</td>
+									<td>
+										<span t-esc="line.type" />
+									</td>
+
+									<td>
+										<span t-esc="get_hijri_date(line.date, '-')" />
+									</td>
+									<td>
+										<span t-esc="line.num_decision" />
+									</td>
+									<td>
+										<span t-esc="get_hijri_date(line.date_decision, '-')" />
+									</td>
+								</tr>
+							</table>
+							<div class="col-xs-8 text-center"
+								style=" background-color:#9CB071; height: 25px; width:100%">
+								<b>
+									التدريب
+								</b>
+							</div>
+							<br />
+							<table class="table table-condensed">
+								<tr>
+									<th>
+										الدورة
+									</th>
+									<th>
+										التاريخ
+									</th>
+									<th>
+										المدة
+									</th>
+									<th>
+										المكان
+									</th>
+
+								</tr>
+								<tr t-foreach="o.training_ids" t-as="line">
+									<td>
+										<span t-esc="line.training_id.name" />
+									</td>
+									<td>
+										<span t-esc="get_hijri_date(line.date_from, '-')" />
+									</td>
+									<td>
+										<span t-esc="line.number_of_days" />
+
+									</td>
+									<td>
+										<span t-esc="line.place.name" />
+									</td>
+
+								</tr>
+							</table>
+						</div>
+					</t>
+
+				</t>
+			</t>
+		</template>
+
+	</data>
+</openerp>

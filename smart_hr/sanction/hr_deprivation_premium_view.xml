@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="hr_deprivation_premium_ligne_form">
+			<field name="name">hr.deprivation.premium.ligne.form</field>
+			<field name="model">hr.deprivation.premium.ligne</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="قرار حرمان من العلاوة">
+					<sheet>
+						<group>
+							<group>
+								<field name="employee_id" />
+								<field name="raison" />
+
+							</group>
+							<group>
+								<field name="state_deprivation" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<!-- قرار حرمان من العلاوة -->
+
+		<record model="ir.ui.view" id="hr_deprivation_premium_tree">
+			<field name="name">hr.deprivation.premium.tree</field>
+			<field name="model">hr.deprivation.premium</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="قرار حرمان من العلاوة">
+					<field name="name" />
+					<field name="order_date" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_deprivation_premium_form">
+			<field name="name">hr.deprivation.premium.form</field>
+			<field name="model">hr.deprivation.premium</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="قرار حرمان من العلاوة">
+					<header>
+						<button name="action_draft" string=" ارسال طلب" type="object"
+							states="draft" groups="smart_hr.group_manager_sanction" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_waiting" string="موافق" type="object"
+							states="waiting" groups="smart_hr.group_responsable_sanction"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" states="waiting" groups="smart_hr.group_responsable_sanction"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						
+
+						<button name="button_deprivation_premium" string="معاينة القرار"
+							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+
+
+
+
+						<field name="state" widget="statusbar"
+							statusbar_visible="draft,waiting,done,refused" />
+
+					</header>
+					<sheet>
+						<group>
+							<group>
+
+								<field name="date_deprivation"
+									attrs="{'readonly':[('state', 'in', ['waiting','done','refused'])]}" />
+							</group>
+							<group>
+								<field name="years_id"
+									attrs="{'readonly':[('state', 'in', ['waiting','done','refused'])]}" />
+								<field name="name" readonly="1"
+									attrs="{'invisible':[('state','not in',['done','refused'])]}" />
+								<field name="order_date" readonly="1"
+									attrs="{'invisible':[('state','not in',['done','refused'])]}" />
+
+							</group>
+						</group>
+
+						<group string="فلترة">
+							<group>
+								<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]" />
+								<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]" />
+							</group>
+							<group>
+								<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]" />
+								<field name="salary_grid_type_id" />
+							</group>
+						</group>
+						<group>
+							<notebook>
+								<page string="قائمة الموظفين"
+									attrs="{'invisible':[('state','not in',['draft'])],}">
+									<group>
+										<field name="employee_ids" nolabel="1" />
+									</group>
+								</page>
+
+
+								<page string="قائمة المحرومين من العلاوة"
+									attrs="{'invisible':[('state','not in', ['waiting','done','refused'])],'readonly':[('state', 'in', ['done','refused'])]}">
+									<group>
+										<field name="deprivation_ids"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+											nolabel="1"
+											attrs="{'invisible':[('state','not in', ['waiting','done','refused'])],'readonly':[('state', 'in', ['waiting','done','refused'])]}">
+											<tree editable="bottom">
+												<field name="employee_id" />
+												<field name="raison"
+													attrs="{'readonly':[('state', 'in', ['waiting','done','refused'])]}" />
+												<field name="state_deprivation" />
+
+												<field name="state" invisible="1" />
+												<button
+													name="%(smart_hr.action_hr_deprivation_cancel_wizard_exclusion)d"
+													attrs="{'invisible':['|',('is_cancel','=',True),('state','in', ['done','refused'])]}"
+													type="action" string="إستبعاد" icon="STOCK_CANCEL" />
+												<field name="is_cancel" invisible="1" />
+
+											</tree>
+										</field>
+									</group>
+								</page>
+
+							</notebook>
+						</group>
+					</sheet>
+					<div>
+						<field name="message_ids" widget="mail_thread" readonly="1" />
+					</div>
+				</form>
+			</field>
+		</record>
+
+
+		<record model="ir.actions.act_window" id="action_hr_deprivation_premium">
+			<field name="name">قرار حرمان من العلاوة</field>
+			<field name="res_model">hr.deprivation.premium</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+		<menuitem id="hr_deprivation_premium_menu" name="قرار حرمان من العلاوة"
+			sequence="102" parent="hr_root_workflows" action="action_hr_deprivation_premium" />
+
+	</data>
+</openerp>
+	

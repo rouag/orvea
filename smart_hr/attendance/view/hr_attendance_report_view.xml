@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<!-- ملخص الحضور و الإنصراف -->
+
+		<record model="ir.ui.view" id="hr_attendance_summary_tree">
+			<field name="name">hr.attendance.summary.tree</field>
+			<field name="model">hr.attendance.summary</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="ملخص الحضور و الإنصراف" create='0' edit='0' delete='0' duplicate='0' >
+					<field name="employee_id" />
+					<field name="number" />
+					<field name="department_id" />
+					<field name="date" />
+					<field name="hour_start" widget="float_time" />
+					<field name="hour_stop" widget="float_time" />
+					<field name="retard" widget="float_time" />
+					<field name="leave" widget="float_time" />
+					<field name="absence" widget="float_time" />
+					<field name="authorization" widget="float_time" />
+					<field name="hours_supp" widget="float_time" />
+					<field name="holidays" />
+				</tree>
+			</field>
+		</record>
+
+
+
+		<record id="hr_attendance_summary_search" model="ir.ui.view">
+			<field name="name">hr.attendance.summary.search</field>
+			<field name="model">hr.attendance.summary</field>
+			<field name="arch" type="xml">
+				<search string="ملخص الحضور و الإنصراف">
+					<field name="employee_id" string="الموظف"
+							   filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]"/>
+					<field name="number" />
+					<field name="department_id" />
+					<field name="date" />
+					<group expand="0" string="تجميع حسب...">
+						<filter name="employee_id" string="الموظف"
+							context="{'group_by':'employee_id'}" />
+						<filter name="date" string="التاريخ" context="{'group_by':'date'}" />
+						<filter name="department_id" string="الإدارة"
+							context="{'group_by':'department_id'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_attendance_summary">
+			<field name="name">ملخص الحضور و الإنصراف</field>
+			<field name="res_model">hr.attendance.summary</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+
+		<menuitem id="hr_attendance_summary_menu" name="ملخص الحضور و الإنصراف"
+			groups="smart_hr.group_dm,smart_hr.group_hrm" sequence="10"
+			parent="menu_attendance_report" action="action_hr_attendance_summary" />
+
+
+	</data>
+</openerp>

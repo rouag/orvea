@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+
+
+
+		<record model="ir.ui.view" id="hr_promotion_employee_demande_tree_view">
+			<field name="name">hr.promotion.employee.demande.tree</field>
+			<field name="model">hr.promotion.employee.demande</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="طلبات الترقية" delete='0' duplicate='0'>
+					<field name="name" />
+					<field name="employee_id" />
+					<field name="hr_allowance_type_id" />
+					<field name="city_fovorite" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_promotion_employee_demande_form_view">
+			<field name="name">hr.promotion.employee.demande.form</field>
+			<field name="model">hr.promotion.employee.demande</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form>
+				<header>
+				<button name="button_confirmed" string="إرسال" type="object"
+							states="new" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"  />
+				<field name="state" widget="statusbar"
+							statusbar_visible="new,waiting,done,cancel" />
+					</header>
+					<sheet string="طلبات الترقية">
+					
+						<group col="2">
+							<field name="create_date" string="تاريخ الطلب" readonly="1" />
+						</group>
+						<group col="2">
+							<group>
+								<field name="employee_id" />
+								<field name="name" readonly="1" attrs="{'invisible': [('state', '=', 'new')]}" />
+								<field name="done_date" attrs="{'invisible': [('state', '!=', 'done')]}"/>
+							</group>
+							<group>
+								<field name="city_fovorite" options="{'no_create': True}"
+									required="1" attrs="{'readonly': [('state', '!=', 'new')]}"/>
+								<field name="hr_allowance_type_id" required="1" attrs="{'readonly': [('state', '!=', 'new')]}" options='{"no_open": True, "no_create": True}' />
+							</group>
+						</group>
+						<group col="2" string="رغبات الموظف">
+							<field name="desire_ids" nolabel="1" >
+								<tree editable="bottom">
+										<field name="sequence" widget="handle" readonly="1" />
+										<field name="name" />
+										<field name="demande_promotion_id" invisible="1" />
+								</tree>
+							</field>
+						</group>
+					</sheet>
+				</form>
+
+			</field>
+		</record>
+
+		<record id="hr_promotion_employee_demande_search" model="ir.ui.view">
+			<field name="name">hr.promotion.employee.demande.search</field>
+			<field name="model">hr.promotion.employee.demande</field>
+			<field name="arch" type="xml">
+				<search>
+					<field name="employee_id" string="الموظف"
+							   filter_domain="['|','|','|','|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.name','ilike',self),('employee_id.father_name','ilike',self),('employee_id.grandfather_name','ilike',self),('employee_id.family_name','ilike',self)]"/>
+					<group expand="0" string="تجميع حسب...">
+						<filter name="employee_id" string="الموظف" context="{'group_by':'employee_id'}" />
+						<filter name="create_date" string="التاريخ" context="{'group_by':'date'}" />
+						<filter name="state" string="الحالة" context="{'group_by':'state'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+
+
+		<record model="ir.actions.act_window" id="action_promotion_demande">
+			<field name="name">طلبات الترقية</field>
+			<field name="res_model">hr.promotion.employee.demande</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="menu_promotion_demande" action="action_promotion_demande"
+			parent="hr_root_workflows" name="طلبات الترقية" sequence="15" groups="smart_hr.group_hrm,smart_hr.group_promotion_specialiter,smart_hr.group_responsable_promotion"/>
+
+
+	</data>
+</openerp>

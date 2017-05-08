@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<template id="hr_suspension_report">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.landscape_layout">
+						<div class="page"
+							style="font-size:16px; font-family:'Times New Roman' !important;">
+
+							<div class="col-xs-12 text-center">
+								<br></br>
+								<strong>كف اليد
+								</strong>
+								<br></br>
+								<br></br>
+								<br></br>
+							</div>
+
+							<table class="table table-bordered">
+								<tr style=" background-color:#9CB071; height:10%;">
+									<td colspan="2" class="text-center">
+										<b> معلومات الموظف
+										</b>
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<b>اسم الموظف:</b>
+									</td>
+									<td>
+										<span t-field="o.employee_id.display_name" />
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<b>رقم الموظف:</b>
+									</td>
+									<td>
+										<span t-field="o.employee_id.number" />
+
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<b>الوظيفة:</b>
+									</td>
+									<td>
+										<span t-field="o.employee_id.job_id.name" />
+
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<b>تاريخ بداية العمل الحكومي</b>
+									</td>
+									<td>
+										<span t-esc="get_hijri_date(o.employee_id.begin_work_date, '-')" />
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<b>تاريخ الالتحاق بالجهة:</b>
+									</td>
+									<td>
+										<span t-esc="get_hijri_date(o.employee_id.recruiter_date, '-')" />
+									</td>
+								</tr>
+							</table>
+							<table class="table table-bordered">
+								<tr style=" background-color:#9CB071; height:10%;">
+									<td colspan="2" class="text-center">
+										<strong> معلومات كف اليد
+										</strong>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<strong> جهة الخطاب
+										</strong>
+									</td>
+									<td>
+										<span t-field="o.letter_sender" />
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<strong> رقم الخطاب
+										</strong>
+									</td>
+									<td>
+										<span t-field="o.letter_number" />
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<strong> تاريخ الخطاب
+										</strong>
+									</td>
+									<td>
+										<span t-esc="get_hijri_date(o.letter_date, '-')" />
+									</td>
+								</tr>
+
+								<tr>
+									<td>
+										<b> سبب كف اليد
+										</b>
+									</td>
+									<td>
+										<span t-field="o.raison" />
+									</td>
+								</tr>
+
+
+
+
+							</table>
+						</div>
+
+					</t>
+				</t>
+			</t>
+		</template>
+
+	</data>
+</openerp>

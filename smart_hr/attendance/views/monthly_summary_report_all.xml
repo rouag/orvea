@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_monthly_summary_all">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.landscape_layout">
+						<div class="page">
+							<div class="oe_structure" />
+
+							<div class="col-xs-12 text-center">
+								<h3 style="color:#395870;">
+									<strong>
+										الخلاصة الشهرية للغيابات والتأخير
+									</strong>
+									<br />
+									<br />
+								</h3>
+							</div>
+							<div class="col-xs-12 text-center">
+								<strong>التاريخ :</strong>
+								<span t-esc="get_hijri_date(o.date_from, '-')" />
+								-
+								<span t-esc="get_hijri_date(o.date_to, '-')" />
+								<br />
+								<br />
+							</div>
+
+							<table class="table table-condensed">
+								<thead>
+									<tr>
+										<th colspan="2">بيانات الموظف</th>
+										<th colspan="6">تأخير و خروج مبكر</th>
+										<th colspan="4">غيابات</th>
+									</tr>
+									<tr>
+										<th width="25%">الموظف</th>
+										<th width="5%">رقم.و</th>
+										<th width="7%">رصيد الشهر السابق</th>
+										<th width="7%">تأخير</th>
+										<th width="7%">خروج مبكر</th>
+										<th width="7%">تحويل</th>
+										<th width="7%">الخصم</th>
+										<th width="7%">الرصيد المرحل</th>
+										<th width="7%">رصيد الشهر السابق</th>
+										<th width="7%">غياب</th>
+										<th width="7%">الخصم</th>
+										<th width="7%">الرصيد المرحل</th>
+
+									</tr>
+								</thead>
+
+								<t t-set="balance_previous_retard" t-value="0" />
+								<t t-set="balance_previous_absence" t-value="0" />
+								<t t-set="retard" t-value="0" />
+								<t t-set="leave" t-value="0" />
+								<t t-set="absence" t-value="0" />
+								<t t-set="delay_request" t-value="0" />
+								<t t-set="days_retard" t-value="0" />
+								<t t-set="days_absence" t-value="0" />
+								<t t-set="balance_forward_retard" t-value="0" />
+								<t t-set="balance_forward_absence" t-value="0" />
+								<tbody>
+									<tr t-foreach="o.line_ids" t-as="line">
+
+
+
+										<t t-set="balance_previous_retard"
+											t-value="balance_previous_retard+line.balance_previous_retard" />
+										<t t-set="balance_previous_absence"
+											t-value="balance_previous_absence+line.balance_previous_absence" />
+										<t t-set="retard" t-value="retard+line.retard" />
+										<t t-set="leave" t-value="leave+line.leave" />
+										<t t-set="absence" t-value="absence+line.absence" />
+										<t t-set="delay_request" t-value="delay_request+line.delay_request" />
+										<t t-set="days_retard" t-value="days_retard+line.days_retard" />
+										<t t-set="days_absence" t-value="days_absence+line.days_absence" />
+										<t t-set="balance_forward_retard"
+											t-value="balance_forward_retard+line.balance_forward_retard" />
+										<t t-set="balance_forward_absence"
+											t-value="balance_forward_absence+line.balance_forward_absence" />
+										<td>
+											<span t-field="line.employee_id.name" />
+										</td>
+
+										<td>
+											<span t-field="line.employee_id.number" />
+										</td>
+
+										<td class="text-center">
+											<t t-if="line.balance_previous_retard">
+												<span t-esc="format_time(line.balance_previous_retard)" />
+											</t>
+											<t t-if="not line.balance_previous_retard">
+												-
+											</t>
+										</td>
+
+										<td class="text-center">
+											<t t-if="line.retard">
+												<span t-esc="format_time(line.retard)" />
+											</t>
+											<t t-if="not line.retard">
+												-
+											</t>
+										</td>
+
+										<td class="text-center">
+											<t t-if="line.leave">
+												<span t-esc="format_time(line.leave)" />
+											</t>
+											<t t-if="not line.leave">
+												-
+											</t>
+										</td>
+
+										<td class="text-center">
+											<t t-if="line.delay_request">
+												<span t-esc="format_time(line.delay_request)" />
+											</t>
+											<t t-if="not line.delay_request">
+												-
+											</t>
+										</td>
+
+										<td class="text-center">
+											<t t-if="line.days_retard">
+												<span t-esc="line.days_retard" style="color:red;" />
+											</t>
+											<t t-if="not line.days_retard">
+												-
+											</t>
+										</td>
+
+										<td class="text-center">
+											<t t-if="line.balance_forward_retard">
+												<span t-esc="format_time(line.balance_forward_retard)" />
+											</t>
+											<t t-if="not line.balance_forward_retard">
+												-
+											</t>
+										</td>
+
+										<td class="text-center">
+											<t t-if="line.balance_previous_absence">
+												<span t-esc="format_time(line.balance_previous_absence)" />
+											</t>
+											<t t-if="not line.balance_previous_absence">
+												-
+											</t>
+										</td>
+
+
+										<td class="text-center">
+											<t t-if="line.absence">
+												<span t-esc="format_time(line.absence)" />
+											</t>
+											<t t-if="not line.absence">
+												-
+											</t>
+										</td>
+
+										<td class="text-center">
+											<t t-if="line.days_absence">
+												<span t-esc="line.days_absence" style="color:red;" />
+											</t>
+											<t t-if="not line.days_absence">
+												-
+											</t>
+										</td>
+										<td class="text-center">
+											<t t-if="line.balance_forward_absence">
+												<span t-esc="format_time(line.balance_forward_absence)" />
+											</t>
+											<t t-if="not line.balance_forward_absence">
+												-
+											</t>
+										</td>
+
+									</tr>
+								</tbody>
+								<tfoot>
+									<tr>
+										<td colspan="2">المجموع</td>
+										<td class="text-center">
+											<span t-esc="format_time(balance_previous_retard)" />
+										</td>
+										<td class="text-center">
+											<span t-esc="format_time(retard)" />
+										</td>
+										<td class="text-center">
+											<span t-esc="format_time(leave)" />
+										</td>
+										<td class="text-center">
+											<span t-esc="format_time(delay_request)" />
+										</td>
+										<td class="text-center">
+											<span t-esc="days_retard" />
+										</td>
+										<td class="text-center">
+											<span t-esc="format_time(balance_forward_retard)" />
+										</td>
+										<td class="text-center">
+											<span t-esc="format_time(balance_previous_absence)" />
+										</td>
+										<td class="text-center">
+											<span t-esc="format_time(absence)" />
+										</td>
+										<td class="text-center">
+											<span t-esc="days_absence" />
+										</td>
+										<td class="text-center">
+											<span t-esc="format_time(balance_forward_absence)" />
+										</td>
+									</tr>
+								</tfoot>
+							</table>
+						</div>
+					</t>
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+								

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<record id="view_employee_tree_promotion_duration" model="ir.ui.view">
+			<field name="name">hr.employee.tree</field>
+			<field name="model">hr.employee</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="الموظفون">
+					<field name="display_name" string="الموظف" />
+					<field name="number" />
+					<field name="date_last_promotion" />
+					<field name="promotion_duration" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="hr_employee_promotion_duration_form" model="ir.ui.view">
+			<field name="name">hr.employee.promotion.duration.form</field>
+			<field name="model">hr.employee.promotion.duration</field>
+			<field name="arch" type="xml">
+				<form string="حساب مدة الترقية">
+					<header>
+						<button name="action_done" states="draft" string="موافق "
+							type="object" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_cancel" states="draft" string="إلغاء "
+							type="object" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<field name="state" widget="statusbar" statusbar_visible="draft,done,cancel" />
+					</header>
+					<sheet>
+						<group>
+							<field name="name" invisible="True" />
+							<field name="date_last_execution" />
+							<field name="employee_promotion_ids"
+								context="{'tree_view_ref': 'view_employee_tree_promotion_duration'}">
+								<tree editable="bottom">
+									<field name="display_name" string="الموظف" readonly="True"/>
+									<field name="number" readonly="True" />
+									<field name="date_last_promotion" readonly="True" />
+									<field name="promotion_duration" readonly="True" />
+								</tree>
+							</field>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="hr_employee_promotion_duration_tree" model="ir.ui.view">
+			<field name="name">hr.employee.promotion.duration.tree</field>
+			<field name="model">hr.employee.promotion.duration</field>
+			<field name="arch" type="xml">
+				<tree string="حساب مدة الترقية">
+					<field name="name" invisible="1"/>
+					<field name="date_last_execution" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_employee_promotion_duration">
+			<field name="name">حساب مدة الترقية</field>
+			<field name="res_model">hr.employee.promotion.duration</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="menu_hr_employee_promotion_duration" parent="hr_users_creation"
+			name="حساب مدة الترقية" sequence="11"
+			action="action_hr_employee_promotion_duration" />
+
+
+
+
+	</data>
+</openerp>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="external_layout_hr">
+			    <!-- Multicompany -->
+			    <t t-if="not o and doc">
+			        <t t-set="o" t-value="doc"/>
+			    </t>
+			    <t t-if="o and 'company_id' in o">
+			        <t t-set="company" t-value="o.company_id"></t>
+			    </t>
+			    <t t-if="not o or not 'company_id' in o">
+			        <t t-set="company" t-value="res_company"></t>
+			    </t>
+			
+			    <t t-call="report.external_layout_header" />
+			    <t t-raw="0" />
+			    <t t-call="report.external_layout_footer" />
+		</template>
+
+		<template id="external_layout_header_hr">
+			<div class="header">
+				<div class="row">
+					<img t-if="company.image_header" t-att-src="'data:image/png;base64,%s' % company.image_header"  width="100%"  />
+				</div>
+				
+			</div>
+		</template>
+		
+		<template id="external_layout_footer_hr">
+			<div class="footer">
+				<div class="row">
+					<img t-if="company.image_footer" t-att-src="'data:image/png;base64,%s' % company.image_footer"  width="100%"  />
+				</div>
+			</div>
+		</template>		
+	</data>
+</openerp>

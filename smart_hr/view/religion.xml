@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<!--أنواع الديانات -->
+
+		<record id="religions_form" model="ir.ui.view">
+			<field name="name">religion.religion.form</field>
+			<field name="model">religion.religion</field>
+			<field name="arch" type="xml">
+				<form string="الديانات ">
+					<sheet>
+						<group>
+							<field name="name" />
+							<field name="code" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="religions_tree" model="ir.ui.view">
+			<field name="name">religion.religion.tree</field>
+			<field name="model">religion.religion</field>
+			<field name="arch" type="xml">
+				<tree string="الديانات">
+					<field name="name" />
+					<field name="code" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_religions">
+			<field name="name">أنواع الديانات</field>
+			<field name="res_model">religion.religion</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<!-- config menu -->
+		<menuitem id="hr_configuration_religions" name="الديانات"
+			sequence="60" parent="hr_configuration_general_root" action="action_religions" />
+
+
+
+
+
+	</data>
+</openerp>

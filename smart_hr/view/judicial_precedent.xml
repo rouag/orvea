@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="view_hr_judicial_precedents_filter">
+			<field name="name">employee.judicial.precedent.order.filter</field>
+			<field name="model">employee.judicial.precedent.order</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="السوابق العدلية ">
+					<field name="employee" string="الموظف"
+						filter_domain="['|','|',('employee.number','ilike',self),('employee.identification_id','ilike',self),('employee.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
+		<!--أنواع السوابق العدلية -->
+
+		<record id="judicial_precedents_form" model="ir.ui.view">
+			<field name="name">judicial.precedent.form</field>
+			<field name="model">judicial.precedent</field>
+			<field name="arch" type="xml">
+				<form string="السوابق العدلية ">
+					<sheet>
+						<group>
+							<field name="name" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="judicial_precedents_tree" model="ir.ui.view">
+			<field name="name">judicial.precedent.tree</field>
+			<field name="model">judicial.precedent</field>
+			<field name="arch" type="xml">
+				<tree string="السوابق العدلية">
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_judicial_precedents">
+			<field name="name">أنواع السوابق العدلية</field>
+			<field name="res_model">judicial.precedent</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<!-- config menu -->
+		<menuitem id="hr_configuration_judicial_precedents" name="السوابق العدلية"
+			sequence="15" parent="hr_root_employee_configuration" action="action_judicial_precedents" />
+
+
+		<!-- السابقة العدلية -->
+
+		<record id="employee_judicial_precedent_form" model="ir.ui.view">
+			<field name="name">employee.judicial.precedent.form</field>
+			<field name="model">employee.judicial.precedent</field>
+			<field name="arch" type="xml">
+				<form string=" ">
+					<sheet>
+						<group>
+							<field name="judicial_precident" />
+							<field name="date" />
+							<field name="periode" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="employee_judicial_precedent_tree" model="ir.ui.view">
+			<field name="name">employee.judicial.precedent.tree</field>
+			<field name="model">employee.judicial.precedent</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="السوابق العدلية">
+					<field name="judicial_precident" />
+					<field name="date" />
+					<field name="periode" />
+				</tree>
+			</field>
+		</record>
+		<!-- ملف السوابق العدلية للموظف -->
+
+		<record id="employee_judicial_precedents_form" model="ir.ui.view">
+			<field name="name">employee.judicial.precedent.order.form</field>
+			<field name="model">employee.judicial.precedent.order</field>
+			<field name="arch" type="xml">
+				<form string="طلب إستسفار السوابق العدلية">
+					<sheet>
+						<group>
+							<field name="employee"
+								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+						</group>
+						<field name="judicial_precedents" string="السوابق العدلية" />
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="employee_judicial_precedents_tree" model="ir.ui.view">
+			<field name="name">employee.judicial.precedent.order.tree</field>
+			<field name="model">employee.judicial.precedent.order</field>
+			<field name="arch" type="xml">
+				<tree string="الفحص الطبي">
+					<field name="employee"
+						domain="['|',('state','=','done'), 
+			('state','=','employee')]" />
+					<field name="create_date" string="تاريخ الانشاء" />
+				</tree>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_employee_judicial">
+			<field name="name">السوابق العدلية</field>
+			<field name="res_model">employee.judicial.precedent.order</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<menuitem id="judicial_precedents" name="ملفات السوابق العدلية"
+			groups="smart_hr.group_hrm" sequence="4" parent="hr_root_employees"
+			action="action_employee_judicial" />
+
+
+	</data>
+</openerp>

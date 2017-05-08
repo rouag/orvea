@@ -1,0 +1,733 @@
+
+#. module: hr
+#: model:ir.model.fields,field_description:hr.field_hr_employee_work_email
+msgid "Work Email"
+msgstr "البريد الإلكتروني"
+
+#. module: hr
+#: model:ir.model.fields,field_description:hr.field_hr_employee_work_location
+msgid "Work Location"
+msgstr "العنوان"
+
+#. module: hr
+#: model:ir.model.fields,field_description:hr.field_hr_employee_mobile_phone
+msgid "Work Mobile"
+msgstr "الجوال"
+
+#. module: hr
+#: model:ir.model.fields,field_description:hr.field_hr_employee_work_phone
+msgid "Work Phone"
+msgstr "الهاتف"
+
+#. module: hr
+#: model:ir.model.fields,field_description:hr.field_hr_employee_country_id
+msgid "Nationality (Country)"
+msgstr "الجنسية"
+
+#. module: hr
+#: model:ir.ui.view,arch_db:hr.hr_department_view_kanban
+msgid "Settings"
+msgstr "تحرير"
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/views/form_view.js:773
+#: code:addons/web/static/src/js/views/form_view.js:820
+#, python-format
+msgid "The record has been modified, your changes will be discarded. Are you sure you want to leave this page ?"
+msgstr "لقد تم تعديل النموذج، سيتم تجاهل التغييرات. هل أنت متأكد أنك تريد مغادرة هذه الصفحة؟"
+
+#. module: hr_payroll
+#: model:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
+msgid "Generate"
+msgstr "تأكيد"
+
+#. module: hr_payroll
+#: model:ir.actions.act_window,name:hr_payroll.action_hr_payslip_by_employees
+#: model:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_form
+msgid "Generate Payslips"
+msgstr "إضافة موظفين"
+
+#. module: hr_payroll
+#: model:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
+msgid ""
+"This wizard will generate payslips for all selected employee(s) based on the"
+" dates and credit note specified on Payslips Run."
+msgstr "."
+
+#. module: hr_payroll
+#: model:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
+msgid "Generate"
+msgstr "تأكيد"
+
+#. module: hr_payroll
+#: model:ir.actions.act_window,name:hr_payroll.action_hr_payslip_by_employees
+#: model:ir.ui.view,arch_db:hr_payroll.hr_payslip_run_form
+msgid "Generate Payslips"
+msgstr "إضافة موظفين"
+
+#. module: hr_payroll
+#: model:ir.ui.view,arch_db:hr_payroll.view_hr_payslip_by_employees
+msgid ""
+"This wizard will generate payslips for all selected employee(s) based on the"
+" dates and credit note specified on Payslips Run."
+msgstr "."
+
+#. module: hr_payroll
+#: selection:hr.payslip.line,amount_select:0
+#: selection:hr.salary.rule,amount_select:0
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line_amount_python_compute
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule_amount_python_compute
+msgid "Python Code"
+msgstr "كود"
+
+#. module: hr_payroll
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_payslip_line_condition_python
+#: model:ir.model.fields,field_description:hr_payroll.field_hr_salary_rule_condition_python
+msgid "Python Condition"
+msgstr "شرط بكود "
+
+#. module: hr_payroll
+#: selection:hr.payslip.line,condition_select:0
+#: selection:hr.salary.rule,condition_select:0
+msgid "Python Expression"
+msgstr "كود"
+
+
+#. module: hr
+#: model:ir.model.fields,field_description:hr.field_hr_employee_calendar_id
+msgid "Working Time"
+msgstr "الورديّات"
+
+#. module: resource
+#: model:ir.actions.act_window,name:resource.action_resource_calendar_form
+#: model:ir.model.fields,field_description:resource.field_resource_calendar_attendance_ids
+#: model:ir.model.fields,field_description:resource.field_resource_calendar_leaves_calendar_id
+#: model:ir.model.fields,field_description:resource.field_resource_resource_calendar_id
+#: model:ir.ui.menu,name:resource.menu_resource_calendar
+#: model:ir.ui.view,arch_db:resource.resource_calendar_form
+#: model:ir.ui.view,arch_db:resource.view_resource_calendar_attendance_form
+#: model:ir.ui.view,arch_db:resource.view_resource_calendar_attendance_tree
+#: model:ir.ui.view,arch_db:resource.view_resource_calendar_search
+#: model:ir.ui.view,arch_db:resource.view_resource_calendar_tree
+msgid "Working Time"
+msgstr "الورديّات"
+
+#. module: hr
+#: model:ir.model.fields,field_description:hr.field_hr_department_name
+msgid "Department Name"
+msgstr "المُسمّى"
+
+#. module: hr
+#: model:ir.model.fields,field_description:hr.field_hr_department_parent_id
+msgid "Parent Department"
+msgstr "الادارة الرئيسي"
+
+
+#. module: hr_appraisal
+#: model:ir.actions.act_window,name:hr_appraisal.open_view_hr_appraisal_tree
+#: model:ir.actions.act_window,name:hr_appraisal.open_view_hr_appraisal_tree2
+#: model:ir.model.fields,field_description:hr_appraisal.field_survey_user_input_appraisal_id
+#: model:ir.ui.menu,name:hr_appraisal.menu_hr_appraisal_root
+#: model:ir.ui.menu,name:hr_appraisal.menu_open_view_hr_appraisal_tree
+#: model:ir.ui.view,arch_db:hr_appraisal.hr_employee_view_form
+#: model:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
+#: model:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_tree
+msgid "Appraisal"
+msgstr "تقييم"
+
+#. module: hr_appraisal
+#: model:mail.message.subtype,name:hr_appraisal.mt_appraisal_sent
+msgid "Appraisal sent"
+msgstr " تم إرسال التقييم"
+
+#. module: hr_appraisal
+#: model:ir.actions.act_window,name:hr_appraisal.hr_appraisal_action_from_department
+msgid "Appraisal to start"
+msgstr "البدء"
+
+#. module: hr_appraisal
+#: model:ir.ui.view,arch_db:hr_appraisal.hr_department_view_kanban
+msgid "Appraisal(s)"
+msgstr "التقييم"
+
+#. module: hr_appraisal
+#: code:addons/hr_appraisal/models/hr_appraisal.py:212
+#: selection:hr.appraisal,state:0 selection:hr.appraisal.report,state:0
+#: model:ir.ui.view,arch_db:hr_appraisal.view_appraisal_report_search
+#, python-format
+msgid "To Start"
+msgstr "البدء"
+
+#. module: hr_appraisal
+#: code:addons/hr_appraisal/models/hr_appraisal.py:212
+#: selection:hr.appraisal,state:0 selection:hr.appraisal.report,state:0
+#: model:ir.ui.view,arch_db:hr_appraisal.view_appraisal_report_search
+#: model:mail.message.subtype,description:hr_appraisal.mt_appraisal_sent
+#, python-format
+msgid "Appraisal Sent"
+msgstr "تم إرسال التقييم"
+
+#. module: hr_appraisal
+#: model:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
+msgid "Start Appraisal and Send Forms"
+msgstr "بدء تقييم وإرسال النماذج"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_mail_template_id
+msgid "Email Template for Appraisal"
+msgstr "قالب البريد الإلكتروني للتقييم"
+
+#. module: hr_appraisal
+#: model:ir.ui.view,arch_db:hr_appraisal.hr_employee_view_form
+msgid "Send Appraisal Form To"
+msgstr "إرسال نماذج التقييم إلى"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee_appraisal_by_manager
+msgid "Managers"
+msgstr "المدراء"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee_appraisal_manager_ids
+msgid "Appraisal manager ids"
+msgstr " تقييم المدارء"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_manager_survey_id
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee_appraisal_manager_survey_id
+msgid "Manager's Appraisal"
+msgstr "نماذج تقييم المدارء"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_colleagues_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee_appraisal_by_colleagues
+msgid "Colleagues"
+msgstr "الزملاء"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_colleagues_ids
+msgid "Colleagues ids"
+msgstr "الزملاء"
+
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee_appraisal_colleagues_survey_id
+msgid "Employee's Appraisal"
+msgstr "نماذج تقييم الزملاء"
+
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee_appraisal_by_collaborators
+msgid "Collaborators"
+msgstr "المتعاونين"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_collaborators_appraisal
+msgid "Collaborator"
+msgstr "المتعاونين"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_collaborators_ids
+msgid "Appraisal colleagues ids"
+msgstr "المتعاونين"
+
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_employee_appraisal_collaborators_survey_id
+msgid "collaborate's Appraisal"
+msgstr "نماذج تقييم المتعاونين"
+
+#. module: hr_appraisal
+#: model:ir.ui.view,arch_db:hr_appraisal.view_hr_appraisal_form
+msgid "Final Evaluation"
+msgstr " التقييم النهائي"
+
+
+#. module: survey
+#: model:ir.model.fields,field_description:survey.field_survey_survey_title
+msgid "Title"
+msgstr "المسمى"
+
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.survey_form
+msgid "User can come back in the previous page"
+msgstr "المستخدم يمكن أن يعود في الصفحة السابقة"
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.survey_form
+msgid "Survey Title"
+msgstr "المسمى "
+
+#. module: survey
+#: model:ir.model.fields,field_description:survey.field_survey_question_type
+msgid "Type of Question"
+msgstr "نوع السؤال"
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.survey_question_form
+msgid "Type of answers"
+msgstr "نوع  الإجابة"
+
+#. module: survey
+#: model:ir.model.fields,field_description:survey.field_survey_question_labels_ids
+msgid "Types of answers"
+msgstr "نوع  الإجابة"
+
+#. module: survey
+#: model:ir.model.fields,field_description:survey.field_survey_question_constr_mandatory
+#: model:ir.ui.view,arch_db:survey.survey_question_form
+msgid "Mandatory Answer"
+msgstr "جواب إلزامي"
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.survey_question_form
+msgid "<i class=\"fa fa-check-square-o fa-lg\"/> answer"
+msgstr "إجابة<i class=\"fa fa-check-square-o fa-lg\"/>"
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.survey_question_form
+msgid "<i class=\"fa fa-circle-o  fa-lg\"/> answer"
+msgstr "إجابة<i class=\"fa fa-check-square-o fa-lg\"/>"
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.survey_question_form
+msgid "<i class=\"fa fa-dot-circle-o fa-lg\"/> answer"
+msgstr "<i class=\"fa fa-check-square-o fa-lg\"/>إجابة"
+
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.survey_question_form
+msgid "Choices"
+msgstr "الخيارات"
+
+#. module: survey
+#: model:ir.model.fields,field_description:survey.field_survey_label_quizz_mark
+msgid "Score for this choice"
+msgstr "نقاط  لهذا الاختيار"
+
+#. module: survey
+#: model:ir.model.fields,field_description:survey.field_survey_user_input_line_quizz_mark
+msgid "Score given for this choice"
+msgstr "نقاط  لهذا الاختيار"
+
+#. module: survey
+#: model:ir.model.fields,field_description:survey.field_survey_survey_quizz_mode
+msgid "Quiz mode"
+msgstr "وضع الاختبار"
+
+#. module: smart_hr
+#: selection:hr.holidays,state:0
+msgid "done"
+msgstr "اعتمدت"
+
+#. module: hr_appraisal
+#: code:addons/hr_appraisal/models/hr_appraisal.py:192
+#, python-format
+msgid "The appraisal deadline must be in the future to allow employees to answer the survey."
+msgstr "يجب أن يكون موعد التقييم في المستقبل "
+
+#. module: survey
+#: selection:survey.question,type:0
+msgid "Multiple Lines Text Box"
+msgstr "مربع النص خطوط متعددة"
+
+#. module: survey
+#: selection:survey.question,type:0
+msgid "Multiple choice: multiple answers allowed"
+msgstr "إجابات متعددة"
+
+#. module: survey
+#: selection:survey.question,type:0
+msgid "Multiple choice: only one answer"
+msgstr "الاختيار من متعدد: إجابة واحدة فقط"
+
+#. module: survey
+#: selection:survey.question,matrix_subtype:0
+msgid "Multiple choices per row"
+msgstr "خيارات متعددة لكل صف"
+
+#. module: survey
+#: model:ir.actions.act_window,help:survey.action_selected_survey_user_input
+msgid "Nobody has replied to your survey yet."
+msgstr "لا أحد قد ردت على الدراسة الاستقصائية الخاصة بك حتى الآن"
+
+#. module: survey
+#: model:ir.actions.act_window,help:survey.action_survey_user_input
+msgid "Nobody has replied to your surveys yet."
+msgstr "لا أحد قد ردت على الدراسة الاستقصائية الخاصة بك حتى الآن"
+
+#. module: survey
+#: selection:survey.question,type:0
+msgid "Single Line Text Box"
+msgstr "سطر واحد"
+
+#. module: survey
+#: selection:survey.question,type:0
+msgid "Matrix"
+msgstr "مصفوفة"
+
+#. module: survey
+#: model:ir.model.fields,field_description:survey.field_survey_question_matrix_subtype
+msgid "Matrix Type"
+msgstr "مصفوفة"
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.result
+msgid "Matrix:"
+msgstr "مصفوفة"
+
+#. module: website
+#: model:ir.ui.view,arch_db:website.aboutus
+msgid ""
+"We are a team of passionate people whose goal is to improve everyone's\n"
+"                                      life through disruptive products. We build great products to solve your\n"
+"                                      business problems."
+msgstr "هيئة التحقيق والإدعاء العام"
+
+#. module: website
+#: model:ir.ui.view,arch_db:website.footer_default
+msgid ""
+"We are a team of passionate people whose goal is to improve everyone's\n"
+"                            life through disruptive products. We build great products to solve your\n"
+"                            business problems."
+msgstr "هيئة التحقيق والإدعاء العام"
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.back
+msgid "Back to Survey"
+msgstr "رجوع للتقيم"
+
+
+#. module: website
+#: model:ir.ui.view,arch_db:website.aboutus
+msgid ""
+"Our products are designed for small to medium size companies willing to optimize\n"
+"                                      their performance."
+msgstr "هيئة التحقيق والإدعاء العام"
+
+#. module: website
+#: model:ir.ui.view,arch_db:website.footer_default
+msgid ""
+"Our products are designed for small to medium size companies willing to optimize\n"
+"                            their performance."
+msgstr "هيئة التحقيق والإدعاء العام"
+
+#. module: website
+#: model:ir.ui.view,arch_db:website.footer_default
+msgid "Our products &amp; Services"
+msgstr " هيئة التحقيق والإدعاء العام "
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_count_completed_survey
+msgid "Number of Answers"
+msgstr "عدد الإجابات"
+
+#. module: hr_appraisal
+#: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_count_sent_survey
+msgid "Number of Sent Forms"
+msgstr "عدد النماذج المرسلة"
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.survey_user_input_form
+msgid "View Results"
+msgstr "عرض النتائج"
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.survey_form
+msgid "View results"
+msgstr "عرض النتائج"
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.survey_user_input_form
+msgid "Print These Answers"
+msgstr "طباعة هذه الأجوبة"
+
+#. module: survey
+#: model:ir.model.fields,field_description:survey.field_survey_user_input_token
+msgid "Identification token"
+msgstr "تحديد الرمز "
+
+#. module: survey
+#: model:ir.model.fields,field_description:survey.field_survey_user_input_line_skipped
+#: model:ir.ui.view,arch_db:survey.result
+msgid "Skipped"
+msgstr "تخطي"
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.survey_user_input_search
+#: selection:survey.user_input,state:0
+msgid "Partially completed"
+msgstr "مكتمل جزئيا"
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.page
+msgid "Submit survey"
+msgstr " إرسال التقييم"
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.sfinished
+msgid "review your answers"
+msgstr "استعراض الإجابات الخاصة بك"
+
+#. module: survey
+#: model:ir.ui.view,arch_db:survey.survey_question_form
+msgid "Choices"
+msgstr "الاختيارات"
+#. module: base
+#: code:addons/base/res/res_company.py:103
+#: model:ir.model.fields,field_description:base.field_res_bank_phone
+#: model:ir.model.fields,field_description:base.field_res_company_phone
+#: model:ir.model.fields,field_description:base.field_res_partner_phone
+#: model:ir.model.fields,field_description:base.field_res_users_phone
+#, python-format
+msgid "Phone"
+msgstr "الهاتف"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_partner_form
+msgid "Phone:"
+msgstr "الهاتف:"
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_partner_mobile
+#: model:ir.model.fields,field_description:base.field_res_users_mobile
+msgid "Mobile"
+msgstr "النقال"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_partner_form
+msgid "Mobile:"
+msgstr "النقال:"
+
+#. module: base
+#: code:addons/base/res/res_company.py:104
+#: model:ir.model.fields,field_description:base.field_res_bank_fax
+#: model:ir.model.fields,field_description:base.field_res_company_fax
+#: model:ir.model.fields,field_description:base.field_res_partner_fax
+#: model:ir.model.fields,field_description:base.field_res_users_fax
+#, python-format
+msgid "Fax"
+msgstr "الفاكس"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_partner_form
+msgid "Fax:"
+msgstr "الفاكس:"
+
+#. module: base
+#: code:addons/base/res/res_company.py:105
+#: model:ir.model.fields,field_description:base.field_res_bank_email
+#: model:ir.model.fields,field_description:base.field_res_company_email
+#: model:ir.model.fields,field_description:base.field_res_partner_email
+#: model:ir.model.fields,field_description:base.field_res_users_email
+#: model:ir.ui.menu,name:base.menu_email
+#, python-format
+msgid "Email"
+msgstr "البريد الإلكتروني"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_users_form
+#: model:ir.ui.view,arch_db:base.view_users_simple_form
+msgid "Email Address"
+msgstr "البريد الإلكتروني"
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_partner_title
+#: model:ir.model.fields,field_description:base.field_res_partner_title_name
+#: model:ir.model.fields,field_description:base.field_res_users_title
+msgid "Title"
+msgstr "المسمى"
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_partner_function
+#: model:ir.model.fields,field_description:base.field_res_users_function
+msgid "Job Position"
+msgstr "الوظيفة"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_partner_form
+msgid "Contacts & Addresses"
+msgstr "الأسماء والعناوين"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_partner_form
+msgid "Internal Notes"
+msgstr "ملاحظات داخلية"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_partner_form
+msgid "Sales & Purchases"
+msgstr "مبيعات ومشتريات"
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_bank_street
+#: model:ir.model.fields,field_description:base.field_res_company_street
+#: model:ir.model.fields,field_description:base.field_res_partner_street
+#: model:ir.model.fields,field_description:base.field_res_users_street
+msgid "Street"
+msgstr "شارع"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_partner_form
+msgid "Internal note..."
+msgstr "ملاحظات داخلية"
+
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_company_form
+#: model:ir.ui.view,arch_db:base.view_partner_address_form
+#: model:ir.ui.view,arch_db:base.view_partner_form
+#: model:ir.ui.view,arch_db:base.view_res_bank_form
+msgid "Street 2..."
+msgstr "شارع 2..."
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_company_form
+#: model:ir.ui.view,arch_db:base.view_partner_address_form
+#: model:ir.ui.view,arch_db:base.view_partner_form
+#: model:ir.ui.view,arch_db:base.view_res_bank_form
+msgid "Street..."
+msgstr "شارع..."
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_bank_street2
+#: model:ir.model.fields,field_description:base.field_res_company_street2
+#: model:ir.model.fields,field_description:base.field_res_partner_street2
+#: model:ir.model.fields,field_description:base.field_res_users_street2
+msgid "Street2"
+msgstr "شارع 2"
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_partner_state_id
+#: model:ir.model.fields,field_description:base.field_res_users_state_id
+#: model:ir.ui.view,arch_db:base.view_company_form
+#: model:ir.ui.view,arch_db:base.view_country_state_form
+#: model:ir.ui.view,arch_db:base.view_country_state_tree
+#: model:ir.ui.view,arch_db:base.view_partner_address_form
+#: model:ir.ui.view,arch_db:base.view_partner_form
+#: model:ir.ui.view,arch_db:base.view_res_bank_form
+msgid "State"
+msgstr "دولة"
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_country_state_code
+msgid "State Code"
+msgstr "كود الدولة"
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_country_state_name
+msgid "State Name"
+msgstr "اسم الولاية"
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_country_state_ids
+msgid "States"
+msgstr "الدول"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_partner_form
+#: model:ir.ui.view,arch_db:base.view_partner_simple_form
+msgid "e.g. Sales Director"
+msgstr "على سبيل المثال مدير مبيعات"
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_partner_customer
+#: model:ir.model.fields,field_description:base.field_res_users_customer
+msgid "Is a Customer"
+msgstr "هو عميل"
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_partner_ref
+#: model:ir.model.fields,field_description:base.field_res_users_ref
+msgid "Internal Reference"
+msgstr "المرجع الداخلي"
+
+#. module: base
+#: model:ir.model.fields,field_description:base.field_res_partner_supplier
+#: model:ir.model.fields,field_description:base.field_res_users_supplier
+msgid "Is a Vendor"
+msgstr "هو بائع"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_partner_form
+#: model:ir.ui.view,arch_db:base.view_partner_simple_form
+msgid "Tags..."
+msgstr "الوسوم..."
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_company_form
+#: model:ir.ui.view,arch_db:base.view_partner_address_form
+#: model:ir.ui.view,arch_db:base.view_partner_form
+#: model:ir.ui.view,arch_db:base.view_res_bank_form
+msgid "ZIP"
+msgstr "الرمز البريدي"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_partner_form
+msgid "internal note..."
+msgstr "مذكرة داخلية ..."
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_base_language_install
+msgid "Load"
+msgstr "حمل"
+
+#. module: base
+#: model:ir.ui.view,arch_db:base.view_company_form
+#: model:ir.ui.view,arch_db:base.view_partner_address_form
+#: model:ir.ui.view,arch_db:base.view_partner_form
+msgid "e.g. www.odoo.com"
+msgstr ""
+
+
+#. module: hr_appraisal
+#: model:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_kanban
+msgid ") Answers"
+msgstr "الإجابات"
+
+#. module: hr_appraisal
+#: model:ir.ui.view,arch_db:hr_appraisal.hr_appraisal_kanban
+msgid ") Sent Appraisal"
+msgstr " النماذج المرسلة"
+
+
+
+#. module: hr
+#: model:ir.ui.view,arch_db:hr.hr_kanban_view_employees
+msgid ""
+"<span class=\"o_unfollow\">Unfollow</span>\n"
+"                                    <span class=\"o_following\">Following</span>"
+msgstr ""
+"<span class=\"o_unfollow\">الغاء المتابعة</span>\n"
+"                                    <span class=\"o_following\">متابعة</span>"
+
+
+#. module: web_kanban
+#. openerp-web
+#: code:addons/web_kanban/static/src/js/kanban_view.js:29
+#, python-format
+msgid "Kanban"
+msgstr "البطاقات"
+
+#. module: base
+#: code:addons/models.py:1281
+#, python-format
+msgid "Error while validating constraint"
+msgstr "خطأ أثناء التحقق من صحة البيانات"
+
+#. module: base
+#: selection:ir.mail_server,smtp_encryption:0
+msgid "None"
+msgstr "لا شيء"
+
+
+
+
+#. module: web
+#. openerp-web
+#: code:addons/web/static/src/js/framework/crash_manager.js:23
+#, python-format
+msgid "Validation Error"
+msgstr "خطأ في التحقق"

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<menuitem id="menu_users_list" name="المستخدمون" sequence="20"
+			parent="hr_users_creation" />
+
+		<menuitem id="users_list" name="قائمة المستخدمون" sequence="30"
+			parent="menu_users_list" action="base.action_res_users" />
+
+
+		<record id="view_form_hr_create_user" model="ir.ui.view">
+			<field name="name">hr.employee.create.users</field>
+			<field name="model">hr.employee.create.users</field>
+			<field name="arch" type="xml">
+				<form string="انشاء مستخدم">
+					<header name="main">
+						<button name="button_done" string="انشاء مستخدم" type="object" attrs="{'invisible': [('state','!=', 'draft')]}"
+							icon="fa-paper-plane" class="oe_inline oe_stat_button"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<field name="state" widget="statusbar"
+							statusbar_visible="draft, done" />
+
+					</header>
+					<sheet>
+
+						<group>
+							<field name="date" />
+							<field name="employee_ids" required="1"
+								domain="[('employee_state', '=', 'employee'), ('user_id', '=', False)]" />
+
+						</group>
+
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="view_tree_hr_employee_hr_create_user" model="ir.ui.view">
+			<field name="name">hr.employee.create.users.tree</field>
+			<field name="model">hr.employee.create.users</field>
+			<field name="arch" type="xml">
+				<tree string="انشاء مستخدم" class="oe_tree_view">
+					<field name="employee_ids" required="1" widget="many2many_tags" />
+					<field name="date" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+		<record id="action_hr_employee_hr_create_user" model="ir.actions.act_window">
+			<field name="name">انشاء مستخدم</field>
+			<field name="res_model">hr.employee.create.users</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+
+		<menuitem id="create_users" name="انشاء مستخدم" sequence="40"
+			parent="hr_users_creation" action="action_hr_employee_hr_create_user" />
+
+	</data>
+</openerp>

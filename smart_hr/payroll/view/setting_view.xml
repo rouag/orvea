@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<!-- أنواع البدلات -->
+
+		<record model="ir.ui.view" id="hr_allowance_type_tree">
+			<field name="name">h_increase.tree</field>
+			<field name="model">hr.allowance.type</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="أنواع البدلات">
+					<field name="sequence" widget="handle" />
+					<field name="name" />
+					<field name="code" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_allowance_type_form">
+			<field name="name">hr.allowance.type.form</field>
+			<field name="model">hr.allowance.type</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="أنواع البدلات">
+					<sheet>
+						<group>
+							<field name="name" />
+							<field name="code" />
+						</group>
+						<group>
+							<field name="note" string="ملاحظات" placeholder="ملاحظات ..." />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_allowance_type">
+			<field name="name">أنواع البدلات</field>
+			<field name="res_model">hr.allowance.type</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+
+		<menuitem id="hr_allowance_type_menu" name="أنواع البدلات"
+			sequence="25" groups="group_payroll_setting" parent="hr_payroll_setting"
+			action="action_hr_allowance_type" />
+
+
+
+		<!-- أنواع التعويضات -->
+		<record model="ir.ui.view" id="hr_indemnity_type_tree">
+			<field name="name">hr.indemnity.type.tree</field>
+			<field name="model">hr.indemnity.type</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="أنواع التعويضات">
+					<field name="sequence" widget="handle" />
+					<field name="name" />
+					<field name="code" />
+					<field name="create_date" string="تاريخ الإنشاء" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_indemnity_type_form">
+			<field name="name">hr.indemnity.type.form</field>
+			<field name="model">hr.indemnity.type</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="أنواع التعويضات">
+					<sheet>
+						<group>
+							<group>
+								<field name="name" />
+								<field name="code" />
+							</group>
+						</group>
+						<group>
+							<field name="note" string="ملاحظات" placeholder="ملاحظات ..." />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_indemnity_type">
+			<field name="name">أنواع التعويضات</field>
+			<field name="res_model">hr.indemnity.type</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+
+		<menuitem id="hr_indemnity_type_menu" name="أنواع التعويضات"
+			sequence="35" groups="group_payroll_setting" parent="hr_payroll_setting"
+			action="action_hr_indemnity_type" />
+
+		<!-- أنواع التأمين -->
+		<record model="ir.ui.view" id="hr_insurance_type_tree">
+			<field name="name">hr.insurance.type.tree</field>
+			<field name="model">hr.insurance.type</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="أنواع التأمين">
+					<field name="name" />
+					<field name="code" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_insurance_type_form">
+			<field name="name">hr.insurance.type.form</field>
+			<field name="model">hr.insurance.type</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="أنواع التأمين">
+					<sheet>
+						<group string="بيانات النوع">
+							<group >
+								<field name="name" />
+							</group>
+							<group>
+								<field name="code" />
+							</group>
+						</group>
+						<group>
+							<field name="note" string="ملاحظات" placeholder="ملاحظات ..." />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_insurance_type">
+			<field name="name">أنواع التأمين</field>
+			<field name="res_model">hr.insurance.type</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+
+		<menuitem id="hr_insurance_type_menu" name="أنواع التأمين"
+			sequence="45" groups="group_payroll_setting" parent="hr_payroll_setting"
+			action="action_hr_insurance_type" />
+			
+			
+		<!-- أنواع العلاوة -->
+
+
+		<record model="ir.ui.view" id="hr_allowance_type_tree">
+			<field name="name">hr.increase.type.tree</field>
+			<field name="model">hr.increase.type</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="أنواع العلاوة">
+					<field name="name" />
+					<field name="code" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="h_increase_type_form">
+			<field name="name">hr.increase.type.form</field>
+			<field name="model">hr.increase.type</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="أنواع العلاوة">
+					<sheet>
+						<group>
+							<field name="name" />
+							<field name="code" />
+						</group>
+						<group>
+							<field name="note" string="ملاحظات" placeholder="ملاحظات ..." />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_h_increase_type">
+			<field name="name">أنواع العلاوة</field>
+			<field name="res_model">hr.increase.type</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+
+		<menuitem id="h_increase_type_menu" name="أنواع العلاوة"
+			sequence="40" groups="group_payroll_setting" parent="hr_payroll_setting"
+			action="action_h_increase_type" />
+	</data>
+</openerp>

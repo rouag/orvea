@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record id="hr_job_workflow_form" model="ir.ui.view">
+			<field name="name">hr.job.workflow.form</field>
+			<field name="model">hr.job.workflow</field>
+			<field name="arch" type="xml">
+				<form string="المخطط الإنسيابي‬">
+					<sheet>
+						<group col="2">
+							<field name="name" />
+							<field name="state_ids" widget="many2many_checkboxes"/>
+						</group>
+
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="hr_job_workflow_tree" model="ir.ui.view">
+			<field name="name">hr.job.workflow.tree</field>
+			<field name="model">hr.job.workflow</field>
+			<field name="arch" type="xml">
+				<tree string="المخطط الإنسيابي">
+					<field name="name" />
+				</tree>
+			</field>
+		</record>
+
+
+		<record id="hr_job_worflow_action" model="ir.actions.act_window" >
+			<field name="name">المخطط الإنسيابي</field>
+			<field name="res_model">hr.job.workflow</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="hr_job_workflow_form" />
+
+		</record>
+
+		<record id="action_hr_job_type_activity_tree" model="ir.actions.act_window.view">
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="hr_job_workflow_tree" />
+			<field name="act_window_id" ref="hr_job_worflow_action" />
+		</record>
+
+		<menuitem id="hr_job_workflow_menu" name="المخطط الإنسيابي"
+			sequence="99" parent="hr_job_setting" action="hr_job_worflow_action" />
+	</data>
+</openerp>

@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_job_career_model">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.landscape_layout">
+						<div class="page">
+							<div class=" text-center">
+								<h3 style="color:#395870;">
+									الحياة الوظيفية
+									<br />
+								</h3>
+							</div>
+							<t t-set="recuitments" t-value="get_recuitments(o.job_id)" />
+							<t t-set="job_update_ids" t-value="get_job_update_ids(o.job_id)" />
+							<t t-set="scale_down_ids" t-value="get_scale_down_ids(o.job_id)" />
+							<t t-set="scale_up_ids" t-value="get_scale_up_ids(o.job_id)" />
+							<t t-set="move_dep_ids" t-value="get_move_dep_ids(o.job_id)" />
+							<t t-set="job_mouvements_ids" t-value="get_job_mouvements_ids(o.job_id)" />
+							<div class="col-xs-12">
+								<table class="table  table-bordered">
+									<tr
+										style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
+										<td colspan="12" class="text-center">
+											<strong>معلومات الوظيفة</strong>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="3">
+
+											<strong>رقم الوظيفة</strong>
+										</td>
+										<td colspan="3" class="text-center">
+
+											<span t-esc="o.job_id.number" />
+										</td>
+										<td colspan="3">
+
+											<strong>مسمى الوظيفة</strong>
+										</td>
+										<td colspan="3" class="text-center">
+
+											<span t-esc="o.job_id.name.name" />
+										</td>
+									</tr>
+									<tr>
+										<td colspan="3">
+
+											<strong>الفرع</strong>
+										</td>
+										<td colspan="3" class="text-center">
+											<span t-esc="o.job_id.branch_id.name" />
+
+										</td>
+										<td colspan="3">
+
+											<strong>الإدارة</strong>
+										</td>
+										<td colspan="3" class="text-center">
+
+											<span t-esc="o.job_id.department_id.name" />
+										</td>
+									</tr>
+									<tr>
+										<td colspan="3">
+
+											<strong>السلم الوظيفي</strong>
+										</td>
+										<td colspan="3" class="text-center">
+
+											<span t-esc="o.job_id.type_id.name" />
+										</td>
+										<td colspan="3">
+
+											<strong>المرتبة</strong>
+										</td>
+										<td colspan="3" class="text-center">
+
+											<span t-esc="o.job_id.grade_id.name" />
+										</td>
+									</tr>
+
+									<tr>
+										<td colspan="3">
+											<strong>رمز الوظيفة</strong>
+										</td>
+										<td colspan="3" class="text-center">
+											<span t-esc="o.job_id.name.number" />
+										</td>
+										<td colspan="3">
+											<strong>المجموعة الوظيفية</strong>
+										</td>
+										<td colspan="3" class="text-center">
+											<span t-esc="o.job_id.specific_id.name" />
+										</td>
+									</tr>
+									<tr>
+										<td colspan="3">
+											<strong>تاريخ الاستحداث</strong>
+										</td>
+										<td colspan="3" class="text-center">
+											<span t-esc="get_hijri_date(o.job_id.create_date, '-')" />
+										</td>
+										<td colspan="3">
+											<strong>حالة الوظيفة</strong>
+										</td>
+										<td colspan="3" class="text-center">
+											<t
+												t-esc="dict(o.job_id.fields_get(allfields=['state'])['state']['selection'])[o.job_id.state]" />
+										</td>
+									</tr>
+									<tr
+										style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
+										<td colspan="12" class="text-center">
+
+											<strong>تاريخ الوظيفة</strong>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2" class="text-center">
+											<strong>المرتبة</strong>
+										</td>
+										<td class="text-center">
+											<strong>رقمها</strong>
+										</td>
+										<td class="text-center" colspan="2">
+											<strong>مسمى الوظيفة</strong>
+										</td>
+										<td class="text-center">
+											<strong>الفرع</strong>
+										</td>
+										<td class="text-center">
+											<strong>الادارة</strong>
+										</td>
+										<td class="text-center">
+											<strong>تاريخ الاجراء</strong>
+										</td>
+										<td class="text-center">
+											<strong>الاجراء</strong>
+										</td>
+										<td class="text-center">
+											<strong>المرتبة الجديدة</strong>
+										</td>
+										<td class="text-center">
+											<strong>رقمها</strong>
+										</td>
+										<td class="text-center">
+											<strong>مسمى الوظيفة الجديد</strong>
+										</td>
+									</tr>
+									<t t-foreach="job_mouvements_ids" t-as="line">
+
+										<tr>
+											<td colspan="2" class="text-center">
+												<span t-esc="line['grade_id']" />
+											</td>
+											<td class="text-center">
+												<span t-esc="line['number']" />
+											</td>
+											<td class="text-center" colspan="2">
+												<span t-esc="line['job_id']" />
+											</td>
+											<td class="text-center">
+												<span t-esc="line['branch_id']" />
+											</td>
+											<td class="text-center">
+												<span t-esc="line['department_id']" />
+											</td>
+											<td class="text-center">
+												<span t-esc="get_hijri_date(line['movment_date'], '-')" />
+
+											</td>
+											<td class="text-center">
+												<span t-esc="line['movment']" />
+											</td>
+											<td class="text-center">
+												<span t-esc="line['new_grade']" />
+											</td>
+											<td class="text-center">
+												<span t-esc="line['new_number']" />
+											</td>
+											<td class="text-center">
+												<span t-esc="line['new_job']" />
+											</td>
+										</tr>
+
+									</t>
+									<tr
+										style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
+										<td colspan="12" class="text-center">
+
+											<strong>بيانات شاغلي الوظيفة</strong>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2" class="text-center">
+											<strong>رقم الموظف</strong>
+										</td>
+										<td colspan="2" class="text-center">
+											<strong>إسم الموظف</strong>
+										</td>
+										<td colspan="2" class="text-center">
+											<strong>مسمى الوظيفة</strong>
+										</td>
+										<td colspan="3" class="text-center">
+											<strong>تاريخ شغلها</strong>
+										</td>
+										<td colspan="3" class="text-center">
+											<strong>الاجراء</strong>
+										</td>
+									</tr>
+									<t t-foreach="recuitments" t-as="line">
+										<tr>
+
+											<td colspan="2" class="text-center">
+												<span t-esc="line.employee_id.number" />
+											</td>
+											<td colspan="2" class="text-center">
+												<span t-esc="line.employee_id.display_name" />
+											</td>
+											<td colspan="2" class="text-center">
+												<span t-esc="line.emp_job_id.name.name" />
+											</td>
+											<td colspan="3" class="text-center">
+												<span t-esc="get_hijri_date(line.date_direct_action, '-')" />
+											</td>
+											<td colspan="3" class="text-center">
+												<span t-esc="line.type_appointment.name" />
+											</td>
+
+										</tr>
+									</t>
+									<tr
+										style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
+										<td colspan="12" class="text-center">
+
+											<strong>التحوير على الوظيفة</strong>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2" class="text-center">
+											<strong>المسمى الوظيفي الجديد</strong>
+										</td>
+										<td class="text-center" colspan="2">
+											<strong>الفرع الجديد</strong>
+										</td>
+										<td class="text-center" colspan="2">
+											<strong>الادارة الجديدة</strong>
+										</td>
+										<td class="text-center">
+											<strong>مسمى الوظيفة القديم</strong>
+										</td>
+										<td class="text-center">
+											<strong>الفرع القديم</strong>
+										</td>
+										<td class="text-center">
+											<strong>الإدارة القديمة</strong>
+										</td>
+										<td class="text-center">
+											<strong>تاريخ الاجراء</strong>
+										</td>
+										<td class="text-center">
+											<strong>رقم القرار</strong>
+										</td>
+										<td class="text-center">
+											<strong>تاريخه</strong>
+										</td>
+									</tr>
+									<t t-foreach="job_update_ids" t-as="line">
+										<tr>
+
+											<td colspan="2" class="text-center">
+												<span t-esc="line.new_name.name" />
+											</td>
+											<td class="text-center" colspan="2">
+												<span></span>
+											</td>
+											<td class="text-center" colspan="2">
+												<span t-esc="line.department_id.name" />
+											</td>
+											<td class="text-center">
+												<span t-esc="line.old_name.name" />
+											</td>
+											<td class="text-center">
+												<span></span>
+											</td>
+											<td class="text-center">
+												<span t-esc="line.department_id.name" />
+											</td>
+											<td class="text-center">
+												<span t-esc="get_hijri_date(line.job_update_id.create_date, '-')" />
+											</td>
+											<td class="text-center">
+												<span t-esc="line.job_update_id.decision_number" />
+											</td>
+											<td class="text-center">
+												<span
+													t-esc="get_hijri_date(line.job_update_id.decision_date, '-')" />
+											</td>
+
+										</tr>
+									</t>
+									<tr
+										style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
+										<td colspan="12" class="text-center">
+
+											<strong>الرفع على الوظيفة</strong>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="3" class="text-center">
+											<strong>المسمى الوظيفي </strong>
+										</td>
+										<td colspan="3" class="text-center">
+											<strong>رقم القرار</strong>
+										</td>
+										<td colspan="2" class="text-center">
+											<strong>تاريخه</strong>
+										</td>
+										<td colspan="2" class="text-center">
+											<strong>المرتبة</strong>
+										</td>
+										<td colspan="2" class="text-center">
+											<strong>المرتبة الجديدة</strong>
+										</td>
+									</tr>
+									<t t-foreach="scale_up_ids" t-as="line">
+										<tr>
+
+											<td colspan="3" class="text-center">
+												<span t-esc="line.job_id.name.name" />
+											</td>
+											<td colspan="3" class="text-center">
+												<span t-esc="line.job_move_grade_id.decision_number" />
+											</td>
+											<td colspan="2" class="text-center">
+												<span
+													t-esc="get_hijri_date(line.job_move_grade_id.decision_date, '-')" />
+											</td>
+											<td colspan="2" class="text-center">
+												<span t-esc="line.job_id.grade_id.name" />
+											</td>
+											<td colspan="2" class="text-center">
+												<span t-esc="line.new_grade_id.name" />
+											</td>
+
+										</tr>
+									</t>
+									<tr>
+										<td colspan="12" class="text-center"></td>
+									</tr>
+									<tr
+										style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
+										<td colspan="12" class="text-center">
+											<strong>الخفض على الوظيفة</strong>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="3" class="text-center">
+											<strong>المسمى الوظيفي </strong>
+										</td>
+										<td colspan="3" class="text-center">
+											<strong>رقم القرار</strong>
+										</td>
+										<td colspan="2" class="text-center">
+											<strong>تاريخه</strong>
+										</td>
+										<td colspan="2" class="text-center">
+											<strong>المرتبة</strong>
+										</td>
+										<td colspan="2" class="text-center">
+											<strong>المرتبة الجديدة</strong>
+										</td>
+									</tr>
+									<t t-foreach="scale_down_ids" t-as="line">
+										<tr>
+
+											<td colspan="3" class="text-center">
+												<span t-esc="line.job_id.name.name" />
+											</td>
+											<td colspan="3" class="text-center">
+												<span t-esc="line.job_move_grade_id.decision_number" />
+											</td>
+											<td colspan="2" class="text-center">
+												<span
+													t-esc="get_hijri_date(line.job_move_grade_id.decision_date, '-')" />
+											</td>
+											<td colspan="2" class="text-center">
+												<span t-esc="line.job_id.grade_id.name" />
+											</td>
+											<td colspan="2" class="text-center">
+												<span t-esc="line.new_grade_id.name" />
+											</td>
+
+										</tr>
+									</t>
+									<tr>
+										<td colspan="12" class="text-center"></td>
+									</tr>
+									<tr
+										style=" background: #395870; background: linear-gradient(#49708f, #293f50); color: #fff;">
+										<td colspan="12" class="text-center">
+											<strong>النقل على الوظيفة</strong>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="3" class="text-center">
+											<strong>المسمى الوظيفي </strong>
+										</td>
+										<td colspan="3" class="text-center">
+											<strong>نوع السلم</strong>
+										</td>
+										<td colspan="2" class="text-center">
+											<strong>المرتبة</strong>
+										</td>
+										<td colspan="2" class="text-center">
+											<strong>الادارة</strong>
+										</td>
+										<td colspan="2" class="text-center">
+											<strong>الادارة الجديدة</strong>
+										</td>
+									</tr>
+									<t t-foreach="move_dep_ids" t-as="line">
+										<tr>
+
+											<td colspan="3" class="text-center">
+												<span t-esc="line.job_id.name.name" />
+											</td>
+											<td colspan="3" class="text-center">
+												<span t-esc="line.type_id.name" />
+											</td>
+											<td colspan="2" class="text-center">
+												<span t-esc="line.grade_id.name" />
+											</td>
+											<td colspan="2" class="text-center">
+												<span t-esc="line.department_id.name" />
+											</td>
+											<td colspan="2" class="text-center">
+												<span t-esc="line.new_department_id.name" />
+											</td>
+
+										</tr>
+									</t>
+
+								</table>
+
+							</div>
+
+						</div>
+					</t>
+
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+								

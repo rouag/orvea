@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_hr_employee_transfert">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.external_layout_extend">
+						<div class="page" style="font-size:14px;">
+							<t t-set="setting" t-value="get_setting()" />
+							<div class="col-xs-12 text-center">
+								<t t-if="o.transfert_type == 'employee'"><strong>قرار نقل موظف</strong></t>
+								<t t-if="o.transfert_type == 'member'"><strong>قرار نقل عضو</strong></t>
+							</div>
+							<p class="text-center">
+								قرار إداري رقم
+								<span t-esc="o.decision_number" />
+								وتاريخ
+								<span t-esc="get_hijri_date(o.decision_date, '-')" />
+							</p>
+							<div class="col-xs-12"
+								style="border-style: solid; border-width: 3px; border-radius: 25px;">
+								<div class="col-xs-3"></div>
+								<div class="col-xs-3"></div>
+								<div class="col-xs-6">
+									<strong>رقم الهوية الوطنية:</strong>
+									<span t-esc="o.employee_id.identification_id" />
+								</div>
+								<br></br>
+								<p>
+									<strong>إن رئيس هيئة التحقيق والإدعاء العام</strong>
+								</p>
+								<p>
+									<strong>بناءً على الصلاحيات الممنوحة له</strong>
+								</p>
+								<p>
+									ولما تقتضيه مصلحة العمل، و إسناداً لموافقات وزارة الخدمة
+									المدنية
+									<t t-if="o.speech_date">بموجب خطابهم رقم () بتاريخ ()</t>
+									بشأن الموافقة على نقل
+									الموظف
+									الموضح إسمه ووظيفته أدناه، و إسناداً
+									إلى لائحة النقل
+									<t t-if="o.decision_date">
+										الصادرة
+										بقرار مجلس الخدمة المدنية رقم (
+										<span t-esc="o.decision_number" />
+										) وتاريخ (
+										<span t-esc="get_hijri_date(o.decision_date, '-')" />
+										)
+									</t>
+									ولموافقتنا
+									على ذلك.
+								</p>
+								<p class="text-center">
+									يقرر مايلي:
+								</p>
+								<p>
+									1- نقل الموظف /
+									<t t-esc="o.employee_id.name" />
+									، إعتباراً من تاريخ صدور هذا القرار، وفقاً للبيانات المحدده
+									أدناه
+								</p>
+								<div class="col-xs-6">
+									<p class="text-center">
+										الوظيفة المنقول منها :
+									</p>
+									<p>
+										مسماها :
+										<t t-esc="o.job_id.name.name" />
+									</p>
+									<p>
+										مرتبتها :
+										<t t-esc="o.job_id.grade_id.name" />
+									</p>
+									<p>
+										رقمها :
+										<t t-esc="o.job_id.number" />
+									</p>
+									<p>
+										مقر العمل :
+										<t t-esc="o.job_id.department_id.name" />
+									</p>
+								</div>
+								<div class="col-xs-6">
+									<p class="text-center">
+										الوظيفة المنقول إليها :
+									</p>
+									<p>
+										مسماها :
+										<t t-esc="o.new_job_id.name.name" />
+									</p>
+									<p>
+										مرتبتها :
+										<t t-esc="o.new_job_id.grade_id.name" />
+									</p>
+									<p>
+										رقمها :
+										<t t-esc="o.new_job_id.number" />
+									</p>
+									<p>
+										مقر العمل :
+										<t t-esc="o.new_job_id.department_id.name" />
+									</p>
+								</div>
+								<p>2- يصرف له نفس الراتب السابق إعتباراً من تاريخ صدور هذا
+									القرار.
+								</p>
+								<p>3- يصرف له النسبة المقررة لطبيعة العمل بواقع (<t t-esc="setting.allowance_proportion" />%) من أول
+									مربوط المرتبة</p>
+								<p>4- يصرف له إنتداب لمدة (<t t-esc="setting.deputation_days" />) أيام وفقاً للمادة (23) من لائحة
+									الحقوق والمزايا المالية.</p>
+								<p>5- ليصرف له بدل ترحيل لتنازله أنه بموجب اقراره وفقاً للمادة
+									(58) من لائحة الحقوق والمزايا المالية.</p>
+								<p>6- يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
+								<div class="col-xs-3">
+								</div>
+								<div class="col-xs-3"></div>
+								<div class="col-xs-6">
+									<strong> رئيس هيئة التحقيق والإدعاء العام</strong>
+									<p class="text-center">
+										<t t-esc="user.company_id.company_president.name" />
+									</p>
+								</div>
+								<div class="col-xs-12"
+									style="border-style: solid; border-width: 1px;margin-bottom:15px;">
+									<p class="text-center">
+										مباشرة
+									</p>
+									<p>سعادة المشرف العام على إدارة الموارد البشرية</p>
+									<p>السلام عليكم ورحمة الله وبركاته ..</p>
+									<p>
+										الموضح إسمه بعلية باشر العمل بتاريخ
+										<span t-esc="get_hijri_date(o.date_direct_action, '-')" />
+									</p>
+									<p class="text-center">
+										ولكم تحياتي
+									</p>
+									<div class="col-xs-3"></div>
+									<div class="col-xs-3"></div>
+									<div class="col-xs-6">
+										<strong>مدير عام الشؤون الإدارية والمالية المكلف</strong>
+										<br></br>
+									</div>
+								</div>
+							</div>
+						</div>
+					</t>
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+							

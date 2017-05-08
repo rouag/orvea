@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<record model="ir.ui.view" id="hr_attendance_report_day_tree1">
+			<field name="name">hr.attendance.report_day.tree1</field>
+			<field name="model">hr.attendance.report_day</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="تقرير التأخير">
+					<field name="employee_id" />
+					<field name="hour_calendar" widget="float_time"  />
+					<field name="hour_attendance" widget="float_time" />
+					<field name="delay_retard" widget="float_time" sum="Total" />
+					<field name="latest_date_import" />
+				</tree>
+			</field>
+		</record>
+
+
+		<record model="ir.ui.view" id="hr_attendance_report_day_tree2">
+			<field name="name">hr.attendance.report_day.tree2</field>
+			<field name="model">hr.attendance.report_day</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="تقرير الغيابات الغير مبررة">
+					<field name="employee_id" />
+					<field name="delay_absence" widget="float_time" sum="Total" />
+					<field name="description" />
+					<field name="latest_date_import" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_attendance_report_day_tree3">
+			<field name="name">hr.attendance.report_day.tree3</field>
+			<field name="model">hr.attendance.report_day</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="تقرير الغيابات المبررة">
+					<field name="employee_id" />
+					<field name="date" />
+					<field name="description" />
+					<field name="latest_date_import" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_attendance_report_day_tree4">
+			<field name="name">hr.attendance.report_day.tree4</field>
+			<field name="model">hr.attendance.report_day</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="تقرير الخروج المبكر">
+					<field name="employee_id" />
+					<field name="hour_calendar_to" widget="float_time" />
+					<field name="hour_attendance" widget="float_time" />
+					<field name="delay_leave" widget="float_time" sum="Total" />
+					<field name="latest_date_import" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_attendance_report_day_tree5">
+			<field name="name">hr.attendance.report_day.tree5</field>
+			<field name="model">hr.attendance.report_day</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="الموظفين الذين لم يسجلوا خروجهم">
+					<field name="employee_id" />
+					<field name="hour_calendar_to" widget="float_time" />
+					<field name="description" />
+					<field name="latest_date_import" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_attendance_report_day_tree6">
+			<field name="name">hr.attendance.report_day.tree6</field>
+			<field name="model">hr.attendance.report_day</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="تقرير الوقت الإضافي">
+					<field name="employee_id" />
+					<field name="hour_calendar_to" widget="float_time" />
+					<field name="hour_attendance" widget="float_time" />
+					<field name="delay_hours_supp" widget="float_time" sum="Total" />
+					<field name="latest_date_import" />
+				</tree>
+			</field>
+		</record>
+						
+
+        <record model="ir.ui.view" id="hr_attendance_report_day_graph">
+            <field name="name">hr.attendance.report_day.graph</field>
+            <field name="model">hr.attendance.report_day</field>
+            <field name="arch" type="xml">
+                <graph string="تقرير حضور اليوم">
+                    <field name="employee_id"/>
+                    <field name="delay_retard" type="measure"/>
+                    <field name="latest_date_import" />
+                </graph>
+            </field>
+        </record>
+        
+
+		<record id="action_hr_attendance_report_day1" model="ir.actions.act_window">
+			<field name="name">تقرير التأخير</field>
+			<field name="res_model">hr.attendance.report_day</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,graph</field>
+			<field name="domain">[('action','=','retard')]</field>
+		</record>
+		<record id="action_hr_attendance_report_day1_tree" model="ir.actions.act_window.view">
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="hr_attendance_report_day_tree1" />
+			<field name="act_window_id" ref="action_hr_attendance_report_day1" />
+		</record>
+
+		<record id="action_hr_attendance_report_day2" model="ir.actions.act_window">
+			<field name="name">تقرير الغيابات الغير مبررة</field>
+			<field name="res_model">hr.attendance.report_day</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,graph</field>
+			<field name="domain">[('action','=','absence')]</field>
+		</record>
+		<record id="action_hr_attendance_report_day2_tree" model="ir.actions.act_window.view">
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="hr_attendance_report_day_tree2" />
+			<field name="act_window_id" ref="action_hr_attendance_report_day2" />
+		</record>
+		
+		<record id="action_hr_attendance_report_day3" model="ir.actions.act_window">
+			<field name="name">تقرير الغيابات المبررة</field>
+			<field name="res_model">hr.attendance.report_day</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,graph</field>
+			<field name="domain">[('action','=','absence_justified')]</field>
+		</record>
+		<record id="action_hr_attendance_report_day3_tree" model="ir.actions.act_window.view">
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="hr_attendance_report_day_tree3" />
+			<field name="act_window_id" ref="action_hr_attendance_report_day3" />
+		</record>
+		
+		<record id="action_hr_attendance_report_day4" model="ir.actions.act_window">
+			<field name="name">تقرير الخروج المبكر</field>
+			<field name="res_model">hr.attendance.report_day</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,graph</field>
+			<field name="domain">[('action','=','leave')]</field>
+		</record>
+		<record id="action_hr_attendance_report_day4_tree" model="ir.actions.act_window.view">
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="hr_attendance_report_day_tree4" />
+			<field name="act_window_id" ref="action_hr_attendance_report_day4" />
+		</record>
+
+		<record id="action_hr_attendance_report_day5" model="ir.actions.act_window">
+			<field name="name">الموظفين الذين لم يسجلوا خروجهم</field>
+			<field name="res_model">hr.attendance.report_day</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,graph</field>
+			<field name="domain">[('action','=','no_leave')]</field>
+		</record>
+		<record id="action_hr_attendance_report_day5_tree" model="ir.actions.act_window.view">
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="hr_attendance_report_day_tree5" />
+			<field name="act_window_id" ref="action_hr_attendance_report_day5" />
+		</record>
+				
+		<record id="action_hr_attendance_report_day6" model="ir.actions.act_window">
+			<field name="name">تقرير الوقت الإضافي</field>
+			<field name="res_model">hr.attendance.report_day</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,graph</field>
+			<field name="domain">[('action','=','hour_supp')]</field>
+		</record>
+		<record id="action_hr_attendance_report_day6_tree" model="ir.actions.act_window.view">
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="hr_attendance_report_day_tree6" />
+			<field name="act_window_id" ref="action_hr_attendance_report_day6" />
+		</record>
+
+
+		<menuitem  name="تقرير الحضور اليومي" id="menu_hr_attendance_report_root"/>
+
+		<menuitem  name="تقارير" id="ssmenu_hr_attendance_report" parent="menu_hr_attendance_report_root" />
+											
+		<menuitem action="action_hr_attendance_report_day1" name="تقرير التأخير"
+			id="menu_hr_attendance_report_day1" parent="ssmenu_hr_attendance_report"
+			sequence="5" />
+
+		<menuitem action="action_hr_attendance_report_day2" name="تقرير الغيابات الغير مبررة"
+			id="menu_hr_attendance_report_day2" parent="ssmenu_hr_attendance_report"
+			sequence="10" />
+
+		<menuitem action="action_hr_attendance_report_day3" name="تقرير الغيابات المبررة"
+			id="menu_hr_attendance_report_day3" parent="ssmenu_hr_attendance_report"
+			sequence="15" />
+
+		<menuitem action="action_hr_attendance_report_day4" name="تقرير الخروج المبكر"
+			id="menu_hr_attendance_report_day4" parent="ssmenu_hr_attendance_report"
+			sequence="20" />
+			
+		<menuitem action="action_hr_attendance_report_day5" name="الموظفين الذين لم يسجلوا خروجهم"
+			id="menu_hr_attendance_report_day5" parent="ssmenu_hr_attendance_report"
+			sequence="25" />			
+
+		<menuitem action="action_hr_attendance_report_day6" name="قرير الوقت الإضافي"
+			id="menu_hr_attendance_report_day6" parent="ssmenu_hr_attendance_report"
+			sequence="30" />
+	</data>
+</openerp>
+	

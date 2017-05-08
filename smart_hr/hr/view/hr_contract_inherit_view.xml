@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="hr_contract_view_search_inherit">
+			<field name="name">hhr.contract.filter.inherit</field>
+			<field name="model">hr.contract</field>
+			<field name="type">search</field>
+			<field name="inherit_id" ref="hr_contract.hr_contract_view_search" />
+			<field name="arch" type="xml">
+				<field name="employee_id" position="replace">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</field>
+			</field>
+		</record>
+		
+		
+		<record id="view_hr_contract_form_inherit" model="ir.ui.view">
+			<field name="name">hr.contract.form.inherit</field>
+			<field name="model">hr.contract</field>
+			<field name="inherit_id" ref="hr_contract.hr_contract_view_form" />
+			<field name="context">{'readonly_by_pass': True}	</field>
+			<field name="arch" type="xml">
+
+				<field name="employee_id" position="replace">
+					<field name="employee_id"
+						options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+					
+						<field name="country_id" options='{"no_open": True, "no_create": True}'
+												 domain="[('code_nat','!=',False)]"
+												context="{'compute_name': '_get_natinality','tree_view_ref': 'view_country_tree_nationality'}" />
+					<field name="identification_id" />
+					<field name="identification_date" />
+					<field name="identification_place" />
+					
+					<field name="passport_id" string="رقم الحفيظة" 
+					/>
+				</field>
+				<div class="oe_title" position="replace">
+					<group>
+						<field name="name" string="مسمى العقد" />
+					</group>
+				</div>
+				<field name="department_id" position="replace">
+					<field name="department_id" />
+				</field>
+				<field name="type_id" position="replace">
+					<field name="type_job_id" />
+					<field name="grade_id" />
+					<field name="degree_id" />
+					<field name="renewable" />
+				</field>
+				<xpath
+					expr="/form/sheet/notebook/page/group/group[@name='salary_and_advantages']"
+					position="after">
+					<group name="payement" string=" الرواتب و البدلات  ">
+						<field name="struct_id" invisible="1" />
+						<field name="basic_salary" />
+						<field name="transport_allow" />
+						<field name="net_salary" />
+						<field name="assurance" />
+						<field name="ticket_travel" />
+						<field name="ticket_famely" />
+
+
+					</group>
+
+
+					<group name="periode" string=" خصائص العقد  ">
+						<field name="date_to" string="مدة التجربة         من " />
+						<field name="date_endd" />
+						<field name="date_contract_to" string="مدة العقد         من " />
+						<field name="date_contract_end" />
+						<field name="calendar_id" />
+						<field name="payement_emploi" />
+
+					</group>
+				</xpath>
+				<xpath expr="/form/sheet/notebook/page/group/group/field[@name='wage']"
+					position="attributes">
+					<attribute name="invisible">True</attribute>
+				</xpath>
+
+				<xpath
+					expr="/form/sheet/notebook/page/group/group[@name='salary_and_advantages']"
+					position="attributes">
+					<attribute name="required">False</attribute>
+					<attribute name="invisible">True</attribute>
+				</xpath>
+
+				<xpath
+					expr="/form/sheet/notebook/page/group/group[@name='duration_group']"
+					position="attributes">
+					<attribute name="invisible">True</attribute>
+
+				</xpath>
+				<xpath expr="//page[@name='information']" position="after">
+					<page string="المسؤول على العقد و مراجع البيانات">
+						<group>
+							<group string="الممسؤول على العقد">
+								<field name="employee_id1" string="الممسؤول على العقد" />
+								<field name="department_id1" string="الادارة" />
+								<field name="job_id1" string="الوظيفة" />
+							</group>
+							<group string="مراجع البيانات">
+								<field name="employee_id2" string="مراجع البيانات" />
+								<field name="department_id2" string="الادارة" />
+								<field name="job_id2" string="الوظيفة" />
+							</group>
+						</group>
+					</page>
+					<page string="مواد العقد">
+						<group>
+							<group string="مواد العقد">
+								<field name="contract_item_ids" nolabel="1">
+									<tree editable="bottom">
+										<field name="code" />
+										<field name="name" />
+									</tree>
+								</field>
+
+							</group>
+						</group>
+					</page>
+				</xpath>
+
+			</field>
+		</record>
+
+
+
+		<record id="view_hr_contract_tree" model="ir.ui.view">
+			<field name="name">hr.contract.tree</field>
+			<field name="model">hr.contract</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="العقد">
+					<field name="name" string="مسمى العقد" />
+					<field name="employee_id" />
+					<field name="job_id" />
+					<field name="type_job_id" />
+					<field name="date_contract_to" string="تاريخ إمضاء العقد" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="action_hr_contract_view" model="ir.actions.act_window">
+			<field name="name">العقود</field>
+			<field name="res_model">hr.contract</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}	</field>
+		</record>
+
+		<menuitem action="action_hr_contract_view" id="hr_menu_contract_view"
+			parent="smart_hr.hr_root_employees" name="العقود" sequence="14"
+			groups="base.group_hr_manager" />
+
+
+	</data>
+</openerp>

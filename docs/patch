@@ -1,0 +1,18 @@
+----21-03-2017----
+modifier Landscape Report	for employee card
+height 160
+
+
+
+------13-03-2017-----------------------
+update hr_employee set type_id = (select type_id from hr_job j where j.id=job_id);
+
+------09-03-2017-----------------------
+set basic_salary in hr_employee to 0 for employees
+update hr_employee set basic_salary=0;
+------08-03-2017-----------------------
+must install module web_m2x_options
+Add these parameters go to Configuration -> Technical -> Parameters -> System Parameters and add new parameters like:
+- web_m2x_options.create: False
+- web_m2x_options.create_edit: False
+

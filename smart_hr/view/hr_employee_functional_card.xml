@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="view_hr_employee_functionnal_card_filter">
+			<field name="name">hr.employee.functionnal.card.search</field>
+			<field name="model">hr.employee.functionnal.card</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="بطاقة وظيفي">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
+
+		<record id="view_form_hr_employee_functionnal_card" model="ir.ui.view">
+			<field name="name">hr.employee.functionnal.card.form</field>
+			<field name="model">hr.employee.functionnal.card</field>
+			<field name="arch" type="xml">
+				<form string=" بطاقة وظيفية">
+					<button accesskey="E" invisible="1"></button>
+					<header>
+
+						<button name="%(report_hr_employee_functionnal_card_report)d"
+							string="طباعة بطاقة وظيفية" type="action" icon="fa-print"
+							class="oe_inline oe_stat_button" states="done" />
+
+						<button name="%(report_hr_emp_card_report)d" string="طباعة بطاقة موظف"
+							type="action" icon="fa-print" class="oe_inline oe_stat_button"
+							states="done" />
+
+						<button name="button_send_request" string="إرسال طلب" type="object"
+							states="draft" icon="fa-paper-plane" class="oe_inline oe_stat_button"
+							groups="smart_hr.group_employee_request,smart_hr.group_hrm"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="button_accept_hrm" string="موافق" type="object"
+							states="hrm" groups="smart_hr.group_hrm" icon="fa-check"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" states="hrm" groups="smart_hr.group_hrm" icon="fa-times"
+							class="oe_inline oe_stat_button" />
+						<field name="state" widget="statusbar" statusbar_visible="draft,hrm,done,refuse" />
+					</header>
+
+
+					<sheet>
+
+						<group attrs="{'invisible':[('state','=', 'done')]}">
+							<field name="date" />
+						</group>
+						<group>
+							<group>
+								<field name="employee_id" required="1"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+									attrs="{'readonly':[('state','!=', 'draft')]}" />
+							</group>
+							<group attrs="{'invisible':[('state','=', 'draft')]}">
+								<field name="number" />
+							</group>
+						</group>
+						<group>
+							<field name="start_date" attrs="{'invisible':[('state','!=', 'done')]}" />
+							<field name="end_date" attrs="{'invisible':[('state','!=', 'done')]}" />
+						</group>
+						<notebook>
+
+							<page string="البيانات الشخصية" attrs="{'invisible':[('state','=', 'draft')]}">
+								<br></br>
+								<group>
+									<field name="birthday" />
+									<field name="emp_age" />
+									<field name="birthday_location" />
+									<field name="identification_id" />
+									<field name="is_saudian" invisible="1"></field>
+									<field name="passport_id" attrs="{'invisible': [('is_saudian','=', True)]}" />
+									<field name="hoveizeh_id" attrs="{'invisible': [('is_saudian','=', False)]}" />
+									<field name="passport_date" attrs="{'invisible': [('is_saudian','=', True)]}" />
+									<field name="hoveizeh_date" attrs="{'invisible': [('is_saudian','=', False)]}" />
+									<field name="passport_place" attrs="{'invisible': [('is_saudian','=', True)]}" />
+									<field name="hoveizeh_place" attrs="{'invisible': [('is_saudian','=', False)]}" />
+									<field name="education_level" />
+									<field name="specialization_ids" widget="many2many_tags" />
+								</group>
+							</page>
+							<page attrs="{'invisible':[('state','=', 'draft')]}" string="بيانات العمل">
+								<br></br>
+								<group>
+
+									<field name="employee_state" />
+									<field name="degree_id" />
+									<field name="department_id" context="{'list_type':'_get_dep_name_employee_form'}" />
+									<field name="begin_work_date" />
+									<field name="recruiter_date" />
+								</group>
+							</page>
+							<page string="الحياة الوظيفية" attrs="{'invisible':[('state','=', 'draft')]}">
+								<br></br>
+								<group>
+									<field name="history_ids" context="{'list_type':'_get_dep_name_employee_form'}">
+										<tree string="سجل الاجراءات">
+											<field name="job_id" />
+											<field name="grade_id_number" />
+											<field name="number" />
+											<field name="dep_side" />
+											<field name="department_id" />
+											<field name="type" />
+											<field name="date" />
+											<field name="num_decision" />
+											<field name="date_decision" />
+										</tree>
+
+									</field>
+								</group>
+							</page>
+							<page string="التدريب" attrs="{'invisible':[('state','=', 'draft')]}">
+								<br></br>
+								<group>
+									<field name="training_ids">
+										<tree>
+											<field name="training_id" string="الدورة" />
+											<field name="date_from" string="التاريخ" />
+											<field name="number_of_days" />
+											<field name="place" />
+										</tree>
+									</field>
+								</group>
+							</page>
+						</notebook>
+					</sheet>
+					<div>
+						<field name="message_ids" widget="mail_thread" readonly="1" />
+					</div>
+				</form>
+			</field>
+		</record>
+
+
+		<record id="view_tree_hr_employee_functionnal_card" model="ir.ui.view">
+			<field name="name">hr.employee.functionnal.card.tree</field>
+			<field name="model">hr.employee.functionnal.card</field>
+			<field name="arch" type="xml">
+				<tree string=" بطاقة وظيفية" class="oe_tree_view">
+					<field name="employee_id" />
+					<field name="date" />
+					<field name="start_date" />
+					<field name="end_date" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+
+		<record id="action_hr_employee_functionnal_card" model="ir.actions.act_window">
+			<field name="name"> بطاقة وظيفية</field>
+			<field name="res_model">hr.employee.functionnal.card</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+
+			</field>
+
+		</record>
+
+		<menuitem id="menu_hr_employee_functionnal_card" action="action_hr_employee_functionnal_card"
+			string="بطاقة وظيفية" sequence="100" parent="hr_root_employees"
+			groups="smart_hr.group_employee_request,smart_hr.group_hrm" />
+	</data>
+</openerp>
+			

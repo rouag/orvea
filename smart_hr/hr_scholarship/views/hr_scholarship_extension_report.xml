@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<template id="hr_scholarship_extension_report">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_hr.external_layout_hr">
+
+						<!-- تمديد ابتعاث -->
+
+						<div class="page" style="direction:rtl;">
+							<div class="row">
+								<div class="col-md-12 text-center">
+
+									<p align="center">
+										<b>قرار تمديد ابتعاث</b>
+									</p>
+
+									<p align="center">
+										قرارإداري رقم
+										( &#160;&#160;&#160;&#160;&#160;&#160;&#160;)
+										بتاريخ
+										( &#160;&#160;&#160;&#160;&#160;&#160;&#160;)
+									</p>
+									<p align="left">
+										رقم الهوية الوطنية:
+										<span t-field="o.employee_id.identification_id" />
+									</p>
+
+								</div>
+							</div>
+
+							<div class="row">
+
+								<br />
+								<br />
+								<p style="font-size:12px;"><b>إن رئيس هيئة التحقيق و الادعاء العام</b></p>
+								<p style="font-size:12px;"><b>بناء على الصلاحيات الممنوحة له</b></p>
+								<p style="font-size:12px;">
+									و الحاقا للقرار الاداري رقم
+									(
+									<span t-field="o.num_speech" />
+									)
+									بتاريخ
+									(
+									<span t-esc="get_hijri_date(o.date_speech, '-')" />
+									)
+									القاضي بتمديد ابتعاث الموظف
+									<span t-field="o.employee_id.display_name" />
+									لنيل
+									<span t-field="o.diplom_id" />
+									من
+									<span t-field="o.faculty_id" />
+									ب
+									<span t-field="o.faculty_id.country_id" />
+									لمده
+									<span t-esc="o.extended_scholarship_id.duration" />
+									يوم اعتبارا من
+									<span t-esc="get_hijri_date(o.date_from, '-')" />
+									و حتى
+									<span t-esc="get_hijri_date(o.date_to, '-')" />
+									و اشارة الى خطاب
+									<span t-esc="o.order_source" />
+									رقم
+									(
+									<span t-field="o.order_number" />
+
+									و تاريخ
+									(
+									<span t-esc="get_hijri_date(o.order_date, '-')" />
+									)
+									المتضمن الموافقة على تمديد فترة ابتعاثه لمدة
+									<span t-esc="o.duration" />
+									يوم و استنادا الى لائحة الابتعاث و لموافقتنا على ذلك
+								</p>
+								<p align="center" style="font-size:12px;">:يقرر ما يلى</p>
+
+								<p style="font-size:12px;">
+									١) تمديد ابتعاث /
+									<span t-field="o.employee_id.display_name" />
+									لنيل
+									<span t-field="o.diplom_id" />
+									من
+									<span t-field="o.faculty_id" />
+									ب
+									<span t-field="o.faculty_id.country_id" />
+									لمده
+									<span t-esc="o.extended_scholarship_id.duration" />
+									يوم اعتبارا من
+									<span t-esc="get_hijri_date(o.date_from, '-')" />
+									و حتى
+									<span t-esc="get_hijri_date(o.date_to, '-')" />
+								</p>
+								<p style="font-size:12px;">٢) على الجهات المختصة اعتماد و تنفيذ موجبه</p>
+							</div>
+							<br></br>
+							<br></br>
+							<p align="left" class="col-md-12">
+								<b>
+									رئيس هيئة التحقيق و الادعاء العام
+								</b>
+								<br></br>
+								<span
+									t-field="o.employee_id.user_id.company_id.company_president.display_name" />
+							</p>
+						</div>
+					</t>
+
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>

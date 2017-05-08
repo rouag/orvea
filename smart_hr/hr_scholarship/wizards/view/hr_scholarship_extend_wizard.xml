@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+
+		<!-- extend Wizard -->
+		<record id="view_form_hr_scholarship_extend_wizard" model="ir.ui.view">
+			<field name="name">hr.scholarship.extend.wizard.form</field>
+			<field name="model">hr.scholarship.extend.wizard</field>
+			<field name="arch" type="xml">
+				<form string="تمديد ابتعاث">
+					<separator string="تمديد ابتعاث" />
+						<group>
+							<field name="date_from" />
+							<field name="date_to" />
+							<field name="duration" />
+							<field name="order_number" />
+							<field name="order_date" />
+							<field name="file_decision" filename="file_decision_name" />
+							<field name="file_decision_name" invisible="1" />
+						</group>
+						<footer>
+							<button name="button_add_history" string="حفظ" type="object"
+								icon="fa-floppy-o" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+							أو
+							<button string="إلغاء" class="oe_link" special="cancel" />
+						</footer>
+				</form>
+			</field>
+		</record>
+		<record id="action_hr_scholarship_extend_wizard" model="ir.actions.act_window">
+			<field name="name">تمديد ابتعاث</field>
+			<field name="res_model">hr.scholarship.extend.wizard</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="view_form_hr_scholarship_extend_wizard" />
+			<field name="target">new</field>
+		</record>
+
+	</data>
+</openerp>

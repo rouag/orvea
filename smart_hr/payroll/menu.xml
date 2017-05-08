@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+
+		<menuitem id="hr_payroll_root" name="الرواتب" groups="group_payroll_management" parent="hr_root" sequence="25" />
+		
+		<menuitem id="hr_special_payslip_root" parent="hr_payroll_root" name="المسيرات الخاصة" sequence="5" />
+
+		<menuitem id="hr_payroll_settlement_root" parent="hr_payroll_root" name="التسويات" sequence="10" />
+
+		<menuitem id="hr_loan_root" parent="hr_payroll_root" name="القروض" sequence="20" />
+
+		<menuitem id="hr_payslip_stop_root_menu" parent="hr_payroll_root" name="ايقاف راتب" sequence="34" />
+
+		<menuitem id="hr_bonus_root" parent="hr_payroll_root" name="المزايا المالية" sequence="40" />
+
+		<menuitem id="hr_payroll_reporting" name="التقارير" groups="group_payroll_management" sequence="45" parent="hr_payroll_root" />
+			
+		<menuitem id="hr_payroll_setting" name="الإعدادات" groups="group_payroll_setting" sequence="50" parent="hr_payroll_root" />		
+			
+	</data>
+</openerp>

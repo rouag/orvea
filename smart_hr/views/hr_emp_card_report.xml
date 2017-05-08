@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<template id="hr_emp_card_report">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<div class="header">
+						<div class="col-xs-3">
+							<img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo"
+								width="100%" style="max-height:85px !important;" />
+						</div>
+						<div class="col-xs-6">
+							<p>المملكة العربية السعودية</p>
+							<p><span t-esc="company.name" /></p>
+							<p t-esc="o.department_name_report" />
+						</div>
+						<div class="col-xs-3" style="margin-bottom:20px;">
+							<img class="emppic" height="150"
+								t-att-src="'data:image/png;base64,%s' % o.employee_id.image"
+								width="100" />
+						</div>
+					</div>
+					<div class="page">
+						<style type="text/css">
+							.emppic{
+							position: absolute;
+							left: 0;
+							top: -50px;
+							}
+							.instructions{
+							border-radius: 25px;
+							border: 2px solid red;
+							width:
+							200px;
+							text-align: center;
+						
+							display: inline-block;
+							background-color:
+							white;
+							padding: 10px;
+							float: left;
+							margin-left: 35%;
+							margin-top:
+							-20px;
+							}
+							.instructionscontent{
+							padding-top:20px;
+							border-radius:
+							25px;
+							border: 2px solid red;
+							}
+							
+							
+							div{
+							padding:0px;
+							margin:0px;
+							}
+
+						</style>
+						<div class="col-xs-8" style="margin-top:50px;">
+							<h4>
+								<b> <span t-esc="o.emp_name" /></b>
+							</h4>
+						</div>
+						<div class="col-xs-4">
+						</div>
+						<div class="col-xs-12">
+							<p>
+								<b>رقم السجل:</b>
+								<span t-field="o.identification_id" />
+							</p>
+							<p>
+								<b>رقم البطاقة:</b>
+								<span t-field="o.identification_id" />
+							</p>
+
+							<p>
+								<b>المسمى الوظيفي:</b>
+								<span t-field="o.employee_id.job_id" />
+							</p>
+							<p>
+								<t t-if="o.employee_id.is_member == False">
+									<b>المرتبة:</b>
+									<span t-field="o.employee_id.grade_id" />
+								</t>
+							</p>
+							<p>
+								<b> تاريخ الإصدار:</b>
+								<span t-esc="get_hijri_date(o.start_date, '-')" />
+							</p>
+							<p>
+								<b>تاريخ الإنتهاء:</b>
+								<span t-esc="get_hijri_date(o.end_date, '-')" />
+							</p>
+
+						</div>
+						<br></br>
+						<div class="col-xs-12"  style="margin-bottom:-20px;">
+							<p class="instructions text-center">
+								تعليمات
+							</p>
+							<div class="instructionscontent">
+								<p align="right">
+									* أي كشف أي تعديل في معلومات هذه البطاقة يبطل مفعولها
+								</p>
+								<p align="right">
+									* يجب إعادة هذه البطاقة لمصدرها فور إنتهاء خدمات
+									حاملها
+								</p>
+								<p align="right">
+									* يجب إبلاغ المرجع في حال فقدان البطاقة
+								</p>
+								<p align="right">
+									* يرجى ممن يعثر على هذه البطاقة تسليمها إلى أقرب مركز
+									شرطة
+								</p>
+								<p align="right">
+									* ينتهي مفعول هذه البطاقة بعد أربعة سنوات من تاريخ
+									صدورها
+								</p>
+							</div>
+						</div>
+					</div>
+				</t>
+
+			</t>
+		</template>
+
+	</data>
+</openerp>

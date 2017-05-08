@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data noupdate="1">
+
+		<!--أنواع جهات التوظيف -->
+		<record id="governmental" model="recruiter.recruiter">
+			<field name="name">حكومي</field>
+		</record>
+
+		<record id="private_company" model="recruiter.recruiter">
+			<field name="name">شركة خاصة</field>
+		</record>
+
+		<!-- إعدادات نتائج تقييم موظف -->
+		<record id="assessment_very_excelent" model="hr.evaluation.result.foctionality">
+			<field name="name">ممتاز</field>
+			<field name="point_from">90</field>
+			<field name="point_to">100</field>
+		</record>
+
+		<record id="assessment_very_good" model="hr.evaluation.result.foctionality">
+			<field name="name">جيد جداً</field>
+			<field name="point_from">75</field>
+			<field name="point_to">90</field>
+		</record>
+
+		<record id="assessment_hr_good" model="hr.evaluation.result.foctionality">
+			<field name="name">جيد</field>
+			<field name="point_from">60</field>
+			<field name="point_to">75</field>
+		</record>
+
+		<record id="assessment_hr_medium" model="hr.evaluation.result.foctionality">
+			<field name="name">متوسط</field>
+			<field name="point_from">40</field>
+			<field name="point_to">60</field>
+		</record>
+
+		<record id="assessment_hr_bad" model="hr.evaluation.result.foctionality">
+			<field name="name">سيئ</field>
+			<field name="point_from">0</field>
+			<field name="point_to">40</field>
+		</record>
+
+		<!-- إعدادات مستويات التعليم -->
+		<record id="illiterate" model="hr.employee.education.level">
+			<field name="sequence" eval="40" />
+			<field name="name">امي</field>
+		</record>
+
+		<record id="read_write" model="hr.employee.education.level">
+			<field name="sequence" eval="50" />
+			<field name="name">يقرأ ويكتب</field>
+		</record>
+
+		<record id="primary_education" model="hr.employee.education.level">
+			<field name="sequence" eval="60" />
+			<field name="name">ابتدائية</field>
+		</record>
+
+		<record id="certificate_after_primary_education" model="hr.employee.education.level">
+			<field name="sequence" eval="70" />
+			<field name="name">دبلوم بعد الابتدائية</field>
+		</record>
+
+		<record id="medium_education" model="hr.employee.education.level">
+			<field name="sequence" eval="80" />
+			<field name="name">متوسطة</field>
+		</record>
+
+		<record id="certificate_after_medium_education" model="hr.employee.education.level">
+			<field name="sequence" eval="90" />
+			<field name="name">دبلوم بعد المتوسطة</field>
+		</record>
+
+		<record id="secondary_education" model="hr.employee.education.level">
+			<field name="sequence" eval="100" />
+			<field name="name">ثانوية</field>
+		</record>
+
+		<record id="certificate_after_secondary_education" model="hr.employee.education.level">
+			<field name="sequence" eval="110" />
+			<field name="name">دبلوم بعد الثانوية</field>
+		</record>
+		<record id="certificate_baccalaureate" model="hr.employee.education.level">
+			<field name="sequence" eval="112" />
+			<field name="name">بكالوريوس</field>
+		</record>
+		<record id="university_education" model="hr.employee.education.level">
+			<field name="sequence" eval="120" />
+			<field name="name">جامعية</field>
+		</record>
+
+		<record id="certificate_after_university_education" model="hr.employee.education.level">
+			<field name="sequence" eval="130" />
+			<field name="name">دبلوم بعد الجامعية</field>
+		</record>
+
+		<record id="certificate_licence" model="hr.employee.education.level">
+			<field name="sequence" eval="132" />
+			<field name="name">ليسانس</field>
+		</record>
+
+		<record id="ma_education" model="hr.employee.education.level">
+			<field name="sequence" eval="140" />
+			<field name="name">ماجستير</field>
+		</record>
+
+		<record id="certificate_after_ma_education" model="hr.employee.education.level">
+			<field name="sequence" eval="150" />
+			<field name="name">دبلوم بعد الماجستير</field>
+		</record>
+
+		<record id="certificate_doctorate_education" model="hr.employee.education.level">
+			<field name="sequence" eval="160" />
+			<field name="name">دكتوراه</field>
+		</record>
+
+
+
+
+
+		<!-- إعدادات أنواع التدريب -->
+		<record id="directly_training" model="hr.training.type">
+			<field name="name">مباشرة</field>
+		</record>
+
+		<record id="not_directly_training" model="hr.training.type">
+			<field name="name">غير مباشرة</field>
+		</record>
+
+		<record id="not_counted_training" model="hr.training.type">
+			<field name="name">لا تحتسب</field>
+		</record>
+		<!-- مرافقة مريض -->
+		<record id="data_entitlement_accompaniment_exceptional_illness_normal"
+			model="hr.holidays.entitlement.config">
+			<field name="name">مرافقة مريض‫ ‫(أمراض‬ غير‬ خطيرة)‬</field>
+			<field name="code">accompaniment_exceptional</field>
+		</record>
+		<record id="data_entitlement_accompaniment_exceptional_illness_serious"
+			model="hr.holidays.entitlement.config">
+			<field name="name">مرافقة مريض‫ ‫(مرض‬ خطير)‬</field>
+			<field name="code">accompaniment_exceptional</field>
+		</record>
+
+		<record
+			id="data_entitlement_accompaniment_exceptional_illness_work_accident"
+			model="hr.holidays.entitlement.config">
+			<field name="name">مرافقة مريض‫ ‫(اصابة عمل)‬</field>
+			<field name="code">accompaniment_exceptional</field>
+		</record>
+
+		<!--الاجازات الرياضية -->
+		<record id="data_entitlement_sport_in" model="hr.holidays.entitlement.config">
+			<field name="name">داخل المملكة‬</field>
+			<field name="code">sport</field>
+		</record>
+		<record id="data_entitlement_sport_out" model="hr.holidays.entitlement.config">
+			<field name="name">خارج المملكة‬</field>
+			<field name="code">sport</field>
+		</record>
+
+		<!-- إعدادات الموظف -->
+		<record id="data_stadard_employee_configuration" model="hr.employee.configuration">
+			<field name="name">إعدادات الموظف</field>
+			<field name="period" eval="2"/>
+			<field name="number" eval="000000"/>
+			<field name="recruitment_legal_age" eval="18"/>
+				<field name="age_member" eval="63"/>
+			<field name="age_nomember" eval="65"/>
+		</record>
+		
+		<!-- hr.decision.setting -->
+		<record id="data_hr_decision_setting" model="hr.decision.setting">
+			<field name="name">اعدادات تسلسل القرارات</field>
+		</record>
+	</data>
+</openerp>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="hr_scholarship_decision_report">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.external_layout_extend">
+						<br></br>
+						<br></br>
+						<br></br>
+
+						<div class="page">
+							<br></br>
+							<br></br>
+							<br></br>
+							<div class="oe_structure" />
+							<p>
+								ادارة الموارد البشرية - الترقيات و النقل
+							</p>
+							<br></br>
+							<p align="left">
+								رقم الهوية الوطنية:
+								<span t-field="o.employee_id.identification_id" />
+								<br></br>
+								الموضوع: مباشرة بعد
+								<span t-field="o.scholarship_id.scholarship_type.name" />
+
+							</p>
+							<p></p>
+							<br></br>
+							<br></br>
+							<p style="font-size:12px;">
+								<b>سعادة المشرف العام على الموارد البشرية </b>
+							</p>
+
+							<p style="font-size:12px;">
+								<b>
+								السلام عليكم ورحمة الله
+								وبركاته
+							</b>
+							</p>
+							<br></br>
+							<br></br>
+							<p style="font-size:12px;">
+
+								إشارة للقرار الإداري رقم
+								(
+								<span t-field="o.scholarship_id.num_speech" />
+								)
+								و تاريخ
+									<span t-esc="get_hijri_date(o.scholarship_id.date_speech, '-')" />
+								القاضي بايفاد الموظف
+								<span t-field="o.employee_id.name" />
+								للدراسة ب
+								<span t-field="o.scholarship_id.faculty_id.name" />
+								و ذلك للحصول على شهادة
+								<span t-field="o.scholarship_id.diplom_id.name" />
+
+								و اشارة لخطاب
+								<span t-field="o.order_source" />
+
+								رقم
+								(<span t-field="o.order_number" />)
+
+								وتاريخ
+									<span t-esc="get_hijri_date(o.order_date, '-')" />
+
+
+								المتضمن أن المذكور باشر العمل يوم
+									<span t-esc="get_hijri_date(o.date, '-')" />
+							</p>
+							<p style="font-size:12px;">
+
+								نود التسجيل بموجبه لديكم.
+							</p>
+							<br></br>
+							<br></br>
+							<p style="font-size:12px;" align='center'>
+
+								<b>,,,و لكم تحياتي</b>
+							</p>
+							<p></p>
+							<p></p>
+							<br></br>
+							<br></br>
+							<br></br>
+							<p style="font-size:12px;" align='left'>
+								<br />
+						مدير عام الشؤون الادارية و المالية المكلف
+								<br />
+								<br />
+
+							</p>
+					
+						</div>
+					</t>
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+								
+							
+								

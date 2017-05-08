@@ -1,0 +1,54 @@
+.o_form_field_number {
+	text-align: right !important;
+	max-width: 200px !important;
+	direction: ltr !important;
+}
+
+.oe_smart_inline {
+	width: 50% !important;
+}
+
+.oe_smart_middle_name {
+	float: left !important;
+	width: 20px !important;
+}
+
+.align_change_css {
+	text-align: center !important;
+}
+
+.div_paddig_right_null {
+	padding-right: 0px !important;
+}
+
+.note_field_width {
+	width: 100% !important;
+}
+
+.td_label_width {
+	width: 2% !important;
+}
+
+.required_field_border {
+	border: 1px solid rgba(179, 31, 31, 0.8) !important;
+}
+
+.selection_field_height {
+	height: 44px;
+}
+
+.o_list_number {
+	direction: ltr !important;
+}
+
+.o_entitlment_category {
+	width: 40% !important;
+}
+
+.o_periode {
+	width: 20% !important;
+}
+
+.o_extension {
+	width: 20% !important;
+}

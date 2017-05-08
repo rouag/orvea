@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data noupdate="1">
+
+		<!-- shcolaship Types -->
+
+		<record id="data_hr_shcolaship_internal" model="hr.scholarship.type">
+			<field name="name">ابتعاث داخلي</field>
+			<field name="code">1</field>
+			<field name="salary_percent" eval="100" />
+		</record>
+
+		<record id="data_hr_shcolaship_external" model="hr.scholarship.type">
+			<field name="name">ابتعاث خارجي</field>
+			<field name="code">2</field>
+			<field name="salary_percent" eval="100" />
+			<field name="traveling_family_ticket" eval="True" />
+		</record>
+		<!-- shcolaship Types service.duration -->
+
+		<record id="data_hr_shcolaship_duration_external_hight" model="hr.scholarship.service.duration">
+			<field name="name">مدة الخدمة اللازمة قبل ابتعاث خارجي</field>
+			<field name="diplom_type">hight</field>
+			<field name="scholarship_type" ref="smart_hr.data_hr_shcolaship_external" />
+			<field name="service_duration">730</field>
+					</record>
+		<record id="data_hr_shcolaship_duration_internal_hight" model="hr.scholarship.service.duration">
+			<field name="name">مدة الخدمة اللازمة قبل ابتعاث داخلي</field>
+			<field name="diplom_type">hight</field>
+			<field name="scholarship_type" ref="smart_hr.data_hr_shcolaship_internal" />
+			<field name="service_duration">730</field>
+		</record>
+		<record id="data_hr_shcolaship_duration_external_middle" model="hr.scholarship.service.duration">
+			<field name="name">2مدة الخدمة اللازمة قبل ابتعاث خارجي</field>
+			<field name="diplom_type">middle</field>
+			<field name="scholarship_type" ref="smart_hr.data_hr_shcolaship_external" />
+			<field name="service_duration">1095</field>
+		</record>
+		<record id="data_hr_shcolaship_duration_internal_middle" model="hr.scholarship.service.duration">
+			<field name="name">2مدة الخدمة اللازمة قبل ابتعاث داخلي</field>
+			<field name="diplom_type">middle</field>
+			<field name="scholarship_type" ref="smart_hr.data_hr_shcolaship_internal" />
+			<field name="service_duration">1095</field>
+		</record>
+	</data>
+</openerp>

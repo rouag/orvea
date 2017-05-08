@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		
+		
+		
+		<menuitem id="menu_holidays_report" name="التقارير"  sequence="60" parent="menu_hr_holiday_root" /> 		
+			
+		
+		<menuitem  id="menu_holidays_configuration"  name="الإعدادات"  sequence="100"  parent="menu_hr_holiday_root" />
+			
+	</data>
+</openerp>

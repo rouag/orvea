@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+				<report id="report_hr_deprivation_premium_report"  model="hr.sanction"
+			name="smart_hr.hr_deprivation_premium_report" report_type="qweb-pdf"
+		string="قرار حرمان من العلاوة"   attachment_use="False" menu="False"
+			file="smart_hr.hr_deprivation_premium_report" />
+			
+	
+	</data>
+</openerp>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!-- إعدادات النقل -->
+		<record id="view_hr_setting" model="ir.ui.view">
+			<field name="name">hr.setting.form</field>
+			<field name="model">hr.setting</field>
+			<field name="arch" type="xml">
+				<form string="‫إعدادات النقل‬‬" create='0'
+					delete='0' duplicate='0'>
+
+					<sheet>
+						<group>
+							<group string="إعدادات النقل">
+								<field name="name" invisible="1" />
+								<field name="desire_number" />
+								<field name="needed_days" />
+								<field name="years_last_transfert" />
+								<field name="allowance_job_nature" options='{"no_open": True, "no_create": True}' />
+								<field name="allowance_proportion" />
+								<field name="allowance_deputation" options='{"no_open": True, "no_create": True}' />
+								<field name="deputation_days" />
+								<field name="allowance_deportation" options='{"no_open": True, "no_create": True}' />
+								<field name="deportation_amount" />
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="ir_actions_button_hr_setting" model="ir.actions.server">
+			<field name="sequence" eval="5" />
+			<field name="state">code</field>
+			<field name="type">ir.actions.server</field>
+			<field name="model_id" ref="model_hr_setting" />
+			<field name="code">action=pool.get('hr.setting').button_setting(cr,uid,None,)
+			</field>
+			<field name="condition">True</field>
+			<field name="name">‫إعدادات النقل‬‬</field>
+		</record>
+
+		<menuitem name="النقل" id="hr_setting_menu"
+			groups="smart_hr.group_configuration" parent="hr_root_workflows_setting"
+			sequence="40" action="ir_actions_button_hr_setting" />
+
+
+
+		<record id="view_hr_authority_board_setting" model="ir.ui.view">
+			<field name="name">hr.authority.board.settingform</field>
+			<field name="model">hr.authority.board.setting</field>
+			<field name="arch" type="xml">
+				<form string="إعدادات مجلس الهيئة" create='0' delete='0'
+					duplicate='0'>
+
+					<sheet>
+						<group>
+							<group>
+								<field name="name" />
+								<field name="users_number" />
+							</group>
+						</group>
+						<group string="وظائف اعضاء مجلس الهيئة">
+							<group>
+								<field name="job_required_ids" nolabel="1" readonly="1">
+									<tree editable="bottom">
+										<field name="name" />
+										<field name="name_number" />
+										<field name="department_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+										<field name="grade_id"
+											options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+										<field name="type_id"></field>
+									</tree>
+								</field>
+							</group>
+						</group>
+
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="ir_actions_button_hr_authority_board_setting"
+			model="ir.actions.server">
+			<field name="sequence" eval="5" />
+			<field name="state">code</field>
+			<field name="type">ir.actions.server</field>
+			<field name="model_id" ref="model_hr_authority_board_setting" />
+			<field name="code">action=pool.get('hr.authority.board.setting').button_authority_board_setting(cr,uid,None,)
+			</field>
+			<field name="condition">True</field>
+			<field name="name">إعدادات مجلس الهيئة</field>
+		</record>
+
+		<menuitem name="مجلس الهيئة" id="hr_setting_authority_board_menu"
+			parent="hr_root_workflows_setting" sequence="65"
+			action="ir_actions_button_hr_authority_board_setting" />
+	</data>
+</openerp>

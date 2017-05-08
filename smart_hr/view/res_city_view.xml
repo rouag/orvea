@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+
+		<!-- Cities -->
+		<record id="view_form_res_city" model="ir.ui.view">
+			<field name="name">res.city.form</field>
+			<field name="model">res.city</field>
+			<field name="arch" type="xml">
+				<form string="مدينة">
+					<sheet>
+						<group>
+							<field name="name" required="1" />
+							<field name="city_side" required="1" />
+							<field name="code" invisible="1" />
+							<field name="country_id" domain="[('code_nat','!=',False)]"/>
+
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record id="view_tree_res_city" model="ir.ui.view">
+			<field name="name">res.city.tree</field>
+			<field name="model">res.city</field>
+			<field name="arch" type="xml">
+				<tree string="مدن" class="oe_tree_view">
+					<field name="name" />
+					<field name="city_side" />
+					<field name="country_id" />
+
+				</tree>
+			</field>
+		</record>
+		<record id="view_search_res_city" model="ir.ui.view">
+			<field name="name">res.city.search</field>
+			<field name="model">res.city</field>
+			<field name="arch" type="xml">
+				<search string="مدن">
+					<field name="name" />
+					<field name="city_side" />
+					<field name="country_id" />
+
+				</search>
+			</field>
+		</record>
+		<record id="action_res_city" model="ir.actions.act_window">
+			<field name="name">المدن</field>
+			<field name="res_model">res.city</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+		<menuitem id="menu_res_city" action="action_res_city"
+			parent="hr_configuration_general_root" name="المدن" />
+
+	</data>
+</openerp>

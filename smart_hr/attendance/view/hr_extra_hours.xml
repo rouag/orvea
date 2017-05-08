@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<!-- الساعات الإضافية -->
+
+		<record model="ir.ui.view" id="hr_extra_hours_tree">
+			<field name="name">hr.extra_hours.tree</field>
+			<field name="model">hr.extra_hours</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="الساعات الإضافية">
+					<field name="name" />
+					<field name="employee_id" />
+					<field name="date" />
+					<field name="hour_from" />
+					<field name="hour_to" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_extra_hours_form">
+			<field name="name">hr.extra_hours.form</field>
+			<field name="model">hr.extra_hours</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="الساعات الإضافية">
+					<header>
+						<button name="action_waiting" string="إرسال للإعتماد" type="object"
+							states="new"  />
+						<button name="action_done" string="إعتماد" type="object"
+							states="waiting" groups="smart_hr.group_dm"/>
+							
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action"
+							states="waiting" groups="smart_hr.group_dm"/>
+						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
+					</header>
+					<sheet>
+						<h3>
+							<field name="name" />
+						</h3>
+						<group>
+							<group string="بيانات الموظف">
+								<field name="employee_id" options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+								<field name="number" />
+								<field name="department_id" />
+								<field name="job_id" />
+								<field name="grade_id" />
+							</group>
+							<group string="بيانات العمل">
+								<field name="date" />
+								<label for="hour_from" string="الفترة" />
+								<div>
+									<div>
+										<field name="hour_from" class="oe_inline" />
+										<label string="-" class="oe_inline" />
+										<field name="hour_to" class="oe_inline" />
+									</div>
+									<div>
+										<field name="hour_number" class="oe_inline" />
+										ساعة
+									</div>
+								</div>
+							</group>
+						</group>
+						<group>
+							<field name="description" placeholder="ملاحظات ..."
+								colspan="4" />
+						</group>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"
+							groups="base.group_user" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record id="hr_extra_hours_search" model="ir.ui.view">
+			<field name="name">hr.extra_hours.search</field>
+			<field name="model">hr.extra_hours</field>
+			<field name="arch" type="xml">
+				<search string="الساعات الإضافية">
+					<field name="name" />
+					<field name="employee_id" string="الموظف"
+							   filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]"/>
+					<field name="date" />
+					<group expand="0" string="تجميع حسب...">
+						<filter name="employee_id" string="الموظف" context="{'group_by':'employee_id'}" />
+						<filter name="date"  string="التاريخ" context="{'group_by':'date'}" />
+						<filter name="state"  string="الحالة" context="{'group_by':'state'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+		
+		<record model="ir.actions.act_window" id="action_hr_extra_hours">
+			<field name="name">الساعات الإضافية</field>
+			<field name="res_model">hr.extra_hours</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+
+		<!-- <menuitem id="hr_extra_hours_menu" name="الساعات الإضافية" groups="smart_hr.group_employee"
+			sequence="30" parent="menu_attendance_root" action="action_hr_extra_hours" /> -->
+	</data>
+</openerp>

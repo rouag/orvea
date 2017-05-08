@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="view_company_form_inherit">
+			<field name="name">res.company.form.inherit.report</field>
+			<field name="model">res.company</field>
+			<field name="type">tree</field>
+			<field name="inherit_id" ref="base.view_company_form" />
+			<field name="arch" type="xml">
+				<notebook position="inside">
+					<page string="إعدادات التقارير">
+						<group string="التقارير العامة">
+							<field name="report_header" widget="image" />
+							<field name="report_footer" widget="image" />
+						</group>
+						<group string="الخطابات والقرارت">
+							<field name="report_header_speech" widget="image" />
+							<field name="report_footer_speech" widget="image" />
+							
+						</group>
+					</page>
+				</notebook>
+				<field name="partner_id" position="after">
+				<field name="company_president"></field>
+				</field>
+			</field>
+		</record>
+	</data>
+</openerp>

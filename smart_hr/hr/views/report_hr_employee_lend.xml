@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_hr_employee_lend">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.external_layout_extend">
+						<div class="page">
+							<t t-set="decision_appoint" t-value="get_decision_appoint(o.employee_id)" />
+							<div class="col-xs-12 text-center">
+								<strong>قرار إعارة</strong>
+							</div>
+							<br></br>
+							<br></br>
+							<p class="text-center">
+								قرار إداري رقم
+								<span t-esc="o.decision_number" />
+								وتاريخ
+								<span t-esc="get_hijri_date(o.decision_date, '-')" />
+							</p>
+							<div class="col-xs-12">
+								<div class="col-xs-3"></div>
+								<div class="col-xs-3"></div>
+								<div class="col-xs-6">
+									<strong>رقم الهوية الوطنية:</strong>
+									<span t-esc="o.employee_id.identification_id" />
+								</div>
+								<br></br>
+								<br></br>
+								<p>
+									<strong>إن رئيس هيئة التحقيق والإدعاء العام</strong>
+								</p>
+								<p>
+									<strong>بناءً على الصلاحيات الممنوحة له</strong>
+								</p>
+								<br></br>
+								<p>بناءً على ما جاء بخطاب رئيس فرع الهيئة المرفق به خطاب شركة العياد للمقاومة والنقليات رقم
+									(<t t-esc="o.decision_number"/>) وتاريخ (	<span t-esc="get_hijri_date(o.decision_date, '-')" />) المتضمن طلب الموافقة على إعارة خدمات الموظف
+									بدائرة التحقيق والإدعاء العام بمحافظات الأسياح والموضحة بياناته
+									أدناه وأسنداً للمادة رقم (29) نظام الخدمة المدنية.
+								</p>
+								<p class="text-center">
+									يقرر مايلي:
+								</p>
+								<br></br>
+								<p>
+									1- إعارة خادم الموظف بالهيئة/
+									<strong><t t-esc="o.employee_id.name" /></strong>
+									، بالمرتبة(<t t-esc="o.employee_id.job_id.grade_id.code" />) رقمها (<t t-esc="o.employee_id.job_id.number" />)  الراتب (<t t-if="decision_appoint"><t t-esc="o.employee_id.wage" /></t>) ريالات إلى
+									<t t-esc="o.insurance_entity.name" />
+									لمدة
+									<t t-esc="o.duration" />
+									يوماً إعتباراً من تاريخ مباشرة الإعارة.
+								</p>
+								<p>2- على الجهة المعار إليها تحمل جميع رواتبه خلال فترة الإعارة.
+								</p>
+								<p>3- على المعار تسديد العائدات التصاعدية للمؤسسه العامة شهرياً
+									كي تحتسب خدماته لأغراض التقاعد.
+								</p>
+								<p>4- يبلغ هذا القرار لمن يلزم لإنفاذه.</p>
+								<div class="col-xs-3"></div>
+								<div class="col-xs-3"></div>
+								<div class="col-xs-6">
+									<strong> رئيس هيئة التحقيق والإدعاء العام</strong><br></br>
+									<p class="text-center"><t t-esc="user.company_id.company_president.name" /></p>
+								</div>
+								<div class="col-xs-12" style="border-style: solid; border-width: 1px;margin-bottom:15px;">
+									<p class="text-center">
+										مباشرة
+									</p>
+									<p>سعادة المشرف العام على إدارة الموارد البشرية</p>
+									<p>السلام عليكم ورحمة الله وبركاته ..</p>
+									<p>الموضح إسمه بعلية باشر العمل بتاريخ <t t-if="decision_appoint"><t t-esc="get_hijri_date(decision_appoint.date_direct_action, '-')" /></t> </p>
+									<p class="text-center">
+										ولكم تحياتي
+									</p>
+									<div class="col-xs-3"></div>
+									<div class="col-xs-3"></div>
+									<div class="col-xs-6">
+										<strong>مدير عام الشؤون الإدارية والمالية المكلف</strong><br></br>
+									</div>
+								</div>
+							</div>
+						</div>
+					</t>
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+							

@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record model="ir.ui.view" id="view_partner_form_inherit">
+			<field name="name">res.partner.inherit</field>
+			<field name="model">res.partner</field>
+			<field name="type">form</field>
+			<field name="inherit_id" ref="base.view_partner_form" />
+			<field name="arch" type="xml">
+				<field name="email" position="before">
+					<field name="is_hospital" invisible="1" />
+					<field name="hospital_director" attrs="{'invisible': [('is_hospital','=', False)]}" />
+				</field>
+				<field name="state_id" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</field>
+				<field name="website" position="after">
+					<field name="insurance" />
+				</field>
+				<page name="sales_purchases" position="attributes">
+					<attribute name="invisible">1</attribute>
+				</page>
+				
+			</field>
+		</record>
+		
+<!-- 		<record id="view_partner_property_form_inherit" model="ir.ui.view"> -->
+<!-- 			<field name="name">res.partner.property.form.inherit</field> -->
+<!-- 			<field name="model">res.partner</field> -->
+<!-- 			<field name="inherit_id" ref="account.view_partner_property_form" /> -->
+<!-- 			<field name="arch" type="xml"> -->
+<!-- 			<page name="accounting" position="attributes"> -->
+<!-- 				<attribute name="invisible">1</attribute> -->
+<!-- 			</page> -->
+<!-- 			</field> -->
+<!-- 		</record> -->
+
+
+		<menuitem id="bank_accounts" sequence="35" name="إعدادات البنوك"
+			parent="smart_hr.hr_root_configuration" />
+
+
+		<menuitem id="banks_management" name=" البنوك" sequence="1"
+			parent="bank_accounts" action="base.action_res_bank_form" />
+		<menuitem id="banks_accounts_management" name=" الحسابات البنكِيّة"
+			sequence="2" parent="bank_accounts" action="base.action_res_partner_bank_account_form" />
+
+		<!-- partner_bank -->
+
+		<record id="view_partner_bank_tree_inherit" model="ir.ui.view">
+			<field name="name">res.partner.bank.tree</field>
+			<field name="model">res.partner.bank</field>
+			<field name="inherit_id" ref="base.view_partner_bank_tree" />
+			<field name="arch" type="xml">
+				<tree position="replace">
+					<tree string="Bank Accounts">
+						<field name="acc_number" />
+						<field name="bank_id" string="البنك" />
+						<field name="company_id" groups="base.group_multi_company" />
+						<field name="employee_id" />
+						<field name="currency_id" />
+						<field name="account_opening_date" />
+						<field name="is_deposit" />
+					</tree>
+				</tree>
+			</field>
+		</record>
+
+		<record id="view_partner_bank_form" model="ir.ui.view">
+			<field name="name">res.partner.bank.form</field>
+			<field name="model">res.partner.bank</field>
+			<field name="inherit_id" ref="base.view_partner_bank_form" />
+			<field name="arch" type="xml">
+				<form position="replace">
+					<form string="Bank account">
+						<group col="4">
+							<field name="acc_number" />
+							<field name="employee_id" />
+							<field name="bank_id" string="البنك" />
+							<field name="account_opening_date" />
+							<field name="is_deposit" />
+							<field name="company_id" groups="base.group_multi_company"
+								options="{'no_create': True}" />
+							<field name="currency_id" options="{'no_create': True}" />
+						</group>
+					</form>
+				</form>
+			</field>
+		</record>
+
+		<record id="action_res_partner_bank_account_form" model="ir.actions.act_window">
+			<field name="name">الحسابات البنكِيّة</field>
+			<field name="res_model">res.partner.bank</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">
+					انقر لإنشاء حساب بنكي.
+				</p>
+			</field>
+		</record>
+		<record id="view_res_bank_form" model="ir.ui.view">
+			<field name="name">res.bank.form</field>
+			<field name="inherit_id" ref="base.view_res_bank_form" />
+			<field name="model">res.bank</field>
+			<field name="arch" type="xml">
+				<form position="replace">
+					<form string="Bank">
+						<group col="4">
+							<field name="name" string="اسم البنك" />
+							<field name="bic" />
+						</group>
+						<group>
+							<group string="العنوان">
+								<label for="street" string="العنوان" />
+								<div class="o_address_format">
+									<field name="street" placeholder="الشارع ..." class="o_address_street" />
+									<field name="street2" placeholder="الشارع ... 2..."
+										class="o_address_street" />
+									<field name="city" placeholder="المدينة" class="o_address_city" />
+									<field name="state" class="o_address_state" placeholder="الولاية"
+										options='{"no_open": True}' />
+									<field name="zip" placeholder="الرقم البريدى" class="o_address_zip" />
+									<field name="country" placeholder="البلد" class="o_address_country"
+										options='{"no_open": True, "no_create": True}' />
+								</div>
+							</group>
+							<group string="بيانات التواصل">
+								<field name="phone" string=" الهاتف" />
+								<field name="fax" string="الفاكس" />
+								<field name="email" widget="email" string="البريد الإلكتروني" />
+								<field name="active" />
+							</group>
+						</group>
+					</form>
+				</form>
+			</field>
+		</record>
+
+
+		<record id="view_res_bank_tree" model="ir.ui.view">
+			<field name="name">res.bank.tree</field>
+			<field name="inherit_id" ref="base.view_res_bank_tree" />
+			<field name="model">res.bank</field>
+			<field name="arch" type="xml">
+				<tree position="replace">
+					<tree string="Banks">
+						<field name="name" string="اسم البنك" />
+						<field name="bic" />
+						<field name="country" />
+					</tree>
+				</tree>
+			</field>
+		</record>
+		<record id="base.action_res_bank_form" model="ir.actions.act_window">
+			<field name="name">Banks</field>
+			<field name="res_model">res.bank</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">
+					انقر لإنشاء بنك جديد.
+				</p>
+				<p>
+					إدارة البنوك التي تريد استخدامها في النظام.
+				</p>
+			</field>
+		</record>
+		<record id="view_partner_bank_search_inherit" model="ir.ui.view">
+			<field name="name">res.partner.bank.search.inherit</field>
+			<field name="model">res.partner.bank</field>
+			<field name="inherit_id" ref="base.view_partner_bank_search" />
+			<field name="arch" type="xml">
+				<field name="partner_id" position="replace">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</field>
+			</field>
+		</record>
+
+		<record id="mail.action_contacts" model="ir.actions.act_window">
+			<field name="name">Contacts</field>
+			<field name="type">ir.actions.act_window</field>
+			<field name="res_model">res.partner</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">kanban,tree,form</field>
+			<field name="search_view_id" ref="base.view_res_partner_filter" />
+			<field name="domain">[('user_ids','=', False)]</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">
+					Click to add a contact in your address book.
+				</p>
+				<p>
+					Odoo helps you easily track all activities related to
+					a customer;
+					discussions, history of business opportunities,
+					documents, etc.
+				</p>
+			</field>
+		</record>
+	</data>
+</openerp>

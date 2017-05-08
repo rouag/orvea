@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<record model="ir.ui.view" id="view_hr_holidays_decision_filter_inherit">
+			<field name="name">hr.holidays.decision.filter.inherit</field>
+			<field name="model">hr.holidays.decision</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="قرار مباشرة">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
+		<!-- قرار مباشرة -->
+		<record id="hr_holidays_decision_form" model="ir.ui.view">
+			<field name="name">hr.holidays.decision.form</field>
+			<field name="model">hr.holidays.decision</field>
+			<field name="arch" type="xml">
+				<form string="قرار مباشرة">
+					<header>
+						<button name="action_waiting" string=" ارسال طلب" type="object"
+							states="new" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							groups="smart_hr.group_employee_request,smart_hr.group_hrm" />
+						<button name="action_done" string="إعتماد" type="object"
+							states="waiting" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							groups="smart_hr.group_hrm" />
+
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" states="waiting" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							groups="smart_hr.group_hrm" />
+	<button name="open_decission_holidays_direct" string="معاينة القرار"
+							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+							
+							
+						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done,cancel" />
+					</header>
+					<sheet>
+						<group>
+							<group>
+								<field name="name" attrs="{'readonly':[('state','!=','new')]}" />
+								<field name="order_date" attrs="{'readonly':[('state','!=','new')]}" />
+								<field name="file_decision" filename="file_decision_name"
+									attrs="{'readonly':[('state','!=','new')]}" />
+								<field name="file_decision_name" invisible="1"
+									attrs="{'readonly':[('state','!=','new')]}" />
+							</group>
+							<group>
+								<field name="date" attrs="{'readonly':[('state','!=','new')]}" />
+							</group>
+						</group>
+						<group>
+							<group string="بيانات الموظف">
+								<field name="employee_id" attrs="{'readonly':[('state','!=','new')]}"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="number" />
+								<field name="job_id"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="department_id" />
+							</group>
+							<group>
+								<group string="بيانات الأجازة">
+									<field name="holiday_id" attrs="{'readonly':[('state','!=','new')]}"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									<field name="holiday_status_id" readonly="1"/>
+									<field name="date_from" readonly="1"/>
+									<field name="date_to" readonly="1"/>
+									<field name="duration" readonly="1"/>
+								</group>
+							
+							</group>
+						</group>
+					</sheet>
+					<div>
+						<field name="message_ids" widget="mail_thread" readonly="1" />
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record id="hr_holidays_decision_tree" model="ir.ui.view">
+			<field name="name">hr.holidays.decision.tree</field>
+			<field name="model">hr.holidays.decision</field>
+			<field name="arch" type="xml">
+				<tree string="قرار مباشرة">
+					<field name="employee_id" />
+					<field name="number" />
+					<field name="job_id" />
+					<field name="department_id" />
+					<field name="date" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_holidays_decision">
+			<field name="name">قرار مباشرة‬‬</field>
+			<field name="res_model">hr.holidays.decision</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+
+		<menuitem id="menu_hr_holidays_decision" parent="menu_hr_holiday_root"
+			sequence="55" name="قرار مباشرة" action="action_hr_holidays_decision"
+			groups="smart_hr.group_employee_request,smart_hr.group_hrm" />
+
+
+
+
+	</data>
+</openerp>

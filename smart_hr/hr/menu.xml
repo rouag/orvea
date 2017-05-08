@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<menuitem id="hr_root_organisation" name="الهيكل الإداري"
+			sequence="10" parent="hr_root" />
+
+		<menuitem id="menu_department_report" name="التقارير"
+			sequence="50" parent="hr_root_organisation" />
+
+		<menuitem id="menu_department_configuration" name="الإعدادات"
+			sequence="100" parent="hr_root_organisation" />
+
+
+		<menuitem name="Contacts" id="mail.menu_contacts" sequence="50"
+			action="mail.action_contacts" web_icon="mail,static/description/icon2.png" parent="hr_configuration_general_root"
+			groups="base.group_user,base.group_partner_manager" />
+	</data>
+</openerp>

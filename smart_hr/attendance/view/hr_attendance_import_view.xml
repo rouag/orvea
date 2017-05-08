@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<record model="ir.ui.view" id="hr_attendance_import_form">
+			<field name="name">hr.attendance.import.tree</field>
+			<field name="model">hr.attendance.import</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="تحديث  سجل الحضور والإنصراف">
+					<field name="name" />
+					<field name="date" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+
+		<record model="ir.ui.view" id="hr_attendance_import_form_view">
+			<field name="name">hr.attendance.import.form</field>
+			<field name="model">hr.attendance.import</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="تحديث  سجل الحضور والإنصراف">
+					<header>
+						<button name="import_attendance" string="تحديث" type="object" states="new"
+						  class="oe_highlight" />
+						 <button name="close_day_file" string="إغلاق اليوم" type="object" states="done"
+						  class="oe_highlight" />
+						<field name="state" widget="statusbar" statusbar_visible="new,done" />
+					</header>
+					<sheet>
+						<group>
+							<group>
+								<field name="name" />
+								<field name="date" />
+								<field name="data" filename="data_name"/>
+								<field name="data_name" invisible='1'/>
+							</group>
+							<group />
+						</group>
+						<field name="description" placeholder="ملاحظات ..." colspan="4" />
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record id="action_hr_attendance_import" model="ir.actions.act_window">
+			<field name="name">تحديث سجل الحضور والإنصراف</field>
+			<field name="res_model">hr.attendance.import</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem action="action_hr_attendance_import" name="تحديث  سجل الحضور والإنصراف"
+			id="menu_hr_attendance_import" parent="menu_attendance_configuration" groups="smart_hr.group_attandance_update"
+			sequence="100" />
+
+
+
+
+
+
+	</data>
+</openerp>
+	

@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!-- فترة العلاوة -->
+
+
+
+		<record model="ir.ui.view" id="hr_periode_increase_tree">
+			<field name="name">hr.periode.increase.tree</field>
+			<field name="model">hr.periode.increase</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="فترة العلاوة">
+					<field name="name" />
+					<field name="period_id" />
+
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_periode_increase_form">
+			<field name="name">hr.periode.increase.form</field>
+			<field name="model">hr.periode.increase</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="فترة العلاوة">
+					<sheet>
+						<group>
+							<field name="name" />
+							<field name="period_id" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_periode_increase">
+			<field name="name"> فترة العلاوة</field>
+			<field name="res_model">hr.periode.increase</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="hr_periode_increase_menu_sou" name=" إعداد  فترة العلاوة"
+			sequence="51" parent="hr_root_workflows_setting" action="action_hr_periode_increase" />
+
+
+		<!-- العلاوة -->
+
+		<record model="ir.ui.view" id="hr_increase_tree">
+			<field name="name">hr.increase.tree</field>
+			<field name="model">hr.increase</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="العلاوة">
+
+					<field name="periode_increase" />
+					<field name="name" invisible="1" />
+					<field name="date" />
+					<field name="number_decision" />
+					<field name="date_decision" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_increase_form">
+			<field name="name">hr.increase.form</field>
+			<field name="model">hr.increase</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="العلاوة">
+					<header>
+						<button name="action_employee_increase_ids_lines" string="إدراج اللائحة "
+							attrs="{'invisible':['|',('is_increase_line', '=', True), ('state','!=', 'draft')]}"
+							type="object" groups="smart_hr.group_increase_employee" />
+
+						<button name="action_update_increase_line" string="تحديث اللائحة "
+							attrs="{'invisible':['|',('is_increase_line', '=', False), ('state','!=','draft')]}"
+							type="object" groups="smart_hr.group_increase_employee" />
+						<button name="action_update_increase__update_pim_line"
+							string="تحديث اللائحة " attrs="{'invisible':[('state','!=','pim')]}"
+							type="object" groups="smart_hr.group_increase_employee" />
+
+						<button name="action_update_increase__update_pim2_line"
+							string="تحديث اللائحة " attrs="{'invisible':[('state','!=','pim2')]}"
+							type="object" groups="smart_hr.group_increase_employee" />
+
+						<button name="action_pim" string="إرسال للإعتماد" type="object"
+							states="draft" groups="smart_hr.group_increase_employee" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_hrm" string="إعتماد" type="object"
+							states="pim" groups="smart_hr.group_increase_manager" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" states="pim" groups="smart_hr.group_increase_manager"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_pim2" string="إعتماد" type="object"
+							states="hrm" groups="smart_hr.group_hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="%(action_increase_refuse_hrm_wizard)d"
+							string="رفض" type="action" states="hrm" groups="smart_hr.group_hrm"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="action_done" string="إعتماد" type="object"
+							states="pim2" groups="smart_hr.group_increase_manager" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="%(action_increase_refuse_pim2_wizard)d"
+							string="رفض" type="action" states="pim2" groups="smart_hr.group_hrm"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="open_decission_increase" string="معاينة  قرار العلاوة"
+							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+						
+						<button name="%(report_report_hr_increase_employee)d"
+							string="قائمة المشمولين بالعلاوة" type="action" states="done" />
+
+						<button name="%(report_report_hr_increase_deprivation_employee)d"
+							string="قائمة المستثنين من العلاوة" type="action" states="done" />
+
+						<field name="state" widget="statusbar" statusbar_visible="draft,pim,hrm,pim2,done" />
+					</header>
+					<sheet>
+						<group>
+							<group>
+								<field name="name" invisible="1" />
+								<field name="date" />
+								<field name="periode_increase"
+									attrs="{'readonly': [('state', 'not in', ['draft'])]}" />
+								<field name="is_increase_line" invisible="1" />
+							</group>
+							<group>
+								<field name="number_decision"
+									attrs="{'invisible':[('state', 'not in', ['done'])],'readonly': [('state', 'in', ['done'])]}" />
+								<field name="date_decision"
+									attrs="{'invisible':[('state', 'not in', ['done'])],'readonly': [('state', 'in', ['done'])]}" />
+							</group>
+							<group />
+						</group>
+						<group col="4">
+							<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]"
+								attrs="{'readonly': [('state', 'in', ['pim','hrm','pim2','done'])]}" />
+							<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]"
+								attrs="{'readonly': [('state', 'in', ['pim','hrm','pim2','done'])]}" />
+							<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]"
+								attrs="{'readonly': [('state', 'in', ['pim','hrm','pim2','done'])]}" />
+							<field name="salary_grid_type_id" />
+						</group>
+						<notebook>
+							<page string="الموظفين المستثنين من العلاوة">
+								<field name="employee_deprivated_ids" nolabel="1"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+									domain="[('employee_id.type_id','!=',%(data_salary_grid_type6)d)]"
+									attrs="{'readonly':[('state','not in',['draft','pim'])]}"
+									create="false">
+									<tree editable="bottom" create="false" delete="false">
+										<field name="employee_id" />
+										<field name="name" />
+										<field name="order_date" />
+										<field name="reason" />
+
+									</tree>
+								</field>
+							</page>
+
+
+							<page string="الموظفين المستحقين للعلاوة">
+								<field name="employee_increase_ids" nolabel="1"
+									domain="[('employee_id.type_id','!=',%(data_salary_grid_type6)d)]"
+									create="false">
+									<tree editable="bottom" create="false" delete="false">
+										<field name="employee_id" />
+
+										<field name="type_id" />
+										<field name="grade_id" />
+										<field name="degree_id" />
+										<field name="new_degree_id" attrs="{'invisible':[('state','=', 'draft')]}" />
+										<field name="basic_salary" />
+
+										<field name="new_basic_salary" attrs="{'invisible':[('state','=', 'draft')]}" />
+										<field name="increase_percent" attrs="{'invisible':[('state','=', 'draft')]}" />
+										<field name="periode_increase" invisible="1" />
+										<field name="state" invisible="1" />
+									</tree>
+								</field>
+							</page>
+							<page string="الموظفين لديهم أخطاء"
+								attrs="{'invisible':[('state', 'not in', ['draft','pim'])]}">
+								<field name="employee_errors_ids" nolabel="1"
+									attrs="{'invisible':[('state', 'not in', ['draft','pim'])]}"
+									create="false">
+									<tree editable="bottom" create="false" delete="false">
+										<field name="employee_id" />
+										<field name="type_id" />
+										<field name="grade_id" />
+										<field name="degree_id" />
+										<field name="basic_salary" />
+
+
+									</tree>
+								</field>
+							</page>
+						</notebook>
+						<group>
+							<field name="note" />
+						</group>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"
+							groups="base.group_user" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+				</form>
+			</field>
+		</record>
+
+
+		<record model="ir.actions.act_window" id="action_hr_increase">
+			<field name="name">العلاوة</field>
+			<field name="res_model">hr.increase</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="hr_increase_menu" name="العلاوة" sequence="105"
+			groups="smart_hr.group_increase_employee,smart_hr.group_hrm" parent="hr_root_workflows"
+			action="action_hr_increase" />
+
+
+		<record model="ir.ui.view" id="hr_increase_percent_tree">
+			<field name="name">hr.employee.increase.percent.tree</field>
+			<field name="model">hr.employee.increase.percent</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree>
+					<field name="employee_id" />
+					<field name="increase_percent" />
+
+				</tree>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_increase_percent_form">
+			<field name="name">hr.employee.increase.percent.form</field>
+			<field name="model">hr.employee.increase.percent</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form>
+					<group>
+						<field name="employee_id"
+							options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+						<field name="increase_percent" />
+					</group>
+				</form>
+			</field>
+		</record>
+	</data>
+</openerp>
+

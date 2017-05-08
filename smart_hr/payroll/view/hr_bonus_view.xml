@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<!-- إسناد المزايا المالية -->
+
+		<record model="ir.ui.view" id="hr_bonus_tree">
+			<field name="name">hr.bonus.tree</field>
+			<field name="model">hr.bonus</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="إسناد المزايا المالية">
+					<field name="name" />
+					<field name="date" />
+					<field name="number_decision" />
+					<field name="date_decision" />
+					<field name="type" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_bonus_form">
+			<field name="name">hr.bonus.form</field>
+			<field name="model">hr.bonus</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="إسناد المزايا المالية">
+					<header>
+						<button name="action_waiting" string="إرسال للإعتماد" type="object"
+							states="new" />
+						<button name="action_done" string="إعتماد" type="object"
+							states="waiting" groups="smart_hr.group_bonus_management" />
+
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" states="waiting" groups="smart_hr.group_bonus_management" />
+						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
+					</header>
+					<sheet>
+						<group>
+							<group>
+								<separator colspan="2" string="بيانات البدل" />
+								<field name="name" />
+								<field name="date" />
+								<field name="type" />
+								<field name="allowance_id"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+									attrs="{'invisible':[('type','!=','allowance')], 'required': [('type','=','allowance')]}" />
+								<field name="reward_id"
+									attrs="{'invisible':[('type','!=','reward')], 'required': [('type','=','reward')]}" />
+								<field name="indemnity_id"
+									attrs="{'invisible':[('type','!=','indemnity')], 'required': [('type','=','indemnity')]}" />
+								<label for="period_from_id" />
+								<div>
+									<field name="period_from_id" class="oe_inline"
+										options='{"no_open": True, "no_create": True}' />
+									<label string="-" class="oe_inline" />
+									<field name="period_to_id" class="oe_inline"
+										options='{"no_open": True, "no_create": True}' />
+								</div>
+							</group>
+							
+							<group>
+								<separator colspan="2" string="الأثر المالي" />
+								<field name="compute_method" />
+								<field name="amount"
+									attrs="{'invisible':[('compute_method','!=','amount')], 'required': [('compute_method','=','amount')]}" />
+								<field name="percentage"
+									attrs="{'invisible':[('compute_method','not in',('percentage','formula_1','formula_2'))], 'required': [('compute_method','in',('percentage','formula_1','formula_2'))]}" />
+								<field name="min_amount" />
+								<field name="city_ids"
+									attrs="{'invisible':[('compute_method','!=','job_location')], 'required': [('compute_method','=','job_location')]}">
+									<tree editable="buttom">
+										<field name="city_id" />
+										<field name="percentage" />
+									</tree>
+								</field>
+								<separator colspan="2" string="بيانات القرار" />
+								<field name="number_decision" />
+								<field name="date_decision" />
+							</group>
+						</group>
+						
+						<group col="4" string="فلترة">
+									<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]" />
+									<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]" />
+									<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]" />
+									<field name="salary_grid_type_id" />
+								</group>
+						<notebook>
+								<page string="قائمة الموظفين" attrs="{'invisible':[('state','not in',['new'])]}">
+									<group>
+										<field name="employee_ids" nolabel="1" />
+									</group>
+								</page>
+						
+						
+						
+						
+							<page string="التفاصيل"
+						attrs="{'invisible':[('state','not in', ['waiting','done'])],'readonly':[('state', 'in', ['done'])]}">
+								<field name="line_ids" nolabel="1">
+									<tree editable="bottom" create="0" edit="0">
+										<field name="employee_id" />
+										<field name="number" invisible="1" />
+										<field name="job_id" invisible="1" />
+										<field name="department_id" />
+										<field name="compute_method" invisible="1" />
+										<field name="amount" invisible="1" />
+										<field name="percentage" invisible="1" />
+										<field name="state" invisible="1" />
+										<field name="bonus_state" invisible="1" />
+										<button name="%(smart_hr.action_wizard_bonus_action)d"
+											type="action" string="إيقاف" icon="STOCK_CANCEL"
+											attrs="{'invisible':['|',('bonus_state','!=','done'),('state','!=','progress')]}"
+											context="{'action':'stop'}" groups="smart_hr.group_bonus_management" />
+										<button name="%(smart_hr.action_wizard_bonus_action)d"
+											type="action" string="إعادة تفعيل" icon="gtk-apply"
+											attrs="{'invisible':['|',('bonus_state','!=','done'),('state','!=','stop')]}"
+											context="{'action':'start'}" groups="smart_hr.group_bonus_management" />
+									</tree>
+								</field>
+								<button name="%(smart_hr.action_wizard_bonus_employee)d"
+									type="action" string="إضافة موظفون" class="oe_link oe_edit_only"
+									attrs="{'invisible':[('state','!=','new')]}" />
+
+							</page>
+							<page string="سجل التغييرات" attrs="{'invisible':[('state','not in', ['waiting','done'])],'readonly':[('state', 'in', ['done'])]}">
+								<field name="history_ids" nolabel="1" readonly="1">
+									<tree editable="bottom">
+										<field name="action" />
+										<field name="create_date" string="التاريخ" />
+										<field name="create_uid" string="المستخدم" />
+										<field name="number_decision" />
+										<field name="date_decision" />
+										<field name="employee_id" />
+										<field name="reason" />
+									</tree>
+								</field>
+							</page>
+						</notebook>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"
+							groups="base.group_user" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_search_hr_bonus" model="ir.ui.view">
+			<field name="name">hr.bonus.search</field>
+			<field name="model">hr.bonus</field>
+			<field name="arch" type="xml">
+				<search string="إسناد المزايا المالية">
+					<field name="name" />
+					<field name="date" />
+					<field name="number_decision" />
+					<field name="date_decision" />
+					<field name="type" />
+					<separator />
+					<filter name="allowance" string="البدلات"
+						domain="[('type','=','draft', 'allowance')]" />
+					<filter name="reward" string="المكافآت"
+						domain="[('type','=','draft', 'reward')]" />
+					<filter name="indemnity" string="التعويضات"
+						domain="[('type','=','draft', 'indemnity')]" />
+						
+					<group expand="0" string="تجميع حسب">
+						<filter name="date" string="التاريخ" context="{'group_by':'date'}" />
+						<filter name="type" string="النوع" context="{'group_by':'type'}" />
+						<filter name="allowance" string="البدلات" context="{'group_by':'allowance'}" />
+						<filter name="reward" string="المكافآت" context="{'group_by':'reward'}" />
+						<filter name="indemnity" string="التعويضات" context="{'group_by':'indemnity'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_bonus">
+			<field name="name">إسناد المزايا المالية</field>
+			<field name="res_model">hr.bonus</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="hr_bonus_menu" name="إسناد المزايا المالية"
+			sequence="5" groups="group_bonus_management" parent="hr_bonus_root"
+			action="action_hr_bonus" />
+
+
+		<!-- البدلات -->
+		<record model="ir.ui.view" id="hr_bonus_allowance_tree">
+			<field name="name">hr.bonus.line.allowance.tree</field>
+			<field name="model">hr.bonus.line</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="البدلات" create='0' edit='0' duplicate='0'
+					delete='0'>
+					<field name="employee_id" />
+					<field name="number" />
+					<field name="department_id" />
+					<field name="allowance_id" />
+					<field name="compute_method" />
+					<field name="amount" />
+					<field name="percentage" />
+					<field name="period_from_id" />
+					<field name="period_to_id" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="hr_bonus_allowance_search" model="ir.ui.view">
+			<field name="name">hr.bonus.line.allowance.search</field>
+			<field name="model">hr.bonus.line</field>
+			<field name="arch" type="xml">
+				<search string="البدلات">
+					<field name="employee_id" />
+					<field name="number" />
+					<field name="allowance_id" />
+					<group expand="0" string="تجميع حسب">
+						<filter name="allowance_id" string="البدل"
+							context="{'group_by':'allowance_id'}" />
+						<filter name="employee_id" string="الموظف"
+							context="{'group_by':'employee_id'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_bonus_allowance">
+			<field name="name">البدلات</field>
+			<field name="res_model">hr.bonus.line</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree</field>
+			<field name="domain">[('type','=','allowance')]</field>
+			<field name="view_id" ref="hr_bonus_allowance_tree" />
+			<field name="search_view_id" ref="hr_bonus_allowance_search" />
+		</record>
+
+		<menuitem id="hr_bonus_allowance_menu" name="البدلات"
+			sequence="10" groups="group_bonus_management" parent="hr_bonus_root"
+			action="action_hr_bonus_allowance" />
+
+		<!-- المكافآت -->
+
+		<record model="ir.ui.view" id="hr_bonus_reward_tree">
+			<field name="name">hr.bonus.line.reward.tree</field>
+			<field name="model">hr.bonus.line</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="المكافآت" create='0' edit='0' duplicate='0'
+					delete='0'>
+					<field name="employee_id" />
+					<field name="number" />
+					<field name="department_id" />
+					<field name="reward_id" />
+					<field name="compute_method" />
+					<field name="amount" />
+					<field name="percentage" />
+					<field name="period_from_id" />
+					<field name="period_to_id" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="hr_bonus_reward_search" model="ir.ui.view">
+			<field name="name">hr.bonus.line.reward.search</field>
+			<field name="model">hr.bonus.line</field>
+			<field name="arch" type="xml">
+				<search string="المكافآت">
+					<field name="employee_id" />
+					<field name="number" />
+					<field name="reward_id" />
+					<group expand="0" string="تجميع حسب">
+						<filter name="reward_id" string="المكافأه" context="{'group_by':'reward_id'}" />
+						<filter name="employee_id" string="الموظف"
+							context="{'group_by':'employee_id'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_bonus_reward">
+			<field name="name">المكافآت</field>
+			<field name="res_model">hr.bonus.line</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree</field>
+			<field name="domain">[('type','=','reward')]</field>
+			<field name="view_id" ref="hr_bonus_reward_tree" />
+			<field name="search_view_id" ref="hr_bonus_reward_search" />
+		</record>
+
+		<menuitem id="hr_bonus_reward_menu" name="المكافآت" sequence="15"
+			groups="group_bonus_management" parent="hr_bonus_root" action="action_hr_bonus_reward" />
+
+		<!-- التعويضات -->
+
+		<record model="ir.ui.view" id="hr_bonus_indemnity_tree">
+			<field name="name">hr.bonus.line.indemnity.tree</field>
+			<field name="model">hr.bonus.line</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="التعويضات" create='0' edit='0' duplicate='0'
+					delete='0'>
+					<field name="employee_id" />
+					<field name="number" />
+					<field name="department_id" />
+					<field name="indemnity_id" />
+					<field name="compute_method" />
+					<field name="amount" />
+					<field name="percentage" />
+					<field name="period_from_id" />
+					<field name="period_to_id" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="hr_bonus_indemnity_search" model="ir.ui.view">
+			<field name="name">hr.bonus.line.indemnity.search</field>
+			<field name="model">hr.bonus.line</field>
+			<field name="arch" type="xml">
+				<search string="التعويضات">
+					<field name="employee_id" />
+					<field name="number" />
+					<field name="indemnity_id" />
+					<group expand="0" string="تجميع حسب">
+						<filter name="indemnity_id" string="التعويض"
+							context="{'group_by':'indemnity_id'}" />
+						<filter name="employee_id" string="الموظف"
+							context="{'group_by':'employee_id'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_bonus_indemnity">
+			<field name="name">التعويضات</field>
+			<field name="res_model">hr.bonus.line</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree</field>
+			<field name="domain">[('type','=','indemnity')]</field>
+			<field name="view_id" ref="hr_bonus_indemnity_tree" />
+			<field name="search_view_id" ref="hr_bonus_indemnity_search" />
+		</record>
+
+		<menuitem id="hr_bonus_indemnity_menu" name="التعويضات"
+			sequence="20" groups="group_bonus_management" parent="hr_bonus_root"
+			action="action_hr_bonus_indemnity" />
+	</data>
+</openerp>
+			

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_normal_resume_holidays">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.landscape_layout">
+						<div class="page">
+							<div class="oe_structure" />
+							<br></br>
+							<br></br>
+
+							<div class="col-xs-12 text-center">
+								<h3 style="color:#395870;">
+									<strong>
+										حصر الاجازات العادية لموظف
+									</strong>
+									<br />
+									<br />
+								</h3>
+							</div>
+
+
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th>اسم الموظف</th>
+										<th> الوظيفة</th>
+										<th> المرتبة</th>
+										<th> الرقم</th>
+										<th> القسم</th>
+										<th> الجهة</th>
+										<th> المدينة</th>
+
+									</tr>
+								</thead>
+								<tbody>
+									<t t-set="employee_id" t-value="get_employee(data['form'])" />
+									<tr>
+
+										<td>
+											<span t-esc="employee_id.display_name" />
+										</td>
+										<td>
+											<span t-esc="employee_id.job_id.name.name" />
+										</td>
+										<td>
+											<span t-esc="employee_id.job_id.grade_id.name" />
+										</td>
+										<td>
+											<span t-esc="employee_id.job_id.number" />
+										</td>
+										<td>
+											<span t-esc="employee_id.department_id.name" />
+										</td>
+										<td>
+											<span t-esc="employee_id.dep_side.name" />
+										</td>
+										<td>
+											<span t-esc="employee_id.dep_city.name" />
+										</td>
+
+
+									</tr>
+								</tbody>
+
+							</table>
+
+							<div class="col-xs-12 text-center">
+								<strong>الاجازات التي تمتع بها </strong>
+								<p>
+									من
+									<u>
+										<span t-esc="get_hijri_date(o.date_from, '-')" />
+									</u>
+									الى
+									<u>
+										<span t-esc="get_hijri_date(o.date_to, '-')" />
+									</u>
+
+								</p>
+
+
+								<br />
+								<br />
+							</div>
+
+
+							<table class="table table-bordered">
+								<!-- head table -->
+								<thead>
+									<tr>
+										<th> مدة الاجازة</th>
+										<th> تاريخ بدئها</th>
+										<th> تاريخ انتهائها</th>
+										<th> رقم القرار</th>
+										<th> تاريخ القرار</th>
+
+									</tr>
+								</thead>
+								<tbody>
+									<tr t-foreach="get_normal_holiday(data['form'])" t-as="line">
+
+										<td>
+											<span t-esc="line.duration" />
+										</td>
+									<td>
+											<span t-esc="get_hijri_date(line.date_from, '-')" />
+										</td>
+										<td>
+											<span t-esc="get_hijri_date(line.date_to, '-')" />
+										</td>
+										<td>
+											<span t-esc="line.name" />
+										</td>
+										<td>
+											<span t-esc="get_hijri_date(line.date, '-')" />
+										</td>
+									</tr>
+
+								</tbody>
+
+							</table>
+							<p>
+								المجموع:
+								<span t-esc="get_sum_holiday(data['form'])"></span>
+								يوم
+							</p>
+										<p>
+								الرصيد المتبقي:
+								<span t-esc="get_current_stock(data['form'])"></span>
+								يوم
+							</p>
+						</div>
+					</t>
+
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+								

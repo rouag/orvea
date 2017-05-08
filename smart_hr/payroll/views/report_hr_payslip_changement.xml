@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_hr_payslip_changement">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.landscape_layout">
+						<div class="page">
+							<t t-set="lines" t-value="get_lines(o.slip_ids, o.period_id)" />
+							<div class="col-xs-12 text-center">
+								<h3>
+									<strong>
+										تقرير حصر الموظفين الذين طرأ تغيير في مسيرهم
+									</strong>
+								</h3>
+								<br></br>
+								<strong>لشهر: </strong>
+									<span t-field="o.period_id.name" />
+								<span></span>
+								<br></br>
+								<br></br>
+							</div>
+							<div class="col-xs-6">
+								<strong>الفرع: </strong>
+								<t t-esc="o.department_level1_id.name" />
+							</div>
+
+							<div class="col-xs-6">
+								<strong>الشعبة: </strong>
+								<t t-esc="o.department_level3_id.name" />
+								<br></br>
+								<br></br>
+							</div>
+
+							<div class="col-xs-6">
+								<strong>القسم: </strong>
+								<t t-esc="o.department_level2_id.name" />
+							</div>
+
+							<div class="col-xs-6">
+								<strong>الصنف: </strong>
+								<t t-esc="o.salary_grid_type_id.name" />
+								<br></br>
+								<br></br>
+							</div>
+
+							<table class="table  table-bordered">
+								<thead>
+									<tr>
+										<th>الموظف</th>
+										<th>الرقم الوظيفي</th>
+										<th>الإدارة</th>
+										<th>صافي الراتب</th>
+										<th>صافي الراتب في المسير</th>
+										<th>الفرق</th>
+										<th>السبب</th>
+									</tr>
+								</thead>
+								<tbody>
+									<t t-set='tot_emp_net_salary' t-value='0' />
+									<t t-set='tot_slip_net_salary' t-value='0' />
+									<t t-set='tot_diff' t-value='0' />
+									<tr t-foreach="lines" t-as="line">
+										<td t-esc="line['employee_name']" />
+										<td t-esc="line['number']" />
+										<td t-esc="line['department_name']" />
+										<td t-esc="get_float(line['employee_net_salary'])" />
+										<td t-esc="get_float(line['payslip_net_salary'])" />
+										<td t-esc="get_float(line['diff'])" />
+										<td>
+											<t t-foreach="line['payslip_lines']" t-as="pline">
+												<t t-esc='pline.name' />
+												 :
+												<t t-esc='get_float(pline.amount)' />
+												<br></br>
+											</t>
+										</td>
+										<t t-set='tot_emp_net_salary' t-value="tot_emp_net_salary + line['employee_net_salary']" />
+										<t t-set='tot_slip_net_salary' t-value="tot_slip_net_salary + line['payslip_net_salary']" />
+										<t t-set='tot_diff' t-value="tot_diff + line['diff']" />
+									</tr>
+									<tr>
+										<td colspan="3">المجموع</td>
+										<td t-esc="get_float(tot_emp_net_salary)"/>
+										<td t-esc="get_float(tot_slip_net_salary)"/>
+										<td t-esc="get_float(tot_diff)"/>
+										<td></td>
+									</tr>
+								</tbody>
+							</table>
+
+						</div>
+					</t>
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+							

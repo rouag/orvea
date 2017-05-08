@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_hr_overtime1,hr_overtime,model_hr_overtime,group_overtime_exelence_employee,1,1,1,1
+access_hr_overtime2,hr_overtime,model_hr_overtime,group_overtime_department,1,1,1,1
+access_hr_overtime3,hr_overtime,model_hr_overtime,group_overtime_hr,1,1,1,1
+access_hr_overtime4,hr_overtime,model_hr_overtime,group_employee,0,0,0,0
+access_hr_overtime_ligne1,hr_overtime_ligne,model_hr_overtime_ligne,group_overtime_exelence_employee,1,1,1,1
+access_hr_overtime_ligne2,hr_overtime_ligne,model_hr_overtime_ligne,group_overtime_department,1,1,1,1
+access_hr_overtime_ligne3,hr_overtime_ligne,model_hr_overtime_ligne,group_overtime_hr,1,1,1,1
+access_hr_overtime_ligne4,hr_overtime_ligne,model_hr_overtime_ligne,group_employee,0,0,0,0
+access_hr_overtime_setting,access_hr_overtime_setting,model_hr_overtime_setting,,1,0,0,0
+access_hr_overtime_setting_hrm,access_hr_overtime_setting_hrm,model_hr_overtime_setting,smart_hr.group_hrm,1,1,1,1

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_overtime">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.external_layout_extend">
+						<div class="page">
+							<div class="oe_structure" />
+							<p>الموارد البشرية/ البدلات و المكافآت</p>
+							<p></p>
+							<p></p>
+							<p style="text-align: center;">خارج دوام(أيام عادية )</p>
+							<p></p>
+							<p></p>
+							<p style="text-align: center;">
+								<strong>
+									قرار إداري رقم
+
+								</strong>
+							</p>
+
+							<p></p>
+
+							<p>
+								<strong> إن صاحب الصلاحية  </strong>
+							</p>
+							<p>بناء على صلاحيات الممنوحة له</p>
+
+							<p style="text-align: center;">
+								<strong>يقرر ما يلي</strong>
+							</p>
+							<p>و بناءا على مقتضى مصلحة العمل و على ما وقع لنا من .....بتكليف
+								منسوبي
+							</p>
+
+							<p>الموضحة أسماؤهم بالبيان المرفق بالعمل </p>
+							<p>خارج وقت الدوام الرسمي للأيام العادية و ذلك لانجاز الاعمال
+								التي لا يمكن انجازها اثناء الدوام الرسمي و حيث أن
+							</p>
+							<p> التكليف ليس نتيجة قصور أو إهمال. </p>
+							<p>و استنادا إلي المادة رقم (٢٦)من نظام الخدمة المدنية و المواد
+								رقم(٣١-٣٢-٣٣-٣٦) من لائحة الحقوق و المزايا الماليه المقرة بالامر
+								الملكي رقم(أ/٢٨) و تاريخ
+							</p>
+							٢٠ /٣/ ١٤٣٢
+							<p>١:تكليف الموضح اسماؤهم بالبيان /
+							</p>
+							<p>
+								-
+								<t t-foreach="o.line_ids" t-as="line">
+									<span t-field="line.employee_id.name" />
+									بالعمل خارج وقت الدوام الرسمي خلال الفترة من
+									<span t-field="line.date_from" />
+									.و حتى.
+
+									<span t-field="line.date_to" />
+
+									<br></br>
+								</t>
+							</p>
+
+							<p> ٢:صرف استحقاق الموضح اسماؤهم بالبيان المرفق بعد انهاء المهمة
+							</p>
+							<p> ٣:وبلغ هذا القرار لمن يلزم لإنفاذه</p>
+						</div>
+
+					</t>
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+								
+							
+								

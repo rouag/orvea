@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data noupdate="1">
+
+
+		<!-- appoint Types -->
+		<record id="data_hr_new_agent_public" model="hr.type.appoint">
+			<field name="name"> تعيين موظف جديد
+			</field>
+			<field name="audit" eval="False" />
+			<field name="recrutment_manager" eval="True" />
+			<field name="enterview_manager" eval="True" />
+			<field name="personnel_hr" eval="True" />
+			<field name="direct_manager" eval="False" />
+			<field name="recrutment_decider" eval="True" />
+			<field name="direct_appoint_period" eval="15" />
+		</record>
+
+		<record id="data_hr_recrute_agent_public" model="hr.type.appoint">
+			<field name="name">تعيين موظف رسمي</field>
+			<field name="audit" eval="True" />
+			<field name="recrutment_manager" eval="True" />
+			<field name="enterview_manager" eval="False" />
+			<field name="personnel_hr" eval="True" />
+			<field name="direct_manager" eval="True" />
+			<field name="recrutment_decider" eval="False" />
+			<field name="direct_appoint_period" eval="15" />
+		</record>
+
+		<record id="data_hr_promotion_agent" model="hr.type.appoint">
+			<field name="name">تعيين بالترقية</field>
+			<field name="audit" eval="True" />
+			<field name="recrutment_manager" eval="True" />
+			<field name="enterview_manager" eval="False" />
+			<field name="personnel_hr" eval="True" />
+			<field name="direct_manager" eval="True" />
+			<field name="recrutment_decider" eval="False" />
+			<field name="show_in_apoint" eval="False" />
+		</record>
+
+		<record id="data_hr_recrute_agent_utilisateur" model="hr.type.appoint">
+			<field name="name"> تعيين الموظفين المستخدمين</field>
+			<field name="audit" eval="False" />
+			<field name="recrutment_manager" eval="True" />
+			<field name="enterview_manager" eval="False" />
+			<field name="personnel_hr" eval="True" />
+			<field name="direct_manager" eval="True" />
+			<field name="recrutment_decider" eval="False" />
+			<field name="direct_appoint_period" eval="15" />
+		</record>
+
+		<record id="data_hr_recrute_salaire_article" model="hr.type.appoint">
+			<field name="name"> تعيين عمال بند الأجور</field>
+			<field name="audit" eval="False" />
+			<field name="recrutment_manager" eval="True" />
+			<field name="enterview_manager" eval="False" />
+			<field name="personnel_hr" eval="True" />
+			<field name="direct_manager" eval="True" />
+			<field name="recrutment_decider" eval="False" />
+			<field name="direct_appoint_period" eval="15" />
+		</record>
+		<record id="data_hr_recrute_contrat" model="hr.type.appoint">
+			<field name="name">تعيين بعقد</field>
+			<field name="audit" eval="False" />
+			<field name="recrutment_manager" eval="False" />
+			<field name="enterview_manager" eval="False" />
+			<field name="personnel_hr" eval="True" />
+			<field name="direct_manager" eval="False" />
+			<field name="recrutment_decider" eval="False" />
+			<field name="direct_appoint_period" eval="30" />
+
+
+		</record>
+		<record id="data_hr_recrute_public_nosoudi" model="hr.type.appoint">
+			<field name="name"> تعيين غير سعودي على مرتبة رسمية</field>
+			<field name="audit" eval="False" />
+			<field name="recrutment_manager" eval="True" />
+			<field name="enterview_manager" eval="False" />
+			<field name="personnel_hr" eval="True" />
+			<field name="direct_manager" eval="False" />
+			<field name="recrutment_decider" eval="False" />
+			<field name="direct_appoint_period" eval="15" />
+
+
+		</record>
+
+		<record id="data_hr_recrute_public_retraite" model="hr.type.appoint">
+			<field name="name">تعيين المحالين على التقاعد</field>
+			<field name="audit" eval="False" />
+			<field name="recrutment_manager" eval="True" />
+			<field name="enterview_manager" eval="False" />
+			<field name="personnel_hr" eval="True" />
+			<field name="direct_manager" eval="True" />
+			<field name="recrutment_decider" eval="False" />
+			<field name="ministry_civil" eval="True" />
+			<field name="direct_appoint_period" eval="15" />
+		</record>
+
+		<record id="data_hr_recrute_Members" model="hr.type.appoint">
+			<field name="name">تعين أعضاء</field>
+			<field name="code">MR01</field>
+			<field name="audit" eval="True" />
+			<field name="recrutment_manager" eval="True" />
+			<field name="enterview_manager" eval="True" />
+			<field name="personnel_hr" eval="True" />
+			<field name="direct_manager" eval="False" />
+			<field name="recrutment_decider" eval="True" />
+			<field name="direct_appoint_period" eval="15" />
+			<field name="for_members" eval="True" />
+		</record>
+
+		<record id="data_hr_recrute_from_transfert" model="hr.type.appoint">
+			<field name="name">تعين النقل</field>
+			<field name="code">TR01</field>
+			<field name="show_in_apoint" eval="False" />
+		</record>
+
+		<record id="data_hr_promotion_member" model="hr.type.appoint">
+			<field name="name">تعيين عضو بالترقية</field>
+			<field name="audit" eval="True" />
+			<field name="recrutment_manager" eval="True" />
+			<field name="enterview_manager" eval="False" />
+			<field name="personnel_hr" eval="True" />
+			<field name="direct_manager" eval="True" />
+			<field name="recrutment_decider" eval="False" />
+			<field name="for_members" eval="True" />
+			<field name="show_in_apoint" eval="False" />
+		</record>
+		
+			<record id="data_hr_improve_situation_type" model="hr.type.appoint">
+			<field name="name">تحسين وضع</field>
+			<field name="audit" eval="True" />
+			<field name="recrutment_manager" eval="True" />
+			<field name="enterview_manager" eval="False" />
+			<field name="personnel_hr" eval="True" />
+			<field name="direct_manager" eval="True" />
+			<field name="recrutment_decider" eval="False" />
+			<field name="for_members" eval="False" />
+			<field name="show_in_apoint" eval="False" />
+		</record>
+		
+		<record id="data_hr_allowance_appoint" model="hr.allowance.appoint">
+			<field name="hr_allowance_type_id" ref="smart_hr.hr_allowance_type_06" />
+			<field name="salary_number" eval="3" />
+			<field name="appoint_type_id" ref="smart_hr.data_hr_recrute_Members" />
+		</record>
+		
+		
+	</data>
+</openerp>
+		

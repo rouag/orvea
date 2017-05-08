@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<!-- أنواع الحسميات -->
+
+		<record id="view_search_hr_deduction_type" model="ir.ui.view">
+			<field name="name">hr.deduction.type.search</field>
+			<field name="model">hr.deduction.type</field>
+			<field name="arch" type="xml">
+				<search string="أنواع الحسميات">
+					<field name="code" />
+					<field name="name" />
+				</search>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_deduction_type_tree">
+			<field name="name">hr.deduction.type.tree</field>
+			<field name="model">hr.deduction.type</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="أنواع الحسميات">
+					<field name="code" />
+					<field name="name" />
+					<field name="type" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_deduction_type_form">
+			<field name="name">hr.deduction.type.form</field>
+			<field name="model">hr.deduction.type</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="أنواع الحسميات">
+					<sheet>
+						<group>
+							<field name="code" />
+							<field name="name" />
+							<field name="type" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_deduction_type">
+			<field name="name">أنواع الحسميات</field>
+			<field name="res_model">hr.deduction.type</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="hr_deduction_type_menu" name="أنواع الحسميات"
+			sequence="40" parent="hr_payroll_setting" action="action_hr_deduction_type" />
+
+
+	</data>
+</openerp>
+			

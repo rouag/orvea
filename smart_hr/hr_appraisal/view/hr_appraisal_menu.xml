@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+
+<!-- appraisal -->
+<delete id="hr_appraisal.menu_hr_appraisal_root" model="ir.ui.menu"/>
+<delete id="hr_appraisal.menu_hr_appraisal_configuration" model="ir.ui.menu"/>
+<delete id="hr_appraisal.menu_open_view_hr_appraisal_tree" model="ir.ui.menu"/>
+
+	
+    	<menuitem name="التقييم الدوري" id="menu_hr_appraisal_configuration" sequence="4" parent="hr_root_evaluation"/>
+    	<menuitem name="التقييم" parent="hr_root_evaluation" id="menu_open_view_hr_appraisal_tree"
+        action="hr_appraisal.open_view_hr_appraisal_tree" groups="base.group_user"/>
+		
+		
+<!-- survey -->
+<delete id="survey.menu_surveys" model="ir.ui.menu"/>
+
+
+
+   <!-- survey MENU ELEMENTS -->
+
+        <!-- Left menu categories-->
+        <menuitem name="إعدادات التقييم" id="menu_surveys_hr" sequence="70"  parent="hr_root_evaluation"  groups="base.group_survey_user"  web_icon="survey,static/description/icon.png"/>
+
+        <!-- Left menu elements: Survey -->
+        <menuitem name="إعدادات اسئلة التقييم " id="menu_survey_form_hr" action="survey.action_survey_form" parent="menu_surveys_hr" sequence="1"/>
+       
+	
+
+
+
+	</data>
+</openerp>

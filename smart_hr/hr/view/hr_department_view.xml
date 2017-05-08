@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+
+		<!-- Department filter -->
+		<record id="view_department_filter_inherit" model="ir.ui.view">
+			<field name="name">Departments</field>
+			<field name="model">hr.department</field>
+			<field name="inherit_id" ref="hr.view_department_filter" />
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='name']" position="after">
+					<field name="dep_type" />
+				</xpath>
+			</field>
+		</record>
+		<!-- Department Hierarchy -->
+
+		<record id="hr_department_tree_view_level" model="ir.ui.view">
+			<field name="name">hr.department.tree.view</field>
+			<field name="model">hr.department</field>
+			<field name="field_parent">child_ids</field>
+			<field name="arch" type="xml">
+				<tree string="الهيكل الإدارى" class="oe_tree_view">
+					<field name="name" />
+					<field name="manager_id" />
+					<field name="parent_id" invisible="1" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="action_hr_department_level_tree" model="ir.actions.act_window">
+			<field name="name">الهيكل الإدارى</field>
+			<field name="res_model">hr.department</field>
+			<field name="view_type">tree</field>
+			<field name="view_mode">tree</field>
+			<field name="domain">[('parent_id','=',False)]</field>
+			<field name="view_id" ref="hr_department_tree_view_level" />
+		</record>
+
+		<menuitem id="hr_department_level_menu" name="الهيكل الشجري"
+			sequence="5" parent="hr_root_organisation" action="action_hr_department_level_tree" />
+
+
+
+		<!-- hr.department form -->
+
+		<record id="view_department_form_smart_inherit" model="ir.ui.view">
+			<field name="name">hr.department.form</field>
+			<field name="model">hr.department</field>
+			<field name="inherit_id" ref="hr.view_department_form" />
+			<field name="arch" type="xml">
+				<form position="replace">
+					<form string="department">
+						<sheet>
+							<group>
+								<group>
+									<field name="name" />
+									<field name="code" />
+									<field name="dep_type"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									<field name="manager_id"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								</group>
+								<group>
+									<field name="parent_id"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									<field name="company_id"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
+										groups="base.group_multi_company" />
+									<field name="dep_side"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+									<field name="dep_city"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								</group>
+							<field name="branch_id" invisible="1"/>
+							</group>
+						</sheet>
+						<div class="oe_chatter">
+							<field name="message_follower_ids" widget="mail_followers"
+								groups="base.group_user" />
+							<field name="message_ids" widget="mail_thread" />
+						</div>
+					</form>
+				</form>
+			</field>
+		</record>
+
+		<record id="hr_department_view_kanban_smart_inherit" model="ir.ui.view">
+			<field name="name">hr.department.kanban.inherit</field>
+			<field name="model">hr.department</field>
+			<field name="inherit_id" ref="hr.hr_department_view_kanban" />
+			<field name="arch" type="xml">
+				<data>
+					<div class="o_primary" position="replace">
+						<div class="o_primary">
+							<div>
+								<field name="name" />
+								<t t-if="parent_id!='False'">
+									~
+									<field name="parent_id" />
+								</t>
+
+							</div>
+						</div>
+					</div>
+					<div class="o_secondary" position="inside">
+						<group>
+							<group>
+								<li>
+									المسؤول:
+									<field name="manager_id"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+
+								</li>
+								<li>
+									المدينة:
+									<field name="dep_city"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+
+								</li>
+								<li>
+									الجهة:
+									<field name="dep_side"
+										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								</li>
+
+							</group>
+						</group>
+					</div>
+					<div class="col-xs-6 o_kanban_primary_right" position="inside">
+						<button class="btn btn-primary" name="button_child_ids"
+							style="margin-right:2px;" type="object">الإدارات</button>
+					</div>
+				</data>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_department_kanban">
+			<field name="name">الإدارات</field>
+			<field name="res_model">hr.department</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">kanban,form,tree</field>
+		</record>
+
+		<menuitem id="hr_department_kanban_menu" name="الإدارات"
+			groups="smart_hr.group_hrm" sequence="10" action="action_hr_department_kanban"
+			parent="hr_root_organisation" />
+
+
+		<record id="view_side_form" model="ir.ui.view">
+			<field name="name">city.side.form</field>
+			<field name="model">city.side</field>
+			<field name="arch" type="xml">
+				<form string="الجهات الجغرافية">
+					<sheet>
+						<group>
+							<field name="name" />
+							<field name="code" />
+							<field name="allowance_ids" widget="many2many_tags"
+								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_side_tree" model="ir.ui.view">
+			<field name="name">city.side.tree</field>
+			<field name="model">city.side</field>
+			<field name="arch" type="xml">
+				<tree string="الجهات الجغرافية">
+					<field name="name" />
+					<field name="code" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_side">
+			<field name="name">الجهات الجغرافية</field>
+			<field name="res_model">city.side</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="hr_configuration_side" name="الجهات الجغرافية"
+			sequence="34" parent="hr_configuration_general_root" action="action_side" />
+	</data>
+</openerp>

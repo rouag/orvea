@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<!--External layout -->
+
+		<template id="external_layout_extend">
+			<t t-if="not o and doc">
+				<t t-set="o" t-value="doc" />
+			</t>
+			<t t-if="o and 'company_id' in o">
+				<t t-set="company" t-value="o.company_id"></t>
+			</t>
+			<t t-if="not o or not 'company_id' in o">
+				<t t-set="company" t-value="res_company"></t>
+			</t>
+			<t t-call="smart_base.external_layout_header_extend" />
+			<t t-raw="0" />
+			<t t-call="smart_base.external_layout_footer_extend" />
+		</template>
+
+		<template id="external_layout_header_extend">
+			<div class="header">
+				<div class="row">
+					<img t-if="company.report_header" t-att-src="'data:image/png;base64,%s' % company.report_header"
+						width="100%" />
+				</div>
+			</div>
+		</template>
+
+		<template id="external_layout_footer_extend">
+			<div class="footer">
+				<div class="row">
+					<img t-if="company.report_footer" t-att-src="'data:image/png;base64,%s' % company.report_footer"
+						width="100%" />
+				</div>
+			</div>
+		</template>
+
+		<!--Landscape layout -->
+
+		<template id="landscape_layout">
+			<t t-if="not o and doc">
+				<t t-set="o" t-value="doc" />
+			</t>
+			<t t-if="o and 'company_id' in o">
+				<t t-set="company" t-value="o.company_id"></t>
+			</t>
+			<t t-if="not o or not 'company_id' in o">
+				<t t-set="company" t-value="res_company"></t>
+			</t>
+			<t t-call="smart_base.landscape_layout_header" />
+			<t t-raw="0" />
+			<t t-call="smart_base.landscape_layout_footer" />
+			
+			
+		</template>
+
+		<template id="landscape_layout_header">
+			<div class="header">
+				<div class="col-xs-3">
+					<img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo"
+						width="100%" style="max-height:85px !important;" />
+				</div>
+				<div class="col-xs-7 text-center">
+					<span t-esc="company.name" />
+				</div>
+				<div class="col-xs-2">
+				
+				<span	t-esc="get_hijri_date(context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M'), '-')" />
+							
+				
+				
+				</div>
+			</div>
+		</template>
+
+		<template id="landscape_layout_footer">
+			<div class="footer">
+				<div class="row">
+					<img t-if="company.report_footer" t-att-src="'data:image/png;base64,%s' % company.report_footer"
+						width="100%" />
+					<ul class="list-inline text-center">
+						<li>الصفحة:</li>
+						<li>
+							<span class="page" />
+						</li>
+						<li>/</li>
+						<li>
+							<span class="topage" />
+						</li>
+					</ul>
+				</div>
+			</div>
+		</template>
+		
+			
+
+		<!-- layout Speech -->
+
+		<template id="layout_speech">
+			<t t-if="not o and doc">
+				<t t-set="o" t-value="doc" />
+			</t>
+			<t t-if="o and 'company_id' in o">
+				<t t-set="company" t-value="o.company_id"></t>
+			</t>
+			<t t-if="not o or not 'company_id' in o">
+				<t t-set="company" t-value="res_company"></t>
+			</t>
+			<t t-call="smart_base.layout_header_speech" />
+			<t t-raw="0" />
+			<t t-call="smart_base.layout_footer_speech" />
+		</template>
+
+		<template id="layout_header_speech">
+			<div class="header">
+				<div class="row">
+					<img t-if="company.report_header_speech" t-att-src="'data:image/png;base64,%s' % company.report_header_speech"
+						width="100%" />
+				</div>
+			</div>
+		</template>
+
+		<template id="layout_footer_speech">
+			<div class="footer">
+				<div class="row">
+					<img t-if="company.report_footer_speech"
+						t-att-src="'data:image/png;base64,%s' % company.report_footer_speech"
+						width="100%" />
+				</div>
+			</div>
+		</template>
+
+	</data>
+</openerp>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data noupdate="1">
+
+		<!-- hr.deputation.setting -->
+		<record id="data_hr_deputation_setting" model="hr.deputation.setting">
+			<field name="name">إعدادات الانتداب</field>
+			<field name="period_decision" eval="30" />
+		</record>
+
+
+
+		<record id="data_hr_transport_setting" model="hr.transport.decision.type">
+			<field name="name">ابتعاث</field>
+			<field name="code" eval="1" />
+		</record>
+		<record id="data_hr_transport_setting2" model="hr.transport.decision.type">
+			<field name="name">إنتداب</field>
+			<field name="code" eval="2" />
+		</record>
+		<record id="data_hr_transport_setting3" model="hr.transport.decision.type">
+			<field name="name">نقل</field>
+			<field name="code" eval="3" />
+		</record>
+		<record id="data_hr_transport_setting4" model="hr.transport.decision.type">
+			<field name="name">علاج</field>
+			<field name="code" eval="4" />
+		</record>
+
+		<record id="data_hr_transport_setting5" model="hr.transport.decision.type">
+			<field name="name">أخرى</field>
+			<field name="code" eval="5" />
+		</record>
+
+		<record id="data_hr_deputation_type1" model="hr.deputation.type">
+			<field name="name">عادي</field>
+			<field name="code" eval="1" />
+			<field name="external_balance" eval="30" />
+		</record>
+		
+		<record id="data_hr_deputation_type2" model="hr.deputation.type">
+			<field name="name">تمثيل المملكة في اجتماعات مجالس او منظمات دولية او اقليمية او عربية</field>
+			<field name="code" eval="2" />
+			<field name="external_balance" eval="120" />
+		</record>
+		
+		<record id="data_hr_deputation_type3" model="hr.deputation.type">
+			<field name="name">سفر الى المنطقة الغربية</field>
+			<field name="code" eval="3" />
+			<field name="external_balance" eval="120" />
+		</record>
+		
+		<record id="data_hr_deputation_type4" model="hr.deputation.type">
+			<field name="name">موظفو الجهات الحكومية العاملين في الجهاز الفني و
+				الاشرافي على المشروعات الحكومية التنموية و الخدمية</field>
+			<field name="code" eval="4" />
+			<field name="external_balance" eval="120" />
+		</record>
+	</data>
+</openerp>
+		

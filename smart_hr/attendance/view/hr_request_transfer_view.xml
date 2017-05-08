@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<!-- طلبات تحويل ساعات التأخير -->
+
+		<record model="ir.ui.view" id="hr_request_transfer_delay_hours_tree">
+			<field name="name">hr.request.transfer.delay.hours.tree</field>
+			<field name="model">hr.request.transfer.delay.hours</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="طلبات تحويل ساعات التأخير">
+					<field name="name" />
+					<field name="date" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_employee_delay_hour_form">
+			<field name="name">hr.employee.delay.hour.form</field>
+			<field name="model">hr.employee.delay.hours</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string=" تحويل ساعات التأخير">
+					<group>
+						<field name="employee_id" />
+						<field name="number_request" />
+						<field name="balance" />
+					</group>
+				</form>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_request_transfer_delay_hours_form">
+			<field name="name">hr.request.transfer.delay.hours.form</field>
+			<field name="model">hr.request.transfer.delay.hours</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="طلبات تحويل ساعات التأخير">
+					<header>
+						<button name="action_audit" string="إرسال للإعتماد" type="object"
+							states="dm" groups="smart_hr.group_dm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_hrm" string="إعتماد" type="object"
+							states="audit" groups="smart_hr.group_delay_hours_checker"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_done" string="إعتماد" type="object"
+							states="hrm" groups="smart_hr.group_hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" states="audit,hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="button_request_transfer_delay_hours" string="معاينة القرار"
+							groups="smart_hr.group_hrm" type="object" states="done" icon="fa-print"
+							class="oe_inline oe_stat_button" />
+
+						<button name="%(delay_employees_list_report)d" string="طباعة البيان"
+							groups="smart_hr.group_hrm" type="action" states="done" icon="fa-print"
+							class="oe_inline oe_stat_button" />
+
+						<field name="state" widget="statusbar" statusbar_visible="dm,audit,hrm,done,refuse" />
+					</header>
+					<sheet>
+						<h3>
+							<field name="name" invisible="1" />
+						</h3>
+						<group>
+							<field name="date" />
+						</group>
+						<group col="4" string="فلترة">
+							<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]"
+								options="{'no_create': True}" />
+							<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]"
+								options="{'no_create': True}" />
+							<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]"
+								options="{'no_create': True}" />
+							<field name="salary_grid_type_id" options="{'no_create': True}" />
+						</group>
+
+						<field name="employee_ids">
+							<tree editable="bottom">
+								<field name="employee_id" options="{'no_create': True}" />
+								<field name="balance" />
+								<field name="number_request" />
+							</tree>
+						</field>
+						<group>
+							<group string="بيانات الخطاب">
+								<field name="speech_source"
+									attrs="{'invisible':[('state','not in',['hrm','done'])], 'required':[('state','=','hrm')], 'readonly':[('state','=','done')]}" />
+								<field name="num_speech"
+									attrs="{'invisible':[('state','not in',['hrm','done'])], 'required':[('state','=','hrm')], 'readonly':[('state','=','done')]}" />
+								<field name="date_speech"
+									attrs="{'invisible':[('state','not in',['hrm','done'])], 'required':[('state','=','hrm')], 'readonly':[('state','=','done')]}" />
+								<field name="speech_file_name" invisible="1" />
+								<field name="speech_file" filename="speech_file_name"
+									attrs="{'invisible':[('state','not in',['hrm','done'])], 'required':[('state','=','hrm')], 'readonly':[('state','=','done')]}" />
+							</group>
+						</group>
+
+						<group>
+
+							<field name="description" placeholder="ملاحظات ..."
+								colspan="4" />
+						</group>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"
+							groups="base.group_user" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record id="hr_request_transfer_delay_hours_search" model="ir.ui.view">
+			<field name="name">hr.request.transfer.delay.hours.search</field>
+			<field name="model">hr.request.transfer.delay.hours</field>
+			<field name="arch" type="xml">
+				<search string="طلبات تحويل ساعات التأخير">
+					<field name="name" />
+					<field name="date" />
+					<group expand="0" string="تجميع حسب...">
+						<filter name="date" string="التاريخ" context="{'group_by':'date'}" />
+						<filter name="state" string="الحالة" context="{'group_by':'state'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_request_transfer_delay_hours">
+			<field name="name">طلبات تحويل ساعات التأخير</field>
+			<field name="res_model">hr.request.transfer.delay.hours</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+
+		<menuitem id="hr_request_transfer_delay_hours_menu" name="طلبات تحويل ساعات التأخير"
+			groups="smart_hr.group_employee" sequence="50" parent="menu_attendance_root"
+			action="action_hr_request_transfer_delay_hours" />
+			<!---->
+
+
+
+		<!-- طلبات تحويل ايام الغياب بدون عذر -->
+
+		<record model="ir.ui.view" id="hr_request_transfer_absence_days_tree">
+			<field name="name">hr.request.transfer.absence.tree</field>
+			<field name="model">hr.request.transfer.absence</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="طلبات تحويل ايام الغياب بدون عذر">
+					<field name="name" />
+					<field name="date" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_request_transfer_absence_days_form">
+			<field name="name">hr.request.transfer.absence.form</field>
+			<field name="model">hr.request.transfer.absence</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="طلبات تحويل ايام الغياب بدون عذر">
+					<header>
+						<button name="action_audit" string="إرسال للإعتماد" type="object"
+							states="dm" groups="smart_hr.group_dm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_hrm" string="إعتماد" type="object"
+							states="audit" groups="smart_hr.group_delay_hours_checker"
+							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_done" string="إعتماد" type="object"
+							states="hrm" groups="smart_hr.group_hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" states="audit,hrm" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="button_request_transfer_absence" string="معاينة القرار"
+							groups="smart_hr.group_hrm" type="object" states="done" icon="fa-print"
+							class="oe_inline oe_stat_button" />
+							
+						<button name="%(absences_employees_list_report)d" string="طباعة البيان"
+							groups="smart_hr.group_hrm" type="action" states="done" icon="fa-print"
+							class="oe_inline oe_stat_button" />
+						<field name="state" widget="statusbar" statusbar_visible="dm,audit,hrm,done,refuse" />
+					</header>
+					<sheet>
+						<h3>
+							<field name="name" invisible="1" />
+						</h3>
+						<group>
+							<field name="date" />
+						</group>
+
+						<field name="employee_ids" context="{'form_view_ref':'smart_hr.hr_employee_absence_days_form'}">
+							<tree  editable="bottom">
+								<field name="create_date" invisible="1" />
+								<field name="employee_id" />
+								<field name="balance" />
+								<field name="number_request" />
+								<field name="line_ids" invisible="1" />
+								<button name="action_open_line" type="object" string="تفاصيل الغياب"
+										attrs="{'invisible':[('create_date','=',False)]}" icon="gtk-preferences"/>
+							</tree>
+						</field>
+						<group>
+							<group string="بيانات الخطاب">
+								<field name="speech_source"
+									attrs="{'invisible':[('state','not in',['hrm','done'])], 'required':[('state','=','hrm')], 'readonly':[('state','=','done')]}" />
+								<field name="num_speech"
+									attrs="{'invisible':[('state','not in',['hrm','done'])], 'required':[('state','=','hrm')],'readonly':[('state','=','done')]}" />
+								<field name="date_speech"
+									attrs="{'invisible':[('state','not in',['hrm','done'])], 'required':[('state','=','hrm')], 'readonly':[('state','=','done')]}" />
+								<field name="speech_file"
+									attrs="{'invisible':[('state','not in',['hrm','done'])], 'required':[('state','=','hrm')], 'readonly':[('state','=','done')]}" />
+							</group>
+						</group>
+						<group>
+
+							<field name="description" placeholder="ملاحظات ..."
+								colspan="4" />
+						</group>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"
+							groups="base.group_user" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record id="hr_request_transfer_absence_days_search" model="ir.ui.view">
+			<field name="name">hr.request.transfer.absence.search</field>
+			<field name="model">hr.request.transfer.absence</field>
+			<field name="arch" type="xml">
+				<search string="طلبات تحويل ايام الغياب بدون عذر">
+					<field name="name" />
+					<field name="date" />
+					<group expand="0" string="تجميع حسب...">
+						<filter name="date" string="التاريخ" context="{'group_by':'date'}" />
+						<filter name="state" string="الحالة" context="{'group_by':'state'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_request_transfer_absence_days">
+			<field name="name">طلبات تحويل ايام الغياب بدون عذر</field>
+			<field name="res_model">hr.request.transfer.absence</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass': True}</field>
+		</record>
+
+		<menuitem id="hr_request_transfer_absence_days_menu" name="طلبات تحويل ايام الغياب بدون عذر"
+			groups="smart_hr.group_dm" sequence="51" parent="menu_attendance_root"
+			action="action_hr_request_transfer_absence_days" />
+
+
+		<record model="ir.ui.view" id="hr_employee_absence_days_form">
+			<field name="name">hr.employee.absence.days.form</field>
+			<field name="model">hr.employee.absence.days</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="طلبات تحويل ايام الغياب بدون عذر">
+					<group col="4">
+						<field name="employee_id" readonly="1" />
+						<field name="balance" />
+					</group>
+					<button name="action_deduction_all" type="object" string="حسم جميع الأيام" icon="gtk-apply"/>
+					<field name="line_ids">
+						<tree editable="bottom" edit="0" create="0" delete="0" >
+							<field name="date" />
+							<field name="deduction" />
+							<button name="action_deduction" type="object" string="حسم" icon="gtk-apply"
+								attrs="{'invisible':[('deduction','!=',False)]}"/>
+							<button name="action_cancel_deduction" type="object" string="إلغاء الحسم" icon="STOCK_CANCEL"
+								attrs="{'invisible':[('deduction','=',False)]}"/>
+						</tree>
+					</field>
+				</form>
+			</field>
+		</record>
+
+	</data>
+</openerp>

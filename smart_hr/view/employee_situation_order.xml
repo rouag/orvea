@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<record model="ir.ui.view" id="view_hr_situation_order_filter">
+			<field name="name">hr.employee.situation.order.search</field>
+			<field name="model">hr.employee.situation.order</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="طلب إفادة عن حالة موظف‬‬">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
+		<record id="employee_situation_order_form" model="ir.ui.view">
+			<field name="name">hr.employee.situation.order.form</field>
+			<field name="model">hr.employee.situation.order</field>
+			<field name="arch" type="xml">
+				<form string="طلب إفادة عن حالة موظف‬‬">
+					<sheet>
+						<group>
+							<group>
+								<field name="date" />
+								<field name="employee_id"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="hospital_name" />
+								<field name="date_hospitalisation" />
+							</group>
+							<group />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_hr_employee_situation_order">
+			<field name="name">طلب إفادة عن حالة موظف‬‬</field>
+			<field name="res_model">hr.employee.situation.order</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="menu_hr_employee_situation_order" parent="menu_hr_holiday_root"
+			name="طلب إفادة عن حالة موظف" sequence="110"
+			action="action_hr_employee_situation_order" groups="smart_hr.group_hrm" />
+
+	</data>
+</openerp>

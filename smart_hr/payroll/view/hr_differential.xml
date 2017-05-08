@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<!-- الفروقات -->
+
+		<record model="ir.ui.view" id="hr_differential_tree">
+			<field name="name">hr.differential.tree</field>
+			<field name="model">hr.differential</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string=" الفروقات">
+					<field name="date" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="hr_differential_form">
+			<field name="name">hr.differential.form</field>
+			<field name="model">hr.differential</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="الفروقات">
+					<header>
+						<button string="إحتسب" name="compute_differences" type="object"
+							states="new" class="oe_highlight" />
+						<button name="action_waiting" string="إرسال للإعتماد" type="object" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							states="new" groups="smart_hr.group_difference_management" />
+						<button name="action_done" string="إعتماد" type="object" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟"
+							states="waiting" groups="smart_hr.group_difference_management" />
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" states="waiting" groups="smart_hr.group_difference_management" />
+						<field name="state" widget="statusbar" statusbar_visible="new,waiting,done" />
+					</header>
+					<sheet>
+						<group>
+							<group>
+								<field name="date" />
+								<field name="period_id" />
+							</group>
+							<group>
+								<field name="action_type" />
+							</group>
+
+						</group>
+						<notebook>
+							<page string="الموظفين">
+								<group col="4" string=" ">
+									<field name="department_level1_id" domain="[('dep_type.level', '=', 1)]" />
+									<field name="department_level2_id" domain="[('parent_id', '=', department_level1_id)]" />
+									<field name="department_level3_id" domain="[('parent_id', '=', department_level2_id)]" />
+									<field name="salary_grid_type_id" />
+								</group>
+							</page>
+							<page string="التفاصيل">
+								<group>
+									<field name="line_ids" nolabel="1">
+										<tree>
+											<field name="employee_id"
+												options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+											<field name="date_start" />
+											<field name="date_stop" />
+											<field name="basic_salary_amount" />
+											<field name="retirement_amount" />
+											<field name="allowance_amount" />
+											<field name="total_amount" />
+										</tree>
+									</field>
+								</group>
+							</page>
+						</notebook>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"
+							groups="base.group_user" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_search_hr_differential" model="ir.ui.view">
+			<field name="name">hr.differential.search</field>
+			<field name="model">hr.differential</field>
+			<field name="arch" type="xml">
+				<search string=" الفروقات">
+					<group expand="0" string="تجميع حسب">
+						<filter name="date" string="التاريخ" context="{'group_by':'date'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_differential">
+			<field name="name"> الفروقات</field>
+			<field name="res_model">hr.differential</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="hr_differential_menu" name=" الفروقات"
+			sequence="30" groups="group_difference_management" parent="hr_payroll_settlement_root"
+			action="action_hr_differential" />
+
+		<!-- الفروقات بالموظف -->
+
+		<record model="ir.ui.view" id="hr_differential_line_tree">
+			<field name="name">hr.differential.line.tree</field>
+			<field name="model">hr.differential.line</field>
+			<field name="type">tree</field>
+			<field name="arch" type="xml">
+				<tree string="الفروقات بالموظف" create='0' edit='0' delete='0'
+					duplicate='0'>
+					<field name="employee_id" />
+					<field name="basic_salary_amount" />
+					<field name="retirement_amount" />
+					<field name="allowance_amount" />
+					<field name="total_amount" />
+				</tree>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_differential_line_form">
+			<field name="name">hr.differential.line.form</field>
+			<field name="model">hr.differential.line</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="الفروقات بالموظف" create='0' edit='0' delete='0'
+					duplicate='0'>
+					<sheet>
+						<group>
+							<group string="بيانات الموظف">
+								<field name="employee_id" />
+							</group>
+							<group string="بيانات الفروقات">
+								<field name="basic_salary_amount" />
+								<field name="retirement_amount" />
+								<field name="allowance_amount" />
+								<field name="total_amount" />
+							</group>
+							<field name="defferential_detail_ids" nolabel="1">
+								<form>
+									<group>
+										<group>
+											<field name="period_id" />
+											<field name="number_of_days" />
+										</group>
+										<group>
+											<field name="basic_salary_amount" />
+											<field name="retirement_amount" />
+											<field name="allowance_amount" />
+											<field name="total_amount" />
+										</group>
+									</group>
+								</form>
+								<tree editable="bottom">
+									<field name="period_id" />
+									<field name="number_of_days" />
+									<field name="basic_salary_amount" />
+									<field name="retirement_amount" />
+									<field name="allowance_amount" />
+									<field name="total_amount" />
+								</tree>
+							</field>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="view_search_hr_differential_line" model="ir.ui.view">
+			<field name="name">hr.differential.line.search</field>
+			<field name="model">hr.differential.line</field>
+			<field name="arch" type="xml">
+				<search string="الفروقات بالموظف">
+					<field name="employee_id" />
+					<separator />
+					<group expand="0" string="تجميع حسب">
+						<filter name="employee_id" string="الموظف"
+							context="{'group_by':'employee_id'}" />
+					</group>
+				</search>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_differential_line">
+			<field name="name">الفروقات بالموظف</field>
+			<field name="res_model">hr.differential.line</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="hr_differential_line_menu" name="الفروقات بالموظف"
+			groups="smart_hr.group_difference_management" sequence="40"
+			parent="hr_payroll_settlement_root" action="action_hr_differential_line" />
+
+
+
+	</data>
+</openerp>
+			

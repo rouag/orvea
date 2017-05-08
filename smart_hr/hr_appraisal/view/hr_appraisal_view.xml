@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<record id="hr_appraisal_search_inherit" model="ir.ui.view">
+			<field name="name">hr.appraisal.search</field>
+			<field name="model">hr.appraisal</field>
+			<field name="inherit_id" ref="hr_appraisal.hr_appraisal_search" />
+
+			<field name="arch" type="xml">
+				<field name="employee_id" position="replace">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</field>
+			</field>
+		</record>
+		<!--التقييم -->
+
+		<record id="view_hr_appraisal_form_inherite" model="ir.ui.view">
+			<field name="name">hr.appraisal.form.inherite</field>
+			<field name="model">hr.appraisal</field>
+			<field name="inherit_id" ref="hr_appraisal.view_hr_appraisal_form" />
+			<field name="arch" type="xml">
+
+
+				<field name="employee_id" position="replace">
+					<group>
+						<group>
+							<field name="employee_id" attrs="{'readonly':[('state', '!=', 'new')]}" />
+						</group>
+						<group />
+					</group>
+				</field>
+
+				<label for="employee_id" position="before">
+					<group>
+						<field name="create_date" string="تاريخ الإنشاء" readonly="1" />
+					</group>
+				</label>
+				<label for="employee_id" position="replace" />
+				<field name="date_final_interview" position="replace" />
+				<field name="mail_template_id" position="replace" />
+
+				<field name="date_close" position="after">
+					<field name="date_final_interview"
+						attrs="{'readonly':[('state', 'in', ['done','cancel'])]}" />
+					<field name="adopted" string="إعتماد" />
+					<field name="mail_template_id" attrs="{'readonly':[('state', '!=', 'new')]}"
+						groups="base.group_no_one" />
+				</field>
+				<field name="manager_appraisal" position="before">
+					<field name="parent_emplyee" attrs="{'readonly':[('state', '!=', 'new')]}" />
+					<field name="parent_emplyee_id" nolabel="1"
+						placeholder="Select Appraisal Reviewer..."
+						attrs="{'invisible':[('parent_emplyee','=',False)], 'readonly':[('state', '!=', 'new')]}"
+						readonly="0" />
+					<field name="parent_emplyee_survey_id" nolabel="1"
+						placeholder="Appraisal Form..."
+						attrs="{'invisible':[('parent_emplyee','=',False)], 'readonly':[('state', '!=', 'new')]}" />
+				</field>
+
+			</field>
+
+
+		</record>
+
+
+		<record model="ir.ui.view" id="survey_form_inherite">
+			<field name="name">survey.survey.inherite</field>
+			<field name="model">survey.survey</field>
+			<field name="inherit_id" ref="survey.survey_form" />
+			<field name="arch" type="xml">
+				<button name="action_test_survey" position="attributes">
+					<attribute name='invisible'>1</attribute>
+				</button>
+
+			</field>
+		</record>
+
+
+		<record model="ir.ui.view" id="view_hr_appraisal_tree_inherite">
+			<field name="name">hr.appraisal.tree.inherite</field>
+			<field name="model">hr.appraisal</field>
+			<field name="inherit_id" ref="hr_appraisal.view_hr_appraisal_tree" />
+			<field name="arch" type="xml">
+				<field name="count_completed_survey" position="after">
+					<field name="note_final" string="نتيجة التقييم" readonly="1" />
+					<field name="adopted" string="إعتماد" readonly="1" />
+				</field>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="survey_response_line_tree_inherite">
+			<field name="name">survey_response_line_tree_inherite</field>
+			<field name="model">survey.user_input_line</field>
+			<field name="inherit_id" ref="survey.survey_response_line_tree" />
+			<field name="arch" type="xml">
+				<field name="quizz_mark" position="before">
+					<field name="quizz_mark" />
+				</field>
+			</field>
+		</record>
+
+
+
+		<record model="ir.ui.view" id="survey_user_input_tree_inherite">
+			<field name="name">survey_user_input_tree_inherite</field>
+			<field name="model">survey.user_input</field>
+			<field name="inherit_id" ref="survey.survey_user_input_tree" />
+			<field name="arch" type="xml">
+				<xpath expr="/tree/field[@name='quizz_score']" position="after">
+					<field name="quizz_score" string="نتيجة التقييم" />
+				</xpath>
+			</field>
+		</record>
+
+
+
+		<record model="ir.ui.view" id="survey_response_line_tree_inherite">
+			<field name="name">survey_response_line_tree_inherite</field>
+			<field name="model">survey.user_input_line</field>
+			<field name="inherit_id" ref="survey.survey_response_line_tree" />
+			<field name="arch" type="xml">
+
+				<xpath expr="/tree/field[@name='quizz_mark']" position="after">
+					<field name="quizz_mark" string="نتيجة التقييم" />
+				</xpath>
+			</field>
+		</record>
+
+
+
+		<record model="ir.ui.view" id="survey_user_input_form_inherite">
+			<field name="name">survey_user_input_form_inherite</field>
+			<field name="model">survey.user_input</field>
+			<field name="inherit_id" ref="survey.survey_user_input_form" />
+			<field name="arch" type="xml">
+
+				<field name="test_entry" position="after">
+					<field name="quizz_score" string="نتيجة التقييم" />
+				</field>
+
+				<xpath expr="//field[@name='user_input_line_ids']" position="replace">
+					<field name="user_input_line_ids" mode="tree" attrs="{'readonly': False}">
+						<tree>
+							<field name="page_id" />
+							<field name="question_id" />
+							<field name="answer_type" />
+							<field name="skipped" />
+							<field name="date_create" />
+							<field name="quizz_mark" string="نتيجة التقييم" />
+						</tree>
+					</field>
+				</xpath>
+			</field>
+		</record>
+
+		<record model="ir.ui.view" id="survey_question_form_inherite">
+			<field name="name">Form view for survey question</field>
+			<field name="model">survey.question</field>
+			<field name="inherit_id" ref="survey.survey_question_form" />
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='labels_ids']" position="replace">
+					<field name="labels_ids" string="Type of answers"
+						context="{'default_question_id': active_id}"
+						attrs="{'invisible': [('type', 'not in', ['simple_choice', 'multiple_choice', 'matrix'])]}">
+						<tree editable="bottom">
+							<field name="sequence" widget="handle" />
+							<field name="value" string="Choices" />
+							<field name="quizz_mark" />
+						</tree>
+					</field>
+				</xpath>
+			</field>
+		</record>
+
+	</data>
+
+
+
+
+</openerp>

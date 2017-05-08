@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+
+		<menuitem id="menu_job_report" name="التقارير"
+			sequence="60" parent="hr_root_job" />
+
+
+		<menuitem id="hr_job_setting" sequence="100" name="الإعدادات"
+			parent="hr_root_job" groups="smart_hr.group_hrm" />
+
+	</data>
+</openerp>

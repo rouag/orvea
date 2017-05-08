@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<!-- إعدادات الانتدابات -->
+		<record id="view_hr_deputation_setting" model="ir.ui.view">
+			<field name="name">hr.deputation.setting.form</field>
+			<field name="model">hr.deputation.setting</field>
+			<field name="arch" type="xml">
+				<form string="إعدادات الانتداب" create='0'  delete='0' duplicate='0'>
+
+					<sheet>
+						<group>
+							<field name="name" invisible="1" />
+							<field name="deputation_distance" />
+							<field name="period_decision" />
+							<field name="annual_balance" />
+						</group>
+						<notebook>
+							<page string="بدل النقل والإنتداب">
+								<field name="line_ids">
+									<tree>
+										<field name="grade_ids" />
+										<field name="internal_transport_amount" />
+										<field name="external_transport_amount" />
+										<field name="internal_deputation_amount" />
+									</tree>
+									<form>
+										<group>
+											<field name="grade_ids" />
+										</group>
+										<group>
+											<group string="بدل النقل">
+												<field name="allowance_transport_id" />
+												<field name="internal_transport_type" />
+												<field name="internal_transport_amount" />
+												<field name="external_transport_type" />
+												<field name="external_transport_amount" />
+											</group>
+											<group string="بدل الإنتداب">
+												<field name="allowance_deputation_id" />
+												<field name="internal_deputation_type" />
+												<field name="internal_deputation_amount" />
+												<field name="external_deputation_type" />
+												<field name="category_ids" >
+													<tree editable="buttom">
+														<field name="category_id" />
+														<field name="amount" />
+													</tree>
+												</field>
+											</group>
+										</group>
+									</form>
+								</field>
+							</page>
+						</notebook>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="ir_actions_button_hr_deputation_setting" model="ir.actions.server">
+			<field name="sequence" eval="5" />
+			<field name="state">code</field>
+			<field name="type">ir.actions.server</field>
+			<field name="model_id" ref="model_hr_deputation_setting" />
+			<field name="code">action=pool.get('hr.deputation.setting').button_setting(cr,uid,None,)
+			</field>
+			<field name="condition">True</field>
+			<field name="name">إعدادات الانتداب</field>
+		</record>
+
+		<menuitem name="إعدادات الانتداب" id="hr_deputation_setting_menu"
+			parent="hr_root_workflows_setting" sequence="15"
+			action="ir_actions_button_hr_deputation_setting" />
+			
+			
+		<record id="view_hr_deputation_type" model="ir.ui.view">
+			<field name="name">hr.deputation.type.form</field>
+			<field name="model">hr.deputation.type</field>
+			<field name="arch" type="xml">
+				<form string="انواع الانتدابات" create='0'  delete='0' duplicate='0'>
+					<sheet>
+						<group>
+							<field name="name" />
+							<field name="code" />
+							<field name="external_balance" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_deputation_type">
+			<field name="name">أنواع الانتدابات</field>
+			<field name="res_model">hr.deputation.type</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem name="أنواع الانتداب" id="hr_deputation_type_menu"
+			parent="hr_root_workflows_setting" sequence="16"
+			action="action_hr_deputation_type" />			
+			
+			
+	</data>
+</openerp>

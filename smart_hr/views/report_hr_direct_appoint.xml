@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_hr_direct_appoint">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.external_layout_extend">
+						<t
+							t-if="o.type_appointment != docs.env.ref('smart_hr.data_hr_promotion_member')">
+							<div class="page">
+								<div class="oe_structure" />
+								<div class="col-xs-12" style="margin-top:20px;">
+									<p style="font-size:22px;" align="center"> قرار مباشرة
+									</p>
+									<p></p>
+									<br></br>
+									<br></br>
+									<p style="font-size:22px;" align="left">
+										رقم الهوية الوطنية:
+										<span t-field="o.employee_id.identification_id" />
+									</p>
+									<p></p>
+									<br></br>
+									<p></p>
+									<p style="font-size:22px;" align="center">
+										السلام عليكم ورحمة الله
+										وبركاته و بعد ،
+									</p>
+									<br></br>
+									<br></br>
+									<p style="font-size:22px;">
+
+										يرجي التكرم بالإذن للسيد:
+										<span t-field="o.employee_id.name" />
+									</p>
+									<p style="font-size:22px;">
+										الذى يشغل بوظيفة
+										<span t-field="o.job_id.name" />
+										رقمها:
+										<span t-esc="o.job_id.number" />
+									</p>
+									<p style="font-size:22px;">
+										لمباشرة مهامه
+										بتاريخ
+											 <span t-esc="get_hijri_date(o.date, '-')" />
+									</p>
+									<br></br>
+									<br></br>
+									<p style="font-size:22px;">
+
+										و لكم جزيل الشكر،،
+									</p>
+									<p></p>
+									<p></p>
+									<br></br>
+									<br></br>
+									<br></br>
+									<p style="font-size:22px;" align="center">
+										و تفضلوا بقبول فائق التقدير
+										و
+										الاحترام
+									</p>
+									<br></br>
+									<br></br>
+									<p style="font-size:22px;" align="left">
+										التوقيع
+										<br></br>
+										.............
+									</p>
+								</div>
+							</div>
+						</t>
+						<t
+							t-if="o.type_appointment == docs.env.ref('smart_hr.data_hr_promotion_member')">
+							
+							<div class="page">
+								<div class="oe_structure" />
+								<p style="font-size:22px;" align="left">
+									رقم الهوية الوطنية:
+									<span t-field="o.employee_id.identification_id" />
+								</p>
+ 
+								<p></p>
+								<br></br>
+								<p></p>
+								<p style="font-size:22px;" align="center">
+									السلام عليكم ورحمة الله
+									وبركاته و بعد ،
+								</p>
+								<br></br>
+								<br></br>
+								<p style="font-size:22px;">
+
+									يرجي التكرم بالإذن للسيد:
+									<span t-field="o.employee_id.name" />
+								</p>
+								<p style="font-size:22px;">
+									الذى يشغل بوظيفة
+									<span t-field="o.job_id.name" />
+									رقمها:
+									<span t-esc="o.job_id.number" />
+								</p>
+								<p style="font-size:22px;">
+									لمباشرة مهامه
+									بتاريخ
+										 <span t-esc="get_hijri_date(o.date, '-')" />
+									
+								</p>
+								<br></br>
+								<br></br>
+								<p style="font-size:22px;">
+
+									و لكم جزيل الشكر،،
+								</p>
+								<p></p>
+								<p></p>
+								<br></br>
+								<br></br>
+								<br></br>
+								<p style="font-size:22px;" align="center">
+									و تفضلوا بقبول فائق التقدير و
+									الاحترام
+								</p>
+								<br></br>
+								<br></br>
+ 
+								<p style="font-size:22px;" align="left">
+									المهنة/(موظف حكومي)
+								</p>
+
+								<div class="col-xs-12" style="margin-top:20px;">
+									<p style="font-size:22px;"  align="left"> مباشرة عضو مرقى
+									</p>
+									<p></p>
+									<br></br>
+									<br></br>
+
+									<p></p>
+									<br></br>
+									<p></p>
+									<p style="font-size:22px;">سعادة المشرف العام على ادارة الموارد البشرية</p>
+									<p style="font-size:22px;">
+										السلام عليكم ورحمة الله
+										 و بعد&#160;&#160;&#160;&#160;&#160;&#160;وبركاته ،
+									</p>
+									<br></br>
+									<br></br>
+									<p style="font-size:22px;">
+
+										يرجي التكرم بالإذن للسيد:
+										<span t-field="o.employee_id.name" />
+									</p>
+									<p style="font-size:22px;">
+										الذى يشغل بوظيفة
+										<span t-field="o.job_id.name" />
+										رقمها:
+										<span t-esc="o.job_id.number" />
+									</p>
+									<p style="font-size:22px;">
+										لمباشرة مهامه
+										بتاريخ
+										<span t-field="o.date" />
+									</p>
+									<br></br>
+									<br></br>
+									<p style="font-size:22px;">
+
+										و لكم جزيل الشكر،،
+									</p>
+									<p></p>
+									<p></p>
+									<br></br>
+									<br></br>
+									<br></br>
+									<p style="font-size:22px;" align="center">
+										و تفضلوا بقبول فائق التقدير
+										و
+										الاحترام
+									</p>
+									<br></br>
+									<br></br>
+									<p style="font-size:22px;" align="left">
+										التوقيع
+										<br></br>
+										.............
+									</p>
+								</div>
+							</div>
+						</t>
+					</t>
+				</t>
+			</t>
+
+		</template>
+	</data>
+</openerp>
+								
+							
+								

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+
+
+		<record model="ir.ui.view" id="view_hr_holidays_extension_filter_inherit">
+			<field name="name">hr.holidays.extension.inherit</field>
+			<field name="model">hr.holidays.extension</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="تمديد  رصيد الاجازات">
+					<field name="employee_id" string="الموظف"
+						filter_domain="['|','|',('employee_id.number','ilike',self),('employee_id.identification_id','ilike',self),('employee_id.display_name','ilike',self)]" />
+				</search>
+			</field>
+		</record>
+
+
+		<record id="hr_holidays_extension_employee_form" model="ir.ui.view">
+			<field name="name">hr.holidays.extension.form</field>
+			<field name="model">hr.holidays.extension</field>
+			<field name="arch" type="xml">
+				<form string="تمديد  رصيد الاجازات">
+					<field name="is_the_creator" invisible="1" />
+					<header>
+						<button name="button_send" string="إرسال طلب" type="object"
+							attrs="{'invisible':[('state','!=','draft')]}" icon="fa-paper-plane"
+							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="button_done" string="موافق" type="object"
+							attrs="{'invisible':['|',('state','!=','audit')]}" groups="smart_hr.group_dm"
+							icon="fa-check" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+
+						<button name="%(action_hr_refuse_wizard)d" string="رفض"
+							type="action" attrs="{'invisible':['|',('state','!=','audit')]}"
+							icon="fa-times" class="oe_inline oe_stat_button" groups="smart_hr.group_dm" />
+							
+						<button name="open_decission_holidays_extension" string="معاينة القرار"
+							type="object" states="done" icon="fa-print" class="oe_inline oe_stat_button" />
+
+						<field name="state" widget="statusbar" statusbar_visible="draft,audit,done" />
+					</header>
+					<sheet>
+						<h1>
+							<field name="name" attrs="{'invisible':[('state', 'not in', [ 'done'])],'readonly':[('state', 'in', ['done'])]}" />
+						</h1>
+						<group col="4">
+							<group>
+								<field name="date" readonly="1" required="1" />
+							</group>
+							<group />
+						</group>
+						<group>
+							<group>
+								<field name="employee_id" readonly="1" required="1"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="holiday_status_id" required="1"
+									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
+								<field name="duration" required="1" />
+							</group>
+							<group>
+
+								<field name="num_decision" required="1" class="oe_smart_inline" />
+								<field name="date_decision" required="1" />
+								<field name="decision_file" filename="decision_file_name" />
+								<field name="decision_file_name" invisible="1" />
+							</group>
+						</group>
+						<group>
+							<group>
+								<field name="note" />
+							</group>
+						</group>
+
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"
+							groups="base.group_user" />
+						<field name="message_ids" widget="mail_thread" />
+					</div>
+				</form>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_holidays_extension_employee_form_inherited">
+			<field name="model">hr.holidays.extension</field>
+			<field name="inherit_id" ref="smart_hr.hr_holidays_extension_employee_form" />
+			<field name="groups_id" eval="[(6, 0, [ref('smart_hr.group_dm')])]" />
+			<field name="arch" type="xml">
+				<field name="employee_id" position="attributes">
+					<attribute name="readonly">False</attribute>
+				</field>
+
+			</field>
+		</record>
+		<record id="hr_holidays_extension_employee_tree" model="ir.ui.view">
+			<field name="name">hr.holidays.extension.tree</field>
+			<field name="model">hr.holidays.extension</field>
+			<field name="arch" type="xml">
+				<tree string="تمديد رصيد الاجازات" class="oe_tree_view"
+					fonts="bold:state in ['draft','done']"
+					row_classes="state-refuse:state=='refuse';state-in-progress:state not in ['draft','refuse','done'];">
+					<field name="name" />
+					<field name="date" />
+					<field name="employee_id" />
+					<field name="holiday_status_id" />
+					<field name="duration" />
+					<field name="state" />
+
+				</tree>
+			</field>
+		</record>
+
+		<record id="action_hr_holidays_extension_employees" model="ir.actions.act_window">
+			<field name="name">تمديد رصيد الاجازات</field>
+			<field name="res_model">hr.holidays.extension</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="help" type="html">
+				<p class="oe_view_nocontent_create">أنقر هنا للإضافة</p>
+			</field>
+		</record>
+		<record id="action_hr_holidays_extension_employees_tree" model="ir.actions.act_window.view">
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="hr_holidays_extension_employee_tree" />
+			<field name="act_window_id" ref="action_hr_holidays_extension_employees" />
+		</record>
+
+		<record id="action_hr_holidays_extension_employees_form" model="ir.actions.act_window.view">
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="hr_holidays_extension_employee_form" />
+			<field name="act_window_id" ref="action_hr_holidays_extension_employees" />
+		</record>
+
+
+		<menuitem id="menu_hr_holidays_extension_employees" action="action_hr_holidays_extension_employees"
+			parent="menu_hr_holiday_root" sequence="52" name="طلبات تمديد رصيد الاجازات" />
+
+
+		<record id="action_hr_holidays_extension_form" model="ir.actions.act_window">
+			<field name="name">تمديد رصيد الاجازات</field>
+			<field name="res_model">hr.holidays.extension</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+		</record>
+
+		<record id="action_hr_holidays_extension_employees_form_notification"
+			model="ir.actions.act_window.view">
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="hr_holidays_extension_employee_form" />
+			<field name="act_window_id" ref="action_hr_holidays_extension_form" />
+		</record>
+
+	</data>
+</openerp>

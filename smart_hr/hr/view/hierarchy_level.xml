@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+
+		<record id="hierarchy_level_form" model="ir.ui.view">
+			<field name="name">hierarchy.level.form</field>
+			<field name="model">hierarchy.level</field>
+			<field name="arch" type="xml">
+				<form string="مستوى العمق في ‫الهيكل‬">
+					<sheet>
+						<group>
+							<field name="department_type" />
+							<field name="level" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="hierarchy_level_tree" model="ir.ui.view">
+			<field name="name">hierarchy.level.tree</field>
+			<field name="model">hierarchy.level</field>
+			<field name="arch" type="xml">
+				<tree string="مستوى العمق في ‫الهيكل‬">
+					<field name="department_type" />
+					<field name="level" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hierarchy_level">
+			<field name="name">مستوى العمق في ‫الهيكل‬</field>
+			<field name="res_model">hierarchy.level</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="menu_hierarchy_level" parent="menu_department_configuration"
+			name="مستوى العمق في ‫الهيكل‬" groups="smart_hr.group_hrm" sequence="10"
+			action="action_hierarchy_level" />
+
+
+		<record id="hr_department_type_form" model="ir.ui.view">
+			<field name="name">hr.department.type.form</field>
+			<field name="model">hr.department.type</field>
+			<field name="arch" type="xml">
+				<form string=" أنواع الإدارات‬">
+					<sheet>
+						<group>
+							<field name="name" />
+							<field name="code" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="hr_department_type_tree" model="ir.ui.view">
+			<field name="name">hr.department.type.tree</field>
+			<field name="model">hr.department.type</field>
+			<field name="arch" type="xml">
+				<tree string="أنواع الإدارات">
+					<field name="name" />
+					<field name="code" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_department_type">
+			<field name="name">أنواع الإدارات</field>
+			<field name="res_model">hr.department.type</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="menu_hr_department_type" parent="menu_department_configuration"
+			name="أنواع الإدارات‬" groups="smart_hr.group_hrm" sequence="8"
+			action="action_hr_department_type" />
+
+
+	</data>
+</openerp>

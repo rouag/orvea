@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+
+		<record id="view_employee_tree_service_duration" model="ir.ui.view">
+			<field name="name">hr.employee.tree</field>
+			<field name="model">hr.employee</field>
+			<field name="type">tree</field>
+			<field name="sequence" eval="2" />
+			<field name="arch" type="xml">
+				<tree string="الموظفون">
+					<field name="display_name" string="الموظف" />
+					<field name="number" />
+					<field name="begin_work_date" />
+					<field name="service_duration" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="hr_employee_service_duration_form" model="ir.ui.view">
+			<field name="name">hr.employee.service.duration.form</field>
+			<field name="model">hr.employee.service.duration</field>
+			<field name="arch" type="xml">
+				<form string="حساب مدة الخدمة">
+					<header>
+						<button name="action_done" states="draft" string="موافق "
+							type="object" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<button name="action_cancel" states="draft" string="إلغاء "
+							type="object" class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
+						<field name="state" widget="statusbar" statusbar_visible="draft,done,cancel" />
+					</header>
+					<sheet>
+						<group>
+							<field name="name" invisible="True" />
+							<field name="date_last_execution" />
+							<field name="employee_service_ids"
+								context="{'tree_view_ref': 'view_employee_tree_service_duration'}">
+
+								<tree editable="bottom">
+									<field name="display_name" string="الموظف" readonly="True"/>
+									<field name="number" readonly="True"/>
+									<field name="begin_work_date" readonly="True"/>
+									<field name="service_duration" readonly="True"/>
+								</tree>
+							</field>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="hr_employee_service_duration_tree" model="ir.ui.view">
+			<field name="name">hr.employee.service.duration.tree</field>
+			<field name="model">hr.employee.service.duration</field>
+			<field name="arch" type="xml">
+				<tree string="حساب مدة الخدمة">
+					<field name="name" invisible="1"/>
+					<field name="date_last_execution" />
+					<field name="state" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_employee_service_duration">
+			<field name="name">حساب مدة الخدمة</field>
+			<field name="res_model">hr.employee.service.duration</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+
+		<menuitem id="menu_hr_employee_service_duration" parent="hr_users_creation"
+			name="حساب مدة الخدمة" sequence="12"
+			action="action_hr_employee_service_duration" />
+
+	<menuitem name="إدارة الاشعارات" id="notification_setting_setting_menu"
+			parent="hr_users_creation" sequence="16"
+			action="smart_base.ir_actions_server_notification_setting" />
+			
+
+
+	</data>
+</openerp>

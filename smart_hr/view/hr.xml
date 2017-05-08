@@ -1,0 +1,663 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		<!-- Employee Search -->
+		<record id="view_search_hr_employee_inherit" model="ir.ui.view">
+			<field name="name">hr.employee.search.inherit</field>
+			<field name="model">hr.employee</field>
+			<field name="inherit_id" ref="hr.view_employee_filter" />
+			<field name="arch" type="xml">
+				<!-- Add some fields -->
+				<xpath expr="//field[@name='name']" position="replace">
+					<field name="name" string="الموظف"
+						filter_domain="['|','|',('number','ilike',self),('identification_id','ilike',self),('display_name','ilike',self)]" />
+					<filter string="الموظفين العاملين" name="available_employees"
+						domain="[('emp_state','=','working'), ('employee_state','!=', 'non_active'), ('employee_state','!=', 'oh'), ('employee_state','!=', 'retired')]" />
+					<filter string="مكلف خارجي" name="assigned_employees"
+						domain="['|', ('emp_state','=','outside'),('employee_state','=','outside_assignment')]" />
+					<filter string="مكفوف اليد" name="suspended_employees"
+						domain="['|', ('employee_state','=','oh'),('emp_state','=','suspended')]" />
+					<filter string="مطوي قيده" name="suspended_employees"
+						domain="['|', ('employee_state','=','retired'),('emp_state','=','terminated')]" />
+				</xpath>
+				<xpath expr="//field[@name='name']" position="after">
+					<field name="number" />
+					<field name="identification_id" />
+				</xpath>
+
+				<!-- Remove Filters -->
+				<xpath expr="//field[@name='category_ids']" position="replace">
+				</xpath>
+				<xpath expr="//filter[@name='message_needaction']" position="replace">
+				</xpath>
+				<xpath expr="//filter[@name='inactive']" position="replace">
+				</xpath>
+				<xpath expr="//group[@expand='0']//filter[2]" position="replace">
+				</xpath>
+			</field>
+		</record>
+
+		<!-- الموظفون -->
+
+		<record id="view_employee_tree" model="ir.ui.view">
+			<field name="name">hr.employee.tree</field>
+			<field name="model">hr.employee</field>
+			<field name="type">tree</field>
+			<field name="sequence" eval="2" />
+			<field name="arch" type="xml">
+				<tree string="بيانات موظف">
+					<field name="number" />
+					<field name="display_name" string="الاسم" />
+					<field name="job_id" />
+					<field name="state" string="الحضور والإنصراف" />
+					<field name="last_sign" string=" تاريخ أخر حضور و إنصراف  " />
+					<field name="employee_state" />
+				</tree>
+			</field>
+		</record>
+
+		<record model="ir.actions.act_window" id="action_hr_employee">
+			<field name="name">الموظفون</field>
+			<field name="res_model">hr.employee</field>
+			<field name="view_mode">kanban,tree,form</field>
+			<field name="domain">[('employee_state','=','employee')]</field>
+			<field name="search_view_id" ref="view_search_hr_employee_inherit" />
+			<field name="context">{'search_default_available_employees':
+				1,'readonly_by_pass':
+				True,'list_type':'_get_dep_name_employee_form','compute_name':
+				'_get_natinality'}
+			</field>
+		</record>
+
+
+		<record id="view_country_tree_nationality" model="ir.ui.view">
+			<field name="name">res.country.tree</field>
+			<field name="model">res.country</field>
+			<field name="arch" type="xml">
+				<tree string="Country">
+					<field name="national" />
+				</tree>
+			</field>
+		</record>
+
+		<record id="hr_kanban_view_employees_inherit" model="ir.ui.view">
+			<field name="name">hr.employee.kanaban.inherit</field>
+			<field name="model">hr.employee</field>
+			<field name="type">kanban</field>
+			<field name="sequence" eval="1" />
+			<field name="inherit_id" ref="hr.hr_kanban_view_employees" />
+			<field name="arch" type="xml">
+				<data>
+					<field name="name" position="attributes">
+						<attribute name="invisible">1</attribute>
+					</field>
+					<field name="name" position="after">
+						<field name="display_name" />
+						<field name="employee_card_id" invisible="1" />
+					</field>
+					<xpath expr="//div[@class='o_employee_summary_icons']"
+						position="replace">
+					</xpath>
+					<field name="mobile_phone" position="replace">
+						<field name="mobile_phone" attrs="{'invisible': [('show_mobile','=', False)]}" />
+						<field name="show_mobile" invisible="1" />
+					</field>
+
+
+					<xpath expr="//div[@class='o_kanban_button']" position="replace">
+						<div class="o_kanban_button">
+
+							<button name="%(report_hr_employee_card)d" type="action"
+								attrs="{'invisible': [('employee_card_id', '=', False)]}" class="o_follow_btn o_following btn btn-sm btn-default">
+								<span class="">طباعة</span>
+							</button>
+						</div>
+					</xpath>
+				</data>
+			</field>
+		</record>
+
+		<record id="action_hr_employee_kanban" model="ir.actions.act_window.view">
+			<field name="view_mode">kanban</field>
+			<field name="sequence" eval="1" />
+			<field name="view_id" ref="hr_kanban_view_employees_inherit" />
+			<field name="act_window_id" ref="action_hr_employee" />
+		</record>
+		<record id="action_hr_employee_tree" model="ir.actions.act_window.view">
+			<field name="view_mode">tree</field>
+			<field name="sequence" eval="2" />
+			<field name="view_id" ref="view_employee_tree" />
+			<field name="act_window_id" ref="action_hr_employee" />
+		</record>
+
+		<record id="action_hr_employee_form" model="ir.actions.act_window.view">
+			<field name="view_mode">form</field>
+			<field name="sequence" eval="3" />
+			<field name="view_id" ref="view_employee_request_form" />
+			<field name="act_window_id" ref="action_hr_employee" />
+		</record>
+
+		<menuitem id="hr_employee_menu" name="الموظفون" sequence="1"
+			parent="hr_root_employees" action="action_hr_employee" groups="smart_hr.group_employees" />
+
+
+
+		<record id="ir_actions_button_my_info" model="ir.actions.server">
+			<field name="sequence" eval="5" />
+			<field name="state">code</field>
+			<field name="type">ir.actions.server</field>
+			<field name="model_id" ref="model_hr_employee" />
+			<field name="code">action=pool.get('hr.employee').button_my_info(cr,uid,None,)
+			</field>
+			<field name="condition">True</field>
+			<field name="name">بياناتي</field>
+		</record>
+
+		<menuitem name="بياناتي" id="hr_employee_mine_menu" parent="hr_root_employees"
+			sequence="11" action="ir_actions_button_my_info" />
+
+
+
+		<!-- طلبات بيانات موظف -->
+
+		<record id="view_employee_request_tree" model="ir.ui.view">
+			<field name="name">hr.employee.request.tree</field>
+			<field name="model">hr.employee</field>
+			<field name="sequence" eval="2" />
+			<field name="type">tree</field>
+			<field name="inherit_id" ref="hr.view_employee_tree" />
+			<field name="arch" type="xml">
+				<xpath expr="//tree" position='replace'>
+					<tree>
+						<field name="display_name" string="الموظف" />
+						<field name="number" string="رقم الوظيفة" />
+
+
+						<field name="employee_state" string="الحالة" />
+					</tree>
+				</xpath>
+			</field>
+		</record>
+
+		<record id="act_hr_employee_2_hr_holidays" model="ir.actions.act_window">
+			<field name="res_model">hr.holidays</field>
+			<field name="view_type">form</field>
+			<field name="name">طلبات الاجازات</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('employee_id', '=', active_id)]</field>
+		</record>
+
+		<record id="hr_contract.act_hr_employee_2_hr_contract" model="ir.actions.act_window">
+			<field name="res_model">hr.contract</field>
+			<field name="view_type">form</field>
+			<field name="name">العقود</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('employee_id', '=', active_id)]</field>
+		</record>
+		<record id="act_hr_employee_2_hr_loan" model="ir.actions.act_window">
+			<field name="res_model">hr.loan</field>
+			<field name="view_type">form</field>
+			<field name="name">القروض</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('employee_id', '=', active_id)]</field>
+			<field name="context">{'search_default_progress':
+				1,'readonly_by_pass':True}
+			</field>
+		</record>
+		<record id="act_hr_employee_2_hr_attendance" model="ir.actions.act_window">
+			<field name="res_model">hr.attendance</field>
+			<field name="view_type">form</field>
+			<field name="name">الحضور</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('employee_id', '=', active_id)]</field>
+		</record>
+
+
+		<record id="view_employee_request_form" model="ir.ui.view">
+			<field name="name">hr.employee.request.form</field>
+			<field name="model">hr.employee</field>
+			<field name="inherit_id" ref="hr.view_employee_form" />
+			<field name="sequence" eval="3" />
+			<field name="arch" type="xml">
+				<xpath expr="/form" position='replace'>
+					<form string="طلبات بيانات موظف">
+						<header>
+							<button name="action_send" string="إرسال للإعتماد" type="object"
+								groups="smart_hr.group_employee_request" attrs="{'invisible': [('employee_state', '!=', 'new')]}" />
+							<button name="action_confirm" string="موافقة" type="object"
+								groups="smart_hr.group_employee_registration" attrs="{'invisible': [('employee_state', '!=', 'waiting')]}" />
+							<button name="action_cancel" string="إلغاء" type="object"
+								groups="smart_hr.group_employee_request" attrs="{'invisible': [('employee_state', '!=', 'waiting')]}" />
+							<button name="%(action_hr_employee_refuse_wizard)d"
+								string="رفض" type="action" groups="smart_hr.group_employee_registration"
+								attrs="{'invisible': [('employee_state', '!=', 'waiting')]}" />
+							<button name="%(report_hr_employee_card)d" type="action"
+								string=" طباعة بطاقة الموظف "
+								attrs="{'invisible': [('employee_card_id', '=', False),('employee_state', '!=', 'employee')]}" />
+							<field name="employee_state" widget="statusbar"
+								attrs="{'invisible': [('employee_state', '=', 'employee')]}"
+								statusbar_visible="new,waiting,done,refused" />
+							<field name="emp_state"
+								attrs="{'invisible': [('employee_state', '!=', 'employee')]}" />
+
+
+
+						</header>
+						<sheet>
+							<field name="employee_card_id" invisible="1" />
+							<field name="display_name" invisible="1" />
+							<field name="is_saudian" invisible="1" />
+							<div class="oe_button_box" name="button_box" position="inside">
+								<button name="%(smart_hr.act_hr_employee_2_hr_loan)d"
+									class="oe_stat_button" icon="fa-money" type="action">
+									<field name="loan_count" widget="statinfo" string="القروض" />
+								</button>
+
+								<button name="%(act_hr_employee_2_hr_attendance)d" class="oe_stat_button"
+									icon="fa-clock-o" type="action">
+									<span>الحضور </span>
+								</button>
+								<button name="%(smart_hr.act_hr_employee_2_hr_holidays)d"
+									class="oe_stat_button" icon="fa-clock-o" type="action">
+									<field name="holiday_count" widget="statinfo"
+										string="رصيد الإجازات العادية" />
+								</button>
+
+								<button name="%(hr_contract.act_hr_employee_2_hr_contract)d"
+									class="oe_stat_button" icon="fa-book" type="action"
+									attrs="{'invisible':[('is_contract','=', False)]}">
+									<field name="contracts_count" widget="statinfo" string="العقود" />
+								</button>
+
+							</div>
+
+							<field name="image" widget="image" class="oe_avatar"
+								options="{&quot;preview_image&quot;:&quot;image_medium&quot;}" />
+							<div class="col-xs-12 div_paddig_right_null">
+								<div class="col-xs-3" style="text-align:right;width:25%;">
+									<label name="name" string="الاسم" />
+								</div>
+								<div class="col-xs-3 div_paddig_right_null" style="text-align:right;width:25%;">
+									<label name="father_name" string="إسم الأب" class="div_paddig_right_null" />
+								</div>
+								<div class="col-xs-3 div_paddig_right_null" style="text-align:right;width:17%;">
+									<label name="grandfather_name" string="اسم الجد" />
+								</div>
+								<div class="col-xs-2 div_paddig_right_null" style="text-align:right;width:16.5%;">
+									<label name="grandfather2_name" string="‫الفخذ‬" />
+								</div>
+								<div class="col-xs-1 div_paddig_right_null" style="text-align:right;width:16.5%;">
+									<label name="family_name" string="الاسم العائلي" />
+								</div>
+
+							</div>
+							<group col="12">
+								<field name="name" nolabel="1" colspan="2" />
+								<field name="father_middle_name" nolabel="1" />
+								<field name="father_name" nolabel="1" colspan="2" />
+								<field name="grandfather_middle_name" nolabel="1" />
+								<field name="grandfather_name" nolabel="1" colspan="2" />
+								<field name="grandfather2_name" nolabel="1" colspan="2" />
+								<field name="family_name" nolabel="1" colspan="2" />
+							</group>
+
+							<label for="number" class="oe_edit_only"
+								attrs="{'invisible': [('number', '=', False)]}" />
+							<h1>
+								<field name="number" placeholder="رقم الوظيفة" class="oe_smart_inline"
+									readonly="1" />
+
+							</h1>
+							<notebook>
+								<page name="public" string="بيانات شخصية">
+									<group string="بيانات شخصية">
+										<group>
+											<field name="deputation_balance" invisible="1" />
+											<field name="country_id" options='{"no_open": True, "no_create": True}'
+												attrs="{'required': 1}" domain="[('code_nat','!=',False)]"
+												context="{'compute_name': '_get_natinality','tree_view_ref': 'view_country_tree_nationality'}" />
+
+											<field name="identification_id"
+												attrs="{'required': [('is_saudian','=', True)],'invisible': [('is_saudian','=', False)]}" />
+											<field name="identification_date"
+												attrs="{'invisible': [('is_saudian','=', False)]}" />
+											<field name="identification_place"
+												attrs="{'invisible': [('is_saudian','=', False)]}" />
+
+											<field name="residance_id" string="رقم الإقامة"
+												attrs="{'required': [('is_saudian','=', False)],'invisible': [('is_saudian','=', True)]}" />
+											<field name="residance_date" string="تاريخ إصدار بطاقة الإقامة"
+												attrs="{'invisible': [('is_saudian','=', True)]}" />
+											<field name="residance_place" string="مكان إصدار بطاقة الإقامة"
+												attrs="{'invisible': [('is_saudian','=', True)]}" />
+										</group>
+										<group>
+											<field name="passport_id" attrs="{'invisible': [('is_saudian','=', True)]}" />
+											<field name="hoveizeh_id"
+												attrs="{'required': [('is_saudian','=', True)],'invisible': [('is_saudian','=', False)]}" />
+											<field name="passport_date" attrs="{'invisible': [('is_saudian','=', True)]}" />
+											<field name="hoveizeh_date"
+												attrs="{'required': [('is_saudian','=', True)],'invisible': [('is_saudian','=', False)]}" />
+											<field name="passport_end_date" attrs="{'invisible': [('is_saudian','=', True)]}" />
+											<field name="hoveizeh_end_date"
+												attrs="{'invisible': [('is_saudian','=', False)]}" />
+											<field name="passport_place" attrs="{'invisible': [('is_saudian','=', True)]}" />
+											<field name="hoveizeh_place"
+												attrs="{'invisible': [('is_saudian','=', False)]}" />
+										</group>
+									</group>
+									<group>
+										<group string="الحالة">
+											<field name="gender" attrs="{'required': 1}" />
+											<field name="religion_state" />
+											<field name="marital" attrs="{'required': 1}" />
+											<field name="children" />
+										</group>
+										<group string="الميلاد">
+											<field name="birthday" attrs="{'required': 1}" />
+											<field name="age_display" attrs="{'readonly': 1}" />
+											<field name="place_of_birth" />
+
+										</group>
+									</group>
+									<group string="المرفقات">
+										<field name="attachments" widget="many2many_binary"
+											nolabel="1" />
+									</group>
+									<group>
+										<field name="notes" placeholder="معلومات أخرى ..." />
+									</group>
+								</page>
+								<page string="بيانات التواصل">
+									<group>
+										<group string="بيانات التواصل">
+											<field name="mobile_phone"
+												attrs="{'invisible': [('show_mobile','=', False)]}" />
+											<field name="work_location" attrs="{'required': 0}" />
+											<field name="work_email" widget="email" attrs="{'required': 1}" />
+											<field name="work_phone" string="تحويلة العمل" />
+											<field name="coach_id" invisible="1" />
+											<field name="manager" groups="base.group_no_one" />
+											<field name="is_contract" invisible="1" />
+											<field name="show_mobile" invisible="1" />
+										</group>
+									</group>
+								</page>
+								<page string="مستويات التعليم">
+									<field name="education_level_ids">
+										<tree>
+											<field name="level_education_id" />
+											<field name="diploma_id" />
+											<field name="qualification_id" />
+											<field name="specialization_ids" widget="many2many_tags" />
+											<field name="diploma_date" />
+											<field name="job_specialite" />
+											<field name="while_serving" />
+										</tree>
+									</field>
+								</page>
+								<page string="بيانات العمل">
+									<group>
+										<group string="بيانات العمل">
+											<field name="department_id"
+												attrs="{'invisible': [('employee_state','!=', 'employee')]}"
+												context="{'list_type':'_get_dep_name_employee_form'}"
+												on_change="onchange_department_id(department_id)" />
+											<field name="branch_id"
+												attrs="{'invisible': [('employee_state','!=', 'employee')]}"/>
+											<field name="dep_side" options="{'no_create': True}"
+												attrs="{'invisible': [('employee_state','!=', 'employee')]}" />
+											<field name="dep_city" options="{'no_create': True}"
+												attrs="{'invisible': [('employee_state','!=', 'employee')]}" />
+											<field name="job_id"
+												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+											<field name="type_id" attrs="{'required': 1}" />
+											<field name="grade_id"
+												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+											<field name="grade_number"
+												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+											<field name="degree_id"
+												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+
+											<field name="commissioning_job_id"
+												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+											<field name="commissioning_type_id"
+												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+											<field name="commissioning_grade_id"
+												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+
+										</group>
+										<group string="خصائص أخرى">
+											<field name="user_id"
+												attrs="{'readonly': 1, 'invisible': [('employee_state','!=', 'employee')]}" />
+											<field name="recruiter" widget="selection" />
+											<field name="recruiter_date" />
+											<field name="begin_work_date" />
+											<field name="calendar_id" string="‫نوع‬ الدوام" />
+											<field name="insurance_type" />
+											<field name="medic_exam" string="تاريخ الفحص الطبي" />
+
+											<field name="parent_id" string="المدير المباشر " />
+											<field name="service_duration_display" attrs="{'readonly': 1}" />
+											<field name="promotion_duration_display" attrs="{'readonly': 1}" />
+											<field name="royal_decree_number" attrs="{'invisible': [('is_member','=', False)]}" />
+											<field name="royal_decree_date" attrs="{'invisible': [('is_member','=', False)]}" />
+											<field name="external_decision" />
+											<field name="is_member" invisible="1" />
+
+										</group>
+									</group>
+								</page>
+								<page string="بيانات البنك">
+									<group string="بيانات البنك">
+										<field name="address_home_id" invisible="1" />
+										<field name="bank_account_id" invisible="1" />
+										<field name="bank_account_ids" nolabel="1"
+											context="{'default_employee_id':active_id}">
+											<tree delete="false">
+												<field name="acc_number" />
+												<field name="bank_id" string="البنك" />
+												<field name="currency_id" />
+												<field name="account_opening_date" />
+												<field name="is_deposit" />
+											</tree>
+											<form>
+												<group col="4">
+													<field name="acc_number" />
+													<field name="bank_id" string="البنك" />
+													<field name="account_opening_date" />
+													<field name="is_deposit" />
+													<field name="company_id" groups="base.group_multi_company"
+														options="{'no_create': True}" />
+													<field name="currency_id" options="{'no_create': True}" />
+													<field name="employee_id" invisible="1" />
+												</group>
+											</form>
+										</field>
+									</group>
+									<group name="active_group" invisible="1" />
+								</page>
+								<page string="أرصدة الاجازات والترقيات" invisible="1">
+									<separator string="أرصدة الاجازات" />
+									<field name="holidays_balance"
+										domain="[('period_id.date_to','&lt;=',context_today())]">
+										<tree string="أرصدة الاجازات ">
+											<field name="holiday_status_id" />
+											<field name="entitlement_name" />
+											<field name="holidays_available_stock" />
+											<field name="token_holidays_sum" />
+											<field name="periode" />
+										</tree>
+									</field>
+									<group>
+										<field name="compensation_stock" readonly="1" class="oe_inline" />
+									</group>
+
+								</page>
+
+
+
+
+								<page string="سجل الاجراءات" readonly='True'>
+
+									<field name='history_ids' readonly="1"
+										context="{'list_type':'_get_dep_name_employee_form'}">
+										<tree string="سجل الاجراءات">
+											<field name="job_id" />
+											<field name="grade_id_number" />
+											<field name="number" />
+											<field name="dep_side" />
+											<field name="department_id" />
+											<field name="type" />
+											<field name="date" />
+											<field name="num_decision" />
+											<field name="date_decision" />
+										</tree>
+									</field>
+
+								</page>
+								<page string="سجل العلاوات" invisible="1">
+									<field name='salary_increase_ids'>
+										<tree string="سجل العلاوات">
+											<field name="name" />
+											<field name="salary_grid_detail_id" />
+											<field name="date" />
+											<field name="amount" />
+										</tree>
+									</field>
+								</page>
+								<page string="البدلات" invisible='1'>
+									<field name='hr_employee_allowance_ids'>
+										<tree string="البدلات">
+											<field name="allowance_id" />
+											<field name="amount" />
+											<field name="date" />
+										</tree>
+									</field>
+								</page>
+							</notebook>
+						</sheet>
+						<div class="oe_chatter">
+							<field name="message_follower_ids" widget="mail_followers" />
+							<field name="message_ids" widget="mail_thread" />
+						</div>
+					</form>
+
+				</xpath>
+			</field>
+		</record>
+		<record id="view_employee_history_form" model="ir.ui.view">
+			<field name="name">hr.employee.history.form</field>
+			<field name="model">hr.employee.history</field>
+			<field name="arch" type="xml">
+				<form string="سجل اجراءات  موظف">
+					<group col="4">
+						<field name="employee_id" />
+						<field name="department_id" context="{'list_type':'_get_dep_name_employee_form'}" />
+						<field name="job_id" />
+						<field name="grade_id_number" />
+						<field name="dep_side" />
+						<field name="type" />
+						<field name="date" />
+						<field name="num_decision" />
+						<field name="date_decision" />
+					</group>
+				</form>
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_employee_hsitory">
+			<field name="name">سجل اجراءات موظف</field>
+			<field name="res_model">hr.employee.history</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'readonly_by_pass':
+				True,'list_type':'_get_dep_name_employee_form'}
+			</field>
+		</record>
+		<record model="ir.actions.act_window" id="action_employee_request">
+			<field name="name">طلب توظيف</field>
+			<field name="res_model">hr.employee</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('employee_state','!=','employee')]</field>
+			<field name="context">{'readonly_by_pass':
+				True,'list_type':'_get_dep_name_employee_form','compute_name':
+				'_get_natinality'}
+			</field>
+			<field name="search_view_id" ref="view_search_hr_employee_inherit" />
+
+		</record>
+		<record id="action_employee_request_tree" model="ir.actions.act_window.view">
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="view_employee_request_tree" />
+			<field name="act_window_id" ref="action_employee_request" />
+		</record>
+		<record id="action_employee_request_form" model="ir.actions.act_window.view">
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="view_employee_request_form" />
+			<field name="act_window_id" ref="action_employee_request" />
+		</record>
+
+		<menuitem id="employee_request_menu" name="طلب توظيف"
+			groups="smart_hr.group_employee_request" sequence="2" parent="hr_root_employees"
+			action="action_employee_request" />
+
+
+
+		<record id="hr_contract.hr_hr_employee_view_form2" model="ir.ui.view">
+			<field name="name">hr.hr.employee.view.form2</field>
+			<field name="model">hr.employee</field>
+			<field name="arch" type="xml">
+				<form>
+
+				</form>
+			</field>
+		</record>
+		<record id="hr_appraisal.hr_employee_view_form" model="ir.ui.view">
+			<field name="name">hr.employee.view.form.inherit.appraisal</field>
+			<field name="model">hr.employee</field>
+			<field name="inherit_id" ref="hr.view_employee_form" />
+			<field name="arch" type="xml">
+				<xpath expr="//div[@name='button_box']" position="inside">
+					<button name="%(hr_appraisal.open_view_hr_appraisal_tree2)d"
+						class="oe_inline oe_stat_button" icon="fa-sitemap" type="action">
+						<field name="appraisal_count" widget="statinfo" />
+					</button>
+				</xpath>
+			</field>
+		</record>
+	</data>
+
+	<record id="hr_payroll.act_hr_employee_payslip_list" model="ir.actions.act_window">
+		<field name="res_model">hr.payslip</field>
+		<field name="name">Payslips</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('employee_id', '=', active_id)]</field>
+	</record>
+
+	<record id="hr_payroll.payroll_hr_employee_view_form" model="ir.ui.view">
+		<field name="name">payroll.hr.employee.view.form</field>
+		<field name="model">hr.employee</field>
+		<field name="inherit_id" ref="hr.view_employee_form" />
+		<field name="arch" type="xml">
+			<data>
+				<div name="button_box" position="inside">
+					<button name="%(hr_payroll.act_hr_employee_payslip_list)d"
+						class="oe_stat_button" icon="fa-money" type="action">
+						<field name="net_salary" widget="statinfo" string="صافي الراتب" />
+					</button>
+				</div>
+			</data>
+		</field>
+	</record>
+
+
+
+
+	<data noupdate="1">
+		<!-- Remove odoo buttons -->
+		<delete id="hr.hr_employee_action_subordinate_hierachy_mutli"
+			model="ir.values" />
+	</data>
+</openerp>

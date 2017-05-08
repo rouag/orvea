@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<template id="report_hr_contract">
+			<t t-call="report.html_container">
+				<t t-foreach="docs" t-as="o">
+					<t t-call="smart_base.external_layout_extend">
+						<div class="page">
+
+							<div class="col-xs-12 text-center">
+								<p style="font-size:22px;" align="center">
+									بسم الله الرحمان الرحيم
+								</p>
+								<br></br>
+								<p style="font-size:22px;" align="right">
+									المملكة العربية السعودية
+								</p>
+								<p style="font-size:22px;" align="right">
+									السفارة السعودية في
+								</p>
+								<p style="font-size:22px;" align="right">
+									الملحقية
+								</p>
+								<strong>
+									<h2>( عقد عمل)</h2>
+								</strong>
+								<br />
+								<p style="font-size:22px;" align="right">
+									في 
+										<span t-esc="time.strftime('%d/%m/%Y')" />
+									<br></br>
+								  تم التعاقد بين كل من
+									:	<br></br>
+									١-
+									ممثلية المملكة العربية
+									    السعودية
+									  في  <span t-field="o.employee_id1.department_id" />
+									يمثلها في هذا العقد
+									:
+								</p>
+								<br></br>
+								<p style="font-size:22px;" align="right">
+									الاسم
+									/
+									<span t-field="o.employee_id1.name" />
+									الطرف الاول
+									<br></br>
+									الوظيفة/
+									<span t-field="o.job_id" />
+								</p>
+
+								<p style="font-size:22px;" align="right">
+									٢-
+									السيد
+									/
+									<span t-field="o.employee_id.name" />
+									الطرف الثاني
+									<br></br>
+									الوظيفة/
+									<span t-field="o.job_id" />
+								</p>
+								<p style="font-size:22px;" align="right">
+									الجنسية
+									/
+									<span t-field="o.country_id" />
+								</p>
+								<br></br>
+								<p style="font-size:22px;" align="right">
+									رقمها
+									/
+									<span t-field="o.identification_id" />
+									تاريخها
+									/
+									<span t-field="o.identification_date" />
+									مصدرها
+									/
+									<span t-field="o.identification_place" />
+								</p>
+								<br></br>
+								<p style="font-size:22px;" align="right">
+									و إتفق الطرفان على ما ياتي
+								</p>
+								<br></br>
+								<p style="font-size:22px;" align="right">
+									المادة : ١
+									يعمل
+									<span t-field="o.employee_id.display_name" />
+									الطرف الثاني لدى الطرف الاول في
+									بوظيفة
+									/
+									<span t-field="o.job_id" />
+								</p>
+								<br></br>
+								<p style="font-size:22px;" align="right">
+									و تشتمل واجبات الوظيفة ما يلي
+								</p>
+								<br></br>
+								<p style="font-size:22px;" align="right">
+									<span t-field="o.job_id.name.job_description" />
+								</p>
+
+
+								<br></br>
+							</div>
+							<t t-foreach="o.contract_item_ids" t-as="line">
+								<p style="font-size:22px;" align="right">
+									<span t-field="line.name" />
+									:
+									<span t-field="line.text" />
+								</p>
+
+							</t>
+
+							<div class="col-xs-4">
+								<p style="font-size:22px;" align="right">
+									<br></br>
+									الطرف الاول
+								</p>
+								<p style="font-size:22px;" align="right">
+									الاسم
+									/
+									<span t-field="o.employee_id1.name" />
+									<br></br>
+									التوقيع
+									/
+									<br></br>
+									الوظيفة
+									/
+									<span t-field="o.job_id1" />
+								</p>
+							</div>
+							<div class="col-xs-4"></div>
+							<div class="col-xs-4">
+								<p style="font-size:22px;" align="right">
+									<br></br>
+
+									الطرف الثاني
+								</p>
+								<p style="font-size:22px;" align="right">
+									الاسم
+									/
+									<span t-field="o.employee_id.name" />
+									<br></br>
+								</p>
+								<p style="font-size:22px;" align="right">
+									التوقيع
+									/
+									<br></br>
+								</p>
+								<p style="font-size:22px;" align="right">
+									الوظيفة
+									/
+									<span t-field="o.job_id" />
+								</p>
+							</div>
+							<div class="col-xs-12">
+							<br></br>
+							<br></br>
+								<p style="font-size:22px;" align="center">
+									الختم الرسمي
+								</p>
+								<br></br>
+								<div class="col-xs-4">
+									<p style="font-size:22px;" align="right">
+										راجع البيانات
+										<br></br>
+									</p>
+									<p style="font-size:22px;" align="right">
+										الاسم
+										/
+										<span t-field="o.employee_id2.name" />
+									</p>
+								</div>
+								<div class="col-xs-4">
+									<p style="font-size:22px;" align="right"> التوقيع
+									</p>
+								</div>
+								<div class="col-xs-4">
+									<p style="font-size:22px;" align="right">
+										الوظيفة
+										/
+										<span t-field="o.job_id2" />
+									</p>
+								</div>
+
+							</div>
+						</div>
+					</t>
+				</t>
+			</t>
+		</template>
+	</data>
+</openerp>
+							

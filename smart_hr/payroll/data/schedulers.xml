@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data>
+
+		<record id="ir_cron_salary_increases" model="ir.cron">
+			<field name="name">increase salary for employees</field>
+			<field name="interval_number">12</field>
+			<field name="interval_type">months</field>
+			<field name="numbercall">-1</field>
+			<field name="doall">0</field>
+			<field name="model">salary.increase</field>
+			<field name="function">update_salary_increases</field>
+			<field name="args">()</field>
+		</record>
+
+	</data>
+</openerp>
