@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-	<data >
+	<data noupdate="1">
 
 		<!--أنواع جهات التوظيف -->
 		<record id="governmental" model="recruiter.recruiter">
@@ -171,14 +171,13 @@
 		</record>
 
 		<!-- إعدادات الموظف -->
-		<record id="data_stadard_employee_configuration" model="hr.employee.configuration">
-			<field name="name">إعدادات الموظف</field>
-			<field name="period" eval="2" />
-			<field name="number" eval="000000" />
-			<field name="recruitment_legal_age" eval="18" />
-			<field name="age_member" eval="63" />
-			<field name="age_nomember" eval="65" />
-		</record>
+<!-- 		<record id="data_stadard_employee_configuration" model="hr.employee.configuration"> -->
+<!-- 			<field name="name">إعدادات الموظف</field> -->
+<!-- 			<field name="period" eval="2" /> -->
+<!-- 			<field name="recruitment_legal_age" eval="18" /> -->
+<!-- 			<field name="age_member" eval="63" /> -->
+<!-- 			<field name="age_nomember" eval="65" /> -->
+<!-- 		</record> -->
 
 		<!-- hr.decision.setting -->
 		<record id="data_hr_decision_setting" model="hr.decision.setting">

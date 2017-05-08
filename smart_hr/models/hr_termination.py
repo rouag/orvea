@@ -88,12 +88,16 @@ class HrTermination(models.Model):
     @api.multi
     def check_constraintes(self):
         if self.termination_type_id.id == self.env.ref('smart_hr.data_hr_ending_service_type_normal').id:
-            age_member = self.env.ref('smart_hr.data_stadard_employee_configuration').age_member
-            age_nomember = self.env.ref('smart_hr.data_stadard_employee_configuration').age_nomember
-            if (self.employee_id.is_member == True) and (self.employee_id.age < age_member):
-                raise ValidationError(u" السن الادنى  هو %s سنة" % age_member)
-            if (self.employee_id.is_member == False) and (self.employee_id.age < age_nomember) :
-                raise ValidationError(u" السن الادنى  هو %s سنة" % age_nomember)
+            hr_employee_configuration_id = self.env['hr.employee.configuration'].search([], limit=1)
+            if hr_employee_configuration_id:
+                age_member = hr_employee_configuration_id.age_member
+                age_nomember = hr_employee_configuration_id.age_nomember
+                if (self.employee_id.is_member == True) and (self.employee_id.age < age_member):
+                    raise ValidationError(u" السن الادنى  هو %s سنة" % age_member)
+                if (self.employee_id.is_member == False) and (self.employee_id.age < age_nomember) :
+                    raise ValidationError(u" السن الادنى  هو %s سنة" % age_nomember)
+            else:
+                    raise ValidationError(u"لالرجاء مراجعة اعدادات الموظف")
         if self.termination_type_id.evaluation_condition:
             years_progress = self.termination_type_id.years_progress
             for year in range(1, years_progress):
