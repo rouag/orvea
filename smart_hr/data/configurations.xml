@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <openerp>
-	<data noupdate="1">
+	<data >
 
 		<!--أنواع جهات التوظيف -->
 		<record id="governmental" model="recruiter.recruiter">
@@ -16,30 +16,39 @@
 			<field name="name">ممتاز</field>
 			<field name="point_from">90</field>
 			<field name="point_to">100</field>
+			<field name="sequence">1</field>
 		</record>
 
 		<record id="assessment_very_good" model="hr.evaluation.result.foctionality">
 			<field name="name">جيد جداً</field>
 			<field name="point_from">75</field>
 			<field name="point_to">90</field>
+			<field name="sequence">2</field>
+
 		</record>
 
 		<record id="assessment_hr_good" model="hr.evaluation.result.foctionality">
 			<field name="name">جيد</field>
 			<field name="point_from">60</field>
 			<field name="point_to">75</field>
+			<field name="sequence">3</field>
+
 		</record>
 
 		<record id="assessment_hr_medium" model="hr.evaluation.result.foctionality">
 			<field name="name">متوسط</field>
 			<field name="point_from">40</field>
 			<field name="point_to">60</field>
+			<field name="sequence">4</field>
+
 		</record>
 
 		<record id="assessment_hr_bad" model="hr.evaluation.result.foctionality">
 			<field name="name">سيئ</field>
 			<field name="point_from">0</field>
 			<field name="point_to">40</field>
+			<field name="sequence">5</field>
+
 		</record>
 
 		<!-- إعدادات مستويات التعليم -->
@@ -164,13 +173,13 @@
 		<!-- إعدادات الموظف -->
 		<record id="data_stadard_employee_configuration" model="hr.employee.configuration">
 			<field name="name">إعدادات الموظف</field>
-			<field name="period" eval="2"/>
-			<field name="number" eval="000000"/>
-			<field name="recruitment_legal_age" eval="18"/>
-				<field name="age_member" eval="63"/>
-			<field name="age_nomember" eval="65"/>
+			<field name="period" eval="2" />
+			<field name="number" eval="000000" />
+			<field name="recruitment_legal_age" eval="18" />
+			<field name="age_member" eval="63" />
+			<field name="age_nomember" eval="65" />
 		</record>
-		
+
 		<!-- hr.decision.setting -->
 		<record id="data_hr_decision_setting" model="hr.decision.setting">
 			<field name="name">اعدادات تسلسل القرارات</field>

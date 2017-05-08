@@ -602,8 +602,8 @@ class HrEmployeeConfiguration(models.Model):
 
     @api.model
     def control_test_retraite_employee(self):
-        age_member = self.env.ref('smart_hr.data_hr_employee_configuration').age_member
-        age_nomember = self.env.ref('smart_hr.data_hr_employee_configuration').age_nomember
+        age_member = self.env.ref('smart_hr.data_stadard_employee_configuration').age_member
+        age_nomember = self.env.ref('smart_hr.data_stadard_employee_configuration').age_nomember
         hr_member = self.env['hr.employee'].search(
             [('emp_state', '!=', 'terminated'), ('employee_state', '=', 'employee')])
         for line in hr_member:

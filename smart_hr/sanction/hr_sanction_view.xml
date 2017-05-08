@@ -32,7 +32,6 @@
 					<field name="name" invisible="1" />
 					<field name="order_date" invisible="1" />
 					<field name="raison" invisible="1" />
-
 					<field name="days_number" />
 					<field name="amount" />
 					<field name="mast" />
@@ -128,7 +127,7 @@
 
 
 						<button name="action_cancel" context="{'operation': 'cancel'}"
-							string="إلغاء" type="object" states="done"
+							string="إلغاء" type="object" 
 							groups="smart_hr.group_third_party_sanction" icon="fa-times-circle-o"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 

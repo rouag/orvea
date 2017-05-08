@@ -18,17 +18,14 @@
 						<button name="%(action_hr_refuse_wizard)d" string="رفض"
 							type="action" states="hrm" groups="smart_hr.group_hrm" icon="fa-times"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
-						
-							<button name="open_decission_suspension" string="معاينة القرار"
+
+						<button name="open_decission_suspension" string="معاينة القرار"
 							groups="smart_hr.group_hrm" type="object" states="done" icon="fa-print"
 							class="oe_inline oe_stat_button" />
 						<field name="state" widget="statusbar" statusbar_visible="draft,hrm,done" />
 					</header>
 					<sheet>
-						<label for="name" class="oe_edit_only" />
-						<h1>
-							<field name="name" readonly="1" />
-						</h1>
+						<field name="name" readonly="1" invisible="1" />
 						<group>
 							<group>
 								<field name="date" readonly="1" />
@@ -37,6 +34,15 @@
 								<field name="suspension_id"
 									domain="[('employee_id','=',employee_id),('state','=','done')]"
 									required="1" attrs="{'readonly':[('state','!=','draft')]}" />
+								<field name="release_date" required="1"
+									attrs="{'readonly':[('state','!=','draft')]}" />
+								<field name="release_reason" required="1"
+									attrs="{'readonly':[('state','!=','draft')]}" />
+								<field name="condemned"
+									attrs="{'invisible':[('state','=','draft')],
+									 'required':[('state','=','hrm')],
+									   'readonly':[('state','=','done')]  }" />
+								<field name="sentence" attrs="{'invisible':[('condemned','=',False)],'readonly':[('state','=','done')]}" />
 							</group>
 							<group string="بيانات الخطاب">
 								<field name="letter_sender" required="1"
@@ -47,15 +53,7 @@
 									attrs="{'readonly':[('state','!=','draft')]}" />
 								<field name="suspension_attachment" required="1"
 									attrs="{'readonly':[('state','!=','draft')]}" />
-								<field name="release_date" required="1"
-									attrs="{'readonly':[('state','!=','draft')]}" />
-								<field name="release_reason" required="1"
-									attrs="{'readonly':[('state','!=','draft')]}" />
-								<field name="condemned"
-									attrs="{'invisible':[('state','=','draft')],
-									 'required':[('state','=','hrm')],
-									   'readonly':[('state','=','done')]  }" />
-								<field name="sentence" attrs="{'invisible':[('condemned','=',False)]}" />
+
 							</group>
 						</group>
 					</sheet>

@@ -160,7 +160,7 @@ class HrCandidates(models.Model):
     place = fields.Many2one(string=' المكان', related='training_id.place')
     experience = fields.Selection([('experience_directe', 'الخبرات‬  المباشرة'),
                                    ('experience_in_directe', 'الخبرات الغير المباشرة'),
-                                   ], string=' نوع الخبرة المكتسبة', )
+                                   ], string=' نوع الخبرة المكتسبة',related='training_id.experience' )
     cause = fields.Text(string=u'سبب الرفض')
 
     @api.onchange('training_id')
@@ -169,7 +169,6 @@ class HrCandidates(models.Model):
             self.date_from = self.training_id.date_from
             self.date_to = self.training_id.date_to
             self.department = self.training_id.department
-            self.experience = self.training_id.experience
 
     @api.onchange('employee_id')
     def _onchange_employee_id(self):

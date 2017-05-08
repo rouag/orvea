@@ -477,11 +477,6 @@ class HrHolidays(models.Model):
                 decision_type_id = self.env.ref('smart_hr.data_leave_motherhood').id
             if self.holiday_status_id.id == self.env.ref('smart_hr.data_hr_holiday_status_childbirth').id:
                 decision_type_id = self.env.ref('smart_hr.data_data_hr_holiday_status_childbirth').id
-                
-                
-
- 
-
 
             # create decission
             decission_val={
@@ -997,13 +992,14 @@ class HrHolidays(models.Model):
                                                                    ('date_from', '<=', date(date_from.year, 12, 30))])
         prev_min_holidays_duration = 0
         for holid in prev_min_holidays:
-            prev_min_holidays_duration += holid.duration        
+            prev_min_holidays_duration += holid.duration
         return prev_min_holidays_duration
 
-    @api.onchange('duration', 'date_from')
     @api.constrains('duration')
-    def onchange_duration_min(self):
+    def check_duration_min(self):
+        warning = {}
 #         maximum_minimum duration test
+        prev_min_holidays_duration = self.compute_prev_min_holidays(self.employee_id, self.holiday_status_id, self.date_from)
         prev_min_holidays_duration = self.compute_prev_min_holidays(self.employee_id, self.holiday_status_id, self.date_from)
         if self.duration > self.holiday_status_id.maximum_minimum and self.duration < self.holiday_status_id.minimum:
             raise ValidationError(u"ا كثر فترة يمكن طلبها  اقل من " + str(self.holiday_status_id.minimum) + u" ايام هي" + str(self.holiday_status_id.maximum_minimum) + u" أيام")
@@ -1013,13 +1009,29 @@ class HrHolidays(models.Model):
 #         compute  duration and date_to
         if self.duration <= 0:
             raise ValidationError(u"الرجاء مراجعة مدة الاجازة" )
-
+        return {'warning': warning}
+            
+            
     @api.onchange('duration', 'date_from')
     def onchange_duration(self):
         warning = {}
 #         maximum_minimum duration test
         prev_min_holidays_duration = self.compute_prev_min_holidays(self.employee_id, self.holiday_status_id, self.date_from)
-#         compute  duration and date_to
+        if self.duration > self.holiday_status_id.maximum_minimum and self.duration < self.holiday_status_id.minimum:
+            warning = {'title': _('تحذير!'),
+                           'message': _(u"ا كثر فترة يمكن طلبها  اقل من " + str(self.holiday_status_id.minimum) + u" ايام هي" + str(self.holiday_status_id.maximum_minimum) + u" أيام"),
+                       }
+        elif self.duration < self.holiday_status_id.maximum_minimum:
+            if prev_min_holidays_duration + self.duration > self.holiday_status_id.maximum_minimum and self.duration < self.holiday_status_id.minimum:
+                warning = {'title': _('تحذير!'),
+                           'message': _(u"ليس لديك الرصيد الكافي للتمتع ب‬اجازة مدتها اقل من‬ " + str(self.holiday_status_id.maximum_minimum) + u" أيام"),
+                       }
+                #         compute  duration and date_to
+        if self.duration <= 0:
+            warning = {'title': _('تحذير!'),
+                       'message': _('الرجاء مراجعة مدة الاجازة!'),
+                       }
+            #         compute  duration and date_to
         date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration - 1)
         self.date_to = date_to
         if self.public_holiday_intersection(date_to):
@@ -1063,7 +1075,7 @@ class HrHolidays(models.Model):
                 duration = self.duration - 2
             if duration < self.holiday_status_id.maximum_minimum:
                 if prev_min_holidays_duration + duration < self.holiday_status_id.maximum_minimum:
-                    if duration>=0:
+                    if duration >= 0:
                         self.duration = duration
                         self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration - 1)
                     else:
@@ -1073,7 +1085,7 @@ class HrHolidays(models.Model):
                     self.duration = self.holiday_status_id.minimum
                     self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration - 1)
             else:
-                if duration>=0:
+                if duration >= 0:
                     self.duration = duration
                     self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.duration - 1)
                 else:

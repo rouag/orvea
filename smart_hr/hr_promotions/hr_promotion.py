@@ -194,7 +194,7 @@ class HrPromotion(models.Model):
                         bad_evaluation = True
 
                 if employee_state != 'terminated' and not suspend and not holidays_status_exceptiona and not holidays_status_study and not scholarship and not training and days < 15 and not deprivation_premium and not bad_evaluation:
-                    if emp.promotion_duration / 354 > emp.job_id.grade_id.years_job:
+                    if emp.promotion_duration / 354 >= emp.job_id.grade_id.years_job:
                         employee_promotion.append(emp)
 
         for emp_promotion in employee_promotion:
@@ -213,8 +213,7 @@ class HrPromotion(models.Model):
                             point_seniority = point_seniority + (seniority.point)
                             point_seniority = point_seniority if point_seniority < regle_point.max_point_seniority else regle_point.max_point_seniority
             try:
-                education_level_job = emp_promotion.job_id.serie_id.hr_classment_job_ids[
-                    0].level_education_id.nomber_year_education
+                education_level_job = emp_promotion.job_id.serie_id.hr_classment_job_ids.search([('categorie_serie_id','=', emp_promotion.job_id.serie_id.id)],limit=1).education_level_id.nomber_year_education
             except:
                 education_level_job = False
             if education_level_job:
@@ -224,24 +223,24 @@ class HrPromotion(models.Model):
                             if education_level_emp.level_education_id.secondary:
                                 for education in regle_point.education_ids:
                                     if education.nature_education == 'after_secondry' and education.type_education == "in_speciality_job":
-                                        education_point += education.year_point * (education_level_emp.nomber_year_education - education_level_job)
-                                        education_point = education_point if education_point < regle_point.max_point_education else regle_point.max_point_education,
+                                        education_point += education.year_point * (education_level_emp.level_education_id.nomber_year_education - education_level_job)
+                                        education_point = education_point if education_point < regle_point.max_point_education else regle_point.max_point_education
                             else:
                                 for education in regle_point.education_ids:
                                     if education.nature_education == 'before_secondry' and education.type_education == "in_speciality_job":
-                                        education_point += education.year_point * (education_level_emp.nomber_year_education - education_level_job)
-                                        education_point = education_point if education_point < regle_point.max_point_education else regle_point.max_point_education,
+                                        education_point += education.year_point * (education_level_emp.level_education_id.nomber_year_education - education_level_job)
+                                        education_point = education_point if education_point < regle_point.max_point_education else regle_point.max_point_education
                         else:
                             if education_level_emp.level_education_id.secondary:
                                 for education in regle_point.education_ids:
                                     if education.nature_education == 'after_secondry' and education.type_education == "not_speciality_job":
-                                        education_point += education.year_point * (education_level_emp.nomber_year_education - education_level_job)
-                                        education_point = education_point if education_point < regle_point.max_point_education else regle_point.max_point_education,
+                                        education_point += education.year_point * (education_level_emp.level_education_id.nomber_year_education - education_level_job)
+                                        education_point = education_point if education_point < regle_point.max_point_education else regle_point.max_point_education
                             else:
                                 for education in regle_point.education_ids:
                                     if education.nature_education == 'before_secondry' and education.type_education == "not_speciality_job":
-                                        education_point += education.year_point * (education_level_emp.nomber_year_education - education_level_job)
-                                        education_point = education_point if education_point < regle_point.max_point_education else regle_point.max_point_education,
+                                        education_point += education.year_point * (education_level_emp.level_education_id.nomber_year_education - education_level_job)
+                                        education_point = education_point if education_point < regle_point.max_point_education else regle_point.max_point_education
             trainings = self.env['hr.candidates'].search(
                 [('employee_id', '=', emp_promotion.id), ('state', '=', 'done')])
             for training in trainings:

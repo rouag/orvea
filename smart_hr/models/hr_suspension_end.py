@@ -12,13 +12,13 @@ class hr_suspension_end(models.Model):
     _description = 'Suspension Ending'
     _order = 'name desc'
 
-    name = fields.Char(string=u'رقم  إجراء إنهاء كف اليد',readonly=1, related='decission_id.name', store=True)
-    date = fields.Date(string=u'التاريخ',readonly=1, related='decission_id.date')
+    name = fields.Char(string=u'رقم  إجراء إنهاء كف اليد',readonly=1, store=True)
+    date = fields.Date(string=u'التاريخ',readonly=1, default=fields.Datetime.now)
     employee_id = fields.Many2one('hr.employee', string=u'الموظف',  domain=[('emp_state', '=', 'suspended')])
     letter_sender = fields.Char(string=u'جهة الخطاب', )
     letter_no = fields.Char(string=u'رقم الخطاب', )
-    letter_date = fields.Date(string=u'تاريخ الخطاب', default=fields.Datetime.now())
-    release_date = fields.Date(string=u'تاريخ إطلاق السراح', default=fields.Datetime.now())
+    letter_date = fields.Date(string=u'تاريخ الخطاب', default=fields.Datetime.now)
+    release_date = fields.Date(string=u'تاريخ إطلاق السراح', default=fields.Datetime.now)
     release_reason = fields.Text(string=u'سبب إطلاق السراح')
     suspension_id = fields.Many2one('hr.suspension', string=u'قرار كف اليد')
     state = fields.Selection([

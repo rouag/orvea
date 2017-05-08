@@ -35,8 +35,8 @@ class HrTerminationRetraiteReport(report_sxw.rml_parse):
     def _get_retraite_employees(self,date_from, date_to, is_member):
         emp_pbj = self.pool.get('hr.employee')
         data_obj = self.pool.get('ir.model.data')
-        age_member = data_obj.get_object(self.cr, self.uid, 'smart_hr', 'data_hr_employee_configuration').age_member
-        age_nomember =data_obj.get_object(self.cr, self.uid, 'smart_hr', 'data_hr_employee_configuration').age_nomember
+        age_member = data_obj.get_object(self.cr, self.uid, 'smart_hr', 'data_stadard_employee_configuration').age_member
+        age_nomember =data_obj.get_object(self.cr, self.uid, 'smart_hr', 'data_stadard_employee_configuration').age_nomember
         hr_member_searchs = emp_pbj.search(self.cr, self.uid, [('emp_state', '!=', 'terminated'), ('employee_state', '=', 'employee'),('is_member','=',True)])
         hr_nomember_searchs = emp_pbj.search(self.cr, self.uid, [('emp_state', '!=', 'terminated'), ('employee_state', '=', 'employee'),('is_member','=',False)])
         date_from = fields.Date.from_string(date_from)

@@ -29,11 +29,10 @@ class hrIncrease(models.Model):
     number_decision = fields.Char(string='رقم القرار')
     date_decision = fields.Date(string=' تاريخ القرار')
     periode_increase = fields.Many2one('hr.periode.increase', string=u'فترة العلاوة', required=1)
-    
     date = fields.Date(string='تاريخ الطلب', default=fields.Datetime.now(), readonly=1)
-    employee_deprivated_ids = fields.One2many('hr.employee.deprivation', 'increase_id', string=u'الموظفين المستثنين من العلاوة', required=1)
-    employee_increase_ids = fields.One2many('hr.employee.increase.percent', 'increase_id', string=u'الموظفين المستحقين للعلاوة  ', required=1)
-    employee_errors_ids = fields.One2many('hr.employee.increase.error', 'increase_id', string=u'الموظفين لديهم أخطاء   ', required=1)
+    employee_deprivated_ids = fields.One2many('hr.employee.deprivation', 'increase_id', string=u'الموظفين المستثنين من العلاوة', required=1, readonly=1)
+    employee_increase_ids = fields.One2many('hr.employee.increase.percent', 'increase_id', string=u'الموظفين المستحقين للعلاوة  ', required=1, readonly=1)
+    employee_errors_ids = fields.One2many('hr.employee.increase.error', 'increase_id', string=u'الموظفين لديهم أخطاء   ', required=1, readonly=1)
     state = fields.Selection([('draft', u'طلب'),
                               ('pim', u'المصاقة على الموظفين المستثنين من العلاوة '),
                               ('hrm', u'مدير شؤون الموظفين'),
@@ -66,9 +65,9 @@ class hrIncrease(models.Model):
             dapartment_id = department_level1_id
         if dapartment_id:
             dapartment = dapartment_obj.browse(dapartment_id)
-            employee_ids += [x.id for x in dapartment.member_ids]
+            employee_ids += [x.id for x in dapartment.member_ids if x.emp_state!='terminated']
             for child in dapartment.all_child_ids:
-                employee_ids += [x.id for x in child.member_ids]
+                employee_ids += [x.id for x in child.member_ids if x.emp_state!='terminated']
         result = []
         result_sanction = []
         res = {}

@@ -148,10 +148,12 @@ class HrSanction(models.Model):
     def action_cancel(self):
         self.state = 'cancel'
         self.date_sanction_end = fields.Date.from_string(fields.Date.today())
+        date_sanction_end = fields.Date.from_string(self.date_sanction_end)
+        date_sanction_start = fields.Date.from_string(self.date_sanction_start)
         for line in self.line_ids:
             if line.deduction == True :
                 raise ValidationError(u"لا يمكن إلغاء  العقوبة بعد تطبيق حسم على موظف")
-            if self.date_sanction_end > self.date_sanction_start :
+            if date_sanction_end > date_sanction_start :
                 raise ValidationError(u"لا يمكن إلغاء  العقوبة بعد نفاذها")
             line.state = 'cancel'
 
@@ -167,7 +169,6 @@ class HrSanction(models.Model):
         if self.type_sanction:
             for line in self.line_ids:
                 line.type_sanction = self.type_sanction
-
 
 
 class HrSanctionLigne(models.Model):
@@ -216,6 +217,7 @@ class HrSanctionLigne(models.Model):
                     raise ValidationError(u'.لا يمكن حرمان موظف من علاوة أكثر من مرة في نفس السنة' + u"  " + u'الموظف:' + self.employee_id.display_name)
         else:
             raise ValidationError(u'الرجاء اعداد سنة تتضمن تاريخ بدء العقوبة')
+
 
 class HrTypeSanction(models.Model):
     _name = 'hr.type.sanction'

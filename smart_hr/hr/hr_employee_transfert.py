@@ -17,7 +17,8 @@ class HrEmployeeTransfert(models.Model):
     sequence = fields.Integer(string=u'رتبة الطلب')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف',  required=1,
                                  default=lambda self: self.env['hr.employee'].search([('user_id', '=', self._uid), ('emp_state', 'not in', ['suspended','terminated'])], limit=1),)
-    last_evaluation_result = fields.Many2one('hr.employee.evaluation.level', string=u'أخر تقييم إداء')
+    last_evaluation_result = fields.Many2one('hr.employee.evaluation.level', string=u'أخر تقييم إداء', compute='get_last_evaluation_result')
+    last_evaluation_result_sequence = fields.Integer(string=u'رتبة أخر تقييم إداء')
     job_id = fields.Many2one('hr.job', string=u'الوظيفة', readonly=1, required=1)
     specific_id = fields.Many2one('hr.groupe.job', related='job_id.specific_id', string=u'المجموعة النوعية', readonly=1, required=1)
     occupied_date = fields.Date(related='job_id.occupied_date', string=u'تاريخ شغلها')
@@ -80,13 +81,22 @@ class HrEmployeeTransfert(models.Model):
     defferential_is_paied = fields.Boolean(string='defferential is paied', default=False)
     payslip_id = fields.Many2one('hr.payslip')
     done_date = fields.Date(string='تاريخ التفعيل')
-
-
     decission_id = fields.Many2one('hr.decision', string=u'القرارات')
     job_allowance_ids = fields.One2many('hr.transfert.allowance', 'job_transfert_id', string=u'بدلات الوظيفة')
     transfert_allowance_ids = fields.One2many('hr.transfert.allowance', 'transfert_id', string=u'بدلات النقل')
     location_allowance_ids = fields.One2many('hr.transfert.allowance', 'location_transfert_id', string=u'بدلات المنطقة')
-    
+
+    @api.multi
+    def get_last_evaluation_result(self):
+        for rec in self:
+            if rec.employee_id:
+                previews_year = int(date.today().year) - 1
+                if rec.employee_id.evaluation_level_ids:
+                    last_evaluation_result = rec.employee_id.evaluation_level_ids.search([('employee_id', '=', rec.employee_id.id),('year', '=', int(previews_year))],limit=1)
+                    if last_evaluation_result:
+                        rec.last_evaluation_result = last_evaluation_result
+                        rec.last_evaluation_result_sequence =  last_evaluation_result.degree_id.sequence
+
     @api.multi
     def open_decission_transfert(self):
         decision_obj= self.env['hr.decision']
@@ -175,10 +185,6 @@ class HrEmployeeTransfert(models.Model):
         res = {}
         if self.employee_id:
             previews_year = int(date.today().year) - 1
-            if self.employee_id.evaluation_level_ids:
-                last_evaluation_result = self.employee_id.evaluation_level_ids.search([('year', '=', int(previews_year))],limit=1)
-                if last_evaluation_result:
-                    self.last_evaluation_result = last_evaluation_result
             self.begin_work_date = self.employee_id.begin_work_date
             self.recruiter_date = self.employee_id.recruiter_date
             self.age = self.employee_id.age
@@ -521,7 +527,7 @@ class HrTransfertSorting(models.Model):
         self.ensure_one()
         self.line_ids.unlink()
         line_ids = []
-        transfert_ids = self.env['hr.employee.transfert'].search([('state', '=', 'pm'), ('ready_tobe_done', '=', False)], order=("create_date, begin_work_date,recruiter_date, age desc"))
+        transfert_ids = self.env['hr.employee.transfert'].search([('state', '=', 'pm'), ('ready_tobe_done', '=', False)], order='recruiter_date asc,last_evaluation_result_sequence asc,begin_work_date asc,age desc' )
         if not transfert_ids:
             raise ValidationError(u"لايوجد طلبات حالياً.")
         sequence = 1
@@ -541,11 +547,12 @@ class HrTransfertSorting(models.Model):
             if not rec.line_ids:
                 raise ValidationError(u"لايوجد طلبات حالياً.")
             line_ids = []
-            for line in rec.line_ids:
-                if line.hr_employee_transfert_id:
-                    vals = {'hr_employee_transfert_id': line.hr_employee_transfert_id.id,
-                            'hr_employee_transfert_id.state':'pm',
-                            'state': line.state,
+            hr_employee_transfert_ids = [line.hr_employee_transfert_id.id for line in rec.line_ids]
+            line_ids2 = self.env['hr.employee.transfert'].search([('id', 'in', hr_employee_transfert_ids)], order='recruiter_date asc,last_evaluation_result_sequence asc,begin_work_date asc,age desc')
+            for line2 in line_ids2:
+                    vals = {'hr_employee_transfert_id': line2.id,
+                            'hr_employee_transfert_id.state': 'pm',
+                            'state': line2.state,
                             }
                     line_ids.append(vals)
             rec.line_ids2 = line_ids
@@ -816,11 +823,11 @@ class HrTransfertSortingLine(models.Model):
     accept_trasfert = fields.Boolean(string='قبول')
     cancel_trasfert = fields.Boolean(string='رفض')
    
-    sequence = fields.Integer(string=u'رتبة الطلب', related='hr_employee_transfert_id.sequence', readonly=1)
-    recruiter_date = fields.Date(string=u'تاريخ التعين بالجهة', related='hr_employee_transfert_id.employee_id.recruiter_date', readonly=1)
-    age = fields.Integer(string=u'السن', related='hr_employee_transfert_id.employee_id.age', readonly=1)
+    sequence = fields.Integer(string=u'رتبة الطلب', readonly=1, related='hr_employee_transfert_id.sequence')
+    recruiter_date = fields.Date(string=u'تاريخ التعين بالجهة', related='hr_employee_transfert_id.employee_id.recruiter_date', readonly=1,store=True)
+    age = fields.Integer(string=u'السن', related='hr_employee_transfert_id.employee_id.age', readonly=1,store=True)
     job_id = fields.Many2one('hr.job', related='hr_employee_transfert_id.job_id', string=u'الوظيفة', readonly=1)
-    begin_work_date = fields.Date(related='hr_employee_transfert_id.employee_id.begin_work_date', string=u'تاريخ بداية العمل الحكومي', readonly=1)
+    begin_work_date = fields.Date(related='hr_employee_transfert_id.employee_id.begin_work_date', string=u'تاريخ بداية العمل الحكومي', readonly=1,store=True)
     transfert_create_date = fields.Datetime(string=u'تاريخ الطلب', related="hr_employee_transfert_id.create_date", readonly=1)
     last_evaluation_result = fields.Many2one('hr.employee.evaluation.level', related="hr_employee_transfert_id.last_evaluation_result", string=u'أخر تقييم إداء')
     new_job_id = fields.Many2one('hr.job', domain=[('state', '=', 'unoccupied')], string=u'الوظيفة المنقول إليها')

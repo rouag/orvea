@@ -10,10 +10,10 @@ class HrTermination(models.Model):
     _name = 'hr.termination'
     _inherit = ['ir.needaction_mixin', 'mail.thread']
     _description = u'طي القيد'
-    _order = 'termination_date desc'
+    _order = 'name desc'
 
-    name = fields.Char(string=u'رقم القرار', readonly=1, related='decission_id.name', store=True)
-    date = fields.Date(string=u'تاريخ',readonly=1, related='decission_id.date')
+    name = fields.Char(string=u'الرقم', readonly=1)
+    date = fields.Date(string=u'التاريخ ',readonly=1, default=fields.Datetime.now())
     date_termination = fields.Date(string=u'تاريخ طي القيد  ', default=fields.Datetime.now())
     termination_date = fields.Date(string=u'تاريخ الإعتماد')
     employee_id = fields.Many2one('hr.employee', string=u'الموظف', required=1, domain=[('emp_state', 'not in', ['suspended', 'terminated']), ('employee_state', '=', 'employee')])
@@ -88,8 +88,8 @@ class HrTermination(models.Model):
     @api.multi
     def check_constraintes(self):
         if self.termination_type_id.id == self.env.ref('smart_hr.data_hr_ending_service_type_normal').id:
-            age_member = self.env.ref('smart_hr.data_hr_employee_configuration').age_member
-            age_nomember = self.env.ref('smart_hr.data_hr_employee_configuration').age_nomember
+            age_member = self.env.ref('smart_hr.data_stadard_employee_configuration').age_member
+            age_nomember = self.env.ref('smart_hr.data_stadard_employee_configuration').age_nomember
             if (self.employee_id.is_member == True) and (self.employee_id.age < age_member):
                 raise ValidationError(u" السن الادنى  هو %s سنة" % age_member)
             if (self.employee_id.is_member == False) and (self.employee_id.age < age_nomember) :
@@ -111,14 +111,14 @@ class HrTermination(models.Model):
         self.check_constraintes()
         self.state = 'hrm'
 
-#     @api.model
-#     def create(self, vals):
-#         ret = super(HrTermination, self).create(vals)
-#         # Sequence
-#         vals = {}
-#         vals['name'] = self.env['ir.sequence'].get('hr.termination.sequence')
-#         ret.write(vals)
-#         return ret
+    @api.model
+    def create(self, vals):
+        ret = super(HrTermination, self).create(vals)
+        # Sequence
+        vals = {}
+        vals['name'] = self.env['ir.sequence'].get('hr.termination.sequence')
+        ret.write(vals)
+        return ret
 
     @api.one
     def button_done(self):

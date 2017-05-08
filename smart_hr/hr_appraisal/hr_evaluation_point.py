@@ -84,3 +84,4 @@ class HrEvaluationResultFoctionality(models.Model):
     name = fields.Char(string=u'النتيجة' )
     point_from = fields.Float(string=u"من درجة ", required=1)
     point_to = fields.Float(string=u"إلى درجة ", required=1)
+    sequence = fields.Integer(string=u"التسلسل ",)

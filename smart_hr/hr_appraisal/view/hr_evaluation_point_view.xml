@@ -2,7 +2,7 @@
 <openerp>
 	<data>
 
-		<!-- Job evaluation point  -->
+		<!-- Job evaluation point -->
 		<record id="view_search_hr_evaluation_point" model="ir.ui.view">
 			<field name="name">hr.evaluation.point.search</field>
 			<field name="model">hr.evaluation.point</field>
@@ -33,61 +33,62 @@
 			<field name="arch" type="xml">
 				<form string="عناصر المفاضلة">
 					<sheet>
-						
+
 						<group col="4">
-						<field name="name" />
-						<field name="grade_id"  options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"/>
+							<field name="name" />
+							<field name="grade_id"
+								options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
 						</group>
 						<group col="8">
-						<field name="max_point_seniority" />
-						<field name="max_point_education" />
-						<field name="max_point_training" />
-						<field name="max_point_functionality" />
+							<field name="max_point_seniority" />
+							<field name="max_point_education" />
+							<field name="max_point_training" />
+							<field name="max_point_functionality" />
 						</group>
 						<notebook>
-							
+
 							<page string="قواعد احتساب النقاط الأقدمية">
 								<field name="seniority_ids">
 									<tree editable="buttom">
-									<field name="name" />
-									<field name="year_from" />
-									<field name="year_to" />
-									<field name="point" />
+										<field name="name" />
+										<field name="year_from" />
+										<field name="year_to" />
+										<field name="point" />
 									</tree>
 								</field>
 							</page>
 							<page string="قواعد احتساب النقاط التعليم ">
 								<field name="education_ids">
 									<tree editable="buttom">
-									<field name="name" />
-									<field name="nature_education" />
-									<field name="type_education" />
-									<field name="year_point" />
+										<field name="name" />
+										<field name="nature_education" />
+										<field name="type_education" />
+										<field name="year_point" />
 									</tree>
 								</field>
 							</page>
 							<page string="قواعد احتساب النقاط التدريب">
 								<field name="training_ids">
-										<tree editable="buttom">
-									<field name="name" />
-									<field name="type_training" />
-									<field name="day_number" />
-									<field name="point" />
+									<tree editable="buttom">
+										<field name="name" />
+										<field name="type_training" />
+										<field name="day_number" />
+										<field name="point" />
 									</tree>
 								</field>
 							</page>
 							<page string="قواعد احتساب النقاط الإداء الوظيفي">
 								<field name="functionality_ids">
-								<tree editable="buttom">
-									<field name="degree_id" />
-									<field name="point" />
-								</tree>
-									
+									<tree editable="buttom">
+										<field name="degree_id" />
+										<field name="point" />
+									</tree>
+
 								</field>
 							</page>
-							
+
 						</notebook>
-						
+
 					</sheet>
 				</form>
 			</field>
@@ -103,8 +104,8 @@
 		</record>
 		<menuitem id="menu_hr_evaluation" action="action_hr_evaluation"
 			parent="menu_surveys_hr" sequence="10" name="عناصر المفاضلة" />
-			
-			<!-- إعدادات نتائج تقييم موظف -->
+
+		<!-- إعدادات نتائج تقييم موظف -->
 
 
 		<record id="view_form_hr_evaluation_result_foctionality" model="ir.ui.view">
@@ -113,11 +114,12 @@
 			<field name="arch" type="xml">
 				<form string="إعدادات نتائج تقييم موظف">
 					<sheet>
-							<group col="6">
-								<field name="name" required="1" />
-								<field name="point_from" required="1" />
-								<field name="point_to" required="1" />
-							</group>
+						<group col="4">
+							<field name="name" required="1" />
+							<field name="sequence" />
+							<field name="point_from" required="1" />
+							<field name="point_to" required="1" />
+						</group>
 					</sheet>
 				</form>
 			</field>
@@ -127,9 +129,10 @@
 			<field name="model">hr.evaluation.result.foctionality</field>
 			<field name="arch" type="xml">
 				<tree string="إعدادات نتائج تقييم موظف" class="oe_tree_view">
+					<field name="sequence" />
 					<field name="name" />
-					<field name="point_from"  />
-					<field name="point_to"  />
+					<field name="point_from" />
+					<field name="point_to" />
 				</tree>
 			</field>
 		</record>
@@ -145,7 +148,7 @@
 		<menuitem id="menu_hr_evaluation_result_foctionality" action="action__hr_evaluation_result_foctionality"
 			parent="menu_surveys_hr" sequence="11" />
 
-		
+
 
 
 
