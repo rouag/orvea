@@ -14,6 +14,10 @@
         'security/ir.model.access.csv',
         'data/paperformat.xml',
         'data/template_email.xml',
+<<<<<<< HEAD
+=======
+        'data/hr_notification_setting_ligne.xml',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
         'view/res_company.xml',
         'view/notification.xml',
         'view/notification_setting.xml',

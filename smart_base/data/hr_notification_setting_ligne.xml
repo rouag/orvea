@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<openerp>
+	<data noupdate="0">
+		<record id="hr_notification_setting" model="notification.setting">
+			<field name="name_setting">إدارة الاشعارات</field>
+			
+		</record>
+		<record id="notification_setting_holidays1" model="notification.setting.line">
+			<field name="notification_setting_id" ref="hr_notification_setting" />
+			<field name="type">hr_holidays_type</field>
+			<field name="notif" eval="True" />
+			<field name="sms" eval="False" />
+			<field name="email" eval="False" />
+		</record>
+		
+	<record id="notification_setting_holidays_extension" model="notification.setting.line">
+			<field name="notification_setting_id" ref="hr_notification_setting" />
+			<field name="type">hr_holidays_extension_type</field>
+		<field name="notif" eval="True" />
+			<field name="sms" eval="False" />
+			<field name="email" eval="False" />
+		</record>
+		<record id="notification_setting_holidays_cancellation" model="notification.setting.line">
+			<field name="notification_setting_id" ref="hr_notification_setting" />
+			<field name="type" >hr_holidays_cancellation_type</field>
+		<field name="notif" eval="True" />
+			<field name="sms" eval="False" />
+			<field name="email" eval="False" />
+		</record> 
+		  
+ 	<record id="notification_setting_promotion" model="notification.setting.line">
+			<field name="notification_setting_id" ref="hr_notification_setting" />
+			<field name="type">hr_promotion_type</field>
+			<field name="notif" eval="True" />
+			<field name="sms" eval="False" />
+			<field name="email" eval="False" />
+		</record>
+		<record id="notification_setting_overtime" model="notification.setting.line">
+			<field name="notification_setting_id" ref="hr_notification_setting" />
+			<field name="type">hr_overtime_type</field>
+			<field name="notif" eval="True" />
+			<field name="sms" eval="False" />
+			<field name="email" eval="False" />
+		</record>
+		<record id="notification_setting_appoint" model="notification.setting.line">
+			<field name="notification_setting_id" ref="hr_notification_setting" />
+			<field name="type">hr_employee_appoint_type</field>
+			<field name="notif" eval="True" />
+			<field name="sms" eval="False" />
+			<field name="email" eval="False" />
+		</record>
+		<record id="notification_setting_appoint_direct" model="notification.setting.line">
+			<field name="notification_setting_id" ref="hr_notification_setting" />
+			<field name="type">hr_employee_appoint_direct_type</field>
+		<field name="notif" eval="True" />
+			<field name="sms" eval="False" />
+			<field name="email" eval="False" />
+		</record>
+		<record id="notification_setting_training" model="notification.setting.line">
+			<field name="notification_setting_id" ref="hr_notification_setting" />
+			<field name="type">hr_employee_training_type</field>
+			<field name="notif" eval="True" />
+			<field name="sms" eval="False" />
+			<field name="email" eval="False" />
+		</record>
+		<record id="notification_setting_deputation" model="notification.setting.line">
+			<field name="notification_setting_id" ref="hr_notification_setting" />
+			<field name="type">hr_employee_deputation_type</field>
+			<field name="notif" eval="True" />
+			<field name="sms" eval="False" />
+			<field name="email" eval="False" />
+		</record>
+		<record id="notification_setting_job_create" model="notification.setting.line">
+			<field name="notification_setting_id" ref="hr_notification_setting" />
+			<field name="type">hr_employee_job_create_type</field>
+			<field name="notif" eval="True" />
+			<field name="sms" eval="False" />
+			<field name="email" eval="False" />
+		</record>
+		<record id="notification_setting_job_strip" model="notification.setting.line">
+			<field name="notification_setting_id" ref="hr_notification_setting" />
+			<field name="type">hr_employee_hr_job_strip_type</field>
+			<field name="notif" eval="True" />
+			<field name="sms" eval="False" />
+			<field name="email" eval="False" />
+		</record>
+		<record id="notification_setting_hr_job_cancel" model="notification.setting.line">
+			<field name="notification_setting_id" ref="hr_notification_setting" />
+			<field name="type">hr_employee_hr_job_cancel_type</field>
+			<field name="notif" eval="True" />
+			<field name="sms" eval="False" />
+			<field name="email" eval="False" />
+		</record>
+		<record id="notification_setting_hr_job_move" model="notification.setting.line">
+			<field name="notification_setting_id" ref="hr_notification_setting" />
+			<field name="type">hr_employee_hr_job_move_type</field>
+			<field name="notif" eval="True" />
+			<field name="sms" eval="False" />
+			<field name="email" eval="False" />
+		</record>
+		<record id="notification_setting_down_grade" model="notification.setting.line">
+			<field name="notification_setting_id" ref="hr_notification_setting" />
+			<field name="type">hr_employee_hr_job_scal_down_grade_type</field>
+		<field name="notif" eval="True" />
+			<field name="sms" eval="False" />
+			<field name="email" eval="False" />
+		</record>
+		<record id="notification_setting_job_update" model="notification.setting.line">
+			<field name="notification_setting_id" ref="hr_notification_setting" />
+			<field name="type">hr_employee_job_update_type</field>
+		<field name="notif" eval="True" />
+			<field name="sms" eval="False" />
+			<field name="email" eval="False" />
+		</record>
+		<record id="notification_setting_authorization" model="notification.setting.line">
+			<field name="notification_setting_id" ref="hr_notification_setting" />
+			<field name="type">hr_employee_authorization_type</field>
+		<field name="notif" eval="True" />
+			<field name="sms" eval="False" />
+			<field name="email" eval="False" />
+		</record>
+		<record id="notification_setting_contract" model="notification.setting.line">
+			<field name="notification_setting_id" ref="hr_notification_setting" />
+			<field name="type">hr_employee_contract_type</field>
+			<field name="notif" eval="True" />
+			<field name="sms" eval="False" />
+			<field name="email" eval="False" />
+		</record>
+			<record id="notification_setting_commissioning" model="notification.setting.line">
+			<field name="notification_setting_id" ref="hr_notification_setting" />
+			<field name="type">hr_employee_commissioning_type</field>
+			<field name="notif" eval="True" />
+			<field name="sms" eval="False" />
+			<field name="email" eval="False" />
+		</record>
+			<record id="notification_setting_transfert" model="notification.setting.line">
+			<field name="notification_setting_id" ref="hr_notification_setting" />
+			<field name="type">hr_employee_transfert_type</field>
+			<field name="notif" eval="True" />
+			<field name="sms" eval="False" />
+			<field name="email" eval="False" />
+		</record>
+		<record id="notification_setting_cron_test_years_employee" model="notification.setting.line">
+			<field name="notification_setting_id" ref="hr_notification_setting" />
+			<field name="type">hr_cron_test_years_employee_type</field>
+			<field name="notif" eval="True" />
+			<field name="sms" eval="False" />
+			<field name="email" eval="False" />
+		</record>
+		<record id="notification_setting_test_periode_employee" model="notification.setting.line">
+			<field name="notification_setting_id" ref="hr_notification_setting" />
+			<field name="type">hr_cron_test_periode_employee_type</field>
+			<field name="notif" eval="True" />
+			<field name="sms" eval="False" />
+			<field name="email" eval="False" />
+		</record>
+		<record id="notification_setting_cron_commissioning_end" model="notification.setting.line">
+			<field name="notification_setting_id" ref="hr_notification_setting" />
+			<field name="type">hr_cron_commissioning_end_type</field>
+			<field name="notif" eval="True" />
+			<field name="sms" eval="False" />
+			<field name="email" eval="False" />
+		</record>
+		
+	</data>
+</openerp>
+			

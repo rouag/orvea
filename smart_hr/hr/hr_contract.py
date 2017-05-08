@@ -132,7 +132,11 @@ class HrContract(models.Model):
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                   'res_id': self.id,
                                                   'res_action': 'smart_hr.action_hr_contract_view',
+<<<<<<< HEAD
                                                   'notif': True
+=======
+                                                    'type': 'hr_employee_contract_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                   })
 
 

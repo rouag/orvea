@@ -188,7 +188,11 @@ class hrHolidaysCancellation(models.Model):
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                   'res_model':'hr.holidays.cancellation',
                                                   'res_id': self.id,
+<<<<<<< HEAD
                                                   'notif': True,
+=======
+                                                    'type':'hr_holidays_cancellation_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                   })
             else:
                 # send notification for requested employee
@@ -203,7 +207,12 @@ class hrHolidaysCancellation(models.Model):
                                                   'res_model':'hr.holidays.cancellation',
                                                   'res_id': self.id,
                                                   'res_action': res_model,
+<<<<<<< HEAD
                                                   'notif': True,})
+=======
+                                                   'type':'hr_holidays_cancellation_type'
+                                                  ,})
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
 
             self.message_post(u"تم إرسال الطلب من قبل '" + unicode(user.name) + u"'")
 
@@ -276,7 +285,11 @@ class hrHolidaysCancellation(models.Model):
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                   'res_model':'hr.holidays.cancellation',
                                                   'res_id': cancellation.id,
+<<<<<<< HEAD
                                                   'notif': True,
+=======
+                                                   'type':'hr_holidays_cancellation_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                   'res_action': 'smart_hr.action_hr_holidays_cancellation_employees'
                                                   })
             else:
@@ -286,7 +299,11 @@ class hrHolidaysCancellation(models.Model):
                                                   'show_date': datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT),
                                                   'res_model':'hr.holidays.cancellation',
                                                   'res_id': cancellation.id,
+<<<<<<< HEAD
                                                   'notif': True,
+=======
+                                                  'type':'hr_holidays_cancellation_type',                                                  
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                   'res_action': 'smart_hr.action_hr_holidays_cut_employees'
                                                   })
     @api.model

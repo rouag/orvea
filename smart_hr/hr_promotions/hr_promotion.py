@@ -444,7 +444,11 @@ class HrPromotion(models.Model):
                                                       'user_id': emp.employee_id.user_id.id,
                                                       'show_date': datetime.now().strftime(
                                                           DEFAULT_SERVER_DATETIME_FORMAT),
+<<<<<<< HEAD
                                                       'notif': True,
+=======
+                                                       'type':'hr_promotion_type',
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
                                                       'res_id': self.id,
                                                       'res_action': 'smart_hr.action_hr_decision_appoint', })
                 emp.employee_id.job_id.write({'state': 'unoccupied', 'category': 'unoccupied_promotion' ,'employee': False})
@@ -592,7 +596,11 @@ class HrPromotionLigneEmployeeJob(models.Model):
         ('done', u'موافقة'),
         ('refuse', u'رفض'),
         ('cancel', u'الغاء'),
+<<<<<<< HEAD
     ], string=u'حالة', )
+=======
+    ], string=u'الحالة', )
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
     emplyoee_state = fields.Boolean(related='promotion_id.emplyoee_state')
     done_date = fields.Date(string='تاريخ التفعيل')
     defferential_is_paied = fields.Boolean(string='defferential is paied', default=False)

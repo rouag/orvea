@@ -8,6 +8,7 @@
 						<div class="page" style="direction:rtl;">
 							<br></br>
 							<div class="text-center">
+<<<<<<< HEAD
 								<p>
 									رقم القرار :
 									<span t-esc="o.number_decision" />
@@ -16,6 +17,9 @@
 									 تاريخ القرار :
 									 <span t-esc="o.date_decision" />
 								</p>
+=======
+								
+>>>>>>> 276a72932207909ed91b8ca99faaeae2fb13647f
 								<b align="left">قائمة الموظفين المستثنين من العلاوة
 
 								</b>
