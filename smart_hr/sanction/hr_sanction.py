@@ -221,9 +221,10 @@ class HrSanctionLigne(models.Model):
         fiscalyear = self.env['hr.fiscalyear'].search([('date_start', '<=', self.date_sanction), ('date_stop', '>=', self.date_sanction)], limit=1)
         sanctions = self.search([('state', '=', 'done'), ('employee_id', '=', self.employee_id.id), ('type_sanction', '=', self.env.ref('smart_hr.data_hr_sanction_type_grade').id), ('id', '!=', self.id)])
         if fiscalyear:
-            for sanction in sanctions:
-                if sanction.date_sanction >= fiscalyear.date_start and sanction.date_sanction <= fiscalyear.date_stop:
-                    raise ValidationError(u'.لا يمكن حرمان موظف من علاوة أكثر من مرة في نفس السنة' + u"  " + u'الموظف:' + self.employee_id.display_name)
+            if self.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_grade').id:
+                for sanction in sanctions:
+                    if sanction.date_sanction >= fiscalyear.date_start and sanction.date_sanction <= fiscalyear.date_stop:
+                        raise ValidationError(u'.لا يمكن حرمان موظف من علاوة أكثر من مرة في نفس السنة' + u"  " + u'الموظف:' + self.employee_id.display_name)
         else:
             raise ValidationError(u'الرجاء اعداد سنة تتضمن تاريخ بدء العقوبة')
 

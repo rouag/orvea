@@ -118,7 +118,7 @@ class HrScholarship(models.Model):
     @api.onchange('date_from', 'date_to')
     def onchange_dates(self):
         res = {}
-        warning={}
+        warning = {}
         if self.date_from:
             if fields.Date.from_string(self.date_from).weekday() in [4, 5] and not self.is_extension:
                 warning = {
@@ -180,10 +180,20 @@ class HrScholarship(models.Model):
         self.ensure_one()
         if not self.is_started:
             raise ValidationError(u'لا يمكن قطع ابتعاث لم يبدأ بعد.')
-        self.env['hr.scholarship.history'].create({'name': u'قطع',
-                                                   'scholarship_id': self.id
-                                                   })
-        self.state = 'cutoff'
+        context = self._context.copy()
+        context.update({
+            u'default_date_cutoff': fields.Datetime.now(),
+        })
+        return {
+            'type': 'ir.actions.act_window',
+            'name': u'قطع الابتعاث',
+            'res_model': 'hr.scholarship.cutoff.wizard',
+            'view_type': 'form',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': context
+        }
+
 
     @api.multi
     def action_cancel(self):
