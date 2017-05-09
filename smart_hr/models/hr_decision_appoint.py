@@ -27,7 +27,7 @@ class HrDecisionAppoint(models.Model):
     contract_id = fields.Many2one('hr.contract', string='العقد', Domain=[('state', '!=', 'close')])
     number = fields.Char(related='employee_id.number', store=True, readonly=True, string=u'الرقم الوظيفي')
     emp_code = fields.Char(string=u'رمز الوظيفة ', readonly=1)
-    country_id = fields.Many2one(related='employee_id.country_id', store=True, readonly=True, string='الجنسية')
+    country_id = fields.Char(related='employee_id.country_id.national',readonly=True,string="الجنسية")
     emp_job_id = fields.Many2one('hr.job', string='الوظيفة', store=True, readonly=1)
     emp_number_job = fields.Char(string='رقم الوظيفة', store=True, readonly=1)
     emp_type_id = fields.Many2one('salary.grid.type', string='الصنف', store=True, readonly=1)
@@ -656,7 +656,6 @@ class HrDecisionAppoint(models.Model):
     def _onchange_employee_id(self):
         if self.employee_id.number:
             self.number = self.employee_id.number
-        self.country_id = self.employee_id.country_id
         self.emp_job_id = self.employee_id.job_id.id
         self.emp_code = self.employee_id.job_id.name.number
         self.emp_number_job = self.employee_id.job_id.number

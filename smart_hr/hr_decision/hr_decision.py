@@ -388,7 +388,7 @@ class HrDecision(models.Model):
                         decision_text = decision_text.replace('DURATION', unicode(duration))
                         
                 if object_type == 'scholarship' :
-                    scholarship_line = self.env['hr.scholarship'].search([('employee_id', '=', employee_id.id),('state', '=', 'done')], limit=1)
+                    scholarship_line = self.env['hr.scholarship'].search([('employee_id', '=', employee_id.id),('id', '=',model_id),('state', '=', 'done')], limit=1)
                     if scholarship_line :
                         diplom_id = scholarship_line.diplom_id.name or ""
                         faculty_id = scholarship_line.faculty_id.name or ""

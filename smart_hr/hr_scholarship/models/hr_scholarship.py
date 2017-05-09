@@ -80,7 +80,7 @@ class HrScholarship(models.Model):
                 'date': decision_date,
                 'employee_id': self.employee_id.id}
             decision = decision_obj.create(decission_val)
-            decision.text = decision.replace_text(self.employee_id, decision_date, decision_type_id, 'scholarship')
+            decision.text = decision.replace_text(self.employee_id, decision_date, decision_type_id, 'scholarship'zzzzz)
             decission_id = decision.id
             self.decission_id = decission_id
         return {
