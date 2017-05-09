@@ -55,7 +55,7 @@ class HrDecisionPromotion(models.Model):
         ('done', u'اعتمدت'),
         ('refuse', u'رفض'),
         ('cancel', u'ملغاة'),
-    ], string=u'حالة', default='draft', )
+    ], string=u'الحالة', default='draft', )
 
 
 class HrDecisionPromotionLine(models.Model):

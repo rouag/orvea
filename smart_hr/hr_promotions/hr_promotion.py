@@ -492,7 +492,7 @@ class HrPromotionLigneEmployee(models.Model):
     emplyoee_state = fields.Boolean(string='تأجيل', )
     state = fields.Selection([('draft', u'طلب'),
                               ('done', u'اعتمدت'),
-                              ], string=u'حالة', default='draft', )
+                              ], string=u'الحالة', default='draft', )
 
     identification_id = fields.Char(string=u'رقم الهوية', related="employee_id.identification_id", readonly=1)
     begin_work_date = fields.Date(related="employee_id.begin_work_date", readonly=1)

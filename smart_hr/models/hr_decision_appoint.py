@@ -78,7 +78,7 @@ class HrDecisionAppoint(models.Model):
         ('done', u'اعتمدت'),
         ('refuse', u'رفض'),
         ('cancel', u'ملغاة'),
-    ], string=u'حالة', default='draft', )
+    ], string=u'الحالة', default='draft', )
 
     # attachments files
     order_picture = fields.Binary(string='صورة الخطاب', attachment=True)

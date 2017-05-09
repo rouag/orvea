@@ -38,7 +38,7 @@ class HrOvertime(models.Model):
         ('cut', u'مقطوعة'),
         ('cancel', u'ملغى'),
         ('refuse', u'مرفوضة')
-    ], string=u'حالة', default='draft', )
+    ], string=u'الحالة', default='draft', )
 
     @api.multi
     def button_cancel_overtime(self):
@@ -211,7 +211,10 @@ class HrOvertimeLigne(models.Model):
     @api.onchange('days_number')
     def _onchange_days_number(self):
         if self.days_number:
-            self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.days_number)
+            if self.date_from :
+                self.date_to = fields.Date.from_string(self.date_from) + timedelta(days=self.days_number)
+            if self.date_to :
+                self.date_from = fields.Date.from_string(self.date_to) - timedelta(days=self.days_number)
 
     @api.one
     @api.constrains('days_number')

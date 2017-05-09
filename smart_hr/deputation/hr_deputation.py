@@ -78,6 +78,7 @@ class HrDeputation(models.Model):
     file_order = fields.Binary(string=' صورة القرار من الوزير المختص  ', attachment=True)
     file_order_name = fields.Char(string=' صورة القرار من الوزير المختص  ')
     file_decision = fields.Binary(string='نسخة من حالة الميزانية', attachment=True)
+    file_decision_name = fields.Char(string='نسخة من حالة الميزانية')
     calcul_wekeend = fields.Boolean(string='  احتساب عطلة نهاية الاسبوع', default=False)
 
     lettre_number = fields.Char(string='رقم خطاب التغطية')
@@ -117,7 +118,8 @@ class HrDeputation(models.Model):
         ('done', u'اعتمدت'),
         ('finish', u'منتهية'),
         ('refuse', u'مرفوضة')
-    ], string=u'حالة', default='draft',)
+        ], string=u'الحالة', default='draft',)
+
     task_name = fields.Char(string=u' المهمة', required=1)
     duration = fields.Integer(string=u'المدة')
 

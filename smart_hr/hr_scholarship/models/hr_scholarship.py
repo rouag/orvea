@@ -106,7 +106,7 @@ class HrScholarship(models.Model):
                 raise ValidationError(u"هناك تداخل في تاريخ الإنتهاء مع عطلة نهاية الاسبوع")
             if self.env['hr.smart.utils'].public_holiday_intersection(self.date_to):
                 raise ValidationError(u"هناك تداخل في تاريخ البدء مع  عطلة او عيد  ")
-            
+
     @api.onchange('diplom_type')
     def onchange_diplom_type(self):
         res = {}
@@ -114,7 +114,7 @@ class HrScholarship(models.Model):
             res['domain'] = {'diplom_id': [('education_level_id.diplom_type', '=', self.diplom_type)]}
             self.diplom_id = False
         return res
-    
+
     @api.onchange('date_from', 'date_to')
     def onchange_dates(self):
         res = {}
