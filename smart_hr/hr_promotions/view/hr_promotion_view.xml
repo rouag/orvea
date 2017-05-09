@@ -340,7 +340,7 @@
 										<field name="sum_point" readonly="1" />
 										<field name="emplyoee_state" invisible="1" />
 										<field name="new_job_id" options='{"no_open": True, "no_create": True}'
-											attrs="{'readonly': [('emplyoee_state', '=', True)]}" domain="[('occupied_promotion','=',True)]" />
+											attrs="{'readonly': [('emplyoee_state', '=', True)]}" domain="[('occupied_promotion','=',True),('state','=','unoccupied')]" />
 										<field name="new_department" invisible="1" />
 										<field name="new_city_jobs" readonly="1" />
 										<field name="emp_grade_id_new" readonly="1" />

@@ -73,7 +73,7 @@ class hrIncrease(models.Model):
         res = {}
         # filter by type
         if self.salary_grid_type_id:
-            employee_ids = employee_obj.search([('id', 'in', employee_ids), ('type_id', '=', self.salary_grid_type_id.id)]).ids
+            employee_ids = employee_obj.search([('emp_state', '!=', 'terminated'), ('id', 'in', employee_ids), ('type_id', '=', self.salary_grid_type_id.id)]).ids
         result = list(set(employee_ids))
         years_id = self.env['hr.fiscalyear'].search([('date_stop', '<', self.periode_increase.period_id.date_start)] , order='date_stop desc', limit=1) 
         if not years_id :
@@ -81,7 +81,8 @@ class hrIncrease(models.Model):
         sanctions = self.env['hr.sanction.ligne'].search([('state', '=', 'done'), ('date_sanction', '>', years_id.date_start), ('date_sanction', '<', years_id.date_stop), ('sanction_id.type_sanction', '=', self.env.ref('smart_hr.data_hr_sanction_type_grade').id)])
         liste_employee_ids = set()
         for rec in sanctions:
-            liste_employee_ids.add(rec.employee_id.id)
+            if rec.employee_id.emp_state != 'terminated':
+                liste_employee_ids.add(rec.employee_id.id) 
         result_sanction = list(liste_employee_ids)
         result_total = set(result) - set(result_sanction)
         result_inter = []

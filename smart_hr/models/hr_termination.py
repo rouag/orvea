@@ -10,7 +10,7 @@ class HrTermination(models.Model):
     _name = 'hr.termination'
     _inherit = ['ir.needaction_mixin', 'mail.thread']
     _description = u'طي القيد'
-    _order = 'name desc'
+    _order = 'date desc'
 
     name = fields.Char(string=u'الرقم', readonly=1)
     date = fields.Date(string=u'التاريخ ',readonly=1, default=fields.Datetime.now())

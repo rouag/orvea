@@ -34,6 +34,41 @@
 			</field>
 		</record>
 
+		<record model="ir.ui.view" id="hr_employee_deprivation_form">
+			<field name="name">hr.employee.deprivation.form</field>
+			<field name="model">hr.employee.deprivation</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="الموظفين المستثنين من العلاوة">
+					<sheet>
+						<group>
+							<field name="employee_id" />
+							<field name="name" />
+							<field name="order_date" />
+							<field name="reason" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+		<record model="ir.ui.view" id="hr_employee_increase_error_form">
+			<field name="name">hr.employee.increase.error.form</field>
+			<field name="model">hr.employee.increase.error</field>
+			<field name="type">form</field>
+			<field name="arch" type="xml">
+				<form string="الموظفين لديهم أخطاء">
+					<sheet>
+						<group>
+							<field name="employee_id" />
+							<field name="type_id" />
+							<field name="grade_id" />
+							<field name="degree_id" />
+							<field name="basic_salary" />
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
 		<record model="ir.actions.act_window" id="action_hr_periode_increase">
 			<field name="name"> فترة العلاوة</field>
 			<field name="res_model">hr.periode.increase</field>
@@ -149,7 +184,6 @@
 								<field name="employee_deprivated_ids" nolabel="1"
 									options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 									domain="[('employee_id.type_id','!=',%(data_salary_grid_type6)d)]"
-									attrs="{'readonly':[('state','not in',['draft','pim'])]}"
 									create="false">
 									<tree editable="bottom" create="false" delete="false">
 										<field name="employee_id" />
@@ -244,9 +278,17 @@
 			<field name="arch" type="xml">
 				<form>
 					<group>
-						<field name="employee_id"
-							options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}" />
-						<field name="increase_percent" />
+						<field name="employee_id" />
+
+						<field name="type_id" />
+						<field name="grade_id" />
+						<field name="degree_id" />
+						<field name="new_degree_id" attrs="{'invisible':[('state','=', 'draft')]}" />
+						<field name="basic_salary" />
+						<field name="new_basic_salary" attrs="{'invisible':[('state','=', 'draft')]}" />
+						<field name="increase_percent" attrs="{'invisible':[('state','=', 'draft')]}" />
+						<field name="periode_increase" invisible="1" />
+						<field name="state" invisible="1" />
 					</group>
 				</form>
 			</field>
