@@ -523,7 +523,7 @@ class HrPromotionLigneJobs(models.Model):
     _name = 'hr.promotion.job'
     _order = 'id desc'
 
-    new_job_id = fields.Many2one('hr.job', string=u'الوظيفة المرقى عليها', domain=[('state', '=', 'unoccupied')])
+    new_job_id = fields.Many2one('hr.job', string=u'الوظيفة المرقى عليها')
     new_number_job = fields.Char(string='رقم الوظيفة', store=True, readonly=1)
     promotion_id = fields.Many2one('hr.promotion', string=u'الترقية ')
     department = fields.Many2one('hr.department', string='الادارة', store=True, readonly=1)

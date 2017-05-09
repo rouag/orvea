@@ -42,15 +42,24 @@ class HrSanction(models.Model):
                               ('done', 'اعتمدت'),
                               ('update', 'تعديل'),
                               ('cancel', 'ملغاة')], string='الحالة', readonly=1, default='draft')
+    display_cancel_button = fields.Boolean(compute='_compute_display_cancel_button')
 
-
+    @api.multi
+    def _compute_display_cancel_button(self):
+        date_sanction_end = fields.Date.from_string(fields.Date.today())
+        for rec in self:
+            date_sanction_start = fields.Date.from_string(rec.date_sanction_start)
+            if rec.state != 'done' or date_sanction_end >= date_sanction_start:
+                rec.display_cancel_button = False
+            else:
+                rec.display_cancel_button = True
 
     @api.multi
     def button_deprivation_premium_sanction(self):
-        decision_obj= self.env['hr.decision']
+        decision_obj = self.env['hr.decision']
         if self.decission_id:
             decission_id = self.decission_id.id
-        else :
+        else:
             decision_type_id = 1
             decision_date = fields.Date.today() # new date
             if self.type_sanction.id == self.env.ref('smart_hr.data_hr_sanction_type_grade').id:

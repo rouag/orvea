@@ -125,9 +125,9 @@
 							states="update" groups="smart_hr.group_third_party_sanction"
 							confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
-
+						<field name="display_cancel_button" invisible="1"/>
 						<button name="action_cancel" context="{'operation': 'cancel'}"
-							string="إلغاء" type="object" 
+							string="إلغاء" type="object"  attrs="{'invisible':[('display_cancel_button','=',False)]}" 
 							groups="smart_hr.group_third_party_sanction" icon="fa-times-circle-o"
 							class="oe_inline oe_stat_button" confirm="هل أنت متأكد من القيام بهذا الإجراء ؟" />
 
