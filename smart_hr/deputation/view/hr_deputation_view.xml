@@ -115,7 +115,7 @@
 									attrs="{'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish', 'refuse'])]}" />
 								<field name="date_to"
 									attrs="{'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish', 'refuse'])]}" />
-								<field name="duration" readonly="True"/>
+								<field name="duration" readonly="True" />
 								<field name="calcul_wekeend" invisible="1"
 									attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
 							</group>
@@ -157,7 +157,8 @@
 									<field name="category_id"
 										options="{'no_create_edit': True,'no_create': True, 'no_quick_create': True}"
 										attrs="{'invisible':['|',('type', '=','internal'),('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
-									<field name="country_ids" domain="[('duputation_category_id', '=', category_id)]"
+									<field name="country_ids"
+										domain="[('duputation_category_id', '=', category_id)]"
 										attrs="{'invisible':['|',('type', '=','internal'),('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish'])]}" />
 								</group>
 								<group string="الجهة توفر">
@@ -179,7 +180,7 @@
 								<group>
 									<field name="file_decision" filename="file_decision_name"
 										attrs="{'invisible':[('state', 'not in', [ 'draft','audit','waiting','done','order','humain','finish'])],'required':[('state','=','draft')],'readonly':[('state', 'in', ['audit','waiting','done','order','humain','finish', 'refuse'])]}" />
-									<field name="file_order" filename="file_decision_name"
+									<field name="file_order" filename="file_order_name"
 										attrs="{'invisible':[('state', '=', 'draft'), ('ministre_report','=', False), ('external_deputation_balance_override','=', False)],'required':[('state','=','audit')],'readonly':[('state', 'in', ['waiting','done','order','humain','finish', 'refuse'])]}" />
 									<field name="decision_number"
 										attrs="{'invisible':[('state', '=', 'draft'), ('ministre_report','=', False), ('external_deputation_balance_override','=', False)],'required':[('state','=','audit')],'readonly':[('state', 'in', ['waiting','done','order','humain','finish', 'refuse'])]}" />
@@ -207,6 +208,8 @@
 									<field name="ministre_report" invisible="1" />
 									<field name="file_report_name" invisible="1" />
 									<field name="file_lettre_name" invisible="1" />
+									<field name="file_order_name" invisible="1" />
+									<field name="file_decision_name" invisible="1" />
 									<field name="deputation_balance_override" invisible="1" />
 									<field name="external_deputation_balance_override"
 										invisible="1" />

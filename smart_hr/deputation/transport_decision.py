@@ -37,7 +37,7 @@ class HrTransportDecision(models.Model):
         ('refuse', u'مرفوض'),
         ('finish', u'منتهية'),
         ('cancel', u'ملغى')
-    ], string=u'حالة', default='draft', )
+    ], string=u'الحالة', default='draft', )
     is_paied = fields.Boolean(string='is paied', default=False)
     payslip_id = fields.Many2one('hr.payslip')
 

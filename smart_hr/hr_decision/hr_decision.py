@@ -23,7 +23,7 @@ class HrDecision(models.Model):
     state = fields.Selection([('draft', u'جديد'),
                               ('done', u'اعتمدت'),
                               ('cancel', u'ملغاة'),
-                              ], string=u'حالة', default='draft')
+                              ], string=u'الحالة', default='draft')
 
     #     @api.onchange('num_speech', 'date_speech', 'name', 'date')
     #     def onchange_fileds(self):

@@ -26,7 +26,7 @@ class HrHolidaysExtension(models.Model):
         ('audit', u'مراجعة'),
         ('done', u'إعتمد'),
         ('refuse', u'رفض'),
-    ], string=u'حالة', default='draft', )
+    ], string=u'الحالة', default='draft', )
     note = fields.Text(string = u'الملاحظات')
     duration = fields.Integer(string=u'الأيام')
     open_period = fields.Many2one('hr.holidays.periode', string=u'periode')

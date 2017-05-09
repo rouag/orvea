@@ -82,7 +82,7 @@ class HrHolidays(models.Model):
         ('confirm', 'To Approve'),
         ('unkhown', 'غير معروف'),
         ('validate1', 'Second Approval'),
-        ('validate', 'Approved')], string=u'حالة', default='draft',)
+        ('validate', 'Approved')], string=u'الحالة', default='draft',)
 
     is_current_user = fields.Boolean(string='Is Current User', compute='_is_current_user')
     is_direct_manager = fields.Boolean(string='Is Direct Manager', compute='_is_direct_manager')
