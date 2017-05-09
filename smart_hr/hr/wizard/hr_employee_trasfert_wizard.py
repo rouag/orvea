@@ -12,13 +12,13 @@ class HrEmployeeTransfertWizard(models.TransientModel):
 
 
 
-    new_job_id = fields.Many2one('hr.job', domain=[('state','=', 'unoccupied')], string=u'الوظيفة المنقول إليها')
-    degree_id = fields.Many2one('salary.grid.degree', related='employee_id.degree_id', string=u'الدرجة' ,readonly=1) 
+    new_job_id = fields.Many2one('hr.job', string=u'الوظيفة المنقول إليها')
+    degree_id = fields.Many2one('salary.grid.degree', related='employee_id.degree_id', string=u'الدرجة' ,readonly=1, required=1) 
     hr_employee_transfert_id = fields.Many2one('hr.employee.transfert', string=u'طلب نقل موظف')
-    new_degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة') 
+    new_degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة', required=1) 
     new_department_id = fields.Many2one('hr.department', related='new_job_id.department_id', string='مقر الوظيفة',readonly=1)
     department_id = fields.Many2one('hr.department', related='employee_id.job_id.department_id', string='مقر الوظيفة', readonly=1)
-    job_id = fields.Many2one('hr.job', related='employee_id.job_id', string=u'الوظيفة', readonly=1)
+    job_id = fields.Many2one('hr.job', related='employee_id.job_id', string=u'الوظيفة', readonly=1, required=1)
     specific_id = fields.Many2one('hr.groupe.job', related='employee_id.job_id.specific_id', string=u'المجموعة النوعية', readonly=1)
     type_id = fields.Many2one('salary.grid.type', related='employee_id.type_id', string=u'الصنف', readonly=1)
     new_type_id = fields.Many2one('salary.grid.type', related='new_job_id.type_id', string=u'الصنف', readonly=1)
@@ -49,13 +49,22 @@ class HrEmployeeTransfertWizard(models.TransientModel):
         res = {}
         if self.res_city and self.specific_group == 'other_specific':
             job_ids = self.env['hr.job'].search([('department_id.dep_city', '=', self.res_city.id), ('state', '=', 'unoccupied'), ('specific_id', '!=', self.specific_id.id)])
-            res['domain'] = {'new_job_id': [('id', 'in', job_ids.ids)]}
-            return res
-        if self.res_city and self.specific_group == 'same_specific':
+        elif self.res_city and self.specific_group == 'same_specific':
             job_ids = self.env['hr.job'].search([('department_id.dep_city', '=', self.res_city.id), ('state', '=', 'unoccupied'), ('specific_id', '=', self.specific_id.id)])
+        elif self.res_city and not self.specific_group:
+            job_ids = self.env['hr.job'].search([('department_id.dep_city', '=', self.res_city.id), ('state', '=', 'unoccupied')])
+        elif not self.res_city and self.specific_group:
+            if self.specific_group == 'other_specific':
+                job_ids = self.env['hr.job'].search([('state', '=', 'unoccupied'), ('specific_id', '!=', self.specific_id.id)])
+            elif self.specific_group == 'same_specific':
+                job_ids = self.env['hr.job'].search([('state', '=', 'unoccupied'), ('specific_id', '=', self.specific_id.id)])
+        else:
+            job_ids = self.env['hr.job'].search([('state', '=', 'unoccupied')])
+        if self.new_job_id:
+            self.new_job_id = False
+        if job_ids:
             res['domain'] = {'new_job_id': [('id', 'in', job_ids.ids)]}
-            return res
-
+        return res
 
     @api.multi
     def action_transfert(self):

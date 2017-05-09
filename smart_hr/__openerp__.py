@@ -38,12 +38,9 @@
         
         #'data/scholarship_data.xml',
         'hr_appraisal/data/hr_appraisal_data.xml',
-        
-        
+
         'wizards/view/hr_refuse_training_wizard_view.xml',
         'wizards/view/hr_refuse_employee_wizard_view.xml',
-     
-        
 
         # الوظائف
         'job/menu.xml',
@@ -290,6 +287,7 @@
         'hr_scholarship/view/hr_scholarship.xml',
         'hr_scholarship/wizards/view/hr_scholarship_succeed_wizard.xml',
         'hr_scholarship/wizards/view/hr_scholarship_extend_wizard.xml',
+        'hr_scholarship/wizards/view/hr_scholarship_cutoff_wizard.xml',
         'hr_scholarship/views/hr_scholarship_extension_report.xml',
         'hr_scholarship/views/report.xml',
         'employee_durations/views/promotion_duration_view.xml',

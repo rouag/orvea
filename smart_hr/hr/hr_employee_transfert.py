@@ -38,7 +38,6 @@ class HrEmployeeTransfert(models.Model):
     degree_id = fields.Many2one('salary.grid.degree',related='employee_id.degree_id', string=u'الدرجة', readonly=1)
     new_degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة', readonly=1)
     degree_last = fields.Many2one('salary.grid.degree', string=u'الدرجة', readonly=1)
-    
     governmental_entity = fields.Many2one('res.partner', string=u'الجهة الحكومية', domain=[('company_type', '=', 'governmental_entity')], readonly=1, states={'new': [('readonly', 0)]})
     desire_ids = fields.One2many('hr.employee.desire',  'desire_id', store=True,required=1, string=u'رغبات النقل', readonly=1, states={'new': [('readonly', 0)]})
     refusing_date = fields.Date(string=u'تاريخ الرفض', readonly=1)
@@ -197,7 +196,7 @@ class HrEmployeeTransfert(models.Model):
             res['domain'] = {'transfert_periode_id': [('for_member', '=', False)]}
             self.transfert_type = 'employee'
             return res
-        else :
+        else:
             self.transfert_type = 'empty'
 
     @api.one
@@ -284,8 +283,6 @@ class HrEmployeeTransfert(models.Model):
                     employ_trasfert.state = 'pm'
         self.state = 'pm'
 
-  
-
     @api.multi
     def action_cancelled(self):
         self.ensure_one()
@@ -347,27 +344,12 @@ class HrEmployeeTransfert(models.Model):
     def action_done(self):
         for rec in self:
             if not rec.new_job_id:
-                        raise ValidationError(u"الرجاء التثبت من حقل الوظيفة المنقول إليها.")
-            if not rec.degree_id:
-                        raise ValidationError(u"الرجاء التثبت من حقل الدرجة.")
+                raise ValidationError(u"الرجاء التثبت من حقل الوظيفة المنقول إليها.")
+            if not rec.new_degree_id:
+                raise ValidationError(u"الرجاء التثبت من حقل الدرجة.")
             # create hr.decision.appoint object
             # with decision file
-            if rec.new_specific_id == rec.specific_id:
-#                 if not rec.decision_number:
-#                     raise ValidationError(u"لم يتم إصدار قرار بشأن النقل.")
-                vals = {
-                    'type_appointment': self.env.ref('smart_hr.data_hr_recrute_from_transfert').id,
-                    'employee_id': rec.employee_id.id,
-                    'job_id': rec.new_job_id.id,
-                    'degree_id': rec.new_degree_id.id,
-                    'transfer_id': rec.id,
-                    'name': self.env['ir.sequence'].get('hr.employee.transfert.seq'),
-                    'order_date': rec.speech_date,}
-            else:
-#                 if not rec.speech_number:
-#                     raise ValidationError(u"لم يتم خطاب قرار بشأن النقل.")
-                # with speech file
-                vals = {
+            vals = {
                     'type_appointment': self.env.ref('smart_hr.data_hr_recrute_from_transfert').id,
                     'employee_id': rec.employee_id.id,
                     'job_id': rec.new_job_id.id,
