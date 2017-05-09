@@ -38,12 +38,9 @@
         
         #'data/scholarship_data.xml',
         'hr_appraisal/data/hr_appraisal_data.xml',
-        
-        
+
         'wizards/view/hr_refuse_training_wizard_view.xml',
         'wizards/view/hr_refuse_employee_wizard_view.xml',
-     
-        
 
         # الوظائف
         'job/menu.xml',
