@@ -8,17 +8,22 @@
 				<form string="سجل الإجراءت">
 					<header>
 						<button name="open_decission_scholarship" string="معاينة القرار"
-							type="object" icon="fa-print" class="oe_inline oe_stat_button" />
+							type="object" icon="fa-print" class="oe_inline oe_stat_button" attrs="{'invisible':[('state','not in', ['done'])]}"/>
 					</header>
 					<sheet>
 						<group>
-							<field name="name" />
-							<field name="date" />
-							<field name="order_number" />
-							<field name="order_date" />
-							<field name='file_decision' filename="file_decision_name" />
-							<field name="file_decision_name" invisible="1" />
-
+							<group>
+								<field name="name" />
+								<field name="date" />
+								<field name="date_from"  attrs="{'invisible':[('state','not in', ['done'])]}"/>
+								<field name="date_to" attrs="{'invisible':[('state','not in', ['done'])]}" />
+								<field name="duration"  attrs="{'invisible':[('state','not in', ['done'])]}"/>
+								<field name="order_number" attrs="{'invisible':[('state','not in', ['done'])]}" />
+								<field name="order_date"  attrs="{'invisible':[('state','not in', ['done'])]}"/>
+								<field name='file_decision' filename="file_decision_name"  attrs="{'invisible':[('state','not in', ['done'])]}"/>
+								<field name="file_decision_name" invisible="1" />
+								<field name="state" invisible="1" />
+							</group>
 						</group>
 					</sheet>
 				</form>
@@ -157,16 +162,20 @@
 										<field name="name" />
 										<field name="date" />
 										<field name="date_from" />
+										<field name="date_to" />
 										<field name="duration" />
 										<field name="order_number" />
 										<field name="order_date" />
 										<button name="open_decission_scholarship" string="معاينة القرار"
-											type="object" icon="fa-print" class="oe_inline oe_stat_button" />
+											attrs="{'invisible':[('state','not in', ['done'])]}" type="object"
+											icon="fa-print" class="oe_inline oe_stat_button" />
+										<field name='file_decision' filename="file_decision_name"
+											invisible="1" />
+										<field name="file_decision_name" invisible="1" />
+										<field name="state" invisible="1" />
 									</tree>
 								</field>
 							</page>
-
-
 						</notebook>
 						<group>
 							<field name="note"
@@ -201,6 +210,8 @@
 			<field name="arch" type="xml">
 				<tree string="الابتعاث">
 					<field name="name" />
+					<field name="employee_id" />
+					<field name="scholarship_type" />
 					<field name="date" />
 					<field name="date_from" />
 					<field name="date_to" />

@@ -12,7 +12,7 @@ class HrScholarship(models.Model):
     _order = 'id desc'
     _description = u'الابتعاث'
 
-    name = fields.Char(string=' المسمى', readonly=1)
+    name = fields.Char(string='رقم الابتعاث', readonly=1)
     date = fields.Date(string='تاريخ الطلب', readonly=1, default=fields.Datetime.now())
     state = fields.Selection([('draft', u'طلب'),
                               ('psm', u'المصاقة على الابتعاث '),
@@ -80,7 +80,7 @@ class HrScholarship(models.Model):
                 'date': decision_date,
                 'employee_id': self.employee_id.id}
             decision = decision_obj.create(decission_val)
-            decision.text = decision.replace_text(self.employee_id, decision_date, decision_type_id, 'scholarship'zzzzz)
+            decision.text = decision.replace_text(self.employee_id, decision_date, decision_type_id, 'scholarship',self.id)
             decission_id = decision.id
             self.decission_id = decission_id
         return {
@@ -277,7 +277,7 @@ class HrScholarship(models.Model):
         context = self._context.copy()
         context.update({
             u'default_date_from': fields.Date.to_string(fields.Date.from_string(self.date_to) + timedelta(days=1)),
-            u'default_date_to': self.date_to,
+            u'default_date_to':  fields.Date.to_string(fields.Date.from_string(self.date_to) + timedelta(days=1)),
             u'is_extension': True
         })
         return {
@@ -386,8 +386,9 @@ class HrScholarshipHistory(models.Model):
     decission_id = fields.Many2one('hr.decision', string=u'القرارات')
     date_from = fields.Date(string=u'تاريخ البدء')
     duration = fields.Integer(string=u'عدد الأيام ')
-    date_to = fields.Date(string=u'')
-
+    date_to = fields.Date(string=u'تاريخ الإنتهاء')
+    state = fields.Selection(related='scholarship_id.state', readonly=True)
+  
     @api.multi
     def open_decission_scholarship(self):
         decision_obj = self.env['hr.decision']
@@ -405,7 +406,7 @@ class HrScholarshipHistory(models.Model):
                 'date': decision_date,
                 'employee_id': self.scholarship_id.employee_id.id}
             decision = decision_obj.create(decission_val)
-            decision.text = decision.replace_text(self.scholarship_id.employee_id, decision_date, decision_type_id, 'scholarship_extension')
+            decision.text = decision.replace_text(self.scholarship_id.employee_id, decision_date, decision_type_id, 'scholarship_extension',self.id)
             decission_id = decision.id
             self.decission_id = decission_id
         return {
@@ -418,4 +419,5 @@ class HrScholarshipHistory(models.Model):
             'res_id': decission_id,
             'target': 'new'
         }    
-    
+
+        

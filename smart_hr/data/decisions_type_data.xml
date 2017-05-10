@@ -1743,7 +1743,7 @@ SPORT
 								<p>
 							و الحاقا للقرار الاداري
 								رقم
-			 (NUMERO)و تاريخ  DATE</p>
+			 (NUMERO)و تاريخ  ORDERD</p>
 							
 							القاضي بتمديد ابتعاث الموظف
 									 EMPLOYEE 
@@ -1787,62 +1787,7 @@ SPORT
 		</record>
 
 
-		<record id="data_employee_scholarship_cancel" model="hr.decision.type">
-			<field name="name"> قرار تمديد ابتعاث </field>
-			<field name="text"><![CDATA[
-			<p>قرار إداري رقم
-			 (NUMERO)و تاريخ  DATE</p>
-			<p style="text-align: center;"><strong>
-				<strong>رقم الهوية الوطنية:</strong>
-			 CARTEID </strong></p>
-							</p>
-								<p>
-									<strong>إن رئيس هيئة التحقيق والإدعاء العام</strong>
-								</p>
-								<p>
-									<strong>بناءً على الصلاحيات الممنوحة له</strong>
-								</p>
-								<br></br>
-								<p>
-							و الحاقا للقرار الاداري
-								رقم
-			 (NUMERO)و تاريخ  DATE</p>
-							
-						
-								<b>
-									رئيس هيئة التحقيق و الادعاء العام
-								</b>
-								
-								            ]]></field>
-		</record>
-			<record id="data_employee_scholarship_cuttoff" model="hr.decision.type">
-			<field name="name"> قرار تمديد ابتعاث </field>
-			<field name="text"><![CDATA[
-			<p>قرار إداري رقم
-			 (NUMERO)و تاريخ  DATE</p>
-			<p style="text-align: center;"><strong>
-				<strong>رقم الهوية الوطنية:</strong>
-			 CARTEID </strong></p>
-							</p>
-								<p>
-									<strong>إن رئيس هيئة التحقيق والإدعاء العام</strong>
-								</p>
-								<p>
-									<strong>بناءً على الصلاحيات الممنوحة له</strong>
-								</p>
-								<br></br>
-								<p>
-							و الحاقا للقرار الاداري
-								رقم
-			 (NUMERO)و تاريخ  DATE</p>
-							
-						
-								<b>
-									رئيس هيئة التحقيق و الادعاء العام
-								</b>
-								
-								            ]]></field>
-		</record>
+	
 
 		<record id="data_employee_scholarship_general" model="hr.decision.type">
 			<field name="name"> قرار ابتعاث </field>

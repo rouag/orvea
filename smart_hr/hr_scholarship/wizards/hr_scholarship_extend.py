@@ -1,15 +1,20 @@
 # -*- coding: utf-8 -*-
 
 from openerp import fields, models, api
-
+from pychart.arrow import default
+from openerp.tools import SUPERUSER_ID
+from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
 
 class HrScholarshipextendWizard(models.TransientModel):
 
     _name = "hr.scholarship.extend.wizard"
     _description = "Scholarship extend Wizard"
 
+
+  
     date_from = fields.Date(string=u'تاريخ من', required=1, readonly=1)
     date_to = fields.Date(string=u'تاريخ إلى', required=1)
+
     duration = fields.Integer(string=u'عدد الأيام ', required=1, compute='_compute_duration', readonly=1)
     order_number = fields.Char(string=u'رقم الخطاب', required=1)
     order_date = fields.Date(string=u'تاريخ الخطاب', required=1)
@@ -32,10 +37,12 @@ class HrScholarshipextendWizard(models.TransientModel):
                                                         'order_number': wiz.order_number,
                                                         'order_date': wiz.order_date,
                                                         'file_decision': wiz.file_decision,
+                                                        'file_decision_name':wiz.file_decision_name,
                                                         'date_from': wiz.date_from,
                                                         'duration': wiz.duration,
                                                         'date_to':wiz.date_to
                                                        })
+    
     @api.one
     @api.depends('date_from', 'date_to')
     def _compute_duration(self):
