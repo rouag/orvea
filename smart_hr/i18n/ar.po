@@ -384,7 +384,7 @@ msgid ""
 "We are a team of passionate people whose goal is to improve everyone's\n"
 "                                      life through disruptive products. We build great products to solve your\n"
 "                                      business problems."
-msgstr "هيئة التحقيق والإدعاء العام"
+msgstr "الموارد البشرية"
 
 #. module: website
 #: model:ir.ui.view,arch_db:website.footer_default
@@ -392,7 +392,7 @@ msgid ""
 "We are a team of passionate people whose goal is to improve everyone's\n"
 "                            life through disruptive products. We build great products to solve your\n"
 "                            business problems."
-msgstr "هيئة التحقيق والإدعاء العام"
+msgstr "الموارد البشرية"
 
 #. module: survey
 #: model:ir.ui.view,arch_db:survey.back
@@ -405,19 +405,19 @@ msgstr "رجوع للتقيم"
 msgid ""
 "Our products are designed for small to medium size companies willing to optimize\n"
 "                                      their performance."
-msgstr "هيئة التحقيق والإدعاء العام"
+msgstr "الموارد البشرية"
 
 #. module: website
 #: model:ir.ui.view,arch_db:website.footer_default
 msgid ""
 "Our products are designed for small to medium size companies willing to optimize\n"
 "                            their performance."
-msgstr "هيئة التحقيق والإدعاء العام"
+msgstr "الموارد البشرية"
 
 #. module: website
 #: model:ir.ui.view,arch_db:website.footer_default
 msgid "Our products &amp; Services"
-msgstr " هيئة التحقيق والإدعاء العام "
+msgstr " الموارد البشرية "
 
 #. module: hr_appraisal
 #: model:ir.model.fields,field_description:hr_appraisal.field_hr_appraisal_count_completed_survey
