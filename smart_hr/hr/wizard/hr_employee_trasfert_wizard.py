@@ -10,9 +10,7 @@ from openerp.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FO
 class HrEmployeeTransfertWizard(models.TransientModel):
     _name = 'wizard.employee.transfert'
 
-
-
-    new_job_id = fields.Many2one('hr.job', string=u'الوظيفة المنقول إليها')
+    new_job_id = fields.Many2one('hr.job', string=u'الوظيفة المنقول إليها', required=1)
     degree_id = fields.Many2one('salary.grid.degree', related='employee_id.degree_id', string=u'الدرجة' ,readonly=1, required=1) 
     hr_employee_transfert_id = fields.Many2one('hr.employee.transfert', string=u'طلب نقل موظف')
     new_degree_id = fields.Many2one('salary.grid.degree', string=u'الدرجة', required=1) 
@@ -28,7 +26,6 @@ class HrEmployeeTransfertWizard(models.TransientModel):
     res_city = fields.Many2one('res.city',  string=u'المدينة')
     specific_group = fields.Selection([('same_specific', 'في نفس المجموعة النوعية'), ('other_specific', 'في مجموعة أخرى') ],  string=u'نوع المجموعة')
     employee_desire_ids = fields.Many2many('hr.employee.desire', string=u'رغبات النقل', readonly=1)
-
 
     @api.model
     def default_get(self, fields):

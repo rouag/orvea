@@ -1553,7 +1553,7 @@ class HrHolidays(models.Model):
                     
                 # Constraintes for Compelling holidays  اجازة مرافقة استثنائية+ اضطرارية
         if self.holiday_status_id in [self.env.ref('smart_hr.data_hr_holiday_status_compelling'), self.env.ref('smart_hr.data_hr_holiday_accompaniment_exceptional')]:
-            if holiday_status_normal_stock > 0:
+            if holiday_status_normal_stock >= 1:
                 raise ValidationError(u"يوجد رصيد في الإجازات العاديّة")
         
                     # Constraintes for childbirth holidays وضع

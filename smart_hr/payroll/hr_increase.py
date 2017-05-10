@@ -68,12 +68,14 @@ class hrIncrease(models.Model):
             employee_ids += [x.id for x in dapartment.member_ids if x.emp_state!='terminated']
             for child in dapartment.all_child_ids:
                 employee_ids += [x.id for x in child.member_ids if x.emp_state!='terminated']
+        else:
+            employee_ids = self.env['hr.employee'].search([('emp_state', '!=', 'terminated')]).ids
         result = []
         result_sanction = []
         res = {}
         # filter by type
         if self.salary_grid_type_id:
-            employee_ids = employee_obj.search([('emp_state', '!=', 'terminated'), ('id', 'in', employee_ids), ('type_id', '=', self.salary_grid_type_id.id)]).ids
+            employee_ids = employee_obj.search([('id', 'in', employee_ids), ('type_id', '=', self.salary_grid_type_id.id)]).ids
         result = list(set(employee_ids))
         years_id = self.env['hr.fiscalyear'].search([('date_stop', '<', self.periode_increase.period_id.date_start)] , order='date_stop desc', limit=1) 
         if not years_id :
@@ -99,7 +101,7 @@ class hrIncrease(models.Model):
         for line in self.employee_increase_ids:
             line.onchange_employee_id()
         self.employee_errors_ids = result_employee_error
-        for rec in   result_sanction  :
+        for rec in result_sanction :
             result_inter.append({'employee_id': rec})
         self.employee_deprivated_ids = result_inter
         self.is_increase_line = True
