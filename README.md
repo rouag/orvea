@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Smart modules for Odoo
 =======================
 
@@ -41,3 +42,5 @@ Configuration
 
 1) You need to install the package "xlrd" to read xls files
 2) you need to install the package "umalqurra" for hijri converting date
+=======
+>>>>>>> branch '9.0' of https://abderrahmen.khalledi@gitlab.com/abderrahmen.khalledi/addons_smart.git
