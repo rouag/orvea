@@ -121,7 +121,7 @@
 								<br />
 								<t t-set="decision_appoint"
 									t-value="docs.env['hr.decision.appoint'].search([('employee_id','=',o.employee_id.id)],limit=1)" />
-								<p style="font-size:22px;">إن رئيس الموارد البشرية</p>
+								<p style="font-size:22px;">إن رئيس   الجهة</p>
 								<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له.</p>
 								<p style="font-size:22px;">و إشارة إلى طلب الإجازة المرفق و استنادا إلى المادة
 									(العشرين) من لائحة الإجازات
@@ -155,7 +155,7 @@
 								<br />
 								<p align="left" style="font-size:22px;">
 
-									رئيس الموارد البشرية
+									رئيس   الجهة
 									<br></br>
 									<span t-field="o.employee_id.user_id.company_id.company_president" />
 
@@ -399,7 +399,7 @@
 									<br />
 									<t t-set="decision_appoint"
 										t-value="docs.env['hr.decision.appoint'].search([('employee_id','=',o.employee_id.id)],limit=1)" />
-									<p style="font-size:22px;">إن رئيس الموارد البشرية</p>
+									<p style="font-size:22px;">إن رئيس   الجهة</p>
 									<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له,</p>
 									<p style="font-size:22px;">
 										واشارة إلى خطابات
@@ -443,7 +443,7 @@
 								<br />
 								<br />
 								<div class="col-xs-5 pull-right" style="font-size:22px;">
-									<span>رئيس الموارد البشرية</span>
+									<span>رئيس   الجهة</span>
 									<br></br>
 									<span
 										t-field="o.employee_id.user_id.company_id.company_president.display_name" />
@@ -483,7 +483,7 @@
 									<br />
 									<t t-set="decision_appoint"
 										t-value="docs.env['hr.decision.appoint'].search([('employee_id','=',o.employee_id.id)],limit=1)" />
-									<p style="font-size:22px;">إن رئيس الموارد البشرية</p>
+									<p style="font-size:22px;">إن رئيس   الجهة</p>
 									<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له,</p>
 									<p style="font-size:22px;">
 										واشارة إلى خطابات
@@ -524,7 +524,7 @@
 								<br />
 								<br />
 								<div class="col-xs-5 pull-right" style="font-size:22px;">
-									<span>رئيس الموارد البشرية</span>
+									<span>رئيس   الجهة</span>
 									<br></br>
 									<span
 										t-field="o.employee_id.user_id.company_id.company_president.display_name" />
@@ -564,7 +564,7 @@
 									<br />
 									<t t-set="decision_appoint"
 										t-value="docs.env['hr.decision.appoint'].search([('employee_id','=',o.employee_id.id)],limit=1)" />
-									<p style="font-size:22px;">إن رئيس الموارد البشرية</p>
+									<p style="font-size:22px;">إن رئيس   الجهة</p>
 									<p style="font-size:22px;">بناء على الصلاحيات الممنوحة له,</p>
 									<p style="font-size:22px;">
 										واشارة إلى خطابات
@@ -605,7 +605,7 @@
 								<br />
 								<br />
 								<div class="col-xs-5 pull-right" style="font-size:22px;">
-									<span>رئيس الموارد البشرية</span>
+									<span>رئيس   الجهة</span>
 									<br></br>
 									<span
 										t-field="o.employee_id.user_id.company_id.company_president.display_name" />

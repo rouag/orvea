@@ -632,8 +632,9 @@
 										<field name="employee_id" readonly="1" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
-										<field name="recruiter_date" />
+
 										<field name="last_evaluation_result" readonly="1" />
+										<field name="recruiter_date" />
 										<field name="begin_work_date" readonly="1" />
 										<field name="age" />
 										<field name="is_conflected" invisible="1" />
@@ -652,8 +653,9 @@
 										<field name="employee_id" readonly="1" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
-										<field name="recruiter_date" />
+
 										<field name="last_evaluation_result" readonly="1" />
+										<field name="recruiter_date" />
 										<field name="begin_work_date" readonly="1" />
 										<field name="age" />
 										<field name="new_job_id" />
@@ -682,8 +684,9 @@
 										<field name="employee_id" readonly="1" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
-										<field name="recruiter_date" />
+
 										<field name="last_evaluation_result" readonly="1" />
+										<field name="recruiter_date" />
 										<field name="begin_work_date" readonly="1" />
 										<field name="age" />
 										<field name="new_job_id" readonly="1" />
@@ -710,8 +713,9 @@
 										<field name="employee_id" readonly="1" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
-										<field name="recruiter_date" />
+
 										<field name="last_evaluation_result" readonly="1" />
+										<field name="recruiter_date" />
 										<field name="begin_work_date" readonly="1" />
 										<field name="age" />
 										<field name="new_job_id" readonly="1" />
@@ -745,8 +749,9 @@
 										<field name="employee_id" readonly="1" />
 										<field name="job_id" readonly="1" />
 										<field name="transfert_create_date" readonly="1" />
-										<field name="recruiter_date" />
+
 										<field name="last_evaluation_result" readonly="1" />
+										<field name="recruiter_date" />
 										<field name="begin_work_date" readonly="1" />
 										<field name="age" />
 										<field name="new_job_id" readonly="1" />
