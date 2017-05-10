@@ -596,7 +596,7 @@
 
 
 						<field name="state" widget="statusbar"
-							statusbar_visible="new,draft,waiting,commission_president,commission_third,benefits,done" />
+							statusbar_visible="new,draft,waiting,commission_president,commission_third,benefits,done,refused" />
 					</header>
 					<sheet>
 						<group>
@@ -671,10 +671,10 @@
 								</field>
 							</page>
 							<page string="طلبات النقل" options="{'no_create': True}"
-								attrs="{'invisible':[('state', 'not in', ['waiting'])]}">
+								attrs="{'invisible':[('state', 'not in', ['waiting','refused'])]}">
 								<br></br>
 								<field name="line_ids3" create='0' options="{'no_create': True}"
-									attrs="{'invisible':[('state', 'not in', ['waiting'])]}"
+									attrs="{'invisible':[('state', 'not in', ['waiting','refused'])]}"
 									string=" طلبات النقل">
 									<tree delete='0' editable="bottom" colors="red:is_conflected==True;"
 										create="false">
