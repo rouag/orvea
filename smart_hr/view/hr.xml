@@ -20,6 +20,7 @@
 					<filter string="مطوي قيده" name="suspended_employees"
 						domain="['|', ('employee_state','=','retired'),('emp_state','=','terminated')]" />
 				</xpath>
+
 				<xpath expr="//field[@name='name']" position="after">
 					<field name="number" />
 					<field name="identification_id" />
@@ -32,7 +33,17 @@
 				</xpath>
 				<xpath expr="//filter[@name='inactive']" position="replace">
 				</xpath>
+
 				<xpath expr="//group[@expand='0']//filter[2]" position="replace">
+				</xpath>
+			</field>
+		</record>
+		<record id="view_search_hr_employee_holidays_inherit" model="ir.ui.view">
+			<field name="name">hr.employee.search.inherit</field>
+			<field name="model">hr.employee</field>
+			<field name="inherit_id" ref="hr_holidays.hr_employee_view_search"/>
+			<field name="arch" type="xml">
+				<xpath expr="//filter[@name='is_absent_totay']" position="replace">
 				</xpath>
 			</field>
 		</record>
@@ -404,7 +415,7 @@
 												context="{'list_type':'_get_dep_name_employee_form'}"
 												on_change="onchange_department_id(department_id)" />
 											<field name="branch_id"
-												attrs="{'invisible': [('employee_state','!=', 'employee')]}"/>
+												attrs="{'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="dep_side" options="{'no_create': True}"
 												attrs="{'invisible': [('employee_state','!=', 'employee')]}" />
 											<field name="dep_city" options="{'no_create': True}"

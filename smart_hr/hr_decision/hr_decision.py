@@ -110,7 +110,6 @@ class HrDecision(models.Model):
         if self.decision_type_id == self.env.ref('smart_hr.data_employee_scholarship_general'):
             object_type = 'scholarship'
             self.text = self.replace_text(self.employee_id, self.date, self.decision_type_id.id, 'scholarship')
-      
         if self.decision_type_id in [self.env.ref('smart_hr.data_decision_type28'),
                                      self.env.ref('smart_hr.data_decision_type27'),
                                      self.env.ref('smart_hr.data_decision_type_suspension_end_member'),
@@ -118,7 +117,7 @@ class HrDecision(models.Model):
                                             ]:
             object_type = 'suspension'
             self.text = self.replace_text(self.employee_id, self.date, self.decision_type_id.id, 'suspension')
-            
+
         if self.decision_type_id == self.env.ref('smart_hr.data_employee_scholarship'):
             object_type = 'scholarship_extension'
             self.text = self.replace_text(self.employee_id, self.date, self.decision_type_id.id, 'scholarship_extension')
@@ -388,7 +387,7 @@ class HrDecision(models.Model):
                         decision_text = decision_text.replace('DURATION', unicode(duration))
                         
                 if object_type == 'scholarship' :
-                    scholarship_line = self.env['hr.scholarship'].search([('employee_id', '=', employee_id.id),('state', '=', 'done')], limit=1)
+                    scholarship_line = self.env['hr.scholarship'].search([('employee_id', '=', employee_id.id),('id', '=',model_id)], limit=1)
                     if scholarship_line :
                         diplom_id = scholarship_line.diplom_id.name or ""
                         faculty_id = scholarship_line.faculty_id.name or ""
@@ -413,7 +412,7 @@ class HrDecision(models.Model):
                         decision_text = decision_text.replace('ENDDET', unicode(date_to))
 
                 if object_type == 'scholarship_extension':
-                    scholarship_line = self.env['hr.scholarship.history'].search([('scholarship_id.employee_id', '=', employee_id.id), ('scholarship_id.state', '=', 'done')], limit=1)
+                    scholarship_line = self.env['hr.scholarship.history'].search([('scholarship_id.employee_id', '=', employee_id.id),('id', '=',model_id)], limit=1)
                     if scholarship_line:
                         diplom_id = scholarship_line.scholarship_id.diplom_id.name or ""
                         faculty_id = scholarship_line.scholarship_id.faculty_id.name or ""
@@ -423,16 +422,19 @@ class HrDecision(models.Model):
                             date_from = self._get_hijri_date(scholarship_line.date_from, '-')
                             date_from = str(date_from).split('-')
                             date_from = date_from[2] + '-' + date_from[1] + '-' + date_from[0] or ""
-                        fromdate = date_from or ""
+                            fromdate = date_from or ""
                         if scholarship_line.date_to:
                             date_to = self._get_hijri_date(scholarship_line.date_to, '-')
                             date_to = str(date_to).split('-')
                             date_to = date_to[2] + '-' + date_to[1] + '-' + date_to[0] or ""
-                        date_to = date_to or ""
+                            date_to = date_to or ""
                         if scholarship_line.order_number:
                             num_speech = scholarship_line.order_number or ""
                         if scholarship_line.order_date:
-                            date_speech = scholarship_line.order_date or ""
+                            order_date = self._get_hijri_date(scholarship_line.order_date, '-')
+                            order_date = str(order_date).split('-')
+                            order_date = order_date[2] + '-' + order_date[1] + '-' + order_date[0] or ""
+                            order_date = order_date or ""
                         decision_text = decision_text.replace('DIPLOME', unicode(diplom_id))
                         decision_text = decision_text.replace('FACULTY', unicode(faculty_id))
                         decision_text = decision_text.replace('CONTRY', unicode(country_id))
@@ -440,7 +442,19 @@ class HrDecision(models.Model):
                         decision_text = decision_text.replace('FROMDET', unicode(fromdate))
                         decision_text = decision_text.replace('ENDDET', unicode(date_to))
                         decision_text = decision_text.replace('ORDERN', unicode(num_speech))
-                        decision_text = decision_text.replace('ORDERD', unicode(date_speech))
+                        decision_text = decision_text.replace('ORDERD', unicode(order_date))
+                        
+                if object_type == 'scholarship_cancel':
+                    scholarship_line = self.env['hr.scholarship.history'].search([('scholarship_id.employee_id', '=', employee_id.id),('id', '=',model_id)], limit=1)
+                    if scholarship_line:
+                        diplom_id = scholarship_line.scholarship_id.diplom_id.name or ""
+                        faculty_id = scholarship_line.scholarship_id.faculty_id.name or ""
+                        country_id = scholarship_line.scholarship_id.faculty_id.country_id.name or ""
+                        duration = scholarship_line.duration or ""
+                        decision_text = decision_text.replace('DIPLOME', unicode(diplom_id))
+                        decision_text = decision_text.replace('FACULTY', unicode(faculty_id))
+                        decision_text = decision_text.replace('CONTRY', unicode(country_id))
+                        decision_text = decision_text.replace('DURATION', unicode(duration))
 
                 if object_type == 'appoint':
                     appoint_line = self.env['hr.decision.appoint'].search([('employee_id', '=', employee_id.id), ('state', '=', 'done')], limit=1)

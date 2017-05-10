@@ -1743,7 +1743,7 @@ SPORT
 								<p>
 							و الحاقا للقرار الاداري
 								رقم
-			 (NUMERO)و تاريخ  DATE</p>
+			 (NUMERO)و تاريخ  ORDERD</p>
 							
 							القاضي بتمديد ابتعاث الموظف
 									 EMPLOYEE 
@@ -1786,6 +1786,8 @@ SPORT
 								            ]]></field>
 		</record>
 
+
+	
 
 		<record id="data_employee_scholarship_general" model="hr.decision.type">
 			<field name="name"> قرار ابتعاث </field>

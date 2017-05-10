@@ -61,6 +61,9 @@
 			<field name="arch" type="xml">
 				<tree string="المهام">
 					<field name="name" />
+					<field name="employee_id" />
+					<field name="type_procedure" />
+					<field name="governmental_entity" />
 					<field name="date_from" />
 					<field name="date_to" />
 					<field name="duration" />
