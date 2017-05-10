@@ -79,6 +79,8 @@ class HrOvertime(models.Model):
     @api.multi
     def action_draft(self):
         for overtime in self:
+            if len(overtime.line_ids)==0:
+                raise ValidationError(u"لا يوجد طلبات خارج الدوام")        
             for line in overtime.line_ids:
                 for rec in line:
                     task_obj = self.env['hr.employee.task']
@@ -90,8 +92,8 @@ class HrOvertime(models.Model):
                                                          #  'governmental_entity' : self.governmental_entity.id,
                                                          'type_procedure': 'overtime',
                                                          })
-            overtime.state = 'audit'
-
+                overtime.state = 'audit'
+              
     @api.multi
     def action_commission(self):
         for overtime in self:
